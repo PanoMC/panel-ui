@@ -4,13 +4,13 @@
     href="https://panomc.com/docs"
     target="_blank"
     use:tooltip="{[$_('components.bottom.help'), { placement: 'top' }]}">
-    <i class="fas fa-question-circle"></i>
+    <i class="fas fa-book-open"></i>
   </a>
   <a
     class="nav-link text-light"
     href="javascript:void(0);"
     use:tooltip="{[$_('components.bottom.pano-market'), { placement: 'top' }]}">
-    <i class="fas fa-store-alt"></i>
+    <i class="fas fa-store"></i>
   </a>
   <a
     class="nav-link text-light"

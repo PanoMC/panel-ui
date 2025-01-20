@@ -1,5 +1,5 @@
 <!-- Error Alert -->
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
+<div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
   <button
     type="button"
     class="btn-close"
@@ -9,7 +9,7 @@
 </div>
 
 <!-- General Settings Sub Page -->
-<div class="card mb-3">
+<div class="card">
   <div class="card-body animate__animated animate__fadeIn">
     <h5 class="card-title">Hesap</h5>
     <div class="row mb-3">
@@ -47,7 +47,7 @@
   </div>
 </div>
 
-<div class="card mb-3">
+<div class="card">
   <div class="card-body animate__animated animate__fadeIn">
     <h5 class="card-title">
       {$_("pages.settings.platform.preferences")}

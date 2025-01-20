@@ -1,6 +1,6 @@
 <!-- Updates Sub Page -->
 
-<div class="container">
+<div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
     <div slot="left">
@@ -25,14 +25,12 @@
   </PageActions>
 
   <div
-    class="alert alert-warning mb-3 animate__animated animate__bounceInDown animate__slower"
+    class="alert alert-warning animate__animated animate__bounceInDown animate__slower mb-0"
     role="alert">
-    <h5 class="alert-heading">Yenide başlatma bekleniyor</h5>
+    <h5 class="alert-heading">Yenide başlat</h5>
 
     <p>
       Platform güncellemesinin uygulanabilmesi için yeniden başlatma gerekiyor.
-      Yönetim Paneli ve Website bakım moduna alınacak, oyun sunucuları
-      etkilenmeyecek.
     </p>
     <p>
       Tahmini süre: <b>TIME</b>
@@ -48,84 +46,72 @@
         <h5 class="card-title" slot="left">Available Updates (COUNT)</h5>
         <!-- Filters -->
         <CardFilters slot="right">
-          <CardFiltersItem href="/">Tümü</CardFiltersItem>
+          <CardFiltersItem href="/" active>Tümü</CardFiltersItem>
           <CardFiltersItem href="/">Platform</CardFiltersItem>
           <CardFiltersItem href="/">Eklenti</CardFiltersItem>
         </CardFilters>
       </CardHeader>
 
-      <!-- Pending Update Card -->
-      <div class="card border">
-        <div class="card-body">
-          <div class="row d-flex flex-nowrap">
-            <div class="col-auto d-md-flex d-none">
+      <!-- Pending Update List -->
+      <!-- No Posts -->
+      <NoContent />
+      <ul class="list-group">
+        <!-- Update -->
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col">
               <a href="/">
-                <img
-                  height="128"
-                  width="128"
-                  src="..."
-                  class="img-thumbnail animate__animated animate__zoomIn d-block"
-                  alt="Alt" />
+                <h5 class="card-title d-inline-block">ID</h5>
               </a>
             </div>
-            <div class="col">
-              <div class="row">
-                <div class="col">
-                  <a href="/">
-                    <h5 class="card-title">ID</h5>
-                  </a>
-                </div>
-                <div class="col-auto">
-                  <button class="btn btn-sm btn-primary" type="button"
-                    >Update</button>
-                </div>
-                <div class="col-auto ps-0">
-                  <a
-                    href="#"
-                    tabindex="0"
-                    class="link-danger"
-                    data-bs-toggle="popover"
-                    data-bs-trigger="focus"
-                    data-bs-custom-class="font-monospace"
-                    data-bs-title="Error Log"
-                    data-bs-content="ERR LOG">
-                    <i class="fa-solid fa-circle-exclamation fa-1x"></i>
-                  </a>
-                </div>
-              </div>
-              <small class="text-muted">
-                <span class="font-monospace">TYPE</span>
-                <div class="vr mx-2"></div>
-                <span class="font-monospace"
-                  >OLDV <i class="fa-solid fa-caret-right"></i> NEWV</span>
-                <div class="vr mx-2"></div>
-                <span class="font-monospace">SIZE</span>
-                <div class="vr mx-2"></div>
-                <span class="font-monospace text-black">INSTALLING...</span>
-                <span class="font-monospace text-black">DOWNLOADING...</span>
-              </small>
-              <span class="font-monospace">
-                <div
-                  class="progress my-3"
-                  role="progressbar"
-                  aria-label="Example 1px high"
-                  aria-valuenow="25"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  style="height: 3px">
-                  <div class="progress-bar bg-secondary" style="width: 25%">
-                  </div>
-                </div>
-              </span>
-
-              <details>
-                <summary class="pb-3"> View Changelog</summary>
-                <p>CHANGELOG</p>
-              </details>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-secondary" type="button"
+                >Update</button>
+            </div>
+            <div class="col-auto ps-0">
+              <a
+                href="#"
+                tabindex="0"
+                class="link-danger"
+                data-bs-toggle="popover"
+                data-bs-trigger="focus"
+                data-bs-custom-class="font-monospace"
+                data-bs-title="Error Log"
+                data-bs-content="ERR LOG">
+                <i class="fa-solid fa-circle-exclamation fa-1x"></i>
+              </a>
             </div>
           </div>
-        </div>
-      </div>
+          <small class="text-muted">
+            <span class="font-monospace">TYPE</span>
+            <div class="vr mx-2"></div>
+            <span class="font-monospace"
+              >OLDV <i class="fa-solid fa-caret-right"></i> NEWV</span>
+            <div class="vr mx-2"></div>
+            <span class="font-monospace">SIZE</span>
+            <div class="vr mx-2"></div>
+            <span class="font-monospace text-black">INSTALLING...</span>
+            <span class="font-monospace text-black">DOWNLOADING...</span>
+          </small>
+          <span class="font-monospace">
+            <div
+              class="progress my-3"
+              role="progressbar"
+              aria-label="Example 1px high"
+              aria-valuenow="25"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              style="height: 3px">
+              <div class="progress-bar bg-secondary" style="width: 25%"></div>
+            </div>
+          </span>
+
+          <details>
+            <summary>Changelog</summary>
+            <p class="pt-3">CHANGELOG</p>
+          </details>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
@@ -137,6 +123,7 @@
   import CardHeader from "$lib/component/CardHeader.svelte";
   import CardFiltersItem from "$lib/component/CardFiltersItem.svelte";
   import CardFilters from "$lib/component/CardFilters.svelte";
+  import NoContent from "$lib/component/NoContent.svelte";
 
   const pageTitle = getContext("pageTitle");
 

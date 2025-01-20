@@ -1,5 +1,5 @@
 <!-- Ticket Categories Page -->
-<article class="container">
+<article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
     <a class="btn btn-link" role="button" href="{base}/tickets" slot="left">
@@ -10,10 +10,10 @@
       class="btn btn-secondary"
       type="button"
       on:click="{onCreateCategoryClick}"
-    slot="right">
+      slot="right">
       <i class="fas fa-plus me-2"></i>{$_(
-      "pages.ticket-categories.create-category-button",
-    )}
+        "pages.ticket-categories.create-category-button",
+      )}
     </button>
   </PageActions>
 

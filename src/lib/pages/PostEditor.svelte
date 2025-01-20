@@ -1,14 +1,15 @@
-<article class="container">
+<article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
     <a
       href="{base}/posts{data.post.status === StatusTypes.TRASH
-          ? '/trash'
-          : data.post.status === StatusTypes.DRAFT
-            ? '/draft'
-            : ''}"
+        ? '/trash'
+        : data.post.status === StatusTypes.DRAFT
+          ? '/draft'
+          : ''}"
       class="btn btn-link"
-      role="button" slot="left">
+      role="button"
+      slot="left">
       <i class="fas fa-arrow-left me-2"></i>
       {$_("pages.post-editor.posts")}
     </a>
@@ -73,7 +74,7 @@
   </PageActions>
 
   <!-- Post & Post Options -->
-  <section class="row animate__animated animate__fadeIn">
+  <section class="row g-3 animate__animated animate__fadeIn">
     <!-- Post -->
     <div class="col-lg-9">
       <div class="card h-100 w-100">

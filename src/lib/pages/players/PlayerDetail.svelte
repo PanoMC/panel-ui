@@ -89,9 +89,9 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row g-3">
     <div class="col-lg-3">
-      <div class="card mb-3">
+      <div class="card">
         <div
           class="card-body d-flex flex-column justify-content-center
           align-items-center">
@@ -135,7 +135,7 @@
     <div class="col-lg-9">
       {#if hasPermission(Permissions.MANAGE_TICKETS)}
         <!-- User's Tickets -->
-        <div class="card mb-3">
+        <div class="card">
           <div class="card-body">
             <h5 class="card-title">{$_("pages.player-detail.last-tickets")}</h5>
 

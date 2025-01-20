@@ -1,7 +1,7 @@
 <!-- About Sup Page -->
-<div class="card mb-3">
+<div class="card">
   <div class="card-body">
-    <h5 class="card-title">Pano</h5>
+    <h5 class="card-title">Pano Platform Info</h5>
     <form class="animate__animated animate__fadeIn">
       <div class="row">
         <label class="col-sm-2 col-form-label" for="panoVersion">
@@ -45,7 +45,8 @@
             href="https://panomc.com/discord"
             id="panoWebsite"
             target="_blank">
-            panomc.com/discord <i class="fa-solid fa-up-right-from-square ms-2"></i>
+            panomc.com/discord <i class="fa-solid fa-up-right-from-square ms-2"
+            ></i>
           </a>
         </div>
       </div>

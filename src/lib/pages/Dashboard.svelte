@@ -2,103 +2,113 @@
 <div class="container">
   <!-- Welcome Alerts -->
   {#if data.gettingStartedBlocks.welcomeBoard}
-  <div
-    class="alert alert-success alert-dismissible animate__animated animate__zoomIn mb-3">
-    <div class="row">
-      <h5 class="mb-3">
-        {@html $_("pages.dashboard.welcome-card.description")}
-      </h5>
-      <div class="col-lg-4 mb-lg-0 mb-3">
-        <p>
-          {$_("pages.dashboard.welcome-card.connect-server-description")}
-        </p>
-        <button
-          class="btn btn-sm btn-primary"
-          data-bs-target="#connectServer"
-          data-bs-toggle="modal">
-          <i class="fa-solid fa-plus me-2"></i>
-          {$_("pages.dashboard.welcome-card.connect-server")}
-        </button>
+    <div
+      class="alert alert-success alert-dismissible animate__animated animate__zoomIn mb-3">
+      <div class="row">
+        <h5 class="mb-3">
+          {@html $_("pages.dashboard.welcome-card.description")}
+        </h5>
+        <div class="col-lg-4 mb-lg-0 mb-3">
+          <p>
+            {$_("pages.dashboard.welcome-card.connect-server-description")}
+          </p>
+          <button
+            class="btn btn-sm btn-primary"
+            data-bs-target="#connectServer"
+            data-bs-toggle="modal">
+            <i class="fa-solid fa-plus me-2"></i>
+            {$_("pages.dashboard.welcome-card.connect-server")}
+          </button>
+        </div>
+        <div class="col-lg-4">
+          <ul class="list-unstyled mb-0">
+            <li>
+              <a class="alert-link" href="{base}/posts/create-post">
+                <i class="fa-solid fa-pen me-2"></i>
+                {$_("pages.dashboard.welcome-card.publish-your-first-post")}
+              </a>
+            </li>
+            <li>
+              <a class="alert-link" href="{base}/view">
+                <i class="fa-solid fa-brush me-2"></i>
+                {$_("pages.dashboard.welcome-card.change-theme")}
+              </a>
+            </li>
+            <li>
+              <a class="alert-link" href="{base}/addons">
+                <i class="fa-solid fa-puzzle-piece me-2"></i>
+                {$_("pages.dashboard.welcome-card.manage-addons")}
+              </a>
+            </li>
+            <li>
+              <a class="alert-link" href="{base}/players">
+                <i class="fa-solid fa-user-cog me-2"></i>{$_(
+                  "pages.dashboard.welcome-card.manage-players",
+                )}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-4">
+          <ul class="list-unstyled">
+            <li>
+              <a class="alert-link" href="javascript:void(0);">
+                <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
+                {$_("pages.dashboard.welcome-card.themes-and-extensions")}
+              </a>
+            </li>
+            <li>
+              <a class="alert-link" href="javascript:void(0);" target="_blank">
+                <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
+                {$_("pages.dashboard.welcome-card.documentations")}
+              </a>
+            </li>
+            <li>
+              <a
+                class="alert-link"
+                href="https://panomc.com/discord"
+                target="_blank">
+                <i class="fa-solid fa-globe me-2"></i>
+                {$_("pages.dashboard.welcome-card.website")}
+              </a>
+            </li>
+            <li>
+              <a
+                class="alert-link"
+                href="https://panomc.com/discord"
+                target="_blank">
+                <i class="fab fa-discord me-2"></i>
+                {$_("pages.dashboard.welcome-card.discord")}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="col-lg-4">
-        <ul class="list-unstyled mb-0">
-          <li>
-            <a class="alert-link" href="{base}/posts/create-post">
-              <i class="fa-solid fa-pen me-2"></i>
-              {$_("pages.dashboard.welcome-card.publish-your-first-post")}
-            </a>
-          </li>
-          <li>
-            <a class="alert-link" href="{base}/view">
-              <i class="fa-solid fa-brush me-2"></i>
-              {$_("pages.dashboard.welcome-card.change-theme")}
-            </a>
-          </li>
-          <li>
-            <a class="alert-link" href="{base}/addons">
-              <i class="fa-solid fa-puzzle-piece me-2"></i>
-              {$_("pages.dashboard.welcome-card.manage-addons")}
-            </a>
-          </li>
-          <li>
-            <a class="alert-link" href="{base}/players">
-              <i class="fa-solid fa-user-cog me-2"></i>{$_(
-                "pages.dashboard.welcome-card.manage-players",
-              )}
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="col-lg-4">
-        <ul class="list-unstyled">
-          <li>
-            <a class="alert-link" href="javascript:void(0);">
-              <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
-              {$_("pages.dashboard.welcome-card.themes-and-extensions")}
-            </a>
-          </li>
-          <li>
-            <a class="alert-link" href="javascript:void(0);" target="_blank">
-              <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
-              {$_("pages.dashboard.welcome-card.documentations")}
-            </a>
-          </li>
-          <li>
-            
-            <a
-            class="alert-link"
-            href="https://panomc.com/discord"
-            target="_blank">
-            <i class="fa-solid fa-globe me-2"></i>
-            {$_("pages.dashboard.welcome-card.website")}
-          </a>
-          </li>
-          <li>
-            <a
-              class="alert-link"
-              href="https://panomc.com/discord"
-              target="_blank">
-              <i class="fab fa-discord me-2"></i>
-              {$_("pages.dashboard.welcome-card.discord")}
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
 
+      <button
+        type="button"
+        title="{$_('pages.dashboard.welcome-card.close-button')}"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        on:click="{onCloseGettingStartedCard}"></button>
+    </div>
+  {/if}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <button
       type="button"
-      title="{$_('pages.dashboard.welcome-card.close-button')}"
       class="btn-close"
       data-bs-dismiss="alert"
-      on:click="{onCloseGettingStartedCard}"></button>
+      aria-label="Close"></button>
+
+    <strong>Holy guacamole!</strong> You should check in on some of those fields
+    below.
   </div>
-  {/if}
-  <div class="row">
+
+  <div class="row g-3">
     <div class="col-lg-6">
       <!-- Latest Tickets -->
       {#if hasPermission(Permissions.MANAGE_TICKETS)}
-        <div class="card mb-3">
+        <div class="card">
           <div class="card-body">
             <h5 class="card-title">
               {$_("pages.dashboard.last-tickets.title")}
@@ -153,7 +163,7 @@
       {/if}
     </div>
     <div class="col-lg-6">
-      <div class="card mb-3">
+      <div class="card">
         <div class="card-body">
           <h5 class="card-title">Logs</h5>
         </div>

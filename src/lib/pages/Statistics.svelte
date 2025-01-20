@@ -1,7 +1,6 @@
-<!-- Player Statistics Page -->
-<div class="container">
-  <div
-    class="row pb-3 justify-content-between animate__animated animate__slideInUp">
+<!-- Statistics Page -->
+<div class="container vstack gap-3">
+  <div class="row justify-content-between animate__animated animate__slideInUp">
     <div class="col-4">
       <div class="card bg-success h-100">
         <div class="card-body">
@@ -37,7 +36,7 @@
     </div>
   </div>
 
-  <div class="card mb-3">
+  <div class="card">
     <div class="card-body">
       <div class="row justify-content-between mb-3">
         <div class="col">

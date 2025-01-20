@@ -1,11 +1,14 @@
-<div class="row mb-3 align-items-center animate__animated animate__slideInUp">
-  <div class="col-xl-4 col-6 order-1">
+<div
+  class="row gy-1 d-flex align-items-center">
+  <div
+    class="col-lg-4 col-12 d-flex justify-content-lg-start justify-content-center">
     <slot name="left" />
   </div>
-  <div class="col-xl-4 col-12 order-xl-2 order-first">
+  <div class="col-lg-4 col-12 order-lg-2 order-last">
     <slot name="middle" />
   </div>
-  <div class="col-xl-4 col-6 d-flex justify-content-end order-3">
+  <div
+    class="col-lg-4 col-12 order-3 d-flex justify-content-lg-end justify-content-center">
     <slot name="right" />
   </div>
 </div>

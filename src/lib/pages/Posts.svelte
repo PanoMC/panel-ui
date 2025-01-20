@@ -1,5 +1,5 @@
 <!-- Posts Page -->
-<article class="container">
+<article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
     <a

@@ -1,10 +1,9 @@
 <!-- Settings Contents -->
-<div class="container">
+<div class="container vstack gap-3">
   <div class="row justify-content-around">
     <div class="col-auto">
       <!-- Settings Nav -->
-      <div
-        class="nav nav-pills d-flex flex-row justify-content-center mb-3 w-100">
+      <div class="nav nav-pills d-flex flex-row justify-content-center">
         <a
           class="nav-item nav-link"
           href="{base}/settings"
@@ -17,7 +16,7 @@
           class:active="{matching(
             $page.url.pathname,
             base + '/settings/platform',
-            true
+            true,
           )}">
           {$_("components.settings-layout.platform")}
         </a>
@@ -27,7 +26,7 @@
           class:active="{matching(
             $page.url.pathname,
             base + '/settings/updates',
-            true
+            true,
           )}">
           {$_("components.settings-layout.updates")}
           <span
@@ -40,7 +39,7 @@
           class:active="{matching(
             $page.url.pathname,
             base + '/settings/about',
-            true
+            true,
           )}">
           {$_("components.settings-layout.about")}
         </a>

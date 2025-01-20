@@ -1,5 +1,5 @@
 <!-- All Players Page -->
-<div class="container">
+<div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
     <div slot="left">
@@ -32,13 +32,19 @@
 
         <!-- Filters -->
         <CardFilters slot="right">
-          <CardFiltersItem href="/players/all" active="{data.pageType === PageTypes.ALL}">
+          <CardFiltersItem
+            href="/players/all"
+            active="{data.pageType === PageTypes.ALL}">
             {$_("pages.players.all")}
           </CardFiltersItem>
-          <CardFiltersItem href="/players/hasPerm" active="{data.pageType === PageTypes.HAS_PERM}">
+          <CardFiltersItem
+            href="/players/hasPerm"
+            active="{data.pageType === PageTypes.HAS_PERM}">
             {$_("pages.players.authorized")}
           </CardFiltersItem>
-          <CardFiltersItem href="/players/banned" active="{data.pageType === PageTypes.BANNED}">
+          <CardFiltersItem
+            href="/players/banned"
+            active="{data.pageType === PageTypes.BANNED}">
             {$_("pages.players.banned")}
           </CardFiltersItem>
         </CardFilters>

@@ -1,13 +1,17 @@
-<div class="container">
+<!-- Action Menu -->
+<div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
     <a class="btn btn-link" role="button" href="{base}/players" slot="left">
       <i class="fas fa-arrow-left me-2"></i>
-      {$_('pages.permission-groups.players')}
+      {$_("pages.permission-groups.players")}
     </a>
-    <a href="{base}/players/perm-groups/create" class="btn btn-secondary" slot="right">
+    <a
+      href="{base}/players/perm-groups/create"
+      class="btn btn-secondary"
+      slot="right">
       <i class="fas fa-plus me-2"></i>
-      {$_('pages.permission-groups.create-permission-group-button')}
+      {$_("pages.permission-groups.create-permission-group-button")}
     </a>
   </PageActions>
 
@@ -16,7 +20,9 @@
       <!-- Permissions Table -->
       <CardHeader>
         <h5 class="card-title" slot="left">
-          {$_('pages.permission-groups.card-title', {values:{count: data.permissionGroupCount}})}
+          {$_("pages.permission-groups.card-title", {
+            values: { count: data.permissionGroupCount },
+          })}
         </h5>
       </CardHeader>
 
@@ -25,9 +31,12 @@
           <thead>
             <tr>
               <th class="align-middle text-nowrap" scope="col"></th>
-              <th class="align-middle text-nowrap" scope="col">{$_('pages.permission-groups.name')}</th>
-              <th class="align-middle text-nowrap" scope="col">{$_('pages.permission-groups.permission-amount')}</th>
-              <th class="align-middle text-nowrap" scope="col">{$_('pages.permission-groups.player-amount')}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_("pages.permission-groups.name")}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_("pages.permission-groups.permission-amount")}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_("pages.permission-groups.player-amount")}</th>
             </tr>
           </thead>
           <tbody>
@@ -36,7 +45,7 @@
                 permissionGroup="{permissionGroup}"
                 on:deleteClick="{(event) =>
                   onShowDeletePermissionGroupModalClick(
-                    event.detail.permissionGroup
+                    event.detail.permissionGroup,
                   )}" />
             {/each}
           </tbody>

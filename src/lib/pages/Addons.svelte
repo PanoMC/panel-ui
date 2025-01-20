@@ -1,12 +1,8 @@
 <AddPluginModal />
-<div class="container">
+<div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <a
-      class="btn btn-link"
-      role="button"
-      href="/addons/categories"
-      slot="left">
+    <a class="btn btn-link" role="button" href="/addons/categories" slot="left">
       <i class="fas fa-puzzle-piece me-2"></i>
       Eklenti Kategorileri
     </a>

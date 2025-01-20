@@ -1,19 +1,23 @@
 <!-- Tickets Page -->
-<article class="container">
+<article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <a class="btn btn-link" role="button" href="{base}/tickets/categories" slot="left">
+    <a
+      class="btn btn-link"
+      role="button"
+      href="{base}/tickets/categories"
+      slot="left">
       <i class="fas fa-list-alt me-2"></i>
       {$_("pages.tickets.ticket-categories")}
     </a>
     <div
       class:d-none="{firstLoad}"
       class="animate__animated animate__faster {getListOfChecked($checkedList)
-          .length > 0
-          ? 'animate__slideInUp'
-          : 'animate__slideOutDown'}
+        .length > 0
+        ? 'animate__slideInUp'
+        : 'animate__slideOutDown'}
     faster"
-    slot="right">
+      slot="right">
       <a
         class="btn btn-link link-danger"
         class:disabled="{getListOfChecked($checkedList).length === 0}"
@@ -37,7 +41,6 @@
   <!-- All Tickets -->
   <div class="card">
     <div class="card-body">
-
       <CardHeader>
         <h5 class="card-title" slot="left">
           {$_("pages.tickets.table-title", {
@@ -51,23 +54,29 @@
                     : "",
             },
           }) +
-          (getListOfChecked($checkedList).length > 0
-            ? ", " +
-            $_("pages.tickets.amount-selected", {
-              values: { amount: getListOfChecked($checkedList).length },
-            })
-            : "")}
+            (getListOfChecked($checkedList).length > 0
+              ? ", " +
+                $_("pages.tickets.amount-selected", {
+                  values: { amount: getListOfChecked($checkedList).length },
+                })
+              : "")}
         </h5>
 
         <!-- Filters -->
         <CardFilters slot="right">
-          <CardFiltersItem href="/tickets/all" active="{data.pageType === PageTypes.ALL}">
+          <CardFiltersItem
+            href="/tickets/all"
+            active="{data.pageType === PageTypes.ALL}">
             {$_("pages.tickets.all")}
           </CardFiltersItem>
-          <CardFiltersItem href="/tickets/waitingReply" active="{data.pageType === PageTypes.WAITING_REPLY}">
+          <CardFiltersItem
+            href="/tickets/waitingReply"
+            active="{data.pageType === PageTypes.WAITING_REPLY}">
             {$_("pages.tickets.waiting-reply")}
           </CardFiltersItem>
-          <CardFiltersItem href="/tickets/closed" active="{data.pageType === PageTypes.CLOSED}">
+          <CardFiltersItem
+            href="/tickets/closed"
+            active="{data.pageType === PageTypes.CLOSED}">
             {$_("pages.tickets.closed")}
           </CardFiltersItem>
         </CardFilters>

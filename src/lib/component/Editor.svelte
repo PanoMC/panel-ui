@@ -1,5 +1,5 @@
 {#if editor}
-  <div class="bg-light rounded mt-3">
+  <div class="my-3">
     <!-- Headings -->
     <button
       class="btn btn-link link-dark btn-small small"
@@ -7,7 +7,10 @@
         editor.chain().focus().toggleHeading({ level: 1 }).run()}"
       class:border-primary="{editor.isActive('heading', { level: 1 })}"
       class:text-primary="{editor.isActive('heading', { level: 1 })}"
-      use:tooltip="{[$_('components.editor.title', {values: {number: 1}}), { placement: 'bottom' }]}">
+      use:tooltip="{[
+        $_('components.editor.title', { values: { number: 1 } }),
+        { placement: 'bottom' },
+      ]}">
       H1
     </button>
     <button
@@ -16,7 +19,10 @@
         editor.chain().focus().toggleHeading({ level: 2 }).run()}"
       class:border-primary="{editor.isActive('heading', { level: 2 })}"
       class:text-primary="{editor.isActive('heading', { level: 2 })}"
-      use:tooltip="{[$_('components.editor.title', {values: {number: 2}}), { placement: 'bottom' }]}">
+      use:tooltip="{[
+        $_('components.editor.title', { values: { number: 2 } }),
+        { placement: 'bottom' },
+      ]}">
       H2
     </button>
     <button
@@ -25,7 +31,10 @@
         editor.chain().focus().toggleHeading({ level: 3 }).run()}"
       class:border-primary="{editor.isActive('heading', { level: 3 })}"
       class:text-primary="{editor.isActive('heading', { level: 3 })}"
-      use:tooltip="{[$_('components.editor.title', {values: {number: 3}}), { placement: 'bottom' }]}">
+      use:tooltip="{[
+        $_('components.editor.title', { values: { number: 3 } }),
+        { placement: 'bottom' },
+      ]}">
       H3
     </button>
 
@@ -51,7 +60,10 @@
       on:click="{() => editor.chain().focus().toggleUnderline().run()}"
       class:border-primary="{editor.isActive('underline')}"
       class:text-primary="{editor.isActive('underline')}"
-      use:tooltip="{[$_('components.editor.underline'), { placement: 'bottom' }]}">
+      use:tooltip="{[
+        $_('components.editor.underline'),
+        { placement: 'bottom' },
+      ]}">
       <u>U</u>
     </button>
     <button
@@ -69,7 +81,10 @@
       on:click="{() => editor.chain().focus().toggleBulletList().run()}"
       class:border-primary="{editor.isActive('bulletList')}"
       class:text-primary="{editor.isActive('bulletList')}"
-      use:tooltip="{[$_('components.editor.bullet-list'), { placement: 'bottom' }]}">
+      use:tooltip="{[
+        $_('components.editor.bullet-list'),
+        { placement: 'bottom' },
+      ]}">
       <i class="fas fa-list"></i>
     </button>
     <button
@@ -77,7 +92,10 @@
       on:click="{() => editor.chain().focus().toggleOrderedList().run()}"
       class:border-primary="{editor.isActive('orderedList')}"
       class:text-primary="{editor.isActive('orderedList')}"
-      use:tooltip="{[$_('components.editor.ordered-list'), { placement: 'bottom' }]}">
+      use:tooltip="{[
+        $_('components.editor.ordered-list'),
+        { placement: 'bottom' },
+      ]}">
       <i class="fas fa-list-ol"></i>
     </button>
 
@@ -99,7 +117,10 @@
     <button
       class="btn btn-link link-dark btn-small small"
       on:click="{openColorPicker}"
-      use:tooltip="{[$_('components.editor.text-color'), { placement: 'bottom' }]}">
+      use:tooltip="{[
+        $_('components.editor.text-color'),
+        { placement: 'bottom' },
+      ]}">
       <i
         class="fas fa-tint"
         style="{editor.getAttributes('textStyle').color &&
@@ -117,7 +138,10 @@
     <button
       class="btn btn-link link-dark btn-small small"
       on:click="{() => editor.chain().focus().unsetColor().run()}"
-      use:tooltip="{[$_('components.editor.remove-text-color'), { placement: 'bottom' }]}">
+      use:tooltip="{[
+        $_('components.editor.remove-text-color'),
+        { placement: 'bottom' },
+      ]}">
       <i class="fas fa-tint-slash"></i>
     </button>
   </div>
