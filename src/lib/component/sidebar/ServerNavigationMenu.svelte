@@ -1,4 +1,4 @@
-<nav class="sidebar-nav navbar-dark animate__animated animate__slideInRight">
+<nav class="sidebar-nav navbar-dark animate__animated animate__fadeIn">
   {#if $selectedServer}
     <ul class="navbar-nav px-3">
       <li class="nav-item p-2">
@@ -7,10 +7,10 @@
           href="{base}/server/dashboard"
           class:active="{matching(
             $page.url.pathname,
-            base + '/server/dashboard'
+            base + '/server/dashboard',
           )}">
           <i class="fas fa-chart-pie me-2"></i>
-          {$_('components.server-navigation-menu.statistics')}
+          {$_("components.server-navigation-menu.statistics")}
         </a>
       </li>
       <li class="nav-item p-2">
@@ -19,10 +19,10 @@
           href="{base}/server/monitoring"
           class:active="{matching(
             $page.url.pathname,
-            base + '/server/monitoring'
+            base + '/server/monitoring',
           )}">
           <i class="fas fa-desktop me-2"></i>
-          {$_('components.server-navigation-menu.monitoring')}
+          {$_("components.server-navigation-menu.monitoring")}
         </a>
       </li>
       <li class="nav-item p-2">
@@ -32,10 +32,10 @@
           class:active="{matching(
             $page.url.pathname,
             base + '/server/settings',
-            true
+            true,
           )}">
           <i class="fas fa-cog me-2"></i>
-          {$_('components.server-navigation-menu.settings')}
+          {$_("components.server-navigation-menu.settings")}
         </a>
       </li>
     </ul>
@@ -55,7 +55,7 @@
         data-bs-toggle="modal"
         type="button">
         <i class="fa-solid fa-plus me-2"></i>
-        {$_('components.server-navigation-menu.connect-server')}
+        {$_("components.server-navigation-menu.connect-server")}
       </button>
     </NoContent>
   {/if}

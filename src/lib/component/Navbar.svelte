@@ -23,7 +23,7 @@
     <div class="col-4 d-flex justify-content-end">
       <div class="navbar-nav">
         <!-- Notifications Dropdown -->
-        <div class="nav-item" id="quickNotificationsDropdown">
+        <div class="nav-item position-relative" id="quickNotificationsDropdown">
           <button
             href="javascript:void(0);"
             class="nav-link"
@@ -40,7 +40,7 @@
           </button>
 
           <div
-            class="dropdown-menu dropdown-menu-end animate__animated animate__zoomIn">
+            class="dropdown-menu position-absolute dropdown-menu-end animate__animated animate__zoomIn">
             <h6 class="dropdown-header">
               {$_("components.navbar.notifications")}
               {$notificationCount === 0 ? "" : "(" + $notificationCount + ")"}
