@@ -758,7 +758,10 @@
       "verification-email-sent-error": "\"{username}\" kullanıcısına doğrulama e-mail gönderilemedi. Hata: {errorCode}",
       "verification-email-sent-successful": "\"{username}\" kullanıcısına doğrulama e-mail'i gönderildi.",
       "enabling-addon-failed-by-dependency-error": "\"{addon}\" eklentisi bağımlı eklenti hatası sebebiyle etkinleştirilemedi!",
-      "failed-to-enable-addon-error": "\"{addon}\" eklentisi etkinleştirilemedi. Eklenti hatalarını kontrol edin!"
+      "failed-to-enable-addon-error": "\"{addon}\" eklentisi etkinleştirilemedi. Eklenti hatalarını kontrol edin!",
+      "pano-account-connect-success": "Pano hesabın başarıyla bağlandı!",
+      "pano-account-disconnect-success": "Pano hesabı başarıyla kaldırıldı!",
+      "pano-account-disconnect-failed": "Pano hesabı kaldırılırken hata oluştu!"
     }
   },
   "page-error": {
