@@ -6,23 +6,23 @@
       type="button"
       class="btn-close"
       data-bs-dismiss="alert"
-      aria-label="Close"></button
-    >Connecting your Pano account has been failed! Try again.
+      aria-label="{$_('buttons.close')}"></button>
+    {$_("pages.settings.platform.connect-failed-alert")}
   </div>
 {/if}
 
 <!-- General Settings Sub Page -->
 <div class="card">
   <div class="card-body animate__animated animate__fadeIn">
-    <h5 class="card-title">Hesap</h5>
+    <h5 class="card-title">{$_("pages.settings.platform.account")}</h5>
     {#if data.panoAccount}
       <div class="row mb-3">
-        <label class="col-md-4" for="platformId"> Platform ID: </label>
+        <label class="col-md-4" for="platformId">{$_("pages.settings.platform.platform-id")}</label>
         <div class="col" id="platformId">{data.panoAccount.platformId}</div>
       </div>
 
       <div class="row mb-3">
-        <label class="col-md-4" for="panoAccountUsername"> Yönetici: </label>
+        <label class="col-md-4" for="panoAccountUsername">{$_("pages.settings.platform.user")}</label>
         <div class="col" id="panoAccountUsername">
           <a href="{PANO_WEBSITE_URL + '/users/' + data.panoAccount.username}" title="{$_('components.player-row.view')}" target="_blank">
             <img
@@ -30,17 +30,17 @@
               width="20"
               height="20"
               class="rounded-circle animate__animated animate__zoomIn me-2"
-              alt="Butlu" />{data.panoAccount.username}</a>
+              alt="{data.panoAccount.username}" />{data.panoAccount.username}</a>
         </div>
       </div>
     {/if}
 
     <div class="row mb-3">
-      <label class="col-md-4" for="connectPanoAccount">Pano Hesabı: </label>
+      <label class="col-md-4" for="connectPanoAccount">{$_("pages.settings.platform.pano-account")}</label>
       <div class="col" id="connectPanoAccount">
         {#if data.panoAccount}
           <span class="text-muted">{maskEmail(data.panoAccount.email)}</span>
-          <button type="button" class="btn btn-sm btn-outline-danger lh-base mx-4" on:click={onDisconnectClick} disabled="{disconnecting}">Kaldır</button>
+          <button type="button" class="btn btn-sm btn-outline-danger lh-base mx-4" on:click={onDisconnectClick} disabled="{disconnecting}">{$_("buttons.remove")}</button>
         {:else}
           <button type="button" class="btn btn-sm btn-outline-primary lh-base" on:click="{onConnectClick}" disabled="{connecting}">
             <img
@@ -50,7 +50,7 @@
               class="me-2 bg-dark p-1 rounded"
               alt="Pano"/>
 
-            {connecting ? "Bağlanıyor..." : "Bağla"}
+            {connecting ? $_('buttons.connecting') : $_('buttons.connect')}
 
             {#if connecting}
               <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
@@ -128,13 +128,25 @@
 
     <button
       class="btn btn-secondary"
-      class:disabled="{saveButtonLoading || isSaveButtonDisabled}"
-      aria-disabled="{saveButtonLoading || isSaveButtonDisabled}"
-      on:click="{save}"
+      class:disabled="{savePreferencesLoading || preferencesSaveDisabled}"
+      aria-disabled="{savePreferencesLoading || preferencesSaveDisabled}"
+      on:click="{onSavePreferencesClick}"
       >{$_("pages.settings.platform.save-button")}
     </button>
   </div>
 </div>
+
+{#if mailError}
+  <!-- Error Alert -->
+  <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"></button>
+    {$_("pages.settings.platform.smtp.email-validation-error", {values: {mailError}})}
+  </div>
+{/if}
 
 <div class="card">
   <div class="card-body">
@@ -142,17 +154,128 @@
       {$_("pages.settings.platform.smtp-settings")}
     </h5>
     <div class="row mb-3">
-      <label class="col-md-4 col-form-label" for="mailUsernameAdress">
-        {$_("pages.settings.platform.mail-username-address")}
-      </label>
-      <div class="col-md-4">
+      <p>
+        {$_("pages.settings.platform.smtp.description")}
+      </p>
+
+      <div class="col-6">
+        <label for="mailUsername"
+        >{$_("pages.settings.platform.smtp.username")}</label>
         <input
-          id="mailUsernameAdress"
           class="form-control"
-          type="email"
-          name="mailUsernameAdress" />
+          id="mailUsername"
+          type="text"
+          placeholder="no-reply"
+          bind:value="{data.email.username}"
+        />
+      </div>
+      <div class="col-6">
+        <label for="mailUserPassword"
+        >{$_("pages.settings.platform.smtp.password")}</label>
+        <input
+          class="form-control"
+          id="mailUserPassword"
+          placeholder="****************"
+          bind:value="{data.email.password}"
+          type="password"/>
       </div>
     </div>
+      <div class="row">
+        <div class="col-6 mb-3">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="useSSLCheck"
+              id="useSSLCheck"
+              aria-checked="{data.email.ssl}"
+              bind:checked="{data.email.ssl}" />
+            <label class="form-check-label" for="useSSLCheck">
+              {$_("pages.settings.platform.smtp.ssl")}
+            </label>
+          </div>
+        </div>
+        <div class="col-6 mb-3">
+          <label for="port">{$_("pages.settings.platform.smtp.tls-setting")}</label>
+          <select
+            class="form-select"
+            bind:value="{data.email.starttls}">
+            <option value="REQUIRED">REQUIRED</option>
+            <option value="OPTIONAL">OPTIONAL</option>
+            <option value="DISABLED">DISABLED</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="senderAddress"
+            >{$_("pages.settings.platform.smtp.sender-address")}</label>
+            <input
+              class="form-control"
+              id="senderAddress"
+              type="text"
+              placeholder="no-reply@forexample.com"
+              bind:value="{data.email.sender}" />
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="hostAddress">{$_("pages.settings.platform.smtp.hostname")}</label>
+            <input
+              class="form-control"
+              id="hostAddress"
+              type="text"
+              placeholder="smtp.forexample.com"
+              bind:value="{data.email.hostname}"/>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="port">{$_("pages.settings.platform.smtp.port")}</label>
+            <input
+              class="form-control"
+              id="port"
+              placeholder="465"
+              type="number"
+              bind:value="{data.email.port}"/>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="port">{$_("pages.settings.platform.smtp.auth-methods")}</label>
+            <select
+              class="form-select"
+              bind:value="{data.email.authMethods}">
+              <option value="PLAIN">PLAIN</option>
+              <option value=""></option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <button
+        class="btn btn-secondary"
+        class:disabled="{saveEmailLoading || !mailValidated}"
+        aria-disabled="{saveEmailLoading || !mailValidated}"
+        on:click="{onSaveSmtpClick}"
+      >{$_("pages.settings.platform.save-button")}
+      </button>
+      {#if !mailValidated && !emailSaveDisabled}
+        <button
+          class="btn btn-outline-primary"
+          class:disabled="{saveEmailLoading}"
+          aria-disabled="{saveEmailLoading}"
+          on:click="{onValidateEmailClick}"
+        >Validate
+          {#if saveEmailLoading}
+            <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+          {/if}
+        </button>
+      {/if}
   </div>
 </div>
 
@@ -174,7 +297,7 @@
         request,
       }).then((body) => {
         if (body.result === "ok") {
-          body.oldSettings = body;
+          body.oldSettings = structuredClone(body);
 
           resolve(body);
         } else {
@@ -192,12 +315,10 @@
     const parentData = await parent();
 
     let data = {
-      updatePeriod: UpdatePeriod.ONCE_PER_DAY,
+      updatePeriod: "",
       locale: "",
-      oldSettings: {
-        updatePeriod: UpdatePeriod.ONCE_PER_DAY,
-        locale: "",
-      },
+      oldSettings: {},
+      email: {}
     };
 
     if (parentData.NETWORK_ERROR) {
@@ -217,11 +338,11 @@
 </script>
 
 <script>
-  import { getContext, onMount } from "svelte";
+  import { getContext } from "svelte";
   import { _ } from "svelte-i18n";
 
   import { page } from "$app/stores";
-  import { goto, invalidateAll } from "$app/navigation";
+  import { goto } from "$app/navigation";
   import { browser } from "$app/environment";
 
   import { showNetworkErrorOnCatch } from "$lib/Store";
@@ -239,6 +360,7 @@
   import PanoAccountConnectSuccessToast from "$lib/component/toasts/PanoAccountConnectSuccessToast.svelte";
   import PanoAccountDisconnectSuccessToast from "$lib/component/toasts/PanoAccountDisconnectSuccessToast.svelte";
   import PanoAccountDisconnectFailToast from "$lib/component/toasts/PanoAccountDisconnectFailToast.svelte";
+  import EmailConfigValidateSuccessToast from "$lib/component/toasts/EmailConfigValidateSuccessToast.svelte";
 
   const pageTitle = getContext("pageTitle");
 
@@ -246,13 +368,19 @@
 
   export let data;
 
-  let saveButtonLoading = false;
+  let savePreferencesLoading;
+  let saveEmailLoading;
   let connecting = !data.panoAccount && data.state && data.encodedData;
   let disconnecting;
+  let mailValidated;
+  let mailError;
 
-  $: isSaveButtonDisabled =
+  $: preferencesSaveDisabled =
     data.oldSettings.updatePeriod === data.updatePeriod &&
     data.oldSettings.locale === data.locale;
+
+  $: emailSaveDisabled =
+    JSON.stringify(data.oldSettings.email) === JSON.stringify(data.email) || !data.email.password
 
   if (browser) {
     if (!data.panoAccount && data.state && data.encodedData) {
@@ -288,43 +416,6 @@
         }).catch((_) => reject())
       });
     }
-  }
-
-  function save() {
-    saveButtonLoading = true;
-
-    showNetworkErrorOnCatch((resolve, reject) => {
-      const formData = new FormData();
-
-      formData.append("updatePeriod", data.updatePeriod);
-      formData.append("locale", data.locale);
-
-      ApiUtil.put({
-        path: "/api/panel/settings",
-        body: formData,
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            saveButtonLoading = false;
-
-            data.oldSettings = Object.keys(data)
-              .filter((key) => key !== "oldSettings")
-              .reduce((obj, key) => {
-                obj[key] = data[key];
-                return obj;
-              }, {});
-
-            changeLanguage(getLanguageByLocale(data.locale));
-
-            showToast(SettingsSaveSuccessToast);
-
-            resolve();
-          } else reject();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
   }
 
   function onConnectClick() {
@@ -376,6 +467,112 @@
 
         disconnecting = false;
       }).catch((_) => reject())
+    });
+  }
+
+  function onSavePreferencesClick() {
+    savePreferencesLoading = true;
+
+    showNetworkErrorOnCatch((resolve, reject) => {
+      const formData = new FormData();
+
+      formData.append("updatePeriod", data.updatePeriod);
+      formData.append("locale", data.locale);
+
+      ApiUtil.put({
+        path: "/api/panel/settings",
+        body: formData,
+      })
+        .then((body) => {
+          if (body.result === "ok") {
+            savePreferencesLoading = false;
+
+            data.oldSettings = Object.keys(data)
+              .filter((key) => key !== "oldSettings")
+              .reduce((obj, key) => {
+                obj[key] = data[key];
+                return obj;
+              }, {});
+
+            changeLanguage(getLanguageByLocale(data.locale));
+
+            showToast(SettingsSaveSuccessToast);
+
+            resolve();
+          } else reject();
+        })
+        .catch(() => {
+          reject();
+        });
+    });
+  }
+
+  function onValidateEmailClick() {
+    saveEmailLoading = true;
+    mailError = null;
+
+    showNetworkErrorOnCatch((resolve, reject) => {
+      ApiUtil.post({
+        path: "/api/panel/settings/verify/mail",
+        body: data.email,
+      })
+        .then((body) => {
+          saveEmailLoading = false;
+
+          if (body.error) {
+            mailError = body.mailError
+
+            return
+          }
+
+          mailValidated = true;
+
+          showToast(EmailConfigValidateSuccessToast);
+
+          resolve();
+        })
+        .catch(() => {
+          reject();
+        });
+    });
+  }
+
+  function onSaveSmtpClick() {
+    saveEmailLoading = true;
+
+    showNetworkErrorOnCatch((resolve, reject) => {
+      const formData = new FormData();
+
+      formData.append("updatePeriod", data.updatePeriod);
+      formData.append("locale", data.locale);
+
+      ApiUtil.put({
+        path: "/api/panel/settings",
+        body: formData,
+      })
+        .then((body) => {
+          if (body.error) {
+            reject();
+
+            return
+          }
+
+          saveEmailLoading = false;
+          mailValidated = false
+
+          data.oldSettings.email = Object.keys(data.email)
+            .reduce((obj, key) => {
+              obj[key] = data.email[key];
+              return obj;
+            }, {});
+
+          showToast(SettingsSaveSuccessToast);
+
+          resolve();
+        })
+        .catch(() => {
+          reject();
+        });
     });
   }
 

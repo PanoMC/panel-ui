@@ -1,4 +1,10 @@
 {
+  "buttons": {
+    "remove": "Kaldır",
+    "connect": "Bağla",
+    "connecting": "Bağlanıyor...",
+    "close": "Kapat"
+  },
   "pages": {
     "dashboard": {
       "title": "Panel",
@@ -153,6 +159,11 @@
         "preferences": "Tercihler",
         "display-language": "Görüntüleme Dili:",
         "check-auto-updates": "Otomatik güncellemeleri denetle:",
+        "connect-failed-alert": "Pano hesabınıza bağlanırken hata oluştu! Lütfen tekrar deneyin.",
+        "account": "Hesap",
+        "platform-id": "Platform ID:",
+        "user": "Kullanıcı:",
+        "pano-account": "Pano Hesabı:",
         "inputs": {
           "check-auto-updates": {
             "never": "Asla",
@@ -161,9 +172,19 @@
             "once-in-a-month": "Ayda bir kez"
           }
         },
-        "smtp-settings": "SMTP Ayarları",
-        "mail-username-address": "Kullanıcı Adı (Adres)",
-        "smtp-password": "Şifre",
+        "smtp": {
+          "username": "Kullanıcı Adı (Adres)",
+          "password": "Şifre",
+          "ssl": "SSL Kullan",
+          "tls-setting": "TLS Ayarı",
+          "sender-address": "Gönderici Adresi",
+          "hostname": "Sağlayıcı Adresi",
+          "port": "Port",
+          "auth-methods": "Giriş Methodu",
+          "description": "Pano, e-posta gönderebilmek için bir e-posta sağlayıcısına ihtiyaç duyar. Lütfen kullanmak istediğiniz e-posta servisi ile oturum açın.",
+          "email-validation-error": "E-mail ayarlarınız doğrulanamadı: {mailError}"
+        },
+        "smtp-settings": "E-Mail Ayarları (SMTP)",
         "save-button": "Kaydet"
       }
     },
@@ -761,7 +782,8 @@
       "failed-to-enable-addon-error": "\"{addon}\" eklentisi etkinleştirilemedi. Eklenti hatalarını kontrol edin!",
       "pano-account-connect-success": "Pano hesabın başarıyla bağlandı!",
       "pano-account-disconnect-success": "Pano hesabı başarıyla kaldırıldı!",
-      "pano-account-disconnect-failed": "Pano hesabı kaldırılırken hata oluştu!"
+      "pano-account-disconnect-failed": "Pano hesabı kaldırılırken hata oluştu!",
+      "email-config-validate-success": "E-Mail başarıyla doğrulandı!"
     }
   },
   "page-error": {

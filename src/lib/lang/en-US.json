@@ -1,4 +1,10 @@
 {
+  "buttons": {
+    "remove": "Remove",
+    "connect": "Connect",
+    "connecting": "Connecting...",
+    "close": "Close"
+  },
   "pages": {
     "dashboard": {
       "title": "Panel",
@@ -153,6 +159,11 @@
         "preferences": "Preferences",
         "display-language": "Display Language:",
         "check-auto-updates": "Check for automatic updates:",
+        "connect-failed-alert": "Connecting your Pano account has been failed! Try again.",
+        "account": "Account",
+        "platform-id": "Platform ID:",
+        "user": "User:",
+        "pano-account": "Pano Account:",
         "inputs": {
           "check-auto-updates": {
             "never": "Never",
@@ -164,18 +175,16 @@
         "smtp": {
           "username": "Username (Address)",
           "password": "Password",
-          "details-button": "Details",
-          "use-ssl": "Use SSL",
-          "use-tls": "Use TLS",
-          "sending-address": "Sending Address",
-          "host": "Host",
+          "ssl": "Use SSL",
+          "tls-setting": "TLS Setting",
+          "sender-address": "Sender Address",
+          "hostname": "Hostname",
           "port": "Port",
-          "auth-method": "Auth Method"
+          "auth-methods": "Auth Methods",
+          "description": "Pano requires an email provider to be able to send emails. Please log in with the e-mail service you want to use.",
+          "email-validation-error": "Couldn't validate e-mail settings: {mailError}"
         },
-        "smtp-settings": "SMTP Settings",
-        "description": "Pano requires an email provider to be able to send emails. Please log in with the e-mail service you want to use.",
-        "help-link-text": "More about setting e-mail",
-
+        "smtp-settings": "E-Mail Settings (SMTP)",
         "save-button": "Save"
       }
     },
@@ -746,7 +755,8 @@
       "failed-to-enable-addon-error": "Failed to enable \"{addon}\". Check out the addon logs!",
       "pano-account-connect-success": "Your Pano account has been successfully connected!",
       "pano-account-disconnect-success": "Pano account removed successfully!!",
-      "pano-account-disconnect-failed": "An error occurred during the removing Pano account!"
+      "pano-account-disconnect-failed": "An error occurred during the removing Pano account!",
+      "email-config-validate-success": "E-Mail validated successfully!"
     }
   },
   "page-error": {
