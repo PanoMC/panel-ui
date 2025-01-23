@@ -84,7 +84,7 @@
    */
   export async function loadServer(event) {
     const {
-      locals: { basicData, csrfToken },
+      locals: { basicData, csrfToken, apiUrlEnv },
     } = event;
 
     let siteInfo = await ApiUtil.get({
@@ -95,7 +95,7 @@
 
     siteInfo = await prepareSiteInfo(siteInfo)
 
-    return { basicData, csrfToken, siteInfo };
+    return { basicData, csrfToken, siteInfo, apiUrlEnv };
   }
 
   /**
@@ -103,10 +103,14 @@
    */
   export async function load(event) {
     const {
-      data: { basicData, csrfToken, siteInfo },
+      data: { basicData, csrfToken, siteInfo, apiUrlEnv },
       parent,
     } = event;
     await parent();
+
+    if (apiUrlEnv) {
+      updateApiUrl(apiUrlEnv);
+    }
 
     await initializePlugins(siteInfo)
 
