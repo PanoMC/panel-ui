@@ -1,0 +1,31 @@
+{
+  "branches": [
+    {
+      "name": "dev",
+      "prerelease": true
+    },
+    {
+      "name": "master"
+    }
+  ],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {
+            "path": "*.zip",
+            "label": false
+          },
+          {
+            "path": "LICENSE",
+            "label": false
+          }
+        ]
+      }
+    ]
+  ],
+  "repositoryUrl": "https://github.com/PanoMc/panel-ui.git"
+}
