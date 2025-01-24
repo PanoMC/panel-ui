@@ -158,7 +158,7 @@
         "save-button": "Save"
       },
       "platform": {
-        "title": "General Settings",
+        "title": "Platform Settings",
         "preferences": "Preferences",
         "display-language": "Display Language",
         "check-auto-updates": "Platform Updates",
