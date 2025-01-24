@@ -27,7 +27,7 @@
               >Paper 1.20, Spigot 1.20, Velocity, 1.2, Bungeecord 1.2
             </small>
             <a class="btn btn-secondary mt-2 d-block shadow-none" href="{PANO_WEBSITE_URL}/download/plugin/mc{PRERELEASE ? '?type=prerelease': ''}" target="_blank"
-              >Download</a>
+              >{$_('buttons.download')}</a>
           </div>
 
           <div class="list-group-item">

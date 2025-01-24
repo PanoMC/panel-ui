@@ -5,7 +5,8 @@
     "connecting": "Connecting...",
     "close": "Close",
     "yes": "Yes",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "download": "Download"
   },
   "pages": {
     "dashboard": {

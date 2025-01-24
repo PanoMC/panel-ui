@@ -5,7 +5,8 @@
     "connecting": "Bağlanıyor...",
     "close": "Kapat",
     "yes": "Evet",
-    "cancel": "İptal"
+    "cancel": "İptal",
+    "download": "İndir"
   },
   "pages": {
     "dashboard": {
