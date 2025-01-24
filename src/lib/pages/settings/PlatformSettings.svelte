@@ -396,7 +396,7 @@
   import PanoAccountDisconnectSuccessToast from "$lib/component/toasts/PanoAccountDisconnectSuccessToast.svelte";
   import PanoAccountDisconnectFailToast from "$lib/component/toasts/PanoAccountDisconnectFailToast.svelte";
   import EmailConfigValidateSuccessToast from "$lib/component/toasts/EmailConfigValidateSuccessToast.svelte";
-  import ConfirmRemovePanoAccountModal, { show as showConfirmRemovePanoAccountModal } from "$lib/component/toasts/ConfirmRemovePanoAccountModal.svelte";
+  import ConfirmRemovePanoAccountModal, { show as showConfirmRemovePanoAccountModal } from "$lib/component/modals/ConfirmRemovePanoAccountModal.svelte";
 
   const pageTitle = getContext("pageTitle");
 
