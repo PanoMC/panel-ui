@@ -761,7 +761,7 @@
       "enabling-addon-failed-by-dependency-error": "Failed to enable \"{addon}\" addon due to failed dependency plugins!",
       "failed-to-enable-addon-error": "Failed to enable \"{addon}\". Check out the addon logs!",
       "pano-account-connect-success": "Your Pano account has been successfully connected!",
-      "pano-account-disconnect-success": "Pano account removed successfully!!",
+      "pano-account-disconnect-success": "Pano account removed successfully!",
       "pano-account-disconnect-fail": "An error occurred during the removing Pano account!",
       "email-config-validate-success": "E-Mail validated successfully!"
     }
