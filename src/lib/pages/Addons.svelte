@@ -19,7 +19,7 @@
 
   <!-- All Addons -->
   <div class="card">
-    <div class="card-body">
+    <div class="card-body vstack gap-3">
       <CardHeader>
         <h5 class="card-title" slot="left">
           {data.plugins.length}
@@ -62,10 +62,10 @@
                   <div class="col-auto d-md-flex d-none">
                     <a href="{base}/addons/detail/{plugin.id}">
                       <img
-                        height="128"
-                        width="128"
+                        height="82"
+                        width="82"
                         src="{API_URL}/panel/plugins/{plugin.id}/logo"
-                        class="img-thumbnail animate__animated animate__zoomIn d-block"
+                        class="bg-light animate__animated animate__zoomIn"
                         alt="{plugin.id}" />
                     </a>
                   </div>

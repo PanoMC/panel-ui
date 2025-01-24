@@ -119,6 +119,7 @@
       },
       "site-settings": {
         "title": "Website Settings",
+        "preferences": "Preferences",
         "inputs": {
           "website-name": {
             "label": "Website Name",
@@ -157,19 +158,20 @@
       "platform": {
         "title": "General Settings",
         "preferences": "Preferences",
-        "display-language": "Display Language:",
-        "check-auto-updates": "Check for automatic updates:",
+        "display-language": "Display Language",
+        "check-auto-updates": "Platform Updates",
         "connect-failed-alert": "Connecting your Pano account has been failed! Try again.",
         "account": "Account",
-        "platform-id": "Platform ID:",
-        "user": "User:",
-        "pano-account": "Pano Account:",
+        "platform-id": "Platform ID",
+        "user": "User",
+        "online-account": "Online Account",
+        "online-account-description": "Connect your online Pano account to access plugins, themes, and updates.",
         "inputs": {
           "check-auto-updates": {
             "never": "Never",
-            "once-in-a-day": "Once in a day",
-            "once-in-a-week": "Once in a week",
-            "once-in-a-month": "Once in a month"
+            "once-in-a-day": "Once in a Day",
+            "once-in-a-week": "Once in a Week",
+            "once-in-a-month": "Once in a Month"
           }
         },
         "smtp": {

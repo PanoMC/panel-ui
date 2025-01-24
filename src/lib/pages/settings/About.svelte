@@ -4,28 +4,28 @@
     <h5 class="card-title">Pano Platform Info</h5>
     <form class="animate__animated animate__fadeIn">
       <div class="row">
-        <label class="col-sm-2 col-form-label" for="panoVersion">
+        <label class="col-md-6 col-form-label" for="panoVersion">
           {$_("pages.settings.about.version")}
         </label>
-        <div class="col col-form-label">
+        <div class="col-md-6 col-form-label">
           <span aria-describedby="panoVersion" id="panoVersion"
             >{data.platformVersion}</span>
         </div>
       </div>
       <div class="row">
-        <label class="col-sm-2 col-form-label" for="siteKeywords">
+        <label class="col-md-6 col-form-label" for="siteKeywords">
           {$_("pages.settings.about.release")}
         </label>
-        <div class="col col-form-label">
+        <div class="col-md-6 col-form-label">
           <span aria-describedby="panoRelease" id="panoRelease"
             >{data.platformStage}</span>
         </div>
       </div>
       <div class="row mb-0">
-        <label class="col-sm-2 col-form-label" for="siteKeywords">
+        <label class="col-md-6 col-form-label" for="siteKeywords">
           {$_("pages.settings.about.website")}
         </label>
-        <div class="col col-form-label">
+        <div class="col-md-6 col-form-label">
           <a
             aria-describedby="panoWebsite"
             href="https://panomc.com"
@@ -36,10 +36,10 @@
         </div>
       </div>
       <div class="row mb-0">
-        <label class="col-sm-2 col-form-label" for="siteKeywords">
+        <label class="col-md-6 col-form-label" for="siteKeywords">
           {$_("pages.settings.about.discord")}
         </label>
-        <div class="col col-form-label">
+        <div class="col-md-6 col-form-label">
           <a
             aria-describedby="panoWebsite"
             href="https://panomc.com/discord"

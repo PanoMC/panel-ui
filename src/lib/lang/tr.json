@@ -119,6 +119,7 @@
       },
       "site-settings": {
         "title": "Website Ayarları",
+        "preferences": "Tercihler",
         "inputs": {
           "website-name": {
             "label": "Site İsmi",
@@ -157,19 +158,20 @@
       "platform": {
         "title": "Genel Ayarlar",
         "preferences": "Tercihler",
-        "display-language": "Görüntüleme Dili:",
-        "check-auto-updates": "Otomatik güncellemeleri denetle:",
+        "display-language": "Görüntüleme Dili",
+        "check-auto-updates": "Platform Updates",
         "connect-failed-alert": "Pano hesabınıza bağlanırken hata oluştu! Lütfen tekrar deneyin.",
         "account": "Hesap",
-        "platform-id": "Platform ID:",
-        "user": "Kullanıcı:",
-        "pano-account": "Pano Hesabı:",
+        "platform-id": "Platform ID",
+        "user": "Kullanıcı",
+        "online-account": "Çevrimiçi Hesap",
+        "online-account-description": "Eklenti, tema ve güncellemelere erişebilmek için çevrimiçi Pano hesabınızı bağlayın.",
         "inputs": {
           "check-auto-updates": {
             "never": "Asla",
-            "once-in-a-day": "Günde bir kez",
-            "once-in-a-week": "Haftada bir kez",
-            "once-in-a-month": "Ayda bir kez"
+            "once-in-a-day": "Günde Bir Kez",
+            "once-in-a-week": "Haftada Bir Kez",
+            "once-in-a-month": "Ayda Bir Kez"
           }
         },
         "smtp": {

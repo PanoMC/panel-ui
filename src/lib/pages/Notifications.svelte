@@ -1,7 +1,7 @@
-<div class="container">
+<div class="container vstack gap-3">
   <!-- Action Menu -->
   <div
-    class="row justify-content-end mb-3 animate__animated animate__slideInUp">
+    class="row justify-content-end animate__animated animate__slideInUp">
     {#if $notifications.length !== 0}
       <div class="col-auto">
         <button

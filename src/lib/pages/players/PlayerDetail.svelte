@@ -132,9 +132,9 @@
         </div>
       </div>
     </div>
-    <div class="col-lg-9">
+    <div class="col-lg-9 vstack gap-3">
       {#if hasPermission(Permissions.MANAGE_TICKETS)}
-        <!-- User's Tickets -->
+        <!-- Tickets -->
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{$_("pages.player-detail.last-tickets")}</h5>
@@ -156,7 +156,8 @@
                         <td class="align-middle text-nowrap">
                           <a
                             title="{$_('pages.player-detail.filter')}"
-                            href="{base}/tickets/category/{ticket.category.url}">
+                            href="{base}/tickets/category/{ticket.category
+                              .url}">
                             {ticket.category.title === "-"
                               ? $_("pages.player-detail.no-category")
                               : ticket.category.title}
@@ -186,6 +187,7 @@
           </div>
         </div>
       {/if}
+      <!-- Statistics -->
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">{$_("pages.player-detail.statistics")}</h5>

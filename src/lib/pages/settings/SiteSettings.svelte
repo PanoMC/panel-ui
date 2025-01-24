@@ -1,10 +1,11 @@
 <!-- Site Settings Sub Page -->
 <div class="card">
   <div class="card-body animate__animated animate__fadeIn">
+    <h5 class="card-title">{$_("pages.settings.site-settings.preferences")}</h5>
     <div class="row mb-3">
-      <label class="col-md-4 col-form-label" for="siteTitle"
+      <label class="col-md-6 col-form-label" for="siteTitle"
         >{$_("pages.settings.site-settings.inputs.website-name.label")}</label>
-      <div class="col">
+      <div class="col-md-6">
         <input
           bind:value="{data.websiteName}"
           aria-describedby="siteTitle"
@@ -17,10 +18,10 @@
       </div>
     </div>
     <div class="row mb-3">
-      <label class="col-md-4 col-form-label" for="siteDesc">
+      <label class="col-md-6 col-form-label" for="siteDesc">
         {$_("pages.settings.site-settings.inputs.website-description.label")}
       </label>
-      <div class="col">
+      <div class="col-md-6">
         <textarea
           bind:value="{data.websiteDescription}"
           aria-describedby="siteDesc"
@@ -31,66 +32,54 @@
     </div>
 
     <div class="row mb-3">
-      <label class="col-md-4 col-form-label" for="ipAddress">
+      <label class="col-md-6 col-form-label" for="ipAddress">
         {$_("pages.settings.site-settings.inputs.game-server-ip-address.label")}
       </label>
-      <div class="col">
-        <div class="row align-items-center">
-          <div class="col">
-            <input
-              id="ipAddress"
-              class="form-control"
-              placeholder="play.server.com"
-              type="text"
-              name="ipAddress"
-              bind:value="{data.serverIpAddress}" />
-          </div>
-        </div>
+      <div class="col-md-6">
+        <input
+          id="ipAddress"
+          class="form-control"
+          placeholder="play.server.com"
+          type="text"
+          name="ipAddress"
+          bind:value="{data.serverIpAddress}" />
       </div>
     </div>
 
     <div class="row mb-3">
-      <label class="col-md-4 col-form-label" for="serverGameVersion">
+      <label class="col-md-6 col-form-label" for="serverGameVersion">
         {$_("pages.settings.site-settings.inputs.game-server-version.label")}
       </label>
-      <div class="col">
-        <div class="row align-items-center">
-          <div class="col">
-            <input
-              id="serverGameVersion"
-              class="form-control"
-              placeholder="1.8.x"
-              type="text"
-              name="serverGameVersion"
-              bind:value="{data.serverGameVersion}" />
-          </div>
-        </div>
+      <div class="col-md-6">
+        <input
+          id="serverGameVersion"
+          class="form-control"
+          placeholder="1.8.x"
+          type="text"
+          name="serverGameVersion"
+          bind:value="{data.serverGameVersion}" />
       </div>
     </div>
 
     <div class="row mb-3">
-      <label class="col-md-4 col-form-label" for="supportEmailAddress">
+      <label class="col-md-6 col-form-label" for="supportEmailAddress">
         {$_("pages.settings.site-settings.inputs.support-email-address.label")}
       </label>
-      <div class="col">
-        <div class="row align-items-center">
-          <div class="col">
-            <input
-              id="supportEmailAddress"
-              class="form-control"
-              placeholder="support@{data.websiteName}.com"
-              type="email"
-              name="supportEmailAddress"
-              bind:value="{data.supportEmail}" />
-          </div>
-        </div>
+      <div class="col-md-6">
+        <input
+          id="supportEmailAddress"
+          class="form-control"
+          placeholder="support@{data.websiteName}.com"
+          type="email"
+          name="supportEmailAddress"
+          bind:value="{data.supportEmail}" />
       </div>
     </div>
     <div class="row mb-3">
-      <label class="col-md-4 col-form-label" for="siteKeywords">
+      <label class="col-md-6 col-form-label" for="siteKeywords">
         {$_("pages.settings.site-settings.inputs.keywords.label")}
       </label>
-      <div class="col">
+      <div class="col-md-6">
         <form on:submit|preventDefault="{addKeyWord}">
           <input
             id="siteKeywords"
@@ -119,66 +108,51 @@
       </div>
     </div>
     <div class="row mb-3">
-      <label class="col-md-4 col-form-label" for="siteFavicon"
+      <label class="col-md-6 col-form-label" for="siteFavicon"
         >{$_("pages.settings.site-settings.inputs.favicon.label")}
       </label>
-      <div class="col">
-        <div class="row">
-          <div class="col-auto">
-            <img
-              alt="{$_('pages.settings.site-settings.inputs.favicon.select')}"
-              class="d-block ml-auto"
-              height="48"
-              src="{favicon}"
-              width="48" />
-          </div>
-          <div class="col">
-            <input
-              class="form-control-file"
-              id="siteFavicon"
-              type="file"
-              bind:files="{faviconFiles}"
-              on:change="{onFaviconChange}"
-              bind:this="{faviconInput}"
-              value="" />
-            <small class="text-muted">
-              {$_("pages.settings.site-settings.inputs.favicon.helper")}
-            </small>
-          </div>
-        </div>
+      <div class="col-md-6 vstack gap-2">
+        <img
+          alt="{$_('pages.settings.site-settings.inputs.favicon.select')}"
+          width="48"
+          height="48"
+          src="{favicon}" />
+        <input
+          class="form-control-file"
+          id="siteFavicon"
+          type="file"
+          bind:files="{faviconFiles}"
+          on:change="{onFaviconChange}"
+          bind:this="{faviconInput}"
+          value="" />
+        <small class="text-muted">
+          {$_("pages.settings.site-settings.inputs.favicon.helper")}
+        </small>
       </div>
     </div>
 
     <div class="row mb-3">
-      <label class="col-md-4 col-form-label" for="siteLogo">
+      <label class="col-md-6 col-form-label" for="siteLogo">
         {$_("pages.settings.site-settings.inputs.website-logo.label")}
       </label>
-      <div class="col">
-        <div class="row">
-          <div class="col-auto">
-            <img
-              class="d-block ml-auto"
-              alt="{$_(
-                'pages.settings.site-settings.inputs.website-logo.server-icon',
-              )}"
-              height="48"
-              width="auto"
-              src="{websiteLogo}" />
-          </div>
-          <div class="col">
-            <input
-              class="form-control-file"
-              id="siteLogo"
-              type="file"
-              bind:files="{websiteLogoFiles}"
-              on:change="{onWebsiteLogoChange}"
-              bind:this="{websiteLogoInput}"
-              value="" />
-            <small class="text-muted">
-              {$_("pages.settings.site-settings.inputs.website-logo.helper")}
-            </small>
-          </div>
-        </div>
+      <div class="col-md-6 vstack gap-2">
+        <img
+          alt="{$_(
+            'pages.settings.site-settings.inputs.website-logo.server-icon',
+          )}"
+          class="img-fluid w-50 h-50"
+          src="{websiteLogo}" />
+        <input
+          class="form-control-file"
+          id="siteLogo"
+          type="file"
+          bind:files="{websiteLogoFiles}"
+          on:change="{onWebsiteLogoChange}"
+          bind:this="{websiteLogoInput}"
+          value="" />
+        <small class="text-muted">
+          {$_("pages.settings.site-settings.inputs.website-logo.helper")}
+        </small>
       </div>
     </div>
 

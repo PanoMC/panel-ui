@@ -25,7 +25,7 @@
   </PageActions>
 
   <div
-    class="alert alert-warning animate__animated animate__bounceInDown animate__slower mb-0"
+    class="alert alert-warning animate__animated animate__slideInUp mb-0"
     role="alert">
     <h5 class="alert-heading">Yenide başlat</h5>
 
