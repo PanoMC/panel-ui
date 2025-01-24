@@ -26,7 +26,7 @@
             <small class="text-muted"
               >Paper 1.20, Spigot 1.20, Velocity, 1.2, Bungeecord 1.2
             </small>
-            <a class="btn btn-secondary mt-2 d-block shadow-none" href="#" target="_blank"
+            <a class="btn btn-secondary mt-2 d-block shadow-none" href="{PANO_WEBSITE_URL}/download/plugin/mc{PRERELEASE ? '?type=prerelease': ''}" target="_blank"
               >Download</a>
           </div>
 
@@ -74,6 +74,7 @@
   import { get } from "svelte/store";
   import copy from "copy-to-clipboard";
   import { differenceInSeconds } from "date-fns";
+  import { _ } from "svelte-i18n";
 
   import { browser } from "$app/environment";
 
@@ -81,7 +82,7 @@
   import tooltip from "$lib/tooltip.util";
 
   import { showNetworkErrorOnCatch } from "$lib/Store";
-  import { _ } from "svelte-i18n";
+  import { PANO_WEBSITE_URL, PRERELEASE } from "$lib/variables.js";
 
   let timeToRefreshKey = "...";
   let commandText;
