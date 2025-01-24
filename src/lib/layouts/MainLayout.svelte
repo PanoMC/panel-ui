@@ -44,6 +44,7 @@
 
   import { show as showServerRequestModal } from "$lib/component/modals/ServerRequestModal.svelte";
   import { initializePlugins, prepareSiteInfo } from "$lib/PluginManager.js";
+  import { updateApiUrl } from "$lib/variables.js";
 
   function initNotificationListeners() {
     addListener("NEW_TICKET", (notification) => {
