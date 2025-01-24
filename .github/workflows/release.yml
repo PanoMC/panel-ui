@@ -73,6 +73,7 @@ jobs:
         run: |
           if [[ "${{ steps.extract_branch.outputs.branch }}" == "dev" ]]; then
             echo "VITE_PANO_WEBSITE_URL=https://dev.panomc.com" > .env.local
+            echo "VITE_PRERELEASE=true" > .env.local
           fi
 
       - name: Build
