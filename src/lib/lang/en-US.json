@@ -3,7 +3,9 @@
     "remove": "Remove",
     "connect": "Connect",
     "connecting": "Connecting...",
-    "close": "Close"
+    "close": "Close",
+    "yes": "Yes",
+    "cancel": "Cancel"
   },
   "pages": {
     "dashboard": {
@@ -475,6 +477,9 @@
       "game-integration": "Game Integration"
     },
     "modals": {
+      "confirm-remove-pano-account": {
+        "title": "Are you sure to disconnect your online Pano account from this platform?"
+      },
       "add-edit-post-category": {
         "create-category": "Create Category",
         "edit-category": "Edit Category",

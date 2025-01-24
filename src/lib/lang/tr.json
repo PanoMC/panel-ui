@@ -3,7 +3,9 @@
     "remove": "Kaldır",
     "connect": "Bağla",
     "connecting": "Bağlanıyor...",
-    "close": "Kapat"
+    "close": "Kapat",
+    "yes": "Evet",
+    "cancel": "İptal"
   },
   "pages": {
     "dashboard": {
@@ -502,6 +504,9 @@
       "game-integration": "Oyun Entegrasyonu"
     },
     "modals": {
+      "confirm-remove-pano-account": {
+        "title": "Çevrimiçi Pano hesabınızı platformdan kaldırmak istediğinize emin misiniz?"
+      },
       "add-edit-post-category": {
         "create-category": "Kategori Oluştur",
         "edit-category": "Kategoriyi Düzenle",

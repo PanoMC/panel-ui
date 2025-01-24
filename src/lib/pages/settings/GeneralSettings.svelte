@@ -309,6 +309,8 @@
   </div>
 </div>
 
+<ConfirmRemovePanoAccountModal/>
+
 <script context="module">
   import { base } from "$app/paths";
   import ApiUtil from "$lib/api.util.js";
@@ -394,6 +396,7 @@
   import PanoAccountDisconnectSuccessToast from "$lib/component/toasts/PanoAccountDisconnectSuccessToast.svelte";
   import PanoAccountDisconnectFailToast from "$lib/component/toasts/PanoAccountDisconnectFailToast.svelte";
   import EmailConfigValidateSuccessToast from "$lib/component/toasts/EmailConfigValidateSuccessToast.svelte";
+  import ConfirmRemovePanoAccountModal, { show as showConfirmRemovePanoAccountModal } from "$lib/component/toasts/ConfirmRemovePanoAccountModal.svelte";
 
   const pageTitle = getContext("pageTitle");
 
@@ -487,30 +490,32 @@
   }
 
   function onDisconnectClick() {
-    disconnecting = true;
+    showConfirmRemovePanoAccountModal(() => {
+      disconnecting = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: "/api/panel/platform/disconnect",
-      })
-        .then(async (body) => {
-          resolve();
+      showNetworkErrorOnCatch((resolve, reject) => {
+        ApiUtil.post({
+          path: "/api/panel/platform/disconnect",
+        })
+          .then(async (body) => {
+            resolve();
 
-          if (body.error) {
-            await showToast(PanoAccountDisconnectFailToast);
+            if (body.error) {
+              await showToast(PanoAccountDisconnectFailToast);
+
+              disconnecting = false;
+              return;
+            }
+
+            await showToast(PanoAccountDisconnectSuccessToast);
+
+            data.panoAccount = null;
 
             disconnecting = false;
-            return;
-          }
-
-          await showToast(PanoAccountDisconnectSuccessToast);
-
-          data.panoAccount = null;
-
-          disconnecting = false;
-        })
-        .catch((_) => reject());
-    });
+          })
+          .catch((_) => reject());
+      });
+    })
   }
 
   function onSavePreferencesClick() {
