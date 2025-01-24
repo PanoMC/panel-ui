@@ -1,3 +1,4 @@
 [submodule "src/pano"]
 	path = src/pano-ui
 	url = https://github.com/panomc/pano-dev-ui.git
+	branch = master
