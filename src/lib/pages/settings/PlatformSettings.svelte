@@ -316,16 +316,16 @@
   import ApiUtil from "$lib/api.util.js";
 
   export const UpdatePeriod = Object.freeze({
-    NEVER: "never",
-    ONCE_PER_DAY: "oncePerDay",
-    ONCE_PER_WEEK: "oncePerWeek",
-    ONCE_PER_MONTH: "oncePerMonth",
+    NEVER: "NEVER",
+    ONCE_PER_DAY: "ONCE_PER_DAY",
+    ONCE_PER_WEEK: "ONCE_PER_WEEK",
+    ONCE_PER_MONTH: "ONCE_PER_MONTH",
   });
 
   async function loadData({ request }) {
     return new Promise((resolve, reject) => {
       ApiUtil.get({
-        path: "/api/panel/settings?type=general",
+        path: "/api/panel/settings?type=GENERAL",
         request,
       }).then((body) => {
         if (body.result === "ok") {
