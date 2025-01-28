@@ -173,7 +173,7 @@
   async function loadData({ request }) {
     return new Promise((resolve, reject) => {
       ApiUtil.get({
-        path: "/api/panel/settings?type=website",
+        path: "/api/panel/settings?type=WEBSITE",
         request,
       }).then((body) => {
         if (body.result === "ok") {
