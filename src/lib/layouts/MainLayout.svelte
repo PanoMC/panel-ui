@@ -43,7 +43,7 @@
   import { addListener } from "$lib/NotificationManager.js";
 
   import { show as showServerRequestModal } from "$lib/component/modals/ServerRequestModal.svelte";
-  import { initializePlugins, prepareSiteInfo } from "$lib/PluginManager.js";
+  import { initializePlugins } from "$lib/PluginManager.js";
   import { updateApiUrl } from "$lib/variables.js";
 
   function initNotificationListeners() {
@@ -93,8 +93,6 @@
       request: event,
       csrfToken,
     });
-
-    siteInfo = await prepareSiteInfo(siteInfo)
 
     return { basicData, csrfToken, siteInfo, apiUrlEnv };
   }
