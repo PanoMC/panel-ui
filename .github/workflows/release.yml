@@ -76,7 +76,7 @@ jobs:
             echo "VITE_PRERELEASE=true" > .env.local
           fi
           
-          echo | cat .env.local
+          cat .env.local
 
       - name: Build
         run: bun run build
