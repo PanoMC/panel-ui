@@ -75,6 +75,8 @@ jobs:
             echo "VITE_PANO_WEBSITE_URL=https://dev.panomc.com" > .env.local
             echo "VITE_PRERELEASE=true" > .env.local
           fi
+          
+          echo | cat .env.local
 
       - name: Build
         run: bun run build
