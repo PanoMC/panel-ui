@@ -1,7 +1,7 @@
 import {
   COOKIE_PREFIX,
   JWT_COOKIE_NAME,
-  CSRF_TOKEN_COOKIE_NAME, updateApiUrl
+  CSRF_TOKEN_COOKIE_NAME, updateApiUrl, API_URL
 } from "$lib/variables";
 
 import ApiUtil, { networkErrorBody } from "$lib/api.util.js";
@@ -35,4 +35,13 @@ export async function handle({ event, event: { cookies }, resolve }) {
   event.locals = locals;
 
   return resolve(event);
+}
+
+/** @type {import('@sveltejs/kit').HandleFetch} */
+export async function handleFetch({ event, request, fetch }) {
+  if (request.url.startsWith(API_URL)) {
+    request.headers.set('cookie', event.request.headers.get('cookie'));
+  }
+
+  return fetch(request);
 }
