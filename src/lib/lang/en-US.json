@@ -6,7 +6,9 @@
     "close": "Close",
     "yes": "Yes",
     "cancel": "Cancel",
-    "download": "Download"
+    "download": "Download",
+    "enable": "Enable",
+    "validate": "Validate"
   },
   "pages": {
     "dashboard": {

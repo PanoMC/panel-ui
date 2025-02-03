@@ -174,11 +174,11 @@
 <div class="card">
   <div class="card-header">
     <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" id="smtpToggle" />
+      <input class="form-check-input" type="checkbox" id="smtpToggle" checked="{$siteInfo.emailEnabled}" on:change={onToggleSmtp} />
       <label class="form-check-label" for="smtpToggle">Toggle SMTP</label>
     </div>
   </div>
-  <div class="card-body opacity-50">
+  <div class="card-body" class:opacity-50={smtpDisabled}>
     <h5 class="card-title">
       {$_("pages.settings.platform.smtp-settings")}
     </h5>
@@ -196,7 +196,8 @@
           id="mailUsername"
           type="text"
           placeholder="no-reply"
-          bind:value="{data.email.username}" />
+          bind:value="{data.email.username}"
+          disabled="{smtpDisabled}"/>
       </div>
     </div>
     <div class="row mb-3">
@@ -208,7 +209,8 @@
           id="mailUserPassword"
           placeholder="****************"
           bind:value="{data.email.password}"
-          type="password" />
+          type="password"
+          disabled="{smtpDisabled}" />
       </div>
     </div>
     <div class="row mb-3">
@@ -223,7 +225,8 @@
             name="useSSLCheck"
             id="useSSLCheck"
             aria-checked="{data.email.ssl}"
-            bind:checked="{data.email.ssl}" />
+            bind:checked="{data.email.ssl}"
+            disabled="{smtpDisabled}" />
         </div>
       </div>
     </div>
@@ -234,7 +237,8 @@
         <select
           class="form-select"
           id="port"
-          bind:value="{data.email.starttls}">
+          bind:value="{data.email.starttls}"
+          disabled="{smtpDisabled}">
           <option value="REQUIRED">REQUIRED</option>
           <option value="OPTIONAL">OPTIONAL</option>
           <option value="DISABLED">DISABLED</option>
@@ -251,7 +255,8 @@
           id="senderAddress"
           type="text"
           placeholder="no-reply@forexample.com"
-          bind:value="{data.email.sender}" />
+          bind:value="{data.email.sender}"
+          disabled="{smtpDisabled}" />
       </div>
     </div>
 
@@ -264,7 +269,8 @@
           id="hostAddress"
           type="text"
           placeholder="smtp.forexample.com"
-          bind:value="{data.email.hostname}" />
+          bind:value="{data.email.hostname}"
+          disabled="{smtpDisabled}" />
       </div>
     </div>
     <div class="row mb-3">
@@ -276,7 +282,8 @@
           id="port"
           placeholder="465"
           type="number"
-          bind:value="{data.email.port}" />
+          bind:value="{data.email.port}"
+          disabled="{smtpDisabled}" />
       </div>
     </div>
 
@@ -284,7 +291,8 @@
       <label class="col-md-6 col-form-label" for="port"
         >{$_("pages.settings.platform.smtp.auth-methods")}</label>
       <div class="col-md-6">
-        <select class="form-select" bind:value="{data.email.authMethods}">
+        <select class="form-select" bind:value="{data.email.authMethods}"
+                disabled="{smtpDisabled}">
           <option value="PLAIN">PLAIN</option>
           <option value=""></option>
         </select>
@@ -293,18 +301,16 @@
 
     <button
       class="btn btn-secondary"
-      class:disabled="{saveEmailLoading || !mailValidated}"
-      aria-disabled="{saveEmailLoading || !mailValidated}"
       on:click="{onSaveSmtpClick}"
-      >{$_("pages.settings.platform.save-button")}
+      disabled="{saveEmailLoading || !mailValidated || smtpDisabled}"
+      >{$_(!$siteInfo.emailEnabled ? "buttons.enable" : "pages.settings.platform.save-button")}
     </button>
     {#if !mailValidated && !emailSaveDisabled}
       <button
         class="btn btn-outline-primary"
-        class:disabled="{saveEmailLoading}"
-        aria-disabled="{saveEmailLoading}"
         on:click="{onValidateEmailClick}"
-        >Validate
+        disabled="{saveEmailLoading || smtpDisabled}"
+        >{$_('buttons.validate')}
         {#if saveEmailLoading}
           <span
             class="spinner-border spinner-border-sm text-primary"
@@ -383,7 +389,7 @@
   import { _ } from "svelte-i18n";
 
   import { page } from "$app/stores";
-  import { goto } from "$app/navigation";
+  import { goto, invalidateAll } from "$app/navigation";
   import { browser } from "$app/environment";
 
   import { showNetworkErrorOnCatch } from "$lib/Store";
@@ -407,6 +413,7 @@
   } from "$lib/component/modals/ConfirmRemovePanoAccountModal.svelte";
 
   const pageTitle = getContext("pageTitle");
+  const siteInfo = getContext("siteInfo");
 
   pageTitle.set("pages.settings.platform.title");
 
@@ -426,6 +433,12 @@
   $: emailSaveDisabled =
     JSON.stringify(data.oldSettings.email) === JSON.stringify(data.email) ||
     !data.email.password;
+
+  let smtpDisabled;
+
+  $: {
+    smtpDisabled = !$siteInfo.emailEnabled
+  }
 
   if (browser) {
     if (!data.panoAccount && data.state && data.encodedData) {
@@ -599,14 +612,30 @@
     showNetworkErrorOnCatch((resolve, reject) => {
       const formData = new FormData();
 
-      formData.append("updatePeriod", data.updatePeriod);
-      formData.append("locale", data.locale);
+      const { hostname,
+        port,
+        ssl,
+        starttls,
+        username,
+        password,
+        sender,
+        authMethods } = data.email
+      formData.append("email", JSON.stringify({
+        hostname,
+        port,
+        ssl,
+        starttls,
+        username,
+        password,
+        sender,
+        authMethods
+      }))
 
       ApiUtil.put({
         path: "/api/panel/settings",
         body: formData,
       })
-        .then((body) => {
+        .then(async (body) => {
           if (body.error) {
             reject();
 
@@ -624,7 +653,9 @@
             {},
           );
 
-          showToast(SettingsSaveSuccessToast);
+          await invalidateAll()
+
+          await showToast(SettingsSaveSuccessToast);
 
           resolve();
         })
@@ -646,5 +677,9 @@
     const maskedDomain = `${domainParts[0][0]}${"*".repeat(domainParts[0].length - 1)}.${domainParts.slice(1).join(".")}`;
 
     return `${maskedLocal}@${maskedDomain}`;
+  }
+
+  function onToggleSmtp(event) {
+    smtpDisabled = !event.target.checked
   }
 </script>

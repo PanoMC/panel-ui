@@ -6,7 +6,9 @@
     "close": "Kapat",
     "yes": "Evet",
     "cancel": "İptal",
-    "download": "İndir"
+    "download": "İndir",
+    "enable": "Aktif Et",
+    "validate": "Doğrula"
   },
   "pages": {
     "dashboard": {
