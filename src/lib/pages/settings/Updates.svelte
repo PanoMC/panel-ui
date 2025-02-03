@@ -43,13 +43,7 @@
   <div class="card">
     <div class="card-body">
       <CardHeader>
-        <h5 class="card-title" slot="left">Available Updates (COUNT)</h5>
-        <!-- Filters -->
-        <CardFilters slot="right">
-          <CardFiltersItem href="/" active>Tümü</CardFiltersItem>
-          <CardFiltersItem href="/">Platform</CardFiltersItem>
-          <CardFiltersItem href="/">Eklenti</CardFiltersItem>
-        </CardFilters>
+        <h5 class="card-title" slot="left">Platform Updates (1)</h5>
       </CardHeader>
 
       <!-- Pending Update List -->
@@ -112,6 +106,30 @@
           </details>
         </li>
       </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <CardHeader>
+        <h5 class="card-title" slot="left">Resource Updates</h5>
+        <!-- Filters -->
+        <CardFilters slot="right">
+          <CardFiltersItem href="/" active>Tümü</CardFiltersItem>
+          <CardFiltersItem href="/">Eklentiler</CardFiltersItem>
+          <CardFiltersItem href="/">Temalar</CardFiltersItem>
+        </CardFilters>
+      </CardHeader>
+
+      <!-- Pending Update List -->
+      <NoContent
+        icon="fas fa-sync fa-3x"
+        text="Kaynak güncellemeleri alabilmek için lütfen Çevrimiçi Hesap bağlayın."
+        dark="{false}">
+        <a href="/panel/settings/platform" class="btn btn-primary btn-sm">
+          Platform Settings
+        </a>
+      </NoContent>
     </div>
   </div>
 </div>
