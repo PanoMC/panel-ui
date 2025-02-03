@@ -10,7 +10,7 @@
   </div>
 {/if}
 
-<!-- General Settings Sub Page -->
+<!-- Platform Settings Sub Page -->
 <div class="card">
   <div class="card-body animate__animated animate__fadeIn">
     <h5 class="card-title">{$_("pages.settings.platform.account")}</h5>
@@ -172,7 +172,13 @@
 {/if}
 
 <div class="card">
-  <div class="card-body">
+  <div class="card-header">
+    <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" id="smtpToggle" />
+      <label class="form-check-label" for="smtpToggle">Toggle SMTP</label>
+    </div>
+  </div>
+  <div class="card-body opacity-50">
     <h5 class="card-title">
       {$_("pages.settings.platform.smtp-settings")}
     </h5>
@@ -309,7 +315,7 @@
   </div>
 </div>
 
-<ConfirmRemovePanoAccountModal/>
+<ConfirmRemovePanoAccountModal />
 
 <script context="module">
   import { base } from "$app/paths";
@@ -396,7 +402,9 @@
   import PanoAccountDisconnectSuccessToast from "$lib/component/toasts/PanoAccountDisconnectSuccessToast.svelte";
   import PanoAccountDisconnectFailToast from "$lib/component/toasts/PanoAccountDisconnectFailToast.svelte";
   import EmailConfigValidateSuccessToast from "$lib/component/toasts/EmailConfigValidateSuccessToast.svelte";
-  import ConfirmRemovePanoAccountModal, { show as showConfirmRemovePanoAccountModal } from "$lib/component/modals/ConfirmRemovePanoAccountModal.svelte";
+  import ConfirmRemovePanoAccountModal, {
+    show as showConfirmRemovePanoAccountModal,
+  } from "$lib/component/modals/ConfirmRemovePanoAccountModal.svelte";
 
   const pageTitle = getContext("pageTitle");
 
@@ -515,7 +523,7 @@
           })
           .catch((_) => reject());
       });
-    })
+    });
   }
 
   function onSavePreferencesClick() {

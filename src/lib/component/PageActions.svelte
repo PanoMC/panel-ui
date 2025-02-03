@@ -1,5 +1,5 @@
 <div
-  class="row gy-1 d-flex align-items-center animate__animated animate__slideInDown">
+  class="row gy-2 d-flex align-items-center">
   <div
     class="col-lg-4 col-12 d-flex justify-content-lg-start justify-content-center">
     <slot name="left" />

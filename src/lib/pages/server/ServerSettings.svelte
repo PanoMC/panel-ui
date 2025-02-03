@@ -1,4 +1,4 @@
-<!-- Site Settings Sub Page -->
+<!-- Server Settings Sub Page -->
 <div class="card animate__animated animate__fadeIn">
   <div class="card-body">
     <h5 class="card-title">
