@@ -134,6 +134,7 @@
       mainServer: basicData.mainServer || {},
       selectedServer: basicData.selectedServer,
       connectedServerCount: basicData.connectedServerCount,
+      siteInfo
     };
 
     if (basicData.result !== "ok") {
@@ -176,6 +177,7 @@
   const mainServer = writable(data.mainServer);
   const selectedServer = writable(data.selectedServer);
   const connectedServerCount = writable(data.connectedServerCount);
+  const siteInfo = writable(data.siteInfo);
 
   const pageTitle = writable(null);
 
@@ -197,6 +199,7 @@
     mainServer.set(page.data.mainServer);
     selectedServer.set(page.data.selectedServer);
     connectedServerCount.set(page.data.connectedServerCount);
+    siteInfo.set(page.data.siteInfo);
 
     sidebarTabsState.set(getCurrentSidebarState());
   });
@@ -216,6 +219,7 @@
 
   setContext("sidebarTabsState", sidebarTabsState);
   setContext("isSidebarOpen", isSidebarOpen);
+  setContext("siteInfo", siteInfo);
 
   $: title = $pageTitle
     ? `${$_($pageTitle)} \u2014 ${options.DEFAULT_PAGE_TITLE}`
