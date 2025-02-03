@@ -59,7 +59,7 @@
             on:click="{sendVerification}"
             class:disabled="{sendingVerificationMail ||
               $user.username === data.player.username ||
-              (data.player.permissionGroup === 'admin' && !$user.admin)}">
+              (data.player.permissionGroup === 'admin' && !$user.admin) || !$siteInfo.emailEnabled}">
             <i class="fas fa-envelope"></i>
           </button>
         {/if}
@@ -338,6 +338,7 @@
 
   const pageTitle = getContext("pageTitle");
   const user = getContext("user");
+  const siteInfo = getContext("siteInfo");
 
   pageTitle.set(data.username);
 
