@@ -52,7 +52,7 @@
         <div class="col-lg-4">
           <ul class="list-unstyled">
             <li>
-              <a class="alert-link" href="{PANO_WEBSITE_URL}/addons">
+              <a class="alert-link" href="{PANO_WEBSITE_URL}/addons" target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
                 {$_("pages.dashboard.welcome-card.themes-and-extensions")}
               </a>
