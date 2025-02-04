@@ -10,7 +10,7 @@
   <div class:d-flex="{!showSplash}" hidden="{showSplash}">
     <Sidebar />
     <!--  Main  -->
-    <main class="w-100 min-vh-100 bg-light overflow-scroll">
+    <main class="w-100 min-vh-100 overflow-scroll">
       <Navbar />
 
       <div hidden="{showLoading}">
@@ -111,7 +111,7 @@
       updateApiUrl(apiUrlEnv);
     }
 
-    await initializePlugins(siteInfo)
+    await initializePlugins(siteInfo);
 
     await initLanguage(basicData.locale);
 
@@ -134,7 +134,7 @@
       mainServer: basicData.mainServer || {},
       selectedServer: basicData.selectedServer,
       connectedServerCount: basicData.connectedServerCount,
-      siteInfo
+      siteInfo,
     };
 
     if (basicData.result !== "ok") {

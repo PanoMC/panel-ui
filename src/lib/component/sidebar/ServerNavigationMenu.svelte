@@ -50,7 +50,7 @@
       text="{$_('components.server-navigation-menu.no-server-text')}"
       dark="{true}">
       <button
-        class="btn btn-secondary btn-sm"
+        class="btn btn-sm btn-secondary d-block m-auto"
         data-bs-target="#connectServer"
         data-bs-toggle="modal"
         type="button">

@@ -1,19 +1,14 @@
 <!-- 404 Page  -->
 <div class="container">
-  <div
-    class="d-flex flex-column align-items-center justify-content-center mt-5
-    container animated bounceInDown">
-    <img
-      alt="{$_('pages.error.title', { values: { status: $page.status } })}"
-      class="img-fluid mb-3"
-      src="{base}/assets/img/404.png"
-      width="280" />
-    <p>
-      {$_("page-error." + $page.status) || $page.error.message}
-    </p>
-    <a class="btn btn-primary" role="button" href="../../.."
-      >{$_("pages.error.go-back")}</a>
+  <div class="alert alert-danger animated bounceInDown" role="alert">
+    {$_("page-error." + $page.status) || $page.error.message}
   </div>
+
+  <img
+    alt="{$_('pages.error.title', { values: { status: $page.status } })}"
+    class="img-fluid d-block m-auto"
+    src="{base}/assets/img/404.png"
+    width="280" />
 </div>
 
 <script>

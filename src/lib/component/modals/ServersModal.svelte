@@ -17,11 +17,14 @@
               data-bs-toggle="modal"
               on:click="{hide}">
               <i class="fa-solid fa-plus"></i>
-              <span class="d-xl-inline d-none ms-2">{$_('components.modals.servers.connect-server-button')}</span>
+              <span class="d-xl-inline d-none ms-2"
+                >{$_("components.modals.servers.connect-server-button")}</span>
             </button>
           </div>
           <div class="col-4 d-flex justify-content-center align-items-center">
-            <h5 class="modal-title pr-2">{$_('components.modals.servers.servers')}</h5>
+            <h5 class="modal-title pr-2">
+              {$_("components.modals.servers.servers")}
+            </h5>
           </div>
           <div class="col-4 d-flex align-items-center">
             <button
@@ -40,15 +43,11 @@
           {#if $loading}
             {#each Array(4) as _, i}
               <div class="col-xl-3 col-6 mb-2">
-                <a href="javascript:void(0);" class="card bg-light">
-                  <div class="card-body text-center h-100">
-                    <img
-                      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-                      class="rounded d-block m-auto mb-3"
-                      height="64"
-                      width="64"
-                      alt="" />
-                    <p class="badge bg-light text-light mb-3">.</p>
+                <div class="card">
+                  <div class="card-body text-center">
+                    <p class="card-text placeholder-glow">
+                      <span class="placeholder col-3"></span>
+                    </p>
                     <h6 class="card-title placeholder-glow">
                       <span class="placeholder col-7"></span>
                     </h6>
@@ -56,7 +55,7 @@
                       <span class="placeholder col-3"></span>
                     </p>
                   </div>
-                </a>
+                </div>
               </div>
             {/each}
           {:else}
@@ -79,7 +78,10 @@
                     {#if server.id === $mainServer.id}
                       <div
                         class="position-absolute top-0 start-50 translate-middle rounded bg-primary p-1 text-white"
-                        use:tooltip="{[$_('components.modals.servers.main-server'), { placement: 'bottom' }]}">
+                        use:tooltip="{[
+                          $_('components.modals.servers.main-server'),
+                          { placement: 'bottom' },
+                        ]}">
                         <i class="fa-solid fa-house"></i>
                       </div>
                     {/if}
@@ -95,7 +97,10 @@
                     {#if server.status === "ONLINE"}
                       <p
                         class="badge bg-secondary text-white rounded-pill mb-3"
-                        use:tooltip="{[$_('components.modals.servers.online'), { placement: 'bottom' }]}">
+                        use:tooltip="{[
+                          $_('components.modals.servers.online'),
+                          { placement: 'bottom' },
+                        ]}">
                         {server.type}
                       </p>
                     {:else}

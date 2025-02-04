@@ -35,9 +35,9 @@
     <p>
       Tahmini süre: <b>TIME</b>
     </p>
-    <button class="btn btn-outline-primary" type="button">
+    <a class="alert-link" type="button">
       <i class="fa-solid fa-power-off me-2"></i>
-      Yeniden Başlat</button>
+      Yeniden Başlat</a>
   </div>
 
   <div class="card">
@@ -54,9 +54,7 @@
         <li class="list-group-item">
           <div class="row">
             <div class="col">
-              <a href="/">
-                <h5 class="card-title d-inline-block">ID</h5>
-              </a>
+              <h5 class="card-title">ID</h5>
             </div>
             <div class="col-auto">
               <button class="btn btn-sm btn-secondary" type="button"
@@ -76,29 +74,16 @@
               </a>
             </div>
           </div>
-          <small class="text-muted">
-            <span class="font-monospace">TYPE</span>
-            <div class="vr mx-2"></div>
-            <span class="font-monospace"
-              >OLDV <i class="fa-solid fa-caret-right"></i> NEWV</span>
-            <div class="vr mx-2"></div>
-            <span class="font-monospace">SIZE</span>
-            <div class="vr mx-2"></div>
-            <span class="font-monospace text-black">INSTALLING...</span>
-            <span class="font-monospace text-black">DOWNLOADING...</span>
-          </small>
-          <span class="font-monospace">
-            <div
-              class="progress my-3"
-              role="progressbar"
-              aria-label="Example 1px high"
-              aria-valuenow="25"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              style="height: 3px">
-              <div class="progress-bar bg-secondary" style="width: 25%"></div>
-            </div>
-          </span>
+          <div
+            class="progress my-3"
+            role="progressbar"
+            aria-label="Example 1px high"
+            aria-valuenow="25"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            style="height: 3px">
+            <div class="progress-bar bg-secondary" style="width: 25%"></div>
+          </div>
 
           <details>
             <summary>Changelog</summary>
@@ -126,9 +111,6 @@
         icon="fas fa-sync fa-3x"
         text="Kaynak güncellemeleri alabilmek için lütfen Çevrimiçi Hesap bağlayın."
         dark="{false}">
-        <a href="/panel/settings/platform" class="btn btn-primary btn-sm">
-          Platform Settings
-        </a>
       </NoContent>
     </div>
   </div>

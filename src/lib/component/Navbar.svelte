@@ -16,7 +16,7 @@
     </div>
     <div class="col-4 d-flex justify-content-center">
       <!-- Page Title -->
-      <h5 class="text-black text-truncate mb-0">
+      <h5 class="text-truncate mb-0">
         {$pageTitle ? $_($pageTitle) : options.DEFAULT_PAGE_TITLE}
       </h5>
     </div>

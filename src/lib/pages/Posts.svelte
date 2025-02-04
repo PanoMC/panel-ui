@@ -17,7 +17,6 @@
         >{$_("pages.post-categories.posts")}</CardMenuItem>
       <CardMenuItem href="/posts/categories" startsWith
         >{$_("pages.posts.post-categories-button")}</CardMenuItem>
-      <CardMenuItem disabled>Etiketler</CardMenuItem>
     </CardMenu>
   </PageActions>
 

@@ -33,11 +33,7 @@
   </div>
 
   <div class="card mb-3">
-    <div
-      class="card-header py-3 rounded-top"
-      class:bg-success="{data.ticket.status === TicketStatuses.NEW}"
-      class:bg-warning="{data.ticket.status === TicketStatuses.REPLIED}"
-      class:bg-danger="{data.ticket.status === TicketStatuses.CLOSED}">
+    <div class="card-header">
       <div class="row">
         <div class="col">
           <h5 class="card-title">{data.ticket.title}</h5>
@@ -67,83 +63,88 @@
       </div>
     </div>
     <div
-      class="card-body messages-section"
+      class="card-body"
       id="messageSection"
       bind:this="{messagesSectionDiv}"
       bind:clientHeight="{$messagesSectionClientHeight}">
       {#if data.ticket.messages.length < data.ticket.count && data.ticket.count > 5}
-        <button
-          class="btn btn-link bg-light d-block m-auto"
-          class:disabled="{loadMoreLoading}"
-          on:click="{loadMore}"
-          ><i class="fas fa-arrow-up me-2"></i>
-          {$_("pages.ticket-detail.previous-messages", {
-            values: {
-              count:
-                data.ticket.count -
-                (data.ticket.messages.length - sentMessageCount),
-            },
-          })}
-        </button>
+        <div class="position-relative">
+          <button
+            class="btn btn-sm btn-secondary position-absolute top-50 start-50 translate-middle"
+            class:disabled="{loadMoreLoading}"
+            on:click="{loadMore}"
+            ><i class="fas fa-arrow-up me-2"></i>
+            {$_("pages.ticket-detail.previous-messages", {
+              values: {
+                count:
+                  data.ticket.count -
+                  (data.ticket.messages.length - sentMessageCount),
+              },
+            })}
+          </button>
+        </div>
       {/if}
 
-      {#each data.ticket.messages as message, index (message)}
-        {#if message.panel}
-          <div class="row py-2 flex-nowrap justify-content-end">
-            <div class="col d-flex justify-content-end align-items-center">
-              <div class="card text-bg-primary">
-                <div class="card-header small">
-                  <Date time="{message.date}" />
+      <div class="vstack gap-2">
+        {#each data.ticket.messages as message, index (message)}
+          {#if message.panel}
+            <div class="row g-2 flex-nowrap">
+              <div class="col d-flex justify-content-end">
+                <div class="card text-bg-secondary">
+                  <div class="card-header small">
+                    <Date time="{message.date}" />
+                  </div>
+                  <div class="card-body answer">
+                    {@html message.message}
+                  </div>
                 </div>
-                <div class="card-body answer">
-                  {@html message.message}
+              </div>
+              <div class="col-auto">
+                <a href="{base}/players/player/{message.username}">
+                  <img
+                    src="https://minotar.net/avatar/{message.username}/48"
+                    alt="{message.username}"
+                    class="rounded animate__animated animate__zoomIn"
+                    use:tooltip="{[message.username, { placement: 'bottom' }]}"
+                    width="48"
+                    height="48" />
+                </a>
+              </div>
+            </div>
+          {:else}
+            <div class="row g-2 flex-nowrap">
+              <div class="col-auto">
+                <a href="{base}/players/player/{message.username}">
+                  <img
+                    src="https://minotar.net/avatar/{message.username}/48"
+                    alt="{message.username}"
+                    class="rounded animate__animated animate__zoomIn"
+                    use:tooltip="{[message.username, { placement: 'bottom' }]}"
+                    width="48"
+                    height="48" />
+                </a>
+              </div>
+              <div class="col hstack gap-2">
+                <div class="card">
+                  <div class="card-header small">
+                    <Date time="{message.date}" />
+                  </div>
+                  <div class="card-body">
+                    {message.message}
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="col-auto">
-              <a href="{base}/players/player/{message.username}">
-                <img
-                  src="https://minotar.net/avatar/{message.username}/48"
-                  alt="{message.username}"
-                  class="rounded animate__animated animate__zoomIn"
-                  use:tooltip="{[message.username, { placement: 'bottom' }]}"
-                  width="48"
-                  height="48" />
-              </a>
-            </div>
-          </div>
-        {:else}
-          <div class="row py-2 flex-nowrap justify-content-start">
-            <div class="col-auto">
-              <a href="{base}/players/player/{message.username}">
-                <img
-                  src="https://minotar.net/avatar/{message.username}/48"
-                  alt="{message.username}"
-                  class="rounded animate__animated animate__zoomIn"
-                  use:tooltip="{[message.username, { placement: 'bottom' }]}"
-                  width="48"
-                  height="48" />
-              </a>
-            </div>
-            <div class="col d-flex flex-nowrap align-items-center">
-              <div class="card text-bg-light">
-                <div class="card-header small">
-                  <Date time="{message.date}" />
-                </div>
-                <div class="card-body">
-                  {message.message}
-                </div>
-              </div>
-            </div>
-          </div>
-        {/if}
-      {/each}
+          {/if}
+        {/each}
+      </div>
+      <hr />
 
       <!-- Send Message Section -->
       <div
-        class="row align-items-end mt-3"
+        class="row align-items-end g-2"
         class:d-none="{data.ticket.status === TicketStatuses.CLOSED}">
-        <div class="col d-flex flex-column">
+        <div class="col">
           <!-- Editor -->
           <Editor bind:content="{messageText}" bind:isEmpty="{isEditorEmpty}" />
           <!-- Editor End -->

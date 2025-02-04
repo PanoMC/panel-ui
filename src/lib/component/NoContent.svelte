@@ -1,14 +1,23 @@
-<div class="container text-center animate__animated animate__zoomIn">
-  {#if dark}
-    <i class="{icon} text-light text-opacity-25 m-3"></i>
-    <p class="text-light">{text}</p>
-  {:else}
-    <i class="{icon} text-dark text-opacity-25 m-3"></i>
-    <small class="text-gray d-block mb-3">{text}</small>
-  {/if}
+{#if dark}
+  <div
+    class="card border-0 opacity-50 bg-transparent animate__animated animate__zoomIn"
+    data-bs-theme="dark">
+    <div class="card-body vstack gap-3 text-center">
+      <span class="{icon}"></span>
+      <p>{text}</p>
+    </div>
+  </div>
+{:else}
+  <div
+    class="card border-0 opacity-50 bg-transparent animate__animated animate__zoomIn">
+    <div class="card-body vstack gap-3 text-center">
+      <span class="{icon}"></span>
+      <p>{text}</p>
+    </div>
+  </div>
+{/if}
 
-  <slot />
-</div>
+<slot />
 
 <script>
   import { _ } from "svelte-i18n";

@@ -1,8 +1,8 @@
 {#if editor}
-  <div class="my-3">
+  <div>
     <!-- Headings -->
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{() =>
         editor.chain().focus().toggleHeading({ level: 1 }).run()}"
       class:border-primary="{editor.isActive('heading', { level: 1 })}"
@@ -14,7 +14,7 @@
       H1
     </button>
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{() =>
         editor.chain().focus().toggleHeading({ level: 2 }).run()}"
       class:border-primary="{editor.isActive('heading', { level: 2 })}"
@@ -26,7 +26,7 @@
       H2
     </button>
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{() =>
         editor.chain().focus().toggleHeading({ level: 3 }).run()}"
       class:border-primary="{editor.isActive('heading', { level: 3 })}"
@@ -40,7 +40,7 @@
 
     <!-- Text Formatting -->
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{() => editor.chain().focus().toggleBold().run()}"
       class:border-primary="{editor.isActive('bold')}"
       class:text-primary="{editor.isActive('bold')}"
@@ -48,7 +48,7 @@
       <b>B</b>
     </button>
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{() => editor.chain().focus().toggleItalic().run()}"
       class:border-primary="{editor.isActive('italic')}"
       class:text-primary="{editor.isActive('italic')}"
@@ -56,7 +56,7 @@
       <i>I</i>
     </button>
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{() => editor.chain().focus().toggleUnderline().run()}"
       class:border-primary="{editor.isActive('underline')}"
       class:text-primary="{editor.isActive('underline')}"
@@ -67,7 +67,7 @@
       <u>U</u>
     </button>
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{() => editor.chain().focus().toggleStrike().run()}"
       class:border-primary="{editor.isActive('strike')}"
       class:text-primary="{editor.isActive('strike')}"
@@ -77,7 +77,7 @@
 
     <!-- Lists -->
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{() => editor.chain().focus().toggleBulletList().run()}"
       class:border-primary="{editor.isActive('bulletList')}"
       class:text-primary="{editor.isActive('bulletList')}"
@@ -88,7 +88,7 @@
       <i class="fas fa-list"></i>
     </button>
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{() => editor.chain().focus().toggleOrderedList().run()}"
       class:border-primary="{editor.isActive('orderedList')}"
       class:text-primary="{editor.isActive('orderedList')}"
@@ -101,13 +101,13 @@
 
     <!-- Media -->
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{addImage}"
       use:tooltip="{[$_('components.editor.image'), { placement: 'bottom' }]}">
       <i class="fas fa-image"></i>
     </button>
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{setLink}"
       use:tooltip="{[$_('components.editor.link'), { placement: 'bottom' }]}"
       class:border-primary="{editor.isActive('link')}"
@@ -115,7 +115,7 @@
       <i class="fas fa-link"></i>
     </button>
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{openColorPicker}"
       use:tooltip="{[
         $_('components.editor.text-color'),
@@ -136,7 +136,7 @@
       hidden />
 
     <button
-      class="btn btn-link link-dark btn-small small"
+      class="btn btn-link btn-sm"
       on:click="{() => editor.chain().focus().unsetColor().run()}"
       use:tooltip="{[
         $_('components.editor.remove-text-color'),
@@ -148,7 +148,7 @@
 {/if}
 
 <!-- Editor Content -->
-<div class="bg-light rounded" bind:this="{element}"></div>
+<textare class="form-control" rows="3" bind:this="{element}"></textare>
 
 <script>
   import { onMount, onDestroy } from "svelte";
