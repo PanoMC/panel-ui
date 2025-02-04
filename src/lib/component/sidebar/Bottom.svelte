@@ -8,7 +8,7 @@
   </a>
   <a
     class="nav-link text-light"
-    href="javascript:void(0);"
+    href="{PANO_WEBSITE_URL}/addons"
     use:tooltip="{[$_('components.bottom.pano-market'), { placement: 'top' }]}">
     <i class="fas fa-store"></i>
   </a>
