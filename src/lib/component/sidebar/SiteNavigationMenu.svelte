@@ -77,6 +77,20 @@
       </li>
     {/if}
 
+    <li class="nav-item p-2">
+      <a
+        class="nav-link"
+        href="{base}/translations"
+        class:active="{matching(
+          $page.url.pathname,
+          base + '/translations',
+          true,
+        )}">
+        <i class="fa-solid fa-language me-2"></i>
+        {$_("components.site-navigation-menu.translations")}
+      </a>
+    </li>
+
     {#if hasPermission(Permissions.MANAGE_ADDONS)}
       <li class="nav-item p-2">
         <a

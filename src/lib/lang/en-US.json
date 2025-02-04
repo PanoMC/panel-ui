@@ -397,7 +397,8 @@
       "players": "Players",
       "view": "View",
       "addons": "Addons",
-      "settings": "Settings"
+      "settings": "Settings",
+      "translations": "Translations"
     },
     "navbar": {
       "navbar-toggle-tooltip": "Open/Close Menu",

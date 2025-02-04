@@ -424,7 +424,8 @@
       "players": "Oyuncular",
       "view": "Görünüm",
       "addons": "Eklentiler",
-      "settings": "Ayarlar"
+      "settings": "Ayarlar",
+      "translations": "Çeviriler"
     },
     "navbar": {
       "navbar-toggle-tooltip": "Menüyü Aç/Kapa",
