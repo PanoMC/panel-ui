@@ -192,7 +192,8 @@
           "email-validation-error": "E-mail ayarlarınız doğrulanamadı: {mailError}"
         },
         "smtp-settings": "E-Mail Ayarları (SMTP)",
-        "save-button": "Kaydet"
+        "save-button": "Kaydet",
+        "toggle-smtp": "SMTP'yi Aç/Kapat"
       }
     },
     "ticket-detail": {

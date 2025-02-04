@@ -175,7 +175,7 @@
   <div class="card-header">
     <div class="form-check form-switch">
       <input class="form-check-input" type="checkbox" id="smtpToggle" checked="{$siteInfo.emailEnabled}" on:change={onToggleSmtp} disabled="{toggleSmtpLoading}" />
-      <label class="form-check-label" for="smtpToggle">Toggle SMTP</label>
+      <label class="form-check-label" for="smtpToggle">{$_("pages.settings.platform.toggle-smtp")}</label>
     </div>
   </div>
   <div class="card-body" class:opacity-50={smtpDisabled}>

@@ -192,7 +192,8 @@
           "email-validation-error": "Couldn't validate e-mail settings: {mailError}"
         },
         "smtp-settings": "E-Mail Settings (SMTP)",
-        "save-button": "Save"
+        "save-button": "Save",
+        "toggle-smtp": "Toggle SMTP"
       }
     },
     "ticket-detail": {
