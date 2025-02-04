@@ -794,7 +794,9 @@
       "pano-account-connect-success": "Pano hesabın başarıyla bağlandı!",
       "pano-account-disconnect-success": "Pano hesabı başarıyla kaldırıldı!",
       "pano-account-disconnect-fail": "Pano hesabı kaldırılırken hata oluştu!",
-      "email-config-validate-success": "E-Mail başarıyla doğrulandı!"
+      "email-config-validate-success": "E-Mail başarıyla doğrulandı!",
+      "smtp-disabled-success": "E-posta başarıyla devre dışı bırakıldı!",
+      "smtp-enabled-success": "E-posta başarıyla aktifleştirildi!"
     }
   },
   "page-error": {

@@ -174,7 +174,7 @@
 <div class="card">
   <div class="card-header">
     <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" id="smtpToggle" checked="{$siteInfo.emailEnabled}" on:change={onToggleSmtp} />
+      <input class="form-check-input" type="checkbox" id="smtpToggle" checked="{$siteInfo.emailEnabled}" on:change={onToggleSmtp} disabled="{toggleSmtpLoading}" />
       <label class="form-check-label" for="smtpToggle">Toggle SMTP</label>
     </div>
   </div>
@@ -408,6 +408,9 @@
   import PanoAccountDisconnectSuccessToast from "$lib/component/toasts/PanoAccountDisconnectSuccessToast.svelte";
   import PanoAccountDisconnectFailToast from "$lib/component/toasts/PanoAccountDisconnectFailToast.svelte";
   import EmailConfigValidateSuccessToast from "$lib/component/toasts/EmailConfigValidateSuccessToast.svelte";
+  import SMTPDisabledSuccessToast from "$lib/component/toasts/SMTPDisabledSuccessToast.svelte";
+  import SMTPEnabledSuccessToast from "$lib/component/toasts/SMTPEnabledSuccessToast.svelte";
+
   import ConfirmRemovePanoAccountModal, {
     show as showConfirmRemovePanoAccountModal,
   } from "$lib/component/modals/ConfirmRemovePanoAccountModal.svelte";
@@ -425,6 +428,7 @@
   let disconnecting;
   let mailValidated;
   let mailError;
+  let toggleSmtpLoading;
 
   $: preferencesSaveDisabled =
     data.oldSettings.updatePeriod === data.updatePeriod &&
@@ -612,15 +616,7 @@
     showNetworkErrorOnCatch((resolve, reject) => {
       const formData = new FormData();
 
-      const { hostname,
-        port,
-        ssl,
-        starttls,
-        username,
-        password,
-        sender,
-        authMethods } = data.email
-      formData.append("email", JSON.stringify({
+      const {
         hostname,
         port,
         ssl,
@@ -629,6 +625,18 @@
         password,
         sender,
         authMethods
+      } = data.email
+
+      formData.append("email", JSON.stringify({
+        enabled: true,
+        hostname: hostname || "",
+        port: port || 3306,
+        ssl: ssl || false,
+        starttls: starttls || "DISABLED",
+        username: username || "",
+        password: password || "",
+        sender: sender || "",
+        authMethods: authMethods || ""
       }))
 
       ApiUtil.put({
@@ -653,9 +661,15 @@
             {},
           );
 
+          const enabled = $siteInfo.emailEnabled
+
           await invalidateAll()
 
-          await showToast(SettingsSaveSuccessToast);
+          if (enabled) {
+            await showToast(SettingsSaveSuccessToast);
+          } else {
+            await showToast(SMTPEnabledSuccessToast);
+          }
 
           resolve();
         })
@@ -680,6 +694,57 @@
   }
 
   function onToggleSmtp(event) {
+    toggleSmtpLoading = true;
+
     smtpDisabled = !event.target.checked
+
+    if (smtpDisabled) {
+      mailValidated = false;
+      saveEmailLoading = true;
+
+      showNetworkErrorOnCatch((resolve, reject) => {
+        const formData = new FormData();
+        formData.append("email", JSON.stringify({
+          enabled: false,
+          hostname: "",
+          port: 0,
+          ssl: false,
+          starttls: "DISABLED",
+          username: "",
+          password: "",
+          sender: "",
+          authMethods: ""
+        }))
+
+        ApiUtil.put({
+          path: "/api/panel/settings",
+          body: formData,
+        })
+          .then(async (body) => {
+            if (body.error) {
+              reject();
+
+              return;
+            }
+
+            saveEmailLoading = false;
+
+            await invalidateAll()
+
+            await showToast(SMTPDisabledSuccessToast);
+
+            toggleSmtpLoading = false;
+
+            resolve();
+          })
+          .catch(() => {
+            reject();
+          });
+      });
+
+      return
+    }
+
+    toggleSmtpLoading = false;
   }
 </script>

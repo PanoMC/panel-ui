@@ -767,7 +767,9 @@
       "pano-account-connect-success": "Your Pano account has been successfully connected!",
       "pano-account-disconnect-success": "Pano account removed successfully!",
       "pano-account-disconnect-fail": "An error occurred during the removing Pano account!",
-      "email-config-validate-success": "E-Mail validated successfully!"
+      "email-config-validate-success": "E-Mail validated successfully!",
+      "smtp-disabled-success": "E-mail disabled successfully!",
+      "smtp-enabled-success": "E-mail enabled successfully!"
     }
   },
   "page-error": {
