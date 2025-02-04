@@ -52,13 +52,13 @@
         <div class="col-lg-4">
           <ul class="list-unstyled">
             <li>
-              <a class="alert-link" href="javascript:void(0);">
+              <a class="alert-link" href="{PANO_WEBSITE_URL}/addons">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
                 {$_("pages.dashboard.welcome-card.themes-and-extensions")}
               </a>
             </li>
             <li>
-              <a class="alert-link" href="javascript:void(0);" target="_blank">
+              <a class="alert-link" href="{PANO_WEBSITE_URL}/docs" target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
                 {$_("pages.dashboard.welcome-card.documentations")}
               </a>
@@ -66,7 +66,7 @@
             <li>
               <a
                 class="alert-link"
-                href="https://panomc.com/discord"
+                href="{PANO_WEBSITE_URL}"
                 target="_blank">
                 <i class="fa-solid fa-globe me-2"></i>
                 {$_("pages.dashboard.welcome-card.website")}
@@ -75,7 +75,7 @@
             <li>
               <a
                 class="alert-link"
-                href="https://panomc.com/discord"
+                href="{PANO_WEBSITE_URL}/discord"
                 target="_blank">
                 <i class="fab fa-discord me-2"></i>
                 {$_("pages.dashboard.welcome-card.discord")}
@@ -213,6 +213,8 @@
   import { showNetworkErrorOnCatch } from "$lib/Store";
   import { hasPermission, Permissions } from "$lib/auth.util";
   import tooltip from "$lib/tooltip.util";
+
+  import { PANO_WEBSITE_URL } from "$lib/variables.js";
 
   import NoContent from "$lib/component/NoContent.svelte";
   import TicketStatusBadge from "$lib/component/badges/TicketStatusBadge.svelte";

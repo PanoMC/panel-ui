@@ -114,7 +114,7 @@
                       {#if plugin.verifyStatus !== "UNKNOWN"}
                         <div class="vr mx-2"></div>
                         <a
-                          href="https://panomc.com/addons/detail/{plugin.id}"
+                          href="{PANO_WEBSITE_URL}/{plugin.id}"
                           target="_blank"
                           title="Mağaza Adresi"
                           class="card-link">
@@ -228,7 +228,7 @@
 
   import { base } from "$app/paths";
 
-  import { API_URL } from "$lib/variables";
+  import { API_URL, PANO_WEBSITE_URL } from "$lib/variables";
   import tooltip from "$lib/tooltip.util";
   import { showNetworkErrorOnCatch } from "$lib/Store.js";
 

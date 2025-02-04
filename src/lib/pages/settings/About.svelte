@@ -28,10 +28,10 @@
         <div class="col-md-6 col-form-label">
           <a
             aria-describedby="panoWebsite"
-            href="https://panomc.com"
+            href="{PANO_WEBSITE_URL}"
             id="panoWebsite"
             target="_blank">
-            panomc.com <i class="fa-solid fa-up-right-from-square ms-2"></i>
+            {getDomain(PANO_WEBSITE_URL)} <i class="fa-solid fa-up-right-from-square ms-2"></i>
           </a>
         </div>
       </div>
@@ -42,10 +42,10 @@
         <div class="col-md-6 col-form-label">
           <a
             aria-describedby="panoWebsite"
-            href="https://panomc.com/discord"
+            href="{PANO_WEBSITE_URL}/discord"
             id="panoWebsite"
             target="_blank">
-            panomc.com/discord <i class="fa-solid fa-up-right-from-square ms-2"
+            {getDomain(PANO_WEBSITE_URL)}/discord <i class="fa-solid fa-up-right-from-square ms-2"
             ></i>
           </a>
         </div>
@@ -121,9 +121,22 @@
   import { getContext } from "svelte";
   import { _ } from "svelte-i18n";
 
+  import { PANO_WEBSITE_URL } from "$lib/variables.js";
+
   export let data;
 
   const pageTitle = getContext("pageTitle");
 
   pageTitle.set("pages.settings.about.title");
+
+  function getDomain(url) {
+    try {
+      // Create a URL object to extract the hostname
+      const urlObj = new URL(url);
+      return urlObj.hostname; // Returns only the domain name (without protocol or path)
+    } catch (e) {
+      // If URL constructor fails (e.g., invalid URL), remove protocol using regex
+      return url.replace(/^https?:\/\//, '');
+    }
+  }
 </script>
