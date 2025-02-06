@@ -1,1 +1,47 @@
-Hello world from translations page!
+<div class="container vstack gap-3">
+  <!-- Action Menu -->
+  <PageActions>
+    <a href="" class="btn btn-link" role="button" slot="left">
+      <i class="fa-solid fa-earth-americas me-2"></i>
+      Languages
+    </a>
+    <!-- Submenu -->
+    <CardMenu slot="middle">
+      <CardMenuItem href="/translations" startsWith>Platform</CardMenuItem>
+      <CardMenuItem href="/translations/themes" startsWith>Themes</CardMenuItem>
+      <CardMenuItem href="/translations/addons" startsWith>Addons</CardMenuItem>
+    </CardMenu>
+
+    <div slot="right">
+      <select class="form-select" name="selectLanguage" id="selectLanguage">
+        <option selected value="en-us">English</option>
+        <option value="tr">Turkish</option>
+        <option value="ru">Russian</option>
+      </select>
+    </div>
+  </PageActions>
+
+  <div class="card">
+    <div class="card-body">
+      <CardHeader>
+        <h5 class="card-title" slot="left">Platform Translations (102)</h5>
+
+        <!-- Filters -->
+        <CardFilters slot="right">
+          <CardFiltersItem href="/" active>All</CardFiltersItem>
+          <CardFiltersItem href="/">Original</CardFiltersItem>
+          <CardFiltersItem href="/">Modified</CardFiltersItem>
+        </CardFilters>
+      </CardHeader>
+    </div>
+  </div>
+</div>
+
+<script>
+  import CardFilters from "$lib/component/CardFilters.svelte";
+  import CardFiltersItem from "$lib/component/CardFiltersItem.svelte";
+  import CardHeader from "$lib/component/CardHeader.svelte";
+  import CardMenu from "$lib/component/CardMenu.svelte";
+  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
+  import PageActions from "$lib/component/PageActions.svelte";
+</script>
