@@ -1,5 +1,5 @@
 <a
-  class="badge rounded-pill text-bg-light"
+  class="badge rounded-pill text-bg-secondary"
   title="{$_('components.player-permission-badge.filter')}"
   href="{base}/players/by-perm-group/{permissionGroup}">
   {permissionGroup === "-"
