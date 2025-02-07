@@ -96,6 +96,7 @@
       "ticket-categories": "Ticket Categories",
       "close-ticket-button": "Close Ticket",
       "table-title": "{ticketCount} {pageType} Ticket",
+      "ticket-categories-button": "Categories",
       "amount-selected": "{amount} amount selected.",
       "all": "All",
       "select-all": "Select All",

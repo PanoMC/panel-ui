@@ -2,14 +2,13 @@
 <article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <a
-      class="btn btn-link"
-      role="button"
-      href="{base}/tickets/categories"
-      slot="left">
-      <i class="fas fa-list-alt me-2"></i>
-      {$_("pages.tickets.ticket-categories")}
-    </a>
+    <!-- Submenu -->
+    <CardMenu slot="middle">
+      <CardMenuItem href="/tickets"
+        >{$_("pages.ticket-categories.tickets")}</CardMenuItem>
+      <CardMenuItem href="/tickets/categories"
+        >{$_("pages.tickets.ticket-categories-button")}</CardMenuItem>
+    </CardMenu>
     <div
       class:d-none="{firstLoad}"
       class="animate__animated animate__faster {getListOfChecked($checkedList)
@@ -88,7 +87,7 @@
       {:else}
         <!-- Tickets Table -->
         <div class="table-responsive">
-          <table class="table table-hover mb-0">
+          <table class="table table-hover">
             <thead>
               <tr>
                 <th class="align-middle" scope="col">
@@ -244,6 +243,8 @@
   import CardHeader from "$lib/component/CardHeader.svelte";
   import CardFiltersItem from "$lib/component/CardFiltersItem.svelte";
   import CardFilters from "$lib/component/CardFilters.svelte";
+  import CardMenu from "$lib/component/CardMenu.svelte";
+  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
   export let data;
 

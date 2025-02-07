@@ -2,10 +2,14 @@
 <article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <a class="btn btn-link" role="button" href="{base}/tickets" slot="left">
-      <i class="fas fa-arrow-left me-2"></i>
-      {$_("pages.ticket-categories.tickets")}
-    </a>
+    <!-- Submenu -->
+    <CardMenu slot="middle">
+      <CardMenuItem href="/tickets"
+        >{$_("pages.ticket-categories.tickets")}</CardMenuItem>
+      <CardMenuItem href="/tickets/categories"
+        >{$_("pages.tickets.ticket-categories-button")}</CardMenuItem>
+    </CardMenu>
+
     <button
       class="btn btn-secondary"
       type="button"
@@ -37,7 +41,7 @@
       <!-- Tickets Table -->
       {#if data.categoryCount > 0}
         <div class="table-responsive">
-          <table class="table table-hover mb-0">
+          <table class="table table-hover">
             <thead>
               <tr>
                 <th scope="col"></th>
@@ -164,6 +168,8 @@
   import TicketCategoryRow from "$lib/component/rows/TicketCategoryRow.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
   import CardHeader from "$lib/component/CardHeader.svelte";
+  import CardMenu from "$lib/component/CardMenu.svelte";
+  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
   export let data;
 

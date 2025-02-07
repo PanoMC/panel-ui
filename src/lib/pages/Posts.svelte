@@ -4,7 +4,7 @@
   <PageActions>
     <a
       href="{base}/posts/create-post"
-      class="btn btn-secondary ms-auto"
+      class="btn btn-secondary"
       role="button"
       slot="right">
       <i class="fas fa-plus me-2"></i>
@@ -67,7 +67,7 @@
       {:else}
         <!-- Posts Table -->
         <div class="table-responsive">
-          <table class="table table-hover mb-0">
+          <table class="table table-hover">
             <thead>
               <tr>
                 <th scope="col"></th>

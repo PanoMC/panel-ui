@@ -1,10 +1,11 @@
-<a
-  class:active="{active}"
-  class="btn btn-sm btn-outline-primary text-truncate"
-  role="button"
-  href="{base + href}">
-  <slot />
-</a>
+<li class="nav-item">
+  <a
+    class:active="{active}"
+    class="nav-link text-truncate"
+    href="{base + href}">
+    <slot />
+  </a>
+</li>
 
 <script>
   import { page } from "$app/stores";

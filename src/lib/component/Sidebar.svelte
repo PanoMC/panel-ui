@@ -3,7 +3,7 @@
   <ConnectServerModal />
 {/if}
 
-<div class="sidebar bg-dark min-vh-100" class:active="{$isSidebarOpen}">
+<div class="sidebar bg-primary min-vh-100" class:active="{$isSidebarOpen}">
   <div class="container">
     <!-- Sidebar Toggler & Logo -->
     <div class="navbar navbar-expand navbar-dark bg-body-primary">

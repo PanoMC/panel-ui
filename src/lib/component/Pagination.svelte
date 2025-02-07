@@ -1,4 +1,4 @@
-<nav class="pt-3">
+<nav>
   <ul class="pagination pagination-sm mb-0 justify-content-start">
     <li class="page-item" class:disabled="{parseInt(page) === 1}">
       <a
