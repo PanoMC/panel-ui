@@ -3,12 +3,12 @@
   <PageActions>
     <a href="" class="btn btn-link" role="button" slot="left">
       <i class="fa-solid fa-earth-americas me-2"></i>
-      Languages
+      Manage Languages
     </a>
     <!-- Submenu -->
     <CardMenu slot="middle">
       <CardMenuItem href="/translations" startsWith>Platform</CardMenuItem>
-      <CardMenuItem href="/translations/themes" startsWith>Themes</CardMenuItem>
+      <CardMenuItem href="/translations/themes" startsWith>Theme</CardMenuItem>
       <CardMenuItem href="/translations/addons" startsWith>Addons</CardMenuItem>
     </CardMenu>
 
@@ -42,7 +42,7 @@
               type="button"
               data-bs-toggle="collapse"
               data-bs-target="#collapseplatformTranslations">
-              tr.json (102)
+              Panel
             </button>
           </h2>
           <div
@@ -57,18 +57,20 @@
               </div>
               <div
                 class="input-group row-cols-3 d-flex flex-nowrap g-2 overflow-x-auto">
-                <span
-                  class="input-group-text font-monospace"
-                  id="keyTranslation">DATA</span>
                 <input
                   type="text"
-                  class="form-control disabled"
-                  disabled
-                  id="originalTranslation" />
+                  class="form-control font-monospace"
+                  id="keyTranslation" value="components.modals.confirm-disable-addon-will-cause-more-disable.title"/>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="originalTranslation"
+                  value="{`Are you sure to disable "\{pluginId\}" addon?`}"/>
                 <input
                   type="text"
                   class="form-control border-danger"
-                  id="customTranslation" />
+                  id="customTranslation"
+                  value="{`"\{pluginId}" eklentisini devre dışı bırakmak istediğinizden emin misiniz?`}"/>
               </div>
             </div>
           </div>
@@ -96,13 +98,13 @@
               </div>
               <div
                 class="input-group row-cols-3 d-flex flex-nowrap g-2 overflow-x-auto">
-                <span
-                  class="input-group-text font-monospace"
-                  id="keyTranslation">DATA</span>
                 <input
                   type="text"
-                  class="form-control disabled"
-                  disabled
+                  class="form-control font-monospace"
+                  id="keyTranslation" value="DATA"/>
+                <input
+                  type="text"
+                  class="form-control"
                   id="originalTranslation" />
                 <input
                   type="text"
