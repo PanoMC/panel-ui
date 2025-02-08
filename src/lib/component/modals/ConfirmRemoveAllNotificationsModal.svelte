@@ -63,10 +63,10 @@
 </script>
 
 <script>
+  import { _ } from "svelte-i18n";
+
   import ApiUtil from "$lib/api.util";
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import NotificationsDeletedPermanentlyToast from "$lib/component/toasts/NotificationsDeletedPermanentlyToast.svelte";
-  import { _ } from "svelte-i18n";
 
   let loading;
 
@@ -89,7 +89,7 @@
 
         hide();
 
-        showToast(NotificationsDeletedPermanentlyToast);
+        showToast('components.toasts.notifications-deleted-permanently');
 
         callback();
       }

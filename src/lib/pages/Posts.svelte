@@ -178,10 +178,9 @@
   import PostRow from "$lib/component/rows/PostRow.svelte";
 
   import {
-    show as showToast
+    show as showToast,
+    limitTitle
   } from "$lib/component/ToastContainer.svelte";
-  import PostMovedToDraftToast from "$lib/component/toasts/PostMovedToDraftToast.svelte";
-  import PostPublishedToast from "$lib/component/toasts/PostPublishedToast.svelte";
   import NoContent from "$lib/component/NoContent.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
   import CardHeader from "$lib/component/CardHeader.svelte";
@@ -235,8 +234,11 @@
 
         await refreshData();
 
-        await showToast(PostMovedToDraftToast, {
-          title: data.posts.find((post) => post.id === id).title,
+        const foundTitle = data.posts.find((post) => post.id === id).title
+        const title = `<a href="${base}/posts/draft" target="_blank">${limitTitle(foundTitle)}</a>`
+
+        await showToast('components.toasts.post-moved-to-draft', {
+          title,
         });
       }
     })
@@ -261,9 +263,12 @@
 
         await goto(base + "/posts");
 
-        await showToast(PostPublishedToast, {
+        const foundTitle =  data.posts.find((post) => post.id === id).title
+        const title = `<a href="${base}/posts/post/${id}" target="_blank">${limitTitle(foundTitle)}</a>`
+
+        await showToast('components.toasts.post-published', {
           postId: id,
-          title: data.posts.find((post) => post.id === id).title,
+          title,
         });
       }
     })

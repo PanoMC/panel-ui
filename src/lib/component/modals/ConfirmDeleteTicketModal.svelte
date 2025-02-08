@@ -76,7 +76,6 @@
   import ApiUtil from "$lib/api.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import TicketsDeletedPermanentlyToast from "$lib/component/toasts/TicketsDeletedPermanentlyToast.svelte";
   import { _ } from "svelte-i18n";
 
   let loading;
@@ -104,7 +103,7 @@
 
         const count = get(selectedTickets).length;
 
-        showToast(TicketsDeletedPermanentlyToast, { count });
+        showToast(count > 1 ? 'components.toasts.tickets-deleted-permanently.multi' : 'components.toasts.tickets-deleted-permanently.single', { count });
 
         callback(get(selectedTickets));
       },

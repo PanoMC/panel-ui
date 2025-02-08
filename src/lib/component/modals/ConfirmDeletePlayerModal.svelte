@@ -90,7 +90,6 @@
   import ApiUtil from "$lib/api.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import PlayerDeletedSuccessToast from "$lib/component/toasts/PlayerDeletedSuccessToast.svelte";
   import { _ } from "svelte-i18n";
 
   $: yesButtonDisabled = $loading || !$currentPassword;
@@ -106,7 +105,7 @@
           callback($player);
           await goto(base + "/players");
           hide();
-          await showToast(PlayerDeletedSuccessToast, { username: $player.username });
+          await showToast('player-deleted-success', { username: $player.username });
           return
         } else if (body.error) {
           if (body.error === "CURRENT_PASSWORD_NOT_CORRECT") {

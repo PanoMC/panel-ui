@@ -234,8 +234,7 @@
     show as showConfirmEnablingAddonModal,
     setCallback as setCallbackConfirmEnablingAddonModal,
   } from "$lib/component/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte";
-  import EnablingAddonFailedByDependencyErrorToast from "$lib/component/toasts/EnablingAddonFailedByDependencyErrorToast.svelte";
-  import FailedToEnableAddonToast from "$lib/component/toasts/FailedToEnableAddonToast.svelte";
+
   import NoContent from "$lib/component/NoContent.svelte";
 
   export let data;
@@ -318,13 +317,13 @@
         data.plugins = data.plugins;
 
         if (body.status === "CREATED") {
-          await showToast(EnablingAddonFailedByDependencyErrorToast, {
+          await showToast('components.toasts.settings-save-error', {
             addon: plugin.id,
           });
         }
 
         if (body.status === "FAILED") {
-          await showToast(FailedToEnableAddonToast, {
+          await showToast('components.toasts.failed-to-enable-addon-error', {
             addon: plugin.id,
           });
         }

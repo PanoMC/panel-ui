@@ -198,7 +198,6 @@
   import ApiUtil from "$lib/api.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import PlayerInfoSavedSuccessToast from "$lib/component/toasts/PlayerInfoSavedSuccessToast.svelte";
 
   function refreshBrowserPage() {
     location.reload();
@@ -229,7 +228,7 @@
 
           hide();
 
-          await showToast(PlayerInfoSavedSuccessToast);
+          await showToast('components.toasts.player-info-saved-success');
 
           player.update((player) => {
             player.newPassword = "";

@@ -200,8 +200,6 @@
   import { websiteLogoSrc } from "$lib/Store.js";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import SettingsSaveSuccessToast from "$lib/component/toasts/SettingsSaveSuccessToast.svelte";
-  import SettingsSaveErrorToast from "$lib/component/toasts/SettingsSaveErrorToast.svelte";
 
   export let data;
 
@@ -299,7 +297,7 @@
 
           data.oldSettings.keywords = [...data.keywords];
 
-          await showToast(SettingsSaveSuccessToast);
+          await showToast('components.toasts.settings-save-success');
 
           if (websiteLogoInput.value !== "") {
             const reader = new FileReader();
@@ -325,7 +323,7 @@
           body.error === "WEBSITE_LOGO_WRONG_CONTENT_TYPE" ||
           body.error === "WEBSITE_LOGO_EXCEEDS_SIZE"
         ) {
-          await showToast(SettingsSaveErrorToast, {
+          await showToast("components.toasts.settings-save-error", {
             errorCode: body.error,
           });
         } else reject();

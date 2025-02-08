@@ -117,7 +117,6 @@
   import { _ } from "svelte-i18n";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import PlayerAuthorizedSuccessToast from "$lib/component/toasts/PlayerAuthorizedSuccessToast.svelte";
 
   function onSubmit() {
     submitLoading.set(true);
@@ -133,7 +132,7 @@
 
           hide();
 
-          await showToast(PlayerAuthorizedSuccessToast);
+          await showToast('components.toasts.player-authorized-success');
 
           callback(get(player));
 

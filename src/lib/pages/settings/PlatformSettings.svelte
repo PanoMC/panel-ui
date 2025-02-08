@@ -381,14 +381,6 @@
     Languages,
   } from "$lib/language.util";
 
-  import SettingsSaveSuccessToast from "$lib/component/toasts/SettingsSaveSuccessToast.svelte";
-  import PanoAccountConnectSuccessToast from "$lib/component/toasts/PanoAccountConnectSuccessToast.svelte";
-  import PanoAccountDisconnectSuccessToast from "$lib/component/toasts/PanoAccountDisconnectSuccessToast.svelte";
-  import PanoAccountDisconnectFailToast from "$lib/component/toasts/PanoAccountDisconnectFailToast.svelte";
-  import EmailConfigValidateSuccessToast from "$lib/component/toasts/EmailConfigValidateSuccessToast.svelte";
-  import SMTPDisabledSuccessToast from "$lib/component/toasts/SMTPDisabledSuccessToast.svelte";
-  import SMTPEnabledSuccessToast from "$lib/component/toasts/SMTPEnabledSuccessToast.svelte";
-
   import ConfirmRemovePanoAccountModal, {
     show as showConfirmRemovePanoAccountModal,
   } from "$lib/component/modals/ConfirmRemovePanoAccountModal.svelte";
@@ -448,7 +440,7 @@
           }
 
           await goto($page.url.pathname, { invalidateAll: true });
-          await showToast(PanoAccountConnectSuccessToast);
+          await showToast('components.toasts.pano-account-connect-success');
 
           connecting = false;
         }
@@ -490,13 +482,13 @@
         path: "/api/panel/platform/disconnect",
         handler: async (body, reject) => {
           if (body.error) {
-            await showToast(PanoAccountDisconnectFailToast);
+            await showToast('components.toasts.pano-account-disconnect-fail');
 
             disconnecting = false;
             return;
           }
 
-          await showToast(PanoAccountDisconnectSuccessToast);
+          await showToast('components.toasts.pano-account-disconnect-success');
 
           data.panoAccount = null;
 
@@ -535,7 +527,7 @@
 
         await changeLanguage(getLanguageByLocale(data.locale));
 
-        await showToast(SettingsSaveSuccessToast);
+        await showToast('components.toasts.settings-save-success');
       }
     })
   }
@@ -558,7 +550,7 @@
 
         mailValidated = true;
 
-        await showToast(EmailConfigValidateSuccessToast);
+        await showToast('components.toasts.email-config-validate-success');
       }
     })
   }
@@ -617,9 +609,9 @@
         await invalidateAll()
 
         if (enabled) {
-          await showToast(SettingsSaveSuccessToast);
+          await showToast('components.toasts.settings-save-success');
         } else {
-          await showToast(SMTPEnabledSuccessToast);
+          await showToast('components.toasts.smtp-enabled-success');
         }
       }
     })
@@ -675,7 +667,7 @@
 
           await invalidateAll()
 
-          await showToast(SMTPDisabledSuccessToast);
+          await showToast('components.toasts.smtp-enabled-success');
 
           toggleSmtpLoading = false;
         }

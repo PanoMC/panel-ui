@@ -77,7 +77,6 @@
   import ApiUtil from "$lib/api.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import ServerMadeMainToast from "$lib/component/toasts/ServerMadeMainToast.svelte";
   import { _ } from "svelte-i18n";
 
   function acceptServer() {
@@ -90,7 +89,7 @@
           callback($server);
           await invalidateAll();
           hide();
-          showToast(ServerMadeMainToast, {name: $server.name});
+          await showToast('components.toasts.server-made-main', {name: $server.name});
 
           return;
         } else if (body.result === "error") {

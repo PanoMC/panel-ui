@@ -209,9 +209,7 @@
 
   import tooltip from "$lib/tooltip.util";
 
-  import PermissionGroupSavedOrCreatedToast from "$lib/component/toasts/PermissionGroupSavedOrCreatedToast.svelte";
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import PermissionGroupSaveErrorToast from "$lib/component/toasts/PermissionGroupSaveErrorToast.svelte";
 
   export let data;
 
@@ -353,8 +351,8 @@
       if (body.result === "ok") {
         loading = false;
 
-        showToast(PermissionGroupSavedOrCreatedToast, {
-          mode: data.mode,
+        showToast('components.toasts.permission-group-saved-or-created.permission-group', {
+          "event": data.mode === Modes.EDIT ? $_('components.toasts.permission-group-saved-or-created.updated'): $_('components.toasts.permission-group-saved-or-created.saved')
         });
 
         if (data.mode === Modes.CREATE) {
@@ -381,7 +379,7 @@
       } else if (body.error) {
         loading = false;
 
-        showToast(PermissionGroupSaveErrorToast, {
+        showToast('components.toasts.permission-group-save-error', {
           errorCode: body.error,
         });
 

@@ -193,9 +193,7 @@
   import { invalidateAll } from "$app/navigation";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import ServerNotExistsToast from "$lib/component/toasts/ServerNotExistsToast.svelte";
   import NoContent from "$lib/component/NoContent.svelte";
-  import ServerSelectedToast from "$lib/component/toasts/ServerSelectedToast.svelte";
 
   const mainServer = getContext("mainServer");
   const selectedServer = getContext("selectedServer");
@@ -210,11 +208,11 @@
           $selectedServer = server;
           await invalidateAll();
           hide();
-          await showToast(ServerSelectedToast, { name: server.name });
+          await showToast('components.toasts.server-selected', { name: server.name });
 
           return;
         } else if (body.error && body.error === "NOT_EXISTS") {
-          await showToast(ServerNotExistsToast);
+          await showToast('components.toasts.server-not-exists');
           initData();
 
           return;

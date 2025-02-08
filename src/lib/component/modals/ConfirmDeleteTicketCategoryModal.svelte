@@ -97,7 +97,6 @@
     show as showToast,
     limitTitle,
   } from "$lib/component/ToastContainer.svelte";
-  import TicketCategoryDeletedPermanentlyToast from "$lib/component/toasts/TicketCategoryDeletedPermanentlyToast.svelte";
   import { _ } from "svelte-i18n";
 
   let loading = false;
@@ -121,8 +120,8 @@
 
         hide();
 
-        showToast(TicketCategoryDeletedPermanentlyToast, {
-          title: get(category).title,
+        showToast('components.toasts.ticket-category-deleted-permanently', {
+          title: limitTitle(get(category).title),
         });
 
         callback(get(category));

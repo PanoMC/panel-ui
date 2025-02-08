@@ -12,6 +12,8 @@
   import { tick } from "svelte";
   import { writable } from "svelte/store";
 
+  import DefaultToast from "$lib/component/DefaultToast.svelte";
+
   const toasts = writable([]);
   let id = 0;
 
@@ -31,9 +33,17 @@
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
-  export async function show(toastComponent, params = {}) {
+  export async function show(text, params = {}, toastComponent = DefaultToast) {
     while (!window.bootstrap) {
       await delay(50);
+    }
+
+    if (text) {
+      params.text = text;
+    }
+
+    if (toastComponent instanceof DefaultToast) {
+      params = { text, values: params }
     }
 
     const toast = { component: toastComponent, params };

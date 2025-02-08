@@ -75,9 +75,8 @@
 
   import ApiUtil from "$lib/api.util";
 
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import PostDeletedPermanentlyToast from "$lib/component/toasts/PostDeletedPermanentlyToast.svelte";
-  import PostMovedToTrashToast from "$lib/component/toasts/PostMovedToTrashToast.svelte";
+  import { show as showToast, limitTitle } from "$lib/component/ToastContainer.svelte";
+  import { base } from "$app/paths";
 
   let loading = false;
 
@@ -98,9 +97,10 @@
       hide();
 
       if (get(post).status === 0) {
-        showToast(PostDeletedPermanentlyToast, { title: get(post).title });
+        showToast('components.toasts.post-deleted-permanently', { title: limitTitle(get(post).title) });
       } else {
-        showToast(PostMovedToTrashToast, { title: get(post).title });
+        const title = `<a href="${base}/posts/trash" target="_blank">${limitTitle(get(post).title)}</a>`
+        showToast('components.toasts.post-moved-to-trash', { title });
       }
 
       callback(get(post));

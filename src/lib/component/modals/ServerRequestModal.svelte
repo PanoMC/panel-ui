@@ -68,7 +68,6 @@
   import ApiUtil from "$lib/api.util.js";
   import { writable } from "svelte/store";
 
-  import ExpiredServerConnectRequestToast from "$lib/component/toasts/ExpiredServerConnectRequestToast.svelte";
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
 
   const dialogID = "serverRequestModal";
@@ -125,7 +124,7 @@
       hide();
     }, 500);
 
-    showToast(ExpiredServerConnectRequestToast);
+    showToast('components.toasts.expired-server-connect-request');
   }
 
   function initData(serverId) {
@@ -158,9 +157,6 @@
 </script>
 
 <script>
-  import AcceptedServerConnectRequestToast from "$lib/component/toasts/AcceptedServerConnectRequestToast.svelte";
-  import RejectedServerConnectRequestToast from "$lib/component/toasts/RejectedServerConnectRequestToast.svelte";
-
   import { invalidateAll } from "$app/navigation";
   import { _ } from "svelte-i18n";
 
@@ -176,12 +172,12 @@
           callback($server);
           await invalidateAll();
           hide();
-          await showToast(AcceptedServerConnectRequestToast);
+          await showToast('components.toasts.accepted-server-connect-request');
 
           return;
         } else if (body.result === "error") {
           hide();
-          await showToast(ExpiredServerConnectRequestToast);
+          await showToast('components.toasts.expired-server-connect-request');
 
           return;
         }
@@ -202,12 +198,12 @@
         if (body.result === "ok") {
           callback($server);
           hide();
-          showToast(RejectedServerConnectRequestToast);
+          showToast('components.toasts.rejected-server-connect');
 
           return;
         } else if (body.result === "error") {
           hide();
-          showToast(ExpiredServerConnectRequestToast);
+          showToast('components.toasts.expired-server-connect-request');
 
           return;
         }

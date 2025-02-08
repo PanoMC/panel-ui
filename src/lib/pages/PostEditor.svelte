@@ -279,11 +279,8 @@
 
   import Editor from "$lib/component/Editor.svelte";
 
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
+  import { show as showToast, limitTitle } from "$lib/component/ToastContainer.svelte";
 
-  import PostPublishedToast from "$lib/component/toasts/PostPublishedToast.svelte";
-  import PostMovedToDraftToast from "$lib/component/toasts/PostMovedToDraftToast.svelte";
-  import PostSavedToast from "$lib/component/toasts/PostSavedToast.svelte";
   import NoContent from "$lib/component/NoContent.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
 
@@ -348,14 +345,16 @@
         }
 
         if (publish) {
-          showToast(PostPublishedToast, {
-            postId: body.id,
-            title: data.post.title,
+          const title = `<a href="${base}/posts/post/${body.id}" target="_blank">${limitTitle(data.post.title)}</a>`
+
+          showToast('components.toasts.post-published', {
+            title,
           });
         } else {
-          showToast(PostSavedToast, {
-            postId: body.id,
-            title: data.post.title,
+          const title = `<a href="${base}/posts/post/${body.id}" target="_blank">${limitTitle(data.post.title)}</a>`
+
+          showToast('components.toasts.post-saved', {
+            title,
           });
         }
 
@@ -424,7 +423,9 @@
 
         await goto(base + "/posts/draft");
 
-        await showToast(PostMovedToDraftToast, { title: data.post.title });
+        const title = `<a href="${base}/posts/draft" target="_blank">${limitTitle(data.post.title)}</a>`
+
+        await showToast('components.toasts.post-moved-to-draft', { title });
       }
     })
   }

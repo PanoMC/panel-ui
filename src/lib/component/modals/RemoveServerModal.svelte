@@ -89,7 +89,6 @@
   import ApiUtil from "$lib/api.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import ServerDeletedSuccessToast from "$lib/component/toasts/ServerDeletedSuccessToast.svelte";
 
   $: confirmButtonDisabled = $currentPassword.length === 0;
 
@@ -113,7 +112,7 @@
         callback($server);
         invalidateAll();
         hide();
-        showToast(ServerDeletedSuccessToast, { name: $server.name });
+        showToast('components.toasts.server-deleted-success', { name: $server.name });
       },
     })
   }

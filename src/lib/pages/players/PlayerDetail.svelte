@@ -293,9 +293,6 @@
   import Pagination from "$lib/component/Pagination.svelte";
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
 
-  import VerificationEmailSentSuccessfulToast from "$lib/component/toasts/VerificationEmailSentSuccessfulToast.svelte";
-  import VerificationEmailSentErrorToast from "$lib/component/toasts/VerificationEmailSentErrorToast.svelte";
-
   import NoContent from "$lib/component/NoContent.svelte";
   import PlayerPermissionBadge from "$lib/component/badges/PlayerPermissionBadge.svelte";
 
@@ -339,14 +336,14 @@
         sendingVerificationMail = false;
 
         if (body.result === "ok") {
-          await showToast(VerificationEmailSentSuccessfulToast, {
+          await showToast('components.toasts.verification-email-sent-successful', {
             username: data.player.username,
           });
 
           return;
         }
 
-        await showToast(VerificationEmailSentErrorToast, {
+        await showToast('components.toasts.verification-email-sent-error', {
           username: data.player.username,
           errorCode: body.error,
         });
