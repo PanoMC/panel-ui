@@ -40,14 +40,14 @@
           <small class="mb-0">
             {@html $_("pages.ticket-detail.by-who", {
               values: {
-                username: `<a href="${base}/players/player/${data.ticket.username}"
+                username: `<a href="${base}/players/detail/${data.ticket.username}"
               >${data.ticket.username}</a>`,
               },
             })}
             <Date time="{data.ticket.date}" />,
             {@html $_("pages.ticket-detail.opened-in-category", {
               values: {
-                category: `<a href="${base}/tickets/category/${data.ticket.category.url}"
+                category: `<a href="${base}/tickets?categoryUrl=${data.ticket.category.url}"
               >${
                 data.ticket.category.title === "-"
                   ? $_("pages.ticket-detail.no-category")
@@ -100,7 +100,7 @@
                 </div>
               </div>
               <div class="col-auto">
-                <a href="{base}/players/player/{message.username}">
+                <a href="{base}/players/detail/{message.username}">
                   <img
                     src="https://minotar.net/avatar/{message.username}/48"
                     alt="{message.username}"
@@ -114,7 +114,7 @@
           {:else}
             <div class="row g-2 flex-nowrap">
               <div class="col-auto">
-                <a href="{base}/players/player/{message.username}">
+                <a href="{base}/players/detail/{message.username}">
                   <img
                     src="https://minotar.net/avatar/{message.username}/48"
                     alt="{message.username}"

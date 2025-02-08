@@ -17,7 +17,7 @@
           <br />
 
           {#each $category.tickets as ticket, index (ticket)}
-            <a href="{base}/tickets/ticket/{ticket.id}" target="_blank">
+            <a href="{base}/tickets/detail/{ticket.id}" target="_blank">
               {ticket.title}
             </a>
             <br />

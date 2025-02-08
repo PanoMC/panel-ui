@@ -8,7 +8,10 @@
     "cancel": "İptal",
     "download": "İndir",
     "enable": "Aktif Et",
-    "validate": "Doğrula"
+    "validate": "Doğrula",
+    "players": "Oyuncular",
+    "posts": "Yazılar",
+    "tickets": "Talepler"
   },
   "pages": {
     "dashboard": {
@@ -60,21 +63,24 @@
     },
     "players": {
       "title": "{pageType}Oyuncular",
+      "by-perm-group-title": "\"{permissionGroupName}\" Yetkili Oyuncular",
       "authorized": "Yetkili",
       "banned": "Yasaklı",
       "perm-groups": "Yetki Grupları",
       "table-title": "{playerCount} {pageType} Oyuncu",
       "all": "Tümü",
+      "player": "Oyuncu",
       "table": {
         "name": "Kullanıcı Adı",
-        "permission": "Yetki",
+        "perm-group": "Yetki Grubu",
         "status": "Durum",
-        "last-entrance": "Son Giriş",
+        "last-login": "Son Giriş",
         "register-date": "Kayıt"
       }
     },
     "posts": {
       "title": "{pageType}Yazılar",
+      "category-posts-title": "\"{category}\" Yazılar",
       "published": "Yayınlanmış",
       "draft": "Taslak",
       "trash": "Çöp",
@@ -91,6 +97,8 @@
     },
     "tickets": {
       "title": "{pageType}Talepler",
+      "{category}": "\"{category}\" Talepler",
+      "no-category": "Kategorisiz",
       "waiting-reply": "Yanıt Bekleyen",
       "closed": "Kapalı",
       "ticket-categories": "Talep Kategorileri",
@@ -264,63 +272,6 @@
       "draft": "Taslak",
       "published": "Yayınlanmış"
     },
-    "category-tickets": {
-      "title": "\"{category}\" Talepler",
-      "no-category": "Kategorisiz",
-      "tickets": "Talepler",
-      "delete": "Sil",
-      "close-ticket": "Talebi Kapat",
-      "table-title": "{ticketCount} Talep",
-      "amount-selected": "{amount} adet seçildi.",
-      "table": {
-        "title": "Başlık",
-        "status": "Durum",
-        "category": "Kategori",
-        "player": "Oyuncu",
-        "last-reply": "Son Yanıt"
-      }
-    },
-    "category-posts": {
-      "title": "\"{category}\" Yazılar",
-      "no-category": "Kategorisiz",
-      "posts": "Yazılar",
-      "create-post": "Yazı Oluştur",
-      "table-title": "{count} Yazı",
-      "table": {
-        "title": "Başlık",
-        "category": "Kategori",
-        "author": "Yazar",
-        "views": "Görüntülenme",
-        "date": "Tarih"
-      },
-      "server": {
-        "dashboard": {
-          "title": "Sunucu İstatistikleri",
-          "server-status": "Sunucu {status}",
-          "online": "Çevrimiçi",
-          "offline": "Çevrimdışı",
-          "player": "{playerCount}/{maxPlayerCount} Oyuncu",
-          "working-time": "Çalışma Süresi: {upTime}",
-          "last-online": "Son Aktif Zamanı: ",
-          "statistics": "İstatistik",
-          "server-name": "Sunucu İsmi:",
-          "server-type": "Sunucu Türü:",
-          "local-ip-address": "Yerel IP Adresi:",
-          "server-version": "Sunucu Sürümü:",
-          "total-connected-servers": "Toplam Bağlı Sunucular:",
-          "date-added": "Eklenme Zamanı:"
-        },
-        "settings": {
-          "title": "Sunucu Ayarları",
-          "main-server": "Ana Sunucu",
-          "already-main-server": "{serverName} ana sunucu",
-          "make-main-server": "Ana Sunucu Olarak Belirle",
-          "main-server-info": "Websitede görüntülenecek sunucu bilgilerini ana sunucu belirler.",
-          "remove-server": "Sunucuyu Kaldır",
-          "disconnect": "Bağlantıyı Kes"
-        }
-      }
-    },
     "server": {
       "dashboard": {
         "title": "Sunucu İstatistikleri",
@@ -349,19 +300,6 @@
       },
       "monitoring": {
         "title": "Sunucu İzleme"
-      }
-    },
-    "players-by-permission-group": {
-      "title": "\"{permissionGroupName}\" Yetkili Oyuncular",
-      "player": "Oyuncu",
-      "players": "Oyuncular",
-      "table-title": "{count} Oyuncu",
-      "table": {
-        "player": "Oyuncu",
-        "permission-group": "Yetki",
-        "status": "Durum",
-        "last-login": "Son Oturum",
-        "register-date": "Kayıt"
       }
     },
     "permission-group-detail": {

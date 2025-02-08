@@ -1,5 +1,5 @@
 {#if status === TicketStatuses.NEW}
-  <a href="{base}/tickets/waitingReply"
+  <a href="{base}/tickets?pageType=WAITING_REPLY"
     ><span class="badge rounded-pill text-bg-success" title="{$_('components.ticket-status-badge.filter')}"
       >{$_('components.ticket-status-badge.new')}</span
     ></a>
@@ -9,7 +9,7 @@
       >{$_('components.ticket-status-badge.replied')}</span
     ></a>
 {:else if status === TicketStatuses.CLOSED}
-  <a href="{base}/tickets/closed"
+  <a href="{base}/tickets?pageType=CLOSED"
     ><span class="badge rounded-pill text-bg-danger" title="{$_('components.ticket-status-badge.filter')}"
       >{$_('components.ticket-status-badge.closed')}</span
     ></a>

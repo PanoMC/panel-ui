@@ -153,7 +153,7 @@
   };
   const errors = writable(defaultErrors);
 
-  let callback = (player) => {};
+  let callback = async (player) => {};
   let hideCallback = (player) => {};
   let modal;
 
@@ -228,8 +228,6 @@
 
           hide();
 
-          await showToast('components.toasts.player-info-saved-success');
-
           player.update((player) => {
             player.newPassword = "";
             player.newPasswordRepeat = "";
@@ -237,7 +235,9 @@
             return player;
           });
 
-          callback(get(player));
+          await callback(get(player));
+
+          await showToast('components.toasts.player-info-saved-success');
 
           return;
         } else if (body.result === "NOT_EXISTS") {

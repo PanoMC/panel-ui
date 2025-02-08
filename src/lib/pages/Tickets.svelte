@@ -2,13 +2,22 @@
 <article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
+    <div slot="left">
+      {#if data.categoryUrl}
+        <a class="btn btn-link" role="button" href="{base}/tickets">
+          <i class="fas fa-arrow-left me-2"></i>
+          {$_('buttons.tickets')}
+        </a>
+      {/if}
+    </div>
     <!-- Submenu -->
     <CardMenu slot="middle">
-      <CardMenuItem href="/tickets"
-                    matchingList="{['/tickets/all', '/tickets/waitingReply', '/tickets/closed']}"
-        >{$_("pages.ticket-categories.tickets")}</CardMenuItem>
-      <CardMenuItem href="/tickets/categories"
-        >{$_("pages.tickets.ticket-categories-button")}</CardMenuItem>
+      {#if !data.categoryUrl}
+        <CardMenuItem href="/tickets"
+          >{$_("pages.ticket-categories.tickets")}</CardMenuItem>
+        <CardMenuItem href="/tickets/categories"
+          >{$_("pages.tickets.ticket-categories-button")}</CardMenuItem>
+      {/if}
     </CardMenu>
     <div
       class:d-none="{firstLoad}"
@@ -18,23 +27,21 @@
         : 'animate__slideOutDown'}
     faster"
       slot="right">
-      <a
+      <button
         class="btn btn-link link-danger"
         class:disabled="{getListOfChecked($checkedList).length === 0}"
-        role="button"
-        href="javascript:void(0);"
+        type="button"
         on:click="{onShowDeleteTicketsModalClick}">
         <i class="fas fa-trash"></i>
-      </a>
-      <a
+      </button>
+      <button
         class="btn btn-danger"
         class:disabled="{getListOfChecked($checkedList).length === 0}"
-        role="button"
-        href="javascript:void(0);"
+        type="button"
         on:click="{onShowCloseTicketsModalClick}">
         <i class="fas fa-times me-2"></i>
         {$_("pages.tickets.close-ticket-button")}
-      </a>
+      </button>
     </div>
   </PageActions>
 
@@ -64,21 +71,23 @@
 
         <!-- Filters -->
         <CardFilters slot="right">
-          <CardFiltersItem
-            href="/tickets/all"
-            active="{data.pageType === PageTypes.ALL}">
-            {$_("pages.tickets.all")}
-          </CardFiltersItem>
-          <CardFiltersItem
-            href="/tickets/waitingReply"
-            active="{data.pageType === PageTypes.WAITING_REPLY}">
-            {$_("pages.tickets.waiting-reply")}
-          </CardFiltersItem>
-          <CardFiltersItem
-            href="/tickets/closed"
-            active="{data.pageType === PageTypes.CLOSED}">
-            {$_("pages.tickets.closed")}
-          </CardFiltersItem>
+          {#if !data.categoryUrl}
+            <CardFiltersItem
+              href="/tickets"
+              active="{data.pageType === PageTypes.ALL}">
+              {$_("pages.tickets.all")}
+            </CardFiltersItem>
+            <CardFiltersItem
+              href="/tickets?pageType=WAITING_REPLY"
+              active="{data.pageType === PageTypes.WAITING_REPLY}">
+              {$_("pages.tickets.waiting-reply")}
+            </CardFiltersItem>
+            <CardFiltersItem
+              href="/tickets?pageType=CLOSED"
+              active="{data.pageType === PageTypes.CLOSED}">
+              {$_("pages.tickets.closed")}
+            </CardFiltersItem>
+          {/if}
         </CardFilters>
       </CardHeader>
 
@@ -107,7 +116,7 @@
                 </th>
                 <th class="align-middle" scope="col"
                   >{$_("pages.tickets.table.title")}</th>
-                <th class="align-middle" scope="col"
+                <th class="align-middle" scope="col" class:table-primary={data.categoryUrl}
                   >{$_("pages.tickets.table.category")}</th>
                 <th class="align-middle" scope="col"
                   >{$_("pages.tickets.table.player")}</th>
@@ -161,17 +170,22 @@
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
-  export async function load(event, pageType = DefaultPageType) {
+  export async function load(event) {
     const { parent, url: { searchParams } } = event;
     await parent();
 
-    pageType = pageType.toUpperCase();
-
     const page = parseInt(searchParams.get("page")) || 1;
+    const categoryUrl = searchParams.get("categoryUrl");
+    const pageType = searchParams.get("pageType") || DefaultPageType;
+
+    if (!Object.values(PageTypes).includes(pageType)) {
+      throw error(404, "PAGE_NOT_FOUND");
+    }
 
     const queryParams = buildQueryParams({
       page,
       pageType,
+      categoryUrl
     });
 
     const body = await ApiUtil.get({
@@ -189,6 +203,7 @@
 
     body.page = page;
     body.pageType = pageType;
+    body.categoryUrl = categoryUrl
 
     return body;
   }
@@ -229,6 +244,7 @@
 
   $: {
     pageTitle.set(
+      data.categoryUrl ? $_('pages.tickets.category-tickets-title', {values: {category: (data.category?.title || "-") === "-" ? $_('pages.tickets.no-category') : (data.category?.title || "-")}}) :
       $_("pages.tickets.title", {
         values: {
           pageType:
@@ -247,6 +263,8 @@
   async function refreshData() {
     const queryParams = buildQueryParams({
       page: data.page,
+      categoryUrl: data.categoryUrl,
+      pageType: data.pageType
     });
 
     await goto(queryParams);

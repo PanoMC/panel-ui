@@ -149,14 +149,14 @@
                       <tr>
                         <td class="align-middle text-nowrap">
                           <a
-                            href="{base}/tickets/ticket/{ticket.id}"
+                            href="{base}/tickets/detail/{ticket.id}"
                             title="{$_('pages.player-detail.view')}"
                             >#{ticket.id} {ticket.title}</a>
                         </td>
                         <td class="align-middle text-nowrap">
                           <a
                             title="{$_('pages.player-detail.filter')}"
-                            href="{base}/tickets/category/{ticket.category
+                            href="{base}/tickets?categoryUrl={ticket.category
                               .url}">
                             {ticket.category.title === "-"
                               ? $_("pages.player-detail.no-category")
@@ -357,7 +357,7 @@
 
   setEditPlayerModalCallback((newPlayer) => {
     if (data.player.username !== newPlayer.username) {
-      goto(base + "/players/player/" + newPlayer.username + "/" + data.page);
+      goto(base + "/players/detail/" + newPlayer.username + "/" + data.page);
 
       return;
     }

@@ -2,22 +2,36 @@
 <article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <a
-      href="{base}/posts/create-post"
-      class="btn btn-secondary"
-      role="button"
-      slot="right">
-      <i class="fas fa-plus me-2"></i>
-      {$_("pages.posts.create-post-button")}
-    </a>
+    <div slot="left">
+      {#if data.categoryUrl}
+        <a class="btn btn-link" role="button" href="{base}/posts">
+          <i class="fas fa-arrow-left ms-2"></i>
+          {$_('buttons.posts')}
+        </a>
+      {/if}
+    </div>
 
     <!-- Submenu -->
     <CardMenu slot="middle">
-      <CardMenuItem href="/posts" startsWith
-        >{$_("pages.post-categories.posts")}</CardMenuItem>
-      <CardMenuItem href="/posts/categories" startsWith
-        >{$_("pages.posts.post-categories-button")}</CardMenuItem>
+      {#if !data.categoryUrl}
+        <CardMenuItem href="/posts" startsWith
+          >{$_("pages.post-categories.posts")}</CardMenuItem>
+        <CardMenuItem href="/posts/categories" startsWith
+          >{$_("pages.posts.post-categories-button")}</CardMenuItem>
+      {/if}
     </CardMenu>
+
+    <div slot="right">
+      {#if !data.categoryUrl}
+        <a
+          href="{base}/posts/create-post"
+          class="btn btn-secondary"
+          role="button">
+          <i class="fas fa-plus me-2"></i>
+          {$_("pages.posts.create-post-button")}
+        </a>
+      {/if}
+    </div>
   </PageActions>
 
   <!-- All Posts -->
@@ -43,21 +57,23 @@
 
         <!-- Filters -->
         <CardFilters slot="right">
-          <CardFiltersItem
-            href="/posts/published"
-            active="{data.pageType === PageTypes.PUBLISHED}">
-            {$_("pages.posts.published")}
-          </CardFiltersItem>
-          <CardFiltersItem
-            href="/posts/draft"
-            active="{data.pageType === PageTypes.DRAFT}">
-            {$_("pages.posts.draft")}
-          </CardFiltersItem>
-          <CardFiltersItem
-            href="/posts/trash"
-            active="{data.pageType === PageTypes.TRASH}">
-            {$_("pages.posts.trash")}
-          </CardFiltersItem>
+          {#if !data.categoryUrl}
+            <CardFiltersItem
+              href="/posts"
+              active="{data.pageType === PageTypes.PUBLISHED}">
+              {$_("pages.posts.published")}
+            </CardFiltersItem>
+            <CardFiltersItem
+              href="/posts?pageType=DRAFT"
+              active="{data.pageType === PageTypes.DRAFT}">
+              {$_("pages.posts.draft")}
+            </CardFiltersItem>
+            <CardFiltersItem
+              href="/posts?pageType=TRASH"
+              active="{data.pageType === PageTypes.TRASH}">
+              {$_("pages.posts.trash")}
+            </CardFiltersItem>
+          {/if}
         </CardFilters>
       </CardHeader>
 
@@ -73,7 +89,7 @@
                 <th scope="col"></th>
                 <th class="align-middle" scope="col"
                   >{$_("pages.posts.table.title")}</th>
-                <th scope="col" class="align-middle"
+                <th scope="col" class="align-middle" class:table-primary={data.categoryUrl}
                   >{$_("pages.posts.table.category")}</th>
                 <th scope="col" class="align-middle"
                   >{$_("pages.posts.table.views")}</th>
@@ -127,16 +143,22 @@
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
-  export async function load(event, pageType = DefaultPageType) {
+  export async function load(event) {
     const { parent, url: { searchParams } } = event;
     await parent();
 
     const page = searchParams.get("page") || 1;
-    pageType = pageType.toUpperCase();
+    const categoryUrl = searchParams.get("categoryUrl");
+    const pageType = searchParams.get("pageType") || DefaultPageType;
+
+    if (!Object.values(PageTypes).includes(pageType)) {
+      throw error(404, "PAGE_NOT_FOUND");
+    }
 
     const queryParams = buildQueryParams({
       page,
-      pageType
+      pageType,
+      categoryUrl
     })
 
     const body = await ApiUtil.get({
@@ -156,6 +178,7 @@
 
     body.page = parseInt(page);
     body.pageType = pageType;
+    body.categoryUrl = categoryUrl
 
     return body;
   }
@@ -195,6 +218,7 @@
 
   $: {
     pageTitle.set(
+      data.categoryUrl ? $_('pages.posts.category-posts-title', {values: {category: (data.category?.title || "-") === "-" ? $_('pages.posts.no-category') : (data.category?.title || "-")}}) :
       $_("pages.posts.title", {
         values: {
           pageType:
@@ -235,7 +259,7 @@
         await refreshData();
 
         const foundTitle = data.posts.find((post) => post.id === id).title
-        const title = `<a href="${base}/posts/draft" target="_blank">${limitTitle(foundTitle)}</a>`
+        const title = `<a href="${base}/posts?pageType=DRAFT" target="_blank">${limitTitle(foundTitle)}</a>`
 
         await showToast('components.toasts.post-moved-to-draft', {
           title,
@@ -264,7 +288,7 @@
         await goto(base + "/posts");
 
         const foundTitle =  data.posts.find((post) => post.id === id).title
-        const title = `<a href="${base}/posts/post/${id}" target="_blank">${limitTitle(foundTitle)}</a>`
+        const title = `<a href="${base}/posts/detail/${id}" target="_blank">${limitTitle(foundTitle)}</a>`
 
         await showToast('components.toasts.post-published', {
           postId: id,
@@ -276,7 +300,9 @@
 
   async function refreshData() {
     const queryParams = buildQueryParams({
-      page: data.page
+      page: data.page,
+      categoryUrl: data.categoryUrl,
+      pageType: data.pageType
     });
 
     await goto(queryParams);

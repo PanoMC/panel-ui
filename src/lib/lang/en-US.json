@@ -8,7 +8,10 @@
     "cancel": "Cancel",
     "download": "Download",
     "enable": "Enable",
-    "validate": "Validate"
+    "validate": "Validate",
+    "players": "Players",
+    "posts": "Posts",
+    "tickets": "Tickets"
   },
   "pages": {
     "dashboard": {
@@ -60,21 +63,25 @@
     },
     "players": {
       "title": "{pageType}Players",
+      "by-perm-group-title": "\"{permissionGroupName}\" Authorized Players",
       "authorized": "Authorized",
       "banned": "Banned",
       "perm-groups": "Permission Groups",
       "table-title": "{playerCount} {pageType} Player",
       "all": "All",
+      "player": "Player",
       "table": {
         "name": "Username",
-        "permission": "Permission",
+        "perm-group": "Permission Group",
         "status": "Status",
-        "last-entrance": "Last Entrance",
+        "last-login": "Last Login",
         "register-date": "Register Date"
       }
     },
     "posts": {
       "title": "{pageType}Posts",
+      "category-posts-title": "\"{category}\" Posts",
+      "no-category": "No Category",
       "published": "Published",
       "draft": "Draft",
       "trash": "Trash",
@@ -91,6 +98,8 @@
     },
     "tickets": {
       "title": "{pageType}Tickets",
+      "category-tickets-title": "\"{category}\" Tickets",
+      "no-category": "No Category",
       "waiting-reply": "Waiting Reply",
       "closed": "Closed",
       "ticket-categories": "Ticket Categories",
@@ -265,36 +274,6 @@
       "draft": "Draft",
       "published": "Published"
     },
-    "category-tickets": {
-      "title": "\"{category}\" Tickets",
-      "no-category": "No Category",
-      "tickets": "Tickets",
-      "delete": "Delete",
-      "close-ticket": "Close Ticket",
-      "table-title": "{ticketCount} Ticket",
-      "amount-selected": "{amount} amount selected.",
-      "table": {
-        "title": "Title",
-        "status": "Status",
-        "category": "Category",
-        "player": "Player",
-        "last-reply": "Last Reply"
-      }
-    },
-    "category-posts": {
-      "title": "\"{category}\" Posts",
-      "no-category": "No Category",
-      "posts": "Posts",
-      "create-post": "Create Post",
-      "table-title": "{count} Post",
-      "table": {
-        "title": "Title",
-        "category": "Category",
-        "author": "Author",
-        "views": "Views",
-        "date": "Date"
-      }
-    },
     "server": {
       "dashboard": {
         "title": "Server Statistics",
@@ -323,19 +302,6 @@
       },
       "monitoring": {
         "title": "Server Monitoring"
-      }
-    },
-    "players-by-permission-group": {
-      "title": "\"{permissionGroupName}\" Authorized Players",
-      "player": "Player",
-      "players": "Players",
-      "table-title": "{count} Player",
-      "table": {
-        "player": "Player",
-        "permission-group": "Permission Group",
-        "status": "Status",
-        "last-login": "Last Login",
-        "register-date": "Register Date"
       }
     },
     "permission-group-detail": {

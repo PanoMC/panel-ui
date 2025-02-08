@@ -16,7 +16,7 @@
     const parentData = await parent();
     const { user } = parentData;
 
-    if (pathname.startsWith("/players/player/")) {
+    if (pathname.startsWith("/players/detail/")) {
       return parentData;
     }
 

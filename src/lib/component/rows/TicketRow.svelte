@@ -11,7 +11,7 @@
   </th>
   <td class="align-middle text-nowrap">
     <a
-      href="{base}/tickets/ticket/{ticket.id}"
+      href="{base}/tickets/detail/{ticket.id}"
       title="{$_('components.ticket-row.view')}">
       #{ticket.id}
       {ticket.title}
@@ -20,7 +20,7 @@
   <td class="align-middle text-nowrap">
     <a
       title="{$_('components.ticket-row.filter')}"
-      href="{base}/tickets/category/{ticket.category.url}">
+      href="{base}/tickets?categoryUrl={ticket.category.url}">
       {ticket.category.title === "-"
         ? $_("components.ticket-row.no-category")
         : ticket.category.title}
@@ -28,7 +28,7 @@
   </td>
   <td class="align-middle text-nowrap">
     <a
-      href="{base}/players/player/{ticket.writer.username}"
+      href="{base}/players/detail/{ticket.writer.username}"
       title="{$_('components.ticket-row.view')}">
       <img
         src="https://minotar.net/avatar/{ticket.writer.username}/32"

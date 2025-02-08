@@ -242,7 +242,7 @@
 
       postBody.id = id;
 
-      data.post = postBody
+      data.post = postBody.post
     }
 
     const categoriesBody = await ApiUtil.get({
@@ -337,7 +337,7 @@
         loading = false;
 
         if (data.mode === Modes.CREATE) {
-          goto(base + "/posts/post/" + body.id);
+          goto(base + "/posts/detail/" + body.id);
         }
 
         if (data.mode === Modes.EDIT && publish) {
@@ -345,13 +345,13 @@
         }
 
         if (publish) {
-          const title = `<a href="${base}/posts/post/${body.id}" target="_blank">${limitTitle(data.post.title)}</a>`
+          const title = `<a href="${base}/posts/detail/${body.id}" target="_blank">${limitTitle(data.post.title)}</a>`
 
           showToast('components.toasts.post-published', {
             title,
           });
         } else {
-          const title = `<a href="${base}/posts/post/${body.id}" target="_blank">${limitTitle(data.post.title)}</a>`
+          const title = `<a href="${base}/posts/detail/${body.id}" target="_blank">${limitTitle(data.post.title)}</a>`
 
           showToast('components.toasts.post-saved', {
             title,
@@ -421,9 +421,9 @@
 
         loading = false;
 
-        await goto(base + "/posts/draft");
+        await goto(base + "/posts?pageType=DRAFT");
 
-        const title = `<a href="${base}/posts/draft" target="_blank">${limitTitle(data.post.title)}</a>`
+        const title = `<a href="${base}/posts?pageType=DRAFT" target="_blank">${limitTitle(data.post.title)}</a>`
 
         await showToast('components.toasts.post-moved-to-draft', { title });
       }
@@ -463,7 +463,7 @@
     if (post.status === StatusTypes.TRASH) {
       goto(base + "/posts");
     } else {
-      goto(base + "/posts/trash");
+      goto(base + "/posts?pageType=TRASH");
     }
   });
 </script>

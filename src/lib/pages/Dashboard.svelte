@@ -117,7 +117,7 @@
                               ticket.writer.username,
                               { placement: 'bottom' },
                             ]}"
-                            href="{base}/players/player/{ticket.writer
+                            href="{base}/players/detail/{ticket.writer
                               .username}">
                             <img
                               src="https://minotar.net/avatar/{ticket.writer
@@ -132,7 +132,7 @@
                         </td>
                         <td class="align-middle text-nowrap">
                           <a
-                            href="{base}/tickets/ticket/{ticket.id}"
+                            href="{base}/tickets/detail/{ticket.id}"
                             title="{$_('pages.dashboard.last-tickets.view')}"
                             >#{ticket.id} {ticket.title}</a>
                         </td>

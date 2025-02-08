@@ -52,7 +52,7 @@
         properties: { id },
       } = notification;
 
-      goto(base + "/tickets/ticket/" + id, { invalidateAll: true });
+      goto(base + "/tickets/detail/" + id, { invalidateAll: true });
     });
 
     addListener("NEW_TICKET_MESSAGE", (notification) => {
@@ -60,7 +60,7 @@
         properties: { id },
       } = notification;
 
-      goto(base + "/tickets/ticket/" + id, { invalidateAll: true });
+      goto(base + "/tickets/detail/" + id, { invalidateAll: true });
     });
 
     addListener("TICKET_CLOSED_BY_USER", (notification) => {
@@ -68,7 +68,7 @@
         properties: { id },
       } = notification;
 
-      goto(base + "/tickets/ticket/" + id, { invalidateAll: true });
+      goto(base + "/tickets/detail/" + id, { invalidateAll: true });
     });
 
     addListener("SERVER_CONNECT_REQUEST", (notification) => {

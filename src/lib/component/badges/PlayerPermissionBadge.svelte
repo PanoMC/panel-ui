@@ -1,7 +1,7 @@
 <a
   class="badge rounded-pill text-bg-secondary"
   title="{$_('components.player-permission-badge.filter')}"
-  href="{base}/players/by-perm-group/{permissionGroup}">
+  href="{base}/players?permissionGroup={permissionGroup}">
   {permissionGroup === "-"
     ? $_("components.player-permission-badge.player")
     : permissionGroup.capitalize()}

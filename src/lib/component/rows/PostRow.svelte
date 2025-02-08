@@ -59,19 +59,19 @@
     </div>
   </th>
   <td class="align-middle text-nowrap">
-    <a href="{base + '/posts/post/' + post.id}" title="{$_('components.post-row.edit')}">
+    <a href="{base + '/posts/detail/' + post.id}" title="{$_('components.post-row.edit')}">
       {post.title}
     </a>
   </td>
   <td class="align-middle text-nowrap">
-    <a title="{$_('components.post-row.filter')}" href="{base}/posts/category/{post.category.url}">
+    <a title="{$_('components.post-row.filter')}" href="{base}/posts?categoryUrl={post.category.url}">
       {post.category.title === "-" ? $_('components.post-row.no-category') : post.category.title}
     </a>
   </td>
   <td class="align-middle text-nowrap">{post.views}</td>
   <td class="align-middle text-nowrap">
     <a
-      href="{base}/players/player/{post.writer.username}"
+      href="{base}/players/detail/{post.writer.username}"
       use:tooltip="{[post.writer.username, { placement: 'bottom' }]}">
       <img
         alt="{post.writer.username}"

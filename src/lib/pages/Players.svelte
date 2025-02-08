@@ -3,12 +3,19 @@
   <!-- Action Menu -->
   <PageActions>
     <div slot="left">
-      {#if hasPermission(Permissions.MANAGE_PERMISSION_GROUPS)}
-        <a class="btn btn-link" role="button" href="{base}/players/perm-groups">
-          <i class="fas fa-user-circle me-2"></i>
-          {$_("pages.players.perm-groups")}
-        </a>
-      {/if}
+    {#if data.permissionGroup}
+      <a class="btn btn-link" role="button" href="{base}/players">
+        <i class="fas fa-arrow-left me-2"></i>
+        {$_('buttons.players')}
+      </a>
+    {:else}
+        {#if hasPermission(Permissions.MANAGE_PERMISSION_GROUPS)}
+          <a class="btn btn-link" role="button" href="{base}/players/perm-groups">
+            <i class="fas fa-user-circle me-2"></i>
+            {$_("pages.players.perm-groups")}
+          </a>
+        {/if}
+    {/if}
     </div>
   </PageActions>
 
@@ -30,23 +37,25 @@
           })}
         </h5>
 
-        <!-- Filters -->
         <CardFilters slot="right">
-          <CardFiltersItem
-            href="/players/all"
-            active="{data.pageType === PageTypes.ALL}">
-            {$_("pages.players.all")}
-          </CardFiltersItem>
-          <CardFiltersItem
-            href="/players/hasPerm"
-            active="{data.pageType === PageTypes.HAS_PERM}">
-            {$_("pages.players.authorized")}
-          </CardFiltersItem>
-          <CardFiltersItem
-            href="/players/banned"
-            active="{data.pageType === PageTypes.BANNED}">
-            {$_("pages.players.banned")}
-          </CardFiltersItem>
+          {#if !data.permissionGroup}
+            <!-- Filters -->
+              <CardFiltersItem
+                href="/players?status=all"
+                active="{data.pageType === PageTypes.ALL}">
+                {$_("pages.players.all")}
+              </CardFiltersItem>
+              <CardFiltersItem
+                href="/players?status=hasPerm"
+                active="{data.pageType === PageTypes.HAS_PERM}">
+                {$_("pages.players.authorized")}
+              </CardFiltersItem>
+              <CardFiltersItem
+                href="/players?status=banned"
+                active="{data.pageType === PageTypes.BANNED}">
+                {$_("pages.players.banned")}
+              </CardFiltersItem>
+          {/if}
         </CardFilters>
       </CardHeader>
 
@@ -62,12 +71,12 @@
                 <th class="align-middle text-nowrap" scope="col"></th>
                 <th class="align-middle text-nowrap" scope="col"
                   >{$_("pages.players.table.name")}</th>
-                <th class="align-middle text-nowrap" scope="col"
-                  >{$_("pages.players.table.permission")}</th>
+                <th class="align-middle text-nowrap" scope="col" class:table-primary={data.permissionGroup}
+                  >{$_("pages.players.table.perm-group")}</th>
                 <th class="align-middle text-nowrap" scope="col"
                   >{$_("pages.players.table.status")}</th>
                 <th class="align-middle text-nowrap" scope="col"
-                  >{$_("pages.players.table.last-entrance")}</th>
+                  >{$_("pages.players.table.last-login")}</th>
                 <th class="align-middle text-nowrap" scope="col"
                   >{$_("pages.players.table.register-date")}</th>
               </tr>
@@ -118,15 +127,22 @@
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
-  export async function load(event, pageType = DefaultPageType) {
+  export async function load(event) {
     const { parent, url: { searchParams } } = event;
     await parent();
 
     const page = parseInt(searchParams.get("page")) || 1;
+    const permissionGroup = searchParams.get("permissionGroup");
+    const status = searchParams.get("status") || DefaultPageType;
+
+    if (!Object.values(PageTypes).includes(status)) {
+      throw error(404, "PAGE_NOT_FOUND");
+    }
 
     const queryParams = buildQueryParams({
       page,
-      status: pageType
+      status,
+      permissionGroup
     });
 
     const body = await ApiUtil.get({
@@ -143,7 +159,8 @@
     }
 
     body.page = page;
-    body.pageType = pageType;
+    body.pageType = status;
+    body.permissionGroup = permissionGroup;
 
     return body;
   }
@@ -196,7 +213,7 @@
   const pageTitle = getContext("pageTitle");
 
   $: {
-    pageTitle.set(
+    pageTitle.set(data.permissionGroup ? $_('pages.players.by-perm-group-title', {values: {permissionGroupName: data.permissionGroup === "-" ? $_('pages.players.player') : data.permissionGroup}}) :
       $_("pages.players.title", {
         values: {
           pageType:
@@ -213,9 +230,11 @@
   async function refreshData() {
     const queryParams = buildQueryParams({
       page: data.page,
+      permissionGroup: data.permissionGroup,
+      status: data.pageType
     });
 
-    await goto(queryParams);
+    await goto(queryParams, {invalidateAll:true});
   }
 
   async function onPageClick(page) {
@@ -248,27 +267,12 @@
     showUnbanPlayerModal(player);
   }
 
-  setAuthorizePlayerModalCallback((newPlayer) => {
-    data.players.forEach((player) => {
-      if (player.id === newPlayer.id) {
-        player.permissionGroup = newPlayer.permissionGroup;
-        player.selected = false;
-      }
-    });
-
-    data.players = data.players;
+  setAuthorizePlayerModalCallback(async (newPlayer) => {
+    await refreshData()
   });
 
-  setEditPlayerModalCallback((newPlayer) => {
-    data.players.forEach((player) => {
-      if (player.id === newPlayer.id) {
-        player.username = newPlayer.username;
-        player.email = newPlayer.email;
-        player.selected = false;
-      }
-    });
-
-    data.players = data.players;
+  setEditPlayerModalCallback(async (newPlayer) => {
+    await refreshData()
   });
 
   onAuthorizePlayerModalHide((newPlayer) => {

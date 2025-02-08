@@ -60,7 +60,7 @@
   const errors = writable(defaultErrors);
   const submitLoading = writable(false);
 
-  let callback = (player) => {};
+  let callback = async (player) => {};
   let hideCallback = (player) => {};
   let modal;
 
@@ -132,9 +132,9 @@
 
           hide();
 
-          await showToast('components.toasts.player-authorized-success');
+          await callback(get(player));
 
-          callback(get(player));
+          await showToast('components.toasts.player-authorized-success');
 
           return;
         } else if (body.result === "NOT_EXISTS") {

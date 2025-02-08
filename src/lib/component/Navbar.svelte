@@ -94,7 +94,7 @@
             <li>
               <a
                 class="dropdown-item"
-                href="{base}/players/player/{$user.username}">
+                href="{base}/players/detail/{$user.username}">
                 {$_("components.navbar.account-dropdown.profile")}
               </a>
             </li>

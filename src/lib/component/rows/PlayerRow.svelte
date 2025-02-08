@@ -49,7 +49,7 @@
     </div>
   </th>
   <td class="align-middle text-nowrap">
-    <a title="{$_('components.player-row.view')}" href="{base}/players/player/{player.username}">
+    <a title="{$_('components.player-row.view')}" href="{base}/players/detail/{player.username}">
       <img
         alt="{player.username}"
         class="rounded-circle animate__animated animate__zoomIn me-2"

@@ -110,7 +110,7 @@
 
         const count = get(selectedTickets).length;
 
-        await showToast(count > 1 ? 'components.toasts.ticket-closed.multi' : 'components.toasts.ticket-closed.single', { count: `<a href="${base}/tickets/closed">${count}</a>` });
+        await showToast(count > 1 ? 'components.toasts.ticket-closed.multi' : 'components.toasts.ticket-closed.single', { count: `<a href="${base}/tickets?pageType=CLOSED">${count}</a>` });
 
         callback(get(selectedTickets));
       }
