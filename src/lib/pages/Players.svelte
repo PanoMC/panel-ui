@@ -41,17 +41,17 @@
           {#if !data.permissionGroup}
             <!-- Filters -->
               <CardFiltersItem
-                href="/players?status=all"
+                href="/players"
                 active="{data.pageType === PageTypes.ALL}">
                 {$_("pages.players.all")}
               </CardFiltersItem>
               <CardFiltersItem
-                href="/players?status=hasPerm"
+                href="/players?pageType=HAS_PERM"
                 active="{data.pageType === PageTypes.HAS_PERM}">
                 {$_("pages.players.authorized")}
               </CardFiltersItem>
               <CardFiltersItem
-                href="/players?status=banned"
+                href="/players?pageType=BANNED"
                 active="{data.pageType === PageTypes.BANNED}">
                 {$_("pages.players.banned")}
               </CardFiltersItem>
@@ -117,9 +117,9 @@
   import ApiUtil, { buildQueryParams } from "$lib/api.util";
 
   export const PageTypes = Object.freeze({
-    ALL: "all",
-    HAS_PERM: "hasPerm",
-    BANNED: "banned",
+    ALL: "ALL",
+    HAS_PERM: "HAS_PERM",
+    BANNED: "BANNED",
   });
 
   export const DefaultPageType = PageTypes.ALL;
@@ -133,15 +133,15 @@
 
     const page = parseInt(searchParams.get("page")) || 1;
     const permissionGroup = searchParams.get("permissionGroup");
-    const status = searchParams.get("status") || DefaultPageType;
+    const pageType = searchParams.get("pageType") || DefaultPageType;
 
-    if (!Object.values(PageTypes).includes(status)) {
+    if (!Object.values(PageTypes).includes(pageType)) {
       throw error(404, "PAGE_NOT_FOUND");
     }
 
     const queryParams = buildQueryParams({
       page,
-      status,
+      status: pageType,
       permissionGroup
     });
 
@@ -159,7 +159,7 @@
     }
 
     body.page = page;
-    body.pageType = status;
+    body.pageType = pageType;
     body.permissionGroup = permissionGroup;
 
     return body;
@@ -231,7 +231,7 @@
     const queryParams = buildQueryParams({
       page: data.page,
       permissionGroup: data.permissionGroup,
-      status: data.pageType
+      pageType: data.pageType
     });
 
     await goto(queryParams, {invalidateAll:true});
