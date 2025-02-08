@@ -13,5 +13,5 @@
   import { _ } from "svelte-i18n";
 
   export let href;
-  export let active;
+  export let active = false;
 </script>

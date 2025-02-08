@@ -198,7 +198,7 @@
 
     body.id = parseInt(id);
 
-    return data;
+    return body;
   }
 </script>
 

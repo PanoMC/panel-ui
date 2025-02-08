@@ -176,7 +176,7 @@
   let firstLoad = true;
 
   $: {
-    pageTitle.set($_('pages.category-tickets.title', {values: {category: data.category.title === "-" ? $_('pages.category-tickets.no-category') : data.category.title}}));
+    pageTitle.set($_('pages.category-tickets.title', {values: {category: (data.category?.title || "-") === "-" ? $_('pages.category-tickets.no-category') : (data.category?.title || "-")}}));
   }
 
   async function refreshData() {

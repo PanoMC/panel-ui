@@ -230,8 +230,11 @@
     const { parent, url: {searchParams} } = event;
     await parent();
 
+    const username = event.params.username;
+    const page = searchParams.get("page") || 1;
+
     const queryParams = buildQueryParams({
-      page: searchParams.get("page") || 1,
+      page,
     });
 
     const body = await ApiUtil.get({

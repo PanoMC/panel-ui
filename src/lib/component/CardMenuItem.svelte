@@ -4,6 +4,7 @@
             $page.url.pathname,
             base + href,
             startsWith,
+            matchingList
           )}"
   ><slot/></a>
 </li>
@@ -13,14 +14,17 @@
   import { base } from "$app/paths";
 
   export let href
-  export let startsWith
-  export let disabled
+  export let startsWith = false;
+  export let disabled = false;
+  export let matchingList = [];
 
-  function matching(path, pathName, startsWith = false) {
+
+  function matching(path, pathName, startsWith = false, matchingList) {
     return (
       path.toUpperCase() === pathName.toUpperCase() ||
       path.toUpperCase() === (pathName + "/").toUpperCase() ||
-      (startsWith && path.startsWith(pathName))
+      (startsWith && path.startsWith(pathName)) ||
+      matchingList.filter((item) => path.startsWith(base + item)).length > 0
     );
   }
 </script>

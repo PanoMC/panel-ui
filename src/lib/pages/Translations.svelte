@@ -126,4 +126,6 @@
   import CardMenu from "$lib/component/CardMenu.svelte";
   import CardMenuItem from "$lib/component/CardMenuItem.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
+
+  export let data
 </script>

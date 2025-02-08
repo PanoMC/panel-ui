@@ -131,7 +131,7 @@
 
   const pageTitle = getContext("pageTitle");
 
-  pageTitle.set($_('pages.category-posts.title', {values: {category: data.category.title === "-" ? $_('pages.category-posts.no-category') : data.category.title}}));
+  pageTitle.set($_('pages.category-posts.title', {values: {category: (data.category?.title || "-") === "-" ? $_('pages.category-posts.no-category') : (data.category?.title || "-")}}));
 
   let buttonsLoading = false;
 

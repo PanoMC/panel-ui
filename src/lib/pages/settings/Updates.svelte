@@ -11,10 +11,6 @@
         DATE
       </span>
     </div>
-    <button type="button" class="btn btn-secondary">
-      <i class="fas fa-rotate me-2"></i>
-      Check Updates
-    </button>
     <div slot="right">
       <button type="button" class="btn btn-link">Update All</button>
 

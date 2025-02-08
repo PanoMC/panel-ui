@@ -5,6 +5,7 @@
     <!-- Submenu -->
     <CardMenu slot="middle">
       <CardMenuItem href="/tickets"
+                    matchingList="{['/tickets/all', '/tickets/waitingReply', '/tickets/closed']}"
         >{$_("pages.ticket-categories.tickets")}</CardMenuItem>
       <CardMenuItem href="/tickets/categories"
         >{$_("pages.tickets.ticket-categories-button")}</CardMenuItem>
