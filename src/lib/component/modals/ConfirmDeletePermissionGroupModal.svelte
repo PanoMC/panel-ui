@@ -135,8 +135,6 @@
         //TODO TOAST
 
         callback(get(permissionGroup));
-
-        resolve();
       }
     })
   }

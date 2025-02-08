@@ -315,8 +315,6 @@
 
           faviconInput.value = "";
           websiteLogoInput.value = "";
-
-          resolve();
         } else if (
           body.error === "FAVICON_WRONG_CONTENT_TYPE" ||
           body.error === "FAVICON_EXCEEDS_SIZE" ||
