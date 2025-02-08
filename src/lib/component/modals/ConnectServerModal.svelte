@@ -81,7 +81,6 @@
   import ApiUtil from "$lib/api.util";
   import tooltip from "$lib/tooltip.util";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import { PANO_WEBSITE_URL, PRERELEASE } from "$lib/variables.js";
 
   let timeToRefreshKey = "...";
@@ -120,34 +119,25 @@
   }
 
   function refreshKey() {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.get({
-        path: "/api/panel/platformAuth/refreshKey",
-      })
-        .then((body) => {
-          if (body.error) {
-            reject();
-
-            return;
-          }
-
-          if (body.result === "ok") {
-            platformServerMatchKey.set(body.key);
-            platformKeyRefreshedTime.set(body.timeStarted);
-          } else {
-            platformServerMatchKey.set("");
-          }
-
-          if (firstStartCountDown) startCountDown();
-
-          resolve();
-        })
-        .catch(() => {
-          platformServerMatchKey.set("");
-
+    ApiUtil.get({
+      path: "/api/panel/platformAuth/refreshKey",
+      handler: (body, reject) => {
+        if (body.error) {
           reject();
-        });
-    });
+
+          return;
+        }
+
+        platformServerMatchKey.set(body.key);
+        platformKeyRefreshedTime.set(body.timeStarted);
+
+        if (!firstStartCountDown) {
+          return;
+        }
+
+        startCountDown();
+      }
+    })
   }
 
   function updateCommandText() {

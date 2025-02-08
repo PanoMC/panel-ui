@@ -73,7 +73,6 @@
 </script>
 
 <script>
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import ApiUtil from "$lib/api.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
@@ -89,30 +88,26 @@
   function onYesClick() {
     loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.delete({
-        path:
-          "/api/panel/tickets?ids=" +
-          Object.values(get(selectedTickets)).map((id) => parseInt(id)),
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            loading = false;
+    ApiUtil.delete({
+      path:
+        "/api/panel/tickets?ids=" +
+        Object.values(get(selectedTickets)).map((id) => parseInt(id)),
+      handler: (body, reject) => {
+        if (body.error) {
+          refreshBrowserPage();
+          return;
+        }
 
-            hide();
+        loading = false;
 
-            const count = get(selectedTickets).length;
+        hide();
 
-            showToast(TicketsDeletedPermanentlyToast, { count });
+        const count = get(selectedTickets).length;
 
-            callback(get(selectedTickets));
+        showToast(TicketsDeletedPermanentlyToast, { count });
 
-            resolve();
-          } else refreshBrowserPage();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+        callback(get(selectedTickets));
+      },
+    })
   }
 </script>

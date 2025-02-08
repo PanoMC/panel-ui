@@ -61,81 +61,49 @@
       <Pagination
         page="{data.page}"
         totalPage="{data.totalPage}"
-        on:firstPageClick="{() => reloadData(1)}"
-        on:lastPageClick="{() => reloadData(data.totalPage)}"
-        on:pageLinkClick="{(event) => reloadData(event.detail.page)}" />
+        on:firstPageClick="{() => onPageClick(1)}"
+        on:lastPageClick="{() => onPageClick(data.totalPage)}"
+        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
       <!-- Pagination End -->
     </div>
   </div>
 </article>
 
 <script context="module">
-  import ApiUtil from "$lib/api.util";
-  import { showNetworkErrorOnCatch } from "$lib/Store";
+  import ApiUtil, { buildQueryParams } from "$lib/api.util";
   import { error } from "@sveltejs/kit";
-
-  async function loadData({ page, url, request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/posts?page=${page}&categoryUrl=${url}`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          const data = body;
-
-          data.page = parseInt(page);
-          data.url = url;
-
-          resolve(data);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent } = event;
-    const parentData = await parent();
+    const { parent, url: {searchParams} } = event;
+    await parent();
 
-    let data = {
-      postCount: 0,
-      posts: [],
-      totalPage: 1,
-      page: event.params.page || 1,
-      url: event.params.url,
-      category: {
-        id: -1,
-        title: "-",
-      },
-    };
+    const page = searchParams.get("page") || 1;
+    const url = event.params.url;
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
-    }
-
-    await loadData({
-      page: event.params.page || 1,
-      url: event.params.url,
+    const queryParams = buildQueryParams({
+      page,
+      url
+    });
+    const body = await ApiUtil.get({
+      path: `/api/panel/posts` + queryParams,
       request: event,
     })
-      .then((body) => {
-        data = { ...data, ...body };
-      })
-      .catch((body) => {
-        if (body.error) {
-          if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
-            throw error(404, body.error);
-          }
 
-          throw error(500, body.error);
-        }
-      });
+    if (body.error) {
+      if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
+        throw error(404, body.error);
+      }
 
-    return data;
+      throw error(500, body.error);
+    }
+
+    body.page = parseInt(page);
+    body.url = url;
+
+    return body;
   }
 </script>
 
@@ -174,79 +142,60 @@
   function onMoveToDraft(id) {
     buttonsLoading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.put({
-        path: `/api/panel/posts/${id}/status`,
-        body: {
-          to: "draft",
-        },
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            buttonsLoading = false;
+    ApiUtil.put({
+      path: `/api/panel/posts/${id}/status`,
+      body: {
+        to: "draft",
+      },
+      handler: (body, reject) => {
+        if (body.error) {
+          refreshBrowserPage()
+          return;
+        }
 
-            reloadData();
+        buttonsLoading = false;
 
-            resolve();
-          } else refreshBrowserPage();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+        refreshData();
+      }
+    })
   }
 
   function onPublishClick(id) {
     buttonsLoading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.put({
-        path: `/api/panel/posts/${id}/status`,
-        body: {
-          to: "PUBLISHED",
-        },
+    ApiUtil.put({
+      path: `/api/panel/posts/${id}/status`,
+      body: {
+        to: "PUBLISHED",
+      },
+      handler: async (body, reject) => {
+        if (body.error) {
+          refreshBrowserPage();
+
+          return;
+        }
+
+        buttonsLoading = false;
+
+        await goto(base + "/posts");
+      }
+    })
+      .then((body) => {
       })
-        .then((body) => {
-          if (body.result === "ok") {
-            buttonsLoading = false;
-
-            goto(base + "/posts");
-
-            resolve();
-          } else refreshBrowserPage();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
   }
 
-  function reloadData(page = data.page, url = data.url) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      loadData({ page, url })
-        .then((loadedData) => {
-          resolve();
-
-          if (page !== data.page) {
-            goto(base + "/posts/category/" + data.url + "/" + page);
-          } else {
-            data = loadedData;
-          }
-        })
-        .catch((body) => {
-          if (body.error === "PAGE_NOT_FOUND") {
-            resolve();
-
-            reloadData(page - 1);
-          } else if (body.error === "NOT_EXISTS") {
-            resolve();
-
-            goto(base + "/error-404");
-          } else {
-            reject();
-          }
-        });
+  async function refreshData() {
+    const queryParams = buildQueryParams({
+      page: data.page,
     });
+
+    await goto(queryParams);
+  }
+
+  async function onPageClick(page) {
+    data.page = page;
+
+    await refreshData();
   }
 
   function onDeletePostClick(post) {
@@ -259,7 +208,7 @@
     if (data.posts.indexOf(post) !== -1)
       data.posts[data.posts.indexOf(post)].selected = false;
 
-    reloadData();
+    refreshData();
   });
 
   onDeletePostModalHide((post) => {

@@ -95,9 +95,9 @@
       <Pagination
         page="{data.page}"
         totalPage="{data.totalPage}"
-        on:firstPageClick="{() => reloadData(1)}"
-        on:lastPageClick="{() => reloadData(data.totalPage)}"
-        on:pageLinkClick="{(event) => reloadData(event.detail.page)}" />
+        on:firstPageClick="{() => onPageClick(1)}"
+        on:lastPageClick="{() => onPageClick(data.totalPage)}"
+        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
     </div>
   </div>
 </div>
@@ -105,8 +105,7 @@
 <script context="module">
   import { error } from "@sveltejs/kit";
 
-  import ApiUtil from "$lib/api.util";
-  import { showNetworkErrorOnCatch } from "$lib/Store";
+  import ApiUtil, { buildQueryParams } from "$lib/api.util";
 
   export const PageTypes = Object.freeze({
     ALL: "all",
@@ -116,63 +115,37 @@
 
   export const DefaultPageType = PageTypes.ALL;
 
-  async function loadData({ page, pageType, request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/players?page=${page}&status=${pageType}`,
-        body: {
-          page: parseInt(page),
-        },
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          const data = body;
-
-          data.page = parseInt(page);
-          data.pageType = pageType;
-
-          resolve(data);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
-
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event, pageType = DefaultPageType) {
-    const { parent } = event;
-    const parentData = await parent();
+    const { parent, url: { searchParams } } = event;
+    await parent();
 
-    let data = {
-      playerCount: 0,
-      players: [],
-      totalPage: 1,
-      page: 1,
-      pageType,
-    };
+    const page = parseInt(searchParams.get("page")) || 1;
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
+    const queryParams = buildQueryParams({
+      page,
+      status: pageType
+    });
+
+    const body = await ApiUtil.get({
+      path: `/api/panel/players` + queryParams,
+      request: event,
+    })
+
+    if (body.error) {
+      if (body.error === "PAGE_NOT_FOUND") {
+        throw error(404, body.error);
+      }
+
+      throw error(500, body.error);
     }
 
-    await loadData({ page: event.params.page || 1, pageType, request: event })
-      .then((body) => {
-        data = { ...data, ...body };
-      })
-      .catch((body) => {
-        if (body.error) {
-          if (body.error === "PAGE_NOT_FOUND") {
-            throw error(404, body.error);
-          }
+    body.page = page;
+    body.pageType = pageType;
 
-          throw error(500, body.error);
-        }
-      });
-
-    return data;
+    return body;
   }
 </script>
 
@@ -237,28 +210,18 @@
     );
   }
 
-  function reloadData(page = data.page, pageType = data.pageType) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      loadData({ page, pageType })
-        .then((loadedData) => {
-          resolve();
-
-          if (page !== data.page) {
-            goto(base + "/players/" + data.pageType + "/" + page);
-          } else {
-            data = loadedData;
-          }
-        })
-        .catch((body) => {
-          if (body.error === "PAGE_NOT_FOUND") {
-            resolve();
-
-            reloadData(page - 1);
-          } else {
-            reject();
-          }
-        });
+  async function refreshData() {
+    const queryParams = buildQueryParams({
+      page: data.page,
     });
+
+    await goto(queryParams);
+  }
+
+  async function onPageClick(page) {
+    data.page = page;
+
+    await refreshData();
   }
 
   function onShowAuthorizePlayerModalClick(player) {
@@ -357,7 +320,7 @@
 
     data.players = data.players;
 
-    reloadData();
+    refreshData();
   });
 
   setUnbanPlayerModalCallback((newPlayer) => {
@@ -369,7 +332,7 @@
 
     data.players = data.players;
 
-    reloadData();
+    refreshData();
   });
 
   onMount(() => {

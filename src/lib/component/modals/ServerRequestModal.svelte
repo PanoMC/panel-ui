@@ -65,7 +65,6 @@
 </div>
 
 <script context="module">
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
   import ApiUtil from "$lib/api.util.js";
   import { writable } from "svelte/store";
 
@@ -121,35 +120,40 @@
     hideCallback = newCallback;
   }
 
+  function showExpiredToast() {
+    setTimeout(() => {
+      hide();
+    }, 500);
+
+    showToast(ExpiredServerConnectRequestToast);
+  }
+
   function initData(serverId) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/servers/${serverId}`,
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            if (body.server.permissionGranted) {
-              setTimeout(() => {
-                hide();
-              }, 500);
-              showToast(ExpiredServerConnectRequestToast);
+    ApiUtil.get({
+      path: `/api/panel/servers/${serverId}`,
+      handler: (body, reject) => {
+        if (body.error) {
+          if (body.error === "NOT_EXISTS") {
+            showExpiredToast();
 
-              return;
-            }
+            return;
+          }
 
-            server.set(body.server);
-            loading.set(false);
-          } else if (body.result === "error") {
-            setTimeout(() => {
-              hide();
-            }, 500);
-            showToast(ExpiredServerConnectRequestToast);
-          } else reject();
-        })
-        .catch(() => {
           reject();
-        });
-    });
+
+          return;
+        }
+
+        if (body.server.permissionGranted) {
+          showExpiredToast();
+
+          return;
+        }
+
+        server.set(body.server);
+        loading.set(false);
+      }
+    })
   }
 </script>
 
@@ -163,51 +167,53 @@
   function acceptServer() {
     $submitLoading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: `/api/panel/servers/${$server.id}/accept`,
-      })
-        .then(async (body) => {
-          $submitLoading = false;
+    ApiUtil.post({
+      path: `/api/panel/servers/${$server.id}/accept`,
+      handler: async (body, reject) => {
+        $submitLoading = false;
 
-          if (body.result === "ok") {
-            callback($server);
-            await invalidateAll();
-            hide();
-            showToast(AcceptedServerConnectRequestToast);
-          } else if (body.result === "error") {
-            hide();
-            showToast(ExpiredServerConnectRequestToast);
-          } else reject();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+        if (body.result === "ok") {
+          callback($server);
+          await invalidateAll();
+          hide();
+          await showToast(AcceptedServerConnectRequestToast);
+
+          return;
+        } else if (body.result === "error") {
+          hide();
+          await showToast(ExpiredServerConnectRequestToast);
+
+          return;
+        }
+
+        reject();
+      }
+    })
   }
 
   function rejectServer() {
     $submitLoading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: `/api/panel/servers/${$server.id}/reject`,
-      })
-        .then((body) => {
-          $submitLoading = false;
+    ApiUtil.post({
+      path: `/api/panel/servers/${$server.id}/reject`,
+      handler: (body, reject) => {
+        $submitLoading = false;
 
-          if (body.result === "ok") {
-            callback($server);
-            hide();
-            showToast(RejectedServerConnectRequestToast);
-          } else if (body.result === "error") {
-            hide();
-            showToast(ExpiredServerConnectRequestToast);
-          } else reject();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+        if (body.result === "ok") {
+          callback($server);
+          hide();
+          showToast(RejectedServerConnectRequestToast);
+
+          return;
+        } else if (body.result === "error") {
+          hide();
+          showToast(ExpiredServerConnectRequestToast);
+
+          return;
+        }
+
+        reject();
+      }
+    })
   }
 </script>

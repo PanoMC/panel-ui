@@ -78,42 +78,17 @@
 <script context="module">
   import ApiUtil from "$lib/api.util.js";
 
-  async function loadData({ request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: "/api/panel/settings/about",
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          resolve(body);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
-
   /**
    * @type {import("@sveltejs/kit").Load}
    */
   export async function load(event) {
     const { parent } = event;
-    const parentData = await parent();
+    await parent();
 
-    let data = {
-      platformVersion: "",
-      platformStage: "",
-    };
-
-    if (parentData.NETWORK_ERROR) {
-      return data;
-    }
-
-    await loadData({ request: event }).then((body) => {
-      data = { ...data, ...body };
+    return await ApiUtil.get({
+      path: "/api/panel/settings/about",
+      request: event,
     });
-
-    return data;
   }
 </script>
 

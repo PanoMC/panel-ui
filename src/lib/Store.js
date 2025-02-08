@@ -31,18 +31,18 @@ export function setSidebarTabsState(state, sidebarTabsState) {
   PanelSidebarStorageUtil.setSidebarTabsState(state);
 }
 
-export function showNetworkErrorOnCatch(callback, isErrorAlready = false) {
-  if (isErrorAlready) {
-    networkErrorCallbacks.update((value) => value.concat(callback));
+export function showNetworkError(callback) {
+  networkErrorCallbacks.update((value) => value.concat(callback));
+}
 
-    return;
+function check(currentList, calledList) {
+  for (const item of currentList) {
+    if (calledList.indexOf(item) === -1) {
+      return
+    }
   }
 
-  new Promise((resolve, reject) => {
-    callback(resolve, reject);
-  }).catch(() => {
-    networkErrorCallbacks.update((value) => value.concat(callback));
-  });
+  retryingNetworkErrors.set(false);
 }
 
 export async function resumeAfterNetworkError() {
@@ -51,39 +51,21 @@ export async function resumeAfterNetworkError() {
   const currentList = get(networkErrorCallbacks).concat();
   const calledList = [];
 
-  function check() {
-    let callbacksDone = true;
+  for (const callback of currentList) {
+    try {
+      await callback(true)
 
-    currentList.forEach((item) => {
-      if (calledList.indexOf(item) === -1) {
-        callbacksDone = false;
-      }
-    });
+      calledList.push(callback);
 
-    if (callbacksDone) {
-      retryingNetworkErrors.set(false);
+      networkErrorCallbacks.update((list) =>
+        list.filter((item) => item !== callback),
+      );
+
+      check(currentList, calledList);
+    } catch (_) {
+      calledList.push(callback);
+
+      check(currentList, calledList);
     }
   }
-
-  currentList.forEach((callback) => {
-    new Promise((resolve, reject) => {
-      callback(resolve, reject);
-    })
-      .then(() => {
-        calledList.push(callback);
-
-        networkErrorCallbacks.update((list) =>
-          list.filter((item) => item !== callback),
-        );
-
-        check();
-      })
-      .catch(() => {
-        calledList.push(callback);
-
-        check();
-      });
-  });
-
-  await invalidateAll();
 }

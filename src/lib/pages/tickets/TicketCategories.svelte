@@ -71,9 +71,9 @@
       <Pagination
         page="{data.page}"
         totalPage="{data.totalPage}"
-        on:firstPageClick="{() => reloadData(1)}"
-        on:lastPageClick="{() => reloadData(data.totalPage)}"
-        on:pageLinkClick="{(event) => reloadData(event.detail.page)}" />
+        on:firstPageClick="{() => onPageClick(1)}"
+        on:lastPageClick="{() => onPageClick(data.totalPage)}"
+        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
     </div>
   </div>
 </article>
@@ -85,62 +85,38 @@
 <ConfirmDeleteTicketCategoryModal />
 
 <script context="module">
-  import ApiUtil from "$lib/api.util.js";
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
+  import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
   import { error } from "@sveltejs/kit";
-
-  async function loadData({ page, request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/ticket/categories?page=${page}`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          const data = body;
-
-          data.page = parseInt(page);
-
-          resolve(data);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent } = event;
-    const parentData = await parent();
+    const { parent, url: {searchParams} } = event;
+    await parent();
 
-    let data = {
-      categoryCount: 0,
-      categories: [],
-      totalPage: 1,
-      page: 1,
-    };
+    const page = searchParams.get("page") || 1;
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
+    const queryParams = buildQueryParams({
+      page,
+    });
+
+    const body = await ApiUtil.get({
+      path: `/api/panel/ticket/categories` + queryParams,
+      request: event,
+    })
+
+    if (body.error) {
+      if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
+        throw error(404, body.error);
+      }
+
+      throw error(500, body.error);
     }
 
-    await loadData({ page: event.params.page || 1, request: event })
-      .then((body) => {
-        data = { ...data, ...body };
-      })
-      .catch((body) => {
-        if (body.error) {
-          if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
-            throw error(404, body.error);
-          }
+    body.page = parseInt(page);
 
-          throw error(500, body.error);
-        }
-      });
-
-    return data;
+    return body;
   }
 </script>
 
@@ -177,28 +153,18 @@
 
   pageTitle.set("pages.ticket-categories.title");
 
-  function reloadData(page = data.page) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      loadData({ page })
-        .then((loadedData) => {
-          if (page !== data.page) {
-            goto(base + "/tickets/categories/" + page);
-          } else {
-            data = loadedData;
-          }
-
-          resolve();
-        })
-        .catch((body) => {
-          if (body.error === "PAGE_NOT_FOUND") {
-            resolve();
-
-            reloadData(page - 1);
-          } else {
-            reject();
-          }
-        });
+  async function refreshData() {
+    const queryParams = buildQueryParams({
+      page: data.page,
     });
+
+    await goto(queryParams);
+  }
+
+  async function onPageClick(page) {
+    data.page = page;
+
+    await refreshData();
   }
 
   function onCreateCategoryClick() {
@@ -218,7 +184,11 @@
   }
 
   setCallbackForTicketCategoriesAddEditModal((routeFirstPage) => {
-    reloadData(routeFirstPage ? 1 : data.page);
+    if (routeFirstPage) {
+      data.page = 1
+    }
+
+    refreshData()
   });
 
   onAddEditTicketCategoryModalHide((category) => {
@@ -227,7 +197,7 @@
   });
 
   setDeleteTicketCategoryModalCallback(() => {
-    reloadData(data.page);
+    refreshData();
   });
 
   onConfirmDeleteTicketCategoryModalHide((category) => {

@@ -169,88 +169,34 @@
   import { writable } from "svelte/store";
 
   import ApiUtil from "$lib/api.util.js";
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
 
   import { TicketStatuses } from "$lib/component/badges/TicketStatusBadge.svelte";
   import Editor from "$lib/component/Editor.svelte";
   import { error } from "@sveltejs/kit";
-
-  async function loadTicket({ id, request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/tickets/${id}`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          const ticket = body.ticket;
-
-          ticket.id = parseInt(id);
-
-          resolve(ticket);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
-
-  // async function loadCategories() {
-  //   return new Promise((resolve, reject) => {
-  //     ApiUtil.get("panel/post/category/categories")
-  //       .then((response) => {
-  //         if (response.data.result === "ok") {
-  //           const data = response.data;
-  //
-  //           resolve(data);
-  //         } else if (response.data.result === "error") {
-  //           const errorCode = response.data.error;
-  //
-  //           reject(errorCode, response.data);
-  //         }
-  //       })
-  //       .catch((e) => {
-  //         console.log(e);
-  //       });
-  //   });
-  // }
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
     const { parent } = event;
-    const parentData = await parent();
+    await parent();
 
-    let data = {
-      ticket: {
-        id: -1,
-        title: "",
-        category: "-",
-        username: "",
-        status: TicketStatuses.NEW,
-        count: 0,
-        messages: [],
-        date: 0,
-      },
-    };
+    const id = event.params.id;
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
+    const body = await ApiUtil.get({
+      path: `/api/panel/tickets/${id}`,
+      request: event,
+    })
+
+    if (body.error) {
+      if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
+        throw error(404, body.error);
+      }
+
+      throw error(500, body.error);
     }
 
-    await loadTicket({ id: event.params.id, request: event })
-      .then((body) => {
-        data.ticket = body;
-      })
-      .catch((body) => {
-        if (body.error) {
-          if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
-            throw error(404, body.error);
-          }
-
-          throw error(500, body.error);
-        }
-      });
+    body.id = parseInt(id);
 
     return data;
   }
@@ -299,61 +245,61 @@
   function loadMore() {
     loadMoreLoading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/tickets/${data.ticket.id}/messages?lastMessageId=${data.ticket.messages[0].id}`,
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            body.messages.reverse().forEach((message) => {
-              data.ticket.messages.unshift(message);
-            });
-
-            data.ticket.messages = data.ticket.messages;
-
-            loadMoreLoading = false;
-          } else if (body.error === "NOT_EXISTS") {
+    ApiUtil.get({
+      path: `/api/panel/tickets/${data.ticket.id}/messages?lastMessageId=${data.ticket.messages[0].id}`,
+      handler: (body, reject) => {
+        if (body.error) {
+          if (body.error === "NOT_EXISTS") {
             goto(base + "/error-404");
-          } else reject();
-        })
-        .catch(() => {
+
+            return
+          }
+
           reject();
+          return;
+        }
+
+        body.messages.reverse().forEach((message) => {
+          data.ticket.messages.unshift(message);
         });
-    });
+
+        data.ticket.messages = data.ticket.messages;
+      }
+    })
   }
 
   function sendMessage() {
     messageSendLoading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: `/api/panel/tickets/${data.ticket.id}/message`,
-        body: {
-          message: messageText,
-        },
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            shouldScroll = true;
-
-            data.ticket.messages.push(body.message);
-
-            sentMessageCount++;
-
-            data.ticket.status = TicketStatuses.REPLIED;
-            messageText = "";
-
-            messageSendLoading = false;
-
-            resolve();
-          } else if (body.error === "NOT_EXISTS") {
+    ApiUtil.post({
+      path: `/api/panel/tickets/${data.ticket.id}/message`,
+      body: {
+        message: messageText,
+      },
+      handler: (body, reject) => {
+        if (body.error) {
+          if (body.error === "NOT_EXISTS") {
             goto(base + "/error-404");
-          } else reject();
-        })
-        .catch(() => {
+
+            return
+          }
+
           reject();
-        });
-    });
+          return;
+        }
+
+        shouldScroll = true;
+
+        data.ticket.messages.push(body.message);
+
+        sentMessageCount++;
+
+        data.ticket.status = TicketStatuses.REPLIED;
+        messageText = "";
+
+        messageSendLoading = false;
+      }
+    })
   }
 
   function limitTitle(text) {

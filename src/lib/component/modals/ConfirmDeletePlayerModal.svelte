@@ -87,7 +87,6 @@
   import { goto } from "$app/navigation";
   import { base } from "$app/paths";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
   import ApiUtil from "$lib/api.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
@@ -99,29 +98,29 @@
   function deletePlayer() {
     $loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: `/api/panel/players/${$player.username}/delete`,
-        body: { currentPassword: $currentPassword },
-      })
-        .then(async (body) => {
-          if (body.result === "ok") {
-            callback($player);
-            await goto(base + "/players");
-            hide();
-            showToast(PlayerDeletedSuccessToast, { username: $player.username });
-          } else if (body.error) {
-            if (body.error === "CURRENT_PASSWORD_NOT_CORRECT") {
-              $passwordError = true;
-              $loading = false;
-            } else {
-              location.reload();
-            }
-          } else reject();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+    ApiUtil.post({
+      path: `/api/panel/players/${$player.username}/delete`,
+      body: { currentPassword: $currentPassword },
+      handler: async (body, reject) => {
+        if (body.result === "ok") {
+          callback($player);
+          await goto(base + "/players");
+          hide();
+          await showToast(PlayerDeletedSuccessToast, { username: $player.username });
+          return
+        } else if (body.error) {
+          if (body.error === "CURRENT_PASSWORD_NOT_CORRECT") {
+            $passwordError = true;
+            $loading = false;
+          } else {
+            location.reload();
+          }
+
+          return;
+        }
+
+        reject();
+      }
+    })
   }
 </script>

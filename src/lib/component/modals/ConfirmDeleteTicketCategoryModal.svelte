@@ -91,7 +91,6 @@
 <script>
   import { base } from "$app/paths";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import ApiUtil from "$lib/api.util";
 
   import {
@@ -110,28 +109,24 @@
   function onYesClick() {
     loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.delete({
-        path: `/api/panel/ticket/categories/${get(category).id}`,
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            loading = false;
+    ApiUtil.delete({
+      path: `/api/panel/ticket/categories/${get(category).id}`,
+      handler: (body, reject) => {
+        if (body.error) {
+          refreshBrowserPage();
+          return;
+        }
 
-            hide();
+        loading = false;
 
-            showToast(TicketCategoryDeletedPermanentlyToast, {
-              title: get(category).title,
-            });
+        hide();
 
-            callback(get(category));
-
-            resolve();
-          } else refreshBrowserPage();
-        })
-        .catch(() => {
-          reject();
+        showToast(TicketCategoryDeletedPermanentlyToast, {
+          title: get(category).title,
         });
-    });
+
+        callback(get(category));
+      },
+    })
   }
 </script>

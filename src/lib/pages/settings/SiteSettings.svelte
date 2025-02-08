@@ -167,59 +167,29 @@
 </div>
 
 <script context="module">
-  import ApiUtil from "$lib/api.util.js";
+  import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
   import tooltip from "$lib/tooltip.util";
-
-  async function loadData({ request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: "/api/panel/settings?type=WEBSITE",
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          body.oldSettings = { ...body };
-          body.oldSettings.keywords = [...body.keywords];
-
-          resolve(body);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
 
   /**
    * @type {import("@sveltejs/kit").Load}
    */
   export async function load(event) {
     const { parent } = event;
-    const parentData = await parent();
+    await parent();
 
-    let data = {
-      websiteName: "",
-      websiteDescription: "",
-      supportEmail: "",
-      serverIpAddress: "",
-      keywords: [],
-      oldSettings: {
-        websiteName: "",
-        websiteDescription: "",
-        supportEmail: "",
-        serverIpAddress: "",
-        serverGameVersion: "",
-        keywords: [],
-      },
-    };
-
-    if (parentData.NETWORK_ERROR) {
-      return data;
-    }
-
-    await loadData({ request: event }).then((body) => {
-      data = { ...data, ...body };
+    const queryParams = buildQueryParams({
+      type: "WEBSITE",
     });
 
-    return data;
+    const body = await ApiUtil.get({
+      path: "/api/panel/settings" + queryParams,
+      request: event,
+    })
+
+    body.oldSettings = { ...body };
+    body.oldSettings.keywords = [...body.keywords];
+
+    return body;
   }
 </script>
 
@@ -227,7 +197,7 @@
   import { getContext } from "svelte";
   import { _ } from "svelte-i18n";
 
-  import { showNetworkErrorOnCatch, websiteLogoSrc } from "$lib/Store.js";
+  import { websiteLogoSrc } from "$lib/Store.js";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
   import SettingsSaveSuccessToast from "$lib/component/toasts/SettingsSaveSuccessToast.svelte";
@@ -288,85 +258,79 @@
   function save() {
     saveButtonLoading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      const formData = new FormData();
+    const formData = new FormData();
 
-      formData.append("websiteName", data.websiteName);
-      formData.append("websiteDescription", data.websiteDescription);
-      formData.append("supportEmail", data.supportEmail);
-      formData.append("serverIpAddress", data.serverIpAddress);
-      formData.append("serverGameVersion", data.serverGameVersion);
-      formData.append("keywords", data.keywords);
+    formData.append("websiteName", data.websiteName);
+    formData.append("websiteDescription", data.websiteDescription);
+    formData.append("supportEmail", data.supportEmail);
+    formData.append("serverIpAddress", data.serverIpAddress);
+    formData.append("serverGameVersion", data.serverGameVersion);
+    formData.append("keywords", data.keywords);
 
-      if (faviconFiles[0]) {
-        formData.append("favicon", faviconFiles[0]);
+    if (faviconFiles[0]) {
+      formData.append("favicon", faviconFiles[0]);
+    }
+
+    if (websiteLogoFiles[0]) {
+      formData.append("websiteLogo", websiteLogoFiles[0]);
+    }
+
+    ApiUtil.put({
+      path: "/api/panel/settings",
+      body: formData,
+      handler: async (body, reject) => {
+        saveButtonLoading = false;
+
+        if (body.result === "ok") {
+          website.update((website) => {
+            return {
+              ...website,
+              name: data.websiteName,
+              description: data.websiteDescription,
+            };
+          });
+
+          data.oldSettings = Object.keys(data)
+            .filter((key) => key !== "oldSettings" && key !== "keywords")
+            .reduce((obj, key) => {
+              obj[key] = data[key];
+              return obj;
+            }, {});
+
+          data.oldSettings.keywords = [...data.keywords];
+
+          await showToast(SettingsSaveSuccessToast);
+
+          if (websiteLogoInput.value !== "") {
+            const reader = new FileReader();
+            const image = websiteLogoFiles[0];
+
+            reader.readAsDataURL(image);
+
+            reader.onload = (e) => {
+              websiteLogoSrc.set(e.target.result);
+            };
+          }
+
+          faviconFiles = [];
+          websiteLogoFiles = [];
+
+          faviconInput.value = "";
+          websiteLogoInput.value = "";
+
+          resolve();
+        } else if (
+          body.error === "FAVICON_WRONG_CONTENT_TYPE" ||
+          body.error === "FAVICON_EXCEEDS_SIZE" ||
+          body.error === "WEBSITE_LOGO_WRONG_CONTENT_TYPE" ||
+          body.error === "WEBSITE_LOGO_EXCEEDS_SIZE"
+        ) {
+          await showToast(SettingsSaveErrorToast, {
+            errorCode: body.error,
+          });
+        } else reject();
       }
-
-      if (websiteLogoFiles[0]) {
-        formData.append("websiteLogo", websiteLogoFiles[0]);
-      }
-
-      ApiUtil.put({
-        path: "/api/panel/settings",
-        body: formData,
-      })
-        .then((body) => {
-          saveButtonLoading = false;
-
-          if (body.result === "ok") {
-            website.update((website) => {
-              return {
-                ...website,
-                name: data.websiteName,
-                description: data.websiteDescription,
-              };
-            });
-
-            data.oldSettings = Object.keys(data)
-              .filter((key) => key !== "oldSettings" && key !== "keywords")
-              .reduce((obj, key) => {
-                obj[key] = data[key];
-                return obj;
-              }, {});
-
-            data.oldSettings.keywords = [...data.keywords];
-
-            showToast(SettingsSaveSuccessToast);
-
-            if (websiteLogoInput.value !== "") {
-              const reader = new FileReader();
-              const image = websiteLogoFiles[0];
-
-              reader.readAsDataURL(image);
-
-              reader.onload = (e) => {
-                websiteLogoSrc.set(e.target.result);
-              };
-            }
-
-            faviconFiles = [];
-            websiteLogoFiles = [];
-
-            faviconInput.value = "";
-            websiteLogoInput.value = "";
-
-            resolve();
-          } else if (
-            body.error === "FAVICON_WRONG_CONTENT_TYPE" ||
-            body.error === "FAVICON_EXCEEDS_SIZE" ||
-            body.error === "WEBSITE_LOGO_WRONG_CONTENT_TYPE" ||
-            body.error === "WEBSITE_LOGO_EXCEEDS_SIZE"
-          ) {
-            showToast(SettingsSaveErrorToast, {
-              errorCode: body.error,
-            });
-          } else reject();
-        })
-        .catch((err) => {
-          console.log(err);
-          reject();
-        });
-    });
+    })
   }
 
   function addKeyWord() {

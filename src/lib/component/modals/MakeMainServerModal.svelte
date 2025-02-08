@@ -74,7 +74,6 @@
 <script>
   import { invalidateAll } from "$app/navigation";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
   import ApiUtil from "$lib/api.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
@@ -84,23 +83,24 @@
   function acceptServer() {
     $loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: `/api/panel/servers/${$server.id}/main`,
-      })
-        .then(async (body) => {
-          if (body.result === "ok") {
-            callback($server);
-            await invalidateAll();
-            hide();
-            showToast(ServerMadeMainToast, {name: $server.name});
-          } else if (body.result === "error") {
-            location.reload();
-          } else reject();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+    ApiUtil.post({
+      path: `/api/panel/servers/${$server.id}/main`,
+      handler: async (body, reject) => {
+        if (body.result === "ok") {
+          callback($server);
+          await invalidateAll();
+          hide();
+          showToast(ServerMadeMainToast, {name: $server.name});
+
+          return;
+        } else if (body.result === "error") {
+          location.reload();
+
+          return
+        }
+
+        reject();
+      }
+    })
   }
 </script>

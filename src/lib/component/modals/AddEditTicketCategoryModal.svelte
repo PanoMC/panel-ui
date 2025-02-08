@@ -94,7 +94,6 @@
 <script>
   import { _ } from "svelte-i18n";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import ApiUtil from "$lib/api.util";
 
   let loading = false;
@@ -103,46 +102,40 @@
   function onSubmit() {
     loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      const bodyHandler = (body) => {
-        if (body.result === "ok") {
-          loading = false;
+    const bodyHandler = (body, reject) => {
+      if (body.result === "ok") {
+        loading = false;
 
-          hide();
+        hide();
 
-          callback(true);
+        callback(true);
 
-          resolve();
-        } else if (body.result === "errors") {
-          loading = false;
+        return
+      } else if (body.result === "errors") {
+        loading = false;
 
-          errors.set(body.errors);
+        errors.set(body.errors);
 
-          resolve();
-        } else reject();
-      };
-
-      if (get(mode) === "edit") {
-        ApiUtil.put({
-          path: `/api/panel/ticket/categories/${get(category).id}`,
-          body: get(category),
-        })
-          .then(bodyHandler)
-          .catch(() => {
-            reject();
-          });
-
-        return;
+        return
       }
 
-      ApiUtil.post({
-        path: "/api/panel/ticket/category",
+      reject();
+    };
+
+    if (get(mode) === "edit") {
+      ApiUtil.put({
+        path: `/api/panel/ticket/categories/${get(category).id}`,
         body: get(category),
+        handler: bodyHandler
       })
-        .then(bodyHandler)
-        .catch(() => {
-          reject();
-        });
-    });
+
+      return;
+    }
+
+    ApiUtil.post({
+      path: "/api/panel/ticket/category",
+      body: get(category),
+      handler: bodyHandler
+    })
   }
 </script>

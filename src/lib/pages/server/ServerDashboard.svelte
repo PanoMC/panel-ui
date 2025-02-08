@@ -103,21 +103,6 @@
     OFFLINE: "OFFLINE",
   });
 
-  async function loadData({ request, selectedServer }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/servers/${selectedServer.id}/dashboard`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          resolve(body);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
-
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
@@ -126,20 +111,10 @@
     const parentData = await parent();
     const { selectedServer } = parentData;
 
-    let data = {
-      server: {},
-      connectedServerCount: 0,
-    };
-
-    if (parentData.NETWORK_ERROR) {
-      return data;
-    }
-
-    await loadData({ request: event, selectedServer }).then((body) => {
-      data = { ...data, ...body };
+    return await ApiUtil.get({
+      path: `/api/panel/servers/${selectedServer.id}/dashboard`,
+      request: event,
     });
-
-    return data;
   }
 </script>
 

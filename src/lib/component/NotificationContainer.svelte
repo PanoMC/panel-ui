@@ -98,7 +98,7 @@
   import { _ } from "svelte-i18n";
   import * as locales from "date-fns/locale";
 
-  import { showNetworkErrorOnCatch, quickNotifications } from "$lib/Store";
+  import { quickNotifications } from "$lib/Store";
   import ApiUtil from "$lib/api.util";
   import { formatDistanceToNow } from "date-fns";
   import { onNotificationClick } from "$lib/NotificationManager.js";
@@ -170,40 +170,35 @@
   }
 
   function getQuickNotifications(id) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.get({
-        path: "/api/panel/notifications/quick",
-      })
-        .then((body) => {
-          if (body.error) {
-            reject();
-
-            return;
-          }
-
-          if (quickNotificationProcessID === id) {
-            if (body.result === "ok") {
-              setNotifications(body.notifications);
-
-              notificationCount.set(body.notificationCount);
-            }
-
-            setTimeout(() => {
-              if (quickNotificationProcessID === id) {
-                startQuicknotificationCountDown();
-              }
-            }, 1000);
-          }
-
-          resolve();
-        })
-        .catch(() => {
+    ApiUtil.get({
+      path: "/api/panel/notifications/quick",
+      handler: (body, reject) => {
+        if (body.error) {
           reject();
-        });
-    });
+
+          return;
+        }
+
+        if (quickNotificationProcessID !== id) {
+          return;
+        }
+
+        setNotifications(body.notifications);
+
+        notificationCount.set(body.notificationCount);
+
+        setTimeout(() => {
+          if (quickNotificationProcessID !== id) {
+            return
+          }
+
+          startQuickNotificationCountDown();
+        }, 1000);
+      }
+    })
   }
 
-  function startQuicknotificationCountDown() {
+  function startQuickNotificationCountDown() {
     quickNotificationProcessID++;
 
     const id = quickNotificationProcessID;
@@ -212,13 +207,10 @@
   }
 
   function markRead(id) {
-    showNetworkErrorOnCatch((resolve, reject) => {
       ApiUtil.post({
         path: `/api/panel/notifications/${id}/read`,
-      }).catch(() => {
-        reject();
-      });
-    });
+        handler: () => {}
+      })
   }
 
   function onClick(notification) {
@@ -228,7 +220,7 @@
   }
 
   onMount(() => {
-    startQuicknotificationCountDown();
+    startQuickNotificationCountDown();
 
     interval = setInterval(() => {
       checkTime += 1;

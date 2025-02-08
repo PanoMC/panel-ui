@@ -103,9 +103,9 @@
         <Pagination
           page="{data.page}"
           totalPage="{data.totalPage}"
-          on:firstPageClick="{() => reloadData(1)}"
-          on:lastPageClick="{() => reloadData(data.totalPage)}"
-          on:pageLinkClick="{(event) => reloadData(event.detail.page)}" />
+          on:firstPageClick="{() => onPageClick(1)}"
+          on:lastPageClick="{() => onPageClick(data.totalPage)}"
+          on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
       </div>
       <!-- Pagination End -->
     </div>
@@ -113,8 +113,7 @@
 </article>
 
 <script context="module">
-  import ApiUtil from "$lib/api.util.js";
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
+  import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
   import { error } from "@sveltejs/kit";
 
   export const PageTypes = Object.freeze({
@@ -125,61 +124,40 @@
 
   export const DefaultPageType = PageTypes.PUBLISHED;
 
-  async function loadData({ page, pageType, request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/posts?page=${page}&pageType=${pageType.toUpperCase()}`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          const data = body;
-
-          data.page = parseInt(page);
-          data.pageType = pageType;
-
-          resolve(data);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
-
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event, pageType = DefaultPageType) {
-    const { parent } = event;
-    const parentData = await parent();
+    const { parent, url: { searchParams } } = event;
+    await parent();
 
+    const page = searchParams.get("page") || 1;
     pageType = pageType.toUpperCase();
 
-    let data = {
-      postCount: 0,
-      posts: [],
-      totalPage: 1,
-      page: 1,
-    };
+    const queryParams = buildQueryParams({
+      page,
+      pageType
+    })
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
+    const body = await ApiUtil.get({
+      path: `/api/panel/posts` + queryParams,
+      request: event,
+    }).catch((err) => {
+      throw error(500, err);
+    });
+
+    if (body.error === "PAGE_NOT_FOUND") {
+      throw error(404, body.error);
     }
 
-    await loadData({ page: event.params.page || 1, pageType, request: event })
-      .then((body) => {
-        data = { ...data, ...body };
-      })
-      .catch((body) => {
-        if (body.error) {
-          if (body.error === "PAGE_NOT_FOUND") {
-            throw error(404, body.error);
-          }
+    if (body.error) {
+      throw error(500, body.error);
+    }
 
-          throw error(500, body.error);
-        }
-      });
+    body.page = parseInt(page);
+    body.pageType = pageType;
 
-    return data;
+    return body;
   }
 </script>
 
@@ -187,7 +165,7 @@
   import { getContext } from "svelte";
   import { _ } from "svelte-i18n";
 
-  import { goto } from "$app/navigation";
+  import { goto, invalidate } from "$app/navigation";
   import { base } from "$app/paths";
 
   import Pagination from "$lib/component/Pagination.svelte";
@@ -200,8 +178,7 @@
   import PostRow from "$lib/component/rows/PostRow.svelte";
 
   import {
-    show as showToast,
-    limitTitle,
+    show as showToast
   } from "$lib/component/ToastContainer.svelte";
   import PostMovedToDraftToast from "$lib/component/toasts/PostMovedToDraftToast.svelte";
   import PostPublishedToast from "$lib/component/toasts/PostPublishedToast.svelte";
@@ -243,84 +220,67 @@
   function onMoveToDraft(id) {
     buttonsLoading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.put({
-        path: `/api/panel/posts/${id}/status`,
-        body: {
-          to: "DRAFT",
-        },
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            buttonsLoading = false;
+    ApiUtil.put({
+      path: `/api/panel/posts/${id}/status`,
+      body: {
+        to: "DRAFT",
+      },
+      handler: async (body, reject) => {
+        if (body.error) {
+          refreshBrowserPage();
+          return;
+        }
 
-            reloadData();
+        buttonsLoading = false;
 
-            showToast(PostMovedToDraftToast, {
-              title: data.posts.find((post) => post.id === id).title,
-            });
+        await refreshData();
 
-            resolve();
-          } else refreshBrowserPage();
-        })
-        .catch(() => {
-          reject();
+        await showToast(PostMovedToDraftToast, {
+          title: data.posts.find((post) => post.id === id).title,
         });
-    });
+      }
+    })
   }
 
   function onPublishClick(id) {
     buttonsLoading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.put({
-        path: `/api/panel/posts/${id}/status`,
-        body: {
-          to: "PUBLISHED",
-        },
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            buttonsLoading = false;
+    ApiUtil.put({
+      path: `/api/panel/posts/${id}/status`,
+      body: {
+        to: "PUBLISHED",
+      },
+      handler: async (body, reject) => {
+        if (body.error) {
+          refreshBrowserPage();
 
-            goto(base + "/posts");
+          return;
+        }
 
-            showToast(PostPublishedToast, {
-              postId: id,
-              title: data.posts.find((post) => post.id === id).title,
-            });
+        buttonsLoading = false;
 
-            resolve();
-          } else refreshBrowserPage();
-        })
-        .catch(() => {
-          reject();
+        await goto(base + "/posts");
+
+        await showToast(PostPublishedToast, {
+          postId: id,
+          title: data.posts.find((post) => post.id === id).title,
         });
-    });
+      }
+    })
   }
 
-  function reloadData(page = data.page, pageType = data.pageType) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      loadData({ page, pageType })
-        .then((loadedData) => {
-          resolve();
-
-          if (page !== data.page) {
-            goto(base + "/posts/" + data.pageType + "/" + page);
-          } else {
-            data = loadedData;
-          }
-        })
-        .catch((body) => {
-          if (body.error === "PAGE_NOT_FOUND") {
-            resolve();
-
-            reloadData(page - 1);
-          } else {
-            reject();
-          }
-        });
+  async function refreshData() {
+    const queryParams = buildQueryParams({
+      page: data.page
     });
+
+    await goto(queryParams);
+  }
+
+  async function onPageClick(page) {
+    data.page = page;
+
+    await refreshData();
   }
 
   function onDeletePostClick(post) {
@@ -330,14 +290,18 @@
   }
 
   setDeletePostModalCallback((post) => {
-    if (data.posts.indexOf(post) !== -1)
+    if (data.posts.indexOf(post) !== -1) {
       data.posts[data.posts.indexOf(post)].selected = false;
+    }
 
-    reloadData();
+    invalidate((_) => true);
   });
 
   onDeletePostModalHide((post) => {
-    if (data.posts.indexOf(post) !== -1)
-      data.posts[data.posts.indexOf(post)].selected = false;
+    if (data.posts.indexOf(post) === -1) {
+      return
+    }
+
+    data.posts[data.posts.indexOf(post)].selected = false;
   });
 </script>

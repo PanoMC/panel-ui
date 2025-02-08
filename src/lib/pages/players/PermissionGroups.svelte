@@ -54,9 +54,9 @@
         <Pagination
           page="{data.page}"
           totalPage="{data.totalPage}"
-          on:firstPageClick="{() => reloadData(1)}"
-          on:lastPageClick="{() => reloadData(data.totalPage)}"
-          on:pageLinkClick="{(event) => reloadData(event.detail.page)}" />
+          on:firstPageClick="{() => onPageClick(1)}"
+          on:lastPageClick="{() => onPageClick(data.totalPage)}"
+          on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
         <!-- Pagination End -->
       </div>
     </div>
@@ -66,62 +66,37 @@
 <ConfirmDeletePermissionGroupModal />
 
 <script context="module">
-  import ApiUtil from "$lib/api.util.js";
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
+  import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
   import { error } from "@sveltejs/kit";
-
-  async function loadData({ request, page }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/permissionGroups?page=${page}`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          body.page = parseInt(page);
-
-          resolve(body);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent } = event;
-    const parentData = await parent();
+    const { parent, url: {searchParams} } = event;
+    await parent();
 
-    let data = {
-      permissions: [],
-      permissionGroups: [],
-      permissionGroupCount: 0,
-      permissionGroupPerms: {},
-      totalPage: 1,
-      page: 1,
-    };
+    const page = searchParams.get("page") || 1;
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
+    const queryParams = buildQueryParams({
+      page,
+    });
+    const body = await ApiUtil.get({
+      path: `/api/panel/permissionGroups` + queryParams,
+      request: event,
+    })
+
+    if (body.error) {
+      if (body.error === "PAGE_NOT_FOUND") {
+        throw error(404, body.error);
+      }
+
+      throw error(500, body.error);
     }
 
-    await loadData({ request: event, page: event.params.page || 1 })
-      .then((body) => {
-        data = { ...data, ...body };
-      })
-      .catch((body) => {
-        if (body.error) {
-          if (body.error === "PAGE_NOT_FOUND") {
-            throw error(404, body.error);
-          }
+    body.page = parseInt(page);
 
-          throw error(500, body.error);
-        }
-      });
-
-    return data;
+    return body;
   }
 </script>
 
@@ -149,28 +124,18 @@
 
   pageTitle.set("pages.permission-groups.title");
 
-  function reloadData(page = data.page) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      loadData({ page })
-        .then((loadedData) => {
-          resolve();
-
-          if (page !== data.page) {
-            goto(base + "/players/perm-groups/" + page);
-          } else {
-            data = loadedData;
-          }
-        })
-        .catch((body) => {
-          if (body.error === "PAGE_NOT_FOUND") {
-            resolve();
-
-            reloadData(page - 1);
-          } else {
-            reject();
-          }
-        });
+  async function refreshData() {
+    const queryParams = buildQueryParams({
+      page: data.page,
     });
+
+    await goto(queryParams);
+  }
+
+  async function onPageClick(page) {
+    data.page = page;
+
+    await refreshData();
   }
 
   onDeletePermissionGroupModalHide((newPermissionGroup) => {
@@ -199,6 +164,6 @@
 
     data.permissionGroups = data.permissionGroups;
 
-    reloadData();
+    refreshData();
   });
 </script>

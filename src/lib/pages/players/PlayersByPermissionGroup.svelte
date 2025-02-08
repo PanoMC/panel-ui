@@ -53,80 +53,49 @@
       <Pagination
         page="{data.page}"
         totalPage="{data.totalPage}"
-        on:firstPageClick="{() => reloadData(1)}"
-        on:lastPageClick="{() => reloadData(data.totalPage)}"
-        on:pageLinkClick="{(event) => reloadData(event.detail.page)}" />
+        on:firstPageClick="{() => onPageClick(1)}"
+        on:lastPageClick="{() => onPageClick(data.totalPage)}"
+        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
     </div>
   </div>
 </div>
 
 <script context="module">
-  import ApiUtil from "$lib/api.util";
-  import { showNetworkErrorOnCatch } from "$lib/Store";
+  import ApiUtil, { buildQueryParams } from "$lib/api.util";
   import { error } from "@sveltejs/kit";
-
-  async function loadData({ page, permissionGroup, request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/players?permissionGroup=${permissionGroup}&page=${parseInt(
-          page
-        )}`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          const data = body;
-
-          data.page = parseInt(page);
-
-          resolve(data);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
 
   /**
    * @type {import("@sveltejs/kit").Load}
    */
   export async function load(event) {
-    const { parent } = event;
-    const parentData = await parent();
+    const { parent, url: {searchParams} } = event;
+    await parent();
 
-    let data = {
-      playerCount: 0,
-      players: [],
-      totalPage: 1,
-      page: 1,
-      permissionGroup: {
-        id: -1,
-        name: event.params.permissionGroup,
-      },
-    };
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
-    }
+    const page = searchParams.get("page") || 1;
+    const permissionGroup = event.params.permissionGroup;
 
-    await loadData({
-      page: event.params.page || 1,
-      permissionGroup: event.params.permissionGroup,
+    const queryParams = buildQueryParams({
+      page,
+      permissionGroup
+    });
+
+    const body = await ApiUtil.get({
+      path: `/api/panel/players` + queryParams,
       request: event,
     })
-      .then((body) => {
-        data = { ...data, ...body };
-      })
-      .catch((body) => {
-        if (body.error) {
-          if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
-            throw error(404, body.error);
-          }
 
-          throw error(500, body.error);
-        }
-      });
+    if (body.error) {
+      if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
+        throw error(404, body.error);
+      }
 
-    return data;
+      throw error(500, body.error);
+    }
+
+    body.page = parseInt(page);
+
+    return body;
   }
 </script>
 
@@ -161,42 +130,18 @@
 
   pageTitle.set($_('pages.players-by-permission-group.title', {values: {permissionGroupName: data.permissionGroup.name === "-" ? $_('pages.players-by-permission-group.player') : data.permissionGroup.name}}));
 
-  function reloadData(
-    page = data.page,
-    permissionGroupName = data.permissionGroup.name
-  ) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      loadData({
-        page,
-        permissionGroup: permissionGroupName,
-      })
-        .then((loadedData) => {
-          resolve();
-
-          if (page !== data.page) {
-            goto(
-              base +
-                "/players/by-perm-group/" +
-                permissionGroupName +
-                "/" +
-                page
-            );
-          } else {
-            data = loadedData;
-          }
-        })
-        .catch((body) => {
-          if (body.error === "PAGE_NOT_FOUND") {
-            resolve();
-
-            reloadData(page - 1);
-          } else if (body.error === "NOT_EXISTS") {
-            goto(base + "/error-404");
-          } else {
-            reject();
-          }
-        });
+  async function refreshData() {
+    const queryParams = buildQueryParams({
+      page: data.page,
     });
+
+    await goto(queryParams);
+  }
+
+  async function onPageClick(page) {
+    data.page = page;
+
+    await refreshData();
   }
 
   function onShowAuthorizePlayerModalClick(player) {

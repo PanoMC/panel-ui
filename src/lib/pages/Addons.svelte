@@ -173,7 +173,8 @@
 </div>
 
 <script context="module">
-  import ApiUtil from "$lib/api.util.js";
+  import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
+  import { error } from "@sveltejs/kit";
 
   export const PageTypes = Object.freeze({
     ALL: "ALL",
@@ -183,43 +184,28 @@
 
   export const DefaultPageType = PageTypes.ALL;
 
-  async function loadData({ request, pageType }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/plugins?status=${pageType.toUpperCase()}`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          resolve(body);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event, pageType = DefaultPageType) {
     const { parent } = event;
-    const parentData = await parent();
+    await parent();
 
     pageType = pageType.toUpperCase();
 
-    let data = {
-      plugins: [],
-      pageType,
-    };
+    const queryParams = buildQueryParams({status: pageType})
+    const body = await ApiUtil.get({
+      path: `/api/panel/plugins` + queryParams,
+      request: event,
+    })
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
+    if (body.error) {
+      throw error(500, body);
     }
 
-    await loadData({ request: event, pageType }).then((body) => {
-      data = { ...data, ...body };
-    });
+    body.pageType = pageType
 
-    return data;
+    return body;
   }
 </script>
 
@@ -230,7 +216,6 @@
 
   import { API_URL, PANO_WEBSITE_URL } from "$lib/variables";
   import tooltip from "$lib/tooltip.util";
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
 
@@ -289,63 +274,63 @@
   }
 
   function togglePluginState(plugin, status, callback = () => {}) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.put({
-        path: `/api/panel/plugins/${plugin.id}`,
-        body: { status },
-      })
-        .then(async (body) => {
-          if (body.result !== "ok") {
-            reject(body.error);
-            return;
-          }
+    ApiUtil.put({
+      path: `/api/panel/plugins/${plugin.id}`,
+      body: { status },
+      handler: async (body, reject) => {
+        if (body.error) {
+          reject(body.error);
 
-          const newPluginsData = await loadData({ pageType: data.pageType });
+          return;
+        }
 
-          data.plugins.forEach((plugin) => {
-            const newPluginData = newPluginsData.plugins.find(
-              (newPluginData) => newPluginData.id === plugin.id,
-            );
-
-            if (newPluginData == null) {
-              data.plugins = data.plugins.filter(
-                (filterPlugin) => filterPlugin.id !== plugin.id,
-              );
-            } else {
-              Object.keys(newPluginData).forEach((key) => {
-                plugin[key] = newPluginData[key];
-              });
-            }
-          });
-
-          newPluginsData.plugins.forEach((newPluginData) => {
-            const pluginData = data.plugins.find(
-              (plugin) => newPluginData.id === plugin.id,
-            );
-
-            if (pluginData == null) {
-              data.plugins.push(newPluginData);
-            }
-          });
-
-          data.plugins = data.plugins;
-
-          if (body.status === "CREATED") {
-            showToast(EnablingAddonFailedByDependencyErrorToast, {
-              addon: plugin.id,
-            });
-          }
-
-          if (body.status === "FAILED") {
-            showToast(FailedToEnableAddonToast, {
-              addon: plugin.id,
-            });
-          }
-
-          callback();
-          resolve();
+        const queryParams = buildQueryParams({status: data.pageType})
+        const newPluginsData = await ApiUtil.get({
+          path: `/api/panel/plugins` + queryParams
         })
-        .catch((e) => reject(e));
-    });
+
+        data.plugins.forEach((plugin) => {
+          const newPluginData = newPluginsData.plugins.find(
+            (newPluginData) => newPluginData.id === plugin.id,
+          );
+
+          if (newPluginData == null) {
+            data.plugins = data.plugins.filter(
+              (filterPlugin) => filterPlugin.id !== plugin.id,
+            );
+          } else {
+            Object.keys(newPluginData).forEach((key) => {
+              plugin[key] = newPluginData[key];
+            });
+          }
+        });
+
+        newPluginsData.plugins.forEach((newPluginData) => {
+          const pluginData = data.plugins.find(
+            (plugin) => newPluginData.id === plugin.id,
+          );
+
+          if (pluginData == null) {
+            data.plugins.push(newPluginData);
+          }
+        });
+
+        data.plugins = data.plugins;
+
+        if (body.status === "CREATED") {
+          await showToast(EnablingAddonFailedByDependencyErrorToast, {
+            addon: plugin.id,
+          });
+        }
+
+        if (body.status === "FAILED") {
+          await showToast(FailedToEnableAddonToast, {
+            addon: plugin.id,
+          });
+        }
+
+        callback();
+      }
+    })
   }
 </script>

@@ -74,7 +74,6 @@
 <script>
   import { _ } from "svelte-i18n";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import ApiUtil from "$lib/api.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
@@ -90,34 +89,31 @@
   function onYesClick() {
     loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.put({
-        path: "/api/panel/tickets",
-        body: {
-          tickets: Object.values(
-            get(selectedTickets).map((id) => parseInt(id))
-          ),
-          status: TicketStatuses.CLOSED,
-        },
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            loading = false;
+    ApiUtil.put({
+      path: "/api/panel/tickets",
+      body: {
+        tickets: Object.values(
+          get(selectedTickets).map((id) => parseInt(id))
+        ),
+        status: TicketStatuses.CLOSED,
+      },
+      handler: async (body, reject) => {
+        if (body.error) {
+          refreshBrowserPage();
 
-            hide();
+          return;
+        }
 
-            const count = get(selectedTickets).length;
+        loading = false;
 
-            showToast(TicketsClosedToast, { count });
+        hide();
 
-            callback(get(selectedTickets));
+        const count = get(selectedTickets).length;
 
-            resolve();
-          } else refreshBrowserPage();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+        await showToast(TicketsClosedToast, { count });
+
+        callback(get(selectedTickets));
+      }
+    })
   }
 </script>

@@ -102,41 +102,23 @@
     }
   }
 
-  async function loadData({ request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: "/api/panel/notifications",
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          resolve(body);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
-
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
     const { parent } = event;
-    const parentData = await parent();
+    await parent();
 
-    let data = {};
+    const body = await ApiUtil.get({
+      path: "/api/panel/notifications",
+      request: event,
+    })
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
-    }
+    setNotifications(body.notifications);
 
-    await loadData({ request: event }).then((body) => {
-      setNotifications(body.notifications);
+    count.set(parseInt(body.notificationCount));
 
-      count.set(parseInt(body.notificationCount));
-    });
-
-    return data;
+    return body;
   }
 </script>
 
@@ -145,9 +127,6 @@
   import { formatDistanceToNow } from "date-fns";
   import { _ } from "svelte-i18n";
   import * as locales from "date-fns/locale";
-
-  import tooltip from "$lib/tooltip.util.js";
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
 
   import ConfirmRemoveAllNotificationsModal, {
     show as showDeleteAllNotificationsModal,
@@ -172,83 +151,74 @@
   let interval;
 
   function getNotifications(id) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      loadData({})
-        .then((data) => {
+    ApiUtil.get({
+      path: "/api/panel/notifications",
+      handler: (body) => {
+        if (notificationProcessID !== id) {
+          return
+        }
+
+        if (body.result === "ok") {
+          setNotifications(body.notifications);
+
+          count.set(parseInt(body.notificationCount));
+        }
+
+        setTimeout(() => {
           if (notificationProcessID === id) {
-            if (data.result === "ok") {
-              setNotifications(data.notifications);
-
-              count.set(parseInt(data.notificationCount));
-            }
-
-            setTimeout(() => {
-              if (notificationProcessID === id) {
-                startnotificationCountdown();
-              }
-            }, 1000);
+            startnotificationCountdown();
           }
-
-          resolve();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+        }, 1000);
+      }
+    })
   }
 
   function loadMore() {
     loadMoreLoading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/notifications/${
-          get(notifications)[get(notifications).length - 1].id
-        }/more`,
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            body.notifications.forEach((notification) => {
-              notifications.update((value) =>
-                value.insert(value.length, notification),
-              );
-            });
-
-            loadMoreLoading = false;
-
-            resolve();
-          } else reject();
-        })
-        .catch(() => {
+    ApiUtil.get({
+      path: `/api/panel/notifications/${
+        get(notifications)[get(notifications).length - 1].id
+      }/more`,
+      handler: (body, reject) => {
+        if (body.error) {
           reject();
+
+          return
+        }
+
+        body.notifications.forEach((notification) => {
+          notifications.update((value) =>
+            value.insert(value.length, notification),
+          );
         });
-    });
+
+        loadMoreLoading = false;
+      }
+    })
   }
 
   function deleteNotification(id) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.delete({
-        path: `/api/panel/notifications/${id}`,
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            get(notifications).forEach((notification) => {
-              if (notification.id === id) {
-                notifications.update((value) =>
-                  value.remove(value.indexOf(notification)),
-                );
-
-                count.update((value) => value--);
-              }
-            });
-
-            resolve();
-          } else reject();
-        })
-        .catch(() => {
+    ApiUtil.delete({
+      path: `/api/panel/notifications/${id}`,
+      handler: (body, reject) => {
+        if (body.error) {
           reject();
+
+          return
+        }
+
+        get(notifications).forEach((notification) => {
+          if (notification.id === id) {
+            notifications.update((value) =>
+              value.remove(value.indexOf(notification)),
+            );
+
+            count.update((value) => value--);
+          }
         });
-    });
+      }
+    })
   }
 
   function startnotificationCountdown() {

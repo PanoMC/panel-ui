@@ -107,7 +107,6 @@
 <script>
   import { base } from "$app/paths";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import ApiUtil from "$lib/api.util";
   import tooltip from "$lib/tooltip.util";
   import { _ } from "svelte-i18n";
@@ -121,26 +120,24 @@
   function onYesClick() {
     loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.delete({
-        path: `/api/panel/permissions/${get(permissionGroup).id}`,
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            loading = false;
+    ApiUtil.delete({
+      path: `/api/panel/permissions/${get(permissionGroup).id}`,
+      handler: (body, reject) => {
+        if (body.error) {
+          refreshBrowserPage();
+          return;
+        }
 
-            hide();
+        loading = false;
 
-            //TODO TOAST
+        hide();
 
-            callback(get(permissionGroup));
+        //TODO TOAST
 
-            resolve();
-          } else refreshBrowserPage();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+        callback(get(permissionGroup));
+
+        resolve();
+      }
+    })
   }
 </script>

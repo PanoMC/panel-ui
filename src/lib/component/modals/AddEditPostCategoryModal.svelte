@@ -123,7 +123,6 @@
 <script>
   import { _ } from "svelte-i18n";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import ApiUtil from "$lib/api.util";
 
   let loading = false;
@@ -132,51 +131,45 @@
   function onSubmit() {
     loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      const bodyHandler = (body) => {
-        if (body.result === "ok") {
-          loading = false;
+    const bodyHandler = (body, reject) => {
+      if (body.result === "ok") {
+        loading = false;
 
-          hide();
+        hide();
 
-          const newCategory = get(category);
+        const newCategory = get(category);
 
-          newCategory.id = body.id;
+        newCategory.id = body.id;
 
-          callback(true, newCategory);
+        callback(true, newCategory);
 
-          resolve();
-        } else if (body.result === "errors") {
-          loading = false;
+        return;
+      } else if (body.result === "errors") {
+        loading = false;
 
-          errors.set(body.errors);
-
-          resolve();
-        } else if (body.result === "error") reject();
-      };
-
-      if (get(mode) === "edit") {
-        ApiUtil.put({
-          path: `/api/panel/post/categories/${get(category).id}`,
-          body: get(category),
-        })
-          .then(bodyHandler)
-          .catch(() => {
-            reject();
-          });
+        errors.set(body.errors);
 
         return;
       }
 
-      ApiUtil.post({
-        path: "/api/panel/post/category",
+      reject();
+    };
+
+    if (get(mode) === "edit") {
+      ApiUtil.put({
+        path: `/api/panel/post/categories/${get(category).id}`,
         body: get(category),
+        handler: bodyHandler
       })
-        .then(bodyHandler)
-        .catch(() => {
-          reject();
-        });
-    });
+
+      return;
+    }
+
+    ApiUtil.post({
+      path: "/api/panel/post/category",
+      body: get(category),
+      handler: bodyHandler
+    })
   }
 
   function setURL() {

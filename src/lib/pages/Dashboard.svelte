@@ -164,43 +164,17 @@
 <script context="module">
   import ApiUtil from "$lib/api.util.js";
 
-  async function loadData({ request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/dashboard`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          resolve(body);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
     const { parent } = event;
-    const parentData = await parent();
+    await parent();
 
-    let data = {
-      gettingStartedBlocks: {
-        welcomeBoard: false,
-      },
-      tickets: [],
-    };
-
-    if (parentData.NETWORK_ERROR) {
-      return data;
-    }
-
-    await loadData({ request: event }).then((body) => {
-      data = { ...data, ...body };
+    return await ApiUtil.get({
+      path: `/api/panel/dashboard`,
+      request: event,
     });
-
-    return data;
   }
 </script>
 
@@ -210,7 +184,6 @@
 
   import { base } from "$app/paths";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import { hasPermission, Permissions } from "$lib/auth.util";
   import tooltip from "$lib/tooltip.util";
 
@@ -227,16 +200,9 @@
   pageTitle.set("pages.dashboard.title");
 
   function onCloseGettingStartedCard() {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: "/api/panel/dashboard/closeGettingStartedCard",
-      })
-        .then(() => {
-          resolve();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+    ApiUtil.post({
+      path: "/api/panel/dashboard/closeGettingStartedCard",
+      handler: () => {}
+    })
   }
 </script>

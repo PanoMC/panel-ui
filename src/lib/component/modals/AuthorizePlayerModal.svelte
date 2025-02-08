@@ -48,7 +48,6 @@
 <script context="module">
   import { writable, get } from "svelte/store";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import ApiUtil from "$lib/api.util";
 
   const dialogID = "authorizePlayerModal";
@@ -98,22 +97,19 @@
   function initData() {
     loading.set(true);
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.get({
-        path: "/api/panel/permissionGroups",
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            permissionGroups.set(body.permissionGroups);
-            loading.set(false);
+    ApiUtil.get({
+      path: "/api/panel/permissionGroups",
+      handler: (body, reject) => {
+        if (body.error) {
+          reject()
 
-            resolve();
-          } else reject();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+          return;
+        }
+
+        permissionGroups.set(body.permissionGroups);
+        loading.set(false);
+      }
+    })
   }
 </script>
 
@@ -126,37 +122,38 @@
   function onSubmit() {
     submitLoading.set(true);
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.put({
-        path: `/api/panel/players/${get(player).username}/permissionGroup`,
-        body: {
-          permissionGroup: get(player).permissionGroup,
-        },
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            submitLoading.set(false);
+    ApiUtil.put({
+      path: `/api/panel/players/${get(player).username}/permissionGroup`,
+      body: {
+        permissionGroup: get(player).permissionGroup,
+      },
+      handler: async (body, reject) => {
+        if (body.result === "ok") {
+          submitLoading.set(false);
 
-            hide();
+          hide();
 
-            showToast(PlayerAuthorizedSuccessToast);
+          await showToast(PlayerAuthorizedSuccessToast);
 
-            callback(get(player));
+          callback(get(player));
 
-            resolve();
-          } else if (body.result === "NOT_EXISTS") {
-            location.reload();
-          } else if (body.errors) {
-            errors.set(body.errors);
+          return;
+        } else if (body.result === "NOT_EXISTS") {
+          location.reload();
 
-            resolve();
-          } else if (body.error) {
-            location.reload();
-          } else reject();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+          return;
+        } else if (body.errors) {
+          errors.set(body.errors);
+
+          return;
+        } else if (body.error) {
+          location.reload();
+
+          return;
+        }
+
+        reject();
+      }
+    })
   }
 </script>

@@ -122,12 +122,10 @@
     logoutLoading,
     options,
     quickNotifications,
-    showNetworkErrorOnCatch,
     toggleSidebar,
   } from "$lib/Store";
   import { onNotificationClick } from "$lib/NotificationManager.js";
   import NoContent from "$lib/component/NoContent.svelte";
-  import { currentLanguage } from "$lib/language.util.js";
 
   let quickNotificationProcessID = 0;
 
@@ -146,43 +144,33 @@
   function onLogout() {
     logoutLoading.set(true);
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({ path: "/api/auth/logout" })
-        .then(() => {
-          window.location.href = "/";
-
-          resolve();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+    ApiUtil.post({
+      path: "/api/auth/logout",
+      handler: () => {
+        window.location.href = "/";
+      }}
+    )
   }
 
   function markQuickNotificationsAsRead(id) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: "/api/panel/notifications/quick/markAsRead",
-      })
-        .then((body) => {
+    ApiUtil.post({
+      path: "/api/panel/notifications/quick/markAsRead",
+      handler: (body, reject) => {
+        if (quickNotificationProcessID !== id) {
+          return
+        }
+
+        if (body.result === "ok") {
+          notificationCount.set(body.notificationCount);
+        }
+
+        setTimeout(() => {
           if (quickNotificationProcessID === id) {
-            if (body.result === "ok") {
-              notificationCount.set(body.notificationCount);
-            }
-
-            setTimeout(() => {
-              if (quickNotificationProcessID === id) {
-                startMarkQuickNotificationsAsReadCountDown();
-              }
-            }, 1000);
+            startMarkQuickNotificationsAsReadCountDown();
           }
-
-          resolve();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+        }, 1000);
+      }
+    })
   }
 
   function startMarkQuickNotificationsAsReadCountDown() {

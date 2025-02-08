@@ -63,7 +63,6 @@
 </script>
 
 <script>
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import ApiUtil from "$lib/api.util";
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
   import NotificationsDeletedPermanentlyToast from "$lib/component/toasts/NotificationsDeletedPermanentlyToast.svelte";
@@ -78,26 +77,22 @@
   function onYesClick() {
     loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.delete({
-        path: "/api/panel/notifications",
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            loading = false;
+    ApiUtil.delete({
+      path: "/api/panel/notifications",
+      handler: (body, reject) => {
+        if (body.error) {
+          refreshBrowserPage();
+          return;
+        }
 
-            hide();
+        loading = false;
 
-            showToast(NotificationsDeletedPermanentlyToast);
+        hide();
 
-            callback();
+        showToast(NotificationsDeletedPermanentlyToast);
 
-            resolve();
-          } else refreshBrowserPage();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+        callback();
+      }
+    })
   }
 </script>

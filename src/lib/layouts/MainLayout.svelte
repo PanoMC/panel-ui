@@ -38,7 +38,7 @@
   import { init as initLanguage } from "$lib/language.util";
   import ApiUtil from "$lib/api.util.js";
 
-  import { networkErrorCallbacks } from "$lib/Store.js";
+  import { networkErrorCallbacks, showNetworkError } from "$lib/Store.js";
 
   import { addListener } from "$lib/NotificationManager.js";
 
@@ -116,6 +116,10 @@
     await initLanguage(basicData.locale);
 
     if (browser) {
+      ApiUtil.interceptors.errorHandler = (requestProcess) => {
+        showNetworkError(requestProcess)
+      };
+
       initNotificationListeners();
     }
 

@@ -334,23 +334,6 @@
     ONCE_PER_MONTH: "ONCE_PER_MONTH",
   });
 
-  async function loadData({ request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: "/api/panel/settings?type=GENERAL",
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          body.oldSettings = structuredClone(body);
-
-          resolve(body);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
-
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
@@ -359,28 +342,24 @@
       parent,
       url: { searchParams },
     } = event;
-    const parentData = await parent();
+    await parent();
 
-    let data = {
-      updatePeriod: "",
-      locale: "",
-      oldSettings: {},
-      email: {},
-    };
-
-    if (parentData.NETWORK_ERROR) {
-      return data;
-    }
-
-    await loadData({ request: event }).then((body) => {
-      data = { ...data, ...body };
+    const queryParams = buildQueryParams({
+      type: "GENERAL",
     });
+
+    const body = await ApiUtil.get({
+      path: "/api/panel/settings" + queryParams,
+      request: event,
+    })
+
+    body.oldSettings = structuredClone(body);
 
     const failed = searchParams.get("failed");
     const encodedData = searchParams.get("encodedData");
     const state = searchParams.get("state");
 
-    return { ...data, platformConnectFailed: failed, encodedData, state };
+    return { ...body, platformConnectFailed: failed, encodedData, state };
   }
 </script>
 
@@ -392,7 +371,6 @@
   import { goto, invalidateAll } from "$app/navigation";
   import { browser } from "$app/environment";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import { PANO_WEBSITE_URL } from "$lib/variables.js";
   import { buildQueryParams } from "$lib/api.util.js";
 
@@ -446,237 +424,211 @@
 
   if (browser) {
     if (!data.panoAccount && data.state && data.encodedData) {
-      showNetworkErrorOnCatch((resolve, reject) => {
-        ApiUtil.post({
-          path: "/api/panel/platform/connect",
-          body: {
-            encodedData: data.encodedData,
-            state: data.state,
-          },
-        })
-          .then(async (body) => {
-            resolve();
-
-            if (body.error) {
-              if (body.error === "ALREADY_CONNECTED_TO_PANO") {
-                await goto($page.url.pathname, { invalidateAll: true });
-                connecting = false;
-                return;
-              }
-
-              const queryParameters = buildQueryParams({ failed: true });
-              await goto($page.url.pathname + queryParameters, {
-                invalidateAll: true,
-              });
+      ApiUtil.post({
+        path: "/api/panel/platform/connect",
+        body: {
+          encodedData: data.encodedData,
+          state: data.state,
+        },
+        handler: async (body, reject) => {
+          if (body.error) {
+            if (body.error === "ALREADY_CONNECTED_TO_PANO") {
+              await goto($page.url.pathname, { invalidateAll: true });
               connecting = false;
-
               return;
             }
 
-            await goto($page.url.pathname, { invalidateAll: true });
-            await showToast(PanoAccountConnectSuccessToast);
-
+            const queryParameters = buildQueryParams({ failed: true });
+            await goto($page.url.pathname + queryParameters, {
+              invalidateAll: true,
+            });
             connecting = false;
-          })
-          .catch((_) => reject());
-      });
+
+            return;
+          }
+
+          await goto($page.url.pathname, { invalidateAll: true });
+          await showToast(PanoAccountConnectSuccessToast);
+
+          connecting = false;
+        }
+      })
     }
   }
 
   function onConnectClick() {
     connecting = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: "/api/panel/platform/code",
-      })
-        .then((body) => {
-          resolve();
+    ApiUtil.post({
+      path: "/api/panel/platform/code",
+      handler: async (body, reject) => {
+        if (body.error) {
+          location.reload();
+          return;
+        }
 
-          if (body.error) {
-            location.reload();
-            return;
-          }
+        const { publicKey, state } = body;
 
-          const { publicKey, state } = body;
+        // Encode dynamic parts to ensure the URL is safe
+        const encodedPublicKey = encodeURIComponent(publicKey);
+        const encodedRedirectUrl = encodeURIComponent(
+          $page.url.origin + $page.url.pathname,
+        );
+        const encodedState = encodeURIComponent(state);
 
-          // Encode dynamic parts to ensure the URL is safe
-          const encodedPublicKey = encodeURIComponent(publicKey);
-          const encodedRedirectUrl = encodeURIComponent(
-            $page.url.origin + $page.url.pathname,
-          );
-          const encodedState = encodeURIComponent(state);
-
-          // Redirect to the constructed URL
-          window.location = `${PANO_WEBSITE_URL}/auth?loginPanoPlatform=${encodedPublicKey}&redirectUrl=${encodedRedirectUrl}&state=${encodedState}`;
+        const queryParams = buildQueryParams({
+          loginPanoPlatform: encodedPublicKey,
+          redirectUrl: encodedRedirectUrl,
+          state: encodedState
         })
-        .catch((_) => reject());
-    });
+
+        // Redirect to the constructed URL
+        window.location = `${PANO_WEBSITE_URL}/auth` + queryParams;
+      }
+    })
   }
 
   function onDisconnectClick() {
     showConfirmRemovePanoAccountModal(() => {
       disconnecting = true;
 
-      showNetworkErrorOnCatch((resolve, reject) => {
-        ApiUtil.post({
-          path: "/api/panel/platform/disconnect",
-        })
-          .then(async (body) => {
-            resolve();
-
-            if (body.error) {
-              await showToast(PanoAccountDisconnectFailToast);
-
-              disconnecting = false;
-              return;
-            }
-
-            await showToast(PanoAccountDisconnectSuccessToast);
-
-            data.panoAccount = null;
+      ApiUtil.post({
+        path: "/api/panel/platform/disconnect",
+        handler: async (body, reject) => {
+          if (body.error) {
+            await showToast(PanoAccountDisconnectFailToast);
 
             disconnecting = false;
-          })
-          .catch((_) => reject());
-      });
+            return;
+          }
+
+          await showToast(PanoAccountDisconnectSuccessToast);
+
+          data.panoAccount = null;
+
+          disconnecting = false;
+        }
+      })
     });
   }
 
   function onSavePreferencesClick() {
     savePreferencesLoading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      const formData = new FormData();
+    const formData = new FormData();
 
-      formData.append("updatePeriod", data.updatePeriod);
-      formData.append("locale", data.locale);
+    formData.append("updatePeriod", data.updatePeriod);
+    formData.append("locale", data.locale);
 
-      ApiUtil.put({
-        path: "/api/panel/settings",
-        body: formData,
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            savePreferencesLoading = false;
-
-            data.oldSettings = Object.keys(data)
-              .filter((key) => key !== "oldSettings")
-              .reduce((obj, key) => {
-                obj[key] = data[key];
-                return obj;
-              }, {});
-
-            changeLanguage(getLanguageByLocale(data.locale));
-
-            showToast(SettingsSaveSuccessToast);
-
-            resolve();
-          } else reject();
-        })
-        .catch(() => {
+    ApiUtil.put({
+      path: "/api/panel/settings",
+      body: formData,
+      handler: async (body, reject) => {
+        if (body.error) {
           reject();
-        });
-    });
+
+          return;
+        }
+
+        savePreferencesLoading = false;
+
+        data.oldSettings = Object.keys(data)
+          .filter((key) => key !== "oldSettings")
+          .reduce((obj, key) => {
+            obj[key] = data[key];
+            return obj;
+          }, {});
+
+        await changeLanguage(getLanguageByLocale(data.locale));
+
+        await showToast(SettingsSaveSuccessToast);
+      }
+    })
   }
 
   function onValidateEmailClick() {
     saveEmailLoading = true;
     mailError = null;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: "/api/panel/settings/verify/mail",
-        body: data.email,
-      })
-        .then((body) => {
-          saveEmailLoading = false;
+    ApiUtil.post({
+      path: "/api/panel/settings/verify/mail",
+      body: data.email,
+      handler: async (body, reject) => {
+        saveEmailLoading = false;
 
-          if (body.error) {
-            mailError = body.mailError;
+        if (body.error) {
+          mailError = body.mailError;
 
-            return;
-          }
+          return;
+        }
 
-          mailValidated = true;
+        mailValidated = true;
 
-          showToast(EmailConfigValidateSuccessToast);
-
-          resolve();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+        await showToast(EmailConfigValidateSuccessToast);
+      }
+    })
   }
 
   function onSaveSmtpClick() {
     saveEmailLoading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      const formData = new FormData();
+    const formData = new FormData();
 
-      const {
-        hostname,
-        port,
-        ssl,
-        starttls,
-        username,
-        password,
-        sender,
-        authMethods
-      } = data.email
+    const {
+      hostname,
+      port,
+      ssl,
+      starttls,
+      username,
+      password,
+      sender,
+      authMethods
+    } = data.email
 
-      formData.append("email", JSON.stringify({
-        enabled: true,
-        hostname: hostname || "",
-        port: port || 3306,
-        ssl: ssl || false,
-        starttls: starttls || "DISABLED",
-        username: username || "",
-        password: password || "",
-        sender: sender || "",
-        authMethods: authMethods || ""
-      }))
+    formData.append("email", JSON.stringify({
+      enabled: true,
+      hostname: hostname || "",
+      port: port || 3306,
+      ssl: ssl || false,
+      starttls: starttls || "DISABLED",
+      username: username || "",
+      password: password || "",
+      sender: sender || "",
+      authMethods: authMethods || ""
+    }))
 
-      ApiUtil.put({
-        path: "/api/panel/settings",
-        body: formData,
-      })
-        .then(async (body) => {
-          if (body.error) {
-            reject();
-
-            return;
-          }
-
-          saveEmailLoading = false;
-          mailValidated = false;
-
-          data.oldSettings.email = Object.keys(data.email).reduce(
-            (obj, key) => {
-              obj[key] = data.email[key];
-              return obj;
-            },
-            {},
-          );
-
-          const enabled = $siteInfo.emailEnabled
-
-          await invalidateAll()
-
-          if (enabled) {
-            await showToast(SettingsSaveSuccessToast);
-          } else {
-            await showToast(SMTPEnabledSuccessToast);
-          }
-
-          resolve();
-        })
-        .catch(() => {
+    ApiUtil.put({
+      path: "/api/panel/settings",
+      body: formData,
+      handler: async (body, reject) => {
+        if (body.error) {
           reject();
-        });
-    });
+
+          return;
+        }
+
+        saveEmailLoading = false;
+        mailValidated = false;
+
+        data.oldSettings.email = Object.keys(data.email).reduce(
+          (obj, key) => {
+            obj[key] = data.email[key];
+            return obj;
+          },
+          {},
+        );
+
+        const enabled = $siteInfo.emailEnabled
+
+        await invalidateAll()
+
+        if (enabled) {
+          await showToast(SettingsSaveSuccessToast);
+        } else {
+          await showToast(SMTPEnabledSuccessToast);
+        }
+      }
+    })
   }
 
   function maskEmail(email) {
@@ -702,45 +654,38 @@
       mailValidated = false;
       saveEmailLoading = true;
 
-      showNetworkErrorOnCatch((resolve, reject) => {
-        const formData = new FormData();
-        formData.append("email", JSON.stringify({
-          enabled: false,
-          hostname: "",
-          port: 0,
-          ssl: false,
-          starttls: "DISABLED",
-          username: "",
-          password: "",
-          sender: "",
-          authMethods: ""
-        }))
+      const formData = new FormData();
+      formData.append("email", JSON.stringify({
+        enabled: false,
+        hostname: "",
+        port: 0,
+        ssl: false,
+        starttls: "DISABLED",
+        username: "",
+        password: "",
+        sender: "",
+        authMethods: ""
+      }))
 
-        ApiUtil.put({
-          path: "/api/panel/settings",
-          body: formData,
-        })
-          .then(async (body) => {
-            if (body.error) {
-              reject();
-
-              return;
-            }
-
-            saveEmailLoading = false;
-
-            await invalidateAll()
-
-            await showToast(SMTPDisabledSuccessToast);
-
-            toggleSmtpLoading = false;
-
-            resolve();
-          })
-          .catch(() => {
+      ApiUtil.put({
+        path: "/api/panel/settings",
+        body: formData,
+        handler: async (body, reject) => {
+          if (body.error) {
             reject();
-          });
-      });
+
+            return;
+          }
+
+          saveEmailLoading = false;
+
+          await invalidateAll()
+
+          await showToast(SMTPDisabledSuccessToast);
+
+          toggleSmtpLoading = false;
+        }
+      })
 
       return
     }

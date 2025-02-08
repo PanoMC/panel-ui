@@ -181,9 +181,9 @@
             <Pagination
               page="{data.page}"
               totalPage="{data.ticketTotalPage}"
-              on:firstPageClick="{() => reloadData(1)}"
-              on:lastPageClick="{() => reloadData(data.ticketTotalPage)}"
-              on:pageLinkClick="{(event) => reloadData(event.detail.page)}" />
+              on:firstPageClick="{() => onPageClick(1)}"
+              on:lastPageClick="{() => onPageClick(data.ticketTotalPage)}"
+              on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
           </div>
         </div>
       {/if}
@@ -220,75 +220,37 @@
 </div>
 
 <script context="module">
-  import ApiUtil from "$lib/api.util";
-  import { showNetworkErrorOnCatch } from "$lib/Store";
+  import ApiUtil, { buildQueryParams } from "$lib/api.util";
   import { error } from "@sveltejs/kit";
-
-  async function loadData({ username, page, request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/players/${username}?page=${page}`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          const data = body;
-
-          data.username = username;
-          data.page = parseInt(page);
-
-          resolve(data);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent } = event;
-    const parentData = await parent();
+    const { parent, url: {searchParams} } = event;
+    await parent();
 
-    let data = {
-      player: {
-        username: "",
-        isBanned: false,
-        registerDate: 0,
-        lastLoginDate: 0,
-        permissionGroup: "",
-        lastActivityTime: 0,
-        inGame: false,
-      },
-      tickets: [],
-      ticketCount: 0,
-      ticketTotalPage: 1,
-    };
+    const queryParams = buildQueryParams({
+      page: searchParams.get("page") || 1,
+    });
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
-    }
-
-    await loadData({
-      username: event.params.username,
-      page: event.params.page || 1,
+    const body = await ApiUtil.get({
+      path: `/api/panel/players/${username}` + queryParams,
       request: event,
     })
-      .then((body) => {
-        data = { ...data, ...body };
-      })
-      .catch((body) => {
-        if (body.error) {
-          if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
-            throw error(404, body.error);
-          }
 
-          throw error(500, body.error);
-        }
-      });
+    if (body.error) {
+      if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
+        throw error(404, body.error);
+      }
 
-    return data;
+      throw error(500, body.error);
+    }
+
+    body.username = username;
+    body.page = parseInt(page);
+
+    return body;
   }
 </script>
 
@@ -351,60 +313,42 @@
     data.player.lastActivityTime > Date.now() - 5 * 60 * 1000 ||
     data.player.inGame;
 
-  function reloadData(page = data.page) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      loadData({
-        username: data.player.username,
-        page,
-      })
-        .then((loadedData) => {
-          resolve();
-
-          if (page !== data.page) {
-            goto(base + "/players/player/" + data.player.username + "/" + page);
-          } else {
-            data = loadedData;
-          }
-        })
-        .catch((body) => {
-          if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
-            resolve();
-
-            reloadData(page - 1);
-          } else {
-            reject();
-          }
-        });
+  async function refreshData() {
+    const queryParams = buildQueryParams({
+      page: data.page,
     });
+
+    await goto(queryParams);
+  }
+
+  async function onPageClick(page) {
+    data.page = page;
+
+    await refreshData();
   }
 
   function sendVerification() {
     sendingVerificationMail = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: `/api/panel/players/${data.player.username}/verificationMail`,
-      })
-        .then((body) => {
-          sendingVerificationMail = false;
+    ApiUtil.post({
+      path: `/api/panel/players/${data.player.username}/verificationMail`,
+      handler: async (body, reject) => {
+        sendingVerificationMail = false;
 
-          if (body.result === "ok") {
-            showToast(VerificationEmailSentSuccessfulToast, {
-              username: data.player.username,
-            });
-
-            return;
-          }
-
-          showToast(VerificationEmailSentErrorToast, {
+        if (body.result === "ok") {
+          await showToast(VerificationEmailSentSuccessfulToast, {
             username: data.player.username,
-            errorCode: body.error,
           });
-        })
-        .catch(() => {
-          reject();
+
+          return;
+        }
+
+        await showToast(VerificationEmailSentErrorToast, {
+          username: data.player.username,
+          errorCode: body.error,
         });
-    });
+      }
+    })
   }
 
   setAuthorizePlayerModalCallback((newPlayer) => {

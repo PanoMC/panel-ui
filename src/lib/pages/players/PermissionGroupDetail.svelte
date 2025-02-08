@@ -122,36 +122,6 @@
 
   export const DefaultMode = Modes.CREATE;
 
-  async function loadData({ id, request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/permissionGroups/${id}`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          resolve(body);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
-
-  async function loadPermissions({ request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: "/api/panel/permissions",
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          resolve(body);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
-
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
@@ -169,57 +139,62 @@
     };
 
     if (mode === Modes.EDIT) {
-      await loadData({
-        id: event.params.id,
+      const id = event.params.id;
+
+      const permissionGroupsBody = await ApiUtil.get({
+        path: `/api/panel/permissionGroups/${id}`,
         request: event,
       })
-        .then((body) => {
-          data = { ...data, ...body };
-        })
-        .catch((body) => {
-          if (body.error) {
-            if (body.error === "NOT_EXISTS") {
-              throw error(404, body.error);
-            }
 
-            throw error(500, body.error);
-          }
-        });
-    }
+      if (permissionGroupsBody.error) {
+        if (permissionGroupsBody.error === "NOT_EXISTS") {
+          throw error(404, permissionGroupsBody.error);
+        }
 
-    if (data !== null) {
-      await loadPermissions({ request: event }).then((body) => {
-        data = { ...data, ...body };
-      });
-
-      data.permissionList = data.permissions;
-      data.permissions = data.permissionList.map((permission) => {
-        return {
-          id: permission.id,
-          selected: data.name === "admin",
-        };
-      });
-
-      if (data.name !== "admin") {
-        data.permissionGroupPerms.forEach((permissionGroupPerm) => {
-          data.permissions.forEach((permission) => {
-            if (permission.id === permissionGroupPerm) {
-              permission.selected = true;
-            }
-          });
-        });
+        throw error(500, permissionGroupsBody.error);
       }
 
-      data.originalPermissions = [];
-      data.permissions.forEach((permission) => {
-        data.originalPermissions.push({ ...permission });
-      });
+      data = { ...data, ...permissionGroupsBody };
+    }
 
-      data.originalUsers = [];
-      data.users.forEach((user) => {
-        data.originalUsers.push(Object.freeze(user));
+    const getPermissionsBody = await ApiUtil.get({
+      path: "/api/panel/permissions",
+      request: event,
+    })
+
+    if (getPermissionsBody.error) {
+      throw error(500, getPermissionsBody.error);
+    }
+
+    data = { ...data, ...getPermissionsBody };
+
+    data.permissionList = data.permissions;
+    data.permissions = data.permissionList.map((permission) => {
+      return {
+        id: permission.id,
+        selected: data.name === "admin",
+      };
+    });
+
+    if (data.name !== "admin") {
+      data.permissionGroupPerms.forEach((permissionGroupPerm) => {
+        data.permissions.forEach((permission) => {
+          if (permission.id === permissionGroupPerm) {
+            permission.selected = true;
+          }
+        });
       });
     }
+
+    data.originalPermissions = [];
+    data.permissions.forEach((permission) => {
+      data.originalPermissions.push({ ...permission });
+    });
+
+    data.originalUsers = [];
+    data.users.forEach((user) => {
+      data.originalUsers.push(Object.freeze(user));
+    });
 
     return data;
   }
@@ -233,7 +208,6 @@
   import { goto } from "$app/navigation";
 
   import tooltip from "$lib/tooltip.util";
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
 
   import PermissionGroupSavedOrCreatedToast from "$lib/component/toasts/PermissionGroupSavedOrCreatedToast.svelte";
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
@@ -327,38 +301,34 @@
 
     checkingUsername = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/players/${username}/exists`,
-      })
-        .then((body) => {
-          checkingUsername = false;
+    await ApiUtil.get({
+      path: `/api/panel/players/${username}/exists`,
+      handler: (body) => {
+        checkingUsername = false;
 
-          if (body.result === "ok") {
-            usernameInputError = false;
-
-            data.users.push(username);
-            data.users = data.users;
-
-            if (removedUsers.indexOf(username) !== -1) {
-              removedUsers.remove(removedUsers.indexOf(username));
-            }
-
-            if (data.originalUsers.indexOf(username) === -1) {
-              addedUsers.push(username);
-            }
-
-            username = "";
-
-            return;
-          }
-
+        if (body.error) {
           errors = { error: body.error };
           usernameInputError = true;
-          resolve();
-        })
-        .catch(() => reject());
-    });
+
+          return;
+        }
+
+        usernameInputError = false;
+
+        data.users.push(username);
+        data.users = data.users;
+
+        if (removedUsers.indexOf(username) !== -1) {
+          removedUsers.remove(removedUsers.indexOf(username));
+        }
+
+        if (data.originalUsers.indexOf(username) === -1) {
+          addedUsers.push(username);
+        }
+
+        username = "";
+      }
+    })
   }
 
   function removeUser(index) {
@@ -379,82 +349,78 @@
     loading = true;
     errors = [];
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      const bodyHandler = (body) => {
-        if (body.result === "ok") {
-          loading = false;
+    const bodyHandler = (body, reject) => {
+      if (body.result === "ok") {
+        loading = false;
 
-          showToast(PermissionGroupSavedOrCreatedToast, {
-            mode: data.mode,
+        showToast(PermissionGroupSavedOrCreatedToast, {
+          mode: data.mode,
+        });
+
+        if (data.mode === Modes.CREATE) {
+          goto(base + "/players/perm-groups/detail/" + body.id);
+        } else {
+          data.originalPermissions = [];
+          data.permissions.forEach((permission) => {
+            data.originalPermissions.push({ ...permission });
           });
+        }
 
-          if (data.mode === Modes.CREATE) {
-            goto(base + "/players/perm-groups/detail/" + body.id);
-          } else {
-            data.originalPermissions = [];
-            data.permissions.forEach((permission) => {
-              data.originalPermissions.push({ ...permission });
-            });
-          }
+        addedUsers.forEach((addedUser) => {
+          data.originalUsers.push(addedUser);
+        });
 
-          addedUsers.forEach((addedUser) => {
-            data.originalUsers.push(addedUser);
-          });
+        removedUsers.forEach((addedUser) => {
+          data.originalUsers.remove(data.originalUsers.indexOf(addedUser));
+        });
 
-          removedUsers.forEach((addedUser) => {
-            data.originalUsers.remove(data.originalUsers.indexOf(addedUser));
-          });
+        addedUsers = [];
+        removedUsers = [];
 
-          addedUsers = [];
-          removedUsers = [];
+        return
+      } else if (body.error) {
+        loading = false;
 
-          resolve();
-        } else if (body.error) {
-          loading = false;
+        showToast(PermissionGroupSaveErrorToast, {
+          errorCode: body.error,
+        });
 
-          showToast(PermissionGroupSaveErrorToast, {
-            errorCode: body.error,
-          });
+        return
+      } else if (body.errors) {
+        loading = false;
 
-          resolve();
-        } else if (body.errors) {
-          loading = false;
+        errors = body.errors;
 
-          errors = body.errors;
-        } else reject();
-      };
-
-      if (data.mode === Modes.EDIT) {
-        ApiUtil.put({
-          path: `/api/panel/permissionGroups/${data.id}`,
-          body: {
-            name,
-            addedUsers,
-            removedUsers,
-            permissions: data.permissions,
-          },
-        })
-          .then(bodyHandler)
-          .catch(() => {
-            reject();
-          });
-
-        return;
+        return
       }
 
-      ApiUtil.post({
-        path: `/api/panel/permissionGroups`,
+      reject();
+    };
+
+    if (data.mode === Modes.EDIT) {
+      ApiUtil.put({
+        path: `/api/panel/permissionGroups/${data.id}`,
         body: {
           name,
           addedUsers,
+          removedUsers,
           permissions: data.permissions,
         },
+        handler: bodyHandler
       })
-        .then(bodyHandler)
-        .catch(() => {
-          reject();
-        });
-    });
+
+      return;
+    }
+
+    ApiUtil.post({
+      path: `/api/panel/permissionGroups`,
+      body: {
+        name,
+        addedUsers,
+        permissions: data.permissions,
+      },
+      handler: bodyHandler
+    })
   }
 
   // function convertIconName(iconName) {

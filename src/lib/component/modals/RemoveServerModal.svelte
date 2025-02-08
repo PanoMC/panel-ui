@@ -86,7 +86,6 @@
 
   import { invalidateAll } from "$app/navigation";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
   import ApiUtil from "$lib/api.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
@@ -97,28 +96,25 @@
   function sendDeleteServer() {
     $loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: `/api/panel/servers/${$server.id}/delete`,
-        body: { currentPassword: $currentPassword },
-      })
-        .then(async (body) => {
-          if (body.result === "ok") {
-            callback($server);
-            await invalidateAll();
-            hide();
-            showToast(ServerDeletedSuccessToast, { name: $server.name });
-          } else if (body.error) {
-            if (body.error === "CURRENT_PASSWORD_NOT_CORRECT") {
-              $passwordError = true;
-            } else {
-              location.reload();
-            }
-          } else reject();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+    ApiUtil.post({
+      path: `/api/panel/servers/${$server.id}/delete`,
+      body: { currentPassword: $currentPassword },
+      handler: (body, reject) => {
+        if (body.error) {
+          if (body.error === "CURRENT_PASSWORD_NOT_CORRECT") {
+            $passwordError = true;
+            return;
+          }
+
+          location.reload();
+          return;
+        }
+
+        callback($server);
+        invalidateAll();
+        hide();
+        showToast(ServerDeletedSuccessToast, { name: $server.name });
+      },
+    })
   }
 </script>

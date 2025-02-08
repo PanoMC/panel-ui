@@ -195,7 +195,6 @@
   import { getContext } from "svelte";
   import { _ } from "svelte-i18n";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import ApiUtil from "$lib/api.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
@@ -212,52 +211,53 @@
   function onSubmit() {
     loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.put({
-        path: `/api/panel/players/${get(player).id}`,
-        body: get(player),
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            if (get(playerBackup).username === get(user).username) {
-              user.update((user) => {
-                user.username = get(player).username;
-                user.email = get(player).email;
+    ApiUtil.put({
+      path: `/api/panel/players/${get(player).id}`,
+      body: get(player),
+      handler: async (body, reject) => {
+        if (body.result === "ok") {
+          if (get(playerBackup).username === get(user).username) {
+            user.update((user) => {
+              user.username = get(player).username;
+              user.email = get(player).email;
 
-                return user;
-              });
-            }
-
-            loading = false;
-
-            hide();
-
-            showToast(PlayerInfoSavedSuccessToast);
-
-            player.update((player) => {
-              player.newPassword = "";
-              player.newPasswordRepeat = "";
-
-              return player;
+              return user;
             });
+          }
 
-            callback(get(player));
+          loading = false;
 
-            resolve();
-          } else if (body.result === "NOT_EXISTS") {
-            refreshBrowserPage();
-          } else if (body.errors) {
-            loading = false;
-            errors.set(body.errors);
+          hide();
 
-            resolve();
-          } else if (body.error) {
-            location.reload();
-          } else reject();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+          await showToast(PlayerInfoSavedSuccessToast);
+
+          player.update((player) => {
+            player.newPassword = "";
+            player.newPasswordRepeat = "";
+
+            return player;
+          });
+
+          callback(get(player));
+
+          return;
+        } else if (body.result === "NOT_EXISTS") {
+          refreshBrowserPage();
+
+          return;
+        } else if (body.errors) {
+          loading = false;
+          errors.set(body.errors);
+
+          return;
+        } else if (body.error) {
+          location.reload();
+
+          return;
+        }
+
+        reject();
+      }
+    })
   }
 </script>

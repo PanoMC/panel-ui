@@ -94,9 +94,9 @@
       <Pagination
         page="{data.page}"
         totalPage="{data.totalPage}"
-        on:firstPageClick="{() => reloadData(1)}"
-        on:lastPageClick="{() => reloadData(data.totalPage)}"
-        on:pageLinkClick="{(event) => reloadData(event.detail.page)}" />
+        on:firstPageClick="{() => onPageClick(1)}"
+        on:lastPageClick="{() => onPageClick(data.totalPage)}"
+        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
     </div>
   </div>
 </article>
@@ -104,76 +104,43 @@
 <script context="module">
   import { writable, get } from "svelte/store";
 
-  import ApiUtil from "$lib/api.util";
-  import { showNetworkErrorOnCatch } from "$lib/Store";
+  import ApiUtil, { buildQueryParams } from "$lib/api.util";
   import { error } from "@sveltejs/kit";
 
   let checkedList = writable([]);
-
-  async function loadData({ page, url, request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/tickets?page=${page}&categoryUrl=${url}`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          const data = body;
-
-          data.page = parseInt(page);
-          data.url = url;
-
-          resolve(data);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent } = event;
-    const parentData = await parent();
+    const { parent, url: { searchParams } } = event;
+    await parent();
 
-    let data = {
-      ticketCount: 0,
-      tickets: [],
-      totalPage: 1,
-      page: 1,
-      url: event.params.url,
-      category: {
-        id: -1,
-        title: "-",
-        description: "",
-        url: "-",
-      },
-    };
+    const page = searchParams.get("page") || 1;
+    const url = event.params.url;
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
-    }
+    const queryParams = buildQueryParams({
+      page,
+      url,
+    });
 
-    await loadData({
-      page: event.params.page || 1,
-      url: event.params.url,
+    const body = await ApiUtil.get({
+      path: `/api/panel/tickets` + queryParams,
       request: event,
     })
-      .then((body) => {
-        data = { ...data, ...body };
-      })
-      .catch((body) => {
-        if (body.error) {
-          if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
-            throw error(404, body.error);
-          }
 
-          throw error(500, body.error);
-        }
-      });
+    if (body.error) {
+      if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
+        throw error(404, body.error);
+      }
 
-    return data;
+      throw error(500, body.error);
+    }
+
+    body.page = parseInt(page);
+    body.url = url;
+
+    return body;
   }
 </script>
 
@@ -212,30 +179,18 @@
     pageTitle.set($_('pages.category-tickets.title', {values: {category: data.category.title === "-" ? $_('pages.category-tickets.no-category') : data.category.title}}));
   }
 
-  function reloadData(page = data.page, url = data.url) {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      loadData({ page, url })
-        .then((loadedData) => {
-          resolve();
-
-          if (page !== data.page) {
-            goto(base + "/tickets/category/" + data.url + "/" + page);
-          } else {
-            data = loadedData;
-          }
-        })
-        .catch((body) => {
-          if (body.error === "PAGE_NOT_FOUND") {
-            resolve();
-
-            reloadData(page - 1);
-          } else if (body.error === "NOT_EXISTS") {
-            goto(base + "/error-404");
-          } else {
-            reject();
-          }
-        });
+  async function refreshData() {
+    const queryParams = buildQueryParams({
+      page: data.page,
     });
+
+    await goto(queryParams);
+  }
+
+  async function onPageClick(page) {
+    data.page = page;
+
+    await refreshData();
   }
 
   function getListOfChecked(list) {
@@ -327,7 +282,7 @@
       $checkedList[id] = false;
     });
 
-    reloadData();
+    refreshData();
   });
 
   onConfirmDeleteTicketModalHide((selectedTickets) => {
@@ -347,7 +302,7 @@
       $checkedList[id] = false;
     });
 
-    reloadData();
+    refreshData();
   });
 
   onConfirmCloseTicketModalHide((selectedTickets) => {

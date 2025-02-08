@@ -131,7 +131,6 @@
 <script context="module">
   import { writable } from "svelte/store";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
   import ApiUtil from "$lib/api.util.js";
   import tooltip from "$lib/tooltip.util";
 
@@ -171,20 +170,19 @@
   }
 
   function initData() {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/servers`,
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            servers.set(body.servers);
-            loading.set(false);
-          } else reject();
-        })
-        .catch(() => {
+    ApiUtil.get({
+      path: `/api/panel/servers`,
+      handler: (body, reject) => {
+        if (body.error) {
           reject();
-        });
-    });
+
+          return
+        }
+
+        servers.set(body.servers);
+        loading.set(false);
+      }
+    })
   }
 </script>
 
@@ -205,25 +203,25 @@
   function onSelect(server) {
     selectingServer.set(server.id);
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: `/api/panel/servers/${server.id}/select`,
-      })
-        .then(async (body) => {
-          if (body.result === "ok") {
-            $selectedServer = server;
-            await invalidateAll();
-            hide();
-            showToast(ServerSelectedToast, { name: server.name });
-          } else if (body.error && body.error === "NOT_EXISTS") {
-            showToast(ServerNotExistsToast);
-            initData();
-          } else reject();
-        })
-        .catch((err) => {
-          console.log(err);
-          reject();
-        });
-    });
+    ApiUtil.post({
+      path: `/api/panel/servers/${server.id}/select`,
+      handler: async (body, reject) => {
+        if (body.result === "ok") {
+          $selectedServer = server;
+          await invalidateAll();
+          hide();
+          await showToast(ServerSelectedToast, { name: server.name });
+
+          return;
+        } else if (body.error && body.error === "NOT_EXISTS") {
+          await showToast(ServerNotExistsToast);
+          initData();
+
+          return;
+        }
+
+        reject();
+      }
+    })
   }
 </script>

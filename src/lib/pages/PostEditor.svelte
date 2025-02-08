@@ -201,46 +201,12 @@
 
   export const DefaultMode = Modes.CREATE;
 
-  async function loadPost({ id, request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/posts/${id}`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          const data = body;
-
-          data.id = parseInt(id);
-
-          resolve(data);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
-
-  async function loadCategories({ request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: "/api/panel/post/categories",
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          resolve(body);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
-
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event, mode = DefaultMode) {
     const { parent } = event;
-    const parentData = await parent();
+    await parent();
 
     let data = {
       post: {
@@ -258,30 +224,33 @@
       error: {},
     };
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
-    }
-
     if (mode === Modes.EDIT) {
-      await loadPost({ id: event.params.id || -1, request: event })
-        .then((body) => {
-          data.post = body.post;
-        })
-        .catch((body) => {
-          if (body.error) {
-            if (body.error === "POST_NOT_FOUND") {
-              throw error(404, body.error);
-            }
+      const id = parseInt(event.params.id) || -1;
 
-            throw error(500, body.error);
-          }
-        });
+      const postBody = await ApiUtil.get({
+        path: `/api/panel/posts/${id}`,
+        request: event,
+      })
+
+      if (postBody.error) {
+        if (postBody.error === "POST_NOT_FOUND") {
+          throw error(404, postBody.error);
+        }
+
+        throw error(500, postBody.error);
+      }
+
+      postBody.id = id;
+
+      data.post = postBody
     }
 
-    if (data !== null)
-      await loadCategories({ request: event }).then((body) => {
-        data = { ...data, ...body };
-      });
+    const categoriesBody = await ApiUtil.get({
+      path: "/api/panel/post/categories",
+      request: event,
+    })
+
+    data = { ...data, ...categoriesBody };
 
     return data;
   }
@@ -296,7 +265,6 @@
 
   import tooltip from "$lib/tooltip.util";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import { UI_URL } from "$lib/variables";
 
   import {
@@ -367,107 +335,98 @@
   function submit(publish) {
     loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      const bodyHandler = (body) => {
-        if (body.result === "ok") {
-          loading = false;
+    const bodyHandler = (body, reject) => {
+      if (body.result === "ok") {
+        loading = false;
 
-          if (data.mode === Modes.CREATE) {
-            goto(base + "/posts/post/" + body.id);
-          }
+        if (data.mode === Modes.CREATE) {
+          goto(base + "/posts/post/" + body.id);
+        }
 
-          if (data.mode === Modes.EDIT && publish) {
-            data.post.status = StatusTypes.PUBLISHED;
-          }
+        if (data.mode === Modes.EDIT && publish) {
+          data.post.status = StatusTypes.PUBLISHED;
+        }
 
-          if (publish) {
-            showToast(PostPublishedToast, {
-              postId: body.id,
-              title: data.post.title,
-            });
-          } else {
-            showToast(PostSavedToast, {
-              postId: body.id,
-              title: data.post.title,
-            });
-          }
-
-          isThumbnailSaved = true;
-          isThumbnailRemoved = false;
-          thumbnailFiles = [];
-
-          resolve();
-        } else if (body.result === "error") {
-          loading = false;
-
-          data.error = body.error;
-
-          resolve();
-        } else reject();
-      };
-
-      const body = new FormData();
-
-      body.append("publish", publish);
-      body.append("title", data.post.title);
-      body.append("category", data.post.category);
-      body.append("text", data.post.text);
-
-      if (isThumbnailRemoved) {
-        body.append("removeThumbnail", true);
-      } else if (thumbnailFiles[0]) {
-        body.append("thumbnail", thumbnailFiles[0]);
-      }
-
-      if (data.post.id === -1) {
-        ApiUtil.post({
-          path: "/api/panel/post",
-          body,
-        })
-          .then(bodyHandler)
-          .catch(() => {
-            reject();
+        if (publish) {
+          showToast(PostPublishedToast, {
+            postId: body.id,
+            title: data.post.title,
           });
+        } else {
+          showToast(PostSavedToast, {
+            postId: body.id,
+            title: data.post.title,
+          });
+        }
 
-        return;
+        isThumbnailSaved = true;
+        isThumbnailRemoved = false;
+        thumbnailFiles = [];
+
+        return
+      } else if (body.result === "error") {
+        loading = false;
+
+        data.error = body.error;
+
+        return
       }
 
-      ApiUtil.put({
-        path: `/api/panel/posts/${data.post.id}`,
+      reject();
+    };
+
+    const body = new FormData();
+
+    body.append("publish", publish);
+    body.append("title", data.post.title);
+    body.append("category", data.post.category);
+    body.append("text", data.post.text);
+
+    if (isThumbnailRemoved) {
+      body.append("removeThumbnail", true);
+    } else if (thumbnailFiles[0]) {
+      body.append("thumbnail", thumbnailFiles[0]);
+    }
+
+    if (data.post.id === -1) {
+      ApiUtil.post({
+        path: "/api/panel/post",
         body,
+        handler: bodyHandler
       })
-        .then(bodyHandler)
-        .catch(() => {
-          reject();
-        });
-    });
+
+      return;
+    }
+
+    ApiUtil.put({
+      path: `/api/panel/posts/${data.post.id}`,
+      body,
+      handler: bodyHandler
+    })
   }
 
   function onDraftClick() {
     loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.put({
-        path: `/api/panel/posts/${data.post.id}/status`,
-        body: {
-          to: "DRAFT",
-        },
-      })
-        .then((body) => {
-          if (body.result === "ok") {
-            loading = false;
-
-            goto(base + "/posts/draft");
-
-            showToast(PostMovedToDraftToast, { title: data.post.title });
-
-            resolve();
-          } else reject();
-        })
-        .catch(() => {
+    ApiUtil.put({
+      path: `/api/panel/posts/${data.post.id}/status`,
+      body: {
+        to: "DRAFT",
+      },
+      handler: async (body, reject) => {
+        if (body.error) {
           reject();
-        });
-    });
+
+          return;
+        }
+
+        loading = false;
+
+        await goto(base + "/posts/draft");
+
+        await showToast(PostMovedToDraftToast, { title: data.post.title });
+      }
+    })
   }
 
   function onRemoveThumbnailClick() {
@@ -483,17 +442,20 @@
   // }
 
   setCallbackForAddEditPostCategoryModal((routeFirstPage, category) => {
-    showNetworkErrorOnCatch((resolve, reject) => {
-      loadCategories()
-        .then((loadedData) => {
-          data.categories = loadedData.categories;
-          data.categoryCount = loadedData.categoryCount;
-          data.post.category = category.id;
-        })
-        .catch(() => {
+    ApiUtil.get({
+      path: "/api/panel/post/categories",
+      handler: (body, reject) => {
+        if (body.error) {
           reject();
-        });
-    });
+
+          return;
+        }
+
+        data.categories = body.categories;
+        data.categoryCount = body.categoryCount;
+        data.post.category = category.id;
+      }
+    })
   });
 
   setDeletePostModalCallback((post) => {

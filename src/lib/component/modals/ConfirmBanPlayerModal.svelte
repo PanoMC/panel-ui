@@ -84,7 +84,6 @@
 </script>
 
 <script>
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
   import ApiUtil from "$lib/api.util.js";
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
 
@@ -96,35 +95,30 @@
   function onSubmit() {
     loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      ApiUtil.post({
-        path: `/api/panel/players/${$player.username}/ban`,
-        body: {
-          sendNotification: $sendNotification,
-        },
-      })
-        .then((body) => {
-          if (body.error) {
-            location.reload()
-          }
+    ApiUtil.post({
+      path: `/api/panel/players/${$player.username}/ban`,
+      body: {
+        sendNotification: $sendNotification,
+      },
+      handler: (body, reject) => {
+        if (body.error) {
+          reject(body.error);
+          return;
+        }
 
-          hide();
+        hide();
 
-          showToast(PlayerBanToast, {
-            username: $player.username,
-            error: body.error,
-          });
-
-          if (body.result === "ok") {
-            callback($player);
-          }
-
-          loading = false;
-        })
-        .catch(() => {
-          loading = false;
-          reject();
+        showToast(PlayerBanToast, {
+          username: $player.username,
+          error: body.error,
         });
-    });
+
+        if (body.result === "ok") {
+          callback($player);
+        }
+
+        loading = false;
+      }
+    })
   }
 </script>

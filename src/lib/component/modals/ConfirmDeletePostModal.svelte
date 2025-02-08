@@ -73,7 +73,6 @@
 <script>
   import { _ } from "svelte-i18n";
 
-  import { showNetworkErrorOnCatch } from "$lib/Store";
   import ApiUtil from "$lib/api.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
@@ -89,47 +88,39 @@
   function onYesClick() {
     loading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      const bodyHandler = (body) => {
-        if (body.result === "ok") {
-          loading = false;
-
-          hide();
-
-          if (get(post).status === 0) {
-            showToast(PostDeletedPermanentlyToast, { title: get(post).title });
-          } else {
-            showToast(PostMovedToTrashToast, { title: get(post).title });
-          }
-
-          callback(get(post));
-
-          resolve();
-        } else refreshBrowserPage();
-      };
-
-      if (get(post).status === 0) {
-        ApiUtil.delete({
-          path: `/api/panel/posts/${get(post).id}`,
-        })
-          .then(bodyHandler)
-          .catch(() => {
-            reject();
-          });
-
-        return;
+    const bodyHandler = (body) => {
+      if (body.error) {
+        refreshBrowserPage()
       }
 
-      ApiUtil.put({
-        path: `/api/panel/posts/${get(post).id}/status`,
-        body: {
-          to: "TRASH",
-        },
+      loading = false;
+
+      hide();
+
+      if (get(post).status === 0) {
+        showToast(PostDeletedPermanentlyToast, { title: get(post).title });
+      } else {
+        showToast(PostMovedToTrashToast, { title: get(post).title });
+      }
+
+      callback(get(post));
+    };
+
+    if (get(post).status === 0) {
+      ApiUtil.delete({
+        path: `/api/panel/posts/${get(post).id}`,
+        handler: bodyHandler
       })
-        .then(bodyHandler)
-        .catch(() => {
-          reject();
-        });
-    });
+
+      return;
+    }
+
+    ApiUtil.put({
+      path: `/api/panel/posts/${get(post).id}/status`,
+      body: {
+        to: "TRASH",
+      },
+      handler: bodyHandler
+    })
   }
 </script>

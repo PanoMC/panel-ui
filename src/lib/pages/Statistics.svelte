@@ -128,59 +128,39 @@
 <!-- Player Statistics Page End -->
 
 <script context="module">
-  import { showNetworkErrorOnCatch } from "$lib/Store.js";
-  import ApiUtil from "$lib/api.util.js";
+  import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
+  import { error } from "@sveltejs/kit";
 
   export const DashboardPeriod = Object.freeze({
     WEEK: "week",
     MONTH: "month",
   });
 
-  async function loadData({ period, request }) {
-    return new Promise((resolve, reject) => {
-      ApiUtil.get({
-        path: `/api/panel/statistics?period=${period}`,
-        request,
-      }).then((body) => {
-        if (body.result === "ok") {
-          resolve(body);
-        } else {
-          reject(body);
-        }
-      });
-    });
-  }
-
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent } = event;
-    const parentData = await parent();
+    const { parent, url: { searchParams } } = event;
+    await parent();
 
-    let data = {
-      registeredPlayerCount: 0,
-      postCount: 0,
-      ticketCount: 0,
-      openTicketCount: 0,
-      adminCount: 0,
-      connectedServerCount: 0,
-      newRegisterCount: 0,
-      period: "",
-      websiteActivityDataList: {},
-    };
+    const period = searchParams.get("period") || DashboardPeriod.WEEK;
 
-    if (parentData.NETWORK_ERROR) {
-      return data;
+    const queryParams = buildQueryParams({
+      period,
+    })
+
+    const body = await ApiUtil.get({
+      path: `/api/panel/statistics` + queryParams,
+      request: event,
+    })
+
+    if (!body.result) {
+      throw error(404, body);
     }
 
-    await loadData({ period: DashboardPeriod.WEEK, request: event }).then(
-      (body) => {
-        data = { ...data, ...body };
-      },
-    );
+    body.period = period
 
-    return data;
+    return body;
   }
 </script>
 
@@ -189,6 +169,7 @@
   import { _ } from "svelte-i18n";
 
   import WebsiteActivityChart from "$lib/component/charts/Dashboard/WebsiteActivityChart.svelte";
+  import { goto } from "$app/navigation";
 
   export let data;
   let reloading = false;
@@ -197,24 +178,25 @@
 
   pageTitle.set("pages.statistics.title");
 
-  function reloadDataByPeriod(period = DashboardPeriod.WEEK) {
+  async function refreshData() {
+    const queryParams = buildQueryParams({
+      period: data.period,
+    });
+
+    await goto(queryParams);
+  }
+
+  async function reloadDataByPeriod(period = DashboardPeriod.WEEK) {
     if (data.period === period) {
       return;
     }
 
     reloading = true;
 
-    showNetworkErrorOnCatch((resolve, reject) => {
-      loadData({ period })
-        .then((loadedData) => {
-          resolve();
+    data.period = period
 
-          data = loadedData;
-          reloading = false;
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+    await refreshData()
+
+    reloading = false;
   }
 </script>
