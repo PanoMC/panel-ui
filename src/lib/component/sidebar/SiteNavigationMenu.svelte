@@ -103,6 +103,16 @@
       </li>
     {/if}
 
+    <li class="nav-item p-2">
+      <a
+        class="nav-link"
+        href="{base}/logs"
+        class:active="{matching($page.url.pathname, base + '/logs', true)}">
+        <i class="fas fa-align-left me-2"></i>
+        {$_("components.site-navigation-menu.logs")}
+      </a>
+    </li>
+
     {#if hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS)}
       <li class="nav-item p-2">
         <a
