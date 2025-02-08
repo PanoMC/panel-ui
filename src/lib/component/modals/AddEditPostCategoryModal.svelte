@@ -166,7 +166,7 @@
     }
 
     ApiUtil.post({
-      path: "/api/panel/post/category",
+      path: "/api/panel/post/categories",
       body: get(category),
       handler: bodyHandler
     })

@@ -272,7 +272,7 @@
     messageSendLoading = true;
 
     ApiUtil.post({
-      path: `/api/panel/tickets/${data.ticket.id}/message`,
+      path: `/api/panel/tickets/${data.ticket.id}/messages`,
       body: {
         message: messageText,
       },
