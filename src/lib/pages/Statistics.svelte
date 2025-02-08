@@ -132,8 +132,8 @@
   import { error } from "@sveltejs/kit";
 
   export const DashboardPeriod = Object.freeze({
-    WEEK: "week",
-    MONTH: "month",
+    WEEK: "WEEK",
+    MONTH: "MONTH",
   });
 
   /**
