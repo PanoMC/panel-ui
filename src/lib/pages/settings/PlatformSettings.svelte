@@ -476,14 +476,8 @@
         );
         const encodedState = encodeURIComponent(state);
 
-        const queryParams = buildQueryParams({
-          loginPanoPlatform: encodedPublicKey,
-          redirectUrl: encodedRedirectUrl,
-          state: encodedState
-        })
-
         // Redirect to the constructed URL
-        window.location = `${PANO_WEBSITE_URL}/auth` + queryParams;
+        window.location = `${PANO_WEBSITE_URL}/auth?loginPanoPlatform=${encodedPublicKey}&redirectUrl=${encodedRedirectUrl}&state=${encodedState}`;
       }
     })
   }
