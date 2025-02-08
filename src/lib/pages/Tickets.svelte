@@ -369,14 +369,22 @@
   });
 
   onConfirmDeleteTicketModalHide((selectedTickets) => {
+    if (!data.tickets || data.tickets.length === 0) {
+      return
+    }
+
     Object.values(selectedTickets).forEach((id) => {
-      data.tickets[
-        data.tickets.indexOf(
-          data.tickets.find(
-            (ticketInTickets) => ticketInTickets.id === parseInt(id),
-          ),
-        )
-      ].selected = false;
+      const index = data.tickets.indexOf(
+        data.tickets.find(
+          (ticketInTickets) => ticketInTickets.id === parseInt(id),
+        ),
+      )
+
+      if (index === -1) {
+        return
+      }
+
+      data.tickets[index].selected = false;
     });
   });
 
@@ -389,14 +397,22 @@
   });
 
   onConfirmCloseTicketModalHide((selectedTickets) => {
+    if (!data.tickets || data.tickets.length === 0) {
+      return
+    }
+
     Object.values(selectedTickets).forEach((id) => {
-      data.tickets[
-        data.tickets.indexOf(
-          data.tickets.find(
-            (ticketInTickets) => ticketInTickets.id === parseInt(id),
-          ),
-        )
-      ].selected = false;
+      const index = data.tickets.indexOf(
+        data.tickets.find(
+          (ticketInTickets) => ticketInTickets.id === parseInt(id),
+        ),
+      )
+
+      if (index === -1) {
+        return
+      }
+
+      data.tickets[index].selected = false;
     });
   });
 </script>

@@ -196,7 +196,7 @@
       throw error(500, body.error);
     }
 
-    body.id = parseInt(id);
+    body.ticket.id = parseInt(id);
 
     return body;
   }
