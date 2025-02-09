@@ -256,10 +256,10 @@
 
         buttonsLoading = false;
 
-        await refreshData();
-
         const foundTitle = data.posts.find((post) => post.id === id).title
-        const title = `<a href="${base}/posts?pageType=DRAFT" target="_blank">${limitTitle(foundTitle)}</a>`
+        const title = `<a href="${base}/posts?pageType=DRAFT">${limitTitle(foundTitle)}</a>`
+
+        await refreshData();
 
         await showToast('components.toasts.post-moved-to-draft', {
           title,
@@ -288,7 +288,7 @@
         await goto(base + "/posts");
 
         const foundTitle =  data.posts.find((post) => post.id === id).title
-        const title = `<a href="${base}/posts/detail/${id}" target="_blank">${limitTitle(foundTitle)}</a>`
+        const title = `<a href="${base}/posts/detail/${id}">${limitTitle(foundTitle)}</a>`
 
         await showToast('components.toasts.post-published', {
           postId: id,
