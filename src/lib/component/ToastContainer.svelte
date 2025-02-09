@@ -42,7 +42,7 @@
       params.text = text;
     }
 
-    if (toastComponent instanceof DefaultToast) {
+    if (toastComponent === DefaultToast) {
       params = { text, values: params }
     }
 
