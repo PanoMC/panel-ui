@@ -1,10 +1,11 @@
 <!-- Statistics Page -->
 <div class="container vstack gap-3">
-  <div class="row justify-content-between animate__animated animate__slideInUp">
+  <div
+    class="row g-3 justify-content-between animate__animated animate__slideInUp">
     <div class="col-4">
-      <div class="card bg-success h-100">
+      <div class="card text-bg-success h-100">
         <div class="card-body">
-          <p class="mb-0 text-white">
+          <p class="card-text">
             {$_("pages.statistics.online-player-text", {
               values: { onlinePlayerCount: data.onlinePlayerCount },
             })}
@@ -13,9 +14,9 @@
       </div>
     </div>
     <div class="col-4">
-      <div class="card bg-primary h-100">
+      <div class="card text-bg-primary h-100">
         <div class="card-body">
-          <p class="mb-0 text-white">
+          <p class="card-text">
             {$_("pages.statistics.new-register-text", {
               values: { newRegisterCount: data.newRegisterCount },
             })}
@@ -24,9 +25,9 @@
       </div>
     </div>
     <div class="col-4">
-      <div class="card bg-warning h-100">
+      <div class="card text-bg-warning h-100">
         <div class="card-body">
-          <p class="mb-0 text-white">
+          <p class="card-text">
             {$_("pages.statistics.total-player-text", {
               values: { totalPlayerCount: data.registeredPlayerCount },
             })}
@@ -38,23 +39,26 @@
 
   <div class="card">
     <div class="card-body">
-      <div class="row justify-content-between mb-3">
-        <div class="col">
-          <h5 class="card-title">
-            {$_("pages.statistics.website-graph.title")}
-          </h5>
-        </div>
-        <div class="col-auto">
-          <div class="btn-group">
+      <CardHeader>
+        <h5 class="card-title" slot="left">
+          {$_("pages.statistics.website-graph.title")}
+        </h5>
+
+        <div
+          class="nav nav-underline small col-sm-auto col justify-content-md-start justify-content-center"
+          slot="right">
+          <div class="nav-item">
             <button
-              class="btn btn-sm btn-outline-primary"
+              class="nav-link text-truncate"
               class:active="{data.period === DashboardPeriod.WEEK}"
               on:click="{() => reloadDataByPeriod()}"
               class:disabled="{reloading}">
               {$_("pages.statistics.website-graph.week")}
             </button>
+          </div>
+          <div class="nav-item">
             <button
-              class="btn btn-sm btn-outline-primary"
+              class="nav-link text-truncate"
               class:active="{data.period === DashboardPeriod.MONTH}"
               on:click="{() => reloadDataByPeriod(DashboardPeriod.MONTH)}"
               class:disabled="{reloading}">
@@ -62,7 +66,8 @@
             </button>
           </div>
         </div>
-      </div>
+      </CardHeader>
+
       <WebsiteActivityChart
         newRegisterData="{data.websiteActivityDataList.newRegisterData}"
         ticketsData="{data.websiteActivityDataList.ticketsData}"
@@ -79,7 +84,7 @@
         {$_("pages.statistics.total-statistics.title")}
       </h5>
       <div class="table-responsive">
-        <table class="table m-0">
+        <table class="table">
           <tbody>
             <tr>
               <th scope="row"
@@ -140,25 +145,28 @@
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent, url: { searchParams } } = event;
+    const {
+      parent,
+      url: { searchParams },
+    } = event;
     await parent();
 
     const period = searchParams.get("period") || DashboardPeriod.WEEK;
 
     const queryParams = buildQueryParams({
       period,
-    })
+    });
 
     const body = await ApiUtil.get({
       path: `/api/panel/statistics` + queryParams,
       request: event,
-    })
+    });
 
     if (!body.result) {
       throw error(404, body);
     }
 
-    body.period = period
+    body.period = period;
 
     return body;
   }
@@ -170,6 +178,7 @@
 
   import WebsiteActivityChart from "$lib/component/charts/Dashboard/WebsiteActivityChart.svelte";
   import { goto } from "$app/navigation";
+  import CardHeader from "$lib/component/CardHeader.svelte";
 
   export let data;
   let reloading = false;
@@ -193,9 +202,9 @@
 
     reloading = true;
 
-    data.period = period
+    data.period = period;
 
-    await refreshData()
+    await refreshData();
 
     reloading = false;
   }
