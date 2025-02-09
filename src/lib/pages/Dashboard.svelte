@@ -157,7 +157,14 @@
     <div class="col-lg-6">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Logs</h5>
+          <h5 class="card-title">Logs ({data.activityLogs.meta.totalCount})</h5>
+          {#each data.activityLogs.data as log, index (log)}
+            <ul>
+              <li>{log.type}</li>
+            </ul>
+          {/each}
+
+          <a href="{base}/logs" role="button" class="btn btn-outline-primary">Show All</a>
         </div>
       </div>
     </div>
@@ -174,10 +181,18 @@
     const { parent } = event;
     await parent();
 
-    return await ApiUtil.get({
-      path: `/api/panel/dashboard`,
-      request: event,
-    });
+    const [dashboard, activityLogs] = await Promise.all([
+      ApiUtil.get({
+        path: `/api/panel/dashboard`,
+        request: event,
+      }),
+      ApiUtil.get({
+        path: `/api/panel/logs/activity`,
+        request: event,
+      })
+    ]);
+
+    return {...dashboard, activityLogs}
   }
 </script>
 
