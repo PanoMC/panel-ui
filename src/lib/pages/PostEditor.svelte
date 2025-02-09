@@ -1,18 +1,13 @@
 <article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <a
-      href="{base}/posts{data.post.status === StatusTypes.TRASH
-        ? '/trash'
-        : data.post.status === StatusTypes.DRAFT
-          ? '/draft'
-          : ''}"
-      class="btn btn-link"
-      role="button"
-      slot="left">
-      <i class="fas fa-arrow-left me-2"></i>
-      {$_("pages.post-editor.posts")}
-    </a>
+    <!-- Submenu -->
+    <CardMenu slot="middle">
+      <CardMenuItem href="/posts"
+        >{$_("pages.post-categories.posts")}</CardMenuItem>
+      <CardMenuItem href="/posts/categories"
+        >{$_("pages.posts.post-categories-button")}</CardMenuItem>
+    </CardMenu>
 
     <div slot="right">
       {#if data.mode === Modes.EDIT}
@@ -230,7 +225,7 @@
       const postBody = await ApiUtil.get({
         path: `/api/panel/posts/${id}`,
         request: event,
-      })
+      });
 
       if (postBody.error) {
         if (postBody.error === "POST_NOT_FOUND") {
@@ -242,13 +237,13 @@
 
       postBody.id = id;
 
-      data.post = postBody.post
+      data.post = postBody.post;
     }
 
     const categoriesBody = await ApiUtil.get({
       path: "/api/panel/post/categories",
       request: event,
-    })
+    });
 
     data = { ...data, ...categoriesBody };
 
@@ -279,10 +274,15 @@
 
   import Editor from "$lib/component/Editor.svelte";
 
-  import { show as showToast, limitTitle } from "$lib/component/ToastContainer.svelte";
+  import {
+    show as showToast,
+    limitTitle,
+  } from "$lib/component/ToastContainer.svelte";
 
   import NoContent from "$lib/component/NoContent.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
+  import CardMenu from "$lib/component/CardMenu.svelte";
+  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
   export let data;
 
@@ -345,15 +345,15 @@
         }
 
         if (publish) {
-          const title = `<a href="${base}/posts/detail/${body.id}" target="_blank">${limitTitle(data.post.title)}</a>`
+          const title = `<a href="${base}/posts/detail/${body.id}" target="_blank">${limitTitle(data.post.title)}</a>`;
 
-          showToast('components.toasts.post-published', {
+          showToast("components.toasts.post-published", {
             title,
           });
         } else {
-          const title = `<a href="${base}/posts/detail/${body.id}" target="_blank">${limitTitle(data.post.title)}</a>`
+          const title = `<a href="${base}/posts/detail/${body.id}" target="_blank">${limitTitle(data.post.title)}</a>`;
 
-          showToast('components.toasts.post-saved', {
+          showToast("components.toasts.post-saved", {
             title,
           });
         }
@@ -362,13 +362,13 @@
         isThumbnailRemoved = false;
         thumbnailFiles = [];
 
-        return
+        return;
       } else if (body.result === "error") {
         loading = false;
 
         data.error = body.error;
 
-        return
+        return;
       }
 
       reject();
@@ -391,8 +391,8 @@
       ApiUtil.post({
         path: "/api/panel/post",
         body,
-        handler: bodyHandler
-      })
+        handler: bodyHandler,
+      });
 
       return;
     }
@@ -400,8 +400,8 @@
     ApiUtil.put({
       path: `/api/panel/posts/${data.post.id}`,
       body,
-      handler: bodyHandler
-    })
+      handler: bodyHandler,
+    });
   }
 
   function onDraftClick() {
@@ -423,11 +423,11 @@
 
         await goto(base + "/posts?pageType=DRAFT");
 
-        const title = `<a href="${base}/posts?pageType=DRAFT" target="_blank">${limitTitle(data.post.title)}</a>`
+        const title = `<a href="${base}/posts?pageType=DRAFT" target="_blank">${limitTitle(data.post.title)}</a>`;
 
-        await showToast('components.toasts.post-moved-to-draft', { title });
-      }
-    })
+        await showToast("components.toasts.post-moved-to-draft", { title });
+      },
+    });
   }
 
   function onRemoveThumbnailClick() {
@@ -455,8 +455,8 @@
         data.categories = body.categories;
         data.categoryCount = body.categoryCount;
         data.post.category = category.id;
-      }
-    })
+      },
+    });
   });
 
   setDeletePostModalCallback((post) => {
