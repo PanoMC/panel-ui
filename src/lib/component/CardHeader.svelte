@@ -1,4 +1,4 @@
-<div class="row gy-1">
+<div class="row">
   <div class="col-md-6 text-md-start text-center">
     <slot name="left" />
   </div>
