@@ -109,9 +109,9 @@
           class="form-control"
           id="platformLanguage"
           bind:value="{data.locale}">
-          {#each Object.keys(Languages) as language, index (language)}
-            <option value="{Languages[language].locale}"
-              >{Languages[language].name}</option>
+          {#each Object.keys($Languages) as language, index (language)}
+            <option value="{$Languages[language].locale}"
+              >{$Languages[language].name}</option>
           {/each}
         </select>
       </div>

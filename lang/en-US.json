@@ -1,4 +1,6 @@
 {
+  "name": "English (US)",
+  "date-fns-code": "en-US",
   "buttons": {
     "remove": "Remove",
     "connect": "Connect",

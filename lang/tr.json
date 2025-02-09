@@ -1,4 +1,9 @@
 {
+  "name": "Türkçe (TR)",
+  "derivatives": [
+    "tr-tr"
+  ],
+  "date-fns-code": "tr",
   "buttons": {
     "remove": "Kaldır",
     "connect": "Bağla",
