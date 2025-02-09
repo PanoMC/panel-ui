@@ -345,13 +345,13 @@
         }
 
         if (publish) {
-          const title = `<a href="${base}/posts/detail/${body.id}" target="_blank">${limitTitle(data.post.title)}</a>`;
+          const title = limitTitle(data.post.title)
 
           showToast("components.toasts.post-published", {
             title,
           });
         } else {
-          const title = `<a href="${base}/posts/detail/${body.id}" target="_blank">${limitTitle(data.post.title)}</a>`;
+          const title = limitTitle(data.post.title)
 
           showToast("components.toasts.post-saved", {
             title,
