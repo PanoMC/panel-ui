@@ -1,9 +1,9 @@
 <!-- Dashboard Page -->
-<div class="container">
+<div class="container vstack gap-3">
   <!-- Welcome Alerts -->
   {#if data.gettingStartedBlocks.welcomeBoard}
     <div
-      class="alert alert-success alert-dismissible animate__animated animate__zoomIn mb-3">
+      class="alert alert-success alert-dismissible animate__animated animate__zoomIn">
       <div class="row">
         <h5 class="mb-3">
           {@html $_("pages.dashboard.welcome-card.description")}
@@ -52,22 +52,25 @@
         <div class="col-lg-4">
           <ul class="list-unstyled">
             <li>
-              <a class="alert-link" href="{PANO_WEBSITE_URL}/addons" target="_blank">
+              <a
+                class="alert-link"
+                href="{PANO_WEBSITE_URL}/addons"
+                target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
                 {$_("pages.dashboard.welcome-card.themes-and-extensions")}
               </a>
             </li>
             <li>
-              <a class="alert-link" href="{PANO_WEBSITE_URL}/docs" target="_blank">
+              <a
+                class="alert-link"
+                href="{PANO_WEBSITE_URL}/docs"
+                target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
                 {$_("pages.dashboard.welcome-card.documentations")}
               </a>
             </li>
             <li>
-              <a
-                class="alert-link"
-                href="{PANO_WEBSITE_URL}"
-                target="_blank">
+              <a class="alert-link" href="{PANO_WEBSITE_URL}" target="_blank">
                 <i class="fa-solid fa-globe me-2"></i>
                 {$_("pages.dashboard.welcome-card.website")}
               </a>
@@ -107,7 +110,7 @@
               <NoContent />
             {:else}
               <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table table-hover">
                   {#each data.tickets as ticket, index (ticket)}
                     <tbody>
                       <tr>
@@ -202,7 +205,7 @@
   function onCloseGettingStartedCard() {
     ApiUtil.post({
       path: "/api/panel/dashboard/closeGettingStartedCard",
-      handler: () => {}
-    })
+      handler: () => {},
+    });
   }
 </script>
