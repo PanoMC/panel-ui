@@ -41,6 +41,7 @@ export async function handle({ event, event: { cookies }, resolve }) {
 export async function handleFetch({ event, request, fetch }) {
   if (request.url.startsWith(API_URL)) {
     request.headers.set('cookie', event.request.headers.get('cookie'));
+    request.headers.set("Origin", API_URL);
   }
 
   return fetch(request);
