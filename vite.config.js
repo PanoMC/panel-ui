@@ -48,7 +48,8 @@ const config = {
     proxy: {
       "/api": env.VITE_API_URL.replace("/api", ""),
       '/panel/api': env.VITE_API_URL.replace("/api", "")
-    }
+    },
+    allowedHosts: true
   }
 };
 
