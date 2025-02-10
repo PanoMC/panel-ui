@@ -1,6 +1,9 @@
 import { sveltekit } from "@sveltejs/kit/vite";
+import { loadEnv } from "vite";
 import fs from "fs";
 import path from "path";
+
+const env = loadEnv("", process.cwd());
 
 function copyLangFolderPlugin() {
   let outDir = "";
@@ -43,8 +46,8 @@ const config = {
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:8088',
-      '/panel/api': 'http://localhost:8088'
+      "/api": env.VITE_API_URL.replace("/api", ""),
+      '/panel/api': env.VITE_API_URL.replace("/api", "")
     }
   }
 };
