@@ -1,4 +1,1 @@
-Logs layout.
-
-<br/>
-<slot/>
+<slot />
