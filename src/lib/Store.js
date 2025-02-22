@@ -17,6 +17,8 @@ export const logoutLoading = writable(false);
 
 export const websiteLogoSrc = writable("/api/websiteLogo");
 
+export const initialized = writable(false);
+
 export function toggleSidebar(isSidebarOpen) {
   isSidebarOpen.update((value) => {
     PanelSidebarStorageUtil.savePanelSidebarStorageUtil(!value);

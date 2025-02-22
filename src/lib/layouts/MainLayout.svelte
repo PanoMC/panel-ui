@@ -156,7 +156,7 @@
 
   import { page } from "$app/stores";
 
-  import { options, logoutLoading } from "$lib/Store";
+  import { options, logoutLoading, initialized } from "$lib/Store";
 
   import Splash from "$lib/component/Splash.svelte";
   import Navbar from "$lib/component/Navbar.svelte";
@@ -262,6 +262,8 @@
 
   onMount(() => {
     mounted = true;
+
+    initialized.set(true);
 
     if (
       !showSplashAlways &&
