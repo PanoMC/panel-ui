@@ -342,7 +342,11 @@
 
     keywordInputError = false;
 
-    data.keywords.push(keyword);
+    const keywords = keyword.split(/,\s*/);
+
+    keywords.forEach(keyword => {
+      data.keywords.push(keyword.trim());
+    });
 
     data.keywords = data.keywords;
 
