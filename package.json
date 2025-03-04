@@ -23,7 +23,7 @@
     "bootstrap": "^5.3.3",
     "chart.js": "^3.9.1",
     "chartjs-adapter-date-fns": "^2.0.1",
-    "cookie": "^0.6.0",
+    "cookie": "^0.7.0",
     "copy-to-clipboard": "^3.3.3",
     "cross-env": "^7.0.3",
     "csrf": "^3.1.0",
