@@ -1,61 +1,53 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
-  <div
-    class="row justify-content-end animate__animated animate__slideInUp">
-    {#if $notifications.length !== 0}
-      <div class="col-auto">
-        <button
-          type="button"
-          class="btn btn-danger"
-          on:click="{() => onDeleteAllClick()}"
-          >{$_("pages.notifications.delete-all")}
-        </button>
-      </div>
-    {/if}
-  </div>
+
+  {#if $notifications.length !== 0}
+    <button
+      type="button"
+      class="btn btn-danger"
+      on:click="{() => onDeleteAllClick()}"
+      >{$_("pages.notifications.delete-all")}
+    </button>
+  {/if}
 
   <!-- All Notifications -->
 
-  <div class="card">
-    <div class="card-body">
-      <div class="list-group list-group-flush">
-        {#each $notifications as notification, index (notification)}
-          <a
-            href="javascript:void(0);"
-            on:click="{() => onNotificationClick(notification)}"
-            class="list-group-item list-group-item-action text-wrap"
-            class:notification-unread="{notification.status === 'NOT_READ'}">
-            {notification.type}
-            <br />
-            <small class="text-muted">
-              {getTime(
-                checkTime,
-                parseInt(notification.date),
-                locales[$currentLanguage["date-fns-code"]],
-              )}
-            </small>
-          </a>
-        {/each}
-      </div>
-
-      {#if $notifications.length === 0}
-        <NoContent />
-      {/if}
-
-      {#if $notifications.length < $count && $count > 10 + 10 * page}
-        <div class="mt-3">
-          <button
-            class="btn btn-link bg-light d-block m-auto"
-            class:disabled="{loadMoreLoading}"
-            on:click="{loadMore}"
-            >{$_("pages.notifications.show-more", {
-              values: { count: $count - $notifications.length },
-            })}
-          </button>
-        </div>
-      {/if}
-    </div>
+  <div class="list-group">
+    {#each $notifications as notification, index (notification)}
+      <a
+        href="javascript:void(0);"
+        on:click="{() => onNotificationClick(notification)}"
+        class="list-group-item list-group-item-action text-wrap"
+        class:notification-unread="{notification.status === 'NOT_READ'}">
+        {notification.type}
+        <br />
+        <small class="text-muted">
+          {getTime(
+            checkTime,
+            parseInt(notification.date),
+            locales[$currentLanguage["date-fns-code"]],
+          )}
+        </small>
+      </a>
+    {/each}
   </div>
+
+  {#if $notifications.length === 0}
+    <NoContent />
+  {/if}
+
+  {#if $notifications.length < $count && $count > 10 + 10 * page}
+    <div class="mt-3">
+      <button
+        class="btn btn-link bg-light d-block m-auto"
+        class:disabled="{loadMoreLoading}"
+        on:click="{loadMore}"
+        >{$_("pages.notifications.show-more", {
+          values: { count: $count - $notifications.length },
+        })}
+      </button>
+    </div>
+  {/if}
 </div>
 
 <ConfirmRemoveAllNotificationsModal />
@@ -112,7 +104,7 @@
     const body = await ApiUtil.get({
       path: "/api/panel/notifications",
       request: event,
-    })
+    });
 
     setNotifications(body.notifications);
 
@@ -155,7 +147,7 @@
       path: "/api/panel/notifications",
       handler: (body) => {
         if (notificationProcessID !== id) {
-          return
+          return;
         }
 
         if (body.result === "ok") {
@@ -169,8 +161,8 @@
             startnotificationCountdown();
           }
         }, 1000);
-      }
-    })
+      },
+    });
   }
 
   function loadMore() {
@@ -184,7 +176,7 @@
         if (body.error) {
           reject();
 
-          return
+          return;
         }
 
         body.notifications.forEach((notification) => {
@@ -194,8 +186,8 @@
         });
 
         loadMoreLoading = false;
-      }
-    })
+      },
+    });
   }
 
   function deleteNotification(id) {
@@ -205,7 +197,7 @@
         if (body.error) {
           reject();
 
-          return
+          return;
         }
 
         get(notifications).forEach((notification) => {
@@ -217,8 +209,8 @@
             count.update((value) => value--);
           }
         });
-      }
-    })
+      },
+    });
   }
 
   function startnotificationCountdown() {

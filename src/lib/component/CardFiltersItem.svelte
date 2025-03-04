@@ -1,7 +1,7 @@
 <li class="nav-item">
   <a
     class:active="{active}"
-    class="nav-link text-truncate pt-0"
+    class="nav-link text-truncate"
     href="{base + href}">
     <slot />
   </a>

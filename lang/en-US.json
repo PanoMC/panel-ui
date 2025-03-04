@@ -237,7 +237,6 @@
     },
     "permission-groups": {
       "title": "Permission Groups",
-      "players": "Players",
       "create-permission-group-button": "Create Permission Group",
       "card-title": "{count} Permission Group",
       "name": "Name",

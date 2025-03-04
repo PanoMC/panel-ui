@@ -1,7 +1,7 @@
 <!-- About Sup Page -->
 <div class="card">
+  <div class="card-header">Pano Platform Info</div>
   <div class="card-body">
-    <h5 class="card-title">Pano Platform Info</h5>
     <form class="animate__animated animate__fadeIn">
       <div class="row">
         <label class="col-md-6 col-form-label" for="panoVersion">
@@ -31,7 +31,8 @@
             href="{PANO_WEBSITE_URL}"
             id="panoWebsite"
             target="_blank">
-            {getDomain(PANO_WEBSITE_URL)} <i class="fa-solid fa-up-right-from-square ms-2"></i>
+            {getDomain(PANO_WEBSITE_URL)}
+            <i class="fa-solid fa-up-right-from-square ms-2"></i>
           </a>
         </div>
       </div>
@@ -45,8 +46,8 @@
             href="{PANO_WEBSITE_URL}/discord"
             id="panoWebsite"
             target="_blank">
-            {getDomain(PANO_WEBSITE_URL)}/discord <i class="fa-solid fa-up-right-from-square ms-2"
-            ></i>
+            {getDomain(PANO_WEBSITE_URL)}/discord
+            <i class="fa-solid fa-up-right-from-square ms-2"></i>
           </a>
         </div>
       </div>
@@ -55,17 +56,18 @@
 </div>
 
 <div class="card">
-  <div class="card-body animate__animated animate__fadeIn">
-    <h5
-      class="card-title animate__animated animate__heartBeat animate__slower d-inline-block">
+  <div class="card-header">
+    <span
+      class="animate__animated animate__heartBeat animate__slower d-inline-block">
       {$_("pages.settings.about.open-source-licenses")} ❤️
-    </h5>
-
+    </span>
+  </div>
+  <div class="card-body animate__animated animate__fadeIn">
     <!-- Software License -->
 
     <details>
-      <summary class="h6 text-primary">Title</summary>
-      <p>
+      <summary class="card-title border-bottom">Title</summary>
+      <p class="card-text">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia quisquam
         assumenda dolor eligendi fugit, architecto ab vero possimus minus
         consequatur delectus aut quam voluptatem debitis ullam ea voluptate
@@ -111,7 +113,7 @@
       return urlObj.hostname; // Returns only the domain name (without protocol or path)
     } catch (e) {
       // If URL constructor fails (e.g., invalid URL), remove protocol using regex
-      return url.replace(/^https?:\/\//, '');
+      return url.replace(/^https?:\/\//, "");
     }
   }
 </script>

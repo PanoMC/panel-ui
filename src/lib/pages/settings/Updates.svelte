@@ -37,11 +37,8 @@
   </div>
 
   <div class="card">
+    <div class="card-header">Platform Updates</div>
     <div class="card-body">
-      <CardHeader>
-        <h5 class="card-title" slot="left">Platform Updates (1)</h5>
-      </CardHeader>
-
       <!-- Pending Update List -->
       <!-- No Posts -->
       <NoContent />
@@ -91,9 +88,9 @@
   </div>
 
   <div class="card">
-    <div class="card-body">
+    <div class="card-header">
       <CardHeader>
-        <h5 class="card-title" slot="left">Resource Updates</h5>
+        <span slot="left">Resource Updates</span>
         <!-- Filters -->
         <CardFilters slot="right">
           <CardFiltersItem href="/" active>Tümü</CardFiltersItem>
@@ -101,6 +98,8 @@
           <CardFiltersItem href="/">Temalar</CardFiltersItem>
         </CardFilters>
       </CardHeader>
+    </div>
+    <div class="card-body">
 
       <!-- Pending Update List -->
       <NoContent

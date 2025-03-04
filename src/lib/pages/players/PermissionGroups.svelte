@@ -2,10 +2,6 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <a class="btn btn-link" role="button" href="{base}/players" slot="left">
-      <i class="fas fa-arrow-left me-2"></i>
-      {$_("pages.permission-groups.players")}
-    </a>
     <a
       href="{base}/players/perm-groups/create"
       class="btn btn-secondary"
@@ -16,18 +12,16 @@
   </PageActions>
 
   <div class="card">
+      <div class="card-header">
+        {$_("pages.permission-groups.card-title", {
+          values: { count: data.permissionGroupCount },
+        })}
+      </div>
     <div class="card-body">
       <!-- Permissions Table -->
-      <CardHeader>
-        <h5 class="card-title" slot="left">
-          {$_("pages.permission-groups.card-title", {
-            values: { count: data.permissionGroupCount },
-          })}
-        </h5>
-      </CardHeader>
 
       <div class="table-responsive">
-        <table class="table table-hover mb-0">
+        <table class="table table-hover">
           <thead>
             <tr>
               <th class="align-middle text-nowrap" scope="col"></th>
@@ -73,7 +67,10 @@
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent, url: {searchParams} } = event;
+    const {
+      parent,
+      url: { searchParams },
+    } = event;
     await parent();
 
     const page = searchParams.get("page") || 1;
@@ -84,7 +81,7 @@
     const body = await ApiUtil.get({
       path: `/api/panel/permissionGroups` + queryParams,
       request: event,
-    })
+    });
 
     if (body.error) {
       if (body.error === "PAGE_NOT_FOUND") {

@@ -238,7 +238,6 @@
     },
     "permission-groups": {
       "title": "Yetki Grupları",
-      "players": "Oyuncular",
       "create-permission-group-button": "Yetki Grubu Oluştur",
       "card-title": "{count} Yetki Grubu",
       "name": "İsim",

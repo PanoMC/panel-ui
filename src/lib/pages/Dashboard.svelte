@@ -110,7 +110,7 @@
               <NoContent />
             {:else}
               <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover mb-0">
                   {#each data.tickets as ticket, index (ticket)}
                     <tbody>
                       <tr>
@@ -164,7 +164,8 @@
             </ul>
           {/each}
 
-          <a href="{base}/logs" role="button" class="btn btn-outline-primary">Show All</a>
+          <a href="{base}/logs" role="button" class="btn btn-outline-primary"
+            >Show All</a>
         </div>
       </div>
     </div>
@@ -189,10 +190,10 @@
       ApiUtil.get({
         path: `/api/panel/logs/activity`,
         request: event,
-      })
+      }),
     ]);
 
-    return {...dashboard, activityLogs}
+    return { ...dashboard, activityLogs };
   }
 </script>
 

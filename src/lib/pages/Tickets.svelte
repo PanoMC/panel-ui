@@ -6,7 +6,7 @@
       {#if data.categoryUrl}
         <a class="btn btn-link" role="button" href="{base}/tickets">
           <i class="fas fa-arrow-left me-2"></i>
-          {$_('buttons.tickets')}
+          {$_("buttons.tickets")}
         </a>
       {/if}
     </div>
@@ -47,9 +47,9 @@
 
   <!-- All Tickets -->
   <div class="card">
-    <div class="card-body">
+    <div class="card-header">
       <CardHeader>
-        <h5 class="card-title" slot="left">
+        <div slot="left">
           {$_("pages.tickets.table-title", {
             values: {
               ticketCount: data.ticketCount,
@@ -67,7 +67,7 @@
                   values: { amount: getListOfChecked($checkedList).length },
                 })
               : "")}
-        </h5>
+        </div>
 
         <!-- Filters -->
         <CardFilters slot="right">
@@ -90,7 +90,8 @@
           {/if}
         </CardFilters>
       </CardHeader>
-
+    </div>
+    <div class="card-body">
       <!-- No Tickets -->
       {#if data.ticketCount === 0}
         <NoContent />
@@ -116,7 +117,10 @@
                 </th>
                 <th class="align-middle" scope="col"
                   >{$_("pages.tickets.table.title")}</th>
-                <th class="align-middle" scope="col" class:table-primary={data.categoryUrl}
+                <th
+                  class="align-middle"
+                  scope="col"
+                  class:table-primary="{data.categoryUrl}"
                   >{$_("pages.tickets.table.category")}</th>
                 <th class="align-middle" scope="col"
                   >{$_("pages.tickets.table.player")}</th>
@@ -171,7 +175,10 @@
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent, url: { searchParams } } = event;
+    const {
+      parent,
+      url: { searchParams },
+    } = event;
     await parent();
 
     const page = parseInt(searchParams.get("page")) || 1;
@@ -185,13 +192,13 @@
     const queryParams = buildQueryParams({
       page,
       pageType,
-      categoryUrl
+      categoryUrl,
     });
 
     const body = await ApiUtil.get({
       path: `/api/panel/tickets` + queryParams,
       request: event,
-    })
+    });
 
     if (body.error) {
       if (body.error === "PAGE_NOT_FOUND") {
@@ -203,7 +210,7 @@
 
     body.page = page;
     body.pageType = pageType;
-    body.categoryUrl = categoryUrl
+    body.categoryUrl = categoryUrl;
 
     return body;
   }
@@ -244,17 +251,25 @@
 
   $: {
     pageTitle.set(
-      data.categoryUrl ? $_('pages.tickets.category-tickets-title', {values: {category: (data.category?.title || "-") === "-" ? $_('pages.tickets.no-category') : (data.category?.title || "-")}}) :
-      $_("pages.tickets.title", {
-        values: {
-          pageType:
-            data.pageType === PageTypes.WAITING_REPLY
-              ? $_("pages.tickets.waiting-reply") + " "
-              : data.pageType === PageTypes.CLOSED
-                ? $_("pages.tickets.closed") + " "
-                : "",
-        },
-      }),
+      data.categoryUrl
+        ? $_("pages.tickets.category-tickets-title", {
+            values: {
+              category:
+                (data.category?.title || "-") === "-"
+                  ? $_("pages.tickets.no-category")
+                  : data.category?.title || "-",
+            },
+          })
+        : $_("pages.tickets.title", {
+            values: {
+              pageType:
+                data.pageType === PageTypes.WAITING_REPLY
+                  ? $_("pages.tickets.waiting-reply") + " "
+                  : data.pageType === PageTypes.CLOSED
+                    ? $_("pages.tickets.closed") + " "
+                    : "",
+            },
+          }),
     );
   }
 
@@ -264,7 +279,7 @@
     const queryParams = buildQueryParams({
       page: data.page,
       categoryUrl: data.categoryUrl,
-      pageType: data.pageType
+      pageType: data.pageType,
     });
 
     await goto(queryParams);
@@ -370,7 +385,7 @@
 
   onConfirmDeleteTicketModalHide((selectedTickets) => {
     if (!data.tickets || data.tickets.length === 0) {
-      return
+      return;
     }
 
     Object.values(selectedTickets).forEach((id) => {
@@ -378,10 +393,10 @@
         data.tickets.find(
           (ticketInTickets) => ticketInTickets.id === parseInt(id),
         ),
-      )
+      );
 
       if (index === -1) {
-        return
+        return;
       }
 
       data.tickets[index].selected = false;
@@ -398,7 +413,7 @@
 
   onConfirmCloseTicketModalHide((selectedTickets) => {
     if (!data.tickets || data.tickets.length === 0) {
-      return
+      return;
     }
 
     Object.values(selectedTickets).forEach((id) => {
@@ -406,10 +421,10 @@
         data.tickets.find(
           (ticketInTickets) => ticketInTickets.id === parseInt(id),
         ),
-      )
+      );
 
       if (index === -1) {
-        return
+        return;
       }
 
       data.tickets[index].selected = false;
