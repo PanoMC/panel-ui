@@ -16,6 +16,9 @@
     "tickets": "Tickets"
   },
   "pages": {
+    "logs": {
+      "title": "Logs"
+    },
     "dashboard": {
       "title": "Panel",
       "welcome-card": {
