@@ -61,13 +61,13 @@
                   type="text"
                   class="form-control font-monospace"
                   id="keyTranslation" value="components.modals.confirm-disable-addon-will-cause-more-disable.title"/>
-                <input
-                  type="text"
+                <textarea
+                  rows="2"
                   class="form-control"
                   id="originalTranslation"
                   value="{`Are you sure to disable "\{pluginId\}" addon?`}"/>
-                <input
-                  type="text"
+                <textarea
+                  rows="2"
                   class="form-control border-danger"
                   id="customTranslation"
                   value="{`"\{pluginId}" eklentisini devre dışı bırakmak istediğinizden emin misiniz?`}"/>
