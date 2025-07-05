@@ -110,7 +110,7 @@
           id="platformLanguage"
           bind:value="{data.locale}">
           {#each Object.keys($Languages) as language, index (language)}
-            <option value="{$Languages[language].locale}"
+            <option value="{$Languages[language].code}"
               >{$Languages[language].name}</option>
           {/each}
         </select>

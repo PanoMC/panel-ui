@@ -2,16 +2,20 @@ import { browser } from "$app/environment";
 import { get, writable } from "svelte/store";
 import { getLocaleFromNavigator, init as initI18n, locale, register, waitLocale } from "svelte-i18n";
 import { base } from "$app/paths";
+import ApiUtil from "$lib/api.util.js";
 
-export const loadedLanguages = writable([]);
 export const languageLoading = writable(false);
 export const currentLanguage = writable(null);
 export const Languages = writable({});
 
 async function fetchLanguages(event) {
-  const response = await event.fetch(base + "/panel-api/languages");
-  const languages = await response.json();
-  Languages.set(languages);
+  const response = await ApiUtil.get({
+    path: `/api/locales`,
+    request: event,
+  })
+  const locales = response.data
+
+  Languages.set(Object.fromEntries(locales.map(item => [item.code, item])));
 }
 
 export async function init(initialLocale, event) {
@@ -33,7 +37,7 @@ export async function init(initialLocale, event) {
 
   initI18n({
     fallbackLocale: "en-US",
-    initialLocale: languageToLoad.locale,
+    initialLocale: languageToLoad.code,
   });
 }
 
@@ -46,28 +50,29 @@ export function getAcceptedLanguage(headers) {
 }
 
 export async function loadLanguage(language, event) {
-  if (get(loadedLanguages).indexOf(language) !== -1) {
-    return;
-  }
-
-  loadedLanguages.update((list) => {
-    list.push(language);
-    return list;
-  });
-
   const useFetch = event ? event.fetch : fetch;
 
-  const response = await useFetch(base + `/panel-api/languages/${language.locale}.json`);
-  const languageFile = await response.json();
+  const [localTranslationsResponse, translationsResponse] = await Promise.all([
+    useFetch(base + `/panel-api/languages/${language.code}.json`),
+    ApiUtil.get({
+      path: `/api/translations/types/PANEL`,
+      request: event,
+    }),
+  ]);
 
-  register(language.locale, async () => languageFile);
+  const languageFile = await localTranslationsResponse.json();
+  const customTranslations = translationsResponse.data
 
-  await waitLocale(language.locale);
+  const translations = unflattenObject({...flattenObject(languageFile), ...flattenObject(customTranslations)})
+
+  register(language.code, async () => translations);
+
+  await waitLocale(language.code);
 
   if (language.derivatives) {
     for (const derivative of language.derivatives) {
-      register(derivative, async () => languageFile);
-      await waitLocale(language.locale);
+      register(derivative, async () => translations);
+      await waitLocale(language.code);
     }
   }
 }
@@ -79,11 +84,9 @@ export async function changeLanguage(language) {
 
   languageLoading.set(true);
 
-  if (get(loadedLanguages).indexOf(language) === -1) {
-    await loadLanguage(language);
-  }
+  await loadLanguage(language);
 
-  locale.set(language.locale);
+  locale.set(language.code);
   currentLanguage.set(language);
 
   languageLoading.set(false);
@@ -95,10 +98,39 @@ export function getLanguageByLocale(locale) {
 
   Object.keys(languages).forEach((key) => {
     const language = languages[key];
-    if (language.locale === locale) {
+    if (language.code === locale) {
       foundLanguage = language;
     }
   });
 
   return foundLanguage;
+}
+
+function flattenObject(obj, prefix = '', result = {}) {
+  for (const key in obj) {
+    const value = obj[key];
+    const newKey = prefix ? `${prefix}.${key}` : key;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      flattenObject(value, newKey, result);
+    } else {
+      result[newKey] = value;
+    }
+  }
+  return result;
+}
+
+function unflattenObject(flatObj) {
+  const result = {};
+  for (const flatKey in flatObj) {
+    const keys = flatKey.split('.');
+    keys.reduce((acc, key, idx) => {
+      if (idx === keys.length - 1) {
+        acc[key] = flatObj[flatKey];
+      } else {
+        acc[key] = acc[key] || {};
+      }
+      return acc[key];
+    }, result);
+  }
+  return result;
 }

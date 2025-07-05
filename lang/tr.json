@@ -1,9 +1,4 @@
 {
-  "name": "Türkçe (TR)",
-  "derivatives": [
-    "tr-tr"
-  ],
-  "date-fns-code": "tr",
   "buttons": {
     "remove": "Kaldır",
     "connect": "Bağla",
@@ -16,9 +11,23 @@
     "validate": "Doğrula",
     "players": "Oyuncular",
     "posts": "Yazılar",
-    "tickets": "Talepler"
+    "tickets": "Talepler",
+    "panel": "Panel",
+    "theme": "Tema",
+    "plugin": "Eklenti",
+    "addons": "Eklentiler",
+    "platform": "Platform",
+    "save": "Kaydet",
+    "all": "Hepsi",
+    "original": "Orijinal",
+    "modified": "Değiştirilmiş",
+    "not-exists": "Kullanılmayan",
+    "manage-languages": "Dilleri Yönet"
   },
   "pages": {
+    "translations": {
+      "unsaved-changes-alert-text": "Kaydedilmemiş değişiklikleriniz var! Emin misiniz?"
+    },
     "dashboard": {
       "title": "Panel",
       "welcome-card": {
@@ -740,7 +749,8 @@
       "pano-account-disconnect-fail": "Pano hesabı kaldırılırken hata oluştu!",
       "email-config-validate-success": "E-Mail başarıyla doğrulandı!",
       "smtp-disabled-success": "E-posta başarıyla devre dışı bırakıldı!",
-      "smtp-enabled-success": "E-posta başarıyla aktifleştirildi!"
+      "smtp-enabled-success": "E-posta başarıyla aktifleştirildi!",
+      "translations-save-success": "Saved changes."
     }
   },
   "page-error": {

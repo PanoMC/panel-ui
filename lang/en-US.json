@@ -1,6 +1,4 @@
 {
-  "name": "English (US)",
-  "date-fns-code": "en-US",
   "buttons": {
     "remove": "Remove",
     "connect": "Connect",
@@ -13,9 +11,23 @@
     "validate": "Validate",
     "players": "Players",
     "posts": "Posts",
-    "tickets": "Tickets"
+    "tickets": "Tickets",
+    "panel": "Panel",
+    "theme": "Theme",
+    "plugin": "Plugin",
+    "addons": "Addons",
+    "platform": "Platform",
+    "save": "Save",
+    "all": "All",
+    "original": "Original",
+    "modified": "Modified",
+    "not-exists": "Not Exists",
+    "manage-languages": "Manage Languages"
   },
   "pages": {
+    "translations": {
+      "unsaved-changes-alert-text": "You have unsaved changes, are you sure?"
+    },
     "logs": {
       "title": "Logs"
     },
@@ -742,7 +754,8 @@
       "pano-account-disconnect-fail": "An error occurred during the removing Pano account!",
       "email-config-validate-success": "E-Mail validated successfully!",
       "smtp-disabled-success": "E-mail disabled successfully!",
-      "smtp-enabled-success": "E-mail enabled successfully!"
+      "smtp-enabled-success": "E-mail enabled successfully!",
+      "translations-save-success": "Saved changes."
     }
   },
   "page-error": {

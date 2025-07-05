@@ -1,1 +1,1 @@
-Language management page.
+Languages management page

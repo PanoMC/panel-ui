@@ -1,6 +1,6 @@
 <li class="nav-item">
   <a class="nav-link {disabled && 'disabled'}" aria-current="page" href="{base + href}" aria-disabled="{disabled}"
-     class:active="{matching(
+     class:active="{typeof active !== 'undefined' ? active : matching(
             $page.url.pathname,
             base + href,
             startsWith,
@@ -17,7 +17,7 @@
   export let startsWith = false;
   export let disabled = false;
   export let matchingList = [];
-
+  export let active;
 
   function matching(path, pathName, startsWith = false, matchingList) {
     return (
