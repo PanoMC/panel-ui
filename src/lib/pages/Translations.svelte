@@ -35,7 +35,7 @@
   <div class="card">
     <div class="card-body vstack gap-3">
       <CardHeader>
-        <h5 class="card-title" slot="left">Platform Translations ({data.meta.totalCount}{data.filter !== FilterTypes.ALL ? '/' + data.meta.filterCount : ''})</h5>
+        <h5 class="card-title" slot="left">{$_('pages.translations.title')} ({data.meta.totalCount}{data.filter !== FilterTypes.ALL ? '/' + data.meta.filterCount : ''})</h5>
         <!-- Filters -->
         <CardFilters slot="right">
           <CardFiltersItem href="/translations{getQueryParams(data.type, data.locale, FilterTypes.ALL)}" active="{data.filter === FilterTypes.ALL}">{$_('buttons.all')}</CardFiltersItem>

@@ -26,7 +26,8 @@
   },
   "pages": {
     "translations": {
-      "unsaved-changes-alert-text": "You have unsaved changes, are you sure?"
+      "unsaved-changes-alert-text": "You have unsaved changes, are you sure?",
+      "title": "Translations"
     },
     "logs": {
       "title": "Logs"

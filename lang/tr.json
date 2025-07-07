@@ -26,7 +26,8 @@
   },
   "pages": {
     "translations": {
-      "unsaved-changes-alert-text": "Kaydedilmemiş değişiklikleriniz var! Emin misiniz?"
+      "unsaved-changes-alert-text": "Kaydedilmemiş değişiklikleriniz var! Emin misiniz?",
+      "title": "Çeviriler"
     },
     "dashboard": {
       "title": "Panel",
