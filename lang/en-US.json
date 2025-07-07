@@ -23,9 +23,26 @@
     "modified": "Modified",
     "not-exists": "Not Exists",
     "manage-languages": "Manage Languages",
-    "categories": "Categories"
+    "categories": "Categories",
+    "create-language": "Create Language",
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit"
   },
   "pages": {
+    "languages": {
+      "title": "Languages",
+      "card-title": "{count} Languages",
+      "name": "Name",
+      "code": "Code",
+      "date-fns-code": "Date-Fns Code",
+      "derivatives": "Derivatives",
+      "defined-by": "Defined By",
+      "defined-by-options": {
+        "SYSTEM": "System",
+        "USER": "User"
+      }
+    },
     "translations": {
       "unsaved-changes-alert-text": "You have unsaved changes, are you sure?",
       "title": "Translations"
@@ -504,6 +521,16 @@
         "save": "Save",
         "create": "Create"
       },
+      "add-edit-language": {
+        "create-language": "Create Language",
+        "edit-language": "Edit Language",
+        "inputs": {
+          "name": "Name",
+          "code": "Code",
+          "date-fns-code": "Date-fns Code",
+          "derivatives": "Press Enter to insert"
+        }
+      },
       "authorize-player": {
         "title": "Authorize Player",
         "close": "Close",
@@ -580,6 +607,9 @@
         "title": "Are you sure you want to permanently delete all notifications?",
         "cancel": "Cancel",
         "yes": "Yes"
+      },
+      "confirm-delete-language": {
+        "title": "Are you sure you want to permanently delete this language?"
       },
       "connect-server": {
         "title": "Connect Server",
@@ -756,7 +786,10 @@
       "email-config-validate-success": "E-Mail validated successfully!",
       "smtp-disabled-success": "E-mail disabled successfully!",
       "smtp-enabled-success": "E-mail enabled successfully!",
-      "translations-save-success": "Saved changes."
+      "translations-save-success": "Saved changes.",
+      "language-deleted-permanently": "\"{name}\" deleted permanently.",
+      "language-updated-successfully": "\"{name}\" updated successfully.",
+      "language-created-successfully": "\"{name}\" created successfully."
     }
   },
   "page-error": {
