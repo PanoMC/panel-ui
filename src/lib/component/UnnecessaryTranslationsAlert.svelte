@@ -1,7 +1,7 @@
 <div
   class="alert alert-warning animate__animated animate__slideInUp"
   role="alert">
-  <details>
+  <details open="{open}">
     <summary class="card-title mb-0">
       These translations are not used anymore, you can delete them:
     </summary>
@@ -24,6 +24,7 @@
 
   export let translations;
   export let pluginId;
+  export let open;
 
   const dispatch = createEventDispatcher();
 

@@ -64,7 +64,7 @@
                 class="accordion-collapse collapse show">
                 <div class="accordion-body">
                   {#if data.translations[pluginId].filter(translation => translation.notExists).length > 0}
-                    <UnnecessaryTranslationsAlert translations="{data.translations[pluginId].filter(translation => translation.notExists)}" pluginId="{pluginId}" on:customInputChange={handleCustomInputChange} on:deleteClick={handleOnDeleteClick}/>
+                    <UnnecessaryTranslationsAlert translations="{data.translations[pluginId].filter(translation => translation.notExists)}" pluginId="{pluginId}" on:customInputChange={handleCustomInputChange} on:deleteClick={handleOnDeleteClick} open="{data.filter === FilterTypes.NOT_EXISTS}"/>
                   {/if}
 
                   {#if data.translations[pluginId].filter(translation => !translation.notExists).length > 0}
@@ -99,7 +99,7 @@
               class="accordion-collapse collapse show">
               <div class="accordion-body">
                 {#if data.translations.filter(translation => translation.notExists).length > 0}
-                  <UnnecessaryTranslationsAlert translations="{data.translations.filter(translation => translation.notExists)}" on:customInputChange={handleCustomInputChange} on:deleteClick={handleOnDeleteClick}/>
+                  <UnnecessaryTranslationsAlert translations="{data.translations.filter(translation => translation.notExists)}" on:customInputChange={handleCustomInputChange} on:deleteClick={handleOnDeleteClick} open="{data.filter === FilterTypes.NOT_EXISTS}"/>
                 {/if}
                 {#if data.translations.filter(translation => !translation.notExists).length > 0}
                   <div class="row-cols-3 g-2 d-flex flex-nowrap">
