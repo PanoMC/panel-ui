@@ -7,7 +7,7 @@
       <CardMenuItem href="/tickets"
         >{$_("pages.ticket-categories.tickets")}</CardMenuItem>
       <CardMenuItem href="/tickets/categories"
-        >{$_("pages.tickets.ticket-categories-button")}</CardMenuItem>
+        >{$_("buttons.categories")}</CardMenuItem>
     </CardMenu>
 
     <button
