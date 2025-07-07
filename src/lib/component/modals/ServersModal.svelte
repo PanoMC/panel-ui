@@ -9,33 +9,16 @@
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="row justify-content-between w-100">
-          <div class="col-4">
-            <button
-              class="btn btn-secondary btn-sm"
-              data-bs-target="#connectServer"
-              data-bs-toggle="modal"
-              on:click="{hide}">
-              <i class="fa-solid fa-plus"></i>
-              <span class="d-xl-inline d-none ms-2"
-                >{$_("components.modals.servers.connect-server-button")}</span>
-            </button>
-          </div>
-          <div class="col-4 d-flex justify-content-center align-items-center">
-            <h5 class="modal-title pr-2">
-              {$_("components.modals.servers.servers")}
-            </h5>
-          </div>
-          <div class="col-4 d-flex align-items-center">
-            <button
-              aria-label="{$_('components.modals.servers.close')}"
-              class="btn-close"
-              on:click="{hide}"
-              title="{$_('components.modals.servers.close')}"
-              type="button">
-            </button>
-          </div>
-        </div>
+        <h5 class="modal-title pr-2">
+          {$_("components.modals.servers.servers")}
+        </h5>
+        <button
+          aria-label="{$_('components.modals.servers.close')}"
+          class="btn-close"
+          on:click="{hide}"
+          title="{$_('components.modals.servers.close')}"
+          type="button">
+        </button>
       </div>
 
       <div class="modal-body">
