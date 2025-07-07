@@ -32,8 +32,11 @@ export async function init(initialLocale, event) {
   const language = getLanguageByLocale(initialLocale);
   const languageToLoad = language || get(Languages)["en-US"];
 
+  await loadLanguage(get(Languages)["en-US"], event);
   await loadLanguage(languageToLoad, event);
   currentLanguage.set(languageToLoad);
+
+  await waitLocale();
 
   initI18n({
     fallbackLocale: "en-US",
@@ -55,13 +58,13 @@ export async function loadLanguage(language, event) {
   const [localTranslationsResponse, translationsResponse] = await Promise.all([
     useFetch(base + `/panel-api/languages/${language.code}.json`),
     ApiUtil.get({
-      path: `/api/translations/types/PANEL`,
+      path: `/api/locales/${language.code}/translations/types/PANEL`,
       request: event,
     }),
   ]);
 
   const languageFile = await localTranslationsResponse.json();
-  const customTranslations = translationsResponse.data
+  const customTranslations = translationsResponse.result !== "ok" ? {} : translationsResponse.data
 
   const translations = unflattenObject({...flattenObject(languageFile), ...flattenObject(customTranslations)})
 
