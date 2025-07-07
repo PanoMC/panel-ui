@@ -220,7 +220,7 @@
 
 <script>
   import { _ } from "svelte-i18n";
-  import { onDestroy, onMount } from "svelte";
+  import { getContext, onDestroy, onMount } from "svelte";
 
   import { beforeNavigate, goto } from "$app/navigation";
   import { base } from "$app/paths";
@@ -243,6 +243,10 @@
   export let data;
   let refreshing;
   let saving;
+
+  const pageTitle = getContext("pageTitle");
+
+  pageTitle.set("pages.translations.title")
 
   $: saveDisabled = JSON.stringify(data.translationInputs) === JSON.stringify(data.originalTranslations) || saving;
 
