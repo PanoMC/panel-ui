@@ -35,7 +35,7 @@
   <div class="card">
     <div class="card-header">
       <CardHeader>
-        <h5 class="card-title" slot="left">{$_('pages.translations.title')} ({data.meta.totalCount}{data.filter !== FilterTypes.ALL ? '/' + data.meta.filterCount : ''})</h5>
+        <h5 class="card-title" slot="left">{$_('pages.translations.title')} ({data.filter !== FilterTypes.ALL ? data.meta.filterCount : data.meta.totalCount})</h5>
         <!-- Filters -->
         <CardFilters slot="right">
           <CardFiltersItem href="/translations{getQueryParams(data.type, data.locale, FilterTypes.ALL)}" active="{data.filter === FilterTypes.ALL}">{$_('buttons.all')}</CardFiltersItem>
@@ -56,7 +56,7 @@
                   type="button"
                   data-bs-toggle="collapse"
                   data-bs-target="#collapsePlugin{pluginId}">
-                  {pluginId}
+                  {pluginId} ({data.translations[pluginId].length})
                 </button>
               </h2>
               <div
@@ -91,7 +91,7 @@
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapse{data.type}Translations">
-                {$_('buttons.' + data.type.toLowerCase())}
+                {$_('buttons.' + data.type.toLowerCase())} ({data.translations.length})
               </button>
             </h2>
             <div
