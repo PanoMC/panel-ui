@@ -1,18 +1,20 @@
 <div
-  class="alert alert-warning animate__animated animate__slideInUp mb-8"
+  class="alert alert-warning animate__animated animate__slideInUp"
   role="alert">
-  <h5 class="alert-heading mb-4">These translations are not used anymore, you can delete them:</h5>
-
-  <div class="row-cols-3 g-2 d-flex flex-nowrap">
-    <label for="KeyTranslation">Key</label>
-    <label for="OriginalTranslation">Original</label>
-    <label for="CustomTranslation">Custom</label>
-  </div>
-  <p>
-    {#each translations as translation, index (translation)}
-      <TranslationRow translation="{translation}" pluginId="{pluginId}" on:customInputChange={handleCustomInputChange} on:deleteClick={handleOnDeleteClick}/>
-    {/each}
-  </p>
+  <details>
+    <summary class="card-title mb-0">
+      These translations are not used anymore, you can delete them:
+    </summary>
+    <p class="card-text">
+      {#each translations as translation, index (translation)}
+        <TranslationRow
+          translation="{translation}"
+          pluginId="{pluginId}"
+          on:customInputChange="{handleCustomInputChange}"
+          on:deleteClick="{handleOnDeleteClick}" />
+      {/each}
+    </p>
+  </details>
 </div>
 
 <script>
@@ -28,16 +30,15 @@
   function handleCustomInputChange(event) {
     const { key, value } = event.detail;
 
-    dispatch('customInputChange', {
+    dispatch("customInputChange", {
       key,
-      value
+      value,
     });
   }
 
   function handleOnDeleteClick(event) {
     const { key } = event.detail;
 
-    dispatch('deleteClick', { key });
-
+    dispatch("deleteClick", { key });
   }
 </script>

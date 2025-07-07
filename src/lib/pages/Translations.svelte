@@ -33,7 +33,7 @@
   </PageActions>
 
   <div class="card">
-    <div class="card-body vstack gap-3">
+    <div class="card-header">
       <CardHeader>
         <h5 class="card-title" slot="left">{$_('pages.translations.title')} ({data.meta.totalCount}{data.filter !== FilterTypes.ALL ? '/' + data.meta.filterCount : ''})</h5>
         <!-- Filters -->
@@ -44,7 +44,8 @@
           <CardFiltersItem href="/translations{getQueryParams(data.type, data.locale, FilterTypes.NOT_EXISTS)}" active="{data.filter === FilterTypes.NOT_EXISTS}">{$_('buttons.not-exists')}</CardFiltersItem>
         </CardFilters>
       </CardHeader>
-
+    </div>
+    <div class="card-body vstack gap-3">
       <div class="accordion">
         {#if data.type === PageTypes.PLUGIN}
           {#each Object.keys(data.translations) as pluginId, index (pluginId)}

@@ -1,39 +1,40 @@
-<div class="d-flex flex-nowrap g-2 overflow-x-auto mb-2">
+<div class="input-group d-flex flex-nowrap g-2 overflow-x-auto">
   <input
     type="text"
     class="form-control font-monospace"
     id="KeyTranslation"
     readonly
-    value="{pluginId ? translation.key.replace(`plugins.${pluginId}.`, ''): translation.key}" />
+    value="{pluginId
+      ? translation.key.replace(`plugins.${pluginId}.`, '')
+      : translation.key}" />
 
   <textarea
     rows="1"
     class="form-control"
     id="OriginalTranslation"
     readonly
-    value="{translation.original}" />
+    value="{translation.original}"></textarea>
 
-  <div class="position-relative w-100">
-    <textarea
-      rows="1"
-      class="form-control pe-5"
-      id="CustomTranslation"
-      bind:value={translation.custom}
-      on:input={onCustomInputChange} />
+  <textarea
+    rows="1"
+    class="form-control"
+    id="CustomTranslation"
+    bind:value="{translation.custom}"
+    on:input="{onCustomInputChange}"></textarea>
 
-    {#if translation.notExists}
-      <button
-        type="button"
-        class="btn position-absolute top-50 end-0 translate-middle-y me-1 btn-sm btn-outline-danger m-0"
-        on:click={() => onDeleteClick(translation.key)}>
-        <i class="fa-solid fa-trash"></i>
-      </button>
-    {/if}
-  </div>
+  {#if translation.notExists}
+    <button
+      id="deleteButton"
+      type="button"
+      class="btn btn-sm btn-outline-danger"
+      on:click="{() => onDeleteClick(translation.key)}">
+      <i class="fa-solid fa-trash"></i>
+    </button>
+  {/if}
 </div>
 
 <script>
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from "svelte";
 
   export let translation;
   export let pluginId;
@@ -43,13 +44,13 @@
   function onCustomInputChange(event) {
     const value = event.target.value;
 
-    dispatch('customInputChange', {
+    dispatch("customInputChange", {
       key: translation.key,
-      value
+      value,
     });
   }
 
   function onDeleteClick(key) {
-    dispatch('deleteClick', { key });
+    dispatch("deleteClick", { key });
   }
 </script>
