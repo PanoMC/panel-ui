@@ -23,9 +23,26 @@
     "modified": "Değiştirilmiş",
     "not-exists": "Kullanılmayan",
     "manage-languages": "Dilleri Yönet",
-    "categories": "Kategoriler"
+    "categories": "Kategoriler",
+    "create-language": "Dil Oluştur",
+    "create": "Oluştur",
+    "delete": "Sil",
+    "edit": "Düzenle"
   },
   "pages": {
+    "languages": {
+      "title": "Diller",
+      "card-title": "{count} Dil",
+      "name": "İsmi",
+      "code": "Kodu",
+      "date-fns-code": "Date-Fns Kodu",
+      "derivatives": "Alternatifleri",
+      "defined-by": "Tanımlayan",
+      "defined-by-options": {
+        "SYSTEM": "Sistem",
+        "USER": "Kullanıcı"
+      }
+    },
     "translations": {
       "unsaved-changes-alert-text": "Kaydedilmemiş değişiklikleriniz var! Emin misiniz?",
       "title": "Çeviriler"
@@ -500,6 +517,16 @@
         "save": "Kaydet",
         "create": "Oluştur"
       },
+      "add-edit-language": {
+        "create-language": "Dil Oluştur",
+        "edit-language": "Dili Düzenle",
+        "inputs": {
+          "name": "İsim",
+          "code": "Kodu",
+          "date-fns-code": "Date-fns Kodu",
+          "derivatives": "Eklemek için Enter'a basın"
+        }
+      },
       "authorize-player": {
         "title": "Oyuncuyu Yetkilendir",
         "close": "Kapat",
@@ -576,6 +603,9 @@
         "title": "Tüm bildirimleri kalıcı olarak silmek istediğinizden emin misiniz?",
         "cancel": "İptal",
         "yes": "Evet"
+      },
+      "confirm-delete-language": {
+        "title": "Bu dili silmek istediğinizden emin misiniz?"
       },
       "connect-server": {
         "title": "Sunucu Bağla",
@@ -752,7 +782,10 @@
       "email-config-validate-success": "E-Mail başarıyla doğrulandı!",
       "smtp-disabled-success": "E-posta başarıyla devre dışı bırakıldı!",
       "smtp-enabled-success": "E-posta başarıyla aktifleştirildi!",
-      "translations-save-success": "Değişiklikler kaydedildi."
+      "translations-save-success": "Değişiklikler kaydedildi.",
+      "language-deleted-permanently": "\"{name}\" kalıcı olarak silindi.",
+      "language-updated-successfully": "\"{name}\" başarıyla güncellendi.",
+      "language-created-successfully": "\"{name}\" başarıyla oluşturuldu."
     }
   },
   "page-error": {
