@@ -752,7 +752,7 @@
       "email-config-validate-success": "E-Mail başarıyla doğrulandı!",
       "smtp-disabled-success": "E-posta başarıyla devre dışı bırakıldı!",
       "smtp-enabled-success": "E-posta başarıyla aktifleştirildi!",
-      "translations-save-success": "Saved changes."
+      "translations-save-success": "Değişiklikler kaydedildi."
     }
   },
   "page-error": {
