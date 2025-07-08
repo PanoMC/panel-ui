@@ -2,7 +2,7 @@
 <div
   aria-hidden="true"
   class="modal fade"
-  id="{dialogID}"
+  bind:this="{$modalElement}"
   role="dialog"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
@@ -41,9 +41,9 @@
 </div>
 
 <script context="module">
-  import { writable } from "svelte/store";
+  import { get, writable } from "svelte/store";
 
-  const dialogID = "deletePlayerModal";
+  const modalElement = writable();
 
   let callback = () => {};
   let hideCallback = () => {};
@@ -55,7 +55,7 @@
   const currentPassword = writable("");
 
   export function show(newPlayer) {
-    modal = new window.bootstrap.Modal(document.getElementById(dialogID), {
+    modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: "static",
       keyboard: false,
     });

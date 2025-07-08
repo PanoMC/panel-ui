@@ -2,7 +2,7 @@
 <div
   aria-hidden="true"
   class="modal fade"
-  id="{dialogID}"
+  bind:this="{$modalElement}"
   role="dialog"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
@@ -67,7 +67,7 @@
 <script context="module">
   import { writable, get } from "svelte/store";
 
-  const dialogID = "permissionGroupDeleteConfirmationModal";
+  const modalElement = writable();
   const permissionGroup = writable({
     id: -1,
     name: "",
@@ -82,7 +82,7 @@
   export function show(newPermissionGroup) {
     permissionGroup.set(newPermissionGroup);
 
-    modal = new window.bootstrap.Modal(document.getElementById(dialogID), {
+    modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: "static",
       keyboard: false,
     });

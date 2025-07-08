@@ -1,7 +1,7 @@
 <div
   aria-hidden="true"
   class="modal fade"
-  id="{dialogID}"
+  bind:this="{$modalElement}"
   role="dialog"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
@@ -33,14 +33,16 @@
 </div>
 
 <script context="module">
-  const dialogID = "confirmDeleteAllNotifications";
+  import { get, writable } from "svelte/store";
+
+  const modalElement = writable();
 
   let callback = () => {};
   let hideCallback = () => {};
   let modal;
 
   export function show() {
-    modal = new window.bootstrap.Modal(document.getElementById(dialogID), {
+    modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: "static",
       keyboard: false,
     });

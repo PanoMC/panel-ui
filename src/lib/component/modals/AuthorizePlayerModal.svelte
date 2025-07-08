@@ -1,5 +1,5 @@
 <!-- Authorize Player Modal -->
-<div class="modal fade" id="{dialogID}" tabindex="-1" aria-hidden="true">
+<div class="modal fade" bind:this="{$modalElement}" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       {#if $loading}
@@ -50,7 +50,7 @@
 
   import ApiUtil from "$lib/api.util";
 
-  const dialogID = "authorizePlayerModal";
+  const modalElement = writable();
   const player = writable({});
   const loading = writable(true);
   const permissionGroups = writable([]);
@@ -71,7 +71,7 @@
 
     initData();
 
-    modal = new window.bootstrap.Modal(document.getElementById(dialogID), {
+    modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: "static",
       keyboard: false,
     });

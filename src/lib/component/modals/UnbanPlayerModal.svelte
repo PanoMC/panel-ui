@@ -2,7 +2,7 @@
 <div
   aria-hidden="true"
   class="modal fade"
-  id="{dialogID}"
+  bind:this="{$modalElement}"
   role="dialog"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
@@ -36,7 +36,7 @@
 <script context="module">
   import { get, writable } from "svelte/store";
 
-  const dialogID = "unbanPlayerModal";
+  const modalElement = writable();
   const player = writable({});
 
   let callback = () => {};
@@ -46,7 +46,7 @@
   export function show(newPlayer) {
     player.set(newPlayer);
 
-    modal = new window.bootstrap.Modal(document.getElementById(dialogID), {
+    modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: "static",
       keyboard: false,
     });

@@ -1,7 +1,7 @@
 <!-- Add Plugin Modal -->
 <div
   class="modal modal-xl fade"
-  id="{dialogID}"
+  bind:this="{$modalElement}"
   tabindex="-1"
   aria-hidden="true">
   <div class="modal-dialog">
@@ -32,7 +32,7 @@
 <script context="module">
   import { writable, get } from "svelte/store";
 
-  const dialogID = "addPluginModal";
+  const modalElement = writable();
   const loading = writable(false);
   const permissionGroups = writable([]);
   const defaultErrors = {};
@@ -47,7 +47,7 @@
     errors.set(defaultErrors);
     submitLoading.set(false);
 
-    modal = new window.bootstrap.Modal(document.getElementById(dialogID), {
+    modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: "static",
       keyboard: false,
     });

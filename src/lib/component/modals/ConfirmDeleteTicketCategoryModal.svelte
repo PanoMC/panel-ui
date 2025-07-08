@@ -2,7 +2,7 @@
 <div
   aria-hidden="true"
   class="modal fade"
-  id="{dialogID}"
+  bind:this="{$modalElement}"
   role="dialog"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
@@ -54,7 +54,7 @@
 <script context="module">
   import { writable, get } from "svelte/store";
 
-  const dialogID = "confirmDeleteTicketCategory";
+  const modalElement = writable();
   const category = writable({
     tickets: [],
   });
@@ -66,7 +66,7 @@
   export function show(newCategory) {
     category.set(newCategory);
 
-    modal = new window.bootstrap.Modal(document.getElementById(dialogID), {
+    modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: "static",
       keyboard: false,
     });

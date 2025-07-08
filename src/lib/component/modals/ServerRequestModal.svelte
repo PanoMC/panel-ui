@@ -2,7 +2,7 @@
 <div
   aria-hidden="true"
   class="modal fade"
-  id="{dialogID}"
+  bind:this="{$modalElement}"
   role="dialog"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
@@ -66,11 +66,11 @@
 
 <script context="module">
   import ApiUtil from "$lib/api.util.js";
-  import { writable } from "svelte/store";
+  import { get, writable } from "svelte/store";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
 
-  const dialogID = "serverRequestModal";
+  const modalElement = writable();
 
   let callback = () => {};
   let hideCallback = () => {};
@@ -91,7 +91,7 @@
   const submitLoading = writable(false);
 
   export function show(serverId) {
-    modal = new window.bootstrap.Modal(document.getElementById(dialogID), {
+    modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: "static",
       keyboard: false,
     });

@@ -1,5 +1,5 @@
 <!-- Add / Edit Category Modal -->
-<div class="modal fade" id="{dialogID}" role="dialog" tabindex="-1">
+<div class="modal fade" bind:this="{$modalElement}" role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -69,7 +69,7 @@
 <script context="module">
   import { writable, get } from "svelte/store";
 
-  const dialogID = "postCategoriesAddEditCategory";
+  const modalElement = writable();
   const mode = writable("create");
   const category = writable({});
   const errors = writable([]);
@@ -96,7 +96,7 @@
     category.set({ ...newCategory });
     errors.set([]);
 
-    modal = new window.bootstrap.Modal(document.getElementById(dialogID), {
+    modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: "static",
       keyboard: false,
     });

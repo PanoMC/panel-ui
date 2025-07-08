@@ -2,7 +2,7 @@
 <div
   class="modal fade"
   aria-hidden="true"
-  id="{dialogID}"
+  bind:this="{$modalElement}"
   role="dialog"
   data-bs-scroll="true"
   tabindex="-1">
@@ -112,12 +112,12 @@
 </div>
 
 <script context="module">
-  import { writable } from "svelte/store";
+  import { get, writable } from "svelte/store";
 
   import ApiUtil from "$lib/api.util.js";
   import tooltip from "$lib/tooltip.util";
 
-  const dialogID = "serversModal";
+  const modalElement = writable();
 
   let callback = () => {};
   let hideCallback = () => {};
@@ -128,7 +128,7 @@
   const selectingServer = writable(null);
 
   export function show() {
-    modal = new window.bootstrap.Modal(document.getElementById(dialogID));
+    modal = new window.bootstrap.Modal(get(modalElement));
 
     selectingServer.set(null);
     loading.set(true);
