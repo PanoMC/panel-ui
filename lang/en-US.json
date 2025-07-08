@@ -723,5 +723,47 @@
   },
   "page-error": {
     "404": "Enderman blocked this page from loading."
+  },
+  "permissions": {
+    "ACCESS_PANEL": {
+      "title": "Access Panel",
+      "description": "Allows access to panel interface. Useful for making VIP player type of permissions without any access."
+    },
+    "MANAGE_SERVERS": {
+      "title": "Manage Servers",
+      "description": "Can connect, disconnect, manage anything about a server."
+    },
+    "MANAGE_POSTS": {
+      "title": "Manage Posts",
+      "description": "Can create, delete, publish a post and manage post categories."
+    },
+    "MANAGE_TICKETS": {
+      "title": "Manage Tickets",
+      "description": "Can reply, delete, close a ticket and manage ticket categories."
+    },
+    "MANAGE_PLAYERS": {
+      "title": "Manage Players",
+      "description": "Can view, verify, delete, manage players. This does not include player's permissions!"
+    },
+    "MANAGE_VIEW": {
+      "title": "Manage View",
+      "description": "Can install, uninstall, change and manage a theme. This permission also allows for changing settings of a theme."
+    },
+    "MANAGE_ADDONS": {
+      "title": "Manage Addons",
+      "description": "Can install, uninstall, change and manage an addon. This permission also allows for changing settings of an addon."
+    },
+    "MANAGE_PLATFORM_SETTINGS": {
+      "title": "Manage Platform Settings",
+      "description": "Can edit website/platform settings. This permission also allows for checking and updating platform, addons and themes."
+    },
+    "MANAGE_PERMISSION_GROUPS": {
+      "title": "Manage Permission Groups",
+      "description": "Can add, edit, delete a permission group. This permission also allows for change permission of a player with \"manage players\" permission."
+    },
+    "ACCESS_ACTIVITY_LOGS": {
+      "title": "Access Activity Logs",
+      "description": "Can view activity logs. Caution: Activity logs may contain sensitive data."
+    }
   }
 }

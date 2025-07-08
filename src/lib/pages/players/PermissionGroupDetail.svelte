@@ -78,7 +78,7 @@
                   <th
                     scope="col"
                     use:tooltip="{[
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vehicula, enim in fermentum accumsan,',
+                      $_(`permissions.${permission.name}.description`),
                       { placement: 'right' },
                     ]}">
                     <!--              TODO: Icon system-->
@@ -86,7 +86,7 @@
                     <!--                data="{icon[convertIconName(permission.iconName)]}"-->
                     <!--                class="text-primary d-block m-auto" />-->
                     <small class="mb-0">
-                      {permission.name}
+                      {$_(`permissions.${permission.name}.title`)}
                     </small>
                   </th>
                   <td>

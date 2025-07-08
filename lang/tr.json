@@ -723,5 +723,47 @@
   },
   "page-error": {
     "404": "Enderman bu sayfanın yüklenmesini engelledi."
+  },
+  "permissions": {
+    "ACCESS_PANEL": {
+      "title": "Panel'e Erişim",
+      "description": "Panel arayüzüne erişim sağlar. Herhangi bir erişim olmadan VIP oyuncu türü yetkiler oluşturmak için kullanışlıdır."
+    },
+    "MANAGE_SERVERS": {
+      "title": "Sunucuları Yönet",
+      "description": "Bir sunucuya bağlanabilir, bağlantısını kesebilir ve sunucuyla ilgili her şeyi yönetebilir."
+    },
+    "MANAGE_POSTS": {
+      "title": "Yazıları Yönet",
+      "description": "Yazı oluşturabilir, silebilir, yayımlayabilir ve yazı kategorilerini yönetebilir."
+    },
+    "MANAGE_TICKETS": {
+      "title": "Destek Taleplerini Yönet",
+      "description": "Destek taleplerine yanıt verebilir, silebilir, kapatabilir ve destek kategorilerini yönetebilir."
+    },
+    "MANAGE_PLAYERS": {
+      "title": "Oyuncuları Yönet",
+      "description": "Oyuncuları görüntüleyebilir, doğrulayabilir, silebilir ve yönetebilir. Bu, oyuncunun yetkilerini içermez!"
+    },
+    "MANAGE_VIEW": {
+      "title": "Görünümü Yönet",
+      "description": "Bir temayı yükleyebilir, kaldırabilir, değiştirebilir ve yönetebilir. Bu yetki ayrıca temanın ayarlarını değiştirmeye de izin verir."
+    },
+    "MANAGE_ADDONS": {
+      "title": "Eklentileri Yönet",
+      "description": "Bir eklentiyi yükleyebilir, kaldırabilir, değiştirebilir ve yönetebilir. Bu yetki ayrıca eklentinin ayarlarını değiştirmeye de izin verir."
+    },
+    "MANAGE_PLATFORM_SETTINGS": {
+      "title": "Platform Ayarlarını Yönet",
+      "description": "Web sitesi/platform ayarlarını düzenleyebilir. Bu yetki ayrıca platformu, eklentileri ve temaları kontrol etme ve güncelleme yetkisi verir."
+    },
+    "MANAGE_PERMISSION_GROUPS": {
+      "title": "Yetki Gruplarını Yönet",
+      "description": "Bir yetki grubunu ekleyebilir, düzenleyebilir ve silebilir. Bu yetki, \"oyuncuları yönet\" yetkisiyle birlikte bir oyuncunun yetkilerini değiştirmeye de olanak tanır."
+    },
+    "ACCESS_ACTIVITY_LOGS": {
+      "title": "Aktivite Kayıtlarına Erişim",
+      "description": "Aktivite kayıtlarını görüntüleyebilir. Dikkat: Aktivite kayıtları hassas veriler içerebilir."
+    }
   }
 }
