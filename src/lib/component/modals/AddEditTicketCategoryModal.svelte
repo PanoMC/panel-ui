@@ -66,7 +66,7 @@
 
     if (newCategory.description === null) newCategory.description = "";
 
-    category.set(newCategory);
+    category.set({ ...newCategory });
     errors.set([]);
 
     modal = new window.bootstrap.Modal(document.getElementById(dialogID), {

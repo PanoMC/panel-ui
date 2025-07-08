@@ -155,10 +155,10 @@
 
   async function refreshData() {
     const queryParams = buildQueryParams({
-      page: data.page,
+      page: data.page === 1 ? null : data.page,
     });
 
-    await goto(queryParams);
+    await goto(queryParams, { invalidateAll: true });
   }
 
   async function onPageClick(page) {

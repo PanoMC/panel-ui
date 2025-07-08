@@ -90,12 +90,10 @@
   ) {
     mode.set(newMode);
 
-    newCategory = Object.assign({}, newCategory);
-
     if (newCategory.color && !newCategory.color.includes("#"))
       newCategory.color = "#" + newCategory.color;
 
-    category.set(newCategory);
+    category.set({ ...newCategory });
     errors.set([]);
 
     modal = new window.bootstrap.Modal(document.getElementById(dialogID), {
