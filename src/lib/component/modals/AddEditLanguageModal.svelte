@@ -37,19 +37,23 @@
             bind:value="{$locale.dateFnsCode}"
             class:border-danger="{$error === 'INVALID_DATE_FNS_CODE'}" />
 
-          <form on:submit|preventDefault="{addKeyWord}">
-            <input
-              id="derivatives"
-              class="form-control mb-3"
-              class:border-danger="{$error === 'derivatives' || $error === 'INVALID_LOCALE_DERIVATIVE'}"
-              placeholder="{$_(
-              'components.modals.add-edit-language.inputs.derivatives',
-            )}"
-              type="text"
-              name="derivative"
-              bind:value="{$derivative}"
-              on:input={onDerivativeChange} />
-          </form>
+          <input
+            id="derivatives"
+            class="form-control mb-3"
+            class:border-danger="{$error === 'derivatives' || $error === 'INVALID_LOCALE_DERIVATIVE'}"
+            placeholder="{$_(
+            'components.modals.add-edit-language.inputs.derivatives',
+          )}"
+            type="text"
+            name="derivative"
+            bind:value="{$derivative}"
+            on:input={onDerivativeChange}
+            on:keydown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                addKeyWord();
+              }
+            }} />
           {#each $locale.derivatives as derivative, index (derivative)}
             <a
               use:tooltip="{[

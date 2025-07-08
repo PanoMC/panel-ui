@@ -295,7 +295,7 @@
   let isThumbnailRemoved;
 
   let thumbnailInput;
-  let thumbnailFiles = [];
+  let thumbnailFiles = null;
 
   const pageTitle = getContext("pageTitle");
 
@@ -360,7 +360,7 @@
 
         isThumbnailSaved = true;
         isThumbnailRemoved = false;
-        thumbnailFiles = [];
+        thumbnailFiles = null;
 
         return;
       } else if (body.result === "error") {
@@ -432,7 +432,7 @@
 
   function onRemoveThumbnailClick() {
     isThumbnailSaved = false;
-    thumbnailFiles = [];
+    thumbnailFiles = null;
     thumbnail = null;
     isThumbnailRemoved = true;
     data.post.thumbnailUrl = null;

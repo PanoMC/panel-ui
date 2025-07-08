@@ -210,8 +210,8 @@
 
   pageTitle.set("pages.settings.site-settings.title");
 
-  let faviconFiles = [];
-  let websiteLogoFiles = [];
+  let faviconFiles = null;
+  let websiteLogoFiles = null;
   let faviconInput;
   let websiteLogoInput;
 
@@ -225,8 +225,8 @@
     data.oldSettings.serverGameVersion === data.serverGameVersion &&
     JSON.stringify(data.oldSettings.keywords) ===
       JSON.stringify(data.keywords) &&
-    faviconFiles.length === 0 &&
-    websiteLogoFiles.length === 0;
+    faviconFiles?.length === 0 &&
+    websiteLogoFiles?.length === 0;
 
   let keywordInputError = false;
 
@@ -312,8 +312,8 @@
             };
           }
 
-          faviconFiles = [];
-          websiteLogoFiles = [];
+          faviconFiles = null;
+          websiteLogoFiles = null;
 
           faviconInput.value = "";
           websiteLogoInput.value = "";
