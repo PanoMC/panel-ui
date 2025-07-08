@@ -95,7 +95,7 @@
         {#each data.keywords as keyword, index (keyword)}
           <a
             use:tooltip="{[
-              $_('pages.settings.site-settings.inputs.keywords.remove'),
+              $_('buttons.remove'),
               { placement: 'bottom' },
             ]}"
             href="javascript:void(0);"
@@ -161,7 +161,7 @@
       class:disabled="{saveButtonLoading || isSaveButtonDisabled}"
       aria-disabled="{saveButtonLoading || isSaveButtonDisabled}"
       on:click="{save}"
-      >{$_("pages.settings.site-settings.save-button")}
+      >{$_("buttons.save")}
     </button>
   </div>
 </div>

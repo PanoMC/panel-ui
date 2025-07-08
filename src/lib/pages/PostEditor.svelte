@@ -40,7 +40,7 @@
         role="button"
         target="_blank"
         href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{data.post.id}"
-        use:tooltip="{[$_('pages.post-editor.view'), { placement: 'bottom' }]}">
+        use:tooltip="{[$_('buttons.view'), { placement: 'bottom' }]}">
         <i class="fas fa-eye"></i>
       </a>
       {#if data.post.status !== StatusTypes.PUBLISHED}
@@ -51,7 +51,7 @@
             isEditorEmpty ||
             data.post.title.length === 0}"
           on:click="{() => submit(false)}">
-          {$_("pages.post-editor.save")}
+          {$_("buttons.save")}
         </button>
       {/if}
       <button

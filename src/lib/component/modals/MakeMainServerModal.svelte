@@ -18,14 +18,14 @@
           type="button"
           class:disabled="{$loading}"
           on:click="{hide}">
-          {$_('components.modals.make-main-server.no')}
+          {$_('buttons.no')}
         </button>
         <button
           class="btn btn-primary col-6 m-0"
           type="button"
           class:disabled="{$loading}"
           on:click="{acceptServer}">
-          {$_('components.modals.make-main-server.yes')}
+          {$_('buttons.yes')}
         </button>
       </div>
     </div>

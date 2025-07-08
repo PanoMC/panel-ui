@@ -27,7 +27,9 @@
     "create-language": "Dil Oluştur",
     "create": "Oluştur",
     "delete": "Sil",
-    "edit": "Düzenle"
+    "edit": "Düzenle",
+    "no": "Hayır",
+    "view": "Görüntüle"
   },
   "pages": {
     "languages": {
@@ -47,6 +49,9 @@
       "unsaved-changes-alert-text": "Kaydedilmemiş değişiklikleriniz var! Emin misiniz?",
       "title": "Çeviriler"
     },
+    "logs": {
+      "title": "Aktivite Kayıtları"
+    },
     "dashboard": {
       "title": "Panel",
       "welcome-card": {
@@ -62,13 +67,11 @@
         "themes-and-extensions": "Temalar ve Eklentiler",
         "documentations": "Dokümantasyon",
         "website": "Website",
-        "discord": "Discord",
-        "close-button": "Kapat"
+        "discord": "Discord"
       },
       "last-tickets": {
         "title": "Son Talepler",
         "player-name": "Oyuncu Adı",
-        "view": "Görüntüle",
         "filter": "Filtrele",
         "no-category": "Kategorisiz"
       }
@@ -114,6 +117,7 @@
     "posts": {
       "title": "{pageType}Yazılar",
       "category-posts-title": "\"{category}\" Yazılar",
+      "no-category": "Kategorisiz",
       "published": "Yayınlanmış",
       "draft": "Taslak",
       "trash": "Çöp",
@@ -130,7 +134,7 @@
     },
     "tickets": {
       "title": "{pageType}Talepler",
-      "{category}": "\"{category}\" Talepler",
+      "category-tickets-title": "\"{category}\" Talepler",
       "no-category": "Kategorisiz",
       "waiting-reply": "Yanıt Bekleyen",
       "closed": "Kapalı",
@@ -185,8 +189,7 @@
           },
           "keywords": {
             "label": "Anahtar Kelimeler",
-            "placeholder": "Eklemek için Enter'a basın",
-            "remove": "Kaldırmak İçin Tıkla"
+            "placeholder": "Eklemek için Enter'a basın"
           },
           "favicon": {
             "label": "Favicon",
@@ -198,8 +201,7 @@
             "server-icon": "Sunucu İkonu",
             "helper": "PNG, JPEG, GIF, SVG formatında, maksimum 2 mb olmalı."
           }
-        },
-        "save-button": "Kaydet"
+        }
       },
       "platform": {
         "title": "Platform Ayarları",
@@ -233,7 +235,6 @@
           "email-validation-error": "E-mail ayarlarınız doğrulanamadı: {mailError}"
         },
         "smtp-settings": "E-Mail Ayarları (SMTP)",
-        "save-button": "Kaydet",
         "toggle-smtp": "SMTP'yi Aç/Kapat"
       }
     },
@@ -280,8 +281,6 @@
       "posts": "Yazılar",
       "trash": "Çöp",
       "move-to-drafts": "Taslaklara Taşı",
-      "view": "Görüntüle",
-      "save": "Kaydet",
       "update": "Güncelle",
       "publish": "Yayınla",
       "inputs": {
@@ -338,8 +337,6 @@
       "title-edit": "Yetki Grubunu Düzenle",
       "title-create": "Yetki Grubu Oluştur",
       "permission-groups": "Yetkiler",
-      "save": "Kaydet",
-      "create": "Oluştur",
       "inputs": {
         "name": {
           "placeholder": "İsim"
@@ -347,23 +344,19 @@
         "player": {
           "placeholder": "Oyuncu ekle..."
         }
-      },
-      "remove": "Kaldır"
+      }
     },
     "player-detail": {
       "players": "Oyuncular",
-      "delete": "Sil",
       "un-ban": "Yasağı Kaldır",
       "ban": "Yasakla",
       "send-verification-mail": "Oyuncu e-postasına bir doğrulama bağlantısı gönder",
       "authorize": "Yetkilendir",
-      "edit": "Düzenle",
       "in-game": "Oyunda",
       "in-website": "Sitede",
       "online-text": "{whereOnline} Çevrimiçi",
       "banned": "Yasaklı",
       "last-tickets": "Son Talepler",
-      "view": "Görüntüle",
       "filter": "Filtrele",
       "no-category": "Kategorisiz",
       "statistics": "İstatistikler",
@@ -384,8 +377,7 @@
     "website-activity-chart": {
       "new-registration": "Yeni Kayıt",
       "new-ticket": "Yeni Talep",
-      "visitor": "Ziyaretçi",
-      "view": "Görüntülenme"
+      "visitor": "Ziyaretçi"
     },
     "site-navigation-menu": {
       "panel": "Panel",
@@ -426,18 +418,14 @@
     },
     "post-row": {
       "actions": "Eylemler",
-      "view": "Görüntüle",
       "move-to-draft": "Taslaklara Taşı",
       "publish": "Yayınla",
       "move-to-trash": "Çöp Kutusuna Taşı",
-      "delete": "Sil",
-      "edit": "Düzenle",
       "no-category": "Kategorisiz",
       "filter": "Filtrele"
     },
     "ticket-row": {
       "select": "Seç",
-      "view": "Görüntüle",
       "filter": "Filtrele",
       "no-category": "Kategorisiz",
       "player-name": "Oyuncu Adı"
@@ -445,10 +433,8 @@
     "player-row": {
       "actions": "Eylemler",
       "authorize": "Yetkilendir",
-      "edit": "Düzenle",
       "remove-ban": "Yasağı Kaldır",
-      "ban": "Yasakla",
-      "view": "Görüntüle"
+      "ban": "Yasakla"
     },
     "player-status-badge": {
       "banned": "Yasaklı",
@@ -486,7 +472,6 @@
       "add-edit-post-category": {
         "create-category": "Kategori Oluştur",
         "edit-category": "Kategoriyi Düzenle",
-        "close": "Kapat",
         "inputs": {
           "title": {
             "placeholder": "Başlık"
@@ -498,14 +483,11 @@
             "placeholder": "URL",
             "helper": "Yanlızca [A-Z/a-z/0-9/-] içerebilir ve minimum 3, maksimum 32 karkater olabilir."
           }
-        },
-        "save": "Kaydet",
-        "create": "Oluştur"
+        }
       },
       "add-edit-ticket-category": {
         "create-category": "Kategori Oluştur",
         "edit-category": "Kategoriyi Düzenle",
-        "close": "Kapat",
         "inputs": {
           "title": {
             "placeholder": "Başlık"
@@ -513,9 +495,7 @@
           "description": {
             "placeholder": "Açıklama"
           }
-        },
-        "save": "Kaydet",
-        "create": "Oluştur"
+        }
       },
       "add-edit-language": {
         "create-language": "Dil Oluştur",
@@ -529,27 +509,19 @@
       },
       "authorize-player": {
         "title": "Oyuncuyu Yetkilendir",
-        "close": "Kapat",
-        "player": "Oyuncu",
-        "save": "Kaydet"
+        "player": "Oyuncu"
       },
       "confirm-ban-player": {
         "title": "Bu oyuncuyu yasaklamak istediğinizden emin misiniz?",
-        "notify-with-email": "E-posta ile bilgilendir",
-        "cancel": "İptal",
-        "yes": "Evet"
+        "notify-with-email": "E-posta ile bilgilendir"
       },
       "confirm-close-ticket": {
         "title-single": "Bu talebi kapatmak istediğinizden emin misiniz?",
-        "title-multi": "Bu talepleri kapatmak istediğinizden emin misiniz?",
-        "cancel": "İptal",
-        "yes": "Evet"
+        "title-multi": "Bu talepleri kapatmak istediğinizden emin misiniz?"
       },
       "confirm-delete-permission-group": {
         "title": "Bu yetki grubunu kalıcı olarak silmek istediğinizden emin misiniz?",
-        "description": "Yetki grubu içerisindeki şu kullanıcılar Oyuncu olarak değişecek:",
-        "cancel": "İptal",
-        "yes": "Evet"
+        "description": "Yetki grubu içerisindeki şu kullanıcılar Oyuncu olarak değişecek:"
       },
       "confirm-delete-player": {
         "title": "Bu oyuncuyu gerçekten silmek istediğinizden emin misiniz?",
@@ -557,59 +529,42 @@
           "password": {
             "placeholder": "Şifre"
           }
-        },
-        "cancel": "İptal",
-        "yes": "Evet"
+        }
       },
       "confirm-delete-post-category": {
         "title": "Bu kategoriyi kalıcı olarak silmek istediğinizden emin misiniz?",
         "description": "Kategori içerisindeki şu yazılar Kategorisiz olarak değişecek:",
-        "more-posts": "+{count} yazı daha",
-        "cancel": "İptal",
-        "yes": "Evet"
+        "more-posts": "+{count} yazı daha"
       },
       "confirm-delete-post": {
         "title-permanent": "Bu yazıyı kalıcı olarak silmek istediğinizden emin misiniz?",
-        "title-trash": "Bu yazıyı çöp kutusuna taşımak istediğinizden emin misiniz?",
-        "cancel": "İptal",
-        "yes": "Evet"
+        "title-trash": "Bu yazıyı çöp kutusuna taşımak istediğinizden emin misiniz?"
       },
       "confirm-delete-ticket-category": {
         "title-permanent": "Not: Eğer bu kategoriyi silerseniz, şu talepler Kategorisiz olarak kalacaklardır:",
         "title": "Bu kategoriyi kalıcı olarak silmek istediğinizden emin misiniz?",
-        "more-tickets": "+{count} talep daha",
-        "cancel": "İptal",
-        "yes": "Evet"
+        "more-tickets": "+{count} talep daha"
       },
       "confirm-disable-addon-will-cause-more-disable": {
         "title": "\"{pluginId}\" eklentisini devre dışı bırakmak istediğinizden emin misiniz?",
-        "description": "\"{pluginId}\" eklentisini devre dışı bırakmak bu eklentileri de devre dışı bırakacaktır:",
-        "cancel": "İptal",
-        "yes": "Evet"
+        "description": "\"{pluginId}\" eklentisini devre dışı bırakmak bu eklentileri de devre dışı bırakacaktır:"
       },
       "confirm-enabling-addon-will-cause-more-enable": {
         "title": "\"{pluginId}\" eklentisini ektinleştirmek istediğinizden emin misiniz?",
-        "description": "\"{pluginId}\" eklentisini etkinleştirmek bu eklentileri de etkinleştirecektir:",
-        "cancel": "İptal",
-        "yes": "Evet"
+        "description": "\"{pluginId}\" eklentisini etkinleştirmek bu eklentileri de etkinleştirecektir:"
       },
       "confirm-delete-ticket": {
         "title-single": "Bu talebi kalıcı olarak silmek istediğinizden emin misiniz?",
-        "title-multi": "Bu talepleri kalıcı olarak silmek istediğinizden emin misiniz?",
-        "cancel": "İptal",
-        "yes": "Evet"
+        "title-multi": "Bu talepleri kalıcı olarak silmek istediğinizden emin misiniz?"
       },
       "confirm-remove-all-notifications": {
-        "title": "Tüm bildirimleri kalıcı olarak silmek istediğinizden emin misiniz?",
-        "cancel": "İptal",
-        "yes": "Evet"
+        "title": "Tüm bildirimleri kalıcı olarak silmek istediğinizden emin misiniz?"
       },
       "confirm-delete-language": {
         "title": "Bu dili silmek istediğinizden emin misiniz?"
       },
       "connect-server": {
         "title": "Sunucu Bağla",
-        "close": "Kapat",
         "steps": {
           "1": "Oyun Eklentisini Sunucuna Kur",
           "2": "Bağlantı Komutunu Çalıştır",
@@ -622,15 +577,11 @@
         "notification-will-come": "Bağlantı isteği bildirim olarak gelecek."
       },
       "make-main-server": {
-        "title": "\"{serverName}\" sunucusunu ana sunucu yapmak istediğinizden emin misiniz?",
-        "no": "Hayır",
-        "yes": "Evet"
+        "title": "\"{serverName}\" sunucusunu ana sunucu yapmak istediğinizden emin misiniz?"
       },
       "remove-server": {
         "title": "Bu sunucuyu kaldırmak istediğinizden emin misiniz?",
-        "account-password": "Hesap Şifresi",
-        "cancel": "İptal",
-        "yes": "Evet"
+        "account-password": "Hesap Şifresi"
       },
       "server-request": {
         "title": "\"{serverName}\" sunucusunu platforma bağlamak istediğinizden emin misiniz?",
@@ -640,18 +591,14 @@
       "servers": {
         "connect-server-button": "Sunucu Bağla",
         "servers": "Sunucular",
-        "close": "Kapat",
         "main-server": "Ana Sunucu",
         "online": "Çevrimiçi"
       },
       "unban-player": {
-        "title": "Bu oyuncunun yasağını kaldırmak istediğinizden emin misiniz?",
-        "cancel": "İptal",
-        "yes": "Evet"
+        "title": "Bu oyuncunun yasağını kaldırmak istediğinizden emin misiniz?"
       },
       "edit-player": {
         "title": "Oyuncu Bilgilerini Düzenle",
-        "close": "Kapat",
         "inputs": {
           "username": {
             "placeholder": "Kullanıcı Adı",
@@ -681,8 +628,7 @@
           },
           "can-open-ticket": "Talep oluşturabilir",
           "email-verified": "E-Postası doğrulandı"
-        },
-        "save": "Kaydet"
+        }
       }
     },
     "editor": {
@@ -713,19 +659,6 @@
       },
       "refreshing": "Yenileniyor...",
       "refresh": "Yenile"
-    },
-    "permission-group-row": {
-      "delete": "Sil",
-      "edit": "Düzenle"
-    },
-    "post-category-row": {
-      "delete": "Sil",
-      "edit": "Düzenle",
-      "view": "Görüntüle"
-    },
-    "ticket-category-row": {
-      "delete": "Sil",
-      "edit": "Düzenle"
     },
     "toasts": {
       "accepted-server-connect-request": "Sunucu bağlantı isteği kabul edildi.",

@@ -28,12 +28,12 @@
             class="btn btn-link col-6 m-0"
             type="button"
             on:click="{hide}"
-            class:disabled="{$loading}">{$_('components.modals.confirm-delete-player.cancel')}</button>
+            class:disabled="{$loading}">{$_('buttons.cancel')}</button>
           <button
             class="btn btn-danger col-6 m-0"
             type="button"
             on:click="{deletePlayer}"
-            class:disabled="{yesButtonDisabled}">{$_('components.modals.confirm-delete-player.yes')}</button>
+            class:disabled="{yesButtonDisabled}">{$_('buttons.yes')}</button>
         </div>
       </form>
     </div>

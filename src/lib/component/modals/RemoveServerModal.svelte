@@ -25,13 +25,13 @@
 
         <div class="modal-footer flex-nowrap">
           <button class="btn btn-link col-6 m-0" type="button" on:click="{hide}"
-            >{$_('components.modals.remove-server.cancel')}</button>
+            >{$_('buttons.cancel')}</button>
           <button
             class="btn btn-danger col-6 m-0"
             type="button"
             disabled="{confirmButtonDisabled}"
             class:disabled="{confirmButtonDisabled}"
-            on:click="{sendDeleteServer}">{$_('components.modals.remove-server.yes')}</button>
+            on:click="{sendDeleteServer}">{$_('buttons.yes')}</button>
         </div>
       </form>
     </div>

@@ -21,7 +21,7 @@
           class:disabled="{loading}"
           aria-disabled="{loading}"
           on:click="{hide}">
-          {$_('components.modals.confirm-close-ticket.cancel')}
+          {$_('buttons.cancel')}
         </button>
         <button
           class="btn btn-danger col-6 m-0"
@@ -29,7 +29,7 @@
           class:disabled="{loading}"
           aria-disabled="{loading}"
           on:click="{onYesClick}">
-          {$_('components.modals.confirm-close-ticket.yes')}
+          {$_('buttons.yes')}
         </button>
       </div>
     </div>

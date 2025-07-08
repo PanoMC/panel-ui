@@ -17,7 +17,7 @@
             type="button"
             class="btn-close"
             data-bs-dismiss="modal"
-            aria-label="{$_('components.modals.authorize-player.close')}"
+            aria-label="{$_('buttons.close')}"
             on:click="{hide}"></button>
         </div>
         <div class="modal-body">
@@ -38,7 +38,7 @@
             type="button"
             class="btn btn-primary w-100"
             class:disabled="{$submitLoading}"
-            on:click="{onSubmit}">{$_('components.modals.authorize-player.save')}</button>
+            on:click="{onSubmit}">{$_('buttons.save')}</button>
         </div>
       {/if}
     </div>

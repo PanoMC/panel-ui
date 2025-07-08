@@ -90,7 +90,7 @@
 
       <button
         type="button"
-        title="{$_('pages.dashboard.welcome-card.close-button')}"
+        title="{$_('buttons.close')}"
         class="btn-close"
         data-bs-dismiss="alert"
         on:click="{onCloseGettingStartedCard}"></button>
@@ -136,7 +136,7 @@
                         <td class="align-middle text-nowrap">
                           <a
                             href="{base}/tickets/detail/{ticket.id}"
-                            title="{$_('pages.dashboard.last-tickets.view')}"
+                            title="{$_('buttons.view')}"
                             >#{ticket.id} {ticket.title}</a>
                         </td>
                         <td class="align-middle text-nowrap">

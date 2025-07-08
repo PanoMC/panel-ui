@@ -11,7 +11,7 @@
 {:else if status === TicketStatuses.CLOSED}
   <a href="{base}/tickets?pageType=CLOSED"
     ><span class="badge rounded-pill text-bg-danger" title="{$_('components.ticket-status-badge.filter')}"
-      >{$_('components.ticket-status-badge.closed')}</span
+      >{$_('buttons.closed')}</span
     ></a>
 {/if}
 

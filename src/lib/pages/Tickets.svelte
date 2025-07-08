@@ -40,7 +40,7 @@
         type="button"
         on:click="{onShowCloseTicketsModalClick}">
         <i class="fas fa-times me-2"></i>
-        {$_("pages.tickets.close-ticket-button")}
+        {$_("buttons.close")}
       </button>
     </div>
   </PageActions>

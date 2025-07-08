@@ -13,10 +13,10 @@
           {$_("components.modals.servers.servers")}
         </h5>
         <button
-          aria-label="{$_('components.modals.servers.close')}"
+          aria-label="{$_('buttons.close')}"
           class="btn-close"
           on:click="{hide}"
-          title="{$_('components.modals.servers.close')}"
+          title="{$_('buttons.close')}"
           type="button">
         </button>
       </div>

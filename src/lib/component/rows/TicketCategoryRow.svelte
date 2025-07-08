@@ -1,7 +1,7 @@
 <tr class:table-primary="{category.selected}">
   <th scope="row" class="align-middle">
     <a
-      title="{$_('components.ticket-category-row.delete')}"
+      title="{$_('buttons.delete')}"
       class="btn btn-sm btn-link link-danger"
       href="javascript:void(0);"
       on:click="{onDeleteClick}">
@@ -9,7 +9,7 @@
     </a>
   </th>
   <td class="text-nowrap align-middle">
-    <a href="javascript:void(0);" title="{$_('components.ticket-category-row.edit')}" on:click="{onEditClick}">
+    <a href="javascript:void(0);" title="{$_('buttons.edit')}" on:click="{onEditClick}">
       {category.title}
     </a>
   </td>

@@ -16,7 +16,7 @@
           target="_blank"
           href="{UI_URL === '/' ? '': UI_URL}/preview/post/{post.id}">
           <i class="fas fa-eye me-2"></i>
-          {$_('components.post-row.view')}
+          {$_('buttons.view')}
         </a>
         {#if pageType !== PageTypes.DRAFT}
           <a
@@ -52,14 +52,14 @@
           {#if pageType !== PageTypes.TRASH}
             {$_('components.post-row.move-to-trash')}
           {:else}
-            {$_('components.post-row.delete')}
+            {$_('buttons.delete')}
           {/if}
         </a>
       </div>
     </div>
   </th>
   <td class="align-middle text-nowrap">
-    <a href="{base + '/posts/detail/' + post.id}" title="{$_('components.post-row.edit')}">
+    <a href="{base + '/posts/detail/' + post.id}" title="{$_('buttons.edit')}">
       {post.title}
     </a>
   </td>

@@ -7,7 +7,7 @@
           {$mode === "create" ? $_('components.modals.add-edit-post-category.create-category') : $_('components.modals.add-edit-post-category.edit-category')}
         </h5>
         <button
-          title="{$_('components.modals.add-edit-post-category.close')}"
+          title="{$_('buttons.close')}"
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
@@ -54,9 +54,9 @@
             class:disabled="{loading || buttonDisabled}">
             <span>
               {#if $mode === "edit"}
-                {$_('components.modals.add-edit-post-category.save')}
+                {$_('buttons.save')}
               {:else}
-                {$_('components.modals.add-edit-post-category.create')}
+                {$_('buttons.create')}
               {/if}
             </span>
           </button>

@@ -26,7 +26,7 @@
           type="button"
           class:disabled="{loading}"
           on:click="{onSubmit}">
-          {$_('components.modals.unban-player.yes')}
+          {$_('buttons.yes')}
         </button>
       </div>
     </div>

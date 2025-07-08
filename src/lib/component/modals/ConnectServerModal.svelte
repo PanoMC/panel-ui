@@ -14,7 +14,7 @@
         <button
           class="btn-close"
           data-bs-dismiss="modal"
-          title="{$_('components.modals.connect-server.close')}"
+          title="{$_('buttons.close')}"
           type="button">
         </button>
       </div>

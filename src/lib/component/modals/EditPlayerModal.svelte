@@ -131,7 +131,7 @@
             class="btn btn-primary w-100"
             type="submit"
             class:disabled="{loading}">
-            {$_('components.modals.edit-player.save')}
+            {$_('buttons.save')}
           </button>
         </div>
       </form>

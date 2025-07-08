@@ -27,7 +27,7 @@
         <div class="col" id="panoAccountUsername">
           <a
             href="{PANO_WEBSITE_URL + '/users/' + data.panoAccount.username}"
-            title="{$_('components.player-row.view')}"
+            title="{$_('buttons.view')}"
             target="_blank">
             <img
               src="https://minotar.net/avatar/{data.panoAccount.username}"
@@ -152,7 +152,7 @@
       class:disabled="{savePreferencesLoading || preferencesSaveDisabled}"
       aria-disabled="{savePreferencesLoading || preferencesSaveDisabled}"
       on:click="{onSavePreferencesClick}"
-      >{$_("pages.settings.platform.save-button")}
+      >{$_("buttons.save")}
     </button>
   </div>
 </div>
@@ -303,7 +303,7 @@
       class="btn btn-secondary"
       on:click="{onSaveSmtpClick}"
       disabled="{saveEmailLoading || !mailValidated || smtpDisabled}"
-      >{$_(!$siteInfo.emailEnabled ? "buttons.enable" : "pages.settings.platform.save-button")}
+      >{$_(!$siteInfo.emailEnabled ? "buttons.enable" : "buttons.save")}
     </button>
     {#if !mailValidated && !emailSaveDisabled}
       <button

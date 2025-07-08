@@ -27,7 +27,9 @@
     "create-language": "Create Language",
     "create": "Create",
     "delete": "Delete",
-    "edit": "Edit"
+    "edit": "Edit",
+    "no": "No",
+    "view": "View"
   },
   "pages": {
     "languages": {
@@ -65,13 +67,11 @@
         "themes-and-extensions": "Themes & Extensions",
         "documentations": "Documentation",
         "website": "Website",
-        "discord": "Discord",
-        "close-button": "Close"
+        "discord": "Discord"
       },
       "last-tickets": {
         "title": "Last Tickets",
         "player-name": "Player Name",
-        "view": "View",
         "filter": "Filter",
         "no-category": "No Category"
       }
@@ -189,8 +189,7 @@
           },
           "keywords": {
             "label": "Keywords",
-            "placeholder": "Press Enter to insert",
-            "remove": "Click To Remove"
+            "placeholder": "Press Enter to insert"
           },
           "favicon": {
             "label": "Favicon",
@@ -202,8 +201,7 @@
             "server-icon": "Server Icon",
             "helper": "PNG, JPEG, GIF, SVG format, maximum 2 mb."
           }
-        },
-        "save-button": "Save"
+        }
       },
       "platform": {
         "title": "Platform Settings",
@@ -237,7 +235,6 @@
           "email-validation-error": "Couldn't validate e-mail settings: {mailError}"
         },
         "smtp-settings": "E-Mail Settings (SMTP)",
-        "save-button": "Save",
         "toggle-smtp": "Toggle SMTP"
       }
     },
@@ -284,8 +281,6 @@
       "posts": "Posts",
       "trash": "Trash",
       "move-to-drafts": "Move to Drafts",
-      "view": "View",
-      "save": "Save",
       "update": "Update",
       "publish": "Publish",
       "inputs": {
@@ -342,8 +337,6 @@
       "title-edit": "Edit Permission Group",
       "title-create": "Create Permission Group",
       "permission-groups": "Permission Groups",
-      "save": "Edit",
-      "create": "Create",
       "inputs": {
         "name": {
           "placeholder": "Name"
@@ -351,23 +344,19 @@
         "player": {
           "placeholder": "Add player..."
         }
-      },
-      "remove": "Remove"
+      }
     },
     "player-detail": {
       "players": "Players",
-      "delete": "Delete",
       "un-ban": "Remove Ban",
       "ban": "Ban",
       "send-verification-mail": "Send a verification link to player email",
       "authorize": "Authorize",
-      "edit": "Edit",
       "in-game": "In Game",
       "in-website": "In Website",
       "online-text": "{whereOnline} Online",
       "banned": "Banned",
       "last-tickets": "Last Tickets",
-      "view": "View",
       "filter": "Filter",
       "no-category": "No Category",
       "statistics": "Statistics",
@@ -388,8 +377,7 @@
     "website-activity-chart": {
       "new-registration": "New Registration",
       "new-ticket": "New Ticket",
-      "visitor": "Visitor",
-      "view": "View"
+      "visitor": "Visitor"
     },
     "site-navigation-menu": {
       "panel": "Panel",
@@ -430,18 +418,14 @@
     },
     "post-row": {
       "actions": "Actions",
-      "view": "View",
       "move-to-draft": "Move To Draft",
       "publish": "Publish",
       "move-to-trash": "Move To Trash",
-      "delete": "Delete",
-      "edit": "Edit",
       "no-category": "No Category",
       "filter": "Filter"
     },
     "ticket-row": {
       "select": "Select",
-      "view": "View",
       "filter": "Filter",
       "no-category": "No Category",
       "player-name": "Player Name"
@@ -449,10 +433,8 @@
     "player-row": {
       "actions": "Actions",
       "authorize": "Authorize",
-      "edit": "Edit",
       "remove-ban": "Remove Ban",
-      "ban": "Ban",
-      "view": "View"
+      "ban": "Ban"
     },
     "player-status-badge": {
       "banned": "Banned",
@@ -490,7 +472,6 @@
       "add-edit-post-category": {
         "create-category": "Create Category",
         "edit-category": "Edit Category",
-        "close": "Close",
         "inputs": {
           "title": {
             "placeholder": "Title"
@@ -502,14 +483,11 @@
             "placeholder": "URL",
             "helper": "It can only contain [A-Z/a-z/0-9/-] and can have a minimum of 3 and a maximum of 32 characters."
           }
-        },
-        "save": "Save",
-        "create": "Create"
+        }
       },
       "add-edit-ticket-category": {
         "create-category": "Create Category",
         "edit-category": "Edit Category",
-        "close": "Close",
         "inputs": {
           "title": {
             "placeholder": "Title"
@@ -517,9 +495,7 @@
           "description": {
             "placeholder": "Description"
           }
-        },
-        "save": "Save",
-        "create": "Create"
+        }
       },
       "add-edit-language": {
         "create-language": "Create Language",
@@ -533,27 +509,19 @@
       },
       "authorize-player": {
         "title": "Authorize Player",
-        "close": "Close",
-        "player": "Player",
-        "save": "Save"
+        "player": "Player"
       },
       "confirm-ban-player": {
         "title": "Are you sure you want to ban this player?",
-        "notify-with-email": "Notify by email",
-        "cancel": "Cancel",
-        "yes": "Yes"
+        "notify-with-email": "Notify by email"
       },
       "confirm-close-ticket": {
         "title-single": "Are you sure you want to close this ticket?",
-        "title-multi": "Are you sure you want to close these tickets?",
-        "cancel": "Cancel",
-        "yes": "Yes"
+        "title-multi": "Are you sure you want to close these tickets?"
       },
       "confirm-delete-permission-group": {
         "title": "Are you sure you want to permanently delete this authorization group?",
-        "description": "The following users in the authorization group will be changed to Player:",
-        "cancel": "Cancel",
-        "yes": "Yes"
+        "description": "The following users in the authorization group will be changed to Player:"
       },
       "confirm-delete-player": {
         "title": "Are you sure you really want to delete this player?",
@@ -561,59 +529,42 @@
           "password": {
             "placeholder": "Password"
           }
-        },
-        "cancel": "Cancel",
-        "yes": "Yes"
+        }
       },
       "confirm-delete-post-category": {
         "title": "Are you sure you want to permanently delete this category?",
         "description": "The following posts in the category will be changed to Uncategorized:",
-        "more-posts": "+{count} more posts",
-        "cancel": "Cancel",
-        "yes": "Yes"
+        "more-posts": "+{count} more posts"
       },
       "confirm-delete-post": {
         "title-permanent": "Are you sure you want to permanently delete this post?",
-        "title-trash": "Are you sure you want to move this post to the trash?",
-        "cancel": "Cancel",
-        "yes": "Yes"
+        "title-trash": "Are you sure you want to move this post to the trash?"
       },
       "confirm-delete-ticket-category": {
         "title-permanent": "Note: If you delete this category, the following tickets will remain Uncategorized:",
         "title": "Are you sure you want to permanently delete this category?",
-        "more-posts": "+{count} more tickets",
-        "cancel": "Cancel",
-        "yes": "Yes"
+        "more-tickets": "+{count} more tickets"
       },
       "confirm-disable-addon-will-cause-more-disable": {
         "title": "Are you sure to disable \"{pluginId}\" addon?",
-        "description": "Disabling \"{pluginId}\" will cause disable these addons too:",
-        "cancel": "Cancel",
-        "yes": "Yes"
+        "description": "Disabling \"{pluginId}\" will cause disable these addons too:"
       },
       "confirm-enabling-addon-will-cause-more-enable": {
         "title": "Are you sure to enable \"{pluginId}\" addon?",
-        "description": "Enabling \"{pluginId}\" will cause enable these addons too:",
-        "cancel": "Cancel",
-        "yes": "Yes"
+        "description": "Enabling \"{pluginId}\" will cause enable these addons too:"
       },
       "confirm-delete-ticket": {
         "title-single": "Are you sure you want to permanently delete this ticket?",
-        "title-multi": "Are you sure you want to permanently delete these tickets?",
-        "cancel": "Cancel",
-        "yes": "Yes"
+        "title-multi": "Are you sure you want to permanently delete these tickets?"
       },
       "confirm-remove-all-notifications": {
-        "title": "Are you sure you want to permanently delete all notifications?",
-        "cancel": "Cancel",
-        "yes": "Yes"
+        "title": "Are you sure you want to permanently delete all notifications?"
       },
       "confirm-delete-language": {
         "title": "Are you sure you want to permanently delete this language?"
       },
       "connect-server": {
         "title": "Connect Server",
-        "close": "Close",
         "steps": {
           "1": "Install Game Server Plugin",
           "2": "Run Connection Command",
@@ -626,15 +577,11 @@
         "notification-will-come": "The connection request will come as a notification."
       },
       "make-main-server": {
-        "title": "Are you sure you want to make \"{serverName}\" the main server?",
-        "no": "No",
-        "yes": "Yes"
+        "title": "Are you sure you want to make \"{serverName}\" the main server?"
       },
       "remove-server": {
         "title": "Are you sure you want to remove this server?",
-        "account-password": "Account Password",
-        "cancel": "Cancel",
-        "yes": "Yes"
+        "account-password": "Account Password"
       },
       "server-request": {
         "title": "Are you sure you want to connect the server \"{serverName}\" to the platform?",
@@ -644,18 +591,14 @@
       "servers": {
         "connect-server-button": "Connect Server",
         "servers": "Servers",
-        "close": "Close",
         "main-server": "Main Server",
         "online": "Online"
       },
       "unban-player": {
-        "title": "Are you sure you want to unban this player?",
-        "cancel": "Cancel",
-        "yes": "Yes"
+        "title": "Are you sure you want to unban this player?"
       },
       "edit-player": {
         "title": "Edit Player Information",
-        "close": "Close",
         "inputs": {
           "username": {
             "placeholder": "Username",
@@ -685,8 +628,7 @@
           },
           "can-open-ticket": "Can create ticket",
           "email-verified": "E-Mail is verified"
-        },
-        "save": "Save"
+        }
       }
     },
     "editor": {
@@ -717,19 +659,6 @@
       },
       "refreshing": "Refreshing...",
       "refresh": "Refresh"
-    },
-    "permission-group-row": {
-      "delete": "Delete",
-      "edit": "Edit"
-    },
-    "post-category-row": {
-      "delete": "Delete",
-      "edit": "Edit",
-      "view": "View"
-    },
-    "ticket-category-row": {
-      "delete": "Delete",
-      "edit": "Edit"
     },
     "toasts": {
       "accepted-server-connect-request": "Server connection request accepted.",

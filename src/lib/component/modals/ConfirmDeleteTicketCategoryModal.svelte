@@ -37,14 +37,14 @@
           type="button"
           class:disabled="{loading}"
           on:click="{hide}">
-          {$_('components.modals.confirm-delete-ticket-category.cancel')}
+          {$_('buttons.cancel')}
         </button>
         <button
           class="btn btn-danger col-6 m-0"
           type="button"
           class:disabled="{loading}"
           on:click="{onYesClick}">
-          {$_('components.modals.confirm-delete-ticket-category.yes')}
+          {$_('buttons.yes')}
         </button>
       </div>
     </div>

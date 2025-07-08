@@ -7,7 +7,7 @@
           {$mode === "edit" ? $_('components.modals.add-edit-ticket-category.edit-category') : $_('components.modals.add-edit-ticket-category.create-category')}
         </h5>
         <button
-          title="{$_('components.modals.add-edit-ticket-category.close')}"
+          title="{$_('buttons.close')}"
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
@@ -38,7 +38,7 @@
             class:btn-secondary="{$mode === 'create'}"
             class:btn-primary="{$mode === 'edit'}"
             class:disabled="{loading || buttonDisabled}">
-            {$mode === "edit" ? $_('components.modals.add-edit-ticket-category.save') : $_('components.modals.add-edit-ticket-category.create')}
+            {$mode === "edit" ? $_('buttons.save') : $_('buttons.create')}
           </button>
         </div>
       </form>

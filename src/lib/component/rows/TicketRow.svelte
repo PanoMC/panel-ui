@@ -12,7 +12,7 @@
   <td class="align-middle text-nowrap">
     <a
       href="{base}/tickets/detail/{ticket.id}"
-      title="{$_('components.ticket-row.view')}">
+      title="{$_('buttons.view')}">
       #{ticket.id}
       {ticket.title}
     </a>
@@ -29,7 +29,7 @@
   <td class="align-middle text-nowrap">
     <a
       href="{base}/players/detail/{ticket.writer.username}"
-      title="{$_('components.ticket-row.view')}">
+      title="{$_('buttons.view')}">
       <img
         src="https://minotar.net/avatar/{ticket.writer.username}/32"
         alt="{$_('components.ticket-row.player-name')}"

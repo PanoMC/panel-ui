@@ -16,7 +16,7 @@
         <button
           class="btn btn-link link-danger"
           use:tooltip="{[
-            $_('pages.player-detail.delete'),
+            $_('buttons.delete'),
             { placement: 'bottom' },
           ]}"
           on:click="{() => showConfirmDeletePlayerModal(data.player)}"
@@ -83,7 +83,7 @@
           class:disabled="{data.player.permissionGroup === 'admin' &&
             !$user.admin}">
           <i class="fas fa-pencil-alt me-2"></i>
-          {$_("pages.player-detail.edit")}
+          {$_("buttons.edit")}
         </button>
       {/if}
     </div>
@@ -150,7 +150,7 @@
                         <td class="align-middle text-nowrap">
                           <a
                             href="{base}/tickets/detail/{ticket.id}"
-                            title="{$_('pages.player-detail.view')}"
+                            title="{$_('buttons.view')}"
                             >#{ticket.id} {ticket.title}</a>
                         </td>
                         <td class="align-middle text-nowrap">

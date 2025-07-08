@@ -131,7 +131,7 @@
       pointBackgroundColor: "#fff",
     });
     datasets.push({
-      label: $_("components.website-activity-chart.view"),
+      label: $_("buttons.view"),
       data: convertedViewData,
       borderColor: "green",
       backgroundColor: "rgba(25, 118, 210, .05)",

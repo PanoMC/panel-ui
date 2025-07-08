@@ -5,14 +5,14 @@
         class="btn btn-sm btn-link link-danger"
         href="javascript:void(0);"
         on:click="{onDeleteClick}"
-        title="{$_('components.permission-group-row.delete')}">
+        title="{$_('buttons.delete')}">
         <i class="fas fa-trash"></i>
       </a>
     {/if}
   </th>
   <td class="align-middle text-nowrap">
     <a
-      title="{$_('components.permission-group-row.edit')}"
+      title="{$_('buttons.edit')}"
       href="{base}/players/perm-groups/detail/{permissionGroup.id}"
       >{permissionGroup.name}</a>
   </td>

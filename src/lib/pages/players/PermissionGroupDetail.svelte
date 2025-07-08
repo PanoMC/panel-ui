@@ -17,9 +17,9 @@
         class:disabled="{saveButtonDisabled}"
         on:click="{onSubmit}">
         {#if data.mode === Modes.EDIT}
-          {$_('pages.permission-group-detail.save')}
+          {$_('buttons.save')}
         {:else}
-          {$_('pages.permission-group-detail.create')}
+          {$_('buttons.create')}
         {/if}
       </button>
     </div>
@@ -51,7 +51,7 @@
 
           {#each data.users as user, index (user)}
             <a
-              use:tooltip="{[$_('pages.permission-group-detail.remove'), { placement: 'bottom' }]}"
+              use:tooltip="{[$_('buttons.remove'), { placement: 'bottom' }]}"
               href="javascript:void(0);"
               on:click="{() => removeUser(index)}">
               <span class="badge rounded-pill bg-light link-dark text-center">

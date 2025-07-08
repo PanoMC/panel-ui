@@ -50,14 +50,14 @@
           type="button"
           class:disabled="{loading}"
           on:click="{hide}">
-          {$_('components.modals.confirm-delete-permission-group.cancel')}
+          {$_('buttons.cancel')}
         </button>
         <button
           class="btn btn-danger"
           type="button"
           class:disabled="{loading}"
           on:click="{onYesClick}">
-          {$_('components.modals.confirm-delete-permission-group.yes')}
+          {$_('buttons.yes')}
         </button>
       </div>
     </div>

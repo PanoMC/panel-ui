@@ -26,7 +26,7 @@
           type="button"
           on:click="{() => showCloseTicketModal([data.ticket.id])}">
           <i class="fas fa-times me-2"></i>
-          {$_("pages.ticket-detail.close-ticket")}
+          {$_("buttons.close")}
         </button>
       {/if}
     </div>
