@@ -100,7 +100,7 @@
 
     if (newLocale.description === null) newLocale.description = "";
 
-    locale.set(newLocale);
+    locale.set({ ...newLocale });
     error.set([]);
     derivative.set(null);
 
