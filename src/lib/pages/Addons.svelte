@@ -32,14 +32,14 @@
         <!-- Filters -->
         <CardFilters slot="right">
           <CardFiltersItem
-            href="/addons/all"
+            href="/addons?status=ALL"
             active="{data.pageType === PageTypes.ALL}">Tümü</CardFiltersItem>
           <CardFiltersItem
-            href="/addons/active"
+            href="/addons?status=ACTIVE"
             active="{data.pageType === PageTypes.ACTIVE}"
             >Aktif</CardFiltersItem>
           <CardFiltersItem
-            href="/addons/disabled"
+            href="/addons?status=DISABLED"
             active="{data.pageType === PageTypes.DISABLED}"
             >Devre Dışı</CardFiltersItem>
         </CardFilters>
@@ -187,13 +187,17 @@
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
-  export async function load(event, pageType = DefaultPageType) {
-    const { parent } = event;
+  export async function load(event) {
+    const { parent, url: { searchParams } } = event;
     await parent();
 
-    pageType = pageType.toUpperCase();
+    const status = searchParams.get("status") || DefaultPageType;
 
-    const queryParams = buildQueryParams({status: pageType})
+    if (!Object.values(PageTypes).includes(status)) {
+      throw error(404, "PAGE_NOT_FOUND");
+    }
+
+    const queryParams = buildQueryParams({status})
     const body = await ApiUtil.get({
       path: `/api/panel/plugins` + queryParams,
       request: event,
@@ -203,7 +207,7 @@
       throw error(500, body);
     }
 
-    body.pageType = pageType
+    body.pageType = status
 
     return body;
   }
