@@ -268,7 +268,7 @@
     return buildQueryParams({
       locale: locale === $currentLanguage.code ? null : locale,
       type: type === PageTypes.PANEL ? null : type,
-      filter: filter === DefaultFilter ? null : filter
+      filter: type === data.type ? filter === DefaultFilter ? null : filter : null
     })
   }
 
