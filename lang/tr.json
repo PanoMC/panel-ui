@@ -139,7 +139,6 @@
       "waiting-reply": "Yanıt Bekleyen",
       "closed": "Kapalı",
       "ticket-categories": "Talep Kategorileri",
-      "ticket-categories-button": "Kategoriler",
       "close-ticket-button": "Talebi Kapat",
       "table-title": "{ticketCount} {pageType} Talep",
       "amount-selected": "{amount} adet seçildi.",
