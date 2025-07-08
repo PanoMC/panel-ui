@@ -32,7 +32,7 @@
         <!-- Filters -->
         <CardFilters slot="right">
           <CardFiltersItem
-            href="/addons?status=ALL"
+            href="/addons"
             active="{data.pageType === PageTypes.ALL}">Tümü</CardFiltersItem>
           <CardFiltersItem
             href="/addons?status=ACTIVE"
