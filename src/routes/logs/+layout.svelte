@@ -1,7 +1,7 @@
-<LogsLayout>
+<Layout>
   <slot />
-</LogsLayout>
+</Layout>
 
 <script>
-  import LogsLayout from "$lib/layouts/LogsLayout.svelte";
+  import Layout from "$lib/layouts/ActivityLogsLayout.svelte";
 </script>

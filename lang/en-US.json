@@ -764,6 +764,10 @@
     "ACCESS_ACTIVITY_LOGS": {
       "title": "Access Activity Logs",
       "description": "Can view activity logs. Caution: Activity logs may contain sensitive data."
+    },
+    "MANAGE_TRANSLATIONS": {
+      "title": "Manage Translations",
+      "description": "Can add, edit, delete translations and languages."
     }
   }
 }

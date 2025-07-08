@@ -11,6 +11,8 @@ export const Permissions = Object.freeze({
   MANAGE_ADDONS: "manage_addons",
   MANAGE_PLATFORM_SETTINGS: "manage_platform_settings",
   MANAGE_PERMISSION_GROUPS: "manage_permission_groups",
+  ACCESS_ACTIVITY_LOGS: "access_activity_logs",
+  MANAGE_TRANSLATIONS: "manage_translations"
 });
 
 export function hasPermission(permission, user) {

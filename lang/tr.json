@@ -764,6 +764,10 @@
     "ACCESS_ACTIVITY_LOGS": {
       "title": "Aktivite Kayıtlarına Erişim",
       "description": "Aktivite kayıtlarını görüntüleyebilir. Dikkat: Aktivite kayıtları hassas veriler içerebilir."
+    },
+    "MANAGE_TRANSLATIONS": {
+      "title": "Çevirileri Yönet",
+      "description": "Çevirileri ve dilleri ekleyebilir, düzenleyebilir ve silebilir."
     }
   }
 }
