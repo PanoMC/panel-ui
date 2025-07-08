@@ -20,33 +20,35 @@
             id="name"
             type="text"
             bind:value="{$locale.name}"
-            class:border-danger="{$error === 'name'}" />
+            on:input={onNameChange}
+            class:border-danger="{$error === 'INVALID_LOCALE_NAME'}" />
           <input
             class="form-control form-control-lg mb-3"
             placeholder="{$_('components.modals.add-edit-language.inputs.code')}"
             id="code"
             type="text"
             bind:value="{$locale.code}"
-            class:border-danger="{$error === 'code'}" />
+            class:border-danger="{$error === 'INVALID_LOCALE_CODE'}" />
           <input
             class="form-control form-control-lg mb-3"
             placeholder="{$_('components.modals.add-edit-language.inputs.date-fns-code')}"
             id="dateFnsCode"
             type="text"
             bind:value="{$locale.dateFnsCode}"
-            class:border-danger="{$error === 'dateFnsCode'}" />
+            class:border-danger="{$error === 'INVALID_DATE_FNS_CODE'}" />
 
           <form on:submit|preventDefault="{addKeyWord}">
             <input
               id="derivatives"
               class="form-control mb-3"
-              class:border-danger="{$error === 'derivatives'}"
+              class:border-danger="{$error === 'derivatives' || $error === 'INVALID_LOCALE_DERIVATIVE'}"
               placeholder="{$_(
               'components.modals.add-edit-language.inputs.derivatives',
             )}"
               type="text"
-              name="keyword"
-              bind:value="{$derivative}" />
+              name="derivative"
+              bind:value="{$derivative}"
+              on:input={onDerivativeChange} />
           </form>
           {#each $locale.derivatives as derivative, index (derivative)}
             <a
@@ -154,10 +156,10 @@
         });
 
         return
-      } else if (body.result === "errors") {
+      } else if (body.result === "error") {
         loading = false;
 
-        error.set(body.errors);
+        error.set(body.error);
 
         return
       }
@@ -183,7 +185,8 @@
   }
 
   function addKeyWord() {
-    if (!$derivative) {
+    if (!$derivative || $derivative.length < 2) {
+      $error = "derivatives"
       return;
     }
 
@@ -210,5 +213,25 @@
 
   function removeKeyWord(index) {
     $locale.derivatives = $locale.derivatives.remove(index);
+  }
+
+  function onNameChange(event) {
+    let value = event.target.value;
+
+    if (value.length > 40) {
+      value = value.substring(0, 40);
+    }
+
+    $locale.name = value;
+  }
+
+  function onDerivativeChange(event) {
+    let value = event.target.value;
+
+    if (value.length > 8) {
+      value = value.substring(0, 8);
+    }
+
+    $derivative = value;
   }
 </script>
