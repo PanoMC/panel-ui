@@ -2,8 +2,8 @@
 <div class="container vstack gap-3">
   <div
     class="row g-3 justify-content-between animate__animated animate__slideInUp">
-    <div class="col-4">
-      <div class="card text-bg-success h-100">
+    <div class="col-lg-4">
+      <div class="card text-bg-secondary h-100">
         <div class="card-body">
           <p class="card-text">
             {$_("pages.statistics.online-player-text", {
@@ -13,8 +13,8 @@
         </div>
       </div>
     </div>
-    <div class="col-4">
-      <div class="card text-bg-primary h-100">
+    <div class="col-lg-4">
+      <div class="card text-bg-info h-100">
         <div class="card-body">
           <p class="card-text">
             {$_("pages.statistics.new-register-text", {
@@ -24,8 +24,8 @@
         </div>
       </div>
     </div>
-    <div class="col-4">
-      <div class="card text-bg-warning h-100">
+    <div class="col-lg-4">
+      <div class="card text-bg-primary h-100">
         <div class="card-body">
           <p class="card-text">
             {$_("pages.statistics.total-player-text", {
@@ -38,14 +38,13 @@
   </div>
 
   <div class="card">
+    <div class="card-header">
+      {$_("pages.statistics.website-graph.title")}
+    </div>
     <div class="card-body">
       <CardHeader>
-        <h5 class="card-title" slot="left">
-          {$_("pages.statistics.website-graph.title")}
-        </h5>
-
         <div
-          class="nav nav-underline small col-sm-auto col justify-content-md-start justify-content-center"
+          class="nav nav-underline col-sm-auto col justify-content-md-start justify-content-center"
           slot="right">
           <div class="nav-item">
             <button
@@ -79,10 +78,10 @@
 
   <!-- Statistic Table -->
   <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">
-        {$_("pages.statistics.total-statistics.title")}
-      </h5>
+    <div class="card-header">
+      {$_("pages.statistics.total-statistics.title")}
+    </div>
+    <div class="card-body py-1">
       <div class="table-responsive">
         <table class="table">
           <tbody>

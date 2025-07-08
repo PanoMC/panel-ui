@@ -12,8 +12,10 @@
 
 <!-- Platform Settings Sub Page -->
 <div class="card">
+  <div class="card-header">
+    {$_("pages.settings.platform.account")}
+  </div>
   <div class="card-body animate__animated animate__fadeIn">
-    <h5 class="card-title">{$_("pages.settings.platform.account")}</h5>
     {#if data.panoAccount}
       <div class="row mb-3">
         <label class="col-md-6" for="platformId"
@@ -84,10 +86,10 @@
 </div>
 
 <div class="card">
+  <div class="card-header">
+    {$_("pages.settings.platform.preferences")}
+  </div>
   <div class="card-body animate__animated animate__fadeIn">
-    <h5 class="card-title">
-      {$_("pages.settings.platform.preferences")}
-    </h5>
     <div class="row mb-3">
       <label class="col-md-6" for="platformDevMode"> Geliştirici Modu </label>
       <div class="col">
@@ -174,19 +176,18 @@
 <div class="card">
   <div class="card-header">
     <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" id="smtpToggle" checked="{$siteInfo.emailEnabled}" on:change={onToggleSmtp} disabled="{toggleSmtpLoading}" />
-      <label class="form-check-label" for="smtpToggle">{$_("pages.settings.platform.toggle-smtp")}</label>
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="smtpToggle"
+        checked="{$siteInfo.emailEnabled}"
+        on:change="{onToggleSmtp}"
+        disabled="{toggleSmtpLoading}" />
+      <label class="form-check-label" for="smtpToggle"
+        >{$_("pages.settings.platform.smtp-settings")}</label>
     </div>
   </div>
-  <div class="card-body" class:opacity-50={smtpDisabled}>
-    <h5 class="card-title">
-      {$_("pages.settings.platform.smtp-settings")}
-    </h5>
-
-    <p class="text-muted">
-      {$_("pages.settings.platform.smtp.description")}
-    </p>
-
+  <div class="card-body" class:opacity-50="{smtpDisabled}">
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="mailUsername"
         >{$_("pages.settings.platform.smtp.username")}</label>
@@ -197,7 +198,7 @@
           type="text"
           placeholder="no-reply"
           bind:value="{data.email.username}"
-          disabled="{smtpDisabled}"/>
+          disabled="{smtpDisabled}" />
       </div>
     </div>
     <div class="row mb-3">
@@ -291,8 +292,10 @@
       <label class="col-md-6 col-form-label" for="port"
         >{$_("pages.settings.platform.smtp.auth-methods")}</label>
       <div class="col-md-6">
-        <select class="form-select" bind:value="{data.email.authMethods}"
-                disabled="{smtpDisabled}">
+        <select
+          class="form-select"
+          bind:value="{data.email.authMethods}"
+          disabled="{smtpDisabled}">
           <option value="PLAIN">PLAIN</option>
           <option value=""></option>
         </select>
@@ -310,7 +313,7 @@
         class="btn btn-outline-primary"
         on:click="{onValidateEmailClick}"
         disabled="{saveEmailLoading || smtpDisabled}"
-        >{$_('buttons.validate')}
+        >{$_("buttons.validate")}
         {#if saveEmailLoading}
           <span
             class="spinner-border spinner-border-sm text-primary"
@@ -351,7 +354,7 @@
     const body = await ApiUtil.get({
       path: "/api/panel/settings" + queryParams,
       request: event,
-    })
+    });
 
     body.oldSettings = structuredClone(body);
 
@@ -411,7 +414,7 @@
   let smtpDisabled;
 
   $: {
-    smtpDisabled = !$siteInfo.emailEnabled
+    smtpDisabled = !$siteInfo.emailEnabled;
   }
 
   if (browser) {
@@ -440,11 +443,11 @@
           }
 
           await goto($page.url.pathname, { invalidateAll: true });
-          await showToast('components.toasts.pano-account-connect-success');
+          await showToast("components.toasts.pano-account-connect-success");
 
           connecting = false;
-        }
-      })
+        },
+      });
     }
   }
 
@@ -470,8 +473,8 @@
 
         // Redirect to the constructed URL
         window.location = `${PANO_WEBSITE_URL}/auth?loginPanoPlatform=${encodedPublicKey}&redirectUrl=${encodedRedirectUrl}&state=${encodedState}`;
-      }
-    })
+      },
+    });
   }
 
   function onDisconnectClick() {
@@ -482,19 +485,19 @@
         path: "/api/panel/platform/disconnect",
         handler: async (body, reject) => {
           if (body.error) {
-            await showToast('components.toasts.pano-account-disconnect-fail');
+            await showToast("components.toasts.pano-account-disconnect-fail");
 
             disconnecting = false;
             return;
           }
 
-          await showToast('components.toasts.pano-account-disconnect-success');
+          await showToast("components.toasts.pano-account-disconnect-success");
 
           data.panoAccount = null;
 
           disconnecting = false;
-        }
-      })
+        },
+      });
     });
   }
 
@@ -527,9 +530,9 @@
 
         await changeLanguage(getLanguageByLocale(data.locale));
 
-        await showToast('components.toasts.settings-save-success');
-      }
-    })
+        await showToast("components.toasts.settings-save-success");
+      },
+    });
   }
 
   function onValidateEmailClick() {
@@ -550,9 +553,9 @@
 
         mailValidated = true;
 
-        await showToast('components.toasts.email-config-validate-success');
-      }
-    })
+        await showToast("components.toasts.email-config-validate-success");
+      },
+    });
   }
 
   function onSaveSmtpClick() {
@@ -568,20 +571,23 @@
       username,
       password,
       sender,
-      authMethods
-    } = data.email
+      authMethods,
+    } = data.email;
 
-    formData.append("email", JSON.stringify({
-      enabled: true,
-      hostname: hostname || "",
-      port: port || 3306,
-      ssl: ssl || false,
-      starttls: starttls || "DISABLED",
-      username: username || "",
-      password: password || "",
-      sender: sender || "",
-      authMethods: authMethods || ""
-    }))
+    formData.append(
+      "email",
+      JSON.stringify({
+        enabled: true,
+        hostname: hostname || "",
+        port: port || 3306,
+        ssl: ssl || false,
+        starttls: starttls || "DISABLED",
+        username: username || "",
+        password: password || "",
+        sender: sender || "",
+        authMethods: authMethods || "",
+      }),
+    );
 
     ApiUtil.put({
       path: "/api/panel/settings",
@@ -596,25 +602,22 @@
         saveEmailLoading = false;
         mailValidated = false;
 
-        data.oldSettings.email = Object.keys(data.email).reduce(
-          (obj, key) => {
-            obj[key] = data.email[key];
-            return obj;
-          },
-          {},
-        );
+        data.oldSettings.email = Object.keys(data.email).reduce((obj, key) => {
+          obj[key] = data.email[key];
+          return obj;
+        }, {});
 
-        const enabled = $siteInfo.emailEnabled
+        const enabled = $siteInfo.emailEnabled;
 
-        await invalidateAll()
+        await invalidateAll();
 
         if (enabled) {
-          await showToast('components.toasts.settings-save-success');
+          await showToast("components.toasts.settings-save-success");
         } else {
-          await showToast('components.toasts.smtp-enabled-success');
+          await showToast("components.toasts.smtp-enabled-success");
         }
-      }
-    })
+      },
+    });
   }
 
   function maskEmail(email) {
@@ -634,24 +637,27 @@
   function onToggleSmtp(event) {
     toggleSmtpLoading = true;
 
-    smtpDisabled = !event.target.checked
+    smtpDisabled = !event.target.checked;
 
     if (smtpDisabled) {
       mailValidated = false;
       saveEmailLoading = true;
 
       const formData = new FormData();
-      formData.append("email", JSON.stringify({
-        enabled: false,
-        hostname: "",
-        port: 0,
-        ssl: false,
-        starttls: "DISABLED",
-        username: "",
-        password: "",
-        sender: "",
-        authMethods: ""
-      }))
+      formData.append(
+        "email",
+        JSON.stringify({
+          enabled: false,
+          hostname: "",
+          port: 0,
+          ssl: false,
+          starttls: "DISABLED",
+          username: "",
+          password: "",
+          sender: "",
+          authMethods: "",
+        }),
+      );
 
       ApiUtil.put({
         path: "/api/panel/settings",
@@ -665,15 +671,15 @@
 
           saveEmailLoading = false;
 
-          await invalidateAll()
+          await invalidateAll();
 
-          await showToast('components.toasts.smtp-enabled-success');
+          await showToast("components.toasts.smtp-enabled-success");
 
           toggleSmtpLoading = false;
-        }
-      })
+        },
+      });
 
-      return
+      return;
     }
 
     toggleSmtpLoading = false;

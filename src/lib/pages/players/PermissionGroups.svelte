@@ -12,11 +12,11 @@
   </PageActions>
 
   <div class="card">
-      <div class="card-header">
-        {$_("pages.permission-groups.card-title", {
-          values: { count: data.permissionGroupCount },
-        })}
-      </div>
+    <div class="card-header">
+      {$_("pages.permission-groups.card-title", {
+        values: { count: data.permissionGroupCount },
+      })}
+    </div>
     <div class="card-body">
       <!-- Permissions Table -->
 
@@ -44,15 +44,17 @@
             {/each}
           </tbody>
         </table>
-        <!-- Pagination -->
-        <Pagination
-          page="{data.page}"
-          totalPage="{data.totalPage}"
-          on:firstPageClick="{() => onPageClick(1)}"
-          on:lastPageClick="{() => onPageClick(data.totalPage)}"
-          on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
-        <!-- Pagination End -->
       </div>
+    </div>
+    <div class="card-footer">
+      <!-- Pagination -->
+      <Pagination
+        page="{data.page}"
+        totalPage="{data.totalPage}"
+        on:firstPageClick="{() => onPageClick(1)}"
+        on:lastPageClick="{() => onPageClick(data.totalPage)}"
+        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
+      <!-- Pagination End -->
     </div>
   </div>
 </div>

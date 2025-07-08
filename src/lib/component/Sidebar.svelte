@@ -4,7 +4,7 @@
 {/if}
 
 <div class="sidebar bg-primary min-vh-100" class:active="{$isSidebarOpen}">
-  <div class="container">
+  <div class="container-fluid">
     <!-- Sidebar Toggler & Logo -->
     <div class="navbar navbar-expand navbar-dark bg-body-primary">
       <button
@@ -15,7 +15,7 @@
         <i class="fa-solid fa-bars"></i>
       </button>
 
-      <a class="navbar-brand m-auto" href="{base}/">
+      <a class="navbar-brand m-auto ps-1" href="{base}/">
         <img
           alt="Pano"
           title="Pano"
@@ -66,9 +66,10 @@
 
     {#if $sidebarTabsState === "game"}
       <button
-        class="btn btn-sm btn-secondary w-100"
+        class="btn btn-sm btn-outline-white w-100"
         type="button"
         on:click="{showServersModal}">
+        <i class="fa-solid fa-cubes me-2"></i>
         {$_("components.sidebar.show-servers")}
       </button>
     {/if}

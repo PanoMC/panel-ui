@@ -1,35 +1,60 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
 
-  {#if $notifications.length !== 0}
-    <button
-      type="button"
-      class="btn btn-danger"
-      on:click="{() => onDeleteAllClick()}"
-      >{$_("pages.notifications.delete-all")}
-    </button>
-  {/if}
+  <PageActions>
+    <div slot="left">
+      {#if data.categoryUrl}
+        <a class="btn btn-link" role="button" href="{base}/posts">
+          <i class="fas fa-arrow-left ms-2"></i>
+          {$_("buttons.posts")}
+        </a>
+      {/if}
+    </div>
+
+
+    <div slot="right">
+      {#if $notifications.length !== 0}
+      <button
+        type="button"
+        class="btn btn-danger"
+        on:click="{() => onDeleteAllClick()}"
+        >
+        <i class="fa fa-trash me-2"></i>
+        {$_("pages.notifications.delete-all")}
+      </button>
+    {/if}
+    </div>
+  </PageActions>
+
+
 
   <!-- All Notifications -->
 
-  <div class="list-group">
-    {#each $notifications as notification, index (notification)}
-      <a
-        href="javascript:void(0);"
-        on:click="{() => onNotificationClick(notification)}"
-        class="list-group-item list-group-item-action text-wrap"
-        class:notification-unread="{notification.status === 'NOT_READ'}">
-        {notification.type}
-        <br />
-        <small class="text-muted">
-          {getTime(
-            checkTime,
-            parseInt(notification.date),
-            locales[$currentLanguage["date-fns-code"]],
-          )}
-        </small>
-      </a>
-    {/each}
+  <div class="card">
+    <div class="card-header">
+      1 Bildirim
+    </div>
+    <div class="card-body">
+      <div class="list-group">
+        {#each $notifications as notification, index (notification)}
+          <a
+            href="javascript:void(0);"
+            on:click="{() => onNotificationClick(notification)}"
+            class="list-group-item list-group-item-action text-wrap"
+            class:notification-unread="{notification.status === 'NOT_READ'}">
+            {notification.type}
+            <br />
+            <small class="text-muted">
+              {getTime(
+                checkTime,
+                parseInt(notification.date),
+                locales[$currentLanguage["date-fns-code"]],
+              )}
+            </small>
+          </a>
+        {/each}
+      </div>
+    </div>
   </div>
 
   {#if $notifications.length === 0}
@@ -128,6 +153,9 @@
 
   import NoContent from "$lib/component/NoContent.svelte";
   import { currentLanguage } from "$lib/language.util.js";
+    import PageActions from "$lib/component/PageActions.svelte";
+    import CardMenu from "$lib/component/CardMenu.svelte";
+    import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
   export let data;
 

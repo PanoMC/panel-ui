@@ -66,7 +66,7 @@
     <!-- Software License -->
 
     <details>
-      <summary class="card-title border-bottom">Title</summary>
+      <summary class="card-title mb-0">Title</summary>
       <p class="card-text">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia quisquam
         assumenda dolor eligendi fugit, architecto ab vero possimus minus

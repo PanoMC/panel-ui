@@ -8,20 +8,25 @@
         <h5 class="mb-3">
           {@html $_("pages.dashboard.welcome-card.description")}
         </h5>
-        <div class="col-lg-4 mb-lg-0 mb-3">
-          <p>
-            {$_("pages.dashboard.welcome-card.connect-server-description")}
-          </p>
-          <button
-            class="btn btn-sm btn-primary"
-            data-bs-target="#connectServer"
-            data-bs-toggle="modal">
-            <i class="fa-solid fa-plus me-2"></i>
-            {$_("pages.dashboard.welcome-card.connect-server")}
-          </button>
+        <div class="col-lg-4">
+          <ul class="mb-0">
+            <li>
+              <a
+                href="javascript:void(0)"
+                class="alert-link"
+                data-bs-target="#connectServer"
+                data-bs-toggle="modal">
+                <i class="fa-solid fa-gamepad me-2"></i>
+                {$_("pages.dashboard.welcome-card.connect-server")}
+              </a>
+              <span class="d-block">
+                {$_("pages.dashboard.welcome-card.connect-server-description")}
+              </span>
+            </li>
+          </ul>
         </div>
         <div class="col-lg-4">
-          <ul class="list-unstyled mb-0">
+          <ul class="mb-0">
             <li>
               <a class="alert-link" href="{base}/posts/create-post">
                 <i class="fa-solid fa-pen me-2"></i>
@@ -50,14 +55,14 @@
           </ul>
         </div>
         <div class="col-lg-4">
-          <ul class="list-unstyled">
+          <ul>
             <li>
               <a
                 class="alert-link"
                 href="{PANO_WEBSITE_URL}/addons"
                 target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
-                {$_("pages.dashboard.welcome-card.themes-and-extensions")}
+                {$_("pages.dashboard.welcome-card.get-themes-and-extensions")}
               </a>
             </li>
             <li>
@@ -101,11 +106,11 @@
       <!-- Latest Tickets -->
       {#if hasPermission(Permissions.MANAGE_TICKETS)}
         <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">
-              {$_("pages.dashboard.last-tickets.title")}
-            </h5>
+          <div class="card-header">
+            {$_("pages.dashboard.last-tickets.title")}
+          </div>
 
+          <div class="card-body">
             {#if data.tickets.length === 0}
               <NoContent />
             {:else}
@@ -156,16 +161,16 @@
     </div>
     <div class="col-lg-6">
       <div class="card">
+        <div class="card-header">
+          Son Kayıtlar ({data.activityLogs.meta.totalCount})
+          <!-- <a slot="right" href="{base}/logs">Show All</a> -->
+        </div>
         <div class="card-body">
-          <h5 class="card-title">Logs ({data.activityLogs.meta.totalCount})</h5>
-          {#each data.activityLogs.data as log, index (log)}
-            <ul>
-              <li>{log.type}</li>
-            </ul>
-          {/each}
-
-          <a href="{base}/logs" role="button" class="btn btn-outline-primary"
-            >Show All</a>
+          <ul class="list-group">
+            {#each data.activityLogs.data as log, index (log)}
+              <li class="list-group-item list-group-item">{log.type}</li>
+            {/each}
+          </ul>
         </div>
       </div>
     </div>

@@ -1,18 +1,25 @@
 <div class="container vstack gap-3">
   <div class="card">
+    <div class="card-header">Logs ({data.meta.totalCount})</div>
     <div class="card-body">
-      <h5 class="card-title">Logs ({data.meta.totalCount})</h5>
-
       {#if data.meta.totalCount === 0}
         <NoContent />
       {:else}
-        {#each data.data as log, index (log)}
-          <ul>
-            <li>{log.type}</li>
-          </ul>
-        {/each}
+        <div class="list-group">
+          {#each data.data as log, index (log)}
+            <a href="#" class="list-group-item list-group-item-action">
+              <span class="d-none text-break">{log.type}</span>
+              <div class="fw-bold">
+                Commodi quibusdam tempore possimus, eveniet accusamus non
+                cupiditate recusandae, nobis eius.
+              </div>
+              <div class="text-muted">31.08.2925 - 22:00</div>
+            </a>
+          {/each}
+        </div>
       {/if}
-
+    </div>
+    <div class="card-footer">
       <!-- Pagination -->
       <Pagination
         page="{data.meta.page}"
@@ -41,13 +48,13 @@
     const page = parseInt(searchParams.get("page")) || 1;
 
     const queryParams = buildQueryParams({
-      page
+      page,
     });
 
     const body = await ApiUtil.get({
       path: `/api/panel/logs/activity` + queryParams,
       request: event,
-    })
+    });
 
     if (body.error) {
       if (body.error === "PAGE_NOT_FOUND") {
@@ -78,7 +85,7 @@
 
   async function refreshData() {
     const queryParams = buildQueryParams({
-      page: data.page
+      page: data.page,
     });
 
     await goto(queryParams, { invalidateAll: true });

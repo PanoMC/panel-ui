@@ -64,7 +64,7 @@
         "change-theme": "Change Theme Appearance",
         "manage-addons": "Manage Addons",
         "manage-players": "Manage Players",
-        "themes-and-extensions": "Themes & Extensions",
+        "get-themes-and-extensions": "Get Themes & Extensions",
         "documentations": "Documentation",
         "website": "Website",
         "discord": "Discord"
@@ -234,16 +234,16 @@
           "description": "Pano requires an email provider to be able to send emails. Please log in with the e-mail service you want to use.",
           "email-validation-error": "Couldn't validate e-mail settings: {mailError}"
         },
-        "smtp-settings": "E-Mail Settings (SMTP)",
+        "smtp-settings": "E-Mail (SMTP)",
         "toggle-smtp": "Toggle SMTP"
       }
     },
     "ticket-detail": {
       "tickets": "Tickets",
       "close-ticket": "Close Ticket",
-      "by-who": "By {username},",
+      "by-who": "By {username}",
       "opened-in-category": "opened in {category} category.",
-      "no-category": "No Category",
+      "no-category": "-",
       "previous-messages": "Previous Messages ({count})",
       "send-button": "Send"
     },

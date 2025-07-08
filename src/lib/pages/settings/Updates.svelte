@@ -31,7 +31,7 @@
     <p>
       Tahmini süre: <b>TIME</b>
     </p>
-    <a class="alert-link" type="button">
+    <a class="btn btn-outline-warning" type="button">
       <i class="fa-solid fa-power-off me-2"></i>
       Yeniden Başlat</a>
   </div>
@@ -88,20 +88,8 @@
   </div>
 
   <div class="card">
-    <div class="card-header">
-      <CardHeader>
-        <span slot="left">Resource Updates</span>
-        <!-- Filters -->
-        <CardFilters slot="right">
-          <CardFiltersItem href="/" active>Tümü</CardFiltersItem>
-          <CardFiltersItem href="/">Eklentiler</CardFiltersItem>
-          <CardFiltersItem href="/">Temalar</CardFiltersItem>
-        </CardFilters>
-      </CardHeader>
-    </div>
+    <div class="card-header">Resource Updates</div>
     <div class="card-body">
-
-      <!-- Pending Update List -->
       <NoContent
         icon="fas fa-sync fa-3x"
         text="Kaynak güncellemeleri alabilmek için lütfen Çevrimiçi Hesap bağlayın."
@@ -115,9 +103,6 @@
   import { getContext } from "svelte";
   import tooltip from "$lib/tooltip.util";
   import PageActions from "$lib/component/PageActions.svelte";
-  import CardHeader from "$lib/component/CardHeader.svelte";
-  import CardFiltersItem from "$lib/component/CardFiltersItem.svelte";
-  import CardFilters from "$lib/component/CardFilters.svelte";
   import NoContent from "$lib/component/NoContent.svelte";
 
   const pageTitle = getContext("pageTitle");

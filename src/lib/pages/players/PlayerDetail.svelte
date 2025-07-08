@@ -59,7 +59,8 @@
             on:click="{sendVerification}"
             class:disabled="{sendingVerificationMail ||
               $user.username === data.player.username ||
-              (data.player.permissionGroup === 'admin' && !$user.admin) || !$siteInfo.emailEnabled}">
+              (data.player.permissionGroup === 'admin' && !$user.admin) ||
+              !$siteInfo.emailEnabled}">
             <i class="fas fa-envelope"></i>
           </button>
         {/if}
@@ -91,17 +92,20 @@
 
   <div class="row g-3">
     <div class="col-lg-3">
-      <div class="card">
+      <div class="card h-100">
+        <div class="card-header">
+          {data.player.username}
+        </div>
         <div
-          class="card-body d-flex flex-column justify-content-center
-          align-items-center">
+          class="card-body d-flex flex-column
+          align-items-center vstack gap-3">
           <img
             alt="{data.player.username}"
-            class="mb-3 rounded-circle animate__animated animate__zoomIn"
-            width="128"
-            height="128"
+            class="rounded-circle animate__animated animate__zoomIn"
+            width="88"
+            height="88"
             class:border="{isOnline}"
-            class:border-5="{isOnline}"
+            class:border-3="{isOnline}"
             class:border-success="{isOnline}"
             src="https://minotar.net/avatar/{data.player.username}"
             use:tooltip="{[
@@ -120,9 +124,6 @@
               { placement: 'bottom' },
             ]}" />
 
-          <h3 class="card-title">{data.player.username}</h3>
-          <h6 class="text-muted">{data.player.email}</h6>
-
           {#if data.player.isBanned}
             <div class="text-danger">{$_("pages.player-detail.banned")}</div>
           {:else}
@@ -136,9 +137,10 @@
       {#if hasPermission(Permissions.MANAGE_TICKETS)}
         <!-- Tickets -->
         <div class="card">
+          <div class="card-header">
+            {$_("pages.player-detail.last-tickets")}
+          </div>
           <div class="card-body">
-            <h5 class="card-title">{$_("pages.player-detail.last-tickets")}</h5>
-
             {#if data.ticketCount === 0}
               <NoContent />
             {:else}
@@ -176,22 +178,16 @@
                 </table>
               </div>
             {/if}
-
-            <!-- Pagination -->
-            <Pagination
-              page="{data.page}"
-              totalPage="{data.ticketTotalPage}"
-              on:firstPageClick="{() => onPageClick(1)}"
-              on:lastPageClick="{() => onPageClick(data.ticketTotalPage)}"
-              on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
           </div>
         </div>
       {/if}
       <!-- Statistics -->
       <div class="card">
+        <div class="card-header">
+          {$_("pages.player-detail.statistics")}
+        </div>
         <div class="card-body">
-          <h5 class="card-title">{$_("pages.player-detail.statistics")}</h5>
-          <table class="table mb-0">
+          <table class="table">
             <tbody>
               <tr>
                 <td>{$_("pages.player-detail.email")}</td>
@@ -214,6 +210,15 @@
             </tbody>
           </table>
         </div>
+        <div class="card-footer">
+          <!-- Pagination -->
+          <Pagination
+            page="{data.page}"
+            totalPage="{data.ticketTotalPage}"
+            on:firstPageClick="{() => onPageClick(1)}"
+            on:lastPageClick="{() => onPageClick(data.ticketTotalPage)}"
+            on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
+        </div>
       </div>
     </div>
   </div>
@@ -227,7 +232,10 @@
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent, url: {searchParams} } = event;
+    const {
+      parent,
+      url: { searchParams },
+    } = event;
     await parent();
 
     const username = event.params.username;
@@ -240,7 +248,7 @@
     const body = await ApiUtil.get({
       path: `/api/panel/players/${username}` + queryParams,
       request: event,
-    })
+    });
 
     if (body.error) {
       if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
@@ -336,19 +344,22 @@
         sendingVerificationMail = false;
 
         if (body.result === "ok") {
-          await showToast('components.toasts.verification-email-sent-successful', {
-            username: data.player.username,
-          });
+          await showToast(
+            "components.toasts.verification-email-sent-successful",
+            {
+              username: data.player.username,
+            },
+          );
 
           return;
         }
 
-        await showToast('components.toasts.verification-email-sent-error', {
+        await showToast("components.toasts.verification-email-sent-error", {
           username: data.player.username,
           errorCode: body.error,
         });
-      }
-    })
+      },
+    });
   }
 
   setAuthorizePlayerModalCallback((newPlayer) => {

@@ -21,15 +21,12 @@
 
   <!-- Post Categories -->
   <div class="card">
+    <div class="card-header">
+      {$_("pages.post-categories.card-title", {
+        values: { count: data.categoryCount },
+      })}
+    </div>
     <div class="card-body">
-      <CardHeader>
-        <h5 class="card-title" slot="left">
-          {$_("pages.post-categories.card-title", {
-            values: { count: data.categoryCount },
-          })}
-        </h5>
-      </CardHeader>
-
       <!-- No Content -->
       {#if data.categoryCount === 0}
         <NoContent />
@@ -66,6 +63,8 @@
           </table>
         </div>
       {/if}
+    </div>
+    <div class="card-footer">
       <!-- Pagination -->
       <Pagination
         page="{data.page}"
@@ -91,7 +90,10 @@
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent, url: {searchParams} } = event;
+    const {
+      parent,
+      url: { searchParams },
+    } = event;
     await parent();
 
     const page = searchParams.get("page") || 1;
@@ -100,7 +102,7 @@
     const body = await ApiUtil.get({
       path: `/api/panel/post/categories` + queryParams,
       request: event,
-    })
+    });
 
     if (body.error) {
       if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
@@ -181,10 +183,10 @@
 
   setCallbackForAddEditPostCategoryModal((routeFirstPage) => {
     if (routeFirstPage) {
-      data.page = 1
+      data.page = 1;
     }
 
-    refreshData()
+    refreshData();
   });
 
   onAddEditPostCategoryModalHide((category) => {
@@ -198,7 +200,7 @@
   });
 
   setDeletePostCategoryModalCallback(() => {
-    refreshData()
+    refreshData();
   });
 
   onConfirmDeletePostCategoryModalHide((category) => {

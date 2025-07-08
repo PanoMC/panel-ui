@@ -64,7 +64,7 @@
         "change-theme": "Tema Görünümünü Değiştir",
         "manage-addons": "Eklentleri Yönet",
         "manage-players": "Oyuncuları Yönet",
-        "themes-and-extensions": "Temalar ve Eklentiler",
+        "get-themes-and-extensions": "Tema ve Eklenti Al",
         "documentations": "Dokümantasyon",
         "website": "Website",
         "discord": "Discord"
@@ -139,6 +139,7 @@
       "waiting-reply": "Yanıt Bekleyen",
       "closed": "Kapalı",
       "ticket-categories": "Talep Kategorileri",
+      "ticket-categories-button": "Kategoriler",
       "close-ticket-button": "Talebi Kapat",
       "table-title": "{ticketCount} {pageType} Talep",
       "amount-selected": "{amount} adet seçildi.",
@@ -234,16 +235,16 @@
           "description": "Pano, e-posta gönderebilmek için bir e-posta sağlayıcısına ihtiyaç duyar. Lütfen kullanmak istediğiniz e-posta servisi ile oturum açın.",
           "email-validation-error": "E-mail ayarlarınız doğrulanamadı: {mailError}"
         },
-        "smtp-settings": "E-Mail Ayarları (SMTP)",
-        "toggle-smtp": "SMTP'yi Aç/Kapat"
+        "smtp-settings": "E-Mail (SMTP)",
+        "toggle-smtp": "SMTP'yi Değiştir"
       }
     },
     "ticket-detail": {
       "tickets": "Talepler",
       "close-ticket": "Talebi Kapat",
-      "by-who": "{username} tarafından,",
+      "by-who": "{username} tarafından",
       "opened-in-category": "{category} kategorisinde açıldı.",
-      "no-category": "Kategorisiz",
+      "no-category": "-",
       "previous-messages": "Önceki Mesajlar ({count})",
       "send-button": "Gönder"
     },

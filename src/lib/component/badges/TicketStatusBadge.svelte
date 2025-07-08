@@ -1,18 +1,20 @@
 {#if status === TicketStatuses.NEW}
-  <a href="{base}/tickets?pageType=WAITING_REPLY"
-    ><span class="badge rounded-pill text-bg-success" title="{$_('components.ticket-status-badge.filter')}"
-      >{$_('components.ticket-status-badge.new')}</span
-    ></a>
+  <a
+    class="badge rounded-pill text-bg-success"
+    title="{$_('components.ticket-status-badge.filter')}"
+    href="{base}/tickets?pageType=WAITING_REPLY"
+    >{$_("components.ticket-status-badge.new")}</a>
 {:else if status === TicketStatuses.REPLIED}
-  <a href="{base}/tickets"
-    ><span class="badge rounded-pill text-bg-warning" title="{$_('components.ticket-status-badge.filter')}"
-      >{$_('components.ticket-status-badge.replied')}</span
-    ></a>
+  <a
+    class="badge rounded-pill text-bg-warning"
+    title="{$_('components.ticket-status-badge.filter')}"
+    href="{base}/tickets">{$_("components.ticket-status-badge.replied")}</a>
 {:else if status === TicketStatuses.CLOSED}
-  <a href="{base}/tickets?pageType=CLOSED"
-    ><span class="badge rounded-pill text-bg-danger" title="{$_('components.ticket-status-badge.filter')}"
-      >{$_('buttons.closed')}</span
-    ></a>
+  <a
+    class="badge rounded-pill text-bg-danger"
+    title="{$_('components.ticket-status-badge.filter')}"
+    href="{base}/tickets?pageType=CLOSED"
+    >{$_("buttons.closed")}</a>
 {/if}
 
 <script context="module">

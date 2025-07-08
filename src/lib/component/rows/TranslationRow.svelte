@@ -1,27 +1,39 @@
-<div class="input-group d-flex flex-nowrap g-2 overflow-x-auto">
-  <input
-    type="text"
-    class="form-control font-monospace"
-    id="KeyTranslation"
-    readonly
-    value="{pluginId
-      ? translation.key.replace(`plugins.${pluginId}.`, '')
-      : translation.key}" />
-
-  <textarea
-    rows="1"
-    class="form-control"
-    id="OriginalTranslation"
-    readonly
-    value="{translation.original}"></textarea>
-
-  <textarea
-    rows="1"
-    class="form-control"
-    id="CustomTranslation"
-    bind:value="{translation.custom}"
-    on:input="{onCustomInputChange}"></textarea>
-
+<div class="row mb-3 g-2">
+  <div class="col-md">
+    <div class="form-floating">
+      <input
+        type="text"
+        class="form-control font-monospace"
+        id="KeyTranslation"
+        readonly
+        value="{pluginId
+          ? translation.key.replace(`plugins.${pluginId}.`, '')
+          : translation.key}" />
+      <label for="KeyTranslation">Key</label>
+    </div>
+  </div>
+  <div class="col-md">
+    <div class="form-floating">
+      <textarea
+        rows="1"
+        class="form-control"
+        id="OriginalTranslation"
+        readonly
+        value="{translation.original}"></textarea>
+      <label for="OriginalTranslation">Original</label>
+    </div>
+  </div>
+  <div class="col-md">
+    <div class="form-floating">
+      <textarea
+        rows="1"
+        class="form-control"
+        id="CustomTranslation"
+        bind:value="{translation.custom}"
+        on:input="{onCustomInputChange}"></textarea>
+      <label for="CustomTranslation">Custom</label>
+    </div>
+  </div>
   {#if translation.notExists}
     <button
       id="deleteButton"

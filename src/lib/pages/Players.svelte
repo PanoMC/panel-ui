@@ -20,28 +20,8 @@
   <!-- All Players -->
   <div class="card">
     <div class="card-header">
-      <CardHeader>
-        <CardFilters slot="right">
-          {#if !data.permissionGroup}
-            <!-- Filters -->
-            <CardFiltersItem
-              href="/players"
-              active="{data.pageType === PageTypes.ALL}">
-              {$_("pages.players.all")}
-            </CardFiltersItem>
-            <CardFiltersItem
-              href="/players?pageType=HAS_PERM"
-              active="{data.pageType === PageTypes.HAS_PERM}">
-              {$_("pages.players.authorized")}
-            </CardFiltersItem>
-            <CardFiltersItem
-              href="/players?pageType=BANNED"
-              active="{data.pageType === PageTypes.BANNED}">
-              {$_("pages.players.banned")}
-            </CardFiltersItem>
-          {/if}
-        </CardFilters>
-        <div slot="left">
+      <div class="row">
+        <div class="col">
           {$_("pages.players.table-title", {
             values: {
               playerCount: data.playerCount,
@@ -54,7 +34,41 @@
             },
           })}
         </div>
-      </CardHeader>
+        <div class="col-auto">
+          <div class="dropdown">
+            <button
+              type="button"
+              class="btn btn-sm btn-link py-0 pe-0"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <span class="me-2">Filter</span>
+              <i class="fa-solid fa-sort"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <!-- <CardFiltersItem
+            href="/players"
+            active="{data.pageType === PageTypes.ALL}">
+            {$_("pages.players.all")}
+          </CardFiltersItem>
+          <CardFiltersItem
+            href="/players?pageType=HAS_PERM"
+            active="{data.pageType === PageTypes.HAS_PERM}">
+            {$_("pages.players.authorized")}
+          </CardFiltersItem>
+          <CardFiltersItem
+            href="/players?pageType=BANNED"
+            active="{data.pageType === PageTypes.BANNED}">
+            {$_("pages.players.banned")}
+          </CardFiltersItem> -->
     </div>
     <div class="card-body">
       <!-- No Players -->
@@ -100,7 +114,8 @@
           </table>
         </div>
       {/if}
-
+    </div>
+    <div class="card-footer">
       <!-- Pagination -->
       <Pagination
         page="{data.page}"

@@ -19,7 +19,15 @@
 
   <!-- All Addons -->
   <div class="card">
-    <div class="card-body vstack gap-3">
+    <div class="card-header">
+      {data.plugins.length}
+      {data.pageType === PageTypes.ACTIVE
+        ? "Aktif"
+        : data.pageType === PageTypes.DISABLED
+          ? "Devre Dışı"
+          : "Yüklü"} Eklenti
+    </div>
+    <div class="card-body">
       <CardHeader>
         <h5 class="card-title" slot="left">
           {data.plugins.length}
@@ -201,7 +209,7 @@
     const body = await ApiUtil.get({
       path: `/api/panel/plugins` + queryParams,
       request: event,
-    })
+    });
 
     if (body.error) {
       throw error(500, body);
@@ -287,10 +295,10 @@
           return;
         }
 
-        const queryParams = buildQueryParams({status: data.pageType})
+        const queryParams = buildQueryParams({ status: data.pageType });
         const newPluginsData = await ApiUtil.get({
-          path: `/api/panel/plugins` + queryParams
-        })
+          path: `/api/panel/plugins` + queryParams,
+        });
 
         data.plugins.forEach((plugin) => {
           const newPluginData = newPluginsData.plugins.find(
@@ -321,19 +329,19 @@
         data.plugins = data.plugins;
 
         if (body.status === "CREATED") {
-          await showToast('components.toasts.settings-save-error', {
+          await showToast("components.toasts.settings-save-error", {
             addon: plugin.id,
           });
         }
 
         if (body.status === "FAILED") {
-          await showToast('components.toasts.failed-to-enable-addon-error', {
+          await showToast("components.toasts.failed-to-enable-addon-error", {
             addon: plugin.id,
           });
         }
 
         callback();
-      }
-    })
+      },
+    });
   }
 </script>

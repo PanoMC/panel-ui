@@ -32,12 +32,13 @@
     </div>
   </div>
 
-  <div class="card mb-3">
+  <div class="card">
     <div class="card-header">
       <div class="row">
         <div class="col">
-          <h5 class="card-title">{data.ticket.title}</h5>
-          <small class="mb-0">
+          {data.ticket.title}
+          <br />
+          <small>
             {@html $_("pages.ticket-detail.by-who", {
               values: {
                 username: `<a href="${base}/players/detail/${data.ticket.username}"
@@ -57,7 +58,7 @@
             })}
           </small>
         </div>
-        <div class="col-auto">
+        <div class="col-sm-auto">
           <TicketStatusBadge status="{data.ticket.status}" />
         </div>
       </div>
@@ -138,11 +139,11 @@
           {/if}
         {/each}
       </div>
-      <hr />
-
+    </div>
+    <div class="card-footer">
       <!-- Send Message Section -->
       <div
-        class="row align-items-end g-2"
+        class="row align-items-end"
         class:d-none="{data.ticket.status === TicketStatuses.CLOSED}">
         <div class="col">
           <!-- Editor -->
@@ -186,7 +187,7 @@
     const body = await ApiUtil.get({
       path: `/api/panel/tickets/${id}`,
       request: event,
-    })
+    });
 
     if (body.error) {
       if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
@@ -252,7 +253,7 @@
           if (body.error === "NOT_EXISTS") {
             goto(base + "/error-404");
 
-            return
+            return;
           }
 
           reject();
@@ -264,8 +265,8 @@
         });
 
         data.ticket.messages = data.ticket.messages;
-      }
-    })
+      },
+    });
   }
 
   function sendMessage() {
@@ -281,7 +282,7 @@
           if (body.error === "NOT_EXISTS") {
             goto(base + "/error-404");
 
-            return
+            return;
           }
 
           reject();
@@ -298,8 +299,8 @@
         messageText = "";
 
         messageSendLoading = false;
-      }
-    })
+      },
+    });
   }
 
   function limitTitle(text) {

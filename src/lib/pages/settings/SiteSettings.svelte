@@ -1,7 +1,9 @@
 <!-- Site Settings Sub Page -->
 <div class="card">
+  <div class="card-header">
+    {$_("pages.settings.site-settings.preferences")}
+  </div>
   <div class="card-body animate__animated animate__fadeIn">
-    <h5 class="card-title">{$_("pages.settings.site-settings.preferences")}</h5>
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteTitle"
         >{$_("pages.settings.site-settings.inputs.website-name.label")}</label>
@@ -184,7 +186,7 @@
     const body = await ApiUtil.get({
       path: "/api/panel/settings" + queryParams,
       request: event,
-    })
+    });
 
     body.oldSettings = { ...body };
     body.oldSettings.keywords = [...body.keywords];
@@ -297,7 +299,7 @@
 
           data.oldSettings.keywords = [...data.keywords];
 
-          await showToast('components.toasts.settings-save-success');
+          await showToast("components.toasts.settings-save-success");
 
           if (websiteLogoInput.value !== "") {
             const reader = new FileReader();
@@ -325,8 +327,8 @@
             errorCode: body.error,
           });
         } else reject();
-      }
-    })
+      },
+    });
   }
 
   function addKeyWord() {
@@ -344,7 +346,7 @@
 
     const keywords = keyword.split(/,\s*/);
 
-    keywords.forEach(keyword => {
+    keywords.forEach((keyword) => {
       data.keywords.push(keyword.trim());
     });
 

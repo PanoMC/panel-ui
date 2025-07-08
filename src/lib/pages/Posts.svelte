@@ -6,7 +6,7 @@
       {#if data.categoryUrl}
         <a class="btn btn-link" role="button" href="{base}/posts">
           <i class="fas fa-arrow-left ms-2"></i>
-          {$_('buttons.posts')}
+          {$_("buttons.posts")}
         </a>
       {/if}
     </div>
@@ -37,6 +37,21 @@
   <!-- All Posts -->
 
   <div class="card">
+    <div class="card-header">
+      {$_("pages.posts.table-title", {
+        values: {
+          postCount: data.postCount,
+          pageType:
+            data.pageType === PageTypes.PUBLISHED
+              ? $_("pages.posts.published") + " "
+              : data.pageType === PageTypes.DRAFT
+                ? $_("pages.posts.draft") + " "
+                : data.pageType === PageTypes.BANNED
+                  ? $_("pages.posts.banned") + " "
+                  : "",
+        },
+      })}
+    </div>
     <div class="card-body">
       <CardHeader>
         <h5 class="card-title" slot="left">
@@ -89,7 +104,10 @@
                 <th scope="col"></th>
                 <th class="align-middle" scope="col"
                   >{$_("pages.posts.table.title")}</th>
-                <th scope="col" class="align-middle" class:table-primary={data.categoryUrl}
+                <th
+                  scope="col"
+                  class="align-middle"
+                  class:table-primary="{data.categoryUrl}"
                   >{$_("pages.posts.table.category")}</th>
                 <th scope="col" class="align-middle"
                   >{$_("pages.posts.table.views")}</th>
@@ -114,16 +132,15 @@
           </table>
         </div>
       {/if}
+    </div>
+    <div class="card-footer">
       <!-- Pagination -->
-      <div class="d-flex justify-content-sm-start justify-content-center">
-        <Pagination
-          page="{data.page}"
-          totalPage="{data.totalPage}"
-          on:firstPageClick="{() => onPageClick(1)}"
-          on:lastPageClick="{() => onPageClick(data.totalPage)}"
-          on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
-      </div>
-      <!-- Pagination End -->
+      <Pagination
+        page="{data.page}"
+        totalPage="{data.totalPage}"
+        on:firstPageClick="{() => onPageClick(1)}"
+        on:lastPageClick="{() => onPageClick(data.totalPage)}"
+        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
     </div>
   </div>
 </article>
@@ -144,7 +161,10 @@
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent, url: { searchParams } } = event;
+    const {
+      parent,
+      url: { searchParams },
+    } = event;
     await parent();
 
     const page = searchParams.get("page") || 1;
@@ -158,8 +178,8 @@
     const queryParams = buildQueryParams({
       page,
       pageType,
-      categoryUrl
-    })
+      categoryUrl,
+    });
 
     const body = await ApiUtil.get({
       path: `/api/panel/posts` + queryParams,
@@ -178,7 +198,7 @@
 
     body.page = parseInt(page);
     body.pageType = pageType;
-    body.categoryUrl = categoryUrl
+    body.categoryUrl = categoryUrl;
 
     return body;
   }
@@ -202,7 +222,7 @@
 
   import {
     show as showToast,
-    limitTitle
+    limitTitle,
   } from "$lib/component/ToastContainer.svelte";
   import NoContent from "$lib/component/NoContent.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
@@ -218,19 +238,27 @@
 
   $: {
     pageTitle.set(
-      data.categoryUrl ? $_('pages.posts.category-posts-title', {values: {category: (data.category?.title || "-") === "-" ? $_('pages.posts.no-category') : (data.category?.title || "-")}}) :
-      $_("pages.posts.title", {
-        values: {
-          pageType:
-            data.pageType === PageTypes.PUBLISHED
-              ? $_("pages.posts.published") + " "
-              : data.pageType === PageTypes.DRAFT
-                ? $_("pages.posts.draft") + " "
-                : data.pageType === PageTypes.TRASH
-                  ? $_("pages.posts.trash") + " "
-                  : "",
-        },
-      }),
+      data.categoryUrl
+        ? $_("pages.posts.category-posts-title", {
+            values: {
+              category:
+                (data.category?.title || "-") === "-"
+                  ? $_("pages.posts.no-category")
+                  : data.category?.title || "-",
+            },
+          })
+        : $_("pages.posts.title", {
+            values: {
+              pageType:
+                data.pageType === PageTypes.PUBLISHED
+                  ? $_("pages.posts.published") + " "
+                  : data.pageType === PageTypes.DRAFT
+                    ? $_("pages.posts.draft") + " "
+                    : data.pageType === PageTypes.TRASH
+                      ? $_("pages.posts.trash") + " "
+                      : "",
+            },
+          }),
     );
   }
 
@@ -256,16 +284,16 @@
 
         buttonsLoading = false;
 
-        const foundTitle = data.posts.find((post) => post.id === id).title
-        const title = `<a href="${base}/posts?pageType=DRAFT">${limitTitle(foundTitle)}</a>`
+        const foundTitle = data.posts.find((post) => post.id === id).title;
+        const title = `<a href="${base}/posts?pageType=DRAFT">${limitTitle(foundTitle)}</a>`;
 
         await refreshData();
 
-        await showToast('components.toasts.post-moved-to-draft', {
+        await showToast("components.toasts.post-moved-to-draft", {
           title,
         });
-      }
-    })
+      },
+    });
   }
 
   function onPublishClick(id) {
@@ -287,22 +315,22 @@
 
         await goto(base + "/posts");
 
-        const foundTitle =  data.posts.find((post) => post.id === id).title
-        const title = `<a href="${base}/posts/detail/${id}">${limitTitle(foundTitle)}</a>`
+        const foundTitle = data.posts.find((post) => post.id === id).title;
+        const title = `<a href="${base}/posts/detail/${id}">${limitTitle(foundTitle)}</a>`;
 
-        await showToast('components.toasts.post-published', {
+        await showToast("components.toasts.post-published", {
           postId: id,
           title,
         });
-      }
-    })
+      },
+    });
   }
 
   async function refreshData() {
     const queryParams = buildQueryParams({
       page: data.page,
       categoryUrl: data.categoryUrl,
-      pageType: data.pageType
+      pageType: data.pageType,
     });
 
     await goto(queryParams);
@@ -330,7 +358,7 @@
 
   onDeletePostModalHide((post) => {
     if (data.posts.indexOf(post) === -1) {
-      return
+      return;
     }
 
     data.posts[data.posts.indexOf(post)].selected = false;
