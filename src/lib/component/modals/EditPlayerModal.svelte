@@ -104,8 +104,7 @@
                   aria-checked="true"
                   role="switch"
                   id="canCreateTicketCheckbox"
-                  bind:checked="{$player.canCreateTicket}"
-                  disabled="{$user.username === $player.username}" />
+                  bind:checked="{$player.canCreateTicket}" />
                 <label class="form-check-label" for="canCreateTicketCheckbox"
                   >{$_('components.modals.edit-player.inputs.can-open-ticket')}</label>
               </div>
@@ -118,8 +117,7 @@
                   role="switch"
                   aria-checked="true"
                   id="emailVerifiedCheckbox"
-                  bind:checked="{$player.isEmailVerified}"
-                  disabled="{$user.username === $player.username}" />
+                  bind:checked="{$player.isEmailVerified}"/>
                 <label class="form-check-label" for="emailVerifiedCheckbox"
                   >{$_('components.modals.edit-player.inputs.email-verified')}</label>
               </div>
@@ -130,7 +128,7 @@
           <button
             class="btn btn-primary w-100"
             type="submit"
-            class:disabled="{loading}">
+            class:disabled="{loading || saveDisabled}">
             {$_('buttons.save')}
           </button>
         </div>
@@ -158,14 +156,14 @@
   let modal;
 
   export function show(newPlayer) {
-    player.set(Object.assign({}, newPlayer));
+    player.set({...newPlayer});
     player.update((player) => {
       player.newPassword = "";
       player.newPasswordRepeat = "";
 
       return player;
     });
-    playerBackup.set(Object.assign({}, get(player)));
+    playerBackup.set({ ...get(player)});
 
     errors.set(defaultErrors);
 
@@ -206,6 +204,8 @@
   let loading = false;
 
   const user = getContext("user");
+
+  $: saveDisabled = !$player.username || !$player.email || $player.username === $playerBackup.username && $player.email === $playerBackup.email && (!$player.newPassword || $player.newPassword && $player.newPassword !== $player.newPasswordRepeat) && $player.canCreateTicket === $playerBackup.canCreateTicket && $player.isEmailVerified === $playerBackup.isEmailVerified;
 
   function onSubmit() {
     loading = true;
