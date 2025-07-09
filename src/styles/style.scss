@@ -70,3 +70,20 @@
 .overlapping-avatar:not(:last-child) {
   margin-left: -12px;
 }
+
+.markdown-renderer img {
+  max-width: 100%;
+}
+
+.markdown-renderer blockquote {
+  border-left: 5px $primary solid;
+  padding-left: 8px;
+}
+
+.markdown-renderer strong {
+  font-weight: bolder;
+}
+
+.markdown-renderer code {
+  background-color: $light;
+}
