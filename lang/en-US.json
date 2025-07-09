@@ -472,8 +472,8 @@
     },
     "modals": {
       "view-activity-log": {
-        "title": "View Activity Log Detail",
-        "details": "Details:"
+        "title": "Activity Log Detail",
+        "json": "JSON:"
       },
       "confirm-remove-pano-account": {
         "title": "Are you sure to disconnect your online Pano account from this platform?"

@@ -13,11 +13,11 @@
           aria-label="{$_('buttons.close')}"
           onclick="{hide}"></button>
       </div>
-      <div class="modal-body pt-0">
-        <label for="resourceDetail" class="form-label">{$_('components.modals.view-activity-log.details')}</label>
+      <div class="modal-body">
+        <label for="activityLogJson" class="form-label">{$_('components.modals.view-activity-log.json')}</label>
         <textarea
-          name="resourceDetail"
-          id="resourceDetail"
+        id="activityLogJson"
+          name="activityLogJson"
           class="form-control"
           value={JSON.stringify($activityLog.details, null, 2)}
           rows="10"

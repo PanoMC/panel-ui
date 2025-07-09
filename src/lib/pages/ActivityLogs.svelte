@@ -15,11 +15,11 @@
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination
-        page="{data.meta.page}"
-        totalPage="{data.meta.totalPage}"
-        on:firstPageClick="{() => onPageClick(1)}"
-        on:lastPageClick="{() => onPageClick(data.meta.totalPage)}"
-        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
+        page={data.meta.page}
+        totalPage={data.meta.totalPage}
+        on:firstPageClick={() => onPageClick(1)}
+        on:lastPageClick={() => onPageClick(data.meta.totalPage)}
+        on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
     </div>
   </div>
 </div>

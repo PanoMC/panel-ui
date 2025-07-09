@@ -472,8 +472,8 @@
     },
     "modals": {
       "view-activity-log": {
-        "title": "Aktivite Kayıt Detayı Görüntüle",
-        "details": "Detaylar:"
+        "title": "Aktivite Kaydı Detayı",
+        "json": "JSON:"
       },
       "confirm-remove-pano-account": {
         "title": "Çevrimiçi Pano hesabınızı platformdan kaldırmak istediğinize emin misiniz?"
