@@ -2,16 +2,20 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <button
-      slot="right"
-      type="button"
-      class="btn btn-secondary ml-auto"
-      on:click={showAddPluginModal}>
-      <i class="fas fa-plus me-2"></i>
-      Eklenti Yükle
-    </button>
+    <div slot="right" class="hstack gap-2">
+      <a href="{base}/addons/store" class="btn btn-outline-primary">
+        <i class="fas fa-store me-2"></i>
+        Pano Mağazası
+      </a>
+      <button
+        type="button"
+        class="btn btn-secondary ml-auto"
+        on:click={showAddPluginModal}>
+        <i class="fas fa-plus me-2"></i>
+        Eklenti Yükle
+      </button>
+    </div>
   </PageActions>
-
   <!-- All Addons -->
   <div class="card">
     <CardHeader>
