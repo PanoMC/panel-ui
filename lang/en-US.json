@@ -29,7 +29,8 @@
     "delete": "Delete",
     "edit": "Edit",
     "no": "No",
-    "view": "View"
+    "view": "View",
+    "closed": "Closed"
   },
   "pages": {
     "languages": {
@@ -466,6 +467,10 @@
       "game-integration": "Game Integration"
     },
     "modals": {
+      "view-activity-log": {
+        "title": "View Activity Log Detail",
+        "details": "Details:"
+      },
       "confirm-remove-pano-account": {
         "title": "Are you sure to disconnect your online Pano account from this platform?"
       },
@@ -769,5 +774,35 @@
       "title": "Manage Translations",
       "description": "Can add, edit, delete translations and languages."
     }
+  },
+  "activity-logs": {
+    "BANNED_PLAYER": "*{username}* banned player {player}.",
+    "CLOSED_TICKETS": "*{username}* closed some tickets ({ticketIds}).",
+    "CREATED_PERMISSION_GROUP": "*{username}* created \"{permissionGroupName}\" permission group.",
+    "CREATED_POST_CATEGORY": "*{username}* created \"{title}\" post category.",
+    "CREATED_TICKET_CATEGORY": "*{username}* created \"{title}\" ticket category.",
+    "DELETED_PERMISSION_GROUP": "*{username}* deleted \"{permissionGroupName}\" permission group.",
+    "DELETED_PLAYER": "*{username}* deleted player {player}.",
+    "DELETED_POST_CATEGORY": "*{username}* deleted \"{title}\" post category.",
+    "DELETED_POST": "*{username}* deleted \"{title}\" post.",
+    "DELETED_TICKET_CATEGORY": "*{username}* deleted \"{title}\" ticket category.",
+    "DELETED_TICKETS": "*{username}* deleted tickets. ({ticketIds})",
+    "DELETE_LOCALE": "*{username}* deleted \"{localeName}\" language.",
+    "INSTALLED_PLATFORM": "*{username}* installed the platform.",
+    "NEW_LOCALE": "*{username}* added new \"{localeName}\" language.",
+    "PUBLISHED_POST": "*{username}* published a post.",
+    "REPLIED_TICKET": "*{username}* replied to a ticket #{ticketId}.",
+    "SENT_MANUAL_VALIDATION_EMAIL": "*{username}* sent manual validation e-mail to {email}.",
+    "UNBANNED_PLAYER": "*{username}* unbanned player {player}.",
+    "UPDATED_PERMISSION_GROUP": "*{username}* made changes in \"{permissionGroupName}\" permission group.",
+    "UPDATED_PERMISSION_GROUP_PERM": "*{username}* made changes in \"{permissionGroupName}\" permission group perm.",
+    "UPDATED_PLAYER": "*{username}* made changes in player \"{player}\".",
+    "UPDATED_PLAYER_PERMISSION_GROUP": "*{username}* made changes in player \"{player}\" permission group to \"{permissionGroupName}\".",
+    "UPDATED_POST_CATEGORY": "*{username}* made changes in \"{title}\" post category.",
+    "UPDATED_POST": "*{username}* made changes in \"{title}\" post.",
+    "UPDATED_POST_STATUS": "*{username}* made changes in \"{title}\" post status to {status}.",
+    "UPDATED_TICKET_CATEGORY": "*{username}* made changes in \"{title}\" ticket category.",
+    "UPDATED_TRANSLATIONS": "*{username}* made changes in translations in \"{localeName}\" language.",
+    "UPDATE_LOCALE": "*{username}* made changes in \"{localeName}\" language."
   }
 }

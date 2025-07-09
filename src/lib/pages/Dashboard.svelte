@@ -168,7 +168,7 @@
         <div class="card-body">
           <ul class="list-group">
             {#each data.activityLogs.data as log, index (log)}
-              <li class="list-group-item list-group-item">{log.type}</li>
+              <ActivityLogRow log="{log}" on:click={onShowViewActivityLogModalClick}/>
             {/each}
           </ul>
         </div>
@@ -176,6 +176,8 @@
     </div>
   </div>
 </div>
+
+<ViewActivityLogModal/>
 
 <script context="module">
   import ApiUtil from "$lib/api.util.js";
@@ -217,6 +219,12 @@
   import TicketStatusBadge from "$lib/component/badges/TicketStatusBadge.svelte";
   import Date from "$lib/component/Date.svelte";
 
+  import ActivityLogRow from "$lib/component/rows/ActivityLogRow.svelte";
+  import ViewActivityLogModal, {
+    show as showViewActivityLogModal,
+    onHide as onViewActivityLogModalHide,
+  } from "$lib/component/modals/ViewActivityLogModal.svelte";
+
   export let data;
 
   const pageTitle = getContext("pageTitle");
@@ -229,4 +237,22 @@
       handler: () => {},
     });
   }
+
+  function onShowViewActivityLogModalClick(event) {
+    const log = event.detail.log
+
+    log.selected = true;
+
+    data.activityLogs.data = data.activityLogs.data
+
+    showViewActivityLogModal(log);
+  }
+
+  onViewActivityLogModalHide((log) => {
+    const _log = data.activityLogs.data.find((_log) => _log.id === log.id)
+
+    _log.selected = false;
+
+    data.activityLogs.data = data.activityLogs.data
+  });
 </script>

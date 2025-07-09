@@ -6,15 +6,8 @@
         <NoContent />
       {:else}
         <div class="list-group">
-          {#each data.data as log, index (log)}
-            <a href="#" class="list-group-item list-group-item-action">
-              <span class="d-none text-break">{log.type}</span>
-              <div class="fw-bold">
-                Commodi quibusdam tempore possimus, eveniet accusamus non
-                cupiditate recusandae, nobis eius.
-              </div>
-              <div class="text-muted">31.08.2925 - 22:00</div>
-            </a>
+          {#each data.logs as log, index (log)}
+            <ActivityLogRow log="{log}" on:click={onShowViewActivityLogModalClick}/>
           {/each}
         </div>
       {/if}
@@ -30,6 +23,8 @@
     </div>
   </div>
 </div>
+
+<ViewActivityLogModal/>
 
 <script context="module">
   import ApiUtil from "$lib/api.util.js";
@@ -64,18 +59,23 @@
       throw error(500, body.error);
     }
 
-    body.meta.page = page;
-
-    return { ...body };
+    return { logs: body.data, meta: { ...body.meta, page } };
   }
 </script>
 
 <script>
   import { getContext } from "svelte";
-  import Pagination from "$lib/component/Pagination.svelte";
-  import { buildQueryParams } from "../../pano-ui/js/api.util.js";
   import { goto } from "$app/navigation";
+
+  import { buildQueryParams } from "$lib/api.util.js";
+
+  import Pagination from "$lib/component/Pagination.svelte";
   import NoContent from "$lib/component/NoContent.svelte";
+  import ActivityLogRow from "$lib/component/rows/ActivityLogRow.svelte";
+  import ViewActivityLogModal, {
+    show as showViewActivityLogModal,
+    onHide as onViewActivityLogModalHide,
+  } from "$lib/component/modals/ViewActivityLogModal.svelte";
 
   export let data;
 
@@ -96,4 +96,22 @@
 
     await refreshData();
   }
+
+  function onShowViewActivityLogModalClick(event) {
+    const log = event.detail.log
+
+    log.selected = true;
+
+    data.logs = data.logs
+
+    showViewActivityLogModal(log);
+  }
+
+  onViewActivityLogModalHide((log) => {
+    const _log = data.logs.find((_log) => _log.id === log.id)
+
+    _log.selected = false;
+
+    data.logs = data.logs
+  });
 </script>
