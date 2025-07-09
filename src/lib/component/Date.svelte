@@ -1,16 +1,16 @@
 <span
   use:tooltip="{[
     format(new Date(parseInt(date)), 'dd/MM/yyyy, HH:mm'),
-    { placement: 'bottom', locale: locales[$currentLanguage['date-fns-code']] },
+    { placement: 'bottom', locale: locales[$currentLanguage.dateFnsCode] },
   ]}">
   <slot>
     {#if relativeFormat}
       {formatRelative(new Date(parseInt(date)), new Date(), {
-        locale: locales[$currentLanguage["date-fns-code"]],
+        locale: locales[$currentLanguage.dateFnsCode],
       }).capitalize()}
     {:else}
       {format(new Date(parseInt(date)), "dd MMMM yyyy", {
-        locale: locales[$currentLanguage["date-fns-code"]],
+        locale: locales[$currentLanguage.dateFnsCode],
       })}
     {/if}
   </slot>

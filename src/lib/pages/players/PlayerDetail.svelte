@@ -119,7 +119,7 @@
                   })
                 : getOfflineRelativeDateText(
                     checkTime,
-                    locales[$currentLanguage['date-fns-code']],
+                    locales[$currentLanguage.dateFnsCode],
                   ),
               { placement: 'bottom' },
             ]}" />

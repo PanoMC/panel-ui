@@ -15,7 +15,7 @@
           >{getTime(
             checkTime,
             parseInt(notification.date),
-            locales[$currentLanguage["date-fns-code"]],
+            locales[$currentLanguage.dateFnsCode],
           )}</small>
         <button
           type="button"
