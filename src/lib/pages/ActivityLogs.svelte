@@ -1,6 +1,6 @@
 <div class="container vstack gap-3">
   <div class="card">
-    <div class="card-header">Logs ({data.meta.totalCount})</div>
+    <div class="card-header">{$_('pages.activity-logs.title')} ({data.meta.totalCount})</div>
     <div class="card-body">
       {#if data.meta.totalCount === 0}
         <NoContent />
@@ -65,6 +65,8 @@
 
 <script>
   import { getContext } from "svelte";
+  import { _ } from "svelte-i18n";
+
   import { goto } from "$app/navigation";
 
   import { buildQueryParams } from "$lib/api.util.js";
@@ -81,7 +83,7 @@
 
   const pageTitle = getContext("pageTitle");
 
-  pageTitle.set("pages.logs.title");
+  pageTitle.set("pages.activity-logs.title");
 
   async function refreshData() {
     const queryParams = buildQueryParams({

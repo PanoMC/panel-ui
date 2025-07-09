@@ -30,9 +30,13 @@
     "edit": "Düzenle",
     "no": "Hayır",
     "view": "Görüntüle",
-    "closed": "Kapalı"
+    "closed": "Kapalı",
+    "show-all": "Tümünü Göster"
   },
   "pages": {
+    "activity-logs": {
+      "title": "Aktivite Kayıtları"
+    },
     "languages": {
       "title": "Diller",
       "card-title": "{count} Dil",
@@ -49,9 +53,6 @@
     "translations": {
       "unsaved-changes-alert-text": "Kaydedilmemiş değişiklikleriniz var! Emin misiniz?",
       "title": "Çeviriler"
-    },
-    "logs": {
-      "title": "Aktivite Kayıtları"
     },
     "dashboard": {
       "title": "Panel",
@@ -75,6 +76,9 @@
         "player-name": "Oyuncu Adı",
         "filter": "Filtrele",
         "no-category": "Kategorisiz"
+      },
+      "logs": {
+        "title": "Son Aktivite Kayıtları"
       }
     },
     "statistics": {

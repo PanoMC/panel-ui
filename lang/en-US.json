@@ -30,9 +30,13 @@
     "edit": "Edit",
     "no": "No",
     "view": "View",
-    "closed": "Closed"
+    "closed": "Closed",
+    "show-all": "Show All"
   },
   "pages": {
+    "activity-logs": {
+      "title": "Activity Logs"
+    },
     "languages": {
       "title": "Languages",
       "card-title": "{count} Languages",
@@ -49,9 +53,6 @@
     "translations": {
       "unsaved-changes-alert-text": "You have unsaved changes, are you sure?",
       "title": "Translations"
-    },
-    "logs": {
-      "title": "Logs"
     },
     "dashboard": {
       "title": "Panel",
@@ -75,6 +76,9 @@
         "player-name": "Player Name",
         "filter": "Filter",
         "no-category": "No Category"
+      },
+      "logs": {
+        "title": "Last Activity Logs"
       }
     },
     "statistics": {

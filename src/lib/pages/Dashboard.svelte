@@ -162,15 +162,18 @@
     <div class="col-lg-6">
       <div class="card">
         <div class="card-header">
-          Son Kayıtlar ({data.activityLogs.meta.totalCount})
+          {$_('pages.dashboard.logs.title')}
           <!-- <a slot="right" href="{base}/logs">Show All</a> -->
         </div>
         <div class="card-body">
-          <ul class="list-group">
+          <ul class="list-group mb-2">
             {#each data.activityLogs.data as log, index (log)}
               <ActivityLogRow log="{log}" on:click={onShowViewActivityLogModalClick}/>
             {/each}
           </ul>
+          {#if data.activityLogs.meta.totalCount > 10}
+            <a href="{base}/logs" class="btn btn-outline-primary w-100">{$_('buttons.show-all')} ({data.activityLogs.meta.totalCount})</a>
+          {/if}
         </div>
       </div>
     </div>
