@@ -75,7 +75,7 @@
               </a>
             </li>
             <li>
-              <a class="alert-link" href="{PANO_WEBSITE_URL}" target="_blank">
+              <a class="alert-link" href={PANO_WEBSITE_URL} target="_blank">
                 <i class="fa-solid fa-globe me-2"></i>
                 {$_("pages.dashboard.welcome-card.website")}
               </a>
@@ -95,10 +95,10 @@
 
       <button
         type="button"
-        title="{$_('buttons.close')}"
+        title={$_("buttons.close")}
         class="btn-close"
         data-bs-dismiss="alert"
-        on:click="{onCloseGettingStartedCard}"></button>
+        on:click={onCloseGettingStartedCard}></button>
     </div>
   {/if}
   <div class="row g-3">
@@ -121,18 +121,18 @@
                       <tr>
                         <td class="align-middle">
                           <a
-                            use:tooltip="{[
+                            use:tooltip={[
                               ticket.writer.username,
-                              { placement: 'bottom' },
-                            ]}"
+                              { placement: "bottom" },
+                            ]}
                             href="{base}/players/detail/{ticket.writer
                               .username}">
                             <img
                               src="https://minotar.net/avatar/{ticket.writer
                                 .username}/32"
-                              alt="{$_(
-                                'pages.dashboard.last-tickets.player-name',
-                              )}"
+                              alt={$_(
+                                "pages.dashboard.last-tickets.player-name",
+                              )}
                               class="rounded-circle animate__animated animate__zoomIn"
                               height="32"
                               width="32" />
@@ -141,14 +141,14 @@
                         <td class="align-middle text-nowrap">
                           <a
                             href="{base}/tickets/detail/{ticket.id}"
-                            title="{$_('buttons.view')}"
+                            title={$_("buttons.view")}
                             >#{ticket.id} {ticket.title}</a>
                         </td>
                         <td class="align-middle text-nowrap">
-                          <TicketStatusBadge status="{ticket.status}" />
+                          <TicketStatusBadge status={ticket.status} />
                         </td>
                         <td class="align-middle text-nowrap"
-                          ><span><Date time="{ticket.lastUpdate}" /></span></td>
+                          ><span><Date time={ticket.lastUpdate} /></span></td>
                       </tr>
                     </tbody>
                   {/each}
@@ -161,26 +161,34 @@
     </div>
     <div class="col-lg-6">
       <div class="card">
+        <CardHeader>
+          <div slot="right">
+            {#if data.activityLogs.meta.totalCount > 10}
+              <a href="{base}/logs" class="btn btn-link d-inline w-100"
+                >{$_("buttons.show-all")} ({data.activityLogs.meta
+                  .totalCount})</a>
+            {/if}
+          </div>
+        </CardHeader>
         <div class="card-header">
-          {$_('pages.dashboard.logs.title')}
+          {$_("pages.dashboard.logs.title")}
           <!-- <a slot="right" href="{base}/logs">Show All</a> -->
         </div>
         <div class="card-body">
-          <ul class="list-group mb-2">
+          <ul class="list-group mb-0">
             {#each data.activityLogs.data as log, index (log)}
-              <ActivityLogRow log="{log}" on:click={onShowViewActivityLogModalClick}/>
+              <ActivityLogRow
+                log={log}
+                on:click={onShowViewActivityLogModalClick} />
             {/each}
           </ul>
-          {#if data.activityLogs.meta.totalCount > 10}
-            <a href="{base}/logs" class="btn btn-outline-primary w-100">{$_('buttons.show-all')} ({data.activityLogs.meta.totalCount})</a>
-          {/if}
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<ViewActivityLogModal/>
+<ViewActivityLogModal />
 
 <script context="module">
   import ApiUtil from "$lib/api.util.js";
@@ -227,6 +235,7 @@
     show as showViewActivityLogModal,
     onHide as onViewActivityLogModalHide,
   } from "$lib/component/modals/ViewActivityLogModal.svelte";
+    import CardHeader from "$lib/component/CardHeader.svelte";
 
   export let data;
 
@@ -242,20 +251,20 @@
   }
 
   function onShowViewActivityLogModalClick(event) {
-    const log = event.detail.log
+    const log = event.detail.log;
 
     log.selected = true;
 
-    data.activityLogs.data = data.activityLogs.data
+    data.activityLogs.data = data.activityLogs.data;
 
     showViewActivityLogModal(log);
   }
 
   onViewActivityLogModalHide((log) => {
-    const _log = data.activityLogs.data.find((_log) => _log.id === log.id)
+    const _log = data.activityLogs.data.find((_log) => _log.id === log.id);
 
     _log.selected = false;
 
-    data.activityLogs.data = data.activityLogs.data
+    data.activityLogs.data = data.activityLogs.data;
   });
 </script>

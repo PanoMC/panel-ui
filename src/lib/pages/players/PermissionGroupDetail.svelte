@@ -1,64 +1,68 @@
-<article class="container">
+<article class="container vstack gap-3">
   <!-- Action Menu -->
-  <div
-    class="row justify-content-between align-items-center mb-3 animate__animated animate__slideInUp">
-    <div class="col-auto">
-      <a class="btn btn-link" role="button" href="{base}/players/perm-groups">
-        <i class="fas fa-arrow-left me-2"></i>
-        {$_('pages.permission-group-detail.permission-groups')}
-      </a>
-    </div>
-    <div class="col-auto">
-      <button
-        class="btn"
-        class:btn-secondary="{data.mode === Modes.CREATE}"
-        class:btn-primary="{data.mode === Modes.EDIT}"
-        type="submit"
-        class:disabled="{saveButtonDisabled}"
-        on:click="{onSubmit}">
-        {#if data.mode === Modes.EDIT}
-          {$_('buttons.save')}
-        {:else}
-          {$_('buttons.create')}
-        {/if}
-      </button>
-    </div>
-  </div>
+  <PageActions>
+    <!-- Submenu -->
+    <CardMenu slot="middle">
+      <CardMenuItem href="/players">
+        {$_("buttons.players")}</CardMenuItem>
+      <CardMenuItem href="/players/perm-groups">
+        {$_("pages.players.perm-groups")}</CardMenuItem>
+    </CardMenu>
+
+    <button
+      slot="right"
+      class="btn"
+      class:btn-secondary={data.mode === Modes.CREATE}
+      class:btn-primary={data.mode === Modes.EDIT}
+      type="submit"
+      class:disabled={saveButtonDisabled}
+      on:click={onSubmit}>
+      {#if data.mode === Modes.EDIT}
+        {$_("buttons.save")}
+      {:else}
+        {$_("buttons.create")}
+      {/if}
+    </button>
+  </PageActions>
 
   <div class="row">
     <div class="col mb-xl-0 mb-3">
       <div class="card h-100">
         <div class="card-body">
           <input
-            class:text-danger="{errors.name}"
-            class:text-black="{!errors.name}"
+            class:text-danger={errors.name}
+            class:text-black={!errors.name}
             class="form-control form-control-lg mb-3"
-            placeholder="{$_('pages.permission-group-detail.inputs.name.placeholder')}"
+            placeholder={$_(
+              "pages.permission-group-detail.inputs.name.placeholder",
+            )}
             id="permissionGroupName"
             type="text"
-            bind:value="{name}"
-            disabled="{data.name === 'admin'}" />
+            bind:value={name}
+            disabled={data.name === "admin"} />
 
-          <form on:submit|preventDefault="{addUser}">
+          <form on:submit|preventDefault={addUser}>
             <input
               class="form-control mb-3"
               id="addPlayerInput"
-              bind:value="{username}"
-              class:border-danger="{usernameInputError}"
-              disabled="{checkingUsername}"
-              placeholder="{$_('pages.permission-group-detail.inputs.player.placeholder')}" />
+              bind:value={username}
+              class:border-danger={usernameInputError}
+              disabled={checkingUsername}
+              placeholder={$_(
+                "pages.permission-group-detail.inputs.player.placeholder",
+              )} />
           </form>
 
           {#each data.users as user, index (user)}
             <a
-              use:tooltip="{[$_('buttons.remove'), { placement: 'bottom' }]}"
+              use:tooltip={[$_("buttons.remove"), { placement: "bottom" }]}
               href="javascript:void(0);"
-              on:click="{() => removeUser(index)}">
+              on:click={() => removeUser(index)}>
               <span class="badge rounded-pill bg-light link-dark text-center">
                 <img
                   class="d-inline rounded-circle me-2"
                   src="https://minotar.net/avatar/{user}"
-                  alt="{user}"
+                  alt={user}
                   width="28"
                   height="28" />
                 {user}
@@ -77,10 +81,10 @@
                 <tr>
                   <th
                     scope="col"
-                    use:tooltip="{[
+                    use:tooltip={[
                       $_(`permissions.${permission.name}.description`),
-                      { placement: 'right' },
-                    ]}">
+                      { placement: "right" },
+                    ]}>
                     <!--              TODO: Icon system-->
                     <!--              <Icon-->
                     <!--                data="{icon[convertIconName(permission.iconName)]}"-->
@@ -95,10 +99,10 @@
                       <input
                         type="checkbox"
                         class="form-check-input"
-                        id="{permission.name}"
-                        checked="{isPermissionChecked(permission)}"
-                        on:click="{() => onPermissionClick(permission)}"
-                        disabled="{isPermissionDisabled()}" />
+                        id={permission.name}
+                        checked={isPermissionChecked(permission)}
+                        on:click={() => onPermissionClick(permission)}
+                        disabled={isPermissionDisabled()} />
                     </div>
                   </td>
                 </tr>
@@ -144,7 +148,7 @@
       const permissionGroupsBody = await ApiUtil.get({
         path: `/api/panel/permissionGroups/${id}`,
         request: event,
-      })
+      });
 
       if (permissionGroupsBody.error) {
         if (permissionGroupsBody.error === "NOT_EXISTS") {
@@ -160,7 +164,7 @@
     const getPermissionsBody = await ApiUtil.get({
       path: "/api/panel/permissions",
       request: event,
-    })
+    });
 
     if (getPermissionsBody.error) {
       throw error(500, getPermissionsBody.error);
@@ -210,13 +214,18 @@
   import tooltip from "$lib/tooltip.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
+  import PageActions from "$lib/component/PageActions.svelte";
+  import CardMenu from "$lib/component/CardMenu.svelte";
+  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
   export let data;
 
   const pageTitle = getContext("pageTitle");
 
   pageTitle.set(
-    data.mode === Modes.EDIT ? "pages.permission-group-detail.title-edit" : "pages.permission-group-detail.title-create"
+    data.mode === Modes.EDIT
+      ? "pages.permission-group-detail.title-edit"
+      : "pages.permission-group-detail.title-create",
   );
 
   let errors = [];
@@ -259,7 +268,7 @@
       const isSame = originalPermissions.filter(
         (originalPermission) =>
           originalPermission.id === permission.id &&
-          originalPermission.selected === permission.selected
+          originalPermission.selected === permission.selected,
       );
 
       if (isSame.length === 0) {
@@ -325,8 +334,8 @@
         }
 
         username = "";
-      }
-    })
+      },
+    });
   }
 
   function removeUser(index) {
@@ -351,9 +360,19 @@
       if (body.result === "ok") {
         loading = false;
 
-        showToast('components.toasts.permission-group-saved-or-created.permission-group', {
-          "event": data.mode === Modes.EDIT ? $_('components.toasts.permission-group-saved-or-created.updated'): $_('components.toasts.permission-group-saved-or-created.saved')
-        });
+        showToast(
+          "components.toasts.permission-group-saved-or-created.permission-group",
+          {
+            "event":
+              data.mode === Modes.EDIT
+                ? $_(
+                    "components.toasts.permission-group-saved-or-created.updated",
+                  )
+                : $_(
+                    "components.toasts.permission-group-saved-or-created.saved",
+                  ),
+          },
+        );
 
         if (data.mode === Modes.CREATE) {
           goto(base + "/players/perm-groups/detail/" + body.id);
@@ -375,21 +394,21 @@
         addedUsers = [];
         removedUsers = [];
 
-        return
+        return;
       } else if (body.error) {
         loading = false;
 
-        showToast('components.toasts.permission-group-save-error', {
+        showToast("components.toasts.permission-group-save-error", {
           errorCode: body.error,
         });
 
-        return
+        return;
       } else if (body.errors) {
         loading = false;
 
         errors = body.errors;
 
-        return
+        return;
       }
 
       reject();
@@ -404,8 +423,8 @@
           removedUsers,
           permissions: data.permissions,
         },
-        handler: bodyHandler
-      })
+        handler: bodyHandler,
+      });
 
       return;
     }
@@ -417,8 +436,8 @@
         addedUsers,
         permissions: data.permissions,
       },
-      handler: bodyHandler
-    })
+      handler: bodyHandler,
+    });
   }
 
   // function convertIconName(iconName) {

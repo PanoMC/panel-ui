@@ -47,50 +47,48 @@
 
   <!-- All Tickets -->
   <div class="card">
-    <div class="card-header">
-      <CardHeader>
-        <div slot="left">
-          {$_("pages.tickets.table-title", {
-            values: {
-              ticketCount: data.ticketCount,
-              pageType:
-                data.pageType === PageTypes.WAITING_REPLY
-                  ? $_("pages.tickets.waiting-reply")
-                  : data.pageType === PageTypes.CLOSED
-                    ? $_("pages.tickets.closed")
-                    : "",
-            },
-          }) +
-            (getListOfChecked($checkedList).length > 0
-              ? ", " +
-                $_("pages.tickets.amount-selected", {
-                  values: { amount: getListOfChecked($checkedList).length },
-                })
-              : "")}
-        </div>
+    <CardHeader>
+      <div slot="left">
+        {$_("pages.tickets.table-title", {
+          values: {
+            ticketCount: data.ticketCount,
+            pageType:
+              data.pageType === PageTypes.WAITING_REPLY
+                ? $_("pages.tickets.waiting-reply")
+                : data.pageType === PageTypes.CLOSED
+                  ? $_("pages.tickets.closed")
+                  : "",
+          },
+        }) +
+          (getListOfChecked($checkedList).length > 0
+            ? ", " +
+              $_("pages.tickets.amount-selected", {
+                values: { amount: getListOfChecked($checkedList).length },
+              })
+            : "")}
+      </div>
 
-        <!-- Filters -->
-        <CardFilters slot="right">
-          {#if !data.categoryUrl}
-            <CardFiltersItem
-              href="/tickets"
-              active="{data.pageType === PageTypes.ALL}">
-              {$_("pages.tickets.all")}
-            </CardFiltersItem>
-            <CardFiltersItem
-              href="/tickets?pageType=WAITING_REPLY"
-              active="{data.pageType === PageTypes.WAITING_REPLY}">
-              {$_("pages.tickets.waiting-reply")}
-            </CardFiltersItem>
-            <CardFiltersItem
-              href="/tickets?pageType=CLOSED"
-              active="{data.pageType === PageTypes.CLOSED}">
-              {$_("pages.tickets.closed")}
-            </CardFiltersItem>
-          {/if}
-        </CardFilters>
-      </CardHeader>
-    </div>
+      <!-- Filters -->
+      <CardFilters slot="right">
+        {#if !data.categoryUrl}
+          <CardFiltersItem
+            href="/tickets"
+            active="{data.pageType === PageTypes.ALL}">
+            {$_("pages.tickets.all")}
+          </CardFiltersItem>
+          <CardFiltersItem
+            href="/tickets?pageType=WAITING_REPLY"
+            active="{data.pageType === PageTypes.WAITING_REPLY}">
+            {$_("pages.tickets.waiting-reply")}
+          </CardFiltersItem>
+          <CardFiltersItem
+            href="/tickets?pageType=CLOSED"
+            active="{data.pageType === PageTypes.CLOSED}">
+            {$_("pages.tickets.closed")}
+          </CardFiltersItem>
+        {/if}
+      </CardFilters>
+    </CardHeader>
     <div class="card-body">
       <!-- No Tickets -->
       {#if data.ticketCount === 0}

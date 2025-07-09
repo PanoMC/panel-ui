@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<nav class="navbar navbar-expand navbar-light border-bottom border-2 mb-3 bg-white mx-2">
+<nav class="navbar navbar-expand navbar-light border-bottom border-2 mb-3 mx-2">
   <div class="container">
     <div class="col-4 d-flex justify-content-start">
       <!-- Navbar Toggler -->

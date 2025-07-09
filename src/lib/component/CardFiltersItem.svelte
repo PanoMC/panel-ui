@@ -1,15 +1,14 @@
-<li class="nav-item">
-  <a
-    class:active="{active}"
-    class="nav-link text-truncate"
-    href="{base + href}">
-    <slot />
-  </a>
-</li>
+<a
+  class:active="{active}"
+  class="btn btn-sm btn-outline-primary text-truncate"
+  role="button"
+  href="{base + href}">
+  <slot />
+</a>
 
 <script>
   import { base } from "$app/paths";
 
   export let href;
-  export let active = false;
+  export let active;
 </script>

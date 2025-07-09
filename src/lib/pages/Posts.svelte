@@ -1,16 +1,7 @@
 <!-- Posts Page -->
 <article class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions>
-    <div slot="left">
-      {#if data.categoryUrl}
-        <a class="btn btn-link" role="button" href="{base}/posts">
-          <i class="fas fa-arrow-left ms-2"></i>
-          {$_("buttons.posts")}
-        </a>
-      {/if}
-    </div>
-
+  <PageActions leftClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
       {#if !data.categoryUrl}
@@ -37,61 +28,45 @@
   <!-- All Posts -->
 
   <div class="card">
-    <div class="card-header">
-      {$_("pages.posts.table-title", {
-        values: {
-          postCount: data.postCount,
-          pageType:
-            data.pageType === PageTypes.PUBLISHED
-              ? $_("pages.posts.published") + " "
-              : data.pageType === PageTypes.DRAFT
-                ? $_("pages.posts.draft") + " "
-                : data.pageType === PageTypes.BANNED
-                  ? $_("pages.posts.banned") + " "
-                  : "",
-        },
-      })}
-    </div>
+    <CardHeader>
+      <div slot="left">
+        {$_("pages.posts.table-title", {
+          values: {
+            postCount: data.postCount,
+            pageType:
+              data.pageType === PageTypes.PUBLISHED
+                ? $_("pages.posts.published") + " "
+                : data.pageType === PageTypes.DRAFT
+                  ? $_("pages.posts.draft") + " "
+                  : data.pageType === PageTypes.BANNED
+                    ? $_("pages.posts.banned") + " "
+                    : "",
+          },
+        })}
+      </div>
+
+      <!-- Filters -->
+      <CardFilters slot="right">
+        {#if !data.categoryUrl}
+          <CardFiltersItem
+            href="/posts"
+            active={data.pageType === PageTypes.PUBLISHED}>
+            {$_("pages.posts.published")}
+          </CardFiltersItem>
+          <CardFiltersItem
+            href="/posts?pageType=DRAFT"
+            active={data.pageType === PageTypes.DRAFT}>
+            {$_("pages.posts.draft")}
+          </CardFiltersItem>
+          <CardFiltersItem
+            href="/posts?pageType=TRASH"
+            active={data.pageType === PageTypes.TRASH}>
+            {$_("pages.posts.trash")}
+          </CardFiltersItem>
+        {/if}
+      </CardFilters>
+    </CardHeader>
     <div class="card-body">
-      <CardHeader>
-        <h5 class="card-title" slot="left">
-          {$_("pages.posts.table-title", {
-            values: {
-              postCount: data.postCount,
-              pageType:
-                data.pageType === PageTypes.PUBLISHED
-                  ? $_("pages.posts.published") + " "
-                  : data.pageType === PageTypes.DRAFT
-                    ? $_("pages.posts.draft") + " "
-                    : data.pageType === PageTypes.BANNED
-                      ? $_("pages.posts.banned") + " "
-                      : "",
-            },
-          })}
-        </h5>
-
-        <!-- Filters -->
-        <CardFilters slot="right">
-          {#if !data.categoryUrl}
-            <CardFiltersItem
-              href="/posts"
-              active="{data.pageType === PageTypes.PUBLISHED}">
-              {$_("pages.posts.published")}
-            </CardFiltersItem>
-            <CardFiltersItem
-              href="/posts?pageType=DRAFT"
-              active="{data.pageType === PageTypes.DRAFT}">
-              {$_("pages.posts.draft")}
-            </CardFiltersItem>
-            <CardFiltersItem
-              href="/posts?pageType=TRASH"
-              active="{data.pageType === PageTypes.TRASH}">
-              {$_("pages.posts.trash")}
-            </CardFiltersItem>
-          {/if}
-        </CardFilters>
-      </CardHeader>
-
       <!-- No Posts -->
       {#if data.postCount === 0}
         <NoContent />
@@ -107,7 +82,7 @@
                 <th
                   scope="col"
                   class="align-middle"
-                  class:table-primary="{data.categoryUrl}"
+                  class:table-primary={data.categoryUrl}
                   >{$_("pages.posts.table.category")}</th>
                 <th scope="col" class="align-middle"
                   >{$_("pages.posts.table.views")}</th>
@@ -120,13 +95,13 @@
             <tbody>
               {#each data.posts as post, index (post)}
                 <PostRow
-                  post="{post}"
-                  pageType="{data.pageType}"
-                  buttonsLoading="{buttonsLoading}"
-                  on:moveToDraft="{(event) => onMoveToDraft(event.detail.id)}"
-                  on:publish="{(event) => onPublishClick(event.detail.id)}"
-                  on:deletePost="{(event) =>
-                    onDeletePostClick(event.detail.post)}" />
+                  post={post}
+                  pageType={data.pageType}
+                  buttonsLoading={buttonsLoading}
+                  on:moveToDraft={(event) => onMoveToDraft(event.detail.id)}
+                  on:publish={(event) => onPublishClick(event.detail.id)}
+                  on:deletePost={(event) =>
+                    onDeletePostClick(event.detail.post)} />
               {/each}
             </tbody>
           </table>
@@ -136,11 +111,11 @@
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination
-        page="{data.page}"
-        totalPage="{data.totalPage}"
-        on:firstPageClick="{() => onPageClick(1)}"
-        on:lastPageClick="{() => onPageClick(data.totalPage)}"
-        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
+        page={data.page}
+        totalPage={data.totalPage}
+        on:firstPageClick={() => onPageClick(1)}
+        on:lastPageClick={() => onPageClick(data.totalPage)}
+        on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
     </div>
   </div>
 </article>

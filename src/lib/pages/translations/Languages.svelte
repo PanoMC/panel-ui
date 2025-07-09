@@ -6,24 +6,20 @@
       class="btn btn-secondary"
       type="button"
       slot="right"
-      on:click="{onCreateLanguageClick}">
-
-      <i class="fas fa-plus me-2"></i>{$_(
-      "buttons.create-language",
-    )}
+      on:click={onCreateLanguageClick}>
+      <i class="fas fa-plus me-2"></i>{$_("buttons.create-language")}
     </button>
   </PageActions>
 
   <div class="card">
+    <CardHeader>
+      <div slot="left">
+        {$_("pages.languages.card-title", {
+          values: { count: data.meta.totalCount },
+        })}
+      </div>
+    </CardHeader>
     <div class="card-body">
-      <CardHeader>
-        <h5 class="card-title" slot="left">
-          {$_("pages.languages.card-title", {
-            values: { count: data.meta.totalCount },
-          })}
-        </h5>
-      </CardHeader>
-
       <!-- No Content -->
       {#if data.meta.totalCount === 0}
         <NoContent />
@@ -34,41 +30,41 @@
         <div class="table-responsive">
           <table class="table table-hover">
             <thead>
-            <tr>
-              <th scope="col"></th>
-              <th class="align-middle" scope="col"
-              >{$_("pages.languages.name")}</th>
-              <th scope="col" class="align-middle"
-              >{$_("pages.languages.code")}</th>
-              <th scope="col" class="align-middle"
-              >{$_("pages.languages.date-fns-code")}</th>
-              <th scope="col" class="align-middle"
-              >{$_("pages.languages.derivatives")}</th>
-              <th scope="col" class="align-middle"
-              >{$_("pages.languages.defined-by")}</th>
-            </tr>
+              <tr>
+                <th scope="col"></th>
+                <th class="align-middle" scope="col"
+                  >{$_("pages.languages.name")}</th>
+                <th scope="col" class="align-middle"
+                  >{$_("pages.languages.code")}</th>
+                <th scope="col" class="align-middle"
+                  >{$_("pages.languages.date-fns-code")}</th>
+                <th scope="col" class="align-middle"
+                  >{$_("pages.languages.derivatives")}</th>
+                <th scope="col" class="align-middle"
+                  >{$_("pages.languages.defined-by")}</th>
+              </tr>
             </thead>
             <tbody>
-            {#each data.locales as locale, index (locale)}
-              <LocaleRow
-                locale="{locale}"
-                index="{index}"
-                on:editClick="{(event) =>
-                    onShowEditLanguageButtonClick(event.detail.index)}"
-                on:deleteClick="{(event) =>
-                    onShowDeleteLanguageModalClick(event.detail.index)}"/>
-            {/each}
+              {#each data.locales as locale, index (locale)}
+                <LocaleRow
+                  locale={locale}
+                  index={index}
+                  on:editClick={(event) =>
+                    onShowEditLanguageButtonClick(event.detail.index)}
+                  on:deleteClick={(event) =>
+                    onShowDeleteLanguageModalClick(event.detail.index)} />
+              {/each}
             </tbody>
           </table>
         </div>
       {/if}
       <!-- Pagination -->
       <Pagination
-        page="{data.meta.page}"
-        totalPage="{data.meta.totalPage}"
-        on:firstPageClick="{() => onPageClick(1)}"
-        on:lastPageClick="{() => onPageClick(data.meta.totalPage)}"
-        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
+        page={data.meta.page}
+        totalPage={data.meta.totalPage}
+        on:firstPageClick={() => onPageClick(1)}
+        on:lastPageClick={() => onPageClick(data.meta.totalPage)}
+        on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
     </div>
   </div>
 </article>
@@ -85,7 +81,10 @@
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent, url: {searchParams} } = event;
+    const {
+      parent,
+      url: { searchParams },
+    } = event;
     await parent();
 
     const page = searchParams.get("page") || 1;
@@ -94,7 +93,7 @@
     const body = await ApiUtil.get({
       path: `/api/panel/locales` + queryParams,
       request: event,
-    })
+    });
 
     if (body.error) {
       if (body.error === "PAGE_NOT_FOUND") {
@@ -104,10 +103,10 @@
       throw error(500, body.error);
     }
 
-    const locales = body.data
-    const meta = body.meta
+    const locales = body.data;
+    const meta = body.meta;
 
-    return { locales, meta: {...meta, page: parseInt(page)} };
+    return { locales, meta: { ...meta, page: parseInt(page) } };
   }
 </script>
 
@@ -146,7 +145,7 @@
       page: data.meta.page,
     });
 
-    await goto(queryParams, {invalidateAll: true});
+    await goto(queryParams, { invalidateAll: true });
   }
 
   async function onPageClick(page) {
@@ -165,13 +164,12 @@
     showAddEditLanguageModal("edit", data.locales[index]);
   }
 
-
   setCallbackForAddEditLanguageModal((routeFirstPage) => {
     if (routeFirstPage) {
-      data.page = 1
+      data.page = 1;
     }
 
-    refreshData()
+    refreshData();
   });
 
   onAddEditLanguageModalHide((locale) => {
@@ -191,7 +189,7 @@
   }
 
   setDeleteLanguageModalCallback(() => {
-    refreshData()
+    refreshData();
   });
 
   onConfirmDeleteLanguageModalHide((locale) => {

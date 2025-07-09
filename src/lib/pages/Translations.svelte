@@ -1,14 +1,14 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <a
-      href="{base}/translations/languages"
-      class="btn btn-link"
-      role="button"
-      slot="left">
-      <i class="fa-solid fa-earth-americas me-2"></i>
-      {$_("buttons.manage-languages")}
-    </a>
+    <!-- Submenu -->
+    <CardMenu slot="left">
+      <CardMenuItem href="/translations"
+        >{$_("pages.translations.title")}</CardMenuItem>
+      <CardMenuItem href="/translations/languages">
+        {$_("buttons.languages")}</CardMenuItem>
+    </CardMenu>
+
     <!-- Submenu -->
     <CardMenu slot="middle">
       <CardMenuItem
@@ -17,7 +17,7 @@
           data.locale,
           data.filter,
         )}"
-        active="{data.type === PageTypes.PANEL}"
+        active={data.type === PageTypes.PANEL}
         >{$_("buttons.platform")}</CardMenuItem>
       <CardMenuItem
         href="/translations{getQueryParams(
@@ -25,7 +25,7 @@
           data.locale,
           data.filter,
         )}"
-        active="{data.type === PageTypes.THEME}"
+        active={data.type === PageTypes.THEME}
         >{$_("buttons.theme")}</CardMenuItem>
       <CardMenuItem
         href="/translations{getQueryParams(
@@ -33,7 +33,7 @@
           data.locale,
           data.filter,
         )}"
-        active="{data.type === PageTypes.PLUGIN}"
+        active={data.type === PageTypes.PLUGIN}
         >{$_("buttons.addons")}</CardMenuItem>
     </CardMenu>
 
@@ -49,65 +49,63 @@
         class="form-select"
         name="selectLanguage"
         id="selectLanguage"
-        bind:value="{data.locale}"
-        on:change="{refreshData}">
+        bind:value={data.locale}
+        on:change={refreshData}>
         {#each data.locales as locale, index (locale)}
-          <option selected value="{locale.code}">{locale.name}</option>
+          <option selected value={locale.code}>{locale.name}</option>
         {/each}
       </select>
       <button
         type="button"
         class="btn btn-secondary"
-        disabled="{saveDisabled}"
-        on:click="{saveChanges}">{$_("buttons.save")}</button>
+        disabled={saveDisabled}
+        on:click={saveChanges}>{$_("buttons.save")}</button>
     </div>
   </PageActions>
 
   <div class="card">
-    <div class="card-header">
-      <CardHeader>
-        <h5 class="card-title" slot="left">
-          {$_("pages.translations.title")} ({data.filter !== FilterTypes.ALL
-            ? data.meta.filterCount
-            : data.meta.totalCount})
-        </h5>
-        <!-- Filters -->
-        <CardFilters slot="right">
-          <CardFiltersItem
-            href="/translations{getQueryParams(
-              data.type,
-              data.locale,
-              FilterTypes.ALL,
-            )}"
-            active="{data.filter === FilterTypes.ALL}"
-            >{$_("buttons.all")}</CardFiltersItem>
-          <CardFiltersItem
-            href="/translations{getQueryParams(
-              data.type,
-              data.locale,
-              FilterTypes.ORIGINAL,
-            )}"
-            active="{data.filter === FilterTypes.ORIGINAL}"
-            >{$_("buttons.original")}</CardFiltersItem>
-          <CardFiltersItem
-            href="/translations{getQueryParams(
-              data.type,
-              data.locale,
-              FilterTypes.CUSTOM,
-            )}"
-            active="{data.filter === FilterTypes.CUSTOM}"
-            >{$_("buttons.modified")}</CardFiltersItem>
-          <CardFiltersItem
-            href="/translations{getQueryParams(
-              data.type,
-              data.locale,
-              FilterTypes.NOT_EXISTS,
-            )}"
-            active="{data.filter === FilterTypes.NOT_EXISTS}"
-            >{$_("buttons.not-exists")}</CardFiltersItem>
-        </CardFilters>
-      </CardHeader>
-    </div>
+    <CardHeader>
+      <div slot="left">
+        {$_("pages.translations.title")} ({data.filter !== FilterTypes.ALL
+          ? data.meta.filterCount
+          : data.meta.totalCount})
+      </div>
+      <!-- Filters -->
+      <CardFilters slot="right">
+        <CardFiltersItem
+          href="/translations{getQueryParams(
+            data.type,
+            data.locale,
+            FilterTypes.ALL,
+          )}"
+          active={data.filter === FilterTypes.ALL}
+          >{$_("buttons.all")}</CardFiltersItem>
+        <CardFiltersItem
+          href="/translations{getQueryParams(
+            data.type,
+            data.locale,
+            FilterTypes.ORIGINAL,
+          )}"
+          active={data.filter === FilterTypes.ORIGINAL}
+          >{$_("buttons.original")}</CardFiltersItem>
+        <CardFiltersItem
+          href="/translations{getQueryParams(
+            data.type,
+            data.locale,
+            FilterTypes.CUSTOM,
+          )}"
+          active={data.filter === FilterTypes.CUSTOM}
+          >{$_("buttons.modified")}</CardFiltersItem>
+        <CardFiltersItem
+          href="/translations{getQueryParams(
+            data.type,
+            data.locale,
+            FilterTypes.NOT_EXISTS,
+          )}"
+          active={data.filter === FilterTypes.NOT_EXISTS}
+          >{$_("buttons.not-exists")}</CardFiltersItem>
+      </CardFilters>
+    </CardHeader>
     <div class="card-body vstack gap-3">
       <div class="accordion">
         {#if data.type === PageTypes.PLUGIN}
@@ -128,22 +126,22 @@
                 <div class="accordion-body">
                   {#if data.translations[pluginId].filter((translation) => translation.notExists).length > 0}
                     <UnnecessaryTranslationsAlert
-                      translations="{data.translations[pluginId].filter(
+                      translations={data.translations[pluginId].filter(
                         (translation) => translation.notExists,
-                      )}"
-                      pluginId="{pluginId}"
-                      on:customInputChange="{handleCustomInputChange}"
-                      on:deleteClick="{handleOnDeleteClick}"
-                      open="{data.filter === FilterTypes.NOT_EXISTS}" />
+                      )}
+                      pluginId={pluginId}
+                      on:customInputChange={handleCustomInputChange}
+                      on:deleteClick={handleOnDeleteClick}
+                      open={data.filter === FilterTypes.NOT_EXISTS} />
                   {/if}
 
                   {#if data.translations[pluginId].filter((translation) => !translation.notExists).length > 0}
                     {#each data.translations[pluginId].filter((translation) => !translation.notExists) as translation, index (translation)}
                       <TranslationRow
-                        translation="{translation}"
-                        pluginId="{pluginId}"
-                        on:customInputChange="{handleCustomInputChange}"
-                        on:deleteClick="{handleOnDeleteClick}" />
+                        translation={translation}
+                        pluginId={pluginId}
+                        on:customInputChange={handleCustomInputChange}
+                        on:deleteClick={handleOnDeleteClick} />
                     {/each}
                   {/if}
                 </div>
@@ -170,19 +168,19 @@
               <div class="accordion-body">
                 {#if data.translations.filter((translation) => translation.notExists).length > 0}
                   <UnnecessaryTranslationsAlert
-                    translations="{data.translations.filter(
+                    translations={data.translations.filter(
                       (translation) => translation.notExists,
-                    )}"
-                    on:customInputChange="{handleCustomInputChange}"
-                    on:deleteClick="{handleOnDeleteClick}"
-                    open="{data.filter === FilterTypes.NOT_EXISTS}" />
+                    )}
+                    on:customInputChange={handleCustomInputChange}
+                    on:deleteClick={handleOnDeleteClick}
+                    open={data.filter === FilterTypes.NOT_EXISTS} />
                 {/if}
                 {#if data.translations.filter((translation) => !translation.notExists).length > 0}
                   {#each data.translations.filter((translation) => !translation.notExists) as translation, index (translation)}
                     <TranslationRow
-                      translation="{translation}"
-                      on:customInputChange="{handleCustomInputChange}"
-                      on:deleteClick="{handleOnDeleteClick}" />
+                      translation={translation}
+                      on:customInputChange={handleCustomInputChange}
+                      on:deleteClick={handleOnDeleteClick} />
                   {/each}
                 {:else if data.translations.filter((translation) => translation.notExists).length === 0}
                   <NoContent />
@@ -361,8 +359,9 @@
     return buildQueryParams({
       locale: locale === $currentLanguage.code ? null : locale,
       type: type === PageTypes.PANEL ? null : type,
-      filter: type === data.type ? filter === DefaultFilter ? null : filter : null
-    })
+      filter:
+        type === data.type ? (filter === DefaultFilter ? null : filter) : null,
+    });
   }
 
   function handleCustomInputChange(event) {

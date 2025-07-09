@@ -1,94 +1,89 @@
-<!-- Player Detail Page -->
-<div class="container">
+<div class="container vstack gap-3">
   <!-- Action Menu -->
-  <div
-    class="row justify-content-between mb-3 animate__animated animate__slideInUp">
-    <div class="col-auto">
-      {#if hasPermission(Permissions.MANAGE_PLAYERS)}
-        <a class="btn btn-link" role="button" href="{base}/players">
-          <i class="fas fa-arrow-left me-2"></i>
-          {$_("pages.player-detail.players")}
-        </a>
-      {/if}
-    </div>
-    <div class="col-auto">
+  <PageActions>
+    <!-- Submenu -->
+    <CardMenu slot="middle">
+      <CardMenuItem href="/players">
+        {$_("buttons.players")}</CardMenuItem>
+      <CardMenuItem href="/players/perm-groups">
+        {$_("pages.players.perm-groups")}</CardMenuItem>
+    </CardMenu>
+
+    <div slot="right">
       {#if hasPermission(Permissions.MANAGE_PLAYERS)}
         <button
           class="btn btn-link link-danger"
-          use:tooltip="{[
-            $_('buttons.delete'),
-            { placement: 'bottom' },
-          ]}"
-          on:click="{() => showConfirmDeletePlayerModal(data.player)}"
-          class:disabled="{$user.username === data.player.username ||
-            (data.player.permissionGroup === 'admin' && !$user.admin)}">
+          use:tooltip={[$_("buttons.delete"), { placement: "bottom" }]}
+          on:click={() => showConfirmDeletePlayerModal(data.player)}
+          class:disabled={$user.username === data.player.username ||
+            (data.player.permissionGroup === "admin" && !$user.admin)}>
           <i class="fas fa-trash"></i>
         </button>
         {#if data.player.isBanned}
           <button
             class="btn btn-link link-danger"
-            use:tooltip="{[
-              $_('pages.player-detail.un-ban'),
-              { placement: 'bottom' },
-            ]}"
-            on:click="{() => showUnbanPlayerModal(data.player)}"
-            class:disabled="{$user.username === data.player.username ||
-              (data.player.permissionGroup === 'admin' && !$user.admin)}">
+            use:tooltip={[
+              $_("pages.player-detail.un-ban"),
+              { placement: "bottom" },
+            ]}
+            on:click={() => showUnbanPlayerModal(data.player)}
+            class:disabled={$user.username === data.player.username ||
+              (data.player.permissionGroup === "admin" && !$user.admin)}>
             <i class="fas fa-gavel"></i>
           </button>
         {:else}
           <button
             class="btn btn-link link-danger"
-            use:tooltip="{[
-              $_('pages.player-detail.ban'),
-              { placement: 'bottom' },
-            ]}"
-            on:click="{() => showConfirmBanPlayerModal(data.player)}"
-            class:disabled="{$user.username === data.player.username ||
-              (data.player.permissionGroup === 'admin' && !$user.admin)}">
+            use:tooltip={[
+              $_("pages.player-detail.ban"),
+              { placement: "bottom" },
+            ]}
+            on:click={() => showConfirmBanPlayerModal(data.player)}
+            class:disabled={$user.username === data.player.username ||
+              (data.player.permissionGroup === "admin" && !$user.admin)}>
             <i class="fas fa-gavel"></i>
           </button>
         {/if}
         {#if !data.player.isEmailVerified}
           <button
             class="btn btn-link"
-            use:tooltip="{[
-              $_('pages.player-detail.send-verification-mail'),
-              { placement: 'bottom' },
-            ]}"
-            on:click="{sendVerification}"
-            class:disabled="{sendingVerificationMail ||
+            use:tooltip={[
+              $_("pages.player-detail.send-verification-mail"),
+              { placement: "bottom" },
+            ]}
+            on:click={sendVerification}
+            class:disabled={sendingVerificationMail ||
               $user.username === data.player.username ||
-              (data.player.permissionGroup === 'admin' && !$user.admin) ||
-              !$siteInfo.emailEnabled}">
+              (data.player.permissionGroup === "admin" && !$user.admin) ||
+              !$siteInfo.emailEnabled}>
             <i class="fas fa-envelope"></i>
           </button>
         {/if}
 
         <button
           class="btn btn-link"
-          use:tooltip="{[
-            $_('pages.player-detail.authorize'),
-            { placement: 'bottom' },
-          ]}"
-          on:click="{() => showAuthorizePlayerModal(data.player)}"
-          class:disabled="{$user.username === data.player.username ||
-            (data.player.permissionGroup === 'admin' && !$user.admin)}">
+          use:tooltip={[
+            $_("pages.player-detail.authorize"),
+            { placement: "bottom" },
+          ]}
+          on:click={() => showAuthorizePlayerModal(data.player)}
+          class:disabled={$user.username === data.player.username ||
+            (data.player.permissionGroup === "admin" && !$user.admin)}>
           <i class="fas fa-user-circle"></i>
         </button>
       {/if}
       {#if hasPermission(Permissions.MANAGE_PLAYERS) || $user.username === data.player.username}
         <button
           class="btn btn-primary"
-          on:click="{() => showEditPlayerModal(data.player)}"
-          class:disabled="{data.player.permissionGroup === 'admin' &&
-            !$user.admin}">
-          <i class="fas fa-pencil-alt me-2"></i>
-          {$_("buttons.edit")}
+          on:click={() => showEditPlayerModal(data.player)}
+          class:disabled={data.player.permissionGroup === "admin" &&
+            !$user.admin}>
+          <i class="fas fa-pencil-alt"></i>
+          <span class="d-xl-inline d-none ms-2"> {$_("buttons.edit")}</span>
         </button>
       {/if}
     </div>
-  </div>
+  </PageActions>
 
   <div class="row g-3">
     <div class="col-lg-3">
@@ -100,35 +95,35 @@
           class="card-body d-flex flex-column
           align-items-center vstack gap-3">
           <img
-            alt="{data.player.username}"
+            alt={data.player.username}
             class="rounded-circle animate__animated animate__zoomIn"
             width="88"
             height="88"
-            class:border="{isOnline}"
-            class:border-3="{isOnline}"
-            class:border-success="{isOnline}"
+            class:border={isOnline}
+            class:border-3={isOnline}
+            class:border-success={isOnline}
             src="https://minotar.net/avatar/{data.player.username}"
-            use:tooltip="{[
+            use:tooltip={[
               isOnline
-                ? $_('pages.player-detail.online-text', {
+                ? $_("pages.player-detail.online-text", {
                     values: {
                       whereOnline: data.player.inGame
-                        ? $_('pages.player-detail.in-game')
-                        : $_('pages.player-detail.in-website'),
+                        ? $_("pages.player-detail.in-game")
+                        : $_("pages.player-detail.in-website"),
                     },
                   })
                 : getOfflineRelativeDateText(
                     checkTime,
                     locales[$currentLanguage.dateFnsCode],
                   ),
-              { placement: 'bottom' },
-            ]}" />
+              { placement: "bottom" },
+            ]} />
 
           {#if data.player.isBanned}
             <div class="text-danger">{$_("pages.player-detail.banned")}</div>
           {:else}
             <PlayerPermissionBadge
-              permissionGroup="{data.player.permissionGroup}" />
+              permissionGroup={data.player.permissionGroup} />
           {/if}
         </div>
       </div>
@@ -152,12 +147,12 @@
                         <td class="align-middle text-nowrap">
                           <a
                             href="{base}/tickets/detail/{ticket.id}"
-                            title="{$_('buttons.view')}"
+                            title={$_("buttons.view")}
                             >#{ticket.id} {ticket.title}</a>
                         </td>
                         <td class="align-middle text-nowrap">
                           <a
-                            title="{$_('pages.player-detail.filter')}"
+                            title={$_("pages.player-detail.filter")}
                             href="{base}/tickets?categoryUrl={ticket.category
                               .url}">
                             {ticket.category.title === "-"
@@ -166,11 +161,11 @@
                           </a>
                         </td>
                         <td class="align-middle text-nowrap">
-                          <TicketStatusBadge status="{ticket.status}" />
+                          <TicketStatusBadge status={ticket.status} />
                         </td>
                         <td class="align-middle text-nowrap"
                           ><span
-                            ><DateComponent time="{ticket.lastUpdate}" /></span
+                            ><DateComponent time={ticket.lastUpdate} /></span
                           ></td>
                       </tr>
                     </tbody>
@@ -201,11 +196,11 @@
               </tr>
               <tr>
                 <td>{$_("pages.player-detail.last-entrance")}</td>
-                <td><DateComponent time="{data.player.lastLoginDate}" /></td>
+                <td><DateComponent time={data.player.lastLoginDate} /></td>
               </tr>
               <tr>
                 <td>{$_("pages.player-detail.register-date")}</td>
-                <td><DateComponent time="{data.player.registerDate}" /></td>
+                <td><DateComponent time={data.player.registerDate} /></td>
               </tr>
             </tbody>
           </table>
@@ -213,11 +208,11 @@
         <div class="card-footer">
           <!-- Pagination -->
           <Pagination
-            page="{data.page}"
-            totalPage="{data.ticketTotalPage}"
-            on:firstPageClick="{() => onPageClick(1)}"
-            on:lastPageClick="{() => onPageClick(data.ticketTotalPage)}"
-            on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
+            page={data.page}
+            totalPage={data.ticketTotalPage}
+            on:firstPageClick={() => onPageClick(1)}
+            on:lastPageClick={() => onPageClick(data.ticketTotalPage)}
+            on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
         </div>
       </div>
     </div>
@@ -303,6 +298,9 @@
 
   import NoContent from "$lib/component/NoContent.svelte";
   import PlayerPermissionBadge from "$lib/component/badges/PlayerPermissionBadge.svelte";
+  import PageActions from "$lib/component/PageActions.svelte";
+  import CardMenu from "$lib/component/CardMenu.svelte";
+  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
   export let data;
 

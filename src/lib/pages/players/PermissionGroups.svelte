@@ -2,6 +2,16 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
+    <!-- Submenu -->
+    <CardMenu slot="middle">
+      {#if !data.categoryUrl}
+        <CardMenuItem href="/players">
+          {$_("buttons.players")}</CardMenuItem>
+        <CardMenuItem href="/players/perm-groups" startsWith>
+          {$_("pages.players.perm-groups")}</CardMenuItem>
+      {/if}
+    </CardMenu>
+
     <a
       href="{base}/players/perm-groups/create"
       class="btn btn-secondary"
@@ -36,11 +46,11 @@
           <tbody>
             {#each data.permissionGroups as permissionGroup, index (permissionGroup)}
               <PermissionGroupRow
-                permissionGroup="{permissionGroup}"
-                on:deleteClick="{(event) =>
+                permissionGroup={permissionGroup}
+                on:deleteClick={(event) =>
                   onShowDeletePermissionGroupModalClick(
                     event.detail.permissionGroup,
-                  )}" />
+                  )} />
             {/each}
           </tbody>
         </table>
@@ -49,11 +59,11 @@
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination
-        page="{data.page}"
-        totalPage="{data.totalPage}"
-        on:firstPageClick="{() => onPageClick(1)}"
-        on:lastPageClick="{() => onPageClick(data.totalPage)}"
-        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
+        page={data.page}
+        totalPage={data.totalPage}
+        on:firstPageClick={() => onPageClick(1)}
+        on:lastPageClick={() => onPageClick(data.totalPage)}
+        on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
       <!-- Pagination End -->
     </div>
   </div>
@@ -116,6 +126,8 @@
   import PermissionGroupRow from "$lib/component/rows/PermissionGroupRow.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
   import CardHeader from "$lib/component/CardHeader.svelte";
+  import CardMenu from "$lib/component/CardMenu.svelte";
+  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
   export let data;
 

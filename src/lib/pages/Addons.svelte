@@ -19,40 +19,31 @@
 
   <!-- All Addons -->
   <div class="card">
-    <div class="card-header">
-      {data.plugins.length}
-      {data.pageType === PageTypes.ACTIVE
-        ? "Aktif"
-        : data.pageType === PageTypes.DISABLED
-          ? "Devre Dışı"
-          : "Yüklü"} Eklenti
-    </div>
+    <CardHeader>
+      <div slot="left">
+        {data.plugins.length}
+        {data.pageType === PageTypes.ACTIVE
+          ? "Aktif"
+          : data.pageType === PageTypes.DISABLED
+            ? "Devre Dışı"
+            : "Yüklü"} Eklenti
+      </div>
+      <!-- Filters -->
+      <CardFilters slot="right">
+        <CardFiltersItem
+          href="/addons"
+          active="{data.pageType === PageTypes.ALL}">Tümü</CardFiltersItem>
+        <CardFiltersItem
+          href="/addons?status=ACTIVE"
+          active="{data.pageType === PageTypes.ACTIVE}"
+          >Aktif</CardFiltersItem>
+        <CardFiltersItem
+          href="/addons?status=DISABLED"
+          active="{data.pageType === PageTypes.DISABLED}"
+          >Devre Dışı</CardFiltersItem>
+      </CardFilters>
+    </CardHeader>
     <div class="card-body">
-      <CardHeader>
-        <h5 class="card-title" slot="left">
-          {data.plugins.length}
-          {data.pageType === PageTypes.ACTIVE
-            ? "Aktif"
-            : data.pageType === PageTypes.DISABLED
-              ? "Devre Dışı"
-              : "Yüklü"} Eklenti
-        </h5>
-        <!-- Filters -->
-        <CardFilters slot="right">
-          <CardFiltersItem
-            href="/addons"
-            active="{data.pageType === PageTypes.ALL}">Tümü</CardFiltersItem>
-          <CardFiltersItem
-            href="/addons?status=ACTIVE"
-            active="{data.pageType === PageTypes.ACTIVE}"
-            >Aktif</CardFiltersItem>
-          <CardFiltersItem
-            href="/addons?status=DISABLED"
-            active="{data.pageType === PageTypes.DISABLED}"
-            >Devre Dışı</CardFiltersItem>
-        </CardFilters>
-      </CardHeader>
-
       <div class="row row-cols-xl-2 row-cols-1 g-3">
         {#if data.plugins.length === 0}
           <NoContent />

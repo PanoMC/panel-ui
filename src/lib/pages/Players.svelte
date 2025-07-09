@@ -2,19 +2,15 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <div slot="left">
-      {#if data.permissionGroup}
-        <a class="btn btn-link" role="button" href="{base}/players">
-          <i class="fas fa-arrow-left me-2"></i>
-          {$_("buttons.players")}
-        </a>
-      {:else if hasPermission(Permissions.MANAGE_PERMISSION_GROUPS)}
-        <a class="btn btn-link" role="button" href="{base}/players/perm-groups">
-          <i class="fas fa-user-circle me-2"></i>
-          {$_("pages.players.perm-groups")}
-        </a>
+    <!-- Submenu -->
+    <CardMenu slot="middle">
+      {#if !data.categoryUrl}
+        <CardMenuItem href="/players" startsWith>
+          {$_("buttons.players")}</CardMenuItem>
+        <CardMenuItem href="/players/perm-groups" startsWith>
+          {$_("pages.players.perm-groups")}</CardMenuItem>
       {/if}
-    </div>
+    </CardMenu>
   </PageActions>
 
   <!-- All Players -->
@@ -86,7 +82,7 @@
                 <th
                   class="align-middle text-nowrap"
                   scope="col"
-                  class:table-primary="{data.permissionGroup}"
+                  class:table-primary={data.permissionGroup}
                   >{$_("pages.players.table.perm-group")}</th>
                 <th class="align-middle text-nowrap" scope="col"
                   >{$_("pages.players.table.status")}</th>
@@ -99,16 +95,16 @@
             <tbody>
               {#each data.players as player, index (player)}
                 <PlayerRow
-                  player="{player}"
-                  checkTime="{checkTime}"
-                  on:showAuthorizePlayerModalClick="{(event) =>
-                    onShowAuthorizePlayerModalClick(event.detail.player)}"
-                  on:showEditPlayerModalClick="{(event) =>
-                    onShowEditPlayerModalClick(event.detail.player)}"
-                  on:showBanPlayerModalClick="{(event) =>
-                    showBanPlayerModalClick(event.detail.player)}"
-                  on:showUnbanPlayerModalClick="{(event) =>
-                    showUnbanPlayerModalClick(event.detail.player)}" />
+                  player={player}
+                  checkTime={checkTime}
+                  on:showAuthorizePlayerModalClick={(event) =>
+                    onShowAuthorizePlayerModalClick(event.detail.player)}
+                  on:showEditPlayerModalClick={(event) =>
+                    onShowEditPlayerModalClick(event.detail.player)}
+                  on:showBanPlayerModalClick={(event) =>
+                    showBanPlayerModalClick(event.detail.player)}
+                  on:showUnbanPlayerModalClick={(event) =>
+                    showUnbanPlayerModalClick(event.detail.player)} />
               {/each}
             </tbody>
           </table>
@@ -118,11 +114,11 @@
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination
-        page="{data.page}"
-        totalPage="{data.totalPage}"
-        on:firstPageClick="{() => onPageClick(1)}"
-        on:lastPageClick="{() => onPageClick(data.totalPage)}"
-        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
+        page={data.page}
+        totalPage={data.totalPage}
+        on:firstPageClick={() => onPageClick(1)}
+        on:lastPageClick={() => onPageClick(data.totalPage)}
+        on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
     </div>
   </div>
 </div>
@@ -223,6 +219,8 @@
   import CardHeader from "$lib/component/CardHeader.svelte";
   import CardFiltersItem from "$lib/component/CardFiltersItem.svelte";
   import CardFilters from "$lib/component/CardFilters.svelte";
+  import CardMenu from "$lib/component/CardMenu.svelte";
+  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
   export let data;
 

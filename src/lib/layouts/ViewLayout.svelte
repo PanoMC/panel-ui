@@ -1,21 +1,13 @@
-<!-- View Page -->
-
-<!-- View Page Contents -->
-<article class="container">
-  <!-- View Categories Navigation -->
-  <nav>
-    <CardMenu>
-      <CardMenuItem href="/view">
-        Temalar
-      </CardMenuItem>
-      <CardMenuItem href="/view/theme-options">
-        Tema Seçenekleri
-      </CardMenuItem>
+<div class="container vstack gap-3">
+  <PageActions>
+    <CardMenu slot="middle">
+      <CardMenuItem href="/view">Temalar</CardMenuItem>
+      <CardMenuItem href="/view/theme-options">Tema Seçenekleri</CardMenuItem>
     </CardMenu>
-  </nav>
+  </PageActions>
 
   <slot />
-</article>
+</div>
 
 <script context="module">
   import { redirect } from "@sveltejs/kit";
@@ -41,6 +33,7 @@
   import { page } from "$app/stores";
   import CardMenu from "$lib/component/CardMenu.svelte";
   import CardMenuItem from "$lib/component/CardMenuItem.svelte";
+  import PageActions from "$lib/component/PageActions.svelte";
 
   function matching(path, pathName, startsWith = false) {
     return (
