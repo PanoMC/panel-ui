@@ -40,10 +40,7 @@
   export function show(_activityLog) {
     activityLog.set({ ..._activityLog });
 
-    modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
-      keyboard: false,
-    });
+    modal = new window.bootstrap.Modal(get(modalElement));
 
     modal.show();
   }
