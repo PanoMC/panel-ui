@@ -1,24 +1,29 @@
 <article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <!-- Submenu -->
-    <CardMenu slot="middle">
-      <CardMenuItem href="/posts"
-        >{$_("pages.post-categories.posts")}</CardMenuItem>
-      <CardMenuItem href="/posts/categories"
-        >{$_("pages.posts.post-categories-button")}</CardMenuItem>
-    </CardMenu>
+    <a
+      href="{base}/posts{data.post.status === StatusTypes.TRASH
+        ? '?pageType=TRASH'
+        : data.post.status === StatusTypes.DRAFT
+          ? '?pageType=DRAFT'
+          : ''}"
+      class="btn btn-link"
+      role="button"
+      slot="left">
+      <i class="fas fa-arrow-left me-2"></i>
+      {$_("pages.post-editor.posts")}
+    </a>
 
     <div slot="right">
       {#if data.mode === Modes.EDIT}
         <button
           class="btn btn-link text-danger"
           type="button"
-          on:click="{showDeletePostModal(data.post)}"
-          use:tooltip="{[
-            $_('pages.post-editor.trash'),
-            { placement: 'bottom' },
-          ]}">
+          on:click={showDeletePostModal(data.post)}
+          use:tooltip={[
+            $_("pages.post-editor.trash"),
+            { placement: "bottom" },
+          ]}>
           <i class="fas fa-trash"></i>
         </button>
       {/if}
@@ -26,12 +31,12 @@
         <button
           class="btn btn-link"
           type="button"
-          class:disabled="{loading}"
-          on:click="{onDraftClick}"
-          use:tooltip="{[
-            $_('pages.post-editor.move-to-drafts'),
-            { placement: 'bottom' },
-          ]}">
+          class:disabled={loading}
+          on:click={onDraftClick}
+          use:tooltip={[
+            $_("pages.post-editor.move-to-drafts"),
+            { placement: "bottom" },
+          ]}>
           <i class="fa-solid fa-box-archive"></i>
         </button>
       {/if}
@@ -40,27 +45,27 @@
         role="button"
         target="_blank"
         href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{data.post.id}"
-        use:tooltip="{[$_('buttons.view'), { placement: 'bottom' }]}">
+        use:tooltip={[$_("buttons.view"), { placement: "bottom" }]}>
         <i class="fas fa-eye"></i>
       </a>
       {#if data.post.status !== StatusTypes.PUBLISHED}
         <button
           class="btn btn-primary"
           type="button"
-          class:disabled="{loading ||
+          class:disabled={loading ||
             isEditorEmpty ||
-            data.post.title.length === 0}"
-          on:click="{() => submit(false)}">
+            data.post.title.length === 0}
+          on:click={() => submit(false)}>
           {$_("buttons.save")}
         </button>
       {/if}
       <button
         class="btn btn-secondary"
         type="button"
-        class:disabled="{loading ||
+        class:disabled={loading ||
           isEditorEmpty ||
-          data.post.title.length === 0}"
-        on:click="{() => submit(true)}">
+          data.post.title.length === 0}
+        on:click={() => submit(true)}>
         {data.post.status === StatusTypes.PUBLISHED
           ? $_("pages.post-editor.update")
           : $_("pages.post-editor.publish")}
@@ -77,14 +82,14 @@
           <input
             class="form-control form-control-lg"
             type="text"
-            placeholder="{$_('pages.post-editor.inputs.title.placeholder')}"
-            bind:value="{data.post.title}" />
+            placeholder={$_("pages.post-editor.inputs.title.placeholder")}
+            bind:value={data.post.title} />
 
           <div class="align-self-center w-100 h-75">
             <!-- Editor -->
             <Editor
-              bind:content="{data.post.text}"
-              bind:isEmpty="{isEditorEmpty}" />
+              bind:content={data.post.text}
+              bind:isEmpty={isEditorEmpty} />
             <!-- Editor End -->
           </div>
         </div>
@@ -117,12 +122,12 @@
                 <form>
                   <select
                     class="form-control form-control-sm"
-                    bind:value="{data.post.category}">
-                    <option class="text-primary" value="{-1}"
+                    bind:value={data.post.category}>
+                    <option class="text-primary" value={-1}
                       >{$_("pages.post-editor.no-category")}</option>
 
                     {#each data.categories as category, index (category)}
-                      <option value="{category.id}">{category.title}</option>
+                      <option value={category.id}>{category.title}</option>
                     {/each}
                   </select>
                 </form>
@@ -135,40 +140,40 @@
                 {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
                   <button
                     class="btn btn-link link-danger"
-                    on:click="{onRemoveThumbnailClick}"
+                    on:click={onRemoveThumbnailClick}
                     >{$_("pages.post-editor.clear")}</button>
                 {:else}
                   <button
                     class="btn btn-sm btn-primary"
-                    on:click="{() => thumbnailInput.click()}"
+                    on:click={() => thumbnailInput.click()}
                     >{$_("pages.post-editor.add")}</button>
                 {/if}
               </div>
               {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
                 <a
                   href="javascript:void(0);"
-                  use:tooltip="{[
-                    $_('pages.post-editor.change'),
-                    { placement: 'bottom' },
-                  ]}"
-                  on:click="{() => thumbnailInput.click()}">
+                  use:tooltip={[
+                    $_("pages.post-editor.change"),
+                    { placement: "bottom" },
+                  ]}
+                  on:click={() => thumbnailInput.click()}>
                   <img
-                    src="{thumbnail || data.post.thumbnailUrl}"
+                    src={thumbnail || data.post.thumbnailUrl}
                     class="border rounded img-fluid"
-                    title="{$_('pages.post-editor.small-image')}"
-                    alt="{$_('pages.post-editor.small-image')}" /></a>
+                    title={$_("pages.post-editor.small-image")}
+                    alt={$_("pages.post-editor.small-image")} /></a>
               {:else}
                 <NoContent
                   icon="fas fa-image fa-3x"
-                  text="{$_('pages.post-editor.thumbnail-not-determined')}" />
+                  text={$_("pages.post-editor.thumbnail-not-determined")} />
               {/if}
               <input
                 class="d-none"
                 type="file"
                 id="uploadPostThumbnailInput"
-                bind:files="{thumbnailFiles}"
-                on:change="{onThumbnailChange}"
-                bind:this="{thumbnailInput}" />
+                bind:files={thumbnailFiles}
+                on:change={onThumbnailChange}
+                bind:this={thumbnailInput} />
             </li>
           </ul>
         </div>
@@ -345,13 +350,13 @@
         }
 
         if (publish) {
-          const title = limitTitle(data.post.title)
+          const title = limitTitle(data.post.title);
 
           showToast("components.toasts.post-published", {
             title,
           });
         } else {
-          const title = limitTitle(data.post.title)
+          const title = limitTitle(data.post.title);
 
           showToast("components.toasts.post-saved", {
             title,

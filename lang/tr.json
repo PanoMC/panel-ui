@@ -341,7 +341,7 @@
     "permission-group-detail": {
       "title-edit": "Yetki Grubunu Düzenle",
       "title-create": "Yetki Grubu Oluştur",
-      "permission-groups": "Yetkiler",
+      "permission-groups": "Yetki Grupları",
       "inputs": {
         "name": {
           "placeholder": "İsim"

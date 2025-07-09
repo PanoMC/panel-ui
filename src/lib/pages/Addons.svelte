@@ -2,19 +2,14 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <a class="btn btn-link" role="button" href="/addons/categories" slot="left">
-      <i class="fas fa-puzzle-piece me-2"></i>
-      Eklenti Kategorileri
-    </a>
-    <a
-      href="javascript:void(0);"
-      class="btn btn-secondary ml-auto"
-      role="button"
+    <button
       slot="right"
-      on:click="{showAddPluginModal}">
+      type="button"
+      class="btn btn-secondary ml-auto"
+      on:click={showAddPluginModal}>
       <i class="fas fa-plus me-2"></i>
       Eklenti Yükle
-    </a>
+    </button>
   </PageActions>
 
   <!-- All Addons -->
@@ -30,16 +25,14 @@
       </div>
       <!-- Filters -->
       <CardFilters slot="right">
-        <CardFiltersItem
-          href="/addons"
-          active="{data.pageType === PageTypes.ALL}">Tümü</CardFiltersItem>
+        <CardFiltersItem href="/addons" active={data.pageType === PageTypes.ALL}
+          >Tümü</CardFiltersItem>
         <CardFiltersItem
           href="/addons?status=ACTIVE"
-          active="{data.pageType === PageTypes.ACTIVE}"
-          >Aktif</CardFiltersItem>
+          active={data.pageType === PageTypes.ACTIVE}>Aktif</CardFiltersItem>
         <CardFiltersItem
           href="/addons?status=DISABLED"
-          active="{data.pageType === PageTypes.DISABLED}"
+          active={data.pageType === PageTypes.DISABLED}
           >Devre Dışı</CardFiltersItem>
       </CardFilters>
     </CardHeader>
@@ -65,7 +58,7 @@
                         width="82"
                         src="{API_URL}/panel/plugins/{plugin.id}/logo"
                         class="bg-light animate__animated animate__zoomIn"
-                        alt="{plugin.id}" />
+                        alt={plugin.id} />
                     </a>
                   </div>
                   <div class="col">
@@ -82,12 +75,12 @@
                             type="checkbox"
                             role="switch"
                             id="addonStatusSwitch"
-                            checked="{plugin.status === 'STARTED'}"
-                            disabled="{plugin.loading}"
-                            on:click="{(e) => {
+                            checked={plugin.status === "STARTED"}
+                            disabled={plugin.loading}
+                            on:click={(e) => {
                               e.preventDefault();
                               onTogglePluginStateClick(plugin);
-                            }}" />
+                            }} />
                         </div>
                       </div>
                       {#if plugin.status === "FAILED"}
@@ -100,7 +93,7 @@
                             data-bs-trigger="focus"
                             data-bs-custom-class="font-monospace"
                             data-bs-title="Error Log"
-                            data-bs-content="{plugin.error}">
+                            data-bs-content={plugin.error}>
                             <i class="fa-solid fa-circle-exclamation fa-1x"></i>
                           </a>
                         </div>
@@ -123,7 +116,7 @@
                       {#if plugin.sourceUrl}
                         <div class="vr mx-2"></div>
                         <a
-                          href="{plugin.sourceUrl}"
+                          href={plugin.sourceUrl}
                           target="_blank"
                           title="Kaynak Adresi"
                           class="card-link">
@@ -140,19 +133,19 @@
                       {#if plugin.verifyStatus === "VERIFIED"}
                         <span
                           class="text-success"
-                          use:tooltip="{[
-                            'Verified by Pano',
-                            { placement: 'bottom' },
-                          ]}">
+                          use:tooltip={[
+                            "Verified by Pano",
+                            { placement: "bottom" },
+                          ]}>
                           <i class="fa-regular fa-circle-check me-1"></i>
                         </span>
                       {:else if plugin.verifyStatus === "NOT_VERIFIED"}
                         <span
                           class="text-warning"
-                          use:tooltip="{[
-                            'Not verified by Pano, use at your own risk!',
-                            { placement: 'bottom' },
-                          ]}">
+                          use:tooltip={[
+                            "Not verified by Pano, use at your own risk!",
+                            { placement: "bottom" },
+                          ]}>
                           <i class="fa-solid fa-circle-exclamation me-1"></i>
                         </span>
                       {/if}
@@ -187,7 +180,10 @@
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent, url: { searchParams } } = event;
+    const {
+      parent,
+      url: { searchParams },
+    } = event;
     await parent();
 
     const status = searchParams.get("status") || DefaultPageType;
@@ -196,7 +192,7 @@
       throw error(404, "PAGE_NOT_FOUND");
     }
 
-    const queryParams = buildQueryParams({status})
+    const queryParams = buildQueryParams({ status });
     const body = await ApiUtil.get({
       path: `/api/panel/plugins` + queryParams,
       request: event,
@@ -206,7 +202,7 @@
       throw error(500, body);
     }
 
-    body.pageType = status
+    body.pageType = status;
 
     return body;
   }

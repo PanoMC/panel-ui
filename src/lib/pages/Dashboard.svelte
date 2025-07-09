@@ -162,18 +162,17 @@
     <div class="col-lg-6">
       <div class="card">
         <CardHeader>
+          <div slot="left">
+            {$_("pages.dashboard.logs.title")}
+          </div>
           <div slot="right">
             {#if data.activityLogs.meta.totalCount > 10}
-              <a href="{base}/logs" class="btn btn-link d-inline w-100"
+              <a href="{base}/logs" class="btn btn-sm btn-outline-primary"
                 >{$_("buttons.show-all")} ({data.activityLogs.meta
                   .totalCount})</a>
             {/if}
           </div>
         </CardHeader>
-        <div class="card-header">
-          {$_("pages.dashboard.logs.title")}
-          <!-- <a slot="right" href="{base}/logs">Show All</a> -->
-        </div>
         <div class="card-body">
           <ul class="list-group mb-0">
             {#each data.activityLogs.data as log, index (log)}
@@ -235,7 +234,7 @@
     show as showViewActivityLogModal,
     onHide as onViewActivityLogModalHide,
   } from "$lib/component/modals/ViewActivityLogModal.svelte";
-    import CardHeader from "$lib/component/CardHeader.svelte";
+  import CardHeader from "$lib/component/CardHeader.svelte";
 
   export let data;
 

@@ -1,13 +1,14 @@
 <article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <!-- Submenu -->
-    <CardMenu slot="middle">
-      <CardMenuItem href="/players">
-        {$_("buttons.players")}</CardMenuItem>
-      <CardMenuItem href="/players/perm-groups">
-        {$_("pages.players.perm-groups")}</CardMenuItem>
-    </CardMenu>
+    <a
+      slot="left"
+      class="btn btn-link"
+      role="button"
+      href="{base}/players/perm-groups">
+      <i class="fas fa-arrow-left me-2"></i>
+      {$_("pages.permission-group-detail.permission-groups")}
+    </a>
 
     <button
       slot="right"

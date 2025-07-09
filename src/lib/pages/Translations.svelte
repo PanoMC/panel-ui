@@ -2,7 +2,7 @@
   <!-- Action Menu -->
   <PageActions>
     <!-- Submenu -->
-    <CardMenu slot="left">
+    <CardMenu slot="middle">
       <CardMenuItem href="/translations"
         >{$_("pages.translations.title")}</CardMenuItem>
       <CardMenuItem href="/translations/languages">
@@ -10,7 +10,7 @@
     </CardMenu>
 
     <!-- Submenu -->
-    <CardMenu slot="middle">
+    <!-- <CardMenu slot="left">
       <CardMenuItem
         href="/translations{getQueryParams(
           PageTypes.PANEL,
@@ -35,7 +35,7 @@
         )}"
         active={data.type === PageTypes.PLUGIN}
         >{$_("buttons.addons")}</CardMenuItem>
-    </CardMenu>
+    </CardMenu> -->
 
     <div slot="right" class="hstack gap-2">
       {#if refreshing || saving}
@@ -45,16 +45,29 @@
             role="status"></span>
         </div>
       {/if}
-      <select
-        class="form-select"
-        name="selectLanguage"
-        id="selectLanguage"
-        bind:value={data.locale}
-        on:change={refreshData}>
-        {#each data.locales as locale, index (locale)}
-          <option selected value={locale.code}>{locale.name}</option>
-        {/each}
-      </select>
+      <div class="input-group">
+        <select
+          class="form-select"
+          name="selectType"
+          id="selectType"
+          bind:value={data.type}
+          on:change={refreshData}>
+          {#each Object.keys(PageTypes) as pageType, index (pageType)}
+            <option selected value={pageType}
+              >{$_("buttons." + pageType.toLowerCase())}</option>
+          {/each}
+        </select>
+        <select
+          class="form-select"
+          name="selectLanguage"
+          id="selectLanguage"
+          bind:value={data.locale}
+          on:change={refreshData}>
+          {#each data.locales as locale, index (locale)}
+            <option selected value={locale.code}>{locale.name}</option>
+          {/each}
+        </select>
+      </div>
       <button
         type="button"
         class="btn btn-secondary"

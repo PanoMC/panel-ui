@@ -2,6 +2,14 @@
 <article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
+    <!-- Submenu -->
+    <CardMenu slot="middle">
+      <CardMenuItem href="/translations"
+        >{$_("pages.translations.title")}</CardMenuItem>
+      <CardMenuItem href="/translations/languages">
+        {$_("buttons.languages")}</CardMenuItem>
+    </CardMenu>
+
     <button
       class="btn btn-secondary"
       type="button"
@@ -133,6 +141,8 @@
   import PageActions from "$lib/component/PageActions.svelte";
   import CardHeader from "$lib/component/CardHeader.svelte";
   import LocaleRow from "$lib/component/rows/LocaleRow.svelte";
+  import CardMenu from "$lib/component/CardMenu.svelte";
+  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
   export let data;
 
