@@ -1,11 +1,4 @@
 <div class="container vstack gap-3">
-  <PageActions>
-    <CardMenu slot="middle">
-      <CardMenuItem href="/view">Temalar</CardMenuItem>
-      <CardMenuItem href="/view/theme-options">Tema Seçenekleri</CardMenuItem>
-    </CardMenu>
-  </PageActions>
-
   <slot />
 </div>
 
