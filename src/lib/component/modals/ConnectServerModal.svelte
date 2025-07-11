@@ -3,7 +3,7 @@
   aria-hidden="true"
   class="modal modal fade"
   id="connectServer"
-  role="document"
+  role="dialog"
   tabindex="-1">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -14,60 +14,33 @@
         <button
           class="btn-close"
           data-bs-dismiss="modal"
-          title="{$_('buttons.close')}"
+          title={$_("buttons.close")}
           type="button">
         </button>
       </div>
       <div class="modal-body">
-        <ol class="list-group list-group-numbered">
-          <div class="list-group-item">
-            {$_("components.modals.connect-server.steps.1")}
-            <br />
-            <small class="text-muted"
-              >Paper 1.20, Spigot 1.20, Velocity, 1.2, Bungeecord 1.2
-            </small>
-            <a
-              class="btn btn-secondary mt-2 d-block shadow-none"
-              href="{PANO_WEBSITE_URL}/download/plugin/mc{PRERELEASE
-                ? '?type=prerelease'
-                : ''}"
-              target="_blank">{$_("buttons.download")}</a>
-          </div>
-
-          <div class="list-group-item">
-            {$_("components.modals.connect-server.steps.2")}
-            <br />
-            <small class="text-muted">
-              {$_("components.modals.connect-server.code-refresh", {
-                values: { timeToRefreshKey },
-              })}
-            </small>
-            <div class="input-group">
-              <input type="text" class="form-control" value="{commandText}" />
-              <button
-                class="btn btn-link border"
-                type="button"
-                id="button-addon2"
-                on:click="{onCopyCommandTextClick}"
-                use:tooltip="{[
-                  isCommandTextCopied
-                    ? $_('components.modals.connect-server.copied')
-                    : $_('components.modals.connect-server.copy'),
-                  { placement: 'bottom', hideOnClick: false },
-                ]}">
-                <i class="fa-regular fa-clipboard"></i>
-              </button>
-            </div>
-          </div>
-
-          <div class="list-group-item">
-            {$_("components.modals.connect-server.steps.3")}
-            <br />
-            <small class="text-muted">
-              {$_("components.modals.connect-server.notification-will-come")}
-            </small>
-          </div>
-        </ol>
+        {$_("components.modals.connect-server.run-connection-command-on-gameserver")}
+        <div class="input-group">
+          <input type="text" class="form-control" value={commandText} />
+          <button
+            class="btn btn-link border"
+            type="button"
+            id="button-addon2"
+            on:click={onCopyCommandTextClick}
+            use:tooltip={[
+              isCommandTextCopied
+                ? $_("components.modals.connect-server.copied")
+                : $_("components.modals.connect-server.copy"),
+              { placement: "bottom", hideOnClick: false },
+            ]}>
+            <i class="fa-regular fa-clipboard"></i>
+          </button>
+        </div>
+        <small class="text-muted">
+          {$_("components.modals.connect-server.code-refresh", {
+            values: { timeToRefreshKey },
+          })}
+        </small>
       </div>
     </div>
   </div>

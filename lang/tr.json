@@ -575,16 +575,10 @@
       },
       "connect-server": {
         "title": "Sunucu Bağla",
-        "steps": {
-          "1": "Oyun Eklentisini Sunucuna Kur",
-          "2": "Bağlantı Komutunu Çalıştır",
-          "3": "Bağlantı İsteğini Onayla"
-        },
-        "download": "Dosyayı İndir",
         "copy": "Kopyala",
-        "copied": "Kopyalandı!",
+      "copied": "Kopyalandı!",
         "code-refresh": "Kod {timeToRefreshKey} saniye sonra yenilenecek.",
-        "notification-will-come": "Bağlantı isteği bildirim olarak gelecek."
+        "run-connection-command-on-gameserver": "Bağlantı komutunu oyun sunucunda çalıştır:"
       },
       "make-main-server": {
         "title": "\"{serverName}\" sunucusunu ana sunucu yapmak istediğinizden emin misiniz?"
