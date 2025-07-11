@@ -79,10 +79,7 @@
           <label
             for={permission.name}
             class="list-group-item list-group-item-action d-flex justify-content-between align-items-center pe-auto"
-            use:tooltip={[
-              $_(`permissions.${permission.name}.description`),
-              { placement: "right" },
-            ]}>
+            use:tooltip={[$_(`permissions.${permission.name}.description`)]}>
             <!--              TODO: Icon system-->
             <!--              <Icon-->
             <!--                data="{icon[convertIconName(permission.iconName)]}"-->
@@ -98,7 +95,8 @@
                 checked={isPermissionChecked(permission)}
                 on:click={() => onPermissionClick(permission)}
                 disabled={isPermissionDisabled()} />
-            </div></label>
+            </div>
+          </label>
         {/each}
       </div>
     </div>
