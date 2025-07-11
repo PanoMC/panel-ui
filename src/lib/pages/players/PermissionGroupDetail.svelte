@@ -1,4 +1,4 @@
-<article class="container vstack gap-3">
+<div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
     <a
@@ -74,47 +74,36 @@
       </div>
     </div>
     <div class="col-xl-4">
-      <div class="card">
-        <div class="card-body">
-          <table class="table table-sm table-hover mb-0">
-            <tbody>
-              {#each data.permissionList as permission, index (permission)}
-                <tr>
-                  <th
-                    scope="col"
-                    use:tooltip={[
-                      $_(`permissions.${permission.name}.description`),
-                      { placement: "right" },
-                    ]}>
-                    <!--              TODO: Icon system-->
-                    <!--              <Icon-->
-                    <!--                data="{icon[convertIconName(permission.iconName)]}"-->
-                    <!--                class="text-primary d-block m-auto" />-->
-                    <small class="mb-0">
-                      {$_(`permissions.${permission.name}.title`)}
-                    </small>
-                  </th>
-                  <td>
-                    <div
-                      class="form-check form-switch d-flex justify-content-end align-content-center">
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id={permission.name}
-                        checked={isPermissionChecked(permission)}
-                        on:click={() => onPermissionClick(permission)}
-                        disabled={isPermissionDisabled()} />
-                    </div>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
+      <div class="list-group">
+        {#each data.permissionList as permission, index (permission)}
+          <label
+            for={permission.name}
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center pe-auto"
+            use:tooltip={[
+              $_(`permissions.${permission.name}.description`),
+              { placement: "right" },
+            ]}>
+            <!--              TODO: Icon system-->
+            <!--              <Icon-->
+            <!--                data="{icon[convertIconName(permission.iconName)]}"-->
+            <!--                class="text-primary d-block m-auto" />-->
+
+            {$_(`permissions.${permission.name}.title`)}
+
+            <div class="form-check form-switch">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id={permission.name}
+                checked={isPermissionChecked(permission)}
+                on:click={() => onPermissionClick(permission)}
+                disabled={isPermissionDisabled()} />
+            </div></label>
+        {/each}
       </div>
     </div>
   </div>
-</article>
+</div>
 
 <script context="module">
   import ApiUtil from "$lib/api.util.js";
