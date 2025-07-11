@@ -3,11 +3,11 @@
 </svelte:head>
 
 <App>
-  {#if showSplash}
+  {#if $showSplash}
     <Splash />
   {/if}
 
-  <div class:d-flex="{!showSplash}" hidden="{showSplash}">
+  <div class:d-flex="{!$showSplash}" hidden="{$showSplash}">
     <Sidebar />
     <!--  Main  -->
     <main class="w-100 min-vh-100 overflow-scroll">
@@ -182,6 +182,7 @@
   const selectedServer = writable(data.selectedServer);
   const connectedServerCount = writable(data.connectedServerCount);
   const siteInfo = writable(data.siteInfo);
+  const showSplash = writable(true);
 
   const pageTitle = writable(null);
 
@@ -229,7 +230,6 @@
     ? `${$_($pageTitle)} \u2014 ${options.DEFAULT_PAGE_TITLE}`
     : options.DEFAULT_PAGE_TITLE;
 
-  let showSplash = true;
   let showSplashAlways = false;
   let showLoading = false;
   let waitAnimation = false;
@@ -256,7 +256,7 @@
       !get(logoutLoading) &&
       mounted
     ) {
-      showSplash = false;
+      $showSplash = false;
     }
   }, 1500);
 
@@ -271,23 +271,23 @@
       !get(logoutLoading) &&
       !waitAnimation
     ) {
-      showSplash = false;
+      $showSplash = false;
     }
   });
 
   onDestroy(
     networkErrorCallbacks.subscribe((value) => {
-      if (!showSplash && value.length !== 0) {
-        showSplash = true;
+      if (!$showSplash && value.length !== 0) {
+        $showSplash = true;
       } else if (
-        showSplash &&
+        $showSplash &&
         value.length === 0 &&
         !waitAnimation &&
         !get(logoutLoading) &&
         !showSplashAlways &&
         mounted
       ) {
-        showSplash = false;
+        $showSplash = false;
       }
     }),
   );
