@@ -4,7 +4,7 @@
     data-bs-theme="dark">
     <div class="card-body vstack gap-3 text-center">
       <span class="{icon}"></span>
-      <p>{text}</p>
+      <p class="mb-0">{text}</p>
     </div>
   </div>
 {:else}
@@ -12,7 +12,7 @@
     class="card border-0 opacity-50 bg-transparent animate__animated animate__zoomIn">
     <div class="card-body vstack gap-3 text-center">
       <span class="{icon}"></span>
-      <p>{text}</p>
+      <p class="mb-0">{text}</p>
     </div>
   </div>
 {/if}

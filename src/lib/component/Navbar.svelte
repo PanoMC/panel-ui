@@ -1,15 +1,15 @@
 <!-- Navbar -->
-<nav class="navbar navbar-expand navbar-light border-bottom border-2 mb-3 mx-2">
+<nav class="navbar navbar-expand navbar-light">
   <div class="container">
     <div class="col-4 d-flex justify-content-start">
       <!-- Navbar Toggler -->
       <div class="navbar-nav">
         <button
           class="navbar-toggler d-inline-block"
-          class:invisible="{$isSidebarOpen}"
+          class:invisible={$isSidebarOpen}
           type="button"
-          title="{$_('components.navbar.navbar-toggle-tooltip')}"
-          on:click="{onSideBarCollapseClick}">
+          title={$_("components.navbar.navbar-toggle-tooltip")}
+          on:click={onSideBarCollapseClick}>
           <i class="fa-solid fa-bars"></i>
         </button>
       </div>
@@ -29,7 +29,7 @@
             class="nav-link"
             data-bs-toggle="dropdown"
             tpye="button"
-            title="{$_('components.navbar.notifications')}">
+            title={$_("components.navbar.notifications")}>
             <i class="fa-regular fa-bell"></i>
             {#if $notificationCount !== 0}
               <span
@@ -40,7 +40,8 @@
           </button>
 
           <div
-            class="dropdown-menu position-absolute dropdown-menu-end animate__animated animate__zoomIn">
+            style="max-width: 300px;"
+            class="dropdown-menu dropdown-menu-end animate__animated animate__zoomIn">
             <h6 class="dropdown-header">
               {$_("components.navbar.notifications")}
               {$notificationCount === 0 ? "" : "(" + $notificationCount + ")"}
@@ -52,10 +53,10 @@
               {#each $quickNotifications as notification, index (notification)}
                 <button
                   type="button"
-                  on:click="{() => onNotificationClick(notification)}"
+                  on:click={() => onNotificationClick(notification)}
                   class="dropdown-item d-flex align-items-center"
-                  class:notification-unread="{notification.status ===
-                    'NOT_READ'}">
+                  class:notification-unread={notification.status ===
+                    "NOT_READ"}>
                   <img
                     src="https://minotar.net/avatar/Username"
                     width="32"
@@ -80,13 +81,13 @@
             type="button"
             class="nav-link"
             data-bs-toggle="dropdown"
-            title="{$_('components.navbar.account-dropdown.session')}">
+            title={$_("components.navbar.account-dropdown.session")}>
             <img
               src="https://minotar.net/avatar/{$user.username}"
               width="20"
               height="20"
               class="rounded-circle animate__animated animate__zoomIn"
-              alt="{$user.username}" />
+              alt={$user.username} />
           </button>
           <ul
             class="dropdown-menu dropdown-menu-end animate__animated animate__zoomIn">
@@ -99,7 +100,9 @@
               </a>
             </li>
             <li class="dropdown-item bg-transparent">
-              <button class="btn btn-sm btn-outline-danger w-100" on:click="{onLogout}">
+              <button
+                class="btn btn-sm btn-outline-danger w-100"
+                on:click={onLogout}>
                 {$_("components.navbar.account-dropdown.logout")}</button>
             </li>
           </ul>
@@ -148,8 +151,8 @@
       path: "/api/auth/logout",
       handler: () => {
         window.location.href = "/";
-      }}
-    )
+      },
+    });
   }
 
   function markQuickNotificationsAsRead(id) {
@@ -157,7 +160,7 @@
       path: "/api/panel/notifications/quick/markAsRead",
       handler: (body, reject) => {
         if (quickNotificationProcessID !== id) {
-          return
+          return;
         }
 
         if (body.result === "ok") {
@@ -169,8 +172,8 @@
             startMarkQuickNotificationsAsReadCountDown();
           }
         }, 1000);
-      }
-    })
+      },
+    });
   }
 
   function startMarkQuickNotificationsAsReadCountDown() {
