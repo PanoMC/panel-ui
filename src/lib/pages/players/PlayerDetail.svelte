@@ -2,14 +2,12 @@
   <!-- Action Menu -->
   <PageActions>
     <!-- Submenu -->
-    <CardMenu slot="middle">
-      <CardMenuItem href="/players">
-        {$_("buttons.players")}</CardMenuItem>
-      <CardMenuItem href="/players/perm-groups">
-        {$_("pages.players.perm-groups")}</CardMenuItem>
-    </CardMenu>
+    <a slot="left" class="btn btn-link" role="button" href="{base}/players">
+      <i class="fas fa-arrow-left me-2"></i>
+      {$_("buttons.players")}
+    </a>
 
-    <div slot="right">
+    <div class="hstack gap-2" slot="right">
       {#if hasPermission(Permissions.MANAGE_PLAYERS)}
         <button
           class="btn btn-link link-danger"

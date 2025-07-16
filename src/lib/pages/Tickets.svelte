@@ -20,25 +20,26 @@
       {/if}
     </CardMenu>
     <div
-      class:d-none="{firstLoad}"
-      class="animate__animated animate__faster {getListOfChecked($checkedList)
-        .length > 0
+      class:d-none={firstLoad}
+      class="hstack gap-2 animate__animated animate__faster {getListOfChecked(
+        $checkedList,
+      ).length > 0
         ? 'animate__slideInUp'
         : 'animate__slideOutDown'}
     faster"
       slot="right">
       <button
         class="btn btn-link link-danger"
-        class:disabled="{getListOfChecked($checkedList).length === 0}"
+        class:disabled={getListOfChecked($checkedList).length === 0}
         type="button"
-        on:click="{onShowDeleteTicketsModalClick}">
+        on:click={onShowDeleteTicketsModalClick}>
         <i class="fas fa-trash"></i>
       </button>
       <button
         class="btn btn-danger"
-        class:disabled="{getListOfChecked($checkedList).length === 0}"
+        class:disabled={getListOfChecked($checkedList).length === 0}
         type="button"
-        on:click="{onShowCloseTicketsModalClick}">
+        on:click={onShowCloseTicketsModalClick}>
         <i class="fas fa-times me-2"></i>
         {$_("buttons.close")}
       </button>
@@ -73,22 +74,23 @@
         {#if !data.categoryUrl}
           <CardFiltersItem
             href="/tickets"
-            active="{data.pageType === PageTypes.ALL}">
+            active={data.pageType === PageTypes.ALL}>
             {$_("pages.tickets.all")}
           </CardFiltersItem>
           <CardFiltersItem
             href="/tickets?pageType=WAITING_REPLY"
-            active="{data.pageType === PageTypes.WAITING_REPLY}">
+            active={data.pageType === PageTypes.WAITING_REPLY}>
             {$_("pages.tickets.waiting-reply")}
           </CardFiltersItem>
           <CardFiltersItem
             href="/tickets?pageType=CLOSED"
-            active="{data.pageType === PageTypes.CLOSED}">
+            active={data.pageType === PageTypes.CLOSED}>
             {$_("pages.tickets.closed")}
           </CardFiltersItem>
         {/if}
       </CardFilters>
     </CardHeader>
+
     <div class="card-body">
       <!-- No Tickets -->
       {#if data.ticketCount === 0}
@@ -102,13 +104,10 @@
                 <th class="align-middle" scope="col">
                   <div class="form-check">
                     <input
-                      title="{$_('pages.tickets.select-all')}"
+                      title={$_("pages.tickets.select-all")}
                       class="form-check-input"
-                      on:click="{onSelectAllClick}"
-                      checked="{isAllTicketsSelected(
-                        data.tickets,
-                        $checkedList,
-                      )}"
+                      on:click={onSelectAllClick}
+                      checked={isAllTicketsSelected(data.tickets, $checkedList)}
                       id="selectAll"
                       type="checkbox" />
                   </div>
@@ -118,7 +117,7 @@
                 <th
                   class="align-middle"
                   scope="col"
-                  class:table-primary="{data.categoryUrl}"
+                  class:table-primary={data.categoryUrl}
                   >{$_("pages.tickets.table.category")}</th>
                 <th class="align-middle" scope="col"
                   >{$_("pages.tickets.table.player")}</th>
@@ -131,24 +130,26 @@
             <tbody>
               {#each data.tickets as ticket, index (ticket)}
                 <TicketRow
-                  ticket="{ticket}"
-                  checkedList="{checkedList}"
-                  on:showCloseTicketModalClick="{(event) =>
-                    onShowCloseTicketModalClick(event.detail.id)}"
-                  on:showDeleteTicketModalClick="{(event) =>
-                    onShowDeleteTicketModalClick(event.detail.id)}" />
+                  ticket={ticket}
+                  checkedList={checkedList}
+                  on:showCloseTicketModalClick={(event) =>
+                    onShowCloseTicketModalClick(event.detail.id)}
+                  on:showDeleteTicketModalClick={(event) =>
+                    onShowDeleteTicketModalClick(event.detail.id)} />
               {/each}
             </tbody>
           </table>
         </div>
       {/if}
+    </div>
+    <div class="card-footer">
       <!-- Pagination -->
       <Pagination
-        page="{data.page}"
-        totalPage="{data.totalPage}"
-        on:firstPageClick="{() => onPageClick(1)}"
-        on:lastPageClick="{() => onPageClick(data.totalPage)}"
-        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
+        page={data.page}
+        totalPage={data.totalPage}
+        on:firstPageClick={() => onPageClick(1)}
+        on:lastPageClick={() => onPageClick(data.totalPage)}
+        on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
     </div>
   </div>
 </article>

@@ -4,33 +4,32 @@
   }
 </style>
 
-<article class="container">
-  <div
-    class="row justify-content-between mb-3 animate__animated animate__slideInUp">
-    <div class="col-auto">
-      <a class="btn btn-link" role="button" href="{base}/tickets">
-        <i class="fas fa-arrow-left me-2"></i>
-        {$_("pages.ticket-detail.tickets")}
-      </a>
-    </div>
-    <div class="col-auto ml-auto">
+<div class="container vstack gap-3">
+  <!-- Action Menu -->
+  <PageActions>
+    <a class="btn btn-link" role="button" href="{base}/tickets" slot="left">
+      <i class="fas fa-arrow-left me-2"></i>
+      {$_("pages.ticket-detail.tickets")}
+    </a>
+
+    <div class="hstack gap-2" slot="right">
       <button
         class="btn btn-link link-danger"
         type="button"
-        on:click="{() => showDeleteTicketModal([data.ticket.id])}">
+        on:click={() => showDeleteTicketModal([data.ticket.id])}>
         <i class="fas fa-trash"></i>
       </button>
       {#if data.ticket.status !== TicketStatuses.CLOSED}
         <button
           class="btn btn-danger"
           type="button"
-          on:click="{() => showCloseTicketModal([data.ticket.id])}">
+          on:click={() => showCloseTicketModal([data.ticket.id])}>
           <i class="fas fa-times me-2"></i>
           {$_("buttons.close")}
         </button>
       {/if}
     </div>
-  </div>
+  </PageActions>
 
   <div class="card">
     <div class="card-header">
@@ -45,7 +44,7 @@
               >${data.ticket.username}</a>`,
               },
             })}
-            <Date time="{data.ticket.date}" />,
+            <Date time={data.ticket.date} />,
             {@html $_("pages.ticket-detail.opened-in-category", {
               values: {
                 category: `<a href="${base}/tickets?categoryUrl=${data.ticket.category.url}"
@@ -59,21 +58,21 @@
           </small>
         </div>
         <div class="col-sm-auto">
-          <TicketStatusBadge status="{data.ticket.status}" />
+          <TicketStatusBadge status={data.ticket.status} />
         </div>
       </div>
     </div>
     <div
       class="card-body"
       id="messageSection"
-      bind:this="{messagesSectionDiv}"
-      bind:clientHeight="{$messagesSectionClientHeight}">
+      bind:this={messagesSectionDiv}
+      bind:clientHeight={$messagesSectionClientHeight}>
       {#if data.ticket.messages.length < data.ticket.count && data.ticket.count > 5}
         <div class="position-relative">
           <button
             class="btn btn-sm btn-secondary position-absolute top-50 start-50 translate-middle"
-            class:disabled="{loadMoreLoading}"
-            on:click="{loadMore}"
+            class:disabled={loadMoreLoading}
+            on:click={loadMore}
             ><i class="fas fa-arrow-up me-2"></i>
             {$_("pages.ticket-detail.previous-messages", {
               values: {
@@ -93,7 +92,7 @@
               <div class="col d-flex justify-content-end">
                 <div class="card text-bg-secondary">
                   <div class="card-header small">
-                    <Date time="{message.date}" />
+                    <Date time={message.date} />
                   </div>
                   <div class="card-body answer">
                     {@html message.message}
@@ -104,9 +103,9 @@
                 <a href="{base}/players/detail/{message.username}">
                   <img
                     src="https://minotar.net/avatar/{message.username}/48"
-                    alt="{message.username}"
+                    alt={message.username}
                     class="rounded animate__animated animate__zoomIn"
-                    use:tooltip="{[message.username, { placement: 'bottom' }]}"
+                    use:tooltip={[message.username, { placement: "bottom" }]}
                     width="48"
                     height="48" />
                 </a>
@@ -118,9 +117,9 @@
                 <a href="{base}/players/detail/{message.username}">
                   <img
                     src="https://minotar.net/avatar/{message.username}/48"
-                    alt="{message.username}"
+                    alt={message.username}
                     class="rounded animate__animated animate__zoomIn"
-                    use:tooltip="{[message.username, { placement: 'bottom' }]}"
+                    use:tooltip={[message.username, { placement: "bottom" }]}
                     width="48"
                     height="48" />
                 </a>
@@ -128,7 +127,7 @@
               <div class="col hstack gap-2">
                 <div class="card">
                   <div class="card-header small">
-                    <Date time="{message.date}" />
+                    <Date time={message.date} />
                   </div>
                   <div class="card-body">
                     {message.message}
@@ -144,18 +143,18 @@
       <!-- Send Message Section -->
       <div
         class="row align-items-end"
-        class:d-none="{data.ticket.status === TicketStatuses.CLOSED}">
+        class:d-none={data.ticket.status === TicketStatuses.CLOSED}>
         <div class="col">
           <!-- Editor -->
-          <Editor bind:content="{messageText}" bind:isEmpty="{isEditorEmpty}" />
+          <Editor bind:content={messageText} bind:isEmpty={isEditorEmpty} />
           <!-- Editor End -->
         </div>
         <div class="col-auto">
           <button
             class="btn btn-secondary mt-lg-0 mt-3"
-            on:click="{sendMessage}"
-            class:disabled="{messageSendLoading || isEditorEmpty}"
-            :disabled="{messageSendLoading || isEditorEmpty}">
+            on:click={sendMessage}
+            class:disabled={messageSendLoading || isEditorEmpty}
+            :disabled={messageSendLoading || isEditorEmpty}>
             <i class="fas fa-paper-plane"></i>
             <span class="d-xl-inline d-none ms-2"
               >{$_("pages.ticket-detail.send-button")}</span>
@@ -164,7 +163,7 @@
       </div>
     </div>
   </div>
-</article>
+</div>
 
 <script context="module">
   import { writable } from "svelte/store";
@@ -223,6 +222,7 @@
 
   import Date from "$lib/component/Date.svelte";
   import TicketStatusBadge from "$lib/component/badges/TicketStatusBadge.svelte";
+  import PageActions from "$lib/component/PageActions.svelte";
 
   export let data;
 
