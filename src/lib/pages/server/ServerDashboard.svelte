@@ -1,55 +1,46 @@
-<div class="container">
+<div class="container vstack gap-3">
   <div
-    class="row justify-content-between mb-3 animate__animated animate__slideInUp">
-    <div class="col-4">
+    class="row g-3 justify-content-between animate__animated animate__slideInUp">
+    <div class="col-lg-4">
       <div
-        class="card bg-opacity-25"
-        class:bg-success="{data.server.status === ServerStatus.ONLINE}"
-        class:bg-danger="{data.server.status === ServerStatus.OFFLINE}">
+        class="card h-100"
+        class:text-bg-success="{data.server.status === ServerStatus.ONLINE}"
+        class:text-bg-danger="{data.server.status === ServerStatus.OFFLINE}">
         <div class="card-body">
-          <p
-            class="mb-0"
-            class:text-success="{data.server.status === ServerStatus.ONLINE}"
-            class:text-danger="{data.server.status === ServerStatus.OFFLINE}">
-            {$_("pages.server.dashboard.server-status", {
-              values: {
-                status:
-                  data.server.status === ServerStatus.ONLINE
-                    ? $_("pages.server.dashboard.online")
-                    : $_("pages.server.dashboard.offline"),
-              },
-            })}
-          </p>
+          {$_("pages.server.dashboard.server-status", {
+            values: {
+              status:
+                data.server.status === ServerStatus.ONLINE
+                  ? $_("pages.server.dashboard.online")
+                  : $_("pages.server.dashboard.offline"),
+            },
+          })}
         </div>
       </div>
     </div>
-    <div class="col-4">
-      <div class="card bg-primary bg-opacity-25">
+    <div class="col-lg-4">
+      <div class="card text-bg-primary h-100">
         <div class="card-body">
-          <p class="mb-0 text-primary">
+          {$_("pages.server.dashboard.player", {
+            values: {
+              playerCount: data.server.playerCount,
+              maxPlayerCount: data.server.maxPlayerCount,
+            },
+          })}
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card text-bg-info h-100">
+        <div class="card-body">
+          {#if data.server.status === ServerStatus.ONLINE}
             {$_("pages.server.dashboard.player", {
-              values: {
-                playerCount: data.server.playerCount,
-                maxPlayerCount: data.server.maxPlayerCount,
-              },
+              values: { upTime: getUptime(data.server.startTime, checkTime) },
             })}
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-4">
-      <div class="card">
-        <div class="card-body">
-          <p class="mb-0 text-dark">
-            {#if data.server.status === ServerStatus.ONLINE}
-              {$_("pages.server.dashboard.player", {
-                values: { upTime: getUptime(data.server.startTime, checkTime) },
-              })}
-            {:else}
-              {$_("pages.server.dashboard.last-online")}
-              <DateComponent time="{data.server.stopTime}" />
-            {/if}
-          </p>
+          {:else}
+            {$_("pages.server.dashboard.last-online")}
+            <DateComponent time="{data.server.stopTime}" />
+          {/if}
         </div>
       </div>
     </div>
@@ -57,8 +48,8 @@
 
   <!-- Statistic Table -->
   <div class="card">
+      <div class="card-header">{$_("pages.server.dashboard.statistics")}</div>
     <div class="card-body">
-      <h5 class="card-title">{$_("pages.server.dashboard.statistics")}</h5>
       <div class="table-responsive">
         <table class="table table-hover m-0">
           <tbody class="text-muted">
