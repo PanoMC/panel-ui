@@ -1,7 +1,7 @@
 <nav class="sidebar-nav navbar-dark animate__animated animate__fadeIn">
   {#if $selectedServer}
     <ul class="navbar-nav px-3">
-      <li class="nav-item p-2">
+      <li class="nav-item">
         <a
           class="nav-link"
           href="{base}/server/dashboard"
@@ -13,7 +13,7 @@
           {$_("components.server-navigation-menu.statistics")}
         </a>
       </li>
-      <li class="nav-item p-2">
+      <li class="nav-item">
         <a
           class="nav-link"
           href="{base}/server/monitoring"
@@ -25,7 +25,7 @@
           {$_("components.server-navigation-menu.monitoring")}
         </a>
       </li>
-      <li class="nav-item p-2">
+      <li class="nav-item">
         <a
           class="nav-link"
           href="{base}/server/settings"
