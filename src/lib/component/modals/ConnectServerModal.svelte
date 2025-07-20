@@ -43,7 +43,7 @@
               })}
             </small>
             <div class="input-group">
-              <input type="text" class="form-control" value="{commandText}" />
+              <input type="text" class="form-control" value="{commandText}" readonly />
               <button
                 class="btn btn-link border"
                 type="button"
