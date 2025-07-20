@@ -575,10 +575,16 @@
       },
       "connect-server": {
         "title": "Connect Server",
+        "steps": {
+          "1": "Install Game Server Plugin",
+          "2": "Run Connection Command",
+          "3": "Confirm Connection Request"
+        },
+        "download": "Download File",
         "copy": "Copy",
         "copied": "Copied!",
         "code-refresh": "Code will refresh after {timeToRefreshKey} seconds.",
-        "run-connection-command-on-gameserver": "Run the connection command on the game server:"
+        "notification-will-come": "The connection request will come as a notification."
       },
       "make-main-server": {
         "title": "Are you sure you want to make \"{serverName}\" the main server?"
