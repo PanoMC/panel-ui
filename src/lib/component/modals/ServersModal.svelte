@@ -21,11 +21,11 @@
       </div>
 
       <div class="modal-body">
-        <div class="row row-cols-1 row-cols-lg-2 g-3">
+        <div class="row row-cols-1 row-cols-lg-3 g-3">
           {#if $loading}
             {#each Array(4) as _, i}
               <div class="col">
-                <div class="card">
+                <div class="card h-100">
                   <div class="card-body">
                     <p class="card-text placeholder-glow">
                       <span class="placeholder col-3"></span>
@@ -46,24 +46,25 @@
 
               <div class="col">
                 <div class="card">
-                  <div class="card-header text-center vstack gap-3">
+                  <div class="card-header text-center">
                     <img
                       src={server.favicon
                         ? server.favicon
                         : base + "/assets/img/server-icon.png"}
-                      class="d-block mx-auto rounded"
+                      class="d-block mx-auto rounded mb-2"
                       height="64"
                       width="64"
                       alt="" />
 
-                    <strong class="mb-0">
-                      {#if server.id === $mainServer.id}
-                        <span class="badge text-bg-secondary rounded-pill me-2">
-                          <i class="fa fa-home"></i>
-                        </span>
-                      {/if}
+                    <div>
                       {server.name}
-                    </strong>
+
+                      {#if server.id === $mainServer.id}
+                        <small class="d-block">
+                          {$_("components.modals.servers.main-server")}
+                        </small>
+                      {/if}
+                    </div>
                   </div>
                   <div class="card-body d-flex justify-content-center">
                     <ul class="list-group list-group-horizontal">
