@@ -90,13 +90,13 @@
                   </div>
                   <div class="card-footer d-flex justify-content-center">
                     <button
-                      class:active={$selectedServer.id === server.id}
+                      class:active={$selectedServer?.id === server.id}
                       data-bs-toggle="button"
                       class="btn btn-outline-primary"
                       type="button"
                       on:click={() =>
                         $selectingServer ? {} : onSelect(server)}
-                      >{$selectedServer.id === server.id
+                      >{$selectedServer?.id === server.id
                         ? "Selected"
                         : "Select Server"}</button>
                   </div>
