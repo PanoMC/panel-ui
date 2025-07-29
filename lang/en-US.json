@@ -31,7 +31,8 @@
     "no": "No",
     "view": "View",
     "closed": "Closed",
-    "show-all": "Show All"
+    "show-all": "Show All",
+    "installed": "Installed"
   },
   "pages": {
     "activity-logs": {
@@ -478,6 +479,9 @@
       },
       "confirm-remove-pano-account": {
         "title": "Are you sure to disconnect your online Pano account from this platform?"
+      },
+      "confirm-install-resource": {
+        "title": "Are you sure to install \"{title}\" ({resourceId})?"
       },
       "add-edit-post-category": {
         "create-category": "Create Category",

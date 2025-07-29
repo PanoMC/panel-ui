@@ -31,7 +31,8 @@
     "no": "Hayır",
     "view": "Görüntüle",
     "closed": "Kapalı",
-    "show-all": "Tümünü Göster"
+    "show-all": "Tümünü Göster",
+    "installed": "Yüklü"
   },
   "pages": {
     "activity-logs": {
@@ -478,6 +479,9 @@
       },
       "confirm-remove-pano-account": {
         "title": "Çevrimiçi Pano hesabınızı platformdan kaldırmak istediğinize emin misiniz?"
+      },
+      "confirm-install-resource": {
+        "title": "\"{title}\" ({resourceId}) kurmak istediğinize emin misiniz?"
       },
       "add-edit-post-category": {
         "create-category": "Kategori Oluştur",
