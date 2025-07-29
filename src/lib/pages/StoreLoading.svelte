@@ -29,7 +29,6 @@
             </ul>
           </div>
           {#if installError}
-            <!-- Geri ve Mağaza Butonları -->
             <div class="d-flex justify-content-between w-full">
               <button on:click="{() => goto(`${base}/${(data.pageType === PageTypes.ADDON ? 'addons' : 'view')}`, {invalidateAll:true})}" class="btn btn-sm btn-outline-secondary">
                 <i class="fas fa-arrow-left me-1"></i> Geri
@@ -132,10 +131,11 @@
 </script>
 
 <script>
-  import { getContext, onMount, tick } from "svelte";
+  import { getContext, tick } from "svelte";
 
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
+  import { browser } from "$app/environment";
 
   import { API_URL, PANO_WEBSITE_URL } from "$lib/variables.js";
   import ApiUtil from "$lib/api.util.js";
@@ -194,13 +194,13 @@
     if (getStoreTokenResponse.error === "PANO_NOT_CONNECTED") {
       data.accountConnected = false;
 
-      return;
+      return null;
     }
 
     if (getStoreTokenResponse.error) {
       data.error = getStoreTokenResponse.error
 
-      return;
+      return null;
     }
 
     return getStoreTokenResponse.data
@@ -255,7 +255,7 @@
     data.confirmView = false;
     data.installingView = true;
 
-    const eventSource = new EventSource(`${API_URL}/panel/install/store/${data.install}/stream`);
+    const eventSource = new EventSource(`/api/panel/install/store/${data.install}/stream`);
 
     eventSource.onmessage = (event) => {
       handleSSEMessage(JSON.parse(event.data))
@@ -296,9 +296,13 @@
     await sleep(500)
 
     await installResourceFromStore()
-  })
+  });
 
-  onMount(async () => {
+  (async () => {
+    if (!browser) {
+      return
+    }
+
     await waitSplash()
     await waitWindow()
 
@@ -313,7 +317,11 @@
     if (data.accountConnected && !data.installingView && !data.confirmView) {
       const storeTokenResponse = await getStoreTokenResponse()
 
+      if (storeTokenResponse === null) {
+        return
+      }
+
       await goToStore(storeTokenResponse)
     }
-  })
+  })();
 </script>
