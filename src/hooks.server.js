@@ -1,7 +1,7 @@
 import {
   COOKIE_PREFIX,
   JWT_COOKIE_NAME,
-  CSRF_TOKEN_COOKIE_NAME, updateApiUrl, API_URL, updatePanoWebsiteUrl
+  CSRF_TOKEN_COOKIE_NAME, updateApiUrl, API_URL
 } from "$lib/variables";
 
 import ApiUtil, { networkErrorBody } from "$lib/api.util.js";
@@ -19,16 +19,9 @@ export async function handle({ event, event: { cookies }, resolve }) {
   // noinspection JSUnresolvedReference
   const apiUrlEnv = process.env.API_URL;
 
-  // noinspection JSUnresolvedReference
-  const panoWebsiteUrlEnv = process.env.PANO_WEBSITE_URL;
-
   if (apiUrlEnv) {
     updateApiUrl(apiUrlEnv);
     locals.apiUrlEnv = apiUrlEnv
-  }
-
-  if (panoWebsiteUrlEnv) {
-    updatePanoWebsiteUrl(panoWebsiteUrlEnv);
   }
 
   const jwt = cookies.get([COOKIE_PREFIX + JWT_COOKIE_NAME]);
