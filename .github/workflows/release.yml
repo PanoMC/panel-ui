@@ -81,6 +81,18 @@ jobs:
       - name: Build
         run: bun run build
 
+      - name: Create manifest.json
+        run: |
+          cat <<EOF > build/manifest.json
+          {
+            "id": "panel-ui",
+            "version": "${{ needs.get-next-version.outputs.new_tag_version }}",
+            "author": "Pano MC",
+            "license": "MIT",
+            "panoVersion": "local-build"
+          }
+          EOF
+
       - name: Zip Build
         run: cd build && zip -r ../panel-ui-v${{ needs.get-next-version.outputs.new_tag_version }}.zip . && cd ..
 
