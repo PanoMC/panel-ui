@@ -43,12 +43,15 @@
               })}
             </small>
             <div class="input-group">
-              <input type="text" class="form-control" value="{commandText}" readonly />
+              <input type="text" class="form-control border-bottom" value="{commandText}" readonly />
               <button
-                class="btn btn-link border"
+                class="btn border shadow-none btn-outline-primary"
                 type="button"
-                id="button-addon2"
                 on:click="{onCopyCommandTextClick}"
+                aria-label="{
+                  isCommandTextCopied
+                    ? $_('components.modals.connect-server.copied')
+                    : $_('components.modals.connect-server.copy')}"
                 use:tooltip="{[
                   isCommandTextCopied
                     ? $_('components.modals.connect-server.copied')
