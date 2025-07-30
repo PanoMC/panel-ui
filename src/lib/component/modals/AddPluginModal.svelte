@@ -1,10 +1,11 @@
 <!-- Add Plugin Modal -->
 <div
+  role="dialog"
   class="modal modal-lg fade"
   bind:this={$modalElement}
   tabindex="-1"
   aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       {#if $loading}
         <div class="modal-body">
@@ -40,7 +41,7 @@
                 bind:this={fileInput}
                 on:change={handleFileChange} />
               <i class="fas fa-upload fa-2x mb-2"></i>
-              <p class="mb-0">Dosyayı buraya sürükleyin<br/>veya tıklayın</p>
+              <p class="mb-0">Dosyayı buraya sürükleyin<br />veya tıklayın</p>
             </button>
 
             <a
@@ -69,7 +70,6 @@
 
   const modalElement = writable();
   const loading = writable(false);
-  const permissionGroups = writable([]);
   const defaultErrors = {};
   const errors = writable(defaultErrors);
   const submitLoading = writable(false);
@@ -82,10 +82,7 @@
     errors.set(defaultErrors);
     submitLoading.set(false);
 
-    modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
-      keyboard: false,
-    });
+    modal = new window.bootstrap.Modal(get(modalElement));
     modal.show();
   }
 
@@ -128,7 +125,6 @@
 
   function handleDragLeave() {
     dropZoneActive = false;
-
   }
 
   function openFileDialog() {

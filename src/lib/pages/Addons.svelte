@@ -37,35 +37,37 @@
       </CardFilters>
     </CardHeader>
     <div class="card-body">
-      <div class="row row-cols-xl-2 row-cols-1 g-3">
         {#if data.plugins.length === 0}
           <NoContent />
         {/if}
+      <div class="row row-cols-xl-2 row-cols-1 g-3">
         {#each data.plugins as plugin, index (plugin)}
           <div
             class="col {plugin.status === 'FAILED' &&
               'animate__animated animate__shakeX animate__slower'}">
             <!-- Installed Addon Card -->
             <div
-              class="card border {plugin.status === 'FAILED' &&
+              class="card {plugin.status === 'FAILED' &&
                 'border-danger border-3'}">
               <div class="card-body">
-                <div class="row d-flex flex-nowrap">
-                  <div class="col-auto d-md-flex d-none">
+                <div class="row g-3">
+                  <div class="col-sm-auto">
                     <a href="{base}/addons/detail/{plugin.id}">
                       <img
-                        height="82"
-                        width="82"
+                        height="88"
+                        width="88"
                         src="/api/panel/plugins/{plugin.id}/logo"
-                        class="bg-light animate__animated animate__zoomIn"
+                        class="animate__animated animate__zoomIn"
                         alt={plugin.id} />
                     </a>
                   </div>
-                  <div class="col">
+                  <div class="col text-break">
                     <div class="row">
                       <div class="col">
-                        <a href="{base}/addons/detail/{plugin.id}">
-                          <h5 class="card-title">{plugin.id}</h5>
+                        <a
+                          href="{base}/addons/detail/{plugin.id}"
+                          class="text-decoration-none">
+                          <h5 class="card-title text-truncate">{plugin.id}</h5>
                         </a>
                       </div>
                       <div class="col-auto">
@@ -99,22 +101,26 @@
                         </div>
                       {/if}
                     </div>
-                    <small class="text-muted">
-                      <a href="/" target="_blank">{plugin.author}</a>
-                      <div class="vr mx-2"></div>
-                      <span class="font-monospace">{plugin.version}</span>
+
+                    <p>
+                      {@html plugin.description}
+                    </p>
+
+                    <div class="d-flex flex-row flex-wrap gap-2">
                       {#if plugin.verifyStatus !== "UNKNOWN"}
-                        <div class="vr mx-2"></div>
                         <a
                           href="{PANO_WEBSITE_URL}/{plugin.id}"
                           target="_blank"
-                          title="Mağaza Adresi"
-                          class="card-link">
+                          title="Mağaza Adresi">
                           <i class="fa-solid fa-store"></i>
                         </a>
                       {/if}
+                      <div>{plugin.author}</div>
+
+                      <span class="font-monospace user-select-all"
+                        >{plugin.version}</span>
+
                       {#if plugin.sourceUrl}
-                        <div class="vr mx-2"></div>
                         <a
                           href={plugin.sourceUrl}
                           target="_blank"
@@ -124,12 +130,9 @@
                         </a>
                       {/if}
                       {#if plugin.license}
-                        <div class="vr mx-2"></div>
-                        <span class="font-monospace">{plugin.license}</span>
+                        <div>{plugin.license}</div>
                       {/if}
-                      {#if plugin.verifyStatus !== "UNKNOWN"}
-                        <div class="vr mx-2"></div>
-                      {/if}
+                      {#if plugin.verifyStatus !== "UNKNOWN"}{/if}
                       {#if plugin.verifyStatus === "VERIFIED"}
                         <span
                           class="text-success"
@@ -137,22 +140,19 @@
                             "Verified by Pano",
                             { placement: "bottom" },
                           ]}>
-                          <i class="fa-regular fa-circle-check me-1"></i>
+                          <i class="fa-regular fa-circle-check"></i>
                         </span>
                       {:else if plugin.verifyStatus === "NOT_VERIFIED"}
-                        <span
+                        <div
                           class="text-warning"
                           use:tooltip={[
                             "Not verified by Pano, use at your own risk!",
                             { placement: "bottom" },
                           ]}>
                           <i class="fa-solid fa-circle-exclamation me-1"></i>
-                        </span>
+                        </div>
                       {/if}
-                    </small>
-                    <p class="pt-2">
-                      {@html plugin.description}
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
