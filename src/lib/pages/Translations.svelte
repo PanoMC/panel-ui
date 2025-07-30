@@ -50,8 +50,8 @@
           class="form-select"
           name="selectType"
           id="selectType"
-          bind:value={data.type}
-          on:change={refreshData}>
+          value={data.type}
+          on:change={(e) => refreshData(e.target.value)}>
           {#each Object.keys(PageTypes) as pageType, index (pageType)}
             <option selected value={pageType}
               >{$_("buttons." + pageType.toLowerCase())}</option>
@@ -62,7 +62,7 @@
           name="selectLanguage"
           id="selectLanguage"
           bind:value={data.locale}
-          on:change={refreshData}>
+          on:change={() => refreshData(data.type)}>
           {#each data.locales as locale, index (locale)}
             <option selected value={locale.code}>{locale.name}</option>
           {/each}
@@ -355,11 +355,11 @@
     JSON.stringify(data.translationInputs) ===
       JSON.stringify(data.originalTranslations) || saving;
 
-  async function refreshData(invalidateAll) {
+  async function refreshData(type, invalidateAll) {
     refreshing = true;
     const queryParams = buildQueryParams({
       locale: data.locale === $currentLanguage.code ? null : data.locale,
-      type: data.type,
+      type,
       filter: data.filter === DefaultFilter ? null : data.filter,
     });
 
@@ -406,7 +406,7 @@
 
         await loadLanguage($currentLanguage);
 
-        await refreshData(true);
+        await refreshData(data.type, true);
 
         data.originalTranslations = data.translationInputs.map((t) => ({
           ...t,
