@@ -5,7 +5,7 @@
       {#if !data.accountConnected}
         Account not connected!
       {:else if data.confirmView && !DEFAULT_INSTALLING_VIEW}
-        <div class="row">
+        <div class="row" hidden="{modalShown}">
           <div
             class="d-inline-flex rounded justify-content-start align-items-start ps-2 pt-2"
             style="height: 350px;">
@@ -137,7 +137,7 @@
   import { page } from "$app/state";
   import { browser } from "$app/environment";
 
-  import { API_URL, PANO_WEBSITE_URL } from "$lib/variables.js";
+  import { PANO_WEBSITE_URL } from "$lib/variables.js";
   import ApiUtil from "$lib/api.util.js";
   import ConfirmInstallResourceModal, {
     setCallback as setConfirmInstallResourceCallback,
@@ -165,6 +165,7 @@
   let installingStep = DEFAULT_INSTALL_FINISHED_VIEW ? 6 : 1;
   let installError;
   let versionInfo;
+  let modalShown;
 
   async function waitSplash() {
     while ($showSplash) {
@@ -235,6 +236,8 @@
 
     versionInfo = getStoreTokenResponse.data
 
+    modalShown = true
+
     showConfirmInstallResourceModal(versionInfo)
   }
 
@@ -261,7 +264,7 @@
       handleSSEMessage(JSON.parse(event.data))
     };
 
-    eventSource.onerror = (error) => {
+    eventSource.onerror = () => {
       eventSource.close()
     };
   }
@@ -292,8 +295,10 @@
     if (DEFAULT_INSTALL_FINISHED_VIEW) {
       return;
     }
+    modalShown = false;
 
     await sleep(500)
+
 
     await installResourceFromStore()
   });
