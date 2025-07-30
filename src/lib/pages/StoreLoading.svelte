@@ -30,7 +30,7 @@
           </div>
           {#if installError}
             <div class="d-flex justify-content-between w-full">
-              <button on:click="{() => goto(`${base}/${(data.pageType === PageTypes.ADDON ? 'addons' : 'view')}`, {invalidateAll:true})}" class="btn btn-sm btn-outline-secondary">
+              <button on:click="{() => goto(`${base}/${(data.pageType === PageTypes.ADDON ? 'addons' : 'view')}`)}" class="btn btn-sm btn-outline-secondary">
                 <i class="fas fa-arrow-left me-1"></i> Geri
               </button>
               <button on:click="{() => goto(`${base}/${(data.pageType === PageTypes.ADDON ? 'addons' : 'view')}/store`, {invalidateAll:true})}" class="btn btn-sm btn-outline-primary">
