@@ -44,7 +44,7 @@
 
   import { show as showServerRequestModal } from "$lib/component/modals/ServerRequestModal.svelte";
   import { initializePlugins } from "$lib/PluginManager.js";
-  import { updateApiUrl } from "$lib/variables.js";
+  import { updateApiUrl, updatePanoWebsiteUrl } from "$lib/variables.js";
 
   function initNotificationListeners() {
     addListener("NEW_TICKET", (notification) => {
@@ -85,7 +85,7 @@
    */
   export async function loadServer(event) {
     const {
-      locals: { basicData, csrfToken, apiUrlEnv },
+      locals: { basicData, csrfToken, apiUrlEnv, panoWebsiteUrlEnv },
     } = event;
 
     let siteInfo = await ApiUtil.get({
@@ -94,7 +94,7 @@
       csrfToken,
     });
 
-    return { basicData, csrfToken, siteInfo, apiUrlEnv };
+    return { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv };
   }
 
   /**
@@ -102,13 +102,17 @@
    */
   export async function load(event) {
     const {
-      data: { basicData, csrfToken, siteInfo, apiUrlEnv },
+      data: { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv },
       parent,
     } = event;
     await parent();
 
     if (apiUrlEnv) {
       updateApiUrl(apiUrlEnv);
+    }
+
+    if (panoWebsiteUrlEnv) {
+      updatePanoWebsiteUrl(panoWebsiteUrlEnv)
     }
 
     await initializePlugins(siteInfo);

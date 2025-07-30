@@ -24,11 +24,12 @@ export async function handle({ event, event: { cookies }, resolve }) {
 
   if (apiUrlEnv) {
     updateApiUrl(apiUrlEnv);
-    locals.apiUrlEnv = apiUrlEnv
+    locals.apiUrlEnv = apiUrlEnv;
   }
 
   if (panoWebsiteUrlEnv) {
     updatePanoWebsiteUrl(panoWebsiteUrlEnv);
+    locals.panoWebsiteUrlEnv = panoWebsiteUrlEnv
   }
 
   const jwt = cookies.get([COOKIE_PREFIX + JWT_COOKIE_NAME]);
