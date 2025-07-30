@@ -27,34 +27,32 @@
         values: { count: data.permissionGroupCount },
       })}
     </div>
-    <div class="card-body">
-      <!-- Permissions Table -->
+    <!-- Permissions Table -->
 
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th class="align-middle text-nowrap" scope="col"></th>
-              <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.permission-groups.name")}</th>
-              <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.permission-groups.permission-amount")}</th>
-              <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.permission-groups.player-amount")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each data.permissionGroups as permissionGroup, index (permissionGroup)}
-              <PermissionGroupRow
-                permissionGroup={permissionGroup}
-                on:deleteClick={(event) =>
-                  onShowDeletePermissionGroupModalClick(
-                    event.detail.permissionGroup,
-                  )} />
-            {/each}
-          </tbody>
-        </table>
-      </div>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th class="align-middle text-nowrap" scope="col"></th>
+            <th class="align-middle text-nowrap" scope="col"
+              >{$_("pages.permission-groups.name")}</th>
+            <th class="align-middle text-nowrap" scope="col"
+              >{$_("pages.permission-groups.permission-amount")}</th>
+            <th class="align-middle text-nowrap" scope="col"
+              >{$_("pages.permission-groups.player-amount")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each data.permissionGroups as permissionGroup, index (permissionGroup)}
+            <PermissionGroupRow
+              permissionGroup={permissionGroup}
+              on:deleteClick={(event) =>
+                onShowDeletePermissionGroupModalClick(
+                  event.detail.permissionGroup,
+                )} />
+          {/each}
+        </tbody>
+      </table>
     </div>
     <div class="card-footer">
       <!-- Pagination -->

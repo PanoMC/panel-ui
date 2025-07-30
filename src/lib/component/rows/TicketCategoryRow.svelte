@@ -1,5 +1,5 @@
 <tr class:table-primary="{category.selected}">
-  <th scope="row" class="align-middle">
+  <th scope="row" class="align-middle text-center">
     <a
       title="{$_('buttons.delete')}"
       class="btn btn-sm btn-link link-danger"

@@ -66,51 +66,49 @@
             {$_("pages.players.banned")}
           </CardFiltersItem> -->
     </div>
-    <div class="card-body">
-      <!-- No Players -->
-      {#if data.playerCount === 0}
-        <NoContent />
-      {:else}
-        <!-- Players Table -->
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th class="align-middle text-nowrap" scope="col"></th>
-                <th class="align-middle text-nowrap" scope="col"
-                  >{$_("pages.players.table.name")}</th>
-                <th
-                  class="align-middle text-nowrap"
-                  scope="col"
-                  class:table-primary={data.permissionGroup}
-                  >{$_("pages.players.table.perm-group")}</th>
-                <th class="align-middle text-nowrap" scope="col"
-                  >{$_("pages.players.table.status")}</th>
-                <th class="align-middle text-nowrap" scope="col"
-                  >{$_("pages.players.table.last-login")}</th>
-                <th class="align-middle text-nowrap" scope="col"
-                  >{$_("pages.players.table.register-date")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each data.players as player, index (player)}
-                <PlayerRow
-                  player={player}
-                  checkTime={checkTime}
-                  on:showAuthorizePlayerModalClick={(event) =>
-                    onShowAuthorizePlayerModalClick(event.detail.player)}
-                  on:showEditPlayerModalClick={(event) =>
-                    onShowEditPlayerModalClick(event.detail.player)}
-                  on:showBanPlayerModalClick={(event) =>
-                    showBanPlayerModalClick(event.detail.player)}
-                  on:showUnbanPlayerModalClick={(event) =>
-                    showUnbanPlayerModalClick(event.detail.player)} />
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
-    </div>
+    <!-- No Players -->
+    {#if data.playerCount === 0}
+      <NoContent />
+    {:else}
+      <!-- Players Table -->
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th class="align-middle text-nowrap" scope="col"></th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_("pages.players.table.name")}</th>
+              <th
+                class="align-middle text-nowrap"
+                scope="col"
+                class:table-primary={data.permissionGroup}
+                >{$_("pages.players.table.perm-group")}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_("pages.players.table.status")}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_("pages.players.table.last-login")}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_("pages.players.table.register-date")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each data.players as player, index (player)}
+              <PlayerRow
+                player={player}
+                checkTime={checkTime}
+                on:showAuthorizePlayerModalClick={(event) =>
+                  onShowAuthorizePlayerModalClick(event.detail.player)}
+                on:showEditPlayerModalClick={(event) =>
+                  onShowEditPlayerModalClick(event.detail.player)}
+                on:showBanPlayerModalClick={(event) =>
+                  showBanPlayerModalClick(event.detail.player)}
+                on:showUnbanPlayerModalClick={(event) =>
+                  showUnbanPlayerModalClick(event.detail.player)} />
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/if}
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination

@@ -91,57 +91,56 @@
       </CardFilters>
     </CardHeader>
 
-    <div class="card-body">
-      <!-- No Tickets -->
-      {#if data.ticketCount === 0}
-        <NoContent />
-      {:else}
-        <!-- Tickets Table -->
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th class="align-middle" scope="col">
-                  <div class="form-check">
-                    <input
-                      title={$_("pages.tickets.select-all")}
-                      class="form-check-input"
-                      on:click={onSelectAllClick}
-                      checked={isAllTicketsSelected(data.tickets, $checkedList)}
-                      id="selectAll"
-                      type="checkbox" />
-                  </div>
-                </th>
-                <th class="align-middle" scope="col"
-                  >{$_("pages.tickets.table.title")}</th>
-                <th
-                  class="align-middle"
-                  scope="col"
-                  class:table-primary={data.categoryUrl}
-                  >{$_("pages.tickets.table.category")}</th>
-                <th class="align-middle" scope="col"
-                  >{$_("pages.tickets.table.player")}</th>
-                <th class="align-middle" scope="col"
-                  >{$_("pages.tickets.table.status")}</th>
-                <th class="align-middle" scope="col"
-                  >{$_("pages.tickets.table.last-reply")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each data.tickets as ticket, index (ticket)}
-                <TicketRow
-                  ticket={ticket}
-                  checkedList={checkedList}
-                  on:showCloseTicketModalClick={(event) =>
-                    onShowCloseTicketModalClick(event.detail.id)}
-                  on:showDeleteTicketModalClick={(event) =>
-                    onShowDeleteTicketModalClick(event.detail.id)} />
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
-    </div>
+    <!-- No Tickets -->
+    {#if data.ticketCount === 0}
+      <NoContent />
+    {:else}
+      <!-- Tickets Table -->
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th class="align-middle" scope="col">
+                <div
+                  class="form-check d-flex justify-content-center align-items-center">
+                  <input
+                    title={$_("pages.tickets.select-all")}
+                    class="form-check-input"
+                    on:click={onSelectAllClick}
+                    checked={isAllTicketsSelected(data.tickets, $checkedList)}
+                    id="selectAll"
+                    type="checkbox" />
+                </div>
+              </th>
+              <th class="align-middle" scope="col"
+                >{$_("pages.tickets.table.title")}</th>
+              <th
+                class="align-middle"
+                scope="col"
+                class:table-primary={data.categoryUrl}
+                >{$_("pages.tickets.table.category")}</th>
+              <th class="align-middle" scope="col"
+                >{$_("pages.tickets.table.player")}</th>
+              <th class="align-middle" scope="col"
+                >{$_("pages.tickets.table.status")}</th>
+              <th class="align-middle" scope="col"
+                >{$_("pages.tickets.table.last-reply")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each data.tickets as ticket, index (ticket)}
+              <TicketRow
+                ticket={ticket}
+                checkedList={checkedList}
+                on:showCloseTicketModalClick={(event) =>
+                  onShowCloseTicketModalClick(event.detail.id)}
+                on:showDeleteTicketModalClick={(event) =>
+                  onShowDeleteTicketModalClick(event.detail.id)} />
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/if}
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination

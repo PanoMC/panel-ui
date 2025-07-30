@@ -1,5 +1,5 @@
-<tr class:table-primary="{player.selected}">
-  <th scope="row">
+<tr class:table-primary={player.selected}>
+  <th scope="row" class="align-middle text-center">
     <div class="dropdown position-static">
       <button
         type="button"
@@ -8,7 +8,7 @@
         aria-haspopup="true"
         data-bs-toggle="dropdown"
         href="javascript:void(0);"
-        title="{$_('components.player-row.actions')}">
+        title={$_("components.player-row.actions")}>
         <span class="fas fa-ellipsis-v"></span>
       </button>
       <div
@@ -17,41 +17,47 @@
           <a
             class="dropdown-item"
             href="javascript:void(0);"
-            on:click="{showAuthorizePlayerModal}"
-            class:disabled="{$user.username === player.username ||
-              (player.permissionGroup === 'admin' && !$user.admin)}">
+            on:click={showAuthorizePlayerModal}
+            class:disabled={$user.username === player.username ||
+              (player.permissionGroup === "admin" && !$user.admin)}>
             <i class="fas fa-user-circle me-2"></i>
-            {$_('components.player-row.authorize')}
+            {$_("components.player-row.authorize")}
           </a>
         {/if}
         <a
           class="dropdown-item"
           href="javascript:void(0);"
-          on:click="{showEditPlayerModal}"
-          class:disabled="{player.permissionGroup === 'admin' && !$user.admin}">
+          on:click={showEditPlayerModal}
+          class:disabled={player.permissionGroup === "admin" && !$user.admin}>
           <i class="fa-solid fa-pencil-alt me-2"></i>
-          {$_('buttons.edit')}
+          {$_("buttons.edit")}
         </a>
         <a
           class="dropdown-item"
           href="javascript:void(0);"
-          on:click="{() =>
-            player.isBanned ? showUnbanPlayerModal() : showBanPlayerModal()}"
-          class:link-danger="{$user.username !== player.username &&
-            ((player.permissionGroup === 'admin' && $user.admin) ||
-              player.permissionGroup !== 'admin')}"
-          class:disabled="{$user.username === player.username ||
-            (player.permissionGroup === 'admin' && !$user.admin)}">
+          on:click={() =>
+            player.isBanned ? showUnbanPlayerModal() : showBanPlayerModal()}
+          class:link-danger={$user.username !== player.username &&
+            ((player.permissionGroup === "admin" && $user.admin) ||
+              player.permissionGroup !== "admin")}
+          class:disabled={$user.username === player.username ||
+            (player.permissionGroup === "admin" && !$user.admin)}>
           <i class="fas fa-gavel me-2"></i>
-          {#if player.isBanned} {$_('components.player-row.remove-ban')} {:else} {$_('components.player-row.ban')} {/if}
+          {#if player.isBanned}
+            {$_("components.player-row.remove-ban")}
+          {:else}
+            {$_("components.player-row.ban")}
+          {/if}
         </a>
       </div>
     </div>
   </th>
   <td class="align-middle text-nowrap">
-    <a title="{$_('buttons.view')}" href="{base}/players/detail/{player.username}">
+    <a
+      title={$_("buttons.view")}
+      href="{base}/players/detail/{player.username}">
       <img
-        alt="{player.username}"
+        alt={player.username}
         class="rounded-circle animate__animated animate__zoomIn me-2"
         height="32"
         src="https://minotar.net/avatar/{player.username}"
@@ -60,19 +66,18 @@
     </a>
   </td>
   <td class="align-middle text-nowrap text-capitalize">
-    <PlayerPermissionBadge permissionGroup="{player.permissionGroup}" />
+    <PlayerPermissionBadge permissionGroup={player.permissionGroup} />
   </td>
   <td class="align-middle text-nowrap">
     <PlayerStatusBadge
-      banned="{player.isBanned}"
-      lastActivityTime="{player.lastActivityTime}"
-      inGame="{player.inGame}"
-      checkTime="{checkTime}" />
+      banned={player.isBanned}
+      lastActivityTime={player.lastActivityTime}
+      inGame={player.inGame}
+      checkTime={checkTime} />
   </td>
-  <td class="align-middle text-nowrap"
-    ><Date time="{player.lastLoginDate}" /></td>
+  <td class="align-middle text-nowrap"><Date time={player.lastLoginDate} /></td>
   <td class="align-middle text-nowrap">
-    <Date time="{player.registerDate}" />
+    <Date time={player.registerDate} />
   </td>
 </tr>
 

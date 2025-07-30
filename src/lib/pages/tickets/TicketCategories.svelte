@@ -29,42 +29,40 @@
         values: { count: data.categoryCount },
       })}
     </div>
-    <div class="card-body">
-      <!-- No Category -->
-      {#if data.categoryCount === 0}
-        <NoContent />
-      {/if}
+    <!-- No Category -->
+    {#if data.categoryCount === 0}
+      <NoContent />
+    {/if}
 
-      <!-- Tickets Table -->
-      {#if data.categoryCount > 0}
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                <th class="align-middle" scope="col"
-                  >{$_("pages.ticket-categories.category")}</th>
-                <th scope="col" class="align-middle"
-                  >{$_("pages.ticket-categories.description")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each data.categories as category, index (category)}
-                <TicketCategoryRow
-                  category="{category}"
-                  index="{index}"
-                  on:editClick="{(event) =>
-                    onShowEditCategoryButtonClick(event.detail.index)}"
-                  on:deleteClick="{(event) =>
-                    onShowDeleteTicketCategoryModalClick(
-                      event.detail.index,
-                    )}" />
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
-    </div>
+    <!-- Tickets Table -->
+    {#if data.categoryCount > 0}
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th class="align-middle" scope="col"
+                >{$_("pages.ticket-categories.category")}</th>
+              <th scope="col" class="align-middle"
+                >{$_("pages.ticket-categories.description")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each data.categories as category, index (category)}
+              <TicketCategoryRow
+                category="{category}"
+                index="{index}"
+                on:editClick="{(event) =>
+                  onShowEditCategoryButtonClick(event.detail.index)}"
+                on:deleteClick="{(event) =>
+                  onShowDeleteTicketCategoryModalClick(
+                    event.detail.index,
+                  )}" />
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/if}
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination

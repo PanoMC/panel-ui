@@ -26,44 +26,42 @@
         values: { count: data.categoryCount },
       })}
     </div>
-    <div class="card-body">
-      <!-- No Content -->
-      {#if data.categoryCount === 0}
-        <NoContent />
-      {/if}
+    <!-- No Content -->
+    {#if data.categoryCount === 0}
+      <NoContent />
+    {/if}
 
-      <!-- Tickets Table -->
-      {#if data.categoryCount > 0}
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                <th class="align-middle" scope="col"
-                  >{$_("pages.post-categories.category")}</th>
-                <th scope="col" class="align-middle"
-                  >{$_("pages.post-categories.description")}</th>
-                <th scope="col" class="align-middle"
-                  >{$_("pages.post-categories.url")}</th>
-                <th scope="col" class="d-none align-middle"
-                  >{$_("pages.post-categories.color")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each data.categories as category, index (category)}
-                <PostCategoryRow
-                  category="{category}"
-                  index="{index}"
-                  on:editClick="{(event) =>
-                    onShowEditCategoryButtonClick(event.detail.index)}"
-                  on:deleteClick="{(event) =>
-                    onShowDeletePostCategoryModalClick(event.detail.index)}" />
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
-    </div>
+    <!-- Tickets Table -->
+    {#if data.categoryCount > 0}
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th class="align-middle" scope="col"
+                >{$_("pages.post-categories.category")}</th>
+              <th scope="col" class="align-middle"
+                >{$_("pages.post-categories.description")}</th>
+              <th scope="col" class="align-middle"
+                >{$_("pages.post-categories.url")}</th>
+              <th scope="col" class="d-none align-middle"
+                >{$_("pages.post-categories.color")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each data.categories as category, index (category)}
+              <PostCategoryRow
+                category="{category}"
+                index="{index}"
+                on:editClick="{(event) =>
+                  onShowEditCategoryButtonClick(event.detail.index)}"
+                on:deleteClick="{(event) =>
+                  onShowDeletePostCategoryModalClick(event.detail.index)}" />
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/if}
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination

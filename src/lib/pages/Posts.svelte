@@ -66,48 +66,46 @@
         {/if}
       </CardFilters>
     </CardHeader>
-    <div class="card-body">
-      <!-- No Posts -->
-      {#if data.postCount === 0}
-        <NoContent />
-      {:else}
-        <!-- Posts Table -->
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                <th class="align-middle" scope="col"
-                  >{$_("pages.posts.table.title")}</th>
-                <th
-                  scope="col"
-                  class="align-middle"
-                  class:table-primary={data.categoryUrl}
-                  >{$_("pages.posts.table.category")}</th>
-                <th scope="col" class="align-middle"
-                  >{$_("pages.posts.table.views")}</th>
-                <th scope="col" class="align-middle"
-                  >{$_("pages.posts.table.author")}</th>
-                <th scope="col" class="align-middle"
-                  >{$_("pages.posts.table.last-update")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each data.posts as post, index (post)}
-                <PostRow
-                  post={post}
-                  pageType={data.pageType}
-                  buttonsLoading={buttonsLoading}
-                  on:moveToDraft={(event) => onMoveToDraft(event.detail.id)}
-                  on:publish={(event) => onPublishClick(event.detail.id)}
-                  on:deletePost={(event) =>
-                    onDeletePostClick(event.detail.post)} />
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
-    </div>
+    <!-- No Posts -->
+    {#if data.postCount === 0}
+      <NoContent />
+    {:else}
+      <!-- Posts Table -->
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th class="align-middle" scope="col"
+                >{$_("pages.posts.table.title")}</th>
+              <th
+                scope="col"
+                class="align-middle"
+                class:table-primary={data.categoryUrl}
+                >{$_("pages.posts.table.category")}</th>
+              <th scope="col" class="align-middle"
+                >{$_("pages.posts.table.views")}</th>
+              <th scope="col" class="align-middle"
+                >{$_("pages.posts.table.author")}</th>
+              <th scope="col" class="align-middle"
+                >{$_("pages.posts.table.last-update")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each data.posts as post, index (post)}
+              <PostRow
+                post={post}
+                pageType={data.pageType}
+                buttonsLoading={buttonsLoading}
+                on:moveToDraft={(event) => onMoveToDraft(event.detail.id)}
+                on:publish={(event) => onPublishClick(event.detail.id)}
+                on:deletePost={(event) =>
+                  onDeletePostClick(event.detail.post)} />
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/if}
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination
