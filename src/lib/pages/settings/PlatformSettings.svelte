@@ -673,7 +673,11 @@
 
           await invalidateAll();
 
-          await showToast("components.toasts.smtp-enabled-success");
+          if (smtpDisabled) {
+            await showToast("components.toasts.smtp-disabled-success");
+          } else {
+            await showToast("components.toasts.smtp-enabled-success");
+          }
 
           toggleSmtpLoading = false;
         },
