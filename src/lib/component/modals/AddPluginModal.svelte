@@ -26,7 +26,7 @@
           <div class="list-group list-group-horizontal">
             <button
               type="button"
-              class="btn list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-50 text-center"
+              class="btn list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-50 text-center shadow-none rounded-end-0"
               class:drag-over={dropZoneActive}
               style="height: 250px; cursor: pointer;"
               on:click={openFileDialog}
