@@ -46,7 +46,8 @@
             <a
               href="{base}/addons/store"
               class="list-group-item list-group-item-action d-flex flex-column align-items-center justify-content-center w-50"
-              style="height: 250px;">
+              style="height: 250px;"
+              on:click={hide}>
               <img
                 src="{base}/assets/img/logo.svg"
                 width="48"
