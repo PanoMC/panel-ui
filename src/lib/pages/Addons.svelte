@@ -3,15 +3,6 @@
   <!-- Action Menu -->
   <PageActions>
     <div slot="right" class="hstack gap-2">
-      <a href="{base}/addons/store" class="btn btn-outline-primary">
-        <img
-          src="{base}/assets/img/logo.svg"
-          width="20"
-          height="20"
-          class="me-2 bg-dark p-1 rounded"
-          alt="Pano" />
-        <small>Pano Mağaza'dan Yükle</small>
-      </a>
       <button
         type="button"
         class="btn btn-secondary ml-auto"
