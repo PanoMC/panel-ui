@@ -65,7 +65,7 @@
                       <img
                         height="82"
                         width="82"
-                        src="{API_URL}/panel/plugins/{plugin.id}/logo"
+                        src="/api/panel/plugins/{plugin.id}/logo"
                         class="bg-light animate__animated animate__zoomIn"
                         alt={plugin.id} />
                     </a>
