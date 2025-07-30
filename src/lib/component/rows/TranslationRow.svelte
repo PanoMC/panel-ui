@@ -6,9 +6,9 @@
         class="form-control font-monospace"
         id="KeyTranslation"
         readonly
-        value="{pluginId
-          ? translation.key.replace(`plugins.${pluginId}.`, '')
-          : translation.key}" />
+        value={pluginId
+          ? translation.key.replace(`plugins.${pluginId}.`, "")
+          : translation.key} />
       <label for="KeyTranslation">Key</label>
     </div>
   </div>
@@ -19,7 +19,7 @@
         class="form-control"
         id="OriginalTranslation"
         readonly
-        value="{translation.original}"></textarea>
+        value={translation.original}></textarea>
       <label for="OriginalTranslation">Original</label>
     </div>
   </div>
@@ -29,19 +29,21 @@
         rows="1"
         class="form-control"
         id="CustomTranslation"
-        bind:value="{translation.custom}"
-        on:input="{onCustomInputChange}"></textarea>
+        bind:value={translation.custom}
+        on:input={onCustomInputChange}></textarea>
       <label for="CustomTranslation">Custom</label>
     </div>
   </div>
   {#if translation.notExists}
-    <button
-      id="deleteButton"
-      type="button"
-      class="btn btn-sm btn-outline-danger"
-      on:click="{() => onDeleteClick(translation.key)}">
-      <i class="fa-solid fa-trash"></i>
-    </button>
+    <div class="col-auto">
+      <button
+        id="deleteButton"
+        type="button"
+        class="btn btn-sm btn-outline-danger h-100 shadow-none"
+        on:click={() => onDeleteClick(translation.key)}>
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
   {/if}
 </div>
 

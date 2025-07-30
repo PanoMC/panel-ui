@@ -1,19 +1,17 @@
 <div
   class="alert alert-warning animate__animated animate__slideInUp"
   role="alert">
-  <details open="{open}">
-    <summary class="card-title mb-0">
+  <details open={open}>
+    <summary>
       These translations are not used anymore, you can delete them:
     </summary>
-    <p class="card-text">
-      {#each translations as translation, index (translation)}
-        <TranslationRow
-          translation="{translation}"
-          pluginId="{pluginId}"
-          on:customInputChange="{handleCustomInputChange}"
-          on:deleteClick="{handleOnDeleteClick}" />
-      {/each}
-    </p>
+    {#each translations as translation, index (translation)}
+      <TranslationRow
+        translation={translation}
+        pluginId={pluginId}
+        on:customInputChange={handleCustomInputChange}
+        on:deleteClick={handleOnDeleteClick} />
+    {/each}
   </details>
 </div>
 
