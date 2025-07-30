@@ -87,3 +87,23 @@
 .markdown-renderer code {
   background-color: $light;
 }
+
+/* Hover effect */
+.drop-zone:hover {
+  background-color: $light;
+  border: 2px dashed #0d6efd;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Drag effect */
+.drag-over {
+  border: 2px dashed #0d6efd !important;
+}
+
+[data-bs-theme="light"] .drag-over {
+  background-color: #e9f5ff !important;
+}
+
+[data-bs-theme="dark"] .drag-over {
+  background-color: rgba($primary, 0.5) !important;
+}

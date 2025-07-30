@@ -24,15 +24,25 @@
         </div>
         <div class="modal-body">
           <div class="list-group list-group-horizontal">
-            <div
-              class="list-group-item d-flex flex-column align-items-center justify-content-center w-50"
-              style="height: 250px;">
+            <button
+              type="button"
+              class="btn list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-50 text-center"
+              class:drag-over={dropZoneActive}
+              style="height: 250px; cursor: pointer;"
+              on:click={openFileDialog}
+              on:drop={handleDrop}
+              on:dragover={handleDragOver}
+              on:dragleave={handleDragLeave}>
               <input
-                class="form-control"
-                id="formFileLg"
+                type="file"
                 accept=".jar"
-                type="file" />
-            </div>
+                class="d-none"
+                bind:this={fileInput}
+                on:change={handleFileChange} />
+              <i class="fas fa-upload fa-2x mb-2"></i>
+              <p class="mb-0">Dosyayı buraya sürükleyin<br/>veya tıklayın</p>
+            </button>
+
             <a
               href="{base}/addons/store"
               class="list-group-item list-group-item-action d-flex flex-column align-items-center justify-content-center w-50"
@@ -92,5 +102,40 @@
 
   export function onHide(newCallback) {
     hideCallback = newCallback;
+  }
+</script>
+
+<script>
+  let dropZoneActive = false;
+  let fileInput;
+
+  function handleDrop(event) {
+    event.preventDefault();
+    dropZoneActive = false;
+
+    const files = event.dataTransfer.files;
+    if (files.length > 0) {
+      fileInput.files = files;
+      // Yükleme işlemi burada başlatılabilir
+    }
+  }
+
+  function handleDragOver(event) {
+    event.preventDefault();
+    dropZoneActive = true;
+  }
+
+  function handleDragLeave() {
+    dropZoneActive = false;
+
+  }
+
+  function openFileDialog() {
+    fileInput.click();
+  }
+
+  function handleFileChange(event) {
+    const files = event.target.files;
+    // Dosya işlemi burada yapılabilir
   }
 </script>
