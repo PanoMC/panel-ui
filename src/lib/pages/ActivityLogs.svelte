@@ -1,17 +1,15 @@
 <div class="container vstack gap-3">
   <div class="card">
     <div class="card-header">{$_('pages.activity-logs.title')} ({data.meta.totalCount})</div>
-    <div class="card-body">
-      {#if data.meta.totalCount === 0}
-        <NoContent />
-      {:else}
-        <div class="list-group">
-          {#each data.logs as log, index (log)}
-            <ActivityLogRow log="{log}" on:click={onShowViewActivityLogModalClick}/>
-          {/each}
-        </div>
-      {/if}
-    </div>
+    {#if data.meta.totalCount === 0}
+      <NoContent />
+    {:else}
+      <div class="list-group list-group-flush">
+        {#each data.logs as log, index (log)}
+          <ActivityLogRow log="{log}" on:click={onShowViewActivityLogModalClick}/>
+        {/each}
+      </div>
+    {/if}
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination
