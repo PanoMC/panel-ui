@@ -89,6 +89,7 @@ jobs:
             "version": "v${{ needs.get-next-version.outputs.new_tag_version }}",
             "author": "Pano MC",
             "license": "MIT",
+            "sourceUrl": "https://github.com/PanoMC/panel-ui",
             "panoVersion": "local-build"
           }
           EOF
