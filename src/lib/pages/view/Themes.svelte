@@ -15,7 +15,7 @@
 
 <div class="row">
   <div class="col-xl-4 col-md-6">
-    <a href="#" title={$_("buttons.view")}>
+    <a href="/panel/view/detail/vanilla-theme" title={$_("buttons.view")}>
       <div class="card text-white position-relative overflow-hidden">
         <img
           src="{base}/assets/img/vanilla.png"
