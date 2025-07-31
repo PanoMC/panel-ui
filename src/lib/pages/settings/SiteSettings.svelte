@@ -6,19 +6,17 @@
   <div class="card-body animate__animated animate__fadeIn">
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteTitle"
-      >{$_("pages.settings.site-settings.inputs.website-name.label")}</label
-      >
+        >{$_("pages.settings.site-settings.inputs.website-name.label")}</label>
       <div class="col-md-6">
         <input
-          bind:value="{data.websiteName}"
+          bind:value={data.websiteName}
           aria-describedby="siteTitle"
           class="form-control"
-          placeholder="{$_(
-            'pages.settings.site-settings.inputs.website-name.placeholder',
-          )}"
+          placeholder={$_(
+            "pages.settings.site-settings.inputs.website-name.placeholder",
+          )}
           id="siteTitle"
-          type="text"
-        />
+          type="text" />
       </div>
     </div>
     <div class="row mb-3">
@@ -27,12 +25,11 @@
       </label>
       <div class="col-md-6">
         <textarea
-          bind:value="{data.websiteDescription}"
+          bind:value={data.websiteDescription}
           aria-describedby="siteDesc"
           class="form-control"
           id="siteDesc"
-          rows="2"
-        ></textarea>
+          rows="2"></textarea>
       </div>
     </div>
 
@@ -47,8 +44,7 @@
           placeholder="play.server.com"
           type="text"
           name="ipAddress"
-          bind:value="{data.serverIpAddress}"
-        />
+          bind:value={data.serverIpAddress} />
       </div>
     </div>
 
@@ -63,8 +59,7 @@
           placeholder="1.8.x"
           type="text"
           name="serverGameVersion"
-          bind:value="{data.serverGameVersion}"
-        />
+          bind:value={data.serverGameVersion} />
       </div>
     </div>
 
@@ -79,8 +74,7 @@
           placeholder="support@{data.websiteName}.com"
           type="email"
           name="supportEmailAddress"
-          bind:value="{data.supportEmail}"
-        />
+          bind:value={data.supportEmail} />
       </div>
     </div>
     <div class="row mb-3">
@@ -88,28 +82,23 @@
         {$_("pages.settings.site-settings.inputs.keywords.label")}
       </label>
       <div class="col-md-6">
-        <form on:submit|preventDefault="{addKeyWord}">
+        <form on:submit|preventDefault={addKeyWord}>
           <input
             id="siteKeywords"
             class="form-control mb-3"
-            class:border-danger="{keywordInputError}"
-            placeholder="{$_(
-              'pages.settings.site-settings.inputs.keywords.placeholder',
-            )}"
+            class:border-danger={keywordInputError}
+            placeholder={$_(
+              "pages.settings.site-settings.inputs.keywords.placeholder",
+            )}
             type="text"
             name="keyword"
-            bind:value="{keyword}"
-          />
+            bind:value={keyword} />
         </form>
         {#each data.keywords as keyword, index (keyword)}
           <a
-            use:tooltip="{[
-              $_('buttons.remove'),
-              { placement: 'bottom' },
-            ]}"
+            use:tooltip={[$_("buttons.remove"), { placement: "bottom" }]}
             href="javascript:void(0);"
-            on:click="{() => removeKeyWord(index)}"
-          >
+            on:click={() => removeKeyWord(index)}>
             <span class="badge rounded-pill bg-light link-primary">
               {keyword}
             </span>
@@ -126,31 +115,27 @@
       <div class="col-md-6">
         <div
           class="position-relative d-inline-block"
-          style="width: 48px; height: 48px;"
-        >
+          style="width: 64px; height: 64px;">
           <img
-            alt="{$_('pages.settings.site-settings.inputs.favicon.select')}"
-            src="{favicon}"
-            class="rounded shadow-sm w-100 h-100 border"
-          />
+            alt={$_("pages.settings.site-settings.inputs.favicon.select")}
+            src={favicon}
+            class="border rounded w-100 h-100" />
           <button
             type="button"
-            class="btn btn-sm btn-light position-absolute top-0 end-0 translate-middle p-1 border rounded-circle"
+            class="btn btn-sm btn-light link-primary border border-primary position-absolute top-0 start-100 translate-middle"
             on:click={() => faviconInput.click()}
-            title="{$_('buttons.change')}"
-          >
-            <i class="fas fa-pencil"></i>
+            title={$_("buttons.change")}>
+            <i class="fas fa-pen "></i>
           </button>
         </div>
         <input
           class="d-none"
           id="siteFavicon"
           type="file"
-          bind:files="{faviconFiles}"
-          on:change="{onFaviconChange}"
-          bind:this="{faviconInput}"
-          accept="image/*"
-        />
+          bind:files={faviconFiles}
+          on:change={onFaviconChange}
+          bind:this={faviconInput}
+          accept="image/*" />
         <small class="text-muted d-block mt-2">
           {$_("pages.settings.site-settings.inputs.favicon.helper")}
         </small>
@@ -164,31 +149,31 @@
       </label>
       <div class="col-md-6">
         <div class="position-relative w-100" style="max-width: 300px;">
-          <div class="ratio ratio-16x9 border rounded shadow-sm overflow-hidden">
+          <div
+            class="ratio ratio-16x9 border rounded overflow-hidden">
             <img
-              src="{websiteLogo}"
+              src={websiteLogo}
               class="object-fit-contain w-100 h-100"
-              alt="{$_('pages.settings.site-settings.inputs.website-logo.server-icon')}"
-            />
+              alt={$_(
+                "pages.settings.site-settings.inputs.website-logo.server-icon",
+              )} />
           </div>
           <button
             type="button"
-            class="btn btn-sm btn-light position-absolute top-0 end-0 translate-middle p-1 border rounded-circle"
+            class="btn btn-sm btn-light link-primary border-primary position-absolute top-0 start-100 translate-middle"
             on:click={() => websiteLogoInput.click()}
-            title="{$_('buttons.change')}"
-          >
-            <i class="fas fa-pencil"></i>
+            title={$_("buttons.change")}>
+            <i class="fas fa-pencil "></i>
           </button>
         </div>
         <input
           class="d-none"
           id="siteLogo"
           type="file"
-          bind:files="{websiteLogoFiles}"
-          on:change="{onWebsiteLogoChange}"
-          bind:this="{websiteLogoInput}"
-          accept="image/*"
-        />
+          bind:files={websiteLogoFiles}
+          on:change={onWebsiteLogoChange}
+          bind:this={websiteLogoInput}
+          accept="image/*" />
         <small class="text-muted d-block mt-2">
           {$_("pages.settings.site-settings.inputs.website-logo.helper")}
         </small>
@@ -197,15 +182,13 @@
 
     <button
       class="btn btn-secondary"
-      class:disabled="{saveButtonLoading || isSaveButtonDisabled}"
-      aria-disabled="{saveButtonLoading || isSaveButtonDisabled}"
-      on:click="{save}"
-    >
+      class:disabled={saveButtonLoading || isSaveButtonDisabled}
+      aria-disabled={saveButtonLoading || isSaveButtonDisabled}
+      on:click={save}>
       {$_("buttons.save")}
     </button>
   </div>
 </div>
-
 
 <script context="module">
   import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
@@ -286,7 +269,7 @@
       favicon = e.target.result;
     };
 
-    selectedFaviconFiles = faviconFiles
+    selectedFaviconFiles = faviconFiles;
   }
 
   function onWebsiteLogoChange(event) {
@@ -299,7 +282,7 @@
       websiteLogo = e.target.result;
     };
 
-    selectedWebsiteLogoFiles = websiteLogoFiles
+    selectedWebsiteLogoFiles = websiteLogoFiles;
   }
 
   function save() {
@@ -359,8 +342,8 @@
             };
           }
 
-          selectedFaviconFiles = []
-          selectedWebsiteLogoFiles = []
+          selectedFaviconFiles = [];
+          selectedWebsiteLogoFiles = [];
 
           faviconInput.value = "";
           websiteLogoInput.value = "";

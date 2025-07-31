@@ -147,8 +147,9 @@
                 </form>
               </div>
             </li>
-            <li class="list-group-item p-0 d-flex justify-content-center align-items-center" class:drag-over={dropZoneActive}
-            >
+            <li
+              class="list-group-item p-0 d-flex justify-content-center align-items-center"
+              class:drag-over={dropZoneActive}>
               {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
                 <div class="thumbnail-wrapper">
                   <button
@@ -169,7 +170,7 @@
                   {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
                     <button
                       type="button"
-                      class="clear-button btn btn-link btn-danger"
+                      class="btn btn-sm btn-light link-danger border-danger position-absolute top-0 start-100 translate-middle"
                       on:click={onRemoveThumbnailClick}>
                       <i class="fas fa-trash"></i>
                     </button>
@@ -195,7 +196,7 @@
                 bind:files={thumbnailFiles}
                 on:change={onThumbnailChange}
                 bind:this={thumbnailInput}
-                accept="image/*"/>
+                accept="image/*" />
             </li>
           </ul>
         </div>
@@ -338,7 +339,7 @@
     const files = event.dataTransfer.files;
 
     if (files.length > 0) {
-      handleThumbnailChange(files[0])
+      handleThumbnailChange(files[0]);
     }
   }
 
@@ -357,7 +358,7 @@
 
     const newImage = event.target.files[0];
 
-    handleThumbnailChange(newImage)
+    handleThumbnailChange(newImage);
   }
 
   function handleThumbnailChange(newImage) {
