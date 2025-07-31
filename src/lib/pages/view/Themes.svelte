@@ -13,43 +13,103 @@
   </div>
 </PageActions>
 
-<div class="row">
-  <div class="col-xl-4 col-md-6">
-    <a href="/panel/view/detail/vanilla-theme" title={$_("buttons.view")}>
-      <div class="card text-white position-relative overflow-hidden">
-        <img
-          src="{base}/assets/img/vanilla.png"
-          class="card-img"
-          alt="Vanilla Theme Screenshot" />
-        <div
-          class="card-img-overlay d-flex flex-column justify-content-end p-3"
-          style="background: linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0));">
-          <h5 class="card-title">Vanilla Theme</h5>
-          <p class="card-subtitle text-light">
-            by <strong>Pano</strong>
-          </p>
-          <div class="d-flex justify-content-between align-items-center">
-            <small class="font-monospace user-select-all">v1.2.0</small>
-            <span class="badge bg-success">Active</span>
-          </div>
+<div class="card">
+  <div class="card-body">
+
+    {#if data.themes.length === 0}
+      <NoContent />
+    {/if}
+
+    <div class="row">
+      {#each data.themes as theme, index (theme)}
+        <div class="col-xl-4 col-md-6">
+          <a href="/panel/view/detail/vanilla-theme" title={$_("buttons.view")}>
+            <div class="card text-white position-relative overflow-hidden">
+              <img
+                src="{base}/assets/img/vanilla.png"
+                class="card-img"
+                alt="Vanilla Theme Screenshot" />
+              <div
+                class="card-img-overlay d-flex flex-column justify-content-end p-3"
+                style="background: linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0));">
+                <h5 class="card-title">{theme.id}<VerifiedStatus status="{theme.verifyStatus}"/></h5>
+                <p class="card-subtitle text-light">
+                  by <strong>{theme.author}</strong>
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="font-monospace user-select-all">{theme.version}</small>
+                  {#if theme.active}
+                    <span class="badge bg-success">Active</span>
+                  {/if}
+                </div>
+              </div>
+            </div>
+          </a>
         </div>
-      </div>
-    </a>
+      {/each}
+    </div>
   </div>
 </div>
 
 <ConfirmDeleteThemeModal />
 
+<script context="module">
+  import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
+  import { error } from "@sveltejs/kit";
+
+  export const PageTypes = Object.freeze({
+    ALL: "ALL",
+    ACTIVE: "ACTIVE",
+    DISABLED: "DISABLED",
+  });
+
+  export const DefaultPageType = PageTypes.ALL;
+
+  /**
+   * @type {import('@sveltejs/kit').PageLoad}
+   */
+  export async function load(event) {
+    const {
+      parent,
+      url: { searchParams },
+    } = event;
+    await parent();
+
+    const status = searchParams.get("status") || DefaultPageType;
+
+    if (!Object.values(PageTypes).includes(status)) {
+      throw error(404, "PAGE_NOT_FOUND");
+    }
+
+    const queryParams = buildQueryParams({ status });
+    const body = await ApiUtil.get({
+      path: `/api/panel/themes` + queryParams,
+      request: event,
+    });
+
+    if (body.error) {
+      throw error(500, body);
+    }
+
+    return { pageType: status, themes: body.data, meta: body.meta };
+  }
+</script>
+
 <script>
   import { getContext } from "svelte";
+  import { _ } from "svelte-i18n";
 
   import { base } from "$app/paths";
-  import { _ } from "svelte-i18n";
 
   import ConfirmDeleteThemeModal from "$lib/component/modals/ConfirmDeleteThemeModal.svelte";
   import CardMenuItem from "$lib/component/CardMenuItem.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
   import CardMenu from "$lib/component/CardMenu.svelte";
+  import NoContent from "$lib/component/NoContent.svelte";
+  import tooltip from "$lib/tooltip.util";
+  import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
+
+  export let data;
 
   const pageTitle = getContext("pageTitle");
 
