@@ -6,24 +6,30 @@
     </a>
 
     <div class="hstack gap-2" slot="right">
-      <button
-        aria-label="Uninstall Theme"
-        class="btn btn-link text-danger"
-        type="button"
-        on:click={uninstallTheme}
-        title="Temayı Kaldır">
-        <i class="fas fa-trash"></i>
-      </button>
-      <a
-        href={`/themes/${theme.name}`}
-        target="_blank"
-        class="btn btn-outline-primary">
-        <i class="fas fa-store me-2"></i>
-        Mağazada Göster
-      </a>
-      <button disabled class="btn btn-secondary" on:click={makeDefault}>
-        Kullan
-      </button>
+      {#if theme.installedBy !== "SYSTEM"}
+        <button
+          aria-label="Uninstall Theme"
+          class="btn btn-link text-danger"
+          type="button"
+          on:click={uninstallTheme}
+          title="Temayı Kaldır">
+          <i class="fas fa-trash"></i>
+        </button>
+      {/if}
+      {#if theme.verifyStatus !== "UNKNOWN"}
+        <a
+          href={`${PANO_WEBSITE_URL}/themes/${theme.id}`}
+          target="_blank"
+          class="btn btn-outline-primary">
+          <i class="fas fa-store me-2"></i>
+          Mağazada Göster
+        </a>
+      {/if}
+      {#if !theme.active}
+        <button disabled class="btn btn-secondary" on:click={makeDefault}>
+          Kullan
+        </button>
+      {/if}
     </div>
   </PageActions>
 
@@ -36,10 +42,10 @@
         class="carousel slide rounded overflow-hidden"
         data-bs-ride="carousel">
         <div class="carousel-inner">
-          {#each theme.screenshots as src, i}
+          {#each theme.screenshots.length === 0 ? ['screenshot.png'] : theme.screenshots as src, i}
             <div class={"carousel-item" + (i === 0 ? " active" : "")}>
               <img
-                src={src}
+                src={`/api/panel/themes/${theme.id}/screenshots/${src}`}
                 class="d-block w-100"
                 alt={`Screenshot ${i + 1}`} />
             </div>
@@ -69,8 +75,8 @@
         <!-- Title & Status -->
         <div>
           <div class="d-flex justify-content-between align-items-start">
-            <h2>{theme.name}</h2>
-            {#if theme.isActive}
+            <h2>{theme.title}</h2>
+            {#if theme.active}
               <span class="badge text-bg-secondary">Kullanılan Tema</span>
             {:else}
               <button
@@ -89,7 +95,7 @@
             class="list-group-item d-flex justify-content-between align-items-center">
             <strong>ID:</strong>
             <span class="font-monospace user-select-all">
-              {theme.id || "Bilinmiyor"}</span>
+              {theme.id}</span>
           </div>
           <li
             class="list-group-item d-flex justify-content-between align-items-center">
@@ -107,13 +113,13 @@
           <div
             class="list-group-item d-flex justify-content-between align-items-center">
             <strong>Lisans:</strong>
-            {theme.license || "Bilinmiyor"}
+            {theme.license}
           </div>
           <div
             class="list-group-item d-flex justify-content-between align-items-center">
             <strong>Kaynak:</strong>
             <a href="#" target="_blank">
-              {theme.source || "Bilinmiyor"}
+              {theme.sourceUrl || "Unknown"}
               <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
             </a>
           </div>
@@ -125,25 +131,60 @@
 </div>
 </div>
 
+<script context="module">
+  import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
+  import { error } from "@sveltejs/kit";
+
+  /**
+   * @type {import('@sveltejs/kit').PageLoad}
+   */
+  export async function load(event) {
+    const {
+      parent,
+      url: { searchParams },
+    } = event;
+    await parent();
+
+    const themeId = event.params.themeId;
+
+    const body = await ApiUtil.get({
+      path: `/api/panel/themes/${themeId}`,
+      request: event,
+    });
+
+    if (body.error === "NOT_FOUND") {
+      throw error(404, body.error);
+    }
+
+    return { theme: body.data };
+  }
+</script>
+
 <script>
   import PageActions from "$lib/component/PageActions.svelte";
   import { getContext } from "svelte";
+  import { PANO_WEBSITE_URL } from "$lib/variables.js";
 
   const pageTitle = getContext("pageTitle");
+
+  export let data;
+
+  const {theme} = data;
+
   pageTitle.set("Tema Detayı");
 
-  export let theme = {
-    name: "Vanilla Theme",
-    description: "Pano için sade ve özelleştirilebilir bir tema.",
-    version: "1.0.0",
-    author: "Ahmet Enes Duruer",
-    screenshots: [
-      "https://placehold.co/600x400?text=Screenshot+1",
-      "https://placehold.co/600x400?text=Screenshot+2",
-    ],
-    installed: true,
-    isActive: true,
-  };
+  // export let theme = {
+  //   name: "Vanilla Theme",
+  //   description: "Pano için sade ve özelleştirilebilir bir tema.",
+  //   version: "1.0.0",
+  //   author: "Ahmet Enes Duruer",
+  //   screenshots: [
+  //     "https://placehold.co/600x400?text=Screenshot+1",
+  //     "https://placehold.co/600x400?text=Screenshot+2",
+  //   ],
+  //   installed: true,
+  //   isActive: true,
+  // };
 
   function uninstallTheme() {
     alert(`'${theme.name}' teması kaldırıldı!`);
