@@ -105,7 +105,7 @@
           <li
             class="list-group-item d-flex justify-content-between align-items-center">
             <strong>Yazar:</strong>
-            <a target="_blank" href="#"
+            <a target="_blank" href="{PANO_WEBSITE_URL}/users/{theme.author}"
               >{theme.author}
               <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
             </a>
@@ -118,7 +118,7 @@
           <div
             class="list-group-item d-flex justify-content-between align-items-center">
             <strong>Kaynak:</strong>
-            <a href="#" target="_blank">
+            <a href="{theme.sourceUrl ? theme.sourceUrl : false}" target="_blank">
               {theme.sourceUrl || "Unknown"}
               <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
             </a>
