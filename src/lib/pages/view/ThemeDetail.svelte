@@ -21,6 +21,9 @@
         <i class="fas fa-store me-2"></i>
         Mağazada Göster
       </a>
+      <button disabled class="btn btn-secondary" on:click={makeDefault}>
+        Kullan
+      </button>
     </div>
   </PageActions>
 
@@ -66,7 +69,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <h2>{theme.name}</h2>
             {#if theme.isActive}
-              <span class="badge text-bg-primary">Varsayılan Tema</span>
+              <span class="badge text-bg-secondary">Kullanılan Tema</span>
             {:else}
               <button
                 class="btn btn-sm btn-outline-primary"
@@ -80,14 +83,38 @@
 
         <!-- Metadata -->
         <ul class="list-group">
-          <li class="list-group-item">
+          <div
+            class="list-group-item d-flex justify-content-between align-items-center">
+            <strong>ID:</strong>
+            <span class="font-monospace user-select-all">
+              {theme.id || "Bilinmiyor"}</span>
+          </div>
+          <li
+            class="list-group-item d-flex justify-content-between align-items-center">
             <strong>Sürüm:</strong>
-            {theme.version}
+            <span class="user-select-all font-monospace">{theme.version}</span>
           </li>
-          <li class="list-group-item">
+          <li
+            class="list-group-item d-flex justify-content-between align-items-center">
             <strong>Yazar:</strong>
-            {theme.author}
+            <a target="_blank" href="#"
+              >{theme.author}
+              <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+            </a>
           </li>
+          <div
+            class="list-group-item d-flex justify-content-between align-items-center">
+            <strong>Lisans:</strong>
+            {theme.license || "Bilinmiyor"}
+          </div>
+          <div
+            class="list-group-item d-flex justify-content-between align-items-center">
+            <strong>Kaynak:</strong>
+            <a href="#" target="_blank">
+              {theme.source || "Bilinmiyor"}
+              <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+            </a>
+          </div>
         </ul>
       </div>
     </div>

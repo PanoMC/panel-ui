@@ -34,7 +34,8 @@
     "show-all": "Show All",
     "installed": "Installed",
     "clear": "Clear",
-    "change": "Change"
+    "change": "Change",
+    "refresh": "Refresh"
   },
   "pages": {
     "activity-logs": {

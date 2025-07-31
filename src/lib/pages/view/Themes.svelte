@@ -6,7 +6,13 @@
     <CardMenuItem href="/view/theme-options">Tema Seçenekleri</CardMenuItem>
   </CardMenu>
   <div slot="right" class="hstack gap-2">
-    <button type="button" class="btn btn-secondary ml-auto">
+    <button
+      type="button"
+      class="btn btn-primary"
+      use:tooltip={[$_("buttons.refresh"), { placement: "bottom" }]}>
+      <i class="fas fa-sync"></i>
+    </button>
+    <button type="button" class="btn btn-secondary">
       <i class="fas fa-plus me-2"></i>
       Tema Yükle
     </button>
@@ -15,7 +21,6 @@
 
 <div class="card">
   <div class="card-body">
-
     {#if data.themes.length === 0}
       <NoContent />
     {/if}
@@ -32,12 +37,15 @@
               <div
                 class="card-img-overlay d-flex flex-column justify-content-end p-3"
                 style="background: linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0));">
-                <h5 class="card-title">{theme.id}<VerifiedStatus status="{theme.verifyStatus}"/></h5>
+                <h5 class="card-title">
+                  {theme.id}<VerifiedStatus status={theme.verifyStatus} />
+                </h5>
                 <p class="card-subtitle text-light">
                   by <strong>{theme.author}</strong>
                 </p>
                 <div class="d-flex justify-content-between align-items-center">
-                  <small class="font-monospace user-select-all">{theme.version}</small>
+                  <small class="font-monospace user-select-all"
+                    >{theme.version}</small>
                   {#if theme.active}
                     <span class="badge bg-success">Active</span>
                   {/if}

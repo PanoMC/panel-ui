@@ -34,7 +34,8 @@
     "show-all": "Tümünü Göster",
     "installed": "Yüklü",
     "clear": "Temizle",
-    "change": "Değiştir"
+    "change": "Değiştir",
+    "refresh": "Yenile"
   },
   "pages": {
     "activity-logs": {
