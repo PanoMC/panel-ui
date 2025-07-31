@@ -6,7 +6,8 @@
   <div class="card-body animate__animated animate__fadeIn">
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteTitle"
-        >{$_("pages.settings.site-settings.inputs.website-name.label")}</label>
+      >{$_("pages.settings.site-settings.inputs.website-name.label")}</label
+      >
       <div class="col-md-6">
         <input
           bind:value="{data.websiteName}"
@@ -16,7 +17,8 @@
             'pages.settings.site-settings.inputs.website-name.placeholder',
           )}"
           id="siteTitle"
-          type="text" />
+          type="text"
+        />
       </div>
     </div>
     <div class="row mb-3">
@@ -29,7 +31,8 @@
           aria-describedby="siteDesc"
           class="form-control"
           id="siteDesc"
-          rows="2"></textarea>
+          rows="2"
+        ></textarea>
       </div>
     </div>
 
@@ -44,7 +47,8 @@
           placeholder="play.server.com"
           type="text"
           name="ipAddress"
-          bind:value="{data.serverIpAddress}" />
+          bind:value="{data.serverIpAddress}"
+        />
       </div>
     </div>
 
@@ -59,7 +63,8 @@
           placeholder="1.8.x"
           type="text"
           name="serverGameVersion"
-          bind:value="{data.serverGameVersion}" />
+          bind:value="{data.serverGameVersion}"
+        />
       </div>
     </div>
 
@@ -74,7 +79,8 @@
           placeholder="support@{data.websiteName}.com"
           type="email"
           name="supportEmailAddress"
-          bind:value="{data.supportEmail}" />
+          bind:value="{data.supportEmail}"
+        />
       </div>
     </div>
     <div class="row mb-3">
@@ -92,7 +98,8 @@
             )}"
             type="text"
             name="keyword"
-            bind:value="{keyword}" />
+            bind:value="{keyword}"
+          />
         </form>
         {#each data.keywords as keyword, index (keyword)}
           <a
@@ -101,7 +108,8 @@
               { placement: 'bottom' },
             ]}"
             href="javascript:void(0);"
-            on:click="{() => removeKeyWord(index)}">
+            on:click="{() => removeKeyWord(index)}"
+          >
             <span class="badge rounded-pill bg-light link-primary">
               {keyword}
             </span>
@@ -109,52 +117,79 @@
         {/each}
       </div>
     </div>
+
+    <!-- Favicon Bölümü -->
     <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="siteFavicon"
-        >{$_("pages.settings.site-settings.inputs.favicon.label")}
+      <label class="col-md-6 col-form-label" for="siteFavicon">
+        {$_("pages.settings.site-settings.inputs.favicon.label")}
       </label>
-      <div class="col-md-6 vstack gap-2">
-        <img
-          alt="{$_('pages.settings.site-settings.inputs.favicon.select')}"
-          width="48"
-          height="48"
-          src="{favicon}" />
+      <div class="col-md-6">
+        <div
+          class="position-relative d-inline-block"
+          style="width: 48px; height: 48px;"
+        >
+          <img
+            alt="{$_('pages.settings.site-settings.inputs.favicon.select')}"
+            src="{favicon}"
+            class="rounded shadow-sm w-100 h-100 border"
+          />
+          <button
+            type="button"
+            class="btn btn-sm btn-light position-absolute top-0 end-0 translate-middle p-1 border rounded-circle"
+            on:click={() => faviconInput.click()}
+            title="{$_('buttons.change')}"
+          >
+            <i class="fas fa-pencil"></i>
+          </button>
+        </div>
         <input
-          class="form-control-file"
+          class="d-none"
           id="siteFavicon"
           type="file"
           bind:files="{faviconFiles}"
           on:change="{onFaviconChange}"
           bind:this="{faviconInput}"
-          value=""
-          accept="image/*"/>
-        <small class="text-muted">
+          accept="image/*"
+        />
+        <small class="text-muted d-block mt-2">
           {$_("pages.settings.site-settings.inputs.favicon.helper")}
         </small>
       </div>
     </div>
 
+    <!-- Website Logo Bölümü -->
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteLogo">
         {$_("pages.settings.site-settings.inputs.website-logo.label")}
       </label>
-      <div class="col-md-6 vstack gap-2">
-        <img
-          alt="{$_(
-            'pages.settings.site-settings.inputs.website-logo.server-icon',
-          )}"
-          class="img-fluid w-50 h-50"
-          src="{websiteLogo}" />
+      <div class="col-md-6">
+        <div class="position-relative w-100" style="max-width: 300px;">
+          <div class="ratio ratio-16x9 border rounded shadow-sm overflow-hidden">
+            <img
+              src="{websiteLogo}"
+              class="object-fit-contain w-100 h-100"
+              alt="{$_('pages.settings.site-settings.inputs.website-logo.server-icon')}"
+            />
+          </div>
+          <button
+            type="button"
+            class="btn btn-sm btn-light position-absolute top-0 end-0 translate-middle p-1 border rounded-circle"
+            on:click={() => websiteLogoInput.click()}
+            title="{$_('buttons.change')}"
+          >
+            <i class="fas fa-pencil"></i>
+          </button>
+        </div>
         <input
-          class="form-control-file"
+          class="d-none"
           id="siteLogo"
           type="file"
           bind:files="{websiteLogoFiles}"
           on:change="{onWebsiteLogoChange}"
           bind:this="{websiteLogoInput}"
-          value=""
-          accept="image/*" />
-        <small class="text-muted">
+          accept="image/*"
+        />
+        <small class="text-muted d-block mt-2">
           {$_("pages.settings.site-settings.inputs.website-logo.helper")}
         </small>
       </div>
@@ -165,10 +200,12 @@
       class:disabled="{saveButtonLoading || isSaveButtonDisabled}"
       aria-disabled="{saveButtonLoading || isSaveButtonDisabled}"
       on:click="{save}"
-      >{$_("buttons.save")}
+    >
+      {$_("buttons.save")}
     </button>
   </div>
 </div>
+
 
 <script context="module">
   import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
