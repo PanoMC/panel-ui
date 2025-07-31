@@ -4,7 +4,7 @@
     class="row justify-content-between align-items-center mb-3 animate__animated animate__slideInUp"
   >
     <div class="col-auto">
-      <a href="/panel/view" class="btn btn-link" role="button">
+      <a href="/panel/addons" class="btn btn-link" role="button">
         <i class="fas fa-arrow-left me-2"></i>
         Eklentiler
       </a>
@@ -82,8 +82,38 @@
   </div>
 </div>
 
+<script context="module">
+  import ApiUtil from "$lib/api.util.js";
+  import { error } from "@sveltejs/kit";
+
+  /**
+   * @type {import('@sveltejs/kit').PageLoad}
+   */
+  export async function load(event) {
+    const {
+      parent,
+    } = event;
+    await parent();
+
+    const addonId = event.params.addonId;
+
+    const body = await ApiUtil.get({
+      path: `/api/panel/plugins/${addonId}`,
+      request: event,
+    });
+
+    if (body.error === "NOT_FOUND") {
+      throw error(404, body.error);
+    }
+
+    return { addon: body.data };
+  }
+</script>
+
 <script>
   import { getContext } from "svelte";
+
+  export let data;
 
   const pageTitle = getContext("pageTitle");
   pageTitle.set("Eklenti Detayı");
