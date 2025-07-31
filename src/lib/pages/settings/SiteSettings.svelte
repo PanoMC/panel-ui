@@ -85,7 +85,7 @@
         <form on:submit|preventDefault={addKeyWord}>
           <input
             id="siteKeywords"
-            class="form-control mb-3"
+            class="form-control mb-2"
             class:border-danger={keywordInputError}
             placeholder={$_(
               "pages.settings.site-settings.inputs.keywords.placeholder",
@@ -96,6 +96,7 @@
         </form>
         {#each data.keywords as keyword, index (keyword)}
           <a
+            class="mb-3 d-inline-block"
             use:tooltip={[$_("buttons.remove"), { placement: "bottom" }]}
             href="javascript:void(0);"
             on:click={() => removeKeyWord(index)}>
@@ -125,7 +126,7 @@
             class="btn btn-sm btn-light link-primary border border-primary position-absolute top-0 start-100 translate-middle"
             on:click={() => faviconInput.click()}
             title={$_("buttons.change")}>
-            <i class="fas fa-pen "></i>
+            <i class="fas fa-pen"></i>
           </button>
         </div>
         <input
@@ -149,8 +150,7 @@
       </label>
       <div class="col-md-6">
         <div class="position-relative w-100" style="max-width: 300px;">
-          <div
-            class="ratio ratio-16x9 border rounded overflow-hidden">
+          <div class="ratio ratio-16x9 border rounded overflow-hidden">
             <img
               src={websiteLogo}
               class="object-fit-contain w-100 h-100"
@@ -163,7 +163,7 @@
             class="btn btn-sm btn-light link-primary border-primary position-absolute top-0 start-100 translate-middle"
             on:click={() => websiteLogoInput.click()}
             title={$_("buttons.change")}>
-            <i class="fas fa-pencil "></i>
+            <i class="fas fa-pencil"></i>
           </button>
         </div>
         <input
