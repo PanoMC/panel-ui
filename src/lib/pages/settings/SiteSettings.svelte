@@ -126,7 +126,8 @@
           bind:files="{faviconFiles}"
           on:change="{onFaviconChange}"
           bind:this="{faviconInput}"
-          value="" />
+          value=""
+          accept="image/*"/>
         <small class="text-muted">
           {$_("pages.settings.site-settings.inputs.favicon.helper")}
         </small>
@@ -151,7 +152,8 @@
           bind:files="{websiteLogoFiles}"
           on:change="{onWebsiteLogoChange}"
           bind:this="{websiteLogoInput}"
-          value="" />
+          value=""
+          accept="image/*" />
         <small class="text-muted">
           {$_("pages.settings.site-settings.inputs.website-logo.helper")}
         </small>
@@ -212,6 +214,10 @@
 
   let faviconFiles = null;
   let websiteLogoFiles = null;
+
+  let selectedFaviconFiles = [];
+  let selectedWebsiteLogoFiles = [];
+
   let faviconInput;
   let websiteLogoInput;
 
@@ -225,8 +231,8 @@
     data.oldSettings.serverGameVersion === data.serverGameVersion &&
     JSON.stringify(data.oldSettings.keywords) ===
       JSON.stringify(data.keywords) &&
-    faviconFiles?.length === 0 &&
-    websiteLogoFiles?.length === 0;
+    selectedFaviconFiles.length === 0 &&
+    selectedWebsiteLogoFiles.length === 0;
 
   let keywordInputError = false;
 
@@ -242,6 +248,8 @@
     reader.onload = (e) => {
       favicon = e.target.result;
     };
+
+    selectedFaviconFiles = faviconFiles
   }
 
   function onWebsiteLogoChange(event) {
@@ -253,6 +261,8 @@
     reader.onload = (e) => {
       websiteLogo = e.target.result;
     };
+
+    selectedWebsiteLogoFiles = websiteLogoFiles
   }
 
   function save() {
@@ -312,8 +322,8 @@
             };
           }
 
-          faviconFiles = null;
-          websiteLogoFiles = null;
+          selectedFaviconFiles = []
+          selectedWebsiteLogoFiles = []
 
           faviconInput.value = "";
           websiteLogoInput.value = "";
