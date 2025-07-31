@@ -1,4 +1,7 @@
 <div class="card animate__animated animate__fadeIn">
+  <div class="card-header">
+    Minecraft
+  </div>
   <div class="card-body">
     <div class="row">
       <label class="col-md-4 col-form-label" for="loginIntergration">

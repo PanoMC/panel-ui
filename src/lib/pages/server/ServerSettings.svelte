@@ -1,9 +1,9 @@
 <!-- Server Settings Sub Page -->
 <div class="card animate__animated animate__fadeIn">
+  <div class="card-header">
+    {$selectedServer.name} ({$selectedServer.host}:{$selectedServer.port})
+  </div>
   <div class="card-body">
-    <h5 class="card-title">
-      {$selectedServer.name} ({$selectedServer.host}:{$selectedServer.port})
-    </h5>
     <div class="row mb-3">
       <label class="col-md-4 col-form-label" for="mainServer">
         {$_('pages.server.settings.main-server')}
@@ -14,24 +14,24 @@
             <i class="fa-solid fa-check me-2"></i> {$_('pages.server.settings.already-main-server', {values:{serverName: $selectedServer.name}})}
           </p>
         {:else}
-          <a
+          <button
             href="javascript:void(0);"
             on:click="{() => showMakeMainServerModal($selectedServer)}"
             class="btn btn-link ps-0"
-            ><i class="fa-solid fa-home me-2"></i> {$_('pages.server.settings.make-main-server')}</a>
+            ><i class="fa-solid fa-home me-2"></i> {$_('pages.server.settings.make-main-server')}</button>
 
           <small class="text-muted d-block"
             >{$_('pages.server.settings.main-server-info')}</small>
         {/if}
       </div>
     </div>
-    <div class="row py-3 rounded my-3 bg-danger bg-opacity-25">
+    <div class="row">
       <label class="col-md-4 col-form-label" for="removeServer">
         {$_('pages.server.settings.remove-server')}
       </label>
       <div class="col d-flex align-items-center">
-        <a href="javascript:void(0);" on:click={() => showRemoveServerModal($selectedServer)} class="btn btn-link link-danger ps-0"
-          ><i class="fa-solid fa-plug me-2"></i> {$_('pages.server.settings.disconnect')}</a>
+        <button type="button" on:click={() => showRemoveServerModal($selectedServer)} class="btn btn-outline-danger btn-sm"
+          ><i class="fa-solid fa-plug me-2"></i> {$_('pages.server.settings.disconnect')}</button>
       </div>
     </div>
   </div>

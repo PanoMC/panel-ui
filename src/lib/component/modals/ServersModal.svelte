@@ -27,15 +27,15 @@
               <div class="col">
                 <div class="card h-100">
                   <div class="card-body">
-                    <p class="card-text placeholder-glow">
+                    <div class="card-text placeholder-glow">
                       <span class="placeholder col-3"></span>
-                    </p>
-                    <h6 class="card-title placeholder-glow">
+                    </div>
+                    <div class="placeholder-glow">
                       <span class="placeholder col-7"></span>
-                    </h6>
-                    <p class="card-text placeholder-glow">
+                    </div>
+                    <div class="card-text placeholder-glow">
                       <span class="placeholder col-3"></span>
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -45,18 +45,29 @@
               <!-- Server Card -->
 
               <div class="col">
-                <div class="card">
+                <div class="card h-100">
                   <div class="card-header text-center">
                     <img
                       src={server.favicon
                         ? server.favicon
                         : base + "/assets/img/server-icon.png"}
-                      class="d-block mx-auto rounded mb-2"
+                      class="d-block mx-auto mb-2"
                       height="64"
                       width="64"
                       alt="" />
 
                     <div>
+                      <div
+                        class="badge text-bg-primary"
+                        class:text-bg-success={server.status === "ONLINE"}>
+                        <div
+                          use:tooltip={[
+                            $_("components.modals.servers.online"),
+                            { placement: "bottom" },
+                          ]}>
+                          {server.type} Velocity
+                        </div>
+                      </div>
                       {server.name}
 
                       {#if server.id === $mainServer.id}
@@ -66,28 +77,14 @@
                       {/if}
                     </div>
                   </div>
-                  <div class="card-body d-flex justify-content-center">
-                    <ul class="list-group list-group-horizontal">
-                      <li
-                        class="list-group-item"
-                        class:list-group-item-success={server.status ===
-                          "ONLINE"}>
-                        <span
-                          use:tooltip={[
-                            $_("components.modals.servers.online"),
-                            { placement: "bottom" },
-                          ]}>
-                          {server.type} Velocity
-                        </span>
-                      </li>
-                      <li class="list-group-item">
-                        {server.host}:{server.port}
-                      </li>
-                      <li class="list-group-item">
-                        {server.playerCount}/{server.maxPlayerCount}
-                      </li>
-                    </ul>
-                  </div>
+                  <ul class="list-group list-group-flush text-center">
+                    <li class="list-group-item">
+                      {server.host}:{server.port}
+                    </li>
+                    <li class="list-group-item">
+                      {server.playerCount}/{server.maxPlayerCount}
+                    </li>
+                  </ul>
                   <div class="card-footer d-flex justify-content-center">
                     <button
                       class:active={$selectedServer?.id === server.id}
