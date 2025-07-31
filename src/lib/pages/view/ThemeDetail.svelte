@@ -27,8 +27,10 @@
     </div>
   </PageActions>
 
-  <div class="row">
-    <div class="col-md-6">
+<div class="card">
+  <div class="card-body">
+      <div class="row g-3">
+    <div class="col-lg-6">
       <div
         id="themeCarousel"
         class="carousel slide rounded overflow-hidden"
@@ -62,7 +64,7 @@
       </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-lg-6">
       <div class="d-flex flex-column h-100 justify-content-between">
         <!-- Title & Status -->
         <div>
@@ -119,6 +121,8 @@
       </div>
     </div>
   </div>
+  </div>
+</div>
 </div>
 
 <script>

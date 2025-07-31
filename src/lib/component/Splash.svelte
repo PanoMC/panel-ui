@@ -29,7 +29,7 @@
       {$_('components.splash.errors.connection')}
     {/if}
     <button
-      class="btn btn-primary mt-3"
+      class="btn btn-secondary mt-3"
       on:click="{onResumeClick}"
       class:disabled="{$retryingNetworkErrors}">
       {$retryingNetworkErrors ? $_('components.splash.refreshing') : $_('components.splash.refresh')}
