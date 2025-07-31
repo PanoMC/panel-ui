@@ -31,7 +31,7 @@
           <a href="/panel/view/detail/vanilla-theme" title={$_("buttons.view")}>
             <div class="card text-white position-relative overflow-hidden">
               <img
-                src="{base}/assets/img/vanilla.png"
+                src="/api/panel/themes/{theme.id}/screenshots/screenshot.png"
                 class="card-img"
                 alt="Vanilla Theme Screenshot" />
               <div
