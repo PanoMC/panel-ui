@@ -1,7 +1,7 @@
 <!-- Action Menu -->
 <div class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions>
+  <PageActions leftClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
       {#if !data.categoryUrl}

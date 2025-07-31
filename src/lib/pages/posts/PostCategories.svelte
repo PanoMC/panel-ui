@@ -1,7 +1,7 @@
 <!-- Categories Page -->
 <article class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions>
+  <PageActions leftClasses="d-lg-flex d-none">
     <button
       class="btn btn-secondary"
       type="button"

@@ -133,45 +133,43 @@
           <div class="card-header">
             {$_("pages.player-detail.last-tickets")}
           </div>
-          <div class="card-body">
-            {#if data.ticketCount === 0}
-              <NoContent />
-            {:else}
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  {#each data.tickets as ticket, index (ticket)}
-                    <tbody>
-                      <tr>
-                        <td class="align-middle text-nowrap">
-                          <a
-                            href="{base}/tickets/detail/{ticket.id}"
-                            title={$_("buttons.view")}
-                            >#{ticket.id} {ticket.title}</a>
-                        </td>
-                        <td class="align-middle text-nowrap">
-                          <a
-                            title={$_("pages.player-detail.filter")}
-                            href="{base}/tickets?categoryUrl={ticket.category
-                              .url}">
-                            {ticket.category.title === "-"
-                              ? $_("pages.player-detail.no-category")
-                              : ticket.category.title}
-                          </a>
-                        </td>
-                        <td class="align-middle text-nowrap">
-                          <TicketStatusBadge status={ticket.status} />
-                        </td>
-                        <td class="align-middle text-nowrap"
-                          ><span
-                            ><DateComponent time={ticket.lastUpdate} /></span
-                          ></td>
-                      </tr>
-                    </tbody>
-                  {/each}
-                </table>
-              </div>
-            {/if}
-          </div>
+          {#if data.ticketCount === 0}
+            <NoContent />
+          {:else}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                {#each data.tickets as ticket, index (ticket)}
+                  <tbody>
+                    <tr>
+                      <td class="align-middle text-nowrap">
+                        <a
+                          href="{base}/tickets/detail/{ticket.id}"
+                          title={$_("buttons.view")}
+                          >#{ticket.id} {ticket.title}</a>
+                      </td>
+                      <td class="align-middle text-nowrap">
+                        <a
+                          title={$_("pages.player-detail.filter")}
+                          href="{base}/tickets?categoryUrl={ticket.category
+                            .url}">
+                          {ticket.category.title === "-"
+                            ? $_("pages.player-detail.no-category")
+                            : ticket.category.title}
+                        </a>
+                      </td>
+                      <td class="align-middle text-nowrap">
+                        <TicketStatusBadge status={ticket.status} />
+                      </td>
+                      <td class="align-middle text-nowrap"
+                        ><span
+                          ><DateComponent time={ticket.lastUpdate} /></span
+                        ></td>
+                    </tr>
+                  </tbody>
+                {/each}
+              </table>
+            </div>
+          {/if}
         </div>
       {/if}
       <!-- Statistics -->
@@ -179,30 +177,28 @@
         <div class="card-header">
           {$_("pages.player-detail.statistics")}
         </div>
-        <div class="card-body">
-          <table class="table">
-            <tbody>
-              <tr>
-                <td>{$_("pages.player-detail.email")}</td>
-                <td>
-                  {#if data.player.isEmailVerified}
-                    {$_("pages.player-detail.email-verified")}
-                  {:else}
-                    {$_("pages.player-detail.email-not-verified")}
-                  {/if}
-                </td>
-              </tr>
-              <tr>
-                <td>{$_("pages.player-detail.last-entrance")}</td>
-                <td><DateComponent time={data.player.lastLoginDate} /></td>
-              </tr>
-              <tr>
-                <td>{$_("pages.player-detail.register-date")}</td>
-                <td><DateComponent time={data.player.registerDate} /></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <table class="table">
+          <tbody>
+            <tr>
+              <td>{$_("pages.player-detail.email")}</td>
+              <td>
+                {#if data.player.isEmailVerified}
+                  {$_("pages.player-detail.email-verified")}
+                {:else}
+                  {$_("pages.player-detail.email-not-verified")}
+                {/if}
+              </td>
+            </tr>
+            <tr>
+              <td>{$_("pages.player-detail.last-entrance")}</td>
+              <td><DateComponent time={data.player.lastLoginDate} /></td>
+            </tr>
+            <tr>
+              <td>{$_("pages.player-detail.register-date")}</td>
+              <td><DateComponent time={data.player.registerDate} /></td>
+            </tr>
+          </tbody>
+        </table>
         <div class="card-footer">
           <!-- Pagination -->
           <Pagination

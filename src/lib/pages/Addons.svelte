@@ -1,7 +1,7 @@
 <AddPluginModal />
 <div class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions>
+  <PageActions middleClasses="d-lg-flex d-none" leftClasses="d-lg-flex d-none">
     <div slot="right" class="hstack gap-2">
       <button
         type="button"

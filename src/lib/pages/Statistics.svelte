@@ -38,41 +38,41 @@
   </div>
 
   <div class="card">
-    <div class="card-header">
-      {$_("pages.statistics.website-graph.title")}
-    </div>
-    <div class="card-body">
       <CardHeader>
+        <div slot="left">
+          {$_("pages.statistics.website-graph.title")}
+        </div>
         <div
           class="nav nav-underline col-sm-auto col justify-content-md-start justify-content-center"
           slot="right">
           <div class="nav-item">
             <button
               class="nav-link text-truncate"
-              class:active="{data.period === DashboardPeriod.WEEK}"
-              on:click="{() => reloadDataByPeriod()}"
-              class:disabled="{reloading}">
+              class:active={data.period === DashboardPeriod.WEEK}
+              on:click={() => reloadDataByPeriod()}
+              class:disabled={reloading}>
               {$_("pages.statistics.website-graph.week")}
             </button>
           </div>
           <div class="nav-item">
             <button
               class="nav-link text-truncate"
-              class:active="{data.period === DashboardPeriod.MONTH}"
-              on:click="{() => reloadDataByPeriod(DashboardPeriod.MONTH)}"
-              class:disabled="{reloading}">
+              class:active={data.period === DashboardPeriod.MONTH}
+              on:click={() => reloadDataByPeriod(DashboardPeriod.MONTH)}
+              class:disabled={reloading}>
               {$_("pages.statistics.website-graph.month")}
             </button>
           </div>
         </div>
       </CardHeader>
 
+    <div class="d-flex">
       <WebsiteActivityChart
-        newRegisterData="{data.websiteActivityDataList.newRegisterData}"
-        ticketsData="{data.websiteActivityDataList.ticketsData}"
-        visitorData="{data.websiteActivityDataList.visitorData}"
-        viewData="{data.websiteActivityDataList.viewData}"
-        period="{data.period}" />
+        newRegisterData={data.websiteActivityDataList.newRegisterData}
+        ticketsData={data.websiteActivityDataList.ticketsData}
+        visitorData={data.websiteActivityDataList.visitorData}
+        viewData={data.websiteActivityDataList.viewData}
+        period={data.period} />
     </div>
   </div>
 
@@ -81,50 +81,48 @@
     <div class="card-header">
       {$_("pages.statistics.total-statistics.title")}
     </div>
-    <div class="card-body py-1">
-      <div class="table-responsive">
-        <table class="table">
-          <tbody>
-            <tr>
-              <th scope="row"
-                >{$_("pages.statistics.total-statistics.posts")}</th>
-              <td>{data.postCount}</td>
-            </tr>
-            <tr>
-              <th scope="row"
-                >{$_("pages.statistics.total-statistics.players")}</th>
-              <td>{data.registeredPlayerCount}</td>
-            </tr>
-            <tr>
-              <th scope="row"
-                >{$_("pages.statistics.total-statistics.admins")}</th>
-              <td>{data.adminCount}</td>
-            </tr>
-            <tr>
-              <th scope="row"
-                >{$_("pages.statistics.total-statistics.tickets")}</th>
-              <td>{data.ticketCount}</td>
-            </tr>
-            <tr>
-              <th scope="row"
-                >{$_(
-                  "pages.statistics.total-statistics.connected-servers",
-                )}</th>
-              <td>{data.connectedServerCount}</td>
-            </tr>
-            <tr>
-              <th scope="row"
-                >{$_("pages.statistics.total-statistics.addons")}</th>
-              <td>?</td>
-            </tr>
-            <tr>
-              <th scope="row"
-                >{$_("pages.statistics.total-statistics.themes")}</th>
-              <td>?</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="table-responsive">
+      <table class="table">
+        <tbody>
+          <tr>
+            <th scope="row"
+              >{$_("pages.statistics.total-statistics.posts")}</th>
+            <td>{data.postCount}</td>
+          </tr>
+          <tr>
+            <th scope="row"
+              >{$_("pages.statistics.total-statistics.players")}</th>
+            <td>{data.registeredPlayerCount}</td>
+          </tr>
+          <tr>
+            <th scope="row"
+              >{$_("pages.statistics.total-statistics.admins")}</th>
+            <td>{data.adminCount}</td>
+          </tr>
+          <tr>
+            <th scope="row"
+              >{$_("pages.statistics.total-statistics.tickets")}</th>
+            <td>{data.ticketCount}</td>
+          </tr>
+          <tr>
+            <th scope="row"
+              >{$_(
+                "pages.statistics.total-statistics.connected-servers",
+              )}</th>
+            <td>{data.connectedServerCount}</td>
+          </tr>
+          <tr>
+            <th scope="row"
+              >{$_("pages.statistics.total-statistics.addons")}</th>
+            <td>?</td>
+          </tr>
+          <tr>
+            <th scope="row"
+              >{$_("pages.statistics.total-statistics.themes")}</th>
+            <td>?</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -178,6 +176,8 @@
   import WebsiteActivityChart from "$lib/component/charts/Dashboard/WebsiteActivityChart.svelte";
   import { goto } from "$app/navigation";
   import CardHeader from "$lib/component/CardHeader.svelte";
+  import CardFilters from "$lib/component/CardFilters.svelte";
+  import CardFiltersItem from "$lib/component/CardFiltersItem.svelte";
 
   export let data;
   let reloading = false;

@@ -1,7 +1,7 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
 
-  <PageActions>
+  <PageActions leftClasses="d-lg-flex d-none" middleClasses="d-lg-flex d-none">
     <div slot="left">
       {#if data.categoryUrl}
         <a class="btn btn-link" role="button" href="{base}/posts">
@@ -11,62 +11,54 @@
       {/if}
     </div>
 
-
     <div slot="right">
       {#if $notifications.length !== 0}
-      <button
-        type="button"
-        class="btn btn-danger"
-        on:click="{() => onDeleteAllClick()}"
-        >
-        <i class="fa fa-trash me-2"></i>
-        {$_("pages.notifications.delete-all")}
-      </button>
-    {/if}
+        <button
+          type="button"
+          class="btn btn-danger"
+          on:click={() => onDeleteAllClick()}>
+          <i class="fa fa-trash me-2"></i>
+          {$_("pages.notifications.delete-all")}
+        </button>
+      {/if}
     </div>
   </PageActions>
-
-
 
   <!-- All Notifications -->
 
   <div class="card">
-    <div class="card-header">
-      1 Bildirim
+    <div class="card-header">1 Bildirim</div>
+    <div class="list-group list-group-flush">
+      {#each $notifications as notification, index (notification)}
+        <a
+          href="javascript:void(0);"
+          on:click={() => onNotificationClick(notification)}
+          class="list-group-item list-group-item-action text-wrap"
+          class:notification-unread={notification.status === "NOT_READ"}>
+          {notification.type}
+          <br />
+          <small class="text-muted">
+            {getTime(
+              checkTime,
+              parseInt(notification.date),
+              locales[$currentLanguage.dateFnsCode],
+            )}
+          </small>
+        </a>
+      {/each}
     </div>
-    <div class="card-body">
-      <div class="list-group">
-        {#each $notifications as notification, index (notification)}
-          <a
-            href="javascript:void(0);"
-            on:click="{() => onNotificationClick(notification)}"
-            class="list-group-item list-group-item-action text-wrap"
-            class:notification-unread="{notification.status === 'NOT_READ'}">
-            {notification.type}
-            <br />
-            <small class="text-muted">
-              {getTime(
-                checkTime,
-                parseInt(notification.date),
-                locales[$currentLanguage.dateFnsCode],
-              )}
-            </small>
-          </a>
-        {/each}
-      </div>
-    </div>
-  </div>
 
-  {#if $notifications.length === 0}
-    <NoContent />
-  {/if}
+    {#if $notifications.length === 0}
+      <NoContent />
+    {/if}
+  </div>
 
   {#if $notifications.length < $count && $count > 10 + 10 * page}
     <div class="mt-3">
       <button
         class="btn btn-link bg-light d-block m-auto"
-        class:disabled="{loadMoreLoading}"
-        on:click="{loadMore}"
+        class:disabled={loadMoreLoading}
+        on:click={loadMore}
         >{$_("pages.notifications.show-more", {
           values: { count: $count - $notifications.length },
         })}
@@ -153,9 +145,9 @@
 
   import NoContent from "$lib/component/NoContent.svelte";
   import { currentLanguage } from "$lib/language.util.js";
-    import PageActions from "$lib/component/PageActions.svelte";
-    import CardMenu from "$lib/component/CardMenu.svelte";
-    import CardMenuItem from "$lib/component/CardMenuItem.svelte";
+  import PageActions from "$lib/component/PageActions.svelte";
+  import CardMenu from "$lib/component/CardMenu.svelte";
+  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
   export let data;
 

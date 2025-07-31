@@ -1,6 +1,6 @@
 <!-- Theme Settings -->
 
-<PageActions>
+<PageActions leftClasses="d-lg-flex d-none">
   <CardMenu slot="middle">
     <CardMenuItem href="/view">Temalar</CardMenuItem>
     <CardMenuItem href="/view/theme-options">Tema Seçenekleri</CardMenuItem>

@@ -1,7 +1,7 @@
 <!-- Tickets Page -->
 <article class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions>
+  <PageActions leftClasses="d-lg-flex d-none">
     <div slot="left">
       {#if data.categoryUrl}
         <a class="btn btn-link" role="button" href="{base}/tickets">

@@ -1,7 +1,7 @@
 <!-- All Players Page -->
 <div class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions>
+  <PageActions leftClasses="d-lg-flex d-none" rightClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
       {#if !data.categoryUrl}
@@ -15,62 +15,44 @@
 
   <!-- All Players -->
   <div class="card">
-    <div class="card-header">
-      <div class="row">
-        <div class="col">
-          {$_("pages.players.table-title", {
-            values: {
-              playerCount: data.playerCount,
-              pageType:
-                data.pageType === PageTypes.HAS_PERM
-                  ? $_("pages.players.authorized") + " "
-                  : data.pageType === PageTypes.BANNED
-                    ? $_("pages.players.banned") + " "
-                    : "",
-            },
-          })}
-        </div>
-        <div class="col-auto">
-          <CardFilters>
-            {#if !data.permissionGroup}
-              <!-- Filters -->
-              <CardFiltersItem
-                href="/players"
-                active="{data.pageType === PageTypes.ALL}">
-                {$_("pages.players.all")}
-              </CardFiltersItem>
-              <CardFiltersItem
-                href="/players?pageType=HAS_PERM"
-                active="{data.pageType === PageTypes.HAS_PERM}">
-                {$_("pages.players.authorized")}
-              </CardFiltersItem>
-              <CardFiltersItem
-                href="/players?pageType=BANNED"
-                active="{data.pageType === PageTypes.BANNED}">
-                {$_("pages.players.banned")}
-              </CardFiltersItem>
-            {/if}
-          </CardFilters>
-        </div>
+    <CardHeader>
+      <div slot="left">
+        {$_("pages.players.table-title", {
+          values: {
+            playerCount: data.playerCount,
+            pageType:
+              data.pageType === PageTypes.HAS_PERM
+                ? $_("pages.players.authorized") + " "
+                : data.pageType === PageTypes.BANNED
+                  ? $_("pages.players.banned") + " "
+                  : "",
+          },
+        })}
       </div>
 
       <!-- Filters -->
-      <!-- <CardFiltersItem
+      <CardFilters slot="right">
+        {#if !data.permissionGroup}
+          <!-- Filters -->
+          <CardFiltersItem
             href="/players"
-            active="{data.pageType === PageTypes.ALL}">
+            active={data.pageType === PageTypes.ALL}>
             {$_("pages.players.all")}
           </CardFiltersItem>
           <CardFiltersItem
             href="/players?pageType=HAS_PERM"
-            active="{data.pageType === PageTypes.HAS_PERM}">
+            active={data.pageType === PageTypes.HAS_PERM}>
             {$_("pages.players.authorized")}
           </CardFiltersItem>
           <CardFiltersItem
             href="/players?pageType=BANNED"
-            active="{data.pageType === PageTypes.BANNED}">
+            active={data.pageType === PageTypes.BANNED}>
             {$_("pages.players.banned")}
-          </CardFiltersItem> -->
-    </div>
+          </CardFiltersItem>
+        {/if}
+      </CardFilters>
+    </CardHeader>
+
     <!-- No Players -->
     {#if data.playerCount === 0}
       <NoContent />

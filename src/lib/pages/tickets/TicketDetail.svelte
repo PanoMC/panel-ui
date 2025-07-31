@@ -6,7 +6,7 @@
 
 <div class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions>
+  <PageActions middleClasses="d-lg-flex d-none">
     <a class="btn btn-link" role="button" href="{base}/tickets" slot="left">
       <i class="fas fa-arrow-left me-2"></i>
       {$_("pages.ticket-detail.tickets")}
@@ -32,7 +32,11 @@
   </PageActions>
 
   <div class="card">
-    <div class="card-header">
+    <div
+      class="card-header bg-opacity-25 py-3 rounded-top"
+      class:bg-secondary={data.ticket.status === TicketStatuses.NEW}
+      class:bg-warning={data.ticket.status === TicketStatuses.REPLIED}
+      class:bg-danger={data.ticket.status === TicketStatuses.CLOSED}>
       <div class="row">
         <div class="col">
           {data.ticket.title}
@@ -139,11 +143,11 @@
         {/each}
       </div>
     </div>
-    <div class="card-footer">
+    <div
+      class="card-footer"
+      class:d-none={data.ticket.status === TicketStatuses.CLOSED}>
       <!-- Send Message Section -->
-      <div
-        class="row align-items-end"
-        class:d-none={data.ticket.status === TicketStatuses.CLOSED}>
+      <div class="row align-items-end g-2">
         <div class="col">
           <!-- Editor -->
           <Editor bind:content={messageText} bind:isEmpty={isEditorEmpty} />
