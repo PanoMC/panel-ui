@@ -123,6 +123,21 @@
               <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
             </a>
           </div>
+          <div
+            class="list-group-item d-flex justify-content-between align-items-center">
+            <strong>Hash:</strong>
+            {theme.hash}
+          </div>
+          <div
+            class="list-group-item d-flex justify-content-between align-items-center">
+            <strong>Installed:</strong>
+            <Date time="{theme.createdAt}" relativeFormat="{true}" />
+          </div>
+          <div
+            class="list-group-item d-flex justify-content-between align-items-center">
+            <strong>Updated:</strong>
+            <Date time="{theme.updatedAt}" relativeFormat="{true}" />
+          </div>
         </ul>
       </div>
     </div>
@@ -164,6 +179,7 @@
   import PageActions from "$lib/component/PageActions.svelte";
   import { getContext } from "svelte";
   import { PANO_WEBSITE_URL } from "$lib/variables.js";
+  import Date from "$lib/component/Date.svelte";
 
   const pageTitle = getContext("pageTitle");
 
