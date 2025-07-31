@@ -30,7 +30,7 @@
           )}">
           {$_("components.settings-layout.updates")}
           <span
-            class="position-absolute top-0 start-100 translate-middle p-2 bg-danger rounded-circle">
+            class="position-absolute top-0 start-100 translate-middle p-2 bg-warning rounded-circle">
           </span>
         </a>
         <a

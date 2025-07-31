@@ -2,7 +2,7 @@
 
 <div class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions>
+  <PageActions middleClasses="d-lg-flex d-none">
     <div slot="left">
       <span
         class="small"
@@ -11,8 +11,8 @@
         DATE
       </span>
     </div>
-    <div slot="right">
-      <button type="button" class="btn btn-link">Update All</button>
+    <div class="hstack gap-2" slot="right">
+      <button type="button" class="btn btn-outline-primary">Update All</button>
 
       <button class="btn btn-secondary">
         <i class="fa-regular fa-arrows-rotate me-2"></i> Check Updates
@@ -50,7 +50,7 @@
               <h5 class="card-title">ID</h5>
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-secondary" type="button"
+              <button class="btn btn-sm btn-outline-primary" type="button"
                 >Update</button>
             </div>
             <div class="col-auto ps-0">

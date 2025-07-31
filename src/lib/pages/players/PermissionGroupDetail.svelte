@@ -32,7 +32,6 @@
         <div class="card-body">
           <input
             class:text-danger={errors.name}
-            class:text-black={!errors.name}
             class="form-control form-control-lg mb-3"
             placeholder={$_(
               "pages.permission-group-detail.inputs.name.placeholder",
@@ -59,9 +58,9 @@
               use:tooltip={[$_("buttons.remove"), { placement: "bottom" }]}
               href="javascript:void(0);"
               on:click={() => removeUser(index)}>
-              <span class="badge rounded-pill bg-light link-dark text-center">
+              <span class="badge rounded-pill text-bg-primary">
                 <img
-                  class="d-inline rounded-circle me-2"
+                  class="rounded-circle me-2"
                   src="https://minotar.net/avatar/{user}"
                   alt={user}
                   width="28"
