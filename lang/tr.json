@@ -32,7 +32,9 @@
     "view": "Görüntüle",
     "closed": "Kapalı",
     "show-all": "Tümünü Göster",
-    "installed": "Yüklü"
+    "installed": "Yüklü",
+    "clear": "Temizle",
+    "change": "Değiştir"
   },
   "pages": {
     "activity-logs": {
@@ -298,11 +300,6 @@
       "views": "Görüntülenme:",
       "category": "Kategori:",
       "no-category": "Kategorisiz",
-      "thumbnail": "Küçük Resim:",
-      "clear": "Temizle",
-      "add": "Ekle",
-      "change": "Değiştir",
-      "thumbnail-not-determined": "Küçük resim belirlenmedi.",
       "title-create": "Yeni Yazı Oluştur",
       "title-edit": "Yazıyı Düzenle",
       "new": "Yeni",

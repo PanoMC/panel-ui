@@ -32,7 +32,9 @@
     "view": "View",
     "closed": "Closed",
     "show-all": "Show All",
-    "installed": "Installed"
+    "installed": "Installed",
+    "clear": "Clear",
+    "change": "Change"
   },
   "pages": {
     "activity-logs": {
@@ -298,11 +300,6 @@
       "views": "View:",
       "category": "Category:",
       "no-category": "No Category",
-      "thumbnail": "Thumbnail:",
-      "clear": "Clear",
-      "add": "Add",
-      "change": "Change",
-      "thumbnail-not-determined": "The thumbnail has not been determined.",
       "title-create": "Create New Post",
       "title-edit": "Edit Post",
       "new": "New",

@@ -1,3 +1,17 @@
+<style>
+  .thumbnail-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .clear-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    z-index: 1;
+  }
+</style>
+
 <article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
@@ -133,39 +147,46 @@
                 </form>
               </div>
             </li>
-            <li class="list-group-item form-group">
-              <div class="d-flex justify-content-between align-items-center">
-                {$_("pages.post-editor.thumbnail")}
-
-                {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
-                  <button
-                    class="btn btn-link link-danger"
-                    on:click={onRemoveThumbnailClick}
-                    >{$_("pages.post-editor.clear")}</button>
-                {:else}
-                  <button
-                    class="btn btn-sm btn-primary"
-                    on:click={() => thumbnailInput.click()}
-                    >{$_("pages.post-editor.add")}</button>
-                {/if}
-              </div>
+            <li class="list-group-item p-0 d-flex justify-content-center align-items-center" class:drag-over={dropZoneActive}
+            >
               {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
-                <a
-                  href="javascript:void(0);"
-                  use:tooltip={[
-                    $_("pages.post-editor.change"),
-                    { placement: "bottom" },
-                  ]}
-                  on:click={() => thumbnailInput.click()}>
-                  <img
-                    src={thumbnail || data.post.thumbnailUrl}
-                    class="border rounded img-fluid"
-                    title={$_("pages.post-editor.small-image")}
-                    alt={$_("pages.post-editor.small-image")} /></a>
+                <div class="thumbnail-wrapper">
+                  <button
+                    type="button"
+                    class="btn border-0 shadow-none"
+                    use:tooltip={[
+                      $_("buttons.change"),
+                      { placement: "bottom" },
+                    ]}
+                    on:click={() => thumbnailInput.click()}>
+                    <img
+                      src={thumbnail || data.post.thumbnailUrl}
+                      class="img-fluid"
+                      title={$_("pages.post-editor.small-image")}
+                      alt={$_("pages.post-editor.small-image")} />
+                  </button>
+
+                  {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
+                    <button
+                      type="button"
+                      class="clear-button btn btn-link btn-danger"
+                      on:click={onRemoveThumbnailClick}>
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  {/if}
+                </div>
               {:else}
-                <NoContent
-                  icon="fas fa-image fa-3x"
-                  text={$_("pages.post-editor.thumbnail-not-determined")} />
+                <button
+                  type="button"
+                  class="btn list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-100 text-center shadow-none border-0 m-0"
+                  style="height: 240px; cursor: pointer;"
+                  on:click={() => thumbnailInput.click()}
+                  on:drop={handleDrop}
+                  on:dragover={handleDragOver}
+                  on:dragleave={handleDragLeave}>
+                  <i class="fas fa-image fa-3x mb-2"></i>
+                  <p class="mb-0">Önizleme'yi sürükleyin<br />veya tıklayın</p>
+                </button>
               {/if}
               <input
                 class="d-none"
@@ -310,12 +331,39 @@
       : "pages.post-editor.title-create",
   );
 
+  let dropZoneActive = false;
+
+  function handleDrop(event) {
+    event.preventDefault();
+    dropZoneActive = false;
+
+    const files = event.dataTransfer.files;
+
+    if (files.length > 0) {
+      handleThumbnailChange(files[0])
+    }
+  }
+
+  function handleDragOver(event) {
+    event.preventDefault();
+    dropZoneActive = true;
+  }
+
+  function handleDragLeave() {
+    dropZoneActive = false;
+  }
+
   function onThumbnailChange(event) {
     isThumbnailSaved = false;
     isThumbnailRemoved = false;
 
-    const reader = new FileReader();
     const newImage = event.target.files[0];
+
+    handleThumbnailChange(newImage)
+  }
+
+  function handleThumbnailChange(newImage) {
+    const reader = new FileReader();
 
     reader.readAsDataURL(newImage);
 
