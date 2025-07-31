@@ -118,7 +118,7 @@
           <div
             class="list-group-item d-flex justify-content-between align-items-center">
             <strong>Kaynak:</strong>
-            <a href="{theme.sourceUrl ? theme.sourceUrl : false}" target="_blank">
+            <a class="overflow-auto text-nowrap" href="{theme.sourceUrl ? theme.sourceUrl : false}" target="_blank">
               {theme.sourceUrl || "Unknown"}
               <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
             </a>
@@ -126,7 +126,7 @@
           <div
             class="list-group-item d-flex justify-content-between align-items-center">
             <strong>Hash:</strong>
-            {theme.hash}
+            <code class="overflow-auto text-nowrap user-select-all">{theme.hash}</code>
           </div>
           <div
             class="list-group-item d-flex justify-content-between align-items-center">
