@@ -148,7 +148,7 @@
 {/if}
 
 <!-- Editor Content -->
-<textarea class="form-control h-auto" style="min-height: 100%" bind:this="{element}"></textarea>
+<div class="form-control h-auto" style="min-height: 100%" bind:this="{element}"></div>
 
 <script>
   import { onMount, onDestroy } from "svelte";

@@ -305,10 +305,7 @@
     limitTitle,
   } from "$lib/component/ToastContainer.svelte";
 
-  import NoContent from "$lib/component/NoContent.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
-  import CardMenu from "$lib/component/CardMenu.svelte";
-  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
   export let data;
 
@@ -436,7 +433,7 @@
 
     if (isThumbnailRemoved) {
       body.append("removeThumbnail", true);
-    } else if (thumbnailFiles[0]) {
+    } else if (thumbnailFiles && thumbnailFiles[0]) {
       body.append("thumbnail", thumbnailFiles[0]);
     }
 
