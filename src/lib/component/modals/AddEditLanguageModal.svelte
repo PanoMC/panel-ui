@@ -23,14 +23,14 @@
             on:input={onNameChange}
             class:border-danger="{$error === 'INVALID_LOCALE_NAME'}" />
           <input
-            class="form-control form-control-lg mb-3"
+            class="form-control mb-3"
             placeholder="{$_('components.modals.add-edit-language.inputs.code')}"
             id="code"
             type="text"
             bind:value="{$locale.code}"
             class:border-danger="{$error === 'INVALID_LOCALE_CODE'}" />
           <input
-            class="form-control form-control-lg mb-3"
+            class="form-control mb-3"
             placeholder="{$_('components.modals.add-edit-language.inputs.date-fns-code')}"
             id="dateFnsCode"
             type="text"
@@ -39,7 +39,7 @@
 
           <input
             id="derivatives"
-            class="form-control mb-3"
+            class="form-control"
             class:border-danger="{$error === 'derivatives' || $error === 'INVALID_LOCALE_DERIVATIVE'}"
             placeholder="{$_(
             'components.modals.add-edit-language.inputs.derivatives',
@@ -55,7 +55,7 @@
               }
             }} />
           {#each $locale.derivatives as derivative, index (derivative)}
-            <a
+            <a class="d-inline-block mt-2"
               use:tooltip="{[
               $_('buttons.remove'),
               { placement: 'bottom' },

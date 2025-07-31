@@ -27,45 +27,45 @@
         })}
       </div>
     </CardHeader>
-    <div class="card-body">
-      <!-- No Content -->
-      {#if data.meta.totalCount === 0}
-        <NoContent />
-      {/if}
+    <!-- No Content -->
+    {#if data.meta.totalCount === 0}
+      <NoContent />
+    {/if}
 
-      <!-- Locales Table -->
-      {#if data.meta.totalCount > 0}
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                <th class="align-middle" scope="col"
-                  >{$_("pages.languages.name")}</th>
-                <th scope="col" class="align-middle"
-                  >{$_("pages.languages.code")}</th>
-                <th scope="col" class="align-middle"
-                  >{$_("pages.languages.date-fns-code")}</th>
-                <th scope="col" class="align-middle"
-                  >{$_("pages.languages.derivatives")}</th>
-                <th scope="col" class="align-middle"
-                  >{$_("pages.languages.defined-by")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each data.locales as locale, index (locale)}
-                <LocaleRow
-                  locale={locale}
-                  index={index}
-                  on:editClick={(event) =>
-                    onShowEditLanguageButtonClick(event.detail.index)}
-                  on:deleteClick={(event) =>
-                    onShowDeleteLanguageModalClick(event.detail.index)} />
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
+    <!-- Locales Table -->
+    {#if data.meta.totalCount > 0}
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th class="align-middle" scope="col"
+                >{$_("pages.languages.name")}</th>
+              <th scope="col" class="align-middle"
+                >{$_("pages.languages.code")}</th>
+              <th scope="col" class="align-middle"
+                >{$_("pages.languages.date-fns-code")}</th>
+              <th scope="col" class="align-middle"
+                >{$_("pages.languages.derivatives")}</th>
+              <th scope="col" class="align-middle"
+                >{$_("pages.languages.defined-by")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each data.locales as locale, index (locale)}
+              <LocaleRow
+                locale={locale}
+                index={index}
+                on:editClick={(event) =>
+                  onShowEditLanguageButtonClick(event.detail.index)}
+                on:deleteClick={(event) =>
+                  onShowDeleteLanguageModalClick(event.detail.index)} />
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/if}
+    <div class="card-footer">
       <!-- Pagination -->
       <Pagination
         page={data.meta.page}
