@@ -110,56 +110,55 @@
             {$_("pages.dashboard.last-tickets.title")}
           </div>
 
-          <div class="card-body">
-            {#if data.tickets.length === 0}
-              <NoContent />
-            {:else}
-              <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                  {#each data.tickets as ticket, index (ticket)}
-                    <tbody>
-                      <tr>
-                        <td class="align-middle">
-                          <a
-                            use:tooltip={[
-                              ticket.writer.username,
-                              { placement: "bottom" },
-                            ]}
-                            href="{base}/players/detail/{ticket.writer
-                              .username}">
-                            <img
-                              src="https://minotar.net/avatar/{ticket.writer
-                                .username}/32"
-                              alt={$_(
-                                "pages.dashboard.last-tickets.player-name",
-                              )}
-                              class="rounded-circle animate__animated animate__zoomIn"
-                              height="32"
-                              width="32" />
-                          </a>
-                        </td>
-                        <td class="align-middle text-nowrap">
-                          <a
-                            href="{base}/tickets/detail/{ticket.id}"
-                            title={$_("buttons.view")}
-                            >#{ticket.id} {ticket.title}</a>
-                        </td>
-                        <td class="align-middle text-nowrap">
-                          <TicketStatusBadge status={ticket.status} />
-                        </td>
-                        <td class="align-middle text-nowrap"
-                          ><span><Date time={ticket.lastUpdate} /></span></td>
-                      </tr>
-                    </tbody>
-                  {/each}
-                </table>
-              </div>
-            {/if}
-          </div>
+          {#if data.tickets.length === 0}
+            <NoContent />
+          {:else}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                {#each data.tickets as ticket, index (ticket)}
+                  <tbody>
+                    <tr>
+                      <td class="align-middle">
+                        <a
+                          use:tooltip={[
+                            ticket.writer.username,
+                            { placement: "bottom" },
+                          ]}
+                          href="{base}/players/detail/{ticket.writer
+                            .username}">
+                          <img
+                            src="https://minotar.net/avatar/{ticket.writer
+                              .username}/32"
+                            alt={$_(
+                              "pages.dashboard.last-tickets.player-name",
+                            )}
+                            class="rounded-circle animate__animated animate__zoomIn"
+                            height="32"
+                            width="32" />
+                        </a>
+                      </td>
+                      <td class="align-middle text-nowrap">
+                        <a
+                          href="{base}/tickets/detail/{ticket.id}"
+                          title={$_("buttons.view")}
+                          >#{ticket.id} {ticket.title}</a>
+                      </td>
+                      <td class="align-middle text-nowrap">
+                        <TicketStatusBadge status={ticket.status} />
+                      </td>
+                      <td class="align-middle text-nowrap"
+                        ><span><Date time={ticket.lastUpdate} /></span></td>
+                    </tr>
+                  </tbody>
+                {/each}
+              </table>
+            </div>
+          {/if}
         </div>
       {/if}
     </div>
     <div class="col-lg-6">
+      <!-- Latest Activity Logs -->
       <div class="card">
         <CardHeader>
           <div slot="left">
@@ -173,15 +172,13 @@
             {/if}
           </div>
         </CardHeader>
-        <div class="card-body">
-          <ul class="list-group mb-0">
-            {#each data.activityLogs.data as log, index (log)}
-              <ActivityLogRow
-                log={log}
-                on:click={onShowViewActivityLogModalClick} />
-            {/each}
-          </ul>
-        </div>
+        <ul class="list-group list-group-flush">
+          {#each data.activityLogs.data as log, index (log)}
+            <ActivityLogRow
+              log={log}
+              on:click={onShowViewActivityLogModalClick} />
+          {/each}
+        </ul>
       </div>
     </div>
   </div>
