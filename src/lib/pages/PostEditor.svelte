@@ -194,7 +194,8 @@
                 id="uploadPostThumbnailInput"
                 bind:files={thumbnailFiles}
                 on:change={onThumbnailChange}
-                bind:this={thumbnailInput} />
+                bind:this={thumbnailInput}
+                accept="image/*"/>
             </li>
           </ul>
         </div>
