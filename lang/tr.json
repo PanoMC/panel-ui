@@ -41,9 +41,17 @@
     "activate": "Aktif Et",
     "themes": "Temalar",
     "previous": "Önceki",
-    "next": "Sonraki"
+    "next": "Sonraki",
+    "theme-settings": "Tema Seçenekleri",
+    "install-theme": "Tema Yükle"
   },
   "pages": {
+    "themes": {
+      "title": "Temalar",
+      "card-title": "{amount} Yüklü Tema",
+      "by": "<strong>{author}</strong> tarafından",
+      "active": "Aktif"
+    },
     "theme-detail": {
       "title": "Tema Detayı",
       "screenshot": "Ekran Görüntüsü",

@@ -2,8 +2,8 @@
 
 <PageActions leftClasses="d-lg-flex d-none">
   <CardMenu slot="middle">
-    <CardMenuItem href="/view">Temalar</CardMenuItem>
-    <CardMenuItem href="/view/theme-options">Tema Seçenekleri</CardMenuItem>
+    <CardMenuItem href="/view">{$_('buttons.themes')}</CardMenuItem>
+    <CardMenuItem href="/view/theme-options">{$_('buttons.theme-settings')}</CardMenuItem>
   </CardMenu>
   <div slot="right" class="hstack gap-2">
     <button
@@ -15,7 +15,7 @@
     </button>
     <button type="button" class="btn btn-secondary">
       <i class="fas fa-plus me-2"></i>
-      Tema Yükle
+      {$_('buttons.install-theme')}
     </button>
   </div>
 </PageActions>
@@ -23,7 +23,7 @@
 <div class="card">
   <CardHeader>
     <div slot="left">
-      {data.themes.length} Yüklü Tema
+      {$_('pages.themes.card-title', {values: {amount: data.themes.length}})}
     </div>
   </CardHeader>
   <div class="card-body">
@@ -47,13 +47,13 @@
                   {theme.title}<VerifiedStatus status={theme.verifyStatus} />
                 </h5>
                 <p class="card-subtitle text-light">
-                  by <strong>{theme.author}</strong>
+                  {@html $_('pages.themes.by', {values: {author: theme.author}})}
                 </p>
                 <div class="d-flex justify-content-between align-items-center">
                   <small class="font-monospace user-select-all"
                     >{theme.version}</small>
                   {#if theme.active}
-                    <span class="badge bg-success">Active</span>
+                    <span class="badge bg-success">{$_('pages.themes.active')}</span>
                   {/if}
                 </div>
               </div>
@@ -131,7 +131,7 @@
 
   let reloading;
 
-  pageTitle.set("Temalar");
+  pageTitle.set("pages.themes.title");
 
   async function reloadThemes() {
     reloading = true;

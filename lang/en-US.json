@@ -41,9 +41,17 @@
     "activate": "Activate",
     "themes": "Themes",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "theme-settings": "Theme Settings",
+    "install-theme": "Install Theme"
   },
   "pages": {
+    "themes": {
+      "title": "Themes",
+      "card-title": "{amount} Installed Theme",
+      "by": "by <strong>{author}</strong>",
+      "active": "Active"
+    },
     "theme-detail": {
       "title": "Theme Detail",
       "screenshot": "Screenshot",
