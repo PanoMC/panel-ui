@@ -732,7 +732,8 @@
       "language-deleted-permanently": "\"{name}\" kalıcı olarak silindi.",
       "language-updated-successfully": "\"{name}\" başarıyla güncellendi.",
       "language-created-successfully": "\"{name}\" başarıyla oluşturuldu.",
-      "reload-themes-success": "Temalar başarıyla yenilendi."
+      "reload-themes-success": "Temalar başarıyla yenilendi.",
+      "activate-theme-success": "Tema başarıyla aktifleştirildi."
     }
   },
   "page-error": {

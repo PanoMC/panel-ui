@@ -732,7 +732,8 @@
       "language-deleted-permanently": "\"{name}\" deleted permanently.",
       "language-updated-successfully": "\"{name}\" updated successfully.",
       "language-created-successfully": "\"{name}\" created successfully.",
-      "reload-themes-success": "Reloaded themes successfully."
+      "reload-themes-success": "Reloaded themes successfully.",
+      "activate-theme-success": "Theme activated successfully."
     }
   },
   "page-error": {

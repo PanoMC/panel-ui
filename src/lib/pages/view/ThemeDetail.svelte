@@ -26,8 +26,8 @@
         </a>
       {/if}
       {#if !theme.active}
-        <button disabled class="btn btn-secondary" on:click={makeDefault}>
-          Kullan
+        <button class="btn btn-secondary" on:click={activate} disabled="{activating}">
+          Kullan{#if activating}<i class="fas fa-spinner fa-spin ms-2"></i>{/if}
         </button>
       {/if}
     </div>
@@ -180,38 +180,48 @@
 </script>
 
 <script>
-  import PageActions from "$lib/component/PageActions.svelte";
   import { getContext } from "svelte";
+  import { invalidate, invalidateAll } from "$app/navigation";
+
+  import { formatBytes } from "$lib/string.util";
   import { PANO_WEBSITE_URL } from "$lib/variables.js";
+
+  import { show as showToast } from "$lib/component/ToastContainer.svelte";
+
+  import PageActions from "$lib/component/PageActions.svelte";
   import Date from "$lib/component/Date.svelte";
-  import { formatBytes } from "$lib/string.util.js";
 
   const pageTitle = getContext("pageTitle");
 
   export let data;
+  let theme;
 
-  const {theme} = data;
+  $: {
+    theme = data.theme;
+  }
+
+  let activating;
 
   pageTitle.set("Tema Detayı");
-
-  // export let theme = {
-  //   name: "Vanilla Theme",
-  //   description: "Pano için sade ve özelleştirilebilir bir tema.",
-  //   version: "1.0.0",
-  //   author: "Ahmet Enes Duruer",
-  //   screenshots: [
-  //     "https://placehold.co/600x400?text=Screenshot+1",
-  //     "https://placehold.co/600x400?text=Screenshot+2",
-  //   ],
-  //   installed: true,
-  //   isActive: true,
-  // };
 
   function uninstallTheme() {
     alert(`'${theme.name}' teması kaldırıldı!`);
   }
 
-  function makeDefault() {
-    alert(`'${theme.name}' artık varsayılan tema olarak ayarlandı.`);
+  async function activate() {
+    activating = true;
+
+    const activateResponse = await ApiUtil.put({path: `/api/panel/themes/${theme.id}`})
+
+    if (activateResponse.result !== "ok") {
+      location.reload()
+      return;
+    }
+
+    await invalidate((_) => true)
+
+    await showToast('components.toasts.activate-theme-success');
+
+    activating = false;
   }
 </script>
