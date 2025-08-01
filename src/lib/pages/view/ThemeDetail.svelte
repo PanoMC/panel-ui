@@ -76,7 +76,7 @@
           <!-- Title & Status -->
           <div>
             <div class="d-flex justify-content-between align-items-start">
-              <h2>{theme.title}</h2>
+              <h2>{theme.title}<VerifiedStatus status={theme.verifyStatus} /></h2>
               {#if theme.active}
                 <span class="badge text-bg-secondary">Kullanılan Tema</span>
               {/if}
@@ -197,6 +197,7 @@
   import ConfirmRemoveThemeModal,  {
     show as showRemoveModal,
   } from "$lib/component/modals/ConfirmRemoveThemeModal.svelte";
+  import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
 
   const pageTitle = getContext("pageTitle");
 
