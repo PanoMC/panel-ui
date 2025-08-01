@@ -33,7 +33,7 @@
     <div class="row">
       {#each data.themes as theme, index (theme)}
         <div class="col-xl-4 col-md-6">
-          <a href="/panel/view/detail/vanilla-theme" title={$_("buttons.view")}>
+          <a href="{base}/view/detail/{theme.id}" title={$_("buttons.view")}>
             <div class="card text-white position-relative overflow-hidden">
               <img
                 src="/api/panel/themes/{theme.id}/screenshots/{theme.screenshots[0] || 'screenshot.png'}"
