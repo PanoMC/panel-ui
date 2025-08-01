@@ -9,8 +9,9 @@
     <button
       type="button"
       class="btn btn-primary"
-      use:tooltip={[$_("buttons.refresh"), { placement: "bottom" }]}>
-      <i class="fas fa-sync"></i>
+      use:tooltip={[$_("buttons.reload"), { placement: "bottom" }]}
+      on:click={reloadThemes}>
+      <i class="fas fa-sync" class:fa-spin={reloading}></i>
     </button>
     <button type="button" class="btn btn-secondary">
       <i class="fas fa-plus me-2"></i>
@@ -113,13 +114,17 @@
   import { _ } from "svelte-i18n";
 
   import { base } from "$app/paths";
+  import { invalidate } from "$app/navigation";
+
+  import tooltip from "$lib/tooltip.util";
+
+  import { show as showToast } from "$lib/component/ToastContainer.svelte";
 
   import ConfirmDeleteThemeModal from "$lib/component/modals/ConfirmDeleteThemeModal.svelte";
   import CardMenuItem from "$lib/component/CardMenuItem.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
   import CardMenu from "$lib/component/CardMenu.svelte";
   import NoContent from "$lib/component/NoContent.svelte";
-  import tooltip from "$lib/tooltip.util";
   import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
   import CardHeader from "$lib/component/CardHeader.svelte";
 
@@ -127,5 +132,21 @@
 
   const pageTitle = getContext("pageTitle");
 
+  let reloading;
+
   pageTitle.set("Temalar");
+
+  async function reloadThemes() {
+    reloading = true;
+
+    await ApiUtil.put({
+      path: `/api/panel/themes`,
+    });
+
+    await invalidate((_) => true)
+
+    await showToast('components.toasts.reload-themes-success');
+
+    reloading = false;
+  }
 </script>
