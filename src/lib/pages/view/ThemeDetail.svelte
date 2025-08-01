@@ -78,12 +78,6 @@
             <h2>{theme.title}</h2>
             {#if theme.active}
               <span class="badge text-bg-secondary">Kullanılan Tema</span>
-            {:else}
-              <button
-                class="btn btn-sm btn-outline-primary"
-                on:click={makeDefault}>
-                Varsayılan Yap
-              </button>
             {/if}
           </div>
           <p class="text-muted">{theme.description}</p>
