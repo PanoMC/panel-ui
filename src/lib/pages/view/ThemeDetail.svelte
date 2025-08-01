@@ -137,6 +137,11 @@
             <strong>Installed By:</strong>
             {theme.installedBy}
           </div>
+          <div
+            class="list-group-item d-flex justify-content-between align-items-center">
+            <strong>Size:</strong>
+            {formatBytes(theme.size)}
+          </div>
         </ul>
       </div>
     </div>
@@ -179,6 +184,7 @@
   import { getContext } from "svelte";
   import { PANO_WEBSITE_URL } from "$lib/variables.js";
   import Date from "$lib/component/Date.svelte";
+  import { formatBytes } from "$lib/string.util.js";
 
   const pageTitle = getContext("pageTitle");
 
