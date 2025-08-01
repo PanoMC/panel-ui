@@ -138,6 +138,11 @@
             <strong>Updated:</strong>
             <Date time="{theme.updatedAt}" relativeFormat="{true}" />
           </div>
+          <div
+            class="list-group-item d-flex justify-content-between align-items-center">
+            <strong>Installed By:</strong>
+            {theme.installedBy}
+          </div>
         </ul>
       </div>
     </div>
