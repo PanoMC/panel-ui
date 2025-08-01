@@ -115,7 +115,7 @@
             <li
               class="list-group-item d-flex justify-content-between align-items-center">
               <strong>{$_('pages.theme-detail.source')}:</strong>
-              <a class="overflow-auto text-nowrap" href="{theme.sourceUrl ? theme.sourceUrl : false}" target="_blank">
+              <a class="overflow-auto text-nowrap" href="{theme.sourceUrl ? theme.sourceUrl : null}" target="_blank">
                 {theme.sourceUrl || $_('pages.theme-detail.unknown')}
                 <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
               </a>
