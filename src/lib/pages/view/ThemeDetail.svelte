@@ -104,7 +104,7 @@
           </li>
           <li
             class="list-group-item d-flex justify-content-between align-items-center">
-            <strong>Yazar:</strong>
+            <strong>Geliştirici:</strong>
             <a target="_blank" href="{PANO_WEBSITE_URL}/users/{theme.author}"
               >{theme.author}
               <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
