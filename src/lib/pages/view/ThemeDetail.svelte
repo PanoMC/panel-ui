@@ -2,17 +2,17 @@
   <!-- Action Menu -->
   <PageActions middleClasses="d-lg-flex d-none">
     <a slot="left" href="{base}/view" class="btn btn-link">
-      <i class="fas fa-arrow-left me-2"></i> Temalar
+      <i class="fas fa-arrow-left me-2"></i> {$_('buttons.themes')}
     </a>
 
     <div class="hstack gap-2" slot="right">
       {#if theme.installedBy !== "SYSTEM"}
         <button
-          aria-label="Uninstall Theme"
+          aria-label="{$_('buttons.remove')}"
           class="btn btn-link text-danger"
           type="button"
           on:click={onRemoveClick}
-          title="Temayı Kaldır"
+          title="{$_('buttons.remove')}"
           class:disabled={removing}>
           <i class="fas fa-trash"></i>
         </button>
@@ -23,12 +23,12 @@
           target="_blank"
           class="btn btn-outline-primary">
           <i class="fas fa-store me-2"></i>
-          Mağazada Göster
+          {$_('buttons.show-in-store')}
         </a>
       {/if}
       {#if !theme.active}
         <button class="btn btn-secondary" on:click={activate} disabled="{activating}">
-          Kullan{#if activating}<i class="fas fa-spinner fa-spin ms-2"></i>{/if}
+          {$_('buttons.activate')}{#if activating}<i class="fas fa-spinner fa-spin ms-2"></i>{/if}
         </button>
       {/if}
     </div>
@@ -48,7 +48,7 @@
                 <img
                   src={`/api/panel/themes/${theme.id}/screenshots/${src}`}
                   class="d-block w-100"
-                  alt={`Screenshot ${i + 1}`} />
+                  alt={$_('pages.theme-detail.screenshot') + ` ${i + 1}`} />
               </div>
             {/each}
           </div>
@@ -57,14 +57,16 @@
               class="carousel-control-prev"
               type="button"
               data-bs-target="#themeCarousel"
-              data-bs-slide="prev">
+              data-bs-slide="prev"
+              aria-label="{$_('buttons.previous')}">
               <span class="carousel-control-prev-icon"></span>
             </button>
             <button
               class="carousel-control-next"
               type="button"
               data-bs-target="#themeCarousel"
-              data-bs-slide="next">
+              data-bs-slide="next"
+              aria-label="{$_('buttons.next')}">
               <span class="carousel-control-next-icon"></span>
             </button>
           {/if}
@@ -78,7 +80,7 @@
             <div class="d-flex justify-content-between align-items-start">
               <h2>{theme.title}<VerifiedStatus status={theme.verifyStatus} /></h2>
               {#if theme.active}
-                <span class="badge text-bg-secondary">Kullanılan Tema</span>
+                <span class="badge text-bg-secondary">{$_('pages.theme-detail.in-use')}</span>
               {/if}
             </div>
             <p class="text-muted">{theme.description}</p>
@@ -86,63 +88,63 @@
 
           <!-- Metadata -->
           <ul class="list-group">
-            <div
+            <li
               class="list-group-item d-flex justify-content-between align-items-center">
               <strong>ID:</strong>
               <span class="font-monospace user-select-all">
                 {theme.id}</span>
-            </div>
+            </li>
             <li
               class="list-group-item d-flex justify-content-between align-items-center">
-              <strong>Sürüm:</strong>
+              <strong>{$_('pages.theme-detail.version')}:</strong>
               <span class="user-select-all font-monospace">{theme.version}</span>
             </li>
             <li
               class="list-group-item d-flex justify-content-between align-items-center">
-              <strong>Geliştirici:</strong>
+              <strong>{$_('pages.theme-detail.developer')}:</strong>
               <a target="_blank" href="{PANO_WEBSITE_URL}/users/{theme.author}"
                 >{theme.author}
                 <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
               </a>
             </li>
-            <div
+            <li
               class="list-group-item d-flex justify-content-between align-items-center">
-              <strong>Lisans:</strong>
-              {theme.license}
-            </div>
-            <div
+              <strong>{$_('pages.theme-detail.license')}:</strong>
+              {theme.license || $_('pages.theme-detail.unknown')}
+            </li>
+            <li
               class="list-group-item d-flex justify-content-between align-items-center">
-              <strong>Kaynak:</strong>
+              <strong>{$_('pages.theme-detail.source')}:</strong>
               <a class="overflow-auto text-nowrap" href="{theme.sourceUrl ? theme.sourceUrl : false}" target="_blank">
-                {theme.sourceUrl || "Unknown"}
+                {theme.sourceUrl || $_('pages.theme-detail.unknown')}
                 <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
               </a>
-            </div>
-            <div
+            </li>
+            <li
               class="list-group-item d-flex justify-content-between align-items-center">
               <strong>Hash:</strong>
               <code class="overflow-auto text-nowrap user-select-all">{theme.hash}</code>
-            </div>
-            <div
+            </li>
+            <li
               class="list-group-item d-flex justify-content-between align-items-center">
-              <strong>Installed:</strong>
+              <strong>{$_('pages.theme-detail.installed-at')}:</strong>
               <Date time="{theme.createdAt}" relativeFormat="{true}" />
-            </div>
-            <div
+            </li>
+            <li
               class="list-group-item d-flex justify-content-between align-items-center">
-              <strong>Updated:</strong>
+              <strong>{$_('pages.theme-detail.updated-at')}:</strong>
               <Date time="{theme.updatedAt}" relativeFormat="{true}" />
-            </div>
-            <div
+            </li>
+            <li
               class="list-group-item d-flex justify-content-between align-items-center">
-              <strong>Installed By:</strong>
-              {theme.installedBy}
-            </div>
-            <div
+              <strong>{$_('pages.theme-detail.installed-by')}:</strong>
+              {$_('pages.theme-detail.installed-by-types.' + theme.installedBy)}
+            </li>
+            <li
               class="list-group-item d-flex justify-content-between align-items-center">
-              <strong>Size:</strong>
+              <strong>{$_('pages.theme-detail.size')}:</strong>
               {formatBytes(theme.size)}
-            </div>
+            </li>
           </ul>
         </div>
       </div>
@@ -183,6 +185,7 @@
 
 <script>
   import { getContext } from "svelte";
+  import { _ } from "svelte-i18n";
 
   import { goto, invalidate } from "$app/navigation";
   import { base } from "$app/paths";
@@ -210,7 +213,7 @@
 
   let activating, removing;
 
-  pageTitle.set("Tema Detayı");
+  pageTitle.set("pages.theme-detail.title");
 
   function onRemoveClick() {
     showRemoveModal(theme.active, async () => {

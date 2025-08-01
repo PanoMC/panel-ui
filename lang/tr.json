@@ -36,9 +36,32 @@
     "clear": "Temizle",
     "change": "Değiştir",
     "refresh": "Yenile",
-    "reload": "Yenile"
+    "reload": "Yenile",
+    "show-in-store": "Mağazada Göster",
+    "activate": "Aktif Et",
+    "themes": "Temalar",
+    "previous": "Önceki",
+    "next": "Sonraki"
   },
   "pages": {
+    "theme-detail": {
+      "title": "Tema Detayı",
+      "screenshot": "Ekran Görüntüsü",
+      "in-use": "Aktif",
+      "version": "Versiyon",
+      "developer": "Geliştirici",
+      "license": "Lisans",
+      "source": "Kaynak",
+      "installed-at": "Yüklendi",
+      "updated-at": "Güncellendi",
+      "installed-by": "Kurulma Şekli",
+      "size": "Boyut",
+      "install-types": {
+        "USER": "Kullanıcı",
+        "SYSTEM": "Sistem"
+      },
+      "unknown": "Bilinmiyor"
+    },
     "activity-logs": {
       "title": "Aktivite Kayıtları"
     },
@@ -373,6 +396,10 @@
     }
   },
   "components": {
+    "verified-status": {
+      "verified": "Pano tarafından doğrulandı",
+      "not-verified": "Pano tarafından doğrulanmadı, kendi sorumluluğunuzda kullanın!"
+    },
     "ticket-status-badge": {
       "filter": "Filtrele",
       "new": "Yeni",

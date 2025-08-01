@@ -3,7 +3,7 @@
                         <span
                           class="text-success"
                           use:tooltip={[
-                            "Verified by Pano",
+                            $_('components.verified-status.verified'),
                             { placement: "bottom" },
                           ]}>
                           <i class="fa-regular fa-circle-check"></i>
@@ -12,7 +12,7 @@
   <div
     class="text-warning"
     use:tooltip={[
-                            "Not verified by Pano, use at your own risk!",
+                            $_('components.verified-status.not-verified'),
                             { placement: "bottom" },
                           ]}>
     <i class="fa-solid fa-circle-exclamation me-1"></i>
@@ -20,7 +20,8 @@
 {/if}
 
 <script>
-  import tooltip from "$lib/tooltip.util"
+  import { _ } from "svelte-i18n";
+  import tooltip from "$lib/tooltip.util";
 
   export let status;
 </script>

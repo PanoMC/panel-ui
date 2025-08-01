@@ -36,9 +36,32 @@
     "clear": "Clear",
     "change": "Change",
     "refresh": "Refresh",
-    "reload": "Reload"
+    "reload": "Reload",
+    "show-in-store": "Show In Store",
+    "activate": "Activate",
+    "themes": "Themes",
+    "previous": "Previous",
+    "next": "Next"
   },
   "pages": {
+    "theme-detail": {
+      "title": "Theme Detail",
+      "screenshot": "Screenshot",
+      "in-use": "Active",
+      "version": "Version",
+      "developer": "Developer",
+      "license": "License",
+      "source": "Source",
+      "installed-at": "Installed",
+      "updated-at": "Updated",
+      "installed-by": "Installed By",
+      "size": "Size",
+      "installed-by-types": {
+        "USER": "User",
+        "SYSTEM": "System"
+      },
+      "unknown": "Unknown"
+    },
     "activity-logs": {
       "title": "Activity Logs"
     },
@@ -373,6 +396,10 @@
     }
   },
   "components": {
+    "verified-status": {
+      "verified": "Verified by Pano",
+      "not-verified": "Not verified by Pano, use at your own risk!"
+    },
     "ticket-status-badge": {
       "filter": "Filter",
       "new": "New",
