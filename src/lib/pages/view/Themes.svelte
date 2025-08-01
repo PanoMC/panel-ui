@@ -20,6 +20,11 @@
 </PageActions>
 
 <div class="card">
+  <CardHeader>
+    <div slot="left">
+      {data.themes.length} Yüklü Tema
+    </div>
+  </CardHeader>
   <div class="card-body">
     {#if data.themes.length === 0}
       <NoContent />
@@ -116,6 +121,7 @@
   import NoContent from "$lib/component/NoContent.svelte";
   import tooltip from "$lib/tooltip.util";
   import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
+  import CardHeader from "$lib/component/CardHeader.svelte";
 
   export let data;
 
