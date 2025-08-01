@@ -479,6 +479,10 @@
       "confirm-remove-pano-account": {
         "title": "Çevrimiçi Pano hesabınızı platformdan kaldırmak istediğinize emin misiniz?"
       },
+      "confirm-remove-theme": {
+        "title": "Bu temayı silmek istediğinizden emin misiniz?",
+        "title-active": "Bu aktif bir tema! Varsayılan olarak \"Vanilla\" tema kullanılacak. Silmek istediğinizden emin misiniz?"
+      },
       "confirm-install-resource": {
         "title": "\"{title}\" ({resourceId}) kurmak istediğinize emin misiniz?"
       },
@@ -733,7 +737,8 @@
       "language-updated-successfully": "\"{name}\" başarıyla güncellendi.",
       "language-created-successfully": "\"{name}\" başarıyla oluşturuldu.",
       "reload-themes-success": "Temalar başarıyla yenilendi.",
-      "activate-theme-success": "Tema başarıyla aktifleştirildi."
+      "activate-theme-success": "Tema başarıyla aktifleştirildi.",
+      "removed-theme-success": "Tema başarıyla kaldırıldı."
     }
   },
   "page-error": {

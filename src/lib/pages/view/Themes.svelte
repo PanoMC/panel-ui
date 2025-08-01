@@ -65,8 +65,6 @@
   </div>
 </div>
 
-<ConfirmDeleteThemeModal />
-
 <script context="module">
   import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
   import { error } from "@sveltejs/kit";
@@ -120,7 +118,6 @@
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
 
-  import ConfirmDeleteThemeModal from "$lib/component/modals/ConfirmDeleteThemeModal.svelte";
   import CardMenuItem from "$lib/component/CardMenuItem.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
   import CardMenu from "$lib/component/CardMenu.svelte";

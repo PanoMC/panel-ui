@@ -479,6 +479,10 @@
       "confirm-remove-pano-account": {
         "title": "Are you sure to disconnect your online Pano account from this platform?"
       },
+      "confirm-remove-theme": {
+        "title": "Are you sure to remove this theme?",
+        "title-active": "This theme is active! It will be default to \"Vanilla\" theme. Are you sure to remove?"
+      },
       "confirm-install-resource": {
         "title": "Are you sure to install \"{title}\" ({resourceId})?"
       },
@@ -733,7 +737,8 @@
       "language-updated-successfully": "\"{name}\" updated successfully.",
       "language-created-successfully": "\"{name}\" created successfully.",
       "reload-themes-success": "Reloaded themes successfully.",
-      "activate-theme-success": "Theme activated successfully."
+      "activate-theme-success": "Theme activated successfully.",
+      "removed-theme-success": "Theme removed successfully."
     }
   },
   "page-error": {
