@@ -6,7 +6,7 @@
     <div class="col-auto">
       <a href="{base}/addons" class="btn btn-link" role="button">
         <i class="fas fa-arrow-left me-2"></i>
-        Eklentiler
+        {$_('buttons.addons')}
       </a>
     </div>
     <div class="col-auto d-flex align-items-center gap-2">
@@ -61,26 +61,26 @@
               <strong>ID:</strong> {addon.id}
             </li>
             <li class="list-group-item">
-              <strong>Sürüm:</strong> {addon.version}
+              <strong>{$_('pages.addon-detail.version')}:</strong> {addon.version}
             </li>
             <li class="list-group-item">
-              <strong>Pano Versiyonu:</strong> {addon.panoVersion}
+              <strong>{$_('pages.addon-detail.pano-version')}:</strong> {addon.panoVersion}
             </li>
             <li class="list-group-item">
-              <strong>Geliştirici:</strong> {addon.developer}
+              <strong>{$_('pages.addon-detail.developer')}:</strong> {addon.developer}
             </li>
             <li class="list-group-item">
-              <strong>Lisans:</strong> {addon.license || "Unknown"}
+              <strong>{$_('pages.addon-detail.license')}:</strong> {addon.license || $_('pages.addon-detail.unknown')}
             </li>
             <li class="list-group-item">
-              <strong>Kaynak Kodu:</strong>
+              <strong>{$_('pages.addon-detail.source')}:</strong>
               <a href={addon.sourceUrl} target="_blank">{addon.sourceUrl}</a>
             </li>
             <li class="list-group-item">
-              <strong>Dependencies:</strong> {isBlank(addon.dependencies) ? '-' : addon.dependencies}
+              <strong>{$_('pages.addon-detail.dependencies')}:</strong> {isBlank(addon.dependencies) ? '-' : addon.dependencies}
             </li>
             <li class="list-group-item">
-              <strong>Requires:</strong> {isBlank(addon.dependencies) ? '-' : addon.requires}
+              <strong>{$_('pages.addon-detail.requires')}:</strong> {isBlank(addon.dependencies) ? '-' : addon.requires}
             </li>
             <li class="list-group-item">
               <strong>Hash:</strong>
@@ -88,7 +88,7 @@
             </li>
             <li
               class="list-group-item">
-              <strong>{$_('pages.theme-detail.size')}:</strong>
+              <strong>{$_('pages.addon-detail.size')}:</strong>
               {formatBytes(addon.size)}
             </li>
           </ul>
@@ -146,7 +146,7 @@
 
   const pageTitle = getContext("pageTitle");
 
-  pageTitle.set("Eklenti Detayı");
+  pageTitle.set("pages.addon-detail.title");
 
   function onRemoveClick() {
     alert(`'${addon.name}' eklentisi kaldırıldı!`);

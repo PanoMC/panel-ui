@@ -72,6 +72,18 @@
       },
       "unknown": "Unknown"
     },
+    "addon-detail": {
+      "title": "Addon Detail",
+      "version": "Version",
+      "pano-version": "Pano Version",
+      "developer": "Developer",
+      "license": "License",
+      "source": "Source",
+      "dependencies": "Dependencies",
+      "requires": "Requires",
+      "size": "Size",
+      "unknown": "Unknown"
+    },
     "activity-logs": {
       "title": "Activity Logs"
     },
