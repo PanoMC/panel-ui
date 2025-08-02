@@ -115,7 +115,7 @@
                           <i class="fa-solid fa-store"></i>
                         </a>
                       {/if}
-                      <div>{plugin.author}</div>
+                      <div>{plugin.developer}</div>
 
                       <span class="font-monospace user-select-all"
                         >{plugin.version}</span>
