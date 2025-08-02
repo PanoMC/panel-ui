@@ -40,7 +40,7 @@
       <div class="col-lg-6">
         <div
           id="themeCarousel"
-          class="carousel slide rounded overflow-hidden"
+          class="carousel carousel-dark slide rounded overflow-hidden"
           data-bs-ride="carousel">
           <div class="carousel-inner">
             {#each theme.screenshots.length === 0 ? ['screenshot.png'] : theme.screenshots as src, i}
