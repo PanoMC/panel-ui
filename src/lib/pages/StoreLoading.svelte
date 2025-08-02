@@ -4,7 +4,7 @@
     <div class="vstack gap-3">
       {#if !data.accountConnected}
         Account not connected!
-      {:else if data.confirmView && !DEFAULT_INSTALLING_VIEW}
+      {:else if data.installingView}
         <div class="row" hidden="{modalShown}">
           <div
             class="d-inline-flex rounded justify-content-start align-items-start ps-2 pt-2"
@@ -15,41 +15,6 @@
               </div>
             </div>
           </div>
-        </div>
-      {:else if data.installingView}
-        <div class="row">
-          <div class="card shadow-sm p-3 mb-4" style="max-width: 360px;">
-            <h6 class="mb-3">Installing {versionInfo.version.type}...</h6>
-            <ul class="list-group list-group-flush">
-              {#each processes as process, index (process)}
-                <li class="list-group-item d-flex align-items-center {getProcessClasses(installingStep, installError, index + 1)}">
-                  <i class="{getIconClasses(installingStep, installError, index + 1)} me-2" ></i> {process}
-                </li>
-              {/each}
-            </ul>
-          </div>
-          {#if installError}
-            <div class="d-flex justify-content-between w-full">
-              <button on:click="{() => goto(`${base}/${(data.pageType === PageTypes.ADDON ? 'addons' : 'view')}`)}" class="btn btn-sm btn-outline-secondary">
-                <i class="fas fa-arrow-left me-1"></i> Geri
-              </button>
-              <button on:click="{() => goto(`${base}/${(data.pageType === PageTypes.ADDON ? 'addons' : 'view')}/store`, {invalidateAll:true})}" class="btn btn-sm btn-outline-primary">
-                <i class="fas fa-store me-1"></i> Mağaza
-              </button>
-            </div>
-          {/if}
-
-          {#if installingStep === 6}
-            <button on:click="{() => goto(`${base}/${(data.pageType === PageTypes.ADDON ? 'addons' : 'view')}`, {invalidateAll:true})}" class="btn btn-sm btn-outline-secondary">
-              <i class="fas fa-arrow-left me-1"></i> Geri Dön
-            </button>
-          {/if}
-
-          {#if installError}
-            <div class="alert alert-danger mt-3 mb-0 py-2 px-3" role="alert" style="font-size: 0.9rem;">
-              Hata oluştu: {installError}
-            </div>
-          {/if}
         </div>
       {:else}
         <div
@@ -94,9 +59,7 @@
   });
 
   const DEFAULT_ACCOUNT_NOT_CONNECTED_VIEW = false;
-  const DEFAULT_CONFIRM_VIEW = false;
   const DEFAULT_INSTALLING_VIEW = false;
-  const DEFAULT_INSTALL_FINISHED_VIEW = false;
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -123,7 +86,6 @@
     return {
       pageType,
       accountConnected: !DEFAULT_ACCOUNT_NOT_CONNECTED_VIEW,
-      confirmView: DEFAULT_CONFIRM_VIEW || install,
       installingView: DEFAULT_INSTALLING_VIEW,
       install
     };
@@ -144,26 +106,12 @@
     show as showConfirmInstallResourceModal,
     onHide as onConfirmInstallResourceModalHide,
   } from "$lib/component/modals/ConfirmInstallResourceModal.svelte";
+  import { show as showInstallingResourceModal } from "$lib/component/modals/InstallingResourceModal.svelte"
 
   export let data;
 
   const showSplash = getContext("showSplash")
 
-  const installingClasses = 'fas fa-spinner fa-spin'
-  const awaitingClasses = 'far fa-clock'
-  const successClasses = 'fas fa-check'
-  const errorClasses = 'fas fa-times'
-
-  const processes = [
-    "Getting version info...",
-    "Downloading file...",
-    "Preparing...",
-    "Installing...",
-    "Done!"
-  ]
-
-  let installingStep = DEFAULT_INSTALL_FINISHED_VIEW ? 6 : 1;
-  let installError;
   let versionInfo;
   let modalShown;
 
@@ -177,14 +125,6 @@
     while (!window) {
       await tick();
     }
-  }
-
-  function getProcessClasses(installingStep, installError, step) {
-    return installingStep === step ? (installError ? 'text-danger' : 'text-primary') : installingStep > step ? 'text-success' : "text-muted"
-  }
-
-  function getIconClasses(installingStep, installError, step) {
-    return installingStep === step ? (installError ? errorClasses : installingClasses) : installingStep > step ? successClasses : awaitingClasses
   }
 
   async function getStoreTokenResponse() {
@@ -208,7 +148,7 @@
   }
 
   async function getVersionInfo() {
-    data.confirmView = true;
+    data.installingView = true;
 
     const getStoreTokenResponse = await ApiUtil.get({
       path: `/api/panel/install/store/${data.install}/info`
@@ -241,34 +181,6 @@
     showConfirmInstallResourceModal(versionInfo)
   }
 
-  function handleSSEMessage(message) {
-    if (message.result === "ok") {
-      installingStep++;
-
-      if (installingStep === 5) {
-        installingStep = 6;
-      }
-    } else {
-      installError = message.error
-      console.error(message.error, message.message)
-    }
-  }
-
-  async function installResourceFromStore() {
-    data.confirmView = false;
-    data.installingView = true;
-
-    const eventSource = new EventSource(`/api/panel/install/store/${data.install}/stream`);
-
-    eventSource.onmessage = (event) => {
-      handleSSEMessage(JSON.parse(event.data))
-    };
-
-    eventSource.onerror = () => {
-      eventSource.close()
-    };
-  }
-
   async function goToStore(getStoreTokenResponse) {
     const { token, state } = getStoreTokenResponse;
 
@@ -292,15 +204,13 @@
   });
 
   setConfirmInstallResourceCallback(async () => {
-    if (DEFAULT_INSTALL_FINISHED_VIEW) {
-      return;
-    }
     modalShown = false;
 
     await sleep(500)
 
+    modalShown = true;
 
-    await installResourceFromStore()
+    await showInstallingResourceModal(data.pageType, null, data.install)
   });
 
   (async () => {
@@ -319,7 +229,7 @@
       return
     }
 
-    if (data.accountConnected && !data.installingView && !data.confirmView) {
+    if (data.accountConnected && !data.installingView) {
       const storeTokenResponse = await getStoreTokenResponse()
 
       if (storeTokenResponse === null) {

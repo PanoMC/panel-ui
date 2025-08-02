@@ -1,4 +1,4 @@
-<AddPluginModal />
+<InstallResourceModal />
 <div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions middleClasses="d-lg-flex d-none" leftClasses="d-lg-flex d-none">
@@ -6,7 +6,7 @@
       <button
         type="button"
         class="btn btn-secondary ml-auto"
-        on:click={showAddPluginModal}>
+        on:click={() => showInstallResourceModal("PLUGIN")}>
         <i class="fas fa-plus me-2"></i>
         Eklenti Yükle
       </button>
@@ -195,7 +195,6 @@
   import { base } from "$app/paths";
 
   import { PANO_WEBSITE_URL } from "$lib/variables";
-  import tooltip from "$lib/tooltip.util";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
 
@@ -203,9 +202,9 @@
   import CardHeader from "$lib/component/CardHeader.svelte";
   import CardFiltersItem from "$lib/component/CardFiltersItem.svelte";
   import CardFilters from "$lib/component/CardFilters.svelte";
-  import AddPluginModal, {
-    show as showAddPluginModal,
-  } from "$lib/component/modals/AddPluginModal.svelte";
+  import InstallResourceModal, {
+    show as showInstallResourceModal,
+  } from "$lib/component/modals/InstallResourceModal.svelte";
   import {
     show as showConfirmDisableAddonModal,
     setCallback as setCallbackConfirmDisableAddonModal,

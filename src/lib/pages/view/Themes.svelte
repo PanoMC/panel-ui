@@ -1,4 +1,5 @@
 <!-- Theme Settings -->
+<InstallResourceModal />
 
 <PageActions leftClasses="d-lg-flex d-none">
   <CardMenu slot="middle">
@@ -13,7 +14,7 @@
       on:click={reloadThemes}>
       <i class="fas fa-sync" class:fa-spin={reloading}></i>
     </button>
-    <button type="button" class="btn btn-secondary">
+    <button type="button" class="btn btn-secondary" on:click={() => showInstallResourceModal("THEME")}>
       <i class="fas fa-plus me-2"></i>
       {$_('buttons.install-theme')}
     </button>
@@ -124,6 +125,7 @@
   import NoContent from "$lib/component/NoContent.svelte";
   import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
   import CardHeader from "$lib/component/CardHeader.svelte";
+  import InstallResourceModal, {show as showInstallResourceModal} from "$lib/component/modals/InstallResourceModal.svelte";
 
   export let data;
 

@@ -26,6 +26,10 @@
   {#if hasPermission(Permissions.MANAGE_SERVERS)}
     <ServerRequestModal />
   {/if}
+
+  {#if hasPermission(Permissions.MANAGE_VIEW) || hasPermission(Permissions.MANAGE_ADDONS)}
+    <InstallingResourceModal/>
+  {/if}
 </App>
 
 <script context="module">
@@ -161,6 +165,8 @@
   import { page } from "$app/stores";
 
   import { options, logoutLoading, initialized } from "$lib/Store";
+  import { hasPermission, Permissions } from "$lib/auth.util.js";
+  import { PanelSidebarStorageUtil } from "$lib/storage.util.js"
 
   import Splash from "$lib/component/Splash.svelte";
   import Navbar from "$lib/component/Navbar.svelte";
@@ -169,9 +175,8 @@
   import App from "$lib/component/App.svelte";
   import NotificationContainer from "$lib/component/NotificationContainer.svelte";
   import ToastContainer from "$lib/component/ToastContainer.svelte";
-  import ServerRequestModal from "$lib/component/modals/ServerRequestModal.svelte";
-  import { hasPermission, Permissions } from "$lib/auth.util.js";
-  import { PanelSidebarStorageUtil } from "$lib/storage.util.js";
+  import ServerRequestModal from "$lib/component/modals/ServerRequestModal.svelte";;
+  import InstallingResourceModal from "$lib/component/modals/InstallingResourceModal.svelte";
 
   export let data;
 

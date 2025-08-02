@@ -43,7 +43,8 @@
     "previous": "Önceki",
     "next": "Sonraki",
     "theme-settings": "Tema Seçenekleri",
-    "install-theme": "Tema Yükle"
+    "install-theme": "Tema Yükle",
+    "back": "Geri"
   },
   "pages": {
     "themes": {
@@ -773,7 +774,8 @@
       "language-created-successfully": "\"{name}\" başarıyla oluşturuldu.",
       "reload-themes-success": "Temalar başarıyla yenilendi.",
       "activate-theme-success": "Tema başarıyla aktifleştirildi.",
-      "removed-theme-success": "Tema başarıyla kaldırıldı."
+      "removed-theme-success": "Tema başarıyla kaldırıldı.",
+      "invalid-resource-file-type": "Geçersiz dosya türü!"
     }
   },
   "page-error": {

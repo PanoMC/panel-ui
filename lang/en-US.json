@@ -43,7 +43,8 @@
     "previous": "Previous",
     "next": "Next",
     "theme-settings": "Theme Settings",
-    "install-theme": "Install Theme"
+    "install-theme": "Install Theme",
+    "back": "Back"
   },
   "pages": {
     "themes": {
@@ -773,7 +774,8 @@
       "language-created-successfully": "\"{name}\" created successfully.",
       "reload-themes-success": "Reloaded themes successfully.",
       "activate-theme-success": "Theme activated successfully.",
-      "removed-theme-success": "Theme removed successfully."
+      "removed-theme-success": "Theme removed successfully.",
+      "invalid-resource-file-type": "Invalid resource file type!"
     }
   },
   "page-error": {
