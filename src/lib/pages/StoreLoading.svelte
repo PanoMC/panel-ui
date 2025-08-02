@@ -213,30 +213,32 @@
     await showInstallingResourceModal(data.pageType === PageTypes.ADDON ? 'PLUGIN' : 'THEME', null, data.install)
   });
 
-  (async () => {
-    if (!browser) {
-      return
-    }
+   $: {
+     (async () => {
+       if (!browser) {
+         return
+       }
 
-    await waitSplash()
-    await waitWindow()
+       await waitSplash()
+       await waitWindow()
 
-    await sleep(500)
+       await sleep(500)
 
-    if (data.install && !data.installingView) {
-      await getVersionInfo()
+       if (data.install && !data.installingView) {
+         await getVersionInfo()
 
-      return
-    }
+         return
+       }
 
-    if (data.accountConnected && !data.installingView) {
-      const storeTokenResponse = await getStoreTokenResponse()
+       if (data.accountConnected && !data.installingView) {
+         const storeTokenResponse = await getStoreTokenResponse()
 
-      if (storeTokenResponse === null) {
-        return
-      }
+         if (storeTokenResponse === null) {
+           return
+         }
 
-      await goToStore(storeTokenResponse)
-    }
-  })();
+         await goToStore(storeTokenResponse)
+       }
+     })();
+   }
 </script>
