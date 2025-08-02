@@ -9,7 +9,8 @@
   <div slot="right" class="hstack gap-2">
     <button
       type="button"
-      class="btn btn-primary"
+      class="btn btn-outline-primary"
+      class:active={reloading}
       use:tooltip={[$_("buttons.reload"), { placement: "bottom" }]}
       on:click={reloadThemes}>
       <i class="fas fa-sync" class:fa-spin={reloading}></i>
