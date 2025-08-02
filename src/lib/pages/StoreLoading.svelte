@@ -210,7 +210,7 @@
 
     modalShown = true;
 
-    await showInstallingResourceModal(data.pageType, null, data.install)
+    await showInstallingResourceModal(data.pageType === PageTypes.ADDON ? 'PLUGIN' : 'THEME', null, data.install)
   });
 
   (async () => {
