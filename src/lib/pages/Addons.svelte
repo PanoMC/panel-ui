@@ -8,7 +8,7 @@
         class="btn btn-secondary ml-auto"
         on:click={() => showInstallResourceModal("PLUGIN")}>
         <i class="fas fa-plus me-2"></i>
-        Eklenti Yükle
+        {$_('buttons.install-addon')}
       </button>
     </div>
   </PageActions>
@@ -16,24 +16,23 @@
   <div class="card">
     <CardHeader>
       <div slot="left">
-        {data.plugins.length}
         {data.pageType === PageTypes.ACTIVE
-          ? "Aktif"
+          ? $_('pages.addons.card-title.active', {values: {amount: data.plugins.length}})
           : data.pageType === PageTypes.DISABLED
-            ? "Devre Dışı"
-            : "Yüklü"} Eklenti
+            ? $_('pages.addons.card-title.inactive', {values: {amount: data.plugins.length}})
+            : $_('pages.addons.card-title.installed', {values: {amount: data.plugins.length}})}
       </div>
       <!-- Filters -->
       <CardFilters slot="right">
         <CardFiltersItem href="/addons" active={data.pageType === PageTypes.ALL}
-          >Tümü</CardFiltersItem>
+          >{$_('buttons.all')}</CardFiltersItem>
         <CardFiltersItem
           href="/addons?status=ACTIVE"
-          active={data.pageType === PageTypes.ACTIVE}>Aktif</CardFiltersItem>
+          active={data.pageType === PageTypes.ACTIVE}>{$_('buttons.active')}</CardFiltersItem>
         <CardFiltersItem
           href="/addons?status=DISABLED"
           active={data.pageType === PageTypes.DISABLED}
-          >Devre Dışı</CardFiltersItem>
+          >{$_('buttons.disabled')}</CardFiltersItem>
       </CardFilters>
     </CardHeader>
     <div class="card-body">
@@ -49,15 +48,16 @@
               <!-- STATUS ACTIONS -->
               <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
                 {#if plugin.status === 'FAILED'}
-                  <a href="#"
+                  <button
+                     aria-label="{$_('buttons.error-log')}"
                      class="text-danger"
                      tabindex="0"
                      data-bs-toggle="popover"
                      data-bs-trigger="focus"
-                     data-bs-title="Error Log"
+                     data-bs-title="{$_('buttons.error-log')}"
                      data-bs-content={plugin.error}>
                     <i class="fa-solid fa-circle-exclamation"></i>
-                  </a>
+                  </button>
                 {/if}
 
                 {#if plugin.loading}
@@ -94,7 +94,7 @@
                         <VerifiedStatus status="{plugin.verifyStatus}" />
                       </h5>
                     </a>
-                    <small class="text-muted">{plugin.developer}</small>
+                    <small class="text-muted">by <span class="fw-bolder">{plugin.developer}</span></small>
                   </div>
                 </div>
 
@@ -104,10 +104,10 @@
                   <span class="font-monospace">{plugin.version}</span>
                   {#if plugin.license}<span>{plugin.license}</span>{/if}
                   {#if plugin.verifyStatus !== 'UNKNOWN'}
-                    <a href="{PANO_WEBSITE_URL}/{plugin.id}" target="_blank"><i class="fa-solid fa-store"></i></a>
+                    <a href="{PANO_WEBSITE_URL}/{plugin.id}" target="_blank" aria-label="{$_('buttons.show-in-store')}" title="{$_('buttons.show-in-store')}"><i class="fa-solid fa-store"></i></a>
                   {/if}
                   {#if plugin.sourceUrl}
-                    <a href={plugin.sourceUrl} target="_blank"><i class="fa-solid fa-link"></i></a>
+                    <a href={plugin.sourceUrl} target="_blank" aria-label="{$_('buttons.source')}"  title="{$_('buttons.source')}"><i class="fa-solid fa-link"></i></a>
                   {/if}
                 </div>
               </div>
@@ -164,6 +164,7 @@
 
 <script>
   import { getContext } from "svelte";
+  import { _ } from "svelte-i18n";
 
   import { base } from "$app/paths";
 
@@ -194,7 +195,7 @@
 
   const pageTitle = getContext("pageTitle");
 
-  pageTitle.set("Eklentiler");
+  pageTitle.set("pages.addons.title");
 
   setCallbackConfirmDisableAddonModal((plugin, hideModal) => {
     togglePluginState(plugin, false, () => {

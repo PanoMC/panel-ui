@@ -44,7 +44,12 @@
     "next": "Next",
     "theme-settings": "Theme Settings",
     "install-theme": "Install Theme",
-    "back": "Back"
+    "back": "Back",
+    "install-addon": "Install Addon",
+    "disabled": "Disabled",
+    "active": "Active",
+    "error-log": "Error Log",
+    "source": "Source"
   },
   "pages": {
     "themes": {
@@ -71,6 +76,14 @@
         "SYSTEM": "System"
       },
       "unknown": "Unknown"
+    },
+    "addons": {
+      "title": "Addons",
+      "card-title": {
+        "active": "{amount} Active Addon",
+        "inactive": "{amount} Inactive Addon",
+        "installed": "{amount} Installed Addon"
+      }
     },
     "addon-detail": {
       "title": "Addon Detail",

@@ -44,7 +44,12 @@
     "next": "Sonraki",
     "theme-settings": "Tema Seçenekleri",
     "install-theme": "Tema Yükle",
-    "back": "Geri"
+    "back": "Geri",
+    "install-addon": "Eklenti Yükle",
+    "disabled": "Devre Dışı",
+    "active": "Aktif",
+    "error-log": "Hata Kaydı",
+    "source": "Kaymak"
   },
   "pages": {
     "themes": {
@@ -71,6 +76,14 @@
         "SYSTEM": "Sistem"
       },
       "unknown": "Bilinmiyor"
+    },
+    "addons": {
+      "title": "Eklentiler",
+      "card-title": {
+        "active": "{amount} Aktif Eklenti",
+        "inactive": "{amount} Devre Dışı Eklenti",
+        "installed": "{amount} Yüklü Eklenti"
+      }
     },
     "addon-detail": {
       "title": "Eklenti Detayı",
