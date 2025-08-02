@@ -40,106 +40,82 @@
         {#if data.plugins.length === 0}
           <NoContent />
         {/if}
-      <div class="row row-cols-xl-2 row-cols-1 g-3">
-        {#each data.plugins as plugin, index (plugin)}
-          <div
-            class="col {plugin.status === 'FAILED' &&
-              'animate__animated animate__shakeX animate__slower'}">
-            <!-- Installed Addon Card -->
-            <div
-              class="card {plugin.status === 'FAILED' &&
-                'border-danger border-3'}">
-              <div class="card-body">
-                <div class="row g-3">
-                  <div class="col-sm-auto">
-                    <a href="{base}/addons/detail/{plugin.id}">
-                      <img
-                        height="88"
-                        width="88"
-                        src="/api/panel/plugins/{plugin.id}/logo"
-                        class="animate__animated animate__zoomIn"
-                        alt={plugin.name} />
+      <div class="row row-cols-xl-2 row-cols-1 g-4">
+        {#each data.plugins as plugin}
+          <div class="col">
+            <div class="card h-100 rounded-4 shadow-sm position-relative
+        {plugin.status === 'FAILED' && 'border-danger border-2'}">
+
+              <!-- STATUS ACTIONS -->
+              <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
+                {#if plugin.status === 'FAILED'}
+                  <a href="#"
+                     class="text-danger"
+                     tabindex="0"
+                     data-bs-toggle="popover"
+                     data-bs-trigger="focus"
+                     data-bs-title="Error Log"
+                     data-bs-content={plugin.error}>
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                  </a>
+                {/if}
+
+                {#if plugin.loading}
+                  <i class="fa-solid fa-spinner fa-spin me-2"></i>
+                {:else}
+                  <div class="form-check form-switch m-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      checked={plugin.status === 'STARTED'}
+                      on:click={(e) => {
+                  e.preventDefault();
+                  onTogglePluginStateClick(plugin);
+                }} />
+                  </div>
+                {/if}
+              </div>
+
+              <div class="card-body d-flex flex-column gap-3">
+                <div class="d-flex gap-3">
+                  <a href="{base}/addons/detail/{plugin.id}">
+                    <img
+                      src="/api/panel/plugins/{plugin.id}/logo"
+                      class="rounded-3 bg-light p-2"
+                      width="72"
+                      height="72"
+                      alt={plugin.name} />
+                  </a>
+                  <div class="flex-grow-1">
+                    <a href="{base}/addons/detail/{plugin.id}" class="text-decoration-none">
+                      <h5 class="card-title mb-1 text-truncate">
+                        {plugin.name}
+                        <VerifiedStatus status="{plugin.verifyStatus}" />
+                      </h5>
                     </a>
+                    <small class="text-muted">{plugin.developer}</small>
                   </div>
-                  <div class="col text-break">
-                    <div class="row">
-                      <div class="col">
-                        <a
-                          href="{base}/addons/detail/{plugin.id}"
-                          class="text-decoration-none">
-                          <h5 class="card-title text-truncate">{plugin.name}<VerifiedStatus status="{plugin.verifyStatus}"/></h5>
-                        </a>
-                      </div>
-                      <div class="col-auto">
-                        <div class="form-check form-switch">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            role="switch"
-                            id="addonStatusSwitch"
-                            checked={plugin.status === "STARTED"}
-                            disabled={plugin.loading}
-                            on:click={(e) => {
-                              e.preventDefault();
-                              onTogglePluginStateClick(plugin);
-                            }} />
-                        </div>
-                      </div>
-                      {#if plugin.status === "FAILED"}
-                        <div class="col-auto ps-0">
-                          <a
-                            href="#"
-                            tabindex="0"
-                            class="link-danger"
-                            data-bs-toggle="popover"
-                            data-bs-trigger="focus"
-                            data-bs-custom-class="font-monospace"
-                            data-bs-title="Error Log"
-                            data-bs-content={plugin.error}>
-                            <i class="fa-solid fa-circle-exclamation fa-1x"></i>
-                          </a>
-                        </div>
-                      {/if}
-                    </div>
+                </div>
 
-                    <p>
-                      {@html plugin.description}
-                    </p>
+                <div class="small flex-grow-1">{@html plugin.description}</div>
 
-                    <div class="d-flex flex-row flex-wrap gap-2">
-                      {#if plugin.verifyStatus !== "UNKNOWN"}
-                        <a
-                          href="{PANO_WEBSITE_URL}/{plugin.id}"
-                          target="_blank"
-                          title="Mağaza Adresi">
-                          <i class="fa-solid fa-store"></i>
-                        </a>
-                      {/if}
-                      <div>{plugin.developer}</div>
-
-                      <span class="font-monospace user-select-all"
-                        >{plugin.version}</span>
-
-                      {#if plugin.sourceUrl}
-                        <a
-                          href={plugin.sourceUrl}
-                          target="_blank"
-                          title="Kaynak Adresi"
-                          class="card-link">
-                          <i class="fa-solid fa-link"></i>
-                        </a>
-                      {/if}
-                      {#if plugin.license}
-                        <div>{plugin.license}</div>
-                      {/if}
-                    </div>
-                  </div>
+                <div class="d-flex flex-wrap gap-3 small text-muted">
+                  <span class="font-monospace">{plugin.version}</span>
+                  {#if plugin.license}<span>{plugin.license}</span>{/if}
+                  {#if plugin.verifyStatus !== 'UNKNOWN'}
+                    <a href="{PANO_WEBSITE_URL}/{plugin.id}" target="_blank"><i class="fa-solid fa-store"></i></a>
+                  {/if}
+                  {#if plugin.sourceUrl}
+                    <a href={plugin.sourceUrl} target="_blank"><i class="fa-solid fa-link"></i></a>
+                  {/if}
                 </div>
               </div>
             </div>
           </div>
         {/each}
       </div>
+
     </div>
   </div>
 </div>
@@ -250,6 +226,8 @@
   }
 
   function togglePluginState(plugin, status, callback = () => {}) {
+    plugin.loading = true;
+
     ApiUtil.put({
       path: `/api/panel/plugins/${plugin.id}`,
       body: { status },
@@ -266,7 +244,7 @@
         });
 
         data.plugins.forEach((plugin) => {
-          const newPluginData = newPluginsData.plugins.find(
+          const newPluginData = newPluginsData.data.find(
             (newPluginData) => newPluginData.id === plugin.id,
           );
 
@@ -281,7 +259,7 @@
           }
         });
 
-        newPluginsData.plugins.forEach((newPluginData) => {
+        newPluginsData.data.forEach((newPluginData) => {
           const pluginData = data.plugins.find(
             (plugin) => newPluginData.id === plugin.id,
           );
@@ -304,6 +282,9 @@
             addon: plugin.id,
           });
         }
+
+        plugin.loading = false;
+        data.plugins = data.plugins
 
         callback();
       },
