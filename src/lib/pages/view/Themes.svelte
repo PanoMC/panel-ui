@@ -1,3 +1,13 @@
+<style>
+  .theme-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .theme-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 .75rem 1.5rem rgba(0,0,0,0.2);
+  }
+</style>
+
 <!-- Theme Settings -->
 <InstallResourceModal />
 
@@ -31,37 +41,37 @@
   <div class="card-body">
     {#if data.themes.length === 0}
       <NoContent />
-    {/if}
-    <div class="row g-4">
-      {#each data.themes as theme, index (theme)}
-        <div class="col-xl-4 col-md-6">
-          <a href="{base}/view/detail/{theme.id}" title={$_("buttons.view")}>
-            <div class="card text-white position-relative overflow-hidden h-100">
-              <img
-                src="/api/panel/themes/{theme.id}/screenshots/{theme.screenshots[0] || 'screenshot.png'}"
-                class="card-img"
-                alt="{theme.title}" />
-              <div
-                class="card-img-overlay d-flex flex-column justify-content-end p-3"
-                style="background: linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0));">
-                <h5 class="card-title m-0">
-                  {theme.title}<VerifiedStatus status={theme.verifyStatus} />
-                </h5>
-                <p class="card-subtitle text-light">
-                  {@html $_('pages.themes.by', {values: {author: theme.author}})}
-                </p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <small class="font-monospace user-select-all">{theme.version}</small>
-                  {#if theme.active}
-                    <span class="badge bg-success">{$_('pages.themes.active')}</span>
-                  {/if}
-                </div>
+    {/if}<div class="row g-4">
+    {#each data.themes as theme}
+      <div class="col-xl-4 col-md-6">
+        <a href="{base}/view/detail/{theme.id}" class="text-decoration-none">
+          <div
+            class="card text-white position-relative overflow-hidden rounded-4 shadow-sm theme-card h-100">
+            <img
+              src="/api/panel/themes/{theme.id}/screenshots/{theme.screenshots[0] || 'screenshot.png'}"
+              class="card-img"
+              alt="{theme.title}" />
+            <div
+              class="card-img-overlay d-flex flex-column justify-content-end"
+              style="background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0)); padding:1.25rem;">
+              <h5 class="card-title mb-1">
+                {theme.title} <VerifiedStatus status={theme.verifyStatus} />
+              </h5>
+              <p class="card-subtitle text-light mb-2">
+                {@html $_('pages.themes.by', {values: {author: theme.author}})}
+              </p>
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="font-monospace user-select-all">{theme.version}</small>
+                {#if theme.active}
+                  <span class="badge bg-success">{$_('pages.themes.active')}</span>
+                {/if}
               </div>
             </div>
-          </a>
-        </div>
-      {/each}
-    </div>
+          </div>
+        </a>
+      </div>
+    {/each}
+  </div>
   </div>
 </div>
 
