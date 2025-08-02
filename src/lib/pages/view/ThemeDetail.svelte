@@ -106,6 +106,11 @@
             </li>
             <li
               class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>{$_('pages.theme-detail.pano-version')}:</strong>
+              <span class="user-select-all font-monospace">{theme.panoVersion}</span>
+            </li>
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center">
               <strong>{$_('pages.theme-detail.developer')}:</strong>
               <a target="_blank" href="{PANO_WEBSITE_URL}/users/{theme.author}"
                 >{theme.author}
