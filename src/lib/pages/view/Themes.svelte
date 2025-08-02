@@ -32,12 +32,11 @@
     {#if data.themes.length === 0}
       <NoContent />
     {/if}
-
-    <div class="row">
+    <div class="row g-4">
       {#each data.themes as theme, index (theme)}
         <div class="col-xl-4 col-md-6">
           <a href="{base}/view/detail/{theme.id}" title={$_("buttons.view")}>
-            <div class="card text-white position-relative overflow-hidden">
+            <div class="card text-white position-relative overflow-hidden h-100">
               <img
                 src="/api/panel/themes/{theme.id}/screenshots/{theme.screenshots[0] || 'screenshot.png'}"
                 class="card-img"
@@ -45,15 +44,14 @@
               <div
                 class="card-img-overlay d-flex flex-column justify-content-end p-3"
                 style="background: linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0));">
-                <h5 class="card-title">
+                <h5 class="card-title m-0">
                   {theme.title}<VerifiedStatus status={theme.verifyStatus} />
                 </h5>
                 <p class="card-subtitle text-light">
                   {@html $_('pages.themes.by', {values: {author: theme.author}})}
                 </p>
                 <div class="d-flex justify-content-between align-items-center">
-                  <small class="font-monospace user-select-all"
-                    >{theme.version}</small>
+                  <small class="font-monospace user-select-all">{theme.version}</small>
                   {#if theme.active}
                     <span class="badge bg-success">{$_('pages.themes.active')}</span>
                   {/if}
