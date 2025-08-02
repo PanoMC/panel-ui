@@ -86,13 +86,15 @@
 
   async function validateFile(file) {
     if (get(type) === 'THEME' && file.name.endsWith(".zip") || get(type) === 'PLUGIN' && file.name.endsWith(".jar")) {
-      return;
+      return true;
     }
 
     hide()
     showInstallResourceModal(get(type))
 
     await showToast("components.toasts.invalid-resource-file-type");
+
+    return false;
   }
 
   async function uploadFile(file) {
@@ -182,7 +184,10 @@
       processes.set(["Uploading...", ...get(processes).slice(2)])
 
       await delay(500);
-      await validateFile(newFile)
+      const valid = await validateFile(newFile)
+      if (!valid) {
+        return
+      }
       const fileName = await uploadFile(newFile)
 
       if (fileName) {
