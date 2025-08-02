@@ -14,7 +14,7 @@
           </div>
         </div>
       {:else}
-        <div class="modal-header">
+        <div class="modal-header border-0">
           <h5 class="modal-title" id="exampleModalLabel">Add Plugin</h5>
           <button
             type="button"
