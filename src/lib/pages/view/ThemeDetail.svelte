@@ -42,6 +42,11 @@
           id="themeCarousel"
           class="carousel carousel-dark slide rounded overflow-hidden"
           data-bs-ride="carousel">
+          <div class="carousel-indicators">
+            {#each theme.screenshots.length === 0 ? ['screenshot.png'] : theme.screenshots as src, i}
+              <button type="button" data-bs-target="#themeCarousel" data-bs-slide-to="i" class="active" aria-current="true" aria-label="{$_('pages.theme-detail.screenshot') + ` ${i + 1}`}"></button>
+            {/each}
+          </div>
           <div class="carousel-inner">
             {#each theme.screenshots.length === 0 ? ['screenshot.png'] : theme.screenshots as src, i}
               <div class={"carousel-item" + (i === 0 ? " active" : "")}>
