@@ -39,14 +39,14 @@
             class="btn btn-link col-6 m-0"
             data-bs-dismiss="modal"
             type="button"
-            on:click={() => goto(`${base}/${$type === 'ADDON' ? 'addons' : 'view'}`, {invalidateAll: true})} >
-            <i class="fas fa-arrow-left me-1"></i> {$_('buttons.back')}
+            on:click={() => goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}`, {invalidateAll: true})} >
+            <i class="fas fa-arrow-left me-1"></i> {$_('buttons.' + ($type === 'PLUGIN' ? 'addons' : 'themes'))}
           </button>
           <button
             class="btn btn-primary col-6 m-0"
             data-bs-dismiss="modal"
             type="button"
-            on:click={() => goto(`${base}/${$type === 'ADDON' ? 'addons' : 'view'}/store`, {invalidateAll:true})} >
+            on:click={() => goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}/store`, {invalidateAll:true})} >
             <i class="fas fa-store me-1"></i> Mağazaya Git
           </button>
         </div>
