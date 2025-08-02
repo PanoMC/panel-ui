@@ -58,7 +58,7 @@
                         width="88"
                         src="/api/panel/plugins/{plugin.id}/logo"
                         class="animate__animated animate__zoomIn"
-                        alt={plugin.id} />
+                        alt={plugin.name} />
                     </a>
                   </div>
                   <div class="col text-break">
@@ -67,7 +67,7 @@
                         <a
                           href="{base}/addons/detail/{plugin.id}"
                           class="text-decoration-none">
-                          <h5 class="card-title text-truncate">{plugin.id}</h5>
+                          <h5 class="card-title text-truncate">{plugin.name}<VerifiedStatus status="{plugin.verifyStatus}"/></h5>
                         </a>
                       </div>
                       <div class="col-auto">
@@ -132,7 +132,6 @@
                       {#if plugin.license}
                         <div>{plugin.license}</div>
                       {/if}
-                      <VerifiedStatus status="{plugin.verifyStatus}"/>
                     </div>
                   </div>
                 </div>
@@ -183,9 +182,7 @@
       throw error(500, body);
     }
 
-    body.pageType = status;
-
-    return body;
+    return { plugins: body.data, pageType: status };
   }
 </script>
 

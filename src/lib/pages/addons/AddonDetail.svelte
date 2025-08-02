@@ -4,7 +4,7 @@
     class="row justify-content-between align-items-center mb-3 animate__animated animate__slideInUp"
   >
     <div class="col-auto">
-      <a href="/panel/addons" class="btn btn-link" role="button">
+      <a href="{base}/addons" class="btn btn-link" role="button">
         <i class="fas fa-arrow-left me-2"></i>
         Eklentiler
       </a>
@@ -27,9 +27,9 @@
     <div class="row g-0">
       <div class="col-md-3 d-flex justify-content-center align-items-center bg-light p-4">
         <img
-          src={addon.icon}
+          src="/api/panel/plugins/{addon.id}/logo"
           class="img-fluid"
-          alt="Eklenti ikonu"
+          alt="{addon.name}"
           style="max-width: 100px; max-height: 100px"
         />
       </div>
@@ -37,13 +37,7 @@
       <div class="col-md-9">
         <div class="card-body">
           <h3 class="card-title d-flex align-items-center gap-2">
-            {addon.name}
-            {#if addon.verified}
-              <i
-                class="fa-solid fa-circle-check text-success"
-                title="Pano tarafından doğrulandı"
-              ></i>
-            {/if}
+            {addon.name} <VerifiedStatus status="{addon.verifyStatus}"/>
           </h3>
           <p class="text-muted">{addon.description}</p>
 
@@ -52,14 +46,14 @@
               <strong>Sürüm:</strong> {addon.version}
             </li>
             <li class="list-group-item">
-              <strong>Yazar:</strong> {addon.author}
+              <strong>Geliştirici:</strong> {addon.developer}
             </li>
             <li class="list-group-item">
               <strong>Lisans:</strong> {addon.license}
             </li>
             <li class="list-group-item">
               <strong>Kaynak Kodu:</strong>
-              <a href={addon.sourceCodeUrl} target="_blank">{addon.sourceCodeUrl}</a>
+              <a href={addon.sourceUrl} target="_blank">{addon.sourceUrl}</a>
             </li>
             <li class="list-group-item">
               <strong>Dosya Hash:</strong>
@@ -70,7 +64,7 @@
           <div class="d-flex gap-2">
             <a
               class="btn btn-outline-dark"
-              href={`/addons/${addon.name}`}
+              href={`/addons/${addon.id}`}
               target="_blank"
             >
               Mağazada Göster
@@ -112,23 +106,30 @@
 
 <script>
   import { getContext } from "svelte";
+  import {base} from "$app/paths";
+  import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
 
   export let data;
+  let addon;
+
+  $: {
+    addon = data.addon;
+  }
 
   const pageTitle = getContext("pageTitle");
   pageTitle.set("Eklenti Detayı");
 
-  export let addon = {
-    name: "Example Addon",
-    description: "Sunucunuza yeni özellikler eklemenizi sağlar.",
-    version: "1.2.3",
-    author: "Ahmet Enes Duruer",
-    icon: "https://placehold.co/100x100?text=Icon",
-    license: "MIT",
-    sourceCodeUrl: "https://github.com/example/pano-addon",
-    verified: true,
-    hash: "8a7b1c309e4d8cd238b1f16fcd2b9f3a04ae5bbf"
-  };
+  // export let addon = {
+  //   name: "Example Addon",
+  //   description: "Sunucunuza yeni özellikler eklemenizi sağlar.",
+  //   version: "1.2.3",
+  //   author: "Ahmet Enes Duruer",
+  //   icon: "https://placehold.co/100x100?text=Icon",
+  //   license: "MIT",
+  //   sourceCodeUrl: "https://github.com/example/pano-addon",
+  //   verified: true,
+  //   hash: "8a7b1c309e4d8cd238b1f16fcd2b9f3a04ae5bbf"
+  // };
 
   function uninstallAddon() {
     alert(`'${addon.name}' eklentisi kaldırıldı!`);
