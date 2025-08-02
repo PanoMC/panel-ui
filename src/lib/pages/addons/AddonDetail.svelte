@@ -10,7 +10,22 @@
       </a>
     </div>
     <div class="col-auto d-flex align-items-center gap-2">
-      <button class="btn btn-link text-danger" type="button" on:click={uninstallAddon}>
+      {#if addon.verifyStatus !== "UNKNOWN"}
+        <a
+          href={`${PANO_WEBSITE_URL}/addons/${addon.id}`}
+          target="_blank"
+          class="btn btn-outline-primary">
+          <i class="fas fa-store me-2"></i>
+          {$_('buttons.show-in-store')}
+        </a>
+      {/if}
+      <button
+        aria-label="{$_('buttons.remove')}"
+        class="btn btn-link text-danger"
+        type="button"
+        on:click={onRemoveClick}
+        title="{$_('buttons.remove')}"
+        class:disabled={removing}>
         <i class="fas fa-trash"></i>
       </button>
       <button class="btn btn-link" type="button">
@@ -43,33 +58,40 @@
 
           <ul class="list-group list-group-flush my-3">
             <li class="list-group-item">
+              <strong>ID:</strong> {addon.id}
+            </li>
+            <li class="list-group-item">
               <strong>Sürüm:</strong> {addon.version}
+            </li>
+            <li class="list-group-item">
+              <strong>Pano Versiyonu:</strong> {addon.panoVersion}
             </li>
             <li class="list-group-item">
               <strong>Geliştirici:</strong> {addon.developer}
             </li>
             <li class="list-group-item">
-              <strong>Lisans:</strong> {addon.license}
+              <strong>Lisans:</strong> {addon.license || "Unknown"}
             </li>
             <li class="list-group-item">
               <strong>Kaynak Kodu:</strong>
               <a href={addon.sourceUrl} target="_blank">{addon.sourceUrl}</a>
             </li>
             <li class="list-group-item">
-              <strong>Dosya Hash:</strong>
+              <strong>Dependencies:</strong> {isBlank(addon.dependencies) ? '-' : addon.dependencies}
+            </li>
+            <li class="list-group-item">
+              <strong>Requires:</strong> {isBlank(addon.dependencies) ? '-' : addon.requires}
+            </li>
+            <li class="list-group-item">
+              <strong>Hash:</strong>
               <code class="text-break d-block">{addon.hash}</code>
             </li>
+            <li
+              class="list-group-item">
+              <strong>{$_('pages.theme-detail.size')}:</strong>
+              {formatBytes(addon.size)}
+            </li>
           </ul>
-
-          <div class="d-flex gap-2">
-            <a
-              class="btn btn-outline-dark"
-              href={`/addons/${addon.id}`}
-              target="_blank"
-            >
-              Mağazada Göster
-            </a>
-          </div>
         </div>
       </div>
     </div>
@@ -106,32 +128,31 @@
 
 <script>
   import { getContext } from "svelte";
-  import {base} from "$app/paths";
+  import { _ } from "svelte-i18n";
+
+  import { base } from "$app/paths";
+
+  import { formatBytes } from "$lib/string.util";
+  import { PANO_WEBSITE_URL } from "$lib/variables";
+
   import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
 
   export let data;
-  let addon;
+  let addon, removing;
 
   $: {
     addon = data.addon;
   }
 
   const pageTitle = getContext("pageTitle");
+
   pageTitle.set("Eklenti Detayı");
 
-  // export let addon = {
-  //   name: "Example Addon",
-  //   description: "Sunucunuza yeni özellikler eklemenizi sağlar.",
-  //   version: "1.2.3",
-  //   author: "Ahmet Enes Duruer",
-  //   icon: "https://placehold.co/100x100?text=Icon",
-  //   license: "MIT",
-  //   sourceCodeUrl: "https://github.com/example/pano-addon",
-  //   verified: true,
-  //   hash: "8a7b1c309e4d8cd238b1f16fcd2b9f3a04ae5bbf"
-  // };
-
-  function uninstallAddon() {
+  function onRemoveClick() {
     alert(`'${addon.name}' eklentisi kaldırıldı!`);
+  }
+
+  function isBlank(value) {
+    return value === null || value === undefined || value.toString().trim() === "";
   }
 </script>
