@@ -35,11 +35,40 @@ function copyLangFolderPlugin() {
   };
 }
 
+function copyManifestPlugin(filename = "manifest.json") {
+  let outDir = "";
+
+  return {
+    name: "copy-manifest-json",
+    apply: "build",
+    configResolved(config) {
+      outDir = "build/";
+    },
+    async closeBundle() {
+      const srcPath = path.resolve(process.cwd(), filename);
+      const destPath = path.resolve(process.cwd(), outDir, filename);
+
+      if (!fs.existsSync(srcPath)) {
+        console.warn(`Manifest file not found at: ${srcPath}`);
+        return;
+      }
+
+      try {
+        await fs.promises.copyFile(srcPath, destPath);
+        console.log(`Copied manifest from ${srcPath} to ${destPath}`);
+      } catch (err) {
+        console.error("Failed to copy manifest.json:", err);
+      }
+    }
+  };
+}
+
 /** @type {import('vite').UserConfig} */
 const config = {
   plugins: [
     sveltekit(),
-    copyLangFolderPlugin()
+    copyLangFolderPlugin(),
+    copyManifestPlugin()
   ],
   ssr: {
     noExternal: ["chart.js"],

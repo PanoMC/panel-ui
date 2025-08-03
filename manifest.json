@@ -1,0 +1,11 @@
+{
+  "id": "panel-ui",
+  "title": "Panel UI",
+  "description": "Pano's Panel UI.",
+  "version": "v{version}",
+  "author": "Pano MC",
+  "license": "MIT",
+  "screenshots": [],
+  "sourceUrl": "https://github.com/PanoMC/panel-ui",
+  "panoVersion": "local-build"
+}
