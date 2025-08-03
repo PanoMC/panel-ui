@@ -3,7 +3,35 @@
   <div class="m-auto p-3" style="max-width: 330px;">
     <div class="vstack gap-3">
       {#if !data.accountConnected}
-        Account not connected!
+        <div class="alert alert-light border rounded text-center">
+          <div
+            class="d-inline-flex rounded justify-content-start align-items-start bg-primary ps-2 pt-2"
+            style="width: 64px; height: 64px;">
+            <img
+              style="transform: rotate(-0.05turn);"
+              src={base + '/assets/img/logo.svg'}
+              width="auto"
+              height="60"
+              alt="Pano"
+              title="Pano" />
+          </div>
+
+          <h5 class="mb-2 fw-semibold">Pano hesabı bağlı değil!</h5>
+          <p class="text-muted mb-3 small">
+            Mağazaya erişebilmek için Pano Website hesabını bağlaman gerekiyor.
+          </p>
+
+          <button class="btn btn-primary w-100"
+                  on:click="{onConnectClick}"
+                  disabled="{connecting}">
+            {connecting ? $_("buttons.connecting") : $_("buttons.connect")}
+            {#if connecting}
+              <span
+                class="spinner-border spinner-border-sm text-primary"
+                role="status"></span>
+            {/if}
+          </button>
+        </div>
       {:else if data.installingView}
         <div class="row" hidden="{modalShown}">
           <div
@@ -17,30 +45,28 @@
           </div>
         </div>
       {:else}
+        <div class="d-flex align-items-center gap-3 border rounded p-3">
         <div
-        class="d-inline-flex rounded justify-content-start align-items-start bg-primary ps-2 pt-2"
-        style="width: 64px; height: 64px;">
-        <img
-          style="transform: rotate(-0.05turn);"
-          src={base + '/assets/img/logo.svg'}
-          width="auto"
-          height="60"
-          alt="Pano"
-          title="Pano" />
+          class="d-inline-flex rounded justify-content-start align-items-start bg-primary ps-2 pt-2"
+          style="width: 64px; height: 64px;">
+          <img
+            style="transform: rotate(-0.05turn);"
+            src={base + '/assets/img/logo.svg'}
+            width="auto"
+            height="60"
+            alt="Pano"
+            title="Pano" />
         </div>
 
-        <div class="row">
-          <div class="col-auto min-h-100 d-flex align-items-center">
-            <div class="spinner-border text-primary spinner-border-sm" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
-          <div class="col">
-            <p class="text-muted mb-0">
-              Store loading for {data.pageType}
-            </p>
-          </div>
+        <div class="spinner-border text-primary" role="status" style="width: 1.5rem; height: 1.5rem;">
+          <span class="visually-hidden">Loading...</span>
         </div>
+
+        <div>
+          <strong>Store yükleniyor…</strong><br />
+          <small class="text-muted">Lütfen bekleyiniz</small>
+        </div>
+      </div>
       {/if}
     </div>
   </div>
@@ -96,6 +122,7 @@
 
 <script>
   import { getContext, tick } from "svelte";
+  import { _ } from "svelte-i18n";
 
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
@@ -116,6 +143,7 @@
 
   let versionInfo;
   let modalShown;
+  let connecting;
 
   async function waitSplash() {
     while ($showSplash) {
@@ -255,4 +283,31 @@
        await goToStore(storeTokenResponse)
      }
    })();
+
+
+  function onConnectClick() {
+    connecting = true;
+
+    ApiUtil.post({
+      path: "/api/panel/platform/code",
+      handler: async (body, reject) => {
+        if (body.error) {
+          location.reload();
+          return;
+        }
+
+        const { publicKey, state } = body;
+
+        // Encode dynamic parts to ensure the URL is safe
+        const encodedPublicKey = encodeURIComponent(publicKey);
+        const encodedRedirectUrl = encodeURIComponent(
+          page.url.origin + base + "/settings/platform",
+        );
+        const encodedState = encodeURIComponent(state);
+
+        // Redirect to the constructed URL
+        window.location = `${PANO_WEBSITE_URL}/auth?loginPanoPlatform=${encodedPublicKey}&redirectUrl=${encodedRedirectUrl}&state=${encodedState}`;
+      },
+    });
+  }
 </script>
