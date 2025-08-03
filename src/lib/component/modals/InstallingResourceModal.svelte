@@ -56,7 +56,6 @@
 </div>
 
 <script context="module">
-  import confetti from "canvas-confetti";
   import { writable, get } from "svelte/store";
 
   import { base } from "$app/paths";
@@ -77,6 +76,7 @@
   let callback = () => {};
   let hideCallback = () => {};
   let modal;
+  let confetti;
 
   export function hide() {
     hideCallback();
@@ -127,6 +127,10 @@
       installingStep.set(get(installingStep)+ 1);
 
       if (get(installingStep) === get(processes).length + 1) {
+        if (!confetti) {
+          confetti = import("canvas-confetti")
+        }
+
         confetti({
           particleCount: 100,
           spread: 70,
