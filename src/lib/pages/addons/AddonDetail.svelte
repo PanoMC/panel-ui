@@ -66,8 +66,20 @@
 
       <div class="col-md-9">
         <div class="card-body">
-          <h3 class="card-title d-flex align-items-center gap-2">
+          <h3 class="card-title d-flex align-items-center gap-2" class:text-danger={addon.status === 'FAILED'}>
             {addon.name} <VerifiedStatus status="{addon.verifyStatus}"/>
+            {#if addon.status === 'FAILED'}
+              <button
+                type="button"
+                aria-label="{$_('buttons.error-log')}"
+                class="btn btn-link text-danger ps-2"
+                data-bs-toggle="popover"
+                data-bs-trigger="focus"
+                data-bs-title="{$_('buttons.error-log')}"
+                data-bs-content={addon.error}>
+                <i class="fa-solid fa-circle-exclamation"></i>
+              </button>
+            {/if}
           </h3>
           <p class="text-muted">{addon.description}</p>
 
@@ -89,10 +101,10 @@
             </li>
             <li class="list-group-item">
               <strong>{$_('pages.addon-detail.source')}:</strong>
-              <a href={addon.sourceUrl} target="_blank">{addon.sourceUrl}</a>
+              <a href={addon.sourceUrl} target="_blank">{addon.sourceUrl || $_('pages.addon-detail.unknown')}</a>
             </li>
             <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.dependencies')}:</strong> {isBlank(addon.dependencies) ? '-' : addon.dependencies}
+              <strong>{$_('pages.addon-detail.dependencies')}:</strong> {@html isBlank(addon.dependencies) ? '-' : addon.dependencies.map(dependency => getDependencyText(dependency))}
             </li>
             <li class="list-group-item">
               <strong>{$_('pages.addon-detail.requires')}:</strong> {isBlank(addon.dependencies) ? '-' : addon.requires}
@@ -242,5 +254,19 @@
         callback();
       },
     });
+  }
+
+  function getDependencyText(dependency) {
+    let text = dependency.pluginId
+
+    if (dependency.pluginVersionSupport !== "*") {
+      text += `@<span class="font-monospace">${dependency.pluginVersionSupport}</span>`
+    }
+
+    if (dependency.optional) {
+      text = `[${text}]`
+    }
+
+    return text;
   }
 </script>
