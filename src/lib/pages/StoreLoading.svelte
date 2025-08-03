@@ -138,6 +138,12 @@
       return null;
     }
 
+    if (getStoreTokenResponse.error === "PANO_CONNECT_FAILED") {
+      await goto('?failedLogin')
+
+      return null;
+    }
+
     if (getStoreTokenResponse.error) {
       data.error = getStoreTokenResponse.error
 
@@ -213,32 +219,30 @@
     await showInstallingResourceModal(data.pageType === PageTypes.ADDON ? 'PLUGIN' : 'THEME', null, data.install)
   });
 
-   $: {
-     (async () => {
-       if (!browser) {
+   (async () => {
+     if (!browser) {
+       return
+     }
+
+     await waitSplash()
+     await waitWindow()
+
+     await sleep(500)
+
+     if (data.install && !data.installingView) {
+       await getVersionInfo()
+
+       return
+     }
+
+     if (data.accountConnected && !data.installingView) {
+       const storeTokenResponse = await getStoreTokenResponse()
+
+       if (storeTokenResponse === null) {
          return
        }
 
-       await waitSplash()
-       await waitWindow()
-
-       await sleep(500)
-
-       if (data.install && !data.installingView) {
-         await getVersionInfo()
-
-         return
-       }
-
-       if (data.accountConnected && !data.installingView) {
-         const storeTokenResponse = await getStoreTokenResponse()
-
-         if (storeTokenResponse === null) {
-           return
-         }
-
-         await goToStore(storeTokenResponse)
-       }
-     })();
-   }
+       await goToStore(storeTokenResponse)
+     }
+   })();
 </script>
