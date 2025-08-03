@@ -34,6 +34,21 @@
       <button class="btn btn-link" type="button">
         <i class="fa-solid fa-arrows-rotate"></i>
       </button>
+      {#if addon.loading}
+        <i class="fa-solid fa-spinner fa-spin me-2"></i>
+      {:else}
+        <div class="form-check form-switch m-0">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            checked={addon.status === 'STARTED'}
+            on:click={(e) => {
+                  e.preventDefault();
+                  onTogglePluginStateClick();
+                }} />
+        </div>
+      {/if}
     </div>
   </section>
 
@@ -130,12 +145,24 @@
   import { getContext } from "svelte";
   import { _ } from "svelte-i18n";
 
+  import { invalidate } from "$app/navigation";
   import { base } from "$app/paths";
 
   import { formatBytes } from "$lib/string.util";
   import { PANO_WEBSITE_URL } from "$lib/variables";
 
   import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
+
+  import { show as showToast } from "$lib/component/ToastContainer.svelte";
+
+  import {
+    show as showConfirmDisableAddonModal,
+    setCallback as setCallbackConfirmDisableAddonModal,
+  } from "$lib/component/modals/ConfirmDisableAddonWillCauseMoreDisableModal.svelte";
+  import {
+    show as showConfirmEnablingAddonModal,
+    setCallback as setCallbackConfirmEnablingAddonModal,
+  } from "$lib/component/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte";
 
   export let data;
   let addon, removing;
@@ -154,5 +181,66 @@
 
   function isBlank(value) {
     return value === null || value === undefined || value.toString().trim() === "";
+  }
+
+  setCallbackConfirmDisableAddonModal((_, hideModal) => {
+    togglePluginState(false, () => {
+      hideModal();
+    });
+  });
+
+  setCallbackConfirmEnablingAddonModal((_, hideModal) => {
+    togglePluginState(true, () => {
+      hideModal();
+    });
+  });
+
+  function onTogglePluginStateClick() {
+    if (addon.status === "STARTED" && addon.dependents.length > 0) {
+      showConfirmDisableAddonModal(addon);
+      return;
+    }
+
+    if (
+      addon.status !== "STARTED" &&
+      addon.notStartedDependencies.length > 0
+    ) {
+      showConfirmEnablingAddonModal(addon);
+      return;
+    }
+
+    togglePluginState(addon.status !== "STARTED");
+  }
+
+  function togglePluginState(status, callback = () => {}) {
+    addon.loading = true;
+
+    ApiUtil.put({
+      path: `/api/panel/plugins/${addon.id}`,
+      body: { status },
+      handler: async (body, reject) => {
+        if (body.result !== "ok") {
+          reject(body.error);
+
+          return;
+        }
+
+        if (body.status === "CREATED") {
+          await showToast("components.toasts.settings-save-error", {
+            addon: addon.id,
+          });
+        }
+
+        if (body.status === "FAILED") {
+          await showToast("components.toasts.failed-to-enable-addon-error", {
+            addon: addon.id,
+          });
+        }
+
+        await invalidate((_) => true)
+
+        callback();
+      },
+    });
   }
 </script>

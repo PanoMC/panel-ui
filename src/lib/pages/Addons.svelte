@@ -233,7 +233,7 @@
       path: `/api/panel/plugins/${plugin.id}`,
       body: { status },
       handler: async (body, reject) => {
-        if (body.error) {
+        if (body.result !== "ok") {
           reject(body.error);
 
           return;
