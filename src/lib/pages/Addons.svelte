@@ -49,9 +49,9 @@
               <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
                 {#if plugin.status === 'FAILED'}
                   <button
+                     type="button"
                      aria-label="{$_('buttons.error-log')}"
-                     class="text-danger"
-                     tabindex="0"
+                     class="btn btn-link text-danger p-0 me-2"
                      data-bs-toggle="popover"
                      data-bs-trigger="focus"
                      data-bs-title="{$_('buttons.error-log')}"
