@@ -74,7 +74,7 @@
       "updated-at": "Güncellendi",
       "installed-by": "Kurulma Şekli",
       "size": "Boyut",
-      "install-types": {
+      "installed-by-types": {
         "USER": "Kullanıcı",
         "SYSTEM": "Sistem"
       },
