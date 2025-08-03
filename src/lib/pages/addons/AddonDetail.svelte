@@ -107,7 +107,7 @@
               <strong>{$_('pages.addon-detail.dependencies')}:</strong> {@html isBlank(addon.dependencies) ? '-' : addon.dependencies.map(dependency => getDependencyText(dependency))}
             </li>
             <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.requires')}:</strong> {isBlank(addon.dependencies) ? '-' : addon.requires}
+              <strong>{$_('pages.addon-detail.requires')}:</strong> {isBlank(addon.requires) ? '-' : addon.requires}
             </li>
             <li class="list-group-item">
               <strong>Hash:</strong>
