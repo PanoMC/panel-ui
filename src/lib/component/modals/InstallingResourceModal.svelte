@@ -46,7 +46,7 @@
             class="btn btn-primary col-6 m-0"
             data-bs-dismiss="modal"
             type="button"
-            on:click={() => goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}/store`, {invalidateAll:true})} >
+            on:click={() => goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}/store`, {invalidateAll:true}) && callback()} >
             <i class="fas fa-store me-1"></i> Mağazaya Git
           </button>
         </div>
@@ -166,10 +166,11 @@
     handleEventSource(eventSource)
   }
 
-  export async function show(newType, newFile, versionId) {
+  export async function show(newType, newFile, versionId, storeCallback) {
     installingStep.set(1);
     installError.set(null);
     type.set(newType)
+    callback = storeCallback
 
     processes.set([
       "Getting version info...",

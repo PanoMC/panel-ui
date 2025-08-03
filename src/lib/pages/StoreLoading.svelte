@@ -70,6 +70,7 @@
 
     const back = searchParams.has("back")
     const install = searchParams.get("install");
+    const fromInstall = searchParams.get("fromInstall");
 
     const previousPage = base + `/` + (pageType === PageTypes.ADDON ? 'addons' : 'view')
 
@@ -87,7 +88,8 @@
       pageType,
       accountConnected: !DEFAULT_ACCOUNT_NOT_CONNECTED_VIEW,
       installingView: DEFAULT_INSTALLING_VIEW,
-      install
+      install,
+      fromInstall
     };
   }
 </script>
@@ -216,7 +218,15 @@
 
     modalShown = true;
 
-    await showInstallingResourceModal(data.pageType === PageTypes.ADDON ? 'PLUGIN' : 'THEME', null, data.install)
+    await showInstallingResourceModal(data.pageType === PageTypes.ADDON ? 'PLUGIN' : 'THEME', null, data.install, async () => {
+      const storeTokenResponse = await getStoreTokenResponse()
+
+      if (storeTokenResponse === null) {
+        return
+      }
+
+      await goToStore(storeTokenResponse)
+    })
   });
 
    (async () => {
