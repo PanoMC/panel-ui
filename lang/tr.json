@@ -633,7 +633,7 @@
       "confirm-remove-addon": {
         "title": "\"{pluginId}\" eklentisini kaldırmak istediğinizden emin misiniz?"
       },
-      "confirm-remove-addon-will-cause-more-disable": {
+      "confirm-remove-addon-will-cause-more-unload": {
         "description": "\"{pluginId}\" eklentisini kaldırmak bu eklentileri de devre dışı bırakacaktır:"
       },
       "confirm-disable-addon-will-cause-more-disable": {

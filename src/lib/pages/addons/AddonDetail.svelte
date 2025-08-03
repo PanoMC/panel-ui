@@ -1,5 +1,5 @@
 <ConfirmRemoveAddonModal/>
-<ConfirmRemoveAddonWillCauseMoreDisableModal/>
+<ConfirmRemoveAddonWillCauseMoreUnloadModal/>
 
 <div class="container py-4">
   <!-- Action Menu -->
@@ -181,10 +181,10 @@
   import ConfirmRemoveAddonModal, {
     show as showConfirmRemoveAddonModal,
   } from "$lib/component/modals/ConfirmRemoveAddonModal.svelte";
-  import ConfirmRemoveAddonWillCauseMoreDisableModal, {
+  import ConfirmRemoveAddonWillCauseMoreUnloadModal, {
     show as showConfirmRemoveAddonCauseMoreModal,
     setCallback as setCallbackConfirmRemoveAddonCauseMoreModal,
-  } from "$lib/component/modals/ConfirmRemoveAddonWillCauseMoreDisableModal.svelte";
+  } from "$lib/component/modals/ConfirmRemoveAddonWillCauseMoreUnloadModal.svelte";
 
   export let data;
   let addon, removing;
@@ -220,7 +220,7 @@
   });
 
   function onRemoveClick() {
-    if (addon.status === "STARTED" && addon.dependents.length > 0) {
+    if (addon.removeDependents.length > 0) {
       showConfirmRemoveAddonCauseMoreModal(addon);
       return;
     }

@@ -633,8 +633,8 @@
       "confirm-remove-addon": {
         "title": "Are you sure to remove \"{pluginId}\" addon?"
       },
-      "confirm-remove-addon-will-cause-more-disable": {
-        "description": "Removing \"{pluginId}\" will cause disable these addons too:"
+      "confirm-remove-addon-will-cause-more-unload": {
+        "description": "Removing \"{pluginId}\" will cause unload these addons too:"
       },
       "confirm-disable-addon-will-cause-more-disable": {
         "title": "Are you sure to disable \"{pluginId}\" addon?",

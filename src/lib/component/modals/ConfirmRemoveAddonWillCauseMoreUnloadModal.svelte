@@ -12,10 +12,10 @@
         </div>
         {$_('components.modals.confirm-remove-addon.title', {values: {pluginId: $plugin.id}})}
         <div class="mt-3 alert alert-warning text-left">
-          {$_('components.modals.confirm-remove-addon-will-cause-more-disable.description', {values: {pluginId: $plugin.id}})}
+          {$_('components.modals.confirm-remove-addon-will-cause-more-unload.description', {values: {pluginId: $plugin.id}})}
           <br />
           <br />
-          {#each $plugin.dependents as addon, index (addon)}
+          {#each $plugin.removeDependents as addon, index (addon)}
             <a
               class="badge bg-warning rounded-pill"
               href="{base}/addons/detail/{addon}"
