@@ -630,6 +630,12 @@
         "title": "Bu kategoriyi kalıcı olarak silmek istediğinizden emin misiniz?",
         "more-tickets": "+{count} talep daha"
       },
+      "confirm-remove-addon": {
+        "title": "\"{pluginId}\" eklentisini kaldırmak istediğinizden emin misiniz?"
+      },
+      "confirm-remove-addon-will-cause-more-disable": {
+        "description": "\"{pluginId}\" eklentisini kaldırmak bu eklentileri de devre dışı bırakacaktır:"
+      },
       "confirm-disable-addon-will-cause-more-disable": {
         "title": "\"{pluginId}\" eklentisini devre dışı bırakmak istediğinizden emin misiniz?",
         "description": "\"{pluginId}\" eklentisini devre dışı bırakmak bu eklentileri de devre dışı bırakacaktır:"
@@ -809,7 +815,8 @@
       "removed-theme-success": "Tema başarıyla kaldırıldı.",
       "stop-theme-success": "Tema başarıyla sonlandırıldı.",
       "start-theme-success": "Tema başarıyla başlatıldı.",
-      "invalid-resource-file-type": "Geçersiz dosya türü!"
+      "invalid-resource-file-type": "Geçersiz dosya türü!",
+      "remove-addon-success": "Eklenti başarıyla kaldırıldı."
     }
   },
   "page-error": {

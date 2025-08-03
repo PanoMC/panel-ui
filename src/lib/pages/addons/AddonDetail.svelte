@@ -1,3 +1,6 @@
+<ConfirmRemoveAddonModal/>
+<ConfirmRemoveAddonWillCauseMoreDisableModal/>
+
 <div class="container py-4">
   <!-- Action Menu -->
   <section
@@ -157,7 +160,7 @@
   import { getContext } from "svelte";
   import { _ } from "svelte-i18n";
 
-  import { invalidate } from "$app/navigation";
+  import { goto, invalidate } from "$app/navigation";
   import { base } from "$app/paths";
 
   import { formatBytes } from "$lib/string.util";
@@ -175,6 +178,13 @@
     show as showConfirmEnablingAddonModal,
     setCallback as setCallbackConfirmEnablingAddonModal,
   } from "$lib/component/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte";
+  import ConfirmRemoveAddonModal, {
+    show as showConfirmRemoveAddonModal,
+  } from "$lib/component/modals/ConfirmRemoveAddonModal.svelte";
+  import ConfirmRemoveAddonWillCauseMoreDisableModal, {
+    show as showConfirmRemoveAddonCauseMoreModal,
+    setCallback as setCallbackConfirmRemoveAddonCauseMoreModal,
+  } from "$lib/component/modals/ConfirmRemoveAddonWillCauseMoreDisableModal.svelte";
 
   export let data;
   let addon, removing;
@@ -186,10 +196,6 @@
   const pageTitle = getContext("pageTitle");
 
   pageTitle.set("pages.addon-detail.title");
-
-  function onRemoveClick() {
-    alert(`'${addon.name}' eklentisi kaldırıldı!`);
-  }
 
   function isBlank(value) {
     return value === null || value === undefined || value.toString().trim() === "";
@@ -206,6 +212,44 @@
       hideModal();
     });
   });
+
+  setCallbackConfirmRemoveAddonCauseMoreModal((_, hideModal) => {
+    removeAddon(() => {
+      hideModal();
+    });
+  });
+
+  function onRemoveClick() {
+    if (addon.status === "STARTED" && addon.dependents.length > 0) {
+      showConfirmRemoveAddonCauseMoreModal(addon);
+      return;
+    }
+
+    showConfirmRemoveAddonModal(addon.id, () => {
+      removeAddon();
+    });
+  }
+
+  function removeAddon(callback = () => {}) {
+    addon.removing = true;
+
+    ApiUtil.delete({
+      path: `/api/panel/plugins/${addon.id}`,
+      handler: async (body, reject) => {
+        if (body.result !== "ok") {
+          location.reload()
+
+          return;
+        }
+
+        await goto(base + "/addons")
+
+        await showToast("components.toasts.remove-addon-success");
+
+        callback();
+      },
+    });
+  }
 
   function onTogglePluginStateClick() {
     if (addon.status === "STARTED" && addon.dependents.length > 0) {

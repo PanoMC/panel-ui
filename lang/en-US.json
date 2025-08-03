@@ -630,6 +630,12 @@
         "title": "Are you sure you want to permanently delete this category?",
         "more-tickets": "+{count} more tickets"
       },
+      "confirm-remove-addon": {
+        "title": "Are you sure to remove \"{pluginId}\" addon?"
+      },
+      "confirm-remove-addon-will-cause-more-disable": {
+        "description": "Removing \"{pluginId}\" will cause disable these addons too:"
+      },
       "confirm-disable-addon-will-cause-more-disable": {
         "title": "Are you sure to disable \"{pluginId}\" addon?",
         "description": "Disabling \"{pluginId}\" will cause disable these addons too:"
@@ -809,7 +815,8 @@
       "removed-theme-success": "Theme removed successfully.",
       "stop-theme-success": "Theme stopped successfully.",
       "start-theme-success": "Theme started successfully.",
-      "invalid-resource-file-type": "Invalid resource file type!"
+      "invalid-resource-file-type": "Invalid resource file type!",
+      "remove-addon-success": "Addon removed successfully."
     }
   },
   "page-error": {
