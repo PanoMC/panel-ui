@@ -16,9 +16,9 @@
               title="Pano" />
           </div>
 
-          <h5 class="mb-2 fw-semibold">Pano hesabı bağlı değil!</h5>
+          <h5 class="mb-2 fw-semibold">{$_('components.store-loading.account-not-connected')}</h5>
           <p class="text-muted mb-3 small">
-            Mağazaya erişebilmek için Pano Website hesabını bağlaman gerekiyor.
+            {$_('components.store-loading.not-connected-description')}
           </p>
 
           <button class="btn btn-primary w-100"
@@ -39,7 +39,7 @@
             style="height: 350px;">
             <div class="col-auto min-h-100 d-flex align-items-center">
               <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
               </div>
             </div>
           </div>
@@ -59,12 +59,12 @@
         </div>
 
         <div class="spinner-border text-primary" role="status" style="width: 1.5rem; height: 1.5rem;">
-          <span class="visually-hidden">Loading...</span>
+          <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
         </div>
 
         <div>
-          <strong>Store yükleniyor…</strong><br />
-          <small class="text-muted">Lütfen bekleyiniz</small>
+          <strong>{$_('components.store-loading.store-loading')}</strong><br />
+          <small class="text-muted">{$_('components.store-loading.please-wait')}</small>
         </div>
       </div>
       {/if}

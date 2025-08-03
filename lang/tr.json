@@ -433,6 +433,13 @@
     }
   },
   "components": {
+    "store-loading": {
+      "store-loading": "Mağaza yükleniyor…",
+      "please-wait": "Lütfen bekleyin.",
+      "loading": "Yükleniyor...",
+      "account-not-connected": "Pano hesabı bağlı değil!",
+      "not-connected-description": "Mağazaya erişmek için bir Pano hesabı bağlamalısınız."
+    },
     "failed-login-pano-store": "Pano mağazasına giriş yapılamadı! Lütfen daha sonra tekrar deneyin veya Pano hesabınızı yeniden bağlayın.",
     "verified-status": {
       "verified": "Pano tarafından doğrulandı",

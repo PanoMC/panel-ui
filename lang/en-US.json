@@ -433,6 +433,13 @@
     }
   },
   "components": {
+    "store-loading": {
+      "store-loading": "Store loading…",
+      "please-wait": "Please wait.",
+      "loading": "Loading...",
+      "account-not-connected": "Pano account is not connected!",
+      "not-connected-description": "To access Store you must connect a Pano account."
+    },
     "failed-login-pano-store": "Failed login to Pano store! Try again later or reconnect your Pano account.",
     "verified-status": {
       "verified": "Verified by Pano",
