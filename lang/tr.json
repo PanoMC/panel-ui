@@ -545,6 +545,13 @@
       "game-integration": "Oyun Entegrasyonu"
     },
     "modals": {
+      "install-resource": {
+        "title": "{type} Kur",
+        "theme": "Tema",
+        "addon": "Eklenti",
+        "drag-here": "Dosyayı buraya sürükleyin<br/>veya tıklayın",
+        "install-from-pano-store": "Pano Mağazası'ndan Kur"
+      },
       "installing-resource": {
         "error": "Hata!",
         "installing": "Kuruluyor...",

@@ -545,6 +545,13 @@
       "game-integration": "Game Integration"
     },
     "modals": {
+      "install-resource": {
+        "title": "Install {type}",
+        "theme": "Theme",
+        "addon": "Addon",
+        "drag-here": "Drag here file<br/>or click",
+        "install-from-pano-store": "Install From Pano Store"
+      },
       "installing-resource": {
         "error": "Error!",
         "installing": "Installing...",

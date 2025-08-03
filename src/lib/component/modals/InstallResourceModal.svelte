@@ -7,7 +7,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header border-0">
-        <h5 class="modal-title">Install {$type === "PLUGIN" ? "Addon" : "Theme"}</h5>
+        <h5 class="modal-title">{$_('components.modals.install-resource.title', {values: {type: $_('components.modals.install-resource.' + ($type === "PLUGIN" ? "addon" : "theme"))}})}</h5>
         <button
           type="button"
           class="btn-close"
@@ -33,7 +33,7 @@
               bind:this={fileInput}
               on:change={handleFileChange} />
             <i class="fas fa-upload fa-2x mb-2"></i>
-            <p class="mb-0">Dosyayı buraya sürükleyin<br />veya tıklayın</p>
+            <p class="mb-0">{@html $_('components.modals.install-resource.drag-here')}</p>
           </button>
 
           <a
@@ -47,7 +47,7 @@
               height="48"
               class="bg-dark rounded-circle mb-2"
               alt="Pano" />
-            <span>Pano Mağaza'dan Yükle</span>
+            <span>{$_('components.modals.install-resource.install-from-pano-store')}</span>
           </a>
         </div>
       </div>
