@@ -49,7 +49,9 @@
     "disabled": "Disabled",
     "active": "Active",
     "error-log": "Error Log",
-    "source": "Source"
+    "source": "Source",
+    "start": "Start",
+    "stop": "Stop"
   },
   "pages": {
     "themes": {
@@ -542,6 +544,9 @@
       "confirm-remove-pano-account": {
         "title": "Are you sure to disconnect your online Pano account from this platform?"
       },
+      "confirm-stop-theme": {
+        "title": "Are you sure to stop current active theme? This will cause website unreachable!"
+      },
       "confirm-remove-theme": {
         "title": "Are you sure to remove this theme?",
         "title-active": "This theme is active! It will be default to \"Vanilla\" theme. Are you sure to remove?"
@@ -802,6 +807,8 @@
       "reload-themes-success": "Reloaded themes successfully.",
       "activate-theme-success": "Theme activated successfully.",
       "removed-theme-success": "Theme removed successfully.",
+      "stop-theme-success": "Theme stopped successfully.",
+      "start-theme-success": "Theme started successfully.",
       "invalid-resource-file-type": "Invalid resource file type!"
     }
   },

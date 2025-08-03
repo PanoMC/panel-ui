@@ -49,7 +49,9 @@
     "disabled": "Devre Dışı",
     "active": "Aktif",
     "error-log": "Hata Kaydı",
-    "source": "Kaymak"
+    "source": "Kaymak",
+    "start": "Başlat",
+    "stop": "Durdur"
   },
   "pages": {
     "themes": {
@@ -542,6 +544,9 @@
       "confirm-remove-pano-account": {
         "title": "Çevrimiçi Pano hesabınızı platformdan kaldırmak istediğinize emin misiniz?"
       },
+      "confirm-stop-theme": {
+        "title": "Mevcut aktif temayı durdurmak istediğinize emin misiniz? Bu, sitenin erişilemez olmasına neden olacaktır!"
+      },
       "confirm-remove-theme": {
         "title": "Bu temayı silmek istediğinizden emin misiniz?",
         "title-active": "Bu aktif bir tema! Varsayılan olarak \"Vanilla\" tema kullanılacak. Silmek istediğinizden emin misiniz?"
@@ -802,6 +807,8 @@
       "reload-themes-success": "Temalar başarıyla yenilendi.",
       "activate-theme-success": "Tema başarıyla aktifleştirildi.",
       "removed-theme-success": "Tema başarıyla kaldırıldı.",
+      "stop-theme-success": "Tema başarıyla sonlandırıldı.",
+      "start-theme-success": "Tema başarıyla başlatıldı.",
       "invalid-resource-file-type": "Geçersiz dosya türü!"
     }
   },

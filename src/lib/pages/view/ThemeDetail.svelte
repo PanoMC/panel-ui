@@ -26,6 +26,28 @@
           {$_('buttons.show-in-store')}
         </a>
       {/if}
+      {#if theme.running}
+        <button
+          aria-label="{$_('buttons.stop')}"
+          class="btn btn-link text-danger"
+          type="button"
+          on:click={onStopClick}
+          title="{$_('buttons.stop')}"
+          class:disabled={stoping}>
+          <i class="fas fa-stop"></i>
+        </button>
+      {/if}
+      {#if !theme.running && theme.active}
+        <button
+          aria-label="{$_('buttons.start')}"
+          class="btn btn-link text-danger"
+          type="button"
+          on:click={onStartClick}
+          title="{$_('buttons.start')}"
+          class:disabled={stoping}>
+          <i class="fas fa-play"></i>
+        </button>
+      {/if}
       {#if !theme.active}
         <button class="btn btn-secondary" on:click={activate} disabled="{activating}">
           {$_('buttons.activate')}{#if activating}<i class="fas fa-spinner fa-spin ms-2"></i>{/if}
@@ -164,6 +186,7 @@
 </div>
 
 <ConfirmRemoveThemeModal/>
+<ConfirmStopThemeModal/>
 
 <script context="module">
   import ApiUtil from "$lib/api.util.js";
@@ -207,10 +230,13 @@
 
   import PageActions from "$lib/component/PageActions.svelte";
   import Date from "$lib/component/Date.svelte";
-  import ConfirmRemoveThemeModal,  {
+  import ConfirmRemoveThemeModal, {
     show as showRemoveModal,
   } from "$lib/component/modals/ConfirmRemoveThemeModal.svelte";
   import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
+  import ConfirmStopThemeModal, {
+    show as showStopModal,
+  } from "$lib/component/modals/ConfirmStopThemeModal.svelte";
 
   const pageTitle = getContext("pageTitle");
 
@@ -221,27 +247,63 @@
     theme = data.theme;
   }
 
-  let activating, removing;
+  let activating, removing, stoping, starting;
 
   pageTitle.set("pages.theme-detail.title");
 
   function onRemoveClick() {
-    showRemoveModal(theme.active, async () => {
+    showRemoveModal(theme.active, () => {
       removing = true;
 
-      const activateResponse = await ApiUtil.delete({path: `/api/panel/themes/${theme.id}`})
+      ApiUtil.delete({path: `/api/panel/themes/${theme.id}`, handler: async (activateResponse) => {
+        if (activateResponse.result !== "ok") {
+          location.reload()
+          return;
+        }
 
-      if (activateResponse.result !== "ok") {
+        await goto(base + "/view")
+
+        await showToast('components.toasts.removed-theme-success');
+
+        removing = false;
+      }})
+    })
+  }
+  
+  function onStopClick() {
+    showStopModal(() => {
+      stoping = true;
+
+      ApiUtil.delete({path: `/api/panel/themes`, handler: async (stopResponse) => {
+        if (stopResponse.result !== "ok") {
+          location.reload()
+          return;
+        }
+
+        await invalidate(_ => true)
+
+        await showToast('components.toasts.stop-theme-success');
+
+        stoping = false;
+      }})
+    })
+  }
+
+  function onStartClick() {
+    starting = true;
+
+    ApiUtil.post({path: `/api/panel/themes`, handler: async (stopResponse) => {
+      if (stopResponse.result !== "ok") {
         location.reload()
         return;
       }
 
-      await goto(base + "/view")
+      await invalidate(_ => true)
 
-      await showToast('components.toasts.removed-theme-success');
+      await showToast('components.toasts.start-theme-success');
 
-      removing = false;
-    })
+      starting = false;
+    }})
   }
 
   async function activate() {
