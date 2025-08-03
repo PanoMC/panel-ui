@@ -233,6 +233,7 @@
 
   function togglePluginState(plugin, status, callback = () => {}) {
     plugin.loading = true;
+    data.plugins = data.plugins
 
     ApiUtil.put({
       path: `/api/panel/plugins/${plugin.id}`,
