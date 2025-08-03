@@ -107,7 +107,7 @@
                   <span class="font-monospace">{plugin.version}</span>
                   {#if plugin.license}<span>{plugin.license}</span>{/if}
                   {#if plugin.verifyStatus !== 'UNKNOWN'}
-                    <a href="{PANO_WEBSITE_URL}/{plugin.id}" target="_blank" aria-label="{$_('buttons.show-in-store')}" title="{$_('buttons.show-in-store')}"><i class="fa-solid fa-store"></i></a>
+                    <a href="{PANO_WEBSITE_URL}/addons/{plugin.id}" target="_blank" aria-label="{$_('buttons.show-in-store')}" title="{$_('buttons.show-in-store')}"><i class="fa-solid fa-store"></i></a>
                   {/if}
                   {#if plugin.sourceUrl}
                     <a href={plugin.sourceUrl} target="_blank" aria-label="{$_('buttons.source')}"  title="{$_('buttons.source')}"><i class="fa-solid fa-link"></i></a>
