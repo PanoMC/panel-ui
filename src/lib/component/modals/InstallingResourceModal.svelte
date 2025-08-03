@@ -8,11 +8,11 @@
     <div class="modal-content">
       <div class="modal-header border-0">
         <h5 class="modal-title">{#if $installError}
-          Hata!
+          {$_('components.modals.installing-resource.error')}
         {:else if !isFinished($installingStep)}
-          Kuruluyor...
+          {$_('components.modals.installing-resource.installing')}
         {:else}
-          Tamamlandı!
+          {$_('components.modals.installing-resource.completed')}
         {/if}</h5>
       </div>
       <div class="modal-body">
@@ -25,11 +25,11 @@
 
         <p class="text-muted small mb-0" in:fade out:fade>
           {#if $installError}
-            <span class="text-danger">Hata: {$installError}</span>
+            <span class="text-danger">{$_('components.modals.installing-resource.error-text', {values: {error: $installError}})}</span>
           {:else if !isFinished($installingStep)}
-            {$processes[$installingStep - 1]}
+            {$_($processes[$installingStep - 1])}
           {:else}
-            🎉 Kurulum tamamlandı!
+            🎉 {$_('components.modals.installing-resource.install-complete')}
           {/if}
         </p>
       </div>
@@ -47,7 +47,7 @@
             data-bs-dismiss="modal"
             type="button"
             on:click={() => goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}/store`, {invalidateAll:true}) && callback()} >
-            <i class="fas fa-store me-1"></i> Mağazaya Git
+            <i class="fas fa-store me-1"></i> {$_('buttons.go-to-store')}
           </button>
         </div>
       {/if}
@@ -173,10 +173,10 @@
     callback = storeCallback
 
     processes.set([
-      "Getting version info...",
-      "Downloading file...",
-      "Preparing...",
-      "Installing..."
+      "components.modals.installing-resource.processes.version-info",
+      "components.modals.installing-resource.processes.downloading",
+      "components.modals.installing-resource.processes.preparing",
+      "components.modals.installing-resource.processes.installing"
     ])
 
     modal = new window.bootstrap.Modal(get(modalElement), {
@@ -186,7 +186,7 @@
     modal.show();
 
     if (newFile) {
-      processes.set(["Uploading...", ...get(processes).slice(2)])
+      processes.set(["components.modals.installing-resource.processes.uploading", ...get(processes).slice(2)])
 
       await delay(500);
       const valid = await validateFile(newFile)

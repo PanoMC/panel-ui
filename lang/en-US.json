@@ -51,7 +51,8 @@
     "error-log": "Error Log",
     "source": "Source",
     "start": "Start",
-    "stop": "Stop"
+    "stop": "Stop",
+    "go-to-store": "Go To Store"
   },
   "pages": {
     "themes": {
@@ -544,6 +545,20 @@
       "game-integration": "Game Integration"
     },
     "modals": {
+      "installing-resource": {
+        "error": "Error!",
+        "installing": "Installing...",
+        "completed": "Completed!",
+        "install-complete": "Installation complete!",
+        "error-text": "Error: {error}",
+        "processes": {
+          "uploading": "Uploading...",
+          "version-info": "Getting version info...",
+          "downloading": "Downloading file...",
+          "preparing": "Preparing...",
+          "installing": "Installing..."
+        }
+      },
       "view-activity-log": {
         "title": "Activity Log Detail",
         "json": "JSON:"

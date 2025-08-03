@@ -51,7 +51,8 @@
     "error-log": "Hata Kaydı",
     "source": "Kaymak",
     "start": "Başlat",
-    "stop": "Durdur"
+    "stop": "Durdur",
+    "go-to-store": "Mağazaya Git"
   },
   "pages": {
     "themes": {
@@ -544,6 +545,20 @@
       "game-integration": "Oyun Entegrasyonu"
     },
     "modals": {
+      "installing-resource": {
+        "error": "Hata!",
+        "installing": "Kuruluyor...",
+        "completed": "Tamamlandı!",
+        "install-complete": "Kurulum tamamlandı!",
+        "error-text": "Hata: {error}",
+        "processes": {
+          "uploading": "Yükleniyor...",
+          "version-info": "Sürüm bilgisi alınıyor...",
+          "downloading": "Dosya indiriliyor...",
+          "preparing": "Hazırlanıyor...",
+          "installing": "Kuruluyor..."
+        }
+      },
       "view-activity-log": {
         "title": "Aktivite Kaydı Detayı",
         "json": "JSON:"
