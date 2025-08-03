@@ -11,6 +11,10 @@
 <!-- Theme Settings -->
 <InstallResourceModal />
 
+{#if data.failedLogin}
+  <FailedLoginPanoStoreAlert/>
+{/if}
+
 <PageActions leftClasses="d-lg-flex d-none">
   <CardMenu slot="middle">
     <CardMenuItem href="/view">{$_('buttons.themes')}</CardMenuItem>
@@ -98,6 +102,7 @@
     await parent();
 
     const status = searchParams.get("status") || DefaultPageType;
+    const failedLogin = searchParams.has("failedLogin")
 
     if (!Object.values(PageTypes).includes(status)) {
       throw error(404, "PAGE_NOT_FOUND");
@@ -113,7 +118,7 @@
       throw error(500, body);
     }
 
-    return { pageType: status, themes: body.data, meta: body.meta };
+    return { pageType: status, themes: body.data, meta: body.meta, failedLogin };
   }
 </script>
 
@@ -135,6 +140,7 @@
   import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
   import CardHeader from "$lib/component/CardHeader.svelte";
   import InstallResourceModal, {show as showInstallResourceModal} from "$lib/component/modals/InstallResourceModal.svelte";
+  import FailedLoginPanoStoreAlert from "$lib/component/FailedLoginPanoStoreAlert.svelte";
 
   export let data;
 

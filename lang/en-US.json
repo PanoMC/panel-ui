@@ -431,6 +431,7 @@
     }
   },
   "components": {
+    "failed-login-pano-store": "Failed login to Pano store! Try again later or reconnect your Pano account.",
     "verified-status": {
       "verified": "Verified by Pano",
       "not-verified": "Not verified by Pano, use at your own risk!"

@@ -431,6 +431,7 @@
     }
   },
   "components": {
+    "failed-login-pano-store": "Pano mağazasına giriş yapılamadı! Lütfen daha sonra tekrar deneyin veya Pano hesabınızı yeniden bağlayın.",
     "verified-status": {
       "verified": "Pano tarafından doğrulandı",
       "not-verified": "Pano tarafından doğrulanmadı, kendi sorumluluğunuzda kullanın!"

@@ -1,5 +1,8 @@
 <InstallResourceModal />
 <div class="container vstack gap-3">
+  {#if data.failedLogin}
+    <FailedLoginPanoStoreAlert/>
+  {/if}
   <!-- Action Menu -->
   <PageActions middleClasses="d-lg-flex d-none" leftClasses="d-lg-flex d-none">
     <div slot="right" class="hstack gap-2">
@@ -143,6 +146,7 @@
     await parent();
 
     const status = searchParams.get("status") || DefaultPageType;
+    const failedLogin = searchParams.has("failedLogin")
 
     if (!Object.values(PageTypes).includes(status)) {
       throw error(404, "PAGE_NOT_FOUND");
@@ -158,7 +162,7 @@
       throw error(500, body);
     }
 
-    return { plugins: body.data, pageType: status };
+    return { plugins: body.data, pageType: status, failedLogin };
   }
 </script>
 
@@ -190,6 +194,7 @@
 
   import NoContent from "$lib/component/NoContent.svelte";
   import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
+  import FailedLoginPanoStoreAlert from "$lib/component/FailedLoginPanoStoreAlert.svelte";
 
   export let data;
 
