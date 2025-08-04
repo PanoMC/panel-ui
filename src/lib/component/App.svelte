@@ -2,12 +2,15 @@
   @import "src/styles/style";
 </style>
 
+<PageLoader />
+
 <slot />
 
 <script>
   import { browser } from "$app/environment";
   import { page } from "$app/stores";
   import { onDestroy } from "svelte";
+  import PageLoader from "$lib/component/PageLoader.svelte";
 
   function loadPopOver() {
     if (window.bootstrap) {
