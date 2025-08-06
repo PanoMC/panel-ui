@@ -9,7 +9,7 @@
       {#if theme.installedBy !== "SYSTEM"}
         <button
           aria-label="{$_('buttons.remove')}"
-          class="btn btn-link text-danger"
+          class="btn btn-link link-danger"
           type="button"
           on:click={onRemoveClick}
           title="{$_('buttons.remove')}"
@@ -28,24 +28,20 @@
       {/if}
       {#if theme.running}
         <button
-          aria-label="{$_('buttons.stop')}"
-          class="btn btn-link text-danger"
+          class="btn btn-danger"
           type="button"
           on:click={onStopClick}
-          title="{$_('buttons.stop')}"
           class:disabled={stoping}>
-          <i class="fas fa-stop"></i>
+          <i class="fas fa-stop me-2"></i> {$_('buttons.stop')}
         </button>
       {/if}
       {#if !theme.running && theme.active}
         <button
-          aria-label="{$_('buttons.start')}"
-          class="btn btn-link text-danger"
+          class="btn btn-secondary"
           type="button"
           on:click={onStartClick}
-          title="{$_('buttons.start')}"
           class:disabled={stoping}>
-          <i class="fas fa-play"></i>
+          <i class="fas fa-play me-2"></i> {$_('buttons.start')}
         </button>
       {/if}
       {#if !theme.active}
@@ -107,7 +103,7 @@
             <div class="d-flex justify-content-between align-items-start">
               <h2>{theme.title}<VerifiedStatus status={theme.verifyStatus} /></h2>
               {#if theme.active}
-                <span class="badge text-bg-secondary">{$_('pages.theme-detail.in-use')}</span>
+                <span class="badge text-bg-success">{$_('pages.theme-detail.in-use')}</span>
               {/if}
             </div>
             <p class="text-muted">{theme.description}</p>

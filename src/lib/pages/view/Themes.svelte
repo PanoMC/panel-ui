@@ -45,7 +45,7 @@
   <div class="card-body">
     {#if data.themes.length === 0}
       <NoContent />
-    {/if}<div class="row g-4">
+    {/if}<div class="row g-3">
     {#each data.themes as theme}
       <div class="col-xl-4 col-md-6">
         <a href="{base}/view/detail/{theme.id}" class="text-decoration-none">

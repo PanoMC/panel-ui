@@ -12,7 +12,7 @@
       </span>
     </div>
     <div class="hstack gap-2" slot="right">
-      <button type="button" class="btn btn-outline-primary" class:disabled={true || !!data.platformUpdate || loading}>Update All</button>
+      <button type="button" class="btn btn-primary" class:disabled={true || !!data.platformUpdate || loading}>Update All</button>
 
       <button class="btn btn-secondary" class:disabled={loading} on:click={checkUpdate}>
         <i class="fa-regular fa-arrows-rotate me-2" class:fa-spin={loading}></i> Check Updates
@@ -68,14 +68,14 @@
                   <div class="col-md-6">
                     <!-- Version, Channel, Author -->
                     <div class="d-flex align-items-center flex-wrap gap-2">
-                      <h5 class="mb-0">Pano@{data.platformUpdate.version}</h5>
-                      <span class="badge
-                {data.platformUpdate.channel === 'stable' ? 'bg-success' : ''}
-                {data.platformUpdate.channel === 'beta' ? 'bg-secondary' : ''}
-                {data.platformUpdate.channel === 'alpha' ? 'bg-success' : ''}">
-                {data.platformUpdate.channel.capitalize()}
-              </span>
-                      <small class="text-muted">by <span class="fw-semibold text-dark">Pano</span>  <span class="text-success"><i class="fa-regular fa-circle-check"></i></span></small>
+                      <span class="badge rounded-pill
+                        {data.platformUpdate.channel === 'stable' ? 'bg-success' : ''}
+                        {data.platformUpdate.channel === 'beta' ? 'bg-secondary' : ''}
+                        {data.platformUpdate.channel === 'alpha' ? 'bg-success' : ''}">
+                        {data.platformUpdate.channel.capitalize()}
+                      </span>
+                      <h5 class="mb-0">Pano@{data.platformUpdate.version} <i class="fa-regular fa-circle-check text-success ms-1"></i></h5>
+                      
                     </div>
 
                     <!-- Size + Date -->
