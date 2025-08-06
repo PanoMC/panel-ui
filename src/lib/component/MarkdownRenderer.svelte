@@ -1,14 +1,23 @@
 <script>
-  import { sanitize } from '@jill64/universal-sanitizer'
-  import { marked } from "marked";
+  import { sanitize } from '@jill64/universal-sanitizer';
+  import { marked } from 'marked';
+  import { browser } from '$app/environment';
 
-  import { browser } from "$app/environment";
+  export let content;
+
+  // Add target="_blank" to links in Markdown
+  const renderer = {
+    link({href, title, text}) {
+      const safeHref = sanitize(href);
+      const titleAttr = title ? ` title="${title}"` : '';
+      return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer"${titleAttr}>${text}</a>`;
+    }
+  };
 
   marked.use({
-    gfm: true
-  })
-
-  export let content
+    gfm: true,
+    renderer
+  });
 
   async function removeFirstPTag(html) {
     if (browser) { // CSR
