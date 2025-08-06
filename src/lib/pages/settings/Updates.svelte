@@ -12,7 +12,7 @@
       </span>
     </div>
     <div class="hstack gap-2" slot="right">
-      <button type="button" class="btn btn-primary" class:disabled={true || !!data.platformUpdate || loading}>Update All</button>
+      <button type="button" class="btn btn-primary" class:disabled={loading || !data.platformUpdate && data.resourceUpdates?.length === 0}>Update All</button>
 
       <button class="btn btn-secondary" class:disabled={loading} on:click={checkUpdate}>
         <i class="fa-regular fa-arrows-rotate me-2" class:fa-spin={loading}></i> Check Updates
@@ -37,17 +37,17 @@
   </div>
 
   <div class="card">
-    <div class="card-header">Platform Updates</div>
+    <div class="card-header">Platform Updates {#if data.platformUpdate}(1){/if}</div>
     <div class="card-body">
       <!-- Pending Update List -->
       {#if !data.platformUpdate}
         <NoContent icon="fas fa-check fa-3x" text="You are using latest version of Pano." />
       {:else}
         <ul class="list-group">
-          <li class="list-group-item">
-            <div class="d-flex">
+          <li class="list-group-item p-4">
+            <div class="d-flex gap-3">
               <!-- Logo -->
-              <div class="flex-shrink-0 me-3">
+              <div class="flex-shrink-0">
                 <div
                   class="d-inline-flex rounded justify-content-start align-items-start bg-primary ps-2 pt-2"
                   style="width: 64px; height: 64px;">
@@ -63,81 +63,85 @@
 
               <!-- Content -->
               <div class="flex-grow-1 w-100">
-                <div class="row align-items-start">
-                  <!-- Left: Version & Info -->
-                  <div class="col-md-6">
-                    <!-- Version, Channel, Author -->
-                    <div class="d-flex align-items-center flex-wrap gap-2">
-                      <span class="badge rounded-pill
-                        {data.platformUpdate.channel === 'stable' ? 'bg-success' : ''}
-                        {data.platformUpdate.channel === 'beta' ? 'bg-secondary' : ''}
-                        {data.platformUpdate.channel === 'alpha' ? 'bg-success' : ''}">
-                        {data.platformUpdate.channel.capitalize()}
-                      </span>
-                      <h5 class="mb-0">Pano@{data.platformUpdate.version} <i class="fa-regular fa-circle-check text-success ms-1"></i></h5>
-                      
+                <div class="d-flex justify-content-between flex-wrap align-items-start">
+                  <!-- Left: Info -->
+                  <div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+              <span class="badge fw-semibold px-3 py-1
+                {data.platformUpdate.channel === 'stable' ? 'bg-success' : ''}
+                {data.platformUpdate.channel === 'beta' ? 'bg-secondary' : ''}
+                {data.platformUpdate.channel === 'alpha' ? 'bg-secondary text-dark' : ''}">
+                {data.platformUpdate.channel.capitalize()}
+              </span>
+                      <h5 class="mb-1">
+                        Pano
+                        <span class="badge bg-light text-dark fw-normal ms-2">
+                  {data.platformUpdate.version}
+                </span>
+                        <i class="fa-regular fa-circle-check text-success ms-1" title="Verified"></i>
+                      </h5>
                     </div>
 
-                    <!-- Size + Date -->
-                    <div class="d-flex gap-3 text-muted small mt-1 flex-wrap">
+                    <div class="mb-1">
+                      <small class="text-muted">by <span class="fw-semibold text-dark">Pano</span></small>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-4 text-muted small mt-2 mt-md-0">
                       <div>
                         <i class="fas fa-database me-1"></i> {formatBytes(data.platformUpdate.size)}
                       </div>
                       <div>
-                        <i class="fas fa-calendar me-1"></i> <Date time="{data.platformUpdate.releaseDate}"/>
+                        <i class="fas fa-calendar me-1"></i> <Date time="{data.platformUpdate.releaseDate}" />
                       </div>
                     </div>
-
                   </div>
 
                   <!-- Right: Actions -->
-                  <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                    <div class="d-flex justify-content-md-end align-items-center gap-2">
-                      <button class="btn btn-sm btn-outline-primary" type="button">
-                        Update
-                      </button>
+                  <div class="d-flex align-items-center gap-2 mt-3 mt-md-0">
+                    <button class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
+                      <i class="fas fa-download"></i>
+                      Update
+                    </button>
+                    {#if data.platformUpdate.error}
                       <a
                         href="#"
                         tabindex="0"
-                        class="link-danger"
+                        class="text-danger"
                         data-bs-toggle="popover"
                         data-bs-trigger="focus"
                         data-bs-custom-class="font-monospace"
                         data-bs-title="Error Log"
-                        data-bs-content="ERR LOG" hidden>
+                        data-bs-content={data.platformUpdate.error}>
                         <i class="fa-solid fa-circle-exclamation fa-lg"></i>
                       </a>
-                    </div>
+                    {/if}
                   </div>
                 </div>
 
-                <!-- Progress Bar -->
-                <div
-                  class="progress my-3"
-                  role="progressbar"
-                  aria-label="Update progress"
-                  aria-valuenow="{data.platformUpdate.progress}"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  style="height: 3px;" hidden>
-                  <div
-                    class="progress-bar bg-secondary"
-                    style="width: {data.platformUpdate.progress + '%'}"></div>
-                </div>
+                <!-- Progress -->
+                {#if data.platformUpdate.progress !== undefined}
+                  <div class="progress my-3" style="height: 5px;">
+                    <div
+                      class="progress-bar bg-secondary progress-bar-striped progress-bar-animated"
+                      style="width: {data.platformUpdate.progress + '%'}"></div>
+                  </div>
+                {/if}
 
                 <!-- Hash -->
-                <div class="text-muted small mb-2">
-                  Hash: <code class="text-break">{data.platformUpdate.hash}</code>
+                <div class="text-muted small mt-1">
+                  <i class="fas fa-fingerprint me-1"></i>
+                  <code class="text-break">{data.platformUpdate.hash}</code>
                 </div>
 
                 <!-- Changelog -->
-                <details>
-                  <summary>Changelog</summary>
-                  <p class="pt-3">
-            <span class="fw-bold markdown-renderer">
-              <MarkdownRenderer content={data.platformUpdate.changelog} />
-            </span>
-                  </p>
+                <details class="mt-3">
+                  <summary class="fw-semibold text-primary">
+                    <i class="fas fa-clipboard-list me-1"></i>
+                    Changelog
+                  </summary>
+                  <div class="pt-2 markdown-renderer">
+                    <MarkdownRenderer content={data.platformUpdate.changelog} />
+                  </div>
                 </details>
               </div>
             </div>
@@ -149,16 +153,106 @@
   </div>
 
   <div class="card">
-    <div class="card-header">Resource Updates</div>
+    <div class="card-header">Resource Updates {#if data.resourceUpdates.length > 0}({data.resourceUpdates.length}){/if}</div>
     <div class="card-body">
-<!--      <NoContent-->
-<!--        icon="fas fa-sync fa-3x"-->
-<!--        text="Kaynak güncellemeleri alabilmek için lütfen Çevrimiçi Hesap bağlayın."-->
-<!--        dark="{false}" />-->
-      <NoContent
-        icon="fas fa-sync fa-3x"
-        text="No updates found."
-        dark="{false}"/>
+      {#if !data.panoAccount}
+        <NoContent
+          icon="fas fa-sync fa-3x"
+          text="Kaynak güncellemeleri alabilmek için lütfen Çevrimiçi Hesap bağlayın."
+          dark="{false}" />
+      {:else if data.resourceUpdates.length === 0}
+        <NoContent
+          icon="fas fa-sync fa-3x"
+          text="No updates found."
+          dark="{false}"/>
+      {:else}
+        <ul class="list-group">
+          {#each data.resourceUpdates as update, index (update)}
+            <li class="list-group-item p-4">
+              <div class="d-flex gap-3">
+                <!-- Logo -->
+                <img
+                  class="border rounded"
+                  src="{`${PANO_WEBSITE_API_URL}/resources/${update.id}/icon`}"
+                  alt="Pano"
+                  width="60"
+                  height="60"
+                />
+
+                <!-- Content -->
+                <div class="flex-grow-1">
+                  <!-- Header -->
+                  <div class="d-flex justify-content-between flex-wrap align-items-start">
+                    <div>
+                      <h5 class="mb-1">
+                        {update.id}
+                        <span class="badge bg-light text-dark fw-normal ms-2">
+                  {update.version}
+                </span>
+                        <VerifiedStatus status="{getVerifiedStatus(update.verified)}" />
+                      </h5>
+                      <small class="text-muted">by <span class="fw-semibold text-dark">{update.developer}</span></small>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 mt-2 mt-md-0">
+                      <button class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
+                        <i class="fas fa-download"></i>
+                        Update
+                      </button>
+                      {#if update.error}
+                        <a
+                          href="#"
+                          tabindex="0"
+                          class="text-danger"
+                          data-bs-toggle="popover"
+                          data-bs-trigger="focus"
+                          data-bs-custom-class="font-monospace"
+                          data-bs-title="Error Log"
+                          data-bs-content={update.error}>
+                          <i class="fa-solid fa-circle-exclamation fa-lg"></i>
+                        </a>
+                      {/if}
+                    </div>
+                  </div>
+
+                  <!-- Meta -->
+                  <div class="d-flex flex-wrap gap-4 text-muted small mt-2">
+                    <div><i class="fas fa-database me-1"></i>{formatBytes(update.size)}</div>
+                    <div><i class="fas fa-calendar me-1"></i><Date time="{update.createdAt}" /></div>
+                  </div>
+
+                  <!-- Progress -->
+                  {#if update.progress !== undefined}
+                    <div class="progress my-3" style="height: 6px;">
+                      <div
+                        class="progress-bar bg-secondary progress-bar-striped progress-bar-animated"
+                        style="width: {update.progress + '%'}"></div>
+                    </div>
+                  {/if}
+
+                  <!-- Hash -->
+                  <div class="text-muted small mt-1">
+                    <i class="fas fa-fingerprint me-1"></i>
+                    <code class="text-break">sha256:{update.hash}</code>
+                  </div>
+
+                  <!-- Changelog -->
+                  <details class="mt-3">
+                    <summary class="fw-semibold text-primary">
+                      <i class="fas fa-clipboard-list me-1"></i>
+                      Changelog
+                    </summary>
+                    <div class="pt-2 markdown-renderer">
+                      <MarkdownRenderer content={update.changelog} />
+                    </div>
+                  </details>
+                </div>
+              </div>
+            </li>
+          {/each}
+        </ul>
+
+      {/if}
     </div>
   </div>
 </div>
@@ -194,6 +288,8 @@
   import MarkdownRenderer from "$lib/component/MarkdownRenderer.svelte";
   import { base } from "$app/paths";
   import { formatBytes } from "$lib/string.util.js";
+  import { PANO_WEBSITE_API_URL } from "$lib/variables";
+  import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
 
   export let data;
 
@@ -208,6 +304,9 @@
     await Promise.all([ApiUtil.get({
       path: "/api/panel/updates/platform",
       handler: async (body) => {
+        await invalidateAll()
+        loading = false;
+
         if (body.error === "NOT_FOUND") {
           // TODO: not found toast
           return
@@ -218,12 +317,19 @@
         }
       }
       })]);
-
-    await invalidateAll()
-    loading = false;
   }
 
   String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
   };
+
+  function getVerifiedStatus(status) {
+    if (typeof status === "undefined") {
+      return "UNKNOWN"
+    } else if (status) {
+      return "VERIFIED"
+    }else {
+      return "NOT_VERIFIED"
+    }
+  }
 </script>
