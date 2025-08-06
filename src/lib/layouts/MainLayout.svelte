@@ -89,7 +89,7 @@
    */
   export async function loadServer(event) {
     const {
-      locals: { basicData, csrfToken, apiUrlEnv, panoWebsiteUrlEnv },
+      locals: { basicData, csrfToken, apiUrlEnv, panoWebsiteUrlEnv, panoWebsiteApiUrlEnv },
     } = event;
 
     let siteInfo = await ApiUtil.get({
@@ -98,7 +98,7 @@
       csrfToken,
     });
 
-    return { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv };
+    return { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv, panoWebsiteApiUrlEnv };
   }
 
   /**
@@ -106,7 +106,7 @@
    */
   export async function load(event) {
     const {
-      data: { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv },
+      data: { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv, panoWebsiteApiUrlEnv },
       parent,
     } = event;
     await parent();
@@ -117,6 +117,10 @@
 
     if (panoWebsiteUrlEnv) {
       updatePanoWebsiteUrl(panoWebsiteUrlEnv)
+    }
+
+    if (panoWebsiteApiUrlEnv) {
+      updatePanoWebsiteUrl(panoWebsiteApiUrlEnv)
     }
 
     await initializePlugins(siteInfo);
