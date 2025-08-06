@@ -78,7 +78,7 @@
 </div>
 
 <script context="module">
-  import ApiUtil from "$lib/api.util.js";
+  import ApiUtil, { buildQueryParams } from "$lib/api.util";
 
   /**
    * @type {import("@sveltejs/kit").Load}
@@ -87,8 +87,12 @@
     const { parent } = event;
     await parent();
 
+    const queryParams = buildQueryParams({
+      type: "ABOUT",
+    });
+
     return await ApiUtil.get({
-      path: "/api/panel/settings/about",
+      path: "/api/panel/settings" + queryParams,
       request: event,
     });
   }
