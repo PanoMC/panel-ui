@@ -204,7 +204,9 @@
                     class="d-flex justify-content-between flex-wrap align-items-start">
                     <div>
                       <h5 class="mb-1">
-                        {update.id}
+                        <a href="{`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}" target="_blank">
+                          {update.id}
+                        </a>
                         <span class="badge bg-light text-dark fw-normal ms-2">
                           {update.oldVersion} <i class="fas fa-arrow-right"></i> {update.version}
                         </span>
@@ -212,9 +214,9 @@
                           status={getVerifiedStatus(update.verified)} />
                       </h5>
                       <small class="text-muted"
-                        >by <span class="fw-semibold text-dark"
+                        >by <a href="{`${PANO_WEBSITE_URL}/users/${update.developer}`}" target="_blank"><span class="fw-semibold text-dark"
                           >{update.developer}</span
-                        ></small>
+                        ></a></small>
                     </div>
 
                     <div class="d-flex align-items-center gap-2 mt-2 mt-md-0">
@@ -316,8 +318,7 @@
   import { invalidateAll } from "$app/navigation";
 
   import { formatBytes } from "$lib/string.util";
-  import { PANO_WEBSITE_API_URL } from "$lib/variables";
-
+  import { PANO_WEBSITE_API_URL, PANO_WEBSITE_URL } from "$lib/variables";
 
   import tooltip from "$lib/tooltip.util";
 
