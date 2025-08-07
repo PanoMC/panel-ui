@@ -56,7 +56,7 @@
     {:else}
       <div class="card-body">
         <ul class="list-group">
-          <li class="list-group-item p-4">
+          <li class="list-group-item">
             <div class="row gx-3">
               <div class="col-md-auto">
                 <!-- Logo -->
@@ -114,7 +114,7 @@
                     <!-- Right: Actions -->
                     <div class="d-flex align-items-center gap-2">
                       <button
-                        class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
+                        class="btn btn-sm btn-secondary d-flex align-items-center gap-1">
                         <i class="fas fa-download"></i>
                         Update
                       </button>
@@ -189,7 +189,7 @@
       {:else}
         <ul class="list-group">
           {#each data.resourceUpdates as update, index (update)}
-            <li class="list-group-item p-4">
+            <li class="list-group-item">
               <div class="row gx-3">
                 <div class="col-md-auto">
                   <!-- Logo -->
@@ -244,7 +244,7 @@
                       <!-- Right: Actions -->
                       <div class="d-flex align-items-center gap-2">
                         <button
-                          class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
+                          class="btn btn-sm btn-secondary d-flex align-items-center gap-1">
                           <i class="fas fa-download"></i>
                           Update
                         </button>

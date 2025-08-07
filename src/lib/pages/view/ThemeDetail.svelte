@@ -101,7 +101,7 @@
           <!-- Title & Status -->
           <div>
             <div class="d-flex justify-content-between align-items-start">
-              <h2>{theme.title}<VerifiedStatus status={theme.verifyStatus} /></h2>
+              <h5 class="card-title">{theme.title}<VerifiedStatus status={theme.verifyStatus} /></h5>
               {#if theme.active}
                 <span class="badge text-bg-success">{$_('pages.theme-detail.in-use')}</span>
               {/if}
@@ -112,23 +112,23 @@
           <!-- Metadata -->
           <ul class="list-group">
             <li
-              class="list-group-item d-flex justify-content-between align-items-center">
+              class="list-group-item">
               <strong>ID:</strong>
               <span class="font-monospace user-select-all">
                 {theme.id}</span>
             </li>
             <li
-              class="list-group-item d-flex justify-content-between align-items-center">
+              class="list-group-item">
               <strong>{$_('pages.theme-detail.version')}:</strong>
               <span class="user-select-all font-monospace">{theme.version}</span>
             </li>
             <li
-              class="list-group-item d-flex justify-content-between align-items-center">
+              class="list-group-item">
               <strong>{$_('pages.theme-detail.pano-version')}:</strong>
               <span class="user-select-all font-monospace">{theme.panoVersion}</span>
             </li>
             <li
-              class="list-group-item d-flex justify-content-between align-items-center">
+              class="list-group-item">
               <strong>{$_('pages.theme-detail.developer')}:</strong>
               <a target="_blank" href="{PANO_WEBSITE_URL}/users/{theme.author}"
                 >{theme.author}
@@ -136,12 +136,12 @@
               </a>
             </li>
             <li
-              class="list-group-item d-flex justify-content-between align-items-center">
+              class="list-group-item">
               <strong>{$_('pages.theme-detail.license')}:</strong>
               {theme.license || $_('pages.theme-detail.unknown')}
             </li>
             <li
-              class="list-group-item d-flex justify-content-between align-items-center">
+              class="list-group-item">
               <strong>{$_('pages.theme-detail.source')}:</strong>
               <a class="overflow-auto text-nowrap" href="{theme.sourceUrl ? theme.sourceUrl : null}" target="_blank">
                 {theme.sourceUrl || $_('pages.theme-detail.unknown')}
@@ -149,27 +149,27 @@
               </a>
             </li>
             <li
-              class="list-group-item d-flex justify-content-between align-items-center">
+              class="list-group-item">
               <strong>Hash:</strong>
               <code class="overflow-auto text-nowrap user-select-all">{theme.hash}</code>
             </li>
             <li
-              class="list-group-item d-flex justify-content-between align-items-center">
+              class="list-group-item">
               <strong>{$_('pages.theme-detail.installed-at')}:</strong>
               <Date time="{theme.createdAt}" relativeFormat="{true}" />
             </li>
             <li
-              class="list-group-item d-flex justify-content-between align-items-center">
+              class="list-group-item">
               <strong>{$_('pages.theme-detail.updated-at')}:</strong>
               <Date time="{theme.updatedAt}" relativeFormat="{true}" />
             </li>
             <li
-              class="list-group-item d-flex justify-content-between align-items-center">
+              class="list-group-item">
               <strong>{$_('pages.theme-detail.installed-by')}:</strong>
               {$_('pages.theme-detail.installed-by-types.' + theme.installedBy)}
             </li>
             <li
-              class="list-group-item d-flex justify-content-between align-items-center">
+              class="list-group-item">
               <strong>{$_('pages.theme-detail.size')}:</strong>
               {formatBytes(theme.size)}
             </li>

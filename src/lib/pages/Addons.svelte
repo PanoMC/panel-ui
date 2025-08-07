@@ -1,7 +1,7 @@
 <InstallResourceModal />
 <div class="container vstack gap-3">
   {#if data.failedLogin}
-    <FailedLoginPanoStoreAlert/>
+    <FailedLoginPanoStoreAlert />
   {/if}
   <!-- Action Menu -->
   <PageActions middleClasses="d-lg-flex d-none" leftClasses="d-lg-flex d-none">
@@ -11,7 +11,7 @@
         class="btn btn-secondary ml-auto"
         on:click={() => showInstallResourceModal("PLUGIN")}>
         <i class="fas fa-plus me-2"></i>
-        {$_('buttons.install-addon')}
+        {$_("buttons.install-addon")}
       </button>
     </div>
   </PageActions>
@@ -20,45 +20,52 @@
     <CardHeader>
       <div slot="left">
         {data.pageType === PageTypes.ACTIVE
-          ? $_('pages.addons.card-title.active', {values: {amount: data.plugins.length}})
+          ? $_("pages.addons.card-title.active", {
+              values: { amount: data.plugins.length },
+            })
           : data.pageType === PageTypes.DISABLED
-            ? $_('pages.addons.card-title.inactive', {values: {amount: data.plugins.length}})
-            : $_('pages.addons.card-title.installed', {values: {amount: data.plugins.length}})}
+            ? $_("pages.addons.card-title.inactive", {
+                values: { amount: data.plugins.length },
+              })
+            : $_("pages.addons.card-title.installed", {
+                values: { amount: data.plugins.length },
+              })}
       </div>
       <!-- Filters -->
       <CardFilters slot="right">
         <CardFiltersItem href="/addons" active={data.pageType === PageTypes.ALL}
-          >{$_('buttons.all')}</CardFiltersItem>
+          >{$_("buttons.all")}</CardFiltersItem>
         <CardFiltersItem
           href="/addons?status=ACTIVE"
-          active={data.pageType === PageTypes.ACTIVE}>{$_('buttons.active')}</CardFiltersItem>
+          active={data.pageType === PageTypes.ACTIVE}
+          >{$_("buttons.active")}</CardFiltersItem>
         <CardFiltersItem
           href="/addons?status=DISABLED"
           active={data.pageType === PageTypes.DISABLED}
-          >{$_('buttons.disabled')}</CardFiltersItem>
+          >{$_("buttons.disabled")}</CardFiltersItem>
       </CardFilters>
     </CardHeader>
     <div class="card-body">
-        {#if data.plugins.length === 0}
-          <NoContent />
-        {/if}
-      <div class="row row-cols-xl-2 row-cols-1 g-4">
+      {#if data.plugins.length === 0}
+        <NoContent />
+      {/if}
+      <div class="row row-cols-xl-2 row-cols-1 g-3">
         {#each data.plugins as plugin}
           <div class="col">
-            <div class="card h-100 rounded-4 shadow-sm position-relative
+            <div
+              class="card h-100 position-relative
         {plugin.status === 'FAILED' && 'border-danger border-2'}">
-
               <!-- STATUS ACTIONS -->
               <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
-                {#if plugin.status === 'FAILED'}
+                {#if plugin.status === "FAILED"}
                   <button
-                     type="button"
-                     aria-label="{$_('buttons.error-log')}"
-                     class="btn btn-link text-danger p-0 me-2"
-                     data-bs-toggle="popover"
-                     data-bs-trigger="focus"
-                     data-bs-title="{$_('buttons.error-log')}"
-                     data-bs-content={plugin.error}>
+                    type="button"
+                    aria-label={$_("buttons.error-log")}
+                    class="btn btn-link text-danger p-0 me-2"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="focus"
+                    data-bs-title={$_("buttons.error-log")}
+                    data-bs-content={plugin.error}>
                     <i class="fa-solid fa-circle-exclamation"></i>
                   </button>
                 {/if}
@@ -71,54 +78,58 @@
                       class="form-check-input"
                       type="checkbox"
                       role="switch"
-                      checked={plugin.status === 'STARTED'}
+                      checked={plugin.status === "STARTED"}
                       on:click={(e) => {
-                  e.preventDefault();
-                  onTogglePluginStateClick(plugin);
-                }} />
+                        e.preventDefault();
+                        onTogglePluginStateClick(plugin);
+                      }} />
                   </div>
                 {/if}
               </div>
 
-              <div class="card-body d-flex flex-column gap-3">
-                <div class="d-flex gap-3">
-                  <a href="{base}/addons/detail/{plugin.id}">
-                    <img
-                      src="/api/panel/plugins/{plugin.id}/logo"
-                      class="rounded-3 bg-light p-2"
-                      width="72"
-                      height="72"
-                      alt={plugin.name} />
-                  </a>
-                  <div class="flex-grow-1">
-                    <a href="{base}/addons/detail/{plugin.id}" class="text-decoration-none">
-                      <h5 class="card-title mb-1 text-truncate">
-                        {plugin.name}
-                        <VerifiedStatus status="{plugin.verifyStatus}" />
-                      </h5>
+              <div class="card-body d-flex flex-column">
+                <div class="row g-3">
+                  <div class="col-auto vstack gap-2">
+                    <a
+                      href="{base}/addons/detail/{plugin.id}"
+                      class="text-decoration-none">
+                      <img
+                        src="/api/panel/plugins/{plugin.id}/logo"
+                        class="rounded"
+                        width="64"
+                        height="64"
+                        alt={plugin.name} />
                     </a>
-                    <small class="text-muted">by <span class="fw-bolder">{plugin.developer}</span></small>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <a
+                        href="{base}/addons/detail/{plugin.id}"
+                        class="text-decoration-none">
+                        <h5 class="text-truncate word-break mb-0">
+                          {plugin.name}
+                        </h5>
+                      </a>
+                      <VerifiedStatus status={plugin.verifyStatus} />
+                      <div>
+                        by <span class="fw-bolder">{plugin.developer}</span>
+                      </div>
+                    </div>
+
+                    <small class="d-block mb-3">
+                      {@html plugin.description}</small>
+
+                    <div class="small text-muted hstack gap-2">
+                      <i class="fa fa-code-branch"></i>
+                      <div class="font-monospace user-select-all">
+                        {plugin.version}
+                      </div>
+                    </div>
                   </div>
-                </div>
-
-                <div class="small flex-grow-1">{@html plugin.description}</div>
-
-                <div class="d-flex flex-wrap gap-3 small text-muted">
-                  <span class="font-monospace">{plugin.version}</span>
-                  {#if plugin.license}<span>{plugin.license}</span>{/if}
-                  {#if plugin.verifyStatus !== 'UNKNOWN'}
-                    <a href="{PANO_WEBSITE_URL}/addons/{plugin.id}" target="_blank" aria-label="{$_('buttons.show-in-store')}" title="{$_('buttons.show-in-store')}"><i class="fa-solid fa-store"></i></a>
-                  {/if}
-                  {#if plugin.sourceUrl}
-                    <a href={plugin.sourceUrl} target="_blank" aria-label="{$_('buttons.source')}"  title="{$_('buttons.source')}"><i class="fa-solid fa-link"></i></a>
-                  {/if}
                 </div>
               </div>
             </div>
           </div>
         {/each}
       </div>
-
     </div>
   </div>
 </div>
@@ -146,7 +157,7 @@
     await parent();
 
     const status = searchParams.get("status") || DefaultPageType;
-    const failedLogin = searchParams.has("failedLogin")
+    const failedLogin = searchParams.has("failedLogin");
 
     if (!Object.values(PageTypes).includes(status)) {
       throw error(404, "PAGE_NOT_FOUND");
@@ -233,7 +244,7 @@
 
   function togglePluginState(plugin, status, callback = () => {}) {
     plugin.loading = true;
-    data.plugins = data.plugins
+    data.plugins = data.plugins;
 
     ApiUtil.put({
       path: `/api/panel/plugins/${plugin.id}`,
@@ -291,7 +302,7 @@
         }
 
         plugin.loading = false;
-        data.plugins = data.plugins
+        data.plugins = data.plugins;
 
         callback();
       },

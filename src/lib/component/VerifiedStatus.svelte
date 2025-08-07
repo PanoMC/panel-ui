@@ -3,7 +3,7 @@
   <span
     class="text-success"
     use:tooltip={[
-      $_('components.verified-status.verified'),
+      $_("components.verified-status.verified"),
       { placement: "bottom" },
     ]}>
     <i class="fa-regular fa-circle-check"></i>
@@ -12,10 +12,10 @@
   <span
     class="text-warning"
     use:tooltip={[
-                            $_('components.verified-status.not-verified'),
-                            { placement: "bottom" },
-                          ]}>
-    <i class="fa-solid fa-circle-exclamation me-1"></i>
+      $_("components.verified-status.not-verified"),
+      { placement: "bottom" },
+    ]}>
+    <i class="fa-solid fa-circle-exclamation"></i>
   </span>
 {/if}
 
