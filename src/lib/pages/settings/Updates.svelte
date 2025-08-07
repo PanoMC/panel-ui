@@ -94,7 +94,7 @@
                         <span class="badge text-bg-light">
                           {data.platformUpdate.channel.capitalize()}
                         </span>
-                        <span class="badge text-bg-light">{data.platformUpdate.version}</span>
+                        <span class="badge text-bg-light">{data.platformUpdate.oldVersion} <i class="fas fa-arrow-right"></i> {data.platformUpdate.version}</span>
 
                         <div>
                           by <strong>Pano</strong>
@@ -206,7 +206,7 @@
                       <h5 class="mb-1">
                         {update.id}
                         <span class="badge bg-light text-dark fw-normal ms-2">
-                          {update.version}
+                          {update.oldVersion} <i class="fas fa-arrow-right"></i> {update.version}
                         </span>
                         <VerifiedStatus
                           status={getVerifiedStatus(update.verified)} />
