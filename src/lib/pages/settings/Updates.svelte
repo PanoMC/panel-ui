@@ -87,7 +87,10 @@
                         <span class="badge text-bg-light">
                           {data.platformUpdate.channel.capitalize()}
                         </span>
-                        <span class="badge text-bg-light">{data.platformUpdate.oldVersion} <i class="fas fa-arrow-right"></i> {data.platformUpdate.version}</span>
+                        <span class="badge text-bg-light"
+                          >{data.platformUpdate.oldVersion}
+                          <i class="fas fa-arrow-right"></i>
+                          {data.platformUpdate.version}</span>
 
                         <div>
                           by <strong>Pano</strong>
@@ -165,14 +168,14 @@
     <CardHeader>
       <div slot="left">
         Resource Updates {#if data.resourceUpdates.length > 0}({data
-        .resourceUpdates.length}){/if}
+            .resourceUpdates.length}){/if}
       </div>
       <div slot="right">
         <button
           type="button"
           class="btn btn-sm btn-outline-primary"
           class:disabled={loading || data.resourceUpdates?.length === 0}
-        >Update All</button>
+          >Update All</button>
       </div>
     </CardHeader>
     <div class="card-body">
@@ -196,13 +199,17 @@
                   <div
                     class="d-inline-flex rounded justify-content-start align-items-start"
                     style="width: 64px; height: 64px;">
-                    <img
-                      class="rounded"
-                      src={`${PANO_WEBSITE_API_URL}/resources/${update.id}/icon`}
-                      width="auto"
-                      height="64"
-                      alt="Pano"
-                      title="Pano" />
+                    <a
+                      href={`${PANO_WEBSITE_URL}/${update.type === "PLUGIN" ? "addons" : "themes"}/${update.id}`}
+                      target="_blank">
+                      <img
+                        class="rounded"
+                        src={`${PANO_WEBSITE_API_URL}/resources/${update.id}/icon`}
+                        width="auto"
+                        height="64"
+                        title="{update.id}"
+                        alt="{update.id}" />
+                    </a>
                   </div>
                 </div>
                 <div class="col">
@@ -213,18 +220,37 @@
                       <div class="vstack gap-2">
                         <div class="d-flex align-items-center gap-2 flex-wrap">
                           <h5 class="mb-0">
-                            <a href="{`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}" target="_blank">{update.id}</a>
+                            <a
+                              href={`${PANO_WEBSITE_URL}/${update.type === "PLUGIN" ? "addons" : "themes"}/${update.id}`}
+                              target="_blank"
+                              >{update.id}<i
+                                class="fa-solid fa-arrow-up-right-from-square ms-2"
+                              ></i
+                              ></a>
                           </h5>
-                          <VerifiedStatus status={getVerifiedStatus(update.verified)} />
+                          <VerifiedStatus
+                            status={getVerifiedStatus(update.verified)} />
 
-                          <span class="badge text-bg-light">{update.oldVersion} <i class="fas fa-arrow-right"></i> {update.version}</span>
+                          <span class="badge text-bg-light"
+                            >{update.oldVersion}
+                            <i class="fas fa-arrow-right"></i>
+                            {update.version}</span>
 
                           <div>
-                            by <a href="{`${PANO_WEBSITE_URL}/users/${update.developer}`}" target="_blank"><strong>{update.developer}</strong></a>
+                            by <a
+                              href={`${PANO_WEBSITE_URL}/users/${update.developer}`}
+                              target="_blank"
+                              ><strong
+                                >{update.developer}<i
+                                  class="fa-solid fa-arrow-up-right-from-square ms-2"
+                                ></i
+                                ></strong
+                              ></a>
                           </div>
                         </div>
 
-                        <div class="d-flex flex-wrap gap-2 text-muted small mb-0">
+                        <div
+                          class="d-flex flex-wrap gap-2 text-muted small mb-0">
                           <div>
                             <i class="fas fa-database me-1"></i>
                             {formatBytes(update.size)}
@@ -236,8 +262,7 @@
                           <!-- Hash -->
                           <div class="user-select-all font-monospace">
                             <i class="fas fa-fingerprint me-1"></i>
-                            <code class="text-break"
-                            >sha256:{update.hash}</code>
+                            <code class="text-break">sha256:{update.hash}</code>
                           </div>
                         </div>
                       </div>
@@ -276,10 +301,11 @@
 
                     <!-- Changelog -->
                     <details class="mt-3">
-                      <summary class="fw-bold link-primary"> Changelog </summary>
+                      <summary class="fw-bold link-primary">
+                        Changelog
+                      </summary>
                       <div class="pt-2 markdown-renderer">
-                        <MarkdownRenderer
-                          content={update.changelog} />
+                        <MarkdownRenderer content={update.changelog} />
                       </div>
                     </details>
                   </div>
