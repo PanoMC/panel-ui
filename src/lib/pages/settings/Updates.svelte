@@ -215,9 +215,7 @@
                           <h5 class="mb-0">
                             <a href="{`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}" target="_blank">{update.id}</a>
                           </h5>
-                          <i
-                            class="fa-regular fa-circle-check text-success"
-                            title="Verified"></i>
+                          <VerifiedStatus status={getVerifiedStatus(update.verified)} />
 
                           <span class="badge text-bg-light">{update.oldVersion} <i class="fas fa-arrow-right"></i> {update.version}</span>
 
