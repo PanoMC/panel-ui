@@ -311,15 +311,20 @@
 
 <script>
   import { getContext } from "svelte";
+
+  import { base } from "$app/paths";
+  import { invalidateAll } from "$app/navigation";
+
+  import { formatBytes } from "$lib/string.util";
+  import { PANO_WEBSITE_API_URL } from "$lib/variables";
+
+
   import tooltip from "$lib/tooltip.util";
+
   import PageActions from "$lib/component/PageActions.svelte";
   import NoContent from "$lib/component/NoContent.svelte";
-  import { invalidateAll } from "$app/navigation";
   import Date from "$lib/component/Date.svelte";
   import MarkdownRenderer from "$lib/component/MarkdownRenderer.svelte";
-  import { base } from "$app/paths";
-  import { formatBytes } from "$lib/string.util.js";
-  import { PANO_WEBSITE_API_URL } from "$lib/variables";
   import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
 
   export let data;
