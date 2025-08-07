@@ -190,98 +190,101 @@
         <ul class="list-group">
           {#each data.resourceUpdates as update, index (update)}
             <li class="list-group-item p-4">
-              <div class="d-flex gap-3">
-                <!-- Logo -->
-                <img
-                  class="border rounded"
-                  src={`${PANO_WEBSITE_API_URL}/resources/${update.id}/icon`}
-                  alt="Pano"
-                  width="60"
-                  height="60" />
-
-                <!-- Content -->
-                <div class="flex-grow-1">
-                  <!-- Header -->
+              <div class="row gx-3">
+                <div class="col-md-auto">
+                  <!-- Logo -->
                   <div
-                    class="d-flex justify-content-between flex-wrap align-items-start">
-                    <div>
-                      <h5 class="mb-1">
-                        <a href="{`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}" target="_blank">
-                          {update.id}
-                        </a>
-                        <span class="badge bg-light text-dark fw-normal ms-2">
-                          {update.oldVersion} <i class="fas fa-arrow-right"></i> {update.version}
-                        </span>
-                        <VerifiedStatus
-                          status={getVerifiedStatus(update.verified)} />
-                      </h5>
-                      <small class="text-muted"
-                        >by <a href="{`${PANO_WEBSITE_URL}/users/${update.developer}`}" target="_blank"><span class="fw-semibold text-dark"
-                          >{update.developer}</span
-                        ></a></small>
-                    </div>
-
-                    <div class="d-flex align-items-center gap-2 mt-2 mt-md-0">
-                      <button
-                        class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
-                        <i class="fas fa-download"></i>
-                        Update
-                      </button>
-                      {#if update.error}
-                        <a
-                          href="#"
-                          tabindex="0"
-                          class="text-danger"
-                          data-bs-toggle="popover"
-                          data-bs-trigger="focus"
-                          data-bs-custom-class="font-monospace"
-                          data-bs-title="Error Log"
-                          data-bs-content={update.error}>
-                          <i class="fa-solid fa-circle-exclamation fa-lg"></i>
-                        </a>
-                      {/if}
-                    </div>
+                    class="d-inline-flex rounded justify-content-start align-items-start"
+                    style="width: 64px; height: 64px;">
+                    <img
+                      class="rounded"
+                      src={`${PANO_WEBSITE_API_URL}/resources/${update.id}/icon`}
+                      width="auto"
+                      height="64"
+                      alt="Pano"
+                      title="Pano" />
                   </div>
+                </div>
+                <div class="col">
+                  <div class="flex-grow-1 w-100">
+                    <div
+                      class="d-flex justify-content-between flex-wrap align-items-start gap-3">
+                      <!-- Left: Info -->
+                      <div class="vstack gap-2">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                          <h5 class="mb-0">
+                            <a href="{`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}" target="_blank">{update.id}</a>
+                          </h5>
+                          <i
+                            class="fa-regular fa-circle-check text-success"
+                            title="Verified"></i>
 
-                  <!-- Meta -->
-                  <div class="d-flex flex-wrap gap-4 text-muted small mt-2">
-                    <div>
-                      <i class="fas fa-database me-1"></i>{formatBytes(
-                        update.size,
-                      )}
-                    </div>
-                    <div>
-                      <i class="fas fa-calendar me-1"></i><Date
-                        time={update.createdAt} />
-                    </div>
-                  </div>
+                          <span class="badge text-bg-light">{update.oldVersion} <i class="fas fa-arrow-right"></i> {update.version}</span>
 
-                  <!-- Progress -->
-                  {#if update.progress !== undefined}
-                    <div class="progress my-3" style="height: 6px;">
-                      <div
-                        class="progress-bar bg-secondary progress-bar-striped progress-bar-animated"
-                        style="width: {update.progress + '%'}">
+                          <div>
+                            by <a href="{`${PANO_WEBSITE_URL}/users/${update.developer}`}" target="_blank"><strong>{update.developer}</strong></a>
+                          </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 text-muted small mb-0">
+                          <div>
+                            <i class="fas fa-database me-1"></i>
+                            {formatBytes(update.size)}
+                          </div>
+                          <div>
+                            <i class="fas fa-calendar me-1"></i>
+                            <Date time={update.createdAt} />
+                          </div>
+                          <!-- Hash -->
+                          <div class="user-select-all font-monospace">
+                            <i class="fas fa-fingerprint me-1"></i>
+                            <code class="text-break"
+                            >sha256:{update.hash}</code>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Right: Actions -->
+                      <div class="d-flex align-items-center gap-2">
+                        <button
+                          class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
+                          <i class="fas fa-download"></i>
+                          Update
+                        </button>
+                        {#if update.error}
+                          <a
+                            href="#"
+                            tabindex="0"
+                            class="text-danger"
+                            data-bs-toggle="popover"
+                            data-bs-trigger="focus"
+                            data-bs-custom-class="font-monospace"
+                            data-bs-title="Error Log"
+                            data-bs-content={update.error}>
+                            <i class="fa-solid fa-circle-exclamation fa-lg"></i>
+                          </a>
+                        {/if}
                       </div>
                     </div>
-                  {/if}
 
-                  <!-- Hash -->
-                  <div class="text-muted small mt-1">
-                    <i class="fas fa-fingerprint me-1"></i>
-                    <code class="text-break">sha256:{update.hash}</code>
+                    <!-- Progress -->
+                    {#if update.progress !== undefined}
+                      <div class="progress my-3" style="height: 5px;">
+                        <div
+                          class="progress-bar bg-secondary progress-bar-striped progress-bar-animated"
+                          style="width: {update.progress + '%'}">
+                        </div>
+                      </div>
+                    {/if}
+
+                    <!-- Changelog -->
+                    <details class="mt-3">
+                      <summary class="fw-bold link-primary"> Changelog </summary>
+                      <div class="pt-2 markdown-renderer">
+                        <MarkdownRenderer
+                          content={update.changelog} />
+                      </div>
+                    </details>
                   </div>
-
-                  <!-- Changelog -->
-                  <details class="mt-3">
-                    <summary class="fw-semibold text-primary">
-                      <i class="fas fa-clipboard-list me-1"></i>
-                      Changelog
-                    </summary>
-                    <div class="pt-2 markdown-renderer">
-                      <MarkdownRenderer content={update.changelog} />
-                    </div>
-                  </details>
                 </div>
               </div>
             </li>
