@@ -1,5 +1,5 @@
 <tr class:table-primary="{post.selected}">
-  <th scope="row" class="align-middle d-flex justify-content-center align-items-center">
+  <th scope="row" class="align-middle text-center">
     <div class="dropdown position-static">
       <a
         role="button"
