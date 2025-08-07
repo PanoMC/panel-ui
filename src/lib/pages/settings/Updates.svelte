@@ -18,13 +18,6 @@
     </div>
     <div class="hstack gap-2" slot="right">
       <button
-        type="button"
-        class="btn btn-primary"
-        class:disabled={loading ||
-          (!data.platformUpdate && data.resourceUpdates?.length === 0)}
-        >Update All</button>
-
-      <button
         class="btn btn-secondary"
         class:disabled={loading}
         on:click={checkUpdate}>
@@ -169,10 +162,19 @@
   </div>
 
   <div class="card">
-    <div class="card-header">
-      Resource Updates {#if data.resourceUpdates.length > 0}({data
-          .resourceUpdates.length}){/if}
-    </div>
+    <CardHeader>
+      <div slot="left">
+        Resource Updates {#if data.resourceUpdates.length > 0}({data
+        .resourceUpdates.length}){/if}
+      </div>
+      <div slot="right">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          class:disabled={loading || data.resourceUpdates?.length === 0}
+        >Update All</button>
+      </div>
+    </CardHeader>
     <div class="card-body">
       {#if !data.panoAccount}
         <NoContent
@@ -327,6 +329,7 @@
   import Date from "$lib/component/Date.svelte";
   import MarkdownRenderer from "$lib/component/MarkdownRenderer.svelte";
   import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
+  import CardHeader from "$lib/component/CardHeader.svelte";
 
   export let data;
 
