@@ -19,7 +19,7 @@
     <div class="hstack gap-2" slot="right">
       <button
         class="btn btn-secondary"
-        class:disabled={loading}
+        class:disabled={loading || $platformUpdating}
         on:click={checkUpdate}>
         <i class="fa-regular fa-arrows-rotate me-2" class:fa-spin={loading}></i>
         Check Updates
@@ -117,34 +117,31 @@
                     <!-- Right: Actions -->
                     <div class="d-flex align-items-center gap-2">
                       <button
-                        class="btn btn-sm btn-secondary d-flex align-items-center gap-1">
+                        class="btn btn-sm btn-secondary d-flex align-items-center gap-1" on:click={installPlatformUpdate} class:disabled={$platformUpdating}>
                         <i class="fas fa-download"></i>
                         Update
                       </button>
-                      {#if data.platformUpdate.error}
-                        <a
-                          href="#"
-                          tabindex="0"
-                          class="text-danger"
-                          data-bs-toggle="popover"
-                          data-bs-trigger="focus"
-                          data-bs-custom-class="font-monospace"
-                          data-bs-title="Error Log"
-                          data-bs-content={data.platformUpdate.error}>
-                          <i class="fa-solid fa-circle-exclamation fa-lg"></i>
-                        </a>
-                      {/if}
                     </div>
                   </div>
 
                   <!-- Progress -->
-                  {#if data.platformUpdate.progress !== undefined}
-                    <div class="progress my-3" style="height: 5px;">
+                  {#if $platformUpdating || platformUpdateError}
+                    <div class="progress my-3" role="progressbar" aria-valuenow="{platformUpdatingStep}" aria-valuemin="0" aria-valuemax="{platformUpdateProcesses.length + 1}" style="height: 5px;">
                       <div
-                        class="progress-bar bg-secondary progress-bar-striped progress-bar-animated"
-                        style="width: {data.platformUpdate.progress + '%'}">
+                        class="progress-bar progress-bar-striped {platformUpdateError ? 'bg-danger' : !isPlatformUpdateFinished(platformUpdatingStep) ? 'progress-bar-animated bg-primary' : 'bg-success'}"
+                        style="width: {(Math.min(platformUpdatingStep - 1, platformUpdateProcesses.length) / platformUpdateProcesses.length) * 100}%">
                       </div>
                     </div>
+
+                    <p class="text-muted small mb-0" in:fade out:fade>
+                      {#if platformUpdateError}
+                        <span class="text-danger">{$_('components.modals.installing-resource.error-text', {values: {error: platformUpdateError}})}</span>
+                      {:else if !isPlatformUpdateFinished(platformUpdatingStep)}
+                        {platformUpdateProcesses[platformUpdatingStep - 1]}
+                      {:else}
+                        🎉 Install complete! Restarting...
+                      {/if}
+                    </p>
                   {/if}
 
                   <!-- Changelog -->
@@ -174,7 +171,7 @@
         <button
           type="button"
           class="btn btn-sm btn-outline-primary"
-          class:disabled={loading || data.resourceUpdates?.length === 0}
+          class:disabled={loading || data.resourceUpdates?.length === 0 || $platformUpdating}
           >Update All</button>
       </div>
     </CardHeader>
@@ -269,23 +266,10 @@
                       <!-- Right: Actions -->
                       <div class="d-flex align-items-center gap-2">
                         <button
-                          class="btn btn-sm btn-secondary d-flex align-items-center gap-1">
+                          class="btn btn-sm btn-secondary d-flex align-items-center gap-1" class:disabled={$platformUpdating}>
                           <i class="fas fa-download"></i>
                           Update
                         </button>
-                        {#if update.error}
-                          <a
-                            href="#"
-                            tabindex="0"
-                            class="text-danger"
-                            data-bs-toggle="popover"
-                            data-bs-trigger="focus"
-                            data-bs-custom-class="font-monospace"
-                            data-bs-title="Error Log"
-                            data-bs-content={update.error}>
-                            <i class="fa-solid fa-circle-exclamation fa-lg"></i>
-                          </a>
-                        {/if}
                       </div>
                     </div>
 
@@ -342,6 +326,8 @@
 
 <script>
   import { getContext } from "svelte";
+  import { fade } from "svelte/transition";
+  import { _ } from "svelte-i18n";
 
   import { base } from "$app/paths";
   import { invalidateAll } from "$app/navigation";
@@ -364,7 +350,85 @@
 
   pageTitle.set("Güncellemeler");
 
-  let loading;
+  let loading, platformUpdateError, confetti;
+  let platformUpdatingStep = 1;
+
+  const platformUpdating = getContext("platformUpdating");
+
+  const platformUpdateProcesses = [
+    "Getting platform update info...",
+    "Downloading update...",
+    "Verifying hash...",
+    "Extracting updater...",
+    "Installing new update...",
+  ]
+
+  function delay(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  async function isPanoHealthy() {
+    try {
+      const getHealthResponse = await ApiUtil.get({path: "/api/health"})
+
+      return getHealthResponse.result === "ok"
+    } catch (_) {
+      return false
+    }
+  }
+
+  async function handlePlatformUpdateSSEMessage(message) {
+    if (message.result === "ok") {
+      platformUpdatingStep++;
+
+      if (platformUpdatingStep === platformUpdateProcesses.length + 1) {
+        if (!confetti) {
+          confetti = await import("canvas-confetti")
+        }
+
+        confetti.default({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          zIndex: 999999
+        });
+
+        await delay(1000)
+
+        while (!await isPanoHealthy()) {
+          await delay(1000)
+        }
+
+        location.reload()
+      }
+    } else {
+      platformUpdateError = message.error
+      console.error(message.error, message.message)
+      $platformUpdating = false;
+    }
+  }
+
+  function handlePlatformUpdateEventSource(eventSource) {
+    eventSource.onmessage = (event) => {
+      handlePlatformUpdateSSEMessage(JSON.parse(event.data))
+    };
+
+    eventSource.onerror = () => {
+      eventSource.close()
+    };
+  }
+
+  function isPlatformUpdateFinished(installingStep) {
+    return installingStep === platformUpdateProcesses.length + 1
+  }
+
+  async function installPlatformUpdate() {
+    platformUpdatingStep = 1
+    $platformUpdating = true;
+    const eventSource = new EventSource(`/api/panel/updates/platform/stream?state=${data.platformUpdate.state}`);
+
+    handlePlatformUpdateEventSource(eventSource)
+  }
 
   async function checkUpdate() {
     loading = true;

@@ -196,6 +196,7 @@
   const connectedServerCount = writable(data.connectedServerCount);
   const siteInfo = writable(data.siteInfo);
   const showSplash = writable(true);
+  const platformUpdating = writable(false);
 
   const pageTitle = writable(null);
 
@@ -238,6 +239,7 @@
   setContext("sidebarTabsState", sidebarTabsState);
   setContext("isSidebarOpen", isSidebarOpen);
   setContext("siteInfo", siteInfo);
+  setContext("platformUpdating", platformUpdating);
 
   $: title = $pageTitle
     ? `${$_($pageTitle)} \u2014 ${options.DEFAULT_PAGE_TITLE}`
@@ -291,6 +293,10 @@
   onDestroy(
     networkErrorCallbacks.subscribe((value) => {
       if (!$showSplash && value.length !== 0) {
+        if ($platformUpdating) {
+          return
+        }
+
         $showSplash = true;
       } else if (
         $showSplash &&
