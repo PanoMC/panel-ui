@@ -331,6 +331,7 @@
 
   import { base } from "$app/paths";
   import { invalidateAll } from "$app/navigation";
+  import { browser } from "$app/environment";
 
   import { formatBytes } from "$lib/string.util";
   import { PANO_WEBSITE_API_URL, PANO_WEBSITE_URL } from "$lib/variables";
@@ -377,15 +378,17 @@
     }
   }
 
+  if (browser) {
+    (async () => {
+      confetti = await import("canvas-confetti")
+    })();
+  }
+
   async function handlePlatformUpdateSSEMessage(message) {
     if (message.result === "ok") {
       platformUpdatingStep++;
 
       if (platformUpdatingStep === platformUpdateProcesses.length + 1) {
-        if (!confetti) {
-          confetti = await import("canvas-confetti")
-        }
-
         confetti.default({
           particleCount: 100,
           spread: 70,

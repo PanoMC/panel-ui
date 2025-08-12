@@ -58,6 +58,7 @@
 <script context="module">
   import { writable, get } from "svelte/store";
 
+  import { browser } from "$app/environment";
   import { base } from "$app/paths";
 
   import ApiUtil from "$lib/api.util";
@@ -77,6 +78,12 @@
   let hideCallback = () => {};
   let modal;
   let confetti;
+
+  if (browser) {
+    (async () => {
+      confetti = await import("canvas-confetti")
+    })();
+  }
 
   export function hide() {
     hideCallback();
@@ -127,10 +134,6 @@
       installingStep.set(get(installingStep)+ 1);
 
       if (get(installingStep) === get(processes).length + 1) {
-        if (!confetti) {
-          confetti = await import("canvas-confetti")
-        }
-
         confetti.default({
           particleCount: 100,
           spread: 70,
