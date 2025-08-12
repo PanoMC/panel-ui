@@ -122,16 +122,16 @@
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
-  function handleSSEMessage(message) {
+  async function handleSSEMessage(message) {
     if (message.result === "ok") {
       installingStep.set(get(installingStep)+ 1);
 
       if (get(installingStep) === get(processes).length + 1) {
         if (!confetti) {
-          confetti = import("canvas-confetti")
+          confetti = await import("canvas-confetti")
         }
 
-        confetti({
+        confetti.default({
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
