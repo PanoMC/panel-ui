@@ -117,7 +117,7 @@
                     <!-- Right: Actions -->
                     <div class="d-flex align-items-center gap-2">
                       <button
-                        class="btn btn-sm btn-secondary d-flex align-items-center gap-1" on:click={installPlatformUpdate} class:disabled={$platformUpdating}>
+                        class="btn btn-sm btn-secondary d-flex align-items-center gap-1" on:click={installPlatformUpdate} class:disabled={loading || $platformUpdating}>
                         <i class="fas fa-download"></i>
                         Update
                       </button>
@@ -168,11 +168,13 @@
             .resourceUpdates.length}){/if}
       </div>
       <div slot="right">
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-primary"
-          class:disabled={loading || data.resourceUpdates?.length === 0 || $platformUpdating}
-          >Update All</button>
+        {#if data.resourceUpdates?.length > 0}
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary"
+            class:disabled={loading || $platformUpdating}
+            >Update All</button>
+        {/if}
       </div>
     </CardHeader>
     <div class="card-body">
@@ -266,7 +268,7 @@
                       <!-- Right: Actions -->
                       <div class="d-flex align-items-center gap-2">
                         <button
-                          class="btn btn-sm btn-secondary d-flex align-items-center gap-1" class:disabled={$platformUpdating}>
+                          class="btn btn-sm btn-secondary d-flex align-items-center gap-1" class:disabled={loading || $platformUpdating}>
                           <i class="fas fa-download"></i>
                           Update
                         </button>
@@ -337,6 +339,8 @@
   import { PANO_WEBSITE_API_URL, PANO_WEBSITE_URL } from "$lib/variables";
 
   import tooltip from "$lib/tooltip.util";
+
+  import { show as showToast } from "$lib/component/ToastContainer.svelte";
 
   import PageActions from "$lib/component/PageActions.svelte";
   import NoContent from "$lib/component/NoContent.svelte";
@@ -442,14 +446,17 @@
           await invalidateAll();
           loading = false;
 
-          if (body.error === "NOT_FOUND") {
-            // TODO: not found toast
+          if (body.error === "PANO_CONNECT_FAILED") {
+            await showToast('components.toasts.check-resources-update-failed-pano-account');
             return;
           }
 
           if (body.result !== "ok") {
-            // TODO: failed to check updates
+            await showToast('components.toasts.check-update-failed');
+            return;
           }
+
+          await showToast('components.toasts.check-update-success');
         },
       }),
     ]);

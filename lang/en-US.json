@@ -845,7 +845,10 @@
       "stop-theme-success": "Theme stopped successfully.",
       "start-theme-success": "Theme started successfully.",
       "invalid-resource-file-type": "Invalid resource file type!",
-      "remove-addon-success": "Addon removed successfully."
+      "remove-addon-success": "Addon removed successfully.",
+      "check-update-success": "Updates checked successfully.",
+      "check-update-failed": "Failed to check updates.",
+      "check-resources-update-failed-pano-account": "Failed to check updates: Can't connect to Pano try again later."
     }
   },
   "page-error": {
