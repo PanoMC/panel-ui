@@ -146,7 +146,7 @@
 
                   <!-- Changelog -->
                   <details class="mt-3">
-                    <summary class="fw-bold link-primary"> Changelog </summary>
+                    <summary class="fw-bold link-primary">Changelog </summary>
                     <div class="pt-2 markdown-renderer">
                       <MarkdownRenderer
                         content={data.platformUpdate.changelog} />

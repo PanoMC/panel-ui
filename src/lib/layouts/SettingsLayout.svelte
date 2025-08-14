@@ -29,9 +29,11 @@
             true,
           )}">
           {$_("components.settings-layout.updates")}
-          <span
-            class="position-absolute top-0 start-100 translate-middle p-2 bg-warning rounded-circle">
-          </span>
+          {#if data.session.basicData.hasUpdate}
+            <span
+              class="position-absolute top-0 start-100 translate-middle p-2 bg-warning rounded-circle">
+            </span>
+          {/if}
         </a>
         <a
           class="nav-item nav-link"
@@ -74,6 +76,8 @@
 
   import { base } from "$app/paths";
   import { page } from "$app/stores";
+
+  export let data;
 
   function matching(path, pathName, startsWith = false) {
     return (
