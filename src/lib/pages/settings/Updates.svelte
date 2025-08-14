@@ -139,7 +139,7 @@
                       {:else if !isPlatformUpdateFinished(platformUpdatingStep)}
                         {platformUpdateProcesses[platformUpdatingStep - 1]}
                       {:else}
-                        🎉 Install complete! Restarting...
+                        🎉 Install complete! Restarting... <i class="me-2 fas fa-spinner fa-spin "></i>
                       {/if}
                     </p>
                   {/if}
