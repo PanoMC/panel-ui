@@ -19,7 +19,7 @@
     <div class="hstack gap-2" slot="right">
       <button
         class="btn btn-secondary"
-        class:disabled={loading || $platformUpdating}
+        class:disabled={loading || $platformUpdating || inProgressResource}
         on:click={checkUpdate}>
         <i class="fa-regular fa-arrows-rotate me-2" class:fa-spin={loading}></i>
         Check Updates
@@ -117,7 +117,7 @@
                     <!-- Right: Actions -->
                     <div class="d-flex align-items-center gap-2">
                       <button
-                        class="btn btn-sm btn-secondary d-flex align-items-center gap-1" on:click={installPlatformUpdate} class:disabled={loading || $platformUpdating}>
+                        class="btn btn-sm btn-secondary d-flex align-items-center gap-1" on:click={installPlatformUpdate} class:disabled={loading || $platformUpdating || inProgressResource || updatingAll}>
                         <i class="fas fa-download"></i>
                         Update
                       </button>
@@ -172,7 +172,8 @@
           <button
             type="button"
             class="btn btn-sm btn-outline-primary"
-            class:disabled={loading || $platformUpdating}
+            class:disabled={loading || $platformUpdating || inProgressResource || updatingAll}
+            on:click={updateAll}
             >Update All</button>
         {/if}
       </div>
@@ -201,7 +202,6 @@
                     <a
                       href={`${PANO_WEBSITE_URL}/${update.type === "PLUGIN" ? "addons" : "themes"}/${update.id}`}
                       target="_blank">
-                      {console.log(update.type === "THEME" ? `screenshots/${update.screenshot?.id}`: 'icon')}
                       <img
                         class="rounded"
                         src={`${PANO_WEBSITE_API_URL}/resources/${update.id}/` + (update.type === "THEME" ? `screenshots/${update.screenshot?.id}`: 'icon')}
@@ -269,7 +269,7 @@
                       <!-- Right: Actions -->
                       <div class="d-flex align-items-center gap-2">
                         <button
-                          class="btn btn-sm btn-secondary d-flex align-items-center gap-1" class:disabled={loading || $platformUpdating}>
+                          class="btn btn-sm btn-secondary d-flex align-items-center gap-1" class:disabled={loading || $platformUpdating || inProgressResource || updatingAll} on:click={() => updateResource(update)}>
                           <i class="fas fa-download"></i>
                           Update
                         </button>
@@ -277,13 +277,23 @@
                     </div>
 
                     <!-- Progress -->
-                    {#if update.progress !== undefined}
-                      <div class="progress my-3" style="height: 5px;">
+                    {#if inProgressResource?.id === update.id || resourceUpdateError?.id === update.id}
+                      <div class="progress my-3" role="progressbar" aria-valuenow="{resourceUpdateStep}" aria-valuemin="0" aria-valuemax="{resourceUpdateProcesses.length + 1}" style="height: 5px;">
                         <div
-                          class="progress-bar bg-secondary progress-bar-striped progress-bar-animated"
-                          style="width: {update.progress + '%'}">
+                          class="progress-bar progress-bar-striped {resourceUpdateError ? 'bg-danger' : !isResourceUpdateFinished(resourceUpdateStep) ? 'progress-bar-animated bg-primary' : 'bg-success'}"
+                          style="width: {(Math.min(resourceUpdateStep - 1, resourceUpdateProcesses.length) / resourceUpdateProcesses.length) * 100}%">
                         </div>
                       </div>
+
+                      <p class="text-muted small mb-0" in:fade out:fade>
+                        {#if resourceUpdateError}
+                          <span class="text-danger">{$_('components.modals.installing-resource.error-text', {values: {error: resourceUpdateError.error}})}</span>
+                        {:else if !isResourceUpdateFinished(resourceUpdateStep)}
+                          {resourceUpdateProcesses[resourceUpdateStep - 1]}
+                        {:else}
+                          🎉 Install complete!
+                        {/if}
+                      </p>
                     {/if}
 
                     <!-- Changelog -->
@@ -359,6 +369,11 @@
   let loading, platformUpdateError, confetti;
   let platformUpdatingStep = 1;
 
+  let inProgressResource;
+  let resourceUpdateError;
+  let resourceUpdateStep = 1;
+  let updatingAll;
+
   const platformUpdating = getContext("platformUpdating");
 
   const platformUpdateProcesses = [
@@ -366,6 +381,13 @@
     "Downloading update...",
     "Verifying hash...",
     "Extracting updater...",
+    "Installing new update...",
+  ]
+
+  const resourceUpdateProcesses = [
+    "Getting version info...",
+    "Downloading update...",
+    "Preparing...",
     "Installing new update...",
   ]
 
@@ -416,9 +438,44 @@
     }
   }
 
+  async function handleResourceUpdateSSEMessage(update, message) {
+    if (message.result === "ok") {
+      resourceUpdateStep++;
+
+      if (resourceUpdateStep === resourceUpdateProcesses.length + 1) {
+        confetti.default({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          zIndex: 999999
+        });
+
+        await delay(1000)
+
+        data.resourceUpdates = data.resourceUpdates.filter(item => item.id !== update.id);
+        inProgressResource = null;
+      }
+    } else {
+      resourceUpdateError = { ...update, error: message.error }
+      console.error(message.error, message.message)
+      inProgressResource = null;
+      updatingAll = false;
+    }
+  }
+
   function handlePlatformUpdateEventSource(eventSource) {
     eventSource.onmessage = (event) => {
       handlePlatformUpdateSSEMessage(JSON.parse(event.data))
+    };
+
+    eventSource.onerror = () => {
+      eventSource.close()
+    };
+  }
+
+  function handleResourceUpdateEventSource(update, eventSource) {
+    eventSource.onmessage = (event) => {
+      handleResourceUpdateSSEMessage(update, JSON.parse(event.data))
     };
 
     eventSource.onerror = () => {
@@ -430,12 +487,56 @@
     return installingStep === platformUpdateProcesses.length + 1
   }
 
+  function isResourceUpdateFinished(installingStep) {
+    return installingStep === resourceUpdateProcesses.length + 1
+  }
+
   async function installPlatformUpdate() {
     platformUpdatingStep = 1
     $platformUpdating = true;
+
+    if (platformUpdateError) {
+      resourceUpdateError = null;
+
+      await delay(500)
+    }
+
     const eventSource = new EventSource(`/api/panel/updates/platform/stream?state=${data.platformUpdate.state}`);
 
     handlePlatformUpdateEventSource(eventSource)
+  }
+
+  async function updateResource(update) {
+    resourceUpdateStep = 1
+    inProgressResource = update;
+
+    if (resourceUpdateError?.id === update.id) {
+      resourceUpdateError = null;
+
+      await delay(500)
+    }
+
+    const eventSource = new EventSource(`/api/panel/updates/resources/${update.id}/stream?state=${update.state}`);
+
+    handleResourceUpdateEventSource(update, eventSource)
+  }
+
+  async function updateAll() {
+
+    for (const update of [...data.resourceUpdates]) {
+      if (updatingAll && resourceUpdateError) {
+        return
+      }
+      updatingAll = true;
+
+      await updateResource(update)
+
+      while(inProgressResource?.id === update.id) {
+        await delay(100)
+      }
+    }
+
+    updatingAll = false;
   }
 
   async function checkUpdate() {
