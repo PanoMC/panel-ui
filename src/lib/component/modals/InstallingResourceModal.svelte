@@ -39,15 +39,15 @@
             class="btn btn-link col-6 m-0"
             data-bs-dismiss="modal"
             type="button"
-            on:click={() => goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}`, {invalidateAll: true})} >
-            <i class="fas fa-arrow-left me-1"></i> {$_('buttons.' + ($type === 'PLUGIN' ? 'addons' : 'themes'))}
+            on:click={() => goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}/store`, {invalidateAll:true}) && callback()} >
+            <i class="fas fa-store me-2"></i> {$_('buttons.go-to-store')}
           </button>
           <button
             class="btn btn-primary col-6 m-0"
             data-bs-dismiss="modal"
             type="button"
-            on:click={() => goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}/store`, {invalidateAll:true}) && callback()} >
-            <i class="fas fa-store me-1"></i> {$_('buttons.go-to-store')}
+            on:click={() => goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}`, {invalidateAll: true})} >
+            <i class="fas fa-arrow-left me-2"></i> {$_('buttons.' + ($type === 'PLUGIN' ? 'addons' : 'themes'))}
           </button>
         </div>
       {/if}
