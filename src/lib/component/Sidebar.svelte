@@ -3,15 +3,15 @@
   <ConnectServerModal />
 {/if}
 
-<div class="sidebar bg-primary min-vh-100" class:active="{$isSidebarOpen}">
+<div class="sidebar bg-primary min-vh-100" class:active={$isSidebarOpen}>
   <div class="container-fluid">
     <!-- Sidebar Toggler & Logo -->
     <div class="navbar navbar-expand navbar-dark bg-body-primary">
       <button
         type="button"
         class="navbar-toggler d-block float-left position-absolute"
-        title="{$_('components.sidebar.sidebar-toggle-tooltip')}"
-        on:click="{onMobileSideBarCollapseClick}">
+        title={$_("components.sidebar.sidebar-toggle-tooltip")}
+        on:click={onMobileSideBarCollapseClick}>
         <i class="fa-solid fa-bars"></i>
       </button>
 
@@ -19,7 +19,7 @@
         <img
           alt="Pano"
           title="Pano"
-          src="{base + '/assets/img/logo.svg'}"
+          src={base + "/assets/img/logo.svg"}
           width="20" />
       </a>
     </div>
@@ -30,8 +30,8 @@
         <li class="nav-item">
           <button
             class="nav-link text-center"
-            on:click="{onWebsiteMenuClick}"
-            class:active="{$sidebarTabsState === 'website'}">
+            on:click={onWebsiteMenuClick}
+            class:active={$sidebarTabsState === "website"}>
             <i class="fas fa-globe fa-lg mb-3"></i>
             <br />
             {$_("components.sidebar.website")}
@@ -41,8 +41,8 @@
           <li class="nav-item">
             <button
               class="nav-link text-center"
-              on:click="{onGameMenuClick}"
-              class:active="{$sidebarTabsState === 'game'}">
+              on:click={onGameMenuClick}
+              class:active={$sidebarTabsState === "game"}>
               <i class="fas fa-cube fa-lg mb-3"></i>
               <br />
               {$_("components.sidebar.server")}
@@ -56,7 +56,7 @@
     {#if $sidebarTabsState === "website"}
       <a
         type="button"
-        href="{UI_URL}"
+        href={UI_URL}
         class="btn btn-sm btn-secondary w-100"
         target="_blank">
         {$_("components.sidebar.show-website")}
@@ -65,17 +65,29 @@
     {/if}
 
     {#if $sidebarTabsState === "game"}
-      <button
-        class="btn btn-sm btn-outline-white w-100"
-        type="button"
-        on:click="{showServersModal}">
-        <i class="fa-solid fa-cubes me-2"></i>
-        {$_("components.sidebar.show-servers")}
-      </button>
+      <div class="hstack gap-1">
+        <button
+          class="btn btn-sm btn-secondary w-100"
+          type="button"
+          on:click={showServersModal}>
+          <i class="fa-solid fa-cubes me-2"></i>
+          {$_("components.sidebar.show-servers")}
+        </button>
+        <button
+          class="btn btn-sm btn-secondary"
+          data-bs-target="#connectServer"
+          data-bs-toggle="modal"
+          aria-label={$_("components.server-navigation-menu.connect-server")}
+          type="button"
+          title="
+          {$_('components.server-navigation-menu.connect-server')}">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
     {/if}
 
     <!-- Sidebar Site Navigation Menu || Sidebar Server Navigation Menu -->
-    <svelte:component this="{menuComponent}" />
+    <svelte:component this={menuComponent} />
 
     <!-- Sidebar Bottom -->
     <Bottom />

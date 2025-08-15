@@ -49,14 +49,6 @@
       icon="fas fa-cube fa-3x"
       text="{$_('components.server-navigation-menu.no-server-text')}"
       dark="{true}">
-      <button
-        class="btn btn-sm btn-secondary d-block m-auto"
-        data-bs-target="#connectServer"
-        data-bs-toggle="modal"
-        type="button">
-        <i class="fa-solid fa-plus me-2"></i>
-        {$_("components.server-navigation-menu.connect-server")}
-      </button>
     </NoContent>
   {/if}
 </nav>
