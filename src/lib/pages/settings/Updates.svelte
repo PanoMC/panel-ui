@@ -201,11 +201,12 @@
                     <a
                       href={`${PANO_WEBSITE_URL}/${update.type === "PLUGIN" ? "addons" : "themes"}/${update.id}`}
                       target="_blank">
+                      {console.log(update.type === "THEME" ? `screenshots/${update.screenshot?.id}`: 'icon')}
                       <img
                         class="rounded"
-                        src={`${PANO_WEBSITE_API_URL}/resources/${update.id}/icon`}
-                        width="auto"
-                        height="64"
+                        src={`${PANO_WEBSITE_API_URL}/resources/${update.id}/` + (update.type === "THEME" ? `screenshots/${update.screenshot?.id}`: 'icon')}
+                        width="64"
+                        height="auto"
                         title="{update.id}"
                         alt="{update.id}" />
                     </a>
