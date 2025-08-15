@@ -168,7 +168,7 @@
             .resourceUpdates.length}){/if}
       </div>
       <div slot="right">
-        {#if data.resourceUpdates?.length > 0}
+        {#if data.resourceUpdates?.length > 1}
           <button
             type="button"
             class="btn btn-sm btn-outline-primary"
