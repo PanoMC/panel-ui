@@ -130,7 +130,7 @@
             </li>
             <li class="list-group-item">
               <strong>Hash:</strong>
-              <code class="overflow-auto text-nowrap user-select-all">{addon.hash}</code>
+              <code class="overflow-auto text-nowrap user-select-all">sha256:{addon.hash}</code>
             </li>
             <li class="list-group-item">
               <strong>{$_("pages.addon-detail.size")}:</strong>

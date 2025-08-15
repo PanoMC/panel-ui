@@ -151,7 +151,7 @@
             <li
               class="list-group-item">
               <strong>Hash:</strong>
-              <code class="overflow-auto text-nowrap user-select-all">{theme.hash}</code>
+              <code class="overflow-auto text-nowrap user-select-all">sha256:{theme.hash}</code>
             </li>
             <li
               class="list-group-item">
