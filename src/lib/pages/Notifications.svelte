@@ -28,43 +28,59 @@
 
   <div class="card">
     <div class="card-header">1 Bildirim</div>
-    <div class="list-group list-group-flush">
-      {#each $notifications as notification, index (notification)}
-        <a
-          href="javascript:void(0);"
-          on:click={() => onNotificationClick(notification)}
-          class="list-group-item list-group-item-action text-wrap"
-          class:notification-unread={notification.status === "NOT_READ"}>
-          {notification.type}
-          <br />
-          <small class="text-muted">
-            {getTime(
-              checkTime,
-              parseInt(notification.date),
-              locales[$currentLanguage.dateFnsCode],
-            )}
-          </small>
-        </a>
-      {/each}
+    <div class="card-body vstack gap-3">
+      <div class="list-group">
+        {#each $notifications as notification, index (notification)}
+          <button
+            title={$_("buttons.view")}
+            on:click={() => onNotificationClick(notification)}
+            class="fw-normal list-group-item list-group-item-action text-wrap"
+            class:notification-unread={notification.status === "NOT_READ"}>
+            <div class="row g-3">
+              <div class="col-auto d-flex align-items-center">
+                <i
+                  class="fa fa-fw fa-bolt d-none"
+                  class:text-danger={notification.status === "NOT_READ"}></i>
+                <img
+                  src="https://minotar.net/avatar/connor4312/64"
+                  alt="NOTIFICATION AUTHOR"
+                  width="48"
+                  height="48"
+                  class="rounded" />
+              </div>
+              <div class="col">
+                {notification.type}
+                <br />
+                <small class="text-muted">
+                  {getTime(
+                    checkTime,
+                    parseInt(notification.date),
+                    locales[$currentLanguage.dateFnsCode],
+                  )}
+                </small>
+              </div>
+            </div>
+          </button>
+        {/each}
+      </div>
     </div>
 
     {#if $notifications.length === 0}
       <NoContent />
     {/if}
+    {#if $notifications.length < $count && $count > 10 + 10 * page}
+      <div class="card-footer">
+        <button
+          class="btn btn-sm btn-outline-primary"
+          class:disabled={loadMoreLoading}
+          on:click={loadMore}
+          >{$_("pages.notifications.show-more", {
+            values: { count: $count - $notifications.length },
+          })}
+        </button>
+      </div>
+    {/if}
   </div>
-
-  {#if $notifications.length < $count && $count > 10 + 10 * page}
-    <div class="mt-3">
-      <button
-        class="btn btn-link bg-light d-block m-auto"
-        class:disabled={loadMoreLoading}
-        on:click={loadMore}
-        >{$_("pages.notifications.show-more", {
-          values: { count: $count - $notifications.length },
-        })}
-      </button>
-    </div>
-  {/if}
 </div>
 
 <ConfirmRemoveAllNotificationsModal />

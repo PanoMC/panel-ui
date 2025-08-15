@@ -30,7 +30,7 @@
             data-bs-toggle="dropdown"
             tpye="button"
             title={$_("components.navbar.notifications")}>
-            <i class="fa-regular fa-bell"></i>
+            <i class="fa-regular fa-bolt"></i>
             {#if $notificationCount !== 0}
               <span
                 class="position-absolute px-2 py-1 translate-middle badge rounded-pill bg-danger">
@@ -40,7 +40,7 @@
           </button>
 
           <div
-            style="max-width: 300px;"
+            style="width: 300px;"
             class="dropdown-menu dropdown-menu-end animate__animated animate__zoomIn">
             <h6 class="dropdown-header">
               {$_("components.navbar.notifications")}
@@ -52,18 +52,31 @@
             {:else}
               {#each $quickNotifications as notification, index (notification)}
                 <button
+                  title={$_("buttons.view")}
                   type="button"
                   on:click={() => onNotificationClick(notification)}
                   class="dropdown-item d-flex align-items-center"
                   class:notification-unread={notification.status ===
                     "NOT_READ"}>
-                  <img
-                    src="https://minotar.net/avatar/Username"
-                    width="32"
-                    height="32"
-                    class="rounded-circle me-2"
-                    alt="Username" />
-                  <p class="mb-0 d-inline">{notification.type}</p>
+                  <div class="row g-3">
+                    <div class="col-auto d-flex align-items-center">
+                      <i
+                        class="fa fa-fw fa-bolt"
+                        class:text-danger={notification.status === "NOT_READ"}
+                      ></i>
+                      <img
+                        src="https://minotar.net/avatar/connor4312/64"
+                        alt="NOTIFICATION AUTHOR"
+                        width="32"
+                        height="32"
+                        class="rounded d-none" />
+                    </div>
+                    <div class="col">
+                      {notification.type}
+                      <br />
+                      <small class="text-muted"> DATE</small>
+                    </div>
+                  </div>
                 </button>
               {/each}
             {/if}
