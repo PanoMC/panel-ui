@@ -416,6 +416,8 @@
       platformUpdatingStep++;
 
       if (platformUpdatingStep === platformUpdateProcesses.length + 1) {
+        await showToast("components.toasts.platform-update-success")
+
         confetti.default({
           particleCount: 100,
           spread: 70,
@@ -432,6 +434,8 @@
         location.reload()
       }
     } else {
+      await showToast("components.toasts.platform-update-failed")
+
       platformUpdateError = message.error
       console.error(message.error, message.message)
       $platformUpdating = false;
@@ -443,6 +447,8 @@
       resourceUpdateStep++;
 
       if (resourceUpdateStep === resourceUpdateProcesses.length + 1) {
+        await showToast("components.toasts.resource-update-success", {id: update.id})
+
         confetti.default({
           particleCount: 100,
           spread: 70,
@@ -456,6 +462,8 @@
         inProgressResource = null;
       }
     } else {
+      await showToast("components.toasts.resource-update-failed", {id: update.id})
+
       resourceUpdateError = { ...update, error: message.error }
       console.error(message.error, message.message)
       inProgressResource = null;

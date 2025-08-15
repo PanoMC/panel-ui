@@ -848,7 +848,11 @@
       "remove-addon-success": "Eklenti başarıyla kaldırıldı.",
       "check-update-success": "Güncellemeler başarıyla kontrol edildi.",
       "check-update-failed": "Güncellemeler kontrol edilirken hata oluştu.",
-      "check-resources-update-failed-pano-account": "Güncellemeler kontrol edilemedi: Pano'ya bağlanılamıyor, lütfen daha sonra tekrar deneyin."
+      "check-resources-update-failed-pano-account": "Güncellemeler kontrol edilemedi: Pano'ya bağlanılamıyor, lütfen daha sonra tekrar deneyin.",
+      "resource-update-success": "\"{id}\" başarıyla güncellendi.",
+      "resource-update-failed": "\"{id}\" güncellenirken hata oluştu.",
+      "platform-update-success": "Platform başarıyla güncellendi.",
+      "platform-update-failed": "Platform güncellenirken hata oluştu."
     }
   },
   "page-error": {

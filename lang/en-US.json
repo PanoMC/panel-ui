@@ -848,7 +848,11 @@
       "remove-addon-success": "Addon removed successfully.",
       "check-update-success": "Updates checked successfully.",
       "check-update-failed": "Failed to check updates.",
-      "check-resources-update-failed-pano-account": "Failed to check updates: Can't connect to Pano try again later."
+      "check-resources-update-failed-pano-account": "Failed to check updates: Can't connect to Pano try again later.",
+      "resource-update-success": "\"{id}\" updated successfully.",
+      "resource-update-failed": "Failed to update \"{id}\".",
+      "platform-update-success": "Updated platform successfully.",
+      "platform-update-failed": "Failed to update platform."
     }
   },
   "page-error": {
