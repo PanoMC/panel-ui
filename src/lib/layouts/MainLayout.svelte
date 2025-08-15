@@ -10,7 +10,7 @@
   <div class:d-flex="{!$showSplash}" hidden="{$showSplash}">
     <Sidebar />
     <!--  Main  -->
-    <main class="w-100 min-vh-100 overflow-auto">
+    <main class="w-100 min-vh-100 overflow-auto pb-5">
       <Navbar />
 
       <div hidden="{showLoading}">
