@@ -459,7 +459,6 @@
       resourceUpdateError = { ...update, error: message.error }
       console.error(message.error, message.message)
       inProgressResource = null;
-      updatingAll = false;
     }
   }
 
@@ -494,12 +493,9 @@
   async function installPlatformUpdate() {
     platformUpdatingStep = 1
     $platformUpdating = true;
+    platformUpdateError = null;
 
-    if (platformUpdateError) {
-      resourceUpdateError = null;
-
-      await delay(500)
-    }
+    await delay(500)
 
     const eventSource = new EventSource(`/api/panel/updates/platform/stream?state=${data.platformUpdate.state}`);
 
@@ -507,14 +503,10 @@
   }
 
   async function updateResource(update) {
-    resourceUpdateStep = 1
+    resourceUpdateError = null;
     inProgressResource = update;
-
-    if (resourceUpdateError?.id === update.id) {
-      resourceUpdateError = null;
-
-      await delay(500)
-    }
+    resourceUpdateStep = 1
+    await delay(500)
 
     const eventSource = new EventSource(`/api/panel/updates/resources/${update.id}/stream?state=${update.state}`);
 
@@ -522,9 +514,9 @@
   }
 
   async function updateAll() {
-
     for (const update of [...data.resourceUpdates]) {
       if (updatingAll && resourceUpdateError) {
+        updatingAll = false;
         return
       }
       updatingAll = true;
