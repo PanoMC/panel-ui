@@ -117,7 +117,7 @@
                     <small class="d-block mb-3">
                       {@html plugin.description}</small>
 
-                    <div class="small text-muted hstack gap-2">
+                    <div class="small text-muted hstack gap-2" title={$_("pages.addons.version")}>
                       <i class="fa fa-code-branch"></i>
                       <div class="font-monospace user-select-all">
                         {plugin.version}
