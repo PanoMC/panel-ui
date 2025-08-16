@@ -65,7 +65,7 @@
                             $_("components.modals.servers.online"),
                             { placement: "bottom" },
                           ]}>
-                          {server.type} Velocity
+                          {server.type}
                         </div>
                       </div>
                       {server.name}
