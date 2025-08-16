@@ -638,7 +638,7 @@
         "description": "Следующие пользователи в группе авторизации будут изменены на игрока:"
       },
       "confirm-delete-player": {
-        "title": "Are you sure you want to delete this player?",
+        "title": "Вы уверены, что хотите удалить этого игрока?",
         "inputs": {
           "password": {
             "placeholder": "Пароль"
