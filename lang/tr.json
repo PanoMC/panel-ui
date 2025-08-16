@@ -81,7 +81,8 @@
       "unknown": "Bilinmiyor"
     },
     "addons": {
-      "title": "Eklentiler",
+    "title": "Eklentiler",
+    "version": "Versiyon",
       "card-title": {
         "active": "{amount} Aktif Eklenti",
         "inactive": "{amount} Devre Dışı Eklenti",

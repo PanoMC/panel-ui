@@ -82,6 +82,7 @@
     },
     "addons": {
       "title": "Addons",
+      "version": "Version",
       "card-title": {
         "active": "{amount} Active Addon",
         "inactive": "{amount} Inactive Addon",

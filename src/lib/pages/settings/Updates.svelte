@@ -117,7 +117,12 @@
                     <!-- Right: Actions -->
                     <div class="d-flex align-items-center gap-2">
                       <button
-                        class="btn btn-sm btn-secondary d-flex align-items-center gap-1" on:click={installPlatformUpdate} class:disabled={loading || $platformUpdating || inProgressResource || updatingAll}>
+                        class="btn btn-sm btn-secondary d-flex align-items-center gap-1"
+                        on:click={installPlatformUpdate}
+                        class:disabled={loading ||
+                          $platformUpdating ||
+                          inProgressResource ||
+                          updatingAll}>
                         <i class="fas fa-download"></i>
                         Update
                       </button>
@@ -126,20 +131,40 @@
 
                   <!-- Progress -->
                   {#if $platformUpdating || platformUpdateError}
-                    <div class="progress my-3" role="progressbar" aria-valuenow="{platformUpdatingStep}" aria-valuemin="0" aria-valuemax="{platformUpdateProcesses.length + 1}" style="height: 5px;">
+                    <div
+                      class="progress my-3"
+                      role="progressbar"
+                      aria-valuenow={platformUpdatingStep}
+                      aria-valuemin="0"
+                      aria-valuemax={platformUpdateProcesses.length + 1}
+                      style="height: 5px;">
                       <div
-                        class="progress-bar progress-bar-striped {platformUpdateError ? 'bg-danger' : !isPlatformUpdateFinished(platformUpdatingStep) ? 'progress-bar-animated bg-primary' : 'bg-success'}"
-                        style="width: {(Math.min(platformUpdatingStep - 1, platformUpdateProcesses.length) / platformUpdateProcesses.length) * 100}%">
+                        class="progress-bar progress-bar-striped {platformUpdateError
+                          ? 'bg-danger'
+                          : !isPlatformUpdateFinished(platformUpdatingStep)
+                            ? 'progress-bar-animated bg-primary'
+                            : 'bg-success'}"
+                        style="width: {(Math.min(
+                          platformUpdatingStep - 1,
+                          platformUpdateProcesses.length,
+                        ) /
+                          platformUpdateProcesses.length) *
+                          100}%">
                       </div>
                     </div>
 
                     <p class="text-muted small mb-0" in:fade out:fade>
                       {#if platformUpdateError}
-                        <span class="text-danger">{$_('components.modals.installing-resource.error-text', {values: {error: platformUpdateError}})}</span>
+                        <span class="text-danger"
+                          >{$_(
+                            "components.modals.installing-resource.error-text",
+                            { values: { error: platformUpdateError } },
+                          )}</span>
                       {:else if !isPlatformUpdateFinished(platformUpdatingStep)}
                         {platformUpdateProcesses[platformUpdatingStep - 1]}
                       {:else}
-                        🎉 Install complete! Restarting... <i class="me-2 fas fa-spinner fa-spin "></i>
+                        🎉 Install complete! Restarting... <i
+                          class="me-2 fas fa-spinner fa-spin"></i>
                       {/if}
                     </p>
                   {/if}
@@ -172,9 +197,11 @@
           <button
             type="button"
             class="btn btn-sm btn-outline-primary"
-            class:disabled={loading || $platformUpdating || inProgressResource || updatingAll}
-            on:click={updateAll}
-            >Update All</button>
+            class:disabled={loading ||
+              $platformUpdating ||
+              inProgressResource ||
+              updatingAll}
+            on:click={updateAll}>Update All</button>
         {/if}
       </div>
     </CardHeader>
@@ -203,12 +230,15 @@
                       href={`${PANO_WEBSITE_URL}/${update.type === "PLUGIN" ? "addons" : "themes"}/${update.id}`}
                       target="_blank">
                       <img
-                        class="rounded"
-                        src={`${PANO_WEBSITE_API_URL}/resources/${update.id}/` + (update.type === "THEME" ? `screenshots/${update.screenshot?.id}`: 'icon')}
                         width="64"
-                        height="auto"
-                        title="{update.id}"
-                        alt="{update.id}" />
+                        height="64"
+                        class="rounded"
+                        src={`${PANO_WEBSITE_API_URL}/resources/${update.id}/` +
+                          (update.type === "THEME"
+                            ? `screenshots/${update.screenshot?.id}`
+                            : "icon")}
+                        title={update.id}
+                        alt={update.id} />
                     </a>
                   </div>
                 </div>
@@ -267,27 +297,48 @@
                         </div>
                       </div>
                       <!-- Right: Actions -->
-                      <div class="d-flex align-items-center gap-2">
-                        <button
-                          class="btn btn-sm btn-secondary d-flex align-items-center gap-1" class:disabled={loading || $platformUpdating || inProgressResource || updatingAll} on:click={() => updateResource(update)}>
-                          <i class="fas fa-download"></i>
-                          Update
-                        </button>
-                      </div>
+                      <button
+                        class="btn btn-sm btn-secondary"
+                        class:disabled={loading ||
+                          $platformUpdating ||
+                          inProgressResource ||
+                          updatingAll}
+                        on:click={() => updateResource(update)}>
+                        Update
+                      </button>
                     </div>
 
                     <!-- Progress -->
                     {#if inProgressResource?.id === update.id || resourceUpdateError?.id === update.id}
-                      <div class="progress my-3" role="progressbar" aria-valuenow="{resourceUpdateStep}" aria-valuemin="0" aria-valuemax="{resourceUpdateProcesses.length + 1}" style="height: 5px;">
+                      <div
+                        class="progress my-3"
+                        role="progressbar"
+                        aria-valuenow={resourceUpdateStep}
+                        aria-valuemin="0"
+                        aria-valuemax={resourceUpdateProcesses.length + 1}
+                        style="height: 5px;">
                         <div
-                          class="progress-bar progress-bar-striped {resourceUpdateError ? 'bg-danger' : !isResourceUpdateFinished(resourceUpdateStep) ? 'progress-bar-animated bg-primary' : 'bg-success'}"
-                          style="width: {(Math.min(resourceUpdateStep - 1, resourceUpdateProcesses.length) / resourceUpdateProcesses.length) * 100}%">
+                          class="progress-bar progress-bar-striped {resourceUpdateError
+                            ? 'bg-danger'
+                            : !isResourceUpdateFinished(resourceUpdateStep)
+                              ? 'progress-bar-animated bg-primary'
+                              : 'bg-success'}"
+                          style="width: {(Math.min(
+                            resourceUpdateStep - 1,
+                            resourceUpdateProcesses.length,
+                          ) /
+                            resourceUpdateProcesses.length) *
+                            100}%">
                         </div>
                       </div>
 
                       <p class="text-muted small mb-0" in:fade out:fade>
                         {#if resourceUpdateError}
-                          <span class="text-danger">{$_('components.modals.installing-resource.error-text', {values: {error: resourceUpdateError.error}})}</span>
+                          <span class="text-danger"
+                            >{$_(
+                              "components.modals.installing-resource.error-text",
+                              { values: { error: resourceUpdateError.error } },
+                            )}</span>
                         {:else if !isResourceUpdateFinished(resourceUpdateStep)}
                           {resourceUpdateProcesses[resourceUpdateStep - 1]}
                         {:else}
@@ -382,14 +433,14 @@
     "Verifying hash...",
     "Extracting updater...",
     "Installing new update...",
-  ]
+  ];
 
   const resourceUpdateProcesses = [
     "Getting version info...",
     "Downloading update...",
     "Preparing...",
     "Installing new update...",
-  ]
+  ];
 
   function delay(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
@@ -397,17 +448,17 @@
 
   async function isPanoHealthy() {
     try {
-      const getHealthResponse = await ApiUtil.get({path: "/api/health"})
+      const getHealthResponse = await ApiUtil.get({ path: "/api/health" });
 
-      return getHealthResponse.result === "ok"
+      return getHealthResponse.result === "ok";
     } catch (_) {
-      return false
+      return false;
     }
   }
 
   if (browser) {
     (async () => {
-      confetti = await import("canvas-confetti")
+      confetti = await import("canvas-confetti");
     })();
   }
 
@@ -416,28 +467,28 @@
       platformUpdatingStep++;
 
       if (platformUpdatingStep === platformUpdateProcesses.length + 1) {
-        await showToast("components.toasts.platform-update-success")
+        await showToast("components.toasts.platform-update-success");
 
         confetti.default({
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
-          zIndex: 999999
+          zIndex: 999999,
         });
 
-        await delay(1000)
+        await delay(1000);
 
-        while (!await isPanoHealthy()) {
-          await delay(1000)
+        while (!(await isPanoHealthy())) {
+          await delay(1000);
         }
 
-        location.reload()
+        location.reload();
       }
     } else {
-      await showToast("components.toasts.platform-update-failed")
+      await showToast("components.toasts.platform-update-failed");
 
-      platformUpdateError = message.error
-      console.error(message.error, message.message)
+      platformUpdateError = message.error;
+      console.error(message.error, message.message);
       $platformUpdating = false;
     }
   }
@@ -447,92 +498,102 @@
       resourceUpdateStep++;
 
       if (resourceUpdateStep === resourceUpdateProcesses.length + 1) {
-        await showToast("components.toasts.resource-update-success", {id: update.id})
+        await showToast("components.toasts.resource-update-success", {
+          id: update.id,
+        });
 
         confetti.default({
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
-          zIndex: 999999
+          zIndex: 999999,
         });
 
-        await delay(1000)
+        await delay(1000);
 
-        data.resourceUpdates = data.resourceUpdates.filter(item => item.id !== update.id);
+        data.resourceUpdates = data.resourceUpdates.filter(
+          (item) => item.id !== update.id,
+        );
         inProgressResource = null;
       }
     } else {
-      await showToast("components.toasts.resource-update-failed", {id: update.id})
+      await showToast("components.toasts.resource-update-failed", {
+        id: update.id,
+      });
 
-      resourceUpdateError = { ...update, error: message.error }
-      console.error(message.error, message.message)
+      resourceUpdateError = { ...update, error: message.error };
+      console.error(message.error, message.message);
       inProgressResource = null;
     }
   }
 
   function handlePlatformUpdateEventSource(eventSource) {
     eventSource.onmessage = (event) => {
-      handlePlatformUpdateSSEMessage(JSON.parse(event.data))
+      handlePlatformUpdateSSEMessage(JSON.parse(event.data));
     };
 
     eventSource.onerror = () => {
-      eventSource.close()
+      eventSource.close();
     };
   }
 
   function handleResourceUpdateEventSource(update, eventSource) {
     eventSource.onmessage = (event) => {
-      handleResourceUpdateSSEMessage(update, JSON.parse(event.data))
+      handleResourceUpdateSSEMessage(update, JSON.parse(event.data));
     };
 
     eventSource.onerror = () => {
-      eventSource.close()
+      eventSource.close();
     };
   }
 
   function isPlatformUpdateFinished(installingStep) {
-    return installingStep === platformUpdateProcesses.length + 1
+    return installingStep === platformUpdateProcesses.length + 1;
   }
 
   function isResourceUpdateFinished(installingStep) {
-    return installingStep === resourceUpdateProcesses.length + 1
+    return installingStep === resourceUpdateProcesses.length + 1;
   }
 
   async function installPlatformUpdate() {
-    platformUpdatingStep = 1
+    platformUpdatingStep = 1;
     $platformUpdating = true;
     platformUpdateError = null;
 
-    await delay(500)
+    await delay(500);
 
-    const eventSource = new EventSource(`/api/panel/updates/platform/stream?state=${data.platformUpdate.state}`);
+    const eventSource = new EventSource(
+      `/api/panel/updates/platform/stream?state=${data.platformUpdate.state}`,
+    );
 
-    handlePlatformUpdateEventSource(eventSource)
+    handlePlatformUpdateEventSource(eventSource);
   }
 
   async function updateResource(update) {
     resourceUpdateError = null;
     inProgressResource = update;
-    resourceUpdateStep = 1
-    await delay(500)
+    resourceUpdateStep = 1;
+    await delay(500);
 
-    const eventSource = new EventSource(`/api/panel/updates/resources/${update.id}/stream?state=${update.state}`);
+    const eventSource = new EventSource(
+      `/api/panel/updates/resources/${update.id}/stream?state=${update.state}`,
+    );
 
-    handleResourceUpdateEventSource(update, eventSource)
+    handleResourceUpdateEventSource(update, eventSource);
   }
 
   async function updateAll() {
     for (const update of [...data.resourceUpdates]) {
       if (updatingAll && resourceUpdateError) {
         updatingAll = false;
-        return
+        return;
       }
       updatingAll = true;
 
-      await updateResource(update)
+      await updateResource(update);
 
-      while(inProgressResource?.id === update.id) {
-        await delay(100)
+      while (inProgressResource?.id === update.id) {
+        await delay(100);
       }
     }
 
@@ -549,16 +610,18 @@
           loading = false;
 
           if (body.error === "PANO_CONNECT_FAILED") {
-            await showToast('components.toasts.check-resources-update-failed-pano-account');
+            await showToast(
+              "components.toasts.check-resources-update-failed-pano-account",
+            );
             return;
           }
 
           if (body.result !== "ok") {
-            await showToast('components.toasts.check-update-failed');
+            await showToast("components.toasts.check-update-failed");
             return;
           }
 
-          await showToast('components.toasts.check-update-success');
+          await showToast("components.toasts.check-update-success");
         },
       }),
     ]);

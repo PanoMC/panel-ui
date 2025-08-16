@@ -45,20 +45,32 @@
               <!-- Server Card -->
 
               <div class="col">
-                <div class="card h-100">
+                <div class="card h-100 position-relative">
                   <div class="card-header text-center">
                     <img
                       src={server.favicon
                         ? server.favicon
                         : base + "/assets/img/server-icon.png"}
-                      class="d-block mx-auto mb-2"
+                      class="rounded d-block mx-auto mb-2"
                       height="64"
                       width="64"
                       alt="" />
 
                     <div>
+                      {#if server.id === $mainServer.id}
+                        <i
+                          class="fa fa-crown me-1"
+                          title={$_("components.modals.servers.main-server")}>
+                        </i>
+
+                        {server.name}
+                      {/if}
+                    </div>
+                  </div>
+                  <ul class="list-group list-group-flush text-center">
+                    <li class="list-group-item">
                       <div
-                        class="badge text-bg-primary"
+                        class="badge rounded-pill text-bg-primary"
                         class:text-bg-success={server.status === "ONLINE"}>
                         <div
                           use:tooltip={[
@@ -68,17 +80,8 @@
                           {server.type}
                         </div>
                       </div>
-                      {server.name}
-
-                      {#if server.id === $mainServer.id}
-                        <small class="d-block">
-                          {$_("components.modals.servers.main-server")}
-                        </small>
-                      {/if}
-                    </div>
-                  </div>
-                  <ul class="list-group list-group-flush text-center">
-                    <li class="list-group-item">
+                    </li>
+                    <li class="list-group-item font-monospace user-select-all">
                       {server.host}:{server.port}
                     </li>
                     <li class="list-group-item">
