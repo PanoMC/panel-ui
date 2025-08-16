@@ -1,0 +1,937 @@
+{
+  "buttons": {
+    "remove": "Удалить",
+    "connect": "Подключить",
+    "connecting": "Подключение...",
+    "close": "Закрыть",
+    "yes": "Да",
+    "cancel": "Отмена",
+    "download": "Загрузить",
+    "enable": "Включить",
+    "validate": "Проверить",
+    "players": "Игроки",
+    "posts": "Посты",
+    "tickets": "Билеты",
+    "panel": "Панель",
+    "theme": "Тема",
+    "plugin": "Плагин",
+    "addons": "Аддоны",
+    "platform": "Платформа",
+    "save": "Сохранить",
+    "all": "Все",
+    "original": "Оригинальные",
+    "modified": "Модифицировано",
+    "not-exists": "Не существует",
+    "languages": "Языки",
+    "categories": "Категории",
+    "create-language": "Создать язык",
+    "create": "Создать",
+    "delete": "Удалить",
+    "edit": "Правка",
+    "no": "Нет",
+    "view": "Вид",
+    "closed": "Закрыто",
+    "show-all": "Показать все",
+    "installed": "Установлено",
+    "clear": "Очистить",
+    "change": "Изменить",
+    "refresh": "Обновить",
+    "reload": "Перезагрузить",
+    "show-in-store": "Показать в магазине",
+    "activate": "Активировать",
+    "themes": "Темы",
+    "previous": "Предыдущий",
+    "next": "След.",
+    "theme-settings": "Перезаписать дизайн вкладок с настройками тем?",
+    "install-theme": "Установить тему",
+    "back": "Назад",
+    "install-addon": "Установить дополнение",
+    "disabled": "Выключено",
+    "active": "Действующая",
+    "error-log": "Журнал ошибок",
+    "source": "Source",
+    "start": "Запуск",
+    "stop": "Остановить",
+    "go-to-store": "ПЕРЕЙТИ В МАГАЗИН"
+  },
+  "pages": {
+    "themes": {
+      "title": "Темы",
+      "card-title": "{amount} Установленная тема",
+      "by": "от <strong>{author}</strong>",
+      "active": "Действующая"
+    },
+    "theme-detail": {
+      "title": "Подробности темы",
+      "screenshot": "Скриншот",
+      "in-use": "Действующая",
+      "version": "Версия",
+      "pano-version": "Версия Pano",
+      "developer": "Разработчик",
+      "license": "Лицензия",
+      "source": "Source",
+      "installed-at": "Установлено",
+      "updated-at": "Актуализирован",
+      "installed-by": "Установлено:",
+      "size": "Размер",
+      "installed-by-types": {
+        "USER": "Пользователь",
+        "SYSTEM": "Система"
+      },
+      "unknown": "Неизвестно"
+    },
+    "addons": {
+      "title": "Аддоны",
+      "card-title": {
+        "active": "{amount} Активное дополнение",
+        "inactive": "{amount} Неактивное дополнение",
+        "installed": "{amount} Установленное дополнение"
+      }
+    },
+    "addon-detail": {
+      "title": "Сведения о дополнении",
+      "version": "Версия",
+      "pano-version": "Версия Pano",
+      "developer": "Разработчик",
+      "license": "Лицензия",
+      "source": "Source",
+      "dependencies": "Зависимость",
+      "requires": "Требует",
+      "size": "Размер",
+      "unknown": "Неизвестно"
+    },
+    "activity-logs": {
+      "title": "Журналы активности"
+    },
+    "languages": {
+      "title": "Языки",
+      "card-title": "{count} Языки",
+      "name": "Наименование",
+      "code": "Код",
+      "date-fns-code": "Date-Fns Code",
+      "derivatives": "Деривативы",
+      "defined-by": "задача определена",
+      "defined-by-options": {
+        "SYSTEM": "Система",
+        "USER": "Пользователь"
+      }
+    },
+    "translations": {
+      "unsaved-changes-alert-text": "У вас есть несохраненные изменения, вы уверены?",
+      "title": "Переводы"
+    },
+    "dashboard": {
+      "title": "Панель",
+      "welcome-card": {
+        "description": "Pano успешно установлен и готов к использованию. <br /> 🚀 Вот что вы можете сделать, чтобы начать:",
+        "connect-server": "Подключиться к серверу",
+        "connect-server-description": "Подключите игровой сервер и получите доступ к дополнительным функциям управления.",
+        "menu-title": "The Menu",
+        "links-title": "Ссылки",
+        "publish-your-first-post": "Опубликовать первый пост",
+        "change-theme": "Изменить внешний вид темы",
+        "manage-addons": "Управление дополнениями",
+        "manage-players": "Управление игроками",
+        "get-themes-and-extensions": "Темы и расширения",
+        "documentations": "Документация",
+        "website": "Сайт",
+        "discord": "Discord"
+      },
+      "last-tickets": {
+        "title": "Последние заявки",
+        "player-name": "Имя игрока",
+        "filter": "Фильтр",
+        "no-category": "Нет категории"
+      },
+      "logs": {
+        "title": "Последние операции"
+      }
+    },
+    "statistics": {
+      "title": "Статистика",
+      "online-player-text": "{onlinePlayerCount} Онлайн на сайте",
+      "new-register-text": "{newRegisterCount} Новая регистрация",
+      "total-player-text": "{totalPlayerCount} Всего игроков",
+      "website-graph": {
+        "title": "Активность на веб-сайтах",
+        "week": "Неделя",
+        "month": "Месяц"
+      },
+      "total-statistics": {
+        "title": "Статистика",
+        "posts": "Публикации:",
+        "players": "Игроки:",
+        "admins": "Администраторы",
+        "tickets": "Билеты: ",
+        "connected-servers": "Серверы:",
+        "addons": "Дополнения:",
+        "themes": "Темы:"
+      }
+    },
+    "players": {
+      "title": "{pageType}Игроков",
+      "by-perm-group-title": "\"{permissionGroupName}\" Авторизованные игроки",
+      "authorized": "Подпись",
+      "banned": "Заблокирован",
+      "perm-groups": "Группы разрешений",
+      "table-title": "{playerCount} {pageType} Игрок",
+      "all": "Все",
+      "player": "Плеер",
+      "table": {
+        "name": "Имя пользователя",
+        "perm-group": "Группа разрешений",
+        "status": "Статус",
+        "last-login": "Последний вход",
+        "register-date": "Дата регистрации"
+      }
+    },
+    "posts": {
+      "title": "{pageType}Публикации",
+      "category-posts-title": "Записи \"{category}\"",
+      "no-category": "Нет категории",
+      "published": "Жарияланды",
+      "draft": "Черновик",
+      "trash": "Свалка",
+      "table-title": "{postCount} {pageType} Публикация",
+      "post-categories-button": "Категории",
+      "create-post-button": "Создать пост",
+      "table": {
+        "title": "Заглавие",
+        "category": "Категория",
+        "views": "Виды",
+        "author": ".",
+        "last-update": "последнее обновление"
+      }
+    },
+    "tickets": {
+      "title": "{pageType}билетов",
+      "category-tickets-title": "Билеты «{category}»",
+      "no-category": "Нет категории",
+      "waiting-reply": "В ожидании ответа",
+      "closed": "Закрыто",
+      "ticket-categories": "Категории сообщений",
+      "close-ticket-button": "Закрыть Тикет",
+      "table-title": "{ticketCount} {pageType} Билет",
+      "amount-selected": "Выбрана {amount} сумма.",
+      "all": "Все",
+      "select-all": "Выбрать все",
+      "table": {
+        "title": "Заглавие",
+        "player": "Плеер",
+        "category": "Категория",
+        "status": "Статус",
+        "last-reply": "Последний ответ"
+      }
+    },
+    "notifications": {
+      "title": "Уведомление",
+      "delete-all": "Удалить все",
+      "delete-notification": "Удалить уведомление",
+      "show-more": "Показать еще ({count})"
+    },
+    "settings": {
+      "about": {
+        "title": "Сведения",
+        "version": "Версия",
+        "release": "Выпуск",
+        "website": "Сайт",
+        "discord": "Discord",
+        "open-source-licenses": "Лицензии открытого ПО"
+      },
+      "site-settings": {
+        "title": "Настройки сайта",
+        "preferences": "Настройки",
+        "inputs": {
+          "website-name": {
+            "label": "Название сайта",
+            "placeholder": "Наименование"
+          },
+          "website-description": {
+            "label": "Описание сайта"
+          },
+          "game-server-ip-address": {
+            "label": "IP-адрес сервера"
+          },
+          "game-server-version": {
+            "label": "Версия сервера"
+          },
+          "support-email-address": {
+            "label": "Адрес электронной почты службы поддержки"
+          },
+          "keywords": {
+            "label": "Ключевые слова",
+            "placeholder": "Нажмите Enter, чтобы вставить"
+          },
+          "favicon": {
+            "label": "Favicon",
+            "select": "Выбор",
+            "helper": "PNG, ICO, GIF, JPG, SVG формат, максимум 1 мб и 16x16 пикселей Должен быть."
+          },
+          "website-logo": {
+            "label": "Логотип сайта",
+            "server-icon": "Значок сервера",
+            "helper": "Формат PNG, JPEG, GIF, SVG, не более 2 мб."
+          }
+        }
+      },
+      "platform": {
+        "title": "Настройки Платформы",
+        "preferences": "Настройки",
+        "display-language": "Отображать язык",
+        "check-auto-updates": "Обновления платформы",
+        "connect-failed-alert": "Не удалось подключить учетную запись Pano. Повторите попытку.",
+        "account": "Счет",
+        "platform-id": "ID платформы",
+        "user": "Пользователь",
+        "online-account": "Онлайн аккаунт",
+        "online-account-description": "Подключите онлайн-аккаунт Pano для доступа к плагинам, темам и обновлениям.",
+        "inputs": {
+          "check-auto-updates": {
+            "never": "Никогда",
+            "once-in-a-day": "запускать раз в день",
+            "once-in-a-week": "1 раз в неделю",
+            "once-in-a-month": "Раз в месяц"
+          }
+        },
+        "smtp": {
+          "username": "Имя пользователя (адрес)",
+          "password": "Пароль",
+          "ssl": "Использование SSL",
+          "tls-setting": "Настройка TLS",
+          "sender-address": "Адрес отправителя",
+          "hostname": "Имя хоста",
+          "port": "Порт",
+          "auth-methods": "Методы идентификации:",
+          "description": "Pano требует, чтобы поставщик услуг электронной почты мог отправлять электронные письма. Войдите в систему с помощью службы электронной почты, которую вы хотите использовать.",
+          "email-validation-error": "Не удалось проверить настройки электронной почты: {mailError}"
+        },
+        "smtp-settings": "Электронная почта (SMTP)",
+        "toggle-smtp": "Переключить SMTP"
+      }
+    },
+    "ticket-detail": {
+      "tickets": "Билеты",
+      "close-ticket": "Закрыть Тикет",
+      "by-who": "От {username}",
+      "opened-in-category": "открыт в категории {category}.",
+      "no-category": "-",
+      "previous-messages": "Предыдущие сообщения ({count})",
+      "send-button": "Отправить"
+    },
+    "post-categories": {
+      "title": "Категории записей",
+      "posts": "Посты",
+      "create-category-button": "Создать категорию",
+      "card-title": "{count} Категория записи",
+      "category": "Категория",
+      "description": "Описание",
+      "url": "Адрес сайта",
+      "color": "Цвет"
+    },
+    "ticket-categories": {
+      "title": "Категории сообщений",
+      "tickets": "Билеты",
+      "create-category-button": "Создать категорию",
+      "card-title": "{count} Категория билета",
+      "category": "Категория",
+      "description": "Описание"
+    },
+    "permission-groups": {
+      "title": "Группы разрешений",
+      "create-permission-group-button": "Создать группу разрешений",
+      "card-title": "{count} Группа разрешений",
+      "name": "Наименование",
+      "permission-amount": "Сумма разрешения",
+      "player-amount": "Сумма игрока"
+    },
+    "error": {
+      "title": "Ошибка: {status}",
+      "go-back": "Назад"
+    },
+    "post-editor": {
+      "posts": "Посты",
+      "trash": "Свалка",
+      "move-to-drafts": "Перейти к черновикам",
+      "update": "Обновление",
+      "publish": "Опубликовать",
+      "inputs": {
+        "title": {
+          "placeholder": "Введите название заметки..."
+        }
+      },
+      "status": "Статус:",
+      "views": "View: (Масштаб)",
+      "category": "Категории:",
+      "no-category": "Нет категории",
+      "title-create": "Создать новую статью",
+      "title-edit": "Редактировать публикацию",
+      "new": "Создать",
+      "draft": "Черновик",
+      "published": "Жарияланды"
+    },
+    "server": {
+      "dashboard": {
+        "title": "Статистика сервера",
+        "server-status": "Сервер {status}",
+        "online": "Онлайн",
+        "offline": "офлайн",
+        "player": "{playerCount}/{maxPlayerCount} Игрок",
+        "working-time": "Время безотказной работы: {upTime}",
+        "last-online": "Последнее подключение к сети:",
+        "statistics": "Статистика",
+        "server-name": "Имя сервера:",
+        "server-type": "Тип сервера.",
+        "local-ip-address": "Локальный IP-адрес",
+        "server-version": "Версия сервера",
+        "total-connected-servers": "Количество подключенных серверов:",
+        "date-added": "Дата Создания:"
+      },
+      "settings": {
+        "title": "Настройки сервера",
+        "main-server": "Главный сервер",
+        "already-main-server": "{serverName} является основным сервером",
+        "make-main-server": "Установить в качестве основного сервера",
+        "main-server-info": "Хост-сервер определяет информацию о сервере, которая будет отображаться на веб-сайте.",
+        "remove-server": "Удалить сервер",
+        "disconnect": "Отключение"
+      },
+      "monitoring": {
+        "title": "МОНИТОРИНГ СЕРВЕРОВ"
+      }
+    },
+    "permission-group-detail": {
+      "title-edit": "Изменить группу разрешений",
+      "title-create": "Создать группу разрешений",
+      "permission-groups": "Группы разрешений",
+      "inputs": {
+        "name": {
+          "placeholder": "Наименование"
+        },
+        "player": {
+          "placeholder": "ÐÐ¾Ð±Ð°Ð²Ð¸ÑÑ Ð¸Ð³ÑÐ¾ÐºÐ°"
+        }
+      }
+    },
+    "player-detail": {
+      "players": "Игроки",
+      "un-ban": "Удалить бан",
+      "ban": "Блокировка",
+      "send-verification-mail": "Отправить ссылку для подтверждения на электронную почту игрока",
+      "authorize": "Авторизоваться",
+      "in-game": "В игре",
+      "in-website": "Показывать  на веб сайте",
+      "online-text": "{whereOnline} Онлайн",
+      "banned": "Заблокирован",
+      "last-tickets": "Последние заявки",
+      "filter": "Фильтр",
+      "no-category": "Нет категории",
+      "statistics": "Статистика",
+      "email": "E-Mail",
+      "email-verified": "Проверено",
+      "email-not-verified": "Не проверено",
+      "last-entrance": "(вход до 13:15)",
+      "register-date": "Дата регистрации"
+    }
+  },
+  "components": {
+    "store-loading": {
+      "store-loading": "Загрузка магазина...",
+      "please-wait": "Подождите.",
+      "loading": "Загрузка...",
+      "account-not-connected": "Учетная запись Pano не подключена!",
+      "not-connected-description": "Для доступа к Магазину необходимо подключить учетную запись Pano."
+    },
+    "failed-login-pano-store": "Не удалось войти в магазин Pano! Повторите попытку позже или повторно подключите аккаунт Pano.",
+    "verified-status": {
+      "verified": "Проверен",
+      "not-verified": "Не проверено Pano, используйте на свой страх и риск!"
+    },
+    "ticket-status-badge": {
+      "filter": "Фильтр",
+      "new": "Создать",
+      "replied": "Ответил(а)",
+      "closed": "Закрыто"
+    },
+    "website-activity-chart": {
+      "new-registration": "Регистрация нового пользователя ",
+      "new-ticket": " Новая заявка",
+      "visitor": "Посетитель"
+    },
+    "site-navigation-menu": {
+      "panel": "Панель",
+      "statistics": "Статистика",
+      "posts": "Посты",
+      "post-categories": "Категории записей",
+      "tickets": "Билеты",
+      "players": "Игроки",
+      "view": "Вид",
+      "addons": "Аддоны",
+      "logs": "Журналы",
+      "settings": "Настройки",
+      "translations": "Переводы"
+    },
+    "navbar": {
+      "navbar-toggle-tooltip": "Открыть/закрыть меню",
+      "notifications": "Уведомление",
+      "show-all": "Показать все",
+      "account-dropdown": {
+        "session": "Сессия",
+        "profile": "Профиль",
+        "logout": "Выйти"
+      }
+    },
+    "sidebar": {
+      "sidebar-toggle-tooltip": "Открыть/закрыть меню",
+      "website": "Сайт",
+      "server": "Сервер",
+      "show-website": "Сайт",
+      "show-servers": "Серверы"
+    },
+    "server-navigation-menu": {
+      "statistics": "Статистика",
+      "monitoring": "Мониторинг",
+      "settings": "Настройки",
+      "no-selected-server": "Выбранный сервер",
+      "no-server-text": "Подключите сервер для просмотра меню сервера.",
+      "connect-server": "Подключиться к серверу"
+    },
+    "post-row": {
+      "actions": "Действия",
+      "move-to-draft": "Перейти к черновику",
+      "publish": "Опубликовать",
+      "move-to-trash": "Удалить",
+      "no-category": "Нет категории",
+      "filter": "Фильтр"
+    },
+    "ticket-row": {
+      "select": "Выбор",
+      "filter": "Фильтр",
+      "no-category": "Нет категории",
+      "player-name": "Имя игрока"
+    },
+    "player-row": {
+      "actions": "Действия",
+      "authorize": "Авторизоваться",
+      "remove-ban": "Удалить бан",
+      "ban": "Блокировка"
+    },
+    "player-status-badge": {
+      "banned": "Заблокирован",
+      "in-game": "В игре",
+      "in-website": "Показывать  на веб сайте",
+      "online": "Онлайн",
+      "offline": "офлайн"
+    },
+    "player-permission-badge": {
+      "filter": "Фильтр",
+      "player": "Плеер"
+    },
+    "bottom": {
+      "help": "Помощь",
+      "pano-market": "Пано-Маркет",
+      "discord": "Discord"
+    },
+    "notification-container": {
+      "notification": "Уведомление"
+    },
+    "settings-layout": {
+      "website": "Сайт",
+      "platform": "Платформа",
+      "updates": "Обновления",
+      "about": "Сведения"
+    },
+    "server-settings-layout": {
+      "server": "Сервер",
+      "game-integration": "Интеграция в игру"
+    },
+    "modals": {
+      "install-resource": {
+        "title": "Установить {type}",
+        "theme": "Тема",
+        "addon": "Аддон",
+        "drag-here": "Перетащите сюда файл<br/>или нажмите",
+        "install-from-pano-store": "Установить из магазина Pano"
+      },
+      "installing-resource": {
+        "error": "Ошибка!",
+        "installing": "Установка...",
+        "completed": "Готово!",
+        "install-complete": "Установка завершена",
+        "error-text": "Ошибка: {error}",
+        "processes": {
+          "uploading": "Загрузка...",
+          "version-info": "Получение информации о версии...",
+          "downloading": "Загрузка файла…",
+          "preparing": "Подготовка...",
+          "installing": "Установка..."
+        }
+      },
+      "view-activity-log": {
+        "title": "Детали журнала активности",
+        "json": "Phar:"
+      },
+      "confirm-remove-pano-account": {
+        "title": "Вы уверены, что хотите отключить свою учетную запись Pano от этой платформы?"
+      },
+      "confirm-stop-theme": {
+        "title": "Вы уверены, что хотите остановить текущую активную тему? Это приведет к недоступности сайта!"
+      },
+      "confirm-remove-theme": {
+        "title": "Вы уверены, что хотите удалить эту тему?",
+        "title-active": "Эта тема активна! По умолчанию это будет тема «Ваниль». Вы уверены, что хотите удалить?"
+      },
+      "confirm-install-resource": {
+        "title": "Вы уверены, что хотите установить \"{title}\" ({resourceId})?"
+      },
+      "add-edit-post-category": {
+        "create-category": "Создать категорию",
+        "edit-category": "Редактировать категорию",
+        "inputs": {
+          "title": {
+            "placeholder": "Заглавие"
+          },
+          "description": {
+            "placeholder": "Описание"
+          },
+          "url": {
+            "placeholder": "Адрес сайта",
+            "helper": "Он может содержать только [A-Z/a-z/0-9/-] и может содержать от 3 до 32 символов."
+          }
+        }
+      },
+      "add-edit-ticket-category": {
+        "create-category": "Создать категорию",
+        "edit-category": "Редактировать категорию",
+        "inputs": {
+          "title": {
+            "placeholder": "Заглавие"
+          },
+          "description": {
+            "placeholder": "Описание"
+          }
+        }
+      },
+      "add-edit-language": {
+        "create-language": "Создать язык",
+        "edit-language": "Редактировать язык",
+        "inputs": {
+          "name": "Наименование",
+          "code": "Код",
+          "date-fns-code": "Date-fns Code",
+          "derivatives": "Нажмите Enter, чтобы вставить"
+        }
+      },
+      "authorize-player": {
+        "title": "Авторизовать игрока",
+        "player": "Плеер"
+      },
+      "confirm-ban-player": {
+        "title": "Are you sure you want to delete this player?",
+        "notify-with-email": "Оповестить по электронной почте"
+      },
+      "confirm-close-ticket": {
+        "title-single": "Вы уверены, что хотите закрыть эту заявку?",
+        "title-multi": "Вы уверены, что хотите закрыть эти тикеты?"
+      },
+      "confirm-delete-permission-group": {
+        "title": "Вы уверены, что хотите навсегда удалить эту группу авторизации?",
+        "description": "Следующие пользователи в группе авторизации будут изменены на игрока:"
+      },
+      "confirm-delete-player": {
+        "title": "Are you sure you want to delete this player?",
+        "inputs": {
+          "password": {
+            "placeholder": "Пароль"
+          }
+        }
+      },
+      "confirm-delete-post-category": {
+        "title": "Вы уверены, что хотите удалить эту категорию?",
+        "description": "Следующие сообщения в категории будут изменены на Без категории:",
+        "more-posts": "+{count} больше публикаций"
+      },
+      "confirm-delete-post": {
+        "title-permanent": "Вы уверены, что хотите навсегда удалить эту запись?",
+        "title-trash": "Вы уверены, что хотите переместить эту запись в корзину?"
+      },
+      "confirm-delete-ticket-category": {
+        "title-permanent": "Примечание. Если вы удалите эту категорию, следующие билеты останутся без категории:",
+        "title": "Вы уверены, что хотите удалить эту категорию?",
+        "more-tickets": "+{count} больше билетов"
+      },
+      "confirm-remove-addon": {
+        "title": "Вы уверены, что хотите удалить дополнение «{pluginId}»?"
+      },
+      "confirm-remove-addon-will-cause-more-unload": {
+        "description": "Удаление \"{pluginId}\" также приведет к выгрузке этих дополнений:"
+      },
+      "confirm-disable-addon-will-cause-more-disable": {
+        "title": "Вы уверены, что хотите отключить дополнение «{pluginId}»?",
+        "description": "Отключение \"{pluginId}\" также приведет к отключению этих дополнений:"
+      },
+      "confirm-enabling-addon-will-cause-more-enable": {
+        "title": "Включить дополнение «{pluginId}»?",
+        "description": "Включение \"{pluginId}\" также приведет к включению этих дополнений:"
+      },
+      "confirm-delete-ticket": {
+        "title-single": "Вы уверенны, что хотите удалить этот тикет?",
+        "title-multi": "Действительно удалить эти файлы навсегда?"
+      },
+      "confirm-remove-all-notifications": {
+        "title": "Вы уверены, что хотите навсегда удалить все уведомления?"
+      },
+      "confirm-delete-language": {
+        "title": "Вы уверены, что хотите удалить этот язык?"
+      },
+      "connect-server": {
+        "title": "Подключиться к серверу",
+        "steps": {
+          "1": "Установить плагин игрового сервера",
+          "2": "Выполнить команду подключения",
+          "3": "Подтвердите запрос на подключение"
+        },
+        "download": "Скачать файл",
+        "copy": "Копия",
+        "copied": "Скопировано!",
+        "code-refresh": "Код обновится через {timeToRefreshKey} секунд.",
+        "notification-will-come": "Запрос на подключение будет отправлен в виде уведомления."
+      },
+      "make-main-server": {
+        "title": "Вы уверены, что хотите сделать \"{serverName}\" основным сервером?"
+      },
+      "remove-server": {
+        "title": "Вы уверены, что хотите удалить это?",
+        "account-password": "Пароль"
+      },
+      "server-request": {
+        "title": "Вы уверены, что хотите подключить сервер \"{serverName}\" к платформе?",
+        "reject": "Отклонить",
+        "connect": "Подключить"
+      },
+      "servers": {
+        "connect-server-button": "Подключиться к серверу",
+        "servers": "Серверы",
+        "main-server": "Главный сервер",
+        "online": "Онлайн"
+      },
+      "unban-player": {
+        "title": "Вы уверены, что хотите снять запрет с этого игрока?"
+      },
+      "edit-player": {
+        "title": "Информация об игроке",
+        "inputs": {
+          "username": {
+            "placeholder": "Имя пользователя",
+            "errors": {
+              "invalid": "Имя пользователя недействительно",
+              "exists": "Это имя пользователя используется другим игроком"
+            }
+          },
+          "email": {
+            "title": "E-Mail",
+            "errors": {
+              "invalid": "e-mail недействителен!",
+              "exists": "Этот адрес электронной почты используется другим игроком"
+            }
+          },
+          "new-password": {
+            "title": "Новый пароль",
+            "errors": {
+              "invalid": "Новый пароль должен содержать не менее 6 и не более 128 символов"
+            }
+          },
+          "new-password-repeat": {
+            "title": "Новый пароль (повторить)",
+            "errors": {
+              "not-match": "Пароли не совпадают"
+            }
+          },
+          "can-open-ticket": "Создать Тикет",
+          "email-verified": "Электронная почта проверена"
+        }
+      }
+    },
+    "editor": {
+      "title": "Заголовок {number}",
+      "bold": "Жирный шрифт",
+      "italic": "Курсивный",
+      "underline": "Подчеркивание",
+      "strike": "Зачеркнуто",
+      "bullet-list": "Список",
+      "ordered-list": "Порядковый список",
+      "image": "Изображение",
+      "link": "Ссылка",
+      "text-color": "Цвет текста",
+      "remove-text-color": "Цвет текста удалить"
+    },
+    "no-content": {
+      "here-is-empty": "пуст."
+    },
+    "pagination": {
+      "previous-page": "Предыдущая страница",
+      "next-page": "Следующая страница"
+    },
+    "splash": {
+      "errors": {
+        "session": "Ошибка сеанса",
+        "permission": "Ошибка доступа",
+        "connection": "Ошибка подключения"
+      },
+      "refreshing": "Обновление...",
+      "refresh": "Обновить (Refresh)"
+    },
+    "toasts": {
+      "accepted-server-connect-request": "Запрос на подключение к серверу принят.",
+      "expired-server-connect-request": "Недопустимый запрос на подключение к серверу.",
+      "notifications-deleted-permanently": "Все уведомления удалены.",
+      "permission-group-saved-or-created": {
+        "permission-group": "Группа разрешений {event}",
+        "updated": "обновления.",
+        "saved": "сохранено."
+      },
+      "permission-group-save-error": "Не удалось сохранить группу разрешений! Ошибка: {errorCode}",
+      "player-authorized-success": "Обновлена группа разрешений игрока.",
+      "player-ban": {
+        "the-player": "\"{username}\" пользователь {event}",
+        "banned": "Locked.",
+        "could-not-ban": "не удалось заблокировать, ошибка: {error}"
+      },
+      "player-deleted-success": "Удален плеер \"{username}\".",
+      "player-info-saved-success": "Обновлена информация об игроке.",
+      "player-unban": {
+        "the-player": "«{username}» пользователя {event}",
+        "removed-ban": "locked.",
+        "could-not-remove-ban": "не удалось удалить блокировку, ошибка: {error}"
+      },
+      "post-category-deleted-permanently": "\"{title}\" удален безвозвратно.",
+      "post-deleted-permanently": "\"{title}\" безвозвратно удален.",
+      "post-moved-to-draft": "\"{title}\" перемещен в черновики.",
+      "post-moved-to-trash": "\"{title}\" перемещен в корзину.",
+      "post-published": "«{title}» опубликован.",
+      "post-saved": "\"{title}\" сохранен.",
+      "rejected-server-connect": "Запрос на подключение к серверу отклонен.",
+      "server-deleted-success": "Удален сервер \"{name}\".",
+      "server-made-main": "\"{name}\" обозначается как основной сервер.",
+      "server-not-exists": "Сервер не найден.",
+      "server-selected": "Выбрано «{name}».",
+      "settings-save-error": "Не удалось сохранить настройки! Ошибка: {errorCode}",
+      "settings-save-success": "Настройки сохранены.",
+      "ticket-category-deleted-permanently": "\"{title}\" безвозвратно удален.",
+      "ticket-closed": {
+        "multi": "{count} заявки закрыты.",
+        "single": "Заявка была закрыта"
+      },
+      "tickets-deleted-permanently": {
+        "multi": "{count} билетов безвозвратно удалено.",
+        "single": "Заявка удалена без возможности восстановления."
+      },
+      "verification-email-sent-error": "Не удалось отправить электронное письмо для подтверждения пользователю \"{username}\". Ошибка: {errorCode}",
+      "verification-email-sent-successful": "Пользователю было отправлено письмо с подтверждением «{username}».",
+      "enabling-addon-failed-by-dependency-error": "Не удалось включить аддон \"{addon}\" из-за неудачных плагинов зависимостей!",
+      "failed-to-enable-addon-error": "Не удалось включить «{addon}». Ознакомьтесь с журналами дополнений!",
+      "pano-account-connect-success": "Ваш Твиттер аккаунт успешно подключен!",
+      "pano-account-disconnect-success": "Учетная запись Pano успешно удалена!",
+      "pano-account-disconnect-fail": "Произошла ошибка при удалении учетной записи Pano!",
+      "email-config-validate-success": "Электронная почта успешно подтверждена!",
+      "smtp-disabled-success": "Электронная почта успешно отключена!",
+      "smtp-enabled-success": "Электронная почта успешно включена!",
+      "translations-save-success": "Изменения сохранены.",
+      "language-deleted-permanently": "\"{name}\" удален безвозвратно.",
+      "language-updated-successfully": "\"{name}\" успешно обновлен.",
+      "language-created-successfully": "\"{name}\" успешно создан.",
+      "reload-themes-success": "Темы успешно перезагружены.",
+      "activate-theme-success": "Тема успешно активирована.",
+      "removed-theme-success": "Тема удалена успешно",
+      "stop-theme-success": "Тема успешно остановлена.",
+      "start-theme-success": "Тема успешно запущена.",
+      "invalid-resource-file-type": "Неверный тип ресурса",
+      "remove-addon-success": "Аддон успешно удален.",
+      "check-update-success": "Обновления успешно проверены.",
+      "check-update-failed": "Не удалось проверить наличие обновлений.",
+      "check-resources-update-failed-pano-account": "Не удалось проверить обновления: не удается подключиться к Pano. Повторите попытку позже.",
+      "resource-update-success": "\"{id}\" успешно обновлен.",
+      "resource-update-failed": "Не удалось обновить \"{id}\".",
+      "platform-update-success": "Платформа успешно обновлена.",
+      "platform-update-failed": "Не удалось обновить платформу."
+    }
+  },
+  "page-error": {
+    "404": "Enderman заблокировал загрузку этой страницы."
+  },
+  "permissions": {
+    "ACCESS_PANEL": {
+      "title": "ВКЛЮЧИТЕ ПАНЕЛЬ УПРАВЛЕНИЯ",
+      "description": "Позволяет получить доступ к интерфейсу панели. Полезно для получения разрешений типа VIP-игрока без какого-либо доступа."
+    },
+    "MANAGE_SERVERS": {
+      "title": "Управление серверами NTP",
+      "description": "Может подключаться, отключаться, управлять всем, что связано с сервером."
+    },
+    "MANAGE_POSTS": {
+      "title": "Управление публикациями",
+      "description": "Может создавать, удалять, публиковать записи и управлять категориями записей."
+    },
+    "MANAGE_TICKETS": {
+      "title": "Управление собственными тикетами",
+      "description": "Может отвечать, удалять, закрывать тикеты и управлять категориями тикетов."
+    },
+    "MANAGE_PLAYERS": {
+      "title": "Управление игроками",
+      "description": "Может просматривать, проверять, удалять, управлять игроками. Это не включает разрешения игрока!"
+    },
+    "MANAGE_VIEW": {
+      "title": "Управление просмотром",
+      "description": "Может устанавливать, удалять, изменять и управлять темой. Это разрешение также позволяет изменять настройки темы."
+    },
+    "MANAGE_ADDONS": {
+      "title": "Управление дополнениями",
+      "description": "Может устанавливать, удалять, изменять и управлять аддоном. Это разрешение также позволяет изменять настройки аддона."
+    },
+    "MANAGE_PLATFORM_SETTINGS": {
+      "title": "Управление настройками платформы",
+      "description": "Может редактировать настройки веб-сайта/платформы. Это разрешение также позволяет проверять и обновлять платформу, дополнения и темы."
+    },
+    "MANAGE_PERMISSION_GROUPS": {
+      "title": "Управление группами разрешений",
+      "description": "Можно добавлять, редактировать, удалять группу разрешений. Это разрешение также позволяет изменять разрешения игрока с разрешением «управлять игроками»."
+    },
+    "ACCESS_ACTIVITY_LOGS": {
+      "title": "Доступ к журналам активности",
+      "description": "Может просматривать журналы активности. Внимание: журналы активности могут содержать конфиденциальные данные."
+    },
+    "MANAGE_TRANSLATIONS": {
+      "title": "Управление переводами",
+      "description": "Может добавлять, редактировать, удалять переводы и языки."
+    }
+  },
+  "activity-logs": {
+    "BANNED_PLAYER": "**{username}** заблокирован игрок {player}.",
+    "CLOSED_TICKETS": "**{username}** закрыл несколько заявок ({ticketIds}).",
+    "CREATED_PERMISSION_GROUP": "**{username}** создана группа разрешений «{permissionGroupName}».",
+    "CREATED_POST_CATEGORY": "**{username}** создана категория публикации «{title}».",
+    "CREATED_TICKET_CATEGORY": "**{username}** создал категорию билетов «{title}».",
+    "DELETED_PERMISSION_GROUP": "**{username}** удалена группа разрешений «{permissionGroupName}».",
+    "DELETED_PLAYER": "**{username}** удалил (а) игрока {player}.",
+    "DELETED_POST_CATEGORY": "**{username}** удалена категория публикации «{title}».",
+    "DELETED_POST": "**{username}** удалена публикация «{title}».",
+    "DELETED_TICKET_CATEGORY": "**{username}** удалена категория билетов «{title}».",
+    "DELETED_TICKETS": "**{username}** удалил (а) тикеты. ({ticketIds})",
+    "DELETE_LOCALE": "**{username}** удален язык «{localeName}».",
+    "INSTALLED_PLATFORM": "**{username}** установил платформу.",
+    "NEW_LOCALE": "**{username}** добавлен новый язык \"{localeName}\".",
+    "PUBLISHED_POST": "**{username}** опубликовал (а) публикацию.",
+    "REPLIED_TICKET": "**{username}** ответила на тикет №{ticketId}.",
+    "SENT_MANUAL_VALIDATION_EMAIL": "**{username}** отправил электронное письмо с ручной проверкой на {email}.",
+    "UNBANNED_PLAYER": "**{username}** разблокированный плеер {player}.",
+    "UPDATED_PERMISSION_GROUP": "**{username}** внесены изменения в группу разрешений «{permissionGroupName}».",
+    "UPDATED_PERMISSION_GROUP_PERM": "**{username}** внесены изменения в пермь группы разрешений «{permissionGroupName}».",
+    "UPDATED_PLAYER": "**{username}** внесены изменения в плеер «{player}».",
+    "UPDATED_PLAYER_PERMISSION_GROUP": "**{username}** изменил группу разрешений плеера «{player}» на «{permissionGroupName}».",
+    "UPDATED_POST_CATEGORY": "**{username}** внесла изменения в категорию публикации «{title}».",
+    "UPDATED_POST": "**{username}** внесла изменения в публикацию «{title}».",
+    "UPDATED_POST_STATUS": "**{username}** изменил статус публикации «{title}» на {status}.",
+    "UPDATED_TICKET_CATEGORY": "**{username}** внесены изменения в категорию билетов «{title}».",
+    "UPDATED_TRANSLATIONS": "**{username}** внесены изменения в переводы на языке «{localeName}».",
+    "UPDATE_LOCALE": "**{username}** внесены изменения в язык «{localeName}»."
+  }
+}
