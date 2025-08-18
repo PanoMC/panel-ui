@@ -389,12 +389,12 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
+  import { getContext, onDestroy, onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { _ } from "svelte-i18n";
 
   import { base } from "$app/paths";
-  import { invalidateAll } from "$app/navigation";
+  import { beforeNavigate, invalidateAll } from "$app/navigation";
   import { browser } from "$app/environment";
 
   import { formatBytes } from "$lib/string.util";
@@ -640,4 +640,33 @@
       return "NOT_VERIFIED";
     }
   }
+
+  const leaveHandler = (e) => {
+    if (($platformUpdating || inProgressResource)) {
+      e.preventDefault();
+      e.returnValue = ""; // Necessary for some browsers
+    }
+  };
+
+  onMount(() => {
+    if (browser) {
+      window?.addEventListener("beforeunload", leaveHandler);
+    }
+  });
+
+  onDestroy(() => {
+    if (browser) {
+      window?.removeEventListener("beforeunload", leaveHandler);
+    }
+  });
+
+  beforeNavigate((nav) => {
+    if (
+      browser &&
+      ($platformUpdating || inProgressResource) &&
+      !confirm($_("pages.settings.updates.updating-leave-alert"))
+    ) {
+      nav.cancel();
+    }
+  });
 </script>
