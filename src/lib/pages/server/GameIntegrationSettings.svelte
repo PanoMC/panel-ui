@@ -5,7 +5,7 @@
   <div class="card-body">
     <div class="row">
       <label class="col-md-4 col-form-label" for="loginIntergration">
-        <p>Giriş Entegrasyonu</p>
+        <p class="mb-0">Giriş Entegrasyonu</p>
         <small class="text-muted">Description of login integration here.</small>
       </label>
       <div class="col col-form-label">

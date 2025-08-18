@@ -4,8 +4,8 @@
     <div class="col-lg-4">
       <div
         class="card h-100"
-        class:text-bg-success="{data.server.status === ServerStatus.ONLINE}"
-        class:text-bg-danger="{data.server.status === ServerStatus.OFFLINE}">
+        class:text-bg-success={data.server.status === ServerStatus.ONLINE}
+        class:text-bg-danger={data.server.status === ServerStatus.OFFLINE}>
         <div class="card-body">
           {$_("pages.server.dashboard.server-status", {
             values: {
@@ -39,7 +39,7 @@
             })}
           {:else}
             {$_("pages.server.dashboard.last-online")}
-            <DateComponent time="{data.server.stopTime}" />
+            <DateComponent time={data.server.stopTime} />
           {/if}
         </div>
       </div>
@@ -48,40 +48,37 @@
 
   <!-- Statistic Table -->
   <div class="card">
-      <div class="card-header">{$_("pages.server.dashboard.statistics")}</div>
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-hover m-0">
-          <tbody class="text-muted">
-            <tr>
-              <th scope="row">{$_("pages.server.dashboard.server-name")}</th>
-              <td>{data.server.name}</td>
-            </tr>
-            <tr>
-              <th scope="row">{$_("pages.server.dashboard.server-type")}</th>
-              <td>{data.server.type}</td>
-            </tr>
-            <tr>
-              <th scope="row"
-                >{$_("pages.server.dashboard.local-ip-address")}</th>
-              <td>{data.server.host}:{data.server.port}</td>
-            </tr>
-            <tr>
-              <th scope="row">{$_("pages.server.dashboard.server-version")}</th>
-              <td>{data.server.version}</td>
-            </tr>
-            <tr>
-              <th scope="row"
-                >{$_("pages.server.dashboard.total-connected-servers")}</th>
-              <td>{data.connectedServerCount}</td>
-            </tr>
-            <tr>
-              <th scope="row">{$_("pages.server.dashboard.date-added")}</th>
-              <td><DateComponent time="{data.server.acceptedTime}" /></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="card-header">{$_("pages.server.dashboard.statistics")}</div>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <tbody>
+          <tr>
+            <th scope="row">{$_("pages.server.dashboard.server-name")}</th>
+            <td>{data.server.name}</td>
+          </tr>
+          <tr>
+            <th scope="row">{$_("pages.server.dashboard.server-type")}</th>
+            <td>{data.server.type}</td>
+          </tr>
+          <tr>
+            <th scope="row">{$_("pages.server.dashboard.local-ip-address")}</th>
+            <td>{data.server.host}:{data.server.port}</td>
+          </tr>
+          <tr>
+            <th scope="row">{$_("pages.server.dashboard.server-version")}</th>
+            <td>{data.server.version}</td>
+          </tr>
+          <tr>
+            <th scope="row"
+              >{$_("pages.server.dashboard.total-connected-servers")}</th>
+            <td>{data.connectedServerCount}</td>
+          </tr>
+          <tr>
+            <th scope="row">{$_("pages.server.dashboard.date-added")}</th>
+            <td><DateComponent time={data.server.acceptedTime} /></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

@@ -485,8 +485,8 @@
       "sidebar-toggle-tooltip": "Open/Close Menu",
       "website": "Website",
       "server": "Server",
-      "show-website": "Website",
-      "show-servers": "Servers"
+      "show-website": "Show Website",
+      "show-servers": "Show Servers"
     },
     "server-navigation-menu": {
       "statistics": "Statistics",

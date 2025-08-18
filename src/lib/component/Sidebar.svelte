@@ -70,7 +70,6 @@
           class="btn btn-sm btn-secondary w-100"
           type="button"
           on:click={showServersModal}>
-          <i class="fa-solid fa-cubes me-2"></i>
           {$_("components.sidebar.show-servers")}
         </button>
         <button
