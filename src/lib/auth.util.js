@@ -2,17 +2,17 @@ import { get } from "svelte/store";
 import { page } from "$app/stores";
 
 export const Permissions = Object.freeze({
-  ACCESS_PANEL: "access_panel",
-  MANAGE_SERVERS: "manage_servers",
-  MANAGE_POSTS: "manage_posts",
-  MANAGE_TICKETS: "manage_tickets",
-  MANAGE_PLAYERS: "manage_players",
-  MANAGE_VIEW: "manage_view",
-  MANAGE_ADDONS: "manage_addons",
-  MANAGE_PLATFORM_SETTINGS: "manage_platform_settings",
-  MANAGE_PERMISSION_GROUPS: "manage_permission_groups",
-  ACCESS_ACTIVITY_LOGS: "access_activity_logs",
-  MANAGE_TRANSLATIONS: "manage_translations"
+  ACCESS_PANEL: "ACCESS_PANEL",
+  MANAGE_SERVERS: "MANAGE_SERVERS",
+  MANAGE_POSTS: "MANAGE_POSTS",
+  MANAGE_TICKETS: "MANAGE_TICKETS",
+  MANAGE_PLAYERS: "MANAGE_PLAYERS",
+  MANAGE_VIEW: "MANAGE_VIEW",
+  MANAGE_ADDONS: "MANAGE_ADDONS",
+  MANAGE_PLATFORM_SETTINGS: "MANAGE_PLATFORM_SETTINGS",
+  MANAGE_PERMISSION_GROUPS: "MANAGE_PERMISSION_GROUPS",
+  ACCESS_ACTIVITY_LOGS: "ACCESS_ACTIVITY_LOGS",
+  MANAGE_TRANSLATIONS: "MANAGE_TRANSLATIONS"
 });
 
 export function hasPermission(permission, user) {
@@ -32,5 +32,6 @@ export function hasPermission(permission, user) {
     return false;
   }
 
-  return userObject.permissions.includes(permission);
+
+  return userObject.permissions.includes(permission.toUpperCase());
 }
