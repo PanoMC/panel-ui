@@ -308,6 +308,9 @@
         },
         "smtp-settings": "E-Mail (SMTP)",
         "toggle-smtp": "Toggle SMTP"
+      },
+      "updates":  {
+        "updating-leave-alert": "There is an update working, leaving this page may result in broken features!"
       }
     },
     "ticket-detail": {
@@ -565,7 +568,8 @@
           "downloading": "Downloading file...",
           "preparing": "Preparing...",
           "installing": "Installing..."
-        }
+        },
+        "installing-leave-alert": "Installing is still working, leaving this page may result in broken features!"
       },
       "view-activity-log": {
         "title": "Activity Log Detail",

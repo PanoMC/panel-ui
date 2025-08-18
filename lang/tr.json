@@ -308,6 +308,9 @@
         },
         "smtp-settings": "E-Mail (SMTP)",
         "toggle-smtp": "SMTP'yi Değiştir"
+      },
+      "updates": {
+        "updating-leave-alert": "Bir güncelleme çalışıyor, bu sayfadan ayrılmak bozuk özelliklere yol açabilir!"
       }
     },
     "ticket-detail": {
@@ -565,7 +568,8 @@
           "downloading": "Dosya indiriliyor...",
           "preparing": "Hazırlanıyor...",
           "installing": "Kuruluyor..."
-        }
+        },
+        "installing-leave-alert": "Kurulum devam ediyor, bu sayfadan ayrılmak bozuk özelliklere yol açabilir!"
       },
       "view-activity-log": {
         "title": "Aktivite Kaydı Detayı",
