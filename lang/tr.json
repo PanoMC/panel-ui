@@ -568,7 +568,8 @@
           "downloading": "Dosya indiriliyor...",
           "preparing": "Hazırlanıyor...",
           "installing": "Kuruluyor..."
-        }
+        },
+        "installing-leave-alert": "Kurulum devam ediyor, bu sayfadan ayrılmak bozuk özelliklere yol açabilir!"
       },
       "view-activity-log": {
         "title": "Aktivite Kaydı Detayı",

@@ -78,6 +78,7 @@
   let hideCallback = () => {};
   let modal;
   let confetti;
+  let installing;
 
   if (browser) {
     (async () => {
@@ -140,8 +141,11 @@
           origin: { y: 0.6 },
           zIndex: 999999
         });
+
+        installing = false;
       }
     } else {
+      installing = false;
       installError.set(message.error)
       console.error(message.error, message.message)
     }
@@ -174,6 +178,7 @@
     installError.set(null);
     type.set(newType)
     callback = storeCallback
+    installing = true;
 
     processes.set([
       "components.modals.installing-resource.processes.version-info",
@@ -222,9 +227,39 @@
   import { _ } from "svelte-i18n";
   import { fade } from "svelte/transition";
 
-  import { goto } from "$app/navigation";
+  import { beforeNavigate, goto } from "$app/navigation";
+  import { onDestroy, onMount } from "svelte";
 
   function isFinished(installingStep) {
     return installingStep === $processes.length + 1
   }
+
+  const leaveHandler = (e) => {
+    if (installing) {
+      e.preventDefault();
+      e.returnValue = ""; // Necessary for some browsers
+    }
+  };
+
+  onMount(() => {
+    if (browser) {
+      window?.addEventListener("beforeunload", leaveHandler);
+    }
+  });
+
+  onDestroy(() => {
+    if (browser) {
+      window?.removeEventListener("beforeunload", leaveHandler);
+    }
+  });
+
+  beforeNavigate((nav) => {
+    if (
+      browser &&
+      installing &&
+      !confirm($_("components.installing-resource.installing-leave-alert"))
+    ) {
+      nav.cancel();
+    }
+  });
 </script>
