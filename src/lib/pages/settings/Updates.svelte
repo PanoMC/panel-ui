@@ -424,6 +424,7 @@
   let resourceUpdateError;
   let resourceUpdateStep = 1;
   let updatingAll;
+  let platformUpdateFinished;
 
   const platformUpdating = getContext("platformUpdating");
 
@@ -482,6 +483,7 @@
           await delay(1000);
         }
 
+        platformUpdateFinished = true;
         location.reload();
       }
     } else {
@@ -642,7 +644,7 @@
   }
 
   const leaveHandler = (e) => {
-    if (($platformUpdating || inProgressResource)) {
+    if (!platformUpdateFinished && ($platformUpdating || inProgressResource)) {
       e.preventDefault();
       e.returnValue = ""; // Necessary for some browsers
     }
@@ -662,7 +664,7 @@
 
   beforeNavigate((nav) => {
     if (
-      browser &&
+      browser && !platformUpdateFinished &&
       ($platformUpdating || inProgressResource) &&
       !confirm($_("pages.settings.updates.updating-leave-alert"))
     ) {
