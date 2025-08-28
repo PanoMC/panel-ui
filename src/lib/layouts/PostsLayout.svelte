@@ -1,6 +1,8 @@
 <slot />
 
 <ConfirmDeletePostModal />
+<ConfirmDraftPostModal />
+<ConfirmPublishPostModal />
 
 <script context="module">
   import { redirect } from "@sveltejs/kit";
@@ -23,4 +25,6 @@
 
 <script>
   import ConfirmDeletePostModal from "$lib/component/modals/ConfirmDeletePostModal.svelte";
+  import ConfirmDraftPostModal from "$lib/component/modals/ConfirmDraftPostModal.svelte";
+  import ConfirmPublishPostModal from "$lib/component/modals/ConfirmPublishPostModal.svelte";
 </script>

@@ -97,7 +97,7 @@
                 post={post}
                 pageType={data.pageType}
                 buttonsLoading={buttonsLoading}
-                on:moveToDraft={(event) => onMoveToDraft(event.detail.id)}
+                on:moveToDraft={(event) => onMoveToDraftClick(event.detail.id)}
                 on:publish={(event) => onPublishClick(event.detail.id)}
                 on:deletePost={(event) =>
                   onDeletePostClick(event.detail.post)} />
@@ -120,7 +120,7 @@
 
 <script context="module">
   import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
-  import { error } from "@sveltejs/kit";
+  import { error, redirect } from "@sveltejs/kit";
 
   export const PageTypes = Object.freeze({
     PUBLISHED: "PUBLISHED",
@@ -140,7 +140,7 @@
     } = event;
     await parent();
 
-    const page = searchParams.get("page") || 1;
+    let page = searchParams.get("page") || 1;
     const categoryUrl = searchParams.get("categoryUrl");
     const pageType = searchParams.get("pageType") || DefaultPageType;
 
@@ -162,7 +162,15 @@
     });
 
     if (body.error === "PAGE_NOT_FOUND") {
-      throw error(404, body.error);
+      page = 1;
+
+      const queryParams = buildQueryParams({
+        page,
+        categoryUrl,
+        pageType,
+      });
+
+      throw redirect(302, queryParams);
     }
 
     if (body.error) {
@@ -191,6 +199,16 @@
     show as showDeletePostModal,
     onHide as onDeletePostModalHide,
   } from "$lib/component/modals/ConfirmDeletePostModal.svelte";
+
+  import {
+    show as showDraftPostModal,
+    onHide as onDraftPostModalHide,
+  } from "$lib/component/modals/ConfirmDraftPostModal.svelte";
+
+  import {
+    show as showPublishPostModal,
+    onHide as onPublishPostModalHide,
+  } from "$lib/component/modals/ConfirmPublishPostModal.svelte";
   import PostRow from "$lib/component/rows/PostRow.svelte";
 
   import {
@@ -241,62 +259,74 @@
     location.reload();
   }
 
-  function onMoveToDraft(id) {
-    buttonsLoading = true;
+  function onMoveToDraftClick(id) {
+    data.posts.find((post) => post.id === id).selected = true;
+    data.posts = data.posts
 
-    ApiUtil.put({
-      path: `/api/panel/posts/${id}/status`,
-      body: {
-        to: "DRAFT",
-      },
-      handler: async (body, reject) => {
-        if (body.error) {
-          refreshBrowserPage();
-          return;
-        }
+    showDraftPostModal(() => {
+      buttonsLoading = true;
 
-        buttonsLoading = false;
+      ApiUtil.put({
+        path: `/api/panel/posts/${id}/status`,
+        body: {
+          to: "DRAFT",
+        },
+        handler: async (body) => {
+          if (body.error) {
+            refreshBrowserPage();
+            return;
+          }
 
-        const foundTitle = data.posts.find((post) => post.id === id).title;
-        const title = `<a href="${base}/posts?pageType=DRAFT">${limitTitle(foundTitle)}</a>`;
+          buttonsLoading = false;
 
-        await refreshData();
+          const foundTitle = data.posts.find((post) => post.id === id).title;
+          const title = `<a href="${base}/posts?pageType=DRAFT">${limitTitle(foundTitle)}</a>`;
 
-        await showToast("components.toasts.post-moved-to-draft", {
-          title,
-        });
-      },
-    });
+          await invalidate((_) => true);
+
+          await showToast("components.toasts.post-moved-to-draft", {
+            title,
+          });
+        },
+      });
+    })
   }
 
   function onPublishClick(id) {
-    buttonsLoading = true;
+    data.posts.find((post) => post.id === id).selected = true;
+    data.posts = data.posts
 
-    ApiUtil.put({
-      path: `/api/panel/posts/${id}/status`,
-      body: {
-        to: "PUBLISHED",
-      },
-      handler: async (body, reject) => {
-        if (body.error) {
-          refreshBrowserPage();
+    showPublishPostModal(() => {
+      buttonsLoading = true;
 
-          return;
-        }
+      ApiUtil.put({
+        path: `/api/panel/posts/${id}/status`,
+        body: {
+          to: "PUBLISHED",
+        },
+        handler: async (body) => {
+          if (body.error) {
+            refreshBrowserPage();
 
-        buttonsLoading = false;
+            return;
+          }
 
-        await goto(base + "/posts");
+          buttonsLoading = false;
 
-        const foundTitle = data.posts.find((post) => post.id === id).title;
-        const title = `<a href="${base}/posts/detail/${id}">${limitTitle(foundTitle)}</a>`;
+          await goto(base + "/posts");
 
-        await showToast("components.toasts.post-published", {
-          postId: id,
-          title,
-        });
-      },
-    });
+          const foundTitle = data.posts.find((post) => post.id === id).title;
+          const title = `<a href="${base}/posts/detail/${id}">${limitTitle(foundTitle)}</a>`;
+
+          await showToast("components.toasts.post-published", {
+            postId: id,
+            title,
+          });
+
+          await invalidate((_) => true);
+        },
+      });
+    })
   }
 
   async function refreshData() {
@@ -321,19 +351,26 @@
     showDeletePostModal(post);
   }
 
-  setDeletePostModalCallback((post) => {
-    if (data.posts.indexOf(post) !== -1) {
-      data.posts[data.posts.indexOf(post)].selected = false;
-    }
+  function removeSelection() {
+    data.posts.forEach(post => post.selected = false)
+    data.posts = data.posts
+  }
+
+  setDeletePostModalCallback(() => {
+    removeSelection()
 
     invalidate((_) => true);
   });
 
-  onDeletePostModalHide((post) => {
-    if (data.posts.indexOf(post) === -1) {
-      return;
-    }
+  onDraftPostModalHide(() => {
+    removeSelection()
+  })
 
-    data.posts[data.posts.indexOf(post)].selected = false;
+  onPublishPostModalHide(() => {
+    removeSelection()
+  })
+
+  onDeletePostModalHide(() => {
+    removeSelection()
   });
 </script>

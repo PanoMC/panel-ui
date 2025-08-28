@@ -52,7 +52,8 @@
     "source": "Kaymak",
     "start": "Başlat",
     "stop": "Durdur",
-    "go-to-store": "Mağazaya Git"
+    "go-to-store": "Mağazaya Git",
+    "update": "Güncelle"
   },
   "pages": {
     "themes": {
@@ -129,7 +130,7 @@
         "connect-server-description": "Oyun sunucunu bağla ve daha fazla yönetim özelliklerine eriş.",
         "menu-title": "Menü",
         "links-title": "Bağlantılar",
-        "publish-your-first-post": "İlk Yazıyı Yayınla",
+        "publish-your-first-post": "İlk Yazıyı Yayımla",
         "change-theme": "Tema Görünümünü Değiştir",
         "manage-addons": "Eklentleri Yönet",
         "manage-players": "Oyuncuları Yönet",
@@ -190,7 +191,7 @@
       "title": "{pageType}Yazılar",
       "category-posts-title": "\"{category}\" Yazılar",
       "no-category": "Kategorisiz",
-      "published": "Yayınlanmış",
+      "published": "Yayımlanmış",
       "draft": "Taslak",
       "trash": "Çöp",
       "table-title": "{postCount} {pageType} Yazı",
@@ -357,7 +358,7 @@
       "trash": "Çöp",
       "move-to-drafts": "Taslaklara Taşı",
       "update": "Güncelle",
-      "publish": "Yayınla",
+      "publish": "Yayımla",
       "inputs": {
         "title": {
           "placeholder": "Yazı başlığını girin"
@@ -371,7 +372,7 @@
       "title-edit": "Yazıyı Düzenle",
       "new": "Yeni",
       "draft": "Taslak",
-      "published": "Yayınlanmış"
+      "published": "Yayımlanmış"
     },
     "server": {
       "dashboard": {
@@ -502,7 +503,7 @@
     "post-row": {
       "actions": "Eylemler",
       "move-to-draft": "Taslaklara Taşı",
-      "publish": "Yayınla",
+      "publish": "Yayımla",
       "move-to-trash": "Çöp Kutusuna Taşı",
       "no-category": "Kategorisiz",
       "filter": "Filtrele"
@@ -596,6 +597,12 @@
       },
       "confirm-install-resource": {
         "title": "\"{title}\" ({resourceId}) kurmak istediğinize emin misiniz?"
+      },
+      "confirm-draft-post": {
+        "title": "Bu gönderiyi taslağa taşımak istediğinize emin misiniz?"
+      },
+      "confirm-publish-post": {
+        "title": "Bu gönderiyi yayımlamak istediğinize emin misiniz? Herkese açık olacaktır."
       },
       "add-edit-post-category": {
         "create-category": "Kategori Oluştur",
@@ -821,7 +828,7 @@
       "post-deleted-permanently": "\"{title}\" kalıcı olarak silindi.",
       "post-moved-to-draft": "\"{title}\" taslaklara taşındı.",
       "post-moved-to-trash": "\"{title}\" çöpe taşındı.",
-      "post-published": "\"{title}\" yayınlandı.",
+      "post-published": "\"{title}\" yayımlandı.",
       "post-saved": "\"{title}\" kaydedildi.",
       "rejected-server-connect": "Sunucu bağlantı isteği reddedildi.",
       "server-deleted-success": "\"{name}\" sunucu silindi.",

@@ -3,13 +3,6 @@
     position: relative;
     display: inline-block;
   }
-
-  .clear-button {
-    position: absolute;
-    top: 0.5rem;
-    right: 1rem;
-    z-index: 1;
-  }
 </style>
 
 <article class="container vstack gap-3">
@@ -31,9 +24,9 @@
     <div slot="right">
       {#if data.mode === Modes.EDIT}
         <button
-          class="btn btn-link text-danger"
+          class="btn btn-outline-danger border-0 shadow-none"
           type="button"
-          on:click={showDeletePostModal(data.post)}
+          on:click={() => showDeletePostModal(data.post)}
           use:tooltip={[
             $_("pages.post-editor.trash"),
             { placement: "bottom" },
@@ -43,7 +36,7 @@
       {/if}
       {#if data.post.status !== StatusTypes.DRAFT && data.mode === Modes.EDIT}
         <button
-          class="btn btn-link"
+          class="btn btn-outline-primary border-0 shadow-none"
           type="button"
           class:disabled={loading}
           on:click={onDraftClick}
@@ -55,7 +48,7 @@
         </button>
       {/if}
       <a
-        class="btn btn-link"
+        class="btn btn-outline-primary border-0 shadow-none"
         role="button"
         target="_blank"
         href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{data.post.id}"
@@ -64,13 +57,17 @@
       </a>
       {#if data.post.status !== StatusTypes.PUBLISHED}
         <button
-          class="btn btn-primary"
+          class="btn btn-outline-primary border-0 shadow-none"
           type="button"
           class:disabled={loading ||
             isEditorEmpty ||
             data.post.title.length === 0}
-          on:click={() => submit(false)}>
-          {$_("buttons.save")}
+          on:click={() => submit(false)}
+          use:tooltip={[
+            $_(data.mode === Modes.CREATE  ? "buttons.save" : "buttons.update"),
+            { placement: "bottom" },
+          ]}>
+          <i class="fas fa-save"></i>
         </button>
       {/if}
       <button
@@ -80,8 +77,9 @@
           isEditorEmpty ||
           data.post.title.length === 0}
         on:click={() => submit(true)}>
+        <i class="fas fa-globe me-2"></i>
         {data.post.status === StatusTypes.PUBLISHED
-          ? $_("pages.post-editor.update")
+          ? $_("buttons.update")
           : $_("pages.post-editor.publish")}
       </button>
     </div>
@@ -300,6 +298,14 @@
     setCallback as setCallbackForAddEditPostCategoryModal,
   } from "$lib/component/modals/AddEditPostCategoryModal.svelte";
 
+  import {
+    show as showDraftPostModal,
+  } from "$lib/component/modals/ConfirmDraftPostModal.svelte";
+
+  import {
+    show as showPublishPostModal,
+  } from "$lib/component/modals/ConfirmPublishPostModal.svelte";
+
   import Editor from "$lib/component/Editor.svelte";
 
   import {
@@ -382,104 +388,108 @@
   }
 
   function submit(publish) {
-    loading = true;
+    showPublishPostModal(() => {
+      loading = true;
 
-    const bodyHandler = (body, reject) => {
-      if (body.result === "ok") {
-        loading = false;
+      const bodyHandler = (body, reject) => {
+        if (body.result === "ok") {
+          loading = false;
 
-        if (data.mode === Modes.CREATE) {
-          goto(base + "/posts/detail/" + body.id);
-        }
+          if (data.mode === Modes.CREATE) {
+            goto(base + "/posts/detail/" + body.id);
+          }
 
-        if (data.mode === Modes.EDIT && publish) {
-          data.post.status = StatusTypes.PUBLISHED;
-        }
+          if (data.mode === Modes.EDIT && publish) {
+            data.post.status = StatusTypes.PUBLISHED;
+          }
 
-        if (publish) {
-          const title = limitTitle(data.post.title);
+          if (publish) {
+            const title = limitTitle(data.post.title);
 
-          showToast("components.toasts.post-published", {
-            title,
-          });
-        } else {
-          const title = limitTitle(data.post.title);
+            showToast("components.toasts.post-published", {
+              title,
+            });
+          } else {
+            const title = limitTitle(data.post.title);
 
-          showToast("components.toasts.post-saved", {
-            title,
-          });
-        }
+            showToast("components.toasts.post-saved", {
+              title,
+            });
+          }
 
-        isThumbnailSaved = true;
-        isThumbnailRemoved = false;
-        thumbnailFiles = null;
+          isThumbnailSaved = true;
+          isThumbnailRemoved = false;
+          thumbnailFiles = null;
 
-        return;
-      } else if (body.result === "error") {
-        loading = false;
+          return;
+        } else if (body.result === "error") {
+          loading = false;
 
-        data.error = body.error;
-
-        return;
-      }
-
-      reject();
-    };
-
-    const body = new FormData();
-
-    body.append("publish", publish);
-    body.append("title", data.post.title);
-    body.append("category", data.post.category);
-    body.append("text", data.post.text);
-
-    if (isThumbnailRemoved) {
-      body.append("removeThumbnail", true);
-    } else if (thumbnailFiles && thumbnailFiles[0]) {
-      body.append("thumbnail", thumbnailFiles[0]);
-    }
-
-    if (data.post.id === -1) {
-      ApiUtil.post({
-        path: "/api/panel/post",
-        body,
-        handler: bodyHandler,
-      });
-
-      return;
-    }
-
-    ApiUtil.put({
-      path: `/api/panel/posts/${data.post.id}`,
-      body,
-      handler: bodyHandler,
-    });
-  }
-
-  function onDraftClick() {
-    loading = true;
-
-    ApiUtil.put({
-      path: `/api/panel/posts/${data.post.id}/status`,
-      body: {
-        to: "DRAFT",
-      },
-      handler: async (body, reject) => {
-        if (body.error) {
-          reject();
+          data.error = body.error;
 
           return;
         }
 
-        loading = false;
+        reject();
+      };
 
-        await goto(base + "/posts?pageType=DRAFT");
+      const body = new FormData();
 
-        const title = `<a href="${base}/posts?pageType=DRAFT" target="_blank">${limitTitle(data.post.title)}</a>`;
+      body.append("publish", publish);
+      body.append("title", data.post.title);
+      body.append("category", data.post.category);
+      body.append("text", data.post.text);
 
-        await showToast("components.toasts.post-moved-to-draft", { title });
-      },
-    });
+      if (isThumbnailRemoved) {
+        body.append("removeThumbnail", true);
+      } else if (thumbnailFiles && thumbnailFiles[0]) {
+        body.append("thumbnail", thumbnailFiles[0]);
+      }
+
+      if (data.post.id === -1) {
+        ApiUtil.post({
+          path: "/api/panel/post",
+          body,
+          handler: bodyHandler,
+        });
+
+        return;
+      }
+
+      ApiUtil.put({
+        path: `/api/panel/posts/${data.post.id}`,
+        body,
+        handler: bodyHandler,
+      });
+    })
+  }
+
+  function onDraftClick() {
+    showDraftPostModal(() => {
+      loading = true;
+
+      ApiUtil.put({
+        path: `/api/panel/posts/${data.post.id}/status`,
+        body: {
+          to: "DRAFT",
+        },
+        handler: async (body, reject) => {
+          if (body.error) {
+            reject();
+
+            return;
+          }
+
+          loading = false;
+
+          await goto(base + "/posts?pageType=DRAFT");
+
+          const title = `<a href="${base}/posts?pageType=DRAFT" target="_blank">${limitTitle(data.post.title)}</a>`;
+
+          await showToast("components.toasts.post-moved-to-draft", { title });
+        },
+      });
+    })
   }
 
   function onRemoveThumbnailClick() {

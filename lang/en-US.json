@@ -52,7 +52,8 @@
     "source": "Source",
     "start": "Start",
     "stop": "Stop",
-    "go-to-store": "Go To Store"
+    "go-to-store": "Go To Store",
+    "update": "Update"
   },
   "pages": {
     "themes": {
@@ -596,6 +597,12 @@
       },
       "confirm-install-resource": {
         "title": "Are you sure to install \"{title}\" ({resourceId})?"
+      },
+      "confirm-draft-post": {
+        "title": "Are you sure to move this post to draft?"
+      },
+      "confirm-publish-post": {
+        "title": "Are you sure to publish this post? It will be publicly available to everyone."
       },
       "add-edit-post-category": {
         "create-category": "Create Category",
