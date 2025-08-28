@@ -287,6 +287,8 @@
   });
 
   onAuthorizePlayerModalHide((newPlayer) => {
+    if (!data.players) {return}
+
     data.players.forEach((player) => {
       if (player.id === newPlayer.id) {
         player.selected = false;
@@ -297,6 +299,8 @@
   });
 
   onEditPlayerModalHide((newPlayer) => {
+    if (!data.players) {return}
+
     data.players.forEach((player) => {
       if (player.id === newPlayer.id) {
         player.selected = false;
@@ -307,6 +311,8 @@
   });
 
   onConfirmBanPlayerModalHide((newPlayer) => {
+    if (!data.players) {return}
+
     data.players.forEach((player) => {
       if (player.id === newPlayer.id) {
         player.selected = false;
@@ -317,6 +323,8 @@
   });
 
   onUnbanPlayerModalHide((newPlayer) => {
+    if (!data.players) {return}
+
     data.players.forEach((player) => {
       if (player.id === newPlayer.id) {
         player.selected = false;
@@ -327,6 +335,8 @@
   });
 
   setConfirmBanPlayerModalCallback((newPlayer) => {
+    if (!data.players) {return}
+
     data.players.forEach((player) => {
       if (player.id === newPlayer.id) {
         player.selected = false;
@@ -339,6 +349,8 @@
   });
 
   setUnbanPlayerModalCallback((newPlayer) => {
+    if (!data.players) {return}
+
     data.players.forEach((player) => {
       if (player.id === newPlayer.id) {
         player.selected = false;
