@@ -304,6 +304,7 @@
                           inProgressResource ||
                           updatingAll}
                         on:click={() => updateResource(update)}>
+                        <i class="fas fa-download"></i>
                         Update
                       </button>
                     </div>
