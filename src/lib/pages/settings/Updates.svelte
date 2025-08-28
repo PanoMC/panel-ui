@@ -125,6 +125,9 @@
                           updatingAll}>
                         <i class="fas fa-download"></i>
                         Update
+                        {#if $platformUpdating}
+                          <i class="fa-solid fa-spinner fa-spin"></i>
+                        {/if}
                       </button>
                     </div>
                   </div>
@@ -306,6 +309,9 @@
                         on:click={() => updateResource(update)}>
                         <i class="fas fa-download"></i>
                         Update
+                        {#if inProgressResource?.id === update.id}
+                          <i class="fa-solid fa-spinner fa-spin"></i>
+                        {/if}
                       </button>
                     </div>
 
