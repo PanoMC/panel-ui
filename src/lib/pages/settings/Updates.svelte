@@ -118,7 +118,7 @@
                     <div class="d-flex align-items-center gap-2">
                       <button
                         class="btn btn-sm btn-secondary d-flex align-items-center gap-1"
-                        on:click={installPlatformUpdate}
+                        on:click={onUpdatePlatformClick}
                         class:disabled={loading ||
                           $platformUpdating ||
                           inProgressResource ||
@@ -204,7 +204,7 @@
               $platformUpdating ||
               inProgressResource ||
               updatingAll}
-            on:click={updateAll}>Update All</button>
+            on:click={onUpdateAllClick}>Update All</button>
         {/if}
       </div>
     </CardHeader>
@@ -306,7 +306,7 @@
                           $platformUpdating ||
                           inProgressResource ||
                           updatingAll}
-                        on:click={() => updateResource(update)}>
+                        on:click={() => onUpdateResourceClick(update)}>
                         <i class="fas fa-download"></i>
                         Update
                         {#if inProgressResource?.id === update.id}
@@ -374,6 +374,10 @@
   </div>
 </div>
 
+<ConfirmUpdatePlatformModal/>
+<ConfirmUpdateResourceModal/>
+<ConfirmUpdateResourcesModal/>
+
 <script context="module">
   import ApiUtil, { buildQueryParams } from "$lib/api.util";
 
@@ -417,6 +421,18 @@
   import MarkdownRenderer from "$lib/component/MarkdownRenderer.svelte";
   import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
   import CardHeader from "$lib/component/CardHeader.svelte";
+
+  import ConfirmUpdatePlatformModal, {
+    show as showUpdatePlatformModal,
+  } from "$lib/component/modals/ConfirmUpdatePlatformModal.svelte";
+
+  import ConfirmUpdateResourceModal, {
+    show as showUpdateResourceModal,
+  } from "$lib/component/modals/ConfirmUpdateResourceModal.svelte";
+
+  import ConfirmUpdateResourcesModal, {
+    show as showUpdateResourcesModal,
+  } from "$lib/component/modals/ConfirmUpdateResourcesModal.svelte";
 
   export let data;
 
@@ -578,6 +594,12 @@
     handlePlatformUpdateEventSource(eventSource);
   }
 
+  function onUpdatePlatformClick() {
+    showUpdatePlatformModal(() => {
+      installPlatformUpdate()
+    })
+  }
+
   async function updateResource(update) {
     resourceUpdateError = null;
     inProgressResource = update;
@@ -589,6 +611,12 @@
     );
 
     handleResourceUpdateEventSource(update, eventSource);
+  }
+
+  function onUpdateResourceClick(update) {
+    showUpdateResourceModal(() => {
+      updateResource(update)
+    })
   }
 
   async function updateAll() {
@@ -607,6 +635,12 @@
     }
 
     updatingAll = false;
+  }
+
+  function onUpdateAllClick() {
+    showUpdateResourcesModal(() => {
+      updateAll()
+    })
   }
 
   async function checkUpdate() {

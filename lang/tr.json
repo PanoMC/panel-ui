@@ -578,6 +578,15 @@
       "confirm-remove-pano-account": {
         "title": "Çevrimiçi Pano hesabınızı platformdan kaldırmak istediğinize emin misiniz?"
       },
+      "confirm-update-platform": {
+        "title": "Platformu güncellemek istediğinize emin misiniz? Güncelleme sırasında Pano birkaç dakika erişilemez olabilir. Bu sayfadan ayrılsanız bile güncelleme arka planda devam edecektir."
+      },
+      "confirm-update-resource": {
+        "title": "Bu kaynağı güncellemek istediğinize emin misiniz? Bu sayfadan ayrılsanız bile güncelleme arka planda devam edecektir."
+      },
+      "confirm-update-resources": {
+        "title": "Tüm kaynakları güncellemek istediğinize emin misiniz? Bu sayfadan ayrılsanız bile yalnızca son kaynağın güncellemesi arka planda devam edecektir."
+      },
       "confirm-stop-theme": {
         "title": "Mevcut aktif temayı durdurmak istediğinize emin misiniz? Bu, sitenin erişilemez olmasına neden olacaktır!"
       },

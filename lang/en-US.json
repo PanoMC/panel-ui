@@ -578,6 +578,15 @@
       "confirm-remove-pano-account": {
         "title": "Are you sure to disconnect your online Pano account from this platform?"
       },
+      "confirm-update-platform": {
+        "title": "Are you sure to update platform? During the update, Pano may not be accessible for few minutes. If you leave this page, the update will continue in the background."
+      },
+      "confirm-update-resource": {
+        "title": "Are you sure to update this resource? If you leave this page, update will continue in the background."
+      },
+      "confirm-update-resources": {
+        "title": "Are you sure to update all the resources? If you leave this page, only the last resource update will continue in the background."
+      },
       "confirm-stop-theme": {
         "title": "Are you sure to stop current active theme? This will cause website unreachable!"
       },
