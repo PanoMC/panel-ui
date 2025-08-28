@@ -19,7 +19,7 @@
           type="button"
           class:disabled="{loading}"
           on:click="{hide}">
-          {$_('components.modals.unban-player.camcel')}
+          {$_('buttons.cancel')}
         </button>
         <button
           class="btn btn-danger col-6 m-0"
