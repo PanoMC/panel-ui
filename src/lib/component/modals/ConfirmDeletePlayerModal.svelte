@@ -105,7 +105,7 @@
           callback($player);
           await goto(base + "/players");
           hide();
-          await showToast('player-deleted-success', { username: $player.username });
+          await showToast('components.toasts.player-deleted-success', { username: $player.username });
           return
         } else if (body.error) {
           if (body.error === "CURRENT_PASSWORD_NOT_CORRECT") {
