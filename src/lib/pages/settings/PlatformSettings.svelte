@@ -485,7 +485,11 @@
         path: "/api/panel/platform/disconnect",
         handler: async (body, reject) => {
           if (body.error) {
-            await showToast("components.toasts.pano-account-disconnect-fail");
+            if (body.error === "PANO_CONNECT_FAILED") {
+              await showToast("components.toasts.pano-account-disconnect-fail-cant-connect");
+            } else {
+              await showToast("components.toasts.pano-account-disconnect-fail");
+            }
 
             disconnecting = false;
             return;
