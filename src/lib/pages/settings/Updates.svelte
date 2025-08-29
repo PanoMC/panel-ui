@@ -236,10 +236,7 @@
                         width="64"
                         height="64"
                         class="rounded"
-                        src={`${PANO_WEBSITE_API_URL}/resources/${update.id}/` +
-                          (update.type === "THEME"
-                            ? `screenshots/${update.screenshot?.id}`
-                            : "icon")}
+                        src={`/api/panel/updates/icon/${update.iconFileName}`}
                         title={update.id}
                         alt={update.id} />
                     </a>
