@@ -76,6 +76,7 @@
           <thead>
             <tr>
               <th scope="col"></th>
+              <th scope="col"></th>
               <th class="align-middle" scope="col"
                 >{$_("pages.posts.table.title")}</th>
               <th

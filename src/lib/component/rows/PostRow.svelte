@@ -58,6 +58,28 @@
       </div>
     </div>
   </th>
+  <td>
+    {#if post.thumbnailUrl}
+      <a href="{base}/posts/detail/{post.id}">
+          <img
+            src={post.thumbnailUrl}
+            style="object-fit: contain;"
+            alt={post.title}
+            title={post.title}
+            width="50"
+            height="40"/>
+     </a>
+      {:else}
+      <!-- DEFAULT, this is used as space aligning for others -->
+      <img
+        src={false}
+        style="object-fit: contain;"
+        alt={post.title}
+        title={post.title}
+        width="50"
+        height="40" hidden/>
+    {/if}
+  </td>
   <td class="align-middle text-nowrap">
     <a href="{base + '/posts/detail/' + post.id}" title="{$_('buttons.edit')}">
       {post.title}
