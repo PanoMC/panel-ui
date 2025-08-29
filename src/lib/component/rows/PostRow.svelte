@@ -62,7 +62,7 @@
     {#if post.thumbnailUrl}
       <a href="{base}/posts/detail/{post.id}">
           <img
-            src={post.thumbnailUrl}
+            src={post.thumbnailUrl + "?preview=true"}
             style="object-fit: contain;"
             alt={post.title}
             title={post.title}
