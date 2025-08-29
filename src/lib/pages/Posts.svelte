@@ -352,6 +352,7 @@
   }
 
   function removeSelection() {
+    if (!data.posts) return
     data.posts.forEach(post => post.selected = false)
     data.posts = data.posts
   }
