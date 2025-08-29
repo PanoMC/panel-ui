@@ -11,8 +11,10 @@
         <div class="pb-3">
           <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
         </div>
+        <div class="pb-3">
         {$_('components.modals.confirm-ban-player.title')}
-        <div class="form-check d-inline-block text-center mt-3">
+        </div>
+        <div class="form-check d-inline-block text-center">
           <input
             class="form-check-input"
             type="checkbox"
