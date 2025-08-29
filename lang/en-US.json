@@ -578,6 +578,9 @@
       "confirm-remove-pano-account": {
         "title": "Are you sure to disconnect your online Pano account from this platform?"
       },
+      "confirm-disable-email": {
+        "title": "Are you sure to disable e-mail? E-mail functions such as register/forgot password won't work!"
+      },
       "confirm-update-platform": {
         "title": "Are you sure to update platform? During the update, Pano may not be accessible for few minutes. If you leave this page, the update will continue in the background."
       },

@@ -578,6 +578,9 @@
       "confirm-remove-pano-account": {
         "title": "Çevrimiçi Pano hesabınızı platformdan kaldırmak istediğinize emin misiniz?"
       },
+      "confirm-disable-email": {
+        "title": "E-posta’yı devre dışı bırakmak istediğinize emin misiniz? Kayıt/şifre sıfırlama gibi e-posta işlevleri çalışmayacaktır!"
+      },
       "confirm-update-platform": {
         "title": "Platformu güncellemek istediğinize emin misiniz? Güncelleme sırasında Pano birkaç dakika erişilemez olabilir. Bu sayfadan ayrılsanız bile güncelleme arka planda devam edecektir."
       },

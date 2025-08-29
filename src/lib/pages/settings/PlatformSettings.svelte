@@ -180,7 +180,7 @@
         class="form-check-input"
         type="checkbox"
         id="smtpToggle"
-        checked="{$siteInfo.emailEnabled}"
+        bind:checked="{$siteInfo.emailEnabled}"
         on:change="{onToggleSmtp}"
         disabled="{toggleSmtpLoading}" />
       <label class="form-check-label" for="smtpToggle"
@@ -325,6 +325,7 @@
 </div>
 
 <ConfirmRemovePanoAccountModal />
+<ConfirmDisableEmailModal />
 
 <script context="module">
   import { base } from "$app/paths";
@@ -387,6 +388,10 @@
   import ConfirmRemovePanoAccountModal, {
     show as showConfirmRemovePanoAccountModal,
   } from "$lib/component/modals/ConfirmRemovePanoAccountModal.svelte";
+
+  import ConfirmDisableEmailModal, {
+    show as showConfirmDisableEmailModal,
+  } from "$lib/component/modals/ConfirmDisableEmailModal.svelte";
 
   const pageTitle = getContext("pageTitle");
   const siteInfo = getContext("siteInfo");
@@ -639,53 +644,55 @@
   }
 
   function onToggleSmtp(event) {
-    toggleSmtpLoading = true;
+    if (!event.target.checked) {
+      $siteInfo.emailEnabled = true;
+      showConfirmDisableEmailModal(() => {
+        toggleSmtpLoading = true;
 
-    smtpDisabled = !event.target.checked;
+        mailValidated = false;
+        saveEmailLoading = true;
 
-    if (smtpDisabled) {
-      mailValidated = false;
-      saveEmailLoading = true;
+        const formData = new FormData();
+        formData.append(
+          "email",
+          JSON.stringify({
+            enabled: false,
+            hostname: "",
+            port: 0,
+            ssl: false,
+            starttls: "DISABLED",
+            username: "",
+            password: "",
+            sender: "",
+            authMethods: "",
+          }),
+        );
 
-      const formData = new FormData();
-      formData.append(
-        "email",
-        JSON.stringify({
-          enabled: false,
-          hostname: "",
-          port: 0,
-          ssl: false,
-          starttls: "DISABLED",
-          username: "",
-          password: "",
-          sender: "",
-          authMethods: "",
-        }),
-      );
+        ApiUtil.put({
+          path: "/api/panel/settings",
+          body: formData,
+          handler: async (body, reject) => {
+            if (body.error) {
+              reject();
 
-      ApiUtil.put({
-        path: "/api/panel/settings",
-        body: formData,
-        handler: async (body, reject) => {
-          if (body.error) {
-            reject();
+              return;
+            }
 
-            return;
-          }
+            saveEmailLoading = false;
 
-          saveEmailLoading = false;
+            await invalidateAll();
 
-          await invalidateAll();
+            if (smtpDisabled) {
+              await showToast("components.toasts.smtp-disabled-success");
+            } else {
+              await showToast("components.toasts.smtp-enabled-success");
+            }
 
-          if (smtpDisabled) {
-            await showToast("components.toasts.smtp-disabled-success");
-          } else {
-            await showToast("components.toasts.smtp-enabled-success");
-          }
-
-          toggleSmtpLoading = false;
-        },
-      });
+            toggleSmtpLoading = false;
+            smtpDisabled = !event.target.checked;
+          },
+        });
+      })
 
       return;
     }
