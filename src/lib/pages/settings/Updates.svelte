@@ -12,7 +12,7 @@
             relativeFormat={true}
             tooltip={false} />
         {:else}
-          Never
+          {$_("pages.settings.updates.never")}
         {/if}
       </span>
     </div>
@@ -22,37 +22,20 @@
         class:disabled={loading || $platformUpdating || inProgressResource}
         on:click={checkUpdate}>
         <i class="fa-regular fa-arrows-rotate me-2" class:fa-spin={loading}></i>
-        Check Updates
+        {$_('buttons.check-updates')}
       </button>
     </div>
   </PageActions>
 
-  <div
-    class="alert alert-warning animate__animated animate__slideInUp mb-0"
-    role="alert"
-    hidden>
-    <h5 class="alert-heading">Yenide başlat</h5>
-
-    <p>
-      Platform güncellemesinin uygulanabilmesi için yeniden başlatma gerekiyor.
-    </p>
-    <p>
-      Tahmini süre: <b>TIME</b>
-    </p>
-    <a class="btn btn-outline-warning" type="button">
-      <i class="fa-solid fa-power-off me-2"></i>
-      Yeniden Başlat</a>
-  </div>
-
   <div class="card">
     <div class="card-header">
-      Platform Updates {#if data.platformUpdate}(1){/if}
+      {$_('pages.settings.updates.platform-updates')}&nbsp;{#if data.platformUpdate}(1){/if}
     </div>
     <!-- Pending Update List -->
     {#if !data.platformUpdate}
       <NoContent
         icon="fas fa-check fa-3x"
-        text="You are using latest version of Pano." />
+        text="{$_('pages.settings.updates.using-latest-pano')}" />
     {:else}
       <div class="card-body">
         <ul class="list-group">
@@ -82,7 +65,7 @@
                         <h5 class="mb-0">Pano</h5>
                         <i
                           class="fa-regular fa-circle-check text-success"
-                          title="Verified"></i>
+                          title="{$_('pages.settings.updates.verified')}"></i>
 
                         <span class="badge text-bg-light">
                           {data.platformUpdate.channel.capitalize()}
@@ -93,7 +76,7 @@
                           {data.platformUpdate.version}</span>
 
                         <div>
-                          by <strong>Pano</strong>
+                          {$_('pages.settings.updates.by')}&nbsp;<strong>Pano</strong>
                         </div>
                       </div>
 
@@ -124,7 +107,7 @@
                           inProgressResource ||
                           updatingAll}>
                         <i class="fas fa-download"></i>
-                        Update
+                        {$_('buttons.update')}
                         {#if $platformUpdating}
                           <i class="fa-solid fa-spinner fa-spin"></i>
                         {/if}
@@ -164,9 +147,9 @@
                             { values: { error: platformUpdateError } },
                           )}</span>
                       {:else if !isPlatformUpdateFinished(platformUpdatingStep)}
-                        {platformUpdateProcesses[platformUpdatingStep - 1]}
+                        {$_('pages.settings.updates.platform-update-steps.' + platformUpdateProcesses[platformUpdatingStep - 1])}
                       {:else}
-                        🎉 Install complete! Restarting... <i
+                        {$_('pages.settings.updates.install-complete-restarting')} <i
                           class="me-2 fas fa-spinner fa-spin"></i>
                       {/if}
                     </p>
@@ -174,7 +157,7 @@
 
                   <!-- Changelog -->
                   <details class="mt-3">
-                    <summary class="fw-bold link-primary">Changelog </summary>
+                    <summary class="fw-bold link-primary">{$_('pages.settings.updates.changelog')}</summary>
                     <div class="pt-2 markdown-renderer">
                       <MarkdownRenderer
                         content={data.platformUpdate.changelog} />
@@ -192,7 +175,7 @@
   <div class="card">
     <CardHeader>
       <div slot="left">
-        Resource Updates {#if data.resourceUpdates.length > 0}({data
+        {$_('pages.settings.updates.resource-updates')}&nbsp;{#if data.resourceUpdates.length > 0}({data
             .resourceUpdates.length}){/if}
       </div>
       <div slot="right">
@@ -204,7 +187,7 @@
               $platformUpdating ||
               inProgressResource ||
               updatingAll}
-            on:click={onUpdateAllClick}>Update All</button>
+            on:click={onUpdateAllClick}>{$_('buttons.update-all')}</button>
         {/if}
       </div>
     </CardHeader>
@@ -212,12 +195,12 @@
       {#if !data.panoAccount}
         <NoContent
           icon="fas fa-sync fa-3x"
-          text="Kaynak güncellemeleri alabilmek için lütfen Çevrimiçi Hesap bağlayın."
+          text="{$_('pages.settings.updates.connect-pano-account')}"
           dark={false} />
       {:else if data.resourceUpdates.length === 0}
         <NoContent
           icon="fas fa-sync fa-3x"
-          text="No updates found."
+          text="{$_('pages.settings.updates.no-update-found')}"
           dark={false} />
       {:else}
         <ul class="list-group">
@@ -267,7 +250,7 @@
                             {update.version}</span>
 
                           <div>
-                            by <a
+                            {$_('pages.settings.updates.by')}&nbsp;<a
                               href={`${PANO_WEBSITE_URL}/users/${update.developer}`}
                               target="_blank"
                               ><strong
@@ -305,7 +288,7 @@
                           updatingAll}
                         on:click={() => onUpdateResourceClick(update)}>
                         <i class="fas fa-download"></i>
-                        Update
+                        {$_('buttons.update')}
                         {#if inProgressResource?.id === update.id}
                           <i class="fa-solid fa-spinner fa-spin"></i>
                         {/if}
@@ -344,9 +327,9 @@
                               { values: { error: resourceUpdateError.error } },
                             )}</span>
                         {:else if !isResourceUpdateFinished(resourceUpdateStep)}
-                          {resourceUpdateProcesses[resourceUpdateStep - 1]}
+                          {$_('pages.settings.updates.resource-update-steps.' + resourceUpdateProcesses[resourceUpdateStep - 1])}
                         {:else}
-                          🎉 Install complete!
+                          {$_('pages.settings.updates.install-complete')}
                         {/if}
                       </p>
                     {/if}
@@ -354,7 +337,7 @@
                     <!-- Changelog -->
                     <details class="mt-3">
                       <summary class="fw-bold link-primary">
-                        Changelog
+                        {$_('pages.settings.updates.changelog')}
                       </summary>
                       <div class="pt-2 markdown-renderer">
                         <MarkdownRenderer content={update.changelog} />
@@ -406,7 +389,7 @@
   import { browser } from "$app/environment";
 
   import { formatBytes } from "$lib/string.util";
-  import { PANO_WEBSITE_API_URL, PANO_WEBSITE_URL } from "$lib/variables";
+  import { PANO_WEBSITE_URL } from "$lib/variables";
 
   import tooltip from "$lib/tooltip.util";
 
@@ -435,7 +418,7 @@
 
   const pageTitle = getContext("pageTitle");
 
-  pageTitle.set("Güncellemeler");
+  pageTitle.set("pages.settings.updates.title");
 
   let loading, platformUpdateError, confetti;
   let platformUpdatingStep = 1;
@@ -449,18 +432,18 @@
   const platformUpdating = getContext("platformUpdating");
 
   const platformUpdateProcesses = [
-    "Getting platform update info...",
-    "Downloading update...",
-    "Verifying hash...",
-    "Extracting updater...",
-    "Installing new update...",
+    "getting-platform-update-info",
+    "downloading-update",
+    "verifying-hash",
+    "extracting-updater",
+    "installing-new-update",
   ];
 
   const resourceUpdateProcesses = [
-    "Getting version info...",
-    "Downloading update...",
-    "Preparing...",
-    "Installing new update...",
+    "getting-version-info",
+    "downloading-update",
+    "preparing",
+    "installing-new-update",
   ];
 
   function delay(time) {

@@ -53,7 +53,9 @@
     "start": "Start",
     "stop": "Stop",
     "go-to-store": "Go To Store",
-    "update": "Update"
+    "update": "Update",
+    "check-updates": "Check Updates",
+    "update-all": "Update All"
   },
   "pages": {
     "themes": {
@@ -311,6 +313,31 @@
         "toggle-smtp": "Toggle SMTP"
       },
       "updates":  {
+        "title": "Updates",
+        "never": "Never",
+        "platform-updates": "Platform Updates",
+        "using-latest-pano": "You are using latest version of Pano.",
+        "verified": "Verified",
+        "by": "by",
+        "install-complete-restarting": "\uD83C\uDF89 Install complete! Restarting...",
+        "changelog": "Changelog",
+        "platform-update-steps": {
+          "getting-platform-update-info": "Getting platform update info...",
+          "downloading-update": "Downloading update...",
+          "verifying-hash": "Verifying hash...",
+          "extracting-updater": "Extracting updater...",
+          "installing-new-update": "Installing new update..."
+        },
+        "resource-updates": "Resource Updates",
+        "connect-pano-account": "Connect a Pano account to get resource updates.",
+        "no-update-found": "No update found.",
+        "install-complete": "\uD83C\uDF89 Install complete!",
+        "resource-update-steps": {
+          "getting-version-info": "Getting version info...",
+          "downloading-update": "Downloading update...",
+          "preparing": "Preparing...",
+          "installing-new-update": "Installing new update..."
+        },
         "updating-leave-alert": "There is an update working, leaving this page may result in broken features!"
       }
     },

@@ -53,7 +53,9 @@
     "start": "Başlat",
     "stop": "Durdur",
     "go-to-store": "Mağazaya Git",
-    "update": "Güncelle"
+    "update": "Güncelle",
+    "check-updates": "Güncellemeleri Kontrol Et",
+    "update-all": "Hepsini Güncelle"
   },
   "pages": {
     "themes": {
@@ -311,7 +313,32 @@
         "toggle-smtp": "SMTP'yi Değiştir"
       },
       "updates": {
-        "updating-leave-alert": "Bir güncelleme çalışıyor, bu sayfadan ayrılmak bozuk özelliklere yol açabilir!"
+        "title": "Güncellemeler",
+        "never": "Asla",
+        "platform-updates": "Platform Güncellemeleri",
+        "using-latest-pano": "Pano'nun en son sürümünü kullanıyorsunuz.",
+        "verified": "Doğrulandı",
+        "by": "geliştirici",
+        "install-complete-restarting": "🎉 Kurulum tamamlandı! Yeniden başlatılıyor...",
+        "changelog": "Değişiklikler",
+        "platform-update-steps": {
+          "getting-platform-update-info": "Platform güncelleme bilgisi alınıyor...",
+          "downloading-update": "Güncelleme indiriliyor...",
+          "verifying-hash": "Hash doğrulanıyor...",
+          "extracting-updater": "Güncelleyici çıkarılıyor...",
+          "installing-new-update": "Yeni güncelleme yükleniyor..."
+        },
+        "resource-updates": "Kaynak Güncellemeleri",
+        "connect-pano-account": "Kaynak güncellemelerini almak için bir Pano hesabı bağlayın.",
+        "no-update-found": "Herhangi bir güncelleme bulunamadı.",
+        "install-complete": "🎉 Kurulum tamamlandı!",
+        "resource-update-steps": {
+          "getting-version-info": "Sürüm bilgisi alınıyor...",
+          "downloading-update": "Güncelleme indiriliyor...",
+          "preparing": "Hazırlanıyor...",
+          "installing-new-update": "Yeni güncelleme yükleniyor..."
+        },
+        "updating-leave-alert": "Bir güncelleme çalışıyor, bu sayfadan ayrılmak bazı özelliklerin bozulmasına yol açabilir!"
       }
     },
     "ticket-detail": {
