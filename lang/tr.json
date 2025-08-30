@@ -987,6 +987,14 @@
     "CHECKED_UPDATES": "**{username}** güncellemeleri kontrol etti.",
     "UPDATED_PLATFORM": "**{username}** Pano'yu {to} sürümüne güncelledi.",
     "UPDATED_RESOURCE": "**{username}** {resourceId} kaynağını v{from} sürümünden v{to} sürümüne güncelledi.",
-    "INSTALLED_RESOURCE": "**{username}** yeni bir kaynak {resourceId}\\@{to} kurdu."
+    "INSTALLED_RESOURCE": "**{username}** yeni bir kaynak {resourceId}\\@{to} kurdu.",
+    "ACTIVATED_THEME": "**{username}** {themeId} temasını aktifleştirdi.",
+    "DELETED_PLUGIN": "**{username}** {pluginId} eklentisini sildi.",
+    "DELETED_THEME": "**{username}** {themeId} temasını sildi.",
+    "DISABLED_PLUGIN": "**{username}** {pluginId} eklentisini devre dışı bıraktı.",
+    "ENABLED_PLUGIN": "**{username}** {pluginId} eklentisini etkinleştirdi.",
+    "RELOADED_THEMES": "**{username}** temaları yeniden yükledi.",
+    "STARTED_CURRENT_THEME": "**{username}** mevcut {themeId} temasını başlattı.",
+    "STOPPED_CURRENT_THEME": "**{username}** mevcut {themeId} temasını durdurdu."
   }
 }

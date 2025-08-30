@@ -987,6 +987,14 @@
     "CHECKED_UPDATES": "**{username}** checked updates.",
     "UPDATED_PLATFORM": "**{username}** updated Pano to {to}.",
     "UPDATED_RESOURCE": "**{username}** updated resource {resourceId} from v{from} to v{to}.",
-    "INSTALLED_RESOURCE": "**{username}** installed a new resource {resourceId}\\@{to}."
+    "INSTALLED_RESOURCE": "**{username}** installed a new resource {resourceId}\\@{to}.",
+    "ACTIVATED_THEME": "**{username}** activated {themeId} theme.",
+    "DELETED_PLUGIN": "**{username}** deleted {pluginId} plugin.",
+    "DELETED_THEME": "**{username}** deleted {themeId} theme.",
+    "DISABLED_PLUGIN": "**{username}** disabled {pluginId} plugin.",
+    "ENABLED_PLUGIN": "**{username}** enabled {pluginId} plugin.",
+    "RELOADED_THEMES": "**{username}** reloaded themes.",
+    "STARTED_CURRENT_THEME": "**{username}** started current {themeId} theme.",
+    "STOPPED_CURRENT_THEME": "**{username}** stopped current {themeId} theme."
   }
 }
