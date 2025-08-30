@@ -147,6 +147,9 @@
         "filter": "Filter",
         "no-category": "No Category"
       },
+      "last-registers": {
+        "title": "Last Registers"
+      },
       "logs": {
         "title": "Last Activity Logs"
       }

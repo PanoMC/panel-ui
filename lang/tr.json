@@ -147,6 +147,9 @@
         "filter": "Filtrele",
         "no-category": "Kategorisiz"
       },
+      "last-registers": {
+        "title": "Son Kayıtlar"
+      },
       "logs": {
         "title": "Son Aktivite Kayıtları"
       }

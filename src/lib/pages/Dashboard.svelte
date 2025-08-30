@@ -2,8 +2,7 @@
 <div class="container vstack gap-3">
   <!-- Welcome Alerts -->
   {#if data.gettingStartedBlocks.welcomeBoard}
-    <div
-      class="alert alert-success alert-dismissible animate__animated animate__zoomIn">
+    <div class="alert alert-success alert-dismissible animate__animated animate__zoomIn">
       <div class="row">
         <h5 class="mb-3">
           {@html $_("pages.dashboard.welcome-card.description")}
@@ -47,9 +46,7 @@
             </li>
             <li>
               <a class="alert-link" href="{base}/players">
-                <i class="fa-solid fa-user-cog me-2"></i>{$_(
-                  "pages.dashboard.welcome-card.manage-players",
-                )}
+                <i class="fa-solid fa-user-cog me-2"></i>{$_("pages.dashboard.welcome-card.manage-players")}
               </a>
             </li>
           </ul>
@@ -57,19 +54,13 @@
         <div class="col-lg-4">
           <ul>
             <li>
-              <a
-                class="alert-link"
-                href="{PANO_WEBSITE_URL}/addons"
-                target="_blank">
+              <a class="alert-link" href="{PANO_WEBSITE_URL}/addons" target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
                 {$_("pages.dashboard.welcome-card.get-themes-and-extensions")}
               </a>
             </li>
             <li>
-              <a
-                class="alert-link"
-                href="{PANO_WEBSITE_URL}/docs"
-                target="_blank">
+              <a class="alert-link" href="{PANO_WEBSITE_URL}/docs" target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
                 {$_("pages.dashboard.welcome-card.documentations")}
               </a>
@@ -81,10 +72,7 @@
               </a>
             </li>
             <li>
-              <a
-                class="alert-link"
-                href="{PANO_WEBSITE_URL}/discord"
-                target="_blank">
+              <a class="alert-link" href="{PANO_WEBSITE_URL}/discord" target="_blank">
                 <i class="fab fa-discord me-2"></i>
                 {$_("pages.dashboard.welcome-card.discord")}
               </a>
@@ -98,14 +86,17 @@
         title={$_("buttons.close")}
         class="btn-close"
         data-bs-dismiss="alert"
-        on:click={onCloseGettingStartedCard}></button>
+        on:click={onCloseGettingStartedCard}>
+      </button>
     </div>
   {/if}
-  <div class="row g-3">
-    <div class="col-lg-6">
-      <!-- Latest Tickets -->
+
+  <!-- Masonry Layout for Cards -->
+  <div class="masonry-container">
+    <div class="masonry-column">
+      <!-- Latest Tickets Card -->
       {#if hasPermission(Permissions.MANAGE_TICKETS)}
-        <div class="card">
+        <div class="card mb-3">
           <div class="card-header">
             {$_("pages.dashboard.last-tickets.title")}
           </div>
@@ -114,41 +105,39 @@
             <NoContent />
           {:else}
             <div class="table-responsive">
-              <table class="table table-hover">
+              <table class="table table-hover mb-0">
                 {#each data.tickets as ticket, index (ticket)}
                   <tbody>
-                    <tr>
-                      <td class="align-middle">
-                        <a
-                          use:tooltip={[
+                  <tr>
+                    <td class="align-middle">
+                      <a
+                        use:tooltip={[
                             ticket.writer.username,
                             { placement: "bottom" },
                           ]}
-                          href="{base}/players/detail/{ticket.writer
-                            .username}">
-                          <img
-                            src="https://minotar.net/avatar/{ticket.writer
-                              .username}/32"
-                            alt={$_(
-                              "pages.dashboard.last-tickets.player-name",
-                            )}
-                            class="rounded-circle animate__animated animate__zoomIn"
-                            height="32"
-                            width="32" />
-                        </a>
-                      </td>
-                      <td class="align-middle text-nowrap">
-                        <a
-                          href="{base}/tickets/detail/{ticket.id}"
-                          title={$_("buttons.view")}
-                          >#{ticket.id} {ticket.title}</a>
-                      </td>
-                      <td class="align-middle text-nowrap">
-                        <TicketStatusBadge status={ticket.status} />
-                      </td>
-                      <td class="align-middle text-nowrap"
-                        ><span><Date time={ticket.lastUpdate} /></span></td>
-                    </tr>
+                        href="{base}/players/detail/{ticket.writer.username}">
+                        <img
+                          src="https://minotar.net/avatar/{ticket.writer.username}/32"
+                          alt={$_("pages.dashboard.last-tickets.player-name")}
+                          class="rounded-circle animate__animated animate__zoomIn"
+                          height="32"
+                          width="32" />
+                      </a>
+                    </td>
+                    <td class="align-middle text-nowrap">
+                      <a
+                        href="{base}/tickets/detail/{ticket.id}"
+                        title={$_("buttons.view")}>
+                        #{ticket.id} {ticket.title}
+                      </a>
+                    </td>
+                    <td class="align-middle text-nowrap">
+                      <TicketStatusBadge status={ticket.status} />
+                    </td>
+                    <td class="align-middle text-nowrap">
+                      <span><Date time={ticket.lastUpdate} /></span>
+                    </td>
+                  </tr>
                   </tbody>
                 {/each}
               </table>
@@ -156,36 +145,10 @@
           {/if}
         </div>
       {/if}
-    </div>
 
-    <div class="col-lg-6">
-      <!-- Latest Activity Logs -->
-      <div class="card">
-        <CardHeader>
-          <div slot="left">
-            {$_("pages.dashboard.logs.title")}
-          </div>
-          <div slot="right">
-            {#if data.activityLogs.meta.totalCount > 10}
-              <a href="{base}/logs" class="btn btn-sm btn-outline-primary"
-                >{$_("buttons.show-all")} ({data.activityLogs.meta
-                  .totalCount})</a>
-            {/if}
-          </div>
-        </CardHeader>
-        <ul class="list-group list-group-flush">
-          {#each data.activityLogs.data as log, index (log)}
-            <ActivityLogRow
-              log={log}
-              on:click={onShowViewActivityLogModalClick} />
-          {/each}
-        </ul>
-      </div>
-    </div>
-    <div class="col-lg-6">
-      <!-- Latest Tickets -->
+      <!-- Latest Registers Card -->
       {#if hasPermission(Permissions.MANAGE_PLAYERS)}
-        <div class="card">
+        <div class="card mb-3">
           <div class="card-header">
             {$_("pages.dashboard.last-registers.title")}
           </div>
@@ -194,7 +157,7 @@
             <NoContent />
           {:else}
             <div class="table-responsive">
-              <table class="table table-hover">
+              <table class="table table-hover mb-0">
                 {#each data.lastRegisters as player, index (player)}
                   <tbody>
                   <tr>
@@ -221,7 +184,9 @@
                         inGame={player.inGame}
                         checkTime={0} />
                     </td>
-                    <td class="align-middle text-nowrap"><Date time={player.lastLoginDate} /></td>
+                    <td class="align-middle text-nowrap">
+                      <Date time={player.lastLoginDate} />
+                    </td>
                     <td class="align-middle text-nowrap">
                       <Date time={player.registerDate} />
                     </td>
@@ -235,6 +200,31 @@
       {/if}
     </div>
 
+    <div class="masonry-column">
+      <!-- Sağ Sütun -->
+      <!-- Latest Activity Logs Card -->
+      <div class="card mb-3">
+        <CardHeader>
+          <div slot="left">
+            {$_("pages.dashboard.logs.title")}
+          </div>
+          <div slot="right">
+            {#if data.activityLogs.meta.totalCount > 10}
+              <a href="{base}/logs" class="btn btn-sm btn-outline-primary">
+                {$_("buttons.show-all")} ({data.activityLogs.meta.totalCount})
+              </a>
+            {/if}
+          </div>
+        </CardHeader>
+        <ul class="list-group list-group-flush">
+          {#each data.activityLogs.data as log, index (log)}
+            <ActivityLogRow
+              log={log}
+              on:click={onShowViewActivityLogModalClick} />
+          {/each}
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -320,3 +310,22 @@
     data.activityLogs.data = data.activityLogs.data;
   });
 </script>
+
+<style>
+  .masonry-container {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .masonry-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (max-width: 991px) {
+    .masonry-container {
+      flex-direction: column;
+    }
+  }
+</style>
