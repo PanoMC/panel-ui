@@ -93,7 +93,7 @@
   {/if}
 
   <!-- Masonry Layout for Cards -->
-  <masonry-layout cols="2">
+  <masonry-layout cols="{$mansoryLayoutCols}">
     <!-- Latest Tickets Card -->
       {#if hasPermission(Permissions.MANAGE_TICKETS)}
           <div class="card mb-3">
@@ -252,8 +252,9 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
+  import { getContext, onMount } from "svelte";
   import { _ } from "svelte-i18n";
+  import {writable} from "svelte/store";
 
   import { base } from "$app/paths";
 
@@ -304,5 +305,26 @@
     _log.selected = false;
 
     data.activityLogs.data = data.activityLogs.data;
+  });
+
+  const mansoryLayoutCols = writable(2);
+
+  function checkMobile() {
+    // 768px altı -> mobil
+    if (window.innerWidth < 768) {
+      mansoryLayoutCols.set(1);
+    } else {
+      mansoryLayoutCols.set(2);
+    }
+  }
+
+  onMount(() => {
+    checkMobile();
+
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
   });
 </script>
