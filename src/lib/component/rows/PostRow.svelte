@@ -72,7 +72,7 @@
       {:else}
       <!-- DEFAULT, this is used as space aligning for others -->
       <img
-        src={false}
+        src=""
         style="object-fit: contain;"
         alt={post.title}
         title={post.title}
