@@ -114,12 +114,17 @@
           <tr>
             <th scope="row"
               >{$_("pages.statistics.total-statistics.addons")}</th>
-            <td>?</td>
+            <td>{data.installedPlugins}</td>
+          </tr>
+          <tr>
+            <th scope="row"
+              >{$_("pages.statistics.total-statistics.active-addons")}</th>
+            <td>{data.activePlugins}</td>
           </tr>
           <tr>
             <th scope="row"
               >{$_("pages.statistics.total-statistics.themes")}</th>
-            <td>?</td>
+            <td>{data.installedThemes}</td>
           </tr>
         </tbody>
       </table>
