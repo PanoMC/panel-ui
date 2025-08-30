@@ -29,12 +29,6 @@
         class:disabled={removing}>
         <i class="fas fa-trash"></i>
       </button>
-      <button class="btn btn-link" type="button">
-        <i class="fa-solid fa-eraser"></i>
-      </button>
-      <button class="btn btn-link" type="button">
-        <i class="fa-solid fa-arrows-rotate"></i>
-      </button>
       {#if addon.loading}
         <i class="fa-solid fa-spinner fa-spin me-2"></i>
       {:else}
