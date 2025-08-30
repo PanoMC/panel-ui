@@ -1,3 +1,4 @@
+
 <!-- Dashboard Page -->
 <div class="container vstack gap-3">
   <!-- Welcome Alerts -->
@@ -92,116 +93,59 @@
   {/if}
 
   <!-- Masonry Layout for Cards -->
-  <div class="masonry-container">
-    <div class="masonry-column">
-      <!-- Latest Tickets Card -->
+  <masonry-layout cols="2">
+    <!-- Latest Tickets Card -->
       {#if hasPermission(Permissions.MANAGE_TICKETS)}
-        <div class="card mb-3">
-          <div class="card-header">
-            {$_("pages.dashboard.last-tickets.title")}
-          </div>
-
-          {#if data.tickets.length === 0}
-            <NoContent />
-          {:else}
-            <div class="table-responsive">
-              <table class="table table-hover mb-0">
-                {#each data.tickets as ticket, index (ticket)}
-                  <tbody>
-                  <tr>
-                    <td class="align-middle">
-                      <a
-                        use:tooltip={[
-                            ticket.writer.username,
-                            { placement: "bottom" },
-                          ]}
-                        href="{base}/players/detail/{ticket.writer.username}">
-                        <img
-                          src="https://minotar.net/avatar/{ticket.writer.username}/32"
-                          alt={$_("pages.dashboard.last-tickets.player-name")}
-                          class="rounded-circle animate__animated animate__zoomIn"
-                          height="32"
-                          width="32" />
-                      </a>
-                    </td>
-                    <td class="align-middle text-nowrap">
-                      <a
-                        href="{base}/tickets/detail/{ticket.id}"
-                        title={$_("buttons.view")}>
-                        #{ticket.id} {ticket.title}
-                      </a>
-                    </td>
-                    <td class="align-middle text-nowrap">
-                      <TicketStatusBadge status={ticket.status} />
-                    </td>
-                    <td class="align-middle text-nowrap">
-                      <span><Date time={ticket.lastUpdate} /></span>
-                    </td>
-                  </tr>
-                  </tbody>
-                {/each}
-              </table>
+          <div class="card mb-3">
+            <div class="card-header">
+              {$_("pages.dashboard.last-tickets.title")}
             </div>
-          {/if}
-        </div>
+
+            {#if data.tickets.length === 0}
+              <NoContent />
+            {:else}
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  {#each data.tickets as ticket, index (ticket)}
+                    <tbody>
+                    <tr>
+                      <td class="align-middle">
+                        <a
+                          use:tooltip={[
+                              ticket.writer.username,
+                              { placement: "bottom" },
+                            ]}
+                          href="{base}/players/detail/{ticket.writer.username}">
+                          <img
+                            src="https://minotar.net/avatar/{ticket.writer.username}/32"
+                            alt={$_("pages.dashboard.last-tickets.player-name")}
+                            class="rounded-circle animate__animated animate__zoomIn"
+                            height="32"
+                            width="32" />
+                        </a>
+                      </td>
+                      <td class="align-middle text-nowrap">
+                        <a
+                          href="{base}/tickets/detail/{ticket.id}"
+                          title={$_("buttons.view")}>
+                          #{ticket.id} {ticket.title}
+                        </a>
+                      </td>
+                      <td class="align-middle text-nowrap">
+                        <TicketStatusBadge status={ticket.status} />
+                      </td>
+                      <td class="align-middle text-nowrap">
+                        <span><Date time={ticket.lastUpdate} /></span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  {/each}
+                </table>
+              </div>
+            {/if}
+          </div>
       {/if}
 
-      <!-- Latest Registers Card -->
-      {#if hasPermission(Permissions.MANAGE_PLAYERS)}
-        <div class="card mb-3">
-          <div class="card-header">
-            {$_("pages.dashboard.last-registers.title")}
-          </div>
-
-          {#if data.lastRegisters.length === 0}
-            <NoContent />
-          {:else}
-            <div class="table-responsive">
-              <table class="table table-hover mb-0">
-                {#each data.lastRegisters as player, index (player)}
-                  <tbody>
-                  <tr>
-                    <td class="align-middle text-nowrap">
-                      <a
-                        title={$_("buttons.view")}
-                        href="{base}/players/detail/{player.username}">
-                        <img
-                          alt={player.username}
-                          class="rounded-circle animate__animated animate__zoomIn me-2"
-                          height="32"
-                          src="https://minotar.net/avatar/{player.username}"
-                          width="32" />
-                        {player.username}
-                      </a>
-                    </td>
-                    <td class="align-middle text-nowrap text-capitalize">
-                      <PlayerPermissionBadge permissionGroup={player.permissionGroup} />
-                    </td>
-                    <td class="align-middle text-nowrap">
-                      <PlayerStatusBadge
-                        banned={player.banned}
-                        lastActivityTime={player.lastActivityTime}
-                        inGame={player.inGame}
-                        checkTime={0} />
-                    </td>
-                    <td class="align-middle text-nowrap">
-                      <Date time={player.lastLoginDate} />
-                    </td>
-                    <td class="align-middle text-nowrap">
-                      <Date time={player.registerDate} />
-                    </td>
-                  </tr>
-                  </tbody>
-                {/each}
-              </table>
-            </div>
-          {/if}
-        </div>
-      {/if}
-    </div>
-
-    <div class="masonry-column">
-      <!-- Sağ Sütun -->
       <!-- Latest Activity Logs Card -->
       <div class="card mb-3">
         <CardHeader>
@@ -221,11 +165,63 @@
             <ActivityLogRow
               log={log}
               on:click={onShowViewActivityLogModalClick} />
+          {:else}
+            <NoContent/>
           {/each}
         </ul>
       </div>
-    </div>
-  </div>
+
+
+    <!-- Latest Registers Card -->
+    {#if hasPermission(Permissions.MANAGE_PLAYERS)}
+      <div class="card mb-3">
+        <div class="card-header">
+          {$_("pages.dashboard.last-registers.title")}
+        </div>
+
+        {#if data.lastRegisters.length === 0}
+          <NoContent />
+        {:else}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              {#each data.lastRegisters as player, index (player)}
+                <tbody>
+                <tr>
+                  <td class="align-middle text-nowrap">
+                    <a
+                      title={$_("buttons.view")}
+                      href="{base}/players/detail/{player.username}">
+                      <img
+                        alt={player.username}
+                        class="rounded-circle animate__animated animate__zoomIn me-2"
+                        height="32"
+                        src="https://minotar.net/avatar/{player.username}"
+                        width="32" />
+                      {player.username}
+                    </a>
+                  </td>
+                  <td class="align-middle text-nowrap text-capitalize">
+                    <PlayerPermissionBadge permissionGroup={player.permissionGroup} />
+                  </td>
+                  <td class="align-middle text-nowrap">
+                    <PlayerStatusBadge
+                      banned={player.banned}
+                      lastActivityTime={player.lastActivityTime}
+                      inGame={player.inGame}
+                      checkTime={0} />
+                  </td>
+                  <td class="align-middle text-nowrap">
+                    <Date time={player.registerDate} />
+                  </td>
+                </tr>
+                </tbody>
+              {/each}
+            </table>
+          </div>
+        {/if}
+      </div>
+    {/if}
+  </masonry-layout>
 </div>
 
 <ViewActivityLogModal />
@@ -310,22 +306,3 @@
     data.activityLogs.data = data.activityLogs.data;
   });
 </script>
-
-<style>
-  .masonry-container {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .masonry-column {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  @media (max-width: 991px) {
-    .masonry-container {
-      flex-direction: column;
-    }
-  }
-</style>
