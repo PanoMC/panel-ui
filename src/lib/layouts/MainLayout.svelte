@@ -82,6 +82,10 @@
 
       showServerRequestModal(id);
     });
+
+    addListener("PANO_UPDATE_FOUND", () => {
+      goto(base + "/settings/updates", { invalidateAll: true });
+    });
   }
 
   /**
