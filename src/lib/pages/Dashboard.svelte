@@ -157,6 +157,7 @@
         </div>
       {/if}
     </div>
+
     <div class="col-lg-6">
       <!-- Latest Activity Logs -->
       <div class="card">
@@ -181,6 +182,59 @@
         </ul>
       </div>
     </div>
+    <div class="col-lg-6">
+      <!-- Latest Tickets -->
+      {#if hasPermission(Permissions.MANAGE_PLAYERS)}
+        <div class="card">
+          <div class="card-header">
+            {$_("pages.dashboard.last-registers.title")}
+          </div>
+
+          {#if data.lastRegisters.length === 0}
+            <NoContent />
+          {:else}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                {#each data.lastRegisters as player, index (player)}
+                  <tbody>
+                  <tr>
+                    <td class="align-middle text-nowrap">
+                      <a
+                        title={$_("buttons.view")}
+                        href="{base}/players/detail/{player.username}">
+                        <img
+                          alt={player.username}
+                          class="rounded-circle animate__animated animate__zoomIn me-2"
+                          height="32"
+                          src="https://minotar.net/avatar/{player.username}"
+                          width="32" />
+                        {player.username}
+                      </a>
+                    </td>
+                    <td class="align-middle text-nowrap text-capitalize">
+                      <PlayerPermissionBadge permissionGroup={player.permissionGroup} />
+                    </td>
+                    <td class="align-middle text-nowrap">
+                      <PlayerStatusBadge
+                        banned={player.banned}
+                        lastActivityTime={player.lastActivityTime}
+                        inGame={player.inGame}
+                        checkTime={0} />
+                    </td>
+                    <td class="align-middle text-nowrap"><Date time={player.lastLoginDate} /></td>
+                    <td class="align-middle text-nowrap">
+                      <Date time={player.registerDate} />
+                    </td>
+                  </tr>
+                  </tbody>
+                {/each}
+              </table>
+            </div>
+          {/if}
+        </div>
+      {/if}
+    </div>
+
   </div>
 </div>
 
@@ -232,6 +286,8 @@
     onHide as onViewActivityLogModalHide,
   } from "$lib/component/modals/ViewActivityLogModal.svelte";
   import CardHeader from "$lib/component/CardHeader.svelte";
+  import PlayerStatusBadge from "$lib/component/badges/PlayerStatusBadge.svelte";
+  import PlayerPermissionBadge from "$lib/component/badges/PlayerPermissionBadge.svelte";
 
   export let data;
 
