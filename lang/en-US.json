@@ -983,6 +983,10 @@
     "UPDATED_POST_STATUS": "**{username}** made changes in \"{title}\" post status to {status}.",
     "UPDATED_TICKET_CATEGORY": "**{username}** made changes in \"{title}\" ticket category.",
     "UPDATED_TRANSLATIONS": "**{username}** made changes in translations in \"{localeName}\" language.",
-    "UPDATE_LOCALE": "**{username}** made changes in \"{localeName}\" language."
+    "UPDATE_LOCALE": "**{username}** made changes in \"{localeName}\" language.",
+    "CHECKED_UPDATES": "**{username}** checked updates.",
+    "UPDATED_PLATFORM": "**{username}** updated Pano to {to}.",
+    "UPDATED_RESOURCE": "**{username}** updated resource {resourceId} from v{from} to v{to}.",
+    "INSTALLED_RESOURCE": "**{username}** installed a new resource {resourceId}\\@{to}."
   }
 }

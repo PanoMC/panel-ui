@@ -983,6 +983,10 @@
     "UPDATED_POST_STATUS": "**{username}** \"{title}\" adlı gönderinin durumunu \"{status}\" olarak değiştirdi.",
     "UPDATED_TICKET_CATEGORY": "**{username}** \"{title}\" adlı destek kategorisinde değişiklik yaptı.",
     "UPDATED_TRANSLATIONS": "**{username}** \"{localeName}\" dilindeki çevirilerde değişiklik yaptı.",
-    "UPDATE_LOCALE": "**{username}** \"{localeName}\" dilinde değişiklik yaptı."
+    "UPDATE_LOCALE": "**{username}** \"{localeName}\" dilinde değişiklik yaptı.",
+    "CHECKED_UPDATES": "**{username}** güncellemeleri kontrol etti.",
+    "UPDATED_PLATFORM": "**{username}** Pano'yu {to} sürümüne güncelledi.",
+    "UPDATED_RESOURCE": "**{username}** {resourceId} kaynağını v{from} sürümünden v{to} sürümüne güncelledi.",
+    "INSTALLED_RESOURCE": "**{username}** yeni bir kaynak {resourceId}\\@{to} kurdu."
   }
 }
