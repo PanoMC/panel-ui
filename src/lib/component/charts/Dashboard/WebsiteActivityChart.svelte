@@ -41,7 +41,12 @@
     }
 
     if (chart) {
-      reloadChart();
+      reloadChart(
+        newRegisterData,
+        ticketsData,
+        visitorData,
+        viewData,
+      );
     }
   }
 
@@ -77,11 +82,16 @@
     return highestValue + 5;
   }
 
-  function getConvertedDatasets() {
-    const convertedNewRegisterData = convertDataForChartJS(newRegisterData);
-    const convertedTicketsData = convertDataForChartJS(ticketsData);
-    const convertedVisitorData = convertDataForChartJS(visitorData);
-    const convertedViewData = convertDataForChartJS(viewData);
+  function getConvertedDatasets(
+    newRegisterDataObj = newRegisterData,
+    ticketsDataObj = ticketsData,
+    visitorDataObj = visitorData,
+    viewDataObj = viewData
+  ) {
+    const convertedNewRegisterData = convertDataForChartJS(newRegisterDataObj);
+    const convertedTicketsData = convertDataForChartJS(ticketsDataObj);
+    const convertedVisitorData = convertDataForChartJS(visitorDataObj);
+    const convertedViewData = convertDataForChartJS(viewDataObj);
 
     return {
       convertedNewRegisterData,
@@ -143,8 +153,18 @@
     return datasets;
   }
 
-  function reloadChart() {
-    const convertedDatasets = getConvertedDatasets();
+  function reloadChart(
+    newRegisterDataObj = newRegisterData,
+    ticketsDataObj = ticketsData,
+    visitorDataObj = visitorData,
+    viewDataObj = viewData
+  ) {
+    const convertedDatasets = getConvertedDatasets(
+      newRegisterDataObj,
+      ticketsDataObj,
+      visitorDataObj,
+      viewDataObj
+    );
 
     chart.data.datasets = getDatasets(convertedDatasets);
 
