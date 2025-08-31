@@ -42,28 +42,18 @@
         <div slot="left">
           {$_("pages.statistics.website-graph.title")}
         </div>
-        <div
-          class="nav nav-underline col-sm-auto col justify-content-md-start justify-content-center"
-          slot="right">
-          <div class="nav-item">
-            <button
-              class="nav-link text-truncate"
-              class:active={data.period === DashboardPeriod.WEEK}
-              on:click={() => reloadDataByPeriod()}
-              class:disabled={reloading}>
-              {$_("pages.statistics.website-graph.week")}
-            </button>
-          </div>
-          <div class="nav-item">
-            <button
-              class="nav-link text-truncate"
-              class:active={data.period === DashboardPeriod.MONTH}
-              on:click={() => reloadDataByPeriod(DashboardPeriod.MONTH)}
-              class:disabled={reloading}>
-              {$_("pages.statistics.website-graph.month")}
-            </button>
-          </div>
-        </div>
+        <CardFilters slot="right">
+          <CardFiltersItem
+            href="/statistics?period={DashboardPeriod.WEEK}"
+            active={data.period === DashboardPeriod.WEEK}>
+            {$_("pages.statistics.website-graph.week")}
+          </CardFiltersItem>
+          <CardFiltersItem
+            href="/statistics?period={DashboardPeriod.MONTH}"
+            active={data.period === DashboardPeriod.MONTH}>
+            {$_("pages.statistics.website-graph.month")}
+          </CardFiltersItem>
+        </CardFilters>
       </CardHeader>
 
     <div class="d-flex">
