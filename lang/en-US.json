@@ -55,7 +55,8 @@
     "go-to-store": "Go To Store",
     "update": "Update",
     "check-updates": "Check Updates",
-    "update-all": "Update All"
+    "update-all": "Update All",
+    "try-again": "Try Again"
   },
   "pages": {
     "themes": {
@@ -63,6 +64,10 @@
       "card-title": "{amount} Installed Theme",
       "by": "by <strong>{author}</strong>",
       "active": "Active"
+    },
+    "theme-settings": {
+      "title": "Theme Settings",
+      "error": "Error occurred while loading theme settings, please try again."
     },
     "theme-detail": {
       "title": "Theme Detail",

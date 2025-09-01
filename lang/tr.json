@@ -55,7 +55,8 @@
     "go-to-store": "Mağazaya Git",
     "update": "Güncelle",
     "check-updates": "Güncellemeleri Kontrol Et",
-    "update-all": "Hepsini Güncelle"
+    "update-all": "Hepsini Güncelle",
+    "try-again": "Tekrar Dene"
   },
   "pages": {
     "themes": {
@@ -63,6 +64,10 @@
       "card-title": "{amount} Yüklü Tema",
       "by": "<strong>{author}</strong> tarafından",
       "active": "Aktif"
+    },
+    "theme-settings": {
+      "title": "Tema Ayarları",
+      "error": "Tema ayarları yüklenirken bir hata oluştu, lütfen tekrar deneyin."
     },
     "theme-detail": {
       "title": "Tema Detayı",

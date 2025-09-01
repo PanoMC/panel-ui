@@ -22,7 +22,7 @@
 <PageActions leftClasses="d-lg-flex d-none">
   <CardMenu slot="middle">
     <CardMenuItem href="/view">{$_("buttons.themes")}</CardMenuItem>
-    <CardMenuItem href="/view/theme-options"
+    <CardMenuItem href="/view/theme-settings"
       >{$_("buttons.theme-settings")}</CardMenuItem>
   </CardMenu>
   <div slot="right" class="hstack gap-2">
