@@ -61,7 +61,7 @@
   let loading = true;
   let error;
 
-  let alwaysLoading = true;
+  let alwaysLoading = false;
 
   function handleMessage(e) {
     if (childOrigin !== "*" && e.origin !== childOrigin) return;
