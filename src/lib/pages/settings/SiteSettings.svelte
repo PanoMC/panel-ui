@@ -94,17 +94,17 @@
             name="keyword"
             bind:value={keyword} />
         </form>
-        {#each data.keywords as keyword, index (keyword)}
-          <a
-            class="mb-3 d-inline-block"
-            use:tooltip={[$_("buttons.remove"), { placement: "bottom" }]}
-            href="javascript:void(0);"
-            on:click={() => removeKeyWord(index)}>
-            <span class="badge rounded-pill bg-light link-primary">
+        <div class="mb-3">
+          {#each data.keywords as keyword, index (keyword)}
+            <button
+              type="button"
+              class="btn btn-link btn-sm"
+              use:tooltip={[$_("buttons.remove"), { placement: "bottom" }]}
+              on:click={() => removeKeyWord(index)}>
               {keyword}
-            </span>
-          </a>
-        {/each}
+            </button>
+          {/each}
+        </div>
       </div>
     </div>
 

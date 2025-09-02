@@ -67,7 +67,7 @@
                 alt={theme.title} />
               <div
                 class="card-img-overlay d-flex flex-column justify-content-end"
-                style="background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0)); padding:1.25rem;">
+                style="background: linear-gradient(to top, rgba(0,0,0,0.3), rgba(0,0,0,0)); padding:1.25rem;">
                 <h5 class="card-title">
                   {theme.title}
                   <VerifiedStatus status={theme.verifyStatus} />

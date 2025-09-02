@@ -1,17 +1,16 @@
 <PageActions>
   <CardMenu slot="middle">
-    <CardMenuItem href="/view">{$_('buttons.themes')}</CardMenuItem>
-    <CardMenuItem href="/view/theme-settings">{$_('buttons.theme-settings')}</CardMenuItem>
+    <CardMenuItem href="/view">{$_("buttons.themes")}</CardMenuItem>
+    <CardMenuItem href="/view/theme-settings"
+      >{$_("buttons.theme-settings")}</CardMenuItem>
   </CardMenu>
 </PageActions>
 
 {#if loading || alwaysLoading}
-  <div class="position-relative" style="height: 500px;">
-    <div
-      class="position-absolute top-0 start-0 w-100 h-50 d-flex align-items-center justify-content-center bg-white"
-      style="opacity:.8;"
-    >
-      <div class="spinner-border text-primary" role="status" aria-label="Loading"></div>
+  <div
+    class="d-flex align-items-center justify-content-center"
+    style="height: 500px;">
+    <div class="spinner-border text-primary" role="status" aria-label="Loading">
     </div>
   </div>
 {/if}
@@ -19,25 +18,25 @@
 {#if error}
   <div class="alert alert-danger text-center w-100 mb-3" role="alert">
     <i class="fas fa-exclamation-triangle me-2"></i>
-    {$_('pages.theme-settings.error')}
+    {$_("pages.theme-settings.error")}
   </div>
   <button class="btn btn-secondary" on:click={load}>
-    <i class="fas fa-redo me-2"></i> {$_('buttons.try-again')}
+    <i class="fas fa-redo me-2"></i>
+    {$_("buttons.try-again")}
   </button>
 {/if}
 
 {#if !error}
-  <div hidden="{loading || alwaysLoading}" in:fade>
+  <div hidden={loading || alwaysLoading} in:fade>
     <iframe
       bind:this={frame}
       src={src}
-      title="{$_('pages.theme-settings.title')}"
+      title={$_("pages.theme-settings.title")}
       style="width:100%; border:0; display:block; background:transparent; bg-dark"
       scrolling="no"
       allowtransparency="true"
       sandbox="allow-same-origin allow-scripts allow-forms"
-      on:load={handleLoad}
-    ></iframe>
+      on:load={handleLoad}></iframe>
   </div>
 {/if}
 
@@ -61,7 +60,7 @@
   let loading = true;
   let error;
 
-  let alwaysLoading = false;
+  let alwaysLoading = true;
 
   function handleMessage(e) {
     if (childOrigin !== "*" && e.origin !== childOrigin) return;
@@ -77,7 +76,7 @@
   function handleLoad() {
     setTimeout(() => {
       loading = false;
-    }, 500)
+    }, 500);
   }
 
   async function load() {
@@ -85,7 +84,7 @@
     error = null;
 
     try {
-      src = "/theme-settings"
+      src = "/theme-settings";
       const url = new URL(src, window.location.href);
       childOrigin = url.origin;
     } catch (_) {
@@ -95,7 +94,10 @@
     window.addEventListener("message", handleMessage);
 
     const onLoad = () => {
-      frame?.contentWindow?.postMessage({ type: "theme-iframe-ping" }, childOrigin);
+      frame?.contentWindow?.postMessage(
+        { type: "theme-iframe-ping" },
+        childOrigin,
+      );
     };
     frame?.addEventListener("load", onLoad);
 
@@ -104,7 +106,7 @@
         loading = false;
         error = true;
       }
-    },5*1000) // 5 seconds;
+    }, 5 * 1000); // 5 seconds;
 
     return () => {
       frame?.removeEventListener("load", onLoad);
