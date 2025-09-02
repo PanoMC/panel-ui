@@ -5,7 +5,7 @@
   import Chart from "chart.js/auto";
   import "chartjs-adapter-date-fns";
   import { onDestroy, onMount } from "svelte";
-  import { startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
+  import { subWeeks, subMonths, startOfDay, endOfDay, subDays } from "date-fns";
 
   import { DashboardPeriod } from "$lib/pages/Statistics.svelte";
   import { hasPermission, Permissions } from "$lib/auth.util.js";
@@ -29,15 +29,25 @@
     const currentDate = new Date();
 
     if (period === DashboardPeriod.WEEK) {
-      minDate = startOfWeek(currentDate, weekConfiguration).getTime();
-      maxDate = endOfWeek(currentDate, weekConfiguration).getTime();
+      // Başlangıç: 7 gün önce 00:00
+      const from = startOfDay(subWeeks(currentDate, 1));
+      // Bitiş: bugün 23:59:59.999  (bugünü dahil)
+      const to = endOfDay(currentDate);
 
-      displayFormats = { "day": "eee" };
+      minDate = from.getTime();
+      maxDate = to.getTime();
+
+      displayFormats = { day: "eee" };
     } else {
-      minDate = startOfMonth(currentDate).getTime();
-      maxDate = endOfMonth(currentDate).getTime();
+      // Başlangıç: 1 ay önce aynı günün 00:00 (takvim değil, relatif 1 ay)
+      const from = startOfDay(subMonths(currentDate, 1));
+      // Bitiş: bugün 23:59:59.999  (bugünü dahil)
+      const to = endOfDay(currentDate);
 
-      displayFormats = { "day": "dd, eee" };
+      minDate = from.getTime();
+      maxDate = to.getTime();
+
+      displayFormats = { day: "dd, eee" };
     }
 
     if (chart) {
