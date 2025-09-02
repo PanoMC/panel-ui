@@ -258,8 +258,8 @@
 
   let keywordInputError = false;
 
-  let favicon = "/api/favicon";
-  let websiteLogo = "/api/websiteLogo";
+  let favicon = "/api/favicon?_=" + Date.now();
+  let websiteLogo = "/api/websiteLogo?_=" + Date.now();
 
   function onFaviconChange(event) {
     const reader = new FileReader();
