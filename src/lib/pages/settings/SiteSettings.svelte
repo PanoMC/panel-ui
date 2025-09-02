@@ -368,6 +368,10 @@
       return;
     }
 
+    if (keyword.trim().length === 0) {
+      return
+    }
+
     if (data.keywords.indexOf(keyword) !== -1) {
       keywordInputError = true;
 
