@@ -1,54 +1,23 @@
 <!-- Settings Contents -->
 <div class="container vstack gap-3">
-  <div class="row justify-content-around">
-    <div class="col-auto">
-      <!-- Settings Nav -->
-      <div class="nav nav-pills d-flex flex-row justify-content-center">
-        <a
-          class="nav-item nav-link"
-          href="{base}/settings"
-          class:active="{matching($page.url.pathname, base + '/settings')}">
-          {$_("components.settings-layout.website")}
-        </a>
-        <a
-          class="nav-item nav-link"
-          href="{base}/settings/platform"
-          class:active="{matching(
-            $page.url.pathname,
-            base + '/settings/platform',
-            true,
-          )}">
-          {$_("components.settings-layout.platform")}
-        </a>
-        <a
-          class="nav-item nav-link position-relative"
-          href="{base}/settings/updates"
-          class:active="{matching(
-            $page.url.pathname,
-            base + '/settings/updates',
-            true,
-          )}">
-          {$_("components.settings-layout.updates")}
-          {#if data.session.basicData.hasUpdate}
+  <PageActions leftClasses="{null}"  middleClasses="col-lg-12" rightClasses="{null}">
+    <PageNav slot="middle">
+      <PageNavItem href="/settings"
+      >{$_("components.settings-layout.website")}</PageNavItem>
+      <PageNavItem href="/settings/platform" startsWith
+      >{$_("components.settings-layout.platform")}</PageNavItem>
+      <PageNavItem href="/settings/updates" classes="position-relative" startsWith
+      >{$_("components.settings-layout.updates")}
+        {#if data.session.basicData.hasUpdate}
             <span
-              class="position-absolute top-0 start-100 translate-middle p-2 bg-warning rounded-circle">
+              class="position-absolute bg-warning rounded-circle" style="top: 8px; right: 8px; padding:4px;">
             </span>
-          {/if}
-        </a>
-        <a
-          class="nav-item nav-link"
-          href="{base}/settings/about"
-          class:active="{matching(
-            $page.url.pathname,
-            base + '/settings/about',
-            true,
-          )}">
-          {$_("components.settings-layout.about")}
-        </a>
-      </div>
-    </div>
-  </div>
-
+        {/if}
+      </PageNavItem>
+      <PageNavItem href="/settings/about" startsWith
+      >{$_("components.settings-layout.about")}</PageNavItem>
+    </PageNav>
+  </PageActions>
   <slot />
 </div>
 
@@ -74,16 +43,9 @@
 <script>
   import { _ } from "svelte-i18n";
 
-  import { base } from "$app/paths";
-  import { page } from "$app/stores";
+  import PageActions from "$lib/component/PageActions.svelte";
+  import PageNav from "$lib/component/PageNav.svelte";
+  import PageNavItem from "$lib/component/PageNavItem.svelte";
 
   export let data;
-
-  function matching(path, pathName, startsWith = false) {
-    return (
-      path.toUpperCase() === pathName.toUpperCase() ||
-      path.toUpperCase() === (pathName + "/").toUpperCase() ||
-      (startsWith && path.startsWith(pathName))
-    );
-  }
 </script>

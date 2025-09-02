@@ -126,7 +126,14 @@
             true,
           )}>
           <i class="fas fa-cog me-2"></i>
+          <span class="position-relative">
           {$_("components.site-navigation-menu.settings")}
+            {#if $session.basicData.hasUpdate}
+              <span
+                class="position-absolute bg-warning rounded-circle" style="top: -2px; right: -8px; padding:4px;">
+              </span>
+            {/if}
+          </span>
         </a>
       </li>
     {/if}
@@ -134,12 +141,15 @@
 </nav>
 
 <script>
+  import { getContext } from "svelte";
   import { _ } from "svelte-i18n";
 
   import { base } from "$app/paths";
   import { page } from "$app/stores";
 
   import { hasPermission, Permissions } from "$lib/auth.util.js";
+
+  const session = getContext("session")
 
   function matching(path, pathName, startsWith = false) {
     return (
