@@ -408,7 +408,9 @@
       "new": "Yeni",
       "draft": "Taslak",
       "published": "Yayımlanmış",
-      "thumbnail-not-determined": "Önizleme'yi sürükleyin<br />veya tıklayın"
+      "thumbnail-not-determined": "Önizleme'yi sürükleyin<br />veya tıklayın",
+      "created-at": "Yayımlandı:",
+      "updated-at": "Güncellendi:"
     },
     "server": {
       "dashboard": {

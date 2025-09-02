@@ -408,7 +408,9 @@
       "new": "New",
       "draft": "Draft",
       "published": "Published",
-      "thumbnail-not-determined": "Drag or click<br />to add preview"
+      "thumbnail-not-determined": "Drag or click<br />to add preview",
+      "created-at": "Created At:",
+      "updated-at": "Updated At:"
     },
     "server": {
       "dashboard": {
