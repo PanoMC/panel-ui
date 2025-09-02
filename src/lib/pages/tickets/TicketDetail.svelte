@@ -32,39 +32,32 @@
   </PageActions>
 
   <div class="card">
-    <div
-      class="card-header bg-opacity-25 py-3 rounded-top"
-      class:bg-secondary={data.ticket.status === TicketStatuses.NEW}
-      class:bg-warning={data.ticket.status === TicketStatuses.REPLIED}
-      class:bg-danger={data.ticket.status === TicketStatuses.CLOSED}>
-      <div class="row">
-        <div class="col">
-          {data.ticket.title}
-          <br />
-          <small>
-            {@html $_("pages.ticket-detail.by-who", {
-              values: {
-                username: `<a href="${base}/players/detail/${data.ticket.username}"
-              >${data.ticket.username}</a>`,
-              },
-            })}
-            <Date time={data.ticket.date} />,
-            {@html $_("pages.ticket-detail.opened-in-category", {
-              values: {
-                category: `<a href="${base}/tickets?categoryUrl=${data.ticket.category.url}"
-              >${
-                data.ticket.category.title === "-"
-                  ? $_("pages.ticket-detail.no-category")
-                  : data.ticket.category.title
-              }</a>`,
-              },
-            })}
-          </small>
-        </div>
-        <div class="col-sm-auto">
-          <TicketStatusBadge status={data.ticket.status} />
-        </div>
+    <div class="card-header rounded-top">
+      <div class="hstack gap-2">
+        <TicketStatusBadge status={data.ticket.status} />
+        <h5 class="card-title text-truncate" title={data.ticket.title}>
+          {data.ticket.title} djsahjdsahjdhsahdsahdkjsakdjsakjdksajdsjadjsad
+        </h5>
       </div>
+      <small>
+        {@html $_("pages.ticket-detail.by-who", {
+          values: {
+            username: `<a href="${base}/players/detail/${data.ticket.username}"
+          >${data.ticket.username}</a>`,
+          },
+        })}
+        <Date time={data.ticket.date} />,
+        {@html $_("pages.ticket-detail.opened-in-category", {
+          values: {
+            category: `<a href="${base}/tickets?categoryUrl=${data.ticket.category.url}"
+          >${
+            data.ticket.category.title === "-"
+              ? $_("pages.ticket-detail.no-category")
+              : data.ticket.category.title
+          }</a>`,
+          },
+        })}
+      </small>
     </div>
     <div
       class="card-body"
@@ -95,11 +88,11 @@
             <div class="row g-2 flex-nowrap">
               <div class="col d-flex justify-content-end">
                 <div class="card text-bg-secondary">
-                  <div class="card-header small">
-                    <Date time={message.date} />
-                  </div>
                   <div class="card-body answer">
                     {@html message.message}
+                  </div>
+                  <div class="card-footer">
+                    <small><Date time={message.date} /></small>
                   </div>
                 </div>
               </div>
@@ -130,11 +123,11 @@
               </div>
               <div class="col hstack gap-2">
                 <div class="card">
-                  <div class="card-header small">
-                    <Date time={message.date} />
-                  </div>
                   <div class="card-body">
                     {message.message}
+                  </div>
+                  <div class="card-footer">
+                    <small><Date time={message.date} /></small>
                   </div>
                 </div>
               </div>
