@@ -126,6 +126,22 @@
                 <div>{data.mode === Modes.CREATE ? "0" : data.post.views}</div>
               </div>
             </li>
+            {#if data.post.status === StatusTypes.PUBLISHED}
+              <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  {$_("pages.post-editor.created-at")}
+                  <div><Date time="{data.post.date}" relativeFormat/></div>
+                </div>
+              </li>
+              {#if data.post.moveDate}
+                <li class="list-group-item">
+                  <div class="d-flex justify-content-between align-items-center">
+                    {$_("pages.post-editor.updated-at")}
+                    <div><Date time="{data.post.moveDate}" relativeFormat/></div>
+                  </div>
+                </li>
+              {/if}
+            {/if}
             <li class="list-group-item">
               <div class="d-flex justify-content-between align-items-center">
                 {$_("pages.post-editor.category")}
@@ -185,7 +201,7 @@
                   on:dragover={handleDragOver}
                   on:dragleave={handleDragLeave}>
                   <i class="fas fa-image fa-3x mb-2"></i>
-                  <p class="mb-0">Önizleme'yi sürükleyin<br />veya tıklayın</p>
+                  <p class="mb-0">{@html $_("pages.post-editor.thumbnail-not-determined")}</p>
                 </button>
               {/if}
               <input
@@ -311,6 +327,7 @@
   } from "$lib/component/ToastContainer.svelte";
 
   import PageActions from "$lib/component/PageActions.svelte";
+  import Date from "$lib/component/Date.svelte";
 
   export let data;
 

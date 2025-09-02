@@ -13,6 +13,7 @@
     <div class="spinner-border text-primary" role="status" aria-label="Loading">
     </div>
   </div>
+
 {/if}
 
 {#if error}

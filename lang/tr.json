@@ -407,7 +407,10 @@
       "title-edit": "Yazıyı Düzenle",
       "new": "Yeni",
       "draft": "Taslak",
-      "published": "Yayımlanmış"
+      "published": "Yayımlanmış",
+      "thumbnail-not-determined": "Önizleme'yi sürükleyin<br />veya tıklayın",
+      "created-at": "Yayımlandı:",
+      "updated-at": "Güncellendi:"
     },
     "server": {
       "dashboard": {

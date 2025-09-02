@@ -148,7 +148,21 @@
 {/if}
 
 <!-- Editor Content -->
-<div class="form-control h-auto" style="min-height: 100%" bind:this="{element}"></div>
+<div class="form-control h-auto editor-height" bind:this="{element}"></div>
+
+<style>
+  /* Mobile */
+  .editor-height {
+    min-height: auto;
+  }
+
+  /* md and above (tablet + desktop) */
+  @media (min-width: 768px) {
+    .editor-height {
+      min-height: 100%;
+    }
+  }
+</style>
 
 <script>
   import { onMount, onDestroy } from "svelte";
