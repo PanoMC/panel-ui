@@ -40,7 +40,7 @@
       <div class="hstack gap-2">
         <TicketStatusBadge status={data.ticket.status} />
         <h5 class="card-title text-truncate" title={data.ticket.title}>
-          {data.ticket.title} djsahjdsahjdhsahdsahdkjsakdjsakjdksajdsjadjsad
+          #{data.ticket.id}: {data.ticket.title}
         </h5>
       </div>
       <small>
