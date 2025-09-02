@@ -185,7 +185,7 @@
                   on:dragover={handleDragOver}
                   on:dragleave={handleDragLeave}>
                   <i class="fas fa-image fa-3x mb-2"></i>
-                  <p class="mb-0">Önizleme'yi sürükleyin<br />veya tıklayın</p>
+                  <p class="mb-0">{@html $_("pages.post-editor.thumbnail-not-determined")}</p>
                 </button>
               {/if}
               <input

@@ -407,7 +407,8 @@
       "title-edit": "Edit Post",
       "new": "New",
       "draft": "Draft",
-      "published": "Published"
+      "published": "Published",
+      "thumbnail-not-determined": "Drag or click<br />to add preview"
     },
     "server": {
       "dashboard": {
