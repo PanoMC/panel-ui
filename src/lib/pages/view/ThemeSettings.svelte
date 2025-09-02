@@ -6,14 +6,54 @@
 </PageActions>
 
 {#if loading || alwaysLoading}
-  <div class="position-relative" style="height: 500px;">
-    <div
-      class="position-absolute top-0 start-0 w-100 h-50 d-flex align-items-center justify-content-center bg-white"
-      style="opacity:.8;"
-    >
-      <div class="spinner-border text-primary" role="status" aria-label="Loading"></div>
+  <div class="p-4">
+    <!-- Başlık Placeholder -->
+    <div class="placeholder-glow mb-4">
+      <span class="placeholder col-3"></span>
+    </div>
+
+    <!-- Kart Placeholder -->
+    <div class="rounded shadow-sm border p-4">
+      <div class="placeholder-glow mb-3">
+        <span class="placeholder col-6"></span>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="placeholder-glow mb-2">
+            <span class="placeholder col-4"></span>
+          </div>
+          <span class="placeholder col-12 form-control"></span>
+        </div>
+
+        <div class="col-md-6">
+          <div class="placeholder-glow mb-2">
+            <span class="placeholder col-4"></span>
+          </div>
+          <span class="placeholder col-12 form-control"></span>
+        </div>
+
+        <div class="col-12">
+          <div class="placeholder-glow mb-2">
+            <span class="placeholder col-3"></span>
+          </div>
+          <span class="placeholder col-12 form-control"></span>
+        </div>
+
+        <div class="col-12">
+          <div class="placeholder-glow mb-2">
+            <span class="placeholder col-2"></span>
+          </div>
+          <span class="placeholder col-12 form-control" style="height:100px;"></span>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mt-4">
+        <span class="btn btn-success disabled placeholder col-2"></span>
+      </div>
     </div>
   </div>
+
 {/if}
 
 {#if error}
@@ -61,7 +101,7 @@
   let loading = true;
   let error;
 
-  let alwaysLoading = false;
+  let alwaysLoading = true;
 
   function handleMessage(e) {
     if (childOrigin !== "*" && e.origin !== childOrigin) return;
