@@ -299,11 +299,11 @@
     formData.append("serverGameVersion", data.serverGameVersion);
     formData.append("keywords", data.keywords);
 
-    if (faviconFiles[0]) {
+    if (faviconFiles && faviconFiles[0]) {
       formData.append("favicon", faviconFiles[0]);
     }
 
-    if (websiteLogoFiles[0]) {
+    if (websiteLogoFiles && websiteLogoFiles[0]) {
       formData.append("websiteLogo", websiteLogoFiles[0]);
     }
 
