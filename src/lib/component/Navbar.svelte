@@ -82,7 +82,7 @@
             {/if}
 
             <a class="dropdown-item bg-transparent" href="{base}/notifications">
-              <button class="btn btn-sm btn-outline-primary w-100">
+              <button class="btn btn-sm btn-primary w-100">
                 {$_("components.navbar.show-all")}</button>
             </a>
           </div>
@@ -114,7 +114,7 @@
             </li>
             <li class="dropdown-item bg-transparent">
               <button
-                class="btn btn-sm btn-outline-danger w-100"
+                class="btn btn-sm btn-danger w-100"
                 on:click={onLogout}>
                 {$_("components.navbar.account-dropdown.logout")}</button>
             </li>

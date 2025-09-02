@@ -22,7 +22,7 @@
           {$_('buttons.cancel')}
         </button>
         <button
-          class="btn btn-danger col-6 m-0"
+          class="btn btn-secondary col-6 m-0"
           type="button"
           class:disabled="{loading}"
           aria-disabled="{loading}"

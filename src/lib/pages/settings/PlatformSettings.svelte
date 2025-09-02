@@ -55,7 +55,7 @@
           <span class="text-muted">{maskEmail(data.panoAccount.email)}</span>
           <button
             type="button"
-            class="btn btn-sm btn-outline-danger ms-2"
+            class="btn btn-sm btn-danger ms-2"
             on:click="{onDisconnectClick}"
             disabled="{disconnecting}">{$_("buttons.remove")}</button>
         {:else}

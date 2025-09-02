@@ -1,12 +1,13 @@
 <tr class:table-primary={category.selected}>
   <th scope="row" class="align-middle text-center">
-    <a
+    <button
+      type="button"
+      aria-label={$_("buttons.delete")}
       title={$_("buttons.delete")}
-      class="btn btn-sm btn-link link-danger"
-      href="javascript:void(0);"
+      class="btn btn-sm btn-link"
       on:click={onDeleteClick}>
-      <i class="fas fa-trash"></i>
-    </a>
+      <i class="fas fa-minus"></i>
+    </button>
   </th>
   <td class="align-middle text-nowrap">
     <a

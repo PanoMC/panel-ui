@@ -12,22 +12,22 @@
     <div slot="right" class="hstack gap-2">
       {#if addon.verifyStatus !== "UNKNOWN"}
         <a
+          title={$_("buttons.show-in-store")}
+          aria-label={$_("buttons.show-in-store")}
           href={`${PANO_WEBSITE_URL}/addons/${addon.id}`}
           target="_blank"
-          class="btn btn-outline-primary">
+          class="btn btn-link">
           <i class="fas fa-store"></i>
-          <span class="d-md-inline d-none ms-2"
-            >{$_("buttons.show-in-store")}</span>
         </a>
       {/if}
       <button
-        aria-label={$_("buttons.remove")}
-        class="btn btn-link text-danger"
+        class="btn btn-link"
         type="button"
         on:click={onRemoveClick}
         title={$_("buttons.remove")}
+        aria-label={$_("buttons.remove")}
         class:disabled={removing}>
-        <i class="fas fa-trash"></i>
+        <i class="fas fa-minus"></i>
       </button>
       {#if addon.loading}
         <i class="fa-solid fa-spinner fa-spin me-2"></i>
@@ -107,7 +107,7 @@
             </li>
             <li class="list-group-item">
               <strong>{$_("pages.addon-detail.source")}:</strong>
-              <a href={addon.sourceUrl} target="_blank"
+              <a href={addon.sourceUrl} target="_blank" class="d-block"
                 >{addon.sourceUrl || $_("pages.addon-detail.unknown")}</a>
             </li>
             <li class="list-group-item">
@@ -124,7 +124,8 @@
             </li>
             <li class="list-group-item">
               <strong>Hash:</strong>
-              <code class="overflow-auto text-nowrap user-select-all">sha256:{addon.hash}</code>
+              <code class="overflow-auto text-nowrap user-select-all d-block"
+                >sha256:{addon.hash}</code>
             </li>
             <li class="list-group-item">
               <strong>{$_("pages.addon-detail.size")}:</strong>

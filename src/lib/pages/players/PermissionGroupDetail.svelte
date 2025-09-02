@@ -1,6 +1,6 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions>
+  <PageActions middleClasses="d-lg-flex d-none">
     <a
       slot="left"
       class="btn btn-link"

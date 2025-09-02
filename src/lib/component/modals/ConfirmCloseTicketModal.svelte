@@ -2,7 +2,7 @@
 <div
   aria-hidden="true"
   class="modal fade"
-  bind:this="{$modalElement}"
+  bind:this={$modalElement}
   role="dialog"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
@@ -11,25 +11,27 @@
         <div class="pb-3">
           <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
         </div>
-        {$selectedTickets.length === 1 ? $_('components.modals.confirm-close-ticket.title-single'): $_('components.modals.confirm-close-ticket.title-multi')}
+        {$selectedTickets.length === 1
+          ? $_("components.modals.confirm-close-ticket.title-single")
+          : $_("components.modals.confirm-close-ticket.title-multi")}
       </div>
       <div class="modal-footer flex-nowrap">
         <button
           class="btn btn-link col-6 m-0"
           data-bs-dismiss="modal"
           type="button"
-          class:disabled="{loading}"
-          aria-disabled="{loading}"
-          on:click="{hide}">
-          {$_('buttons.cancel')}
+          class:disabled={loading}
+          aria-disabled={loading}
+          on:click={hide}>
+          {$_("buttons.cancel")}
         </button>
         <button
-          class="btn btn-danger col-6 m-0"
+          class="btn btn-secondary col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          aria-disabled="{loading}"
-          on:click="{onYesClick}">
-          {$_('buttons.yes')}
+          class:disabled={loading}
+          aria-disabled={loading}
+          on:click={onYesClick}>
+          {$_("buttons.yes")}
         </button>
       </div>
     </div>
@@ -92,9 +94,7 @@
     ApiUtil.put({
       path: "/api/panel/tickets",
       body: {
-        tickets: Object.values(
-          get(selectedTickets).map((id) => parseInt(id))
-        ),
+        tickets: Object.values(get(selectedTickets).map((id) => parseInt(id))),
         status: TicketStatuses.CLOSED,
       },
       handler: async (body, reject) => {
@@ -110,10 +110,15 @@
 
         const count = get(selectedTickets).length;
 
-        await showToast(count > 1 ? 'components.toasts.ticket-closed.multi' : 'components.toasts.ticket-closed.single', { count: `<a href="${base}/tickets?pageType=CLOSED">${count}</a>` });
+        await showToast(
+          count > 1
+            ? "components.toasts.ticket-closed.multi"
+            : "components.toasts.ticket-closed.single",
+          { count: `<a href="${base}/tickets?pageType=CLOSED">${count}</a>` },
+        );
 
         callback(get(selectedTickets));
-      }
-    })
+      },
+    });
   }
 </script>

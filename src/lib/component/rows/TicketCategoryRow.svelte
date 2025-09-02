@@ -1,17 +1,18 @@
-<tr class:table-primary="{category.selected}">
+<tr class:table-primary={category.selected}>
   <th scope="row" class="align-middle text-center">
-    <a
-      title="{$_('buttons.delete')}"
-      class="btn btn-sm btn-link link-danger"
-      href="javascript:void(0);"
-      on:click="{onDeleteClick}">
-      <i class="fas fa-trash"></i>
-    </a>
+    <button
+      type="button"
+      title={$_("buttons.delete")}
+      aria-label={$_("buttons.delete")}
+      class="btn btn-sm btn-link"
+      on:click={onDeleteClick}>
+      <i class="fas fa-minus"></i>
+    </button>
   </th>
   <td class="text-nowrap align-middle">
-    <a href="javascript:void(0);" title="{$_('buttons.edit')}" on:click="{onEditClick}">
+    <button type="button" class="btn btn-sm btn-link" title={$_("buttons.edit")} on:click={onEditClick}>
       {category.title}
-    </a>
+    </button>
   </td>
   <td class="text-nowrap align-middle">{category.description}</td>
 </tr>

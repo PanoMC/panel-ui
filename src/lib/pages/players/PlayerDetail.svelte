@@ -1,25 +1,29 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions>
+  <PageActions middleClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <a slot="left" class="btn btn-link" role="button" href="{base}/players">
       <i class="fas fa-arrow-left me-2"></i>
       {$_("buttons.players")}
     </a>
 
-    <div class="hstack gap-2" slot="right">
+    <div slot="right" class="hstack gap-2">
       {#if hasPermission(Permissions.MANAGE_PLAYERS)}
         <button
-          class="btn btn-link link-danger"
+          aria-label={$_("buttons.delete")}
+          title={$_("buttons.delete")}
+          class="btn btn-link"
           use:tooltip={[$_("buttons.delete"), { placement: "bottom" }]}
           on:click={() => showConfirmDeletePlayerModal(data.player)}
           class:disabled={$user.username === data.player.username ||
             (data.player.permissionGroup === "admin" && !$user.admin)}>
-          <i class="fas fa-trash"></i>
+          <i class="fas fa-minus"></i>
         </button>
         {#if data.player.isBanned}
           <button
-            class="btn btn-link link-danger"
+            aria-label={$_("pages.player-detail.un-ban")}
+            title={$_("pages.player-detail.un-ban")}
+            class="btn btn-link"
             use:tooltip={[
               $_("pages.player-detail.un-ban"),
               { placement: "bottom" },
@@ -31,11 +35,10 @@
           </button>
         {:else}
           <button
-            class="btn btn-link link-danger"
-            use:tooltip={[
-              $_("pages.player-detail.ban"),
-              { placement: "bottom" },
-            ]}
+            <button
+            aria-label={$_("pages.player-detail.un-ban")}
+            title={$_("pages.player-detail.un-ban")}
+            class="btn btn-link"
             on:click={() => showConfirmBanPlayerModal(data.player)}
             class:disabled={$user.username === data.player.username ||
               (data.player.permissionGroup === "admin" && !$user.admin)}>
@@ -44,11 +47,9 @@
         {/if}
         {#if !data.player.isEmailVerified}
           <button
+            aria-label={$_("pages.player-detail.send-verification-mail")}
+            title={$_("pages.player-detail.send-verification-mail")}
             class="btn btn-link"
-            use:tooltip={[
-              $_("pages.player-detail.send-verification-mail"),
-              { placement: "bottom" },
-            ]}
             on:click={sendVerification}
             class:disabled={sendingVerificationMail ||
               $user.username === data.player.username ||
@@ -59,11 +60,9 @@
         {/if}
 
         <button
+          aria-label={$_("pages.player-detail.authorize")}
+          title={$_("pages.player-detail.authorize")}
           class="btn btn-link"
-          use:tooltip={[
-            $_("pages.player-detail.authorize"),
-            { placement: "bottom" },
-          ]}
           on:click={() => showAuthorizePlayerModal(data.player)}
           class:disabled={$user.username === data.player.username ||
             (data.player.permissionGroup === "admin" && !$user.admin)}>
@@ -72,7 +71,7 @@
       {/if}
       {#if hasPermission(Permissions.MANAGE_PLAYERS) || $user.username === data.player.username}
         <button
-          class="btn btn-primary"
+          class="btn btn-secondary"
           on:click={() => showEditPlayerModal(data.player)}
           class:disabled={data.player.permissionGroup === "admin" &&
             !$user.admin}>
@@ -161,8 +160,7 @@
                         <TicketStatusBadge status={ticket.status} />
                       </td>
                       <td class="align-middle text-nowrap"
-                        ><span
-                          ><DateComponent time={ticket.lastUpdate} /></span
+                        ><span><DateComponent time={ticket.lastUpdate} /></span
                         ></td>
                     </tr>
                   </tbody>

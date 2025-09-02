@@ -1,51 +1,56 @@
 <!-- Tickets Page -->
 <article class="container vstack gap-3">
-  <!-- Action Menu -->
-  <PageActions leftClasses="d-lg-flex d-none">
-    <div slot="left">
-      {#if data.categoryUrl}
+  {#if data.categoryUrl}
+    <PageActions middleClasses="d-none" rightClasses="d-none">
+      <div slot="left">
         <a class="btn btn-link" role="button" href="{base}/tickets">
           <i class="fas fa-arrow-left me-2"></i>
           {$_("buttons.tickets")}
         </a>
-      {/if}
-    </div>
-    <!-- Submenu -->
-    <CardMenu slot="middle">
-      {#if !data.categoryUrl}
-        <CardMenuItem href="/tickets"
-          >{$_("pages.ticket-categories.tickets")}</CardMenuItem>
-        <CardMenuItem href="/tickets/categories"
-          >{$_("buttons.categories")}</CardMenuItem>
-      {/if}
-    </CardMenu>
-    <div
-      class:d-none={firstLoad}
-      class="hstack gap-2 animate__animated animate__faster {getListOfChecked(
-        $checkedList,
-      ).length > 0
-        ? 'animate__slideInUp'
-        : 'animate__slideOutDown'}
+      </div>
+    </PageActions>
+  {:else}
+    <!-- Action Menu -->
+    <PageActions left="d-lg-flex d-none">
+      <!-- Submenu -->
+      <CardMenu slot="middle">
+        {#if !data.categoryUrl}
+          <CardMenuItem href="/tickets"
+            >{$_("pages.ticket-categories.tickets")}</CardMenuItem>
+          <CardMenuItem href="/tickets/categories"
+            >{$_("buttons.categories")}</CardMenuItem>
+        {/if}
+      </CardMenu>
+      <div
+        class:d-none={firstLoad}
+        class="hstack gap-2 animate__animated animate__faster {getListOfChecked(
+          $checkedList,
+        ).length > 0
+          ? 'animate__slideInUp'
+          : 'animate__slideOutDown'}
     faster"
-      slot="right">
-      <button
-        class="btn btn-link link-danger"
-        class:disabled={getListOfChecked($checkedList).length === 0}
-        type="button"
-        on:click={onShowDeleteTicketsModalClick}>
-        <i class="fas fa-trash"></i>
-      </button>
-      <button
-        class="btn btn-danger"
-        class:disabled={getListOfChecked($checkedList).length === 0}
-        type="button"
-        on:click={onShowCloseTicketsModalClick}>
-        <i class="fas fa-times me-2"></i>
-        {$_("buttons.close")}
-      </button>
-    </div>
-  </PageActions>
-
+        slot="right">
+        <button
+          title={$_("buttons.delete")}
+          aria-label={$_("buttons.delete")}
+          class="btn btn-link"
+          class:disabled={getListOfChecked($checkedList).length === 0}
+          type="button"
+          on:click={onShowDeleteTicketsModalClick}>
+          <i class="fas fa-minus"></i>
+        </button>
+        <button
+          class="btn btn-secondary"
+          title={$_("buttons.close")}
+          aria-label={$_("buttons.close")}
+          class:disabled={getListOfChecked($checkedList).length === 0}
+          type="button"
+          on:click={onShowCloseTicketsModalClick}>
+          <i class="fas fa-times me-2"></i>{$_("buttons.close")}
+        </button>
+      </div>
+    </PageActions>
+  {/if}
   <!-- All Tickets -->
   <div class="card">
     <CardHeader>

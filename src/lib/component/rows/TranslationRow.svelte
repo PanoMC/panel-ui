@@ -37,11 +37,13 @@
   {#if translation.notExists}
     <div class="col-auto">
       <button
+        title={$_("buttons.delete")}
+        aria-label={$_("buttons.delete")}
         id="deleteButton"
         type="button"
         class="btn btn-sm btn-outline-danger h-100 shadow-none"
         on:click={() => onDeleteClick(translation.key)}>
-        <i class="fa-solid fa-trash"></i>
+        <i class="fa-solid fa-minus"></i>
       </button>
     </div>
   {/if}

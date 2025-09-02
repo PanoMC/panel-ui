@@ -14,14 +14,18 @@
 
     <div class="hstack gap-2" slot="right">
       <button
-        class="btn btn-link link-danger"
+        title={$_("buttons.delete")}
+        aria-label={$_("buttons.delete")}
+        class="btn btn-link"
         type="button"
         on:click={() => showDeleteTicketModal([data.ticket.id])}>
-        <i class="fas fa-trash"></i>
+        <i class="fas fa-minus"></i>
       </button>
       {#if data.ticket.status !== TicketStatuses.CLOSED}
         <button
-          class="btn btn-danger"
+          title={$_("buttons.close")}
+          aria-label={$_("buttons.close")}
+          class="btn btn-secondary"
           type="button"
           on:click={() => showCloseTicketModal([data.ticket.id])}>
           <i class="fas fa-times me-2"></i>

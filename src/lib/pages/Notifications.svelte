@@ -15,9 +15,9 @@
       {#if $notifications.length !== 0}
         <button
           type="button"
-          class="btn btn-danger"
+          class="btn btn-secondary"
           on:click={() => onDeleteAllClick()}>
-          <i class="fa fa-trash me-2"></i>
+          <i class="fa fa-minus me-2"></i>
           {$_("pages.notifications.delete-all")}
         </button>
       {/if}

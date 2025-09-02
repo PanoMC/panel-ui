@@ -24,49 +24,48 @@
     <div slot="right">
       {#if data.mode === Modes.EDIT}
         <button
-          class="btn btn-outline-danger border-0 shadow-none"
+          title={$_("buttons.remove")}
+          aria-label={$_("buttons.remove")}
+          class="btn btn-link"
           type="button"
-          on:click={() => showDeletePostModal(data.post)}
-          use:tooltip={[
-            $_("pages.post-editor.trash"),
-            { placement: "bottom" },
-          ]}>
-          <i class="fas fa-trash"></i>
+          on:click={() => showDeletePostModal(data.post)}>
+          <i class="fas fa-minus"></i>
         </button>
       {/if}
       {#if data.post.status !== StatusTypes.DRAFT && data.mode === Modes.EDIT}
         <button
-          class="btn btn-outline-primary border-0 shadow-none"
+          title={$_("pages.post-editor.move-to-drafts")}
+          aria-label={$_("pages.post-editor.move-to-drafts")}
+          class="btn btn-link"
           type="button"
           class:disabled={loading}
-          on:click={onDraftClick}
-          use:tooltip={[
-            $_("pages.post-editor.move-to-drafts"),
-            { placement: "bottom" },
-          ]}>
-          <i class="fa-solid fa-box-archive"></i>
+          on:click={onDraftClick}>
+          <i class="fa-solid fa-sheet-plastic"></i>
         </button>
       {/if}
       <a
-        class="btn btn-outline-primary border-0 shadow-none"
+        class="btn btn-link"
         role="button"
+        aria-label={$_("buttons.view")}
+        title={$_("buttons.view")}
         target="_blank"
-        href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{data.post.id}"
-        use:tooltip={[$_("buttons.view"), { placement: "bottom" }]}>
+        href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{data.post.id}">
         <i class="fas fa-eye"></i>
       </a>
       {#if data.post.status !== StatusTypes.PUBLISHED}
         <button
-          class="btn btn-outline-primary border-0 shadow-none"
+          title={$_(
+            data.mode === Modes.CREATE ? "buttons.save" : "buttons.update",
+          )}
+          aria-label={$_(
+            data.mode === Modes.CREATE ? "buttons.save" : "buttons.update",
+          )}
+          class="btn btn-link"
           type="button"
           class:disabled={loading ||
             isEditorEmpty ||
             data.post.title.length === 0}
-          on:click={() => submit(false)}
-          use:tooltip={[
-            $_(data.mode === Modes.CREATE  ? "buttons.save" : "buttons.update"),
-            { placement: "bottom" },
-          ]}>
+          on:click={() => submit(false)}>
           <i class="fas fa-save"></i>
         </button>
       {/if}
@@ -77,7 +76,7 @@
           isEditorEmpty ||
           data.post.title.length === 0}
         on:click={() => submit(true)}>
-        <i class="fas fa-globe me-2"></i>
+        <i class="fas fa-asterisk me-2"></i>
         {data.post.status === StatusTypes.PUBLISHED
           ? $_("buttons.update")
           : $_("pages.post-editor.publish")}
@@ -160,7 +159,7 @@
                     on:click={() => thumbnailInput.click()}>
                     <img
                       src={thumbnail || data.post.thumbnailUrl}
-                      class="img-fluid"
+                      class="img-fluid rounded"
                       title={$_("pages.post-editor.small-image")}
                       alt={$_("pages.post-editor.small-image")} />
                   </button>
@@ -168,9 +167,11 @@
                   {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
                     <button
                       type="button"
-                      class="btn btn-sm btn-light link-danger border-danger position-absolute top-0 start-100 translate-middle"
-                      on:click={onRemoveThumbnailClick}>
-                      <i class="fas fa-trash"></i>
+                      class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle"
+                      on:click={onRemoveThumbnailClick}
+                      title={$_("buttons.remove")}
+                      aria-label={$_("buttons.remove")}>
+                      <i class="fas fa-minus"></i>
                     </button>
                   {/if}
                 </div>
@@ -298,13 +299,9 @@
     setCallback as setCallbackForAddEditPostCategoryModal,
   } from "$lib/component/modals/AddEditPostCategoryModal.svelte";
 
-  import {
-    show as showDraftPostModal,
-  } from "$lib/component/modals/ConfirmDraftPostModal.svelte";
+  import { show as showDraftPostModal } from "$lib/component/modals/ConfirmDraftPostModal.svelte";
 
-  import {
-    show as showPublishPostModal,
-  } from "$lib/component/modals/ConfirmPublishPostModal.svelte";
+  import { show as showPublishPostModal } from "$lib/component/modals/ConfirmPublishPostModal.svelte";
 
   import Editor from "$lib/component/Editor.svelte";
 
@@ -461,7 +458,7 @@
         body,
         handler: bodyHandler,
       });
-    })
+    });
   }
 
   function onDraftClick() {
@@ -489,7 +486,7 @@
           await showToast("components.toasts.post-moved-to-draft", { title });
         },
       });
-    })
+    });
   }
 
   function onRemoveThumbnailClick() {

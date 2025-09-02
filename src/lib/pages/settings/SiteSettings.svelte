@@ -123,9 +123,10 @@
             class="border rounded w-100 h-100" />
           <button
             type="button"
-            class="btn btn-sm btn-light link-primary border border-primary position-absolute top-0 start-100 translate-middle"
+            class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
             on:click={() => faviconInput.click()}
-            title={$_("buttons.change")}>
+            title={$_("buttons.change")}
+            aria-label={$_("buttons.change")}>
             <i class="fas fa-pen"></i>
           </button>
         </div>
@@ -160,9 +161,10 @@
           </div>
           <button
             type="button"
-            class="btn btn-sm btn-light link-primary border-primary position-absolute top-0 start-100 translate-middle"
+            class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
             on:click={() => websiteLogoInput.click()}
-            title={$_("buttons.change")}>
+            title={$_("buttons.change")}
+            aria-label={$_("buttons.change")}>
             <i class="fas fa-pencil"></i>
           </button>
         </div>

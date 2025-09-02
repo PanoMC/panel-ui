@@ -30,7 +30,7 @@
         {$_('pages.server.settings.remove-server')}
       </label>
       <div class="col d-flex align-items-center">
-        <button type="button" on:click={() => showRemoveServerModal($selectedServer)} class="btn btn-outline-danger btn-sm"
+        <button type="button" on:click={() => showRemoveServerModal($selectedServer)} class="btn btn-danger btn-sm"
           ><i class="fa-solid fa-plug me-2"></i> {$_('pages.server.settings.disconnect')}</button>
       </div>
     </div>

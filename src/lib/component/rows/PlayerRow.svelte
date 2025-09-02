@@ -3,43 +3,40 @@
     <div class="dropdown position-static">
       <button
         type="button"
-        class="btn btn-link btn-sm"
+        class="btn btn-sm btn-link"
         aria-expanded="false"
         aria-haspopup="true"
         data-bs-toggle="dropdown"
-        href="javascript:void(0);"
-        title={$_("components.player-row.actions")}>
+        title={$_("components.player-row.actions")}
+        aria-label={$_("components.player-row.actions")}>
         <span class="fas fa-ellipsis-v"></span>
       </button>
       <div
         class="dropdown-menu dropdown-menu-start animate__animated animate__fadeIn">
         {#if hasPermission(Permissions.MANAGE_PERMISSION_GROUPS)}
-          <a
+          <button
+            type="button"
             class="dropdown-item"
-            href="javascript:void(0);"
             on:click={showAuthorizePlayerModal}
             class:disabled={$user.username === player.username ||
               (player.permissionGroup === "admin" && !$user.admin)}>
             <i class="fas fa-user-circle me-2"></i>
             {$_("components.player-row.authorize")}
-          </a>
+          </button>
         {/if}
-        <a
+        <button
+          type="button"
           class="dropdown-item"
-          href="javascript:void(0);"
           on:click={showEditPlayerModal}
           class:disabled={player.permissionGroup === "admin" && !$user.admin}>
           <i class="fa-solid fa-pencil-alt me-2"></i>
           {$_("buttons.edit")}
-        </a>
-        <a
+        </button>
+        <button
+          type="button"
           class="dropdown-item"
-          href="javascript:void(0);"
           on:click={() =>
             player.isBanned ? showUnbanPlayerModal() : showBanPlayerModal()}
-          class:link-danger={$user.username !== player.username &&
-            ((player.permissionGroup === "admin" && $user.admin) ||
-              player.permissionGroup !== "admin")}
           class:disabled={$user.username === player.username ||
             (player.permissionGroup === "admin" && !$user.admin)}>
           <i class="fas fa-gavel me-2"></i>
@@ -48,7 +45,7 @@
           {:else}
             {$_("components.player-row.ban")}
           {/if}
-        </a>
+        </button>
       </div>
     </div>
   </th>

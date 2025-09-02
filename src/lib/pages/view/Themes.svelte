@@ -45,13 +45,11 @@
 </PageActions>
 
 <div class="card">
-  <CardHeader>
-    <div slot="left">
-      {$_("pages.themes.card-title", {
-        values: { amount: data.themes.length },
-      })}
-    </div>
-  </CardHeader>
+  <div class="card-header">
+    {$_("pages.themes.card-title", {
+      values: { amount: data.themes.length },
+    })}
+  </div>
   <div class="card-body">
     {#if data.themes.length === 0}
       <NoContent />

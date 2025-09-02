@@ -17,15 +17,13 @@
 {/if}
 
 {#if error}
-  <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-4 rounded">
-    <div class="alert alert-danger text-center w-100 mb-3" role="alert">
-      <i class="fas fa-exclamation-triangle me-2"></i>
-      {$_('pages.theme-settings.error')}
-    </div>
-    <button class="btn btn-secondary" on:click={load}>
-      <i class="fas fa-redo me-2"></i> {$_('buttons.try-again')}
-    </button>
+  <div class="alert alert-danger text-center w-100 mb-3" role="alert">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    {$_('pages.theme-settings.error')}
   </div>
+  <button class="btn btn-secondary" on:click={load}>
+    <i class="fas fa-redo me-2"></i> {$_('buttons.try-again')}
+  </button>
 {/if}
 
 {#if !error}
@@ -34,7 +32,7 @@
       bind:this={frame}
       src={src}
       title="{$_('pages.theme-settings.title')}"
-      style="width:100%; border:0; display:block; background:transparent;"
+      style="width:100%; border:0; display:block; background:transparent; bg-dark"
       scrolling="no"
       allowtransparency="true"
       sandbox="allow-same-origin allow-scripts allow-forms"

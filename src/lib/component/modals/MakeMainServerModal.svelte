@@ -14,7 +14,7 @@
       </div>
       <div class="modal-footer flex-nowrap">
         <button
-          class="btn btn-link link-danger col-6 m-0"
+          class="btn btn-link col-6 m-0"
           type="button"
           class:disabled="{$loading}"
           on:click="{hide}">

@@ -105,7 +105,7 @@
               <NoContent />
             {:else}
               <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table table-hover">
                   {#each data.tickets as ticket, index (ticket)}
                     <tbody>
                     <tr>
@@ -183,7 +183,7 @@
           <NoContent />
         {:else}
           <div class="table-responsive">
-            <table class="table table-hover mb-0">
+            <table class="table table-hover">
               {#each data.lastRegisters as player, index (player)}
                 <tbody>
                 <tr>

@@ -1,13 +1,14 @@
 <tr class:table-primary={permissionGroup.selected}>
   <th scope="row" class="align-middle text-center">
     {#if permissionGroup.name !== "admin"}
-      <a
-        class="btn btn-sm btn-link link-danger"
-        href="javascript:void(0);"
+      <button
+        type="button"
+        aria-label={$_("buttons.delete")}
+        class="btn btn-sm btn-link"
         on:click={onDeleteClick}
         title={$_("buttons.delete")}>
-        <i class="fas fa-trash"></i>
-      </a>
+        <i class="fas fa-minus"></i>
+      </button>
     {/if}
   </th>
   <td class="align-middle text-nowrap">

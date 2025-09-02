@@ -9,34 +9,6 @@
         {$_("buttons.languages")}</CardMenuItem>
     </CardMenu>
 
-    <!-- Submenu -->
-    <!-- <CardMenu slot="left">
-      <CardMenuItem
-        href="/translations{getQueryParams(
-          PageTypes.PANEL,
-          data.locale,
-          data.filter,
-        )}"
-        active={data.type === PageTypes.PANEL}
-        >{$_("buttons.platform")}</CardMenuItem>
-      <CardMenuItem
-        href="/translations{getQueryParams(
-          PageTypes.THEME,
-          data.locale,
-          data.filter,
-        )}"
-        active={data.type === PageTypes.THEME}
-        >{$_("buttons.theme")}</CardMenuItem>
-      <CardMenuItem
-        href="/translations{getQueryParams(
-          PageTypes.PLUGIN,
-          data.locale,
-          data.filter,
-        )}"
-        active={data.type === PageTypes.PLUGIN}
-        >{$_("buttons.addons")}</CardMenuItem>
-    </CardMenu> -->
-
     <div slot="right" class="hstack gap-2">
       {#if refreshing || saving}
         <div>

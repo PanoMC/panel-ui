@@ -1,7 +1,7 @@
 <!-- Categories Page -->
 <article class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions leftClasses="d-lg-flex d-none">
+  <PageActions left="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
       <CardMenuItem href="/translations"

@@ -16,7 +16,7 @@
           {$_('components.modals.remove-server.title')}
 
           <input
-            class="form-control d-inline-block text-center mt-3"
+            class="form-control zmt-3"
             placeholder="{$_('components.modals.remove-server.account-password')}"
             type="password"
             bind:value="{$currentPassword}"

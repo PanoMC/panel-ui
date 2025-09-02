@@ -1,75 +1,75 @@
-<tr class:table-primary="{post.selected}">
+<tr class:table-primary={post.selected}>
   <th scope="row" class="align-middle text-center">
     <div class="dropdown position-static">
-      <a
-        role="button"
-        href="javascript:void(0);"
+      <button
+        type="button"
         class="btn btn-sm btn-link"
         data-bs-toggle="dropdown"
-        title="{$_('components.post-row.actions')}">
+        title={$_("components.post-row.actions")}
+        aria-label={$_("components.post-row.actions")}>
         <span class="fas fa-ellipsis-v"></span>
-      </a>
+      </button>
       <div
         class="dropdown-menu dropdown-menu-start animate__animated animate__fadeIn">
         <a
           class="dropdown-item"
           target="_blank"
-          href="{UI_URL === '/' ? '': UI_URL}/preview/post/{post.id}">
+          href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{post.id}">
           <i class="fas fa-eye me-2"></i>
-          {$_('buttons.view')}
+          {$_("buttons.view")}
         </a>
         {#if pageType !== PageTypes.DRAFT}
-          <a
+          <button
+            type="button"
             class="dropdown-item"
-            href="javascript:void(0);"
-            on:click="{onMoveToDraft}"
-            class:disabled="{buttonsLoading}">
+            on:click={onMoveToDraft}
+            class:disabled={buttonsLoading}>
             <span>
-              <i class="fa-solid fa-box-archive me-2"></i>
-              {$_('components.post-row.move-to-draft')}
+              <i class="fa-solid fa-sheet-plastic me-2"></i>
+              {$_("components.post-row.move-to-draft")}
             </span>
-          </a>
+          </button>
         {/if}
 
         {#if pageType !== PageTypes.PUBLISHED}
-          <a
+          <button
+            type="button"
             class="dropdown-item"
-            href="javascript:void(0);"
-            class:disabled="{buttonsLoading}"
-            on:click="{onPublishClick}">
+            class:disabled={buttonsLoading}
+            on:click={onPublishClick}>
             <span>
-              <i class="fas fa-globe-americas me-2"></i>
-              {$_('components.post-row.publish')}
+              <i class="fas fa-asterisk me-2"></i>
+              {$_("components.post-row.publish")}
             </span>
-          </a>
+          </button>
         {/if}
 
-        <a
-          class="dropdown-item link-danger"
-          href="javascript:void(0);"
-          on:click="{onDeletePostClick}">
-          <i class="fas fa-trash me-2"></i>
+        <button
+          type="button"
+          class="dropdown-item"
+          on:click={onDeletePostClick}>
+          <i class="fas fa-minus me-2"></i>
           {#if pageType !== PageTypes.TRASH}
-            {$_('components.post-row.move-to-trash')}
+            {$_("components.post-row.move-to-trash")}
           {:else}
-            {$_('buttons.delete')}
+            {$_("buttons.delete")}
           {/if}
-        </a>
+        </button>
       </div>
     </div>
   </th>
   <td>
     {#if post.thumbnailUrl}
       <a href="{base}/posts/detail/{post.id}">
-          <img
-            src={post.thumbnailUrl + "?preview=true"}
-            style="object-fit: contain;"
-            alt={post.title}
-            title={post.title}
-            width="50"
-            height="40"/>
-     </a>
-      {:else}
+        <img
+          src={post.thumbnailUrl + "?preview=true"}
+          style="object-fit: contain;"
+          alt={post.title}
+          title={post.title}
+          width="50"
+          height="40" />
+      </a>
+    {:else}
       <!-- DEFAULT, this is used as space aligning for others -->
       <img
         src=""
@@ -77,26 +77,31 @@
         alt={post.title}
         title={post.title}
         width="50"
-        height="40" hidden/>
+        height="40"
+        hidden />
     {/if}
   </td>
   <td class="align-middle text-nowrap">
-    <a href="{base + '/posts/detail/' + post.id}" title="{$_('buttons.edit')}">
+    <a href={base + "/posts/detail/" + post.id} title={$_("buttons.edit")}>
       {post.title}
     </a>
   </td>
   <td class="align-middle text-nowrap">
-    <a title="{$_('components.post-row.filter')}" href="{base}/posts?categoryUrl={post.category.url}">
-      {post.category.title === "-" ? $_('components.post-row.no-category') : post.category.title}
+    <a
+      title={$_("components.post-row.filter")}
+      href="{base}/posts?categoryUrl={post.category.url}">
+      {post.category.title === "-"
+        ? $_("components.post-row.no-category")
+        : post.category.title}
     </a>
   </td>
   <td class="align-middle text-nowrap">{post.views}</td>
   <td class="align-middle text-nowrap">
     <a
       href="{base}/players/detail/{post.writer.username}"
-      use:tooltip="{[post.writer.username, { placement: 'bottom' }]}">
+      use:tooltip={[post.writer.username, { placement: "bottom" }]}>
       <img
-        alt="{post.writer.username}"
+        alt={post.writer.username}
         class="rounded-circle"
         height="32"
         src="https://minotar.net/avatar/{post.writer.username}"
@@ -104,7 +109,7 @@
     </a>
   </td>
   <td class="align-middle text-nowrap">
-    <Date time="{post.date}" />
+    <Date time={post.date} />
   </td>
 </tr>
 
