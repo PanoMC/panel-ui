@@ -28,7 +28,7 @@
 
   <div class="card">
     <div class="card-header">{$_('pages.notifications.title')}</div>
-    <div class="card-body vstack gap-3">
+    <div class="card-body vstack gap-3" class:d-none="{$notifications.length === 0}">
       <div class="list-group">
         {#each $notifications as notification (notification)}
           <div
