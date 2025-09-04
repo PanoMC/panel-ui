@@ -42,15 +42,18 @@
               class="flex-grow-1 text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
 
             <span class="d-flex align-items-center">
-              <i
-                class="fa fa-fw fa-bolt d-none"
-                class:text-danger={notification.status === "NOT_READ"}></i>
-              <img
-                src="https://minotar.net/avatar/{notification.details?.username || notification.details?.author}/64"
-                alt="NOTIFICATION AUTHOR"
-                width="48"
-                height="48"
-                class="rounded" />
+              {#if notification.details?.image || notification.details?.username}
+                <img
+                  src="{notification.details.image || `https://minotar.net/avatar/${notification.details?.username}/64`}"
+                  alt="NOTIFICATION AUTHOR"
+                  width="48"
+                  height="48"
+                  class="rounded" />
+              {:else}
+                <i
+                  class="fa fa-fw fa-bolt"
+                  class:text-danger={notification.status === "NOT_READ"}></i>
+              {/if}
             </span>
 
               <span class="flex-grow-1 text-start">
@@ -59,7 +62,7 @@
               <small class="text-muted">
                 {getTime(
                   checkTime,
-                  parseInt(notification.date),
+                  parseInt(notification.createdAt),
                   locales[$currentLanguage.dateFnsCode],
                 )}
               </small>

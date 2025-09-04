@@ -1008,5 +1008,12 @@
     "RELOADED_THEMES": "**{username}** temaları yeniden yükledi.",
     "STARTED_CURRENT_THEME": "**{username}** mevcut {themeId} temasını başlattı.",
     "STOPPED_CURRENT_THEME": "**{username}** mevcut {themeId} temasını durdurdu."
+  },
+  "notifications": {
+    "NEW_TICKET_MESSAGE" : "<b>{username}</b> destek talebinde mesaj gönderdi (<b>#{id}</b>).",
+    "NEW_TICKET" : "<b>{username}</b> yeni bir destek talebi oluşturdu (<b>#{id}</b>).",
+    "TICKET_CLOSED_BY_USER" : "<b>{username}</b> destek talebini kapattı (<b>#{id}</b>).",
+    "PANO_UPDATE_FOUND" : "İyi haber! Yeni bir Pano güncellemesi bulundu!",
+    "SERVER_CONNECT_REQUEST" : "Bir sunucu, Pano'ya bağlanma isteği gönderdi."
   }
 }

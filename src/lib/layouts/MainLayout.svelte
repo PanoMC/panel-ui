@@ -53,7 +53,7 @@
   function initNotificationListeners() {
     addListener("NEW_TICKET", (notification) => {
       const {
-        properties: { id },
+        details: { id },
       } = notification;
 
       goto(base + "/tickets/detail/" + id, { invalidateAll: true });
@@ -61,7 +61,7 @@
 
     addListener("NEW_TICKET_MESSAGE", (notification) => {
       const {
-        properties: { id },
+        details: { id },
       } = notification;
 
       goto(base + "/tickets/detail/" + id, { invalidateAll: true });
@@ -69,7 +69,7 @@
 
     addListener("TICKET_CLOSED_BY_USER", (notification) => {
       const {
-        properties: { id },
+        details: { id },
       } = notification;
 
       goto(base + "/tickets/detail/" + id, { invalidateAll: true });
@@ -77,7 +77,7 @@
 
     addListener("SERVER_CONNECT_REQUEST", (notification) => {
       const {
-        properties: { id },
+        details: { id },
       } = notification;
 
       showServerRequestModal(id);

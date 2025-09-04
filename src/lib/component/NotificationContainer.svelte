@@ -13,7 +13,7 @@
         <small>
           {getTime(
             checkTime,
-            parseInt(notification.date),
+            parseInt(notification.createdAt),
             locales[$currentLanguage.dateFnsCode],
           )}
         </small>
@@ -27,16 +27,50 @@
         </button>
       </div>
 
-      <div class="toast-body">{notification.type}</div>
+      <div class="toast-body">
+        <div
+          class="fw-normal list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap">
+          <button
+            type="button"
+            title={$_("buttons.view")}
+            on:click={() => onNotificationClick(notification)}
+            class="text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
 
-      <!-- A invisible button which makes whole notification clickable -->
+          <span class="d-flex align-items-center">
+            {#if notification.details?.image || notification.details?.username}
+              <img
+                src="{notification.details.image || `https://minotar.net/avatar/${notification.details?.username}/64`}"
+                alt="NOTIFICATION AUTHOR"
+                width="48"
+                height="48"
+                class="rounded" />
+            {:else}
+              <i
+                class="fa fa-fw fa-bolt"
+                class:text-danger={notification.status === "NOT_READ"}></i>
+            {/if}
+          </span>
+
+            <span class="text-start">
+            <span class="text-wrap markdown-renderer text-break">
+              {@html $_('notifications.' + notification.type, {
+                values: {...sanitizeObject(notification.details || {})}
+              })}
+            </span>
+          </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Invisible button covering whole area without creating spacing -->
       <button
         type="button"
-        class="stretched-link p-0 border-0 bg-transparent"
+        class="stretched-link p-0 border-0 bg-transparent position-absolute top-0 start-0 w-100 h-100"
         aria-label={$_("buttons.view")}
         on:click={() => onClick(notification)}>
       </button>
     </article>
+
   {/each}
 </div>
 
@@ -111,6 +145,7 @@
   import { getContext, onDestroy, onMount } from "svelte";
   import { _ } from "svelte-i18n";
   import * as locales from "date-fns/locale";
+  import { sanitize } from "@jill64/universal-sanitizer";
 
   import { quickNotifications } from "$lib/Store";
   import ApiUtil from "$lib/api.util";
@@ -252,4 +287,11 @@
   onDestroy(() => {
     clearInterval(interval);
   });
+
+  function sanitizeObject(obj) {
+    return Object.keys(obj).reduce((sanitizedObj, key) => {
+      sanitizedObj[key] = sanitize(obj[key]);
+      return sanitizedObj;
+    }, {});
+  }
 </script>

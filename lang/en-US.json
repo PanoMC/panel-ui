@@ -1008,5 +1008,12 @@
     "RELOADED_THEMES": "**{username}** reloaded themes.",
     "STARTED_CURRENT_THEME": "**{username}** started current {themeId} theme.",
     "STOPPED_CURRENT_THEME": "**{username}** stopped current {themeId} theme."
+  },
+  "notifications": {
+    "NEW_TICKET_MESSAGE" : "<b>{username}</b> sent a message in ticket (<b>#{id}</b>).",
+    "NEW_TICKET" : "<b>{username}</b> created a new ticket (<b>#{id}</b>).",
+    "TICKET_CLOSED_BY_USER" :  "<b>{username}</b> closed ticket (<b>#{id}</b>).",
+    "PANO_UPDATE_FOUND" :  "Happy news! A Pano update found!",
+    "SERVER_CONNECT_REQUEST" : "A server requested to connect Pano."
   }
 }
