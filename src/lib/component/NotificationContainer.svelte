@@ -1,31 +1,45 @@
-<div
-  class="toast-container position-fixed bottom-0 end-0 p-3 d-xl-block d-none">
+<div class="toast-container position-fixed bottom-0 end-0 p-3 d-xl-block d-none">
   {#each $notifications as notification, index (notification)}
-    <div
+    <article
       id="notificationToast{notification.id}"
-      class="toast"
-      role="alert"
+      class="toast position-relative"
       aria-live="assertive"
-      aria-atomic="true"
-      on:click="{() => onClick(notification)}">
+      aria-atomic="true">
+
       <div class="toast-header text-bg-primary">
-        <strong class="me-auto"
-          >{$_("components.notification-container.notification")}</strong>
-        <small
-          >{getTime(
+        <strong class="me-auto">
+          {$_("components.notification-container.notification")}
+        </strong>
+        <small>
+          {getTime(
             checkTime,
             parseInt(notification.date),
             locales[$currentLanguage.dateFnsCode],
-          )}</small>
+          )}
+        </small>
+
         <button
           type="button"
-          class="btn-close btn-close-white"
-          data-bs-dismiss="toast"></button>
+          class="btn-close btn-close-white position-relative z-3"
+          aria-label="{$_('buttons.close')}"
+          data-bs-dismiss="toast"
+          on:click|stopPropagation>
+        </button>
       </div>
+
       <div class="toast-body">{notification.type}</div>
-    </div>
+
+      <!-- A invisible button which makes whole notification clickable -->
+      <button
+        type="button"
+        class="stretched-link p-0 border-0 bg-transparent"
+        aria-label={$_("buttons.view")}
+        on:click={() => onClick(notification)}>
+      </button>
+    </article>
   {/each}
 </div>
+
 
 <script context="module">
   import { tick } from "svelte";
@@ -152,7 +166,9 @@
           return quickNotifications.insert(index, item);
         });
 
-        addNotification(item);
+        if (item.status === "NOT_READ") {
+          addNotification(item);
+        }
       }
     });
 
