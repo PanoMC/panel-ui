@@ -32,7 +32,7 @@
       <div class="list-group">
         {#each $notifications as notification (notification)}
           <div
-            class="fw-normal list-group-item d-flex align-items-center gap-3 text-wrap"
+            class="fw-normal list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
             class:notification-unread={notification.status === "NOT_READ"}>
 
             <button
@@ -157,6 +157,25 @@
 
     setNotifications(body.notifications);
 
+    if (browser) {
+      body.notifications.slice(0, 5).forEach(notification => {
+        if (notification.status === "NOT_READ") {
+          setTimeout(() => {
+            notifications.update(notifications => {
+              notifications.forEach(subNotification => {
+                if (subNotification.id === notification.id) {
+                  notification.status = "READ"
+                }
+              })
+
+              return notifications;
+            })
+          }, 3000)
+        }
+      })
+    }
+
+
     count.set(parseInt(body.notificationCount));
 
     return body;
@@ -195,7 +214,13 @@
   let checkTime = 0;
   let interval;
 
-  function getNotifications(id) {
+  function delay(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  async function getNotifications(id) {
+    await delay(1000)
+
     ApiUtil.get({
       path: "/api/panel/notifications",
       handler: (body) => {
@@ -214,6 +239,22 @@
             startnotificationCountdown();
           }
         }, 1000);
+
+        $notifications.slice(0, 5).forEach(notification => {
+          if (notification.status === "NOT_READ") {
+            setTimeout(() => {
+              notifications.update(notifications => {
+                notifications.forEach(subNotification => {
+                  if (subNotification.id === notification.id) {
+                    notification.status = "READ"
+                  }
+                })
+
+                return notifications;
+              })
+            }, 3000)
+          }
+        })
       },
     });
   }

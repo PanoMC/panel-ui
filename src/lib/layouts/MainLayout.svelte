@@ -212,17 +212,17 @@
   );
 
   const pageUnsubscribe = page.subscribe((page) => {
-    session.set(page.data.session);
-    user.set(page.data.user);
-    website.set(page.data.website);
-    platformServerMatchKey.set(page.data.platformServerMatchKey);
-    platformKeyRefreshedTime.set(page.data.platformKeyRefreshedTime);
-    platformHostAddress.set(page.data.platformHostAddress);
-    notificationCount.set(page.data.notificationCount);
-    mainServer.set(page.data.mainServer);
-    selectedServer.set(page.data.selectedServer);
-    connectedServerCount.set(page.data.connectedServerCount);
-    siteInfo.set(page.data.siteInfo);
+    session.set(data.session);
+    user.set(data.user);
+    website.set(data.website);
+    platformServerMatchKey.set(data.platformServerMatchKey);
+    platformKeyRefreshedTime.set(data.platformKeyRefreshedTime);
+    platformHostAddress.set(data.platformHostAddress);
+    notificationCount.set(data.notificationCount);
+    mainServer.set(data.mainServer);
+    selectedServer.set(data.selectedServer);
+    connectedServerCount.set(data.connectedServerCount);
+    siteInfo.set(data.siteInfo);
 
     sidebarTabsState.set(getCurrentSidebarState());
   });

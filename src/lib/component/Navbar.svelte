@@ -50,35 +50,44 @@
             {#if $quickNotifications.length === 0}
               <NoContent />
             {:else}
-              {#each $quickNotifications as notification, index (notification)}
-                <button
-                  title={$_("buttons.view")}
-                  type="button"
-                  on:click={() => onNotificationClick(notification)}
-                  class="dropdown-item d-flex align-items-center"
-                  class:notification-unread={notification.status ===
-                    "NOT_READ"}>
-                  <div class="row g-3">
-                    <div class="col-auto d-flex align-items-center">
-                      <i
-                        class="fa fa-fw fa-bolt"
-                        class:text-danger={notification.status === "NOT_READ"}
-                      ></i>
-                      <img
-                        src="https://minotar.net/avatar/connor4312/64"
-                        alt="NOTIFICATION AUTHOR"
-                        width="32"
-                        height="32"
-                        class="rounded d-none" />
-                    </div>
-                    <div class="col">
-                      {notification.type}
-                      <br />
-                      <small class="text-muted"> DATE</small>
-                    </div>
-                  </div>
-                </button>
+              <div class="list-group list-group-flush">
+                {#each $quickNotifications as notification, index (notification)}
+                <div
+                  class="fw-normal list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
+                  class:notification-unread={notification.status === "NOT_READ"}>
+                  <button
+                    type="button"
+                    title={$_("buttons.view")}
+                    on:click={() => onNotificationClick(notification)}
+                    class="text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
+
+                  <span class="d-flex align-items-center">
+                    <i
+                      class="fa fa-fw fa-bolt d-none"
+                      class:text-danger={notification.status === "NOT_READ"}></i>
+                    <img
+                      src="https://minotar.net/avatar/{notification.details?.username || notification.details?.author}/64"
+                      alt="NOTIFICATION AUTHOR"
+                      width="48"
+                      height="48"
+                      class="rounded" />
+                  </span>
+
+                    <span class="text-start">
+                      <span class="text-wrap markdown-renderer text-break">{@html $_('notifications.' + notification.type, {values: {...sanitizeObject(notification.details || {})}})}</span>
+                          <br />
+                      <small class="text-muted">
+                        {getTime(
+                          checkTime,
+                          parseInt(notification.date),
+                          locales[$currentLanguage.dateFnsCode],
+                        )}
+                      </small>
+                    </span>
+                  </button>
+                </div>
               {/each}
+              </div>
             {/if}
 
             <a class="dropdown-item bg-transparent" href="{base}/notifications">
@@ -127,9 +136,11 @@
 
 <script>
   import { onDestroy, onMount, getContext } from "svelte";
-  import { formatDistanceToNow } from "date-fns";
   import { _ } from "svelte-i18n";
+
+  import { formatDistanceToNow } from "date-fns";
   import * as locales from "date-fns/locale";
+  import { sanitize } from "@jill64/universal-sanitizer";
 
   import { base } from "$app/paths";
 
@@ -140,6 +151,9 @@
     quickNotifications,
     toggleSidebar,
   } from "$lib/Store";
+
+  import { currentLanguage } from "$lib/language.util";
+
   import { onNotificationClick } from "$lib/NotificationManager.js";
   import NoContent from "$lib/component/NoContent.svelte";
 
@@ -147,6 +161,7 @@
 
   let checkTime = 0;
   let interval;
+  let showingQuickNotification;
 
   const pageTitle = getContext("pageTitle");
   const user = getContext("user");
@@ -168,10 +183,16 @@
     });
   }
 
-  function markQuickNotificationsAsRead(id) {
+  function delay(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  async function markQuickNotificationsAsRead(id) {
+    await delay(1000)
+
     ApiUtil.post({
       path: "/api/panel/notifications/quick/markAsRead",
-      handler: (body, reject) => {
+      handler: (body) => {
         if (quickNotificationProcessID !== id) {
           return;
         }
@@ -182,18 +203,14 @@
 
         setTimeout(() => {
           if (quickNotificationProcessID === id) {
-            startMarkQuickNotificationsAsReadCountDown();
+            startMarkQuickNotificationsAsReadCountDown(id);
           }
         }, 1000);
       },
     });
   }
 
-  function startMarkQuickNotificationsAsReadCountDown() {
-    quickNotificationProcessID++;
-
-    const id = quickNotificationProcessID;
-
+  function startMarkQuickNotificationsAsReadCountDown(id) {
     markQuickNotificationsAsRead(id);
   }
 
@@ -201,15 +218,49 @@
     return formatDistanceToNow(time, { addSuffix: true, locale });
   }
 
+  function scheduleReadForLast5(notifications) {
+    if (!showingQuickNotification) return;
+
+    notifications.slice(0, 5).forEach(notification => {
+      if (notification.status === "NOT_READ") {
+        setTimeout(() => {
+          if (!showingQuickNotification) return;
+
+          quickNotifications.update(notifications => {
+            notifications.forEach(subNotification => {
+              if (subNotification.id === notification.id) {
+                notification.status = "READ"
+              }
+            })
+
+            return notifications;
+          })
+        }, 3000)
+      }
+    })
+  }
+
+  onDestroy(quickNotifications.subscribe(scheduleReadForLast5))
+
   onMount(() => {
     const dropdown = document.getElementById("quickNotificationsDropdown");
 
     dropdown.addEventListener("show.bs.dropdown", function () {
-      startMarkQuickNotificationsAsReadCountDown();
+      quickNotificationProcessID++;
+
+      const id = quickNotificationProcessID;
+
+      startMarkQuickNotificationsAsReadCountDown(id);
+
+      showingQuickNotification = true;
+
+      scheduleReadForLast5($quickNotifications)
     });
 
     dropdown.addEventListener("hide.bs.dropdown", function () {
       quickNotificationProcessID++;
+
+      showingQuickNotification = false;
     });
 
     interval = setInterval(() => {
@@ -220,4 +271,11 @@
   onDestroy(() => {
     clearInterval(interval);
   });
+
+  function sanitizeObject(obj) {
+    return Object.keys(obj).reduce((sanitizedObj, key) => {
+      sanitizedObj[key] = sanitize(obj[key]);
+      return sanitizedObj;
+    }, {});
+  }
 </script>
