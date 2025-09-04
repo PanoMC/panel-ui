@@ -42,16 +42,16 @@
               class="flex-grow-1 text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
 
             <span class="d-flex align-items-center">
-              {#if notification.details?.image || notification.details?.username}
+              {#if notification.details.faIcon}
+                <i class="{notification.details.faIcon} fa-fw"></i>
+              {:else if notification.details.image || notification.details.username}
                 <img
-                  src="{notification.details.image || `https://minotar.net/avatar/${notification.details?.username}/64`}"
-                  alt="NOTIFICATION AUTHOR"
+                  src="{notification.details.image || `https://minotar.net/avatar/${notification.details.username}/64`}"
                   width="48"
                   height="48"
                   class="rounded" />
               {:else}
-                <i
-                  class="fa fa-fw fa-bolt"></i>
+                <i class="fa fa-fw fa-bolt"></i>
               {/if}
             </span>
 
