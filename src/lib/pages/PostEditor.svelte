@@ -130,7 +130,7 @@
               <li class="list-group-item">
                 <div class="d-flex justify-content-between align-items-center">
                   {$_("pages.post-editor.created-at")}
-                  <div><Date time="{data.post.date}" relativeFormat/></div>
+                  <div class="text-end"><Date time="{data.post.date}" relativeFormat/></div>
                 </div>
               </li>
               {#if data.post.moveDate}
