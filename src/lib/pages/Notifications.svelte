@@ -27,40 +27,56 @@
   <!-- All Notifications -->
 
   <div class="card">
-    <div class="card-header">1 Bildirim</div>
+    <div class="card-header">{$_('pages.notifications.title')}</div>
     <div class="card-body vstack gap-3">
       <div class="list-group">
-        {#each $notifications as notification, index (notification)}
-          <button
-            title={$_("buttons.view")}
-            on:click={() => onNotificationClick(notification)}
-            class="fw-normal list-group-item list-group-item-action text-wrap"
+        {#each $notifications as notification (notification)}
+          <div
+            class="fw-normal list-group-item d-flex align-items-center gap-3 text-wrap"
             class:notification-unread={notification.status === "NOT_READ"}>
-            <div class="row g-3">
-              <div class="col-auto d-flex align-items-center">
-                <i
-                  class="fa fa-fw fa-bolt d-none"
-                  class:text-danger={notification.status === "NOT_READ"}></i>
-                <img
-                  src="https://minotar.net/avatar/connor4312/64"
-                  alt="NOTIFICATION AUTHOR"
-                  width="48"
-                  height="48"
-                  class="rounded" />
-              </div>
-              <div class="col">
-                {notification.type}
-                <br />
-                <small class="text-muted">
-                  {getTime(
-                    checkTime,
-                    parseInt(notification.date),
-                    locales[$currentLanguage.dateFnsCode],
-                  )}
-                </small>
-              </div>
-            </div>
-          </button>
+
+            <button
+              type="button"
+              title={$_("buttons.view")}
+              on:click={() => onNotificationClick(notification)}
+              class="flex-grow-1 text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
+
+            <span class="d-flex align-items-center">
+              <i
+                class="fa fa-fw fa-bolt d-none"
+                class:text-danger={notification.status === "NOT_READ"}></i>
+              <img
+                src="https://minotar.net/avatar/{notification.details?.username || notification.details?.author}/64"
+                alt="NOTIFICATION AUTHOR"
+                width="48"
+                height="48"
+                class="rounded" />
+            </span>
+
+              <span class="flex-grow-1 text-start">
+              <span class="text-wrap markdown-renderer">{@html $_('notifications.' + notification.type, {values: {...sanitizeObject(notification.details || {})}})}</span>
+                  <br />
+              <small class="text-muted">
+                {getTime(
+                  checkTime,
+                  parseInt(notification.date),
+                  locales[$currentLanguage.dateFnsCode],
+                )}
+              </small>
+            </span>
+            </button>
+
+            <button
+              type="button"
+              class="btn-close ms-2"
+              aria-label={$_("pages.notifications.delete-notification")}
+              use:tooltip={[
+                $_("pages.notifications.delete-notification"),
+                { placement: "bottom" },
+              ]}
+              on:click={() => onDeleteNotificationClick(notification.id)}>
+            </button>
+          </div>
         {/each}
       </div>
     </div>
@@ -152,6 +168,9 @@
   import { formatDistanceToNow } from "date-fns";
   import { _ } from "svelte-i18n";
   import * as locales from "date-fns/locale";
+  import { sanitize } from "@jill64/universal-sanitizer";
+
+  import tooltip from "$lib/tooltip.util";
 
   import ConfirmRemoveAllNotificationsModal, {
     show as showDeleteAllNotificationsModal,
@@ -162,8 +181,6 @@
   import NoContent from "$lib/component/NoContent.svelte";
   import { currentLanguage } from "$lib/language.util.js";
   import PageActions from "$lib/component/PageActions.svelte";
-  import CardMenu from "$lib/component/CardMenu.svelte";
-  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
   export let data;
 
@@ -226,7 +243,7 @@
     });
   }
 
-  function deleteNotification(id) {
+  function onDeleteNotificationClick(id) {
     ApiUtil.delete({
       path: `/api/panel/notifications/${id}`,
       handler: (body, reject) => {
@@ -236,13 +253,18 @@
           return;
         }
 
-        get(notifications).forEach((notification) => {
+        $notifications.forEach((notification) => {
           if (notification.id === id) {
-            notifications.update((value) =>
-              value.remove(value.indexOf(notification)),
+            notifications.update((value) => {
+                return value.remove(value.indexOf(notification));
+              }
             );
 
-            count.update((value) => value--);
+            count.update((value) => {
+              value--;
+
+              return value
+            });
           }
         });
       },
@@ -288,4 +310,11 @@
   setDeleteAllNotificationsModalCallback(() => {
     startnotificationCountdown();
   });
+
+  function sanitizeObject(obj) {
+    return Object.keys(obj).reduce((sanitizedObj, key) => {
+      sanitizedObj[key] = sanitize(obj[key]);
+      return sanitizedObj;
+    }, {});
+  }
 </script>
