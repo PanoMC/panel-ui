@@ -912,6 +912,7 @@
       "check-update-success": "Güncellemeler başarıyla kontrol edildi.",
       "check-update-failed": "Güncellemeler kontrol edilirken hata oluştu.",
       "check-resources-update-failed-pano-account": "Güncellemeler kontrol edilemedi: Pano'ya bağlanılamıyor, lütfen daha sonra tekrar deneyin.",
+      "check-resources-update-failed-pano-account-needed": "Kaynak güncellemeleri kontrol edilemedi: Bir Pano hesabı bağlı olmalı!",
       "resource-update-success": "\"{id}\" başarıyla güncellendi.",
       "resource-update-failed": "\"{id}\" güncellenirken hata oluştu.",
       "platform-update-success": "Platform başarıyla güncellendi.",

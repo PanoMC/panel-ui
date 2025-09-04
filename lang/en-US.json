@@ -912,6 +912,7 @@
       "check-update-success": "Updates checked successfully.",
       "check-update-failed": "Failed to check updates.",
       "check-resources-update-failed-pano-account": "Failed to check updates: Can't connect to Pano, try again later.",
+      "check-resources-update-failed-pano-account-needed": "Failed to check updates for resources: A pano account must be connected!",
       "resource-update-success": "\"{id}\" updated successfully.",
       "resource-update-failed": "Failed to update \"{id}\".",
       "platform-update-success": "Updated platform successfully.",
