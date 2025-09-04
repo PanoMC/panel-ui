@@ -243,7 +243,7 @@
           }
         }, 1000);
 
-        $notifications.slice(0, 5).forEach(notification => {
+        $notifications.forEach(notification => {
           if (notification.status === "NOT_READ") {
             setTimeout(() => {
               notifications.update(notifications => {
