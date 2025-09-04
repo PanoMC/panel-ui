@@ -70,9 +70,7 @@
                         height="48"
                         class="rounded" />
                     {:else}
-                      <i
-                        class="fa fa-fw fa-bolt"
-                        class:text-danger={notification.status === "NOT_READ"}></i>
+                      <i class="fa fa-fw fa-bolt"></i>
                     {/if}
                   </span>
 

@@ -51,8 +51,7 @@
                   class="rounded" />
               {:else}
                 <i
-                  class="fa fa-fw fa-bolt"
-                  class:text-danger={notification.status === "NOT_READ"}></i>
+                  class="fa fa-fw fa-bolt"></i>
               {/if}
             </span>
 
