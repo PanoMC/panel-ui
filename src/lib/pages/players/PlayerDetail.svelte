@@ -167,6 +167,15 @@
                 {/each}
               </table>
             </div>
+            <div class="card-footer">
+              <!-- Pagination -->
+              <Pagination
+                page={data.page}
+                totalPage={data.ticketTotalPage}
+                on:firstPageClick={() => onPageClick(1)}
+                on:lastPageClick={() => onPageClick(data.ticketTotalPage)}
+                on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
+            </div>
           {/if}
         </div>
       {/if}
@@ -197,15 +206,6 @@
             </tr>
           </tbody>
         </table>
-        <div class="card-footer">
-          <!-- Pagination -->
-          <Pagination
-            page={data.page}
-            totalPage={data.ticketTotalPage}
-            on:firstPageClick={() => onPageClick(1)}
-            on:lastPageClick={() => onPageClick(data.ticketTotalPage)}
-            on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
-        </div>
       </div>
     </div>
   </div>
