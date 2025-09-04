@@ -42,6 +42,7 @@
             {:else if notification.details.image || notification.details.username}
               <img
                 src="{notification.details.image || `https://minotar.net/avatar/${notification.details.username}/64`}"
+                alt="{$_('buttons.view')}"
                 width="48"
                 height="48"
                 class="rounded" />
