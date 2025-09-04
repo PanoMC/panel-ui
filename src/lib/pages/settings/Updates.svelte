@@ -640,8 +640,7 @@
           }
 
           if (body.error === "PANO_NOT_CONNECTED") {
-            data.panoAccount = null;
-            data.resourceUpdates = []
+            await invalidateAll();
             await showToast("components.toasts.check-resources-update-failed-pano-account-needed");
             return;
           }
