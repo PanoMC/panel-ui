@@ -93,9 +93,9 @@
           align-items-center vstack gap-3">
           <img
             alt={data.player.username}
-            class="rounded-circle animate__animated animate__zoomIn"
-            width="88"
-            height="88"
+            class="rounded animate__animated animate__zoomIn"
+            width="128"
+            height="128"
             class:border={isOnline}
             class:border-3={isOnline}
             class:border-success={isOnline}
