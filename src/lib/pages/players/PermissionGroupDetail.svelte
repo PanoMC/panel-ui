@@ -386,7 +386,7 @@
         loading = false;
 
         showToast("components.toasts.permission-group-save-error", {
-          errorCode: body.error,
+          errorCode: $_('errors.' + body.error),
         });
 
         return;
