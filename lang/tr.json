@@ -1018,6 +1018,7 @@
     "SERVER_CONNECT_REQUEST" : "Bir sunucu, Pano'ya bağlanma isteği gönderdi."
   },
   "errors": {
+    "NETWORK_ERROR": "Bağlantı hatası! Lütfen bağlantınızı kontrol edin.",
     "ALREADY_BANNED": "Kullanıcı zaten yasaklanmış!",
     "ALREADY_CONNECTED_TO_PANO": "Zaten bir hesap Pano sunucularına bağlanmış!",
     "BAD_REQUEST": "Geçersiz istek, lütfen verilerinizi kontrol edin.",

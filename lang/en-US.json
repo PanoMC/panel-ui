@@ -1018,6 +1018,7 @@
     "SERVER_CONNECT_REQUEST": "A server requested to connect Pano."
   },
   "errors": {
+    "NETWORK_ERROR": "Network error! Please check your connection.",
     "ALREADY_BANNED": "User is already banned!",
     "ALREADY_CONNECTED_TO_PANO": "Already connected an account to Pano servers!",
     "BAD_REQUEST": "Bad request, please check your data.",
