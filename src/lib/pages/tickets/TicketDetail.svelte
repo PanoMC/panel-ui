@@ -36,32 +36,36 @@
   </PageActions>
 
   <div class="card">
-    <div class="card-header rounded-top">
-      <div class="hstack gap-2">
-        <TicketStatusBadge status={data.ticket.status} />
-        <h5 class="card-title text-truncate" title={data.ticket.title}>
-          #{data.ticket.id}: {data.ticket.title}
-        </h5>
-      </div>
-      <small>
-        {@html $_("pages.ticket-detail.by-who", {
-          values: {
-            username: `<a href="${base}/players/detail/${data.ticket.username}"
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <h5 class="card-title text-truncate mb-0" title={data.ticket.title}>
+            #{data.ticket.id}: {data.ticket.title}
+          </h5>
+          <small class="mb-0">
+            {@html $_("pages.ticket-detail.by-who", {
+              values: {
+                username: `<a href="${base}/players/detail/${data.ticket.username}"
           >${data.ticket.username}</a>`,
-          },
-        })}
-        <Date time={data.ticket.date} />,
-        {@html $_("pages.ticket-detail.opened-in-category", {
-          values: {
-            category: `<a href="${base}/tickets?categoryUrl=${data.ticket.category.url}"
+              },
+            })}
+            <Date time={data.ticket.date} />,
+            {@html $_("pages.ticket-detail.opened-in-category", {
+              values: {
+                category: `<a href="${base}/tickets?categoryUrl=${data.ticket.category.url}"
           >${
             data.ticket.category.title === "-"
               ? $_("pages.ticket-detail.no-category")
               : data.ticket.category.title
           }</a>`,
-          },
-        })}
-      </small>
+              },
+            })}
+          </small>
+        </div>
+        <div class="col-auto">
+          <TicketStatusBadge status={data.ticket.status} />
+        </div>
+      </div>
     </div>
     <div
       class="card-body"
@@ -71,7 +75,7 @@
       {#if data.ticket.messages.length < data.ticket.count && data.ticket.count > 5}
         <div class="position-relative">
           <button
-            class="btn btn-sm btn-secondary position-absolute top-50 start-50 translate-middle"
+            class="btn btn-sm btn-primary position-absolute top-50 start-50 translate-middle"
             class:disabled={loadMoreLoading}
             on:click={loadMore}
             ><i class="fas fa-arrow-up me-2"></i>
@@ -91,7 +95,7 @@
           {#if message.panel}
             <div class="row g-2 flex-nowrap">
               <div class="col d-flex justify-content-end">
-                <div class="card text-bg-secondary">
+                <div class="card">
                   <div class="card-body answer">
                     {@html message.message}
                   </div>

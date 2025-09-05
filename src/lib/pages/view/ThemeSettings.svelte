@@ -13,18 +13,19 @@
     <div class="spinner-border text-primary" role="status" aria-label="Loading">
     </div>
   </div>
-
 {/if}
 
 {#if error}
-  <div class="alert alert-danger text-center w-100 mb-3" role="alert">
+  <div class="alert alert-danger text-center mb-0" role="alert">
     <i class="fas fa-exclamation-triangle me-2"></i>
     {$_("pages.theme-settings.error")}
   </div>
-  <button class="btn btn-secondary" on:click={load}>
-    <i class="fas fa-redo me-2"></i>
-    {$_("buttons.try-again")}
-  </button>
+  <div class="d-flex justify-content-center">
+    <button class="btn btn-secondary" on:click={load}>
+      <i class="fas fa-redo me-2"></i>
+      {$_("buttons.try-again")}
+    </button>
+  </div>
 {/if}
 
 {#if !error}
