@@ -346,7 +346,7 @@
 
         await showToast("components.toasts.verification-email-sent-error", {
           username: data.player.username,
-          errorCode: body.error,
+          errorCode: $_('errors.' + body.error),
         });
       },
     });
