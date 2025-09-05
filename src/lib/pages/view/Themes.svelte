@@ -130,7 +130,7 @@
     });
 
     if (body.error) {
-      throw error(500, body);
+      throw error(500, body.error);
     }
 
     return {

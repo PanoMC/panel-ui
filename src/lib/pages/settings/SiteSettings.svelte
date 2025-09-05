@@ -356,7 +356,7 @@
           body.error === "WEBSITE_LOGO_EXCEEDS_SIZE"
         ) {
           await showToast("components.toasts.settings-save-error", {
-            errorCode: body.error,
+            errorCode: $_('errors.' + body.error),
           });
         } else reject();
       },

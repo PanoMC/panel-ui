@@ -25,7 +25,7 @@
 
         <p class="text-muted small mb-0" in:fade out:fade>
           {#if $installError}
-            <span class="text-danger">{$_('components.modals.installing-resource.error-text', {values: {error: $installError}})}</span>
+            <span class="text-danger">{$_('components.modals.installing-resource.error-text', {values: {error: $_('errors.' + $installError)}})}</span>
           {:else if !isFinished($installingStep)}
             {$_($processes[$installingStep - 1])}
           {:else}

@@ -93,7 +93,7 @@
 
         showToast('components.toasts.player-unban.the-player', {
           username: $player.username,
-          event: body.error ? $_('components.toasts.player-unban.could-not-remove-ban', {values: body.error}): $_('components.toasts.player-unban.removed-ban')
+          event: body.error ? $_('components.toasts.player-unban.could-not-remove-ban', {values: $_('errors.' + body.error)}): $_('components.toasts.player-unban.removed-ban')
         });
 
         callback($player);

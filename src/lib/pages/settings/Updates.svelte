@@ -144,7 +144,7 @@
                         <span class="text-danger"
                           >{$_(
                             "components.modals.installing-resource.error-text",
-                            { values: { error: platformUpdateError } },
+                            { values: { error: $_('errors.' + platformUpdateError) } },
                           )}</span>
                       {:else if !isPlatformUpdateFinished(platformUpdatingStep)}
                         {$_('pages.settings.updates.platform-update-steps.' + platformUpdateProcesses[platformUpdatingStep - 1])}
@@ -324,7 +324,7 @@
                           <span class="text-danger"
                             >{$_(
                               "components.modals.installing-resource.error-text",
-                              { values: { error: resourceUpdateError.error } },
+                              { values: { error: $_('errors.' +  resourceUpdateError.error) } },
                             )}</span>
                         {:else if !isResourceUpdateFinished(resourceUpdateStep)}
                           {$_('pages.settings.updates.resource-update-steps.' + resourceUpdateProcesses[resourceUpdateStep - 1])}

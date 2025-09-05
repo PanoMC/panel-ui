@@ -111,7 +111,7 @@
 
         showToast('components.toasts.player-ban.the-player', {
           username: $player.username,
-          event: body.error ? $_('components.toasts.player-ban.could-not-ban', {values: body.error}): $_('components.toasts.player-ban.banned')
+          event: body.error ? $_('components.toasts.player-ban.could-not-ban', {values: $_('errors.' + body.error)}): $_('components.toasts.player-ban.banned')
         });
 
         if (body.result === "ok") {
