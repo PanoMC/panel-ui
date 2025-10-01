@@ -10,6 +10,7 @@
       <button
         type="button"
         class="navbar-toggler d-block float-left position-absolute"
+        aria-label={$_("components.sidebar.sidebar-toggle-tooltip")}
         title={$_("components.sidebar.sidebar-toggle-tooltip")}
         on:click={onMobileSideBarCollapseClick}>
         <i class="fa-solid fa-bars"></i>

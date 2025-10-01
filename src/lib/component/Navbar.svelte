@@ -8,6 +8,7 @@
           class="navbar-toggler d-inline-block"
           class:invisible={$isSidebarOpen}
           type="button"
+          aria-label={$_("components.navbar.navbar-toggle-tooltip")}
           title={$_("components.navbar.navbar-toggle-tooltip")}
           on:click={onSideBarCollapseClick}>
           <i class="fa-solid fa-bars"></i>
@@ -52,44 +53,52 @@
             {:else}
               <div class="list-group list-group-flush">
                 {#each $quickNotifications as notification, index (notification)}
-                <div
-                  class="fw-normal list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
-                  class:notification-unread={notification.status === "NOT_READ"}>
-                  <button
-                    type="button"
-                    title={$_("buttons.view")}
-                    on:click={() => onNotificationClick(notification)}
-                    class="text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
+                  <div
+                    class="fw-normal list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
+                    class:notification-unread={notification.status ===
+                      "NOT_READ"}>
+                    <button
+                      type="button"
+                      title={$_("buttons.view")}
+                      on:click={() => onNotificationClick(notification)}
+                      class="text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
+                      <div class="d-flex align-items-center">
+                        {#if notification.details.faIcon}
+                          <i
+                            class="{notification.details
+                              .faIcon} fa-lg fa-fw text-primary"></i>
+                        {:else if notification.details.image || notification.details.username}
+                          <img
+                            src={notification.details.image ||
+                              `https://minotar.net/avatar/${notification.details.username}/64`}
+                            alt={$_("buttons.view")}
+                            width="18"
+                            height="18"
+                            class="rounded-circle" />
+                        {:else}
+                          <i class="fa fa-bolt fa-lg fa-fw text-primary"></i>
+                        {/if}
+                      </div>
 
-                  <span class="d-flex align-items-center">
-                    {#if notification.details.faIcon}
-                      <i class="{notification.details.faIcon} fa-fw"></i>
-                    {:else if notification.details.image || notification.details.username}
-                      <img
-                        src="{notification.details.image || `https://minotar.net/avatar/${notification.details.username}/64`}"
-                        alt="{$_('buttons.view')}"
-                        width="48"
-                        height="48"
-                        class="rounded" />
-                    {:else}
-                      <i class="fa fa-fw fa-bolt"></i>
-                    {/if}
-                  </span>
-
-                    <span class="text-start">
-                      <span class="text-wrap markdown-renderer text-break">{@html $_('notifications.' + notification.type, {values: {...sanitizeObject(notification.details || {})}})}</span>
-                          <br />
-                      <small class="text-muted">
-                        {getTime(
-                          checkTime,
-                          parseInt(notification.createdAt),
-                          locales[$currentLanguage.dateFnsCode],
-                        )}
-                      </small>
-                    </span>
-                  </button>
-                </div>
-              {/each}
+                      <div class="fw-normal">
+                        <span class="text-wrap markdown-renderer text-break"
+                          >{@html $_("notifications." + notification.type, {
+                            values: {
+                              ...sanitizeObject(notification.details || {}),
+                            },
+                          })}</span>
+                        <br />
+                        <small class="text-muted">
+                          {getTime(
+                            checkTime,
+                            parseInt(notification.createdAt),
+                            locales[$currentLanguage.dateFnsCode],
+                          )}
+                        </small>
+                      </div>
+                    </button>
+                  </div>
+                {/each}
               </div>
             {/if}
 
@@ -125,9 +134,7 @@
               </a>
             </li>
             <li class="dropdown-item bg-transparent">
-              <button
-                class="btn btn-sm btn-danger w-100"
-                on:click={onLogout}>
+              <button class="btn btn-sm btn-danger w-100" on:click={onLogout}>
                 {$_("components.navbar.account-dropdown.logout")}</button>
             </li>
           </ul>
@@ -191,7 +198,7 @@
   }
 
   async function markQuickNotificationsAsRead(id) {
-    await delay(1000)
+    await delay(1000);
 
     ApiUtil.post({
       path: "/api/panel/notifications/quick/markAsRead",
@@ -224,26 +231,26 @@
   function scheduleReadForLast5(notifications) {
     if (!showingQuickNotification) return;
 
-    notifications.slice(0, 5).forEach(notification => {
+    notifications.slice(0, 5).forEach((notification) => {
       if (notification.status === "NOT_READ") {
         setTimeout(() => {
           if (!showingQuickNotification) return;
 
-          quickNotifications.update(notifications => {
-            notifications.forEach(subNotification => {
+          quickNotifications.update((notifications) => {
+            notifications.forEach((subNotification) => {
               if (subNotification.id === notification.id) {
-                notification.status = "READ"
+                notification.status = "READ";
               }
-            })
+            });
 
             return notifications;
-          })
-        }, 3000)
+          });
+        }, 3000);
       }
-    })
+    });
   }
 
-  onDestroy(quickNotifications.subscribe(scheduleReadForLast5))
+  onDestroy(quickNotifications.subscribe(scheduleReadForLast5));
 
   onMount(() => {
     const dropdown = document.getElementById("quickNotificationsDropdown");
@@ -257,7 +264,7 @@
 
       showingQuickNotification = true;
 
-      scheduleReadForLast5($quickNotifications)
+      scheduleReadForLast5($quickNotifications);
     });
 
     dropdown.addEventListener("hide.bs.dropdown", function () {

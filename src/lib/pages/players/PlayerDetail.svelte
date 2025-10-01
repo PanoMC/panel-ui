@@ -93,7 +93,7 @@
           align-items-center vstack gap-3">
           <img
             alt={data.player.username}
-            class="rounded animate__animated animate__zoomIn"
+            class="img-thumbnail rounded animate__animated animate__zoomIn"
             width="128"
             height="128"
             class:border={isOnline}
@@ -122,6 +122,30 @@
             <PlayerPermissionBadge
               permissionGroup={data.player.permissionGroup} />
           {/if}
+        </div>
+        <div class="card-footer">
+          <table class="table p-0">
+            <tbody>
+              <tr>
+                <td>{$_("pages.player-detail.email")}</td>
+                <td>
+                  {#if data.player.isEmailVerified}
+                    {$_("pages.player-detail.email-verified")}
+                  {:else}
+                    {$_("pages.player-detail.email-not-verified")}
+                  {/if}
+                </td>
+              </tr>
+              <tr>
+                <td>{$_("pages.player-detail.last-entrance")}</td>
+                <td><DateComponent time={data.player.lastLoginDate} /></td>
+              </tr>
+              <tr>
+                <td>{$_("pages.player-detail.register-date")}</td>
+                <td><DateComponent time={data.player.registerDate} /></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -179,34 +203,6 @@
           {/if}
         </div>
       {/if}
-      <!-- Statistics -->
-      <div class="card">
-        <div class="card-header">
-          {$_("pages.player-detail.statistics")}
-        </div>
-        <table class="table">
-          <tbody>
-            <tr>
-              <td>{$_("pages.player-detail.email")}</td>
-              <td>
-                {#if data.player.isEmailVerified}
-                  {$_("pages.player-detail.email-verified")}
-                {:else}
-                  {$_("pages.player-detail.email-not-verified")}
-                {/if}
-              </td>
-            </tr>
-            <tr>
-              <td>{$_("pages.player-detail.last-entrance")}</td>
-              <td><DateComponent time={data.player.lastLoginDate} /></td>
-            </tr>
-            <tr>
-              <td>{$_("pages.player-detail.register-date")}</td>
-              <td><DateComponent time={data.player.registerDate} /></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 </div>
@@ -346,7 +342,7 @@
 
         await showToast("components.toasts.verification-email-sent-error", {
           username: data.player.username,
-          errorCode: $_('errors.' + body.error),
+          errorCode: $_("errors." + body.error),
         });
       },
     });

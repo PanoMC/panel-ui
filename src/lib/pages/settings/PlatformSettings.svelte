@@ -20,7 +20,7 @@
       <div class="row mb-3">
         <label class="col-md-6" for="platformId"
           >{$_("pages.settings.platform.platform-id")}</label>
-        <div class="col" id="platformId">{data.panoAccount.platformId}</div>
+        <span class="col user-select-all font-monospace" id="platformId">{data.panoAccount.platformId}</span>
       </div>
 
       <div class="row mb-3">
@@ -37,7 +37,8 @@
               height="20"
               class="rounded-circle animate__animated animate__zoomIn me-2"
               alt="{data.panoAccount.username}" />{data.panoAccount
-              .username}</a>
+              .username}<i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
+            </a>
         </div>
       </div>
     {/if}
@@ -50,7 +51,7 @@
           {$_("pages.settings.platform.online-account-description")}
         </small>
       </label>
-      <div class="col" id="connectPanoAccount">
+      <div class="col d-flex align-items-center" id="connectPanoAccount">
         {#if data.panoAccount}
           <span class="text-muted">{maskEmail(data.panoAccount.email)}</span>
           <button

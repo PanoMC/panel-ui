@@ -27,46 +27,52 @@
   <!-- All Notifications -->
 
   <div class="card">
-    <div class="card-header">{$_('pages.notifications.title')}</div>
-    <div class="card-body vstack gap-3" class:d-none="{$notifications.length === 0}">
+    <div class="card-header">{$_("pages.notifications.title")}</div>
+    <div
+      class="card-body vstack gap-3"
+      class:d-none={$notifications.length === 0}>
       <div class="list-group">
         {#each $notifications as notification (notification)}
           <div
-            class="fw-normal list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
+            class="list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
             class:notification-unread={notification.status === "NOT_READ"}>
-
             <button
               type="button"
               title={$_("buttons.view")}
               on:click={() => onNotificationClick(notification)}
               class="flex-grow-1 text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
+              <span class="d-flex align-items-center">
+                {#if notification.details.faIcon}
+                  <i
+                    class="{notification.details
+                      .faIcon} fa-fw fa-xl text-primary"></i>
+                {:else if notification.details.image || notification.details.username}
+                  <img
+                    src={notification.details.image ||
+                      `https://minotar.net/avatar/${notification.details.username}/64`}
+                    alt={$_("buttons.view")}
+                    width="30"
+                    height="30"
+                    class="rounded" />
+                {:else}
+                  <i class="fa fa-bolt fa-xl fa-fw text-primary"></i>
+                {/if}
+              </span>
 
-            <span class="d-flex align-items-center">
-              {#if notification.details.faIcon}
-                <i class="{notification.details.faIcon} fa-fw"></i>
-              {:else if notification.details.image || notification.details.username}
-                <img
-                  src="{notification.details.image || `https://minotar.net/avatar/${notification.details.username}/64`}"
-                  alt="{$_('buttons.view')}"
-                  width="48"
-                  height="48"
-                  class="rounded" />
-              {:else}
-                <i class="fa fa-fw fa-bolt"></i>
-              {/if}
-            </span>
-
-              <span class="flex-grow-1 text-start">
-              <span class="text-wrap markdown-renderer">{@html $_('notifications.' + notification.type, {values: {...sanitizeObject(notification.details || {})}})}</span>
-                  <br />
-              <small class="text-muted">
-                {getTime(
-                  checkTime,
-                  parseInt(notification.createdAt),
-                  locales[$currentLanguage.dateFnsCode],
-                )}
-              </small>
-            </span>
+              <div class="fw-normal">
+                <span class="text-wrap markdown-renderer"
+                  >{@html $_("notifications." + notification.type, {
+                    values: { ...sanitizeObject(notification.details || {}) },
+                  })}</span>
+                <br />
+                <small class="text-muted">
+                  {getTime(
+                    checkTime,
+                    parseInt(notification.createdAt),
+                    locales[$currentLanguage.dateFnsCode],
+                  )}
+                </small>
+              </div>
             </button>
 
             <button
@@ -161,23 +167,22 @@
     setNotifications(body.notifications);
 
     if (browser) {
-      body.notifications.slice(0, 5).forEach(notification => {
+      body.notifications.slice(0, 5).forEach((notification) => {
         if (notification.status === "NOT_READ") {
           setTimeout(() => {
-            notifications.update(notifications => {
-              notifications.forEach(subNotification => {
+            notifications.update((notifications) => {
+              notifications.forEach((subNotification) => {
                 if (subNotification.id === notification.id) {
-                  notification.status = "READ"
+                  notification.status = "READ";
                 }
-              })
+              });
 
               return notifications;
-            })
-          }, 3000)
+            });
+          }, 3000);
         }
-      })
+      });
     }
-
 
     count.set(parseInt(body.notificationCount));
 
@@ -222,7 +227,7 @@
   }
 
   async function getNotifications(id) {
-    await delay(1000)
+    await delay(1000);
 
     ApiUtil.get({
       path: "/api/panel/notifications",
@@ -243,21 +248,21 @@
           }
         }, 1000);
 
-        $notifications.forEach(notification => {
+        $notifications.forEach((notification) => {
           if (notification.status === "NOT_READ") {
             setTimeout(() => {
-              notifications.update(notifications => {
-                notifications.forEach(subNotification => {
+              notifications.update((notifications) => {
+                notifications.forEach((subNotification) => {
                   if (subNotification.id === notification.id) {
-                    notification.status = "READ"
+                    notification.status = "READ";
                   }
-                })
+                });
 
                 return notifications;
-              })
-            }, 3000)
+              });
+            }, 3000);
           }
-        })
+        });
       },
     });
   }
@@ -300,14 +305,13 @@
         $notifications.forEach((notification) => {
           if (notification.id === id) {
             notifications.update((value) => {
-                return value.remove(value.indexOf(notification));
-              }
-            );
+              return value.remove(value.indexOf(notification));
+            });
 
             count.update((value) => {
               value--;
 
-              return value
+              return value;
             });
           }
         });

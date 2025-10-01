@@ -54,20 +54,20 @@
           </form>
 
           {#each data.users as user, index (user)}
-            <a
+            <button
+              class="btn btn-link btn-sm"
+              type="button"
+              aria-label={$_("buttons.remove")}
               use:tooltip={[$_("buttons.remove"), { placement: "bottom" }]}
-              href="javascript:void(0);"
               on:click={() => removeUser(index)}>
-              <span class="badge rounded-pill text-bg-primary">
-                <img
-                  class="rounded-circle me-2"
-                  src="https://minotar.net/avatar/{user}"
-                  alt={user}
-                  width="28"
-                  height="28" />
-                {user}
-              </span>
-            </a>
+              <img
+                class="rounded-circle me-2"
+                src="https://minotar.net/avatar/{user}"
+                alt={user}
+                width="30"
+                height="30" />
+              {user}
+            </button>
           {/each}
         </div>
       </div>
@@ -386,7 +386,7 @@
         loading = false;
 
         showToast("components.toasts.permission-group-save-error", {
-          errorCode: $_('errors.' + body.error),
+          errorCode: $_("errors." + body.error),
         });
 
         return;

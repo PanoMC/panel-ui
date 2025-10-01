@@ -125,7 +125,7 @@
                       aria-valuemax={platformUpdateProcesses.length + 1}
                       style="height: 5px;">
                       <div
-                        class="progress-bar progress-bar-striped {platformUpdateError
+                        class="progress-bar bg-secondary progress-bar-striped {platformUpdateError
                           ? 'bg-danger'
                           : !isPlatformUpdateFinished(platformUpdatingStep)
                             ? 'progress-bar-animated bg-primary'

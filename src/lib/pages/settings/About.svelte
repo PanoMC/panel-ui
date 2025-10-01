@@ -8,7 +8,7 @@
           {$_("pages.settings.about.version")}
         </label>
         <div class="col-md-6 col-form-label">
-          <span aria-describedby="panoVersion" id="panoVersion"
+          <span class="user-select-all font-monospace" aria-describedby="panoVersion" id="panoVersion"
             >{data.platformVersion}</span>
         </div>
       </div>
@@ -28,7 +28,7 @@
         <div class="col-md-6 col-form-label">
           <a
             aria-describedby="panoWebsite"
-            href="{PANO_WEBSITE_URL}"
+            href={PANO_WEBSITE_URL}
             id="panoWebsite"
             target="_blank">
             {getDomain(PANO_WEBSITE_URL)}
