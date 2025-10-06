@@ -12,23 +12,22 @@
 
 // Panel UI Styles
 
-.sidebar {
-  min-width: 250px;
-  max-width: 250px;
-  position: relative;
-  top: 0;
-  left: 0;
-  z-index: 1040;
-  transition: 250ms all;
-  @include media-breakpoint-down(md) {
-    position: fixed;
-    left: 0;
+#sidebar { --bs-offcanvas-width: 256px; } /* mobile offcanvas width */
+
+/* Masaüstü düzeni: yan yana */
+@media (min-width: 992px) {
+  /* Make Sidebar visible, sticky and fixed width */
+  .offcanvas-lg {
+    position: sticky;
+    transform: none !important;
+    visibility: visible !important;
+    z-index: auto !important;           /* prevent content override */
+    flex: 0 0 256px;                    /* fix 256px */
+    max-width: 256px;
   }
+  .offcanvas-backdrop { display: none !important; }
 }
 
-.sidebar:not(.active) {
-  margin-left: -250px;
-}
 
 ::-webkit-scrollbar {
   width: 8px;

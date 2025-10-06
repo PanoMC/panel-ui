@@ -3,104 +3,109 @@
   <ConnectServerModal />
 {/if}
 
-<div class="sidebar bg-primary min-vh-100" class:active={$isSidebarOpen}>
-  <div class="container-fluid">
-    <!-- Sidebar Toggler & Logo -->
-    <div class="navbar navbar-expand navbar-dark bg-body-primary">
-      <button
-        type="button"
-        class="navbar-toggler d-block float-left position-absolute"
-        aria-label={$_("components.sidebar.sidebar-toggle-tooltip")}
-        title={$_("components.sidebar.sidebar-toggle-tooltip")}
-        on:click={onMobileSideBarCollapseClick}>
-        <i class="fa-solid fa-bars"></i>
-      </button>
 
-      <a class="navbar-brand m-auto ps-1" href="{base}/">
-        <img
-          alt="Pano"
-          title="Pano"
-          src={base + "/assets/img/logo.svg"}
-          width="20" />
-      </a>
-    </div>
+<div class="offcanvas offcanvas-start bg-primary" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel" class:offcanvas-lg={$isSidebarOpen}>
+  <div class="offcanvas-body p-0 ">
+    <div class="container-fluid">
+      <!-- Sidebar Toggler & Logo -->
+      <div class="navbar navbar-expand navbar-dark bg-body-primary">
+        <button
+          type="button"
+          class="navbar-toggler d-block float-left position-absolute"
+          aria-label={$_("components.sidebar.sidebar-toggle-tooltip")}
+          title={$_("components.sidebar.sidebar-toggle-tooltip")}
+          on:click={onMobileSideBarCollapseClick}
+          data-bs-dismiss="offcanvas">
+          <i class="fa-solid fa-bars"></i>
+        </button>
 
-    <!-- Sidebar Tabs -->
-    <div class="navbar-dark">
-      <ul class="navbar-nav flex-row nav-fill">
-        <li class="nav-item">
-          <button
-            class="nav-link text-center"
-            on:click={onWebsiteMenuClick}
-            class:active={$sidebarTabsState === "website"}>
-            <i class="fas fa-globe fa-lg mb-3"></i>
-            <br />
-            {$_("components.sidebar.website")}
-          </button>
-        </li>
-        {#if hasPermission(Permissions.MANAGE_SERVERS)}
+        <a class="navbar-brand m-auto ps-1" href="{base}/">
+          <img
+            alt="Pano"
+            title="Pano"
+            src={base + "/assets/img/logo.svg"}
+            width="20" />
+        </a>
+      </div>
+
+      <!-- Sidebar Tabs -->
+      <div class="navbar-dark">
+        <ul class="navbar-nav flex-row nav-fill">
           <li class="nav-item">
             <button
               class="nav-link text-center"
-              on:click={onGameMenuClick}
-              class:active={$sidebarTabsState === "game"}>
-              <i class="fas fa-cube fa-lg mb-3"></i>
+              on:click={onWebsiteMenuClick}
+              class:active={$sidebarTabsState === "website"}>
+              <i class="fas fa-globe fa-lg mb-3"></i>
               <br />
-              {$_("components.sidebar.server")}
+              {$_("components.sidebar.website")}
             </button>
           </li>
-        {/if}
-      </ul>
-    </div>
-
-    <!-- Sidebar Info Section -->
-    {#if $sidebarTabsState === "website"}
-      <a
-        type="button"
-        href={UI_URL}
-        class="btn btn-sm btn-secondary w-100"
-        target="_blank">
-        {$_("components.sidebar.show-website")}
-        <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
-      </a>
-    {/if}
-
-    {#if $sidebarTabsState === "game"}
-      <div class="hstack gap-1">
-        <button
-          class="btn btn-sm btn-secondary w-100"
-          type="button"
-          on:click={showServersModal}>
-          {$_("components.sidebar.show-servers")}
-        </button>
-        <button
-          class="btn btn-sm btn-secondary"
-          data-bs-target="#connectServer"
-          data-bs-toggle="modal"
-          aria-label={$_("components.server-navigation-menu.connect-server")}
-          type="button"
-          title="
-          {$_('components.server-navigation-menu.connect-server')}">
-          <i class="fa-solid fa-plus"></i>
-        </button>
+          {#if hasPermission(Permissions.MANAGE_SERVERS)}
+            <li class="nav-item">
+              <button
+                class="nav-link text-center"
+                on:click={onGameMenuClick}
+                class:active={$sidebarTabsState === "game"}>
+                <i class="fas fa-cube fa-lg mb-3"></i>
+                <br />
+                {$_("components.sidebar.server")}
+              </button>
+            </li>
+          {/if}
+        </ul>
       </div>
-    {/if}
 
-    <!-- Sidebar Site Navigation Menu || Sidebar Server Navigation Menu -->
-    <svelte:component this={menuComponent} />
+      <!-- Sidebar Info Section -->
+      {#if $sidebarTabsState === "website"}
+        <a
+          type="button"
+          href={UI_URL}
+          class="btn btn-sm btn-secondary w-100"
+          target="_blank">
+          {$_("components.sidebar.show-website")}
+          <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
+        </a>
+      {/if}
 
-    <!-- Sidebar Bottom -->
-    <Bottom />
+      {#if $sidebarTabsState === "game"}
+        <div class="hstack gap-1">
+          <button
+            class="btn btn-sm btn-secondary w-100"
+            type="button"
+            on:click={showServersModal}>
+            {$_("components.sidebar.show-servers")}
+          </button>
+          <button
+            class="btn btn-sm btn-secondary"
+            data-bs-target="#connectServer"
+            data-bs-toggle="modal"
+            aria-label={$_("components.server-navigation-menu.connect-server")}
+            type="button"
+            title="
+          {$_('components.server-navigation-menu.connect-server')}">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      {/if}
+
+      <!-- Sidebar Site Navigation Menu || Sidebar Server Navigation Menu -->
+      <svelte:component this={menuComponent} />
+
+      <!-- Sidebar Bottom -->
+      <Bottom />
+    </div>
   </div>
 </div>
 
+<!--<div class="sidebar bg-primary min-vh-100" class:active={$isSidebarOpen} hidden>-->
+<!--</div>-->
+
 <script>
-  import { getContext, onDestroy } from "svelte";
+  import { getContext, onDestroy, onMount } from "svelte";
   import { _ } from "svelte-i18n";
 
   import { base } from "$app/paths";
-
-  import tooltip from "$lib/tooltip.util";
 
   import { toggleSidebar, setSidebarTabsState } from "$lib/Store";
 
@@ -115,15 +120,13 @@
   import ConnectServerModal from "./modals/ConnectServerModal.svelte";
   import { UI_URL } from "$lib/variables.js";
 
-  import { websiteLogoSrc } from "$lib/Store.js";
   import { hasPermission, Permissions } from "$lib/auth.util.js";
+  import { browser } from "$app/environment";
 
   let menuComponent = SiteNavigationMenu;
 
-  const website = getContext("website");
   const sidebarTabsState = getContext("sidebarTabsState");
   const isSidebarOpen = getContext("isSidebarOpen");
-  const selectedServer = getContext("selectedServer");
 
   const unsubscribeSidebarTabsState = sidebarTabsState.subscribe((value) => {
     if (value === "website" || !hasPermission(Permissions.MANAGE_SERVERS)) {
@@ -146,4 +149,22 @@
   }
 
   onDestroy(unsubscribeSidebarTabsState);
+
+  function delay(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  onMount(async () => {
+    const sidebar = document.getElementById('sidebar');
+    while(!window.bootstrap) await delay();
+    const off = window.bootstrap.Offcanvas.getOrCreateInstance(sidebar);
+
+    sidebar.addEventListener('click', (e) => {
+      const a = e.target.closest('a[href]');
+      if (!a) return;
+      if (window.innerWidth < 992) { // only work in mobile
+        off.hide(); // href will work normally
+      }
+    });
+  })
 </script>

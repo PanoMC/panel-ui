@@ -5,12 +5,15 @@
       <!-- Navbar Toggler -->
       <div class="navbar-nav">
         <button
+          class:d-lg-none={$isSidebarOpen}
           class="navbar-toggler d-inline-block"
-          class:invisible={$isSidebarOpen}
           type="button"
           aria-label={$_("components.navbar.navbar-toggle-tooltip")}
           title={$_("components.navbar.navbar-toggle-tooltip")}
-          on:click={onSideBarCollapseClick}>
+          on:click={onSideBarCollapseClick}
+          data-bs-toggle="offcanvas"
+          data-bs-target="#sidebar"
+          aria-controls="sidebar">
           <i class="fa-solid fa-bars"></i>
         </button>
       </div>
