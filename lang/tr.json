@@ -262,6 +262,10 @@
           "website-description": {
             "label": "Site Açıklaması"
           },
+          "register-agreement": {
+            "label": "Kayıt Sözleşmesi",
+            "small-note": "Not: Bu alan HTML destekler. Boş bırakılırsa kayıt formundaki \"Sözleşmeyi kabul ediyorum\" onay kutusu gösterilmez."
+          },
           "game-server-ip-address": {
             "label": "Oyun Sunucu IP Adresi"
           },

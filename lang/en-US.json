@@ -262,6 +262,10 @@
           "website-description": {
             "label": "Website Description"
           },
+          "register-agreement": {
+            "label": "Register Agreement",
+            "small-note": "Note: This field supports HTML. If left empty, the \"I accept the agreement\" checkbox will not appear on the signup form."
+          },
           "game-server-ip-address": {
             "label": "Game Server IP Address"
           },

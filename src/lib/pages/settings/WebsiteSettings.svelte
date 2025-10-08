@@ -32,6 +32,20 @@
           rows="2"></textarea>
       </div>
     </div>
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="siteRegisterAgreement">
+        {$_("pages.settings.site-settings.inputs.register-agreement.label")}
+      </label>
+      <div class="col-md-6">
+        <textarea
+          bind:value={data.registerAgreement}
+          aria-describedby="siteRegisterAgreement"
+          class="form-control"
+          id="siteRegisterAgreement"
+          rows="2"></textarea>
+        <small for="siteRegisterAgreement">{$_("pages.settings.site-settings.inputs.register-agreement.small-note")}</small>
+      </div>
+    </div>
 
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="ipAddress">
@@ -248,6 +262,7 @@
   $: isSaveButtonDisabled =
     data.oldSettings.websiteName === data.websiteName &&
     data.oldSettings.websiteDescription === data.websiteDescription &&
+    data.oldSettings.registerAgreement === data.registerAgreement &&
     data.oldSettings.supportEmail === data.supportEmail &&
     data.oldSettings.serverIpAddress === data.serverIpAddress &&
     data.oldSettings.serverGameVersion === data.serverGameVersion &&
@@ -294,6 +309,7 @@
 
     formData.append("websiteName", data.websiteName);
     formData.append("websiteDescription", data.websiteDescription);
+    formData.append("registerAgreement", data.registerAgreement);
     formData.append("supportEmail", data.supportEmail);
     formData.append("serverIpAddress", data.serverIpAddress);
     formData.append("serverGameVersion", data.serverGameVersion);
