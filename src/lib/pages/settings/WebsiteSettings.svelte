@@ -277,6 +277,7 @@
   $: isSaveButtonDisabled =
     data.oldSettings.websiteName === data.websiteName &&
     data.oldSettings.websiteDescription === data.websiteDescription &&
+    data.oldSettings.websiteUrl === data.websiteUrl &&
     data.oldSettings.registerAgreement === data.registerAgreement &&
     data.oldSettings.supportEmail === data.supportEmail &&
     data.oldSettings.serverIpAddress === data.serverIpAddress &&
@@ -324,6 +325,7 @@
 
     formData.append("websiteName", data.websiteName);
     formData.append("websiteDescription", data.websiteDescription);
+    formData.append("websiteUrl", data.websiteUrl);
     formData.append("registerAgreement", data.registerAgreement);
     formData.append("supportEmail", data.supportEmail);
     formData.append("serverIpAddress", data.serverIpAddress);
