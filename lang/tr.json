@@ -262,6 +262,10 @@
           "website-description": {
             "label": "Site Açıklaması"
           },
+          "website-url": {
+            "label": "Website Adresi",
+            "placeholder": "https://benim-minecraft-sunucu-websitem.com"
+          },
           "register-agreement": {
             "label": "Kayıt Sözleşmesi",
             "small-note": "Not: Bu alan HTML destekler. Boş bırakılırsa kayıt formundaki \"Sözleşmeyi kabul ediyorum\" onay kutusu gösterilmez."

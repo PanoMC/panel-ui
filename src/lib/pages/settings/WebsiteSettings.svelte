@@ -33,6 +33,21 @@
       </div>
     </div>
     <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="websiteUrl"
+      >{$_("pages.settings.site-settings.inputs.website-url.label")}</label>
+      <div class="col-md-6">
+        <input
+          bind:value={data.websiteUrl}
+          aria-describedby="websiteUrl"
+          class="form-control"
+          placeholder={$_(
+            "pages.settings.site-settings.inputs.website-url.placeholder",
+          )}
+          id="websiteUrl"
+          type="text" />
+      </div>
+    </div>
+    <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteRegisterAgreement">
         {$_("pages.settings.site-settings.inputs.register-agreement.label")}
       </label>

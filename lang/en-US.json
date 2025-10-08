@@ -262,6 +262,10 @@
           "website-description": {
             "label": "Website Description"
           },
+          "website-url": {
+            "label": "Website URL",
+            "placeholder": "https://my-minecraft-server-website.com"
+          },
           "register-agreement": {
             "label": "Register Agreement",
             "small-note": "Note: This field supports HTML. If left empty, the \"I accept the agreement\" checkbox will not appear on the signup form."
