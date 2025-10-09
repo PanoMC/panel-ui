@@ -40,7 +40,7 @@
               type="button"
               title={$_("buttons.view")}
               on:click={() => onNotificationClick(notification)}
-              class="flex-grow-1 text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
+              class="btn btn-link text-decoration-none flex-grow-1 text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
               <span class="d-flex align-items-center">
                 {#if notification.details.faIcon}
                   <i

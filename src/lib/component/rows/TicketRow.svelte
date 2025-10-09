@@ -10,7 +10,10 @@
     </div>
   </th>
   <td class="align-middle text-nowrap">
-    <a href="{base}/tickets/detail/{ticket.id}" title={$_("buttons.view")}>
+    <a
+      href="{base}/tickets/detail/{ticket.id}"
+      class="rounded focus-ring"
+      title={$_("buttons.view")}>
       #{ticket.id}
       {ticket.title}
     </a>
@@ -18,7 +21,8 @@
   <td class="align-middle text-nowrap">
     <a
       title={$_("components.ticket-row.filter")}
-      href="{base}/tickets?categoryUrl={ticket.category.url}">
+      href="{base}/tickets?categoryUrl={ticket.category.url}"
+      class="rounded focus-ring">
       {ticket.category.title === "-"
         ? $_("components.ticket-row.no-category")
         : ticket.category.title}
@@ -27,13 +31,19 @@
   <td class="align-middle text-nowrap">
     <a
       href="{base}/players/detail/{ticket.writer.username}"
-      title={$_("buttons.view")}>
+      title={$_("buttons.view")}
+      class="d-inline-block rounded-circle focus-ring">
       <img
         src="https://minotar.net/avatar/{ticket.writer.username}/32"
         alt={$_("components.ticket-row.player-name")}
-        class="rounded-circle animate__animated animate__zoomIn me-2"
+        class="rounded-circle animate__animated animate__zoomIn"
         height="32"
         width="32" />
+    </a>
+    <a
+      href="{base}/players/detail/{ticket.writer.username}"
+      title={$_("buttons.view")}
+      class="rounded focus-ring ms-2">
       {ticket.writer.username}
     </a>
   </td>

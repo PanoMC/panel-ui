@@ -51,14 +51,20 @@
   </th>
   <td class="align-middle text-nowrap">
     <a
+      class="d-inline-block focus-ring rounded-circle"
       title={$_("buttons.view")}
       href="{base}/players/detail/{player.username}">
       <img
-        alt={player.username}
-        class="rounded-circle animate__animated animate__zoomIn me-2"
-        height="32"
         src="https://minotar.net/avatar/{player.username}"
-        width="32" />
+        alt={player.username}
+        width="32"
+        height="32"
+        class="rounded-circle animate__animated animate__zoomIn" />
+    </a>
+    <a
+      class="rounded focus-ring ms-2"
+      title={$_("buttons.view")}
+      href="{base}/players/detail/{player.username}">
       {player.username}
     </a>
   </td>

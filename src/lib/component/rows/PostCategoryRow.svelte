@@ -10,16 +10,18 @@
     </button>
   </th>
   <td class="align-middle text-nowrap">
-    <a
-      href="javascript:void(0);"
+    <button
+      class="btn btn-link p-0"
+      type="button"
       title={$_("buttons.edit")}
       on:click={onEditClick}>
       {category.title}
-    </a>
+    </button>
   </td>
   <td class="align-middle text-nowrap">{category.description}</td>
   <td class="align-middle">
     <a
+    class="rounded focus-ring"
       href="{UI_URL === '/' ? '' : UI_URL}/blog/category/{category.url}"
       target="_blank"
       title={$_("buttons.view")}>

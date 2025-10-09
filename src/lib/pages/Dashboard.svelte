@@ -1,9 +1,9 @@
-
 <!-- Dashboard Page -->
 <div class="container vstack gap-3">
   <!-- Welcome Alerts -->
   {#if data.gettingStartedBlocks.welcomeBoard}
-    <div class="alert alert-success alert-dismissible animate__animated animate__zoomIn">
+    <div
+      class="alert alert-success alert-dismissible animate__animated animate__zoomIn">
       <div class="row">
         <h5 class="mb-3">
           {@html $_("pages.dashboard.welcome-card.description")}
@@ -47,7 +47,9 @@
             </li>
             <li>
               <a class="alert-link" href="{base}/players">
-                <i class="fa-solid fa-user-cog me-2"></i>{$_("pages.dashboard.welcome-card.manage-players")}
+                <i class="fa-solid fa-user-cog me-2"></i>{$_(
+                  "pages.dashboard.welcome-card.manage-players",
+                )}
               </a>
             </li>
           </ul>
@@ -55,13 +57,19 @@
         <div class="col-lg-4">
           <ul>
             <li>
-              <a class="alert-link" href="{PANO_WEBSITE_URL}/addons" target="_blank">
+              <a
+                class="alert-link"
+                href="{PANO_WEBSITE_URL}/addons"
+                target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
                 {$_("pages.dashboard.welcome-card.get-themes-and-extensions")}
               </a>
             </li>
             <li>
-              <a class="alert-link" href="{PANO_WEBSITE_URL}/docs" target="_blank">
+              <a
+                class="alert-link"
+                href="{PANO_WEBSITE_URL}/docs"
+                target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
                 {$_("pages.dashboard.welcome-card.documentations")}
               </a>
@@ -73,7 +81,10 @@
               </a>
             </li>
             <li>
-              <a class="alert-link" href="{PANO_WEBSITE_URL}/discord" target="_blank">
+              <a
+                class="alert-link"
+                href="{PANO_WEBSITE_URL}/discord"
+                target="_blank">
                 <i class="fab fa-discord me-2"></i>
                 {$_("pages.dashboard.welcome-card.discord")}
               </a>
@@ -93,84 +104,87 @@
   {/if}
 
   <!-- Masonry Layout for Cards -->
-  <masonry-layout cols="{$mansoryLayoutCols}">
+  <masonry-layout cols={$mansoryLayoutCols}>
     <!-- Latest Tickets Card -->
-      {#if hasPermission(Permissions.MANAGE_TICKETS)}
-          <div class="card mb-3">
-            <div class="card-header">
-              {$_("pages.dashboard.last-tickets.title")}
-            </div>
-
-            {#if data.tickets.length === 0}
-              <NoContent />
-            {:else}
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  {#each data.tickets as ticket, index (ticket)}
-                    <tbody>
-                    <tr>
-                      <td class="align-middle">
-                        <a
-                          use:tooltip={[
-                              ticket.writer.username,
-                              { placement: "bottom" },
-                            ]}
-                          href="{base}/players/detail/{ticket.writer.username}">
-                          <img
-                            src="https://minotar.net/avatar/{ticket.writer.username}/32"
-                            alt={$_("pages.dashboard.last-tickets.player-name")}
-                            class="rounded-circle animate__animated animate__zoomIn"
-                            height="32"
-                            width="32" />
-                        </a>
-                      </td>
-                      <td class="align-middle text-nowrap">
-                        <a
-                          href="{base}/tickets/detail/{ticket.id}"
-                          title={$_("buttons.view")}>
-                          #{ticket.id} {ticket.title}
-                        </a>
-                      </td>
-                      <td class="align-middle text-nowrap">
-                        <TicketStatusBadge status={ticket.status} />
-                      </td>
-                      <td class="align-middle text-nowrap">
-                        <span><Date time={ticket.lastUpdate} /></span>
-                      </td>
-                    </tr>
-                    </tbody>
-                  {/each}
-                </table>
-              </div>
-            {/if}
-          </div>
-      {/if}
-
-      <!-- Latest Activity Logs Card -->
+    {#if hasPermission(Permissions.MANAGE_TICKETS)}
       <div class="card mb-3">
-        <CardHeader>
-          <div slot="left">
-            {$_("pages.dashboard.logs.title")}
-          </div>
-          <div slot="right">
-            {#if data.activityLogs.meta.totalCount > 10}
-              <a href="{base}/logs" class="btn btn-sm btn-outline-primary">
-                {$_("buttons.show-all")} ({data.activityLogs.meta.totalCount})
-              </a>
-            {/if}
-          </div>
-        </CardHeader>
-        <ul class="list-group list-group-flush">
-          {#each data.activityLogs.data as log, index (log)}
-            <ActivityLogRow
-              log={log}
-              on:click={onShowViewActivityLogModalClick} />
-          {:else}
-            <NoContent/>
-          {/each}
-        </ul>
-      </div>
+        <div class="card-header">
+          {$_("pages.dashboard.last-tickets.title")}
+        </div>
 
+        {#if data.tickets.length === 0}
+          <NoContent />
+        {:else}
+          <div class="table-responsive">
+            <table class="table table-hover">
+              {#each data.tickets as ticket, index (ticket)}
+                <tbody>
+                  <tr>
+                    <td class="align-middle">
+                      <a
+                        class="focus-ring rounded-circle d-inline-block"
+                        use:tooltip={[
+                          ticket.writer.username,
+                          { placement: "bottom" },
+                        ]}
+                        href="{base}/players/detail/{ticket.writer.username}">
+                        <img
+                          src="https://minotar.net/avatar/{ticket.writer
+                            .username}/32"
+                          alt={$_("pages.dashboard.last-tickets.player-name")}
+                          class="rounded-circle animate__animated animate__zoomIn"
+                          height="32"
+                          width="32" />
+                      </a>
+                    </td>
+                    <td class="align-middle text-nowrap">
+                      <a
+                        class="btn btn-link p-0"
+                        href="{base}/tickets/detail/{ticket.id}"
+                        title={$_("buttons.view")}>
+                        #{ticket.id}
+                        {ticket.title}
+                      </a>
+                    </td>
+                    <td class="align-middle text-nowrap">
+                      <TicketStatusBadge status={ticket.status} />
+                    </td>
+                    <td class="align-middle text-nowrap">
+                      <span><Date time={ticket.lastUpdate} /></span>
+                    </td>
+                  </tr>
+                </tbody>
+              {/each}
+            </table>
+          </div>
+        {/if}
+      </div>
+    {/if}
+
+    <!-- Latest Activity Logs Card -->
+    <div class="card mb-3">
+      <CardHeader>
+        <div slot="left">
+          {$_("pages.dashboard.logs.title")}
+        </div>
+        <div slot="right">
+          {#if data.activityLogs.meta.totalCount > 10}
+            <a href="{base}/logs" class="btn btn-sm btn-outline-primary">
+              {$_("buttons.show-all")} ({data.activityLogs.meta.totalCount})
+            </a>
+          {/if}
+        </div>
+      </CardHeader>
+      <ul class="list-group list-group-flush">
+        {#each data.activityLogs.data as log, index (log)}
+          <ActivityLogRow
+            log={log}
+            on:click={onShowViewActivityLogModalClick} />
+        {:else}
+          <NoContent />
+        {/each}
+      </ul>
+    </div>
 
     <!-- Latest Registers Card -->
     {#if hasPermission(Permissions.MANAGE_PLAYERS)}
@@ -186,34 +200,35 @@
             <table class="table table-hover">
               {#each data.lastRegisters as player, index (player)}
                 <tbody>
-                <tr>
-                  <td class="align-middle text-nowrap">
-                    <a
-                      title={$_("buttons.view")}
-                      href="{base}/players/detail/{player.username}">
-                      <img
-                        alt={player.username}
-                        class="rounded-circle animate__animated animate__zoomIn me-2"
-                        height="32"
-                        src="https://minotar.net/avatar/{player.username}"
-                        width="32" />
-                      {player.username}
-                    </a>
-                  </td>
-                  <td class="align-middle text-nowrap text-capitalize">
-                    <PlayerPermissionBadge permissionGroup={player.permissionGroup} />
-                  </td>
-                  <td class="align-middle text-nowrap">
-                    <PlayerStatusBadge
-                      banned={player.banned}
-                      lastActivityTime={player.lastActivityTime}
-                      inGame={player.inGame}
-                      checkTime={0} />
-                  </td>
-                  <td class="align-middle text-nowrap">
-                    <Date time={player.registerDate} />
-                  </td>
-                </tr>
+                  <tr>
+                    <td class="align-middle">
+                      <a
+                        class="focus-ring rounded-circle d-inline-block"
+                        title={$_("buttons.view")}
+                        href="{base}/players/detail/{player.username}">
+                        <img
+                          alt={player.username}
+                          class="rounded-circle animate__animated animate__zoomIn"
+                          height="32"
+                          width="32"
+                          src="https://minotar.net/avatar/{player.username}" />
+                      </a>
+                    </td>
+                    <td class="align-middle text-capitalize">
+                      <PlayerPermissionBadge
+                        permissionGroup={player.permissionGroup} />
+                    </td>
+                    <td class="align-middle">
+                      <PlayerStatusBadge
+                        banned={player.banned}
+                        lastActivityTime={player.lastActivityTime}
+                        inGame={player.inGame}
+                        checkTime={0} />
+                    </td>
+                    <td class="align-middle">
+                      <Date time={player.registerDate} />
+                    </td>
+                  </tr>
                 </tbody>
               {/each}
             </table>
@@ -254,7 +269,7 @@
 <script>
   import { getContext, onMount } from "svelte";
   import { _ } from "svelte-i18n";
-  import {writable} from "svelte/store";
+  import { writable } from "svelte/store";
 
   import { base } from "$app/paths";
 

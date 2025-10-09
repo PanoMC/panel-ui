@@ -27,17 +27,16 @@
     <div class="col-4 d-flex justify-content-end">
       <div class="navbar-nav">
         <!-- Notifications Dropdown -->
-        <div class="nav-item position-relative" id="quickNotificationsDropdown">
+        <div class="nav-item" id="quickNotificationsDropdown">
           <button
-            href="javascript:void(0);"
-            class="nav-link"
+            class="nav-link position-relative"
             data-bs-toggle="dropdown"
             type="button"
             title={$_("components.navbar.notifications")}>
             <i class="fa-regular fa-bolt"></i>
             {#if $notificationCount !== 0}
               <span
-                class="position-absolute px-2 py-1 translate-middle badge rounded-pill bg-danger">
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {$notificationCount}
               </span>
             {/if}
@@ -131,7 +130,7 @@
             <h6 class="dropdown-header">{$user.username}</h6>
             <li>
               <a
-                class="dropdown-item"
+                class="dropdown-item focus-ring"
                 href="{base}/players/detail/{$user.username}">
                 {$_("components.navbar.account-dropdown.profile")}
               </a>

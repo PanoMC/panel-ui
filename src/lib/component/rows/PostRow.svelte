@@ -60,7 +60,7 @@
   </th>
   <td>
     {#if post.thumbnailUrl}
-      <a href="{base}/posts/detail/{post.id}">
+      <a href="{base}/posts/detail/{post.id}" class="focus-ring">
         <img
           src={post.thumbnailUrl + "?preview=true"}
           style="object-fit: contain;"
@@ -82,12 +82,16 @@
     {/if}
   </td>
   <td class="align-middle text-nowrap">
-    <a href={base + "/posts/detail/" + post.id} title={$_("buttons.edit")}>
+    <a
+      href={base + "/posts/detail/" + post.id}
+      title={$_("buttons.edit")}
+      class="rounded focus-ring">
       {post.title}
     </a>
   </td>
   <td class="align-middle text-nowrap">
     <a
+      class="rounded focus-ring"
       title={$_("components.post-row.filter")}
       href="{base}/posts?categoryUrl={post.category.url}">
       {post.category.title === "-"
@@ -96,16 +100,17 @@
     </a>
   </td>
   <td class="align-middle text-nowrap">{post.views}</td>
-  <td class="align-middle text-nowrap">
+  <td class="align-middle">
     <a
       href="{base}/players/detail/{post.writer.username}"
+      class="d-inline-block focus-ring rounded-circle"
       use:tooltip={[post.writer.username, { placement: "bottom" }]}>
       <img
         alt={post.writer.username}
         class="rounded-circle"
+        width="32"
         height="32"
-        src="https://minotar.net/avatar/{post.writer.username}"
-        width="32" />
+        src="https://minotar.net/avatar/{post.writer.username}" />
     </a>
   </td>
   <td class="align-middle text-nowrap">

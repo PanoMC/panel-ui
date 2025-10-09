@@ -19,7 +19,7 @@
           <i class="fa-solid fa-bars"></i>
         </button>
 
-        <a class="navbar-brand m-auto ps-1" href="{base}/">
+        <a class="navbar-brand m-auto btn btn-primary shadow-none" href="{base}/">
           <img
             alt="Pano"
             title="Pano"
@@ -36,8 +36,7 @@
               class="nav-link text-center"
               on:click={onWebsiteMenuClick}
               class:active={$sidebarTabsState === "website"}>
-              <i class="fas fa-globe fa-lg mb-3"></i>
-              <br />
+              <i class="fas fa-globe fa-lg mb-3 d-block"></i>
               {$_("components.sidebar.website")}
             </button>
           </li>
@@ -47,8 +46,8 @@
                 class="nav-link text-center"
                 on:click={onGameMenuClick}
                 class:active={$sidebarTabsState === "game"}>
-                <i class="fas fa-cube fa-lg mb-3"></i>
-                <br />
+                <i class="fas fa-cube fa-lg mb-3 d-block"></i>
+                
                 {$_("components.sidebar.server")}
               </button>
             </li>

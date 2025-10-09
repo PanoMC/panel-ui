@@ -1,10 +1,10 @@
 <button
   type="button"
-  class="list-group-item list-group-item-action"
+  class="list-group-item list-group-item-action focus-ring"
   class:bg-secondary-subtle={log.selected}
   on:click={onClick}
   title={$_("buttons.view")}>
-  <span class="fw-bold markdown-renderer">
+  <span class="fw-normal markdown-renderer link-primary">
     <MarkdownRenderer
       content={$_("activity-logs." + log.type, { values: log.details })} />
   </span>

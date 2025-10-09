@@ -45,7 +45,7 @@
           <small class="mb-0">
             {@html $_("pages.ticket-detail.by-who", {
               values: {
-                username: `<a href="${base}/players/detail/${data.ticket.username}"
+                username: `<a class="rounded focus-ring" href="${base}/players/detail/${data.ticket.username}"
           >${data.ticket.username}</a>`,
               },
             })}
@@ -105,7 +105,7 @@
                 </div>
               </div>
               <div class="col-auto">
-                <a href="{base}/players/detail/{message.username}">
+                <a href="{base}/players/detail/{message.username}" class="rounded focus-ring">
                   <img
                     src="https://minotar.net/avatar/{message.username}/48"
                     alt={message.username}
