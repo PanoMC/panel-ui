@@ -45,60 +45,72 @@
               <!-- Server Card -->
 
               <div class="col">
-                <div class="card h-100 position-relative">
-                  <div class="card-header text-center">
-                    <img
-                      src={server.favicon
-                        ? server.favicon
-                        : base + "/assets/img/server-icon.png"}
-                      class="rounded d-block mx-auto mb-2"
-                      height="64"
-                      width="64"
-                      alt="" />
+                <div class="ratio ratio-1x1">
+                  <div class="card">
+                    <div class="card-header text-center">
+                      <img
+                        src={server.favicon
+                          ? server.favicon
+                          : base + "/assets/img/server-icon.png"}
+                        class="rounded d-block mx-auto mb-2 border"
+                        height="64"
+                        width="64"
+                        alt="" />
 
-                    <div>
-                      {#if server.id === $mainServer.id}
-                        <i
-                          class="fa fa-crown me-1"
-                          title={$_("components.modals.servers.main-server")}>
-                        </i>
+                      <div>
+                        {#if server.id === $mainServer.id}
+                          <i
+                            class="fa fa-crown me-1 text-secondary"
+                            title={$_("components.modals.servers.main-server")}>
+                          </i>
 
-                        {server.name}
-                      {/if}
-                    </div>
-                  </div>
-                  <ul class="list-group list-group-flush text-center">
-                    <li class="list-group-item">
-                      <div
-                        class="badge rounded-pill text-bg-primary"
-                        class:text-bg-success={server.status === "ONLINE"}>
-                        <div
-                          use:tooltip={[
-                            $_("components.modals.servers.online"),
-                            { placement: "bottom" },
-                          ]}>
-                          {server.type}
-                        </div>
+                          {server.name}
+                        {/if}
                       </div>
-                    </li>
-                    <li class="list-group-item font-monospace user-select-all">
-                      {server.host}:{server.port}
-                    </li>
-                    <li class="list-group-item">
-                      {server.playerCount}/{server.maxPlayerCount}
-                    </li>
-                  </ul>
-                  <div class="card-footer d-flex justify-content-center">
-                    <button
-                      class:active={$selectedServer?.id === server.id}
-                      data-bs-toggle="button"
-                      class="btn btn-outline-primary"
-                      type="button"
-                      on:click={() =>
-                        $selectingServer ? {} : onSelect(server)}
-                      >{$selectedServer?.id === server.id
-                        ? "Selected"
-                        : "Select Server"}</button>
+                    </div>
+                    <div
+                      class="card-body d-flex flex-column justify-content-center">
+                      <ul class="list-group list-group-flush text-center">
+                        <li class="list-group-item">
+                          <div
+                            class="badge rounded-pill text-bg-primary"
+                            class:text-bg-success={server.status === "ONLINE"}>
+                            <div
+                              use:tooltip={[
+                                $_("components.modals.servers.online"),
+                                { placement: "bottom" },
+                              ]}>
+                              {server.type}
+                            </div>
+                          </div>
+                        </li>
+                        <li
+                          class="list-group-item font-monospace user-select-all">
+                          {server.host}:{server.port}
+                        </li>
+                        <li class="list-group-item">
+                          {server.playerCount}/{server.maxPlayerCount}
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                      <button
+                        type="button"
+                        class:active={$selectedServer?.id === server.id}
+                        data-bs-toggle="button"
+                        class="btn"
+                        class:btn-primary={$selectedServer?.id === server.id}
+                        class:btn-outline-primary={$selectedServer?.id !== server.id}
+                        class:disabled={$selectedServer?.id === server.id}
+                        on:click={() =>
+                          $selectingServer ? {} : onSelect(server)}
+                        >{#if $selectedServer?.id === server.id}
+                          <i class="fas fa-check-circle"></i>
+                        {:else}
+                          <i class="far fa-check-circle"></i>
+                        {/if}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
