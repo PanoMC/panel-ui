@@ -539,7 +539,6 @@
     },
     "server-navigation-menu": {
       "statistics": "Statistics",
-      "monitoring": "Monitoring",
       "settings": "Settings",
       "no-selected-server": "No selected server.",
       "no-server-text": "Connect a server to view the server menu.",

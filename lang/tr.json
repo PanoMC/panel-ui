@@ -539,7 +539,6 @@
     },
     "server-navigation-menu": {
       "statistics": "İstatistikler",
-      "monitoring": "İzleme",
       "settings": "Ayarlar",
       "no-selected-server": "Seçili sunucu yok.",
       "no-server-text": "Sunucu menüsünü görüntülemek için bir sunucu bağla.",
