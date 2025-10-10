@@ -1,8 +1,8 @@
-<!-- Unban Player Modal -->
+<!-- Server Connect Request Modal -->
 <div
   aria-hidden="true"
   class="modal fade"
-  bind:this="{$modalElement}"
+  bind:this={$modalElement}
   role="dialog"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
@@ -14,30 +14,43 @@
           </div>
         </div>
       {:else}
+        <div class="modal-header">
+          <button
+            class="btn-close"
+            aria-label={$_("buttons.close")}
+            data-bs-dismiss="modal"
+            title={$_("buttons.close")}
+            type="button">
+          </button>
+        </div>
         <div class="modal-body text-center">
           <div class="pb-3">
             <i class="fas fa-plug fa-3x d-block m-auto text-gray"></i>
           </div>
-          {$_('components.modals.server-request.title', {values: {serverName: $server.name}})}
-          <div class="card bg-light mt-3 text-start">
-            <div class="row g-0">
-              <div
-                class="col-md-4 d-flex align-items-center justify-content-center">
-                <img
-                  src="{$server.favicon
-                    ? $server.favicon
-                    : 'https://icons.iconarchive.com/icons/chrisl21/minecraft/64/Crafting-Table-icon.png'}"
-                  class="img-fluid"
-                  alt="{$server.name}" />
-              </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h6 class="card-title">{$server.host}:{$server.port}</h6>
-                  <p class="card-text text-muted">
-                    {$server.playerCount}/{$server.maxPlayerCount}
-                  </p>
-                  <small class="badge text-black rounded-pill"
-                    >{$server.type}</small>
+          <p>
+            {$_("components.modals.server-request.title", {
+              values: { serverName: $server.name },
+            })}
+          </p>
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-auto">
+                  <img
+                    src={$server.favicon
+                      ? $server.favicon
+                      : "https://icons.iconarchive.com/icons/chrisl21/minecraft/64/Crafting-Table-icon.png"}
+                    class="img-fluid rounded border"
+                    alt={$server.name} />
+                </div>
+                <div class="col text-start">
+                  <span class="badge text-bg-primary rounded-pill mb-2"
+                    >{$server.type}</span>
+                  <div class="d-flex flex-row justify-content-between">
+                    <span class="font-monospace user-select-all"
+                      >{$server.host}:{$server.port}</span>
+                    <span>{$server.playerCount}/{$server.maxPlayerCount}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -45,18 +58,18 @@
         </div>
         <div class="modal-footer flex-nowrap">
           <button
-            class="btn btn-link col-6 m-0"
+            class="btn btn-link link-danger col-6 m-0"
             type="button"
-            class:disabled="{$submitLoading}"
-            on:click="{rejectServer}">
-            {$_('components.modals.server-request.reject')}
+            class:disabled={$submitLoading}
+            on:click={rejectServer}>
+            {$_("components.modals.server-request.reject")}
           </button>
           <button
             class="btn btn-secondary col-6 m-0"
             type="button"
-            class:disabled="{$submitLoading}"
-            on:click="{acceptServer}">
-            {$_('components.modals.server-request.connect')}
+            class:disabled={$submitLoading}
+            on:click={acceptServer}>
+            {$_("components.modals.server-request.connect")}
           </button>
         </div>
       {/if}
@@ -124,7 +137,7 @@
       hide();
     }, 500);
 
-    showToast('components.toasts.expired-server-connect-request');
+    showToast("components.toasts.expired-server-connect-request");
   }
 
   function initData(serverId) {
@@ -151,8 +164,8 @@
 
         server.set(body.server);
         loading.set(false);
-      }
-    })
+      },
+    });
   }
 </script>
 
@@ -172,19 +185,19 @@
           callback($server);
           await invalidateAll();
           hide();
-          await showToast('components.toasts.accepted-server-connect-request');
+          await showToast("components.toasts.accepted-server-connect-request");
 
           return;
         } else if (body.result === "error") {
           hide();
-          await showToast('components.toasts.expired-server-connect-request');
+          await showToast("components.toasts.expired-server-connect-request");
 
           return;
         }
 
         reject();
-      }
-    })
+      },
+    });
   }
 
   function rejectServer() {
@@ -198,18 +211,18 @@
         if (body.result === "ok") {
           callback($server);
           hide();
-          showToast('components.toasts.rejected-server-connect');
+          showToast("components.toasts.rejected-server-connect");
 
           return;
         } else if (body.result === "error") {
           hide();
-          showToast('components.toasts.expired-server-connect-request');
+          showToast("components.toasts.expired-server-connect-request");
 
           return;
         }
 
         reject();
-      }
-    })
+      },
+    });
   }
 </script>
