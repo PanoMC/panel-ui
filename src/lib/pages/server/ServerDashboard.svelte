@@ -34,8 +34,13 @@
       <div class="card text-bg-info h-100">
         <div class="card-body">
           {#if data.server.status === ServerStatus.ONLINE}
-            {$_("pages.server.dashboard.player", {
-              values: { upTime: getUptime(data.server.startTime, checkTime) },
+            {$_("pages.server.dashboard.working-time", {
+              values: {
+                upTime: getUptime(
+                  data.server.startTime,
+                  checkTime
+                ),
+              },
             })}
           {:else}
             {$_("pages.server.dashboard.last-online")}
@@ -131,9 +136,9 @@
     });
 
     const days = differenceInCalendarDays(time, now);
-    const hours = duration["hours"];
-    const minutes = duration["minutes"];
-    const seconds = duration["seconds"];
+    const hours = duration["hours"] || 0;
+    const minutes = duration["minutes"] || 0;
+    const seconds = duration["seconds"] || 0;
 
     return `${days}:${hours}:${minutes}:${seconds}`;
   }
