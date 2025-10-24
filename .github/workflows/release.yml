@@ -26,13 +26,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: oven-sh/setup-bun@v2.0.2
-        with:
-          bun-version: latest
 
       - name: Dry run to get next release version
         id: get-next-version
         run: |
-          export NEXT_TAG_VERSION=$(bunx semantic-release --dry-run --force | grep 'next release version is ' | awk -F"next release version is " '{print $2}')
+          export NEXT_TAG_VERSION=$(bunx semantic-release --ignore-engines --dry-run --force | grep 'next release version is ' | awk -F"next release version is " '{print $2}')
           echo "new_tag_version=${NEXT_TAG_VERSION}" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
@@ -67,8 +65,6 @@ jobs:
         id: extract_branch
 
       - uses: oven-sh/setup-bun@v2.0.2
-        with:
-          bun-version: latest
 
       - name: Install
         run: bun install
@@ -95,4 +91,4 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-        run: bunx semantic-release --force
+        run: bunx semantic-release --ignore-engines --force
