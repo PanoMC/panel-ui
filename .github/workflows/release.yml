@@ -25,7 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@v2.0.2
+        with:
+          bun-version: latest
 
       - name: Dry run to get next release version
         id: get-next-version
@@ -64,7 +66,9 @@ jobs:
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@v2.0.2
+        with:
+          bun-version: latest
 
       - name: Install
         run: bun install
