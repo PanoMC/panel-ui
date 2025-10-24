@@ -14,27 +14,23 @@
         <button
           class="btn-close"
           data-bs-dismiss="modal"
+          aria-label="{$_('buttons.close')}"
           title="{$_('buttons.close')}"
           type="button">
         </button>
       </div>
       <div class="modal-body">
         <ol class="list-group list-group-numbered">
-          <div class="list-group-item">
+          <li class="list-group-item">
             {$_("components.modals.connect-server.steps.1")}
             <br />
-            <small class="text-muted"
-              >Paper 1.20, Spigot 1.20, Velocity, 1.2, Bungeecord 1.2
-            </small>
             <a
               class="btn btn-secondary mt-2 d-block shadow-none"
-              href="{PANO_WEBSITE_URL}/download/plugin/mc{PRERELEASE
-                ? '?type=prerelease'
-                : ''}"
-              target="_blank">{$_("buttons.download")}</a>
-          </div>
+              href="{PANO_WEBSITE_URL}/download"
+              target="_blank">{$_("buttons.download")} <i class="fa fa-external-link ms-2"></i></a>
+          </li>
 
-          <div class="list-group-item">
+          <li class="list-group-item">
             {$_("components.modals.connect-server.steps.2")}
             <br />
             <small class="text-muted">
@@ -61,15 +57,15 @@
                 <i class="fa-regular fa-clipboard"></i>
               </button>
             </div>
-          </div>
+          </li>
 
-          <div class="list-group-item">
+          <li class="list-group-item">
             {$_("components.modals.connect-server.steps.3")}
             <br />
             <small class="text-muted">
               {$_("components.modals.connect-server.notification-will-come")}
             </small>
-          </div>
+          </li>
         </ol>
       </div>
     </div>
