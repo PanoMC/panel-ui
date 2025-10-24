@@ -27,6 +27,9 @@
 
 <script context="module">
   import { redirect } from "@sveltejs/kit";
+
+  import { base } from "$app/paths";
+
   import { hasPermission, Permissions } from "$lib/auth.util.js";
 
   /**
@@ -37,7 +40,7 @@
     const { user } = parentData;
 
     if (!hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS, user)) {
-      throw redirect(302, "/");
+      throw redirect(302, base);
     }
 
     return parentData;
