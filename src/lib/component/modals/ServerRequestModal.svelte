@@ -39,8 +39,10 @@
                   <img
                     src={$server.favicon
                       ? $server.favicon
-                      : "https://icons.iconarchive.com/icons/chrisl21/minecraft/64/Crafting-Table-icon.png"}
-                    class="img-fluid rounded border"
+                      : "/api/server/icon/default"}
+                    class="rounded border"
+                    width="48"
+                    height="48"
                     alt={$server.name} />
                 </div>
                 <div class="col text-start">
