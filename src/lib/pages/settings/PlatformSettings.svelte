@@ -378,6 +378,7 @@
 
   import { PANO_WEBSITE_URL } from "$lib/variables.js";
   import { buildQueryParams } from "$lib/api.util.js";
+  import { currentLanguage } from "$lib/language.util.js";
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
   import {
@@ -478,7 +479,7 @@
         const encodedState = encodeURIComponent(state);
 
         // Redirect to the constructed URL
-        window.location = `${PANO_WEBSITE_URL}/auth?loginPanoPlatform=${encodedPublicKey}&redirectUrl=${encodedRedirectUrl}&state=${encodedState}`;
+        window.location = `${PANO_WEBSITE_URL}/auth?loginPanoPlatform=${encodedPublicKey}&redirectUrl=${encodedRedirectUrl}&state=${encodedState}&hl=${$currentLanguage.code}`;
       },
     });
   }

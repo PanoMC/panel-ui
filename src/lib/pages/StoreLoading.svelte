@@ -130,6 +130,8 @@
 
   import { PANO_WEBSITE_URL } from "$lib/variables.js";
   import ApiUtil from "$lib/api.util.js";
+  import { currentLanguage } from "$lib/language.util.js";
+
   import ConfirmInstallResourceModal, {
     setCallback as setConfirmInstallResourceCallback,
     show as showConfirmInstallResourceModal,
@@ -228,7 +230,7 @@
     const encodedState = encodeURIComponent(state);
 
     // Redirect to the constructed URL
-    window.location = `${PANO_WEBSITE_URL}/auth?storeAuthorizeToken=${storeAuthToken}&panoCallback=${encodedRedirectUrl}&state=${encodedState}&type=${data.pageType}`;
+    window.location = `${PANO_WEBSITE_URL}/auth?storeAuthorizeToken=${storeAuthToken}&panoCallback=${encodedRedirectUrl}&state=${encodedState}&type=${data.pageType}&hl=${$currentLanguage.code}`;
   }
 
   function sleep(ms) {
@@ -306,7 +308,7 @@
         const encodedState = encodeURIComponent(state);
 
         // Redirect to the constructed URL
-        window.location = `${PANO_WEBSITE_URL}/auth?loginPanoPlatform=${encodedPublicKey}&redirectUrl=${encodedRedirectUrl}&state=${encodedState}`;
+        window.location = `${PANO_WEBSITE_URL}/auth?loginPanoPlatform=${encodedPublicKey}&redirectUrl=${encodedRedirectUrl}&state=${encodedState}&hl=${$currentLanguage.code}`;
       },
     });
   }
