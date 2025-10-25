@@ -129,7 +129,7 @@
               <th
                 class="align-middle"
                 scope="col"
-                class:table-primary={data.categoryUrl}
+                class:table-active={data.categoryUrl}
                 >{$_("pages.tickets.table.category")}</th>
               <th class="align-middle" scope="col"
                 >{$_("pages.tickets.table.player")}</th>

@@ -82,7 +82,7 @@
               <th
                 scope="col"
                 class="align-middle"
-                class:table-primary={data.categoryUrl}
+                class:table-active={data.categoryUrl}
                 >{$_("pages.posts.table.category")}</th>
               <th scope="col" class="align-middle"
                 >{$_("pages.posts.table.views")}</th>

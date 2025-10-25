@@ -1,4 +1,4 @@
-<tr class:table-primary={category.selected}>
+<tr class:table-active={category.selected}>
   <th scope="row" class="align-middle text-center">
     <button
       type="button"

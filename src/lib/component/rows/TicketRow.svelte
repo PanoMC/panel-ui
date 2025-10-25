@@ -1,4 +1,4 @@
-<tr class:table-primary={ticket.selected}>
+<tr class:table-active={ticket.selected}>
   <th scope="row" class="align-middle">
     <div class="form-check d-flex justify-content-center align-items-center">
       <input

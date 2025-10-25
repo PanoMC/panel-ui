@@ -1,4 +1,4 @@
-<tr class:table-primary={permissionGroup.selected}>
+<tr class:table-active={permissionGroup.selected}>
   <th scope="row" class="align-middle text-center">
     {#if permissionGroup.name !== "admin"}
       <button

@@ -13,8 +13,9 @@
         </h5>
         <button
           class="btn-close"
+          aria-label={$_("buttons.close")}
           data-bs-dismiss="modal"
-          title="{$_('buttons.close')}"
+          title={$_("buttons.close")}
           type="button">
         </button>
       </div>
@@ -43,21 +44,24 @@
               })}
             </small>
             <div class="input-group">
-              <input type="text" class="form-control" value="{commandText}" readonly />
+              <input
+                type="text"
+                class="form-control"
+                value={commandText}
+                readonly />
               <button
                 class="btn border shadow-none btn-outline-primary"
                 type="button"
-                on:click="{onCopyCommandTextClick}"
-                aria-label="{
+                on:click={onCopyCommandTextClick}
+                aria-label={isCommandTextCopied
+                  ? $_("components.modals.connect-server.copied")
+                  : $_("components.modals.connect-server.copy")}
+                use:tooltip={[
                   isCommandTextCopied
-                    ? $_('components.modals.connect-server.copied')
-                    : $_('components.modals.connect-server.copy')}"
-                use:tooltip="{[
-                  isCommandTextCopied
-                    ? $_('components.modals.connect-server.copied')
-                    : $_('components.modals.connect-server.copy'),
-                  { placement: 'bottom', hideOnClick: false },
-                ]}">
+                    ? $_("components.modals.connect-server.copied")
+                    : $_("components.modals.connect-server.copy"),
+                  { placement: "bottom", hideOnClick: false },
+                ]}>
                 <i class="fa-regular fa-clipboard"></i>
               </button>
             </div>

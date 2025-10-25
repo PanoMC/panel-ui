@@ -12,6 +12,20 @@
 
 // Panel UI Styles
 
+.blocks {
+  background-position:
+    bottom right,
+    bottom left,
+    bottom left;
+  background-image: url("/assets/img/red.svg"), url("/assets/img/yellow.svg"),
+    url("/assets/img/green.svg");
+  background-repeat: no-repeat;
+  background-size:
+    64px 64px,
+    128px 64px,
+    64px 128px;
+}
+
 #sidebar { --bs-offcanvas-width: 256px; } /* mobile offcanvas width */
 
 /* Masaüstü düzeni: yan yana */
@@ -27,7 +41,6 @@
   }
   .offcanvas-backdrop { display: none !important; }
 }
-
 
 ::-webkit-scrollbar {
   width: 8px;

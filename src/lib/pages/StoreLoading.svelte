@@ -1,78 +1,68 @@
-
 <div class="w-100 vh-100 d-flex align-items-center blocks">
   <div class="m-auto p-3" style="max-width: 330px;">
     <div class="vstack gap-3">
       {#if !data.accountConnected}
-        <div class="alert alert-light border rounded text-center">
-          <div
-            class="d-inline-flex rounded justify-content-start align-items-start bg-primary ps-2 pt-2"
-            style="width: 64px; height: 64px;">
-            <img
-              style="transform: rotate(-0.05turn);"
-              src={base + '/assets/img/logo.svg'}
-              width="auto"
-              height="60"
-              alt="Pano"
-              title="Pano" />
-          </div>
-
-          <h5 class="mb-2 fw-semibold">{$_('components.store-loading.account-not-connected')}</h5>
-          <p class="text-muted mb-3 small">
-            {$_('components.store-loading.not-connected-description')}
-          </p>
-
-          <button class="btn btn-primary w-100"
-                  on:click="{onConnectClick}"
-                  disabled="{connecting}">
-            {connecting ? $_("buttons.connecting") : $_("buttons.connect")}
-            {#if connecting}
-              <span
-                class="spinner-border spinner-border-sm text-primary"
-                role="status"></span>
-            {/if}
-          </button>
+        <div class="alert alert-danger mb-0">
+          <strong>
+            {$_("components.store-loading.account-not-connected")}
+          </strong>
+          {$_("components.store-loading.not-connected-description")}
         </div>
+
+        <button
+          class="btn btn-secondary"
+          on:click={onConnectClick}
+          disabled={connecting}>
+          {connecting ? $_("buttons.connecting") : $_("buttons.connect")}
+        </button>
       {:else if data.installingView}
-        <div class="row" hidden="{modalShown}">
+        <div class="row" hidden={modalShown}>
           <div
             class="d-inline-flex rounded justify-content-start align-items-start ps-2 pt-2"
             style="height: 350px;">
             <div class="col-auto min-h-100 d-flex align-items-center">
               <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
+                <span class="visually-hidden"
+                  >{$_("components.store-loading.loading")}</span>
               </div>
             </div>
           </div>
         </div>
       {:else}
         <div class="d-flex align-items-center gap-3 border rounded p-3">
-        <div
-          class="d-inline-flex rounded justify-content-start align-items-start bg-primary ps-2 pt-2"
-          style="width: 64px; height: 64px;">
-          <img
-            style="transform: rotate(-0.05turn);"
-            src={base + '/assets/img/logo.svg'}
-            width="auto"
-            height="60"
-            alt="Pano"
-            title="Pano" />
-        </div>
+          <div
+            class="d-inline-flex rounded justify-content-start align-items-start bg-primary ps-2 pt-2"
+            style="width: 64px; height: 64px;">
+            <img
+              style="transform: rotate(-0.05turn);"
+              src={base + "/assets/img/logo.svg"}
+              width="auto"
+              height="60"
+              alt="Pano"
+              title="Pano" />
+          </div>
 
-        <div class="spinner-border text-primary" role="status" style="width: 1.5rem; height: 1.5rem;">
-          <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
-        </div>
+          <div
+            class="spinner-border text-primary"
+            role="status"
+            style="width: 1.5rem; height: 1.5rem;">
+            <span class="visually-hidden"
+              >{$_("components.store-loading.loading")}</span>
+          </div>
 
-        <div>
-          <strong>{$_('components.store-loading.store-loading')}</strong><br />
-          <small class="text-muted">{$_('components.store-loading.please-wait')}</small>
+          <div>
+            <strong>{$_("components.store-loading.store-loading")}</strong
+            ><br />
+            <small class="text-muted"
+              >{$_("components.store-loading.please-wait")}</small>
+          </div>
         </div>
-      </div>
       {/if}
     </div>
   </div>
 </div>
 
-<ConfirmInstallResourceModal/>
+<ConfirmInstallResourceModal />
 
 <script context="module">
   import { redirect } from "@sveltejs/kit";
@@ -81,7 +71,7 @@
 
   export const PageTypes = Object.freeze({
     ADDON: "ADDON",
-    THEME: "THEME"
+    THEME: "THEME",
   });
 
   const DEFAULT_ACCOUNT_NOT_CONNECTED_VIEW = false;
@@ -91,20 +81,24 @@
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event, pageType) {
-    const { parent, url: { searchParams }, } = event;
+    const {
+      parent,
+      url: { searchParams },
+    } = event;
     await parent();
 
-    const back = searchParams.has("back")
+    const back = searchParams.has("back");
     const install = searchParams.get("install");
     const fromInstall = searchParams.get("fromInstall");
 
-    const previousPage = base + `/` + (pageType === PageTypes.ADDON ? 'addons' : 'view')
+    const previousPage =
+      base + `/` + (pageType === PageTypes.ADDON ? "addons" : "view");
 
     if (back) {
       throw redirect(302, previousPage);
     }
 
-    const failedLogin = searchParams.has("failedLogin")
+    const failedLogin = searchParams.has("failedLogin");
 
     if (failedLogin) {
       throw redirect(302, previousPage + "?failedLogin");
@@ -115,7 +109,7 @@
       accountConnected: !DEFAULT_ACCOUNT_NOT_CONNECTED_VIEW,
       installingView: DEFAULT_INSTALLING_VIEW,
       install,
-      fromInstall
+      fromInstall,
     };
   }
 </script>
@@ -137,11 +131,11 @@
     show as showConfirmInstallResourceModal,
     onHide as onConfirmInstallResourceModalHide,
   } from "$lib/component/modals/ConfirmInstallResourceModal.svelte";
-  import { show as showInstallingResourceModal } from "$lib/component/modals/InstallingResourceModal.svelte"
+  import { show as showInstallingResourceModal } from "$lib/component/modals/InstallingResourceModal.svelte";
 
   export let data;
 
-  const showSplash = getContext("showSplash")
+  const showSplash = getContext("showSplash");
 
   let versionInfo;
   let modalShown;
@@ -161,7 +155,7 @@
 
   async function getStoreTokenResponse() {
     const getStoreTokenResponse = await ApiUtil.get({
-      path: `/api/panel/platform/store/authorize/token`
+      path: `/api/panel/platform/store/authorize/token`,
     });
 
     if (getStoreTokenResponse.error === "PANO_NOT_CONNECTED") {
@@ -171,25 +165,25 @@
     }
 
     if (getStoreTokenResponse.error === "PANO_CONNECT_FAILED") {
-      await goto('?failedLogin')
+      await goto("?failedLogin");
 
       return null;
     }
 
     if (getStoreTokenResponse.error) {
-      data.error = getStoreTokenResponse.error
+      data.error = getStoreTokenResponse.error;
 
       return null;
     }
 
-    return getStoreTokenResponse.data
+    return getStoreTokenResponse.data;
   }
 
   async function getVersionInfo() {
     data.installingView = true;
 
     const getStoreTokenResponse = await ApiUtil.get({
-      path: `/api/panel/install/store/${data.install}/info`
+      path: `/api/panel/install/store/${data.install}/info`,
     });
 
     if (getStoreTokenResponse.error === "PANO_NOT_CONNECTED") {
@@ -198,25 +192,28 @@
       return;
     }
 
-    if (getStoreTokenResponse.error === "NOT_FOUND" || getStoreTokenResponse.error === "BAD_REQUEST") {
-      await goto("/error-404")
+    if (
+      getStoreTokenResponse.error === "NOT_FOUND" ||
+      getStoreTokenResponse.error === "BAD_REQUEST"
+    ) {
+      await goto("/error-404");
 
       return;
     }
 
     if (getStoreTokenResponse.error) {
-      data.error = getStoreTokenResponse.error
+      data.error = getStoreTokenResponse.error;
 
       return;
     }
 
     data.installingView = true;
 
-    versionInfo = getStoreTokenResponse.data
+    versionInfo = getStoreTokenResponse.data;
 
-    modalShown = true
+    modalShown = true;
 
-    showConfirmInstallResourceModal(versionInfo)
+    showConfirmInstallResourceModal(versionInfo);
   }
 
   async function goToStore(getStoreTokenResponse) {
@@ -234,58 +231,62 @@
   }
 
   function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   onConfirmInstallResourceModalHide(() => {
-    goto(base + `/` + (data.pageType === PageTypes.ADDON ? 'addons' : 'view'))
+    goto(base + `/` + (data.pageType === PageTypes.ADDON ? "addons" : "view"));
   });
 
   setConfirmInstallResourceCallback(async () => {
     modalShown = false;
 
-    await sleep(500)
+    await sleep(500);
 
     modalShown = true;
 
-    await showInstallingResourceModal(data.pageType === PageTypes.ADDON ? 'PLUGIN' : 'THEME', null, data.install, async () => {
-      const storeTokenResponse = await getStoreTokenResponse()
+    await showInstallingResourceModal(
+      data.pageType === PageTypes.ADDON ? "PLUGIN" : "THEME",
+      null,
+      data.install,
+      async () => {
+        const storeTokenResponse = await getStoreTokenResponse();
 
-      if (storeTokenResponse === null) {
-        return
-      }
+        if (storeTokenResponse === null) {
+          return;
+        }
 
-      await goToStore(storeTokenResponse)
-    })
+        await goToStore(storeTokenResponse);
+      },
+    );
   });
 
-   (async () => {
-     if (!browser) {
-       return
-     }
+  (async () => {
+    if (!browser) {
+      return;
+    }
 
-     await waitSplash()
-     await waitWindow()
+    await waitSplash();
+    await waitWindow();
 
-     await sleep(500)
+    await sleep(500);
 
-     if (data.install && !data.installingView) {
-       await getVersionInfo()
+    if (data.install && !data.installingView) {
+      await getVersionInfo();
 
-       return
-     }
+      return;
+    }
 
-     if (data.accountConnected && !data.installingView) {
-       const storeTokenResponse = await getStoreTokenResponse()
+    if (data.accountConnected && !data.installingView) {
+      const storeTokenResponse = await getStoreTokenResponse();
 
-       if (storeTokenResponse === null) {
-         return
-       }
+      if (storeTokenResponse === null) {
+        return;
+      }
 
-       await goToStore(storeTokenResponse)
-     }
-   })();
-
+      await goToStore(storeTokenResponse);
+    }
+  })();
 
   function onConnectClick() {
     connecting = true;

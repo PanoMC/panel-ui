@@ -76,7 +76,7 @@
           class:disabled={data.player.permissionGroup === "admin" &&
             !$user.admin}>
           <i class="fas fa-pencil-alt"></i>
-          <span class="d-xl-inline d-none ms-2"> {$_("buttons.edit")}</span>
+          <span class="d-lg-inline d-none ms-2"> {$_("buttons.edit")}</span>
         </button>
       {/if}
     </div>
@@ -122,9 +122,8 @@
             <PlayerPermissionBadge
               permissionGroup={data.player.permissionGroup} />
           {/if}
-        </div>
-        <div class="card-footer">
-          <table class="table p-0">
+
+          <table class="table">
             <tbody>
               <tr>
                 <td>{$_("pages.player-detail.email")}</td>

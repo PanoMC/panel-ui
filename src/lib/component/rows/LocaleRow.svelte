@@ -1,4 +1,4 @@
-<tr class:table-primary={locale.selected}>
+<tr class:table-active={locale.selected}>
   <th scope="row" class="align-middle">
     {#if locale.definedBy !== "SYSTEM"}
       <button

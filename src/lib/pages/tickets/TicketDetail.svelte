@@ -161,7 +161,7 @@
             class:disabled={messageSendLoading || isEditorEmpty}
             :disabled={messageSendLoading || isEditorEmpty}>
             <i class="fas fa-paper-plane"></i>
-            <span class="d-xl-inline d-none ms-2"
+            <span class="d-lg-inline d-none ms-2"
               >{$_("pages.ticket-detail.send-button")}</span>
           </button>
         </div>

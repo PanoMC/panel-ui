@@ -1,4 +1,4 @@
-<tr class:table-primary={post.selected}>
+<tr class:table-active={post.selected}>
   <th scope="row" class="align-middle text-center">
     <div class="dropdown position-static">
       <button

@@ -1,4 +1,4 @@
-<tr class:table-primary={player.selected}>
+<tr class:table-active={player.selected}>
   <th scope="row" class="align-middle text-center">
     <div class="dropdown position-static">
       <button

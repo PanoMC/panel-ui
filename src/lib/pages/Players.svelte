@@ -68,7 +68,7 @@
               <th
                 class="align-middle text-nowrap"
                 scope="col"
-                class:table-primary={data.permissionGroup}
+                class:table-active={data.permissionGroup}
                 >{$_("pages.players.table.perm-group")}</th>
               <th class="align-middle text-nowrap" scope="col"
                 >{$_("pages.players.table.status")}</th>
