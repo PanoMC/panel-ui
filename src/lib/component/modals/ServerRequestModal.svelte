@@ -14,7 +14,7 @@
           </div>
         </div>
       {:else}
-        <div class="modal-header">
+        <div class="modal-header border-bottom-0">
           <button
             class="btn-close"
             aria-label={$_("buttons.close")}
@@ -106,10 +106,7 @@
   const submitLoading = writable(false);
 
   export function show(serverId) {
-    modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
-      keyboard: false,
-    });
+    modal = new window.bootstrap.Modal(get(modalElement));
 
     loading.set(true);
     submitLoading.set(false);
@@ -121,8 +118,6 @@
   }
 
   export function hide() {
-    hideCallback();
-
     modal.hide();
   }
 

@@ -53,10 +53,7 @@
   const currentPassword = writable("");
 
   export function show(newServer) {
-    modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
-      keyboard: false,
-    });
+    modal = new window.bootstrap.Modal(get(modalElement));
 
     loading.set(false);
     server.set(newServer);
@@ -110,8 +107,9 @@
         }
 
         callback($server);
+        hide()
         invalidateAll();
-        hide();
+        location.reload()
         showToast('components.toasts.server-deleted-success', { name: $server.name });
       },
     })
