@@ -7,7 +7,7 @@
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
-      <form>
+      <form on:submit|preventDefault="{deletePlayer}">
         <div class="modal-body text-center">
           <div class="pb-3">
             <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"
@@ -19,7 +19,9 @@
             class="form-control d-inline-block text-center mt-3"
             placeholder="{$_('components.modals.confirm-delete-player.inputs.password.placeholder')}"
             type="password"
+            id="currentPasswordInput"
             bind:value="{$currentPassword}"
+            bind:this={$passwordInput}
             class:border-danger="{$passwordError}" />
         </div>
 
@@ -53,6 +55,7 @@
   const loading = writable(false);
   const passwordError = writable(false);
   const currentPassword = writable("");
+  const passwordInput = writable()
 
   export function show(newPlayer) {
     modal = new window.bootstrap.Modal(get(modalElement), {
@@ -66,6 +69,10 @@
     currentPassword.set("");
 
     modal.show();
+
+    setTimeout(() => {
+      get(passwordInput).focus()
+    }, 500)
   }
 
   export function hide() {
