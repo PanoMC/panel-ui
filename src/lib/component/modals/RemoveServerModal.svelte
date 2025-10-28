@@ -20,6 +20,7 @@
             placeholder="{$_('components.modals.remove-server.account-password')}"
             type="password"
             bind:value="{$currentPassword}"
+            bind:this={$passwordInput}
             class:border-danger="{$passwordError}" />
         </div>
 
@@ -51,6 +52,7 @@
   const loading = writable(false);
   const passwordError = writable(false);
   const currentPassword = writable("");
+  const passwordInput = writable()
 
   export function show(newServer) {
     modal = new window.bootstrap.Modal(get(modalElement));
@@ -61,6 +63,10 @@
     currentPassword.set("");
 
     modal.show();
+
+    setTimeout(() => {
+      get(passwordInput).focus()
+    }, 500)
   }
 
   export function hide() {
