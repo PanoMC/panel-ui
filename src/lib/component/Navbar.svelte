@@ -27,7 +27,7 @@
     <div class="col-4 d-flex justify-content-end">
       <div class="navbar-nav">
         <!-- Notifications Dropdown -->
-        <div class="nav-item" id="quickNotificationsDropdown">
+        <div class="nav-item dropdown" id="quickNotificationsDropdown">
           <button
             class="nav-link position-relative"
             data-bs-toggle="dropdown"
@@ -115,7 +115,7 @@
         <div class="nav-item dropdown d-lg-block d-none">
           <button
             type="button"
-            class="nav-link"
+            class="nav-link h-100 d-flex align-items-center"
             data-bs-toggle="dropdown"
             title={$_("components.navbar.account-dropdown.session")}>
             <img
