@@ -63,8 +63,9 @@
               <img
                 src="/api/panel/themes/{theme.id}/screenshots/{theme
                   .screenshots[0] || 'screenshot.png'}"
-                class="card-img"
-                alt={theme.title} />
+                class="card-img w-100 h-100 object-fit-cover"
+                alt={theme.title}
+                style="object-position:center;" />
               <div
                 class="card-img-overlay d-flex flex-column justify-content-end"
                 style="background: linear-gradient(to top, rgba(0,0,0,0.3), rgba(0,0,0,0)); padding:1.25rem;">
