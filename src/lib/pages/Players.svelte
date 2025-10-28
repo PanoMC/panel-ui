@@ -1,7 +1,7 @@
 <!-- All Players Page -->
 <div class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions leftClasses="d-lg-flex d-none" rightClasses="d-lg-flex d-none">
+  <PageActions leftClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
       {#if !data.categoryUrl}
@@ -11,6 +11,11 @@
           {$_("pages.players.perm-groups")}</CardMenuItem>
       {/if}
     </CardMenu>
+    <div slot="right">
+      <a href="/settings/migration" class="btn btn-secondary">
+        <i class="fa fa-file-import me-2"></i>İçe Aktar...
+      </a>
+    </div>
   </PageActions>
 
   <!-- All Players -->
@@ -287,7 +292,9 @@
   });
 
   onAuthorizePlayerModalHide((newPlayer) => {
-    if (!data.players) {return}
+    if (!data.players) {
+      return;
+    }
 
     data.players.forEach((player) => {
       if (player.id === newPlayer.id) {
@@ -299,7 +306,9 @@
   });
 
   onEditPlayerModalHide((newPlayer) => {
-    if (!data.players) {return}
+    if (!data.players) {
+      return;
+    }
 
     data.players.forEach((player) => {
       if (player.id === newPlayer.id) {
@@ -311,7 +320,9 @@
   });
 
   onConfirmBanPlayerModalHide((newPlayer) => {
-    if (!data.players) {return}
+    if (!data.players) {
+      return;
+    }
 
     data.players.forEach((player) => {
       if (player.id === newPlayer.id) {
@@ -323,7 +334,9 @@
   });
 
   onUnbanPlayerModalHide((newPlayer) => {
-    if (!data.players) {return}
+    if (!data.players) {
+      return;
+    }
 
     data.players.forEach((player) => {
       if (player.id === newPlayer.id) {
@@ -335,7 +348,9 @@
   });
 
   setConfirmBanPlayerModalCallback((newPlayer) => {
-    if (!data.players) {return}
+    if (!data.players) {
+      return;
+    }
 
     data.players.forEach((player) => {
       if (player.id === newPlayer.id) {
@@ -349,7 +364,9 @@
   });
 
   setUnbanPlayerModalCallback((newPlayer) => {
-    if (!data.players) {return}
+    if (!data.players) {
+      return;
+    }
 
     data.players.forEach((player) => {
       if (player.id === newPlayer.id) {
