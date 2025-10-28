@@ -4,12 +4,11 @@
   class:bg-secondary-subtle={log.selected}
   on:click={onClick}
   title={$_("buttons.view")}>
-  <span class="fw-normal markdown-renderer link-primary">
+  <span class="fw-normal d-block markdown-renderer">
     <MarkdownRenderer
       content={$_("activity-logs." + log.type, { values: log.details })} />
   </span>
-  <br />
-  <span class="text-muted"><Date time={log.createdAt} /></span>
+  <Date time={log.createdAt} />
 </button>
 
 <script>
