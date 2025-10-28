@@ -12,7 +12,7 @@
       {/if}
     </CardMenu>
     <div slot="right">
-      <a href="/settings/migration" class="btn btn-secondary">
+      <a href="{base}/settings/migration" class="btn btn-secondary">
         <i class="fa fa-file-import me-2"></i>İçe Aktar...
       </a>
     </div>
