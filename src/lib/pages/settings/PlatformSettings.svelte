@@ -62,7 +62,7 @@
         {:else}
           <button
             type="button"
-            class="btn btn-sm btn-outline-primary lh-base"
+            class="btn btn-sm btn-primary lh-base"
             on:click="{onConnectClick}"
             disabled="{connecting}">
             <img
