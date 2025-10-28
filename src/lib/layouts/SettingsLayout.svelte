@@ -6,6 +6,8 @@
         >{$_("components.settings-layout.website")}</PageNavItem>
       <PageNavItem href="/settings/platform" startsWith
         >{$_("components.settings-layout.platform")}</PageNavItem>
+      <PageNavItem href="/settings/migration"
+      >Migration</PageNavItem>
       <PageNavItem
         href="/settings/updates"
         classes="position-relative"
