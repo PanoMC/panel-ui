@@ -1,8 +1,30 @@
-<canvas height="120" id="websiteActivityChart" bind:this="{element}"></canvas>
+<div class="chart-container">
+  <canvas id="websiteActivityChart" bind:this="{element}"></canvas>
+</div>
+
+<style>
+  .chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+  }
+</style>
 
 <script>
   import { _, locale } from "svelte-i18n";
-  import Chart from "chart.js/auto";
+  import {
+    Chart,
+    LineController,
+    LineElement,
+    PointElement,
+    LinearScale,
+    TimeScale,
+    Title,
+    Tooltip,
+    Legend,
+    Filler,
+    Colors,
+  } from "chart.js";
   import "chartjs-adapter-date-fns";
   import { onDestroy, onMount } from "svelte";
   import { subWeeks, subMonths, startOfDay, endOfDay, subDays } from "date-fns";
@@ -12,11 +34,28 @@
   import { currentLanguage } from "$lib/language.util.js";
   import { get } from "svelte/store";
 
+  // Chart.js v4 - Register required components with Colors plugin for default palette
+  Chart.register(
+    LineController,
+    LineElement,
+    PointElement,
+    LinearScale,
+    TimeScale,
+    Title,
+    Tooltip,
+    Legend,
+    Filler,
+    Colors
+  );
+
   let element;
   let chart;
   let minDate;
   let maxDate;
   let displayFormats;
+  let isDarkMode = false;
+  let themeObserver;
+  let mediaQuery;
   export let newRegisterData;
   export let ticketsData;
   export let visitorData;
@@ -25,6 +64,20 @@
 
   const weekConfiguration = { weekStartsOn: 1 };
 
+  // Dark mode detection
+  function checkDarkMode() {
+    if (typeof window !== 'undefined') {
+      const htmlTheme = document.documentElement.getAttribute('data-bs-theme');
+      if (htmlTheme) {
+        return htmlTheme === 'dark';
+      }
+      // Fallback to prefers-color-scheme
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  }
+
+  // Period değiştiğinde min/max date ve displayFormats'ı güncelle
   $: {
     const currentDate = new Date();
 
@@ -49,15 +102,16 @@
 
       displayFormats = { day: "dd, eee" };
     }
+  }
 
-    if (chart) {
-      reloadChart(
-        newRegisterData,
-        ticketsData,
-        visitorData,
-        viewData,
-      );
-    }
+  // Data props'ları veya period değiştiğinde chart'ı güncelle
+  $: if (chart && newRegisterData && ticketsData && visitorData && viewData) {
+    reloadChart(
+      newRegisterData,
+      ticketsData,
+      visitorData,
+      viewData,
+    );
   }
 
   const unsubscribeCurrentLanguage = currentLanguage.subscribe(() => {
@@ -65,6 +119,19 @@
       reloadChart()
     }
   })
+
+  // Dark mode'a göre renkleri döndür
+  function getColors() {
+    const dark = checkDarkMode();
+    
+    return {
+      grid: dark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+      text: dark ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)',
+      tooltipBg: dark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.8)',
+      tooltipText: dark ? '#000' : '#fff',
+      tooltipBorder: dark ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)',
+    };
+  }
 
   function convertDataForChartJS(data) {
     const newData = [];
@@ -121,43 +188,53 @@
 
     const datasets = [];
 
+    // Chart.js default palette kullanarak modern, smooth çizgiler (fill olmadan)
     datasets.push({
       label: $_("components.website-activity-chart.new-registration"),
       data: convertedNewRegisterData,
-      borderColor: "orange",
-      backgroundColor: "rgba(25, 118, 210, .05)",
-      borderWidth: 2,
-      pointRadius: 5,
-      pointBackgroundColor: "#fff",
+      borderWidth: 3,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      pointBorderWidth: 2,
+      pointHoverBorderWidth: 3,
+      tension: 0.4,
+      fill: false,
     });
 
     datasets.push({
       label: $_("components.website-activity-chart.new-ticket"),
       data: convertedTicketsData,
-      borderColor: "purple",
-      backgroundColor: "rgba(25, 118, 210, .05)",
-      borderWidth: 2,
-      pointRadius: 5,
-      pointBackgroundColor: "#fff",
+      borderWidth: 3,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      pointBorderWidth: 2,
+      pointHoverBorderWidth: 3,
+      tension: 0.4,
+      fill: false,
     });
 
     datasets.push({
       label: $_("components.website-activity-chart.visitor"),
       data: convertedVisitorData,
-      borderColor: "red",
-      backgroundColor: "rgba(25, 118, 210, .05)",
-      borderWidth: 2,
-      pointRadius: 5,
-      pointBackgroundColor: "#fff",
+      borderWidth: 3,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      pointBorderWidth: 2,
+      pointHoverBorderWidth: 3,
+      tension: 0.4,
+      fill: false,
     });
+
     datasets.push({
       label: $_("buttons.view"),
       data: convertedViewData,
-      borderColor: "green",
-      backgroundColor: "rgba(25, 118, 210, .05)",
-      borderWidth: 2,
-      pointRadius: 5,
-      pointBackgroundColor: "#fff",
+      borderWidth: 3,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      pointBorderWidth: 2,
+      pointHoverBorderWidth: 3,
+      tension: 0.4,
+      fill: false,
     });
 
     return datasets;
@@ -189,8 +266,8 @@
 
   function renderChart() {
     const convertedDatasets = getConvertedDatasets();
-
     const suggestedMax = getSuggestedMax(convertedDatasets);
+    const colors = getColors();
 
     chart = new Chart(element, {
       type: "line",
@@ -198,6 +275,53 @@
         datasets: getDatasets(convertedDatasets),
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        resizeDelay: 0,
+        interaction: {
+          mode: "index",
+          intersect: false,
+        },
+        plugins: {
+          colors: {
+            enabled: true,
+            forceOverride: true,
+          },
+          legend: {
+            display: true,
+            position: "top",
+            labels: {
+              usePointStyle: true,
+              padding: 15,
+              font: {
+                size: 12,
+                weight: "500",
+              },
+              color: colors.text,
+            },
+          },
+          tooltip: {
+            enabled: true,
+            backgroundColor: colors.tooltipBg,
+            titleColor: colors.tooltipText,
+            bodyColor: colors.tooltipText,
+            borderColor: colors.tooltipBorder,
+            borderWidth: 1,
+            padding: 12,
+            displayColors: true,
+            usePointStyle: true,
+            callbacks: {
+              label: function (context) {
+                let label = context.dataset.label || "";
+                if (label) {
+                  label += ": ";
+                }
+                label += context.parsed.y;
+                return label;
+              },
+            },
+          },
+        },
         scales: {
           x: {
             type: "time",
@@ -205,16 +329,38 @@
               unit: "day",
               displayFormats,
               isoWeekday: true,
-              padding: 5,
             },
             min: minDate,
             max: maxDate,
             offset: true,
+            grid: {
+              display: true,
+              color: colors.grid,
+              drawBorder: false,
+            },
+            ticks: {
+              font: {
+                size: 11,
+              },
+              color: colors.text,
+              maxRotation: 0,
+              autoSkip: true,
+            },
           },
           y: {
+            beginAtZero: true,
             suggestedMax: suggestedMax,
+            grid: {
+              display: true,
+              color: colors.grid,
+              drawBorder: false,
+            },
             ticks: {
-              precision: false,
+              precision: 0,
+              font: {
+                size: 11,
+              },
+              color: colors.text,
             },
           },
         },
@@ -222,9 +368,65 @@
     });
   }
 
+  // Theme değişikliğini dinle ve chart'ı güncelle
+  function updateChartColors() {
+    if (!chart) return;
+    
+    const colors = getColors();
+    
+    // Legend renkleri
+    chart.options.plugins.legend.labels.color = colors.text;
+    
+    // Tooltip renkleri
+    chart.options.plugins.tooltip.backgroundColor = colors.tooltipBg;
+    chart.options.plugins.tooltip.titleColor = colors.tooltipText;
+    chart.options.plugins.tooltip.bodyColor = colors.tooltipText;
+    chart.options.plugins.tooltip.borderColor = colors.tooltipBorder;
+    
+    // Grid ve tick renkleri
+    chart.options.scales.x.grid.color = colors.grid;
+    chart.options.scales.x.ticks.color = colors.text;
+    chart.options.scales.y.grid.color = colors.grid;
+    chart.options.scales.y.ticks.color = colors.text;
+    
+    chart.update();
+  }
+
   onMount(() => {
     renderChart();
+    
+    // Theme değişikliklerini dinle
+    themeObserver = new MutationObserver(() => {
+      updateChartColors();
+    });
+    
+    if (typeof document !== 'undefined') {
+      themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-bs-theme', 'class'],
+      });
+    }
+    
+    // Color scheme değişikliklerini de dinle
+    if (typeof window !== 'undefined') {
+      mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      mediaQuery.addEventListener('change', updateChartColors);
+    }
   });
 
-  onDestroy(unsubscribeCurrentLanguage)
+  onDestroy(() => {
+    if (chart) {
+      chart.destroy();
+    }
+    
+    if (themeObserver) {
+      themeObserver.disconnect();
+    }
+    
+    if (mediaQuery) {
+      mediaQuery.removeEventListener('change', updateChartColors);
+    }
+    
+    unsubscribeCurrentLanguage();
+  });
 </script>
