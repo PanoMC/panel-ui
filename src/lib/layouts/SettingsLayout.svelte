@@ -15,8 +15,8 @@
         >{$_("components.settings-layout.updates")}
         {#if data.session.basicData.hasUpdate}
           <span
-            class="position-absolute bg-warning rounded-circle"
-            style="top: 8px; right: 8px; padding:4px;">
+            class="position-absolute bg-warning rounded-circle p-1"
+            style="top: 7px; right: 6px;">
           </span>
         {/if}
       </PageNavItem>

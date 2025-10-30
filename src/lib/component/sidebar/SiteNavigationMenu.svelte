@@ -116,21 +116,21 @@
     </li>
 
     {#if hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS)}
-      <li class="nav-item">
+      <li class="nav-item ">
         <a
-          class="nav-link"
+          class="nav-link p-0"
           href="{base}/settings"
           class:active={matching(
             $page.url.pathname,
             base + "/settings",
             true,
           )}>
-          <i class="fas fa-cog me-2"></i>
-          <span class="position-relative">
-          {$_("components.site-navigation-menu.settings")}
+          <span class="position-relative" class:pe-2={$session.basicData.hasUpdate}>
+            <i class="fas fa-cog me-2"></i>
+            {$_("components.site-navigation-menu.settings")}
             {#if $session.basicData.hasUpdate}
               <span
-                class="position-absolute bg-warning rounded-circle" style="top: -2px; right: -8px; padding:4px;">
+                class="position-absolute bg-warning rounded-circle p-1 top-0 end-0">
               </span>
             {/if}
           </span>

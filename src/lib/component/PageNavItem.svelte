@@ -1,4 +1,4 @@
-<li class="nav-item">
+<li class="nav-item {liClazz || ''}">
   <svelte:element this="{button ? 'button': 'a'}"
     class="nav-link {disabled && 'disabled'} {classes}"
     aria-current="page"
@@ -23,7 +23,8 @@
     active,
     button,
     onclick,
-    classes
+    classes,
+    liClazz
   } = $props();
 
   const aProps = $derived(!button && {href: base + href});
