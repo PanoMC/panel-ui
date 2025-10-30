@@ -56,7 +56,8 @@
     "update": "Güncelle",
     "check-updates": "Güncellemeleri Kontrol Et",
     "update-all": "Hepsini Güncelle",
-    "try-again": "Tekrar Dene"
+    "try-again": "Tekrar Dene",
+    "search": "Ara..."
   },
   "pages": {
     "themes": {

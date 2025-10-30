@@ -55,6 +55,21 @@
           ? data.meta.filterCount
           : data.meta.totalCount})
       </div>
+      <!-- Search -->
+      <div slot="middle" class="w-100" style="max-width: 500px;">
+        <div class="input-group">
+          <span class="input-group-text" id="search-addon">
+            <i class="fas fa-search"></i>
+          </span>
+          <input
+            type="text"
+            class="form-control"
+            placeholder={$_("buttons.search")}
+            aria-label={$_("buttons.search")}
+            aria-describedby="search-addon"
+            bind:value={searchQuery} />
+        </div>
+      </div>
       <!-- Filters -->
       <CardFilters slot="right">
         <CardFiltersItem
@@ -94,7 +109,7 @@
     <div class="card-body vstack gap-3">
       <div class="accordion">
         {#if data.type === PageTypes.PLUGIN}
-          {#each Object.keys(data.translations) as pluginId, index (pluginId)}
+          {#each Object.keys(filteredTranslations) as pluginId, index (pluginId)}
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button
@@ -102,16 +117,16 @@
                   type="button"
                   data-bs-toggle="collapse"
                   data-bs-target="#collapsePlugin{pluginId}">
-                  {pluginId} ({data.translations[pluginId].length})
+                  {pluginId} ({filteredTranslations[pluginId].length})
                 </button>
               </h2>
               <div
                 id="collapsePlugin{pluginId}"
                 class="accordion-collapse collapse show">
                 <div class="accordion-body">
-                  {#if data.translations[pluginId].filter((translation) => translation.notExists).length > 0}
+                  {#if filteredTranslations[pluginId].filter((translation) => translation.notExists).length > 0}
                     <UnnecessaryTranslationsAlert
-                      translations={data.translations[pluginId].filter(
+                      translations={filteredTranslations[pluginId].filter(
                         (translation) => translation.notExists,
                       )}
                       pluginId={pluginId}
@@ -120,8 +135,8 @@
                       open={data.filter === FilterTypes.NOT_EXISTS} />
                   {/if}
 
-                  {#if data.translations[pluginId].filter((translation) => !translation.notExists).length > 0}
-                    {#each data.translations[pluginId].filter((translation) => !translation.notExists) as translation, index (translation)}
+                  {#if filteredTranslations[pluginId].filter((translation) => !translation.notExists).length > 0}
+                    {#each filteredTranslations[pluginId].filter((translation) => !translation.notExists) as translation, index (translation)}
                       <TranslationRow
                         translation={translation}
                         pluginId={pluginId}
@@ -143,7 +158,7 @@
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapse{data.type}Translations">
-                {$_("buttons." + data.type.toLowerCase())} ({data.translations
+                {$_("buttons." + data.type.toLowerCase())} ({filteredTranslations
                   .length})
               </button>
             </h2>
@@ -151,23 +166,23 @@
               id="collapse{data.type}Translations"
               class="accordion-collapse collapse show">
               <div class="accordion-body">
-                {#if data.translations.filter((translation) => translation.notExists).length > 0}
+                {#if filteredTranslations.filter((translation) => translation.notExists).length > 0}
                   <UnnecessaryTranslationsAlert
-                    translations={data.translations.filter(
+                    translations={filteredTranslations.filter(
                       (translation) => translation.notExists,
                     )}
                     on:customInputChange={handleCustomInputChange}
                     on:deleteClick={handleOnDeleteClick}
                     open={data.filter === FilterTypes.NOT_EXISTS} />
                 {/if}
-                {#if data.translations.filter((translation) => !translation.notExists).length > 0}
-                  {#each data.translations.filter((translation) => !translation.notExists) as translation, index (translation)}
+                {#if filteredTranslations.filter((translation) => !translation.notExists).length > 0}
+                  {#each filteredTranslations.filter((translation) => !translation.notExists) as translation, index (translation)}
                     <TranslationRow
                       translation={translation}
                       on:customInputChange={handleCustomInputChange}
                       on:deleteClick={handleOnDeleteClick} />
                   {/each}
-                {:else if data.translations.filter((translation) => translation.notExists).length === 0}
+                {:else if filteredTranslations.filter((translation) => translation.notExists).length === 0}
                   <NoContent />
                 {/if}
               </div>
@@ -318,10 +333,56 @@
   export let data;
   let refreshing;
   let saving;
+  let searchQuery = "";
+  let filteredTranslations;
 
   const pageTitle = getContext("pageTitle");
 
   pageTitle.set("pages.translations.title");
+
+  function filterTranslations(translations, query) {
+    if (!query || query.trim() === "") {
+      return translations;
+    }
+
+    const searchTerm = query.toLowerCase();
+
+    if (data.type === PageTypes.PLUGIN) {
+      // For PLUGIN type, translations is an object grouped by pluginId
+      const filtered = {};
+      
+      Object.keys(translations).forEach((pluginId) => {
+        const pluginTranslations = translations[pluginId].filter(
+          (translation) => {
+            const matchesKey = translation.key.toLowerCase().includes(searchTerm);
+            const matchesOriginal = translation.original?.toLowerCase().includes(searchTerm);
+            const matchesCustom = translation.custom?.toLowerCase().includes(searchTerm);
+            const matchesPluginId = pluginId.toLowerCase().includes(searchTerm);
+            
+            return matchesKey || matchesOriginal || matchesCustom || matchesPluginId;
+          }
+        );
+        
+        if (pluginTranslations.length > 0) {
+          filtered[pluginId] = pluginTranslations;
+        }
+      });
+      
+      return filtered;
+    } else {
+      // For other types, translations is an array
+      return translations.filter((translation) => {
+        const matchesKey = translation.key.toLowerCase().includes(searchTerm);
+        const matchesOriginal = translation.original?.toLowerCase().includes(searchTerm);
+        const matchesCustom = translation.custom?.toLowerCase().includes(searchTerm);
+        
+        return matchesKey || matchesOriginal || matchesCustom;
+      });
+    }
+  }
+
+  // Reactive statement to automatically filter when data or search query changes
+  $: filteredTranslations = filterTranslations(data.translations, searchQuery);
 
   $: saveDisabled =
     JSON.stringify(data.translationInputs) ===
@@ -337,6 +398,7 @@
 
     await goto(queryParams, { invalidateAll });
 
+    searchQuery = "";
     refreshing = false;
   }
 

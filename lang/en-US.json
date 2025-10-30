@@ -56,7 +56,8 @@
     "update": "Update",
     "check-updates": "Check Updates",
     "update-all": "Update All",
-    "try-again": "Try Again"
+    "try-again": "Try Again",
+    "search": "Search..."
   },
   "pages": {
     "themes": {
