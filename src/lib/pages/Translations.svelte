@@ -26,7 +26,7 @@
           on:change={(e) => refreshData(e.target.value)}>
           {#each Object.keys(PageTypes) as pageType, index (pageType)}
             <option selected value={pageType}
-              >{$_("buttons." + pageType.toLowerCase())}</option>
+              >{$_("buttons." + pageType.toLowerCase().replace("_", "-"))}</option>
           {/each}
         </select>
         <select
@@ -155,7 +155,7 @@
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapse{data.type}Translations">
-                {$_("buttons." + data.type.toLowerCase())} ({filteredTranslations.length})
+                {$_("buttons." + data.type.toLowerCase().replace("_", "-"))} ({filteredTranslations.length})
               </button>
             </h2>
             <div
@@ -201,6 +201,8 @@
     PANEL: "PANEL",
     THEME: "THEME",
     PLUGIN: "PLUGIN",
+    PLATFORM: "PLATFORM",
+    MC_PLUGIN: "MC_PLUGIN",
   });
   export const DefaultPageType = PageTypes.PANEL;
 

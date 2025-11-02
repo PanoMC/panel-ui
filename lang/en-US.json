@@ -57,8 +57,8 @@
     "check-updates": "Check Updates",
     "update-all": "Update All",
     "try-again": "Try Again",
-    "search": "Search...",
-    "find": "Find..."
+    "find": "Find...",
+    "mc-plugin": "MC Plugin"
   },
   "pages": {
     "themes": {
