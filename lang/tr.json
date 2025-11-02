@@ -57,7 +57,8 @@
     "check-updates": "Güncellemeleri Kontrol Et",
     "update-all": "Hepsini Güncelle",
     "try-again": "Tekrar Dene",
-    "search": "Ara..."
+    "search": "Ara...",
+    "find": "Bul..."
   },
   "pages": {
     "themes": {

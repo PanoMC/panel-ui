@@ -56,17 +56,14 @@
           : data.meta.totalCount})
       </div>
       <!-- Search -->
-      <div slot="middle" class="w-100" style="max-width: 500px;">
+      <div slot="middle">
         <div class="input-group">
-          <span class="input-group-text" id="search-addon">
-            <i class="fas fa-search"></i>
-          </span>
           <input
             type="text"
-            class="form-control"
-            placeholder={$_("buttons.search")}
-            aria-label={$_("buttons.search")}
-            aria-describedby="search-addon"
+            class="form-control form-control-sm"
+            placeholder={$_("buttons.find")}
+            aria-label={$_("buttons.find")}
+            aria-describedby="find-addon"
             bind:value={searchQuery} />
         </div>
       </div>
@@ -158,8 +155,7 @@
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapse{data.type}Translations">
-                {$_("buttons." + data.type.toLowerCase())} ({filteredTranslations
-                  .length})
+                {$_("buttons." + data.type.toLowerCase())} ({filteredTranslations.length})
               </button>
             </h2>
             <div
@@ -350,32 +346,44 @@
     if (data.type === PageTypes.PLUGIN) {
       // For PLUGIN type, translations is an object grouped by pluginId
       const filtered = {};
-      
+
       Object.keys(translations).forEach((pluginId) => {
         const pluginTranslations = translations[pluginId].filter(
           (translation) => {
-            const matchesKey = translation.key.toLowerCase().includes(searchTerm);
-            const matchesOriginal = translation.original?.toLowerCase().includes(searchTerm);
-            const matchesCustom = translation.custom?.toLowerCase().includes(searchTerm);
+            const matchesKey = translation.key
+              .toLowerCase()
+              .includes(searchTerm);
+            const matchesOriginal = translation.original
+              ?.toLowerCase()
+              .includes(searchTerm);
+            const matchesCustom = translation.custom
+              ?.toLowerCase()
+              .includes(searchTerm);
             const matchesPluginId = pluginId.toLowerCase().includes(searchTerm);
-            
-            return matchesKey || matchesOriginal || matchesCustom || matchesPluginId;
-          }
+
+            return (
+              matchesKey || matchesOriginal || matchesCustom || matchesPluginId
+            );
+          },
         );
-        
+
         if (pluginTranslations.length > 0) {
           filtered[pluginId] = pluginTranslations;
         }
       });
-      
+
       return filtered;
     } else {
       // For other types, translations is an array
       return translations.filter((translation) => {
         const matchesKey = translation.key.toLowerCase().includes(searchTerm);
-        const matchesOriginal = translation.original?.toLowerCase().includes(searchTerm);
-        const matchesCustom = translation.custom?.toLowerCase().includes(searchTerm);
-        
+        const matchesOriginal = translation.original
+          ?.toLowerCase()
+          .includes(searchTerm);
+        const matchesCustom = translation.custom
+          ?.toLowerCase()
+          .includes(searchTerm);
+
         return matchesKey || matchesOriginal || matchesCustom;
       });
     }
