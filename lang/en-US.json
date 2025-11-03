@@ -300,6 +300,8 @@
       "platform": {
         "title": "Platform Settings",
         "preferences": "Preferences",
+        "allow-user-locale-selection": "User Language Selection",
+        "allow-user-locale-selection-description": "Allow users to choose their own language, independent from platform.",
         "display-language": "Display Language",
         "check-auto-updates": "Platform Updates",
         "connect-failed-alert": "Connecting your Pano account has been failed! Try again.",
@@ -815,6 +817,10 @@
             "errors": {
               "not-match": "The passwords do not match"
             }
+          },
+          "locale": {
+            "label": "Display Language",
+            "default": "Platform Default ({defaultLocaleName})"
           },
           "can-open-ticket": "Can create ticket",
           "email-verified": "E-Mail is verified"

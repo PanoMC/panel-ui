@@ -8,9 +8,9 @@
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Edit Player Information</h5>
+        <h5 class="modal-title">{$_('components.modals.edit-player.title')}</h5>
         <button
-          title="Close"
+          title="{$_('buttons.close')}"
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
@@ -95,6 +95,22 @@
                   {/if}
                 {/if}
               </div>
+            </div>
+            <div class="col-12 mb-3">
+              <label for="userLocaleCode">
+                {$_("components.modals.edit-player.inputs.locale.label")}
+              </label>
+              <select
+                class="form-control"
+                id="userLocaleCode"
+                bind:value="{$player.localeCode}">
+                <option value="{null}"
+                >{$_("components.modals.edit-player.inputs.locale.default", {values: {defaultLocaleName: $Languages[$siteInfo.platformLocale].name}})}</option>
+                {#each Object.keys($Languages) as language, index (language)}
+                  <option value="{$Languages[language].code}"
+                  >{$Languages[language].name}</option>
+                {/each}
+              </select>
             </div>
             <div class="col-6">
               <div class="form-check form-switch">
@@ -199,6 +215,14 @@
 
   import { show as showToast } from "$lib/component/ToastContainer.svelte";
 
+  import {
+    changeLanguage,
+    getLanguageByLocale,
+    Languages,
+  } from "$lib/language.util";
+
+  const siteInfo = getContext("siteInfo");
+
   function refreshBrowserPage() {
     location.reload();
   }
@@ -207,14 +231,14 @@
 
   const user = getContext("user");
 
-  $: saveDisabled = !$player.username || !$player.email || $player.username === $playerBackup.username && $player.email === $playerBackup.email && (!$player.newPassword || $player.newPassword && $player.newPassword !== $player.newPasswordRepeat) && $player.canCreateTicket === $playerBackup.canCreateTicket && $player.isEmailVerified === $playerBackup.isEmailVerified;
+  $: saveDisabled = !$player.username || !$player.email || $player.username === $playerBackup.username && $player.email === $playerBackup.email && (!$player.newPassword || $player.newPassword && $player.newPassword !== $player.newPasswordRepeat) && $player.canCreateTicket === $playerBackup.canCreateTicket && $player.isEmailVerified === $playerBackup.isEmailVerified && $player.localeCode === $playerBackup.localeCode;
 
   function onSubmit() {
     loading = true;
 
     ApiUtil.put({
       path: `/api/panel/players/${get(player).id}`,
-      body: get(player),
+      body: {...get(player), localeCode: $player.localeCode || ""},
       handler: async (body, reject) => {
         if (body.result === "ok") {
           if (get(playerBackup).username === get(user).username) {
@@ -224,6 +248,8 @@
 
               return user;
             });
+
+            await changeLanguage(getLanguageByLocale($player.localeCode || $siteInfo.platformLocale))
           }
 
           loading = false;
@@ -252,7 +278,8 @@
 
           return;
         } else if (body.error) {
-          location.reload();
+          console.log(body.error)
+          //location.reload();
 
           return;
         }

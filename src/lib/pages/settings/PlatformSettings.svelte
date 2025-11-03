@@ -93,13 +93,14 @@
   <div class="card-body animate__animated animate__fadeIn">
     <div class="row mb-3">
       <label class="col-md-6" for="platformDevMode"> Geliştirici Modu </label>
-      <div class="col">
+      <div class="col d-flex align-items-center">
         <div class="form-check form-switch">
           <input
             class="form-check-input"
             type="checkbox"
             role="switch"
-            id="platformDevMode" />
+            id="platformDevMode"
+            autocomplete="off"/>
         </div>
       </div>
     </div>
@@ -117,6 +118,26 @@
               >{$Languages[language].name}</option>
           {/each}
         </select>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-md-6" for="allowUserLocaleSelection">
+        {$_("pages.settings.platform.allow-user-locale-selection")}
+        <br />
+        <small class="text-muted">
+          {$_("pages.settings.platform.allow-user-locale-selection-description")}
+        </small>
+      </label>
+      <div class="col d-flex align-items-center">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="allowUserLocaleSelection"
+            autocomplete="off"
+            bind:checked={data.allowUserLocaleSelection}/>
+        </div>
       </div>
     </div>
 
@@ -412,7 +433,8 @@
 
   $: preferencesSaveDisabled =
     data.oldSettings.updatePeriod === data.updatePeriod &&
-    data.oldSettings.locale === data.locale;
+    data.oldSettings.locale === data.locale &&
+    data.oldSettings.allowUserLocaleSelection === data.allowUserLocaleSelection;
 
   $: emailSaveDisabled =
     JSON.stringify(data.oldSettings.email) === JSON.stringify(data.email) ||
@@ -519,6 +541,7 @@
 
     formData.append("updatePeriod", data.updatePeriod);
     formData.append("locale", data.locale);
+    formData.append("allowUserLocaleSelection", data.allowUserLocaleSelection);
 
     ApiUtil.put({
       path: "/api/panel/settings",
@@ -539,7 +562,9 @@
             return obj;
           }, {});
 
-        await changeLanguage(getLanguageByLocale(data.locale));
+        if (!$siteInfo.userLocaleCode) {
+          await changeLanguage(getLanguageByLocale(data.locale));
+        }
 
         await showToast("components.toasts.settings-save-success");
       },

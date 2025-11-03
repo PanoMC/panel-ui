@@ -129,7 +129,7 @@
 
     await initializePlugins(siteInfo);
 
-    await initLanguage(basicData.locale, event);
+    await initLanguage(siteInfo.locale, event);
 
     if (browser) {
       ApiUtil.interceptors.errorHandler = (requestProcess) => {

@@ -300,6 +300,8 @@
       "platform": {
         "title": "Platform Ayarları",
         "preferences": "Tercihler",
+        "allow-user-locale-selection": "Kullanıcı Dil Seçimi",
+        "allow-user-locale-selection-description": "Kullanıcıların kendi dilini seçmelerine izin ver, platformdan bağımsız.",
         "display-language": "Görüntüleme Dili",
         "check-auto-updates": "Güncellemeleri Denetle",
         "connect-failed-alert": "Pano hesabınıza bağlanırken hata oluştu! Lütfen tekrar deneyin.",
@@ -815,6 +817,10 @@
             "errors": {
               "not-match": "Şifreler aynı değil"
             }
+          },
+          "locale": {
+            "label": "Görüntüleme Dili",
+            "default": "Platform Varsayılanı ({defaultLocaleName})"
           },
           "can-open-ticket": "Talep oluşturabilir",
           "email-verified": "E-Postası doğrulandı"
