@@ -757,6 +757,7 @@
       },
       "connect-server": {
         "title": "Sunucu Bağla",
+        "toggle-connect-server": "Sunucu Bağlama Aç/Kapa",
         "steps": {
           "1": "Oyun Eklentisini Sunucuna Kur",
           "2": "Bağlantı Komutunu Çalıştır",

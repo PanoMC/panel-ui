@@ -757,6 +757,7 @@
       },
       "connect-server": {
         "title": "Connect Server",
+        "toggle-connect-server": "Toggle Connect Server",
         "steps": {
           "1": "Install Game Server Plugin",
           "2": "Run Connection Command",

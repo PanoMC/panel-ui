@@ -8,9 +8,24 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">
-          {$_("components.modals.connect-server.title")}
-        </h5>
+        <div class="hstack gap-2">
+          <div class="form-check form-switch">
+            <input
+              title={$_(
+                "components.modals.connect-server.toggle-connect-server",
+              )}
+              aria-label={$_(
+                "components.modals.connect-server.toggle-connect-server",
+              )}
+              class="form-check-input"
+              type="checkbox"
+              id="toggleConnectServer" />
+          </div>
+          <h5 class="modal-title">
+            {$_("components.modals.connect-server.title")}
+          </h5>
+        </div>
+
         <button
           class="btn-close"
           aria-label={$_("buttons.close")}
@@ -19,7 +34,7 @@
           type="button">
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body opacity-50">
         <ol class="list-group list-group-numbered">
           <li class="list-group-item">
             {$_("components.modals.connect-server.steps.1")}
@@ -27,7 +42,9 @@
             <a
               class="btn btn-secondary mt-2 d-block shadow-none"
               href="{PANO_WEBSITE_URL}/download"
-              target="_blank">{$_("buttons.download")} <i class="fa fa-external-link ms-2"></i></a>
+              target="_blank"
+              >{$_("buttons.download")}
+              <i class="fa fa-external-link ms-2"></i></a>
           </li>
 
           <li class="list-group-item">
