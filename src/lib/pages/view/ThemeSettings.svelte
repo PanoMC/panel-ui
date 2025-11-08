@@ -75,6 +75,48 @@
     }
   }
 
+  function sendTheme() {
+    if (!frame?.contentWindow || !childOrigin) return;
+    
+    // Get data-bs-theme value from panel
+    const bsTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+    
+    console.log('Sending data-bs-theme to iframe:', bsTheme);
+    frame.contentWindow.postMessage({
+      type: 'set-bs-theme',
+      theme: bsTheme
+    }, childOrigin);
+  }
+
+  function sendCSS() {
+    if (!frame?.contentWindow || !childOrigin) return;
+    
+    // Collect global CSS (non-scoped styles)
+    // Get all style tags present in DOM at runtime
+    const allStyles = Array.from(document.querySelectorAll('style'));
+    const globalStyles = allStyles
+      .filter(style => {
+        // Exclude scoped styles (those with data-svelte-h attribute)
+        return !style.hasAttribute('data-svelte-h');
+      })
+      .map(style => {
+        // Use textContent or innerHTML
+        return style.textContent || style.innerHTML || '';
+      })
+      .filter(css => css.trim().length > 0) // Filter out empty ones
+      .join('\n\n');
+    
+    if (globalStyles) {
+      console.log('Sending CSS to iframe:', globalStyles.substring(0, 100) + '...');
+      frame.contentWindow.postMessage({
+        type: 'inject-css',
+        css: globalStyles
+      }, childOrigin);
+    } else {
+      console.warn('No global CSS found to send');
+    }
+  }
+
   function handleLoad() {
     setTimeout(() => {
       loading = false;
@@ -100,6 +142,11 @@
         { type: "theme-iframe-ping" },
         childOrigin,
       );
+      // Send theme and CSS (with slight delay to ensure iframe is ready)
+      setTimeout(() => {
+        sendTheme();
+        sendCSS();
+      }, 100);
     };
     frame?.addEventListener("load", onLoad);
 
