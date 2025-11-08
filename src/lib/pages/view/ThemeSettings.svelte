@@ -37,8 +37,7 @@
       style="width:100%; border:0; display:block; background:transparent; bg-dark"
       scrolling="no"
       allowtransparency="true"
-      sandbox="allow-same-origin allow-scripts allow-forms"
-      on:load={handleLoad}></iframe>
+      sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
   </div>
 {/if}
 
@@ -72,6 +71,15 @@
     if (data.type === "theme-iframe-height" && frame) {
       const h = Number(data.height) || 0;
       if (h > 0) frame.style.height = h + "px";
+    }
+
+    if (data.type === "theme-settings-loaded") {
+      sendTheme()
+      sendCSS()
+    }
+
+    if (data.type === "theme-settings-ready") {
+      loading = false;
     }
   }
 
@@ -117,12 +125,6 @@
     }
   }
 
-  function handleLoad() {
-    setTimeout(() => {
-      loading = false;
-    }, 500);
-  }
-
   async function load() {
     loading = true;
     error = null;
@@ -142,11 +144,6 @@
         { type: "theme-iframe-ping" },
         childOrigin,
       );
-      // Send theme and CSS (with slight delay to ensure iframe is ready)
-      setTimeout(() => {
-        sendTheme();
-        sendCSS();
-      }, 100);
     };
     frame?.addEventListener("load", onLoad);
 
