@@ -58,7 +58,8 @@
     "update-all": "Update All",
     "try-again": "Try Again",
     "find": "Find...",
-    "mc-plugin": "MC Plugin"
+    "mc-plugin": "MC Plugin",
+    "see-docs": "See Docs"
   },
   "pages": {
     "themes": {
@@ -452,6 +453,16 @@
       },
       "monitoring": {
         "title": "Server Monitoring"
+      },
+      "game-integration": {
+        "title": "Game Integration Settings",
+        "minecraft": "Minecraft",
+        "auth-integration": "Auth Integration",
+        "auth-integration-description": "Let Pano hook into auth plugins in Fabric.",
+        "ban-integration": "Ban Integration",
+        "ban-integration-description": "Let Pano hook into ban plugins in Fabric.",
+        "permission-integration": "Permission Integration",
+        "permission-integration-description": "Let Pano hook into permission plugins in Fabric."
       }
     },
     "permission-group-detail": {

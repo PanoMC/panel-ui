@@ -58,7 +58,8 @@
     "update-all": "Hepsini Güncelle",
     "try-again": "Tekrar Dene",
     "find": "Bul...",
-    "mc-plugin": "MC Eklentisi"
+    "mc-plugin": "MC Eklentisi",
+    "see-docs": "Dokümantasyona Bak"
   },
   "pages": {
     "themes": {
@@ -452,6 +453,16 @@
       },
       "monitoring": {
         "title": "Sunucu İzleme"
+      },
+      "game-integration": {
+        "title": "Oyun Entegrasyon Ayarları",
+        "minecraft": "Minecraft",
+        "auth-integration": "Kimlik Doğrulama Entegrasyonu",
+        "auth-integration-description": "Pano'nun Fabric'daki kimlik doğrulama eklentilerine bağlanmasına izin verin.",
+        "ban-integration": "Yasaklama Entegrasyonu",
+        "ban-integration-description": "Pano'nun Fabric'daki yasaklama eklentilerine bağlanmasına izin verin.",
+        "permission-integration": "Yetki Entegrasyonu",
+        "permission-integration-description": "Pano'nun Fabric'daki yetki eklentilerine bağlanmasına izin verin."
       }
     },
     "permission-group-detail": {

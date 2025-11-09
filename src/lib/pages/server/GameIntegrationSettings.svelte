@@ -1,13 +1,13 @@
 <div class="card animate__animated animate__fadeIn">
-  <div class="card-header">Minecraft</div>
+  <div class="card-header">{$_("pages.server.game-integration.minecraft")}</div>
   <div class="card-body">
     <div class="row">
       <label class="col-md-4 col-form-label" for="authIntegration">
-        Auth Integration
+        {$_("pages.server.game-integration.auth-integration")}
         <small class="d-block"
-          >Let Pano hook into auth plugins in Fabric.<br />
+          >{$_("pages.server.game-integration.auth-integration-description")}<br />
           <a href="" target="_blank"
-            >See Docs <i class="fas fa-external-link"></i></a
+            >{$_("buttons.see-docs")} <i class="fas fa-external-link"></i></a
           ></small>
       </label>
       <div class="col col-form-label">
@@ -23,11 +23,11 @@
     </div>
     <div class="row">
       <label class="col-md-4 col-form-label" for="banIntegration">
-        Ban Integration
+        {$_("pages.server.game-integration.ban-integration")}
         <small class="d-block"
-          >Let Pano hook into ban plugins in Fabric.<br />
+          >{$_("pages.server.game-integration.ban-integration-description")}<br />
           <a href="" target="_blank"
-            >See Docs <i class="fas fa-external-link"></i></a
+            >{$_("buttons.see-docs")} <i class="fas fa-external-link"></i></a
           ></small>
       </label>
       <div class="col col-form-label">
@@ -43,11 +43,11 @@
     </div>
     <div class="row">
       <label class="col-md-4 col-form-label" for="permissionIntegration">
-        Permission Integration
+        {$_("pages.server.game-integration.permission-integration")}
         <small class="d-block"
-          >Let Pano hook into permission plugins in Fabric.<br />
+          >{$_("pages.server.game-integration.permission-integration-description")}<br />
           <a href="" target="_blank"
-            >See Docs <i class="fas fa-external-link"></i></a
+            >{$_("buttons.see-docs")} <i class="fas fa-external-link"></i></a
           ></small>
       </label>
       <div class="col col-form-label">
@@ -100,7 +100,7 @@
 
   const pageTitle = getContext("pageTitle");
 
-  pageTitle.set("Oyun Entegrasyon Ayarları");
+  pageTitle.set("pages.server.game-integration.title");
 
   export let data;
 
