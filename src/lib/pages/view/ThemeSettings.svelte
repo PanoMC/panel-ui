@@ -65,10 +65,13 @@
   let alwaysLoading = false;
 
   function handleMessage(e) {
-    console.log("handleMessage", e);
     if (childOrigin !== "*" && e.origin !== childOrigin) return;
     const data = e.data;
     if (!data || typeof data !== "object") return;
+
+    if (data.type) {
+      console.log("Panel received message", data.type);
+    }
 
     if (data.type === "theme-iframe-height" && frame) {
       const h = Number(data.height) || 0;
@@ -98,7 +101,7 @@
     }, childOrigin);
   }
 
-  function sendCSS() {
+  async function sendCSS() {
     if (!frame?.contentWindow || !childOrigin) return;
     
     // Collect global CSS (non-scoped styles)
@@ -116,14 +119,34 @@
       .filter(css => css.trim().length > 0) // Filter out empty ones
       .join('\n\n');
     
+    // If we have inline styles, send them
     if (globalStyles) {
-      console.log('Sending CSS to iframe:', globalStyles.substring(0, 100) + '...');
+      console.log('Sending inline CSS to iframe:', globalStyles.substring(0, 100) + '...');
       frame.contentWindow.postMessage({
         type: 'inject-css',
         css: globalStyles
       }, childOrigin);
     } else {
-      console.warn('No global CSS found to send');
+      // If no inline styles, check for link tags (build mode)
+      const cssLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+      const globalLinks = cssLinks
+        .filter(link => {
+          // Include only global CSS links (exclude theme-specific ones)
+          const href = link.href || '';
+          // Exclude theme-specific links, include _app links (build output)
+          return href.includes('_app') && !href.includes('theme');
+        })
+        .map(link => link.href);
+      
+      if (globalLinks.length > 0) {
+        console.log('Sending CSS links to iframe:', globalLinks);
+        frame.contentWindow.postMessage({
+          type: 'inject-css-links',
+          links: globalLinks
+        }, childOrigin);
+      } else {
+        console.warn('No global CSS found to send (neither style tags nor link tags)');
+      }
     }
   }
 
