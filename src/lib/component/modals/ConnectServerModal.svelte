@@ -9,17 +9,27 @@
     <div class="modal-content">
       <div class="modal-header">
         <div class="hstack gap-2">
-          <div class="form-check form-switch">
-            <input
-              title={$_(
-                "components.modals.connect-server.toggle-connect-server",
-              )}
-              aria-label={$_(
-                "components.modals.connect-server.toggle-connect-server",
-              )}
-              class="form-check-input"
-              type="checkbox"
-              id="toggleConnectServer" />
+          <div class="form-check form-switch position-relative">
+            {#if toggleLoading}
+              <span class="position-absolute top-50 start-50 translate-middle" style="z-index: 1;" role="status">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+              </span>
+            {:else}
+              <input
+                title={$_(
+                  "components.modals.connect-server.toggle-connect-server",
+                )}
+                aria-label={$_(
+                  "components.modals.connect-server.toggle-connect-server",
+                )}
+                class="form-check-input"
+                type="checkbox"
+                id="toggleConnectServer"
+                checked={acceptPluginAuth}
+                disabled={toggleLoading}
+                on:change={toggleAcceptPluginAuth}
+                autocomplete="off" />
+            {/if}
           </div>
           <h5 class="modal-title">
             {$_("components.modals.connect-server.title")}
@@ -34,7 +44,7 @@
           type="button">
         </button>
       </div>
-      <div class="modal-body opacity-50">
+      <div class="modal-body" class:opacity-50={!acceptPluginAuth}>
         <ol class="list-group list-group-numbered">
           <li class="list-group-item">
             {$_("components.modals.connect-server.steps.1")}
@@ -43,6 +53,8 @@
               class="btn btn-secondary mt-2 d-block shadow-none"
               href="{PANO_WEBSITE_URL}/download"
               target="_blank"
+              tabindex={acceptPluginAuth ? 0 : -1}
+              class:disabled={!acceptPluginAuth}
               >{$_("buttons.download")}
               <i class="fa fa-external-link ms-2"></i></a>
           </li>
@@ -50,20 +62,24 @@
           <li class="list-group-item">
             {$_("components.modals.connect-server.steps.2")}
             <br />
-            <small class="text-muted">
-              {$_("components.modals.connect-server.code-refresh", {
-                values: { timeToRefreshKey },
-              })}
-            </small>
+            {#if acceptPluginAuth}
+              <small class="text-muted">
+                {$_("components.modals.connect-server.code-refresh", {
+                  values: { timeToRefreshKey },
+                })}
+              </small>
+            {/if}
             <div class="input-group">
               <input
                 type="text"
                 class="form-control"
                 value={commandText}
-                readonly />
+                readonly
+                disabled={!acceptPluginAuth} />
               <button
                 class="btn border shadow-none btn-outline-primary"
                 type="button"
+                disabled={!acceptPluginAuth}
                 on:click={onCopyCommandTextClick}
                 aria-label={isCommandTextCopied
                   ? $_("components.modals.connect-server.copied")
@@ -106,15 +122,19 @@
 
   import { PANO_WEBSITE_URL, PRERELEASE } from "$lib/variables.js";
 
+  const platformServerMatchKey = getContext("platformServerMatchKey");
+  const platformKeyRefreshedTime = getContext("platformKeyRefreshedTime");
+  const platformHostAddress = getContext("platformHostAddress");
+  const session = getContext("session");
+
   let timeToRefreshKey = "...";
   let commandText;
   let isCommandTextCopied = false;
   let copyClickIDForCommandText = 0;
   let firstStartCountDown = false;
 
-  const platformServerMatchKey = getContext("platformServerMatchKey");
-  const platformKeyRefreshedTime = getContext("platformKeyRefreshedTime");
-  const platformHostAddress = getContext("platformHostAddress");
+  let acceptPluginAuth = $session.basicData.acceptPluginAuth
+  let toggleLoading;
 
   function getTimeLeftInSeconds() {
     const now = new Date(); // current time
@@ -159,6 +179,23 @@
         }
 
         startCountDown();
+      },
+    });
+  }
+
+  function toggleAcceptPluginAuth() {
+    toggleLoading = true;
+    ApiUtil.put({
+      path: "/api/panel/platformAuth/toggle",
+      handler: (body) => {
+        if (body.error) {
+          location.reload();
+
+          return;
+        }
+
+        acceptPluginAuth = body.acceptPluginAuth
+        toggleLoading = false;
       },
     });
   }
