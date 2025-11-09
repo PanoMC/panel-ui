@@ -37,7 +37,8 @@
       style="width:100%; border:0; display:block; background:transparent; bg-dark"
       scrolling="no"
       allowtransparency="true"
-      sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
+      sandbox="allow-same-origin allow-scripts allow-forms"
+      on:load={handleLoad}></iframe>
   </div>
 {/if}
 
@@ -64,6 +65,7 @@
   let alwaysLoading = false;
 
   function handleMessage(e) {
+    console.log("handleMessage", e);
     if (childOrigin !== "*" && e.origin !== childOrigin) return;
     const data = e.data;
     if (!data || typeof data !== "object") return;
@@ -125,7 +127,23 @@
     }
   }
 
+  function delay(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  async function handleLoad() {
+    if (!frame) await delay(100);
+
+    if (childOrigin && frame.contentWindow) {
+      sendTheme()
+      sendCSS();
+    }
+  }
+
   async function load() {
+    window.removeEventListener("message", handleMessage);
+    window.addEventListener("message", handleMessage);
+
     loading = true;
     error = null;
 
@@ -137,14 +155,14 @@
       childOrigin = "*";
     }
 
-    window.addEventListener("message", handleMessage);
-
     const onLoad = () => {
       frame?.contentWindow?.postMessage(
         { type: "theme-iframe-ping" },
         childOrigin,
       );
     };
+
+    frame?.removeEventListener("load", onLoad);
     frame?.addEventListener("load", onLoad);
 
     setTimeout(() => {
