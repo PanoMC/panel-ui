@@ -6,7 +6,7 @@
       <div class="navbar-nav">
         <button
           class:d-lg-none={$isSidebarOpen}
-          class="navbar-toggler d-inline-block"
+          class="navbar-toggler d-inline-block me-2"
           type="button"
           aria-label={$_("components.navbar.navbar-toggle-tooltip")}
           title={$_("components.navbar.navbar-toggle-tooltip")}
@@ -16,6 +16,30 @@
           aria-controls="sidebar">
           <i class="fa-solid fa-bars"></i>
         </button>
+        <!-- Panel Theme Switcher -->
+        <div class="nav-item dropdown">
+          <button
+            title={$_("components.navbar.panel-theme")}
+            aria-label={$_("components.navbar.panel-theme")}
+            class="nav-link"
+            data-bs-toggle="dropdown"
+            type="button">
+            <i class="fa-solid fa-palette"></i>
+          </button>
+          <ul
+            class="dropdown-menu dropdown-menu-start animate__animated animate__zoomIn">
+            <h6 class="dropdown-header">Panel Theme</h6>
+            <li>
+              <button type="button" class="dropdown-item"> Light </button>
+            </li>
+            <li>
+              <button type="button" class="dropdown-item"> Dark </button>
+            </li>
+            <li>
+              <button type="button" class="dropdown-item"> Copper </button>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="col-4 d-flex justify-content-center">
@@ -32,6 +56,7 @@
             class="nav-link position-relative"
             data-bs-toggle="dropdown"
             type="button"
+            aria-label={$_("components.navbar.notifications")}
             title={$_("components.navbar.notifications")}>
             <i class="fa-regular fa-bolt"></i>
             {#if $notificationCount !== 0}
@@ -117,6 +142,7 @@
             type="button"
             class="nav-link h-100 d-flex align-items-center"
             data-bs-toggle="dropdown"
+            aria-label={$_("components.navbar.account-dropdown.session")}
             title={$_("components.navbar.account-dropdown.session")}>
             <img
               src="https://minotar.net/avatar/{$user.username}"

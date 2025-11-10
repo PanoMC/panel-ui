@@ -542,6 +542,7 @@
     "navbar": {
       "navbar-toggle-tooltip": "Menüyü Aç/Kapa",
       "notifications": "Bildirimler",
+      "panel-theme-switch": "Panel Teması",
       "show-all": "Tümünü Görüntüle",
       "account-dropdown": {
         "session": "Oturum",
