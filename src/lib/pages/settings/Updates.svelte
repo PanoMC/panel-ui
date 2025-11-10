@@ -67,12 +67,12 @@
                           class="fa-regular fa-circle-check text-success"
                           title="{$_('pages.settings.updates.verified')}"></i>
 
-                        <span class="badge text-bg-light">
+                        <span class="badge text-bg-primary">
                           {data.platformUpdate.channel.capitalize()}
                         </span>
-                        <span class="badge text-bg-light"
+                        <span class="badge text-bg-primary"
                           >{data.platformUpdate.oldVersion}
-                          <i class="fas fa-arrow-right"></i>
+                          <i class="fas fa-arrow-right fa-xs"></i>
                           {data.platformUpdate.version}</span>
 
                         <div>
