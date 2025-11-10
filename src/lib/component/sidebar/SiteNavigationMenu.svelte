@@ -116,9 +116,9 @@
     </li>
 
     {#if hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS)}
-      <li class="nav-item ">
+      <li class="nav-item">
         <a
-          class="nav-link p-0"
+          class="nav-link"
           href="{base}/settings"
           class:active={matching(
             $page.url.pathname,
