@@ -2,10 +2,17 @@
 <html lang="en" data-bs-theme="dark">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="/api/favicon" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     %sveltekit.head%
+
+    <script>
+      (function() {
+        const m = document.querySelector("meta[name=\"x-theme\"]");
+        const theme = m && m.getAttribute("content");
+        document.documentElement.setAttribute("data-bs-theme", theme);
+      })();
+    </script>
   </head>
   <body>
     <div id="svelte">%sveltekit.body%</div>

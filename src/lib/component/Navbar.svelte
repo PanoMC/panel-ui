@@ -18,27 +18,35 @@
         </button>
         <!-- Panel Theme Switcher -->
         <div class="nav-item dropdown">
-          <button
-            title={$_("components.navbar.panel-theme")}
-            aria-label={$_("components.navbar.panel-theme")}
-            class="nav-link"
-            data-bs-toggle="dropdown"
-            type="button">
-            <i class="fa-solid fa-palette"></i>
-          </button>
-          <ul
-            class="dropdown-menu dropdown-menu-start animate__animated animate__zoomIn">
-            <h6 class="dropdown-header">Panel Theme</h6>
-            <li>
-              <button type="button" class="dropdown-item"> Light </button>
-            </li>
-            <li>
-              <button type="button" class="dropdown-item"> Dark </button>
-            </li>
-            <li>
-              <button type="button" class="dropdown-item"> Copper </button>
-            </li>
-          </ul>
+          {#if selectingPanelTheme}
+            <i class="nav-link fa-solid fa-spinner fa-spin"></i>
+          {:else}
+            <button
+              title={$_("components.navbar.panel-theme")}
+              aria-label={$_("components.navbar.panel-theme")}
+              class="nav-link"
+              data-bs-toggle="dropdown"
+              type="button"
+              class:disabled={selectingPanelTheme}
+              disabled="{selectingPanelTheme}">
+              <i class="fa-solid fa-palette"></i>
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-start animate__animated animate__zoomIn">
+              <h6 class="dropdown-header">{$_("components.navbar.panel-theme")}</h6>
+              {#each panelThemes as theme}
+                <li>
+                  <button
+                    type="button"
+                    class="dropdown-item"
+                    class:active={($session.basicData.panelTheme || 'dark') === theme}
+                    on:click={() => changePanelTheme(theme)}>
+                    {$_("panel-themes." + theme)}
+                  </button>
+                </li>
+              {/each}
+            </ul>
+          {/if}
         </div>
       </div>
     </div>
@@ -195,19 +203,42 @@
   import { onNotificationClick } from "$lib/NotificationManager.js";
   import NoContent from "$lib/component/NoContent.svelte";
 
+  const pageTitle = getContext("pageTitle");
+  const user = getContext("user");
+  const notificationCount = getContext("notificationCount");
+  const isSidebarOpen = getContext("isSidebarOpen");
+  const session = getContext("session")
+
+  const panelThemes = ['light', 'dark', 'copper'];
+
   let quickNotificationProcessID = 0;
 
   let checkTime = 0;
   let interval;
   let showingQuickNotification;
-
-  const pageTitle = getContext("pageTitle");
-  const user = getContext("user");
-  const notificationCount = getContext("notificationCount");
-  const isSidebarOpen = getContext("isSidebarOpen");
+  let selectingPanelTheme;
 
   function onSideBarCollapseClick() {
     toggleSidebar(isSidebarOpen);
+  }
+
+  function changePanelTheme(theme) {
+    selectingPanelTheme = true;
+
+    ApiUtil.put({
+      path: "/api/panel/panelTheme/select",
+      body: {theme},
+      handler: (body) => {
+        if (body.error) {
+          location.reload()
+          return;
+        }
+
+        document.documentElement.setAttribute("data-bs-theme", theme);
+        $session.basicData.panelTheme = theme;
+        selectingPanelTheme = false;
+      },
+    });
   }
 
   function onLogout() {

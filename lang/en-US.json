@@ -1132,5 +1132,10 @@
     "UNAUTHORIZED": "You are not authorized to access this resource.",
     "WEBSITE_LOGO_EXCEEDS_SIZE": "Website logo exceeds maximum allowed size.",
     "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Website logo has an invalid content type."
+  },
+  "panel-themes": {
+    "light": "Light",
+    "dark": "Dark",
+    "copper": "Copper"
   }
 }

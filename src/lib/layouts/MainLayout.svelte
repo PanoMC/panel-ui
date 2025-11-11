@@ -1,5 +1,9 @@
 <svelte:head>
+  <link href="/api/favicon?hash={data.siteInfo.faviconHash}" rel="icon" />
+
   <title>{title}</title>
+
+  <meta content={$session.basicData.panelTheme || "dark"} name="x-theme" />
 </svelte:head>
 
 <App>

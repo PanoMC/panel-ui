@@ -542,7 +542,7 @@
     "navbar": {
       "navbar-toggle-tooltip": "Menüyü Aç/Kapa",
       "notifications": "Bildirimler",
-      "panel-theme-switch": "Panel Teması",
+      "panel-theme": "Panel Teması",
       "show-all": "Tümünü Görüntüle",
       "account-dropdown": {
         "session": "Oturum",
@@ -1132,5 +1132,10 @@
     "UNAUTHORIZED": "Bu kaynağa erişim yetkiniz yok.",
     "WEBSITE_LOGO_EXCEEDS_SIZE": "Web sitesi logosu izin verilen maksimum boyutu aşıyor.",
     "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Web sitesi logosu geçersiz içerik türüne sahip."
+  },
+  "panel-themes": {
+    "light": "Açık",
+    "dark": "Koyu",
+    "copper": "Bakır"
   }
 }
