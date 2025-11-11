@@ -781,6 +781,7 @@
         },
         "download": "Download File",
         "copy": "Copy",
+        "copy-for-console": "Copy for console",
         "copied": "Copied!",
         "code-refresh": "Code will refresh after {timeToRefreshKey} seconds.",
         "notification-will-come": "The connection request will come as a notification."

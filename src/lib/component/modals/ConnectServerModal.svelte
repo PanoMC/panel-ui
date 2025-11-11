@@ -80,7 +80,7 @@
                 class="btn border shadow-none btn-outline-primary"
                 type="button"
                 disabled={!acceptPluginAuth}
-                on:click={onCopyCommandTextClick}
+                on:click={() => onCopyCommandText(false)}
                 aria-label={isCommandTextCopied
                   ? $_("components.modals.connect-server.copied")
                   : $_("components.modals.connect-server.copy")}
@@ -91,6 +91,22 @@
                   { placement: "bottom", hideOnClick: false },
                 ]}>
                 <i class="fa-regular fa-clipboard"></i>
+              </button>
+              <button
+                class="btn border shadow-none btn-outline-secondary"
+                type="button"
+                disabled={!acceptPluginAuth}
+                on:click={() => onCopyCommandText(true)}
+                aria-label={isCommandTextForConsoleCopied
+                  ? $_("components.modals.connect-server.copied")
+                  : $_("components.modals.connect-server.copy-for-console")}
+                use:tooltip={[
+                  isCommandTextForConsoleCopied
+                    ? $_("components.modals.connect-server.copied")
+                    : $_("components.modals.connect-server.copy-for-console"),
+                  { placement: "bottom", hideOnClick: false },
+                ]}>
+                <i class="fa-solid fa-terminal"></i>
               </button>
             </div>
           </li>
@@ -131,6 +147,8 @@
   let commandText;
   let isCommandTextCopied = false;
   let copyClickIDForCommandText = 0;
+  let isCommandTextForConsoleCopied = false;
+  let copyClickIDForCommandTextForConsole = 0;
   let firstStartCountDown = false;
 
   let acceptPluginAuth = $session.basicData.acceptPluginAuth
@@ -208,18 +226,36 @@
       get(platformServerMatchKey);
   }
 
-  function onCopyCommandTextClick() {
-    copyClickIDForCommandText++;
+  function onCopyCommandText(forConsole = false) {
+    if (forConsole) {
+      copyClickIDForCommandTextForConsole++;
+    } else {
+      copyClickIDForCommandText++;
+    }
 
-    const id = copyClickIDForCommandText;
+    const id = forConsole ? copyClickIDForCommandTextForConsole : copyClickIDForCommandText;
 
-    copy(commandText);
+    const textToCopy = forConsole && commandText.startsWith("/")
+      ? commandText.substring(1)
+      : commandText;
 
-    isCommandTextCopied = true;
+    copy(textToCopy);
+
+    if (forConsole) {
+      isCommandTextForConsoleCopied = true;
+    } else {
+      isCommandTextCopied = true;
+    }
 
     setTimeout(function () {
-      if (copyClickIDForCommandText === id) {
-        isCommandTextCopied = false;
+      if (forConsole) {
+        if (copyClickIDForCommandTextForConsole === id) {
+          isCommandTextForConsoleCopied = false;
+        }
+      } else {
+        if (copyClickIDForCommandText === id) {
+          isCommandTextCopied = false;
+        }
       }
     }, 1000);
   }

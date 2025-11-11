@@ -781,6 +781,7 @@
         },
         "download": "Dosyayı İndir",
         "copy": "Kopyala",
+        "copy-for-console": "Konsol için kopyala",
         "copied": "Kopyalandı!",
         "code-refresh": "Kod {timeToRefreshKey} saniye sonra yenilenecek.",
         "notification-will-come": "Bağlantı isteği bildirim olarak gelecek."
