@@ -47,6 +47,7 @@
   import { getContext } from "svelte";
   import { _ } from "svelte-i18n";
   import { fade } from "svelte/transition";
+  import { base } from "$app/paths";
 
   import CardMenuItem from "$lib/component/CardMenuItem.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
@@ -130,6 +131,7 @@
     } else {
       // If no inline styles, check for link tags (build mode)
       const cssLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+      const baseUrl = window.location.origin + base;
       const globalLinks = cssLinks
         .filter(link => {
           // Include only global CSS links (exclude theme-specific ones)
@@ -137,7 +139,24 @@
           // Exclude theme-specific links, include _app links (build output)
           return href.includes('_app') && !href.includes('theme');
         })
-        .map(link => link.href);
+        .map(link => {
+          const href = link.href || '';
+          try {
+            const url = new URL(href);
+            // If URL doesn't start with base + /_app, remove the part between base and /_app
+            if (url.origin === window.location.origin && url.pathname.includes('/_app')) {
+              const appIndex = url.pathname.indexOf('/_app');
+              const expectedBasePath = base + '/_app';
+              if (appIndex > 0 && !url.pathname.startsWith(expectedBasePath)) {
+                // Remove everything between origin+base and /_app
+                return baseUrl + '/_app' + url.pathname.substring(appIndex + '/_app'.length) + (url.search || '') + (url.hash || '');
+              }
+            }
+            return href;
+          } catch (e) {
+            return href;
+          }
+        });
       
       if (globalLinks.length > 0) {
         console.log('Sending CSS links to iframe:', globalLinks);
