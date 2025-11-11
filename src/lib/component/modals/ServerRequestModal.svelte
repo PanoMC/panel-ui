@@ -167,8 +167,12 @@
 </script>
 
 <script>
-  import { invalidateAll } from "$app/navigation";
+  import { getContext } from "svelte";
   import { _ } from "svelte-i18n";
+
+  import { invalidateAll } from "$app/navigation";
+
+  const selectedServer = getContext("selectedServer");
 
   function acceptServer() {
     $submitLoading = true;
@@ -176,18 +180,31 @@
     ApiUtil.post({
       path: `/api/panel/servers/${$server.id}/accept`,
       handler: async (body, reject) => {
-        $submitLoading = false;
-
         if (body.result === "ok") {
           callback($server);
-          await invalidateAll();
-          hide();
+
+          if (body.selected) {
+            $selectedServer = $server;
+            await invalidateAll();
+            hide();
+
+            await showToast("components.toasts.server-selected", {
+              name: $server.name,
+            });
+          } else {
+            await invalidateAll();
+            hide();
+          }
+
           await showToast("components.toasts.accepted-server-connect-request");
+          $submitLoading = false;
 
           return;
         } else if (body.result === "error") {
           hide();
           await showToast("components.toasts.expired-server-connect-request");
+          $submitLoading = false;
+
 
           return;
         }
