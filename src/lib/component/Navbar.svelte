@@ -207,7 +207,8 @@
   const user = getContext("user");
   const notificationCount = getContext("notificationCount");
   const isSidebarOpen = getContext("isSidebarOpen");
-  const session = getContext("session")
+  const session = getContext("session");
+  const panelTheme = getContext("panelTheme");
 
   const panelThemes = ['light', 'dark', 'copper'];
 
@@ -236,6 +237,7 @@
 
         document.documentElement.setAttribute("data-bs-theme", theme);
         $session.basicData.panelTheme = theme;
+        $panelTheme = theme;
         selectingPanelTheme = false;
       },
     });

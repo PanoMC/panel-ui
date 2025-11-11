@@ -205,6 +205,7 @@
   const siteInfo = writable(data.siteInfo);
   const showSplash = writable(true);
   const platformUpdating = writable(false);
+  const panelTheme = writable(data.session.basicData.panelTheme || "dark");
 
   const pageTitle = writable(null);
 
@@ -227,6 +228,7 @@
     selectedServer.set(data.selectedServer);
     connectedServerCount.set(data.connectedServerCount);
     siteInfo.set(data.siteInfo);
+    panelTheme.set(data.session.basicData.panelTheme || "dark");
 
     sidebarTabsState.set(getCurrentSidebarState());
   });
@@ -248,6 +250,7 @@
   setContext("isSidebarOpen", isSidebarOpen);
   setContext("siteInfo", siteInfo);
   setContext("platformUpdating", platformUpdating);
+  setContext("panelTheme", panelTheme);
 
   $: title = $pageTitle
     ? `${$_($pageTitle)} \u2014 ${options.DEFAULT_PAGE_TITLE}`

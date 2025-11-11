@@ -43,7 +43,7 @@
 {/if}
 
 <script>
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { getContext } from "svelte";
   import { _ } from "svelte-i18n";
   import { fade } from "svelte/transition";
@@ -53,6 +53,7 @@
   import CardMenu from "$lib/component/CardMenu.svelte";
 
   const pageTitle = getContext("pageTitle");
+  const panelTheme = getContext("panelTheme");
   pageTitle.set("pages.theme-settings.title");
 
   let frame = null;
@@ -88,11 +89,11 @@
     }
   }
 
-  function sendTheme() {
+  function sendTheme(theme) {
     if (!frame?.contentWindow || !childOrigin) return;
     
-    // Get data-bs-theme value from panel
-    const bsTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+    // Get theme from panelTheme store
+    const bsTheme = theme || $panelTheme;
     
     console.log('Sending data-bs-theme to iframe:', bsTheme);
     frame.contentWindow.postMessage({
@@ -201,5 +202,19 @@
     };
   }
 
-  onMount(load);
+  let unsubscribeTheme;
+
+  onMount(() => {
+    load();
+
+    unsubscribeTheme = panelTheme.subscribe((value) => {
+        sendTheme(value);
+    });
+  });
+
+  onDestroy(() => {
+    if (unsubscribeTheme) {
+      unsubscribeTheme();
+    }
+  });
 </script>
