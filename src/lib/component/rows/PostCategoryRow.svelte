@@ -6,7 +6,7 @@
       title={$_("buttons.delete")}
       class="btn btn-sm btn-link"
       on:click={onDeleteClick}>
-      <i class="fas fa-minus"></i>
+      <i class="fas fa-trash"></i>
     </button>
   </th>
   <td class="align-middle text-nowrap">

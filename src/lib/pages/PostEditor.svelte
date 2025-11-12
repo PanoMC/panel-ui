@@ -29,7 +29,7 @@
           class="btn btn-link"
           type="button"
           on:click={() => showDeletePostModal(data.post)}>
-          <i class="fas fa-minus"></i>
+          <i class="fas fa-trash"></i>
         </button>
       {/if}
       {#if data.post.status !== StatusTypes.DRAFT && data.mode === Modes.EDIT}

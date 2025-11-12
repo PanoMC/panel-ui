@@ -17,7 +17,7 @@
           on:click={() => showConfirmDeletePlayerModal(data.player)}
           class:disabled={$user.username === data.player.username ||
             (data.player.permissionGroup === "admin" && !$user.admin)}>
-          <i class="fas fa-minus"></i>
+          <i class="fas fa-trash"></i>
         </button>
         {#if data.player.isBanned}
           <button

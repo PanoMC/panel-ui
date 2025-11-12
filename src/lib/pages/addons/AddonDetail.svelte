@@ -27,7 +27,7 @@
         title={$_("buttons.remove")}
         aria-label={$_("buttons.remove")}
         class:disabled={removing}>
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-trash"></i>
       </button>
       {#if addon.loading}
         <i class="fa-solid fa-spinner fa-spin me-2"></i>
@@ -51,7 +51,7 @@
   <div class="card">
     <div class="row g-0">
       <div
-        class="col-md-3 d-flex justify-content-center align-items-center bg-light p-3 rounded-start rounded-top">
+        class="col-md-3 d-flex justify-content-center align-items-center p-3 rounded-start rounded-top">
         <img
           src="/api/panel/plugins/{addon.id}/logo"
           class="img-fluid rounded"
@@ -80,7 +80,7 @@
               </button>
             {/if}
           </h5>
-          <p class="text-muted">{addon.description}</p>
+          <p>{addon.description}</p>
 
           <ul class="list-group">
             <li class="list-group-item">

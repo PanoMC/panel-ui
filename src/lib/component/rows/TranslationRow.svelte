@@ -43,7 +43,7 @@
         type="button"
         class="btn btn-sm btn-outline-danger h-100 shadow-none"
         on:click={() => onDeleteClick(translation.key)}>
-        <i class="fa-solid fa-minus"></i>
+        <i class="fa-solid fa-trash"></i>
       </button>
     </div>
   {/if}

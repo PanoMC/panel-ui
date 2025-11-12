@@ -19,7 +19,7 @@
         class="btn btn-link"
         type="button"
         on:click={() => showDeleteTicketModal([data.ticket.id])}>
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-trash"></i>
       </button>
       {#if data.ticket.status !== TicketStatuses.CLOSED}
         <button

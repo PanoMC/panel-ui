@@ -42,7 +42,7 @@
               class:disabled={getListOfChecked($checkedList).length === 0}
               type="button"
               on:click={onShowDeleteTicketsModalClick}>
-              <i class="fas fa-minus"></i>
+              <i class="fas fa-trash"></i>
             </button>
             <button
               class="btn btn-secondary"

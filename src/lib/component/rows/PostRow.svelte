@@ -48,7 +48,7 @@
           type="button"
           class="dropdown-item"
           on:click={onDeletePostClick}>
-          <i class="fas fa-minus me-2"></i>
+          <i class="fas fa-trash me-2"></i>
           {#if pageType !== PageTypes.TRASH}
             {$_("components.post-row.move-to-trash")}
           {:else}

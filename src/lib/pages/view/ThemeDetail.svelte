@@ -15,7 +15,7 @@
           on:click={onRemoveClick}
           title={$_("buttons.remove")}
           class:disabled={removing}>
-          <i class="fas fa-minus"></i>
+          <i class="fas fa-trash"></i>
         </button>
       {/if}
       {#if theme.verifyStatus !== "UNKNOWN"}

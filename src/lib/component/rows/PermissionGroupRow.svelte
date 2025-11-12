@@ -7,7 +7,7 @@
         class="btn btn-sm btn-link"
         on:click={onDeleteClick}
         title={$_("buttons.delete")}>
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-trash"></i>
       </button>
     {/if}
   </th>
