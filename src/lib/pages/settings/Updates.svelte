@@ -244,7 +244,7 @@
                           <VerifiedStatus
                             status={getVerifiedStatus(update.verified)} />
 
-                          <span class="badge text-bg-light"
+                          <span class="badge text-bg-primary"
                             >{update.oldVersion}
                             <i class="fas fa-arrow-right"></i>
                             {update.version}</span>
