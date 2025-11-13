@@ -6,7 +6,7 @@ export async function GET() {
   let filePath = path.resolve(`licenses.json`);
 
   if (!fs.existsSync(filePath)) {
-    filePath = path.resolve(path.dirname(process.argv[1]) + `licenses.json`);
+    filePath = path.resolve(path.dirname(process.argv[1]) + `/licenses.json`);
   }
 
   if (fs.existsSync(filePath)) {
