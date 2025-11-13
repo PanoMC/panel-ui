@@ -22,3 +22,5 @@ functions
 /plugins
 
 .env.local
+
+licenses.json
