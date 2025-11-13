@@ -111,3 +111,12 @@
   border: 2px dashed var(--pano-primary) !important;
   background-color: rgba(var(--pano-primary-rgb), 0.1) !important;
 }
+
+/* License details icon rotation */
+details summary .fa-chevron-right {
+  transition: transform 0.2s ease;
+}
+
+details[open] summary .fa-chevron-right {
+  transform: rotate(90deg);
+}

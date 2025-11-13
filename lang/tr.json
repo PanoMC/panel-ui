@@ -252,7 +252,11 @@
         "release": "Sürüm",
         "website": "Website",
         "discord": "Discord",
-        "open-source-licenses": "Açık Kaynak Lisanslar"
+        "open-source-licenses": "Açık Kaynak Lisanslar",
+        "author": "Yazar",
+        "repository": "Depo",
+        "license": "Lisans",
+        "no-licenses": "Lisans bilgisi bulunamadı. Lütfen 'npm run generate-licenses' komutunu çalıştırın."
       },
       "site-settings": {
         "title": "Website Ayarları",

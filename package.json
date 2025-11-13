@@ -8,7 +8,8 @@
     "lint": "npm-run-all -c lint:*",
     "lint:prettier": "prettier -c . --config .prettierrc",
     "format": "npm-run-all -c format:*",
-    "format:prettier": "prettier --write . --config .prettierrc"
+    "format:prettier": "prettier --write . --config .prettierrc",
+    "generate-licenses": "node scripts/generate-licenses.js"
   },
   "husky": {
     "hooks": {}

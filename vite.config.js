@@ -2,8 +2,12 @@ import { sveltekit } from "@sveltejs/kit/vite";
 import { loadEnv } from "vite";
 import fs from "fs";
 import path from "path";
+import { collectLicenses } from "./scripts/generate-licenses.js";
 
 const env = loadEnv("", process.cwd());
+
+// Global flag to ensure licenses are generated only once per build
+let licensesGenerated = false;
 
 function copyLangFolderPlugin() {
   let outDir = "";
@@ -63,10 +67,48 @@ function copyManifestPlugin(filename = "manifest.json") {
   };
 }
 
+function generateLicensesPlugin() {
+  let outDir = "";
+
+  return {
+    name: "generate-licenses",
+    apply: "build",
+    configResolved(config) {
+      outDir = path.resolve(process.cwd(), "build");
+    },
+    async closeBundle() {
+      // Don't regenerate if file already exists (SSR and client build run in separate processes)
+      const licensesPath = path.join(outDir, "licenses.json");
+      if (fs.existsSync(licensesPath)) {
+        return;
+      }
+
+      // Run only once (closeBundle is called for both SSR and client builds)
+      if (!licensesGenerated) {
+        licensesGenerated = true;
+        try {
+          console.log("Generating licenses...");
+          // Ensure the build directory exists
+          if (!fs.existsSync(outDir)) {
+            fs.mkdirSync(outDir, { recursive: true });
+          }
+          collectLicenses(outDir);
+          console.log("Licenses generated successfully.");
+        } catch (err) {
+          console.error("Failed to generate licenses:", err);
+          // Don't fail the build, just warn
+        }
+      }
+    }
+  };
+}
+
+
 /** @type {import('vite').UserConfig} */
 const config = {
   plugins: [
     sveltekit(),
+    generateLicensesPlugin(),
     copyLangFolderPlugin(),
     copyManifestPlugin()
   ],
