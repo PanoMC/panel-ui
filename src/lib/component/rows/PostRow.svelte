@@ -86,12 +86,14 @@
       href={base + "/posts/detail/" + post.id}
       title={$_("buttons.edit")}
       class="rounded focus-ring">
-      {post.title}
+      {post.title && post.title.length > 50
+        ? post.title.slice(0, 50) + '...'
+        : post.title}
     </a>
   </td>
   <td class="align-middle text-nowrap">
     <a
-      class="rounded focus-ring"
+      class="badge focus-ring {post.category.title === '-' ? 'text-bg-primary' : 'text-bg-secondary'}"
       title={$_("components.post-row.filter")}
       href="{base}/posts?categoryUrl={post.category.url}">
       {post.category.title === "-"
