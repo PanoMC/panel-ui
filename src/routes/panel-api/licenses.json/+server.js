@@ -3,12 +3,10 @@ import path from "path";
 
 /** @type {import("@sveltejs/kit").RequestHandler} */
 export async function GET() {
-  // Önce build klasöründen oku
-  let filePath = path.resolve(process.cwd(), "build", "licenses.json");
+  let filePath = path.resolve(`licenses.json`);
 
-  // Build klasöründe yoksa ana dizinden oku (development için)
   if (!fs.existsSync(filePath)) {
-    filePath = path.resolve(process.cwd(), "licenses.json");
+    filePath = path.resolve(path.dirname(process.argv[1]) + `licenses.json`);
   }
 
   if (fs.existsSync(filePath)) {
