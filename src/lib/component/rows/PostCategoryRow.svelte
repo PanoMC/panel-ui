@@ -18,7 +18,11 @@
       {category.title}
     </button>
   </td>
-  <td class="align-middle text-nowrap">{category.description}</td>
+  <td class="align-middle text-nowrap">
+    {category.description && category.description.length > 50
+      ? category.description.slice(0, 50) + '...'
+      : category.description}
+  </td>
   <td class="align-middle">
     <a
     class="rounded focus-ring"
