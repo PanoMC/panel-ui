@@ -28,18 +28,21 @@
               data-bs-toggle="dropdown"
               type="button"
               class:disabled={selectingPanelTheme}
-              disabled="{selectingPanelTheme}">
+              disabled={selectingPanelTheme}>
               <i class="fa-solid fa-palette"></i>
             </button>
             <ul
               class="dropdown-menu dropdown-menu-start animate__animated animate__zoomIn">
-              <h6 class="dropdown-header">{$_("components.navbar.panel-theme")}</h6>
+              <h6 class="dropdown-header">
+                {$_("components.navbar.panel-theme")}
+              </h6>
               {#each panelThemes as theme}
                 <li>
                   <button
                     type="button"
                     class="dropdown-item"
-                    class:active={($session.basicData.panelTheme || 'dark') === theme}
+                    class:active={($session.basicData.panelTheme || "dark") ===
+                      theme}
                     on:click={() => changePanelTheme(theme)}>
                     {$_("panel-themes." + theme)}
                   </button>
@@ -47,6 +50,14 @@
               {/each}
             </ul>
           {/if}
+        </div>
+        <!-- Selected Server -->
+        <div class="nav-item">
+          <span class="nav-link text-info">
+            <small
+              ><i class="fa-solid fa-circle-check me-1"></i>
+              {$selectedServer.name} ({$selectedServer.host}:{$selectedServer.port})</small>
+          </span>
         </div>
       </div>
     </div>
@@ -203,6 +214,7 @@
   import { onNotificationClick } from "$lib/NotificationManager.js";
   import NoContent from "$lib/component/NoContent.svelte";
 
+  const selectedServer = getContext("selectedServer");
   const pageTitle = getContext("pageTitle");
   const user = getContext("user");
   const notificationCount = getContext("notificationCount");
@@ -210,7 +222,7 @@
   const session = getContext("session");
   const panelTheme = getContext("panelTheme");
 
-  const panelThemes = ['light', 'dark', 'copper'];
+  const panelThemes = ["light", "dark", "copper"];
 
   let quickNotificationProcessID = 0;
 
@@ -228,10 +240,10 @@
 
     ApiUtil.put({
       path: "/api/panel/panelTheme/select",
-      body: {theme},
+      body: { theme },
       handler: (body) => {
         if (body.error) {
-          location.reload()
+          location.reload();
           return;
         }
 
