@@ -51,14 +51,16 @@
             </ul>
           {/if}
         </div>
-        <!-- Selected Server -->
-        <div class="nav-item">
-          <span class="nav-link text-info">
-            <small
-              ><i class="fa-solid fa-circle-check me-1"></i>
-              {$selectedServer.name} ({$selectedServer.host}:{$selectedServer.port})</small>
-          </span>
-        </div>
+        {#if $selectedServer}
+          <!-- Selected Server -->
+          <div class="nav-item">
+            <span class="nav-link text-info">
+              <small
+                ><i class="fa-solid fa-circle-check me-1"></i>
+                {$selectedServer.name} ({$selectedServer.host}:{$selectedServer.port})</small>
+            </span>
+          </div>
+        {/if}
       </div>
     </div>
     <div class="col-4 d-flex justify-content-center">
