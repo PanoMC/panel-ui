@@ -55,7 +55,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba($color: $light, $alpha: 0.1);
+  background: rgba(var(--pano-light-rgb), 0.1);
   border-radius: 8px;
 }
 
@@ -65,7 +65,7 @@
 
 @keyframes readNotification {
   0% {
-    background-color: rgba($primary, 0.2);
+    background-color: rgba(var(--pano-primary-rgb), 0.2);
   }
   100% {
     background-color: transparent;
@@ -74,7 +74,7 @@
 
 .overlapping-avatar {
   position: relative;
-  border: 4px solid $white;
+  border: 4px solid var(--pano-white);
   border-radius: 50%;
   overflow: hidden;
 }
@@ -88,7 +88,7 @@
 }
 
 .markdown-renderer blockquote {
-  border-left: 5px $primary solid;
+  border-left: 5px var(--pano-primary) solid;
   padding-left: 8px;
 }
 
@@ -97,17 +97,17 @@
 }
 
 .markdown-renderer code {
-  background-color: $light;
+  background-color: var(--pano-light);
 }
 
 /* Hover effect */
 .drop-zone:hover {
-  background-color: $light;
+  background-color: var(--pano-light);
   transition: all 0.2s ease-in-out;
 }
 
 /* Drag effect */
 .drag-over {
-  border: 2px dashed $primary !important;
-  background-color: rgba($primary, 0.1) !important;
+  border: 2px dashed var(--pano-primary) !important;
+  background-color: rgba(var(--pano-primary-rgb), 0.1) !important;
 }
