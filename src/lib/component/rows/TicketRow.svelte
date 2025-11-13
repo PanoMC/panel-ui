@@ -19,14 +19,11 @@
     </a>
   </td>
   <td class="align-middle text-nowrap">
-    <a
-      title={$_("components.ticket-row.filter")}
-      href="{base}/tickets?categoryUrl={ticket.category.url}"
-      class="rounded focus-ring">
-      {ticket.category.title === "-"
-        ? $_("components.ticket-row.no-category")
-        : ticket.category.title}
-    </a>
+    <CategoryBadge
+      category={ticket.category}
+      pageType="tickets"
+      filterTitle={$_("components.ticket-row.filter")}
+      noCategoryText={$_("components.ticket-row.no-category")} />
   </td>
   <td class="align-middle text-nowrap">
     <a
@@ -62,6 +59,7 @@
   import { base } from "$app/paths";
 
   import Date from "$lib/component/Date.svelte";
+  import CategoryBadge from "$lib/component/badges/CategoryBadge.svelte";
   import TicketStatusBadge from "$lib/component/badges/TicketStatusBadge.svelte";
 
   export let ticket;

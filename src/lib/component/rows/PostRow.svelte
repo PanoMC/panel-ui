@@ -92,14 +92,11 @@
     </a>
   </td>
   <td class="align-middle text-nowrap">
-    <a
-      class="badge focus-ring {post.category.title === '-' ? 'text-bg-primary' : 'text-bg-secondary'}"
-      title={$_("components.post-row.filter")}
-      href="{base}/posts?categoryUrl={post.category.url}">
-      {post.category.title === "-"
-        ? $_("components.post-row.no-category")
-        : post.category.title}
-    </a>
+    <CategoryBadge
+      category={post.category}
+      pageType="posts"
+      filterTitle={$_("components.post-row.filter")}
+      noCategoryText={$_("components.post-row.no-category")} />
   </td>
   <td class="align-middle text-nowrap">{post.views}</td>
   <td class="align-middle">
@@ -127,6 +124,7 @@
   import { base } from "$app/paths";
 
   import Date from "$lib/component/Date.svelte";
+  import CategoryBadge from "$lib/component/badges/CategoryBadge.svelte";
 
   import tooltip from "$lib/tooltip.util.js";
   import { UI_URL } from "$lib/variables.js";
