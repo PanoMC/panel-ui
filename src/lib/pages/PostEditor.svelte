@@ -1,7 +1,10 @@
 <style>
   .thumbnail-wrapper {
     position: relative;
-    display: inline-block;
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
   }
 </style>
 
@@ -165,20 +168,22 @@
               class:drag-over={dropZoneActive}>
               {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
                 <div class="thumbnail-wrapper">
-                  <button
-                    type="button"
-                    class="btn border-0 shadow-none"
-                    use:tooltip={[
-                      $_("buttons.change"),
-                      { placement: "bottom" },
-                    ]}
-                    on:click={() => thumbnailInput.click()}>
-                    <img
-                      src={thumbnail || data.post.thumbnailUrl}
-                      class="img-fluid rounded"
-                      title={$_("pages.post-editor.small-image")}
-                      alt={$_("pages.post-editor.small-image")} />
-                  </button>
+                  <div class="ratio ratio-16x9 w-100 rounded overflow-hidden">
+                    <button
+                      type="button"
+                      class="btn border-0 shadow-none w-100 h-100 p-0 bg-transparent"
+                      use:tooltip={[
+                        $_("buttons.change"),
+                        { placement: "bottom" },
+                      ]}
+                      on:click={() => thumbnailInput.click()}>
+                      <img
+                        src={thumbnail || data.post.thumbnailUrl}
+                        class="img-fluid w-100 h-100 object-fit-cover"
+                        title={$_("pages.post-editor.small-image")}
+                        alt={$_("pages.post-editor.small-image")} />
+                    </button>
+                  </div>
 
                   {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
                     <button

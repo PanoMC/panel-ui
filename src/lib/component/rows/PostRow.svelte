@@ -1,3 +1,21 @@
+<style>
+  .post-row-thumbnail {
+    width: calc(40px * 16 / 9);
+    max-width: 100%;
+  }
+
+  .post-row-thumbnail .thumbnail-frame {
+    border-radius: var(--bs-border-radius);
+    overflow: hidden;
+  }
+
+  .post-row-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>
+
 <tr class:table-active={post.selected}>
   <th scope="row" class="align-middle text-center">
     <div class="dropdown position-static">
@@ -58,28 +76,23 @@
       </div>
     </div>
   </th>
-  <td>
-    {#if post.thumbnailUrl}
-      <a href="{base}/posts/detail/{post.id}" class="focus-ring">
-        <img
-          src={post.thumbnailUrl + "?preview=true"}
-          style="object-fit: contain;"
-          alt={post.title}
-          title={post.title}
-          width="50"
-          height="40" />
-      </a>
-    {:else}
-      <!-- DEFAULT, this is used as space aligning for others -->
-      <img
-        src=""
-        style="object-fit: contain;"
-        alt={post.title}
-        title={post.title}
-        width="50"
-        height="40"
-        hidden />
-    {/if}
+  <td class="align-middle">
+    <div class="post-row-thumbnail">
+      {#if post.thumbnailUrl}
+        <a
+          href="{base}/posts/detail/{post.id}"
+          class="focus-ring d-block">
+          <div class="ratio ratio-16x9 thumbnail-frame">
+            <img
+              src={post.thumbnailUrl + "?preview=true"}
+              alt={post.title}
+              title={post.title} />
+          </div>
+        </a>
+      {:else}
+        <div class="ratio ratio-16x9 thumbnail-frame"></div>
+      {/if}
+    </div>
   </td>
   <td class="align-middle text-nowrap">
     <a
