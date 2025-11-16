@@ -11,7 +11,7 @@
 
   .post-row-thumbnail img {
     width: 100%;
-    height: 100%;
+    height: 40px;
     object-fit: cover;
   }
 </style>
