@@ -66,7 +66,7 @@
     {#if licenses && licenses.length > 0}
       <div class="list-group">
         {#each licenses as license}
-          <details class="list-group-item mb-2 border rounded">
+          <details class="list-group-item">
             <summary class="d-flex justify-content-between align-items-center list-unstyled mb-0">
               <div class="d-flex align-items-center flex-wrap gap-2">
                 <i class="fa-solid fa-chevron-right me-2"></i>
