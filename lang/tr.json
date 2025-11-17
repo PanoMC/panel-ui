@@ -448,6 +448,7 @@
       },
       "settings": {
         "title": "Sunucu Ayarları",
+        "server-name": "Sunucu İsmi",
         "main-server": "Ana Sunucu",
         "already-main-server": "{serverName} ana sunucu",
         "make-main-server": "Ana Sunucu Yap",

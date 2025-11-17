@@ -448,6 +448,7 @@
       },
       "settings": {
         "title": "Server Settings",
+        "server-name": "Server Name",
         "main-server": "Main Server",
         "already-main-server": "{serverName} is main server",
         "make-main-server": "Set as Main Server",

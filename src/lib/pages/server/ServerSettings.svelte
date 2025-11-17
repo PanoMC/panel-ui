@@ -3,7 +3,22 @@
   <div class="card-header">Tercihler</div>
   <div class="card-body">
     <div class="row mb-3">
-      <label class="col-md-4 col-form-label" for="mainServer">
+      <label class="col-md-6 col-form-label" for="serverName">
+        {$_("pages.server.settings.server-name")}
+      </label>
+      <div class="col">
+        <div class="mb-3">
+          <input
+            type="text"
+            class="form-control"
+            name="serverName"
+            id="serverName"
+            placeholder={$_("pages.server.settings.server-name")} />
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="mainServer">
         {$_("pages.server.settings.main-server")}
         <small class="d-block"
           >{$_("pages.server.settings.main-server-info")}</small>
@@ -25,8 +40,8 @@
         {/if}
       </div>
     </div>
-    <div class="row">
-      <label class="col-md-4 col-form-label" for="removeServer">
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="removeServer">
         {$_("pages.server.settings.remove-server")}
       </label>
       <div class="col hstack gap-2">
@@ -40,6 +55,10 @@
         </button>
       </div>
     </div>
+
+    <button class="btn btn-secondary">
+      {$_("buttons.save")}
+    </button>
   </div>
 </div>
 
