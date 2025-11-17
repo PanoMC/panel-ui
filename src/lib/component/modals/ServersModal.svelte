@@ -47,15 +47,17 @@
               <div class="col">
                 <div class="ratio ratio-1x1">
                   <div class="card">
-                    <div class="card-header text-center">
+                    <div
+                      class="card-header d-flex justify-content-center align-items-center vstack gap-2">
                       <img
                         src={server.favicon
                           ? server.favicon
                           : base + "/assets/img/server-icon.png"}
-                        class="rounded d-block mx-auto mb-2 border"
+                        class="rounded border"
                         height="64"
                         width="64"
-                        alt="" />
+                        title={server.name}
+                        alt={server.name} />
 
                       <div>
                         {#if server.id === $mainServer.id}
@@ -63,15 +65,15 @@
                             class="fa fa-crown me-1 text-secondary"
                             title={$_("components.modals.servers.main-server")}>
                           </i>
-
-                          {server.name}
                         {/if}
+                        {server.name}
                       </div>
                     </div>
                     <div
                       class="card-body d-flex flex-column justify-content-center">
-                      <ul class="list-group text-center">
-                        <li class="list-group-item">
+                      <ul
+                        class="list-unstyled d-flex flex-column gap-2 text-center">
+                        <li>
                           <div
                             class="badge rounded-pill text-bg-primary"
                             class:text-bg-success={server.status === "ONLINE"}>
@@ -84,11 +86,11 @@
                             </div>
                           </div>
                         </li>
-                        <li
-                          class="list-group-item font-monospace user-select-all">
-                          {server.host}:{server.port}
+                        <li>
+                          <code class="user-select-all"
+                            >{server.host}:{server.port}</code>
                         </li>
-                        <li class="list-group-item">
+                        <li>
                           {server.playerCount}/{server.maxPlayerCount}
                         </li>
                       </ul>
