@@ -450,7 +450,7 @@
         "title": "Sunucu Ayarları",
         "main-server": "Ana Sunucu",
         "already-main-server": "{serverName} ana sunucu",
-        "make-main-server": "Ana Sunucu Belirle",
+        "make-main-server": "Ana Sunucu Yap",
         "main-server-info": "Websitede görüntülenecek sunucu bilgilerini ana sunucu belirler.",
         "remove-server": "Sunucuyu Kaldır",
         "disconnect": "Bağlantıyı Kes"

@@ -70,7 +70,7 @@
                     </div>
                     <div
                       class="card-body d-flex flex-column justify-content-center">
-                      <ul class="list-group list-group-flush text-center">
+                      <ul class="list-group text-center">
                         <li class="list-group-item">
                           <div
                             class="badge rounded-pill text-bg-primary"
@@ -100,7 +100,8 @@
                         data-bs-toggle="button"
                         class="btn"
                         class:btn-primary={$selectedServer?.id === server.id}
-                        class:btn-outline-primary={$selectedServer?.id !== server.id}
+                        class:btn-outline-primary={$selectedServer?.id !==
+                          server.id}
                         class:disabled={$selectedServer?.id === server.id}
                         on:click={() =>
                           $selectingServer ? {} : onSelect(server)}

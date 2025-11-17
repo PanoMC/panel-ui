@@ -21,7 +21,7 @@
           {$_('buttons.no')}
         </button>
         <button
-          class="btn btn-primary col-6 m-0"
+          class="btn btn-secondary col-6 m-0"
           type="button"
           class:disabled="{$loading}"
           on:click="{acceptServer}">
