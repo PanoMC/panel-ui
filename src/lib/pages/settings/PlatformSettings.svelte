@@ -5,24 +5,20 @@
       type="button"
       class="btn-close"
       data-bs-dismiss="alert"
-      aria-label="{$_('buttons.close')}"></button>
+      aria-label={$_("buttons.close")}></button>
     {$_("pages.settings.platform.connect-failed-alert")}
   </div>
 {/if}
 
-<PageActions middleClasses="d-lg-flex d-none">
-  <div class="hstack gap-2" slot="right">
-    <button
-      class="btn btn-danger"
-      on:click={onStopPanoClick}>
+<PageActions leftClasses="d-none" middleClasses="d-none" rightClasses="col-lg-12">
+  <div class="hstack gap-2 ms-lg-auto" slot="right">
+    <button class="btn btn-danger" on:click={onStopPanoClick}>
       <i class="fas fa-stop me-2"></i>
       {$_("buttons.stop-pano")}
     </button>
-    <button
-      class="btn btn-secondary"
-      on:click={onRestartPanoClick}>
+    <button class="btn btn-secondary" on:click={onRestartPanoClick}>
       <i class="fa-regular fa-arrows-rotate me-2"></i>
-      {$_('buttons.restart-pano')}
+      {$_("buttons.restart-pano")}
     </button>
   </div>
 </PageActions>
@@ -37,7 +33,8 @@
       <div class="row mb-3">
         <label class="col-md-6" for="platformId"
           >{$_("pages.settings.platform.platform-id")}</label>
-        <span class="col user-select-all font-monospace" id="platformId">{data.panoAccount.platformId}</span>
+        <span class="col user-select-all font-monospace" id="platformId"
+          >{data.panoAccount.platformId}</span>
       </div>
 
       <div class="row mb-3">
@@ -45,17 +42,12 @@
           >{$_("pages.settings.platform.user")}</label>
         <div class="col" id="panoAccountUsername">
           <a
-            href="{PANO_WEBSITE_URL + '/users/' + data.panoAccount.username}"
-            title="{$_('buttons.view')}"
+            href={PANO_WEBSITE_URL + "/users/" + data.panoAccount.username}
+            title={$_("buttons.view")}
             target="_blank">
-            <img
-              src="https://minotar.net/avatar/{data.panoAccount.username}"
-              width="20"
-              height="20"
-              class="rounded-circle animate__animated animate__zoomIn me-2"
-              alt="{data.panoAccount.username}" />{data.panoAccount
-              .username}<i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
-            </a>
+            @{data.panoAccount.username}
+            <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
+          </a>
         </div>
       </div>
     {/if}
@@ -70,18 +62,23 @@
       </label>
       <div class="col d-flex align-items-center" id="connectPanoAccount">
         {#if data.panoAccount}
-          <span class="text-muted">{maskEmail(data.panoAccount.email)}</span>
-          <button
-            type="button"
-            class="btn btn-sm btn-danger ms-2"
-            on:click="{onDisconnectClick}"
-            disabled="{disconnecting}">{$_("buttons.remove")}</button>
+          <div class="hstack gap-2">
+            <span class="badge text-bg-primary"
+              >{maskEmail(data.panoAccount.email)}</span>
+            <button
+              type="button"
+              class="btn btn-close"
+              title={$_("buttons.remove")}
+              aria-label={$_("buttons.remove")}
+              on:click={onDisconnectClick}
+              disabled={disconnecting}></button>
+          </div>
         {:else}
           <button
             type="button"
             class="btn btn-sm btn-primary lh-base"
-            on:click="{onConnectClick}"
-            disabled="{connecting}">
+            on:click={onConnectClick}
+            disabled={connecting}>
             <img
               src="{base}/assets/img/logo.svg"
               width="20"
@@ -117,7 +114,7 @@
             type="checkbox"
             role="switch"
             id="platformDevMode"
-            autocomplete="off"/>
+            autocomplete="off" />
         </div>
       </div>
     </div>
@@ -129,9 +126,9 @@
         <select
           class="form-control"
           id="platformLanguage"
-          bind:value="{data.locale}">
+          bind:value={data.locale}>
           {#each Object.keys($Languages) as language, index (language)}
-            <option value="{$Languages[language].code}"
+            <option value={$Languages[language].code}
               >{$Languages[language].name}</option>
           {/each}
         </select>
@@ -142,7 +139,9 @@
         {$_("pages.settings.platform.allow-user-locale-selection")}
         <br />
         <small class="text-muted">
-          {$_("pages.settings.platform.allow-user-locale-selection-description")}
+          {$_(
+            "pages.settings.platform.allow-user-locale-selection-description",
+          )}
         </small>
       </label>
       <div class="col d-flex align-items-center">
@@ -153,7 +152,7 @@
             role="switch"
             id="allowUserLocaleSelection"
             autocomplete="off"
-            bind:checked={data.allowUserLocaleSelection}/>
+            bind:checked={data.allowUserLocaleSelection} />
         </div>
       </div>
     </div>
@@ -165,22 +164,22 @@
       <div class="col-md-6">
         <select
           class="form-control"
-          bind:value="{data.updatePeriod}"
+          bind:value={data.updatePeriod}
           id="updatePeriod">
-          <option value="{UpdatePeriod.NEVER}"
+          <option value={UpdatePeriod.NEVER}
             >{$_(
               "pages.settings.platform.inputs.check-auto-updates.never",
             )}</option>
-          <option value="{UpdatePeriod.ONCE_PER_DAY}"
+          <option value={UpdatePeriod.ONCE_PER_DAY}
             >{$_(
               "pages.settings.platform.inputs.check-auto-updates.once-in-a-day",
             )}</option>
-          <option value="{UpdatePeriod.ONCE_PER_WEEK}"
+          <option value={UpdatePeriod.ONCE_PER_WEEK}
             >{$_(
               "pages.settings.platform.inputs.check-auto-updates.once-in-a-week",
             )}
           </option>
-          <option value="{UpdatePeriod.ONCE_PER_MONTH}"
+          <option value={UpdatePeriod.ONCE_PER_MONTH}
             >{$_(
               "pages.settings.platform.inputs.check-auto-updates.once-in-a-month",
             )}</option>
@@ -190,9 +189,9 @@
 
     <button
       class="btn btn-secondary"
-      class:disabled="{savePreferencesLoading || preferencesSaveDisabled}"
-      aria-disabled="{savePreferencesLoading || preferencesSaveDisabled}"
-      on:click="{onSavePreferencesClick}"
+      class:disabled={savePreferencesLoading || preferencesSaveDisabled}
+      aria-disabled={savePreferencesLoading || preferencesSaveDisabled}
+      on:click={onSavePreferencesClick}
       >{$_("buttons.save")}
     </button>
   </div>
@@ -219,14 +218,14 @@
         class="form-check-input"
         type="checkbox"
         id="smtpToggle"
-        bind:checked="{$siteInfo.emailEnabled}"
-        on:change="{onToggleSmtp}"
-        disabled="{toggleSmtpLoading}" />
+        bind:checked={$siteInfo.emailEnabled}
+        on:change={onToggleSmtp}
+        disabled={toggleSmtpLoading} />
       <label class="form-check-label" for="smtpToggle"
         >{$_("pages.settings.platform.smtp-settings")}</label>
     </div>
   </div>
-  <div class="card-body" class:opacity-50="{smtpDisabled}">
+  <div class="card-body" class:opacity-50={smtpDisabled}>
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="mailUsername"
         >{$_("pages.settings.platform.smtp.username")}</label>
@@ -236,8 +235,8 @@
           id="mailUsername"
           type="text"
           placeholder="no-reply"
-          bind:value="{data.email.username}"
-          disabled="{smtpDisabled}" />
+          bind:value={data.email.username}
+          disabled={smtpDisabled} />
       </div>
     </div>
     <div class="row mb-3">
@@ -248,9 +247,9 @@
           class="form-control"
           id="mailUserPassword"
           placeholder="****************"
-          bind:value="{data.email.password}"
+          bind:value={data.email.password}
           type="password"
-          disabled="{smtpDisabled}" />
+          disabled={smtpDisabled} />
       </div>
     </div>
     <div class="row mb-3">
@@ -264,9 +263,9 @@
             type="checkbox"
             name="useSSLCheck"
             id="useSSLCheck"
-            aria-checked="{data.email.ssl}"
-            bind:checked="{data.email.ssl}"
-            disabled="{smtpDisabled}" />
+            aria-checked={data.email.ssl}
+            bind:checked={data.email.ssl}
+            disabled={smtpDisabled} />
         </div>
       </div>
     </div>
@@ -277,8 +276,8 @@
         <select
           class="form-select"
           id="port"
-          bind:value="{data.email.starttls}"
-          disabled="{smtpDisabled}">
+          bind:value={data.email.starttls}
+          disabled={smtpDisabled}>
           <option value="REQUIRED">REQUIRED</option>
           <option value="OPTIONAL">OPTIONAL</option>
           <option value="DISABLED">DISABLED</option>
@@ -295,8 +294,8 @@
           id="senderAddress"
           type="text"
           placeholder="no-reply@forexample.com"
-          bind:value="{data.email.sender}"
-          disabled="{smtpDisabled}" />
+          bind:value={data.email.sender}
+          disabled={smtpDisabled} />
       </div>
     </div>
 
@@ -309,8 +308,8 @@
           id="hostAddress"
           type="text"
           placeholder="smtp.forexample.com"
-          bind:value="{data.email.hostname}"
-          disabled="{smtpDisabled}" />
+          bind:value={data.email.hostname}
+          disabled={smtpDisabled} />
       </div>
     </div>
     <div class="row mb-3">
@@ -322,8 +321,8 @@
           id="port"
           placeholder="465"
           type="number"
-          bind:value="{data.email.port}"
-          disabled="{smtpDisabled}" />
+          bind:value={data.email.port}
+          disabled={smtpDisabled} />
       </div>
     </div>
 
@@ -333,8 +332,8 @@
       <div class="col-md-6">
         <select
           class="form-select"
-          bind:value="{data.email.authMethods}"
-          disabled="{smtpDisabled}">
+          bind:value={data.email.authMethods}
+          disabled={smtpDisabled}>
           <option value="PLAIN">PLAIN</option>
           <option value=""></option>
         </select>
@@ -343,15 +342,15 @@
 
     <button
       class="btn btn-secondary"
-      on:click="{onSaveSmtpClick}"
-      disabled="{saveEmailLoading || !mailValidated || smtpDisabled}"
+      on:click={onSaveSmtpClick}
+      disabled={saveEmailLoading || !mailValidated || smtpDisabled}
       >{$_(!$siteInfo.emailEnabled ? "buttons.enable" : "buttons.save")}
     </button>
     {#if !mailValidated && !emailSaveDisabled}
       <button
         class="btn btn-outline-primary"
-        on:click="{onValidateEmailClick}"
-        disabled="{saveEmailLoading || smtpDisabled}"
+        on:click={onValidateEmailClick}
+        disabled={saveEmailLoading || smtpDisabled}
         >{$_("buttons.validate")}
         {#if saveEmailLoading}
           <span
@@ -541,7 +540,9 @@
         handler: async (body, reject) => {
           if (body.error) {
             if (body.error === "PANO_CONNECT_FAILED") {
-              await showToast("components.toasts.pano-account-disconnect-fail-cant-connect");
+              await showToast(
+                "components.toasts.pano-account-disconnect-fail-cant-connect",
+              );
             } else {
               await showToast("components.toasts.pano-account-disconnect-fail");
             }
@@ -745,7 +746,7 @@
             smtpDisabled = !event.target.checked;
           },
         });
-      })
+      });
 
       return;
     }
