@@ -51,7 +51,7 @@
             </ul>
           {/if}
         </div>
-        {#if $selectedServer}
+        {#if $selectedServer && showSelectedServer}
           <!-- Selected Server -->
           <div class="nav-item">
             <span class="nav-link">
@@ -207,6 +207,7 @@
   import { sanitize } from "@jill64/universal-sanitizer";
 
   import { base } from "$app/paths";
+  import { page } from "$app/stores";
 
   import ApiUtil from "$lib/api.util";
   import {
@@ -220,6 +221,9 @@
 
   import { onNotificationClick } from "$lib/NotificationManager.js";
   import NoContent from "$lib/component/NoContent.svelte";
+  import { hasPermission, Permissions } from "$lib/auth.util.js";
+  import SiteNavigationMenu from "$lib/component/sidebar/SiteNavigationMenu.svelte";
+  import ServerNavigationMenu from "$lib/component/sidebar/ServerNavigationMenu.svelte";
 
   const selectedServer = getContext("selectedServer");
   const pageTitle = getContext("pageTitle");
@@ -228,6 +232,7 @@
   const isSidebarOpen = getContext("isSidebarOpen");
   const session = getContext("session");
   const panelTheme = getContext("panelTheme");
+  const sidebarTabsState = getContext("sidebarTabsState");
 
   const panelThemes = ["light", "dark", "copper"];
 
@@ -237,6 +242,15 @@
   let interval;
   let showingQuickNotification;
   let selectingPanelTheme;
+
+  let showSelectedServer;
+
+  $: isServerPath = $page.url.pathname.startsWith((base || "") + "/server");
+
+  $: showSelectedServer = isServerPath || !(
+    $sidebarTabsState === "website" ||
+    !hasPermission(Permissions.MANAGE_SERVERS)
+  );
 
   function onSideBarCollapseClick() {
     toggleSidebar(isSidebarOpen);
@@ -361,6 +375,8 @@
   onDestroy(() => {
     clearInterval(interval);
   });
+
+  // herhangi bir manuel abonelik yok
 
   function sanitizeObject(obj) {
     return Object.keys(obj).reduce((sanitizedObj, key) => {
