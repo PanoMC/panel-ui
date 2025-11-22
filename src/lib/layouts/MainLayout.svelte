@@ -205,6 +205,7 @@
   const siteInfo = writable(data.siteInfo);
   const showSplash = writable(true);
   const platformUpdating = writable(false);
+  const platformRestarting = writable(false);
   const panelTheme = writable(data.session.basicData.panelTheme || "dark");
 
   const pageTitle = writable(null);
@@ -250,6 +251,7 @@
   setContext("isSidebarOpen", isSidebarOpen);
   setContext("siteInfo", siteInfo);
   setContext("platformUpdating", platformUpdating);
+  setContext("platformRestarting", platformRestarting);
   setContext("panelTheme", panelTheme);
 
   $: title = $pageTitle
@@ -304,7 +306,7 @@
   onDestroy(
     networkErrorCallbacks.subscribe((value) => {
       if (!$showSplash && value.length !== 0) {
-        if ($platformUpdating) {
+        if ($platformUpdating || $platformRestarting) {
           return
         }
 

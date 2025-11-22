@@ -7,7 +7,7 @@
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
-      <form>
+      <form on:submit|preventDefault={sendDeleteServer}>
         <div class="modal-body text-center">
           <div class="pb-3">
             <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"

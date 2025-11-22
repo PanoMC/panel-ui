@@ -59,7 +59,9 @@
     "try-again": "Try Again",
     "find": "Find...",
     "mc-plugin": "MC Plugin",
-    "see-docs": "See Docs"
+    "see-docs": "See Docs",
+    "stop-pano": "Stop Pano",
+    "restart-pano": "Restart Pano"
   },
   "pages": {
     "themes": {
@@ -662,6 +664,14 @@
       },
       "confirm-stop-theme": {
         "title": "Are you sure to stop current active theme? This will cause website unreachable!"
+      },
+      "confirm-stop-pano": {
+        "title": "Are you sure to stop Pano? This will cause the website to be unreachable!",
+        "account-password": "Account Password"
+      },
+      "confirm-restart-pano": {
+        "title": "Are you sure to restart Pano? This will temporarily make the website unreachable!",
+        "account-password": "Account Password"
       },
       "confirm-remove-theme": {
         "title": "Are you sure to remove this theme?",

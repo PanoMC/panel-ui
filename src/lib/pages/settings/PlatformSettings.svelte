@@ -10,6 +10,23 @@
   </div>
 {/if}
 
+<PageActions middleClasses="d-lg-flex d-none">
+  <div class="hstack gap-2" slot="right">
+    <button
+      class="btn btn-danger"
+      on:click={onStopPanoClick}>
+      <i class="fas fa-stop me-2"></i>
+      {$_("buttons.stop-pano")}
+    </button>
+    <button
+      class="btn btn-secondary"
+      on:click={onRestartPanoClick}>
+      <i class="fa-regular fa-arrows-rotate me-2"></i>
+      {$_('buttons.restart-pano')}
+    </button>
+  </div>
+</PageActions>
+
 <!-- Platform Settings Sub Page -->
 <div class="card">
   <div class="card-header">
@@ -348,6 +365,8 @@
 
 <ConfirmRemovePanoAccountModal />
 <ConfirmDisableEmailModal />
+<ConfirmStopPanoModal />
+<ConfirmRestartPanoModal />
 
 <script context="module">
   import { base } from "$app/paths";
@@ -415,6 +434,13 @@
   import ConfirmDisableEmailModal, {
     show as showConfirmDisableEmailModal,
   } from "$lib/component/modals/ConfirmDisableEmailModal.svelte";
+  import ConfirmStopPanoModal, {
+    show as showConfirmStopPanoModal,
+  } from "$lib/component/modals/ConfirmStopPanoModal.svelte";
+  import ConfirmRestartPanoModal, {
+    show as showConfirmRestartPanoModal,
+  } from "$lib/component/modals/ConfirmRestartPanoModal.svelte";
+  import PageActions from "$lib/component/PageActions.svelte";
 
   const pageTitle = getContext("pageTitle");
   const siteInfo = getContext("siteInfo");
@@ -725,5 +751,13 @@
     }
 
     toggleSmtpLoading = false;
+  }
+
+  function onStopPanoClick() {
+    showConfirmStopPanoModal();
+  }
+
+  function onRestartPanoClick() {
+    showConfirmRestartPanoModal();
   }
 </script>

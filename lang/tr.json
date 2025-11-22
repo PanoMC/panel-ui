@@ -59,7 +59,9 @@
     "try-again": "Tekrar Dene",
     "find": "Bul...",
     "mc-plugin": "MC Eklentisi",
-    "see-docs": "Dokümantasyona Bak"
+    "see-docs": "Dokümantasyona Bak",
+    "stop-pano": "Pano'yu Durdur",
+    "restart-pano": "Pano'yu Yeniden Başlat"
   },
   "pages": {
     "themes": {
@@ -663,6 +665,14 @@
       },
       "confirm-stop-theme": {
         "title": "Mevcut aktif temayı durdurmak istediğinize emin misiniz? Bu, sitenin erişilemez olmasına neden olacaktır!"
+      },
+      "confirm-stop-pano": {
+        "title": "Pano'yu durdurmak istediğinize emin misiniz? Bu, sitenin erişilemez olmasına neden olacaktır!",
+        "account-password": "Hesap Şifresi"
+      },
+      "confirm-restart-pano": {
+        "title": "Pano'yu yeniden başlatmak istediğinize emin misiniz? Bu, sitenin geçici olarak erişilemez olmasına neden olacaktır!",
+        "account-password": "Hesap Şifresi"
       },
       "confirm-remove-theme": {
         "title": "Bu temayı silmek istediğinizden emin misiniz?",
