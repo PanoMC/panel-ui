@@ -1055,7 +1055,9 @@
     "ENABLED_PLUGIN": "**{username}** enabled {pluginId} plugin.",
     "RELOADED_THEMES": "**{username}** reloaded themes.",
     "STARTED_CURRENT_THEME": "**{username}** started current {themeId} theme.",
-    "STOPPED_CURRENT_THEME": "**{username}** stopped current {themeId} theme."
+    "STOPPED_CURRENT_THEME": "**{username}** stopped current {themeId} theme.",
+    "STOPPED_PANO": "**{username}** stopped Pano.",
+    "RESTARTED_PANO": "**{username}** restarted Pano."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> sent a message in ticket (<b>#{id}</b>).",

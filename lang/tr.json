@@ -1056,7 +1056,9 @@
     "ENABLED_PLUGIN": "**{username}** {pluginId} eklentisini etkinleştirdi.",
     "RELOADED_THEMES": "**{username}** temaları yeniden yükledi.",
     "STARTED_CURRENT_THEME": "**{username}** mevcut {themeId} temasını başlattı.",
-    "STOPPED_CURRENT_THEME": "**{username}** mevcut {themeId} temasını durdurdu."
+    "STOPPED_CURRENT_THEME": "**{username}** mevcut {themeId} temasını durdurdu.",
+    "STOPPED_PANO": "**{username}** Pano'yu durdurdu.",
+    "RESTARTED_PANO": "**{username}** Pano'yu yeniden başlattı."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE" : "<b>{username}</b> destek talebinde mesaj gönderdi (<b>#{id}</b>).",
