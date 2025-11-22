@@ -545,6 +545,7 @@
       "translations": "Çeviriler"
     },
     "navbar": {
+      "selected-server": "Seçili Sunucu",
       "navbar-toggle-tooltip": "Menüyü Aç/Kapa",
       "notifications": "Bildirimler",
       "panel-theme": "Panel Teması",

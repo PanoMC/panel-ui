@@ -54,10 +54,14 @@
         {#if $selectedServer}
           <!-- Selected Server -->
           <div class="nav-item">
-            <span class="nav-link text-info">
-              <small
-                ><i class="fa-solid fa-circle-check me-1"></i>
-                {$selectedServer.name} ({$selectedServer.host}:{$selectedServer.port})</small>
+            <span class="nav-link">
+              <i
+                class="fa-solid fa-server"
+                use:tooltip={[
+                  `${$_("components.navbar.selected-server")}: ${$selectedServer.name} (${$selectedServer.host}:${$selectedServer.port})`,
+                  { placement: "bottom" },
+                ]}>
+              </i>
             </span>
           </div>
         {/if}
@@ -196,6 +200,7 @@
 <script>
   import { onDestroy, onMount, getContext } from "svelte";
   import { _ } from "svelte-i18n";
+  import tooltip from "$lib/tooltip.util";
 
   import { formatDistanceToNow } from "date-fns";
   import * as locales from "date-fns/locale";
