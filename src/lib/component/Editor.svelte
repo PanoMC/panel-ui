@@ -170,10 +170,8 @@
 
   import { Editor } from "@tiptap/core";
   import StarterKit from "@tiptap/starter-kit";
-  import Underline from "@tiptap/extension-underline";
-  import Link from "@tiptap/extension-link";
   import Image from "@tiptap/extension-image";
-  import TextStyle from "@tiptap/extension-text-style";
+  import { TextStyleKit } from "@tiptap/extension-text-style";
   import Color from "@tiptap/extension-color";
 
   import tooltip from "$lib/tooltip.util";
@@ -229,12 +227,24 @@
       element: element,
       extensions: [
         StarterKit,
-        Underline,
-        Link.configure({
-          openOnClick: false,
-        }),
         Image,
-        TextStyle,
+        TextStyleKit.configure({
+          backgroundColor: {
+            types: ['textStyle'],
+          },
+          color: {
+            types: ['textStyle'],
+          },
+          fontFamily: {
+            types: ['textStyle'],
+          },
+          fontSize: {
+            types: ['textStyle'],
+          },
+          lineHeight: {
+            types: ['textStyle'],
+          },
+        }),
         Color,
       ],
       content: content,
