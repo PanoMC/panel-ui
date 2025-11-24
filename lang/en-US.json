@@ -506,7 +506,18 @@
       "email-verified": "Verified",
       "email-not-verified": "Not Verified",
       "last-entrance": "Last Entrance",
-      "register-date": "Register Date"
+      "register-date": "Register Date",
+      "ban-history": "Ban History",
+      "permanent-ban": "Permanent Ban",
+      "no-reason": "No reason specified",
+      "email-notified": "Email notification sent",
+      "email-not-notified": "Email notification not sent",
+      "system-ban": "System",
+      "ban-duration": "Duration",
+      "ban-reason": "Reason",
+      "email-notification": "Email Notification",
+      "banned-by": "Banned By",
+      "banned-at": "Banned At"
     }
   },
   "components": {
@@ -730,7 +741,26 @@
       },
       "confirm-ban-player": {
         "title": "Are you sure you want to ban this player?",
-        "notify-with-email": "Notify by email"
+        "notify-with-email": "Notify by email",
+        "ban-message": "Ban Message",
+        "ban-message-placeholder": "Enter the ban message to show to the player",
+        "ban-duration": "Ban Duration",
+        "permanent-ban": "Permanent",
+        "custom-duration": "Duration",
+        "custom-datetime": "Custom",
+        "select-duration": "Select Duration",
+        "15-minutes": "15 Minutes",
+        "30-minutes": "30 Minutes",
+        "1-hour": "1 Hour",
+        "3-hours": "3 Hours",
+        "6-hours": "6 Hours",
+        "12-hours": "12 Hours",
+        "1-day": "1 Day",
+        "3-days": "3 Days",
+        "1-week": "1 Week",
+        "1-month": "1 Month",
+        "6-months": "6 Months",
+        "1-year": "1 Year"
       },
       "confirm-close-ticket": {
         "title-single": "Are you sure you want to close this ticket?",

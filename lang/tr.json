@@ -506,7 +506,18 @@
       "email-verified": "Doğrulandı",
       "email-not-verified": "Doğrulanmadı",
       "last-entrance": "Son Giriş",
-      "register-date": "Kayıt"
+      "register-date": "Kayıt",
+      "ban-history": "Ban Geçmişi",
+      "permanent-ban": "Kalıcı Ban",
+      "no-reason": "Sebep belirtilmemiş",
+      "email-notified": "E-posta bildirimi gönderildi",
+      "email-not-notified": "E-posta bildirimi gönderilmedi",
+      "system-ban": "Sistem",
+      "ban-duration": "Süresi",
+      "ban-reason": "Sebep",
+      "email-notification": "E-posta Bildirimi",
+      "banned-by": "Banlayan",
+      "banned-at": "Tarih"
     }
   },
   "components": {
@@ -731,7 +742,26 @@
       },
       "confirm-ban-player": {
         "title": "Bu oyuncuyu yasaklamak istediğinizden emin misiniz?",
-        "notify-with-email": "E-posta ile bilgilendir"
+        "notify-with-email": "E-posta ile bilgilendir",
+        "ban-message": "Ban Mesajı",
+        "ban-message-placeholder": "Oyuncuya gösterilecek ban mesajını girin",
+        "ban-duration": "Ban Süresi",
+        "permanent-ban": "Kalıcı",
+        "custom-duration": "Süre",
+        "custom-datetime": "Özel",
+        "select-duration": "Süre Seçin",
+        "15-minutes": "15 Dakika",
+        "30-minutes": "30 Dakika",
+        "1-hour": "1 Saat",
+        "3-hours": "3 Saat",
+        "6-hours": "6 Saat",
+        "12-hours": "12 Saat",
+        "1-day": "1 Gün",
+        "3-days": "3 Gün",
+        "1-week": "1 Hafta",
+        "1-month": "1 Ay",
+        "6-months": "6 Ay",
+        "1-year": "1 Yıl"
       },
       "confirm-close-ticket": {
         "title-single": "Bu talebi kapatmak istediğinizden emin misiniz?",
