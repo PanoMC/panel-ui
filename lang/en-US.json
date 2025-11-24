@@ -963,7 +963,9 @@
       "resource-update-success": "\"{id}\" updated successfully.",
       "resource-update-failed": "Failed to update \"{id}\".",
       "platform-update-success": "Updated platform successfully.",
-      "platform-update-failed": "Failed to update platform."
+      "platform-update-failed": "Failed to update platform.",
+      "hash-copied": "Hash data copied.",
+      "hash-copy-failed": "Failed to copy hash data."
     }
   },
   "page-error": {

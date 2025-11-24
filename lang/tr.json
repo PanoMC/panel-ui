@@ -964,7 +964,9 @@
       "resource-update-success": "\"{id}\" başarıyla güncellendi.",
       "resource-update-failed": "\"{id}\" güncellenirken hata oluştu.",
       "platform-update-success": "Platform başarıyla güncellendi.",
-      "platform-update-failed": "Platform güncellenirken hata oluştu."
+      "platform-update-failed": "Platform güncellenirken hata oluştu.",
+      "hash-copied": "Hash verisi kopyalandı.",
+      "hash-copy-failed": "Hash verisi kopyalanamadı."
     }
   },
   "page-error": {

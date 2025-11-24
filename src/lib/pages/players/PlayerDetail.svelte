@@ -3,8 +3,8 @@
   <PageActions middleClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <a slot="left" class="btn btn-link" role="button" href="{base}/players">
-      <i class="fas fa-arrow-left me-2"></i>
-      {$_("buttons.players")}
+      <i class="fas fa-arrow-left"></i>
+      <span class="d-lg-inline d-none ms-2">{$_("buttons.players")}</span>
     </a>
 
     <div slot="right" class="hstack gap-2">

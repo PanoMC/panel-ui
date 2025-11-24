@@ -45,15 +45,9 @@
             <div class="col-md-auto">
               <!-- Logo -->
               <div
-                class="d-inline-flex rounded justify-content-start align-items-start bg-primary ps-2 pt-2"
+                class="d-inline-flex rounded justify-content-center align-items-center bg-primary"
                 style="width: 64px; height: 64px;">
-                <img
-                  style="transform: rotate(-0.05turn);"
-                  src={base + "/assets/img/logo.svg"}
-                  width="auto"
-                  height="60"
-                  alt="Pano"
-                  title="Pano" />
+                <i class="fas fa-box fa-2x text-white" title="Pano"></i>
               </div>
             </div>
             <div class="col">
@@ -82,7 +76,7 @@
                       </div>
                     </div>
 
-                    <div class="d-flex flex-wrap gap-2 text-muted small mb-0">
+                    <div class="d-flex flex-wrap gap-2 small mb-0">
                       <div>
                         <i class="fas fa-database me-1"></i>
                         {formatBytes(data.platformUpdate.size)}
@@ -91,28 +85,55 @@
                         <i class="fas fa-calendar me-1"></i>
                         <Date time={data.platformUpdate.releaseDate} />
                       </div>
-                      <!-- Hash -->
-                      <div class="user-select-all font-monospace">
-                        <i class="fas fa-fingerprint me-1"></i>
-                        <code class="text-break"
-                          >{data.platformUpdate.hash}</code>
-                      </div>
                     </div>
                   </div>
                   <!-- Right: Actions -->
                   <div class="d-flex align-items-center gap-2">
-                    <button
-                      class="btn btn-sm btn-secondary d-flex align-items-center gap-1"
-                      on:click={onUpdatePlatformClick}
-                      class:disabled={loading ||
-                        $platformUpdating ||
-                        inProgressResource ||
-                        updatingAll}>
-                      {$_("buttons.update")}
-                      {#if $platformUpdating}
-                        <i class="fa-solid fa-spinner fa-spin"></i>
-                      {/if}
-                    </button>
+                    <div class="btn-group" role="group">
+                      <button
+                        class="btn btn-sm btn-secondary d-flex align-items-center gap-1"
+                        on:click={onUpdatePlatformClick}
+                        class:disabled={loading ||
+                          $platformUpdating ||
+                          inProgressResource ||
+                          updatingAll}>
+                        {$_("buttons.update")}
+                        {#if $platformUpdating}
+                          <i class="fa-solid fa-spinner fa-spin"></i>
+                        {/if}
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split"
+                        class:disabled={loading ||
+                          $platformUpdating ||
+                          inProgressResource ||
+                          updatingAll}
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                          <button
+                            class="dropdown-item"
+                            on:click={() =>
+                              showChangelogModal(
+                                data.platformUpdate.changelog,
+                              )}>
+                            {$_("pages.settings.updates.changelog")}
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            class="dropdown-item"
+                            on:click={() =>
+                              copyHashToClipboard(data.platformUpdate.hash)}>
+                            Hash'i Kopyala
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
 
@@ -140,7 +161,7 @@
                     </div>
                   </div>
 
-                  <p class="text-muted small mb-0" in:fade out:fade>
+                  <p class="small mb-0" in:fade out:fade>
                     {#if platformUpdateError}
                       <span class="text-danger"
                         >{$_(
@@ -162,15 +183,6 @@
                     {/if}
                   </p>
                 {/if}
-
-                <!-- Changelog -->
-                <details class="mt-3">
-                  <summary class="fw-bold link-primary"
-                    >{$_("pages.settings.updates.changelog")}</summary>
-                  <div class="pt-2 markdown-renderer">
-                    <MarkdownRenderer content={data.platformUpdate.changelog} />
-                  </div>
-                </details>
               </div>
             </div>
           </div>
@@ -219,21 +231,17 @@
             <div class="row gx-3">
               <div class="col-md-auto">
                 <!-- Logo -->
-                <div
-                  class="d-inline-flex rounded justify-content-start align-items-start"
-                  style="width: 64px; height: 64px;">
-                  <a
-                    href={`${PANO_WEBSITE_URL}/${update.type === "PLUGIN" ? "addons" : "themes"}/${update.id}`}
-                    target="_blank">
-                    <img
-                      width="64"
-                      height="64"
-                      class="rounded"
-                      src={`/api/panel/updates/icon/${update.iconFileName}`}
-                      title={update.id}
-                      alt={update.id} />
-                  </a>
-                </div>
+                <a
+                  href={`${PANO_WEBSITE_URL}/${update.type === "PLUGIN" ? "addons" : "themes"}/${update.id}`}
+                  target="_blank">
+                  <img
+                    width="64"
+                    height="64"
+                    class="rounded"
+                    src={`/api/panel/updates/icon/${update.iconFileName}`}
+                    title={update.id}
+                    alt={update.id} />
+                </a>
               </div>
               <div class="col">
                 <div class="flex-grow-1 w-100">
@@ -272,7 +280,7 @@
                         </div>
                       </div>
 
-                      <div class="d-flex flex-wrap gap-2 text-muted small mb-0">
+                      <div class="d-flex flex-wrap gap-2 small mb-0">
                         <div>
                           <i class="fas fa-database me-1"></i>
                           {formatBytes(update.size)}
@@ -281,26 +289,52 @@
                           <i class="fas fa-calendar me-1"></i>
                           <Date time={update.createdAt} />
                         </div>
-                        <!-- Hash -->
-                        <div class="user-select-all font-monospace">
-                          <i class="fas fa-fingerprint me-1"></i>
-                          <code class="text-break">sha256:{update.hash}</code>
-                        </div>
                       </div>
                     </div>
                     <!-- Right: Actions -->
-                    <button
-                      class="btn btn-sm btn-secondary"
-                      class:disabled={loading ||
-                        $platformUpdating ||
-                        inProgressResource ||
-                        updatingAll}
-                      on:click={() => onUpdateResourceClick(update)}>
-                      {$_("buttons.update")}
-                      {#if inProgressResource?.id === update.id}
-                        <i class="fa-solid fa-spinner fa-spin"></i>
-                      {/if}
-                    </button>
+                    <div class="btn-group" role="group">
+                      <button
+                        class="btn btn-sm btn-secondary"
+                        class:disabled={loading ||
+                          $platformUpdating ||
+                          inProgressResource ||
+                          updatingAll}
+                        on:click={() => onUpdateResourceClick(update)}>
+                        {$_("buttons.update")}
+                        {#if inProgressResource?.id === update.id}
+                          <i class="fa-solid fa-spinner fa-spin"></i>
+                        {/if}
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split"
+                        class:disabled={loading ||
+                          $platformUpdating ||
+                          inProgressResource ||
+                          updatingAll}
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                          <button
+                            class="dropdown-item"
+                            on:click={() =>
+                              showChangelogModal(update.changelog)}>
+                            {$_("pages.settings.updates.changelog")}
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            class="dropdown-item"
+                            on:click={() =>
+                              copyHashToClipboard(`sha256:${update.hash}`)}>
+                            Hash'i Kopyala
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
 
                   <!-- Progress -->
@@ -327,7 +361,7 @@
                       </div>
                     </div>
 
-                    <p class="text-muted small mb-0" in:fade out:fade>
+                    <p class="small mb-0" in:fade out:fade>
                       {#if resourceUpdateError}
                         <span class="text-danger"
                           >{$_(
@@ -350,16 +384,6 @@
                       {/if}
                     </p>
                   {/if}
-
-                  <!-- Changelog -->
-                  <details class="mt-3">
-                    <summary class="fw-bold link-primary">
-                      {$_("pages.settings.updates.changelog")}
-                    </summary>
-                    <div class="pt-2 markdown-renderer">
-                      <MarkdownRenderer content={update.changelog} />
-                    </div>
-                  </details>
                 </div>
               </div>
             </div>
@@ -373,6 +397,7 @@
 <ConfirmUpdatePlatformModal />
 <ConfirmUpdateResourceModal />
 <ConfirmUpdateResourcesModal />
+<ChangelogModal />
 
 <script context="module">
   import ApiUtil, { buildQueryParams } from "$lib/api.util";
@@ -430,6 +455,10 @@
     show as showUpdateResourcesModal,
   } from "$lib/component/modals/ConfirmUpdateResourcesModal.svelte";
 
+  import ChangelogModal, {
+    show as showChangelogModal,
+  } from "$lib/component/modals/ChangelogModal.svelte";
+
   export let data;
 
   const pageTitle = getContext("pageTitle");
@@ -464,6 +493,16 @@
 
   function delay(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  async function copyHashToClipboard(hash) {
+    try {
+      await navigator.clipboard.writeText(hash);
+      await showToast("components.toasts.hash-copied");
+    } catch (err) {
+      console.error("Failed to copy hash:", err);
+      await showToast("components.toasts.hash-copy-failed");
+    }
   }
 
   async function isPanoHealthy() {
