@@ -134,11 +134,11 @@
     const { selectedServer } = parentData;
 
     const response = await ApiUtil.get({
-      path: `/api/panel/servers/${selectedServer.id}/settings`,
+      path: `/api/panel/servers/${selectedServer.id}`,
       request: event,
     });
 
-    const serverSettings = response.data
+    const serverSettings = response.server.settings
 
     return {serverSettings, serverSettingsOriginal: structuredClone(serverSettings)}
   }
@@ -165,12 +165,14 @@
 
     ApiUtil.put({
       path: `/api/panel/servers/${data.selectedServer.id}/settings`,
-      body: serverSettings,
+      body: { settings: serverSettings },
       handler: async (body, reject) => {
         saving = false;
 
         if (body.result !== "ok") {
           reject()
+
+          return
         }
 
         serverSettingsOriginal = structuredClone(serverSettings)

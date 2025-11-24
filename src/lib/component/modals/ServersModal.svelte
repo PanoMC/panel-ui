@@ -56,8 +56,8 @@
                         class="rounded border"
                         height="64"
                         width="64"
-                        title={server.name}
-                        alt={server.name} />
+                        title={server.customName || server.name}
+                        alt={server.customName || server.name} />
 
                       <div>
                         {#if server.id === $mainServer.id}
@@ -66,7 +66,7 @@
                             title={$_("components.modals.servers.main-server")}>
                           </i>
                         {/if}
-                        {server.name}
+                        {server.customName || server.name}
                       </div>
                     </div>
                     <div
@@ -212,7 +212,7 @@
           await invalidateAll();
           hide();
           await showToast("components.toasts.server-selected", {
-            name: server.name,
+            name: server.customName || server.name,
           });
 
           return;

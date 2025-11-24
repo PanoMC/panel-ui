@@ -13,6 +13,8 @@
             class="form-control"
             name="serverName"
             id="serverName"
+            bind:value="{server.customName}"
+            on:input={onNameChange}
             placeholder={$_("pages.server.settings.server-name")} />
         </div>
       </div>
@@ -28,7 +30,7 @@
           <button class="btn btn-secondary btn-sm disabled" disabled>
             <i class="fa-solid fa-check me-1"></i>
             {$_("pages.server.settings.already-main-server", {
-              values: { serverName: $selectedServer.name },
+              values: { serverName: $selectedServer.customName || $selectedServer.name },
             })}
           </button>
         {:else}
@@ -45,7 +47,7 @@
         {$_("pages.server.settings.remove-server")}
       </label>
       <div class="col hstack gap-2">
-        <span class="badge text-bg-primary">{$selectedServer.name}</span>
+        <span class="badge text-bg-primary">{$selectedServer.customName || $selectedServer.name}</span>
         <button
           type="button"
           title={$_("buttons.remove")}
@@ -56,7 +58,10 @@
       </div>
     </div>
 
-    <button class="btn btn-secondary">
+    <button class="btn btn-secondary"
+      class:disabled={saving || saveDisabled}
+      aria-disabled={saving || saveDisabled}
+      on:click={save}>
       {$_("buttons.save")}
     </button>
   </div>
@@ -64,6 +69,33 @@
 
 <MakeMainServerModal />
 <RemoveServerModal />
+
+<script context="module">
+  import ApiUtil from "$lib/api.util.js";
+
+  /**
+   * @type {import('@sveltejs/kit').PageLoad}
+   */
+  export async function load(event) {
+
+    const { parent } = event;
+    const parentData = await parent();
+    const { selectedServer } = parentData;
+
+    const response = await ApiUtil.get({
+      path: `/api/panel/servers/${selectedServer.id}`,
+      request: event,
+    });
+
+    const { server } = response
+
+    if (!server.customName) {
+      server.customName = server.name
+    }
+
+    return {server, serverOriginal: structuredClone(server)}
+  }
+</script>
 
 <script>
   import { getContext } from "svelte";
@@ -76,9 +108,50 @@
     show as showRemoveServerModal,
   } from "$lib/component/modals/RemoveServerModal.svelte";
 
+  export let data;
+
+  let {server, serverOriginal} = data
+
   const mainServer = getContext("mainServer");
   const selectedServer = getContext("selectedServer");
   const pageTitle = getContext("pageTitle");
 
+  let saving;
+
+  $: saveDisabled = saving || JSON.stringify(server) === JSON.stringify(serverOriginal) || !server.customName || server.customName === server.name
+
   pageTitle.set("pages.server.settings.title");
+
+  function onNameChange(event) {
+    let value = event.target.value;
+
+    if (value.length > 64) {
+      value = value.substring(0, 64);
+    }
+
+    server.customName = value;
+  }
+
+  function save() {
+    saving = true;
+
+    ApiUtil.put({
+      path: `/api/panel/servers/${data.selectedServer.id}/settings`,
+      body: { customName: server.customName },
+      handler: async (body, reject) => {
+        saving = false;
+
+        if (body.result !== "ok") {
+          reject()
+          return
+        }
+
+        serverOriginal = structuredClone(server)
+
+        if ($selectedServer.id === server.id) {
+          $selectedServer = structuredClone(server)
+        }
+      }
+    });
+  }
 </script>

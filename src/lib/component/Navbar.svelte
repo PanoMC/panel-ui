@@ -58,7 +58,7 @@
               <i
                 class="fa-solid fa-server"
                 use:tooltip={[
-                  `${$_("components.navbar.selected-server")}: ${$selectedServer.name} (${$selectedServer.host}:${$selectedServer.port})`,
+                  `${$_("components.navbar.selected-server")}: ${$selectedServer.customName || $selectedServer.name} (${$selectedServer.host}:${$selectedServer.port})`,
                   { placement: "bottom" },
                 ]}>
               </i>

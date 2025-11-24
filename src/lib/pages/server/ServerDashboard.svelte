@@ -59,7 +59,7 @@
         <tbody>
           <tr>
             <th scope="row">{$_("pages.server.dashboard.server-name")}</th>
-            <td>{data.server.name}</td>
+            <td>{data.server.customName || data.server.name}</td>
           </tr>
           <tr>
             <th scope="row">{$_("pages.server.dashboard.server-type")}</th>
