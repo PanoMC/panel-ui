@@ -21,20 +21,22 @@
       class:disabled={loading || $platformUpdating || inProgressResource}
       on:click={checkUpdate}>
       <i class="fa-regular fa-arrows-rotate me-2" class:fa-spin={loading}></i>
-      {$_('buttons.check-updates')}
+      {$_("buttons.check-updates")}
     </button>
   </div>
 </PageActions>
 
 <div class="card">
   <div class="card-header">
-    {$_('pages.settings.updates.platform-updates')}&nbsp;{#if data.platformUpdate}(1){/if}
+    {$_(
+      "pages.settings.updates.platform-updates",
+    )}&nbsp;{#if data.platformUpdate}(1){/if}
   </div>
   <!-- Pending Update List -->
   {#if !data.platformUpdate}
     <NoContent
       icon="fas fa-check fa-3x"
-      text="{$_('pages.settings.updates.using-latest-pano')}" />
+      text={$_("pages.settings.updates.using-latest-pano")} />
   {:else}
     <div class="card-body">
       <ul class="list-group">
@@ -64,7 +66,7 @@
                       <h5 class="mb-0">Pano</h5>
                       <i
                         class="fa-regular fa-circle-check text-success"
-                        title="{$_('pages.settings.updates.verified')}"></i>
+                        title={$_("pages.settings.updates.verified")}></i>
 
                       <span class="badge text-bg-primary">
                         {data.platformUpdate.channel.capitalize()}
@@ -75,7 +77,8 @@
                         {data.platformUpdate.version}</span>
 
                       <div>
-                        {$_('pages.settings.updates.by')}&nbsp;<strong>Pano</strong>
+                        {$_("pages.settings.updates.by")}&nbsp;<strong
+                          >Pano</strong>
                       </div>
                     </div>
 
@@ -105,8 +108,7 @@
                         $platformUpdating ||
                         inProgressResource ||
                         updatingAll}>
-                      <i class="fas fa-download"></i>
-                      {$_('buttons.update')}
+                      {$_("buttons.update")}
                       {#if $platformUpdating}
                         <i class="fa-solid fa-spinner fa-spin"></i>
                       {/if}
@@ -143,23 +145,30 @@
                       <span class="text-danger"
                         >{$_(
                           "components.modals.installing-resource.error-text",
-                          { values: { error: $_('errors.' + platformUpdateError) } },
+                          {
+                            values: {
+                              error: $_("errors." + platformUpdateError),
+                            },
+                          },
                         )}</span>
                     {:else if !isPlatformUpdateFinished(platformUpdatingStep)}
-                      {$_('pages.settings.updates.platform-update-steps.' + platformUpdateProcesses[platformUpdatingStep - 1])}
+                      {$_(
+                        "pages.settings.updates.platform-update-steps." +
+                          platformUpdateProcesses[platformUpdatingStep - 1],
+                      )}
                     {:else}
-                      {$_('pages.settings.updates.install-complete-restarting')} <i
-                        class="me-2 fas fa-spinner fa-spin"></i>
+                      {$_("pages.settings.updates.install-complete-restarting")}
+                      <i class="me-2 fas fa-spinner fa-spin"></i>
                     {/if}
                   </p>
                 {/if}
 
                 <!-- Changelog -->
                 <details class="mt-3">
-                  <summary class="fw-bold link-primary">{$_('pages.settings.updates.changelog')}</summary>
+                  <summary class="fw-bold link-primary"
+                    >{$_("pages.settings.updates.changelog")}</summary>
                   <div class="pt-2 markdown-renderer">
-                    <MarkdownRenderer
-                      content={data.platformUpdate.changelog} />
+                    <MarkdownRenderer content={data.platformUpdate.changelog} />
                   </div>
                 </details>
               </div>
@@ -174,8 +183,10 @@
 <div class="card">
   <CardHeader>
     <div slot="left">
-      {$_('pages.settings.updates.resource-updates')}&nbsp;{#if data.resourceUpdates.length > 0}({data
-          .resourceUpdates.length}){/if}
+      {$_(
+        "pages.settings.updates.resource-updates",
+      )}&nbsp;{#if data.resourceUpdates.length > 0}({data.resourceUpdates
+          .length}){/if}
     </div>
     <div slot="right">
       {#if data.resourceUpdates?.length > 1}
@@ -186,7 +197,7 @@
             $platformUpdating ||
             inProgressResource ||
             updatingAll}
-          on:click={onUpdateAllClick}>{$_('buttons.update-all')}</button>
+          on:click={onUpdateAllClick}>{$_("buttons.update-all")}</button>
       {/if}
     </div>
   </CardHeader>
@@ -194,12 +205,12 @@
     {#if !data.panoAccount}
       <NoContent
         icon="fas fa-sync fa-3x"
-        text="{$_('pages.settings.updates.connect-pano-account')}"
+        text={$_("pages.settings.updates.connect-pano-account")}
         dark={false} />
     {:else if data.resourceUpdates.length === 0}
       <NoContent
         icon="fas fa-sync fa-3x"
-        text="{$_('pages.settings.updates.no-update-found')}"
+        text={$_("pages.settings.updates.no-update-found")}
         dark={false} />
     {:else}
       <ul class="list-group">
@@ -249,7 +260,7 @@
                           {update.version}</span>
 
                         <div>
-                          {$_('pages.settings.updates.by')}&nbsp;<a
+                          {$_("pages.settings.updates.by")}&nbsp;<a
                             href={`${PANO_WEBSITE_URL}/users/${update.developer}`}
                             target="_blank"
                             ><strong
@@ -261,8 +272,7 @@
                         </div>
                       </div>
 
-                      <div
-                        class="d-flex flex-wrap gap-2 text-muted small mb-0">
+                      <div class="d-flex flex-wrap gap-2 text-muted small mb-0">
                         <div>
                           <i class="fas fa-database me-1"></i>
                           {formatBytes(update.size)}
@@ -286,8 +296,7 @@
                         inProgressResource ||
                         updatingAll}
                       on:click={() => onUpdateResourceClick(update)}>
-                      <i class="fas fa-download"></i>
-                      {$_('buttons.update')}
+                      {$_("buttons.update")}
                       {#if inProgressResource?.id === update.id}
                         <i class="fa-solid fa-spinner fa-spin"></i>
                       {/if}
@@ -323,12 +332,21 @@
                         <span class="text-danger"
                           >{$_(
                             "components.modals.installing-resource.error-text",
-                            { values: { error: $_('errors.' +  resourceUpdateError.error) } },
+                            {
+                              values: {
+                                error: $_(
+                                  "errors." + resourceUpdateError.error,
+                                ),
+                              },
+                            },
                           )}</span>
                       {:else if !isResourceUpdateFinished(resourceUpdateStep)}
-                        {$_('pages.settings.updates.resource-update-steps.' + resourceUpdateProcesses[resourceUpdateStep - 1])}
+                        {$_(
+                          "pages.settings.updates.resource-update-steps." +
+                            resourceUpdateProcesses[resourceUpdateStep - 1],
+                        )}
                       {:else}
-                        {$_('pages.settings.updates.install-complete')}
+                        {$_("pages.settings.updates.install-complete")}
                       {/if}
                     </p>
                   {/if}
@@ -336,7 +354,7 @@
                   <!-- Changelog -->
                   <details class="mt-3">
                     <summary class="fw-bold link-primary">
-                      {$_('pages.settings.updates.changelog')}
+                      {$_("pages.settings.updates.changelog")}
                     </summary>
                     <div class="pt-2 markdown-renderer">
                       <MarkdownRenderer content={update.changelog} />
@@ -352,9 +370,9 @@
   </div>
 </div>
 
-<ConfirmUpdatePlatformModal/>
-<ConfirmUpdateResourceModal/>
-<ConfirmUpdateResourcesModal/>
+<ConfirmUpdatePlatformModal />
+<ConfirmUpdateResourceModal />
+<ConfirmUpdateResourcesModal />
 
 <script context="module">
   import ApiUtil, { buildQueryParams } from "$lib/api.util";
@@ -574,8 +592,8 @@
 
   function onUpdatePlatformClick() {
     showUpdatePlatformModal(() => {
-      installPlatformUpdate()
-    })
+      installPlatformUpdate();
+    });
   }
 
   async function updateResource(update) {
@@ -593,8 +611,8 @@
 
   function onUpdateResourceClick(update) {
     showUpdateResourceModal(() => {
-      updateResource(update)
-    })
+      updateResource(update);
+    });
   }
 
   async function updateAll() {
@@ -617,8 +635,8 @@
 
   function onUpdateAllClick() {
     showUpdateResourcesModal(() => {
-      updateAll()
-    })
+      updateAll();
+    });
   }
 
   async function checkUpdate() {
@@ -639,7 +657,9 @@
 
           if (body.error === "PANO_NOT_CONNECTED") {
             await invalidateAll();
-            await showToast("components.toasts.check-resources-update-failed-pano-account-needed");
+            await showToast(
+              "components.toasts.check-resources-update-failed-pano-account-needed",
+            );
             return;
           }
 
@@ -689,7 +709,8 @@
 
   beforeNavigate((nav) => {
     if (
-      browser && !platformUpdateFinished &&
+      browser &&
+      !platformUpdateFinished &&
       ($platformUpdating || inProgressResource) &&
       !confirm($_("pages.settings.updates.updating-leave-alert"))
     ) {
