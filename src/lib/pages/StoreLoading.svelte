@@ -53,8 +53,7 @@
           <div>
             <strong>{$_("components.store-loading.store-loading")}</strong
             ><br />
-            <small class="text-muted"
-              >{$_("components.store-loading.please-wait")}</small>
+            <small>{$_("components.store-loading.please-wait")}</small>
           </div>
         </div>
       {/if}

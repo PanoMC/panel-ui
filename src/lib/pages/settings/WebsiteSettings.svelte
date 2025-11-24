@@ -34,7 +34,7 @@
     </div>
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="websiteUrl"
-      >{$_("pages.settings.site-settings.inputs.website-url.label")}</label>
+        >{$_("pages.settings.site-settings.inputs.website-url.label")}</label>
       <div class="col-md-6">
         <input
           bind:value={data.websiteUrl}
@@ -58,7 +58,10 @@
           class="form-control"
           id="siteRegisterAgreement"
           rows="2"></textarea>
-        <small for="siteRegisterAgreement">{$_("pages.settings.site-settings.inputs.register-agreement.small-note")}</small>
+        <small for="siteRegisterAgreement"
+          >{$_(
+            "pages.settings.site-settings.inputs.register-agreement.small-note",
+          )}</small>
       </div>
     </div>
 
@@ -167,7 +170,7 @@
           on:change={onFaviconChange}
           bind:this={faviconInput}
           accept="image/*" />
-        <small class="text-muted d-block mt-2">
+        <small class=" d-block mt-2">
           {$_("pages.settings.site-settings.inputs.favicon.helper")}
         </small>
       </div>
@@ -205,7 +208,7 @@
           on:change={onWebsiteLogoChange}
           bind:this={websiteLogoInput}
           accept="image/*" />
-        <small class="text-muted d-block mt-2">
+        <small class=" d-block mt-2">
           {$_("pages.settings.site-settings.inputs.website-logo.helper")}
         </small>
       </div>
@@ -389,7 +392,7 @@
           body.error === "WEBSITE_LOGO_EXCEEDS_SIZE"
         ) {
           await showToast("components.toasts.settings-save-error", {
-            errorCode: $_('errors.' + body.error),
+            errorCode: $_("errors." + body.error),
           });
         } else reject();
       },
@@ -402,7 +405,7 @@
     }
 
     if (keyword.trim().length === 0) {
-      return
+      return;
     }
 
     if (data.keywords.indexOf(keyword) !== -1) {

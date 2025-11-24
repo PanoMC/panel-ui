@@ -10,7 +10,10 @@
   </div>
 {/if}
 
-<PageActions leftClasses="d-none" middleClasses="d-none" rightClasses="col-lg-12">
+<PageActions
+  leftClasses="d-none"
+  middleClasses="d-none"
+  rightClasses="col-lg-12">
   <div class="hstack gap-2 ms-lg-auto" slot="right">
     <button class="btn btn-danger" on:click={onStopPanoClick}>
       <i class="fas fa-stop"></i>
@@ -56,7 +59,7 @@
       <label class="col-md-6" for="connectPanoAccount"
         >{$_("pages.settings.platform.online-account")}
         <br />
-        <small class="text-muted">
+        <small>
           {$_("pages.settings.platform.online-account-description")}
         </small>
       </label>
@@ -138,7 +141,7 @@
       <label class="col-md-6" for="allowUserLocaleSelection">
         {$_("pages.settings.platform.allow-user-locale-selection")}
         <br />
-        <small class="text-muted">
+        <small>
           {$_(
             "pages.settings.platform.allow-user-locale-selection-description",
           )}

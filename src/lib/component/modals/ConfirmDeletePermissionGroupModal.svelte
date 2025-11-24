@@ -2,7 +2,7 @@
 <div
   aria-hidden="true"
   class="modal fade"
-  bind:this="{$modalElement}"
+  bind:this={$modalElement}
   role="dialog"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
@@ -11,11 +11,13 @@
         <div class="pb-3">
           <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
         </div>
-        {$_('components.modals.confirm-delete-permission-group.title')}
+        {$_("components.modals.confirm-delete-permission-group.title")}
 
         {#if $permissionGroup.userCount > 0}
           <div class="mt-3 alert alert-warning">
-            {$_('components.modals.confirm-delete-permission-group.description')}
+            {$_(
+              "components.modals.confirm-delete-permission-group.description",
+            )}
             <br />
             <br />
             <span class="badge bg-warning rounded-pill mr-1">
@@ -30,13 +32,13 @@
               {#each $permissionGroup.users as user, index (user)}
                 <span
                   class="overlapping-avatar"
-                  use:tooltip="{[user, { placement: 'bottom' }]}">
+                  use:tooltip={[user, { placement: "bottom" }]}>
                   <a href="{base}/players/player/{user}">
                     <img
                       src="https://minotar.net/avatar/{user}"
                       width="32"
                       height="32"
-                      alt="{user}" />
+                      alt={user} />
                   </a>
                 </span>
               {/each}
@@ -46,18 +48,18 @@
       </div>
       <div class="modal-footer">
         <button
-          class="btn btn-link text-muted"
+          class="btn btn-link"
           type="button"
-          class:disabled="{loading}"
-          on:click="{hide}">
-          {$_('buttons.cancel')}
+          class:disabled={loading}
+          on:click={hide}>
+          {$_("buttons.cancel")}
         </button>
         <button
           class="btn btn-danger"
           type="button"
-          class:disabled="{loading}"
-          on:click="{onYesClick}">
-          {$_('buttons.yes')}
+          class:disabled={loading}
+          on:click={onYesClick}>
+          {$_("buttons.yes")}
         </button>
       </div>
     </div>
@@ -135,7 +137,7 @@
         //TODO TOAST
 
         callback(get(permissionGroup));
-      }
-    })
+      },
+    });
   }
 </script>

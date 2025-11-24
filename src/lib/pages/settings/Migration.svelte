@@ -243,7 +243,7 @@
               {#if configFile}
                 <i class="bi bi-file-earmark-text text-success fs-1"></i>
                 <p class="mb-1 fw-semibold">{configFile.name}</p>
-                <p class="text-muted small mb-2">
+                <p class="small mb-2">
                   {(configFile.size / 1024).toFixed(2)} KB
                 </p>
                 <button
@@ -252,7 +252,7 @@
                   <i class="bi bi-trash"></i> Remove
                 </button>
               {:else}
-                <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                <i class="bi bi-cloud-upload fs-1"></i>
                 <p class="mb-1">Drag and drop your file here</p>
                 <p class="small">or click to browse</p>
               {/if}
@@ -271,7 +271,7 @@
             <div class="mb-4">
               <label class="form-label fw-semibold"
                 >SQLite Database (authme.db)</label>
-              <p class="text-muted small mb-2">
+              <p class=" small mb-2">
                 <i class="bi bi-info-circle"></i> Your config.yml indicates SQLite
                 is used. Please upload your database file.
               </p>
@@ -286,7 +286,7 @@
                 {#if dbFile}
                   <i class="bi bi-database text-success fs-1"></i>
                   <p class="mb-1 fw-semibold">{dbFile.name}</p>
-                  <p class="text-muted small mb-2">
+                  <p class=" small mb-2">
                     {(dbFile.size / 1024).toFixed(2)} KB
                   </p>
                   <button
@@ -295,11 +295,11 @@
                     <i class="bi bi-trash"></i> Remove
                   </button>
                 {:else}
-                  <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                  <i class="bi bi-cloud-upload fs-1"></i>
                   <p class="mb-1">
                     Drag and drop your <strong>SQLite database</strong> here
                   </p>
-                  <p class="text-muted small">or click to browse</p>
+                  <p class=" small">or click to browse</p>
                 {/if}
               </div>
               <input
@@ -329,7 +329,7 @@
                     {:else if step.status === "error"}
                       <i class="bi bi-x-circle-fill text-danger fs-5"></i>
                     {:else}
-                      <i class="bi bi-circle text-muted fs-5"></i>
+                      <i class="bi bi-circle fs-5"></i>
                     {/if}
                     <span class="fw-semibold">{step.title}</span>
                   </div>
@@ -355,7 +355,7 @@
                 {/if}
 
                 {#if step.message}
-                  <p class="text-muted small mb-0 ms-4">{step.message}</p>
+                  <p class=" small mb-0 ms-4">{step.message}</p>
                 {/if}
               </div>
             {/each}

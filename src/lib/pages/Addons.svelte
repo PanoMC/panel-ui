@@ -11,7 +11,8 @@
         class="btn btn-secondary"
         on:click={() => showInstallResourceModal("PLUGIN")}>
         <i class="fas fa-plus"></i>
-        <span class="d-lg-inline d-none ms-2">{$_("buttons.install-addon")}</span>
+        <span class="d-lg-inline d-none ms-2"
+          >{$_("buttons.install-addon")}</span>
       </button>
     </div>
   </PageActions>
@@ -117,7 +118,9 @@
                     <small class="d-block mb-3">
                       {@html plugin.description}</small>
 
-                    <div class="small text-muted hstack gap-2" title={$_("pages.addons.version")}>
+                    <div
+                      class="small hstack gap-2"
+                      title={$_("pages.addons.version")}>
                       <i class="fa fa-code-branch"></i>
                       <div class="font-monospace user-select-all">
                         {plugin.version}

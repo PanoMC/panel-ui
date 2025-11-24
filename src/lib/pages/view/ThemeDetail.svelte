@@ -125,7 +125,7 @@
                     >{$_("pages.theme-detail.in-use")}</span>
                 {/if}
               </div>
-              <p class="text-muted">{theme.description}</p>
+              <p>{theme.description}</p>
             </div>
 
             <!-- Metadata -->

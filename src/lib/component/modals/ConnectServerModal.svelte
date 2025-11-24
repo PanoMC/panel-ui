@@ -11,7 +11,10 @@
         <div class="hstack gap-2">
           <div class="form-check form-switch position-relative">
             {#if toggleLoading}
-              <span class="position-absolute top-50 start-50 translate-middle" style="z-index: 1;" role="status">
+              <span
+                class="position-absolute top-50 start-50 translate-middle"
+                style="z-index: 1;"
+                role="status">
                 <i class="fa-solid fa-spinner fa-spin"></i>
               </span>
             {:else}
@@ -63,7 +66,7 @@
             {$_("components.modals.connect-server.steps.2")}
             <br />
             {#if acceptPluginAuth}
-              <small class="text-muted">
+              <small class="">
                 {$_("components.modals.connect-server.code-refresh", {
                   values: { timeToRefreshKey },
                 })}
@@ -114,7 +117,7 @@
           <li class="list-group-item">
             {$_("components.modals.connect-server.steps.3")}
             <br />
-            <small class="text-muted">
+            <small class="">
               {$_("components.modals.connect-server.notification-will-come")}
             </small>
           </li>
@@ -151,7 +154,7 @@
   let copyClickIDForCommandTextForConsole = 0;
   let firstStartCountDown = false;
 
-  let acceptPluginAuth = $session.basicData.acceptPluginAuth
+  let acceptPluginAuth = $session.basicData.acceptPluginAuth;
   let toggleLoading;
 
   function getTimeLeftInSeconds() {
@@ -212,7 +215,7 @@
           return;
         }
 
-        acceptPluginAuth = body.acceptPluginAuth
+        acceptPluginAuth = body.acceptPluginAuth;
         toggleLoading = false;
       },
     });
@@ -233,11 +236,14 @@
       copyClickIDForCommandText++;
     }
 
-    const id = forConsole ? copyClickIDForCommandTextForConsole : copyClickIDForCommandText;
+    const id = forConsole
+      ? copyClickIDForCommandTextForConsole
+      : copyClickIDForCommandText;
 
-    const textToCopy = forConsole && commandText.startsWith("/")
-      ? commandText.substring(1)
-      : commandText;
+    const textToCopy =
+      forConsole && commandText.startsWith("/")
+        ? commandText.substring(1)
+        : commandText;
 
     copy(textToCopy);
 

@@ -140,7 +140,7 @@
                             },
                           })}</span>
                         <br />
-                        <small class="text-muted">
+                        <small>
                           {getTime(
                             checkTime,
                             parseInt(notification.createdAt),
@@ -247,10 +247,12 @@
 
   $: isServerPath = $page.url.pathname.startsWith((base || "") + "/server");
 
-  $: showSelectedServer = isServerPath || !(
-    $sidebarTabsState === "website" ||
-    !hasPermission(Permissions.MANAGE_SERVERS)
-  );
+  $: showSelectedServer =
+    isServerPath ||
+    !(
+      $sidebarTabsState === "website" ||
+      !hasPermission(Permissions.MANAGE_SERVERS)
+    );
 
   function onSideBarCollapseClick() {
     toggleSidebar(isSidebarOpen);
