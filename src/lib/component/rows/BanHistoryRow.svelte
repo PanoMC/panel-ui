@@ -2,7 +2,10 @@
   <td class="align-middle text-nowrap">
     {#if banHistory.bannedUntil}
       <span
-        title={new Date(banHistory.bannedUntil).toLocaleString()}
+        use:tooltip="{[
+          format(new Date(banHistory.bannedUntil), 'dd/MM/yyyy, HH:mm'),
+          { placement: 'bottom', locale: locales[$currentLanguage.dateFnsCode] },
+        ]}"
         class="text-primary">
         {getBanDurationText(banHistory.createdAt, banHistory.bannedUntil)}
       </span>
@@ -19,9 +22,15 @@
   </td>
   <td class="align-middle text-center">
     {#if banHistory.emailNotified}
-      <i class="fas fa-check text-success" title={$_("pages.player-detail.email-notified")}></i>
+      <i class="fas fa-check text-success" use:tooltip="{[
+          $_('pages.player-detail.email-notified'),
+          { placement: 'bottom' },
+        ]}"></i>
     {:else}
-      <i class="fas fa-times text-danger" title={$_("pages.player-detail.email-not-notified")}></i>
+      <i class="fas fa-times text-danger" use:tooltip="{[
+          $_('pages.player-detail.email-not-notified'),
+          { placement: 'bottom' },
+        ]}"></i>
     {/if}
   </td>
   <td class="align-middle text-nowrap">
@@ -54,10 +63,13 @@
 
 <script>
   import { _ } from "svelte-i18n";
-  import { base } from "$app/paths";
-  import { formatDuration, intervalToDuration } from "date-fns";
+  import { format, formatDuration, intervalToDuration } from "date-fns";
   import * as locales from "date-fns/locale";
+
+  import { base } from "$app/paths";
+
   import { currentLanguage } from "$lib/language.util.js";
+  import tooltip from "$lib/tooltip.util";
 
   import DateComponent from "$lib/component/Date.svelte";
 
