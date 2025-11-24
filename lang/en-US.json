@@ -349,6 +349,7 @@
         "by": "by",
         "install-complete-restarting": "\uD83C\uDF89 Install complete! Restarting...",
         "changelog": "Changelog",
+        "copy-hash": "Copy Hash",
         "platform-update-steps": {
           "getting-platform-update-info": "Getting platform update info...",
           "downloading-update": "Downloading update...",

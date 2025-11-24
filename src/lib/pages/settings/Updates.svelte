@@ -91,16 +91,16 @@
                   <div class="d-flex align-items-center gap-2">
                     <div class="btn-group" role="group">
                       <button
-                        class="btn btn-sm btn-secondary d-flex align-items-center gap-1"
+                        class="btn btn-sm btn-secondary d-flex align-items-center gap-2"
                         on:click={onUpdatePlatformClick}
                         class:disabled={loading ||
                           $platformUpdating ||
                           inProgressResource ||
                           updatingAll}>
-                        {$_("buttons.update")}
                         {#if $platformUpdating}
-                          <i class="fa-solid fa-spinner fa-spin"></i>
+                          <i class="fa-solid fa-arrows-rotate fa-spin"></i>
                         {/if}
+                        {$_("buttons.update")}
                       </button>
                       <button
                         type="button"
@@ -129,7 +129,7 @@
                             class="dropdown-item"
                             on:click={() =>
                               copyHashToClipboard(data.platformUpdate.hash)}>
-                            Hash'i Kopyala
+                            {$_("pages.settings.updates.copy-hash")}
                           </button>
                         </li>
                       </ul>
@@ -179,7 +179,7 @@
                       )}
                     {:else}
                       {$_("pages.settings.updates.install-complete-restarting")}
-                      <i class="me-2 fas fa-spinner fa-spin"></i>
+                      <i class="me-2 fas fa-arrows-rotate fa-spin"></i>
                     {/if}
                   </p>
                 {/if}
@@ -294,16 +294,16 @@
                     <!-- Right: Actions -->
                     <div class="btn-group" role="group">
                       <button
-                        class="btn btn-sm btn-secondary"
+                        class="btn btn-sm btn-secondary d-flex align-items-center gap-2"
                         class:disabled={loading ||
                           $platformUpdating ||
                           inProgressResource ||
                           updatingAll}
                         on:click={() => onUpdateResourceClick(update)}>
-                        {$_("buttons.update")}
                         {#if inProgressResource?.id === update.id}
-                          <i class="fa-solid fa-spinner fa-spin"></i>
+                          <i class="fa-solid fa-arrows-rotate fa-spin"></i>
                         {/if}
+                        {$_("buttons.update")}
                       </button>
                       <button
                         type="button"
@@ -330,7 +330,7 @@
                             class="dropdown-item"
                             on:click={() =>
                               copyHashToClipboard(`sha256:${update.hash}`)}>
-                            Hash'i Kopyala
+                            {$_("pages.settings.updates.copy-hash")}
                           </button>
                         </li>
                       </ul>

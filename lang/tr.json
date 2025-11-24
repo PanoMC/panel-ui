@@ -349,6 +349,7 @@
         "by": "geliştirici",
         "install-complete-restarting": "🎉 Kurulum tamamlandı! Yeniden başlatılıyor...",
         "changelog": "Değişiklikler",
+        "copy-hash": "Hash'i Kopyala",
         "platform-update-steps": {
           "getting-platform-update-info": "Platform güncelleme bilgisi alınıyor...",
           "downloading-update": "Güncelleme indiriliyor...",
