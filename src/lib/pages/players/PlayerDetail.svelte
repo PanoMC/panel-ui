@@ -96,11 +96,12 @@
             class="img-thumbnail rounded animate__animated animate__zoomIn"
             width="128"
             height="128"
-            class:border={isOnline}
-            class:border-3={isOnline}
+            class:border={isOnline || data.player.isBanned}
+            class:border-3={isOnline || data.player.isBanned}
             class:border-success={isOnline}
+            class:border-danger={data.player.isBanned}
             src="https://minotar.net/avatar/{data.player.username}"
-            use:tooltip={[
+            use:tooltip={!data.player.isBanned && [
               isOnline
                 ? $_("pages.player-detail.online-text", {
                     values: {
@@ -193,15 +194,53 @@
             <div class="card-footer">
               <!-- Pagination -->
               <Pagination
-                page={data.page}
+                page={data.ticketsPage}
                 totalPage={data.ticketTotalPage}
-                on:firstPageClick={() => onPageClick(1)}
-                on:lastPageClick={() => onPageClick(data.ticketTotalPage)}
-                on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
+                on:firstPageClick={() => onTicketsPageClick(1)}
+                on:lastPageClick={() => onTicketsPageClick(data.ticketTotalPage)}
+                on:pageLinkClick={(event) => onTicketsPageClick(event.detail.page)} />
             </div>
           {/if}
         </div>
       {/if}
+
+      <!-- Ban History -->
+      <div class="card">
+        <div class="card-header">
+          {$_("pages.player-detail.ban-history")}
+        </div>
+        {#if data.banHistoryCount === 0}
+          <NoContent />
+        {:else}
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th class="align-middle">{$_("pages.player-detail.ban-duration")}</th>
+                  <th class="align-middle">{$_("pages.player-detail.ban-reason")}</th>
+                  <th class="align-middle text-center">{$_("pages.player-detail.email-notification")}</th>
+                  <th class="align-middle">{$_("pages.player-detail.banned-by")}</th>
+                  <th class="align-middle">{$_("pages.player-detail.banned-at")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each data.banHistory as banHistory, index (banHistory)}
+                    <BanHistoryRow {banHistory} />
+                {/each}
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer">
+            <!-- Pagination -->
+            <Pagination
+              page={data.banHistoryPage}
+              totalPage={data.banHistoryTotalPage}
+              on:firstPageClick={() => onBanHistoryPageClick(1)}
+              on:lastPageClick={() => onBanHistoryPageClick(data.banHistoryTotalPage)}
+              on:pageLinkClick={(event) => onBanHistoryPageClick(event.detail.page)} />
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
 </div>
@@ -221,10 +260,12 @@
     await parent();
 
     const username = event.params.username;
-    const page = searchParams.get("page") || 1;
+    const ticketsPage = searchParams.get("ticketsPage") || 1;
+    const banHistoryPage = searchParams.get("banHistoryPage") || 1;
 
     const queryParams = buildQueryParams({
-      page,
+      ticketsPage,
+      banHistoryPage
     });
 
     const body = await ApiUtil.get({
@@ -241,7 +282,8 @@
     }
 
     body.username = username;
-    body.page = parseInt(page);
+    body.ticketsPage = parseInt(ticketsPage);
+    body.banHistoryPage = parseInt(banHistoryPage);
 
     return body;
   }
@@ -253,7 +295,7 @@
   import { _ } from "svelte-i18n";
   import * as locales from "date-fns/locale";
 
-  import { goto } from "$app/navigation";
+  import { goto, invalidate } from "$app/navigation";
   import { base } from "$app/paths";
 
   import tooltip from "$lib/tooltip.util";
@@ -286,6 +328,7 @@
   import NoContent from "$lib/component/NoContent.svelte";
   import PlayerPermissionBadge from "$lib/component/badges/PlayerPermissionBadge.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
+  import BanHistoryRow from "$lib/component/rows/BanHistoryRow.svelte";
   import CardMenu from "$lib/component/CardMenu.svelte";
   import CardMenuItem from "$lib/component/CardMenuItem.svelte";
 
@@ -308,14 +351,21 @@
 
   async function refreshData() {
     const queryParams = buildQueryParams({
-      page: data.page,
+      ticketsPage: data.ticketsPage,
+      banHistoryPage: data.banHistoryPage,
     });
 
     await goto(queryParams);
   }
 
-  async function onPageClick(page) {
-    data.page = page;
+  async function onTicketsPageClick(ticketsPage) {
+    data.ticketsPage = ticketsPage;
+
+    await refreshData();
+  }
+
+  async function onBanHistoryPageClick(banHistoryPage) {
+    data.banHistoryPage = banHistoryPage;
 
     await refreshData();
   }
@@ -353,7 +403,7 @@
 
   setEditPlayerModalCallback((newPlayer) => {
     if (data.player.username !== newPlayer.username) {
-      goto(base + "/players/detail/" + newPlayer.username + "/" + data.page);
+      goto(base + "/players/detail/" + newPlayer.username);
 
       return;
     }
@@ -361,8 +411,8 @@
     data.player = newPlayer;
   });
 
-  setConfirmBanPlayerModalCallback(() => {
-    data.player.isBanned = true;
+  setConfirmBanPlayerModalCallback(async () => {
+    await invalidate((_) => true);
   });
 
   setUnbanPlayerModalCallback(() => {
