@@ -13,7 +13,8 @@
     </CardMenu>
     <div slot="right">
       <a href="{base}/settings/migration" class="btn btn-secondary">
-        <i class="fa fa-file-import me-2"></i>İçe Aktar...
+        <i class="fa fa-file-import"></i>
+        <span class="d-lg-inline d-none ms-2">İçe Aktar</span>
       </a>
     </div>
   </PageActions>

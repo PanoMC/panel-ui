@@ -8,10 +8,10 @@
     <div slot="right" class="hstack gap-2">
       <button
         type="button"
-        class="btn btn-secondary ml-auto"
+        class="btn btn-secondary"
         on:click={() => showInstallResourceModal("PLUGIN")}>
-        <i class="fas fa-plus me-2"></i>
-        {$_("buttons.install-addon")}
+        <i class="fas fa-plus"></i>
+        <span class="d-lg-inline d-none ms-2">{$_("buttons.install-addon")}</span>
       </button>
     </div>
   </PageActions>

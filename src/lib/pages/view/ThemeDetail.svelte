@@ -2,8 +2,8 @@
   <!-- Action Menu -->
   <PageActions middleClasses="d-lg-flex d-none">
     <a slot="left" href="{base}/view" class="btn btn-link">
-      <i class="fas fa-arrow-left me-2"></i>
-      {$_("buttons.themes")}
+      <i class="fas fa-arrow-left"></i>
+      <span class="d-lg-inline d-none ms-2"> {$_("buttons.themes")}</span>
     </a>
 
     <div class="hstack gap-2" slot="right">
@@ -31,10 +31,11 @@
         <button
           class="btn btn-danger"
           type="button"
+          aria-label={$_("buttons.stop")}
           on:click={onStopClick}
           class:disabled={stoping}>
-          <i class="fas fa-stop me-2"></i>
-          {$_("buttons.stop")}
+          <i class="fas fa-stop"></i>
+          <span class="d-lg-inline d-none ms-2">{$_("buttons.stop")}</span>
         </button>
       {/if}
       {#if !theme.running && theme.active}

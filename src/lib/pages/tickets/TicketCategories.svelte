@@ -13,11 +13,11 @@
     <button
       class="btn btn-secondary"
       type="button"
-      on:click="{onCreateCategoryClick}"
+      on:click={onCreateCategoryClick}
       slot="right">
-      <i class="fas fa-plus me-2"></i>{$_(
-        "pages.ticket-categories.create-category-button",
-      )}
+      <i class="fas fa-plus"></i>
+      <span class="d-lg-inline d-none ms-2"
+        >{$_("pages.ticket-categories.create-category-button")}</span>
     </button>
   </PageActions>
 
@@ -50,14 +50,12 @@
           <tbody>
             {#each data.categories as category, index (category)}
               <TicketCategoryRow
-                category="{category}"
-                index="{index}"
-                on:editClick="{(event) =>
-                  onShowEditCategoryButtonClick(event.detail.index)}"
-                on:deleteClick="{(event) =>
-                  onShowDeleteTicketCategoryModalClick(
-                    event.detail.index,
-                  )}" />
+                category={category}
+                index={index}
+                on:editClick={(event) =>
+                  onShowEditCategoryButtonClick(event.detail.index)}
+                on:deleteClick={(event) =>
+                  onShowDeleteTicketCategoryModalClick(event.detail.index)} />
             {/each}
           </tbody>
         </table>
@@ -66,11 +64,11 @@
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination
-        page="{data.page}"
-        totalPage="{data.totalPage}"
-        on:firstPageClick="{() => onPageClick(1)}"
-        on:lastPageClick="{() => onPageClick(data.totalPage)}"
-        on:pageLinkClick="{(event) => onPageClick(event.detail.page)}" />
+        page={data.page}
+        totalPage={data.totalPage}
+        on:firstPageClick={() => onPageClick(1)}
+        on:lastPageClick={() => onPageClick(data.totalPage)}
+        on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
     </div>
   </div>
 </article>

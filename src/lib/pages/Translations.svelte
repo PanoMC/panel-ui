@@ -26,7 +26,9 @@
           on:change={(e) => refreshData(e.target.value)}>
           {#each Object.keys(PageTypes) as pageType, index (pageType)}
             <option selected value={pageType}
-              >{$_("buttons." + pageType.toLowerCase().replace("_", "-"))}</option>
+              >{$_(
+                "buttons." + pageType.toLowerCase().replace("_", "-"),
+              )}</option>
           {/each}
         </select>
         <select
@@ -42,9 +44,13 @@
       </div>
       <button
         type="button"
+        title={$_("buttons.save")}
+        aria-label={$_("buttons.save")}
         class="btn btn-secondary"
         disabled={saveDisabled}
-        on:click={saveChanges}>{$_("buttons.save")}</button>
+        on:click={saveChanges}>
+        <i class="fa fa-save"></i>
+      </button>
     </div>
   </PageActions>
 

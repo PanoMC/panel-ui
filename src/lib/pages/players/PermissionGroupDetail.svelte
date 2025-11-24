@@ -6,8 +6,9 @@
       class="btn btn-link"
       role="button"
       href="{base}/players/perm-groups">
-      <i class="fas fa-arrow-left me-2"></i>
-      {$_("pages.permission-group-detail.permission-groups")}
+      <i class="fas fa-arrow-left"></i>
+      <span class="d-lg-inline d-none ms-2">
+        {$_("pages.permission-group-detail.permission-groups")}</span>
     </a>
 
     <button
@@ -52,23 +53,30 @@
                 "pages.permission-group-detail.inputs.player.placeholder",
               )} />
           </form>
+          <ul class="list-group" class:d-none={data.users.length === 0}>
+            {#each data.users as user, index (user)}
+              <li
+                class="list-group-item d-flex flex-row justify-content-between">
+                <div class="hstack gap-2">
+                  <img
+                    class="rounded-circle"
+                    src="https://minotar.net/avatar/{user}"
+                    alt={user}
+                    width="18"
+                    height="18" />
 
-          {#each data.users as user, index (user)}
-            <button
-              class="btn btn-link btn-sm"
-              type="button"
-              aria-label={$_("buttons.remove")}
-              use:tooltip={[$_("buttons.remove"), { placement: "bottom" }]}
-              on:click={() => removeUser(index)}>
-              <img
-                class="rounded-circle me-2"
-                src="https://minotar.net/avatar/{user}"
-                alt={user}
-                width="30"
-                height="30" />
-              {user}
-            </button>
-          {/each}
+                  {user}
+                </div>
+                <button
+                  class="btn-close"
+                  type="button"
+                  title={$_("buttons.remove")}
+                  aria-label={$_("buttons.remove")}
+                  on:click={() => removeUser(index)}>
+                </button>
+              </li>
+            {/each}
+          </ul>
         </div>
       </div>
     </div>

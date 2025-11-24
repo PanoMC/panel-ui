@@ -1,7 +1,7 @@
 <!-- Categories Page -->
 <article class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions left="d-lg-flex d-none">
+  <PageActions leftClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
       <CardMenuItem href="/translations"
@@ -15,7 +15,9 @@
       type="button"
       slot="right"
       on:click={onCreateLanguageClick}>
-      <i class="fas fa-plus me-2"></i>{$_("buttons.create-language")}
+      <i class="fas fa-plus"></i>
+      <span class="d-lg-inline d-none ms-2"
+        >{$_("buttons.create-language")}</span>
     </button>
   </PageActions>
 

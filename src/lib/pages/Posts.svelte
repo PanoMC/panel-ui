@@ -18,8 +18,9 @@
           href="{base}/posts/create-post"
           class="btn btn-secondary"
           role="button">
-          <i class="fas fa-plus me-2"></i>
-          {$_("pages.posts.create-post-button")}
+          <i class="fas fa-plus"></i>
+          <span class="d-lg-inline d-none ms-2">
+            {$_("pages.posts.create-post-button")}</span>
         </a>
       {/if}
     </div>
@@ -262,7 +263,7 @@
 
   function onMoveToDraftClick(id) {
     data.posts.find((post) => post.id === id).selected = true;
-    data.posts = data.posts
+    data.posts = data.posts;
 
     showDraftPostModal(() => {
       buttonsLoading = true;
@@ -290,12 +291,12 @@
           });
         },
       });
-    })
+    });
   }
 
   function onPublishClick(id) {
     data.posts.find((post) => post.id === id).selected = true;
-    data.posts = data.posts
+    data.posts = data.posts;
 
     showPublishPostModal(() => {
       buttonsLoading = true;
@@ -327,7 +328,7 @@
           await invalidate((_) => true);
         },
       });
-    })
+    });
   }
 
   async function refreshData() {
@@ -353,26 +354,26 @@
   }
 
   function removeSelection() {
-    if (!data.posts) return
-    data.posts.forEach(post => post.selected = false)
-    data.posts = data.posts
+    if (!data.posts) return;
+    data.posts.forEach((post) => (post.selected = false));
+    data.posts = data.posts;
   }
 
   setDeletePostModalCallback(() => {
-    removeSelection()
+    removeSelection();
 
     invalidate((_) => true);
   });
 
   onDraftPostModalHide(() => {
-    removeSelection()
-  })
+    removeSelection();
+  });
 
   onPublishPostModalHide(() => {
-    removeSelection()
-  })
+    removeSelection();
+  });
 
   onDeletePostModalHide(() => {
-    removeSelection()
+    removeSelection();
   });
 </script>

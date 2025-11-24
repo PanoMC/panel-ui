@@ -16,8 +16,8 @@
       href="{base}/players/perm-groups/create"
       class="btn btn-secondary"
       slot="right">
-      <i class="fas fa-plus me-2"></i>
-      {$_("pages.permission-groups.create-permission-group-button")}
+      <i class="fas fa-plus"></i>
+      <span class="d-lg-inline d-none ms-2">{$_("pages.permission-groups.create-permission-group-button")}</span>
     </a>
   </PageActions>
 

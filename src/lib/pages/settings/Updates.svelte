@@ -20,8 +20,8 @@
       class="btn btn-secondary"
       class:disabled={loading || $platformUpdating || inProgressResource}
       on:click={checkUpdate}>
-      <i class="fa-regular fa-arrows-rotate me-2" class:fa-spin={loading}></i>
-      {$_("buttons.check-updates")}
+      <i class="fa-regular fa-arrows-rotate" class:fa-spin={loading}></i>
+      <span class="d-lg-inline d-none ms-2">{$_("buttons.check-updates")}</span>
     </button>
   </div>
 </PageActions>

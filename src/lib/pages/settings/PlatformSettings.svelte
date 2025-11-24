@@ -13,12 +13,12 @@
 <PageActions leftClasses="d-none" middleClasses="d-none" rightClasses="col-lg-12">
   <div class="hstack gap-2 ms-lg-auto" slot="right">
     <button class="btn btn-danger" on:click={onStopPanoClick}>
-      <i class="fas fa-stop me-2"></i>
-      {$_("buttons.stop-pano")}
+      <i class="fas fa-stop"></i>
+      <span class="d-lg-inline d-none ms-2">{$_("buttons.stop")}</span>
     </button>
     <button class="btn btn-secondary" on:click={onRestartPanoClick}>
-      <i class="fa-regular fa-arrows-rotate me-2"></i>
-      {$_("buttons.restart-pano")}
+      <i class="fa-regular fa-arrows-rotate"></i>
+      <span class="d-lg-inline d-none ms-2">{$_("buttons.restart")}</span>
     </button>
   </div>
 </PageActions>

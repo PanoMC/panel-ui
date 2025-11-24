@@ -2,23 +2,16 @@
   <!-- Action Menu -->
 
   <PageActions leftClasses="d-lg-flex d-none" middleClasses="d-lg-flex d-none">
-    <div slot="left">
-      {#if data.categoryUrl}
-        <a class="btn btn-link" role="button" href="{base}/posts">
-          <i class="fas fa-arrow-left ms-2"></i>
-          {$_("buttons.posts")}
-        </a>
-      {/if}
-    </div>
-
     <div slot="right">
       {#if $notifications.length !== 0}
         <button
           type="button"
+          aria-label={$_("pages.notifications.delete-all")}
           class="btn btn-secondary"
           on:click={() => onDeleteAllClick()}>
-          <i class="fa fa-trash me-2"></i>
-          {$_("pages.notifications.delete-all")}
+          <i class="fa fa-trash"></i>
+          <span class="d-lg-inline d-none ms-2">
+            {$_("pages.notifications.delete-all")}</span>
         </button>
       {/if}
     </div>

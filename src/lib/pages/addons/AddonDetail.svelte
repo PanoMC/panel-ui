@@ -5,8 +5,8 @@
   <!-- Action Menu -->
   <PageActions middleClasses="d-lg-flex d-none">
     <a slot="left" href="{base}/addons" class="btn btn-link" role="button">
-      <i class="fas fa-arrow-left me-2"></i>
-      {$_("buttons.addons")}
+      <i class="fas fa-arrow-left"></i>
+      <span class="d-lg-inline d-none ms-2">{$_("buttons.addons")}</span>
     </a>
 
     <div slot="right" class="hstack gap-2">

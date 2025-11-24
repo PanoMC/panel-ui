@@ -1,4 +1,4 @@
-<PageActions>
+<PageActions leftClasses="d-lg-flex d-none" rightClasses="d-lg-flex d-none">
   <CardMenu slot="middle">
     <CardMenuItem href="/view">{$_("buttons.themes")}</CardMenuItem>
     <CardMenuItem href="/view/theme-settings"
@@ -81,8 +81,8 @@
     }
 
     if (data.type === "theme-settings-loaded") {
-      sendTheme()
-      sendCSS()
+      sendTheme();
+      sendCSS();
     }
 
     if (data.type === "theme-settings-ready") {
@@ -92,64 +92,84 @@
 
   function sendTheme(theme) {
     if (!frame?.contentWindow || !childOrigin) return;
-    
+
     // Get theme from panelTheme store
     const bsTheme = theme || $panelTheme;
-    
-    console.log('Sending data-bs-theme to iframe:', bsTheme);
-    frame.contentWindow.postMessage({
-      type: 'set-bs-theme',
-      theme: bsTheme
-    }, childOrigin);
+
+    console.log("Sending data-bs-theme to iframe:", bsTheme);
+    frame.contentWindow.postMessage(
+      {
+        type: "set-bs-theme",
+        theme: bsTheme,
+      },
+      childOrigin,
+    );
   }
 
   async function sendCSS() {
     if (!frame?.contentWindow || !childOrigin) return;
-    
+
     // Collect global CSS (non-scoped styles)
     // Get all style tags present in DOM at runtime
-    const allStyles = Array.from(document.querySelectorAll('style'));
+    const allStyles = Array.from(document.querySelectorAll("style"));
     const globalStyles = allStyles
-      .filter(style => {
+      .filter((style) => {
         // Exclude scoped styles (those with data-svelte-h attribute)
-        return !style.hasAttribute('data-svelte-h');
+        return !style.hasAttribute("data-svelte-h");
       })
-      .map(style => {
+      .map((style) => {
         // Use textContent or innerHTML
-        return style.textContent || style.innerHTML || '';
+        return style.textContent || style.innerHTML || "";
       })
-      .filter(css => css.trim().length > 0) // Filter out empty ones
-      .join('\n\n');
-    
+      .filter((css) => css.trim().length > 0) // Filter out empty ones
+      .join("\n\n");
+
     // If we have inline styles, send them
     if (globalStyles) {
-      console.log('Sending inline CSS to iframe:', globalStyles.substring(0, 100) + '...');
-      frame.contentWindow.postMessage({
-        type: 'inject-css',
-        css: globalStyles
-      }, childOrigin);
+      console.log(
+        "Sending inline CSS to iframe:",
+        globalStyles.substring(0, 100) + "...",
+      );
+      frame.contentWindow.postMessage(
+        {
+          type: "inject-css",
+          css: globalStyles,
+        },
+        childOrigin,
+      );
     } else {
       // If no inline styles, check for link tags (build mode)
-      const cssLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+      const cssLinks = Array.from(
+        document.querySelectorAll('link[rel="stylesheet"]'),
+      );
       const baseUrl = window.location.origin + base;
       const globalLinks = cssLinks
-        .filter(link => {
+        .filter((link) => {
           // Include only global CSS links (exclude theme-specific ones)
-          const href = link.href || '';
+          const href = link.href || "";
           // Exclude theme-specific links, include _app links (build output)
-          return href.includes('_app') && !href.includes('theme');
+          return href.includes("_app") && !href.includes("theme");
         })
-        .map(link => {
-          const href = link.href || '';
+        .map((link) => {
+          const href = link.href || "";
           try {
             const url = new URL(href);
             // If URL doesn't start with base + /_app, remove the part between base and /_app
-            if (url.origin === window.location.origin && url.pathname.includes('/_app')) {
-              const appIndex = url.pathname.indexOf('/_app');
-              const expectedBasePath = base + '/_app';
+            if (
+              url.origin === window.location.origin &&
+              url.pathname.includes("/_app")
+            ) {
+              const appIndex = url.pathname.indexOf("/_app");
+              const expectedBasePath = base + "/_app";
               if (appIndex > 0 && !url.pathname.startsWith(expectedBasePath)) {
                 // Remove everything between origin+base and /_app
-                return baseUrl + '/_app' + url.pathname.substring(appIndex + '/_app'.length) + (url.search || '') + (url.hash || '');
+                return (
+                  baseUrl +
+                  "/_app" +
+                  url.pathname.substring(appIndex + "/_app".length) +
+                  (url.search || "") +
+                  (url.hash || "")
+                );
               }
             }
             return href;
@@ -157,15 +177,20 @@
             return href;
           }
         });
-      
+
       if (globalLinks.length > 0) {
-        console.log('Sending CSS links to iframe:', globalLinks);
-        frame.contentWindow.postMessage({
-          type: 'inject-css-links',
-          links: globalLinks
-        }, childOrigin);
+        console.log("Sending CSS links to iframe:", globalLinks);
+        frame.contentWindow.postMessage(
+          {
+            type: "inject-css-links",
+            links: globalLinks,
+          },
+          childOrigin,
+        );
       } else {
-        console.warn('No global CSS found to send (neither style tags nor link tags)');
+        console.warn(
+          "No global CSS found to send (neither style tags nor link tags)",
+        );
       }
     }
   }
@@ -178,7 +203,7 @@
     if (!frame) await delay(100);
 
     if (childOrigin && frame.contentWindow) {
-      sendTheme()
+      sendTheme();
       sendCSS();
     }
   }
@@ -227,7 +252,7 @@
     load();
 
     unsubscribeTheme = panelTheme.subscribe((value) => {
-        sendTheme(value);
+      sendTheme(value);
     });
   });
 

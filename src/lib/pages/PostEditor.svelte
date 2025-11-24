@@ -10,7 +10,7 @@
 
 <article class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions>
+  <PageActions middleClasses="d-lg-flex d-none">
     <a
       href="{base}/posts{data.post.status === StatusTypes.TRASH
         ? '?pageType=TRASH'
@@ -20,8 +20,9 @@
       class="btn btn-link"
       role="button"
       slot="left">
-      <i class="fas fa-arrow-left me-2"></i>
-      {$_("pages.post-editor.posts")}
+      <i class="fas fa-arrow-left"></i>
+      <span class="d-lg-inline d-none ms-2">
+        {$_("pages.post-editor.posts")}</span>
     </a>
 
     <div slot="right">
@@ -79,10 +80,11 @@
           isEditorEmpty ||
           data.post.title.length === 0}
         on:click={() => submit(true)}>
-        <i class="fas fa-asterisk me-2"></i>
-        {data.post.status === StatusTypes.PUBLISHED
-          ? $_("buttons.update")
-          : $_("pages.post-editor.publish")}
+        <i class="fas fa-save"></i>
+        <span class="d-lg-inline d-none ms-2">
+          {data.post.status === StatusTypes.PUBLISHED
+            ? $_("buttons.update")
+            : $_("pages.post-editor.publish")}</span>
       </button>
     </div>
   </PageActions>
@@ -133,14 +135,17 @@
               <li class="list-group-item">
                 <div class="d-flex justify-content-between align-items-center">
                   {$_("pages.post-editor.created-at")}
-                  <div class="text-end"><Date time="{data.post.date}" relativeFormat/></div>
+                  <div class="text-end">
+                    <Date time={data.post.date} relativeFormat />
+                  </div>
                 </div>
               </li>
               {#if data.post.moveDate}
                 <li class="list-group-item">
-                  <div class="d-flex justify-content-between align-items-center">
+                  <div
+                    class="d-flex justify-content-between align-items-center">
                     {$_("pages.post-editor.updated-at")}
-                    <div><Date time="{data.post.moveDate}" relativeFormat/></div>
+                    <div><Date time={data.post.moveDate} relativeFormat /></div>
                   </div>
                 </li>
               {/if}
@@ -206,7 +211,9 @@
                   on:dragover={handleDragOver}
                   on:dragleave={handleDragLeave}>
                   <i class="fas fa-image fa-3x mb-2"></i>
-                  <p class="mb-0">{@html $_("pages.post-editor.thumbnail-not-determined")}</p>
+                  <p class="mb-0">
+                    {@html $_("pages.post-editor.thumbnail-not-determined")}
+                  </p>
                 </button>
               {/if}
               <input

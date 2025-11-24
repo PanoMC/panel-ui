@@ -28,9 +28,10 @@
   <div slot="right" class="hstack gap-2">
     <button
       type="button"
+      title={$_("buttons.reload")}
+      aria-label={$_("buttons.reload")}
       class="btn btn-outline-primary"
       class:active={reloading}
-      use:tooltip={[$_("buttons.reload"), { placement: "bottom" }]}
       on:click={reloadThemes}>
       <i class="fas fa-sync" class:fa-spin={reloading}></i>
     </button>
@@ -38,8 +39,8 @@
       type="button"
       class="btn btn-secondary"
       on:click={() => showInstallResourceModal("THEME")}>
-      <i class="fas fa-plus me-2"></i>
-      {$_("buttons.install-theme")}
+      <i class="fas fa-plus"></i>
+      <span class="d-lg-inline d-none ms-2">{$_("buttons.install-theme")}</span>
     </button>
   </div>
 </PageActions>
