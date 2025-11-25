@@ -98,7 +98,7 @@
             height="128"
             class:border={isOnline || data.player.isBanned}
             class:border-3={isOnline || data.player.isBanned}
-            class:border-success={isOnline}
+            class:border-success={!data.player.isBanned && isOnline}
             class:border-danger={data.player.isBanned}
             src="https://minotar.net/avatar/{data.player.username}"
             use:tooltip={!data.player.isBanned && [
