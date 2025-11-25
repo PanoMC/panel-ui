@@ -2,35 +2,44 @@
   <td class="align-middle text-nowrap">
     {#if banHistory.bannedUntil}
       <span
-        use:tooltip="{[
-          format(new Date(banHistory.bannedUntil), 'dd/MM/yyyy, HH:mm'),
-          { placement: 'bottom', locale: locales[$currentLanguage.dateFnsCode] },
-        ]}"
-        class="text-primary">
+        use:tooltip={[
+          format(new Date(banHistory.bannedUntil), "dd/MM/yyyy, HH:mm"),
+          {
+            placement: "bottom",
+            locale: locales[$currentLanguage.dateFnsCode],
+          },
+        ]}>
         {getBanDurationText(banHistory.createdAt, banHistory.bannedUntil)}
       </span>
     {:else}
-      <span class="text-muted">{$_("pages.player-detail.permanent-ban")}</span>
+      <span>{$_("pages.player-detail.permanent-ban")}</span>
     {/if}
   </td>
   <td class="align-middle">
     {#if banHistory.reason}
-      <span title={banHistory.reason}>{banHistory.reason.length > 36 ? banHistory.reason.substring(0, 36) + '...' : banHistory.reason}</span>
+      <span title={banHistory.reason}
+        >{banHistory.reason.length > 36
+          ? banHistory.reason.substring(0, 36) + "..."
+          : banHistory.reason}</span>
     {:else}
-      <span class="text-muted">{$_("pages.player-detail.no-reason")}</span>
+      <span>{$_("pages.player-detail.no-reason")}</span>
     {/if}
   </td>
   <td class="align-middle text-center">
     {#if banHistory.emailNotified}
-      <i class="fas fa-check text-success" use:tooltip="{[
-          $_('pages.player-detail.email-notified'),
-          { placement: 'bottom' },
-        ]}"></i>
+      <i
+        class="fas fa-check text-success"
+        use:tooltip={[
+          $_("pages.player-detail.email-notified"),
+          { placement: "bottom" },
+        ]}></i>
     {:else}
-      <i class="fas fa-times text-danger" use:tooltip="{[
-          $_('pages.player-detail.email-not-notified'),
-          { placement: 'bottom' },
-        ]}"></i>
+      <i
+        class="fas fa-times text-danger"
+        use:tooltip={[
+          $_("pages.player-detail.email-not-notified"),
+          { placement: "bottom" },
+        ]}></i>
     {/if}
   </td>
   <td class="align-middle text-nowrap">
@@ -53,7 +62,8 @@
         {banHistory.bannedBy}
       </a>
     {:else}
-      <span class="badge text-bg-primary">{$_("pages.player-detail.system-ban")}</span>
+      <span class="badge text-bg-primary"
+        >{$_("pages.player-detail.system-ban")}</span>
     {/if}
   </td>
   <td class="align-middle text-nowrap">
@@ -75,7 +85,8 @@
 
   export let banHistory;
 
-  $: currentLocale = $currentLanguage?.code === 'tr' ? locales.tr : locales.enUS;
+  $: currentLocale =
+    $currentLanguage?.code === "tr" ? locales.tr : locales.enUS;
 
   function getBanDurationText(createdAt, bannedUntil) {
     const createdAtDate = new Date(createdAt);
@@ -84,7 +95,7 @@
     // Calculate the difference between bannedUntil - createdAt
     const duration = intervalToDuration({
       start: createdAtDate,
-      end: bannedUntilDate
+      end: bannedUntilDate,
     });
 
     // Show years, months, weeks, days, hours and minutes, no seconds
@@ -140,7 +151,7 @@
 
     // Show starting from the most important unit
     const durationObj = {};
-    
+
     if (years > 0) {
       durationObj.years = years;
       if (months > 0) durationObj.months = months;
@@ -174,7 +185,7 @@
     }
 
     return formatDuration(durationObj, {
-      locale: currentLocale
+      locale: currentLocale,
     });
   }
 </script>

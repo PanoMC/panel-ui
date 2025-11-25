@@ -118,7 +118,7 @@
             ]} />
 
           {#if data.player.isBanned}
-            <div class="text-danger">{$_("pages.player-detail.banned")}</div>
+            <div class="badge text-bg-danger">{$_("pages.player-detail.banned")}</div>
           {:else}
             <PlayerPermissionBadge
               permissionGroup={data.player.permissionGroup} />
