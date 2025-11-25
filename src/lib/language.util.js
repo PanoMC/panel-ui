@@ -45,7 +45,10 @@ export async function init(initialLocale, event) {
 }
 
 export function getAcceptedLanguage(headers) {
-  if (typeof headers.get("accept-language") === "undefined") {
+  if (
+    typeof headers.get("accept-language") === "undefined" ||
+    headers.get("accept-language") == null
+  ) {
     return "";
   }
 
