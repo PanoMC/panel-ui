@@ -17,7 +17,7 @@
   </div>
 {:else}
   <div
-    class="badge rounded-pill text-bg-danger"
+    class="badge rounded-pill text-bg-primary"
     use:tooltip="{[
       getOfflineRelativeDateText(checkTime),
       { placement: 'bottom' },
