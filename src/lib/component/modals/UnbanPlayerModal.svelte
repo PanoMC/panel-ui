@@ -85,6 +85,11 @@
       path: `/api/panel/players/${$player.username}/unban`,
       handler: (body, reject) => {
         if (body.error) {
+          if (body.error === "NOT_BANNED" || body.error === "NOT_EXISTS") {
+            location.reload();
+            return;
+          }
+
           reject(body.error);
           return;
         }

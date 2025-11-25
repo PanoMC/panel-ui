@@ -247,6 +247,11 @@
       body,
       handler: (body, reject) => {
         if (body.error) {
+          if (body.error === "ALREADY_BANNED" || body.error === "NOT_EXISTS") {
+            location.reload();
+            return;
+          }
+
           reject(body.error);
           return;
         }
