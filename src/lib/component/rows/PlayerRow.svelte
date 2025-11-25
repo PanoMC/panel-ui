@@ -59,10 +59,10 @@
         alt={player.username}
         width="32"
         height="32"
-        class="rounded-circle animate__animated animate__zoomIn" />
+        class="rounded-circle animate__animated animate__zoomIn"/>
     </a>
     <a
-      class="rounded focus-ring ms-2"
+      class="rounded focus-ring ms-2" class:text-danger={player.isBanned} class:text-decoration-line-through={player.isBanned}
       title={$_("buttons.view")}
       href="{base}/players/detail/{player.username}">
       {player.username}
