@@ -60,8 +60,7 @@
     "find": "Find...",
     "mc-plugin": "MC Plugin",
     "see-docs": "See Docs",
-    "stop-pano": "Stop Pano",
-    "restart-pano": "Restart Pano"
+    "restart": "Restart"
   },
   "pages": {
     "themes": {

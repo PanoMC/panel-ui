@@ -60,8 +60,7 @@
     "find": "Bul...",
     "mc-plugin": "MC Eklentisi",
     "see-docs": "Dokümantasyona Bak",
-    "stop-pano": "Pano'yu Durdur",
-    "restart-pano": "Pano'yu Yeniden Başlat"
+    "restart": "Yeniden Başlat"
   },
   "pages": {
     "themes": {
