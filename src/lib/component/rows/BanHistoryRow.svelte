@@ -85,9 +85,6 @@
 
   export let banHistory;
 
-  $: currentLocale =
-    $currentLanguage?.code === "tr" ? locales.tr : locales.enUS;
-
   function getBanDurationText(createdAt, bannedUntil) {
     const createdAtDate = new Date(createdAt);
     const bannedUntilDate = new Date(bannedUntil);
@@ -183,9 +180,8 @@
     } else {
       durationObj.minutes = 1; // Minimum 1 minute
     }
-
     return formatDuration(durationObj, {
-      locale: currentLocale,
+      locale: locales[$currentLanguage.dateFnsCode],
     });
   }
 </script>
