@@ -424,6 +424,7 @@
   import { getContext, onDestroy, onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { _ } from "svelte-i18n";
+  import copy from "copy-to-clipboard";
 
   import { base } from "$app/paths";
   import { beforeNavigate, invalidateAll } from "$app/navigation";
@@ -497,7 +498,7 @@
 
   async function copyHashToClipboard(hash) {
     try {
-      await navigator.clipboard.writeText(hash);
+      copy(hash)
       await showToast("components.toasts.hash-copied");
     } catch (err) {
       console.error("Failed to copy hash:", err);
