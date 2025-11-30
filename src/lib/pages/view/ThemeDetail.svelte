@@ -70,7 +70,7 @@
             class="carousel carousel-dark slide rounded overflow-hidden"
             data-bs-ride="carousel">
             <div class="carousel-indicators">
-              {#each theme.screenshots.length === 0 ? ["screenshot.png"] : theme.screenshots as src, i}
+              {#each theme.screenshots.length === 0 ? {"screenshot.png": ""} : Object.keys(theme.screenshots) as src, i}
                 <button
                   type="button"
                   data-bs-target="#themeCarousel"
@@ -82,10 +82,10 @@
               {/each}
             </div>
             <div class="carousel-inner">
-              {#each theme.screenshots.length === 0 ? ["screenshot.png"] : theme.screenshots as src, i}
+              {#each theme.screenshots.length === 0 ? {"screenshot.png": ""} : Object.keys(theme.screenshots) as key, i}
                 <div class={"carousel-item" + (i === 0 ? " active" : "")}>
                   <img
-                    src={`/api/panel/themes/${theme.id}/screenshots/${src}`}
+                    src={`/api/panel/themes/${theme.id}/screenshots/${key}?hash=${theme.screenshots[key]}`}
                     class="d-block w-100"
                     alt={$_("pages.theme-detail.screenshot") + ` ${i + 1}`} />
                 </div>

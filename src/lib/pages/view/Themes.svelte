@@ -62,8 +62,7 @@
             <div
               class="card text-white position-relative overflow-hidden theme-card h-100">
               <img
-                src="/api/panel/themes/{theme.id}/screenshots/{theme
-                  .screenshots[0] || 'screenshot.png'}"
+                src="/api/panel/themes/{theme.id}/screenshots/{getFirstScreenshotUrl(theme) || 'screenshot.png'}"
                 class="card-img w-100 h-100 object-fit-cover"
                 alt={theme.title}
                 style="object-position:center;" />
@@ -186,5 +185,17 @@
     await showToast("components.toasts.reload-themes-success");
 
     reloading = false;
+  }
+
+  function getFirstScreenshotUrl(theme) {
+    const keys = Object.keys(theme.screenshots)
+
+    if (keys.length === 0) {
+      return null
+    }
+
+    const firstKey = keys[0]
+
+    return `${firstKey}?hash=${theme.screenshots[firstKey]}`
   }
 </script>
