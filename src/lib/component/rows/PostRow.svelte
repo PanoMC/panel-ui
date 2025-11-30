@@ -84,7 +84,12 @@
           class="focus-ring d-block">
           <div class="ratio ratio-16x9 thumbnail-frame">
             <img
-              src={post.thumbnailUrl + "?preview=true"}
+              src={post.thumbnailUrl ? (() => {
+                const lastDotIndex = post.thumbnailUrl.lastIndexOf('.');
+                return lastDotIndex > 0
+                  ? post.thumbnailUrl.substring(0, lastDotIndex) + '-preview' + post.thumbnailUrl.substring(lastDotIndex)
+                  : post.thumbnailUrl + '-preview';
+              })() : post.thumbnailUrl}
               alt={post.title}
               title={post.title} />
           </div>
