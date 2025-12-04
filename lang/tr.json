@@ -294,12 +294,12 @@
           "favicon": {
             "label": "Favicon",
             "select": "Seç",
-            "helper": "PNG, ICO, GIF, JPG, SVG formatında, maksimum 1 mb ve 16x16 piksel olmalı."
+            "helper": "PNG, ICO, GIF, JPG formatında, maksimum 1 mb ve 16x16 piksel olmalı."
           },
           "website-logo": {
             "label": "Website Logo",
             "server-icon": "Sunucu İkonu",
-            "helper": "PNG, JPEG, GIF, SVG formatında, maksimum 2 mb olmalı."
+            "helper": "PNG, JPEG, GIF formatında, maksimum 2 mb olmalı."
           }
         }
       },
@@ -996,7 +996,11 @@
       "platform-update-success": "Platform başarıyla güncellendi.",
       "platform-update-failed": "Platform güncellenirken hata oluştu.",
       "hash-copied": "Hash verisi kopyalandı.",
-      "hash-copy-failed": "Hash verisi kopyalanamadı."
+      "hash-copy-failed": "Hash verisi kopyalanamadı.",
+      "favicon-exceeds-size": "Favicon izin verilen maksimum boyutu (1 MB) aşıyor.",
+      "favicon-wrong-content-type": "Favicon dosya türü geçersiz. Sadece PNG, JPG, JPEG, GIF ve ICO dosyalarına izin verilir.",
+      "website-logo-exceeds-size": "Web sitesi logosu izin verilen maksimum boyutu (2 MB) aşıyor.",
+      "website-logo-wrong-content-type": "Web sitesi logosu dosya türü geçersiz. Sadece PNG, JPG, JPEG ve GIF dosyalarına izin verilir."
     }
   },
   "page-error": {

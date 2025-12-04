@@ -294,12 +294,12 @@
           "favicon": {
             "label": "Favicon",
             "select": "Select",
-            "helper": "PNG, ICO, GIF, JPG, SVG format, maximum 1 mb and 16x16 pixels It must be."
+            "helper": "PNG, ICO, GIF, JPG format, maximum 1 mb and 16x16 pixels It must be."
           },
           "website-logo": {
             "label": "Website Logo",
             "server-icon": "Server Icon",
-            "helper": "PNG, JPEG, GIF, SVG format, maximum 2 mb."
+            "helper": "PNG, JPEG, GIF format, maximum 2 mb."
           }
         }
       },
@@ -995,7 +995,11 @@
       "platform-update-success": "Updated platform successfully.",
       "platform-update-failed": "Failed to update platform.",
       "hash-copied": "Hash data copied.",
-      "hash-copy-failed": "Failed to copy hash data."
+      "hash-copy-failed": "Failed to copy hash data.",
+      "favicon-exceeds-size": "Favicon exceeds maximum allowed size (1 MB).",
+      "favicon-wrong-content-type": "Favicon file type is invalid. Only PNG, JPG, JPEG, GIF, and ICO files are allowed.",
+      "website-logo-exceeds-size": "Website logo exceeds maximum allowed size (2 MB).",
+      "website-logo-wrong-content-type": "Website logo file type is invalid. Only PNG, JPG, JPEG, and GIF files are allowed."
     }
   },
   "page-error": {

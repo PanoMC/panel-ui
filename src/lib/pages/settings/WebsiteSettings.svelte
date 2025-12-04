@@ -295,11 +295,41 @@
   let favicon = "/api/favicon?_=" + Date.now();
   let websiteLogo = "/api/websiteLogo?_=" + Date.now();
 
-  function onFaviconChange(event) {
-    const reader = new FileReader();
-    const image = event.target.files[0];
+  async function onFaviconChange(event) {
+    const file = event.target.files[0];
+    
+    if (!file) {
+      return;
+    }
 
-    reader.readAsDataURL(image);
+    // Favicon validasyonu: max 1MB, PNG, JPG, JPEG, GIF, ICO
+    const maxSize = 1 * 1024 * 1024; // 1MB
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/x-icon', 'image/vnd.microsoft.icon'];
+    const allowedExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.ico'];
+    
+    // Dosya boyutu kontrolü
+    if (file.size > maxSize) {
+      await showToast("components.toasts.favicon-exceeds-size");
+      faviconInput.value = "";
+      faviconFiles = null;
+      selectedFaviconFiles = [];
+      return;
+    }
+
+    // Dosya tipi kontrolü
+    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
+    
+    if (!isValidType) {
+      await showToast("components.toasts.favicon-wrong-content-type");
+      faviconInput.value = "";
+      faviconFiles = null;
+      selectedFaviconFiles = [];
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
 
     reader.onload = (e) => {
       favicon = e.target.result;
@@ -308,11 +338,41 @@
     selectedFaviconFiles = faviconFiles;
   }
 
-  function onWebsiteLogoChange(event) {
-    const reader = new FileReader();
-    const image = event.target.files[0];
+  async function onWebsiteLogoChange(event) {
+    const file = event.target.files[0];
+    
+    if (!file) {
+      return;
+    }
 
-    reader.readAsDataURL(image);
+    // Website logo validasyonu: max 2MB, PNG, JPG, JPEG, GIF
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/gif'];
+    const allowedExtensions = ['.png', '.jpg', '.jpeg', '.gif'];
+    
+    // Dosya boyutu kontrolü
+    if (file.size > maxSize) {
+      await showToast("components.toasts.website-logo-exceeds-size");
+      websiteLogoInput.value = "";
+      websiteLogoFiles = null;
+      selectedWebsiteLogoFiles = [];
+      return;
+    }
+
+    // Dosya tipi kontrolü
+    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
+    
+    if (!isValidType) {
+      await showToast("components.toasts.website-logo-wrong-content-type");
+      websiteLogoInput.value = "";
+      websiteLogoFiles = null;
+      selectedWebsiteLogoFiles = [];
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
 
     reader.onload = (e) => {
       websiteLogo = e.target.result;
