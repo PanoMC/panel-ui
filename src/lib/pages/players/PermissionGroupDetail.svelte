@@ -79,6 +79,7 @@
           </ul>
         </div>
       </div>
+
     </div>
     <div class="col-xl-4">
       <div class="list-group">
@@ -452,3 +453,4 @@
   //   return this.charAt(0).toUpperCase() + this.slice(1);
   // };
 </script>
+
