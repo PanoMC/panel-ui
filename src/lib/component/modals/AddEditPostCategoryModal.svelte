@@ -1,62 +1,71 @@
 <!-- Add / Edit Category Modal -->
-<div class="modal fade" bind:this="{$modalElement}" role="dialog" tabindex="-1">
+<div class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          {$mode === "create" ? $_('components.modals.add-edit-post-category.create-category') : $_('components.modals.add-edit-post-category.edit-category')}
+          {$mode === "create"
+            ? $_("components.modals.add-edit-post-category.create-category")
+            : $_("components.modals.add-edit-post-category.edit-category")}
         </h5>
         <button
-          title="{$_('buttons.close')}"
+          title={$_("buttons.close")}
+          aria-label={$_("buttons.close")}
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
-          on:click="{hide}"></button>
+          on:click={hide}></button>
       </div>
-      <form on:submit|preventDefault="{onSubmit}">
+      <form on:submit|preventDefault={onSubmit}>
         <div class="modal-body">
           <input
-            class:border-danger="{$errors.title}"
+            class:border-danger={$errors.title}
             class="form-control form-control-lg mb-3"
-            placeholder="{$_('components.modals.add-edit-post-category.inputs.title.placeholder')}"
+            placeholder={$_(
+              "components.modals.add-edit-post-category.inputs.title.placeholder",
+            )}
             id="category"
             type="text"
-            bind:value="{$category.title}"
-            on:input="{() => setURL()}" />
+            bind:value={$category.title}
+            on:input={() => setURL()} />
           <textarea
-            class:border-danger="{$errors.description}"
+            class:border-danger={$errors.description}
             class="form-control mb-3"
-            placeholder="{$_('components.modals.add-edit-post-category.inputs.description.placeholder')}"
+            placeholder={$_(
+              "components.modals.add-edit-post-category.inputs.description.placeholder",
+            )}
             id="categoryDescription"
             type="text"
             rows="5"
-            bind:value="{$category.description}"></textarea>
+            bind:value={$category.description}></textarea>
           <div class="mb-3 input-group">
             <span class="input-group-text">/category/</span>
             <input
               class="form-control"
-              placeholder="{$_('components.modals.add-edit-post-category.inputs.url.placeholder')}"
+              placeholder={$_(
+                "components.modals.add-edit-post-category.inputs.url.placeholder",
+              )}
               id="categoryURL"
               type="text"
-              class:is-invalid="{$errors.url}"
-              bind:value="{$category.url}" />
+              class:is-invalid={$errors.url}
+              bind:value={$category.url} />
           </div>
-          <small class:text-danger="{$errors.url}">
-            {$_('components.modals.add-edit-post-category.inputs.url.helper')}
+          <small class:text-danger={$errors.url}>
+            {$_("components.modals.add-edit-post-category.inputs.url.helper")}
           </small>
         </div>
         <div class="modal-footer">
           <button
             class="btn w-100"
             type="submit"
-            class:btn-secondary="{$mode === 'create'}"
-            class:btn-primary="{$mode === 'edit'}"
-            class:disabled="{loading || buttonDisabled}">
+            class:btn-secondary={$mode === "create"}
+            class:btn-primary={$mode === "edit"}
+            class:disabled={loading || buttonDisabled}>
             <span>
               {#if $mode === "edit"}
-                {$_('buttons.save')}
+                {$_("buttons.save")}
               {:else}
-                {$_('buttons.create')}
+                {$_("buttons.create")}
               {/if}
             </span>
           </button>
@@ -86,7 +95,7 @@
       description: "",
       url: "",
       color: "#1976d2",
-    }
+    },
   ) {
     mode.set(newMode);
 
@@ -157,8 +166,8 @@
       ApiUtil.put({
         path: `/api/panel/post/categories/${get(category).id}`,
         body: get(category),
-        handler: bodyHandler
-      })
+        handler: bodyHandler,
+      });
 
       return;
     }
@@ -166,8 +175,8 @@
     ApiUtil.post({
       path: "/api/panel/post/categories",
       body: get(category),
-      handler: bodyHandler
-    })
+      handler: bodyHandler,
+    });
   }
 
   function setURL() {

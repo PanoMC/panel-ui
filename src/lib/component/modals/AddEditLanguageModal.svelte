@@ -1,70 +1,74 @@
-<div class="modal fade" bind:this="{$modalElement}" role="dialog" tabindex="-1">
+<div class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          {$mode === "edit" ? $_('components.modals.add-edit-language.edit-language') : $_('components.modals.add-edit-language.create-language')}
+          {$mode === "edit"
+            ? $_("components.modals.add-edit-language.edit-language")
+            : $_("components.modals.add-edit-language.create-language")}
         </h5>
         <button
-          title="{$_('buttons.close')}"
+          title={$_("buttons.close")}
+          aria-label={$_("buttons.close")}
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
-          on:click="{hide}"></button>
+          on:click={hide}></button>
       </div>
-      <form on:submit|preventDefault="{onSubmit}">
+      <form on:submit|preventDefault={onSubmit}>
         <div class="modal-body">
           <input
             class="form-control form-control-lg mb-3"
-            placeholder="{$_('components.modals.add-edit-language.inputs.name')}"
+            placeholder={$_("components.modals.add-edit-language.inputs.name")}
             id="name"
             type="text"
-            bind:value="{$locale.name}"
+            bind:value={$locale.name}
             on:input={onNameChange}
-            class:border-danger="{$error === 'INVALID_LOCALE_NAME'}" />
+            class:border-danger={$error === "INVALID_LOCALE_NAME"} />
           <input
             class="form-control mb-3"
-            placeholder="{$_('components.modals.add-edit-language.inputs.code')}"
+            placeholder={$_("components.modals.add-edit-language.inputs.code")}
             id="code"
             type="text"
-            bind:value="{$locale.code}"
-            class:border-danger="{$error === 'INVALID_LOCALE_CODE'}" />
+            bind:value={$locale.code}
+            class:border-danger={$error === "INVALID_LOCALE_CODE"} />
           <input
             class="form-control mb-3"
-            placeholder="{$_('components.modals.add-edit-language.inputs.date-fns-code')}"
+            placeholder={$_(
+              "components.modals.add-edit-language.inputs.date-fns-code",
+            )}
             id="dateFnsCode"
             type="text"
-            bind:value="{$locale.dateFnsCode}"
-            class:border-danger="{$error === 'INVALID_DATE_FNS_CODE'}" />
+            bind:value={$locale.dateFnsCode}
+            class:border-danger={$error === "INVALID_DATE_FNS_CODE"} />
 
           <input
             id="derivatives"
             class="form-control"
-            class:border-danger="{$error === 'derivatives' || $error === 'INVALID_LOCALE_DERIVATIVE'}"
-            placeholder="{$_(
-            'components.modals.add-edit-language.inputs.derivatives',
-          )}"
+            class:border-danger={$error === "derivatives" ||
+              $error === "INVALID_LOCALE_DERIVATIVE"}
+            placeholder={$_(
+              "components.modals.add-edit-language.inputs.derivatives",
+            )}
             type="text"
             name="derivative"
-            bind:value="{$derivative}"
+            bind:value={$derivative}
             on:input={onDerivativeChange}
             on:keydown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 e.preventDefault();
                 addKeyWord();
               }
             }} />
           {#each $locale.derivatives as derivative, index (derivative)}
-            <a class="d-inline-block mt-2"
-              use:tooltip="{[
-              $_('buttons.remove'),
-              { placement: 'bottom' },
-            ]}"
+            <a
+              class="d-inline-block mt-2"
+              use:tooltip={[$_("buttons.remove"), { placement: "bottom" }]}
               href="javascript:void(0);"
-              on:click="{() => removeKeyWord(index)}">
-            <span class="badge rounded-pill bg-light link-primary">
-              {derivative}
-            </span>
+              on:click={() => removeKeyWord(index)}>
+              <span class="badge rounded-pill bg-light link-primary">
+                {derivative}
+              </span>
             </a>
           {/each}
         </div>
@@ -72,10 +76,10 @@
           <button
             class="btn w-100"
             type="submit"
-            class:btn-secondary="{$mode === 'create'}"
-            class:btn-primary="{$mode === 'edit'}"
-            class:disabled="{loading || buttonDisabled}">
-            {$mode === "edit" ? $_('buttons.save') : $_('buttons.create')}
+            class:btn-secondary={$mode === "create"}
+            class:btn-primary={$mode === "edit"}
+            class:disabled={loading || buttonDisabled}>
+            {$mode === "edit" ? $_("buttons.save") : $_("buttons.create")}
           </button>
         </div>
       </form>
@@ -88,9 +92,9 @@
 
   const modalElement = writable();
   const mode = writable("create");
-  const locale = writable({derivatives: []});
+  const locale = writable({ derivatives: [] });
   const error = writable();
-  const derivative = writable()
+  const derivative = writable();
 
   let callback = (routeFirstPage) => {};
   let hideCallback = (locale) => {};
@@ -98,7 +102,13 @@
 
   export function show(
     newMode,
-    newLocale = { id: -1, name: "", code: "", dateFnsCode: "", derivatives: [] }
+    newLocale = {
+      id: -1,
+      name: "",
+      code: "",
+      dateFnsCode: "",
+      derivatives: [],
+    },
   ) {
     mode.set(newMode);
 
@@ -155,17 +165,23 @@
 
         callback(true);
 
-        showToast('components.toasts.' + (get(mode) === "edit" ? "language-updated-successfully" : "language-created-successfully"), {
-          name: limitTitle(get(locale).name),
-        });
+        showToast(
+          "components.toasts." +
+            (get(mode) === "edit"
+              ? "language-updated-successfully"
+              : "language-created-successfully"),
+          {
+            name: limitTitle(get(locale).name),
+          },
+        );
 
-        return
+        return;
       } else if (body.result === "error") {
         loading = false;
 
         error.set(body.error);
 
-        return
+        return;
       }
 
       reject();
@@ -175,8 +191,8 @@
       ApiUtil.put({
         path: `/api/panel/locales/${get(locale).id}`,
         body: get(locale),
-        handler: bodyHandler
-      })
+        handler: bodyHandler,
+      });
 
       return;
     }
@@ -184,13 +200,13 @@
     ApiUtil.post({
       path: "/api/panel/locales",
       body: get(locale),
-      handler: bodyHandler
-    })
+      handler: bodyHandler,
+    });
   }
 
   function addKeyWord() {
     if (!$derivative || $derivative.length < 2) {
-      $error = "derivatives"
+      $error = "derivatives";
       return;
     }
 
@@ -206,7 +222,7 @@
 
     const keywords = $derivative.split(/,\s*/);
 
-    keywords.forEach(keyword => {
+    keywords.forEach((keyword) => {
       $locale.derivatives.push(keyword.trim());
     });
 

@@ -11,6 +11,7 @@
         <h5 class="modal-title">{$_('components.modals.edit-player.title')}</h5>
         <button
           title="{$_('buttons.close')}"
+          aria-label="{$_('buttons.close')}"
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
