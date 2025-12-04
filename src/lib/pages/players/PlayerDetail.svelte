@@ -56,6 +56,9 @@
               (data.player.permissionGroup === "admin" && !$user.admin) ||
               !$siteInfo.emailEnabled}>
             <i class="fas fa-envelope"></i>
+            {#if sendingVerificationMail}
+              <span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>
+            {/if}
           </button>
         {/if}
 
