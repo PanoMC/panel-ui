@@ -1,5 +1,9 @@
 <!-- Authorize Player Modal -->
-<div class="modal fade" bind:this="{$modalElement}" tabindex="-1" aria-hidden="true">
+<div
+  class="modal fade"
+  bind:this={$modalElement}
+  tabindex="-1"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       {#if $loading}
@@ -11,34 +15,72 @@
       {:else}
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">
-            {$_('components.modals.authorize-player.title')}
+            {$_("components.modals.authorize-player.title")}
           </h5>
           <button
             type="button"
             class="btn-close"
             data-bs-dismiss="modal"
-            aria-label="{$_('buttons.close')}"
-            on:click="{hide}"></button>
+            aria-label={$_("buttons.close")}
+            title={$_("buttons.close")}
+            on:click={hide}></button>
         </div>
         <div class="modal-body">
-          <select
-            class="form-control"
-            id="selectPermGroup"
-            bind:value="{$player.permissionGroup}">
-            <option class="text-primary" value="-">{$_('components.modals.authorize-player.player')}</option>
+          <div class="vstack gap-2">
+            <label for="authorizePlayerPermGroup">{$_("components.modals.authorize-player.permission-group-label")}</label>
+            <div class="hstack gap-2">
+              <select
+                class="form-control"
+                id="authorizePlayerPermGroup"
+                bind:value={$player.permissionGroup}>
+                <option class="text-primary" value="-"
+                  >{$_("components.modals.authorize-player.player")}</option>
 
-            {#each $permissionGroups as permissionGroup, index (permissionGroup)}
-              <option value="{permissionGroup.name}"
-                >{permissionGroup.name}</option>
-            {/each}
-          </select>
+                {#each $permissionGroups as permissionGroup, index (permissionGroup)}
+                  <option value={permissionGroup.name}
+                    >{permissionGroup.name}</option>
+                {/each}
+              </select>
+
+              <!-- Remove Button -->
+              <button
+                class="btn-close"
+                aria-label={$_("buttons.remove")}
+                title={$_("buttons.remove")}></button>
+            </div>
+            <!-- Add Button -->
+            <button class="btn btn-primary btn-sm"
+              >{$_("buttons.add")} 1/1
+            </button>
+
+            <label for="authorizePlayerPermissions">Yetkiler</label>
+            <div class="list-group">
+              <label
+                for="example-permission"
+                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center pe-auto">
+                <!--              TODO: Icon system-->
+                <!--              <Icon-->
+                <!--                data="{icon[convertIconName(permission.iconName)]}"-->
+                <!--                class="text-primary d-block m-auto" />-->
+
+                Example Permission
+
+                <div class="form-check form-switch">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="example-permission" />
+                </div>
+              </label>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button
             type="button"
             class="btn btn-primary w-100"
-            class:disabled="{$submitLoading}"
-            on:click="{onSubmit}">{$_('buttons.save')}</button>
+            class:disabled={$submitLoading}
+            on:click={onSubmit}>{$_("buttons.save")}</button>
         </div>
       {/if}
     </div>
@@ -101,15 +143,15 @@
       path: "/api/panel/permissionGroups",
       handler: (body, reject) => {
         if (body.error) {
-          reject()
+          reject();
 
           return;
         }
 
         permissionGroups.set(body.permissionGroups);
         loading.set(false);
-      }
-    })
+      },
+    });
   }
 </script>
 
@@ -134,7 +176,7 @@
 
           await callback(get(player));
 
-          await showToast('components.toasts.player-authorized-success');
+          await showToast("components.toasts.player-authorized-success");
 
           return;
         } else if (body.result === "NOT_EXISTS") {
@@ -152,7 +194,7 @@
         }
 
         reject();
-      }
-    })
+      },
+    });
   }
 </script>

@@ -1,5 +1,6 @@
 {
   "buttons": {
+    "add": "Ekle",
     "remove": "Kaldır",
     "connect": "Bağla",
     "connecting": "Bağlanıyor...",
@@ -190,7 +191,7 @@
       "by-perm-group-title": "\"{permissionGroupName}\" Yetkili Oyuncular",
       "authorized": "Yetkili",
       "banned": "Yasaklı",
-      "perm-groups": "Yetki Grupları",
+      "permissions": "Yetkiler",
       "table-title": "{playerCount} {pageType} Oyuncu",
       "all": "Tümü",
       "player": "Oyuncu",
@@ -396,13 +397,89 @@
       "category": "Kategori",
       "description": "Açıklama"
     },
-    "permission-groups": {
-      "title": "Yetki Grupları",
+    "permissions": {
+      "title": "Yetkiler",
       "create-permission-group-button": "Yetki Grubu Oluştur",
       "card-title": "{count} Yetki Grubu",
       "name": "İsim",
       "permission-amount": "Yetki Adeti",
-      "player-amount": "Oyuncu Adeti"
+      "player-amount": "Oyuncu Adeti",
+      "groups": "Yetki Grupları",
+      "search": {
+        "placeholder": "Ara..."
+      },
+      "permissions": "Yetki",
+      "players": "Oyuncu",
+      "users": "Oyuncular",
+      "no-groups-found": "Grup bulunamadı",
+      "permissions-assigned": "Atanan Yetki",
+      "select-group-title": "Bir Grup Seçin",
+      "select-group-description": "Düzenlemek için soldaki listeden bir yetki grubu seçin.",
+      "create-new-group": "Yeni Grup Oluştur",
+      "form": {
+        "group-name": "Grup İsmi",
+        "group-name-placeholder": "Grup ismini girin",
+        "weight": "Weight",
+        "weight-placeholder": "0-199 arası değer",
+        "display-name": "Display Name",
+        "display-name-placeholder": "Görünen isim",
+        "prefix": "Prefix",
+        "prefix-placeholder": "Ön ek",
+        "parent": "Parent",
+        "select-option": "Seçiniz",
+        "parent-admin": "Admin",
+        "parent-moderator": "Moderator",
+        "parent-vip": "VIP",
+        "suffix": "Suffix",
+        "suffix-placeholder": "Son ek"
+      },
+      "permission-editor": {
+        "search": {
+          "placeholder": "İzin ara..."
+        },
+        "filter": {
+          "all-categories": "Tüm Kategoriler"
+        },
+        "add-all": "Tümünü Ekle",
+        "remove-all": "Tümünü Kaldır",
+        "stats": {
+          "total": "Toplam",
+          "granted": "Verilen",
+          "denied": "Reddedilen"
+        }
+      }
+    },
+    "permission-groups": {
+      "create-permission-group-button": "Yetki Grubu Oluştur",
+      "form": {
+        "group-name": "Grup İsmi",
+        "group-name-placeholder": "Grup ismini girin",
+        "weight": "Ağırlık (0-199)",
+        "weight-placeholder": "0-199 arası değer",
+        "display-name": "Görünen İsim",
+        "display-name-placeholder": "Görünen isim",
+        "prefix": "Ön Ek",
+        "prefix-placeholder": "Ön ek",
+        "parent": "Üst Grup",
+        "select-option": "Seçiniz",
+        "parent-admin": "Admin",
+        "parent-moderator": "Moderator",
+        "parent-vip": "VIP",
+        "suffix": "Son Ek",
+        "suffix-placeholder": "Son ek"
+      },
+      "validation": {
+        "name-required": "Grup ismi gerekli!",
+        "weight-range": "Ağırlık değeri 0-199 arasında olmalıdır!"
+      },
+      "tracks": {
+        "add-permission-track": "Yetki Takibi Ekle",
+        "edit-permission-track": "Yetki Takibini Düzenle",
+        "buttons": {
+          "cancel": "İptal",
+          "save-changes": "Değişiklikleri Kaydet"
+        }
+      }
     },
     "error": {
       "title": "Hata: {status}",
@@ -479,7 +556,7 @@
     "permission-group-detail": {
       "title-edit": "Yetki Grubunu Düzenle",
       "title-create": "Yetki Grubu Oluştur",
-      "permission-groups": "Yetki Grupları",
+      "permissions": "Yetkiler",
       "inputs": {
         "name": {
           "placeholder": "İsim"
@@ -738,7 +815,9 @@
       },
       "authorize-player": {
         "title": "Oyuncuyu Yetkilendir",
-        "player": "Oyuncu"
+        "player": "Oyuncu",
+        "permission-group-label": "Yetki Grubu",
+        "select-group": "Yetki grubu seçin"
       },
       "confirm-ban-player": {
         "title": "Bu oyuncuyu yasaklamak istediğinizden emin misiniz?",
@@ -816,6 +895,20 @@
       },
       "confirm-delete-language": {
         "title": "Bu dili silmek istediğinizden emin misiniz?"
+      },
+      "add-permission-node": {
+        "title": "İzin Düğümleri Ekle",
+        "input-placeholder": "İzin yazın ve Enter'a basın",
+        "help-text": "Yapıştırırken birden fazla izni virgül, boşluk veya yeni satırlarla ayırın.",
+        "selected-permissions-label": "Seçilen İzinler",
+        "value-label": "Değer {value}",
+        "expiry-label": "Son Kullanma",
+        "expiry-never": "Asla",
+        "expiry-date": "Tarih",
+        "context-label": "Bağlam",
+        "context-key-placeholder": "Anahtar",
+        "add-context-button": "Bağlam Ekle",
+        "add-permissions-button": "{count} İzin Ekle"
       },
       "connect-server": {
         "title": "Sunucu Bağla",

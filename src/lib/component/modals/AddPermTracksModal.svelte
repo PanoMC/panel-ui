@@ -4,9 +4,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">
-            {$_("pages.permissions.tracks.edit-permission-track")}
-          </h5>
+          <h5 class="modal-title">Add Permission Track</h5>
           <button
             type="button"
             class="btn-close"
@@ -15,16 +13,15 @@
             title={$_("buttons.close")}></button>
         </div>
         <div class="modal-body">
-          <p class="text-muted">
-            Permission track editing functionality will be implemented here.
-          </p>
+          <!-- Modal content will be added here -->
+          <p class="text-muted">Modal content is empty as requested.</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" on:click={closeModal}>
-            {$_("pages.permissions.tracks.buttons.cancel")}
+            Cancel
           </button>
           <button type="button" class="btn btn-primary" on:click={handleSave}>
-            {$_("pages.permissions.tracks.buttons.save-changes")}
+            Save Changes
           </button>
         </div>
       </div>
@@ -32,7 +29,7 @@
   </div>
 {/if}
 
-<!-- Edit Permission Track Modal -->
+<!-- Add Permission Tracks Modal -->
 <script>
   import { _ } from "svelte-i18n";
   import { createEventDispatcher } from "svelte";

@@ -7,8 +7,8 @@
       {#if !data.categoryUrl}
         <CardMenuItem href="/players" startsWith>
           {$_("buttons.players")}</CardMenuItem>
-        <CardMenuItem href="/players/perm-groups" startsWith>
-          {$_("pages.players.perm-groups")}</CardMenuItem>
+        <CardMenuItem href="/players/permissions" startsWith>
+          {$_("pages.players.permissions")}</CardMenuItem>
       {/if}
     </CardMenu>
     <div slot="right">

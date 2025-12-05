@@ -8,7 +8,7 @@
       href="{base}/players/perm-groups">
       <i class="fas fa-arrow-left"></i>
       <span class="d-lg-inline d-none ms-2">
-        {$_("pages.permission-group-detail.permission-groups")}</span>
+        {$_("pages.permission-group-detail.permissions")}</span>
     </a>
 
     <button
@@ -81,32 +81,12 @@
       </div>
 
     </div>
-    <div class="col-xl-4">
-      <div class="list-group">
-        {#each data.permissionList as permission, index (permission)}
-          <label
-            for={permission.name}
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center pe-auto"
-            use:tooltip={[$_(`permissions.${permission.name}.description`)]}>
-            <!--              TODO: Icon system-->
-            <!--              <Icon-->
-            <!--                data="{icon[convertIconName(permission.iconName)]}"-->
-            <!--                class="text-primary d-block m-auto" />-->
-
-            {$_(`permissions.${permission.name}.title`)}
-
-            <div class="form-check form-switch">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id={permission.name}
-                checked={isPermissionChecked(permission)}
-                on:click={() => onPermissionClick(permission)}
-                disabled={isPermissionDisabled()} />
-            </div>
-          </label>
-        {/each}
-      </div>
+    <div class="col-xl-8">
+      <PermissionEditor
+        permissions={data.permissions}
+        permissionList={data.permissionList}
+        isAdmin={data.name === "admin"}
+        on:permissionsChanged={handlePermissionsChanged} />
     </div>
   </div>
 </div>

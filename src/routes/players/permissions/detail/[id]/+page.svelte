@@ -1,4 +1,4 @@
-<PermissionGroupDetail data="{data}" />
+<PermissionGroupDetail data={data} />
 
 <script>
   import PermissionGroupDetail from "$lib/pages/players/PermissionGroupDetail.svelte";

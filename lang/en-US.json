@@ -1,5 +1,6 @@
 {
   "buttons": {
+    "add": "Add",
     "remove": "Remove",
     "connect": "Connect",
     "connecting": "Connecting...",
@@ -190,7 +191,7 @@
       "by-perm-group-title": "\"{permissionGroupName}\" Authorized Players",
       "authorized": "Authorized",
       "banned": "Banned",
-      "perm-groups": "Permission Groups",
+      "permissions": "Permissions",
       "table-title": "{playerCount} {pageType} Player",
       "all": "All",
       "player": "Player",
@@ -396,13 +397,89 @@
       "category": "Category",
       "description": "Description"
     },
-    "permission-groups": {
-      "title": "Permission Groups",
+    "permissions": {
+      "title": "Permissions",
       "create-permission-group-button": "Create Permission Group",
       "card-title": "{count} Permission Group",
       "name": "Name",
       "permission-amount": "Permission Amount",
-      "player-amount": "Player Amount"
+      "player-amount": "Player Amount",
+      "groups": "Permission Groups",
+      "search": {
+        "placeholder": "Search..."
+      },
+      "permissions": "Permission",
+      "players": "Player",
+      "users": "Users",
+      "no-groups-found": "No groups found",
+      "permissions-assigned": "Assigned Permission",
+      "select-group-title": "Select a Group",
+      "select-group-description": "Select a permission group from the list on the left to edit.",
+      "create-new-group": "Create New Group",
+      "form": {
+        "group-name": "Group Name",
+        "group-name-placeholder": "Enter group name",
+        "weight": "Weight",
+        "weight-placeholder": "Value between 0-199",
+        "display-name": "Display Name",
+        "display-name-placeholder": "Display name",
+        "prefix": "Prefix",
+        "prefix-placeholder": "Prefix text",
+        "parent": "Parent",
+        "select-option": "Select",
+        "parent-admin": "Admin",
+        "parent-moderator": "Moderator",
+        "parent-vip": "VIP",
+        "suffix": "Suffix",
+        "suffix-placeholder": "Suffix text"
+      },
+      "permission-editor": {
+        "search": {
+          "placeholder": "Search permissions..."
+        },
+        "filter": {
+          "all-categories": "All Categories"
+        },
+        "add-all": "Add All",
+        "remove-all": "Remove All",
+        "stats": {
+          "total": "Total",
+          "granted": "Granted",
+          "denied": "Denied"
+        }
+      }
+    },
+    "permission-groups": {
+      "create-permission-group-button": "Create Permission Group",
+      "form": {
+        "group-name": "Group Name",
+        "group-name-placeholder": "Enter group name",
+        "weight": "Weight (0-199)",
+        "weight-placeholder": "Value between 0-199",
+        "display-name": "Display Name",
+        "display-name-placeholder": "Display name",
+        "prefix": "Prefix",
+        "prefix-placeholder": "Prefix text",
+        "parent": "Parent",
+        "select-option": "Select",
+        "parent-admin": "Admin",
+        "parent-moderator": "Moderator",
+        "parent-vip": "VIP",
+        "suffix": "Suffix",
+        "suffix-placeholder": "Suffix text"
+      },
+      "validation": {
+        "name-required": "Group name is required!",
+        "weight-range": "Weight value must be between 0-199!"
+      },
+      "tracks": {
+        "add-permission-track": "Add Permission Track",
+        "edit-permission-track": "Edit Permission Track",
+        "buttons": {
+          "cancel": "Cancel",
+          "save-changes": "Save Changes"
+        }
+      }
     },
     "error": {
       "title": "Error: {status}",
@@ -479,7 +556,7 @@
     "permission-group-detail": {
       "title-edit": "Edit Permission Group",
       "title-create": "Create Permission Group",
-      "permission-groups": "Permission Groups",
+      "permissions": "Permissions",
       "inputs": {
         "name": {
           "placeholder": "Name"
@@ -737,7 +814,9 @@
       },
       "authorize-player": {
         "title": "Authorize Player",
-        "player": "Player"
+        "player": "Player",
+        "permission-group-label": "Permission Group",
+        "select-group": "Select permission group"
       },
       "confirm-ban-player": {
         "title": "Are you sure you want to ban this player?",
@@ -815,6 +894,20 @@
       },
       "confirm-delete-language": {
         "title": "Are you sure you want to permanently delete this language?"
+      },
+      "add-permission-node": {
+        "title": "Add Permission Nodes",
+        "input-placeholder": "Type permission and press Enter",
+        "help-text": "Separate multiple permissions with commas, spaces, or new lines when pasting.",
+        "selected-permissions-label": "Selected Permissions",
+        "value-label": "Value {value}",
+        "expiry-label": "Expiry",
+        "expiry-never": "Never",
+        "expiry-date": "Date",
+        "context-label": "Context:",
+        "context-key-placeholder": "Key",
+        "add-context-button": "Add Context",
+        "add-permissions-button": "Add {count} Permission{plural}"
       },
       "connect-server": {
         "title": "Connect Server",
