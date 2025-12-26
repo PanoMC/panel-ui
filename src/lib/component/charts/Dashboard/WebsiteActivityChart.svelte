@@ -77,14 +77,14 @@
     return false;
   }
 
-  // Period değiştiğinde min/max date ve displayFormats'ı güncelle
+  // Update min/max date and displayFormats when period changes
   $: {
     const currentDate = new Date();
 
     if (period === DashboardPeriod.WEEK) {
-      // Başlangıç: 7 gün önce 00:00
+      // Start: 7 days ago at 00:00
       const from = startOfDay(subWeeks(currentDate, 1));
-      // Bitiş: bugün 23:59:59.999  (bugünü dahil)
+      // End: today at 23:59:59.999 (inclusive)
       const to = endOfDay(currentDate);
 
       minDate = from.getTime();
@@ -92,9 +92,9 @@
 
       displayFormats = { day: "eee" };
     } else {
-      // Başlangıç: 1 ay önce aynı günün 00:00 (takvim değil, relatif 1 ay)
+      // Start: 1 month ago at 00:00 (relative, not calendar-aligned)
       const from = startOfDay(subMonths(currentDate, 1));
-      // Bitiş: bugün 23:59:59.999  (bugünü dahil)
+      // End: today at 23:59:59.999 (inclusive)
       const to = endOfDay(currentDate);
 
       minDate = from.getTime();
@@ -104,7 +104,7 @@
     }
   }
 
-  // Data props'ları veya period değiştiğinde chart'ı güncelle
+  // Reload chart when data props or period changes
   $: if (chart && newRegisterData && ticketsData && visitorData && viewData) {
     reloadChart(
       newRegisterData,
@@ -120,7 +120,7 @@
     }
   })
 
-  // Dark mode'a göre renkleri döndür
+  // Return colors based on dark mode
   function getColors() {
     const dark = checkDarkMode();
     
@@ -188,7 +188,7 @@
 
     const datasets = [];
 
-    // Chart.js default palette kullanarak modern, smooth çizgiler (fill olmadan)
+    // Use Chart.js default palette for modern, smooth lines (no fill)
     datasets.push({
       label: $_("components.website-activity-chart.new-registration"),
       data: convertedNewRegisterData,
@@ -368,7 +368,7 @@
     });
   }
 
-  // Theme değişikliğini dinle ve chart'ı güncelle
+  // Listen for theme changes and refresh the chart
   function updateChartColors() {
     if (!chart) return;
     
@@ -395,7 +395,7 @@
   onMount(() => {
     renderChart();
     
-    // Theme değişikliklerini dinle
+    // Listen for theme changes
     themeObserver = new MutationObserver(() => {
       updateChartColors();
     });
@@ -407,7 +407,7 @@
       });
     }
     
-    // Color scheme değişikliklerini de dinle
+    // Also listen for color scheme changes
     if (typeof window !== 'undefined') {
       mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       mediaQuery.addEventListener('change', updateChartColors);

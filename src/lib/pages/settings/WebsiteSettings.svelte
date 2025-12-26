@@ -140,7 +140,7 @@
       </div>
     </div>
 
-    <!-- Favicon Bölümü -->
+    <!-- Favicon section -->
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteFavicon">
         {$_("pages.settings.site-settings.inputs.favicon.label")}
@@ -176,7 +176,7 @@
       </div>
     </div>
 
-    <!-- Website Logo Bölümü -->
+    <!-- Website logo section -->
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteLogo">
         {$_("pages.settings.site-settings.inputs.website-logo.label")}
@@ -307,7 +307,7 @@
     const allowedTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/x-icon', 'image/vnd.microsoft.icon'];
     const allowedExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.ico'];
     
-    // Dosya boyutu kontrolü
+    // File size check
     if (file.size > maxSize) {
       await showToast("components.toasts.favicon-exceeds-size");
       faviconInput.value = "";
@@ -316,7 +316,7 @@
       return;
     }
 
-    // Dosya tipi kontrolü
+    // File type check
     const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
     const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
     
@@ -350,7 +350,7 @@
     const allowedTypes = ['image/png', 'image/jpeg', 'image/gif'];
     const allowedExtensions = ['.png', '.jpg', '.jpeg', '.gif'];
     
-    // Dosya boyutu kontrolü
+    // File size check
     if (file.size > maxSize) {
       await showToast("components.toasts.website-logo-exceeds-size");
       websiteLogoInput.value = "";
@@ -359,7 +359,7 @@
       return;
     }
 
-    // Dosya tipi kontrolü
+    // File type check
     const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
     const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
     

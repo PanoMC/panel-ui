@@ -1,163 +1,278 @@
-{#if showModal}
-  <div
-    class="modal-backdrop fade show"
-    on:click={closeModal}
-    on:keydown={(e) => {
-      if (e.key === "Escape") closeModal();
-    }}
-    role="button"
-    tabindex="0"
-    aria-label="Close modal">
-  </div>
-  <div class="modal fade show d-block" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            {$_("pages.permission-groups.create-permission-group-button")}
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            on:click={closeModal}
-            aria-label={$_("buttons.close")}
-            title={$_("buttons.close")}></button>
-        </div>
-        <div class="modal-body">
-          <form on:submit|preventDefault={handleSubmit}>
-            <div class="mb-3">
-              <div class="input-group">
+<!-- Create Permission Group Modal -->
+<div
+  class="modal fade"
+  bind:this={$modalElement}
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {$_("pages.permission-groups.create-permission-group-button")}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label={$_("buttons.close")}
+          title={$_("buttons.close")}
+          on:click={hide}></button>
+      </div>
+      <div class="modal-body">
+        <form on:submit|preventDefault={handleSubmit}>
+          <div class="mb-3">
+            <div class="row g-2">
+              <div class="col-8">
+                <label for="groupName" class="form-label">
+                  {$_("pages.permission-groups.form.group-name")}
+                </label>
                 <input
                   type="text"
                   class="form-control form-control-lg"
                   id="groupName"
-                  bind:value={newGroup.name}
+                  bind:value={$newGroup.name}
+                  disabled={$lockGroupName}
+                  aria-disabled={$lockGroupName}
                   maxlength="30"
                   required
-                  placeholder={$_("pages.permission-groups.form.group-name")}
+                  placeholder={$_("pages.permission-groups.form.group-name-placeholder")}
                   title={$_("pages.permission-groups.form.group-name")} />
+              </div>
+              <div class="col-4">
+                <label for="groupWeight" class="form-label">
+                  {$_("pages.permission-groups.form.weight")}
+                </label>
                 <input
                   type="number"
                   class="form-control form-control-lg"
                   id="groupWeight"
-                  bind:value={newGroup.weight}
-                  min="0"
-                  max="199"
-                  required
-                  placeholder={$_("pages.permission-groups.form.weight")}
+                  bind:value={$newGroup.weight}
+                  inputmode="numeric"
+                  on:blur={() => newGroup.update((g) => ({ ...g, weight: normalizeWeight(g.weight) }))}
+                  placeholder={$_("pages.permission-groups.form.weight-placeholder")}
                   title={$_("pages.permission-groups.form.weight")} />
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="groupDisplayName" class="form-label"
-                  >{$_("pages.permission-groups.form.display-name")}</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="groupDisplayName"
-                  bind:value={newGroup.displayName}
-                  maxlength="30"
-                  placeholder={$_(
-                    "pages.permission-groups.form.display-name-placeholder",
-                  )} />
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="groupParent" class="form-label"
-                  >{$_("pages.permission-groups.form.parent")}</label>
-                <select
-                  class="form-select"
-                  id="groupParent"
-                  bind:value={newGroup.parent}>
-                  <option value=""
-                    >{$_("pages.permission-groups.form.select-option")}</option>
-                  <option value="admin"
-                    >{$_("pages.permission-groups.form.parent-admin")}</option>
-                  <option value="moderator"
-                    >{$_(
-                      "pages.permission-groups.form.parent-moderator",
-                    )}</option>
-                  <option value="vip"
-                    >{$_("pages.permission-groups.form.parent-vip")}</option>
-                </select>
-              </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label for="groupDisplayName" class="form-label"
+                >{$_("pages.permission-groups.form.display-name")}</label>
+              <input
+                type="text"
+                class="form-control"
+                id="groupDisplayName"
+                bind:value={$newGroup.displayName}
+                maxlength="30"
+                placeholder={$_(
+                  "pages.permission-groups.form.display-name-placeholder",
+                )} />
             </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="groupPrefix" class="form-label"
-                  >{$_("pages.permission-groups.form.prefix")}</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="groupPrefix"
-                  bind:value={newGroup.prefix}
-                  maxlength="30"
-                  placeholder={$_(
-                    "pages.permission-groups.form.prefix-placeholder",
-                  )} />
+          </div>
+
+          <div class="mb-1">
+            <div class="form-label">{$_("pages.permission-groups.form.parents")}</div>
+            {#if ($newGroup.parents || []).length === 0}
+              <div class="small text-muted">{$_("pages.permission-groups.form.no-parents")}</div>
+            {:else}
+              <div class="list-group list-group-flush border rounded">
+                {#each ($newGroup.parents || []) as p (p)}
+                  <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="text-truncate">
+                      {parentLabel(p)}
+                      <small class="text-muted">({p})</small>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-danger"
+                      on:click={() => removeParent(p)}>
+                      {$_("buttons.remove")}
+                    </button>
+                  </div>
+                {/each}
               </div>
-              <div class="col-md-6 mb-3">
-                <label for="groupSuffix" class="form-label"
-                  >{$_("pages.permission-groups.form.suffix")}</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="groupSuffix"
-                  bind:value={newGroup.suffix}
-                  maxlength="30"
-                  placeholder={$_(
-                    "pages.permission-groups.form.suffix-placeholder",
-                  )} />
-              </div>
+            {/if}
+          </div>
+
+          <div class="row g-2 mt-2">
+            <div class="col-9">
+              <select class="form-select" bind:value={parentToAdd}>
+                <option value="">{$_("pages.permission-groups.form.select-option")}</option>
+                {#each $allGroups as g (g.id ?? g.name)}
+                  {#if (String(g?.name || "") !== String($newGroup?.name || ""))}
+                    <option value={g.name}>
+                      {g.displayName || g.name} ({g.name})
+                    </option>
+                  {/if}
+                {/each}
+              </select>
             </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary w-100"
-            on:click={handleSubmit}>
-            {$_("buttons.save")}
-          </button>
-        </div>
+            <div class="col-3 d-grid">
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                disabled={!String(parentToAdd || "").trim()}
+                aria-disabled={!String(parentToAdd || "").trim()}
+                on:click={addParent}>
+                {$_("buttons.add")}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary w-100"
+          disabled={!canSave}
+          aria-disabled={!canSave}
+          on:click={handleSubmit}>
+          {$_("buttons.save")}
+        </button>
       </div>
     </div>
   </div>
-{/if}
+</div>
 
-<!-- Create Permission Group Modal -->
-<script>
-  import { _ } from "svelte-i18n";
-  import { createEventDispatcher } from "svelte";
+<script context="module">
+  import { writable, get } from "svelte/store";
 
-  export let showModal = false;
-  export let newGroup = {
+  const modalElement = writable();
+  const allGroups = writable([]);
+  const lockGroupName = writable(false);
+  const originalGroupName = writable("");
+  const normalizeWeight = (raw) => {
+    const n = parseInt(raw);
+    if (isNaN(n)) return 0;
+    return n;
+  };
+
+  const newGroup = writable({
     name: "",
     weight: 0,
     displayName: "",
-    prefix: "",
-    parent: "",
-    suffix: "",
+    parents: [],
+  });
+
+  let callback = (group) => {};
+  let hideCallback = () => {};
+  let modal;
+
+  export function show(payload = {}) {
+    allGroups.set(Array.isArray(payload.allGroups) ? payload.allGroups : []);
+    const initialName = String(payload?.newGroup?.name || "").trim();
+    lockGroupName.set(initialName === "default");
+    originalGroupName.set(initialName);
+    newGroup.set({
+      name: "",
+      displayName: "",
+      ...(payload.newGroup ?? {}),
+      weight: normalizeWeight(payload?.newGroup?.weight),
+      parents: Array.from(new Set([...(payload?.newGroup?.parents || [])].filter(Boolean))),
+    });
+
+    modal = new window.bootstrap.Modal(get(modalElement), {
+      backdrop: "static",
+      keyboard: false,
+    });
+    modal.show();
+  }
+
+  export function hide() {
+    hideCallback(get(newGroup));
+    modal?.hide();
+  }
+
+  export function setCallback(newCallback) {
+    callback = newCallback;
+  }
+
+  export function onHide(newCallback) {
+    hideCallback = newCallback;
+  }
+</script>
+
+<script>
+  import { _ } from "svelte-i18n";
+
+  const isValidGroupName = (raw) => {
+    const name = String(raw || "").trim();
+    if (!name) return false;
+    if (name.length > 30) return false;
+    // allow typical permission group keys: letters/numbers/dot/underscore/dash
+    return /^[a-zA-Z0-9._-]+$/.test(name);
   };
 
-  const dispatch = createEventDispatcher();
+  const normalizeWeight = (raw) => {
+    const n = parseInt(raw);
+    if (isNaN(n)) return 0;
+    return n;
+  };
 
-  function closeModal() {
-    dispatch("close");
+  let parentToAdd = "";
+  let canSave = false;
+
+  $: {
+    const name = String($newGroup?.name || "").trim();
+    const nameLc = name.toLowerCase();
+    const originalLc = String($originalGroupName || "").trim().toLowerCase();
+
+    const taken =
+      !!nameLc &&
+      ($allGroups || []).some((g) => {
+        const gn = String(g?.name || "").trim().toLowerCase();
+        if (!gn) return false;
+        if (gn === originalLc) return false; // allow unchanged name in edit mode
+        return gn === nameLc;
+      });
+
+    canSave = isValidGroupName(name) && !taken;
+  }
+
+  const parentLabel = (name) => {
+    const byName = new Map(($allGroups || []).map((g) => [g.name, g]));
+    const g = byName.get(name);
+    return g?.displayName || name;
+  };
+
+  function addParent() {
+    const name = String(parentToAdd || "").trim();
+    if (!name) return;
+
+    newGroup.update((g) => {
+      const curr = Array.isArray(g.parents) ? g.parents : [];
+      if (curr.includes(name)) return g;
+      return { ...g, parents: [...curr, name] };
+    });
+
+    parentToAdd = "";
+  }
+
+  function removeParent(name) {
+    const n = String(name || "").trim();
+    if (!n) return;
+    newGroup.update((g) => {
+      const curr = Array.isArray(g.parents) ? g.parents : [];
+      return { ...g, parents: curr.filter((x) => x !== n) };
+    });
   }
 
   function handleSubmit() {
-    // Basic validation
-    if (!newGroup.name.trim()) {
+    const ng = get(newGroup);
+
+    if (!ng.name.trim()) {
       alert($_("pages.permission-groups.validation.name-required"));
       return;
     }
-
-    if (newGroup.weight < 0 || newGroup.weight > 199) {
-      alert($_("pages.permission-groups.validation.weight-range"));
+    if (!canSave) {
       return;
     }
 
-    dispatch("save", { group: newGroup });
+    hide();
+    callback({
+      ...ng,
+      weight: normalizeWeight(ng.weight),
+      parents: Array.from(new Set([...(ng.parents || [])].filter(Boolean))),
+    });
   }
 </script>

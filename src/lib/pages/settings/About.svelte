@@ -139,7 +139,7 @@
       request: event,
     });
 
-    // Lisansları endpoint'ten yükle
+    // Load licenses from the endpoint
     let licenses = [];
     try {
       const licensesResponse = await ApiUtil.get({
@@ -149,7 +149,7 @@
 
       licenses = licensesResponse.data
 
-      // Eğer hata dönerse boş array kullan
+      // If an error is returned, fall back to an empty array
       if (!Array.isArray(licenses)) {
         licenses = [];
       }

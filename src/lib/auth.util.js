@@ -32,6 +32,24 @@ export function hasPermission(permission, user) {
     return false;
   }
 
+  const toPanelNode = (p) => {
+    const raw = String(p || "").trim();
+    if (!raw) return "";
 
-  return userObject.permissions.includes(permission.toUpperCase());
+    const lower = raw.toLowerCase();
+    if (lower.startsWith("pano.panel.")) {
+      return lower;
+    }
+
+    // old enum format: MANAGE_PERMISSION_GROUPS -> pano.panel.manage.permission.groups
+    return `pano.panel.${lower.replaceAll("_", ".")}`;
+  };
+
+  const wantedNode = toPanelNode(permission);
+  const wantedKey = String(permission || "").trim().toUpperCase();
+  const perms = Array.isArray(userObject.permissions) ? userObject.permissions : [];
+  const permsLower = perms.map((x) => String(x || "").toLowerCase());
+
+  // Prefer node-style checks; keep legacy key check for backward compatibility.
+  return (wantedNode && permsLower.includes(wantedNode)) || (wantedKey && perms.includes(wantedKey));
 }

@@ -399,6 +399,43 @@
     },
     "permissions": {
       "title": "Yetkiler",
+      "panel": {
+        "search": {
+          "placeholder": "Ara (grup, kullanıcı, node)"
+        },
+        "actions": {
+          "save": "Kaydet",
+          "add-group": "Grup ekle",
+          "add-track": "Track ekle",
+          "add-user": "Kullanıcı ekle",
+          "edit": "Düzenle",
+          "delete": "Sil",
+          "remove": "Kaldır"
+        },
+        "accordions": {
+          "tracks": "Trackler",
+          "groups": "Gruplar",
+          "users": "Kullanıcılar"
+        },
+        "group": {
+          "parents": "Üst gruplar",
+          "weight": "Ağırlık"
+        },
+        "nodes": {
+          "add-node": "Node ekle",
+          "node": "Node",
+          "active": "Aktif",
+          "expiry": "Süre"
+        },
+        "user": {
+          "groups": "Gruplar",
+          "delete": "Kullanıcıyı sil"
+        },
+        "empty": {
+          "no-nodes": "Node yok.",
+          "select-something": "Grup, kullanıcı veya track seçin."
+        }
+      },
       "create-permission-group-button": "Yetki Grubu Oluştur",
       "card-title": "{count} Yetki Grubu",
       "name": "İsim",
@@ -419,19 +456,8 @@
       "form": {
         "group-name": "Grup İsmi",
         "group-name-placeholder": "Grup ismini girin",
-        "weight": "Weight",
-        "weight-placeholder": "0-199 arası değer",
         "display-name": "Display Name",
-        "display-name-placeholder": "Görünen isim",
-        "prefix": "Prefix",
-        "prefix-placeholder": "Ön ek",
-        "parent": "Parent",
-        "select-option": "Seçiniz",
-        "parent-admin": "Admin",
-        "parent-moderator": "Moderator",
-        "parent-vip": "VIP",
-        "suffix": "Suffix",
-        "suffix-placeholder": "Son ek"
+        "display-name-placeholder": "Görünen isim"
       },
       "permission-editor": {
         "search": {
@@ -454,27 +480,34 @@
       "form": {
         "group-name": "Grup İsmi",
         "group-name-placeholder": "Grup ismini girin",
-        "weight": "Ağırlık (0-199)",
-        "weight-placeholder": "0-199 arası değer",
-        "display-name": "Görünen İsim",
-        "display-name-placeholder": "Görünen isim",
-        "prefix": "Ön Ek",
-        "prefix-placeholder": "Ön ek",
-        "parent": "Üst Grup",
+        "weight": "Ağırlık",
+        "weight-placeholder": "Ağırlık",
+        "parents": "Üst gruplar",
+        "no-parents": "Üst grup yok.",
         "select-option": "Seçiniz",
-        "parent-admin": "Admin",
-        "parent-moderator": "Moderator",
-        "parent-vip": "VIP",
-        "suffix": "Son Ek",
-        "suffix-placeholder": "Son ek"
+        "display-name": "Görünen İsim",
+        "display-name-placeholder": "Görünen isim"
       },
       "validation": {
-        "name-required": "Grup ismi gerekli!",
-        "weight-range": "Ağırlık değeri 0-199 arasında olmalıdır!"
+        "name-required": "Grup ismi gerekli!"
       },
       "tracks": {
         "add-permission-track": "Yetki Takibi Ekle",
         "edit-permission-track": "Yetki Takibini Düzenle",
+        "form": {
+          "name": "İsim",
+          "description": "Açıklama"
+        },
+        "groups": {
+          "title": "Bu track'teki gruplar",
+          "help": "Grupları üstten sürükleyip seçili listeye bırakın. Seçili grupları sürükleyerek yeniden sıralayabilirsiniz.",
+          "no-groups-available": "Kullanılabilir grup yok."
+        },
+        "selected": {
+          "title": "Seçilen gruplar",
+          "dropzone-aria": "Grupları buraya bırakın",
+          "empty": "Seçili grup yok. Grupları buraya sürükleyin."
+        },
         "buttons": {
           "cancel": "İptal",
           "save-changes": "Değişiklikleri Kaydet"
@@ -628,6 +661,7 @@
       "post-categories": "Yazı Kategorileri",
       "tickets": "Talepler",
       "players": "Oyuncular",
+      "permissions": "Yetkiler",
       "view": "Görünüm",
       "addons": "Eklentiler",
       "logs": "Kayıtlar",
@@ -874,6 +908,53 @@
       },
       "confirm-remove-addon": {
         "title": "\"{pluginId}\" eklentisini kaldırmak istediğinizden emin misiniz?"
+      },
+      "confirm-remove-perm-track": {
+        "title": "\"{trackName}\" track'ını kaldırmak istediğinizden emin misiniz?"
+      },
+      "confirm-remove-perm-group": {
+        "title": "\"{groupName}\" grubunu silmek istediğinizden emin misiniz?"
+      },
+      "confirm-remove-perm-user": {
+        "title": "\"{username}\" kullanıcısını listeden kaldırmak istediğinize emin misiniz?"
+      },
+      "search-player": {
+        "title": "Kullanıcı Ara",
+        "inputs": {
+          "query": {
+            "placeholder": "Kullanıcı adı ara..."
+          }
+        },
+        "states": {
+          "loading": "Aranıyor...",
+          "start-typing": "Aramak için yazmaya başlayın.",
+          "max-results": "En fazla 10 sonuç gösterilir.",
+          "no-results": "Sonuç yok."
+        },
+        "badges": {
+          "select": "Seç",
+          "add": "Ekle"
+        }
+      },
+      "edit-permission-node": {
+        "title": "Permission Node Düzenle",
+        "states": {
+          "no-node-selected": "Node seçilmedi."
+        },
+        "form": {
+          "node": "Node",
+          "node-placeholder": "örn. group.admin veya prefix.80.&d[MOD]",
+          "active": "Aktif",
+          "expiry": "Süre",
+          "expiry-aria": "Süre seçenekleri",
+          "expiry-never": "Asla",
+          "expiry-date": "Tarih"
+        },
+        "contexts": {
+          "title": "Bağlamlar",
+          "key-placeholder": "anahtar (örn. pano / server / world)",
+          "value-placeholder": "değer (örn. true / lobby / world_nether)"
+        }
       },
       "confirm-remove-addon-will-cause-more-unload": {
         "description": "\"{pluginId}\" eklentisini kaldırmak bu eklentileri de devre dışı bırakacaktır:"

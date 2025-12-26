@@ -212,6 +212,7 @@
                           height="32"
                           width="32"
                           src="https://minotar.net/avatar/{player.username}" />
+                        {player.username}
                       </a>
                     </td>
                     <td class="align-middle text-capitalize">
@@ -325,7 +326,7 @@
   const mansoryLayoutCols = writable(2);
 
   function checkMobile() {
-    // 768px altı -> mobil
+    // Below 768px -> mobile
     if (window.innerWidth < 768) {
       mansoryLayoutCols.set(1);
     } else {

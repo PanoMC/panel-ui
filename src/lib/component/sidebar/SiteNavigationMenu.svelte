@@ -65,6 +65,22 @@
       </li>
     {/if}
 
+    {#if hasPermission(Permissions.MANAGE_PERMISSION_GROUPS)}
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          href="{base}/permissions"
+          class:active={matching(
+            $page.url.pathname,
+            base + "/permissions",
+            true,
+          )}>
+          <i class="fas fa-user-shield me-2"></i>
+          {$_("components.site-navigation-menu.permissions")}
+        </a>
+      </li>
+    {/if}
+
     {#if hasPermission(Permissions.MANAGE_VIEW)}
       <li class="nav-item">
         <a

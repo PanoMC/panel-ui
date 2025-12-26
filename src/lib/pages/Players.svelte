@@ -7,8 +7,6 @@
       {#if !data.categoryUrl}
         <CardMenuItem href="/players" startsWith>
           {$_("buttons.players")}</CardMenuItem>
-        <CardMenuItem href="/players/permissions" startsWith>
-          {$_("pages.players.permissions")}</CardMenuItem>
       {/if}
     </CardMenu>
     <div slot="right">
@@ -166,7 +164,7 @@
 
     body.page = page;
     body.pageType = pageType;
-    body.permissionGroup = permissionGroup;
+    body.permissionGroup = body.permissionGroup;
 
     return body;
   }
@@ -226,9 +224,7 @@
         ? $_("pages.players.by-perm-group-title", {
             values: {
               permissionGroupName:
-                data.permissionGroup === "-"
-                  ? $_("pages.players.player")
-                  : data.permissionGroup,
+                data.permissionGroup.displayName || data.permissionGroup.name,
             },
           })
         : $_("pages.players.title", {
@@ -247,7 +243,7 @@
   async function refreshData() {
     const queryParams = buildQueryParams({
       page: data.page,
-      permissionGroup: data.permissionGroup,
+      permissionGroup: data.permissionGroup.name,
       pageType: data.pageType,
     });
 

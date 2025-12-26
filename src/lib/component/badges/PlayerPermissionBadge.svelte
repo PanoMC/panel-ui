@@ -1,10 +1,8 @@
 <a
   class="badge rounded-pill text-bg-secondary focus-ring text-decoration-none"
   title={$_("components.player-permission-badge.filter")}
-  href="{base}/players?permissionGroup={permissionGroup}">
-  {permissionGroup === "-"
-    ? $_("components.player-permission-badge.player")
-    : permissionGroup.capitalize()}
+  href="{base}/players?permissionGroup={permissionGroup.name}">
+  {permissionGroup.displayName.capitalize()}
 </a>
 
 <script context="module">

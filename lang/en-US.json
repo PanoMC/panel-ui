@@ -399,6 +399,43 @@
     },
     "permissions": {
       "title": "Permissions",
+      "panel": {
+        "search": {
+          "placeholder": "Search (group, user, node)"
+        },
+        "actions": {
+          "save": "Save",
+          "add-group": "Add group",
+          "add-track": "Add track",
+          "add-user": "Add user",
+          "edit": "Edit",
+          "delete": "Delete",
+          "remove": "Remove"
+        },
+        "accordions": {
+          "tracks": "Tracks",
+          "groups": "Groups",
+          "users": "Users"
+        },
+        "group": {
+          "parents": "Parents",
+          "weight": "Weight"
+        },
+        "nodes": {
+          "add-node": "Add node",
+          "node": "Node",
+          "active": "Active",
+          "expiry": "Expiry"
+        },
+        "user": {
+          "groups": "Groups",
+          "delete": "Delete user"
+        },
+        "empty": {
+          "no-nodes": "No nodes.",
+          "select-something": "Select a group, user or track."
+        }
+      },
       "create-permission-group-button": "Create Permission Group",
       "card-title": "{count} Permission Group",
       "name": "Name",
@@ -419,19 +456,8 @@
       "form": {
         "group-name": "Group Name",
         "group-name-placeholder": "Enter group name",
-        "weight": "Weight",
-        "weight-placeholder": "Value between 0-199",
         "display-name": "Display Name",
-        "display-name-placeholder": "Display name",
-        "prefix": "Prefix",
-        "prefix-placeholder": "Prefix text",
-        "parent": "Parent",
-        "select-option": "Select",
-        "parent-admin": "Admin",
-        "parent-moderator": "Moderator",
-        "parent-vip": "VIP",
-        "suffix": "Suffix",
-        "suffix-placeholder": "Suffix text"
+        "display-name-placeholder": "Display name"
       },
       "permission-editor": {
         "search": {
@@ -454,27 +480,34 @@
       "form": {
         "group-name": "Group Name",
         "group-name-placeholder": "Enter group name",
-        "weight": "Weight (0-199)",
-        "weight-placeholder": "Value between 0-199",
-        "display-name": "Display Name",
-        "display-name-placeholder": "Display name",
-        "prefix": "Prefix",
-        "prefix-placeholder": "Prefix text",
-        "parent": "Parent",
+        "weight": "Weight",
+        "weight-placeholder": "Weight",
+        "parents": "Parent groups",
+        "no-parents": "No parent group.",
         "select-option": "Select",
-        "parent-admin": "Admin",
-        "parent-moderator": "Moderator",
-        "parent-vip": "VIP",
-        "suffix": "Suffix",
-        "suffix-placeholder": "Suffix text"
+        "display-name": "Display Name",
+        "display-name-placeholder": "Display name"
       },
       "validation": {
-        "name-required": "Group name is required!",
-        "weight-range": "Weight value must be between 0-199!"
+        "name-required": "Group name is required!"
       },
       "tracks": {
         "add-permission-track": "Add Permission Track",
         "edit-permission-track": "Edit Permission Track",
+        "form": {
+          "name": "Name",
+          "description": "Description"
+        },
+        "groups": {
+          "title": "Groups in this track",
+          "help": "Drag groups from above into the selected list. Selected groups can be reordered via drag & drop.",
+          "no-groups-available": "No groups available."
+        },
+        "selected": {
+          "title": "Selected groups",
+          "dropzone-aria": "Drop groups here",
+          "empty": "No groups selected. Drag groups here."
+        },
         "buttons": {
           "cancel": "Cancel",
           "save-changes": "Save Changes"
@@ -628,6 +661,7 @@
       "post-categories": "Post Categories",
       "tickets": "Tickets",
       "players": "Players",
+      "permissions": "Permissions",
       "view": "View",
       "addons": "Addons",
       "logs": "Logs",
@@ -873,6 +907,53 @@
       },
       "confirm-remove-addon": {
         "title": "Are you sure to remove \"{pluginId}\" addon?"
+      },
+      "confirm-remove-perm-track": {
+        "title": "Are you sure to remove \"{trackName}\" track?"
+      },
+      "confirm-remove-perm-group": {
+        "title": "Are you sure to remove \"{groupName}\" group?"
+      },
+      "confirm-remove-perm-user": {
+        "title": "Are you sure to remove \"{username}\" user?"
+      },
+      "search-player": {
+        "title": "Search User",
+        "inputs": {
+          "query": {
+            "placeholder": "Search username..."
+          }
+        },
+        "states": {
+          "loading": "Searching...",
+          "start-typing": "Start typing to search.",
+          "max-results": "At most 10 results are shown.",
+          "no-results": "No results."
+        },
+        "badges": {
+          "select": "Select",
+          "add": "Add"
+        }
+      },
+      "edit-permission-node": {
+        "title": "Edit Permission Node",
+        "states": {
+          "no-node-selected": "No node selected."
+        },
+        "form": {
+          "node": "Node",
+          "node-placeholder": "e.g. group.admin or prefix.80.&d[MOD]",
+          "active": "Active",
+          "expiry": "Expiry",
+          "expiry-aria": "Expiry options",
+          "expiry-never": "Never",
+          "expiry-date": "Date"
+        },
+        "contexts": {
+          "title": "Contexts",
+          "key-placeholder": "key (e.g. pano / server / world)",
+          "value-placeholder": "value (e.g. true / lobby / world_nether)"
+        }
       },
       "confirm-remove-addon-will-cause-more-unload": {
         "description": "Removing \"{pluginId}\" will cause unload these addons too:"
