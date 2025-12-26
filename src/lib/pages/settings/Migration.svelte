@@ -76,6 +76,7 @@
 
 <div class="card">
   <div class="card-header pb-0 vstack gap-2">
+    <div class="card-title">From platforms & CMS to Pano</div>
     <!-- Nav tabs -->
     <ul class="nav nav-tabs border-bottom-0" id="migrateTabs" role="tablist">
       <li class="nav-item" role="presentation">
@@ -170,6 +171,7 @@
 
 <div class="card">
   <div class="card-header pb-0 vstack gap-2">
+    <div class="card-title">From plugins to Pano</div>
     <!-- Nav tabs -->
     <ul
       class="nav nav-tabs border-bottom-0"

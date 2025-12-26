@@ -58,8 +58,7 @@
     <div class="row">
       <label class="col-md-6" for="connectPanoAccount"
         >{$_("pages.settings.platform.online-account")}
-        <br />
-        <small>
+        <small class="d-block">
           {$_("pages.settings.platform.online-account-description")}
         </small>
       </label>
@@ -70,7 +69,7 @@
               >{maskEmail(data.panoAccount.email)}</span>
             <button
               type="button"
-              class="btn btn-close"
+              class="btn-close"
               title={$_("buttons.remove")}
               aria-label={$_("buttons.remove")}
               on:click={onDisconnectClick}
@@ -140,8 +139,7 @@
     <div class="row mb-3">
       <label class="col-md-6" for="allowUserLocaleSelection">
         {$_("pages.settings.platform.allow-user-locale-selection")}
-        <br />
-        <small>
+        <small class="d-block">
           {$_(
             "pages.settings.platform.allow-user-locale-selection-description",
           )}
