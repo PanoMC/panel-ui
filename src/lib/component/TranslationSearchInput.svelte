@@ -7,6 +7,7 @@
   export let debounceMs = 250;
   export let initialValue = "";
   export let searching = false;
+  export let showSpinner = true;
 
   const dispatch = createEventDispatcher();
 
@@ -41,7 +42,7 @@
     value={value}
     on:input={onInput} />
 
-  {#if searching || pending}
+  {#if showSpinner && (searching || pending)}
     <span class="input-group-text" title="Searching..." aria-label="Searching...">
       <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
     </span>

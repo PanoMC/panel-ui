@@ -409,13 +409,13 @@
       "title": "Yetkiler",
       "panel": {
         "search": {
-          "placeholder": "Ara (grup, kullanıcı, node)"
+          "placeholder": "Ara (grup, oyuncu, node)"
         },
         "actions": {
           "save": "Kaydet",
           "add-group": "Grup ekle",
           "add-track": "Track ekle",
-          "add-user": "Kullanıcı ekle",
+          "add-user": "Oyuncu ekle",
           "edit": "Düzenle",
           "delete": "Sil",
           "remove": "Kaldır"
@@ -423,7 +423,7 @@
         "accordions": {
           "tracks": "Trackler",
           "groups": "Gruplar",
-          "users": "Kullanıcılar"
+          "users": "Oyuncular"
         },
         "group": {
           "parents": "Üst gruplar",
@@ -437,11 +437,11 @@
         },
         "user": {
           "groups": "Gruplar",
-          "delete": "Kullanıcıyı sil"
+          "delete": "Oyuncuyu sil"
         },
         "empty": {
           "no-nodes": "Node yok.",
-          "select-something": "Grup, kullanıcı veya track seçin."
+          "select-something": "Grup, oyuncu veya track seçin."
         }
       },
       "create-permission-group-button": "Yetki Grubu Oluştur",
@@ -924,13 +924,13 @@
         "title": "\"{groupName}\" grubunu silmek istediğinizden emin misiniz?"
       },
       "confirm-remove-perm-user": {
-        "title": "\"{username}\" kullanıcısını listeden kaldırmak istediğinize emin misiniz?"
+        "title": "\"{username}\" oyuncusunu listeden kaldırmak istediğinize emin misiniz?"
       },
       "search-player": {
-        "title": "Kullanıcı Ara",
+        "title": "Oyuncu Ara",
         "inputs": {
           "query": {
-            "placeholder": "Kullanıcı adı ara..."
+            "placeholder": "Oyuncu adı ara..."
           }
         },
         "states": {

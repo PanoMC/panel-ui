@@ -1,11 +1,12 @@
 <div class="container vstack gap-3">
   <PageActions>
     <div slot="middle" class="hstack gap-2">
-      <input
-        type="text"
-        class="form-control form-control-sm {String(globalSearchQuery || '').trim() ? 'border-secondary' : ''}"
-        placeholder={$_("pages.permissions.panel.search.placeholder")}
-        bind:value={globalSearchQuery} />
+      <TranslationSearchInput
+        showSpinner={false}
+        placeholderKey="pages.permissions.panel.search.placeholder"
+        ariaLabelKey="pages.permissions.panel.search.placeholder"
+        debounceMs={250}
+        on:change={(e) => (globalSearchQuery = e.detail.value)} />
     </div>
     <div slot="right" class="hstack gap-2">
       <button type="button" title="{$_("pages.permissions.panel.actions.save")}" class="btn btn-link" on:click={saveSnapshot}>
@@ -511,6 +512,8 @@
   } from "$lib/component/modals/SearchPlayerModal.svelte";
   import PageActions from "$lib/component/PageActions.svelte";
   import NoContent from "$lib/component/NoContent.svelte";
+  import TranslationSearchInput from "$lib/component/TranslationSearchInput.svelte";
+  import { currentLanguage } from "$lib/language.util.js";
 
   export let data;
 
@@ -1128,7 +1131,7 @@
     return out;
   }
 
-  const norm = (v) => String(v || "").toLowerCase();
+  const norm = (v) => String(v || "").toLocaleLowerCase($currentLanguage?.code);
 
   function nodeSearchText(n) {
     if (!n || typeof n !== "object") return "";

@@ -409,13 +409,13 @@
       "title": "Permissions",
       "panel": {
         "search": {
-          "placeholder": "Search (group, user, node)"
+          "placeholder": "Search (group, player, node)"
         },
         "actions": {
           "save": "Save",
           "add-group": "Add group",
           "add-track": "Add track",
-          "add-user": "Add user",
+          "add-user": "Add player",
           "edit": "Edit",
           "delete": "Delete",
           "remove": "Remove"
@@ -423,7 +423,7 @@
         "accordions": {
           "tracks": "Tracks",
           "groups": "Groups",
-          "users": "Users"
+          "users": "Players"
         },
         "group": {
           "parents": "Parents",
@@ -437,11 +437,11 @@
         },
         "user": {
           "groups": "Groups",
-          "delete": "Delete user"
+          "delete": "Delete player"
         },
         "empty": {
           "no-nodes": "No nodes.",
-          "select-something": "Select a group, user or track."
+          "select-something": "Select a group, player or track."
         }
       },
       "create-permission-group-button": "Create Permission Group",
@@ -923,13 +923,13 @@
         "title": "Are you sure to remove \"{groupName}\" group?"
       },
       "confirm-remove-perm-user": {
-        "title": "Are you sure to remove \"{username}\" user?"
+        "title": "Are you sure to remove \"{username}\" player?"
       },
       "search-player": {
-        "title": "Search User",
+        "title": "Search Player",
         "inputs": {
           "query": {
-            "placeholder": "Search username..."
+            "placeholder": "Search player name..."
           }
         },
         "states": {
