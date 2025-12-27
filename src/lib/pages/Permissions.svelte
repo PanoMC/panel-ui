@@ -78,7 +78,7 @@
                             on:click={() => selectTrack(track)}>
                             <div class="d-flex flex-column text-start w-100">
                               <div class="fw-bold text-truncate">{track.name}</div>
-                              <small class="text-muted text-truncate">{track.description}</small>
+                              <small class=" text-truncate">{track.description}</small>
                             </div>
                           </button>
                         </h2>
@@ -246,9 +246,9 @@
               <div>
                 <h5 class="mb-0">
                   {selectedGroup.displayName || selectedGroup.name}
-                  <span class="text-muted fw-normal ms-2">({selectedGroup.name})</span>
+                  <span class="font-monospace ms-2">{selectedGroup.name}</span>
                 </h5>
-                <div class="small text-muted">
+                <small>
                   {$_("pages.permissions.panel.group.parents")}:
                   {#if selectedGroupParents.length === 0}
                     -
@@ -256,7 +256,7 @@
                     {#each selectedGroupParents as pg (pg.name)}
                       <button
                         type="button"
-                        class="badge text-bg-light ms-1 border-0"
+                        class="badge text-bg-secondary rounded-pill btn btn-sm btn-link text-decoration-none focus-ring"
                         style="cursor: pointer;"
                         on:click={() => selectGroupByName(pg.name)}
                         aria-label={`Üst gruba git: ${pg.name}`}
@@ -265,35 +265,35 @@
                       </button>
                     {/each}
                   {/if}
-                </div>
-                <small>{$_("pages.permissions.panel.group.weight")}: {getGroupWeight(selectedGroup, nodes)}</small>
+                </small>
+                <small class="d-block">{$_("pages.permissions.panel.group.weight")}: {getGroupWeight(selectedGroup, nodes)}</small>
               </div>
               <div class="hstack gap-2">
                 <button
                   type="button"
-                  class="btn btn-sm btn-primary"
-                  title={$_("pages.permissions.panel.nodes.add-node")}
-                  aria-label={$_("pages.permissions.panel.nodes.add-node")}
-                  on:click={() => addNode("GROUP")}>
-                  <i class="fa fa-plus me-1"></i>{$_("pages.permissions.panel.nodes.node")}
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-primary"
+                  class="btn btn-link"
                   on:click={editSelectedGroup}
                   aria-label={$_("pages.permissions.panel.actions.edit")}
                   title={$_("pages.permissions.panel.actions.edit")}>
-                  <i class="fa fa-pen me-1"></i>{$_("pages.permissions.panel.actions.edit")}
+                  <i class="fa fa-pen"></i>
                 </button>
                 <button
                   type="button"
-                  class="btn btn-sm btn-outline-danger"
+                  class="btn btn-link"
                   disabled={selectedGroup?.name === "default"}
                   on:click={() => selectedGroup?.name !== "default" && showRemoveGroupModal()}
                   aria-disabled={selectedGroup?.name === "default"}
                   aria-label={$_("pages.permissions.panel.actions.delete")}
                   title={$_("pages.permissions.panel.actions.delete")}>
-                  <i class="fa fa-trash me-1"></i>{$_("pages.permissions.panel.actions.delete")}
+                  <i class="fa fa-trash"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  title={$_("pages.permissions.panel.nodes.add-node")}
+                  aria-label={$_("pages.permissions.panel.nodes.add-node")}
+                  on:click={() => addNode("GROUP")}>
+                  <i class="fa fa-plus me-2"></i> {$_("pages.permissions.panel.nodes.add-node")}
                 </button>
               </div>
             {:else}
@@ -348,68 +348,66 @@
             {/if}
           </div>
 
-          <div class="card-body">
-            {#if currentNodes.length === 0}
-              <NoContent text={$_("pages.permissions.panel.empty.no-nodes")} />
-            {:else}
-              <div class="table-responsive">
-                <table class="table table-sm align-middle">
-                  <thead>
+          {#if currentNodes.length === 0}
+            <NoContent text={$_("pages.permissions.panel.empty.no-nodes")} />
+          {:else}
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th style="width: 15%;"></th>
+                    <th style="width: 45%;">{$_("pages.permissions.panel.nodes.node")}</th>
+                    <th style="width: 15%;">{$_("pages.permissions.panel.nodes.active")}</th>
+                    <th style="width: 25%;">{$_("pages.permissions.panel.nodes.expiry")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {#each filteredCurrentNodes as node (node.id ?? `${node.holderType}:${node.holderId}:${node.node}:${node.createdAt}`)}
                     <tr>
-                      <th style="width: 45%;">{$_("pages.permissions.panel.nodes.node")}</th>
-                      <th style="width: 15%;">{$_("pages.permissions.panel.nodes.active")}</th>
-                      <th style="width: 25%;">{$_("pages.permissions.panel.nodes.expiry")}</th>
-                      <th style="width: 15%;"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {#each filteredCurrentNodes as node (node.id ?? `${node.holderType}:${node.holderId}:${node.node}:${node.createdAt}`)}
-                      <tr>
-                        <td>
-                          <div class="text-truncate">{node.node}</div>
-                          <div class="small text-muted mt-1">
-                            {#each formatNodeContext(node.context) as c (c)}
-                              <span class="badge text-bg-light me-1 mb-1">{c}</span>
-                            {/each}
-                          </div>
-                        </td>
-                        <td>
+                      <td class="d-table-cell text-end hstack gap-2">
+                        <button
+                          class="btn btn-link"
+                          on:click={() => editNode(node)}
+                          aria-label={nodeActionLabels.edit}
+                          title={nodeActionLabels.edit}>
+                          <i class="fa fa-pen"></i>
+                        </button>
+                        <button
+                          class="btn btn-link"
+                          on:click={() => removeNode(node)}
+                          aria-label={nodeActionLabels.delete}
+                          title={nodeActionLabels.delete}>
+                          <i class="fa fa-eraser"></i>
+                        </button>
+                      </td>
+                      <td>
+                        <div class="text-truncate font-monospace">{node.node}</div>
+                        {#each formatNodeContext(node.context) as c (c)}
+                          <span class="badge text-bg-primary me-2">{c}</span>
+                        {/each}
+                      </td>
+                      <td>
+                        <div class="form-check form-switch">
                           <input
                             class="form-check-input"
                             type="checkbox"
                             checked={!!node.active}
                             on:change={() => toggleNode(node)} />
-                        </td>
-                        <td class="small">
-                          {#if node.expiresAt}
-                            {new Date(node.expiresAt).toLocaleString()}
-                          {:else}
-                            -
-                          {/if}
-                        </td>
-                        <td class="text-end">
-                          <button
-                            class="btn btn-sm btn-outline-primary me-2"
-                            on:click={() => editNode(node)}
-                            aria-label={nodeActionLabels.edit}
-                            title={nodeActionLabels.edit}>
-                            <i class="fa fa-pen"></i>
-                          </button>
-                          <button
-                            class="btn btn-sm btn-outline-danger"
-                            on:click={() => removeNode(node)}
-                            aria-label={nodeActionLabels.delete}
-                            title={nodeActionLabels.delete}>
-                            <i class="fa fa-trash"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    {/each}
-                  </tbody>
-                </table>
-              </div>
-            {/if}
-          </div>
+                        </div>
+                      </td>
+                      <td class="small">
+                        {#if node.expiresAt}
+                          {new Date(node.expiresAt).toLocaleString()}
+                        {:else}
+                          -
+                        {/if}
+                      </td>
+                    </tr>
+                  {/each}
+                </tbody>
+              </table>
+            </div>
+          {/if}
         </div>
       {:else if selectedTrack}
         <div class="card">
@@ -442,7 +440,7 @@
                 {/each}
               </div>
             {:else}
-              <div class="text-muted small">-</div>
+              <div class=" small">-</div>
             {/if}
           </div>
         </div>
