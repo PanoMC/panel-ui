@@ -8,21 +8,21 @@
         bind:value={globalSearchQuery} />
     </div>
     <div slot="right" class="hstack gap-2">
-      <button type="button" class="btn btn-primary btn-sm" on:click={saveSnapshot}>
-        <i class="fa fa-save me-1"></i>{$_("pages.permissions.panel.actions.save")}
+      <button type="button" title="{$_("pages.permissions.panel.actions.save")}" class="btn btn-link" on:click={saveSnapshot}>
+        <i class="fa fa-save"></i>
       </button>
 
       {#if showGroups}
-        <button type="button" class="btn btn-secondary btn-sm" on:click={addGroup}>
-          <i class="fa fa-plus me-1"></i>{$_("pages.permissions.panel.actions.add-group")}
+        <button type="button" class="btn btn-secondary" on:click={addGroup}>
+          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.add-group")}
         </button>
       {:else if showTracks}
-        <button type="button" class="btn btn-secondary btn-sm" on:click={addTrack}>
-          <i class="fa fa-plus me-1"></i>{$_("pages.permissions.panel.actions.add-track")}
+        <button type="button" class="btn btn-secondary" on:click={addTrack}>
+          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.add-track")}
         </button>
       {:else if showUsers}
-        <button type="button" class="btn btn-secondary btn-sm" on:click={openUserSearch}>
-          <i class="fa fa-plus me-1"></i>{$_("pages.permissions.panel.actions.add-user")}
+        <button type="button" class="btn btn-secondary" on:click={openUserSearch}>
+          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.add-user")}
         </button>
       {/if}
     </div>

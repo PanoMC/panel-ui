@@ -75,7 +75,7 @@
             base + "/permissions",
             true,
           )}>
-          <i class="fas fa-user-shield me-2"></i>
+          <i class="fas fa-gavel me-2"></i>
           {$_("components.site-navigation-menu.permissions")}
         </a>
       </li>
