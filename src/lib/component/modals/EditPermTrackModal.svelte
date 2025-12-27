@@ -24,44 +24,73 @@
       </div>
       <div class="modal-body">
         <div class="form-floating mb-3">
-          <input id="editTrackName" class="form-control" type="text" placeholder={$_("pages.permission-groups.tracks.form.name")} bind:value={$draft.name} maxlength="128" />
-          <label for="editTrackName">{$_("pages.permission-groups.tracks.form.name")}</label>
+          <input
+            id="editTrackName"
+            class="form-control"
+            type="text"
+            placeholder={$_("pages.permission-groups.tracks.form.name")}
+            bind:value={$draft.name}
+            maxlength="128" />
+          <label for="editTrackName"
+            >{$_("pages.permission-groups.tracks.form.name")}</label>
         </div>
 
         <div class="form-floating mb-3">
-          <textarea id="editTrackDescription" class="form-control" placeholder={$_("pages.permission-groups.tracks.form.description")} rows="4" style="height: 140px;" bind:value={$draft.description}></textarea>
-          <label for="editTrackDescription">{$_("pages.permission-groups.tracks.form.description")}</label>
+          <textarea
+            id="editTrackDescription"
+            class="form-control"
+            placeholder={$_("pages.permission-groups.tracks.form.description")}
+            rows="4"
+            style="height: 140px;"
+            bind:value={$draft.description}></textarea>
+          <label for="editTrackDescription"
+            >{$_("pages.permission-groups.tracks.form.description")}</label>
         </div>
 
         <div class="mb-3">
-          <label for="">{$_("pages.permission-groups.tracks.groups.title")}</label>
-          <div class="small mb-0">{$_("pages.permission-groups.tracks.groups.help")}</div>
+          <label class="form-label" for="selectableGroups"
+            >{$_("pages.permission-groups.tracks.groups.title")}</label>
+          <small class="d-block mb-2">
+            {$_("pages.permission-groups.tracks.groups.help")}
+          </small>
+          {#if $permissionGroups.length === 0}
+            <small>
+              {$_("pages.permission-groups.tracks.groups.no-groups-available")}
+            </small>
+          {:else}
+            <div
+              id="selectableGroups"
+              class="d-flex flex-wrap gap-2 mb-3"
+              style="max-height: 160px; overflow-y: auto;">
+              {#each sortedPermissionGroups.filter((g) => !($draft.groupNames || []).includes(g.name)) as group (group.name)}
+                <button
+                  type="button"
+                  class="btn btn-sm btn-secondary rounded-pill {draggingAvailableName ===
+                  group.name
+                    ? 'opacity-50'
+                    : ''}"
+                  draggable="true"
+                  on:dragstart={(e) => onAvailableDragStart(e, group.name)}
+                  on:dragend={() => (draggingAvailableName = null)}
+                  aria-label={`Drag to add: ${group.name}`}
+                  title={`Drag to add: ${group.name}`}>
+                  <span>{groupLabel(group.name)}</span>
+                </button>
+              {/each}
+            </div>
+          {/if}
         </div>
 
-        {#if $permissionGroups.length === 0}
-          <p class="mb-0">{$_("pages.permission-groups.tracks.groups.no-groups-available")}</p>
-        {:else}
-          <div class="d-flex flex-wrap gap-2 mb-3" style="max-height: 160px; overflow-y: auto;">
-            {#each sortedPermissionGroups.filter((g) => !($draft.groupNames || []).includes(g.name)) as group (group.name)}
-              <button
-                type="button"
-                class="btn btn-sm btn-secondary rounded-pill {draggingAvailableName === group.name ? 'opacity-50' : ''}"
-                draggable="true"
-                on:dragstart={(e) => onAvailableDragStart(e, group.name)}
-                on:dragend={() => (draggingAvailableName = null)}
-                aria-label={`Drag to add: ${group.name}`}
-                title={`Drag to add: ${group.name}`}>
-                <span>{groupLabel(group.name)}</span>
-              </button>
-            {/each}
-          </div>
-        {/if}
 
         {#if $draft.groupNames.length > 0}
           <div class="mb-3">
-            <div class="mb-2">{$_("pages.permission-groups.tracks.selected.title")}</div>
+            <label class="form-label" for="selectedNodes">
+              {$_("pages.permission-groups.tracks.selected.title")}
+            </label>
             <div
-              class={"list-group " + (isDragOverSelected ? "border border-primary rounded" : "")}
+              id="selectedNodes"
+              class={"list-group " +
+                (isDragOverSelected ? "border border-primary rounded" : "")}
               role="list"
               on:dragover|preventDefault={() => (isDragOverSelected = true)}
               on:dragleave={() => (isDragOverSelected = false)}
@@ -81,15 +110,16 @@
                   }}>
                   <div class="d-flex align-items-center overflow-hidden">
                     <span class="me-2" style="cursor: grab;">≡</span>
-                    <span class="badge text-bg-secondary me-2 rounded-pill">{idx + 1}</span>
+                    <span class="badge text-bg-secondary me-2 rounded-pill"
+                      >{idx + 1}</span>
                     <span class="text-truncate">{groupLabel(gname)}</span>
                   </div>
                   <button
                     type="button"
                     class="btn-close"
                     on:click={() => removeGroupFromTrack(gname)}
-                    aria-label={`Remove group: ${gname}`}
-                    title={`Remove group: ${gname}`}>
+                    aria-label={$_("buttons.remove")}
+                    title={$_("buttons.remove")}>
                   </button>
                 </div>
                 {#if idx < $draft.groupNames.length - 1}
@@ -102,9 +132,12 @@
           </div>
         {:else}
           <div
-            class={"p-3 border rounded " + (isDragOverSelected ? "border-primary" : "")}
+            class={"p-3 border rounded " +
+              (isDragOverSelected ? "border-primary" : "")}
             role="region"
-            aria-label={$_("pages.permission-groups.tracks.selected.dropzone-aria")}
+            aria-label={$_(
+              "pages.permission-groups.tracks.selected.dropzone-aria",
+            )}
             on:dragover|preventDefault={() => (isDragOverSelected = true)}
             on:dragleave={() => (isDragOverSelected = false)}
             on:drop|preventDefault={(e) => onDropIntoList(e)}>
@@ -113,8 +146,11 @@
         {/if}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary w-100" on:click={handleSave}>
-          {$_("pages.permission-groups.tracks.buttons.save-changes")}
+        <button
+          type="button"
+          class="btn btn-primary w-100"
+          on:click={handleSave}>
+          {$_("buttons.save")}
         </button>
       </div>
     </div>
@@ -159,7 +195,9 @@
     draft.set({
       name: t?.name || "",
       description: t?.description || "",
-      groupNames: uniquePreserveOrder(Array.isArray(t?.groupNames) ? t.groupNames : []),
+      groupNames: uniquePreserveOrder(
+        Array.isArray(t?.groupNames) ? t.groupNames : [],
+      ),
     });
 
     modal = new window.bootstrap.Modal(get(modalElement), {
@@ -185,7 +223,7 @@
 
 <script>
   import { _ } from "svelte-i18n";
-    import NoContent from "../NoContent.svelte";
+  import NoContent from "../NoContent.svelte";
 
   let draggedName = null;
   let draggedFrom = null; // "available" | "selected" | null
@@ -196,15 +234,17 @@
   function groupLabel(name) {
     const n = String(name || "").trim();
     if (!n) return "";
-    const g = ($permissionGroups || []).find((x) => String(x?.name || "").trim() === n);
+    const g = ($permissionGroups || []).find(
+      (x) => String(x?.name || "").trim() === n,
+    );
     const dn = String(g?.displayName || "").trim();
     if (!dn || dn === n) return n;
     return `${dn} (${n})`;
   }
 
   $: {
-    sortedPermissionGroups = [...($permissionGroups || [])].sort(
-      (a, b) => String(a?.name || "").localeCompare(String(b?.name || "")),
+    sortedPermissionGroups = [...($permissionGroups || [])].sort((a, b) =>
+      String(a?.name || "").localeCompare(String(b?.name || "")),
     );
   }
 
@@ -327,14 +367,18 @@
         ...t,
         name: d.name.trim(),
         description: d.description || "",
-        groupNames: uniquePreserveOrder(Array.isArray(d.groupNames) ? d.groupNames : []),
+        groupNames: uniquePreserveOrder(
+          Array.isArray(d.groupNames) ? d.groupNames : [],
+        ),
       });
       return;
     }
     callback({
       name: d.name.trim(),
       description: d.description || "",
-      groupNames: uniquePreserveOrder(Array.isArray(d.groupNames) ? d.groupNames : []),
+      groupNames: uniquePreserveOrder(
+        Array.isArray(d.groupNames) ? d.groupNames : [],
+      ),
     });
   }
 </script>

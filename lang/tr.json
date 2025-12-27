@@ -492,7 +492,7 @@
         "weight-placeholder": "Ağırlık",
         "parents": "Üst Gruplar",
         "no-parents": "Üst Grup yok.",
-        "select-option": "Seçiniz",
+        "select-option": "Seç",
         "display-name": "Görünen İsim",
         "display-name-placeholder": "Görünen İsim"
       },
@@ -513,10 +513,6 @@
         },
         "selected": {
           "title": "Seçilen Gruplar"
-        },
-        "buttons": {
-          "cancel": "İptal",
-          "save-changes": "Değişiklikleri Kaydet"
         }
       }
     },

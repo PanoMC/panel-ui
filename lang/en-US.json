@@ -513,10 +513,6 @@
         },
         "selected": {
           "title": "Selected groups"
-        },
-        "buttons": {
-          "cancel": "Cancel",
-          "save-changes": "Save Changes"
         }
       }
     },
