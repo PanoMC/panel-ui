@@ -188,6 +188,19 @@
       </div>
     </div>
 
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="releaseChannel">
+        Release Channel
+      </label>
+      <div class="col-md-6">
+        <select class="form-control" bind:value={data.releaseChannel} id="releaseChannel">
+          <option value="ALPHA">alpha</option>
+          <option value="BETA">beta</option>
+          <option value="RELEASE">stable</option>
+        </select>
+      </div>
+    </div>
+
     <button
       class="btn btn-secondary"
       class:disabled={savePreferencesLoading || preferencesSaveDisabled}
@@ -449,6 +462,12 @@
 
   export let data;
 
+  // Backwards-compatible default (stable) in case older servers don't send this field.
+  data.releaseChannel = data.releaseChannel || "RELEASE";
+  if (data?.oldSettings) {
+    data.oldSettings.releaseChannel = data.oldSettings.releaseChannel || data.releaseChannel;
+  }
+
   let savePreferencesLoading;
   let saveEmailLoading;
   let connecting = !data.panoAccount && data.state && data.encodedData;
@@ -459,6 +478,7 @@
 
   $: preferencesSaveDisabled =
     data.oldSettings.updatePeriod === data.updatePeriod &&
+    data.oldSettings.releaseChannel === data.releaseChannel &&
     data.oldSettings.locale === data.locale &&
     data.oldSettings.allowUserLocaleSelection === data.allowUserLocaleSelection;
 
@@ -568,6 +588,7 @@
     const formData = new FormData();
 
     formData.append("updatePeriod", data.updatePeriod);
+    formData.append("releaseChannel", data.releaseChannel);
     formData.append("locale", data.locale);
     formData.append("allowUserLocaleSelection", data.allowUserLocaleSelection);
 
