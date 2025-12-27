@@ -14,15 +14,14 @@
       <div
         class="dropdown-menu dropdown-menu-start animate__animated animate__fadeIn">
         {#if hasPermission(Permissions.MANAGE_PERMISSION_GROUPS)}
-          <button
-            type="button"
+          <a
+            href="{base}/permissions"
             class="dropdown-item"
-            on:click={showAuthorizePlayerModal}
             class:disabled={$user.username === player.username ||
               (player.permissionGroup === "admin" && !$user.admin)}>
             <i class="fas fa-user-circle me-2"></i>
             {$_("components.player-row.authorize")}
-          </button>
+          </a>
         {/if}
         <button
           type="button"
@@ -101,10 +100,6 @@
   export let checkTime;
 
   const dispatch = createEventDispatcher();
-
-  function showAuthorizePlayerModal() {
-    dispatch("showAuthorizePlayerModalClick", { player });
-  }
 
   function showEditPlayerModal() {
     dispatch("showEditPlayerModalClick", { player });

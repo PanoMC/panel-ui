@@ -87,8 +87,6 @@
               <PlayerRow
                 player={player}
                 checkTime={checkTime}
-                on:showAuthorizePlayerModalClick={(event) =>
-                  onShowAuthorizePlayerModalClick(event.detail.player)}
                 on:showEditPlayerModalClick={(event) =>
                   onShowEditPlayerModalClick(event.detail.player)}
                 on:showBanPlayerModalClick={(event) =>
@@ -180,11 +178,6 @@
   import Pagination from "$lib/component/Pagination.svelte";
 
   import {
-    show as showAuthorizePlayerModal,
-    setCallback as setAuthorizePlayerModalCallback,
-    onHide as onAuthorizePlayerModalHide,
-  } from "$lib/component/modals/AuthorizePlayerModal.svelte";
-  import {
     show as showEditPlayerModal,
     setCallback as setEditPlayerModalCallback,
     onHide as onEditPlayerModalHide,
@@ -256,12 +249,6 @@
     await refreshData();
   }
 
-  function onShowAuthorizePlayerModalClick(player) {
-    data.players[data.players.indexOf(player)].selected = true;
-
-    showAuthorizePlayerModal(player);
-  }
-
   function onShowEditPlayerModalClick(player) {
     data.players[data.players.indexOf(player)].selected = true;
 
@@ -280,26 +267,8 @@
     showUnbanPlayerModal(player);
   }
 
-  setAuthorizePlayerModalCallback(async (newPlayer) => {
-    await refreshData();
-  });
-
   setEditPlayerModalCallback(async (newPlayer) => {
     await refreshData();
-  });
-
-  onAuthorizePlayerModalHide((newPlayer) => {
-    if (!data.players) {
-      return;
-    }
-
-    data.players.forEach((player) => {
-      if (player.id === newPlayer.id) {
-        player.selected = false;
-      }
-    });
-
-    data.players = data.players;
   });
 
   onEditPlayerModalHide((newPlayer) => {

@@ -62,15 +62,15 @@
           </button>
         {/if}
 
-        <button
+        <a
+          href="{base}/permissions"
           aria-label={$_("pages.player-detail.authorize")}
           title={$_("pages.player-detail.authorize")}
           class="btn btn-link"
-          on:click={() => showAuthorizePlayerModal(data.player)}
           class:disabled={$user.username === data.player.username ||
             (data.player.permissionGroup === "admin" && !$user.admin)}>
           <i class="fas fa-user-circle"></i>
-        </button>
+        </a>
       {/if}
       {#if hasPermission(Permissions.MANAGE_PLAYERS) || $user.username === data.player.username}
         <button
@@ -310,10 +310,6 @@
     setCallback as setEditPlayerModalCallback,
   } from "$lib/component/modals/EditPlayerModal.svelte";
   import {
-    show as showAuthorizePlayerModal,
-    setCallback as setAuthorizePlayerModalCallback,
-  } from "$lib/component/modals/AuthorizePlayerModal.svelte";
-  import {
     show as showConfirmBanPlayerModal,
     setCallback as setConfirmBanPlayerModalCallback,
   } from "$lib/component/modals/ConfirmBanPlayerModal.svelte";
@@ -399,10 +395,6 @@
       },
     });
   }
-
-  setAuthorizePlayerModalCallback((newPlayer) => {
-    data.player.permissionGroup = newPlayer.permissionGroup;
-  });
 
   setEditPlayerModalCallback((newPlayer) => {
     if (data.player.username !== newPlayer.username) {
