@@ -190,14 +190,24 @@
 
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="releaseChannel">
-        Release Channel
+        {$_("pages.settings.platform.release-channel")}
       </label>
       <div class="col-md-6">
         <select class="form-control" bind:value={data.releaseChannel} id="releaseChannel">
-          <option value="ALPHA">alpha</option>
-          <option value="BETA">beta</option>
-          <option value="RELEASE">stable</option>
+          <option value="ALPHA">{$_("pages.settings.platform.inputs.release-channel.alpha")}</option>
+          <option value="BETA">{$_("pages.settings.platform.inputs.release-channel.beta")}</option>
+          <option value="RELEASE">{$_("pages.settings.platform.inputs.release-channel.stable")}</option>
         </select>
+
+        {#if data.releaseChannel && data.releaseChannel !== "RELEASE"}
+          <div class="alert alert-warning small py-2 mt-2 mb-0" role="alert">
+            {@html $_("pages.settings.platform.release-channel-warning")}
+            {#if data.releaseChannel === "BETA"}
+              <br />
+              {@html $_("pages.settings.platform.release-channel-warning-beta")}
+            {/if}
+          </div>
+        {/if}
       </div>
     </div>
 

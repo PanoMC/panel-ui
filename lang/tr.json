@@ -311,6 +311,9 @@
         "allow-user-locale-selection-description": "Kullanıcıların kendi dilini seçmelerine izin ver, platformdan bağımsız.",
         "display-language": "Görüntüleme Dili",
         "check-auto-updates": "Güncellemeleri Denetle",
+        "release-channel": "Sürüm Kanalı",
+        "release-channel-warning": "Bu kanal <strong>en güncel</strong> sürümleri içerebilir fakat <strong>stabil olmayabilir</strong>. Hatalar/buglar yaşanabilir. <strong>Kendi riskinizle kullanın.</strong>",
+        "release-channel-warning-beta": "<strong>Beta</strong>, genelde <strong>alpha</strong>'dan daha stabildir; yine de buglar içerebilir.",
         "connect-failed-alert": "Pano hesabınıza bağlanırken hata oluştu! Lütfen tekrar deneyin.",
         "account": "Hesap",
         "platform-id": "Platform ID",
@@ -323,6 +326,11 @@
             "once-in-a-day": "Günde Bir Kez",
             "once-in-a-week": "Haftada Bir Kez",
             "once-in-a-month": "Ayda Bir Kez"
+          },
+          "release-channel": {
+            "alpha": "alpha",
+            "beta": "beta",
+            "stable": "stable"
           }
         },
         "smtp": {

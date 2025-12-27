@@ -311,6 +311,9 @@
         "allow-user-locale-selection-description": "Allow users to choose their own language, independent from platform.",
         "display-language": "Display Language",
         "check-auto-updates": "Platform Updates",
+        "release-channel": "Release Channel",
+        "release-channel-warning": "This channel may contain the <strong>newest</strong> releases, but it may <strong>not be stable</strong>. Bugs may occur. <strong>Use at your own risk.</strong>",
+        "release-channel-warning-beta": "<strong>Beta</strong> is generally more stable than <strong>alpha</strong>, but it can still contain bugs.",
         "connect-failed-alert": "Connecting your Pano account has been failed! Try again.",
         "account": "Account",
         "platform-id": "Platform ID",
@@ -323,6 +326,11 @@
             "once-in-a-day": "Once in a Day",
             "once-in-a-week": "Once in a Week",
             "once-in-a-month": "Once in a Month"
+          },
+          "release-channel": {
+            "alpha": "alpha",
+            "beta": "beta",
+            "stable": "stable"
           }
         },
         "smtp": {
