@@ -75,6 +75,19 @@
     </div>
     <div class="col-4 d-flex justify-content-end">
       <div class="navbar-nav">
+        <!-- Report a bug -->
+        <div class="nav-item">
+          <a
+            class="nav-link"
+            href="https://github.com/PanoMC/Pano/issues/new"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Report a bug"
+            title="Report a bug">
+            <i class="fa-solid fa-bug"></i>
+          </a>
+        </div>
+
         <!-- Notifications Dropdown -->
         <div class="nav-item dropdown" id="quickNotificationsDropdown">
           <button
