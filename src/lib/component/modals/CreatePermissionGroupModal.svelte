@@ -20,82 +20,74 @@
       </div>
       <div class="modal-body">
         <form on:submit|preventDefault={handleSubmit}>
-          <div class="mb-3">
-            <div class="row g-2">
-              <div class="col-8">
-                <label for="groupName" class="form-label">
-                  {$_("pages.permission-groups.form.group-name")}
-                </label>
-                <input
-                  type="text"
-                  class="form-control form-control-lg"
-                  id="groupName"
-                  bind:value={$newGroup.name}
-                  disabled={$lockGroupName}
-                  aria-disabled={$lockGroupName}
-                  maxlength="30"
-                  required
-                  placeholder={$_("pages.permission-groups.form.group-name-placeholder")}
-                  title={$_("pages.permission-groups.form.group-name")} />
-              </div>
-              <div class="col-4">
-                <label for="groupWeight" class="form-label">
-                  {$_("pages.permission-groups.form.weight")}
-                </label>
-                <input
-                  type="number"
-                  class="form-control form-control-lg"
-                  id="groupWeight"
-                  bind:value={$newGroup.weight}
-                  inputmode="numeric"
-                  on:blur={() => newGroup.update((g) => ({ ...g, weight: normalizeWeight(g.weight) }))}
-                  placeholder={$_("pages.permission-groups.form.weight-placeholder")}
-                  title={$_("pages.permission-groups.form.weight")} />
-              </div>
-            </div>
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              id="groupDisplayName"
+              bind:value={$newGroup.displayName}
+              title="{$_("pages.permission-groups.form.display-name")}"
+              maxlength="30" />
+            <label for="groupDisplayName">
+              {$_("pages.permission-groups.form.display-name")}
+            </label>
           </div>
-          <div class="row">
-            <div class="col-md-12 mb-3">
-              <label for="groupDisplayName" class="form-label"
-                >{$_("pages.permission-groups.form.display-name")}</label>
+          <div class="input-group mb-3">
+            <div class="form-floating">
               <input
                 type="text"
                 class="form-control"
-                id="groupDisplayName"
-                bind:value={$newGroup.displayName}
+                id="groupName"
+                bind:value={$newGroup.name}
+                disabled={$lockGroupName}
+                aria-disabled={$lockGroupName}
                 maxlength="30"
-                placeholder={$_(
-                  "pages.permission-groups.form.display-name-placeholder",
-                )} />
+                required
+                title={$_("pages.permission-groups.form.group-name")} />
+              <label for="groupName">
+                {$_("pages.permission-groups.form.group-name")}
+              </label>
+            </div>
+            <div class="form-floating">
+              <input
+                type="number"
+                class="form-control"
+                id="groupWeight"
+                bind:value={$newGroup.weight}
+                inputmode="numeric"
+                on:blur={() => newGroup.update((g) => ({ ...g, weight: normalizeWeight(g.weight) }))}
+                title={$_("pages.permission-groups.form.weight")} />
+              <label for="groupWeight">
+                {$_("pages.permission-groups.form.weight")}
+              </label>
             </div>
           </div>
 
-          <div class="mb-1">
-            <div class="form-label">{$_("pages.permission-groups.form.parents")}</div>
-            {#if ($newGroup.parents || []).length === 0}
-              <div class="small text-muted">{$_("pages.permission-groups.form.no-parents")}</div>
-            {:else}
-              <div class="list-group list-group-flush border rounded">
-                {#each ($newGroup.parents || []) as p (p)}
-                  <div class="list-group-item d-flex justify-content-between align-items-center">
-                    <div class="text-truncate">
-                      {parentLabel(p)}
-                      <small class="text-muted">({p})</small>
-                    </div>
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-danger"
-                      on:click={() => removeParent(p)}>
-                      {$_("buttons.remove")}
-                    </button>
+          <div class="form-label">{$_("pages.permission-groups.form.parents")}</div>
+          {#if ($newGroup.parents || []).length === 0}
+          <NoContent />
+          {:else}
+            <div class="list-group list-group">
+              {#each ($newGroup.parents || []) as p (p)}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                  <div class="text-truncate">
+                    {parentLabel(p)}
+                    <small>({p})</small>
                   </div>
-                {/each}
-              </div>
-            {/if}
-          </div>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    title="{$_("buttons.remove")}"
+                    aria-label="{$_("buttons.remove")}"
+                    on:click={() => removeParent(p)}>
+                  </button>
+                </div>
+              {/each}
+            </div>
+          {/if}
 
-          <div class="row g-2 mt-2">
-            <div class="col-9">
+          {#if availableParentGroups.length > 0}
+            <div class="hstack gap-2 mt-3">
               <select class="form-select" bind:value={parentToAdd}>
                 <option value="">{$_("pages.permission-groups.form.select-option")}</option>
                 {#each availableParentGroups as g (g.id ?? g.name)}
@@ -104,18 +96,18 @@
                   </option>
                 {/each}
               </select>
-            </div>
-            <div class="col-3 d-grid">
               <button
                 type="button"
-                class="btn btn-outline-primary"
+                class="btn btn-link"
+                title="{$_("buttons.add")}"
+                aria-label="{$_("buttons.add")}"
                 disabled={!String(parentToAdd || "").trim()}
                 aria-disabled={!String(parentToAdd || "").trim()}
                 on:click={addParent}>
-                {$_("buttons.add")}
+                <i class="fa fa-plus"></i>
               </button>
             </div>
-          </div>
+          {/if}
         </form>
       </div>
       <div class="modal-footer">
@@ -192,6 +184,7 @@
 
 <script>
   import { _ } from "svelte-i18n";
+    import NoContent from "../NoContent.svelte";
 
   const isValidGroupName = (raw) => {
     const name = String(raw || "").trim();

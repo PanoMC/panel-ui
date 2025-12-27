@@ -413,9 +413,9 @@
         },
         "actions": {
           "save": "Save",
-          "add-group": "Add group",
-          "add-track": "Add track",
-          "add-user": "Add player",
+          "create-group": "Create Group",
+          "create-track": "Create Track",
+          "create-user": "Create Player",
           "edit": "Edit",
           "delete": "Delete",
           "remove": "Remove"
@@ -430,7 +430,7 @@
           "weight": "Weight"
         },
         "nodes": {
-          "add-node": "Add node",
+          "add-node": "Add Node",
           "node": "Node",
           "active": "Active",
           "expiry": "Expiry"
@@ -465,7 +465,7 @@
         "group-name": "Group Name",
         "group-name-placeholder": "Enter group name",
         "display-name": "Display Name",
-        "display-name-placeholder": "Display name"
+        "display-name-placeholder": "Display Name"
       },
       "permission-editor": {
         "search": {
@@ -487,17 +487,17 @@
       "create-permission-group-button": "Create Permission Group",
       "form": {
         "group-name": "Group Name",
-        "group-name-placeholder": "Enter group name",
+        "group-name-placeholder": "Group Name",
         "weight": "Weight",
         "weight-placeholder": "Weight",
-        "parents": "Parent groups",
+        "parents": "Parent Groups",
         "no-parents": "No parent group.",
         "select-option": "Select",
         "display-name": "Display Name",
-        "display-name-placeholder": "Display name"
+        "display-name-placeholder": "Display Name"
       },
       "validation": {
-        "name-required": "Group name is required!"
+        "name-required": "Group Name is required!"
       },
       "tracks": {
         "add-permission-track": "Add Permission Track",
@@ -507,7 +507,7 @@
           "description": "Description"
         },
         "groups": {
-          "title": "Groups in this track",
+          "title": "Track Groups",
           "help": "Drag groups from above into the selected list. Selected groups can be reordered via drag & drop.",
           "no-groups-available": "No groups available."
         },
@@ -927,16 +927,10 @@
       },
       "search-player": {
         "title": "Search Player",
-        "inputs": {
-          "query": {
-            "placeholder": "Search player name..."
-          }
-        },
         "states": {
           "loading": "Searching...",
           "start-typing": "Start typing to search.",
-          "max-results": "At most 10 results are shown.",
-          "no-results": "No results."
+          "max-results": "At most 10 results are shown."
         },
         "badges": {
           "select": "Select",

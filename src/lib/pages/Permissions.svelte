@@ -14,16 +14,16 @@
       </button>
 
       {#if showGroups}
-        <button type="button" class="btn btn-secondary" on:click={addGroup}>
-          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.add-group")}
+        <button type="button" class="btn btn-secondary" on:click={createGroup}>
+          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.create-group")}
         </button>
       {:else if showTracks}
-        <button type="button" class="btn btn-secondary" on:click={addTrack}>
-          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.add-track")}
+        <button type="button" class="btn btn-secondary" on:click={createTrack}>
+          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.create-track")}
         </button>
       {:else if showUsers}
         <button type="button" class="btn btn-secondary" on:click={openUserSearch}>
-          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.add-user")}
+          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.create-user")}
         </button>
       {/if}
     </div>
@@ -256,7 +256,7 @@
                     {#each selectedGroupParents as pg (pg.name)}
                       <button
                         type="button"
-                        class="badge text-bg-secondary rounded-pill btn btn-sm btn-link text-decoration-none focus-ring"
+                        class="badge text-bg-secondary rounded-pill btn btn-sm btn-link text-decoration-none focus-ring me-1"
                         style="cursor: pointer;"
                         on:click={() => selectGroupByName(pg.name)}
                         aria-label={`Üst gruba git: ${pg.name}`}
@@ -440,12 +440,14 @@
                 {/each}
               </div>
             {:else}
-              <div class=" small">-</div>
+              <div>-</div>
             {/if}
           </div>
         </div>
       {:else}
+      <div class="card d-flex align-items center justify-content-center h-100">
         <NoContent text={$_("pages.permissions.panel.empty.select-something")} />
+      </div>
       {/if}
     </div>
   </div>
@@ -902,7 +904,7 @@
     await showToast("components.toasts.settings-save-success");
   }
 
-  function addGroup() {
+  function createGroup() {
     editingGroupId = null;
     newGroup = emptyGroupForm();
     showCreatePermissionGroupModal({
@@ -942,7 +944,7 @@
     });
   }
 
-  function addTrack() {
+  function createTrack() {
     selectedTrackForEdit = null;
     showEditPermTrackModal({ permissionGroups });
   }
@@ -1289,7 +1291,7 @@
 
   }
 
-  function handleAddTrackFromModal(trackData) {
+  function handlecreateTrackFromModal(trackData) {
     if (!trackData) return;
     const now = Date.now();
     const newTrack = {
@@ -1340,7 +1342,7 @@
     if (trackData?.id != null) {
       handleEditTrackFromModal(trackData);
     } else {
-      handleAddTrackFromModal(trackData);
+      handlecreateTrackFromModal(trackData);
     }
   });
   setEditPermissionNodeModalCallback(handleEditPermissionNodeFromModal);

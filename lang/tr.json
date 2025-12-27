@@ -413,9 +413,9 @@
         },
         "actions": {
           "save": "Kaydet",
-          "add-group": "Grup ekle",
-          "add-track": "Track ekle",
-          "add-user": "Oyuncu ekle",
+          "create-group": "Grup Oluştur",
+          "create-track": "Track Oluştur",
+          "create-user": "Oyuncu Oluştur",
           "edit": "Düzenle",
           "delete": "Sil",
           "remove": "Kaldır"
@@ -426,11 +426,11 @@
           "users": "Oyuncular"
         },
         "group": {
-          "parents": "Üst gruplar",
+          "parents": "Üst Gruplar",
           "weight": "Ağırlık"
         },
         "nodes": {
-          "add-node": "Node ekle",
+          "add-node": "Node Ekle",
           "node": "Node",
           "active": "Aktif",
           "expiry": "Süre"
@@ -463,9 +463,9 @@
       "create-new-group": "Yeni Grup Oluştur",
       "form": {
         "group-name": "Grup İsmi",
-        "group-name-placeholder": "Grup ismini girin",
+        "group-name-placeholder": "Grup İsmi",
         "display-name": "Display Name",
-        "display-name-placeholder": "Görünen isim"
+        "display-name-placeholder": "Görünen İsim"
       },
       "permission-editor": {
         "search": {
@@ -494,7 +494,7 @@
         "no-parents": "Üst grup yok.",
         "select-option": "Seçiniz",
         "display-name": "Görünen İsim",
-        "display-name-placeholder": "Görünen isim"
+        "display-name-placeholder": "Görünen İsim"
       },
       "validation": {
         "name-required": "Grup ismi gerekli!"
@@ -507,7 +507,7 @@
           "description": "Açıklama"
         },
         "groups": {
-          "title": "Bu track'teki gruplar",
+          "title": "Track Grupları",
           "help": "Grupları üstten sürükleyip seçili listeye bırakın. Seçili grupları sürükleyerek yeniden sıralayabilirsiniz.",
           "no-groups-available": "Kullanılabilir grup yok."
         },
@@ -928,16 +928,10 @@
       },
       "search-player": {
         "title": "Oyuncu Ara",
-        "inputs": {
-          "query": {
-            "placeholder": "Oyuncu adı ara..."
-          }
-        },
         "states": {
           "loading": "Aranıyor...",
           "start-typing": "Aramak için yazmaya başlayın.",
-          "max-results": "En fazla 10 sonuç gösterilir.",
-          "no-results": "Sonuç yok."
+          "max-results": "En fazla 10 sonuç gösterilir."
         },
         "badges": {
           "select": "Seç",
@@ -955,7 +949,7 @@
           "active": "Aktif",
           "expiry": "Süre",
           "expiry-aria": "Süre seçenekleri",
-          "expiry-never": "Asla",
+          "expiry-never": "Yok",
           "expiry-date": "Tarih"
         },
         "contexts": {

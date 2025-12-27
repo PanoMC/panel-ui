@@ -23,27 +23,29 @@
           on:click={hide}></button>
       </div>
       <div class="modal-body">
-        <div class="mb-3">
-          <label class="form-label" for="editTrackName">{$_("pages.permission-groups.tracks.form.name")}</label>
-          <input id="editTrackName" class="form-control" type="text" bind:value={$draft.name} maxlength="128" />
+        <div class="form-floating mb-3">
+          <input id="editTrackName" class="form-control" type="text" placeholder={$_("pages.permission-groups.tracks.form.name")} bind:value={$draft.name} maxlength="128" />
+          <label for="editTrackName">{$_("pages.permission-groups.tracks.form.name")}</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          <textarea id="editTrackDescription" class="form-control" placeholder={$_("pages.permission-groups.tracks.form.description")} rows="4" style="height: 140px;" bind:value={$draft.description}></textarea>
+          <label for="editTrackDescription">{$_("pages.permission-groups.tracks.form.description")}</label>
         </div>
 
         <div class="mb-3">
-          <label class="form-label" for="editTrackDescription">{$_("pages.permission-groups.tracks.form.description")}</label>
-          <textarea id="editTrackDescription" class="form-control" rows="2" bind:value={$draft.description}></textarea>
+          <label for="">{$_("pages.permission-groups.tracks.groups.title")}</label>
+          <div class="small mb-0">{$_("pages.permission-groups.tracks.groups.help")}</div>
         </div>
-
-        <div class="mb-2 fw-bold">{$_("pages.permission-groups.tracks.groups.title")}</div>
-        <div class="small text-muted mb-2">{$_("pages.permission-groups.tracks.groups.help")}</div>
 
         {#if $permissionGroups.length === 0}
-          <p class="text-muted mb-0">{$_("pages.permission-groups.tracks.groups.no-groups-available")}</p>
+          <p class="mb-0">{$_("pages.permission-groups.tracks.groups.no-groups-available")}</p>
         {:else}
           <div class="d-flex flex-wrap gap-2 mb-3" style="max-height: 160px; overflow-y: auto;">
             {#each sortedPermissionGroups.filter((g) => !($draft.groupNames || []).includes(g.name)) as group (group.name)}
               <button
                 type="button"
-                class="btn btn-sm btn-outline-secondary {draggingAvailableName === group.name ? 'opacity-50' : ''}"
+                class="btn btn-sm btn-secondary rounded-pill {draggingAvailableName === group.name ? 'opacity-50' : ''}"
                 draggable="true"
                 on:dragstart={(e) => onAvailableDragStart(e, group.name)}
                 on:dragend={() => (draggingAvailableName = null)}
@@ -57,7 +59,7 @@
 
         {#if $draft.groupNames.length > 0}
           <div class="mb-3">
-            <div class="fw-bold mb-2">{$_("pages.permission-groups.tracks.selected.title")}</div>
+            <div class="mb-2">{$_("pages.permission-groups.tracks.selected.title")}</div>
             <div
               class={"list-group " + (isDragOverSelected ? "border border-primary rounded" : "")}
               role="list"
@@ -84,16 +86,15 @@
                   </div>
                   <button
                     type="button"
-                    class="btn btn-sm btn-outline-danger"
+                    class="btn-close"
                     on:click={() => removeGroupFromTrack(gname)}
                     aria-label={`Remove group: ${gname}`}
                     title={`Remove group: ${gname}`}>
-                    <i class="fa fa-times"></i>
                   </button>
                 </div>
                 {#if idx < $draft.groupNames.length - 1}
-                  <div class="text-center text-muted py-1">
-                    <i class="fa fa-arrow-down"></i>
+                  <div class="text-center">
+                    <i class="fa fa-arrow-down fa-fw"></i>
                   </div>
                 {/if}
               {/each}
@@ -101,18 +102,18 @@
           </div>
         {:else}
           <div
-            class={"text-muted small p-3 border rounded " + (isDragOverSelected ? "border-primary" : "")}
+            class={"p-3 border rounded " + (isDragOverSelected ? "border-primary" : "")}
             role="region"
             aria-label={$_("pages.permission-groups.tracks.selected.dropzone-aria")}
             on:dragover|preventDefault={() => (isDragOverSelected = true)}
             on:dragleave={() => (isDragOverSelected = false)}
             on:drop|preventDefault={(e) => onDropIntoList(e)}>
-            {$_("pages.permission-groups.tracks.selected.empty")}
+            <NoContent />
           </div>
         {/if}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" on:click={handleSave}>
+        <button type="button" class="btn btn-primary w-100" on:click={handleSave}>
           {$_("pages.permission-groups.tracks.buttons.save-changes")}
         </button>
       </div>
@@ -184,6 +185,7 @@
 
 <script>
   import { _ } from "svelte-i18n";
+    import NoContent from "../NoContent.svelte";
 
   let draggedName = null;
   let draggedFrom = null; // "available" | "selected" | null

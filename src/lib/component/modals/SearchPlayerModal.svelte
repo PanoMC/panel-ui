@@ -5,7 +5,7 @@
   tabindex="-1"
   role="dialog"
   aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{$_("components.modals.search-player.title")}</h5>
@@ -17,17 +17,27 @@
           on:click={hide}></button>
       </div>
       <div class="modal-body">
-        <input
-          class="form-control"
-          type="text"
-          bind:value={$query}
-          placeholder={$_("components.modals.search-player.inputs.query.placeholder")}
-          on:keydown={(e) => {
-            if (e.key === "Escape") hide();
-          }} />
+        <div class="vstack gap-2">
+          <div class="position-relative">
+            <input
+              class="form-control form-control-lg"
+              type="search"
+              bind:value={$query}
+              placeholder={$_("buttons.find")}
+              on:keydown={(e) => {
+                if (e.key === "Escape") hide();
+              }} />
+            {#if $query.trim().length > 0}
+              <button
+                type="button"
+                class="btn-close position-absolute top-50 end-0 translate-middle-y me-2"
+                title={$_("buttons.clear")}
+                on:click={() => query.set("")}>
+              </button>
+            {/if}
+          </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-2">
-          <small class="text-muted">
+          <small>
             {#if $loading}
               {$_("components.modals.search-player.states.loading")}
             {:else if $query.trim().length === 0}
@@ -36,15 +46,10 @@
               {$_("components.modals.search-player.states.max-results")}
             {/if}
           </small>
-          {#if $query.trim().length > 0}
-            <button type="button" class="btn btn-sm btn-outline-secondary" on:click={() => query.set("")}>
-              {$_("buttons.clear")}
-            </button>
-          {/if}
         </div>
 
         {#if $errorText}
-          <div class="alert alert-danger mt-3 mb-0">{$errorText}</div>
+          <div class="alert alert-danger">{$errorText}</div>
         {/if}
 
         {#if $results.length > 0}
@@ -66,10 +71,10 @@
                   {/if}
                   <div class="overflow-hidden">
                     <div class="fw-bold text-truncate">{u.username}</div>
-                    <small class="text-muted d-block text-truncate">{formatGroups(u) || "-"}</small>
+                    <small class="d-block text-truncate">{formatGroups(u) || "-"}</small>
                   </div>
                 </div>
-                <span class="badge bg-primary">
+                <span class="badge text-bg-primary">
                   {isExisting(u)
                     ? $_("components.modals.search-player.badges.select")
                     : $_("components.modals.search-player.badges.add")}
@@ -80,11 +85,8 @@
         {/if}
 
         {#if $results.length === 0 && $query.trim().length > 0 && !$loading && !$errorText}
-          <div class="text-muted mt-3">{$_("components.modals.search-player.states.no-results")}</div>
+          <NoContent />
         {/if}
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" on:click={hide}>{$_("buttons.close")}</button>
       </div>
     </div>
   </div>
@@ -142,6 +144,7 @@
 <script>
   import { _ } from "svelte-i18n";
   import ApiUtil from "$lib/api.util";
+  import NoContent from "$lib/component/NoContent.svelte";
 
   let debounceTimer;
   let activeSearchToken = 0;
