@@ -59,17 +59,17 @@
                         draft.update((d) => ({ ...d, nodeValue: p.node }));
                         showNodeSuggestions = false;
                       }}>
-                      <div class="overflow-hidden">
-                        <p class="fw-bold text-truncate mb-2">
+                      <div class="overflow-hidden vstack gap-1">
+                        <p class="fw-bold text-truncate mb-0">
                           {p.type === "panel" ? $_(p.titleKey) : p.title}
                         </p>
                         <div
                           class="text-truncate font-monospace">
                           {p.node}
                         </div>
-                        <div class="small mt-1">
+                        <small class="mb-0">
                           {p.type === "panel" ? $_(p.descKey) : p.desc}
-                        </div>
+                        </small>
                       </div>
                     </button>
                   {/each}
@@ -91,8 +91,8 @@
           </div>
 
           <div class="mb-3">
-            <div class="fw-bold mb-2">{$_("components.modals.edit-permission-node.form.expiry")}</div>
-            <div class="btn-group w-100" role="group" aria-label={$_("components.modals.edit-permission-node.form.expiry-aria")}>
+            <label class="form-label" for="permExpiry">{$_("components.modals.edit-permission-node.form.expiry")}</label>
+            <div id="permExpiry" class="btn-group w-100" role="group" aria-label={$_("components.modals.edit-permission-node.form.expiry-aria")}>
               <input
                 type="radio"
                 class="btn-check"
@@ -101,8 +101,8 @@
                 autocomplete="off"
                 bind:group={$draft.expiryType}
                 value="never" />
-              <label class="btn btn-outline-primary" for="expiry-never-edit">{$_("components.modals.edit-permission-node.form.expiry-never")}</label>
 
+              <label class="btn btn-outline-primary" for="expiry-never-edit">{$_("components.modals.edit-permission-node.form.expiry-never")}</label>
               <input
                 type="radio"
                 class="btn-check"
@@ -118,40 +118,38 @@
             {/if}
           </div>
 
-          <div class="mb-3">
-            <div class="fw-bold mb-2">{$_("components.modals.edit-permission-node.contexts.title")}</div>
+          <div>
+            <label class="form-label" for="">{$_("components.modals.edit-permission-node.contexts.title")}</label>
 
             {#if $draft.contexts.length === 0}
               <NoContent />
             {:else}
-              <div class="vstack gap-2">
-                {#each $draft.contexts as ctx, index (index)}
-                <div class="hstack gap-2">
-                  <div class="input-group">
-                    <input
-                      class="form-control"
-                      type="text"
-                      placeholder={$_("components.modals.edit-permission-node.contexts.key-placeholder")}
-                      bind:value={ctx.key} />
-                    <input
-                      class="form-control"
-                      type="text"
-                      placeholder={$_("components.modals.edit-permission-node.contexts.value-placeholder")}
-                      bind:value={ctx.value} />
-                  </div>
-                    <button
-                      class="btn-close"
-                      type="button"
-                      on:click={() => removeContext(index)}
-                      aria-label={$_("buttons.remove")}
-                      title={$_("buttons.remove")}>
-                    </button>
-                  </div>
-                {/each}
-              </div>
+              {#each $draft.contexts as ctx, index (index)}
+              <div class="hstack gap-2 mb-2">
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder={$_("components.modals.edit-permission-node.contexts.key-placeholder")}
+                    bind:value={ctx.key} />
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder={$_("components.modals.edit-permission-node.contexts.value-placeholder")}
+                    bind:value={ctx.value} />
+                </div>
+                  <button
+                    class="btn-close"
+                    type="button"
+                    on:click={() => removeContext(index)}
+                    aria-label={$_("buttons.remove")}
+                    title={$_("buttons.remove")}>
+                  </button>
+                </div>
+              {/each}
             {/if}
 
-            <button class="btn btn-sm btn-primary mt-2 w-100" type="button" on:click={addContext}>
+            <button class="btn btn-sm btn-primary w-100" type="button" on:click={addContext}>
               <i class="fa fa-plus me-2"></i>{$_("buttons.add")}
             </button>
           </div>
