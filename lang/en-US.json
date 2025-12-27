@@ -512,9 +512,7 @@
           "no-groups-available": "No groups available."
         },
         "selected": {
-          "title": "Selected groups",
-          "dropzone-aria": "Drop groups here",
-          "empty": "No groups selected. Drag groups here."
+          "title": "Selected groups"
         },
         "buttons": {
           "cancel": "Cancel",

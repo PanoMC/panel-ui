@@ -80,8 +80,8 @@
                     isDragOverSelected = false;
                   }}>
                   <div class="d-flex align-items-center overflow-hidden">
-                    <span class="me-2 text-muted" title="Drag to reorder" style="cursor: grab;">≡</span>
-                    <span class="badge text-bg-secondary me-2">{idx + 1}</span>
+                    <span class="me-2" style="cursor: grab;">≡</span>
+                    <span class="badge text-bg-secondary me-2 rounded-pill">{idx + 1}</span>
                     <span class="text-truncate">{groupLabel(gname)}</span>
                   </div>
                   <button

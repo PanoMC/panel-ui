@@ -36,7 +36,7 @@
             <div class="form-floating">
               <input
                 type="text"
-                class="form-control"
+                class="form-control font-monospace"
                 id="groupName"
                 bind:value={$newGroup.name}
                 disabled={$lockGroupName}
@@ -91,14 +91,14 @@
               <select class="form-select" bind:value={parentToAdd}>
                 <option value="">{$_("pages.permission-groups.form.select-option")}</option>
                 {#each availableParentGroups as g (g.id ?? g.name)}
-                  <option value={g.name}>
+                  <option class="font-monospace" value={g.name}>
                     {g.displayName || g.name} ({g.name})
                   </option>
                 {/each}
               </select>
               <button
                 type="button"
-                class="btn btn-link"
+                class="btn btn-primary"
                 title="{$_("buttons.add")}"
                 aria-label="{$_("buttons.add")}"
                 disabled={!String(parentToAdd || "").trim()}

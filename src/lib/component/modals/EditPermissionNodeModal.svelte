@@ -18,7 +18,7 @@
       </div>
       <div class="modal-body" style="overflow: visible;">
         {#if !$node}
-          <p class="text-muted mb-0">{$_("components.modals.edit-permission-node.states.no-node-selected")}</p>
+          <p class="mb-0">{$_("components.modals.edit-permission-node.states.no-node-selected")}</p>
         {:else}
           <div class="mb-3">
             <label class="form-label" for="nodeValue">{$_("components.modals.edit-permission-node.form.node")}</label>
@@ -26,7 +26,7 @@
             <div class="position-relative">
               <input
                 id="nodeValue"
-                class="form-control form-control-lg"
+                class="form-control form-control-lg font-monospace"
                 type="text"
                 bind:value={$draft.nodeValue}
                 placeholder={$_("components.modals.edit-permission-node.form.node-placeholder")}
@@ -49,7 +49,7 @@
 
               {#if showNodeSuggestions && filteredPanelNodes.length > 0}
                 <div
-                  class="list-group position-absolute w-100 shadow-sm"
+                  class="list-group position-absolute w-100"
                   style="z-index: 2000; max-height: 280px; overflow: auto; top: calc(100% + 4px);">
                   {#each filteredPanelNodes as p (p.key)}
                     <button
@@ -60,15 +60,14 @@
                         showNodeSuggestions = false;
                       }}>
                       <div class="overflow-hidden">
-                        <div class="fw-bold text-truncate">
+                        <p class="fw-bold text-truncate mb-2">
                           {p.type === "panel" ? $_(p.titleKey) : p.title}
-                        </div>
+                        </p>
                         <div
-                          class="small text-muted text-truncate"
-                          style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">
+                          class="text-truncate font-monospace">
                           {p.node}
                         </div>
-                        <div class="small text-muted mt-1">
+                        <div class="small mt-1">
                           {p.type === "panel" ? $_(p.descKey) : p.desc}
                         </div>
                       </div>
@@ -120,18 +119,14 @@
           </div>
 
           <div class="mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <div class="fw-bold">{$_("components.modals.edit-permission-node.contexts.title")}</div>
-              <button class="btn btn-sm btn-outline-primary" type="button" on:click={addContext}>
-                <i class="fa fa-plus me-1"></i>{$_("buttons.add")}
-              </button>
-            </div>
+            <div class="fw-bold mb-2">{$_("components.modals.edit-permission-node.contexts.title")}</div>
 
             {#if $draft.contexts.length === 0}
               <NoContent />
             {:else}
               <div class="vstack gap-2">
                 {#each $draft.contexts as ctx, index (index)}
+                <div class="hstack gap-2">
                   <div class="input-group">
                     <input
                       class="form-control"
@@ -143,18 +138,22 @@
                       type="text"
                       placeholder={$_("components.modals.edit-permission-node.contexts.value-placeholder")}
                       bind:value={ctx.value} />
+                  </div>
                     <button
-                      class="btn btn-outline-danger"
+                      class="btn-close"
                       type="button"
                       on:click={() => removeContext(index)}
                       aria-label={$_("buttons.remove")}
                       title={$_("buttons.remove")}>
-                      <i class="fa fa-trash"></i>
                     </button>
                   </div>
                 {/each}
               </div>
             {/if}
+
+            <button class="btn btn-sm btn-primary mt-2 w-100" type="button" on:click={addContext}>
+              <i class="fa fa-plus me-2"></i>{$_("buttons.add")}
+            </button>
           </div>
         {/if}
       </div>

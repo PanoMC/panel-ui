@@ -430,7 +430,7 @@
           "weight": "Ağırlık"
         },
         "nodes": {
-          "add-node": "Node Ekle",
+          "add-node": "Yetki Ekle",
           "node": "Node",
           "active": "Aktif",
           "expiry": "Süre"
@@ -490,8 +490,8 @@
         "group-name-placeholder": "Grup ismini girin",
         "weight": "Ağırlık",
         "weight-placeholder": "Ağırlık",
-        "parents": "Üst gruplar",
-        "no-parents": "Üst grup yok.",
+        "parents": "Üst Gruplar",
+        "no-parents": "Üst Grup yok.",
         "select-option": "Seçiniz",
         "display-name": "Görünen İsim",
         "display-name-placeholder": "Görünen İsim"
@@ -512,9 +512,7 @@
           "no-groups-available": "Kullanılabilir grup yok."
         },
         "selected": {
-          "title": "Seçilen gruplar",
-          "dropzone-aria": "Grupları buraya bırakın",
-          "empty": "Seçili grup yok. Grupları buraya sürükleyin."
+          "title": "Seçilen Gruplar"
         },
         "buttons": {
           "cancel": "İptal",
@@ -939,12 +937,12 @@
         }
       },
       "edit-permission-node": {
-        "title": "Permission Node Düzenle",
+        "title": "Yetki Düzenle",
         "states": {
           "no-node-selected": "Node seçilmedi."
         },
         "form": {
-          "node": "Node",
+          "node": "Yetki",
           "node-placeholder": "örn. group.admin veya prefix.80.&d[MOD]",
           "active": "Aktif",
           "expiry": "Süre",
