@@ -3,7 +3,7 @@
     <div slot="middle" class="hstack gap-2">
       <input
         type="text"
-        class="form-control form-control-sm"
+        class="form-control form-control-sm {String(globalSearchQuery || '').trim() ? 'border-secondary' : ''}"
         placeholder={$_("pages.permissions.panel.search.placeholder")}
         bind:value={globalSearchQuery} />
     </div>
@@ -362,7 +362,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {#each currentNodes as node (node.id ?? `${node.holderType}:${node.holderId}:${node.node}:${node.createdAt}`)}
+                    {#each filteredCurrentNodes as node (node.id ?? `${node.holderType}:${node.holderId}:${node.node}:${node.createdAt}`)}
                       <tr>
                         <td>
                           <div class="text-truncate">{node.node}</div>
@@ -535,6 +535,7 @@
   let filteredTracks = tracks;
   let filteredUsers = users;
   let currentNodes = [];
+  let filteredCurrentNodes = [];
   let selectedGroupParents = [];
   let nodeActionLabels = { edit: "Düzenle", delete: "Sil" };
 
@@ -1128,6 +1129,23 @@
   }
 
   const norm = (v) => String(v || "").toLowerCase();
+
+  function nodeSearchText(n) {
+    if (!n || typeof n !== "object") return "";
+    const parts = [
+      n.holderType,
+      n.holderName,
+      n.node,
+      // context can help searching for server/world/etc filters
+      n.context ? JSON.stringify(n.context) : "",
+    ];
+    return norm(parts.filter(Boolean).join(" "));
+  }
+
+  function nodeMatchesQuery(n, q) {
+    if (!q) return true;
+    return nodeSearchText(n).includes(q);
+  }
   const sortGroups = (gs, currentNodesList) =>
     [...(gs || [])].sort(
       (a, b) =>
@@ -1226,7 +1244,12 @@
       }
 
       const weight = normalizeWeight(groupData.weight);
-      const parents = Array.from(new Set([...(groupData.parents || [])].filter(Boolean)));
+      const parents = (() => {
+        const base = Array.from(new Set([...(groupData.parents || [])].filter(Boolean)));
+        // Ensure every newly created group inherits from default (except the default group itself).
+        if (groupData?.name !== "default" && !base.includes("default")) base.push("default");
+        return base;
+      })();
       const newGroupData = {
         id: now, // Temporary ID (will be remapped server-side on save snapshot)
         name: groupData.name,
@@ -1253,6 +1276,12 @@
         weight,
         now,
       });
+
+      // Auto-select newly created group
+      showGroups = true;
+      showTracks = false;
+      showUsers = false;
+      selectGroup(newGroupData);
     } catch (error) {
       console.error("Error creating group:", error);
     }
@@ -1271,6 +1300,13 @@
       updatedAt: now,
     };
     tracks = [...(tracks || []), newTrack];
+
+    // Auto-select newly created track
+    showTracks = true;
+    showGroups = false;
+    showUsers = false;
+    selectedTrackForEdit = newTrack;
+    selectTrack(newTrack);
   }
 
   function handleEditTrackFromModal(trackData) {
@@ -1336,22 +1372,60 @@
   $: {
     const q = norm(globalSearchQuery);
     const hasQ = !!q;
+    const groupDisplayByName = new Map(
+      (permissionGroups || []).map((g) => [
+        String(g?.name || "").trim(),
+        norm(g?.displayName || g?.name),
+      ]),
+    );
 
     filteredGroups = sortGroups(
       hasQ
-        ? (permissionGroups || []).filter((g) => norm(g.name).includes(q) || norm(g.displayName).includes(q))
+        ? (permissionGroups || []).filter((g) => {
+          const gid = g?.id;
+          const groupText = `${norm(g?.name)} ${norm(g?.displayName)}`;
+          if (groupText.includes(q)) return true;
+          if (gid == null) return false;
+          return (nodes || []).some(
+            (n) => n?.holderType === "GROUP" && n?.holderId === gid && nodeMatchesQuery(n, q),
+          );
+        })
         : permissionGroups,
       nodes,
     );
 
     filteredTracks = hasQ
-      ? (tracks || []).filter((t) => norm(t.name).includes(q) || norm(t.description).includes(q))
+      ? (tracks || []).filter((t) => {
+        const base = `${norm(t?.name)} ${norm(t?.description)}`;
+        if (base.includes(q)) return true;
+
+        if (!Array.isArray(t?.groupNames) || t.groupNames.length === 0) return false;
+
+        // match by group name OR group displayName
+        return t.groupNames.some((gn) => {
+          const name = String(gn || "").trim();
+          if (!name) return false;
+          if (norm(name).includes(q)) return true;
+          const display = groupDisplayByName.get(name) || "";
+          return !!display && display.includes(q);
+        });
+      })
       : tracks || [];
 
     filteredUsers = hasQ
-      ? (users || []).filter((u) => norm(u.username).includes(q) || (u.groups || []).some((g) => norm(g).includes(q)))
+      ? (users || []).filter((u) => {
+        const uid = u?.id;
+        const base = norm(u?.username);
+        if (base.includes(q)) return true;
+        if (Array.isArray(u?.groups) && u.groups.some((g) => norm(g).includes(q))) return true;
+        if (uid == null) return false;
+        return (nodes || []).some(
+          (n) => n?.holderType === "USER" && n?.holderId === uid && nodeMatchesQuery(n, q),
+        );
+      })
       : users || [];
 
     refreshCurrentNodes();
+    filteredCurrentNodes = hasQ ? (currentNodes || []).filter((n) => nodeMatchesQuery(n, q)) : currentNodes;
   }
 </script>

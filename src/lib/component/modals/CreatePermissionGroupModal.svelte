@@ -98,12 +98,10 @@
             <div class="col-9">
               <select class="form-select" bind:value={parentToAdd}>
                 <option value="">{$_("pages.permission-groups.form.select-option")}</option>
-                {#each $allGroups as g (g.id ?? g.name)}
-                  {#if (String(g?.name || "") !== String($newGroup?.name || ""))}
-                    <option value={g.name}>
-                      {g.displayName || g.name} ({g.name})
-                    </option>
-                  {/if}
+                {#each availableParentGroups as g (g.id ?? g.name)}
+                  <option value={g.name}>
+                    {g.displayName || g.name} ({g.name})
+                  </option>
                 {/each}
               </select>
             </div>
@@ -211,6 +209,7 @@
 
   let parentToAdd = "";
   let canSave = false;
+  let availableParentGroups = [];
 
   $: {
     const name = String($newGroup?.name || "").trim();
@@ -227,6 +226,18 @@
       });
 
     canSave = isValidGroupName(name) && !taken;
+  }
+
+  $: {
+    const selfName = String($newGroup?.name || "").trim();
+    const selected = new Set(($newGroup?.parents || []).map((p) => String(p || "").trim()).filter(Boolean));
+    availableParentGroups = ($allGroups || []).filter((g) => {
+      const gn = String(g?.name || "").trim();
+      if (!gn) return false;
+      if (gn === selfName) return false;
+      if (selected.has(gn)) return false;
+      return true;
+    });
   }
 
   const parentLabel = (name) => {
