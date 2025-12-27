@@ -63,15 +63,9 @@
       </div>
       <!-- Search -->
       <div slot="middle">
-        <div class="input-group">
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            placeholder={$_("buttons.find")}
-            aria-label={$_("buttons.find")}
-            aria-describedby="find-addon"
-            bind:value={searchQuery} />
-        </div>
+        <TranslationSearchInput
+          searching={searching}
+          on:change={(e) => (searchQuery = e.detail.value)} />
       </div>
       <!-- Filters -->
       <CardFilters slot="right">
@@ -127,19 +121,17 @@
                 id="collapsePlugin{pluginId}"
                 class="accordion-collapse collapse show">
                 <div class="accordion-body">
-                  {#if filteredTranslations[pluginId].filter((translation) => translation.notExists).length > 0}
+                  {#if (splitByPlugin[pluginId]?.notExists || []).length > 0}
                     <UnnecessaryTranslationsAlert
-                      translations={filteredTranslations[pluginId].filter(
-                        (translation) => translation.notExists,
-                      )}
+                      translations={splitByPlugin[pluginId].notExists}
                       pluginId={pluginId}
                       on:customInputChange={handleCustomInputChange}
                       on:deleteClick={handleOnDeleteClick}
                       open={data.filter === FilterTypes.NOT_EXISTS} />
                   {/if}
 
-                  {#if filteredTranslations[pluginId].filter((translation) => !translation.notExists).length > 0}
-                    {#each filteredTranslations[pluginId].filter((translation) => !translation.notExists) as translation, index (translation)}
+                  {#if (splitByPlugin[pluginId]?.existing || []).length > 0}
+                    {#each splitByPlugin[pluginId].existing as translation, index (translation)}
                       <TranslationRow
                         translation={translation}
                         pluginId={pluginId}
@@ -168,23 +160,21 @@
               id="collapse{data.type}Translations"
               class="accordion-collapse collapse show">
               <div class="accordion-body">
-                {#if filteredTranslations.filter((translation) => translation.notExists).length > 0}
+                {#if splitFlat.notExists.length > 0}
                   <UnnecessaryTranslationsAlert
-                    translations={filteredTranslations.filter(
-                      (translation) => translation.notExists,
-                    )}
+                    translations={splitFlat.notExists}
                     on:customInputChange={handleCustomInputChange}
                     on:deleteClick={handleOnDeleteClick}
                     open={data.filter === FilterTypes.NOT_EXISTS} />
                 {/if}
-                {#if filteredTranslations.filter((translation) => !translation.notExists).length > 0}
-                  {#each filteredTranslations.filter((translation) => !translation.notExists) as translation, index (translation)}
+                {#if splitFlat.existing.length > 0}
+                  {#each splitFlat.existing as translation, index (translation)}
                     <TranslationRow
                       translation={translation}
                       on:customInputChange={handleCustomInputChange}
                       on:deleteClick={handleOnDeleteClick} />
                   {/each}
-                {:else if filteredTranslations.filter((translation) => translation.notExists).length === 0}
+                {:else if splitFlat.notExists.length === 0}
                   <NoContent />
                 {/if}
               </div>
@@ -314,7 +304,7 @@
 
 <script>
   import { _ } from "svelte-i18n";
-  import { getContext, onDestroy, onMount } from "svelte";
+  import { getContext, onDestroy, onMount, tick } from "svelte";
 
   import { beforeNavigate, goto } from "$app/navigation";
   import { base } from "$app/paths";
@@ -331,6 +321,7 @@
   import PageActions from "$lib/component/PageActions.svelte";
   import TranslationRow from "$lib/component/rows/TranslationRow.svelte";
   import UnnecessaryTranslationsAlert from "$lib/component/UnnecessaryTranslationsAlert.svelte";
+  import TranslationSearchInput from "$lib/component/TranslationSearchInput.svelte";
   import NoContent from "$lib/component/NoContent.svelte";
   import { browser } from "$app/environment";
 
@@ -339,66 +330,148 @@
   let saving;
   let searchQuery = "";
   let filteredTranslations;
+  let searching = false;
+
+  let searchWorker;
+  let lastRequestId = 0;
+  let keyToTranslation = new Map();
+  let allGroupedByPlugin = {};
+  let datasetToken = "";
+  let splitByPlugin = {};
+  let splitFlat = { notExists: [], existing: [] };
 
   const pageTitle = getContext("pageTitle");
 
   pageTitle.set("pages.translations.title");
 
-  function filterTranslations(translations, query) {
-    if (!query || query.trim() === "") {
-      return translations;
-    }
+  function extractPluginId(key) {
+    const m = String(key || "").match(/^plugins\.([^.]+)/);
+    return m ? m[1] : null;
+  }
 
-    const searchTerm = query.toLowerCase();
+  function rebuildIndexes() {
+    keyToTranslation = new Map((data.translationInputs || []).map((t) => [t.key, t]));
 
     if (data.type === PageTypes.PLUGIN) {
-      // For PLUGIN type, translations is an object grouped by pluginId
-      const filtered = {};
-
-      Object.keys(translations).forEach((pluginId) => {
-        const pluginTranslations = translations[pluginId].filter(
-          (translation) => {
-            const matchesKey = translation.key
-              .toLowerCase()
-              .includes(searchTerm);
-            const matchesOriginal = translation.original
-              ?.toLowerCase()
-              .includes(searchTerm);
-            const matchesCustom = translation.custom
-              ?.toLowerCase()
-              .includes(searchTerm);
-            const matchesPluginId = pluginId.toLowerCase().includes(searchTerm);
-
-            return (
-              matchesKey || matchesOriginal || matchesCustom || matchesPluginId
-            );
-          },
-        );
-
-        if (pluginTranslations.length > 0) {
-          filtered[pluginId] = pluginTranslations;
-        }
-      });
-
-      return filtered;
+      const grouped = {};
+      for (const t of data.translationInputs || []) {
+        const pid = extractPluginId(t.key);
+        if (!pid) continue;
+        if (!grouped[pid]) grouped[pid] = [];
+        grouped[pid].push(t);
+      }
+      allGroupedByPlugin = grouped;
+      filteredTranslations = grouped;
     } else {
-      // For other types, translations is an array
-      return translations.filter((translation) => {
-        const matchesKey = translation.key.toLowerCase().includes(searchTerm);
-        const matchesOriginal = translation.original
-          ?.toLowerCase()
-          .includes(searchTerm);
-        const matchesCustom = translation.custom
-          ?.toLowerCase()
-          .includes(searchTerm);
-
-        return matchesKey || matchesOriginal || matchesCustom;
-      });
+      allGroupedByPlugin = {};
+      filteredTranslations = data.translationInputs || [];
     }
   }
 
-  // Reactive statement to automatically filter when data or search query changes
-  $: filteredTranslations = filterTranslations(data.translations, searchQuery);
+  function splitList(list) {
+    const notExists = [];
+    const existing = [];
+    for (const t of list || []) {
+      if (t?.notExists) notExists.push(t);
+      else existing.push(t);
+    }
+    return { notExists, existing };
+  }
+
+  function ensureWorker() {
+    if (!browser) return;
+    if (searchWorker) return;
+    searchWorker = new Worker(
+      new URL("../workers/translationsSearch.worker.js", import.meta.url),
+      { type: "module" },
+    );
+    searchWorker.onmessage = (e) => {
+      const msg = e?.data || {};
+      if (msg.type !== "result") return;
+      if (msg.requestId !== lastRequestId) return;
+
+      searching = false;
+
+      if (data.type === PageTypes.PLUGIN) {
+        const keysByPlugin = msg.result || {};
+        const out = {};
+        for (const [pid, keys] of Object.entries(keysByPlugin)) {
+          const arr = (keys || []).map((k) => keyToTranslation.get(k)).filter(Boolean);
+          if (arr.length) out[pid] = arr;
+        }
+        filteredTranslations = out;
+      } else {
+        const keys = Array.isArray(msg.result) ? msg.result : [];
+        filteredTranslations = keys.map((k) => keyToTranslation.get(k)).filter(Boolean);
+      }
+    };
+  }
+
+  function initWorkerData() {
+    ensureWorker();
+    if (!searchWorker) return;
+    searchWorker.postMessage({
+      type: "init",
+      pageType: data.type,
+      locale: data.locale,
+      translations: data.translationInputs || [],
+    });
+  }
+
+  function runSearchInBackground(query) {
+    // For empty query, use local precomputed lists (instant).
+    const q = String(query || "").trim();
+    if (!q) {
+      // Showing all rows can still be heavy to render; briefly show the same indicator.
+      searching = true;
+      tick().then(() => {
+        filteredTranslations =
+          data.type === PageTypes.PLUGIN ? allGroupedByPlugin : (data.translationInputs || []);
+        // allow the spinner paint before large DOM update
+        setTimeout(() => (searching = false), 0);
+      });
+      return;
+    }
+
+    ensureWorker();
+    if (!searchWorker) return;
+    searching = true;
+    lastRequestId += 1;
+    searchWorker.postMessage({
+      type: "search",
+      requestId: lastRequestId,
+      query: q,
+    });
+  }
+
+  // (Re)build indexes ONLY when dataset changes (type/locale/filter), not on every custom input change.
+  $: {
+    const nextToken = `${data?.localeId ?? ""}|${data?.type ?? ""}|${data?.filter ?? ""}|${data?.meta?.totalCount ?? ""}`;
+    if (nextToken && nextToken !== datasetToken) {
+      datasetToken = nextToken;
+      rebuildIndexes();
+      initWorkerData();
+      runSearchInBackground(searchQuery);
+    }
+  }
+
+  // Run search in background on query changes (non-blocking)
+  $: if (datasetToken) runSearchInBackground(searchQuery);
+
+  // Pre-split lists once when filteredTranslations changes (avoid `.filter(...)` in template on every render)
+  $: {
+    if (data.type === PageTypes.PLUGIN) {
+      const out = {};
+      for (const [pid, list] of Object.entries(filteredTranslations || {})) {
+        out[pid] = splitList(list);
+      }
+      splitByPlugin = out;
+      splitFlat = { notExists: [], existing: [] };
+    } else {
+      splitByPlugin = {};
+      splitFlat = splitList(filteredTranslations || []);
+    }
+  }
 
   $: saveDisabled =
     JSON.stringify(data.translationInputs) ===
@@ -434,6 +507,15 @@
     item.custom = value === "" ? null : value;
 
     data.translationInputs = data.translationInputs;
+
+    // Keep background search index in sync with edits (cheap single-record update)
+    if (searchWorker) {
+      searchWorker.postMessage({
+        type: "updateCustom",
+        key,
+        custom: item.custom,
+      });
+    }
   }
 
   function saveChanges() {
@@ -508,6 +590,14 @@
     if (browser) {
       window?.addEventListener("beforeunload", leaveHandler);
     }
+
+  onDestroy(() => {
+    try {
+      searchWorker?.terminate?.();
+    } catch (e) {
+      // ignore
+    }
+  });
   });
 
   onDestroy(() => {
