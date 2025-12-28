@@ -417,8 +417,6 @@
           "create-group": "Create Group",
           "create-track": "Create Track",
           "add-player": "Add Player",
-          "edit": "Edit",
-          "delete": "Delete",
           "remove": "Remove"
         },
         "accordions": {
@@ -434,7 +432,10 @@
           "add-node": "Add Node",
           "node": "Node",
           "active": "Active",
-          "expiry": "Expiry"
+          "expiry": "Expiry",
+          "pano-only-alert": "This permission node will only work in Pano and will not be reflected in the game.",
+          "game-only-alert": "This permission node will only work in the game and will not be reflected in Pano.",
+          "pano-only-alert-link": "Read documentation"
         },
         "user": {
           "groups": "Groups",

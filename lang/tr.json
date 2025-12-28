@@ -417,8 +417,6 @@
           "create-group": "Grup Oluştur",
           "create-track": "Track Oluştur",
           "add-player": "Oyuncu Ekle",
-          "edit": "Düzenle",
-          "delete": "Sil",
           "remove": "Kaldır"
         },
         "accordions": {
@@ -434,7 +432,10 @@
           "add-node": "Yetki Ekle",
           "node": "Node",
           "active": "Aktif",
-          "expiry": "Süre"
+          "expiry": "Süre",
+          "pano-only-alert": "Bu permission node sadece Pano'da çalışacak ve oyuna yansımayacak.",
+          "game-only-alert": "Bu permission node sadece oyunda çalışacak ama Pano'da çalışmayacak.",
+          "pano-only-alert-link": "Dokümantasyonu oku"
         },
         "user": {
           "groups": "Gruplar",

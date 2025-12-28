@@ -272,8 +272,8 @@
                   type="button"
                   class="btn btn-link"
                   on:click={editSelectedGroup}
-                  aria-label={$_("pages.permissions.panel.actions.edit")}
-                  title={$_("pages.permissions.panel.actions.edit")}>
+                  aria-label={$_("buttons.edit")}
+                  title={$_("buttons.edit")}>
                   <i class="fa fa-pen"></i>
                 </button>
                 <button
@@ -282,8 +282,8 @@
                   disabled={selectedGroup?.name === "default"}
                   on:click={() => selectedGroup?.name !== "default" && showRemoveGroupModal()}
                   aria-disabled={selectedGroup?.name === "default"}
-                  aria-label={$_("pages.permissions.panel.actions.delete")}
-                  title={$_("pages.permissions.panel.actions.delete")}>
+                  aria-label={$_("buttons.delete")}
+                  title={$_("buttons.delete")}>
                   <i class="fa fa-trash"></i>
                 </button>
                 <button
@@ -336,11 +336,11 @@
                 {#if !isSelfUser(selectedUser)}
                   <button
                     type="button"
-                    class="btn btn-sm btn-outline-danger"
+                    class="btn btn-sm btn-link"
                     aria-label={$_("pages.permissions.panel.user.delete")}
                     title={$_("pages.permissions.panel.user.delete")}
                     on:click={() => showRemoveUserModal(selectedUser)}>
-                    <i class="fa fa-trash me-1"></i>{$_("pages.permissions.panel.actions.delete")}
+                    <i class="fa fa-trash me-1"></i>
                   </button>
                 {/if}
               </div>
@@ -417,7 +417,7 @@
             </div>
             <div class="hstack gap-2">
               <button class="btn btn-sm btn-outline-primary" on:click={() => { selectedTrackForEdit = selectedTrack; showEditTrackModal(); }}>
-                <i class="fa fa-pen me-1"></i>{$_("pages.permissions.panel.actions.edit")}
+                <i class="fa fa-pen me-1"></i>{$_("buttons.edit")}
               </button>
               <button class="btn btn-sm btn-outline-danger" on:click={() => { selectedTrackForEdit = selectedTrack; showRemoveTrackModal(); }}>
                 <i class="fa fa-trash me-1"></i>{$_("pages.permissions.panel.actions.remove")}
@@ -670,14 +670,71 @@
   }
 
   $: nodeActionLabels = selectedGroup
-    ? { edit: $_("pages.permissions.panel.actions.edit"), delete: $_("pages.permissions.panel.actions.delete") }
-    : { edit: $_("pages.permissions.panel.actions.edit"), delete: $_("pages.permissions.panel.actions.delete") };
+    ? { edit: $_("buttons.edit"), delete: $_("buttons.delete") }
+    : { edit: $_("buttons.edit"), delete: $_("buttons.delete") };
 
   const normalizeWeight = (raw) => {
     const n = parseInt(raw);
     if (isNaN(n)) return 0;
     return n;
   };
+
+  function upsertGroupDisplayNameNode({ groupId, groupName, displayName, now }) {
+    const dn = String(displayName ?? "").trim();
+    const nodeValue = `displayname.${dn || groupName || ""}`;
+
+    // Find existing displayname.* nodes for this group
+    const idxs = [];
+    for (let i = 0; i < (nodes || []).length; i++) {
+      const n = nodes[i];
+      if (
+        n?.holderType === "GROUP" &&
+        n?.holderId === groupId &&
+        typeof n?.node === "string" &&
+        n.node.startsWith("displayname.")
+      ) {
+        idxs.push(i);
+      }
+    }
+
+    // If there are multiple, update the first and remove/deactivate the rest to keep deterministic state.
+    if (idxs.length > 0) {
+      const firstIdx = idxs[0];
+      const idxSet = new Set(idxs);
+      nodes = (nodes || []).map((n, i) => {
+        if (!idxSet.has(i)) return n;
+        if (i === firstIdx) {
+          return {
+            ...n,
+            holderName: groupName ?? n.holderName,
+            node: nodeValue,
+            active: true,
+            updatedAt: now,
+          };
+        }
+        // keep extra nodes but make them deterministic/inactive
+        return { ...n, active: false, updatedAt: now };
+      });
+      return;
+    }
+
+    // Create new node
+    nodes = [
+      ...(nodes || []),
+      makeNode({
+        id: now + 3,
+        holderType: "GROUP",
+        holderId: groupId,
+        holderName: groupName,
+        node: nodeValue,
+        active: true,
+        context: {},
+        expiresAt: null,
+        createdAt: now,
+        updatedAt: now,
+      }),
+    ];
+  }
 
   function getGroupWeight(group, currentNodesList) {
     if (!group) return 0;
@@ -850,17 +907,60 @@
     nodes = (nodes || []).map((n) =>
       n.id === node.id ? { ...n, active: !n.active, updatedAt: Date.now() } : n,
     );
+    // Keep group.displayName in sync when displayname node is toggled.
+    if (node?.holderType === "GROUP" && typeof node?.node === "string" && node.node.startsWith("displayname.")) {
+      syncGroupDisplayNameFromNodes(node.holderId);
+    }
     refreshCurrentNodes();
   }
 
   function removeNode(node) {
     nodes = (nodes || []).filter((n) => n.id !== node.id);
+    // Keep group.displayName in sync when displayname node is removed.
+    if (node?.holderType === "GROUP" && typeof node?.node === "string" && node.node.startsWith("displayname.")) {
+      syncGroupDisplayNameFromNodes(node.holderId);
+    }
     refreshCurrentNodes();
   }
 
   function editNode(node) {
     selectedNodeForEdit = node;
     showEditPermissionNodeModal({ node, permissionGroups });
+  }
+
+  function parseGroupDisplayNameNodeValue(nodeStr) {
+    if (typeof nodeStr !== "string") return null;
+    if (!nodeStr.startsWith("displayname.")) return null;
+    const v = String(nodeStr.slice("displayname.".length) || "").trim();
+    return v || null;
+  }
+
+  function syncGroupDisplayNameFromNodes(groupId) {
+    if (!groupId) return;
+
+    const group = (permissionGroups || []).find((g) => g?.id === groupId);
+    if (!group) return;
+
+    // Pick the first ACTIVE displayname node if present.
+    const dnNode = (nodes || []).find(
+      (n) =>
+        n?.holderType === "GROUP" &&
+        n?.holderId === groupId &&
+        n?.active !== false &&
+        typeof n?.node === "string" &&
+        n.node.startsWith("displayname."),
+    );
+
+    const dn = dnNode ? parseGroupDisplayNameNodeValue(dnNode.node) : null;
+    const newDisplayName = (dn || group.name || "").trim();
+
+    permissionGroups = (permissionGroups || []).map((g) =>
+      g?.id === groupId ? { ...g, displayName: newDisplayName, updatedAt: Date.now() } : g,
+    );
+
+    if (selectedGroup?.id === groupId) {
+      selectedGroup = { ...selectedGroup, displayName: newDisplayName, updatedAt: Date.now() };
+    }
   }
 
   // Modal callbacks are wired once below via setCallback(...)
@@ -883,6 +983,23 @@
   }
 
   async function saveSnapshot() {
+    // Ensure group displayName is also tracked as a node (LuckPerms-like)
+    // - node: "displayname.<value>"
+    // - holderType: "GROUP"
+    // - holderId: group.id
+    // This keeps snapshot consistent even if the UI edits displayName only on the group object.
+    const now = Date.now();
+    for (const g of permissionGroups || []) {
+      if (!g?.id) continue;
+      const dn = String(g.displayName || g.name || "").trim();
+      upsertGroupDisplayNameNode({
+        groupId: g.id,
+        groupName: g.name,
+        displayName: dn,
+        now,
+      });
+    }
+
     const body = {
       groups: permissionGroups,
       tracks,
@@ -1229,6 +1346,13 @@
           now,
         });
 
+        upsertGroupDisplayNameNode({
+          groupId: editingGroupId,
+          groupName: updatedGroup.name,
+          displayName: updatedGroup.displayName,
+          now,
+        });
+
         // Update track references if the group name changed
         if (oldName && oldName !== updatedGroup.name) {
           tracks = (tracks || []).map((t) => ({
@@ -1276,6 +1400,13 @@
         groupId: newGroupData.id,
         groupName: newGroupData.name,
         weight,
+        now,
+      });
+
+      upsertGroupDisplayNameNode({
+        groupId: newGroupData.id,
+        groupName: newGroupData.name,
+        displayName: newGroupData.displayName,
         now,
       });
 
@@ -1329,6 +1460,16 @@
     } else {
       nodes = (nodes || []).map((n) => (n.id === updatedNode.id ? updatedNode : n));
     }
+
+    // If a group displayname node changed, update the group's displayName immediately.
+    if (
+      updatedNode?.holderType === "GROUP" &&
+      typeof updatedNode?.node === "string" &&
+      updatedNode.node.startsWith("displayname.")
+    ) {
+      syncGroupDisplayNameFromNodes(updatedNode.holderId);
+    }
+
     refreshCurrentNodes();
   }
 

@@ -20,6 +20,26 @@
         {#if !$node}
           <p class="mb-0">{$_("components.modals.edit-permission-node.states.no-node-selected")}</p>
         {:else}
+          {#if $draft.contexts.some(ctx => ctx.key?.trim() === 'pano' && ctx.value?.toString().trim() === 'true')}
+            <div class="alert alert-warning alert-dismissible fade show mb-3 p-2 small" role="alert">
+              <i class="fa fa-info-circle me-1"></i>
+              {$_("pages.permissions.panel.nodes.pano-only-alert")}
+              <a href="https://docs.panomc.com" target="_blank" class="alert-link ms-1">
+                {$_("pages.permissions.panel.nodes.pano-only-alert-link")}
+                <i class="fa fa-external-link-alt ms-1 small"></i>
+              </a>
+            </div>
+          {:else if $draft.contexts.some(ctx => ctx.key?.trim() === 'pano' && ctx.value?.toString().trim() === 'false')}
+            <div class="alert alert-info alert-dismissible fade show mb-3 p-2 small" role="alert">
+              <i class="fa fa-info-circle me-1"></i>
+              {$_("pages.permissions.panel.nodes.game-only-alert")}
+              <a href="https://docs.panomc.com" target="_blank" class="alert-link ms-1">
+                {$_("pages.permissions.panel.nodes.pano-only-alert-link")}
+                <i class="fa fa-external-link-alt ms-1 small"></i>
+              </a>
+            </div>
+          {/if}
+
           <div class="mb-3">
             <label class="form-label" for="nodeValue">{$_("components.modals.edit-permission-node.form.node")}</label>
 
@@ -128,12 +148,12 @@
               <div class="hstack gap-2 mb-2">
                 <div class="input-group">
                   <input
-                    class="form-control"
+                    class="form-control {ctx.key?.trim() === 'pano' && ctx.value?.toString().trim() === 'true' ? 'border-warning' : ctx.key?.trim() === 'pano' && ctx.value?.toString().trim() === 'false' ? 'border-info' : ''}"
                     type="text"
                     placeholder={$_("components.modals.edit-permission-node.contexts.key-placeholder")}
                     bind:value={ctx.key} />
                   <input
-                    class="form-control"
+                    class="form-control {ctx.key?.trim() === 'pano' && ctx.value?.toString().trim() === 'true' ? 'border-warning' : ctx.key?.trim() === 'pano' && ctx.value?.toString().trim() === 'false' ? 'border-info' : ''}"
                     type="text"
                     placeholder={$_("components.modals.edit-permission-node.contexts.value-placeholder")}
                     bind:value={ctx.value} />
