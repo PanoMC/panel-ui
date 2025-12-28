@@ -21,10 +21,9 @@
 
   function matching(path, pathName, startsWith = false, matchingList) {
     return (
+      matchingList.length > 0 ? matchingList.filter((item) => path + $page.url.search === base + item).length > 0 : (startsWith && path.startsWith(pathName))||
       path.toUpperCase() === pathName.toUpperCase() ||
-      path.toUpperCase() === (pathName + "/").toUpperCase() ||
-      (startsWith && path.startsWith(pathName)) ||
-      matchingList.filter((item) => path.startsWith(base + item)).length > 0
+      path.toUpperCase() === (pathName + "/").toUpperCase()
     );
   }
 </script>

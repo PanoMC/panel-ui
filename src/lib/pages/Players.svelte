@@ -4,10 +4,10 @@
   <PageActions leftClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
-      {#if !data.categoryUrl}
-        <CardMenuItem href="/players" startsWith>
-          {$_("buttons.players")}</CardMenuItem>
-      {/if}
+      <CardMenuItem href="/players" matchingList="{['/players?pageType=HAS_PERM', '/players']}">
+        {$_("buttons.players")}</CardMenuItem>
+      <CardMenuItem href="/players?pageType=BANNED" matchingList="{['/players?pageType=BANNED']}">
+        {$_("buttons.bans")}</CardMenuItem>
     </CardMenu>
     <div slot="right">
       <a href="{base}/settings/migration" class="btn btn-secondary">
@@ -47,11 +47,6 @@
             href="/players?pageType=HAS_PERM"
             active={data.pageType === PageTypes.HAS_PERM}>
             {$_("pages.players.authorized")}
-          </CardFiltersItem>
-          <CardFiltersItem
-            href="/players?pageType=BANNED"
-            active={data.pageType === PageTypes.BANNED}>
-            {$_("pages.players.banned")}
           </CardFiltersItem>
         {/if}
       </CardFilters>

@@ -61,7 +61,8 @@
     "find": "Find...",
     "mc-plugin": "MC Plugin",
     "see-docs": "See Docs",
-    "restart": "Restart"
+    "restart": "Restart",
+    "bans": "Bans"
   },
   "pages": {
     "themes": {
