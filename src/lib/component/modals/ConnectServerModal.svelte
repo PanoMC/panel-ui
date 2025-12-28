@@ -80,7 +80,7 @@
                       class:active={!isRemoteConnection}
                       disabled={!acceptPluginAuth}
                       on:click={() => isRemoteConnection = false}>
-                      Local
+                      {$_('buttons.local')}
                     </button>
                   </li>
                   <li class="nav-item">
@@ -90,7 +90,7 @@
                       class:active={isRemoteConnection}
                       disabled={!acceptPluginAuth}
                       on:click={() => isRemoteConnection = true}>
-                      Remote
+                      {$_('buttons.remote')}
                     </button>
                   </li>
                 </ul>

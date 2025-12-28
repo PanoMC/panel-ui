@@ -62,7 +62,9 @@
     "mc-plugin": "MC Plugin",
     "see-docs": "See Docs",
     "restart": "Restart",
-    "bans": "Bans"
+    "bans": "Bans",
+    "local":  "Local",
+    "remote": "Remote"
   },
   "pages": {
     "themes": {

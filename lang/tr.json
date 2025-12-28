@@ -62,7 +62,9 @@
     "mc-plugin": "MC Eklentisi",
     "see-docs": "Dokümantasyona Bak",
     "restart": "Yeniden Başlat",
-    "bans": "Yasaklar"
+    "bans": "Yasaklar",
+    "local": "Yerel",
+    "remote": "Uzaktan"
   },
   "pages": {
     "themes": {
