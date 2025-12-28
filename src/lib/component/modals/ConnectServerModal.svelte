@@ -71,11 +71,35 @@
                   values: { timeToRefreshKey },
                 })}
               </small>
+              <div class="mt-2">
+                <ul class="nav nav-tabs border-bottom-0">
+                  <li class="nav-item">
+                    <button
+                      type="button"
+                      class="nav-link"
+                      class:active={!isRemoteConnection}
+                      disabled={!acceptPluginAuth}
+                      on:click={() => isRemoteConnection = false}>
+                      Local
+                    </button>
+                  </li>
+                  <li class="nav-item">
+                    <button
+                      type="button"
+                      class="nav-link"
+                      class:active={isRemoteConnection}
+                      disabled={!acceptPluginAuth}
+                      on:click={() => isRemoteConnection = true}>
+                      Remote
+                    </button>
+                  </li>
+                </ul>
+              </div>
             {/if}
             <div class="input-group">
               <input
                 type="text"
-                class="form-control"
+                class="form-control rounded-top-0 rounded-end-0"
                 value={commandText}
                 readonly
                 disabled={!acceptPluginAuth} />
@@ -153,6 +177,7 @@
   let isCommandTextForConsoleCopied = false;
   let copyClickIDForCommandTextForConsole = 0;
   let firstStartCountDown = false;
+  let isRemoteConnection = false;
 
   let acceptPluginAuth = $session.basicData.acceptPluginAuth;
   let toggleLoading;
@@ -222,9 +247,23 @@
   }
 
   function updateCommandText() {
+    let hostAddress;
+
+    if (!isRemoteConnection) {
+      hostAddress = get(platformHostAddress);
+    } else {
+      // remote: use browser hostname and port from platformHostAddress if exists
+      const platformAddress = get(platformHostAddress);
+      const portMatch = platformAddress.match(/:(\d+)$/);
+      const port = portMatch ? portMatch[1] : null;
+      const hostname = window.location.hostname;
+
+      hostAddress = port ? `${hostname}:${port}` : hostname;
+    }
+
     commandText =
       "/pano connect " +
-      get(platformHostAddress) +
+      hostAddress +
       " " +
       get(platformServerMatchKey);
   }
@@ -264,6 +303,11 @@
         }
       }
     }, 1000);
+  }
+
+  // Reactive statement for connection type changes
+  $: if (browser && typeof isRemoteConnection !== 'undefined') {
+    updateCommandText();
   }
 
   if (browser) {
