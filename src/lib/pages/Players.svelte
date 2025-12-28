@@ -157,7 +157,7 @@
 
     body.page = page;
     body.pageType = pageType;
-    body.permissionGroup = body.permissionGroup;
+    console.log(body)
 
     return body;
   }
@@ -231,7 +231,7 @@
   async function refreshData() {
     const queryParams = buildQueryParams({
       page: data.page,
-      permissionGroup: data.permissionGroup.name,
+      permissionGroup: data.permissionGroup?.name,
       pageType: data.pageType,
     });
 
