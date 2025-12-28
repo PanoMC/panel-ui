@@ -23,7 +23,7 @@
         </button>
       {:else if showUsers}
         <button type="button" class="btn btn-secondary" on:click={openUserSearch}>
-          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.create-user")}
+          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.add-player")}
         </button>
       {/if}
     </div>

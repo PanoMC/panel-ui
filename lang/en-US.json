@@ -415,7 +415,7 @@
           "save": "Save",
           "create-group": "Create Group",
           "create-track": "Create Track",
-          "create-user": "Create Player",
+          "add-player": "Add Player",
           "edit": "Edit",
           "delete": "Delete",
           "remove": "Remove"
