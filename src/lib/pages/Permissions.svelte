@@ -77,7 +77,7 @@
                             aria-controls={"trackCollapse-" + (track.id ?? track.name)}
                             on:click={() => selectTrack(track)}>
                             <div class="d-flex flex-column text-start w-100">
-                              <div class="fw-bold text-truncate">{track.name}</div>
+                              <div class="text-truncate">{track.name}</div>
                               <small class=" text-truncate">{track.description}</small>
                             </div>
                           </button>
@@ -153,10 +153,10 @@
                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {selectedGroup && selectedGroup.id === group.id ? 'active' : ''}"
                       on:click={() => selectGroup(group)}>
                       <div>
-                        <div class="fw-bold">
+                        <div class="fw-normal">
                           {group.displayName}
                         </div>
-                        <small>({group.name})</small>
+                        <small class="font-monospace">({group.name})</small>
                       </div>
                       <span class="badge bg-primary">{getGroupWeight(group, nodes)}</span>
                     </button>
@@ -221,7 +221,6 @@
                         {/if}
                         <div class="overflow-hidden">
                           <div class="fw-bold text-truncate">{user.username}</div>
-                          <small class="d-block text-truncate">{formatUserGroups(user, nodes, permissionGroups)}</small>
                         </div>
                       </div>
                     </div>
@@ -318,7 +317,7 @@
                     {#each getUserDirectGroupNames(selectedUser, nodes) as gname (gname)}
                       <button
                         type="button"
-                        class="badge text-bg-light ms-1 border-0"
+                        class="badge text-bg-secondary ms-1 border-0"
                         style="cursor: pointer;"
                         on:click={() => selectGroupByName(gname)}
                         aria-label={`Gruba git: ${gname}`}
@@ -364,7 +363,7 @@
                 <tbody>
                   {#each filteredCurrentNodes as node (node.id ?? `${node.holderType}:${node.holderId}:${node.node}:${node.createdAt}`)}
                     <tr>
-                      <td class="d-table-cell text-end hstack gap-2">
+                      <td class="d-table-cell text-center hstack gap-2">
                         <button
                           class="btn btn-link"
                           on:click={() => editNode(node)}
