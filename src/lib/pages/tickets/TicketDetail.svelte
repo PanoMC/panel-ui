@@ -28,7 +28,7 @@
           class="btn btn-secondary"
           type="button"
           on:click={() => showCloseTicketModal([data.ticket.id])}>
-          <i class="fas fa-times me-2"></i>
+          <i class="fas fa-check me-2"></i>
           {$_("buttons.close")}
         </button>
       {/if}
