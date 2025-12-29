@@ -49,7 +49,7 @@
     <div class="card-header">
       <div class="row g-3">
         <div
-          class="col-auto d-flex justify-content-center align-items-center rounded-start rounded-top">
+          class="col-auto d-flex justify-content-center align-items-start rounded-start rounded-top">
           <img
             src="/api/panel/plugins/{addon.id}/logo"
             class="img-fluid rounded"
@@ -115,15 +115,15 @@
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#addonDetailsCollapse"
-            aria-expanded="true"
+            aria-expanded="false"
             aria-controls="addonDetailsCollapse"
             title={$_("buttons.toggle-details")}
             aria-label={$_("buttons.toggle-details")}>
-            <i class="fas fa-chevron-down me-1"></i>
+            <i class="fas fa-chevron-right me-1"></i>
             {$_("buttons.show-more-details")}
           </button>
 
-          <div class="collapse show mt-3" id="addonDetailsCollapse">
+          <div class="collapse mt-3" id="addonDetailsCollapse">
             <ul class="list-group">
               <li class="list-group-item">
                 <strong>{$_("pages.addon-detail.dependencies")}:</strong>
