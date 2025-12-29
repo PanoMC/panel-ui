@@ -29,42 +29,37 @@
         class:disabled={removing}>
         <i class="fas fa-trash"></i>
       </button>
-      {#if addon.loading}
-        <i class="fa-solid fa-spinner fa-spin me-2"></i>
-      {:else}
-        <div class="form-check form-switch m-0">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            role="switch"
-            checked={addon.status === "STARTED"}
-            on:click={(e) => {
-              e.preventDefault();
-              onTogglePluginStateClick();
-            }} />
-        </div>
-      {/if}
+      <div class="form-check form-switch m-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+          checked={addon.status === "STARTED"}
+          disabled={addon.loading}
+          on:click={(e) => {
+            e.preventDefault();
+            onTogglePluginStateClick();
+          }} />
+      </div>
     </div>
   </PageActions>
 
   <!-- Addon Details -->
   <div class="card">
-    <div class="row g-0">
-      <div
-        class="col-md-3 d-flex justify-content-center align-items-center p-3 rounded-start rounded-top">
-        <img
-          src="/api/panel/plugins/{addon.id}/logo"
-          class="img-fluid rounded"
-          alt={addon.name}
-          height="128"
-          width="128" />
-      </div>
+    <div class="card-header">
+      <div class="row g-3">
+        <div
+          class="col-auto d-flex justify-content-center align-items-center rounded-start rounded-top">
+          <img
+            src="/api/panel/plugins/{addon.id}/logo"
+            class="img-fluid rounded"
+            alt={addon.name}
+            height="86"
+            width="86" />
+        </div>
 
-      <div class="col-md-9">
-        <div class="card-body">
-          <h5
-            class="card-title d-flex align-items-center gap-2"
-            class:text-danger={addon.status === "FAILED"}>
+        <div class="col">
+          <h5 class="card-title" class:text-danger={addon.status === "FAILED"}>
             {addon.name}
             <VerifiedStatus status={addon.verifyStatus} />
             {#if addon.status === "FAILED"}
@@ -80,61 +75,85 @@
               </button>
             {/if}
           </h5>
-          <p>{addon.description}</p>
 
-          <ul class="list-group">
+          {addon.description}
+
+          <ul class="list-group mt-3">
             <li class="list-group-item">
               <strong>ID:</strong>
-              <span class="user-select-all font-monospace">{addon.id}</span>
+              <span class="user-select-all font-monospace text-break"
+                >{addon.id}</span>
             </li>
             <li class="list-group-item">
               <strong>{$_("pages.addon-detail.version")}:</strong>
-              <span class="user-select-all font-monospace"
+              <span class="user-select-all font-monospace text-break"
                 >{addon.version}</span>
             </li>
             <li class="list-group-item">
               <strong>{$_("pages.addon-detail.pano-version")}:</strong>
-              <span class="user-select-all font-monospace"
+              <span class="user-select-all font-monospace text-break"
                 >{addon.panoVersion}</span>
             </li>
             <li class="list-group-item">
               <strong>{$_("pages.addon-detail.developer")}:</strong>
-              {addon.developer}
+              <span class="text-break">{addon.developer}</span>
             </li>
             <li class="list-group-item">
               <strong>{$_("pages.addon-detail.license")}:</strong>
-              {addon.license || $_("pages.addon-detail.unknown")}
+              <span class="text-break"
+                >{addon.license || $_("pages.addon-detail.unknown")}</span>
             </li>
             <li class="list-group-item">
               <strong>{$_("pages.addon-detail.source")}:</strong>
-              <a href={addon.sourceUrl} target="_blank" class="d-block"
+              <a href={addon.sourceUrl} target="_blank" class="text-break"
                 >{addon.sourceUrl || $_("pages.addon-detail.unknown")}</a>
             </li>
-            <li class="list-group-item">
-              <strong>{$_("pages.addon-detail.dependencies")}:</strong>
-              {@html isBlank(addon.dependencies)
-                ? "-"
-                : addon.dependencies.map((dependency) =>
-                    getDependencyText(dependency),
-                  )}
-            </li>
-            <li class="list-group-item">
-              <strong>{$_("pages.addon-detail.requires")}:</strong>
-              {isBlank(addon.requires) ? "-" : addon.requires}
-            </li>
-            <li class="list-group-item">
-              <strong>Hash:</strong>
-              <code class="overflow-auto text-nowrap user-select-all d-block"
-                >sha256:{addon.hash}</code>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_("pages.addon-detail.size")}:</strong>
-              {formatBytes(addon.size)}
-            </li>
           </ul>
+
+          <button
+            class="btn btn-link p-0 mt-2"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#addonDetailsCollapse"
+            aria-expanded="true"
+            aria-controls="addonDetailsCollapse"
+            title={$_("buttons.toggle-details")}
+            aria-label={$_("buttons.toggle-details")}>
+            <i class="fas fa-chevron-down me-1"></i>
+            {$_("buttons.show-more-details")}
+          </button>
+
+          <div class="collapse show mt-3" id="addonDetailsCollapse">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <strong>{$_("pages.addon-detail.dependencies")}:</strong>
+                <span class="text-break"
+                  >{@html isBlank(addon.dependencies)
+                    ? "-"
+                    : addon.dependencies.map((dependency) =>
+                        getDependencyText(dependency),
+                      )}</span>
+              </li>
+              <li class="list-group-item">
+                <strong>{$_("pages.addon-detail.requires")}:</strong>
+                <span class="text-break"
+                  >{isBlank(addon.requires) ? "-" : addon.requires}</span>
+              </li>
+              <li class="list-group-item">
+                <strong>Hash:</strong>
+                <code class="overflow-auto text-break user-select-all"
+                  >sha256:{addon.hash}</code>
+              </li>
+              <li class="list-group-item">
+                <strong>{$_("pages.addon-detail.size")}:</strong>
+                <span class="text-break">{formatBytes(addon.size)}</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
+    <div class="card-body">PLUGIN_CONTENT</div>
   </div>
 </div>
 
@@ -321,4 +340,25 @@
 
     return text;
   }
+
+  // Handle collapse icon rotation
+  import { onMount } from "svelte";
+
+  onMount(() => {
+    const collapseElement = document.getElementById("addonDetailsCollapse");
+    const toggleButton = document.querySelector(
+      '[data-bs-target="#addonDetailsCollapse"]',
+    );
+    const icon = toggleButton.querySelector("i");
+
+    collapseElement.addEventListener("show.bs.collapse", () => {
+      icon.classList.remove("fa-chevron-right");
+      icon.classList.add("fa-chevron-down");
+    });
+
+    collapseElement.addEventListener("hide.bs.collapse", () => {
+      icon.classList.remove("fa-chevron-down");
+      icon.classList.add("fa-chevron-right");
+    });
+  });
 </script>

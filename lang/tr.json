@@ -64,7 +64,10 @@
     "restart": "Yeniden Başlat",
     "bans": "Yasaklar",
     "local": "Yerel",
-    "remote": "Uzaktan"
+    "remote": "Uzaktan",
+    "toggle-details": "Detayları Aç/Kapat",
+    "show-more-details": "Daha Fazla Detay Göster",
+    "show-less-details": "Daha Az Detay Göster"
   },
   "pages": {
     "themes": {
