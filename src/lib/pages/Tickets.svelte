@@ -124,18 +124,18 @@
                     type="checkbox" />
                 </div>
               </th>
-              <th class="align-middle" scope="col"
+              <th class="align-middle text-nowrap" scope="col"
                 >{$_("pages.tickets.table.title")}</th>
               <th
                 class="align-middle"
                 scope="col"
                 class:table-active={data.categoryUrl}
                 >{$_("pages.tickets.table.category")}</th>
-              <th class="align-middle" scope="col"
+              <th class="align-middle text-nowrap" scope="col"
                 >{$_("pages.tickets.table.player")}</th>
-              <th class="align-middle" scope="col"
+              <th class="align-middle text-nowrap" scope="col"
                 >{$_("pages.tickets.table.status")}</th>
-              <th class="align-middle" scope="col"
+              <th class="align-middle text-nowrap" scope="col"
                 >{$_("pages.tickets.table.last-reply")}</th>
             </tr>
           </thead>

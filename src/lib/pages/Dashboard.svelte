@@ -142,7 +142,6 @@
                         class="btn btn-link p-0"
                         href="{base}/tickets/detail/{ticket.id}"
                         title={$_("buttons.view")}>
-                        #{ticket.id}
                         {ticket.title}
                       </a>
                     </td>
@@ -169,7 +168,7 @@
         </div>
         <div slot="right">
           {#if data.activityLogs.meta.totalCount > 10}
-            <a href="{base}/logs" class="btn btn-sm btn-outline-primary">
+            <a href="{base}/logs" class="btn btn-link">
               {$_("buttons.show-all")} ({data.activityLogs.meta.totalCount})
             </a>
           {/if}
@@ -201,23 +200,23 @@
               {#each data.lastRegisters as player, index (player)}
                 <tbody>
                   <tr>
-                    <td class="align-middle">
+                    <td class="align-middle text-nowrap">
                       <a
-                        class="focus-ring rounded-circle d-inline-block"
                         title={$_("buttons.view")}
                         href="{base}/players/detail/{player.username}">
                         <img
                           alt={player.username}
-                          class="rounded-circle animate__animated animate__zoomIn"
+                          class="rounded-circle me-2 animate__animated animate__zoomIn"
                           height="32"
                           width="32"
                           src="https://minotar.net/avatar/{player.username}" />
+                      </a>
+                      <a
+                        class="btn btn-link p-0"
+                        title={$_("buttons.view")}
+                        href="{base}/players/detail/{player.username}">
                         {player.username}
                       </a>
-                    </td>
-                    <td class="align-middle text-capitalize">
-                      <PlayerPermissionBadge
-                        permissionGroup={player.permissionGroup} />
                     </td>
                     <td class="align-middle">
                       <PlayerStatusBadge
@@ -226,7 +225,7 @@
                         inGame={player.inGame}
                         checkTime={0} />
                     </td>
-                    <td class="align-middle">
+                    <td class="align-middle text-nowrap">
                       <Date time={player.registerDate} />
                     </td>
                   </tr>

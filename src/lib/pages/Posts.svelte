@@ -78,18 +78,18 @@
             <tr>
               <th scope="col"></th>
               <th scope="col"></th>
-              <th class="align-middle" scope="col"
+              <th class="align-middle text-nowrap" scope="col"
                 >{$_("pages.posts.table.title")}</th>
               <th
                 scope="col"
-                class="align-middle"
+                class="align-middle text-nowrap"
                 class:table-active={data.categoryUrl}
                 >{$_("pages.posts.table.category")}</th>
-              <th scope="col" class="align-middle"
+              <th scope="col" class="align-middle text-nowrap"
                 >{$_("pages.posts.table.views")}</th>
-              <th scope="col" class="align-middle"
+              <th scope="col" class="align-middle text-nowrap"
                 >{$_("pages.posts.table.author")}</th>
-              <th scope="col" class="align-middle"
+              <th scope="col" class="align-middle text-nowrap"
                 >{$_("pages.posts.table.last-update")}</th>
             </tr>
           </thead>

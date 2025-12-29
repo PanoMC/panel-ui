@@ -41,9 +41,9 @@
           <thead>
             <tr>
               <th scope="col"></th>
-              <th class="align-middle" scope="col"
+              <th class="align-middle text-nowrap" scope="col"
                 >{$_("pages.ticket-categories.category")}</th>
-              <th scope="col" class="align-middle"
+              <th scope="col" class="align-middle text-nowrap"
                 >{$_("pages.ticket-categories.description")}</th>
             </tr>
           </thead>

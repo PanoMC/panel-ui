@@ -22,13 +22,11 @@
   </PageActions>
 
   <div class="card">
-    <CardHeader>
-      <div slot="left">
-        {$_("pages.languages.card-title", {
-          values: { count: data.meta.totalCount },
-        })}
-      </div>
-    </CardHeader>
+    <div class="card-header">
+      {$_("pages.languages.card-title", {
+        values: { count: data.meta.totalCount },
+      })}
+    </div>
     <!-- No Content -->
     {#if data.meta.totalCount === 0}
       <NoContent />
@@ -41,15 +39,15 @@
           <thead>
             <tr>
               <th scope="col"></th>
-              <th class="align-middle" scope="col"
+              <th class="align-middle text-nowrap" scope="col"
                 >{$_("pages.languages.name")}</th>
-              <th scope="col" class="align-middle"
+              <th scope="col" class="align-middle text-nowrap"
                 >{$_("pages.languages.code")}</th>
-              <th scope="col" class="align-middle"
+              <th scope="col" class="align-middle text-nowrap"
                 >{$_("pages.languages.date-fns-code")}</th>
-              <th scope="col" class="align-middle"
+              <th scope="col" class="align-middle text-nowrap"
                 >{$_("pages.languages.derivatives")}</th>
-              <th scope="col" class="align-middle"
+              <th scope="col" class="align-middle text-nowrap"
                 >{$_("pages.languages.defined-by")}</th>
             </tr>
           </thead>

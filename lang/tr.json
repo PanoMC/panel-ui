@@ -122,7 +122,7 @@
     },
     "languages": {
       "title": "Diller",
-      "card-title": "{count} Dil",
+      "card-title": "Diller ({count})",
       "name": "İsmi",
       "code": "Kodu",
       "date-fns-code": "Date-Fns Kodu",
@@ -415,7 +415,6 @@
           "placeholder": "Ara (grup, oyuncu, node)"
         },
         "actions": {
-          "save": "Kaydet",
           "create-group": "Grup Oluştur",
           "create-track": "Track Oluştur",
           "add-player": "Oyuncu Ekle",

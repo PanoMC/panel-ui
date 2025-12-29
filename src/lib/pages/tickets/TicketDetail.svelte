@@ -7,9 +7,14 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions middleClasses="d-lg-flex d-none">
-    <a class="btn btn-link" role="button" href="{base}/tickets" slot="left">
-      <i class="fas fa-arrow-left me-2"></i>
-      {$_("pages.ticket-detail.tickets")}
+    <a
+      class="btn btn-link"
+      title={$_("pages.ticket-detail.tickets")}
+      aria-label={$_("pages.ticket-detail.tickets")}
+      role="button"
+      href="{base}/tickets"
+      slot="left">
+      <i class="fas fa-arrow-left"></i>
     </a>
 
     <div class="hstack gap-2" slot="right">
@@ -105,7 +110,9 @@
                 </div>
               </div>
               <div class="col-auto">
-                <a href="{base}/players/detail/{message.username}" class="rounded focus-ring">
+                <a
+                  href="{base}/players/detail/{message.username}"
+                  class="rounded focus-ring">
                   <img
                     src="https://minotar.net/avatar/{message.username}/48"
                     alt={message.username}

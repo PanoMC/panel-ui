@@ -415,7 +415,6 @@
           "placeholder": "Search (group, player, node)"
         },
         "actions": {
-          "save": "Save",
           "create-group": "Create Group",
           "create-track": "Create Track",
           "add-player": "Add Player",

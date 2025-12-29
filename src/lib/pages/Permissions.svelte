@@ -9,21 +9,34 @@
         on:change={(e) => (globalSearchQuery = e.detail.value)} />
     </div>
     <div slot="right" class="hstack gap-2">
-      <button type="button" title="{$_("pages.permissions.panel.actions.save")}" class="btn btn-link" on:click={saveSnapshot}>
+      <button
+        type="button"
+        title={$_("buttons.save")}
+        class="btn btn-link"
+        on:click={saveSnapshot}>
         <i class="fa fa-save"></i>
       </button>
 
       {#if showGroups}
         <button type="button" class="btn btn-secondary" on:click={createGroup}>
-          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.create-group")}
+          <i class="fa fa-plus"></i>
+          <span class="d-lg-inline d-none"
+            >{$_("pages.permissions.panel.actions.create-group")}</span>
         </button>
       {:else if showTracks}
         <button type="button" class="btn btn-secondary" on:click={createTrack}>
-          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.create-track")}
+          <i class="fa fa-plus"></i>
+          <span class="d-lg-inline d-none"
+            >{$_("pages.permissions.panel.actions.create-track")}</span>
         </button>
       {:else if showUsers}
-        <button type="button" class="btn btn-secondary" on:click={openUserSearch}>
-          <i class="fa fa-plus me-2"></i>{$_("pages.permissions.panel.actions.add-player")}
+        <button
+          type="button"
+          class="btn btn-secondary"
+          on:click={openUserSearch}>
+          <i class="fa fa-plus"></i>
+          <span class="d-lg-inline d-none"
+            >{$_("pages.permissions.panel.actions.add-player")}</span>
         </button>
       {/if}
     </div>
@@ -32,29 +45,30 @@
   <div class="row g-3">
     <div class="col-lg-4">
       <div class="accordion" id="leftAccordion">
-
-
         <!-- Trackler -->
-        <div class="accordion-item"
-             role="button"
-             tabindex="0"
-             on:keydown={(e) => e.key === 'Enter' && alert("zaa")}>
+        <div
+          class="accordion-item"
+          role="button"
+          tabindex="0"
+          on:keydown={(e) => e.key === "Enter" && alert("zaa")}>
           <h2 class="accordion-header" id="tracksHeading">
             <button
               class="accordion-button {showTracks ? '' : 'collapsed'}"
               type="button"
               aria-controls="tracksCollapse"
               on:click={() => {
-                const collapse = document.getElementById('tracksCollapse');
+                const collapse = document.getElementById("tracksCollapse");
                 if (collapse) {
-                    showTracks = !collapse.classList.contains('show');
-                    showGroups = false;
-                    showUsers = false;
-                    const collapseInstance = window.bootstrap?.Collapse.getOrCreateInstance(collapse);
-                    collapseInstance.toggle();
+                  showTracks = !collapse.classList.contains("show");
+                  showGroups = false;
+                  showUsers = false;
+                  const collapseInstance =
+                    window.bootstrap?.Collapse.getOrCreateInstance(collapse);
+                  collapseInstance.toggle();
                 }
               }}>
-              <span class="me-2">{$_("pages.permissions.panel.accordions.tracks")}</span>
+              <span class="me-2"
+                >{$_("pages.permissions.panel.accordions.tracks")}</span>
             </button>
           </h2>
           <div
@@ -65,27 +79,35 @@
             <div class="accordion-body p-0">
               <div style={listStyle(260)}>
                 {#if Array.isArray(filteredTracks) && filteredTracks.length > 0}
-                  <div class="accordion accordion-flush" id="tracksListAccordion">
+                  <div
+                    class="accordion accordion-flush"
+                    id="tracksListAccordion">
                     {#each filteredTracks as track (track.id ?? track.name)}
                       <div class="accordion-item">
-                        <h2 class="accordion-header" id={"trackHeading-" + (track.id ?? track.name)}>
+                        <h2
+                          class="accordion-header"
+                          id={"trackHeading-" + (track.id ?? track.name)}>
                           <button
                             type="button"
                             class="accordion-button collapsed py-2"
                             data-bs-toggle="collapse"
-                            data-bs-target={"#trackCollapse-" + (track.id ?? track.name)}
-                            aria-controls={"trackCollapse-" + (track.id ?? track.name)}
+                            data-bs-target={"#trackCollapse-" +
+                              (track.id ?? track.name)}
+                            aria-controls={"trackCollapse-" +
+                              (track.id ?? track.name)}
                             on:click={() => selectTrack(track)}>
                             <div class="d-flex flex-column text-start w-100">
                               <div class="text-truncate">{track.name}</div>
-                              <small class=" text-truncate">{track.description}</small>
+                              <small class=" text-truncate"
+                                >{track.description}</small>
                             </div>
                           </button>
                         </h2>
                         <div
                           id={"trackCollapse-" + (track.id ?? track.name)}
                           class="accordion-collapse collapse"
-                          aria-labelledby={"trackHeading-" + (track.id ?? track.name)}
+                          aria-labelledby={"trackHeading-" +
+                            (track.id ?? track.name)}
                           data-bs-parent="#tracksListAccordion">
                           <div class="accordion-body py-2">
                             {#if Array.isArray(track.groupNames) && track.groupNames.length > 0}
@@ -94,7 +116,8 @@
                                   <button
                                     type="button"
                                     class="list-group-item list-group-item-action py-1"
-                                    on:click|stopPropagation={() => selectGroupByName(gname)}
+                                    on:click|stopPropagation={() =>
+                                      selectGroupByName(gname)}
                                     aria-label={`Gruba git: ${gname}`}
                                     title={`Gruba git: ${gname}`}>
                                     {gname}
@@ -117,26 +140,29 @@
           </div>
         </div>
         <!-- Gruplar -->
-        <div class="accordion-item"
-             role="button"
-             tabindex="0"
-             on:keydown={(e) => e.key === 'Enter' && alert("zaa")}>
+        <div
+          class="accordion-item"
+          role="button"
+          tabindex="0"
+          on:keydown={(e) => e.key === "Enter" && alert("zaa")}>
           <h2 class="accordion-header" id="groupsHeading">
             <button
               class="accordion-button {showGroups ? '' : 'collapsed'}"
               type="button"
               aria-controls="groupsCollapse"
               on:click={() => {
-                const collapse = document.getElementById('groupsCollapse');
+                const collapse = document.getElementById("groupsCollapse");
                 if (collapse) {
-                    showGroups = !collapse.classList.contains('show');
-                    showTracks = false;
-                    showUsers = false;
-                    const collapseInstance = window.bootstrap?.Collapse.getOrCreateInstance(collapse);
-                    collapseInstance.toggle();
+                  showGroups = !collapse.classList.contains("show");
+                  showTracks = false;
+                  showUsers = false;
+                  const collapseInstance =
+                    window.bootstrap?.Collapse.getOrCreateInstance(collapse);
+                  collapseInstance.toggle();
                 }
               }}>
-              <span class="me-2">{$_("pages.permissions.panel.accordions.groups")}</span>
+              <span class="me-2"
+                >{$_("pages.permissions.panel.accordions.groups")}</span>
             </button>
           </h2>
           <div
@@ -150,7 +176,10 @@
                   {#each filteredGroups as group (group.id ?? group.name)}
                     <button
                       type="button"
-                      class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {selectedGroup && selectedGroup.id === group.id ? 'active' : ''}"
+                      class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {selectedGroup &&
+                      selectedGroup.id === group.id
+                        ? 'active'
+                        : ''}"
                       on:click={() => selectGroup(group)}>
                       <div>
                         <div class="fw-normal">
@@ -158,7 +187,8 @@
                         </div>
                         <small class="font-monospace">({group.name})</small>
                       </div>
-                      <span class="badge bg-primary">{getGroupWeight(group, nodes)}</span>
+                      <span class="badge bg-primary"
+                        >{getGroupWeight(group, nodes)}</span>
                     </button>
                   {/each}
                 </div>
@@ -172,26 +202,29 @@
         </div>
 
         <!-- Kullanıcılar -->
-        <div class="accordion-item"
-             role="button"
-             tabindex="0"
-             on:keydown={(e) => e.key === 'Enter' && alert("zaa")}>
+        <div
+          class="accordion-item"
+          role="button"
+          tabindex="0"
+          on:keydown={(e) => e.key === "Enter" && alert("zaa")}>
           <h2 class="accordion-header" id="usersHeading">
             <button
               class="accordion-button {showUsers ? '' : 'collapsed'}"
               type="button"
               aria-controls="usersCollapse"
               on:click={() => {
-                const collapse = document.getElementById('usersCollapse');
+                const collapse = document.getElementById("usersCollapse");
                 if (collapse) {
-                    showUsers = !collapse.classList.contains('show');
-                    showGroups = false;
-                    showTracks = false;
-                    const collapseInstance = window.bootstrap?.Collapse.getOrCreateInstance(collapse);
-                    collapseInstance.toggle();
+                  showUsers = !collapse.classList.contains("show");
+                  showGroups = false;
+                  showTracks = false;
+                  const collapseInstance =
+                    window.bootstrap?.Collapse.getOrCreateInstance(collapse);
+                  collapseInstance.toggle();
                 }
               }}>
-              <span class="me-2">{$_("pages.permissions.panel.accordions.users")}</span>
+              <span class="me-2"
+                >{$_("pages.permissions.panel.accordions.users")}</span>
             </button>
           </h2>
           <div
@@ -204,12 +237,17 @@
                 <div class="list-group list-group-flush" style={listStyle(320)}>
                   {#each filteredUsers as user (user.id ?? user.username)}
                     <div
-                      class="list-group-item d-flex justify-content-between align-items-center {selectedUser && selectedUser.id === user.id ? 'active' : ''}"
+                      class="list-group-item d-flex justify-content-between align-items-center {selectedUser &&
+                      selectedUser.id === user.id
+                        ? 'active'
+                        : ''}"
                       role="button"
                       tabindex="0"
                       on:click={() => selectUser(user)}
-                      on:keydown={(e) => onActionKeydown(e, () => selectUser(user))}>
-                      <div class="me-2 d-flex align-items-center overflow-hidden">
+                      on:keydown={(e) =>
+                        onActionKeydown(e, () => selectUser(user))}>
+                      <div
+                        class="me-2 d-flex align-items-center overflow-hidden">
                         {#if minotarAvatarUrl(user.username, 24)}
                           <img
                             src={minotarAvatarUrl(user.username, 24)}
@@ -220,7 +258,9 @@
                             loading="lazy" />
                         {/if}
                         <div class="overflow-hidden">
-                          <div class="fw-bold text-truncate">{user.username}</div>
+                          <div class="fw-bold text-truncate">
+                            {user.username}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -240,12 +280,13 @@
     <div class="col-lg-8">
       {#if selectedGroup || selectedUser}
         <div class="card">
-              <div class="card-header d-flex justify-content-between align-items-center">
+          <div
+            class="card-header d-flex justify-content-between align-items-center">
             {#if selectedGroup}
               <div>
                 <h5 class="mb-0">
                   {selectedGroup.displayName || selectedGroup.name}
-                  <span class="font-monospace ms-2">{selectedGroup.name}</span>
+                  <span class="font-monospace">{selectedGroup.name}</span>
                 </h5>
                 <small>
                   {$_("pages.permissions.panel.group.parents")}:
@@ -265,7 +306,11 @@
                     {/each}
                   {/if}
                 </small>
-                <small class="d-block">{$_("pages.permissions.panel.group.weight")}: {getGroupWeight(selectedGroup, nodes)}</small>
+                <small class="d-block"
+                  >{$_("pages.permissions.panel.group.weight")}: {getGroupWeight(
+                    selectedGroup,
+                    nodes,
+                  )}</small>
               </div>
               <div class="hstack gap-2">
                 <button
@@ -280,7 +325,8 @@
                   type="button"
                   class="btn btn-link"
                   disabled={selectedGroup?.name === "default"}
-                  on:click={() => selectedGroup?.name !== "default" && showRemoveGroupModal()}
+                  on:click={() =>
+                    selectedGroup?.name !== "default" && showRemoveGroupModal()}
                   aria-disabled={selectedGroup?.name === "default"}
                   aria-label={$_("buttons.delete")}
                   title={$_("buttons.delete")}>
@@ -292,7 +338,8 @@
                   title={$_("pages.permissions.panel.nodes.add-node")}
                   aria-label={$_("pages.permissions.panel.nodes.add-node")}
                   on:click={() => addNode("GROUP")}>
-                  <i class="fa fa-plus me-2"></i> {$_("pages.permissions.panel.nodes.add-node")}
+                  <i class="fa fa-plus"></i><span class="d-lg-inline d-none"
+                    >{$_("pages.permissions.panel.nodes.add-node")}</span>
                 </button>
               </div>
             {:else}
@@ -330,8 +377,12 @@
               </div>
 
               <div class="hstack gap-2">
-                <button class="btn btn-sm btn-primary" on:click={() => addNode("USER")}>
-                  <i class="fa fa-plus me-1"></i>{$_("pages.permissions.panel.nodes.node")}
+                <button
+                  class="btn btn-sm btn-primary"
+                  on:click={() => addNode("USER")}>
+                  <i class="fa fa-plus me-1"></i>{$_(
+                    "pages.permissions.panel.nodes.node",
+                  )}
                 </button>
                 {#if !isSelfUser(selectedUser)}
                   <button
@@ -354,16 +405,19 @@
               <table class="table align-middle">
                 <thead>
                   <tr>
-                    <th style="width: 15%;"></th>
-                    <th style="width: 45%;">{$_("pages.permissions.panel.nodes.node")}</th>
-                    <th style="width: 15%;">{$_("pages.permissions.panel.nodes.active")}</th>
-                    <th style="width: 25%;">{$_("pages.permissions.panel.nodes.expiry")}</th>
+                    <th></th>
+                    <th class="align-middle text-nowrap"
+                      >{$_("pages.permissions.panel.nodes.node")}</th>
+                    <th class="align-middle text-nowrap"
+                      >{$_("pages.permissions.panel.nodes.active")}</th>
+                    <th class="align-middle text-nowrap"
+                      >{$_("pages.permissions.panel.nodes.expiry")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {#each filteredCurrentNodes as node (node.id ?? `${node.holderType}:${node.holderId}:${node.node}:${node.createdAt}`)}
                     <tr>
-                      <td class="d-table-cell text-center hstack gap-2">
+                      <td class="d-table-cell text-center hstack gap-2 text-nowrap">
                         <button
                           class="btn btn-link"
                           on:click={() => editNode(node)}
@@ -380,7 +434,9 @@
                         </button>
                       </td>
                       <td>
-                        <div class="text-truncate font-monospace">{node.node}</div>
+                        <div class="text-truncate font-monospace">
+                          {node.node}
+                        </div>
                         {#each formatNodeContext(node.context) as c (c)}
                           <span class="badge text-bg-primary me-2">{c}</span>
                         {/each}
@@ -410,17 +466,30 @@
         </div>
       {:else if selectedTrack}
         <div class="card">
-          <div class="card-header d-flex justify-content-between align-items-center">
+          <div
+            class="card-header d-flex justify-content-between align-items-center">
             <div>
               <h5 class="mb-0">{selectedTrack.name}</h5>
               <small>{selectedTrack.description}</small>
             </div>
             <div class="hstack gap-2">
-              <button class="btn btn-sm btn-outline-primary" on:click={() => { selectedTrackForEdit = selectedTrack; showEditTrackModal(); }}>
+              <button
+                class="btn btn-sm btn-outline-primary"
+                on:click={() => {
+                  selectedTrackForEdit = selectedTrack;
+                  showEditTrackModal();
+                }}>
                 <i class="fa fa-pen me-1"></i>{$_("buttons.edit")}
               </button>
-              <button class="btn btn-sm btn-outline-danger" on:click={() => { selectedTrackForEdit = selectedTrack; showRemoveTrackModal(); }}>
-                <i class="fa fa-trash me-1"></i>{$_("pages.permissions.panel.actions.remove")}
+              <button
+                class="btn btn-sm btn-outline-danger"
+                on:click={() => {
+                  selectedTrackForEdit = selectedTrack;
+                  showRemoveTrackModal();
+                }}>
+                <i class="fa fa-trash me-1"></i>{$_(
+                  "pages.permissions.panel.actions.remove",
+                )}
               </button>
             </div>
           </div>
@@ -444,9 +513,11 @@
           </div>
         </div>
       {:else}
-      <div class="card d-flex align-items center justify-content-center h-100">
-        <NoContent text={$_("pages.permissions.panel.empty.select-something")} />
-      </div>
+        <div
+          class="card d-flex align-items center justify-content-center h-100">
+          <NoContent
+            text={$_("pages.permissions.panel.empty.select-something")} />
+        </div>
       {/if}
     </div>
   </div>
@@ -467,7 +538,10 @@
 
   /** @type {import('@sveltejs/kit').PageLoad} */
   export async function load(event) {
-    const res = await ApiUtilModule.get({ path: "/api/panel/permission/snapshot", request: event });
+    const res = await ApiUtilModule.get({
+      path: "/api/panel/permission/snapshot",
+      request: event,
+    });
     if (res?.error) {
       throw error(500, res.error);
     }
@@ -679,7 +753,12 @@
     return n;
   };
 
-  function upsertGroupDisplayNameNode({ groupId, groupName, displayName, now }) {
+  function upsertGroupDisplayNameNode({
+    groupId,
+    groupName,
+    displayName,
+    now,
+  }) {
     const dn = String(displayName ?? "").trim();
     const nodeValue = `displayname.${dn || groupName || ""}`;
 
@@ -847,7 +926,9 @@
       .sort((a, b) => b.weight - a.weight || a.name.localeCompare(b.name));
   }
 
-  $: selectedGroupParents = selectedGroup ? computeSelectedGroupParents(selectedGroup, nodes) : [];
+  $: selectedGroupParents = selectedGroup
+    ? computeSelectedGroupParents(selectedGroup, nodes)
+    : [];
 
   function refreshCurrentNodes() {
     if (selectedGroup) {
@@ -883,7 +964,10 @@
         createdAt: now,
         updatedAt: now,
       };
-      showEditPermissionNodeModal({ node: selectedNodeForEdit, permissionGroups });
+      showEditPermissionNodeModal({
+        node: selectedNodeForEdit,
+        permissionGroups,
+      });
       return;
     }
     if (holderType === "USER" && selectedUser) {
@@ -899,7 +983,10 @@
         createdAt: now,
         updatedAt: now,
       };
-      showEditPermissionNodeModal({ node: selectedNodeForEdit, permissionGroups });
+      showEditPermissionNodeModal({
+        node: selectedNodeForEdit,
+        permissionGroups,
+      });
     }
   }
 
@@ -908,7 +995,11 @@
       n.id === node.id ? { ...n, active: !n.active, updatedAt: Date.now() } : n,
     );
     // Keep group.displayName in sync when displayname node is toggled.
-    if (node?.holderType === "GROUP" && typeof node?.node === "string" && node.node.startsWith("displayname.")) {
+    if (
+      node?.holderType === "GROUP" &&
+      typeof node?.node === "string" &&
+      node.node.startsWith("displayname.")
+    ) {
       syncGroupDisplayNameFromNodes(node.holderId);
     }
     refreshCurrentNodes();
@@ -917,7 +1008,11 @@
   function removeNode(node) {
     nodes = (nodes || []).filter((n) => n.id !== node.id);
     // Keep group.displayName in sync when displayname node is removed.
-    if (node?.holderType === "GROUP" && typeof node?.node === "string" && node.node.startsWith("displayname.")) {
+    if (
+      node?.holderType === "GROUP" &&
+      typeof node?.node === "string" &&
+      node.node.startsWith("displayname.")
+    ) {
       syncGroupDisplayNameFromNodes(node.holderId);
     }
     refreshCurrentNodes();
@@ -955,11 +1050,17 @@
     const newDisplayName = (dn || group.name || "").trim();
 
     permissionGroups = (permissionGroups || []).map((g) =>
-      g?.id === groupId ? { ...g, displayName: newDisplayName, updatedAt: Date.now() } : g,
+      g?.id === groupId
+        ? { ...g, displayName: newDisplayName, updatedAt: Date.now() }
+        : g,
     );
 
     if (selectedGroup?.id === groupId) {
-      selectedGroup = { ...selectedGroup, displayName: newDisplayName, updatedAt: Date.now() };
+      selectedGroup = {
+        ...selectedGroup,
+        displayName: newDisplayName,
+        updatedAt: Date.now(),
+      };
     }
   }
 
@@ -1156,7 +1257,9 @@
     if (!u) return;
 
     users = (users || []).filter((x) => x.id !== u.id);
-    nodes = (nodes || []).filter((n) => !(n.holderType === "USER" && n.holderId === u.id));
+    nodes = (nodes || []).filter(
+      (n) => !(n.holderType === "USER" && n.holderId === u.id),
+    );
 
     if (selectedUser && selectedUser.id === u.id) {
       selectedUser = null;
@@ -1184,10 +1287,14 @@
     const removedId = groupToRemove.id;
 
     // Remove group from source list
-    permissionGroups = (permissionGroups || []).filter((g) => g.id !== removedId);
+    permissionGroups = (permissionGroups || []).filter(
+      (g) => g.id !== removedId,
+    );
 
     // Remove group-held nodes
-    nodes = (nodes || []).filter((n) => !(n.holderType === "GROUP" && n.holderId === removedId));
+    nodes = (nodes || []).filter(
+      (n) => !(n.holderType === "GROUP" && n.holderId === removedId),
+    );
 
     // Remove from tracks membership lists
     tracks = (tracks || []).map((t) => ({
@@ -1222,7 +1329,18 @@
     createdAt,
     updatedAt,
   }) {
-    return { id, holderType, holderId, holderName, node, active, context, expiresAt, createdAt, updatedAt };
+    return {
+      id,
+      holderType,
+      holderId,
+      holderName,
+      node,
+      active,
+      context,
+      expiresAt,
+      createdAt,
+      updatedAt,
+    };
   }
 
   function groupMetaNodes({ now, groupId, groupName, parents }) {
@@ -1268,8 +1386,11 @@
   const sortGroups = (gs, currentNodesList) =>
     [...(gs || [])].sort(
       (a, b) =>
-        getGroupWeight(b, currentNodesList) - getGroupWeight(a, currentNodesList) ||
-        String(a?.name ?? "").localeCompare(String(b?.name ?? ""), undefined, { sensitivity: "base" }),
+        getGroupWeight(b, currentNodesList) -
+          getGroupWeight(a, currentNodesList) ||
+        String(a?.name ?? "").localeCompare(String(b?.name ?? ""), undefined, {
+          sensitivity: "base",
+        }),
     );
 
   // Track modal open helpers
@@ -1285,15 +1406,15 @@
 
   // Modal callbacks are wired once below via setCallback(...)
 
-
   async function handleCreateGroup(groupData) {
-
     try {
       const now = Date.now();
 
       // Edit existing group
       if (editingGroupId != null) {
-        const existing = (permissionGroups || []).find((g) => g.id === editingGroupId);
+        const existing = (permissionGroups || []).find(
+          (g) => g.id === editingGroupId,
+        );
         if (!existing) {
           editingGroupId = null;
           return;
@@ -1301,7 +1422,9 @@
 
         const oldName = existing.name;
         const weight = normalizeWeight(groupData.weight);
-        const parents = Array.from(new Set([...(groupData.parents || [])].filter(Boolean)));
+        const parents = Array.from(
+          new Set([...(groupData.parents || [])].filter(Boolean)),
+        );
         const updatedGroup = {
           ...existing,
           name: groupData.name,
@@ -1332,12 +1455,15 @@
             : n,
         );
 
-        nodes = [...(nodes || []), ...groupMetaNodes({
-          now,
-          groupId: editingGroupId,
-          groupName: updatedGroup.name,
-          parents,
-        })];
+        nodes = [
+          ...(nodes || []),
+          ...groupMetaNodes({
+            now,
+            groupId: editingGroupId,
+            groupName: updatedGroup.name,
+            parents,
+          }),
+        ];
 
         upsertGroupWeightNode({
           groupId: editingGroupId,
@@ -1371,9 +1497,12 @@
 
       const weight = normalizeWeight(groupData.weight);
       const parents = (() => {
-        const base = Array.from(new Set([...(groupData.parents || [])].filter(Boolean)));
+        const base = Array.from(
+          new Set([...(groupData.parents || [])].filter(Boolean)),
+        );
         // Ensure every newly created group inherits from default (except the default group itself).
-        if (groupData?.name !== "default" && !base.includes("default")) base.push("default");
+        if (groupData?.name !== "default" && !base.includes("default"))
+          base.push("default");
         return base;
       })();
       const newGroupData = {
@@ -1389,12 +1518,15 @@
 
       // LuckPerms-like: apply parent inheritance as permission nodes.
       // Parent is expressed as a group-held node: "group.<parentName>"
-      nodes = [...(nodes || []), ...groupMetaNodes({
-        now,
-        groupId: newGroupData.id,
-        groupName: newGroupData.name,
-        parents,
-      })];
+      nodes = [
+        ...(nodes || []),
+        ...groupMetaNodes({
+          now,
+          groupId: newGroupData.id,
+          groupName: newGroupData.name,
+          parents,
+        }),
+      ];
 
       upsertGroupWeightNode({
         groupId: newGroupData.id,
@@ -1418,7 +1550,6 @@
     } catch (error) {
       console.error("Error creating group:", error);
     }
-
   }
 
   function handlecreateTrackFromModal(trackData) {
@@ -1428,7 +1559,9 @@
       id: now,
       name: trackData.name,
       description: trackData.description || "",
-      groupNames: Array.isArray(trackData.groupNames) ? trackData.groupNames : [],
+      groupNames: Array.isArray(trackData.groupNames)
+        ? trackData.groupNames
+        : [],
       createdAt: now,
       updatedAt: now,
     };
@@ -1458,7 +1591,9 @@
     if (idx === -1) {
       nodes = [...(nodes || []), updatedNode];
     } else {
-      nodes = (nodes || []).map((n) => (n.id === updatedNode.id ? updatedNode : n));
+      nodes = (nodes || []).map((n) =>
+        n.id === updatedNode.id ? updatedNode : n,
+      );
     }
 
     // If a group displayname node changed, update the group's displayName immediately.
@@ -1497,10 +1632,18 @@
       return t?.name !== rname;
     });
 
-    if (selectedTrack && ((rid != null && selectedTrack.id === rid) || (rid == null && selectedTrack.name === rname))) {
+    if (
+      selectedTrack &&
+      ((rid != null && selectedTrack.id === rid) ||
+        (rid == null && selectedTrack.name === rname))
+    ) {
       selectedTrack = null;
     }
-    if (selectedTrackForEdit && ((rid != null && selectedTrackForEdit.id === rid) || (rid == null && selectedTrackForEdit.name === rname))) {
+    if (
+      selectedTrackForEdit &&
+      ((rid != null && selectedTrackForEdit.id === rid) ||
+        (rid == null && selectedTrackForEdit.name === rname))
+    ) {
       selectedTrackForEdit = null;
     }
   });
@@ -1525,50 +1668,63 @@
     filteredGroups = sortGroups(
       hasQ
         ? (permissionGroups || []).filter((g) => {
-          const gid = g?.id;
-          const groupText = `${norm(g?.name)} ${norm(g?.displayName)}`;
-          if (groupText.includes(q)) return true;
-          if (gid == null) return false;
-          return (nodes || []).some(
-            (n) => n?.holderType === "GROUP" && n?.holderId === gid && nodeMatchesQuery(n, q),
-          );
-        })
+            const gid = g?.id;
+            const groupText = `${norm(g?.name)} ${norm(g?.displayName)}`;
+            if (groupText.includes(q)) return true;
+            if (gid == null) return false;
+            return (nodes || []).some(
+              (n) =>
+                n?.holderType === "GROUP" &&
+                n?.holderId === gid &&
+                nodeMatchesQuery(n, q),
+            );
+          })
         : permissionGroups,
       nodes,
     );
 
     filteredTracks = hasQ
       ? (tracks || []).filter((t) => {
-        const base = `${norm(t?.name)} ${norm(t?.description)}`;
-        if (base.includes(q)) return true;
+          const base = `${norm(t?.name)} ${norm(t?.description)}`;
+          if (base.includes(q)) return true;
 
-        if (!Array.isArray(t?.groupNames) || t.groupNames.length === 0) return false;
+          if (!Array.isArray(t?.groupNames) || t.groupNames.length === 0)
+            return false;
 
-        // match by group name OR group displayName
-        return t.groupNames.some((gn) => {
-          const name = String(gn || "").trim();
-          if (!name) return false;
-          if (norm(name).includes(q)) return true;
-          const display = groupDisplayByName.get(name) || "";
-          return !!display && display.includes(q);
-        });
-      })
+          // match by group name OR group displayName
+          return t.groupNames.some((gn) => {
+            const name = String(gn || "").trim();
+            if (!name) return false;
+            if (norm(name).includes(q)) return true;
+            const display = groupDisplayByName.get(name) || "";
+            return !!display && display.includes(q);
+          });
+        })
       : tracks || [];
 
     filteredUsers = hasQ
       ? (users || []).filter((u) => {
-        const uid = u?.id;
-        const base = norm(u?.username);
-        if (base.includes(q)) return true;
-        if (Array.isArray(u?.groups) && u.groups.some((g) => norm(g).includes(q))) return true;
-        if (uid == null) return false;
-        return (nodes || []).some(
-          (n) => n?.holderType === "USER" && n?.holderId === uid && nodeMatchesQuery(n, q),
-        );
-      })
+          const uid = u?.id;
+          const base = norm(u?.username);
+          if (base.includes(q)) return true;
+          if (
+            Array.isArray(u?.groups) &&
+            u.groups.some((g) => norm(g).includes(q))
+          )
+            return true;
+          if (uid == null) return false;
+          return (nodes || []).some(
+            (n) =>
+              n?.holderType === "USER" &&
+              n?.holderId === uid &&
+              nodeMatchesQuery(n, q),
+          );
+        })
       : users || [];
 
     refreshCurrentNodes();
-    filteredCurrentNodes = hasQ ? (currentNodes || []).filter((n) => nodeMatchesQuery(n, q)) : currentNodes;
+    filteredCurrentNodes = hasQ
+      ? (currentNodes || []).filter((n) => nodeMatchesQuery(n, q))
+      : currentNodes;
   }
 </script>

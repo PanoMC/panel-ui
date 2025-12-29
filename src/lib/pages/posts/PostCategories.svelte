@@ -39,13 +39,13 @@
           <thead>
             <tr>
               <th scope="col"></th>
-              <th class="align-middle" scope="col"
+              <th class="align-middle text-nowrap" scope="col"
                 >{$_("pages.post-categories.category")}</th>
-              <th scope="col" class="align-middle"
+              <th scope="col" class="align-middle text-nowrap"
                 >{$_("pages.post-categories.description")}</th>
-              <th scope="col" class="align-middle"
+              <th scope="col" class="align-middle text-nowrap"
                 >{$_("pages.post-categories.url")}</th>
-              <th scope="col" class="d-none align-middle"
+              <th scope="col" class="d-none align-middle text-nowrap"
                 >{$_("pages.post-categories.color")}</th>
             </tr>
           </thead>

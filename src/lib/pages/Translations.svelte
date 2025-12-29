@@ -103,8 +103,8 @@
           >{$_("buttons.not-exists")}</CardFiltersItem>
       </CardFilters>
     </CardHeader>
-    <div class="card-body vstack gap-3">
-      <div class="accordion">
+    <div class="vstack gap-3">
+      <div class="accordion accordion-flush mb-2">
         {#if data.type === PageTypes.PLUGIN}
           {#each Object.keys(filteredTranslations) as pluginId, index (pluginId)}
             <div class="accordion-item">
