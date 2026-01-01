@@ -1,160 +1,114 @@
 <nav class="navbar-dark animate__animated animate__slideInLeft">
   <ul class="navbar-nav flex-column px-3">
-    <li class="nav-item">
-      <a
-        class="nav-link"
-        href="{base}/"
-        class:active={matching($page.url.pathname, base)}>
-        <i class="fas fa-table-columns me-2"></i>
-        {$_("components.site-navigation-menu.panel")}
-      </a>
-    </li>
-    <li class="nav-item">
-      <a
-        class="nav-link"
-        href="{base}/statistics"
-        class:active={matching(
-          $page.url.pathname,
-          base + "/statistics",
-          true,
-        )}>
-        <i class="fas fa-chart-simple me-2"></i>
-        {$_("components.site-navigation-menu.statistics")}
-      </a>
-    </li>
-    {#if hasPermission(Permissions.MANAGE_POSTS)}
-      <li class="nav-item">
-        <a
-          href="{base}/posts"
-          class="nav-link"
-          class:active={matching($page.url.pathname, base + "/posts", true)}>
-          <i class="fas fa-pen me-2"></i>
-          {$_("components.site-navigation-menu.posts")}
-        </a>
-      </li>
-    {/if}
-    {#if hasPermission(Permissions.MANAGE_TICKETS)}
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          href="{base}/tickets"
-          class:active={matching(
-            $page.url.pathname,
-            base + "/tickets",
-            true,
-          )}>
-          <i class="fas fa-ticket me-2"></i>
-          {$_("components.site-navigation-menu.tickets")}
-        </a>
-      </li>
-    {/if}
-
-    {#if hasPermission(Permissions.MANAGE_PLAYERS)}
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          href="{base}/players"
-          class:active={matching(
-            $page.url.pathname,
-            base + "/players",
-            true,
-          )}>
-          <i class="fas fa-users me-2"></i>
-          {$_("components.site-navigation-menu.players")}
-        </a>
-      </li>
-    {/if}
-
-    {#if hasPermission(Permissions.MANAGE_PERMISSION_GROUPS)}
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          href="{base}/permissions"
-          class:active={matching(
-            $page.url.pathname,
-            base + "/permissions",
-            true,
-          )}>
-          <i class="fas fa-gavel me-2"></i>
-          {$_("components.site-navigation-menu.permissions")}
-        </a>
-      </li>
-    {/if}
-
-    {#if hasPermission(Permissions.MANAGE_VIEW)}
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          href="{base}/view"
-          class:active={matching($page.url.pathname, base + "/view", true)}>
-          <i class="fas fa-palette me-2"></i>
-          {$_("components.site-navigation-menu.view")}
-        </a>
-      </li>
-    {/if}
-
-    {#if hasPermission(Permissions.MANAGE_TRANSLATIONS)}
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          href="{base}/translations"
-          class:active={matching(
-            $page.url.pathname,
-            base + "/translations",
-            true,
-          )}>
-          <i class="fa-solid fa-language me-2"></i>
-          {$_("components.site-navigation-menu.translations")}
-        </a>
-      </li>
-    {/if}
-
-    {#if hasPermission(Permissions.MANAGE_ADDONS)}
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          href="{base}/addons"
-          class:active={matching($page.url.pathname, base + "/addons", true)}>
-          <i class="fas fa-puzzle-piece me-2"></i>
-          {$_("components.site-navigation-menu.addons")}
-        </a>
-      </li>
-    {/if}
-
-    <li class="nav-item">
-      <a
-        class="nav-link"
-        href="{base}/logs"
-        class:active={matching($page.url.pathname, base + "/logs", true)}>
-        <i class="fas fa-align-left me-2"></i>
-        {$_("components.site-navigation-menu.logs")}
-      </a>
-    </li>
-
-    {#if hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS)}
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          href="{base}/settings"
-          class:active={matching(
-            $page.url.pathname,
-            base + "/settings",
-            true,
-          )}>
-          <span class="position-relative" class:pe-2={$session.basicData.hasUpdate}>
-            <i class="fas fa-cog me-2"></i>
-            {$_("components.site-navigation-menu.settings")}
-            {#if $session.basicData.hasUpdate}
-              <span
-                class="position-absolute bg-warning rounded-circle p-1 top-0 end-0">
+    {#each siteNavigationItems as item}
+      {#if !item.permission || hasPermission(item.permission)}
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="{base + item.href}"
+            class:active={matching($page.url.pathname, base + item.href, item.startsWith)}>
+            {#if item.hasUpdate}
+              <span class="position-relative" class:pe-2={$session.basicData.hasUpdate}>
+                <i class="{item.icon} me-2"></i>
+                {$_(item.text)}
+                {#if $session.basicData.hasUpdate}
+                  <span
+                    class="position-absolute bg-warning rounded-circle p-1 top-0 end-0">
+                  </span>
+                {/if}
               </span>
+            {:else}
+              <i class="{item.icon} me-2"></i>
+              {$_(item.text)}
             {/if}
-          </span>
-        </a>
-      </li>
-    {/if}
+          </a>
+        </li>
+      {/if}
+    {/each}
   </ul>
 </nav>
+
+<script context="module">
+  import { Permissions } from "$lib/auth.util.js";
+
+  export const originalSiteNavItems = [
+    {
+      href: "/",
+      icon: "fas fa-table-columns",
+      text: "components.site-navigation-menu.panel",
+      startsWith: false
+    },
+    {
+      href: "/statistics",
+      icon: "fas fa-chart-simple",
+      text: "components.site-navigation-menu.statistics",
+      startsWith: true
+    },
+    {
+      href: "/posts",
+      icon: "fas fa-pen",
+      text: "components.site-navigation-menu.posts",
+      startsWith: true,
+      permission: Permissions.MANAGE_POSTS
+    },
+    {
+      href: "/tickets",
+      icon: "fas fa-ticket",
+      text: "components.site-navigation-menu.tickets",
+      startsWith: true,
+      permission: Permissions.MANAGE_TICKETS
+    },
+    {
+      href: "/players",
+      icon: "fas fa-users",
+      text: "components.site-navigation-menu.players",
+      startsWith: true,
+      permission: Permissions.MANAGE_PLAYERS
+    },
+    {
+      href: "/permissions",
+      icon: "fas fa-gavel",
+      text: "components.site-navigation-menu.permissions",
+      startsWith: true,
+      permission: Permissions.MANAGE_PERMISSION_GROUPS
+    },
+    {
+      href: "/view",
+      icon: "fas fa-palette",
+      text: "components.site-navigation-menu.view",
+      startsWith: true,
+      permission: Permissions.MANAGE_VIEW
+    },
+    {
+      href: "/translations",
+      icon: "fa-solid fa-language",
+      text: "components.site-navigation-menu.translations",
+      startsWith: true,
+      permission: Permissions.MANAGE_TRANSLATIONS
+    },
+    {
+      href: "/addons",
+      icon: "fas fa-puzzle-piece",
+      text: "components.site-navigation-menu.addons",
+      startsWith: true,
+      permission: Permissions.MANAGE_ADDONS
+    },
+    {
+      href: "/logs",
+      icon: "fas fa-align-left",
+      text: "components.site-navigation-menu.logs",
+      startsWith: true
+    },
+    {
+      href: "/settings",
+      icon: "fas fa-cog",
+      text: "components.site-navigation-menu.settings",
+      startsWith: true,
+      permission: Permissions.MANAGE_PLATFORM_SETTINGS,
+      hasUpdate: true
+    }
+  ];
+</script>
 
 <script>
   import { getContext } from "svelte";
@@ -163,7 +117,8 @@
   import { base } from "$app/paths";
   import { page } from "$app/stores";
 
-  import { hasPermission, Permissions } from "$lib/auth.util.js";
+  import { hasPermission } from "$lib/auth.util.js";
+  import { siteNavigationItems } from "$lib/PluginAPI.js";
 
   const session = getContext("session")
 

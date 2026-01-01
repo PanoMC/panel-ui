@@ -157,7 +157,6 @@
 
     body.page = page;
     body.pageType = pageType;
-    console.log(body)
 
     return body;
   }

@@ -40,7 +40,7 @@
     "prettier": "~3.6.2",
     "prettier-plugin-svelte": "^3.4.0",
     "sass": "^1.94.2",
-    "svelte": "^5.43.14",
+    "svelte": "^5.46.1",
     "svelte-preprocess": "^6.0.3",
     "tippy.js": "^6.3.7",
     "vite": "^7.2.4"
