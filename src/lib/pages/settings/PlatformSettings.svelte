@@ -108,7 +108,7 @@
   </div>
   <div class="card-body animate__animated animate__fadeIn">
     <div class="row mb-3">
-      <label class="col-md-6" for="platformDevMode"> Geliştirici Modu </label>
+      <label class="col-md-6" for="platformDevMode">{$_("pages.settings.platform.developer-mode")}</label>
       <div class="col d-flex align-items-center">
         <div class="form-check form-switch">
           <input
@@ -116,7 +116,8 @@
             type="checkbox"
             role="switch"
             id="platformDevMode"
-            autocomplete="off" />
+            autocomplete="off"
+            bind:checked={data.developmentMode} />
         </div>
       </div>
     </div>
@@ -490,7 +491,8 @@
     data.oldSettings.updatePeriod === data.updatePeriod &&
     data.oldSettings.releaseChannel === data.releaseChannel &&
     data.oldSettings.locale === data.locale &&
-    data.oldSettings.allowUserLocaleSelection === data.allowUserLocaleSelection;
+    data.oldSettings.allowUserLocaleSelection === data.allowUserLocaleSelection &&
+    data.oldSettings.developmentMode === data.developmentMode;
 
   $: emailSaveDisabled =
     JSON.stringify(data.oldSettings.email) === JSON.stringify(data.email) ||
@@ -601,6 +603,7 @@
     formData.append("releaseChannel", data.releaseChannel);
     formData.append("locale", data.locale);
     formData.append("allowUserLocaleSelection", data.allowUserLocaleSelection);
+    formData.append("developmentMode", data.developmentMode);
 
     ApiUtil.put({
       path: "/api/panel/settings",

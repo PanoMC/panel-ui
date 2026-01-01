@@ -313,6 +313,7 @@
       "platform": {
         "title": "Platform Settings",
         "preferences": "Preferences",
+        "developer-mode": "Developer Mode",
         "allow-user-locale-selection": "User Language Selection",
         "allow-user-locale-selection-description": "Allow users to choose their own language, independent from platform.",
         "display-language": "Display Language",

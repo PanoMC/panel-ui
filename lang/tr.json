@@ -313,6 +313,7 @@
       "platform": {
         "title": "Platform Ayarları",
         "preferences": "Tercihler",
+        "developer-mode": "Geliştirici Modu",
         "allow-user-locale-selection": "Kullanıcı Dil Seçimi",
         "allow-user-locale-selection-description": "Kullanıcıların kendi dilini seçmelerine izin ver, platformdan bağımsız.",
         "display-language": "Görüntüleme Dili",
