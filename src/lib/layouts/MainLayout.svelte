@@ -51,7 +51,7 @@
   import { addListener } from "$lib/NotificationManager.js";
 
   import { show as showServerRequestModal } from "$lib/component/modals/ServerRequestModal.svelte";
-  import { initializePlugins } from "$lib/PluginManager.js";
+  import { initializePlugins, preparePlugins } from "$lib/PluginManager.js";
   import { updateApiUrl, updatePanoWebsiteUrl } from "$lib/variables.js";
 
   function initNotificationListeners() {
@@ -105,6 +105,8 @@
       request: event,
       csrfToken,
     });
+
+    await preparePlugins(siteInfo);
 
     return { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv, panoWebsiteApiUrlEnv };
   }
