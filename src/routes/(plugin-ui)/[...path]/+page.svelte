@@ -25,14 +25,16 @@
 </script>
 
 <script>
-  import { browser } from "$app/environment";
   import { onDestroy } from "svelte";
   import { writable } from "svelte/store";
+  import { v4 as uuidv4 } from 'uuid';
+
+  import { browser } from "$app/environment";
 
   export let data;
 
   const view = writable();
-  const viewId = `plugin-view-${crypto.randomUUID()}`;
+  const viewId = `plugin-view-${uuidv4()}`;
   let component;
 
   if (browser) {
