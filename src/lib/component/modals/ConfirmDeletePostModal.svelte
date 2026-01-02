@@ -8,7 +8,7 @@
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-body text-center">
-        <div class="pb-3">  
+        <div class="pb-3">
           <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
         </div>
         {$post.status === 0

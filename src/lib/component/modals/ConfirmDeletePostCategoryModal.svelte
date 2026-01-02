@@ -2,7 +2,7 @@
 <div
   aria-hidden="true"
   class="modal fade"
-  bind:this="{$modalElement}"
+  bind:this={$modalElement}
   role="dialog"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
@@ -11,23 +11,29 @@
         <div class="pb-3">
           <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
         </div>
-        {$_('components.modals.confirm-delete-post-category.title')}
+        {$_("components.modals.confirm-delete-post-category.title")}
         {#if $category.postCount !== 0}
-          <div class="mt-3 alert alert-warning text-left">
-            {$_('components.modals.confirm-delete-post-category.description')}
-            <br />
-            <br />
-            {#each $category.posts as post, index (post)}
-              <a
-                class="badge bg-warning rounded-pill"
-                href="{base}/posts/detail/{post.id}"
-                target="_blank">
-                {post.title}
-              </a>
-            {/each}
+          <div class="mt-3 alert alert-warning text-start mb-0">
+            <p>
+              {$_("components.modals.confirm-delete-post-category.description")}
+            </p>
+            <ul class="list-unstyled">
+              {#each $category.posts as post, index (post)}
+                <li>
+                  <a
+                    class="badge bg-warning rounded-pill"
+                    href="{base}/posts/detail/{post.id}"
+                    target="_blank">
+                    {post.title}
+                  </a>
+                </li>
+              {/each}
+            </ul>
           </div>
           {#if $category.postCount > 5}
-            {$_('components.modals.confirm-delete-post-category.more-posts', {values: {count:$category.postCount - 5}})}
+            {$_("components.modals.confirm-delete-post-category.more-posts", {
+              values: { count: $category.postCount - 5 },
+            })}
           {/if}
         {/if}
       </div>
@@ -35,16 +41,16 @@
         <button
           class="btn btn-link col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          on:click="{hide}">
-          {$_('buttons.cancel')}
+          class:disabled={loading}
+          on:click={hide}>
+          {$_("buttons.cancel")}
         </button>
         <button
           class="btn btn-danger col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          on:click="{onYesClick}">
-          {$_('buttons.yes')}
+          class:disabled={loading}
+          on:click={onYesClick}>
+          {$_("buttons.yes")}
         </button>
       </div>
     </div>
@@ -120,12 +126,12 @@
 
         hide();
 
-        showToast('components.toasts.post-category-deleted-permanently', {
+        showToast("components.toasts.post-category-deleted-permanently", {
           title: limitTitle(get(category).title),
         });
 
         callback(get(category));
       },
-    })
+    });
   }
 </script>
