@@ -57,7 +57,10 @@
               !$siteInfo.emailEnabled}>
             <i class="fas fa-envelope"></i>
             {#if sendingVerificationMail}
-              <span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>
+              <span
+                class="spinner-border spinner-border-sm ms-2"
+                role="status"
+                aria-hidden="true"></span>
             {/if}
           </button>
         {/if}
@@ -121,35 +124,36 @@
             ]} />
 
           {#if data.player.isBanned}
-            <div class="badge text-bg-danger">{$_("pages.player-detail.banned")}</div>
+            <div class="badge text-bg-danger">
+              {$_("pages.player-detail.banned")}
+            </div>
           {:else}
             <PlayerPermissionBadge
               permissionGroup={data.player.permissionGroup} />
           {/if}
-
-          <table class="table">
-            <tbody>
-              <tr>
-                <td>{$_("pages.player-detail.email")}</td>
-                <td>
-                  {#if data.player.isEmailVerified}
-                    {$_("pages.player-detail.email-verified")}
-                  {:else}
-                    {$_("pages.player-detail.email-not-verified")}
-                  {/if}
-                </td>
-              </tr>
-              <tr>
-                <td>{$_("pages.player-detail.last-entrance")}</td>
-                <td><DateComponent time={data.player.lastLoginDate} /></td>
-              </tr>
-              <tr>
-                <td>{$_("pages.player-detail.register-date")}</td>
-                <td><DateComponent time={data.player.registerDate} /></td>
-              </tr>
-            </tbody>
-          </table>
         </div>
+        <table class="table">
+          <tbody>
+            <tr>
+              <td>{$_("pages.player-detail.email")}</td>
+              <td>
+                {#if data.player.isEmailVerified}
+                  {$_("pages.player-detail.email-verified")}
+                {:else}
+                  {$_("pages.player-detail.email-not-verified")}
+                {/if}
+              </td>
+            </tr>
+            <tr>
+              <td>{$_("pages.player-detail.last-entrance")}</td>
+              <td><DateComponent time={data.player.lastLoginDate} /></td>
+            </tr>
+            <tr>
+              <td>{$_("pages.player-detail.register-date")}</td>
+              <td><DateComponent time={data.player.registerDate} /></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <div class="col-lg-9 vstack gap-3">
@@ -200,8 +204,10 @@
                 page={data.ticketsPage}
                 totalPage={data.ticketTotalPage}
                 on:firstPageClick={() => onTicketsPageClick(1)}
-                on:lastPageClick={() => onTicketsPageClick(data.ticketTotalPage)}
-                on:pageLinkClick={(event) => onTicketsPageClick(event.detail.page)} />
+                on:lastPageClick={() =>
+                  onTicketsPageClick(data.ticketTotalPage)}
+                on:pageLinkClick={(event) =>
+                  onTicketsPageClick(event.detail.page)} />
             </div>
           {/if}
         </div>
@@ -219,16 +225,21 @@
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th class="align-middle">{$_("pages.player-detail.ban-duration")}</th>
-                  <th class="align-middle">{$_("pages.player-detail.ban-reason")}</th>
-                  <th class="align-middle text-center">{$_("pages.player-detail.email-notification")}</th>
-                  <th class="align-middle">{$_("pages.player-detail.banned-by")}</th>
-                  <th class="align-middle">{$_("pages.player-detail.banned-at")}</th>
+                  <th class="align-middle"
+                    >{$_("pages.player-detail.ban-duration")}</th>
+                  <th class="align-middle"
+                    >{$_("pages.player-detail.ban-reason")}</th>
+                  <th class="align-middle text-center"
+                    >{$_("pages.player-detail.email-notification")}</th>
+                  <th class="align-middle"
+                    >{$_("pages.player-detail.banned-by")}</th>
+                  <th class="align-middle"
+                    >{$_("pages.player-detail.banned-at")}</th>
                 </tr>
               </thead>
               <tbody>
                 {#each data.banHistory as banHistory, index (banHistory)}
-                    <BanHistoryRow {banHistory} />
+                  <BanHistoryRow banHistory={banHistory} />
                 {/each}
               </tbody>
             </table>
@@ -239,8 +250,10 @@
               page={data.banHistoryPage}
               totalPage={data.banHistoryTotalPage}
               on:firstPageClick={() => onBanHistoryPageClick(1)}
-              on:lastPageClick={() => onBanHistoryPageClick(data.banHistoryTotalPage)}
-              on:pageLinkClick={(event) => onBanHistoryPageClick(event.detail.page)} />
+              on:lastPageClick={() =>
+                onBanHistoryPageClick(data.banHistoryTotalPage)}
+              on:pageLinkClick={(event) =>
+                onBanHistoryPageClick(event.detail.page)} />
           </div>
         {/if}
       </div>
@@ -268,7 +281,7 @@
 
     const queryParams = buildQueryParams({
       ticketsPage,
-      banHistoryPage
+      banHistoryPage,
     });
 
     const body = await ApiUtil.get({
