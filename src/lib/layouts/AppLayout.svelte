@@ -178,7 +178,6 @@
       page,
       base,
       navigating,
-      _,
       browser,
       components: {
         PageActions,
@@ -201,7 +200,8 @@
           ...ApiUtilStuff
         },
         language: {
-          ...languageStuff
+          ...languageStuff,
+          _,
         },
         tooltip: {
           tooltip
