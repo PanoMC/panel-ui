@@ -10,11 +10,13 @@
     </div>
   </th>
   <td class="align-middle text-nowrap">
+    <code>#{ticket.id}</code>
+  </td>
+  <td class="align-middle text-nowrap">
     <a
       href="{base}/tickets/detail/{ticket.id}"
       class="rounded focus-ring"
       title={$_('buttons.view')}>
-      #{ticket.id}
       {ticket.title}
     </a>
   </td>

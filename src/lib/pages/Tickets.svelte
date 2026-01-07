@@ -117,6 +117,8 @@
                 </div>
               </th>
               <th class="align-middle text-nowrap" scope="col"
+                >{$_('pages.tickets.table.id')}</th>
+              <th class="align-middle text-nowrap" scope="col"
                 >{$_('pages.tickets.table.title')}</th>
               <th class="align-middle" scope="col" class:table-active={data.categoryUrl}
                 >{$_('pages.tickets.table.category')}</th>

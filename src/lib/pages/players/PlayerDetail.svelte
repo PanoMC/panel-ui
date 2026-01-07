@@ -162,8 +162,11 @@
                   <tbody>
                     <tr>
                       <td class="align-middle text-nowrap">
+                        <code>#{ticket.id}</code>
+                      </td>
+                      <td class="align-middle text-nowrap">
                         <a href="{base}/tickets/detail/{ticket.id}" title={$_('buttons.view')}
-                          >#{ticket.id} {ticket.title}</a>
+                          >{ticket.title}</a>
                       </td>
                       <td class="align-middle text-nowrap">
                         <a

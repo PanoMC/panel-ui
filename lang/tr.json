@@ -240,6 +240,7 @@
       "all": "Tümü",
       "select-all": "Tümünü Seç",
       "table": {
+        "id": "ID",
         "title": "Başlık",
         "player": "Oyuncu",
         "category": "Kategori",

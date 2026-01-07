@@ -240,6 +240,7 @@
       "all": "All",
       "select-all": "Select All",
       "table": {
+        "id": "ID",
         "title": "Title",
         "player": "Player",
         "category": "Category",
