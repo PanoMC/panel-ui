@@ -1,21 +1,16 @@
 <!-- Servers Modal -->
-<div
-  class="modal fade"
-  bind:this={$modalElement}
-  role="dialog"
-  data-bs-scroll="true"
-  tabindex="-1">
+<div class="modal fade" bind:this={$modalElement} role="dialog" data-bs-scroll="true" tabindex="-1">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          {$_("components.modals.servers.servers")}
+          {$_('components.modals.servers.servers')}
         </h5>
         <button
-          aria-label={$_("buttons.close")}
+          aria-label={$_('buttons.close')}
           class="btn-close"
           on:click={hide}
-          title={$_("buttons.close")}
+          title={$_('buttons.close')}
           type="button">
         </button>
       </div>
@@ -50,9 +45,7 @@
                     <div
                       class="card-header d-flex justify-content-center align-items-center vstack gap-2">
                       <img
-                        src={server.favicon
-                          ? server.favicon
-                          : base + "/assets/img/server-icon.png"}
+                        src={server.favicon ? server.favicon : base + '/assets/img/server-icon.png'}
                         class="rounded border"
                         height="64"
                         width="64"
@@ -63,32 +56,29 @@
                         {#if server.id === $mainServer.id}
                           <i
                             class="fa fa-crown me-1 text-secondary"
-                            title={$_("components.modals.servers.main-server")}>
+                            title={$_('components.modals.servers.main-server')}>
                           </i>
                         {/if}
                         {server.customName || server.name}
                       </div>
                     </div>
-                    <div
-                      class="card-body d-flex flex-column justify-content-center">
-                      <ul
-                        class="list-unstyled d-flex flex-column gap-2 text-center">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                      <ul class="list-unstyled d-flex flex-column gap-2 text-center">
                         <li>
                           <div
                             class="badge rounded-pill text-bg-primary"
-                            class:text-bg-success={server.status === "ONLINE"}>
+                            class:text-bg-success={server.status === 'ONLINE'}>
                             <div
                               use:tooltip={[
-                                $_("components.modals.servers.online"),
-                                { placement: "bottom" },
+                                $_('components.modals.servers.online'),
+                                { placement: 'bottom' },
                               ]}>
                               {server.type}
                             </div>
                           </div>
                         </li>
                         <li>
-                          <code class="user-select-all"
-                            >{server.host}:{server.port}</code>
+                          <code class="user-select-all">{server.host}:{server.port}</code>
                         </li>
                         <li>
                           {server.playerCount}/{server.maxPlayerCount}
@@ -102,11 +92,9 @@
                         data-bs-toggle="button"
                         class="btn"
                         class:btn-primary={$selectedServer?.id === server.id}
-                        class:btn-outline-primary={$selectedServer?.id !==
-                          server.id}
+                        class:btn-outline-primary={$selectedServer?.id !== server.id}
                         class:disabled={$selectedServer?.id === server.id}
-                        on:click={() =>
-                          $selectingServer ? {} : onSelect(server)}
+                        on:click={() => ($selectingServer ? {} : onSelect(server))}
                         >{#if $selectedServer?.id === server.id}
                           <i class="fas fa-check-circle"></i>
                         {:else}
@@ -131,10 +119,10 @@
 </div>
 
 <script context="module">
-  import { get, writable } from "svelte/store";
+  import { get, writable } from 'svelte/store';
 
-  import ApiUtil from "$lib/api.util.js";
-  import tooltip from "$lib/tooltip.util";
+  import ApiUtil from '$lib/api.util.js';
+  import tooltip from '$lib/tooltip.util';
 
   const modalElement = writable();
 
@@ -189,17 +177,17 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { invalidateAll } from "$app/navigation";
-  import { base } from "$app/paths";
+  import { invalidateAll } from '$app/navigation';
+  import { base } from '$app/paths';
 
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import NoContent from "$lib/component/NoContent.svelte";
+  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import NoContent from '$lib/component/NoContent.svelte';
 
-  const mainServer = getContext("mainServer");
-  const selectedServer = getContext("selectedServer");
+  const mainServer = getContext('mainServer');
+  const selectedServer = getContext('selectedServer');
 
   function onSelect(server) {
     selectingServer.set(server.id);
@@ -207,17 +195,17 @@
     ApiUtil.post({
       path: `/api/panel/servers/${server.id}/select`,
       handler: async (body, reject) => {
-        if (body.result === "ok") {
+        if (body.result === 'ok') {
           $selectedServer = server;
           await invalidateAll();
           hide();
-          await showToast("components.toasts.server-selected", {
+          await showToast('components.toasts.server-selected', {
             name: server.customName || server.name,
           });
 
           return;
-        } else if (body.error && body.error === "NOT_EXISTS") {
-          await showToast("components.toasts.server-not-exists");
+        } else if (body.error && body.error === 'NOT_EXISTS') {
+          await showToast('components.toasts.server-not-exists');
           initData();
 
           return;

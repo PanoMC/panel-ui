@@ -1,19 +1,14 @@
 <!-- Search Player Modal -->
-<div
-  class="modal fade"
-  bind:this={$modalElement}
-  tabindex="-1"
-  role="dialog"
-  aria-hidden="true">
+<div class="modal fade" bind:this={$modalElement} tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{$_("components.modals.search-player.title")}</h5>
+        <h5 class="modal-title">{$_('components.modals.search-player.title')}</h5>
         <button
           type="button"
           class="btn-close"
-          aria-label={$_("buttons.close")}
-          title={$_("buttons.close")}
+          aria-label={$_('buttons.close')}
+          title={$_('buttons.close')}
           on:click={hide}></button>
       </div>
       <div class="modal-body">
@@ -23,27 +18,27 @@
               class="form-control form-control-lg"
               type="search"
               bind:value={$query}
-              placeholder={$_("buttons.find")}
+              placeholder={$_('buttons.find')}
               on:keydown={(e) => {
-                if (e.key === "Escape") hide();
+                if (e.key === 'Escape') hide();
               }} />
             {#if $query.trim().length > 0}
               <button
                 type="button"
                 class="btn-close position-absolute top-50 end-0 translate-middle-y me-2"
-                title={$_("buttons.clear")}
-                on:click={() => query.set("")}>
+                title={$_('buttons.clear')}
+                on:click={() => query.set('')}>
               </button>
             {/if}
           </div>
 
           <small>
             {#if $loading}
-              {$_("components.modals.search-player.states.loading")}
+              {$_('components.modals.search-player.states.loading')}
             {:else if $query.trim().length === 0}
-              {$_("components.modals.search-player.states.start-typing")}
+              {$_('components.modals.search-player.states.start-typing')}
             {:else}
-              {$_("components.modals.search-player.states.max-results")}
+              {$_('components.modals.search-player.states.max-results')}
             {/if}
           </small>
         </div>
@@ -71,13 +66,13 @@
                   {/if}
                   <div class="overflow-hidden">
                     <div class="fw-bold text-truncate">{u.username}</div>
-                    <small class="d-block text-truncate">{formatGroups(u) || "-"}</small>
+                    <small class="d-block text-truncate">{formatGroups(u) || '-'}</small>
                   </div>
                 </div>
                 <span class="badge text-bg-primary">
                   {isExisting(u)
-                    ? $_("components.modals.search-player.badges.select")
-                    : $_("components.modals.search-player.badges.add")}
+                    ? $_('components.modals.search-player.badges.select')
+                    : $_('components.modals.search-player.badges.add')}
                 </span>
               </button>
             {/each}
@@ -93,12 +88,12 @@
 </div>
 
 <script context="module">
-  import { writable, get } from "svelte/store";
+  import { writable, get } from 'svelte/store';
 
   const modalElement = writable();
-  const query = writable("");
+  const query = writable('');
   const loading = writable(false);
-  const errorText = writable("");
+  const errorText = writable('');
   const results = writable([]);
   const localPlayers = writable(null);
   const allGroups = writable([]);
@@ -110,9 +105,9 @@
   let modal;
 
   export function show(payload = {}) {
-    query.set("");
+    query.set('');
     loading.set(false);
-    errorText.set("");
+    errorText.set('');
     results.set([]);
 
     localPlayers.set(payload.localPlayers ?? null);
@@ -121,7 +116,7 @@
     existingUserIds.set(payload.existingUserIds ?? []);
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
     modal.show();
@@ -142,24 +137,24 @@
 </script>
 
 <script>
-  import { _ } from "svelte-i18n";
-  import ApiUtil from "$lib/api.util";
-  import NoContent from "$lib/component/NoContent.svelte";
+  import { _ } from 'svelte-i18n';
+  import ApiUtil from '$lib/api.util';
+  import NoContent from '$lib/component/NoContent.svelte';
 
   let debounceTimer;
   let activeSearchToken = 0;
 
   $: {
-    const q = ($query || "").trim();
+    const q = ($query || '').trim();
     clearTimeout(debounceTimer);
     if (!q) {
       results.set([]);
-      errorText.set("");
+      errorText.set('');
       loading.set(false);
     } else {
       // Prevent "Sonuç yok." flashing during debounce: mark as loading immediately.
       loading.set(true);
-      errorText.set("");
+      errorText.set('');
       const token = ++activeSearchToken;
       debounceTimer = setTimeout(() => search(q, token), 250);
     }
@@ -171,29 +166,29 @@
     // - holderType: "USER"
     // No inherited/parent groups, and do NOT trust API-provided group fields.
     const userId = user?.id;
-    if (userId == null) return "";
+    if (userId == null) return '';
 
     const directGroupNames = ($allNodes || [])
       .filter(
         (n) =>
-          n?.holderType === "USER" &&
+          n?.holderType === 'USER' &&
           n?.holderId === userId &&
           n?.active !== false &&
-          typeof n?.node === "string" &&
-          n.node.startsWith("group."),
+          typeof n?.node === 'string' &&
+          n.node.startsWith('group.'),
       )
-      .map((n) => String(n.node).slice("group.".length))
-      .map((x) => String(x || "").trim())
+      .map((n) => String(n.node).slice('group.'.length))
+      .map((x) => String(x || '').trim())
       .filter(Boolean);
 
     const unique = Array.from(new Set(directGroupNames));
-    const groupNames = unique.length ? unique : ["default"];
+    const groupNames = unique.length ? unique : ['default'];
 
     const byName = new Map(($allGroups || []).map((g) => [g.name, g]));
     return groupNames
-      .map((name) => (byName.get(name)?.displayName || name || "").trim())
+      .map((name) => (byName.get(name)?.displayName || name || '').trim())
       .filter(Boolean)
-      .join(", ");
+      .join(', ');
   }
 
   function isExisting(user) {
@@ -202,7 +197,7 @@
   }
 
   function minotarAvatarUrl(username, size = 24) {
-    const u = String(username || "").trim();
+    const u = String(username || '').trim();
     if (!u) return null;
     const encoded = encodeURIComponent(u);
     return `https://minotar.net/avatar/${encoded}/${size}`;
@@ -211,14 +206,12 @@
   async function search(q, token) {
     // If a newer search started, ignore this one
     if (token !== activeSearchToken) return;
-    errorText.set("");
+    errorText.set('');
     try {
       const qq = q.toLowerCase();
       const localResults =
         Array.isArray($localPlayers) && $localPlayers.length > 0
-          ? $localPlayers
-              .filter((p) => (p?.username || "").toLowerCase().includes(qq))
-              .slice(0, 10)
+          ? $localPlayers.filter((p) => (p?.username || '').toLowerCase().includes(qq)).slice(0, 10)
           : [];
 
       // Show local matches immediately (fast UI), but still query the API to find users not in local list.
@@ -242,8 +235,8 @@
         const merged = [];
         const pushUnique = (u) => {
           if (!u) return;
-          const key = u.id != null ? `id:${u.id}` : `u:${String(u.username || "").toLowerCase()}`;
-          if (!key || key === "u:") return;
+          const key = u.id != null ? `id:${u.id}` : `u:${String(u.username || '').toLowerCase()}`;
+          if (!key || key === 'u:') return;
           if (seen.has(key)) return;
           seen.add(key);
           merged.push(u);
@@ -256,7 +249,7 @@
       }
     } catch (e) {
       if (token !== activeSearchToken) return;
-      errorText.set("SEARCH_FAILED");
+      errorText.set('SEARCH_FAILED');
       // keep local results if we have any
       if (!(Array.isArray($localPlayers) && $localPlayers.length > 0)) {
         results.set([]);
@@ -273,5 +266,3 @@
     hide();
   }
 </script>
-
-

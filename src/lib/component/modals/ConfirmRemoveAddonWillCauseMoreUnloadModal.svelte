@@ -1,18 +1,15 @@
-<div
-  aria-hidden="true"
-  class="modal fade"
-  bind:this="{$modalElement}"
-  role="dialog"
-  tabindex="-1">
+<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
           <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
         </div>
-        {$_('components.modals.confirm-remove-addon.title', {values: {pluginId: $plugin.id}})}
+        {$_('components.modals.confirm-remove-addon.title', { values: { pluginId: $plugin.id } })}
         <div class="mt-3 alert alert-warning text-left">
-          {$_('components.modals.confirm-remove-addon-will-cause-more-unload.description', {values: {pluginId: $plugin.id}})}
+          {$_('components.modals.confirm-remove-addon-will-cause-more-unload.description', {
+            values: { pluginId: $plugin.id },
+          })}
           <br />
           <br />
           {#each $plugin.removeDependents as addon, index (addon)}
@@ -29,15 +26,15 @@
         <button
           class="btn btn-link col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          on:click="{hide}">
+          class:disabled={loading}
+          on:click={hide}>
           {$_('buttons.cancel')}
         </button>
         <button
           class="btn btn-danger col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          on:click="{onYesClick}">
+          class:disabled={loading}
+          on:click={onYesClick}>
           {$_('buttons.yes')}
         </button>
       </div>
@@ -46,10 +43,10 @@
 </div>
 
 <script context="module">
-  import { writable, get } from "svelte/store";
+  import { writable, get } from 'svelte/store';
 
   const modalElement = writable();
-  const plugin = writable({dependents: []});
+  const plugin = writable({ dependents: [] });
 
   let callback = (plugin) => {};
   let hideCallback = (plugin) => {};
@@ -59,7 +56,7 @@
     plugin.set(newPlugin);
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
 
@@ -82,15 +79,15 @@
 </script>
 
 <script>
-  import { base } from "$app/paths";
-  import { _ } from "svelte-i18n";
+  import { base } from '$app/paths';
+  import { _ } from 'svelte-i18n';
 
   let loading = false;
 
   const hideMethod = () => {
     hide();
     loading = false;
-  }
+  };
 
   async function onYesClick() {
     loading = true;

@@ -13,12 +13,7 @@
   role="status"
   in:fade
   out:fade>
-  <img
-    alt="Pano"
-    src="{base}/assets/img/loading_slime.gif"
-    width="128"
-    height="auto" />
-    
+  <img alt="Pano" src="{base}/assets/img/loading_slime.gif" width="128" height="auto" />
 
   {#if networkErrors}
     {#if notLoggedIn}
@@ -30,38 +25,40 @@
     {/if}
     <button
       class="btn btn-secondary mt-3"
-      on:click="{onResumeClick}"
-      class:disabled="{$retryingNetworkErrors}">
-      {$retryingNetworkErrors ? $_('components.splash.refreshing') : $_('components.splash.refresh')}
+      on:click={onResumeClick}
+      class:disabled={$retryingNetworkErrors}>
+      {$retryingNetworkErrors
+        ? $_('components.splash.refreshing')
+        : $_('components.splash.refresh')}
     </button>
   {/if}
 </div>
 
 <script>
-  import { getContext, onDestroy } from "svelte";
-  import { fade } from "svelte/transition";
-  import { _ } from "svelte-i18n";
+  import { getContext, onDestroy } from 'svelte';
+  import { fade } from 'svelte/transition';
+  import { _ } from 'svelte-i18n';
 
   import {
     networkErrorCallbacks,
     resumeAfterNetworkError,
     retryingNetworkErrors,
-  } from "$lib/Store";
-  import { base } from "$app/paths";
+  } from '$lib/Store';
+  import { base } from '$app/paths';
 
   let networkErrors = false;
 
-  const session = getContext("session");
+  const session = getContext('session');
 
   $: basicData = $session.basicData;
 
-  $: notLoggedIn = basicData.error === "NOT_LOGGED_IN";
-  $: noPermission = basicData.error === "NO_PERMISSION";
+  $: notLoggedIn = basicData.error === 'NOT_LOGGED_IN';
+  $: noPermission = basicData.error === 'NO_PERMISSION';
 
   onDestroy(
     networkErrorCallbacks.subscribe((value) => {
       networkErrors = value.length !== 0;
-    })
+    }),
   );
 
   async function onResumeClick() {

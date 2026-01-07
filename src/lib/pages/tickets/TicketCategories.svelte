@@ -4,20 +4,14 @@
   <PageActions leftClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
-      <CardMenuItem href="/tickets"
-        >{$_("pages.ticket-categories.tickets")}</CardMenuItem>
-      <CardMenuItem href="/tickets/categories"
-        >{$_("buttons.categories")}</CardMenuItem>
+      <CardMenuItem href="/tickets">{$_('pages.ticket-categories.tickets')}</CardMenuItem>
+      <CardMenuItem href="/tickets/categories">{$_('buttons.categories')}</CardMenuItem>
     </CardMenu>
 
-    <button
-      class="btn btn-secondary"
-      type="button"
-      on:click={onCreateCategoryClick}
-      slot="right">
+    <button class="btn btn-secondary" type="button" on:click={onCreateCategoryClick} slot="right">
       <i class="fas fa-plus"></i>
       <span class="d-lg-inline d-none ms-2"
-        >{$_("pages.ticket-categories.create-category-button")}</span>
+        >{$_('pages.ticket-categories.create-category-button')}</span>
     </button>
   </PageActions>
 
@@ -25,7 +19,7 @@
 
   <div class="card">
     <div class="card-header">
-      {$_("pages.ticket-categories.card-title", {
+      {$_('pages.ticket-categories.card-title', {
         values: { count: data.categoryCount },
       })}
     </div>
@@ -42,18 +36,17 @@
             <tr>
               <th scope="col"></th>
               <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.ticket-categories.category")}</th>
+                >{$_('pages.ticket-categories.category')}</th>
               <th scope="col" class="align-middle text-nowrap"
-                >{$_("pages.ticket-categories.description")}</th>
+                >{$_('pages.ticket-categories.description')}</th>
             </tr>
           </thead>
           <tbody>
             {#each data.categories as category, index (category)}
               <TicketCategoryRow
-                category={category}
-                index={index}
-                on:editClick={(event) =>
-                  onShowEditCategoryButtonClick(event.detail.index)}
+                {category}
+                {index}
+                on:editClick={(event) => onShowEditCategoryButtonClick(event.detail.index)}
                 on:deleteClick={(event) =>
                   onShowDeleteTicketCategoryModalClick(event.detail.index)} />
             {/each}
@@ -80,8 +73,8 @@
 <ConfirmDeleteTicketCategoryModal />
 
 <script context="module">
-  import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
-  import { error } from "@sveltejs/kit";
+  import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
+  import { error } from '@sveltejs/kit';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -93,7 +86,7 @@
     } = event;
     await parent();
 
-    const page = searchParams.get("page") || 1;
+    const page = searchParams.get('page') || 1;
 
     const queryParams = buildQueryParams({
       page,
@@ -105,7 +98,7 @@
     });
 
     if (body.error) {
-      if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
+      if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
         throw error(404, body.error);
       }
 
@@ -119,37 +112,37 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { goto } from "$app/navigation";
-  import { base } from "$app/paths";
+  import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
 
-  import Pagination from "$lib/component/Pagination.svelte";
+  import Pagination from '$lib/component/Pagination.svelte';
 
   import AddEditTicketCategoryModal, {
     show as showTicketCategoriesAddEditModal,
     setCallback as setCallbackForTicketCategoriesAddEditModal,
     onHide as onAddEditTicketCategoryModalHide,
-  } from "$lib/component/modals/AddEditTicketCategoryModal.svelte";
+  } from '$lib/component/modals/AddEditTicketCategoryModal.svelte';
   import ConfirmDeleteTicketCategoryModal, {
     setCallback as setDeleteTicketCategoryModalCallback,
     show as showDeleteTicketCategoryModal,
     onHide as onConfirmDeleteTicketCategoryModalHide,
-  } from "$lib/component/modals/ConfirmDeleteTicketCategoryModal.svelte";
+  } from '$lib/component/modals/ConfirmDeleteTicketCategoryModal.svelte';
 
-  import NoContent from "$lib/component/NoContent.svelte";
-  import TicketCategoryRow from "$lib/component/rows/TicketCategoryRow.svelte";
-  import PageActions from "$lib/component/PageActions.svelte";
-  import CardHeader from "$lib/component/CardHeader.svelte";
-  import CardMenu from "$lib/component/CardMenu.svelte";
-  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
+  import NoContent from '$lib/component/NoContent.svelte';
+  import TicketCategoryRow from '$lib/component/rows/TicketCategoryRow.svelte';
+  import PageActions from '$lib/component/PageActions.svelte';
+  import CardHeader from '$lib/component/CardHeader.svelte';
+  import CardMenu from '$lib/component/CardMenu.svelte';
+  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
-  pageTitle.set("pages.ticket-categories.title");
+  pageTitle.set('pages.ticket-categories.title');
 
   async function refreshData() {
     const queryParams = buildQueryParams({
@@ -166,13 +159,13 @@
   }
 
   function onCreateCategoryClick() {
-    showTicketCategoriesAddEditModal("create");
+    showTicketCategoriesAddEditModal('create');
   }
 
   function onShowEditCategoryButtonClick(index) {
     data.categories[index].selected = true;
 
-    showTicketCategoriesAddEditModal("edit", data.categories[index]);
+    showTicketCategoriesAddEditModal('edit', data.categories[index]);
   }
 
   function onShowDeleteTicketCategoryModalClick(index) {

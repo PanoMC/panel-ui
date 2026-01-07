@@ -4,7 +4,7 @@
   <div class="card-body">
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="serverName">
-        {$_("pages.server.settings.server-name")}
+        {$_('pages.server.settings.server-name')}
       </label>
       <div class="col">
         <div class="mb-3">
@@ -13,23 +13,22 @@
             class="form-control"
             name="serverName"
             id="serverName"
-            bind:value="{server.customName}"
+            bind:value={server.customName}
             on:input={onNameChange}
-            placeholder={$_("pages.server.settings.server-name")} />
+            placeholder={$_('pages.server.settings.server-name')} />
         </div>
       </div>
     </div>
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="mainServer">
-        {$_("pages.server.settings.main-server")}
-        <small class="d-block"
-          >{$_("pages.server.settings.main-server-info")}</small>
+        {$_('pages.server.settings.main-server')}
+        <small class="d-block">{$_('pages.server.settings.main-server-info')}</small>
       </label>
       <div class="col col-form-label">
         {#if $selectedServer.id === $mainServer.id}
           <button class="btn btn-secondary btn-sm disabled" disabled>
             <i class="fa-solid fa-check me-1"></i>
-            {$_("pages.server.settings.already-main-server", {
+            {$_('pages.server.settings.already-main-server', {
               values: { serverName: $selectedServer.customName || $selectedServer.name },
             })}
           </button>
@@ -38,31 +37,33 @@
             on:click={() => showMakeMainServerModal($selectedServer)}
             class="btn btn-secondary btn-sm">
             <i class="fas fa-crown me-1"></i>
-            {$_("pages.server.settings.make-main-server")}</button>
+            {$_('pages.server.settings.make-main-server')}</button>
         {/if}
       </div>
     </div>
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="removeServer">
-        {$_("pages.server.settings.remove-server")}
+        {$_('pages.server.settings.remove-server')}
       </label>
       <div class="col hstack gap-2">
-        <span class="badge text-bg-primary">{$selectedServer.customName || $selectedServer.name}</span>
+        <span class="badge text-bg-primary"
+          >{$selectedServer.customName || $selectedServer.name}</span>
         <button
           type="button"
-          title={$_("buttons.remove")}
-          aria-label={$_("buttons.remove")}
+          title={$_('buttons.remove')}
+          aria-label={$_('buttons.remove')}
           on:click={() => showRemoveServerModal($selectedServer)}
           class="btn-close">
         </button>
       </div>
     </div>
 
-    <button class="btn btn-secondary"
+    <button
+      class="btn btn-secondary"
       class:disabled={saving || saveDisabled}
       aria-disabled={saving || saveDisabled}
       on:click={save}>
-      {$_("buttons.save")}
+      {$_('buttons.save')}
     </button>
   </div>
 </div>
@@ -71,13 +72,12 @@
 <RemoveServerModal />
 
 <script context="module">
-  import ApiUtil from "$lib/api.util.js";
+  import ApiUtil from '$lib/api.util.js';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-
     const { parent } = event;
     const parentData = await parent();
     const { selectedServer } = parentData;
@@ -87,40 +87,44 @@
       request: event,
     });
 
-    const { server } = response
+    const { server } = response;
 
     if (!server.customName) {
-      server.customName = server.name
+      server.customName = server.name;
     }
 
-    return {server, serverOriginal: structuredClone(server)}
+    return { server, serverOriginal: structuredClone(server) };
   }
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
   import MakeMainServerModal, {
     show as showMakeMainServerModal,
-  } from "$lib/component/modals/MakeMainServerModal.svelte";
+  } from '$lib/component/modals/MakeMainServerModal.svelte';
   import RemoveServerModal, {
     show as showRemoveServerModal,
-  } from "$lib/component/modals/RemoveServerModal.svelte";
+  } from '$lib/component/modals/RemoveServerModal.svelte';
 
   export let data;
 
-  let {server, serverOriginal} = data
+  let { server, serverOriginal } = data;
 
-  const mainServer = getContext("mainServer");
-  const selectedServer = getContext("selectedServer");
-  const pageTitle = getContext("pageTitle");
+  const mainServer = getContext('mainServer');
+  const selectedServer = getContext('selectedServer');
+  const pageTitle = getContext('pageTitle');
 
   let saving;
 
-  $: saveDisabled = saving || JSON.stringify(server) === JSON.stringify(serverOriginal) || !server.customName || server.customName === server.name
+  $: saveDisabled =
+    saving ||
+    JSON.stringify(server) === JSON.stringify(serverOriginal) ||
+    !server.customName ||
+    server.customName === server.name;
 
-  pageTitle.set("pages.server.settings.title");
+  pageTitle.set('pages.server.settings.title');
 
   function onNameChange(event) {
     let value = event.target.value;
@@ -141,17 +145,17 @@
       handler: async (body, reject) => {
         saving = false;
 
-        if (body.result !== "ok") {
-          reject()
-          return
+        if (body.result !== 'ok') {
+          reject();
+          return;
         }
 
-        serverOriginal = structuredClone(server)
+        serverOriginal = structuredClone(server);
 
         if ($selectedServer.id === server.id) {
-          $selectedServer = structuredClone(server)
+          $selectedServer = structuredClone(server);
         }
-      }
+      },
     });
   }
 </script>

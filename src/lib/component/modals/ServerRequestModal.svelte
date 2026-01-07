@@ -1,10 +1,5 @@
 <!-- Server Connect Request Modal -->
-<div
-  aria-hidden="true"
-  class="modal fade"
-  bind:this={$modalElement}
-  role="dialog"
-  tabindex="-1">
+<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       {#if $loading}
@@ -17,9 +12,9 @@
         <div class="modal-header border-bottom-0">
           <button
             class="btn-close"
-            aria-label={$_("buttons.close")}
+            aria-label={$_('buttons.close')}
             data-bs-dismiss="modal"
-            title={$_("buttons.close")}
+            title={$_('buttons.close')}
             type="button">
           </button>
         </div>
@@ -28,7 +23,7 @@
             <i class="fas fa-plug fa-3x d-block m-auto text-gray"></i>
           </div>
           <p>
-            {$_("components.modals.server-request.title", {
+            {$_('components.modals.server-request.title', {
               values: { serverName: $server.name },
             })}
           </p>
@@ -37,17 +32,14 @@
               <div class="row">
                 <div class="col-auto">
                   <img
-                    src={$server.favicon
-                      ? $server.favicon
-                      : "/api/server/icon/default"}
+                    src={$server.favicon ? $server.favicon : '/api/server/icon/default'}
                     class="rounded border"
                     width="48"
                     height="48"
                     alt={$server.name} />
                 </div>
                 <div class="col text-start">
-                  <span class="badge text-bg-primary rounded-pill mb-2"
-                    >{$server.type}</span>
+                  <span class="badge text-bg-primary rounded-pill mb-2">{$server.type}</span>
                   <div class="d-flex flex-row justify-content-between">
                     <span class="font-monospace user-select-all"
                       >{$server.host}:{$server.port}</span>
@@ -64,14 +56,14 @@
             type="button"
             class:disabled={$submitLoading}
             on:click={rejectServer}>
-            {$_("components.modals.server-request.reject")}
+            {$_('components.modals.server-request.reject')}
           </button>
           <button
             class="btn btn-secondary col-6 m-0"
             type="button"
             class:disabled={$submitLoading}
             on:click={acceptServer}>
-            {$_("components.modals.server-request.connect")}
+            {$_('components.modals.server-request.connect')}
           </button>
         </div>
       {/if}
@@ -80,10 +72,10 @@
 </div>
 
 <script context="module">
-  import ApiUtil from "$lib/api.util.js";
-  import { get, writable } from "svelte/store";
+  import ApiUtil from '$lib/api.util.js';
+  import { get, writable } from 'svelte/store';
 
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
+  import { show as showToast } from '$lib/component/ToastContainer.svelte';
 
   const modalElement = writable();
 
@@ -92,14 +84,14 @@
   let modal;
   const defaultServer = {
     id: -1,
-    name: "",
+    name: '',
     playerCount: 0,
     maxPlayerCount: 0,
-    type: "",
-    version: "",
-    favicon: "",
+    type: '',
+    version: '',
+    favicon: '',
     permissionGranted: false,
-    status: "OFFLINE",
+    status: 'OFFLINE',
   };
   const server = writable(defaultServer);
   const loading = writable(true);
@@ -134,7 +126,7 @@
       hide();
     }, 500);
 
-    showToast("components.toasts.expired-server-connect-request");
+    showToast('components.toasts.expired-server-connect-request');
   }
 
   function initData(serverId) {
@@ -142,7 +134,7 @@
       path: `/api/panel/servers/${serverId}`,
       handler: (body, reject) => {
         if (body.error) {
-          if (body.error === "NOT_EXISTS") {
+          if (body.error === 'NOT_EXISTS') {
             showExpiredToast();
 
             return;
@@ -167,12 +159,12 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { invalidateAll } from "$app/navigation";
+  import { invalidateAll } from '$app/navigation';
 
-  const selectedServer = getContext("selectedServer");
+  const selectedServer = getContext('selectedServer');
 
   function acceptServer() {
     $submitLoading = true;
@@ -180,7 +172,7 @@
     ApiUtil.post({
       path: `/api/panel/servers/${$server.id}/accept`,
       handler: async (body, reject) => {
-        if (body.result === "ok") {
+        if (body.result === 'ok') {
           callback($server);
 
           if (body.selected) {
@@ -188,7 +180,7 @@
             await invalidateAll();
             hide();
 
-            await showToast("components.toasts.server-selected", {
+            await showToast('components.toasts.server-selected', {
               name: $server.name,
             });
           } else {
@@ -196,15 +188,14 @@
             hide();
           }
 
-          await showToast("components.toasts.accepted-server-connect-request");
+          await showToast('components.toasts.accepted-server-connect-request');
           $submitLoading = false;
 
           return;
-        } else if (body.result === "error") {
+        } else if (body.result === 'error') {
           hide();
-          await showToast("components.toasts.expired-server-connect-request");
+          await showToast('components.toasts.expired-server-connect-request');
           $submitLoading = false;
-
 
           return;
         }
@@ -222,15 +213,15 @@
       handler: (body, reject) => {
         $submitLoading = false;
 
-        if (body.result === "ok") {
+        if (body.result === 'ok') {
           callback($server);
           hide();
-          showToast("components.toasts.rejected-server-connect");
+          showToast('components.toasts.rejected-server-connect');
 
           return;
-        } else if (body.result === "error") {
+        } else if (body.result === 'error') {
           hide();
-          showToast("components.toasts.expired-server-connect-request");
+          showToast('components.toasts.expired-server-connect-request');
 
           return;
         }

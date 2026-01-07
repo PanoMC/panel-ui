@@ -1,9 +1,9 @@
 <div class="container">Tools page!</div>
 
 <script>
-  import { getContext } from "svelte";
+  import { getContext } from 'svelte';
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
-  pageTitle.set("Araçlar");
+  pageTitle.set('Araçlar');
 </script>

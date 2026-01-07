@@ -5,25 +5,26 @@
     <form class="animate__animated animate__fadeIn">
       <div class="row">
         <label class="col-md-6 col-form-label" for="panoVersion">
-          {$_("pages.settings.about.version")}
+          {$_('pages.settings.about.version')}
         </label>
         <div class="col-md-6 col-form-label">
-          <span class="user-select-all font-monospace" aria-describedby="panoVersion" id="panoVersion"
-            >{data.platformVersion}</span>
+          <span
+            class="user-select-all font-monospace"
+            aria-describedby="panoVersion"
+            id="panoVersion">{data.platformVersion}</span>
         </div>
       </div>
       <div class="row">
         <label class="col-md-6 col-form-label" for="siteKeywords">
-          {$_("pages.settings.about.release")}
+          {$_('pages.settings.about.release')}
         </label>
         <div class="col-md-6 col-form-label">
-          <span aria-describedby="panoRelease" id="panoRelease"
-            >{data.platformStage}</span>
+          <span aria-describedby="panoRelease" id="panoRelease">{data.platformStage}</span>
         </div>
       </div>
       <div class="row mb-0">
         <label class="col-md-6 col-form-label" for="siteKeywords">
-          {$_("pages.settings.about.website")}
+          {$_('pages.settings.about.website')}
         </label>
         <div class="col-md-6 col-form-label">
           <a
@@ -38,7 +39,7 @@
       </div>
       <div class="row mb-0">
         <label class="col-md-6 col-form-label" for="siteKeywords">
-          {$_("pages.settings.about.discord")}
+          {$_('pages.settings.about.discord')}
         </label>
         <div class="col-md-6 col-form-label">
           <a
@@ -57,9 +58,8 @@
 
 <div class="card">
   <div class="card-header">
-    <span
-      class="animate__animated animate__heartBeat animate__slower d-inline-block">
-      {$_("pages.settings.about.open-source-licenses")} ❤️
+    <span class="animate__animated animate__heartBeat animate__slower d-inline-block">
+      {$_('pages.settings.about.open-source-licenses')} ❤️
     </span>
   </div>
   <div class="card-body animate__animated animate__fadeIn">
@@ -89,39 +89,48 @@
               {/if}
             </summary>
             <div class="pt-3">
-            {#if license.author}
-              <p class="mb-2">
-                <strong>{$_("pages.settings.about.author")}:</strong> {license.author}
-              </p>
-            {/if}
-            {#if license.repository}
-              <p class="mb-2">
-                <strong>{$_("pages.settings.about.repository")}:</strong>
-                <a href={license.repository} target="_blank" rel="noopener noreferrer" class="ms-1">
-                  {license.repository}
-                  <i class="fa-solid fa-up-right-from-square ms-1"></i>
-                </a>
-              </p>
-            {/if}
-            {#if license.licenseText}
-              <pre class="bg-body-secondary p-3 rounded small border" style="max-height: 300px; overflow-y: auto;"><code class="text-body">{license.licenseText}</code></pre>
-            {:else}
-              <p>
-                <strong>{$_("pages.settings.about.license")}:</strong> {license.license}
-              </p>
-            {/if}
+              {#if license.author}
+                <p class="mb-2">
+                  <strong>{$_('pages.settings.about.author')}:</strong>
+                  {license.author}
+                </p>
+              {/if}
+              {#if license.repository}
+                <p class="mb-2">
+                  <strong>{$_('pages.settings.about.repository')}:</strong>
+                  <a
+                    href={license.repository}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="ms-1">
+                    {license.repository}
+                    <i class="fa-solid fa-up-right-from-square ms-1"></i>
+                  </a>
+                </p>
+              {/if}
+              {#if license.licenseText}
+                <pre
+                  class="bg-body-secondary p-3 rounded small border"
+                  style="max-height: 300px; overflow-y: auto;"><code class="text-body"
+                    >{license.licenseText}</code></pre>
+              {:else}
+                <p>
+                  <strong>{$_('pages.settings.about.license')}:</strong>
+                  {license.license}
+                </p>
+              {/if}
             </div>
           </details>
         {/each}
       </div>
     {:else}
-      <p>{$_("pages.settings.about.no-licenses")}</p>
+      <p>{$_('pages.settings.about.no-licenses')}</p>
     {/if}
   </div>
 </div>
 
 <script context="module">
-  import ApiUtil, { buildQueryParams } from "$lib/api.util";
+  import ApiUtil, { buildQueryParams } from '$lib/api.util';
 
   /**
    * @type {import("@sveltejs/kit").Load}
@@ -131,11 +140,11 @@
     await parent();
 
     const queryParams = buildQueryParams({
-      type: "ABOUT",
+      type: 'ABOUT',
     });
 
     const apiData = await ApiUtil.get({
-      path: "/api/panel/settings" + queryParams,
+      path: '/api/panel/settings' + queryParams,
       request: event,
     });
 
@@ -143,39 +152,41 @@
     let licenses = [];
     try {
       const licensesResponse = await ApiUtil.get({
-        path: "/api/panel/licenses/oss",
+        path: '/api/panel/licenses/oss',
         request: event,
       });
 
-      licenses = licensesResponse.data
+      licenses = licensesResponse.data;
 
       // If an error is returned, fall back to an empty array
       if (!Array.isArray(licenses)) {
         licenses = [];
       }
     } catch (e) {
-      console.log(e)
-      console.warn("Lisans dosyası bulunamadı. Lütfen 'npm run generate-licenses' komutunu çalıştırın.");
+      console.log(e);
+      console.warn(
+        "Lisans dosyası bulunamadı. Lütfen 'npm run generate-licenses' komutunu çalıştırın.",
+      );
     }
 
     return {
       ...apiData,
-      licenses
+      licenses,
     };
   }
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { PANO_WEBSITE_URL } from "$lib/variables.js";
+  import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
-  pageTitle.set("pages.settings.about.title");
+  pageTitle.set('pages.settings.about.title');
 
   const licenses = data.licenses || [];
 
@@ -186,7 +197,7 @@
       return urlObj.hostname; // Returns only the domain name (without protocol or path)
     } catch (e) {
       // If URL constructor fails (e.g., invalid URL), remove protocol using regex
-      return url.replace(/^https?:\/\//, "");
+      return url.replace(/^https?:\/\//, '');
     }
   }
 </script>

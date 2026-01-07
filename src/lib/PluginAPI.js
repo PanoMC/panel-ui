@@ -1,6 +1,6 @@
-import { baseAPI, pageAPI } from "../pano-sdk/core/js/PluginAPI";
-import { originalSiteNavItems } from "$lib/component/sidebar/SiteNavigationMenu.svelte";
-import { originalServerNavItems } from "$lib/component/sidebar/ServerNavigationMenu.svelte";
+import { baseAPI, pageAPI } from '../pano-sdk/core/js/PluginAPI';
+import { originalSiteNavItems } from '$lib/component/sidebar/SiteNavigationMenu.svelte';
+import { originalServerNavItems } from '$lib/component/sidebar/ServerNavigationMenu.svelte';
 
 export let siteNavigationItems = [];
 export let serverNavigationItems = [];
@@ -16,16 +16,12 @@ export const panoApi = {
     ...pageAPI,
     nav: {
       site: {
-        async editNavLinks(
-          handler = async (navigationItems) => navigationItems,
-        ) {
+        async editNavLinks(handler = async (navigationItems) => navigationItems) {
           siteNavigationItems = await handler(siteNavigationItems);
         },
       },
       server: {
-        async editNavLinks(
-          handler = async (navigationItems) => navigationItems,
-        ) {
+        async editNavLinks(handler = async (navigationItems) => navigationItems) {
           serverNavigationItems = await handler(serverNavigationItems);
         },
       },

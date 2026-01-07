@@ -6,9 +6,7 @@
         class="form-control font-monospace"
         id="KeyTranslation"
         readonly
-        value={pluginId
-          ? translation.key.replace(`plugins.${pluginId}.`, "")
-          : translation.key} />
+        value={pluginId ? translation.key.replace(`plugins.${pluginId}.`, '') : translation.key} />
       <label for="KeyTranslation">Key</label>
     </div>
   </div>
@@ -37,8 +35,8 @@
   {#if translation.notExists}
     <div class="col-auto">
       <button
-        title={$_("buttons.delete")}
-        aria-label={$_("buttons.delete")}
+        title={$_('buttons.delete')}
+        aria-label={$_('buttons.delete')}
         id="deleteButton"
         type="button"
         class="btn btn-sm btn-outline-danger h-100 shadow-none"
@@ -50,7 +48,7 @@
 </div>
 
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from 'svelte';
 
   export let translation;
   export let pluginId;
@@ -60,13 +58,13 @@
   function onCustomInputChange(event) {
     const value = event.target.value;
 
-    dispatch("customInputChange", {
+    dispatch('customInputChange', {
       key: translation.key,
       value,
     });
   }
 
   function onDeleteClick(key) {
-    dispatch("deleteClick", { key });
+    dispatch('deleteClick', { key });
   }
 </script>

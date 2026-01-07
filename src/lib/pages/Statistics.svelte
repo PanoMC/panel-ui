@@ -1,12 +1,11 @@
 <!-- Statistics Page -->
 <div class="container vstack gap-3">
-  <div
-    class="row g-3 justify-content-between animate__animated animate__slideInUp">
+  <div class="row g-3 justify-content-between animate__animated animate__slideInUp">
     <div class="col-lg-4">
       <div class="card text-bg-secondary h-100">
         <div class="card-body">
           <p class="card-text">
-            {$_("pages.statistics.online-player-text", {
+            {$_('pages.statistics.online-player-text', {
               values: { onlinePlayerCount: data.onlinePlayerCount },
             })}
           </p>
@@ -17,7 +16,7 @@
       <div class="card text-bg-info h-100">
         <div class="card-body">
           <p class="card-text">
-            {$_("pages.statistics.new-register-text", {
+            {$_('pages.statistics.new-register-text', {
               values: { newRegisterCount: data.newRegisterCount },
             })}
           </p>
@@ -28,7 +27,7 @@
       <div class="card text-bg-primary h-100">
         <div class="card-body">
           <p class="card-text">
-            {$_("pages.statistics.total-player-text", {
+            {$_('pages.statistics.total-player-text', {
               values: { totalPlayerCount: data.registeredPlayerCount },
             })}
           </p>
@@ -38,23 +37,23 @@
   </div>
 
   <div class="card">
-      <CardHeader>
-        <div slot="left">
-          {$_("pages.statistics.website-graph.title")}
-        </div>
-        <CardFilters slot="right">
-          <CardFiltersItem
-            href="/statistics?period={DashboardPeriod.WEEK}"
-            active={data.period === DashboardPeriod.WEEK}>
-            {$_("pages.statistics.website-graph.week")}
-          </CardFiltersItem>
-          <CardFiltersItem
-            href="/statistics?period={DashboardPeriod.MONTH}"
-            active={data.period === DashboardPeriod.MONTH}>
-            {$_("pages.statistics.website-graph.month")}
-          </CardFiltersItem>
-        </CardFilters>
-      </CardHeader>
+    <CardHeader>
+      <div slot="left">
+        {$_('pages.statistics.website-graph.title')}
+      </div>
+      <CardFilters slot="right">
+        <CardFiltersItem
+          href="/statistics?period={DashboardPeriod.WEEK}"
+          active={data.period === DashboardPeriod.WEEK}>
+          {$_('pages.statistics.website-graph.week')}
+        </CardFiltersItem>
+        <CardFiltersItem
+          href="/statistics?period={DashboardPeriod.MONTH}"
+          active={data.period === DashboardPeriod.MONTH}>
+          {$_('pages.statistics.website-graph.month')}
+        </CardFiltersItem>
+      </CardFilters>
+    </CardHeader>
 
     <div class="d-flex">
       <WebsiteActivityChart
@@ -69,51 +68,41 @@
   <!-- Statistic Table -->
   <div class="card">
     <div class="card-header">
-      {$_("pages.statistics.total-statistics.title")}
+      {$_('pages.statistics.total-statistics.title')}
     </div>
     <div class="table-responsive">
       <table class="table">
         <tbody>
           <tr>
-            <th scope="row"
-              >{$_("pages.statistics.total-statistics.posts")}</th>
+            <th scope="row">{$_('pages.statistics.total-statistics.posts')}</th>
             <td>{data.postCount}</td>
           </tr>
           <tr>
-            <th scope="row"
-              >{$_("pages.statistics.total-statistics.players")}</th>
+            <th scope="row">{$_('pages.statistics.total-statistics.players')}</th>
             <td>{data.registeredPlayerCount}</td>
           </tr>
           <tr>
-            <th scope="row"
-              >{$_("pages.statistics.total-statistics.admins")}</th>
+            <th scope="row">{$_('pages.statistics.total-statistics.admins')}</th>
             <td>{data.adminCount}</td>
           </tr>
           <tr>
-            <th scope="row"
-              >{$_("pages.statistics.total-statistics.tickets")}</th>
+            <th scope="row">{$_('pages.statistics.total-statistics.tickets')}</th>
             <td>{data.ticketCount}</td>
           </tr>
           <tr>
-            <th scope="row"
-              >{$_(
-                "pages.statistics.total-statistics.connected-servers",
-              )}</th>
+            <th scope="row">{$_('pages.statistics.total-statistics.connected-servers')}</th>
             <td>{data.connectedServerCount}</td>
           </tr>
           <tr>
-            <th scope="row"
-              >{$_("pages.statistics.total-statistics.addons")}</th>
+            <th scope="row">{$_('pages.statistics.total-statistics.addons')}</th>
             <td>{data.installedPlugins}</td>
           </tr>
           <tr>
-            <th scope="row"
-              >{$_("pages.statistics.total-statistics.active-addons")}</th>
+            <th scope="row">{$_('pages.statistics.total-statistics.active-addons')}</th>
             <td>{data.activePlugins}</td>
           </tr>
           <tr>
-            <th scope="row"
-              >{$_("pages.statistics.total-statistics.themes")}</th>
+            <th scope="row">{$_('pages.statistics.total-statistics.themes')}</th>
             <td>{data.installedThemes}</td>
           </tr>
         </tbody>
@@ -125,12 +114,12 @@
 <!-- Player Statistics Page End -->
 
 <script context="module">
-  import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
-  import { error } from "@sveltejs/kit";
+  import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
+  import { error } from '@sveltejs/kit';
 
   export const DashboardPeriod = Object.freeze({
-    WEEK: "WEEK",
-    MONTH: "MONTH",
+    WEEK: 'WEEK',
+    MONTH: 'MONTH',
   });
 
   /**
@@ -143,7 +132,7 @@
     } = event;
     await parent();
 
-    const period = searchParams.get("period") || DashboardPeriod.WEEK;
+    const period = searchParams.get('period') || DashboardPeriod.WEEK;
 
     const queryParams = buildQueryParams({
       period,
@@ -165,21 +154,21 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import WebsiteActivityChart from "$lib/component/charts/Dashboard/WebsiteActivityChart.svelte";
-  import { goto } from "$app/navigation";
-  import CardHeader from "$lib/component/CardHeader.svelte";
-  import CardFilters from "$lib/component/CardFilters.svelte";
-  import CardFiltersItem from "$lib/component/CardFiltersItem.svelte";
+  import WebsiteActivityChart from '$lib/component/charts/Dashboard/WebsiteActivityChart.svelte';
+  import { goto } from '$app/navigation';
+  import CardHeader from '$lib/component/CardHeader.svelte';
+  import CardFilters from '$lib/component/CardFilters.svelte';
+  import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
 
   export let data;
   let reloading = false;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
-  pageTitle.set("pages.statistics.title");
+  pageTitle.set('pages.statistics.title');
 
   async function refreshData() {
     const queryParams = buildQueryParams({

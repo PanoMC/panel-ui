@@ -9,8 +9,8 @@
   <PageActions middleClasses="d-lg-flex d-none">
     <a
       class="btn btn-link"
-      title={$_("pages.ticket-detail.tickets")}
-      aria-label={$_("pages.ticket-detail.tickets")}
+      title={$_('pages.ticket-detail.tickets')}
+      aria-label={$_('pages.ticket-detail.tickets')}
       role="button"
       href="{base}/tickets"
       slot="left">
@@ -19,8 +19,8 @@
 
     <div class="hstack gap-2" slot="right">
       <button
-        title={$_("buttons.delete")}
-        aria-label={$_("buttons.delete")}
+        title={$_('buttons.delete')}
+        aria-label={$_('buttons.delete')}
         class="btn btn-link"
         type="button"
         on:click={() => showDeleteTicketModal([data.ticket.id])}>
@@ -28,13 +28,13 @@
       </button>
       {#if data.ticket.status !== TicketStatuses.CLOSED}
         <button
-          title={$_("buttons.close")}
-          aria-label={$_("buttons.close")}
+          title={$_('buttons.close')}
+          aria-label={$_('buttons.close')}
           class="btn btn-secondary"
           type="button"
           on:click={() => showCloseTicketModal([data.ticket.id])}>
           <i class="fas fa-check me-2"></i>
-          {$_("buttons.close")}
+          {$_('buttons.close')}
         </button>
       {/if}
     </div>
@@ -48,19 +48,19 @@
             #{data.ticket.id}: {data.ticket.title}
           </h5>
           <small class="mb-0">
-            {@html $_("pages.ticket-detail.by-who", {
+            {@html $_('pages.ticket-detail.by-who', {
               values: {
                 username: `<a class="rounded focus-ring" href="${base}/players/detail/${data.ticket.username}"
           >${data.ticket.username}</a>`,
               },
             })}
             <Date time={data.ticket.date} />,
-            {@html $_("pages.ticket-detail.opened-in-category", {
+            {@html $_('pages.ticket-detail.opened-in-category', {
               values: {
                 category: `<a href="${base}/tickets?categoryUrl=${data.ticket.category.url}"
           >${
-            data.ticket.category.title === "-"
-              ? $_("pages.ticket-detail.no-category")
+            data.ticket.category.title === '-'
+              ? $_('pages.ticket-detail.no-category')
               : data.ticket.category.title
           }</a>`,
               },
@@ -84,11 +84,9 @@
             class:disabled={loadMoreLoading}
             on:click={loadMore}
             ><i class="fas fa-arrow-up me-2"></i>
-            {$_("pages.ticket-detail.previous-messages", {
+            {$_('pages.ticket-detail.previous-messages', {
               values: {
-                count:
-                  data.ticket.count -
-                  (data.ticket.messages.length - sentMessageCount),
+                count: data.ticket.count - (data.ticket.messages.length - sentMessageCount),
               },
             })}
           </button>
@@ -110,14 +108,12 @@
                 </div>
               </div>
               <div class="col-auto">
-                <a
-                  href="{base}/players/detail/{message.username}"
-                  class="rounded focus-ring">
+                <a href="{base}/players/detail/{message.username}" class="rounded focus-ring">
                   <img
                     src="https://minotar.net/avatar/{message.username}/48"
                     alt={message.username}
                     class="rounded animate__animated animate__zoomIn"
-                    use:tooltip={[message.username, { placement: "bottom" }]}
+                    use:tooltip={[message.username, { placement: 'bottom' }]}
                     width="48"
                     height="48" />
                 </a>
@@ -131,7 +127,7 @@
                     src="https://minotar.net/avatar/{message.username}/48"
                     alt={message.username}
                     class="rounded animate__animated animate__zoomIn"
-                    use:tooltip={[message.username, { placement: "bottom" }]}
+                    use:tooltip={[message.username, { placement: 'bottom' }]}
                     width="48"
                     height="48" />
                 </a>
@@ -151,9 +147,7 @@
         {/each}
       </div>
     </div>
-    <div
-      class="card-footer"
-      class:d-none={data.ticket.status === TicketStatuses.CLOSED}>
+    <div class="card-footer" class:d-none={data.ticket.status === TicketStatuses.CLOSED}>
       <!-- Send Message Section -->
       <div class="row align-items-end g-2">
         <div class="col">
@@ -168,8 +162,7 @@
             class:disabled={messageSendLoading || isEditorEmpty}
             :disabled={messageSendLoading || isEditorEmpty}>
             <i class="fas fa-paper-plane"></i>
-            <span class="d-lg-inline d-none ms-2"
-              >{$_("pages.ticket-detail.send-button")}</span>
+            <span class="d-lg-inline d-none ms-2">{$_('pages.ticket-detail.send-button')}</span>
           </button>
         </div>
       </div>
@@ -178,13 +171,13 @@
 </div>
 
 <script context="module">
-  import { writable } from "svelte/store";
+  import { writable } from 'svelte/store';
 
-  import ApiUtil from "$lib/api.util.js";
+  import ApiUtil from '$lib/api.util.js';
 
-  import { TicketStatuses } from "$lib/component/badges/TicketStatusBadge.svelte";
-  import Editor from "$lib/component/Editor.svelte";
-  import { error } from "@sveltejs/kit";
+  import { TicketStatuses } from '$lib/component/badges/TicketStatusBadge.svelte';
+  import Editor from '$lib/component/Editor.svelte';
+  import { error } from '@sveltejs/kit';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -201,7 +194,7 @@
     });
 
     if (body.error) {
-      if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
+      if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
         throw error(404, body.error);
       }
 
@@ -215,38 +208,38 @@
 </script>
 
 <script>
-  import { afterUpdate, getContext, onMount } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { afterUpdate, getContext, onMount } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { goto } from "$app/navigation";
-  import { base } from "$app/paths";
+  import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
 
-  import tooltip from "$lib/tooltip.util.js";
+  import tooltip from '$lib/tooltip.util.js';
 
   import {
     setCallback as setCloseTicketModalCallback,
     show as showCloseTicketModal,
-  } from "$lib/component/modals/ConfirmCloseTicketModal.svelte";
+  } from '$lib/component/modals/ConfirmCloseTicketModal.svelte';
   import {
     setCallback as setDeleteTicketModalCallback,
     show as showDeleteTicketModal,
-  } from "$lib/component/modals/ConfirmDeleteTicketModal.svelte";
+  } from '$lib/component/modals/ConfirmDeleteTicketModal.svelte';
 
-  import Date from "$lib/component/Date.svelte";
-  import TicketStatusBadge from "$lib/component/badges/TicketStatusBadge.svelte";
-  import PageActions from "$lib/component/PageActions.svelte";
+  import Date from '$lib/component/Date.svelte';
+  import TicketStatusBadge from '$lib/component/badges/TicketStatusBadge.svelte';
+  import PageActions from '$lib/component/PageActions.svelte';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
-  pageTitle.set("#" + data.ticket.id + " " + limitTitle(data.ticket.title));
+  pageTitle.set('#' + data.ticket.id + ' ' + limitTitle(data.ticket.title));
 
   let messagesSectionDiv;
   let loadMoreLoading = false;
   let messageSendLoading = false;
 
-  let messageText = "";
+  let messageText = '';
   let isEditorEmpty = true;
 
   let shouldScroll = true;
@@ -262,8 +255,8 @@
       path: `/api/panel/tickets/${data.ticket.id}/messages?lastMessageId=${data.ticket.messages[0].id}`,
       handler: (body, reject) => {
         if (body.error) {
-          if (body.error === "NOT_EXISTS") {
-            goto(base + "/error-404");
+          if (body.error === 'NOT_EXISTS') {
+            goto(base + '/error-404');
 
             return;
           }
@@ -291,8 +284,8 @@
       },
       handler: (body, reject) => {
         if (body.error) {
-          if (body.error === "NOT_EXISTS") {
-            goto(base + "/error-404");
+          if (body.error === 'NOT_EXISTS') {
+            goto(base + '/error-404');
 
             return;
           }
@@ -308,7 +301,7 @@
         sentMessageCount++;
 
         data.ticket.status = TicketStatuses.REPLIED;
-        messageText = "";
+        messageText = '';
 
         messageSendLoading = false;
       },
@@ -319,7 +312,7 @@
     const limit = 32;
 
     if (text.length > limit) {
-      text = text.substring(0, limit) + "...";
+      text = text.substring(0, limit) + '...';
     }
 
     return text;
@@ -330,7 +323,7 @@
   });
 
   setDeleteTicketModalCallback(() => {
-    goto(base + "/tickets");
+    goto(base + '/tickets');
   });
 
   afterUpdate(() => {

@@ -1,10 +1,5 @@
 <!-- Confirm Delete Post Modal -->
-<div
-  aria-hidden="true"
-  class="modal fade"
-  bind:this="{$modalElement}"
-  role="dialog"
-  tabindex="-1">
+<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-body text-center">
@@ -19,15 +14,15 @@
         <button
           class="btn btn-link col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          on:click="{hide}">
+          class:disabled={loading}
+          on:click={hide}>
           {$_('buttons.cancel')}
         </button>
         <button
           class="btn btn-danger col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          on:click="{onYesClick}">
+          class:disabled={loading}
+          on:click={onYesClick}>
           {$_('buttons.yes')}
         </button>
       </div>
@@ -36,7 +31,7 @@
 </div>
 
 <script context="module">
-  import { writable, get } from "svelte/store";
+  import { writable, get } from 'svelte/store';
 
   const modalElement = writable();
   const post = writable({});
@@ -49,7 +44,7 @@
     post.set(newPost);
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
     modal.show();
@@ -71,12 +66,12 @@
 </script>
 
 <script>
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
-  import ApiUtil from "$lib/api.util";
+  import ApiUtil from '$lib/api.util';
 
-  import { show as showToast, limitTitle } from "$lib/component/ToastContainer.svelte";
-  import { base } from "$app/paths";
+  import { show as showToast, limitTitle } from '$lib/component/ToastContainer.svelte';
+  import { base } from '$app/paths';
 
   let loading = false;
 
@@ -89,7 +84,7 @@
 
     const bodyHandler = (body) => {
       if (body.error) {
-        refreshBrowserPage()
+        refreshBrowserPage();
       }
 
       loading = false;
@@ -97,9 +92,11 @@
       hide();
 
       if (get(post).status === 0) {
-        showToast('components.toasts.post-deleted-permanently', { title: limitTitle(get(post).title) });
+        showToast('components.toasts.post-deleted-permanently', {
+          title: limitTitle(get(post).title),
+        });
       } else {
-        const title = `<a href="${base}/posts?pageType=TRASH" target="_blank">${limitTitle(get(post).title)}</a>`
+        const title = `<a href="${base}/posts?pageType=TRASH" target="_blank">${limitTitle(get(post).title)}</a>`;
         showToast('components.toasts.post-moved-to-trash', { title });
       }
 
@@ -109,8 +106,8 @@
     if (get(post).status === 0) {
       ApiUtil.delete({
         path: `/api/panel/posts/${get(post).id}`,
-        handler: bodyHandler
-      })
+        handler: bodyHandler,
+      });
 
       return;
     }
@@ -118,9 +115,9 @@
     ApiUtil.put({
       path: `/api/panel/posts/${get(post).id}/status`,
       body: {
-        to: "TRASH",
+        to: 'TRASH',
       },
-      handler: bodyHandler
-    })
+      handler: bodyHandler,
+    });
   }
 </script>

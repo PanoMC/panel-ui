@@ -1,1 +1,1 @@
-export { load } from "$lib/pages/Notifications.svelte";
+export { load } from '$lib/pages/Notifications.svelte';

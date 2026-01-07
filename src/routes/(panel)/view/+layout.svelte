@@ -3,5 +3,5 @@
 </Layout>
 
 <script>
-  import Layout from "$lib/layouts/ViewLayout.svelte";
+  import Layout from '$lib/layouts/ViewLayout.svelte';
 </script>

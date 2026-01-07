@@ -5,39 +5,34 @@
       <div slot="left">
         <a class="btn btn-link" role="button" href="{base}/tickets">
           <i class="fas fa-arrow-left me-2"></i>
-          {$_("buttons.tickets")}
+          {$_('buttons.tickets')}
         </a>
       </div>
     </PageActions>
   {:else}
     <!-- Action Menu -->
-    <PageActions leftClasses="d-lg-flex d-none" rightClasses="{getListOfChecked(
-          $checkedList,
-        ).length > 0 ? true : null}">
+    <PageActions
+      leftClasses="d-lg-flex d-none"
+      rightClasses={getListOfChecked($checkedList).length > 0 ? true : null}>
       <!-- Submenu -->
       <CardMenu slot="middle">
         {#if !data.categoryUrl}
-          <CardMenuItem href="/tickets"
-            >{$_("pages.ticket-categories.tickets")}</CardMenuItem>
-          <CardMenuItem href="/tickets/categories"
-            >{$_("buttons.categories")}</CardMenuItem>
+          <CardMenuItem href="/tickets">{$_('pages.ticket-categories.tickets')}</CardMenuItem>
+          <CardMenuItem href="/tickets/categories">{$_('buttons.categories')}</CardMenuItem>
         {/if}
       </CardMenu>
       <div slot="right">
-        {#if getListOfChecked(
-          $checkedList,
-        ).length > 0}
+        {#if getListOfChecked($checkedList).length > 0}
           <div
             class:d-none={firstLoad}
-            class="hstack gap-2 animate__animated animate__faster {getListOfChecked(
-              $checkedList,
-            ).length > 0
+            class="hstack gap-2 animate__animated animate__faster {getListOfChecked($checkedList)
+              .length > 0
               ? 'animate__slideInUp'
               : 'animate__slideOutDown'}
         faster">
             <button
-              title={$_("buttons.delete")}
-              aria-label={$_("buttons.delete")}
+              title={$_('buttons.delete')}
+              aria-label={$_('buttons.delete')}
               class="btn btn-link"
               class:disabled={getListOfChecked($checkedList).length === 0}
               type="button"
@@ -46,12 +41,12 @@
             </button>
             <button
               class="btn btn-secondary"
-              title={$_("buttons.close")}
-              aria-label={$_("buttons.close")}
+              title={$_('buttons.close')}
+              aria-label={$_('buttons.close')}
               class:disabled={getListOfChecked($checkedList).length === 0}
               type="button"
               on:click={onShowCloseTicketsModalClick}>
-              <i class="fas fa-times me-2"></i>{$_("buttons.close")}
+              <i class="fas fa-times me-2"></i>{$_('buttons.close')}
             </button>
           </div>
         {/if}
@@ -62,42 +57,40 @@
   <div class="card">
     <CardHeader>
       <div slot="left">
-        {$_("pages.tickets.table-title", {
+        {$_('pages.tickets.table-title', {
           values: {
             ticketCount: data.ticketCount,
             pageType:
               data.pageType === PageTypes.WAITING_REPLY
-                ? $_("pages.tickets.waiting-reply")
+                ? $_('pages.tickets.waiting-reply')
                 : data.pageType === PageTypes.CLOSED
-                  ? $_("pages.tickets.closed")
-                  : "",
+                  ? $_('pages.tickets.closed')
+                  : '',
           },
         }) +
           (getListOfChecked($checkedList).length > 0
-            ? ", " +
-              $_("pages.tickets.amount-selected", {
+            ? ', ' +
+              $_('pages.tickets.amount-selected', {
                 values: { amount: getListOfChecked($checkedList).length },
               })
-            : "")}
+            : '')}
       </div>
 
       <!-- Filters -->
       <CardFilters slot="right">
         {#if !data.categoryUrl}
-          <CardFiltersItem
-            href="/tickets"
-            active={data.pageType === PageTypes.ALL}>
-            {$_("pages.tickets.all")}
+          <CardFiltersItem href="/tickets" active={data.pageType === PageTypes.ALL}>
+            {$_('pages.tickets.all')}
           </CardFiltersItem>
           <CardFiltersItem
             href="/tickets?pageType=WAITING_REPLY"
             active={data.pageType === PageTypes.WAITING_REPLY}>
-            {$_("pages.tickets.waiting-reply")}
+            {$_('pages.tickets.waiting-reply')}
           </CardFiltersItem>
           <CardFiltersItem
             href="/tickets?pageType=CLOSED"
             active={data.pageType === PageTypes.CLOSED}>
-            {$_("pages.tickets.closed")}
+            {$_('pages.tickets.closed')}
           </CardFiltersItem>
         {/if}
       </CardFilters>
@@ -113,10 +106,9 @@
           <thead>
             <tr>
               <th class="align-middle" scope="col">
-                <div
-                  class="form-check d-flex justify-content-center align-items-center">
+                <div class="form-check d-flex justify-content-center align-items-center">
                   <input
-                    title={$_("pages.tickets.select-all")}
+                    title={$_('pages.tickets.select-all')}
                     class="form-check-input"
                     on:click={onSelectAllClick}
                     checked={isAllTicketsSelected(data.tickets, $checkedList)}
@@ -125,25 +117,22 @@
                 </div>
               </th>
               <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.tickets.table.title")}</th>
-              <th
-                class="align-middle"
-                scope="col"
-                class:table-active={data.categoryUrl}
-                >{$_("pages.tickets.table.category")}</th>
+                >{$_('pages.tickets.table.title')}</th>
+              <th class="align-middle" scope="col" class:table-active={data.categoryUrl}
+                >{$_('pages.tickets.table.category')}</th>
               <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.tickets.table.player")}</th>
+                >{$_('pages.tickets.table.player')}</th>
               <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.tickets.table.status")}</th>
+                >{$_('pages.tickets.table.status')}</th>
               <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.tickets.table.last-reply")}</th>
+                >{$_('pages.tickets.table.last-reply')}</th>
             </tr>
           </thead>
           <tbody>
             {#each data.tickets as ticket, index (ticket)}
               <TicketRow
-                ticket={ticket}
-                checkedList={checkedList}
+                {ticket}
+                {checkedList}
                 on:showCloseTicketModalClick={(event) =>
                   onShowCloseTicketModalClick(event.detail.id)}
                 on:showDeleteTicketModalClick={(event) =>
@@ -166,17 +155,17 @@
 </article>
 
 <script context="module">
-  import { writable, get } from "svelte/store";
+  import { writable, get } from 'svelte/store';
 
-  import ApiUtil, { buildQueryParams } from "$lib/api.util";
-  import { error } from "@sveltejs/kit";
+  import ApiUtil, { buildQueryParams } from '$lib/api.util';
+  import { error } from '@sveltejs/kit';
 
   let checkedList = writable([]);
 
   export const PageTypes = Object.freeze({
-    ALL: "ALL",
-    WAITING_REPLY: "WAITING_REPLY",
-    CLOSED: "CLOSED",
+    ALL: 'ALL',
+    WAITING_REPLY: 'WAITING_REPLY',
+    CLOSED: 'CLOSED',
   });
 
   export const DefaultPageType = PageTypes.ALL;
@@ -191,12 +180,12 @@
     } = event;
     await parent();
 
-    const page = parseInt(searchParams.get("page")) || 1;
-    const categoryUrl = searchParams.get("categoryUrl");
-    const pageType = searchParams.get("pageType") || DefaultPageType;
+    const page = parseInt(searchParams.get('page')) || 1;
+    const categoryUrl = searchParams.get('categoryUrl');
+    const pageType = searchParams.get('pageType') || DefaultPageType;
 
     if (!Object.values(PageTypes).includes(pageType)) {
-      throw error(404, "PAGE_NOT_FOUND");
+      throw error(404, 'PAGE_NOT_FOUND');
     }
 
     const queryParams = buildQueryParams({
@@ -211,7 +200,7 @@
     });
 
     if (body.error) {
-      if (body.error === "PAGE_NOT_FOUND") {
+      if (body.error === 'PAGE_NOT_FOUND') {
         throw error(404, body.error);
       }
 
@@ -227,57 +216,57 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { goto } from "$app/navigation";
-  import { base } from "$app/paths";
+  import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
 
-  import Pagination from "$lib/component/Pagination.svelte";
+  import Pagination from '$lib/component/Pagination.svelte';
 
   import {
     setCallback as setCloseTicketModalCallback,
     show as showCloseTicketModal,
     onHide as onConfirmCloseTicketModalHide,
-  } from "$lib/component/modals/ConfirmCloseTicketModal.svelte";
+  } from '$lib/component/modals/ConfirmCloseTicketModal.svelte';
   import {
     setCallback as setDeleteTicketModalCallback,
     show as showDeleteTicketModal,
     onHide as onConfirmDeleteTicketModalHide,
-  } from "$lib/component/modals/ConfirmDeleteTicketModal.svelte";
+  } from '$lib/component/modals/ConfirmDeleteTicketModal.svelte';
 
-  import TicketRow from "$lib/component/rows/TicketRow.svelte";
-  import NoContent from "$lib/component/NoContent.svelte";
-  import PageActions from "$lib/component/PageActions.svelte";
-  import CardHeader from "$lib/component/CardHeader.svelte";
-  import CardFiltersItem from "$lib/component/CardFiltersItem.svelte";
-  import CardFilters from "$lib/component/CardFilters.svelte";
-  import CardMenu from "$lib/component/CardMenu.svelte";
-  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
+  import TicketRow from '$lib/component/rows/TicketRow.svelte';
+  import NoContent from '$lib/component/NoContent.svelte';
+  import PageActions from '$lib/component/PageActions.svelte';
+  import CardHeader from '$lib/component/CardHeader.svelte';
+  import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
+  import CardFilters from '$lib/component/CardFilters.svelte';
+  import CardMenu from '$lib/component/CardMenu.svelte';
+  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
   $: {
     pageTitle.set(
       data.categoryUrl
-        ? $_("pages.tickets.category-tickets-title", {
+        ? $_('pages.tickets.category-tickets-title', {
             values: {
               category:
-                (data.category?.title || "-") === "-"
-                  ? $_("pages.tickets.no-category")
-                  : data.category?.title || "-",
+                (data.category?.title || '-') === '-'
+                  ? $_('pages.tickets.no-category')
+                  : data.category?.title || '-',
             },
           })
-        : $_("pages.tickets.title", {
+        : $_('pages.tickets.title', {
             values: {
               pageType:
                 data.pageType === PageTypes.WAITING_REPLY
-                  ? $_("pages.tickets.waiting-reply") + " "
+                  ? $_('pages.tickets.waiting-reply') + ' '
                   : data.pageType === PageTypes.CLOSED
-                    ? $_("pages.tickets.closed") + " "
-                    : "",
+                    ? $_('pages.tickets.closed') + ' '
+                    : '',
             },
           }),
     );
@@ -340,9 +329,7 @@
       (id) =>
         (data.tickets[
           data.tickets.indexOf(
-            data.tickets.find(
-              (ticketInTickets) => ticketInTickets.id === parseInt(id),
-            ),
+            data.tickets.find((ticketInTickets) => ticketInTickets.id === parseInt(id)),
           )
         ].selected = true),
     );
@@ -352,9 +339,7 @@
 
   function onShowDeleteTicketModalClick(id) {
     data.tickets[
-      data.tickets.indexOf(
-        data.tickets.find((ticketInTickets) => ticketInTickets.id === id),
-      )
+      data.tickets.indexOf(data.tickets.find((ticketInTickets) => ticketInTickets.id === id))
     ].selected = true;
 
     showDeleteTicketModal([id]);
@@ -365,9 +350,7 @@
       (id) =>
         (data.tickets[
           data.tickets.indexOf(
-            data.tickets.find(
-              (ticketInTickets) => ticketInTickets.id === parseInt(id),
-            ),
+            data.tickets.find((ticketInTickets) => ticketInTickets.id === parseInt(id)),
           )
         ].selected = true),
     );
@@ -377,9 +360,7 @@
 
   function onShowCloseTicketModalClick(id) {
     data.tickets[
-      data.tickets.indexOf(
-        data.tickets.find((ticketInTickets) => ticketInTickets.id === id),
-      )
+      data.tickets.indexOf(data.tickets.find((ticketInTickets) => ticketInTickets.id === id))
     ].selected = true;
 
     showCloseTicketModal([id]);
@@ -400,9 +381,7 @@
 
     Object.values(selectedTickets).forEach((id) => {
       const index = data.tickets.indexOf(
-        data.tickets.find(
-          (ticketInTickets) => ticketInTickets.id === parseInt(id),
-        ),
+        data.tickets.find((ticketInTickets) => ticketInTickets.id === parseInt(id)),
       );
 
       if (index === -1) {
@@ -428,9 +407,7 @@
 
     Object.values(selectedTickets).forEach((id) => {
       const index = data.tickets.indexOf(
-        data.tickets.find(
-          (ticketInTickets) => ticketInTickets.id === parseInt(id),
-        ),
+        data.tickets.find((ticketInTickets) => ticketInTickets.id === parseInt(id)),
       );
 
       if (index === -1) {

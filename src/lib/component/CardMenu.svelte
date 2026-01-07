@@ -1,3 +1,3 @@
 <ul class="nav nav-pills">
-  <slot/>
+  <slot />
 </ul>

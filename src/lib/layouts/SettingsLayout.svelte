@@ -2,17 +2,12 @@
 <div class="container vstack gap-3">
   <PageActions leftClasses={null} middleClasses="col-lg-12" rightClasses={null}>
     <PageNav slot="middle">
-      <PageNavItem href="/settings"
-        >{$_("components.settings-layout.website")}</PageNavItem>
+      <PageNavItem href="/settings">{$_('components.settings-layout.website')}</PageNavItem>
       <PageNavItem href="/settings/platform" startsWith
-        >{$_("components.settings-layout.platform")}</PageNavItem>
-      <PageNavItem href="/settings/migration"
-      >Migration</PageNavItem>
-      <PageNavItem
-        href="/settings/updates"
-        classes="position-relative"
-        startsWith
-        >{$_("components.settings-layout.updates")}
+        >{$_('components.settings-layout.platform')}</PageNavItem>
+      <PageNavItem href="/settings/migration">Migration</PageNavItem>
+      <PageNavItem href="/settings/updates" classes="position-relative" startsWith
+        >{$_('components.settings-layout.updates')}
         {#if data.session.basicData.hasUpdate}
           <span
             class="position-absolute bg-warning rounded-circle p-1"
@@ -21,18 +16,18 @@
         {/if}
       </PageNavItem>
       <PageNavItem href="/settings/about" startsWith
-        >{$_("components.settings-layout.about")}</PageNavItem>
+        >{$_('components.settings-layout.about')}</PageNavItem>
     </PageNav>
   </PageActions>
   <slot />
 </div>
 
 <script context="module">
-  import { redirect } from "@sveltejs/kit";
+  import { redirect } from '@sveltejs/kit';
 
-  import { base } from "$app/paths";
+  import { base } from '$app/paths';
 
-  import { hasPermission, Permissions } from "$lib/auth.util.js";
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
 
   /**
    * @type {import('@sveltejs/kit').LayoutLoad}
@@ -50,11 +45,11 @@
 </script>
 
 <script>
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
-  import PageActions from "$lib/component/PageActions.svelte";
-  import PageNav from "$lib/component/PageNav.svelte";
-  import PageNavItem from "$lib/component/PageNavItem.svelte";
+  import PageActions from '$lib/component/PageActions.svelte';
+  import PageNav from '$lib/component/PageNav.svelte';
+  import PageNavItem from '$lib/component/PageNavItem.svelte';
 
   export let data;
 </script>

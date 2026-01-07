@@ -1,7 +1,7 @@
-<Statistics data="{data}" />
+<Statistics {data} />
 
 <script>
-  import Statistics from "$lib/pages/Statistics.svelte";
+  import Statistics from '$lib/pages/Statistics.svelte';
 
   export let data;
 </script>

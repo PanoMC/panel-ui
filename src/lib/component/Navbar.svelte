@@ -8,8 +8,8 @@
           class:d-lg-none={$isSidebarOpen}
           class="navbar-toggler d-inline-block me-2"
           type="button"
-          aria-label={$_("components.navbar.navbar-toggle-tooltip")}
-          title={$_("components.navbar.navbar-toggle-tooltip")}
+          aria-label={$_('components.navbar.navbar-toggle-tooltip')}
+          title={$_('components.navbar.navbar-toggle-tooltip')}
           on:click={onSideBarCollapseClick}
           data-bs-toggle="offcanvas"
           data-bs-target="#sidebar"
@@ -22,8 +22,8 @@
             <i class="nav-link fa-solid fa-spinner fa-spin"></i>
           {:else}
             <button
-              title={$_("components.navbar.panel-theme")}
-              aria-label={$_("components.navbar.panel-theme")}
+              title={$_('components.navbar.panel-theme')}
+              aria-label={$_('components.navbar.panel-theme')}
               class="nav-link"
               data-bs-toggle="dropdown"
               type="button"
@@ -31,20 +31,18 @@
               disabled={selectingPanelTheme}>
               <i class="fa-solid fa-palette"></i>
             </button>
-            <ul
-              class="dropdown-menu dropdown-menu-start animate__animated animate__zoomIn">
+            <ul class="dropdown-menu dropdown-menu-start animate__animated animate__zoomIn">
               <h6 class="dropdown-header">
-                {$_("components.navbar.panel-theme")}
+                {$_('components.navbar.panel-theme')}
               </h6>
               {#each panelThemes as theme}
                 <li>
                   <button
                     type="button"
                     class="dropdown-item"
-                    class:active={($session.basicData.panelTheme || "dark") ===
-                      theme}
+                    class:active={($session.basicData.panelTheme || 'dark') === theme}
                     on:click={() => changePanelTheme(theme)}>
-                    {$_("panel-themes." + theme)}
+                    {$_('panel-themes.' + theme)}
                   </button>
                 </li>
               {/each}
@@ -58,8 +56,8 @@
               <i
                 class="fa-solid fa-server"
                 use:tooltip={[
-                  `${$_("components.navbar.selected-server")}: ${$selectedServer.customName || $selectedServer.name} (${$selectedServer.host}:${$selectedServer.port})`,
-                  { placement: "bottom" },
+                  `${$_('components.navbar.selected-server')}: ${$selectedServer.customName || $selectedServer.name} (${$selectedServer.host}:${$selectedServer.port})`,
+                  { placement: 'bottom' },
                 ]}>
               </i>
             </span>
@@ -94,8 +92,8 @@
             class="nav-link position-relative"
             data-bs-toggle="dropdown"
             type="button"
-            aria-label={$_("components.navbar.notifications")}
-            title={$_("components.navbar.notifications")}>
+            aria-label={$_('components.navbar.notifications')}
+            title={$_('components.navbar.notifications')}>
             <i class="fa-regular fa-bolt"></i>
             {#if $notificationCount !== 0}
               <span
@@ -109,8 +107,8 @@
             style="width: 300px;"
             class="dropdown-menu dropdown-menu-end animate__animated animate__zoomIn">
             <h6 class="dropdown-header">
-              {$_("components.navbar.notifications")}
-              {$notificationCount === 0 ? "" : "(" + $notificationCount + ")"}
+              {$_('components.navbar.notifications')}
+              {$notificationCount === 0 ? '' : '(' + $notificationCount + ')'}
             </h6>
 
             {#if $quickNotifications.length === 0}
@@ -120,23 +118,20 @@
                 {#each $quickNotifications as notification, index (notification)}
                   <div
                     class="fw-normal list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
-                    class:notification-unread={notification.status ===
-                      "NOT_READ"}>
+                    class:notification-unread={notification.status === 'NOT_READ'}>
                     <button
                       type="button"
-                      title={$_("buttons.view")}
+                      title={$_('buttons.view')}
                       on:click={() => onNotificationClick(notification)}
                       class="text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
                       <div class="d-flex align-items-center">
                         {#if notification.details.faIcon}
-                          <i
-                            class="{notification.details
-                              .faIcon} fa-lg fa-fw text-primary"></i>
+                          <i class="{notification.details.faIcon} fa-lg fa-fw text-primary"></i>
                         {:else if notification.details.image || notification.details.username}
                           <img
                             src={notification.details.image ||
                               `https://minotar.net/avatar/${notification.details.username}/64`}
-                            alt={$_("buttons.view")}
+                            alt={$_('buttons.view')}
                             width="18"
                             height="18"
                             class="rounded-circle" />
@@ -147,7 +142,7 @@
 
                       <div class="fw-normal">
                         <span class="text-wrap markdown-renderer text-break"
-                          >{@html $_("notifications." + notification.type, {
+                          >{@html $_('notifications.' + notification.type, {
                             values: {
                               ...sanitizeObject(notification.details || {}),
                             },
@@ -169,7 +164,7 @@
 
             <a class="dropdown-item bg-transparent" href="{base}/notifications">
               <button class="btn btn-sm btn-primary w-100">
-                {$_("components.navbar.show-all")}</button>
+                {$_('components.navbar.show-all')}</button>
             </a>
           </div>
         </div>
@@ -180,8 +175,8 @@
             type="button"
             class="nav-link h-100 d-flex align-items-center"
             data-bs-toggle="dropdown"
-            aria-label={$_("components.navbar.account-dropdown.session")}
-            title={$_("components.navbar.account-dropdown.session")}>
+            aria-label={$_('components.navbar.account-dropdown.session')}
+            title={$_('components.navbar.account-dropdown.session')}>
             <img
               src="https://minotar.net/avatar/{$user.username}"
               width="20"
@@ -189,19 +184,16 @@
               class="rounded-circle animate__animated animate__zoomIn"
               alt={$user.username} />
           </button>
-          <ul
-            class="dropdown-menu dropdown-menu-end animate__animated animate__zoomIn">
+          <ul class="dropdown-menu dropdown-menu-end animate__animated animate__zoomIn">
             <h6 class="dropdown-header">{$user.username}</h6>
             <li>
-              <a
-                class="dropdown-item focus-ring"
-                href="{base}/players/detail/{$user.username}">
-                {$_("components.navbar.account-dropdown.profile")}
+              <a class="dropdown-item focus-ring" href="{base}/players/detail/{$user.username}">
+                {$_('components.navbar.account-dropdown.profile')}
               </a>
             </li>
             <li class="dropdown-item bg-transparent">
               <button class="btn btn-sm btn-danger w-100" on:click={onLogout}>
-                {$_("components.navbar.account-dropdown.logout")}</button>
+                {$_('components.navbar.account-dropdown.logout')}</button>
             </li>
           </ul>
         </div>
@@ -211,43 +203,38 @@
 </nav>
 
 <script>
-  import { onDestroy, onMount, getContext } from "svelte";
-  import { _ } from "svelte-i18n";
-  import tooltip from "$lib/tooltip.util";
+  import { onDestroy, onMount, getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
-  import { formatDistanceToNow } from "date-fns";
-  import * as locales from "date-fns/locale";
-  import { sanitize } from "@jill64/universal-sanitizer";
+  import { formatDistanceToNow } from 'date-fns';
+  import * as locales from 'date-fns/locale';
+  import { sanitize } from '@jill64/universal-sanitizer';
 
-  import { base } from "$app/paths";
-  import { page } from "$app/stores";
+  import { base } from '$app/paths';
+  import { page } from '$app/stores';
 
-  import ApiUtil from "$lib/api.util";
-  import {
-    logoutLoading,
-    options,
-    quickNotifications,
-    toggleSidebar,
-  } from "$lib/Store";
+  import ApiUtil from '$lib/api.util';
+  import { logoutLoading, options, quickNotifications, toggleSidebar } from '$lib/Store';
 
-  import { currentLanguage } from "$lib/language.util";
+  import { currentLanguage } from '$lib/language.util';
 
-  import { onNotificationClick } from "$lib/NotificationManager.js";
-  import NoContent from "$lib/component/NoContent.svelte";
-  import { hasPermission, Permissions } from "$lib/auth.util.js";
-  import SiteNavigationMenu from "$lib/component/sidebar/SiteNavigationMenu.svelte";
-  import ServerNavigationMenu from "$lib/component/sidebar/ServerNavigationMenu.svelte";
+  import { onNotificationClick } from '$lib/NotificationManager.js';
+  import NoContent from '$lib/component/NoContent.svelte';
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import SiteNavigationMenu from '$lib/component/sidebar/SiteNavigationMenu.svelte';
+  import ServerNavigationMenu from '$lib/component/sidebar/ServerNavigationMenu.svelte';
 
-  const selectedServer = getContext("selectedServer");
-  const pageTitle = getContext("pageTitle");
-  const user = getContext("user");
-  const notificationCount = getContext("notificationCount");
-  const isSidebarOpen = getContext("isSidebarOpen");
-  const session = getContext("session");
-  const panelTheme = getContext("panelTheme");
-  const sidebarTabsState = getContext("sidebarTabsState");
+  const selectedServer = getContext('selectedServer');
+  const pageTitle = getContext('pageTitle');
+  const user = getContext('user');
+  const notificationCount = getContext('notificationCount');
+  const isSidebarOpen = getContext('isSidebarOpen');
+  const session = getContext('session');
+  const panelTheme = getContext('panelTheme');
+  const sidebarTabsState = getContext('sidebarTabsState');
 
-  const panelThemes = ["light", "dark", "copper"];
+  const panelThemes = ['light', 'dark', 'copper'];
 
   let quickNotificationProcessID = 0;
 
@@ -258,14 +245,11 @@
 
   let showSelectedServer;
 
-  $: isServerPath = $page.url.pathname.startsWith((base || "") + "/server");
+  $: isServerPath = $page.url.pathname.startsWith((base || '') + '/server');
 
   $: showSelectedServer =
     isServerPath ||
-    !(
-      $sidebarTabsState === "website" ||
-      !hasPermission(Permissions.MANAGE_SERVERS)
-    );
+    !($sidebarTabsState === 'website' || !hasPermission(Permissions.MANAGE_SERVERS));
 
   function onSideBarCollapseClick() {
     toggleSidebar(isSidebarOpen);
@@ -275,7 +259,7 @@
     selectingPanelTheme = true;
 
     ApiUtil.put({
-      path: "/api/panel/panelTheme/select",
+      path: '/api/panel/panelTheme/select',
       body: { theme },
       handler: (body) => {
         if (body.error) {
@@ -283,7 +267,7 @@
           return;
         }
 
-        document.documentElement.setAttribute("data-bs-theme", theme);
+        document.documentElement.setAttribute('data-bs-theme', theme);
         $session.basicData.panelTheme = theme;
         $panelTheme = theme;
         selectingPanelTheme = false;
@@ -295,9 +279,9 @@
     logoutLoading.set(true);
 
     ApiUtil.post({
-      path: "/api/auth/logout",
+      path: '/api/auth/logout',
       handler: () => {
-        window.location.href = "/";
+        window.location.href = '/';
       },
     });
   }
@@ -310,13 +294,13 @@
     await delay(1000);
 
     ApiUtil.post({
-      path: "/api/panel/notifications/quick/markAsRead",
+      path: '/api/panel/notifications/quick/markAsRead',
       handler: (body) => {
         if (quickNotificationProcessID !== id) {
           return;
         }
 
-        if (body.result === "ok") {
+        if (body.result === 'ok') {
           notificationCount.set(body.notificationCount);
         }
 
@@ -341,14 +325,14 @@
     if (!showingQuickNotification) return;
 
     notifications.slice(0, 5).forEach((notification) => {
-      if (notification.status === "NOT_READ") {
+      if (notification.status === 'NOT_READ') {
         setTimeout(() => {
           if (!showingQuickNotification) return;
 
           quickNotifications.update((notifications) => {
             notifications.forEach((subNotification) => {
               if (subNotification.id === notification.id) {
-                notification.status = "READ";
+                notification.status = 'READ';
               }
             });
 
@@ -362,9 +346,9 @@
   onDestroy(quickNotifications.subscribe(scheduleReadForLast5));
 
   onMount(() => {
-    const dropdown = document.getElementById("quickNotificationsDropdown");
+    const dropdown = document.getElementById('quickNotificationsDropdown');
 
-    dropdown.addEventListener("show.bs.dropdown", function () {
+    dropdown.addEventListener('show.bs.dropdown', function () {
       quickNotificationProcessID++;
 
       const id = quickNotificationProcessID;
@@ -376,7 +360,7 @@
       scheduleReadForLast5($quickNotifications);
     });
 
-    dropdown.addEventListener("hide.bs.dropdown", function () {
+    dropdown.addEventListener('hide.bs.dropdown', function () {
       quickNotificationProcessID++;
 
       showingQuickNotification = false;

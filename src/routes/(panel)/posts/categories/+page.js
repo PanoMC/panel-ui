@@ -1,1 +1,1 @@
-export { load } from "$lib/pages/posts/PostCategories.svelte";
+export { load } from '$lib/pages/posts/PostCategories.svelte';

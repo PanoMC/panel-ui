@@ -9,11 +9,7 @@
         on:change={(e) => (globalSearchQuery = e.detail.value)} />
     </div>
     <div slot="right" class="hstack gap-2">
-      <button
-        type="button"
-        title={$_("buttons.save")}
-        class="btn btn-link"
-        on:click={saveSnapshot}>
+      <button type="button" title={$_('buttons.save')} class="btn btn-link" on:click={saveSnapshot}>
         <i class="fa fa-save"></i>
       </button>
 
@@ -21,22 +17,18 @@
         <button type="button" class="btn btn-secondary" on:click={createGroup}>
           <i class="fa fa-plus"></i>
           <span class="d-lg-inline d-none"
-            >{$_("pages.permissions.panel.actions.create-group")}</span>
+            >{$_('pages.permissions.panel.actions.create-group')}</span>
         </button>
       {:else if showTracks}
         <button type="button" class="btn btn-secondary" on:click={createTrack}>
           <i class="fa fa-plus"></i>
           <span class="d-lg-inline d-none"
-            >{$_("pages.permissions.panel.actions.create-track")}</span>
+            >{$_('pages.permissions.panel.actions.create-track')}</span>
         </button>
       {:else if showUsers}
-        <button
-          type="button"
-          class="btn btn-secondary"
-          on:click={openUserSearch}>
+        <button type="button" class="btn btn-secondary" on:click={openUserSearch}>
           <i class="fa fa-plus"></i>
-          <span class="d-lg-inline d-none"
-            >{$_("pages.permissions.panel.actions.add-player")}</span>
+          <span class="d-lg-inline d-none">{$_('pages.permissions.panel.actions.add-player')}</span>
         </button>
       {/if}
     </div>
@@ -50,25 +42,23 @@
           class="accordion-item"
           role="button"
           tabindex="0"
-          on:keydown={(e) => e.key === "Enter" && alert("zaa")}>
+          on:keydown={(e) => e.key === 'Enter' && alert('zaa')}>
           <h2 class="accordion-header" id="tracksHeading">
             <button
               class="accordion-button {showTracks ? '' : 'collapsed'}"
               type="button"
               aria-controls="tracksCollapse"
               on:click={() => {
-                const collapse = document.getElementById("tracksCollapse");
+                const collapse = document.getElementById('tracksCollapse');
                 if (collapse) {
-                  showTracks = !collapse.classList.contains("show");
+                  showTracks = !collapse.classList.contains('show');
                   showGroups = false;
                   showUsers = false;
-                  const collapseInstance =
-                    window.bootstrap?.Collapse.getOrCreateInstance(collapse);
+                  const collapseInstance = window.bootstrap?.Collapse.getOrCreateInstance(collapse);
                   collapseInstance.toggle();
                 }
               }}>
-              <span class="me-2"
-                >{$_("pages.permissions.panel.accordions.tracks")}</span>
+              <span class="me-2">{$_('pages.permissions.panel.accordions.tracks')}</span>
             </button>
           </h2>
           <div
@@ -79,35 +69,29 @@
             <div class="accordion-body p-0">
               <div style={listStyle(260)}>
                 {#if Array.isArray(filteredTracks) && filteredTracks.length > 0}
-                  <div
-                    class="accordion accordion-flush"
-                    id="tracksListAccordion">
+                  <div class="accordion accordion-flush" id="tracksListAccordion">
                     {#each filteredTracks as track (track.id ?? track.name)}
                       <div class="accordion-item">
                         <h2
                           class="accordion-header"
-                          id={"trackHeading-" + (track.id ?? track.name)}>
+                          id={'trackHeading-' + (track.id ?? track.name)}>
                           <button
                             type="button"
                             class="accordion-button collapsed py-2"
                             data-bs-toggle="collapse"
-                            data-bs-target={"#trackCollapse-" +
-                              (track.id ?? track.name)}
-                            aria-controls={"trackCollapse-" +
-                              (track.id ?? track.name)}
+                            data-bs-target={'#trackCollapse-' + (track.id ?? track.name)}
+                            aria-controls={'trackCollapse-' + (track.id ?? track.name)}
                             on:click={() => selectTrack(track)}>
                             <div class="d-flex flex-column text-start w-100">
                               <div class="text-truncate">{track.name}</div>
-                              <small class=" text-truncate"
-                                >{track.description}</small>
+                              <small class=" text-truncate">{track.description}</small>
                             </div>
                           </button>
                         </h2>
                         <div
-                          id={"trackCollapse-" + (track.id ?? track.name)}
+                          id={'trackCollapse-' + (track.id ?? track.name)}
                           class="accordion-collapse collapse"
-                          aria-labelledby={"trackHeading-" +
-                            (track.id ?? track.name)}
+                          aria-labelledby={'trackHeading-' + (track.id ?? track.name)}
                           data-bs-parent="#tracksListAccordion">
                           <div class="accordion-body py-2">
                             {#if Array.isArray(track.groupNames) && track.groupNames.length > 0}
@@ -116,8 +100,7 @@
                                   <button
                                     type="button"
                                     class="list-group-item list-group-item-action py-1"
-                                    on:click|stopPropagation={() =>
-                                      selectGroupByName(gname)}
+                                    on:click|stopPropagation={() => selectGroupByName(gname)}
                                     aria-label={`Gruba git: ${gname}`}
                                     title={`Gruba git: ${gname}`}>
                                     {gname}
@@ -144,25 +127,23 @@
           class="accordion-item"
           role="button"
           tabindex="0"
-          on:keydown={(e) => e.key === "Enter" && alert("zaa")}>
+          on:keydown={(e) => e.key === 'Enter' && alert('zaa')}>
           <h2 class="accordion-header" id="groupsHeading">
             <button
               class="accordion-button {showGroups ? '' : 'collapsed'}"
               type="button"
               aria-controls="groupsCollapse"
               on:click={() => {
-                const collapse = document.getElementById("groupsCollapse");
+                const collapse = document.getElementById('groupsCollapse');
                 if (collapse) {
-                  showGroups = !collapse.classList.contains("show");
+                  showGroups = !collapse.classList.contains('show');
                   showTracks = false;
                   showUsers = false;
-                  const collapseInstance =
-                    window.bootstrap?.Collapse.getOrCreateInstance(collapse);
+                  const collapseInstance = window.bootstrap?.Collapse.getOrCreateInstance(collapse);
                   collapseInstance.toggle();
                 }
               }}>
-              <span class="me-2"
-                >{$_("pages.permissions.panel.accordions.groups")}</span>
+              <span class="me-2">{$_('pages.permissions.panel.accordions.groups')}</span>
             </button>
           </h2>
           <div
@@ -187,8 +168,7 @@
                         </div>
                         <small class="font-monospace">({group.name})</small>
                       </div>
-                      <span class="badge bg-primary"
-                        >{getGroupWeight(group, nodes)}</span>
+                      <span class="badge bg-primary">{getGroupWeight(group, nodes)}</span>
                     </button>
                   {/each}
                 </div>
@@ -206,25 +186,23 @@
           class="accordion-item"
           role="button"
           tabindex="0"
-          on:keydown={(e) => e.key === "Enter" && alert("zaa")}>
+          on:keydown={(e) => e.key === 'Enter' && alert('zaa')}>
           <h2 class="accordion-header" id="usersHeading">
             <button
               class="accordion-button {showUsers ? '' : 'collapsed'}"
               type="button"
               aria-controls="usersCollapse"
               on:click={() => {
-                const collapse = document.getElementById("usersCollapse");
+                const collapse = document.getElementById('usersCollapse');
                 if (collapse) {
-                  showUsers = !collapse.classList.contains("show");
+                  showUsers = !collapse.classList.contains('show');
                   showGroups = false;
                   showTracks = false;
-                  const collapseInstance =
-                    window.bootstrap?.Collapse.getOrCreateInstance(collapse);
+                  const collapseInstance = window.bootstrap?.Collapse.getOrCreateInstance(collapse);
                   collapseInstance.toggle();
                 }
               }}>
-              <span class="me-2"
-                >{$_("pages.permissions.panel.accordions.users")}</span>
+              <span class="me-2">{$_('pages.permissions.panel.accordions.users')}</span>
             </button>
           </h2>
           <div
@@ -244,10 +222,8 @@
                       role="button"
                       tabindex="0"
                       on:click={() => selectUser(user)}
-                      on:keydown={(e) =>
-                        onActionKeydown(e, () => selectUser(user))}>
-                      <div
-                        class="me-2 d-flex align-items-center overflow-hidden">
+                      on:keydown={(e) => onActionKeydown(e, () => selectUser(user))}>
+                      <div class="me-2 d-flex align-items-center overflow-hidden">
                         {#if minotarAvatarUrl(user.username, 24)}
                           <img
                             src={minotarAvatarUrl(user.username, 24)}
@@ -280,8 +256,7 @@
     <div class="col-lg-8">
       {#if selectedGroup || selectedUser}
         <div class="card">
-          <div
-            class="card-header d-flex justify-content-between align-items-center">
+          <div class="card-header d-flex justify-content-between align-items-center">
             {#if selectedGroup}
               <div>
                 <h5 class="mb-0">
@@ -289,7 +264,7 @@
                   <span class="font-monospace">{selectedGroup.name}</span>
                 </h5>
                 <small>
-                  {$_("pages.permissions.panel.group.parents")}:
+                  {$_('pages.permissions.panel.group.parents')}:
                   {#if selectedGroupParents.length === 0}
                     -
                   {:else}
@@ -307,7 +282,7 @@
                   {/if}
                 </small>
                 <small class="d-block"
-                  >{$_("pages.permissions.panel.group.weight")}: {getGroupWeight(
+                  >{$_('pages.permissions.panel.group.weight')}: {getGroupWeight(
                     selectedGroup,
                     nodes,
                   )}</small>
@@ -317,29 +292,28 @@
                   type="button"
                   class="btn btn-link"
                   on:click={editSelectedGroup}
-                  aria-label={$_("buttons.edit")}
-                  title={$_("buttons.edit")}>
+                  aria-label={$_('buttons.edit')}
+                  title={$_('buttons.edit')}>
                   <i class="fa fa-pen"></i>
                 </button>
                 <button
                   type="button"
                   class="btn btn-link"
-                  disabled={selectedGroup?.name === "default"}
-                  on:click={() =>
-                    selectedGroup?.name !== "default" && showRemoveGroupModal()}
-                  aria-disabled={selectedGroup?.name === "default"}
-                  aria-label={$_("buttons.delete")}
-                  title={$_("buttons.delete")}>
+                  disabled={selectedGroup?.name === 'default'}
+                  on:click={() => selectedGroup?.name !== 'default' && showRemoveGroupModal()}
+                  aria-disabled={selectedGroup?.name === 'default'}
+                  aria-label={$_('buttons.delete')}
+                  title={$_('buttons.delete')}>
                   <i class="fa fa-trash"></i>
                 </button>
                 <button
                   type="button"
                   class="btn btn-primary"
-                  title={$_("pages.permissions.panel.nodes.add-node")}
-                  aria-label={$_("pages.permissions.panel.nodes.add-node")}
-                  on:click={() => addNode("GROUP")}>
+                  title={$_('pages.permissions.panel.nodes.add-node')}
+                  aria-label={$_('pages.permissions.panel.nodes.add-node')}
+                  on:click={() => addNode('GROUP')}>
                   <i class="fa fa-plus"></i><span class="d-lg-inline d-none"
-                    >{$_("pages.permissions.panel.nodes.add-node")}</span>
+                    >{$_('pages.permissions.panel.nodes.add-node')}</span>
                 </button>
               </div>
             {:else}
@@ -357,7 +331,7 @@
                   <span>{selectedUser.username}</span>
                 </h5>
                 <div class="small">
-                  {$_("pages.permissions.panel.user.groups")}:
+                  {$_('pages.permissions.panel.user.groups')}:
                   {#if getUserDirectGroupNames(selectedUser, nodes).length === 0}
                     -
                   {:else}
@@ -377,19 +351,15 @@
               </div>
 
               <div class="hstack gap-2">
-                <button
-                  class="btn btn-sm btn-primary"
-                  on:click={() => addNode("USER")}>
-                  <i class="fa fa-plus me-1"></i>{$_(
-                    "pages.permissions.panel.nodes.node",
-                  )}
+                <button class="btn btn-sm btn-primary" on:click={() => addNode('USER')}>
+                  <i class="fa fa-plus me-1"></i>{$_('pages.permissions.panel.nodes.node')}
                 </button>
                 {#if !isSelfUser(selectedUser)}
                   <button
                     type="button"
                     class="btn btn-sm btn-link"
-                    aria-label={$_("pages.permissions.panel.user.delete")}
-                    title={$_("pages.permissions.panel.user.delete")}
+                    aria-label={$_('pages.permissions.panel.user.delete')}
+                    title={$_('pages.permissions.panel.user.delete')}
                     on:click={() => showRemoveUserModal(selectedUser)}>
                     <i class="fa fa-trash me-1"></i>
                   </button>
@@ -399,7 +369,7 @@
           </div>
 
           {#if currentNodes.length === 0}
-            <NoContent text={$_("pages.permissions.panel.empty.no-nodes")} />
+            <NoContent text={$_('pages.permissions.panel.empty.no-nodes')} />
           {:else}
             <div class="table-responsive">
               <table class="table align-middle">
@@ -407,11 +377,11 @@
                   <tr>
                     <th></th>
                     <th class="align-middle text-nowrap"
-                      >{$_("pages.permissions.panel.nodes.node")}</th>
+                      >{$_('pages.permissions.panel.nodes.node')}</th>
                     <th class="align-middle text-nowrap"
-                      >{$_("pages.permissions.panel.nodes.active")}</th>
+                      >{$_('pages.permissions.panel.nodes.active')}</th>
                     <th class="align-middle text-nowrap"
-                      >{$_("pages.permissions.panel.nodes.expiry")}</th>
+                      >{$_('pages.permissions.panel.nodes.expiry')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -466,8 +436,7 @@
         </div>
       {:else if selectedTrack}
         <div class="card">
-          <div
-            class="card-header d-flex justify-content-between align-items-center">
+          <div class="card-header d-flex justify-content-between align-items-center">
             <div>
               <h5 class="mb-0">{selectedTrack.name}</h5>
               <small>{selectedTrack.description}</small>
@@ -479,7 +448,7 @@
                   selectedTrackForEdit = selectedTrack;
                   showEditTrackModal();
                 }}>
-                <i class="fa fa-pen me-1"></i>{$_("buttons.edit")}
+                <i class="fa fa-pen me-1"></i>{$_('buttons.edit')}
               </button>
               <button
                 class="btn btn-sm btn-outline-danger"
@@ -487,9 +456,7 @@
                   selectedTrackForEdit = selectedTrack;
                   showRemoveTrackModal();
                 }}>
-                <i class="fa fa-trash me-1"></i>{$_(
-                  "pages.permissions.panel.actions.remove",
-                )}
+                <i class="fa fa-trash me-1"></i>{$_('pages.permissions.panel.actions.remove')}
               </button>
             </div>
           </div>
@@ -513,10 +480,8 @@
           </div>
         </div>
       {:else}
-        <div
-          class="card d-flex align-items center justify-content-center h-100">
-          <NoContent
-            text={$_("pages.permissions.panel.empty.select-something")} />
+        <div class="card d-flex align-items center justify-content-center h-100">
+          <NoContent text={$_('pages.permissions.panel.empty.select-something')} />
         </div>
       {/if}
     </div>
@@ -533,13 +498,13 @@
 <ConfirmRemovePermUserModal />
 
 <script context="module">
-  import { error } from "@sveltejs/kit";
-  import ApiUtilModule from "$lib/api.util.js";
+  import { error } from '@sveltejs/kit';
+  import ApiUtilModule from '$lib/api.util.js';
 
   /** @type {import('@sveltejs/kit').PageLoad} */
   export async function load(event) {
     const res = await ApiUtilModule.get({
-      path: "/api/panel/permission/snapshot",
+      path: '/api/panel/permission/snapshot',
       request: event,
     });
     if (res?.error) {
@@ -550,50 +515,50 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import ApiUtil from "$lib/api.util.js";
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
+  import ApiUtil from '$lib/api.util.js';
+  import { show as showToast } from '$lib/component/ToastContainer.svelte';
   import CreatePermissionGroupModal, {
     show as showCreatePermissionGroupModal,
     setCallback as setCreatePermissionGroupModalCallback,
-  } from "$lib/component/modals/CreatePermissionGroupModal.svelte";
+  } from '$lib/component/modals/CreatePermissionGroupModal.svelte';
   import EditPermTrackModal, {
     show as showEditPermTrackModal,
     setCallback as setEditPermTrackModalCallback,
-  } from "$lib/component/modals/EditPermTrackModal.svelte";
+  } from '$lib/component/modals/EditPermTrackModal.svelte';
   import EditPermissionNodeModal, {
     show as showEditPermissionNodeModal,
     setCallback as setEditPermissionNodeModalCallback,
-  } from "$lib/component/modals/EditPermissionNodeModal.svelte";
+  } from '$lib/component/modals/EditPermissionNodeModal.svelte';
   import ConfirmRemovePermTrackModal, {
     show as showConfirmRemovePermTrackModal,
     setCallback as setConfirmRemovePermTrackModalCallback,
-  } from "$lib/component/modals/ConfirmRemovePermTrackModal.svelte";
+  } from '$lib/component/modals/ConfirmRemovePermTrackModal.svelte';
   import ConfirmRemovePermGroupModal, {
     show as showConfirmRemovePermGroupModal,
     setCallback as setConfirmRemovePermGroupModalCallback,
-  } from "$lib/component/modals/ConfirmRemovePermGroupModal.svelte";
+  } from '$lib/component/modals/ConfirmRemovePermGroupModal.svelte';
   import ConfirmRemovePermUserModal, {
     show as showConfirmRemovePermUserModal,
     setCallback as setConfirmRemovePermUserModalCallback,
-  } from "$lib/component/modals/ConfirmRemovePermUserModal.svelte";
+  } from '$lib/component/modals/ConfirmRemovePermUserModal.svelte';
   import SearchPlayerModal, {
     show as showSearchPlayerModal,
     setCallback as setSearchPlayerModalCallback,
-  } from "$lib/component/modals/SearchPlayerModal.svelte";
-  import PageActions from "$lib/component/PageActions.svelte";
-  import NoContent from "$lib/component/NoContent.svelte";
-  import TranslationSearchInput from "$lib/component/TranslationSearchInput.svelte";
-  import { currentLanguage } from "$lib/language.util.js";
+  } from '$lib/component/modals/SearchPlayerModal.svelte';
+  import PageActions from '$lib/component/PageActions.svelte';
+  import NoContent from '$lib/component/NoContent.svelte';
+  import TranslationSearchInput from '$lib/component/TranslationSearchInput.svelte';
+  import { currentLanguage } from '$lib/language.util.js';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
-  const currentUser = getContext("user");
+  const pageTitle = getContext('pageTitle');
+  const currentUser = getContext('user');
 
-  pageTitle.set("pages.permissions.title");
+  pageTitle.set('pages.permissions.title');
 
   // Variables for editor functionality
   let selectedGroup = null;
@@ -613,7 +578,7 @@
   let currentNodes = [];
   let filteredCurrentNodes = [];
   let selectedGroupParents = [];
-  let nodeActionLabels = { edit: "Düzenle", delete: "Sil" };
+  let nodeActionLabels = { edit: 'Düzenle', delete: 'Sil' };
 
   let showGroups = false;
   let showTracks = false;
@@ -624,7 +589,7 @@
   }
 
   function onActionKeydown(e, action) {
-    if (e.key === "Enter" || e.key === " ") {
+    if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       action?.();
     }
@@ -636,32 +601,32 @@
     // - holderType: "USER"
     // - holderId: user.id
     // No inherited/parent groups should be listed here.
-    if (!user?.id) return "-";
+    if (!user?.id) return '-';
 
     const directGroupNames = (currentNodesList || [])
       .filter(
         (n) =>
-          n?.holderType === "USER" &&
+          n?.holderType === 'USER' &&
           n?.holderId === user.id &&
           n?.active !== false &&
-          typeof n?.node === "string" &&
-          n.node.startsWith("group."),
+          typeof n?.node === 'string' &&
+          n.node.startsWith('group.'),
       )
-      .map((n) => n.node.slice("group.".length))
-      .map((x) => String(x || "").trim())
+      .map((n) => n.node.slice('group.'.length))
+      .map((x) => String(x || '').trim())
       .filter(Boolean);
 
     const unique = Array.from(new Set(directGroupNames));
-    if (unique.length === 0) return "-";
+    if (unique.length === 0) return '-';
 
     const byName = new Map((currentGroupList || []).map((g) => [g.name, g]));
     return unique
       .map((name) => {
         const g = byName.get(name);
-        return (g?.displayName || name || "").trim();
+        return (g?.displayName || name || '').trim();
       })
       .filter(Boolean)
-      .join(", ");
+      .join(', ');
   }
 
   function getUserDirectGroupNames(user, currentNodesList) {
@@ -669,14 +634,14 @@
     const activeGroupNames = (currentNodesList || [])
       .filter(
         (n) =>
-          n?.holderType === "USER" &&
+          n?.holderType === 'USER' &&
           n?.holderId === user.id &&
           n?.active !== false &&
-          typeof n?.node === "string" &&
-          n.node.startsWith("group."),
+          typeof n?.node === 'string' &&
+          n.node.startsWith('group.'),
       )
-      .map((n) => String(n.node).slice("group.".length))
-      .map((x) => String(x || "").trim())
+      .map((n) => String(n.node).slice('group.'.length))
+      .map((x) => String(x || '').trim())
       .filter(Boolean);
 
     const uniqueActive = Array.from(new Set(activeGroupNames));
@@ -684,14 +649,14 @@
   }
 
   function minotarAvatarUrl(username, size = 24) {
-    const u = String(username || "").trim();
+    const u = String(username || '').trim();
     if (!u) return null;
     const encoded = encodeURIComponent(u);
     return `https://minotar.net/avatar/${encoded}/${size}`;
   }
 
   function formatNodeContext(ctx) {
-    if (!ctx || typeof ctx !== "object") return [];
+    if (!ctx || typeof ctx !== 'object') return [];
     const entries = [];
     for (const [k, v] of Object.entries(ctx)) {
       if (!k) continue;
@@ -708,7 +673,7 @@
 
   // Variables for tracks functionality
   let selectedTrackForEdit = null;
-  let globalSearchQuery = "";
+  let globalSearchQuery = '';
 
   // Modal variables
   let selectedNodeForEdit = null;
@@ -744,8 +709,8 @@
   }
 
   $: nodeActionLabels = selectedGroup
-    ? { edit: $_("buttons.edit"), delete: $_("buttons.delete") }
-    : { edit: $_("buttons.edit"), delete: $_("buttons.delete") };
+    ? { edit: $_('buttons.edit'), delete: $_('buttons.delete') }
+    : { edit: $_('buttons.edit'), delete: $_('buttons.delete') };
 
   const normalizeWeight = (raw) => {
     const n = parseInt(raw);
@@ -753,24 +718,19 @@
     return n;
   };
 
-  function upsertGroupDisplayNameNode({
-    groupId,
-    groupName,
-    displayName,
-    now,
-  }) {
-    const dn = String(displayName ?? "").trim();
-    const nodeValue = `displayname.${dn || groupName || ""}`;
+  function upsertGroupDisplayNameNode({ groupId, groupName, displayName, now }) {
+    const dn = String(displayName ?? '').trim();
+    const nodeValue = `displayname.${dn || groupName || ''}`;
 
     // Find existing displayname.* nodes for this group
     const idxs = [];
     for (let i = 0; i < (nodes || []).length; i++) {
       const n = nodes[i];
       if (
-        n?.holderType === "GROUP" &&
+        n?.holderType === 'GROUP' &&
         n?.holderId === groupId &&
-        typeof n?.node === "string" &&
-        n.node.startsWith("displayname.")
+        typeof n?.node === 'string' &&
+        n.node.startsWith('displayname.')
       ) {
         idxs.push(i);
       }
@@ -802,7 +762,7 @@
       ...(nodes || []),
       makeNode({
         id: now + 3,
-        holderType: "GROUP",
+        holderType: 'GROUP',
         holderId: groupId,
         holderName: groupName,
         node: nodeValue,
@@ -819,17 +779,17 @@
     if (!group) return 0;
     const weightNodes = (currentNodesList || []).filter(
       (n) =>
-        n.holderType === "GROUP" &&
+        n.holderType === 'GROUP' &&
         n.holderId === group.id &&
         n.active !== false &&
-        typeof n.node === "string" &&
-        n.node.startsWith("weight."),
+        typeof n.node === 'string' &&
+        n.node.startsWith('weight.'),
     );
 
     if (weightNodes.length === 0) return 0;
 
     const weights = weightNodes
-      .map((n) => parseInt(n.node.slice("weight.".length)))
+      .map((n) => parseInt(n.node.slice('weight.'.length)))
       .filter((w) => !isNaN(w));
 
     return weights.length > 0 ? Math.max(...weights) : 0;
@@ -842,10 +802,10 @@
     for (let i = 0; i < (nodes || []).length; i++) {
       const n = nodes[i];
       if (
-        n?.holderType === "GROUP" &&
+        n?.holderType === 'GROUP' &&
         n?.holderId === groupId &&
-        typeof n?.node === "string" &&
-        n.node.startsWith("weight.")
+        typeof n?.node === 'string' &&
+        n.node.startsWith('weight.')
       ) {
         idxs.push(i);
       }
@@ -875,7 +835,7 @@
       ...(nodes || []),
       makeNode({
         id: now + 2,
-        holderType: "GROUP",
+        holderType: 'GROUP',
         holderId: groupId,
         holderName: groupName,
         node: `weight.${w}`,
@@ -889,9 +849,7 @@
   }
 
   function groupNodesCount(groupId) {
-    return (nodes || []).filter(
-      (n) => n.holderType === "GROUP" && n.holderId === groupId,
-    ).length;
+    return (nodes || []).filter((n) => n.holderType === 'GROUP' && n.holderId === groupId).length;
   }
 
   function computeSelectedGroupParents(group, currentNodesList) {
@@ -900,13 +858,13 @@
     const directParentNames = (currentNodesList || [])
       .filter(
         (n) =>
-          n?.holderType === "GROUP" &&
+          n?.holderType === 'GROUP' &&
           n?.holderId === group.id &&
           n?.active !== false &&
-          typeof n?.node === "string" &&
-          n.node.startsWith("group."),
+          typeof n?.node === 'string' &&
+          n.node.startsWith('group.'),
       )
-      .map((n) => n.node.slice("group.".length))
+      .map((n) => n.node.slice('group.'.length))
       .filter((name) => name && name !== group.name);
 
     // except for the default group itself (default cannot have default as parent).
@@ -926,14 +884,12 @@
       .sort((a, b) => b.weight - a.weight || a.name.localeCompare(b.name));
   }
 
-  $: selectedGroupParents = selectedGroup
-    ? computeSelectedGroupParents(selectedGroup, nodes)
-    : [];
+  $: selectedGroupParents = selectedGroup ? computeSelectedGroupParents(selectedGroup, nodes) : [];
 
   function refreshCurrentNodes() {
     if (selectedGroup) {
       const real = (nodes || []).filter(
-        (n) => n.holderType === "GROUP" && n.holderId === selectedGroup.id,
+        (n) => n.holderType === 'GROUP' && n.holderId === selectedGroup.id,
       );
 
       currentNodes = [...real];
@@ -941,7 +897,7 @@
     }
     if (selectedUser) {
       currentNodes = (nodes || []).filter(
-        (n) => n.holderType === "USER" && n.holderId === selectedUser.id,
+        (n) => n.holderType === 'USER' && n.holderId === selectedUser.id,
       );
       return;
     }
@@ -950,14 +906,14 @@
 
   function addNode(holderType) {
     const now = Date.now();
-    if (holderType === "GROUP" && selectedGroup) {
+    if (holderType === 'GROUP' && selectedGroup) {
       // Use edit modal for creating a new node
       selectedNodeForEdit = {
         id: now, // temporary id for UI; server will remap on snapshot save
-        holderType: "GROUP",
+        holderType: 'GROUP',
         holderId: selectedGroup.id,
         holderName: selectedGroup.name,
-        node: "",
+        node: '',
         active: true,
         context: { pano: true },
         expiresAt: null,
@@ -970,13 +926,13 @@
       });
       return;
     }
-    if (holderType === "USER" && selectedUser) {
+    if (holderType === 'USER' && selectedUser) {
       selectedNodeForEdit = {
         id: now,
-        holderType: "USER",
+        holderType: 'USER',
         holderId: selectedUser.id,
         holderName: null,
-        node: "",
+        node: '',
         active: true,
         context: { pano: true },
         expiresAt: null,
@@ -996,9 +952,9 @@
     );
     // Keep group.displayName in sync when displayname node is toggled.
     if (
-      node?.holderType === "GROUP" &&
-      typeof node?.node === "string" &&
-      node.node.startsWith("displayname.")
+      node?.holderType === 'GROUP' &&
+      typeof node?.node === 'string' &&
+      node.node.startsWith('displayname.')
     ) {
       syncGroupDisplayNameFromNodes(node.holderId);
     }
@@ -1009,9 +965,9 @@
     nodes = (nodes || []).filter((n) => n.id !== node.id);
     // Keep group.displayName in sync when displayname node is removed.
     if (
-      node?.holderType === "GROUP" &&
-      typeof node?.node === "string" &&
-      node.node.startsWith("displayname.")
+      node?.holderType === 'GROUP' &&
+      typeof node?.node === 'string' &&
+      node.node.startsWith('displayname.')
     ) {
       syncGroupDisplayNameFromNodes(node.holderId);
     }
@@ -1024,9 +980,9 @@
   }
 
   function parseGroupDisplayNameNodeValue(nodeStr) {
-    if (typeof nodeStr !== "string") return null;
-    if (!nodeStr.startsWith("displayname.")) return null;
-    const v = String(nodeStr.slice("displayname.".length) || "").trim();
+    if (typeof nodeStr !== 'string') return null;
+    if (!nodeStr.startsWith('displayname.')) return null;
+    const v = String(nodeStr.slice('displayname.'.length) || '').trim();
     return v || null;
   }
 
@@ -1039,20 +995,18 @@
     // Pick the first ACTIVE displayname node if present.
     const dnNode = (nodes || []).find(
       (n) =>
-        n?.holderType === "GROUP" &&
+        n?.holderType === 'GROUP' &&
         n?.holderId === groupId &&
         n?.active !== false &&
-        typeof n?.node === "string" &&
-        n.node.startsWith("displayname."),
+        typeof n?.node === 'string' &&
+        n.node.startsWith('displayname.'),
     );
 
     const dn = dnNode ? parseGroupDisplayNameNodeValue(dnNode.node) : null;
-    const newDisplayName = (dn || group.name || "").trim();
+    const newDisplayName = (dn || group.name || '').trim();
 
     permissionGroups = (permissionGroups || []).map((g) =>
-      g?.id === groupId
-        ? { ...g, displayName: newDisplayName, updatedAt: Date.now() }
-        : g,
+      g?.id === groupId ? { ...g, displayName: newDisplayName, updatedAt: Date.now() } : g,
     );
 
     if (selectedGroup?.id === groupId) {
@@ -1067,9 +1021,9 @@
   // Modal callbacks are wired once below via setCallback(...)
 
   async function loadSnapshot() {
-    const res = await ApiUtil.get({ path: "/api/panel/permission/snapshot" });
+    const res = await ApiUtil.get({ path: '/api/panel/permission/snapshot' });
     if (res?.error) {
-      console.error("Failed to load snapshot:", res.error);
+      console.error('Failed to load snapshot:', res.error);
       return;
     }
     snapshot = res;
@@ -1092,7 +1046,7 @@
     const now = Date.now();
     for (const g of permissionGroups || []) {
       if (!g?.id) continue;
-      const dn = String(g.displayName || g.name || "").trim();
+      const dn = String(g.displayName || g.name || '').trim();
       upsertGroupDisplayNameNode({
         groupId: g.id,
         groupName: g.name,
@@ -1107,18 +1061,18 @@
       nodes,
     };
     const res = await ApiUtil.post({
-      path: "/api/panel/permission/snapshot",
+      path: '/api/panel/permission/snapshot',
       body,
     });
     if (res?.error) {
-      console.error("Failed to save snapshot:", res.error);
-      await showToast("components.toasts.settings-save-error", {
-        errorCode: $_("errors." + res.error),
+      console.error('Failed to save snapshot:', res.error);
+      await showToast('components.toasts.settings-save-error', {
+        errorCode: $_('errors.' + res.error),
       });
       return;
     }
     await loadSnapshot();
-    await showToast("components.toasts.settings-save-success");
+    await showToast('components.toasts.settings-save-success');
   }
 
   function createGroup() {
@@ -1139,19 +1093,19 @@
     const parentNames = (nodes || [])
       .filter(
         (n) =>
-          n?.holderType === "GROUP" &&
+          n?.holderType === 'GROUP' &&
           n?.holderId === selectedGroup.id &&
           n?.active !== false &&
-          typeof n?.node === "string" &&
-          n.node.startsWith("group."),
+          typeof n?.node === 'string' &&
+          n.node.startsWith('group.'),
       )
-      .map((n) => n.node.slice("group.".length))
+      .map((n) => n.node.slice('group.'.length))
       .filter(Boolean);
 
     newGroup = {
-      name: selectedGroup.name || "",
+      name: selectedGroup.name || '',
       weight: getGroupWeight(selectedGroup, nodes),
-      displayName: selectedGroup.displayName || "",
+      displayName: selectedGroup.displayName || '',
       parents: Array.from(new Set(parentNames)),
     };
 
@@ -1186,19 +1140,19 @@
       // This is a USER-held node like: "group.default"
       const hasAnyDirectGroupNode = (nodes || []).some(
         (n) =>
-          n?.holderType === "USER" &&
+          n?.holderType === 'USER' &&
           n?.holderId === u.id &&
           n?.active !== false &&
-          typeof n?.node === "string" &&
-          n.node.startsWith("group."),
+          typeof n?.node === 'string' &&
+          n.node.startsWith('group.'),
       );
 
       const hasDefaultGroupNode = (nodes || []).some(
         (n) =>
-          n?.holderType === "USER" &&
+          n?.holderType === 'USER' &&
           n?.holderId === u.id &&
-          typeof n?.node === "string" &&
-          n.node === "group.default" &&
+          typeof n?.node === 'string' &&
+          n.node === 'group.default' &&
           n?.active !== false,
       );
 
@@ -1211,10 +1165,10 @@
           ...(nodes || []),
           makeNode({
             id: tempId,
-            holderType: "USER",
+            holderType: 'USER',
             holderId: u.id,
             holderName: null,
-            node: "group.default",
+            node: 'group.default',
             active: true,
             context: { pano: true },
             expiresAt: null,
@@ -1245,7 +1199,7 @@
   async function showRemoveUserModal(u) {
     if (!u) return;
     if (isSelfUser(u)) {
-      await showToast("components.toasts.settings-save-error", {
+      await showToast('components.toasts.settings-save-error', {
         errorCode: "You can't remove yourself.",
       });
       return;
@@ -1257,9 +1211,7 @@
     if (!u) return;
 
     users = (users || []).filter((x) => x.id !== u.id);
-    nodes = (nodes || []).filter(
-      (n) => !(n.holderType === "USER" && n.holderId === u.id),
-    );
+    nodes = (nodes || []).filter((n) => !(n.holderType === 'USER' && n.holderId === u.id));
 
     if (selectedUser && selectedUser.id === u.id) {
       selectedUser = null;
@@ -1275,26 +1227,22 @@
 
   function showRemoveGroupModal() {
     if (!selectedGroup) return;
-    if (selectedGroup.name === "default") return;
+    if (selectedGroup.name === 'default') return;
     showConfirmRemovePermGroupModal(selectedGroup);
   }
 
   function removeGroupConfirmed(groupToRemove) {
     if (!groupToRemove) return;
-    if (groupToRemove.name === "default") return;
+    if (groupToRemove.name === 'default') return;
 
     const removedName = groupToRemove.name;
     const removedId = groupToRemove.id;
 
     // Remove group from source list
-    permissionGroups = (permissionGroups || []).filter(
-      (g) => g.id !== removedId,
-    );
+    permissionGroups = (permissionGroups || []).filter((g) => g.id !== removedId);
 
     // Remove group-held nodes
-    nodes = (nodes || []).filter(
-      (n) => !(n.holderType === "GROUP" && n.holderId === removedId),
-    );
+    nodes = (nodes || []).filter((n) => !(n.holderType === 'GROUP' && n.holderId === removedId));
 
     // Remove from tracks membership lists
     tracks = (tracks || []).map((t) => ({
@@ -1310,9 +1258,9 @@
 
   function emptyGroupForm() {
     return {
-      name: "",
+      name: '',
       weight: 0,
-      displayName: "",
+      displayName: '',
       parents: [],
     };
   }
@@ -1352,7 +1300,7 @@
       out.push(
         makeNode({
           id: now + 100 + i,
-          holderType: "GROUP",
+          holderType: 'GROUP',
           holderId: groupId,
           holderName: groupName,
           node: `group.${parent}`,
@@ -1365,18 +1313,18 @@
     return out;
   }
 
-  const norm = (v) => String(v || "").toLocaleLowerCase($currentLanguage?.code);
+  const norm = (v) => String(v || '').toLocaleLowerCase($currentLanguage?.code);
 
   function nodeSearchText(n) {
-    if (!n || typeof n !== "object") return "";
+    if (!n || typeof n !== 'object') return '';
     const parts = [
       n.holderType,
       n.holderName,
       n.node,
       // context can help searching for server/world/etc filters
-      n.context ? JSON.stringify(n.context) : "",
+      n.context ? JSON.stringify(n.context) : '',
     ];
-    return norm(parts.filter(Boolean).join(" "));
+    return norm(parts.filter(Boolean).join(' '));
   }
 
   function nodeMatchesQuery(n, q) {
@@ -1386,10 +1334,9 @@
   const sortGroups = (gs, currentNodesList) =>
     [...(gs || [])].sort(
       (a, b) =>
-        getGroupWeight(b, currentNodesList) -
-          getGroupWeight(a, currentNodesList) ||
-        String(a?.name ?? "").localeCompare(String(b?.name ?? ""), undefined, {
-          sensitivity: "base",
+        getGroupWeight(b, currentNodesList) - getGroupWeight(a, currentNodesList) ||
+        String(a?.name ?? '').localeCompare(String(b?.name ?? ''), undefined, {
+          sensitivity: 'base',
         }),
     );
 
@@ -1412,9 +1359,7 @@
 
       // Edit existing group
       if (editingGroupId != null) {
-        const existing = (permissionGroups || []).find(
-          (g) => g.id === editingGroupId,
-        );
+        const existing = (permissionGroups || []).find((g) => g.id === editingGroupId);
         if (!existing) {
           editingGroupId = null;
           return;
@@ -1422,9 +1367,7 @@
 
         const oldName = existing.name;
         const weight = normalizeWeight(groupData.weight);
-        const parents = Array.from(
-          new Set([...(groupData.parents || [])].filter(Boolean)),
-        );
+        const parents = Array.from(new Set([...(groupData.parents || [])].filter(Boolean)));
         const updatedGroup = {
           ...existing,
           name: groupData.name,
@@ -1441,16 +1384,16 @@
         nodes = (nodes || []).filter(
           (n) =>
             !(
-              n.holderType === "GROUP" &&
+              n.holderType === 'GROUP' &&
               n.holderId === editingGroupId &&
-              typeof n.node === "string" &&
-              n.node.startsWith("group.")
+              typeof n.node === 'string' &&
+              n.node.startsWith('group.')
             ),
         );
 
         // Update holderName for remaining group-held nodes
         nodes = (nodes || []).map((n) =>
-          n.holderType === "GROUP" && n.holderId === editingGroupId
+          n.holderType === 'GROUP' && n.holderId === editingGroupId
             ? { ...n, holderName: updatedGroup.name }
             : n,
         );
@@ -1483,9 +1426,7 @@
         if (oldName && oldName !== updatedGroup.name) {
           tracks = (tracks || []).map((t) => ({
             ...t,
-            groupNames: (t.groupNames || []).map((gn) =>
-              gn === oldName ? updatedGroup.name : gn,
-            ),
+            groupNames: (t.groupNames || []).map((gn) => (gn === oldName ? updatedGroup.name : gn)),
           }));
         }
 
@@ -1497,12 +1438,9 @@
 
       const weight = normalizeWeight(groupData.weight);
       const parents = (() => {
-        const base = Array.from(
-          new Set([...(groupData.parents || [])].filter(Boolean)),
-        );
+        const base = Array.from(new Set([...(groupData.parents || [])].filter(Boolean)));
         // Ensure every newly created group inherits from default (except the default group itself).
-        if (groupData?.name !== "default" && !base.includes("default"))
-          base.push("default");
+        if (groupData?.name !== 'default' && !base.includes('default')) base.push('default');
         return base;
       })();
       const newGroupData = {
@@ -1548,7 +1486,7 @@
       showUsers = false;
       selectGroup(newGroupData);
     } catch (error) {
-      console.error("Error creating group:", error);
+      console.error('Error creating group:', error);
     }
   }
 
@@ -1558,10 +1496,8 @@
     const newTrack = {
       id: now,
       name: trackData.name,
-      description: trackData.description || "",
-      groupNames: Array.isArray(trackData.groupNames)
-        ? trackData.groupNames
-        : [],
+      description: trackData.description || '',
+      groupNames: Array.isArray(trackData.groupNames) ? trackData.groupNames : [],
       createdAt: now,
       updatedAt: now,
     };
@@ -1591,16 +1527,14 @@
     if (idx === -1) {
       nodes = [...(nodes || []), updatedNode];
     } else {
-      nodes = (nodes || []).map((n) =>
-        n.id === updatedNode.id ? updatedNode : n,
-      );
+      nodes = (nodes || []).map((n) => (n.id === updatedNode.id ? updatedNode : n));
     }
 
     // If a group displayname node changed, update the group's displayName immediately.
     if (
-      updatedNode?.holderType === "GROUP" &&
-      typeof updatedNode?.node === "string" &&
-      updatedNode.node.startsWith("displayname.")
+      updatedNode?.holderType === 'GROUP' &&
+      typeof updatedNode?.node === 'string' &&
+      updatedNode.node.startsWith('displayname.')
     ) {
       syncGroupDisplayNameFromNodes(updatedNode.holderId);
     }
@@ -1634,8 +1568,7 @@
 
     if (
       selectedTrack &&
-      ((rid != null && selectedTrack.id === rid) ||
-        (rid == null && selectedTrack.name === rname))
+      ((rid != null && selectedTrack.id === rid) || (rid == null && selectedTrack.name === rname))
     ) {
       selectedTrack = null;
     }
@@ -1660,7 +1593,7 @@
     const hasQ = !!q;
     const groupDisplayByName = new Map(
       (permissionGroups || []).map((g) => [
-        String(g?.name || "").trim(),
+        String(g?.name || '').trim(),
         norm(g?.displayName || g?.name),
       ]),
     );
@@ -1673,10 +1606,7 @@
             if (groupText.includes(q)) return true;
             if (gid == null) return false;
             return (nodes || []).some(
-              (n) =>
-                n?.holderType === "GROUP" &&
-                n?.holderId === gid &&
-                nodeMatchesQuery(n, q),
+              (n) => n?.holderType === 'GROUP' && n?.holderId === gid && nodeMatchesQuery(n, q),
             );
           })
         : permissionGroups,
@@ -1688,15 +1618,14 @@
           const base = `${norm(t?.name)} ${norm(t?.description)}`;
           if (base.includes(q)) return true;
 
-          if (!Array.isArray(t?.groupNames) || t.groupNames.length === 0)
-            return false;
+          if (!Array.isArray(t?.groupNames) || t.groupNames.length === 0) return false;
 
           // match by group name OR group displayName
           return t.groupNames.some((gn) => {
-            const name = String(gn || "").trim();
+            const name = String(gn || '').trim();
             if (!name) return false;
             if (norm(name).includes(q)) return true;
-            const display = groupDisplayByName.get(name) || "";
+            const display = groupDisplayByName.get(name) || '';
             return !!display && display.includes(q);
           });
         })
@@ -1707,17 +1636,10 @@
           const uid = u?.id;
           const base = norm(u?.username);
           if (base.includes(q)) return true;
-          if (
-            Array.isArray(u?.groups) &&
-            u.groups.some((g) => norm(g).includes(q))
-          )
-            return true;
+          if (Array.isArray(u?.groups) && u.groups.some((g) => norm(g).includes(q))) return true;
           if (uid == null) return false;
           return (nodes || []).some(
-            (n) =>
-              n?.holderType === "USER" &&
-              n?.holderId === uid &&
-              nodeMatchesQuery(n, q),
+            (n) => n?.holderType === 'USER' && n?.holderId === uid && nodeMatchesQuery(n, q),
           );
         })
       : users || [];

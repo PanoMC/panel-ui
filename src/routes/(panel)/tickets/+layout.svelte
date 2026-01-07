@@ -3,5 +3,5 @@
 </Layout>
 
 <script>
-  import Layout from "$lib/layouts/TicketsLayout.svelte";
+  import Layout from '$lib/layouts/TicketsLayout.svelte';
 </script>

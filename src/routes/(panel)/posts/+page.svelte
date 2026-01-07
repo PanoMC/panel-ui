@@ -1,7 +1,7 @@
-<Posts data="{data}" />
+<Posts {data} />
 
 <script>
-  import Posts from "$lib/pages/Posts.svelte";
+  import Posts from '$lib/pages/Posts.svelte';
 
   export let data;
 </script>

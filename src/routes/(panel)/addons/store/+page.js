@@ -1,4 +1,4 @@
-import { load as loadStore, PageTypes } from "$lib/pages/StoreLoading.svelte";
+import { load as loadStore, PageTypes } from '$lib/pages/StoreLoading.svelte';
 
 /**
  * @type {import('@sveltejs/kit').PageLoad}

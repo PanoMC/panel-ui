@@ -1,4 +1,4 @@
-import { load as loadPostEditor, Modes } from "$lib/pages/PostEditor.svelte";
+import { load as loadPostEditor, Modes } from '$lib/pages/PostEditor.svelte';
 
 /**
  * @type {import('@sveltejs/kit').PageLoad}

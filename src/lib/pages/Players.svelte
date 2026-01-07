@@ -4,10 +4,10 @@
   <PageActions leftClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
-      <CardMenuItem href="/players" matchingList="{['/players?pageType=HAS_PERM', '/players']}">
-        {$_("buttons.players")}</CardMenuItem>
-      <CardMenuItem href="/players?pageType=BANNED" matchingList="{['/players?pageType=BANNED']}">
-        {$_("buttons.bans")}</CardMenuItem>
+      <CardMenuItem href="/players" matchingList={['/players?pageType=HAS_PERM', '/players']}>
+        {$_('buttons.players')}</CardMenuItem>
+      <CardMenuItem href="/players?pageType=BANNED" matchingList={['/players?pageType=BANNED']}>
+        {$_('buttons.bans')}</CardMenuItem>
     </CardMenu>
     <div slot="right">
       <a href="{base}/settings/migration" class="btn btn-secondary">
@@ -21,15 +21,15 @@
   <div class="card">
     <CardHeader>
       <div slot="left">
-        {$_("pages.players.table-title", {
+        {$_('pages.players.table-title', {
           values: {
             playerCount: data.playerCount,
             pageType:
               data.pageType === PageTypes.HAS_PERM
-                ? $_("pages.players.authorized") + " "
+                ? $_('pages.players.authorized') + ' '
                 : data.pageType === PageTypes.BANNED
-                  ? $_("pages.players.banned") + " "
-                  : "",
+                  ? $_('pages.players.banned') + ' '
+                  : '',
           },
         })}
       </div>
@@ -38,15 +38,13 @@
       <CardFilters slot="right">
         {#if !data.permissionGroup}
           <!-- Filters -->
-          <CardFiltersItem
-            href="/players"
-            active={data.pageType === PageTypes.ALL}>
-            {$_("pages.players.all")}
+          <CardFiltersItem href="/players" active={data.pageType === PageTypes.ALL}>
+            {$_('pages.players.all')}
           </CardFiltersItem>
           <CardFiltersItem
             href="/players?pageType=HAS_PERM"
             active={data.pageType === PageTypes.HAS_PERM}>
-            {$_("pages.players.authorized")}
+            {$_('pages.players.authorized')}
           </CardFiltersItem>
         {/if}
       </CardFilters>
@@ -62,30 +60,28 @@
           <thead>
             <tr>
               <th class="align-middle text-nowrap" scope="col"></th>
-              <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.players.table.name")}</th>
+              <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.name')}</th>
               <th
                 class="align-middle text-nowrap"
                 scope="col"
                 class:table-active={data.permissionGroup}
-                >{$_("pages.players.table.perm-group")}</th>
+                >{$_('pages.players.table.perm-group')}</th>
               <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.players.table.status")}</th>
+                >{$_('pages.players.table.status')}</th>
               <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.players.table.last-login")}</th>
+                >{$_('pages.players.table.last-login')}</th>
               <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.players.table.register-date")}</th>
+                >{$_('pages.players.table.register-date')}</th>
             </tr>
           </thead>
           <tbody>
             {#each data.players as player, index (player)}
               <PlayerRow
-                player={player}
-                checkTime={checkTime}
+                {player}
+                {checkTime}
                 on:showEditPlayerModalClick={(event) =>
                   onShowEditPlayerModalClick(event.detail.player)}
-                on:showBanPlayerModalClick={(event) =>
-                  showBanPlayerModalClick(event.detail.player)}
+                on:showBanPlayerModalClick={(event) => showBanPlayerModalClick(event.detail.player)}
                 on:showUnbanPlayerModalClick={(event) =>
                   showUnbanPlayerModalClick(event.detail.player)} />
             {/each}
@@ -106,14 +102,14 @@
 </div>
 
 <script context="module">
-  import { error } from "@sveltejs/kit";
+  import { error } from '@sveltejs/kit';
 
-  import ApiUtil, { buildQueryParams } from "$lib/api.util";
+  import ApiUtil, { buildQueryParams } from '$lib/api.util';
 
   export const PageTypes = Object.freeze({
-    ALL: "ALL",
-    HAS_PERM: "HAS_PERM",
-    BANNED: "BANNED",
+    ALL: 'ALL',
+    HAS_PERM: 'HAS_PERM',
+    BANNED: 'BANNED',
   });
 
   export const DefaultPageType = PageTypes.ALL;
@@ -128,12 +124,12 @@
     } = event;
     await parent();
 
-    const page = parseInt(searchParams.get("page")) || 1;
-    const permissionGroup = searchParams.get("permissionGroup");
-    const pageType = searchParams.get("pageType") || DefaultPageType;
+    const page = parseInt(searchParams.get('page')) || 1;
+    const permissionGroup = searchParams.get('permissionGroup');
+    const pageType = searchParams.get('pageType') || DefaultPageType;
 
     if (!Object.values(PageTypes).includes(pageType)) {
-      throw error(404, "PAGE_NOT_FOUND");
+      throw error(404, 'PAGE_NOT_FOUND');
     }
 
     const queryParams = buildQueryParams({
@@ -148,7 +144,7 @@
     });
 
     if (body.error) {
-      if (body.error === "PAGE_NOT_FOUND") {
+      if (body.error === 'PAGE_NOT_FOUND') {
         throw error(404, body.error);
       }
 
@@ -163,65 +159,64 @@
 </script>
 
 <script>
-  import { getContext, onDestroy, onMount } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext, onDestroy, onMount } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { goto } from "$app/navigation";
-  import { base } from "$app/paths";
+  import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
 
-  import Pagination from "$lib/component/Pagination.svelte";
+  import Pagination from '$lib/component/Pagination.svelte';
 
   import {
     show as showEditPlayerModal,
     setCallback as setEditPlayerModalCallback,
     onHide as onEditPlayerModalHide,
-  } from "$lib/component/modals/EditPlayerModal.svelte";
+  } from '$lib/component/modals/EditPlayerModal.svelte';
   import {
     show as showConfirmBanPlayerModal,
     setCallback as setConfirmBanPlayerModalCallback,
     onHide as onConfirmBanPlayerModalHide,
-  } from "$lib/component/modals/ConfirmBanPlayerModal.svelte";
+  } from '$lib/component/modals/ConfirmBanPlayerModal.svelte';
   import {
     show as showUnbanPlayerModal,
     setCallback as setUnbanPlayerModalCallback,
     onHide as onUnbanPlayerModalHide,
-  } from "$lib/component/modals/UnbanPlayerModal.svelte";
+  } from '$lib/component/modals/UnbanPlayerModal.svelte';
 
-  import PlayerRow from "$lib/component/rows/PlayerRow.svelte";
+  import PlayerRow from '$lib/component/rows/PlayerRow.svelte';
 
-  import NoContent from "$lib/component/NoContent.svelte";
-  import { hasPermission, Permissions } from "$lib/auth.util.js";
-  import PageActions from "$lib/component/PageActions.svelte";
-  import CardHeader from "$lib/component/CardHeader.svelte";
-  import CardFiltersItem from "$lib/component/CardFiltersItem.svelte";
-  import CardFilters from "$lib/component/CardFilters.svelte";
-  import CardMenu from "$lib/component/CardMenu.svelte";
-  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
+  import NoContent from '$lib/component/NoContent.svelte';
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import PageActions from '$lib/component/PageActions.svelte';
+  import CardHeader from '$lib/component/CardHeader.svelte';
+  import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
+  import CardFilters from '$lib/component/CardFilters.svelte';
+  import CardMenu from '$lib/component/CardMenu.svelte';
+  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
 
   export let data;
 
   let checkTime = 0;
   let interval;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
   $: {
     pageTitle.set(
       data.permissionGroup
-        ? $_("pages.players.by-perm-group-title", {
+        ? $_('pages.players.by-perm-group-title', {
             values: {
-              permissionGroupName:
-                data.permissionGroup.displayName || data.permissionGroup.name,
+              permissionGroupName: data.permissionGroup.displayName || data.permissionGroup.name,
             },
           })
-        : $_("pages.players.title", {
+        : $_('pages.players.title', {
             values: {
               pageType:
                 data.pageType === PageTypes.HAS_PERM
-                  ? $_("pages.players.authorized") + " "
+                  ? $_('pages.players.authorized') + ' '
                   : data.pageType === PageTypes.BANNED
-                    ? $_("pages.players.banned") + " "
-                    : "",
+                    ? $_('pages.players.banned') + ' '
+                    : '',
             },
           }),
     );

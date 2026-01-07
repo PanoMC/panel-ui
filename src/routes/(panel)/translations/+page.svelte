@@ -1,7 +1,7 @@
-<Translations data="{data}" />
+<Translations {data} />
 
 <script>
-  import Translations from "$lib/pages/Translations.svelte";
+  import Translations from '$lib/pages/Translations.svelte';
 
   export let data;
 </script>

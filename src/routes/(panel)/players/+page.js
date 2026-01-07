@@ -1,1 +1,1 @@
-export { load } from "$lib/pages/Players.svelte";
+export { load } from '$lib/pages/Players.svelte';

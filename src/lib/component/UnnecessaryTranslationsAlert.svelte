@@ -1,14 +1,10 @@
-<div
-  class="alert alert-warning animate__animated animate__slideInUp"
-  role="alert">
-  <details open={open}>
-    <summary>
-      These translations are not used anymore, you can delete them:
-    </summary>
+<div class="alert alert-warning animate__animated animate__slideInUp" role="alert">
+  <details {open}>
+    <summary> These translations are not used anymore, you can delete them: </summary>
     {#each translations as translation, index (translation)}
       <TranslationRow
-        translation={translation}
-        pluginId={pluginId}
+        {translation}
+        {pluginId}
         on:customInputChange={handleCustomInputChange}
         on:deleteClick={handleOnDeleteClick} />
     {/each}
@@ -16,9 +12,9 @@
 </div>
 
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from 'svelte';
 
-  import TranslationRow from "$lib/component/rows/TranslationRow.svelte";
+  import TranslationRow from '$lib/component/rows/TranslationRow.svelte';
 
   export let translations;
   export let pluginId;
@@ -29,7 +25,7 @@
   function handleCustomInputChange(event) {
     const { key, value } = event.detail;
 
-    dispatch("customInputChange", {
+    dispatch('customInputChange', {
       key,
       value,
     });
@@ -38,6 +34,6 @@
   function handleOnDeleteClick(event) {
     const { key } = event.detail;
 
-    dispatch("deleteClick", { key });
+    dispatch('deleteClick', { key });
   }
 </script>

@@ -1,1 +1,1 @@
-export { load } from "$lib/layouts/PermissionsLayout.svelte";
+export { load } from '$lib/layouts/PermissionsLayout.svelte';

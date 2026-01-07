@@ -1,6 +1,6 @@
 <a
   class="badge rounded-pill text-bg-secondary focus-ring text-decoration-none"
-  title={$_("components.player-permission-badge.filter")}
+  title={$_('components.player-permission-badge.filter')}
   href="{base}/players?permissionGroup={permissionGroup.name}">
   {permissionGroup.displayName.capitalize()}
 </a>
@@ -12,9 +12,9 @@
 </script>
 
 <script>
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
-  import { base } from "$app/paths";
+  import { base } from '$app/paths';
 
   export let permissionGroup;
 

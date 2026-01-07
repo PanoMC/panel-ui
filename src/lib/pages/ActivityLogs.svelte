@@ -6,7 +6,7 @@
     {:else}
       <div class="list-group list-group-flush">
         {#each data.logs as log, index (log)}
-          <ActivityLogRow log="{log}" on:click={onShowViewActivityLogModalClick}/>
+          <ActivityLogRow {log} on:click={onShowViewActivityLogModalClick} />
         {/each}
       </div>
     {/if}
@@ -22,11 +22,11 @@
   </div>
 </div>
 
-<ViewActivityLogModal/>
+<ViewActivityLogModal />
 
 <script context="module">
-  import ApiUtil from "$lib/api.util.js";
-  import { error } from "@sveltejs/kit";
+  import ApiUtil from '$lib/api.util.js';
+  import { error } from '@sveltejs/kit';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -38,7 +38,7 @@
     } = event;
     await parent();
 
-    const page = parseInt(searchParams.get("page")) || 1;
+    const page = parseInt(searchParams.get('page')) || 1;
 
     const queryParams = buildQueryParams({
       page,
@@ -50,7 +50,7 @@
     });
 
     if (body.error) {
-      if (body.error === "PAGE_NOT_FOUND") {
+      if (body.error === 'PAGE_NOT_FOUND') {
         throw error(404, body.error);
       }
 
@@ -62,26 +62,26 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { goto } from "$app/navigation";
+  import { goto } from '$app/navigation';
 
-  import { buildQueryParams } from "$lib/api.util.js";
+  import { buildQueryParams } from '$lib/api.util.js';
 
-  import Pagination from "$lib/component/Pagination.svelte";
-  import NoContent from "$lib/component/NoContent.svelte";
-  import ActivityLogRow from "$lib/component/rows/ActivityLogRow.svelte";
+  import Pagination from '$lib/component/Pagination.svelte';
+  import NoContent from '$lib/component/NoContent.svelte';
+  import ActivityLogRow from '$lib/component/rows/ActivityLogRow.svelte';
   import ViewActivityLogModal, {
     show as showViewActivityLogModal,
     onHide as onViewActivityLogModalHide,
-  } from "$lib/component/modals/ViewActivityLogModal.svelte";
+  } from '$lib/component/modals/ViewActivityLogModal.svelte';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
-  pageTitle.set("pages.activity-logs.title");
+  pageTitle.set('pages.activity-logs.title');
 
   async function refreshData() {
     const queryParams = buildQueryParams({
@@ -98,20 +98,20 @@
   }
 
   function onShowViewActivityLogModalClick(event) {
-    const log = event.detail.log
+    const log = event.detail.log;
 
     log.selected = true;
 
-    data.logs = data.logs
+    data.logs = data.logs;
 
     showViewActivityLogModal(log);
   }
 
   onViewActivityLogModalHide((log) => {
-    const _log = data.logs.find((_log) => _log.id === log.id)
+    const _log = data.logs.find((_log) => _log.id === log.id);
 
     _log.selected = false;
 
-    data.logs = data.logs
+    data.logs = data.logs;
   });
 </script>

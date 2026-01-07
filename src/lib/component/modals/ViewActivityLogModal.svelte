@@ -1,8 +1,4 @@
-<div
-  aria-hidden="true"
-  class="modal fade"
-  bind:this="{$modalElement}"
-  role="dialog">
+<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -10,14 +6,15 @@
         <button
           type="button"
           class="btn-close"
-          aria-label="{$_('buttons.close')}"
-          title="{$_('buttons.close')}"
-          onclick="{hide}"></button>
+          aria-label={$_('buttons.close')}
+          title={$_('buttons.close')}
+          onclick={hide}></button>
       </div>
       <div class="modal-body">
-        <label for="activityLogJson" class="form-label">{$_('components.modals.view-activity-log.json')}</label>
+        <label for="activityLogJson" class="form-label"
+          >{$_('components.modals.view-activity-log.json')}</label>
         <textarea
-        id="activityLogJson"
+          id="activityLogJson"
           name="activityLogJson"
           class="form-control"
           value={JSON.stringify($activityLog.details, null, 2)}
@@ -29,7 +26,7 @@
 </div>
 
 <script context="module">
-  import { get, writable } from "svelte/store";
+  import { get, writable } from 'svelte/store';
 
   const modalElement = writable();
 
@@ -42,7 +39,7 @@
     activityLog.set({ ..._activityLog });
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
 
@@ -65,5 +62,5 @@
 </script>
 
 <script>
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 </script>

@@ -1,13 +1,17 @@
 import {
   COOKIE_PREFIX,
   JWT_COOKIE_NAME,
-  CSRF_TOKEN_COOKIE_NAME, updateApiUrl, API_URL, updatePanoWebsiteUrl, updatePanoWebsiteApiUrl
-} from "$lib/variables";
+  CSRF_TOKEN_COOKIE_NAME,
+  updateApiUrl,
+  API_URL,
+  updatePanoWebsiteUrl,
+  updatePanoWebsiteApiUrl,
+} from '$lib/variables';
 
-import ApiUtil, { networkErrorBody } from "$lib/api.util.js";
+import ApiUtil, { networkErrorBody } from '$lib/api.util.js';
 
 async function fetchBasicData(token, csrfToken) {
-  return ApiUtil.get({ path: "/api/panel/basicData", token, csrfToken }).catch(
+  return ApiUtil.get({ path: '/api/panel/basicData', token, csrfToken }).catch(
     () => networkErrorBody,
   );
 }
@@ -32,12 +36,12 @@ export async function handle({ event, event: { cookies }, resolve }) {
 
   if (panoWebsiteUrlEnv) {
     updatePanoWebsiteUrl(panoWebsiteUrlEnv);
-    locals.panoWebsiteUrlEnv = panoWebsiteUrlEnv
+    locals.panoWebsiteUrlEnv = panoWebsiteUrlEnv;
   }
 
   if (panoWebsiteApiUrlEnv) {
     updatePanoWebsiteApiUrl(panoWebsiteApiUrlEnv);
-    locals.panoWebsiteApiUrlEnv = panoWebsiteApiUrlEnv
+    locals.panoWebsiteApiUrlEnv = panoWebsiteApiUrlEnv;
   }
 
   const jwt = cookies.get([COOKIE_PREFIX + JWT_COOKIE_NAME]);
@@ -57,7 +61,7 @@ export async function handle({ event, event: { cookies }, resolve }) {
 export async function handleFetch({ event, request, fetch }) {
   if (request.url.startsWith(API_URL)) {
     request.headers.set('cookie', event.request.headers.get('cookie'));
-    request.headers.set("Origin", API_URL);
+    request.headers.set('Origin', API_URL);
   }
 
   return fetch(request);

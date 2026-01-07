@@ -1,10 +1,5 @@
 <!-- Connect Server Modal -->
-<div
-  aria-hidden="true"
-  class="modal modal fade"
-  id="connectServer"
-  role="document"
-  tabindex="-1">
+<div aria-hidden="true" class="modal modal fade" id="connectServer" role="document" tabindex="-1">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -19,12 +14,8 @@
               </span>
             {:else}
               <input
-                title={$_(
-                  "components.modals.connect-server.toggle-connect-server",
-                )}
-                aria-label={$_(
-                  "components.modals.connect-server.toggle-connect-server",
-                )}
+                title={$_('components.modals.connect-server.toggle-connect-server')}
+                aria-label={$_('components.modals.connect-server.toggle-connect-server')}
                 class="form-check-input"
                 type="checkbox"
                 id="toggleConnectServer"
@@ -35,22 +26,22 @@
             {/if}
           </div>
           <h5 class="modal-title">
-            {$_("components.modals.connect-server.title")}
+            {$_('components.modals.connect-server.title')}
           </h5>
         </div>
 
         <button
           class="btn-close"
-          aria-label={$_("buttons.close")}
+          aria-label={$_('buttons.close')}
           data-bs-dismiss="modal"
-          title={$_("buttons.close")}
+          title={$_('buttons.close')}
           type="button">
         </button>
       </div>
       <div class="modal-body" class:opacity-50={!acceptPluginAuth}>
         <ol class="list-group list-group-numbered">
           <li class="list-group-item">
-            {$_("components.modals.connect-server.steps.1")}
+            {$_('components.modals.connect-server.steps.1')}
             <br />
             <a
               class="btn btn-secondary mt-2 d-block shadow-none"
@@ -58,16 +49,16 @@
               target="_blank"
               tabindex={acceptPluginAuth ? 0 : -1}
               class:disabled={!acceptPluginAuth}
-              >{$_("buttons.download")}
+              >{$_('buttons.download')}
               <i class="fa fa-external-link ms-2"></i></a>
           </li>
 
           <li class="list-group-item">
-            {$_("components.modals.connect-server.steps.2")}
+            {$_('components.modals.connect-server.steps.2')}
             <br />
             {#if acceptPluginAuth}
               <small class="">
-                {$_("components.modals.connect-server.code-refresh", {
+                {$_('components.modals.connect-server.code-refresh', {
                   values: { timeToRefreshKey },
                 })}
               </small>
@@ -79,7 +70,7 @@
                       class="nav-link"
                       class:active={!isRemoteConnection}
                       disabled={!acceptPluginAuth}
-                      on:click={() => isRemoteConnection = false}>
+                      on:click={() => (isRemoteConnection = false)}>
                       {$_('buttons.local')}
                     </button>
                   </li>
@@ -89,7 +80,7 @@
                       class="nav-link"
                       class:active={isRemoteConnection}
                       disabled={!acceptPluginAuth}
-                      on:click={() => isRemoteConnection = true}>
+                      on:click={() => (isRemoteConnection = true)}>
                       {$_('buttons.remote')}
                     </button>
                   </li>
@@ -109,13 +100,13 @@
                 disabled={!acceptPluginAuth}
                 on:click={() => onCopyCommandText(false)}
                 aria-label={isCommandTextCopied
-                  ? $_("components.modals.connect-server.copied")
-                  : $_("components.modals.connect-server.copy")}
+                  ? $_('components.modals.connect-server.copied')
+                  : $_('components.modals.connect-server.copy')}
                 use:tooltip={[
                   isCommandTextCopied
-                    ? $_("components.modals.connect-server.copied")
-                    : $_("components.modals.connect-server.copy"),
-                  { placement: "bottom", hideOnClick: false },
+                    ? $_('components.modals.connect-server.copied')
+                    : $_('components.modals.connect-server.copy'),
+                  { placement: 'bottom', hideOnClick: false },
                 ]}>
                 <i class="fa-regular fa-clipboard"></i>
               </button>
@@ -125,13 +116,13 @@
                 disabled={!acceptPluginAuth}
                 on:click={() => onCopyCommandText(true)}
                 aria-label={isCommandTextForConsoleCopied
-                  ? $_("components.modals.connect-server.copied")
-                  : $_("components.modals.connect-server.copy-for-console")}
+                  ? $_('components.modals.connect-server.copied')
+                  : $_('components.modals.connect-server.copy-for-console')}
                 use:tooltip={[
                   isCommandTextForConsoleCopied
-                    ? $_("components.modals.connect-server.copied")
-                    : $_("components.modals.connect-server.copy-for-console"),
-                  { placement: "bottom", hideOnClick: false },
+                    ? $_('components.modals.connect-server.copied')
+                    : $_('components.modals.connect-server.copy-for-console'),
+                  { placement: 'bottom', hideOnClick: false },
                 ]}>
                 <i class="fa-solid fa-terminal"></i>
               </button>
@@ -139,10 +130,10 @@
           </li>
 
           <li class="list-group-item">
-            {$_("components.modals.connect-server.steps.3")}
+            {$_('components.modals.connect-server.steps.3')}
             <br />
             <small class="">
-              {$_("components.modals.connect-server.notification-will-come")}
+              {$_('components.modals.connect-server.notification-will-come')}
             </small>
           </li>
         </ol>
@@ -152,25 +143,25 @@
 </div>
 
 <script>
-  import { getContext, onDestroy } from "svelte";
-  import { get } from "svelte/store";
-  import copy from "copy-to-clipboard";
-  import { differenceInSeconds } from "date-fns";
-  import { _ } from "svelte-i18n";
+  import { getContext, onDestroy } from 'svelte';
+  import { get } from 'svelte/store';
+  import copy from 'copy-to-clipboard';
+  import { differenceInSeconds } from 'date-fns';
+  import { _ } from 'svelte-i18n';
 
-  import { browser } from "$app/environment";
+  import { browser } from '$app/environment';
 
-  import ApiUtil from "$lib/api.util";
-  import tooltip from "$lib/tooltip.util";
+  import ApiUtil from '$lib/api.util';
+  import tooltip from '$lib/tooltip.util';
 
-  import { PANO_WEBSITE_URL, PRERELEASE } from "$lib/variables.js";
+  import { PANO_WEBSITE_URL, PRERELEASE } from '$lib/variables.js';
 
-  const platformServerMatchKey = getContext("platformServerMatchKey");
-  const platformKeyRefreshedTime = getContext("platformKeyRefreshedTime");
-  const platformHostAddress = getContext("platformHostAddress");
-  const session = getContext("session");
+  const platformServerMatchKey = getContext('platformServerMatchKey');
+  const platformKeyRefreshedTime = getContext('platformKeyRefreshedTime');
+  const platformHostAddress = getContext('platformHostAddress');
+  const session = getContext('session');
 
-  let timeToRefreshKey = "...";
+  let timeToRefreshKey = '...';
   let commandText;
   let isCommandTextCopied = false;
   let copyClickIDForCommandText = 0;
@@ -200,7 +191,7 @@
       } else {
         clearInterval(timer);
 
-        timeToRefreshKey = "...";
+        timeToRefreshKey = '...';
 
         refreshKey();
       }
@@ -209,7 +200,7 @@
 
   function refreshKey() {
     ApiUtil.get({
-      path: "/api/panel/platformAuth/refreshKey",
+      path: '/api/panel/platformAuth/refreshKey',
       handler: (body, reject) => {
         if (body.error) {
           reject();
@@ -232,7 +223,7 @@
   function toggleAcceptPluginAuth() {
     toggleLoading = true;
     ApiUtil.put({
-      path: "/api/panel/platformAuth/toggle",
+      path: '/api/panel/platformAuth/toggle',
       handler: (body) => {
         if (body.error) {
           location.reload();
@@ -261,11 +252,7 @@
       hostAddress = port ? `${hostname}:${port}` : hostname;
     }
 
-    commandText =
-      "/pano connect " +
-      hostAddress +
-      " " +
-      get(platformServerMatchKey);
+    commandText = '/pano connect ' + hostAddress + ' ' + get(platformServerMatchKey);
   }
 
   function onCopyCommandText(forConsole = false) {
@@ -275,14 +262,10 @@
       copyClickIDForCommandText++;
     }
 
-    const id = forConsole
-      ? copyClickIDForCommandTextForConsole
-      : copyClickIDForCommandText;
+    const id = forConsole ? copyClickIDForCommandTextForConsole : copyClickIDForCommandText;
 
     const textToCopy =
-      forConsole && commandText.startsWith("/")
-        ? commandText.substring(1)
-        : commandText;
+      forConsole && commandText.startsWith('/') ? commandText.substring(1) : commandText;
 
     copy(textToCopy);
 

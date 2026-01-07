@@ -4,16 +4,13 @@
       {#if !data.accountConnected}
         <div class="alert alert-danger mb-0">
           <strong>
-            {$_("components.store-loading.account-not-connected")}
+            {$_('components.store-loading.account-not-connected')}
           </strong>
-          {$_("components.store-loading.not-connected-description")}
+          {$_('components.store-loading.not-connected-description')}
         </div>
 
-        <button
-          class="btn btn-secondary"
-          on:click={onConnectClick}
-          disabled={connecting}>
-          {connecting ? $_("buttons.connecting") : $_("buttons.connect")}
+        <button class="btn btn-secondary" on:click={onConnectClick} disabled={connecting}>
+          {connecting ? $_('buttons.connecting') : $_('buttons.connect')}
         </button>
       {:else if data.installingView}
         <div class="row" hidden={modalShown}>
@@ -22,8 +19,7 @@
             style="height: 350px;">
             <div class="col-auto min-h-100 d-flex align-items-center">
               <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden"
-                  >{$_("components.store-loading.loading")}</span>
+                <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
               </div>
             </div>
           </div>
@@ -35,7 +31,7 @@
             style="width: 64px; height: 64px;">
             <img
               style="transform: rotate(-0.05turn);"
-              src={base + "/assets/img/logo.svg"}
+              src={base + '/assets/img/logo.svg'}
               width="auto"
               height="60"
               alt="Pano"
@@ -46,14 +42,12 @@
             class="spinner-border text-primary"
             role="status"
             style="width: 1.5rem; height: 1.5rem;">
-            <span class="visually-hidden"
-              >{$_("components.store-loading.loading")}</span>
+            <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
           </div>
 
           <div>
-            <strong>{$_("components.store-loading.store-loading")}</strong
-            ><br />
-            <small>{$_("components.store-loading.please-wait")}</small>
+            <strong>{$_('components.store-loading.store-loading')}</strong><br />
+            <small>{$_('components.store-loading.please-wait')}</small>
           </div>
         </div>
       {/if}
@@ -64,13 +58,13 @@
 <ConfirmInstallResourceModal />
 
 <script context="module">
-  import { redirect } from "@sveltejs/kit";
+  import { redirect } from '@sveltejs/kit';
 
-  import { base } from "$app/paths";
+  import { base } from '$app/paths';
 
   export const PageTypes = Object.freeze({
-    ADDON: "ADDON",
-    THEME: "THEME",
+    ADDON: 'ADDON',
+    THEME: 'THEME',
   });
 
   const DEFAULT_ACCOUNT_NOT_CONNECTED_VIEW = false;
@@ -86,21 +80,20 @@
     } = event;
     await parent();
 
-    const back = searchParams.has("back");
-    const install = searchParams.get("install");
-    const fromInstall = searchParams.get("fromInstall");
+    const back = searchParams.has('back');
+    const install = searchParams.get('install');
+    const fromInstall = searchParams.get('fromInstall');
 
-    const previousPage =
-      base + `/` + (pageType === PageTypes.ADDON ? "addons" : "view");
+    const previousPage = base + `/` + (pageType === PageTypes.ADDON ? 'addons' : 'view');
 
     if (back) {
       throw redirect(302, previousPage);
     }
 
-    const failedLogin = searchParams.has("failedLogin");
+    const failedLogin = searchParams.has('failedLogin');
 
     if (failedLogin) {
-      throw redirect(302, previousPage + "?failedLogin");
+      throw redirect(302, previousPage + '?failedLogin');
     }
 
     return {
@@ -114,27 +107,27 @@
 </script>
 
 <script>
-  import { getContext, tick } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext, tick } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { goto } from "$app/navigation";
-  import { page } from "$app/state";
-  import { browser } from "$app/environment";
+  import { goto } from '$app/navigation';
+  import { page } from '$app/state';
+  import { browser } from '$app/environment';
 
-  import { PANO_WEBSITE_URL } from "$lib/variables.js";
-  import ApiUtil from "$lib/api.util.js";
-  import { currentLanguage } from "$lib/language.util.js";
+  import { PANO_WEBSITE_URL } from '$lib/variables.js';
+  import ApiUtil from '$lib/api.util.js';
+  import { currentLanguage } from '$lib/language.util.js';
 
   import ConfirmInstallResourceModal, {
     setCallback as setConfirmInstallResourceCallback,
     show as showConfirmInstallResourceModal,
     onHide as onConfirmInstallResourceModalHide,
-  } from "$lib/component/modals/ConfirmInstallResourceModal.svelte";
-  import { show as showInstallingResourceModal } from "$lib/component/modals/InstallingResourceModal.svelte";
+  } from '$lib/component/modals/ConfirmInstallResourceModal.svelte';
+  import { show as showInstallingResourceModal } from '$lib/component/modals/InstallingResourceModal.svelte';
 
   export let data;
 
-  const showSplash = getContext("showSplash");
+  const showSplash = getContext('showSplash');
 
   let versionInfo;
   let modalShown;
@@ -157,14 +150,14 @@
       path: `/api/panel/platform/store/authorize/token`,
     });
 
-    if (getStoreTokenResponse.error === "PANO_NOT_CONNECTED") {
+    if (getStoreTokenResponse.error === 'PANO_NOT_CONNECTED') {
       data.accountConnected = false;
 
       return null;
     }
 
-    if (getStoreTokenResponse.error === "PANO_CONNECT_FAILED") {
-      await goto("?failedLogin");
+    if (getStoreTokenResponse.error === 'PANO_CONNECT_FAILED') {
+      await goto('?failedLogin');
 
       return null;
     }
@@ -185,17 +178,17 @@
       path: `/api/panel/install/store/${data.install}/info`,
     });
 
-    if (getStoreTokenResponse.error === "PANO_NOT_CONNECTED") {
+    if (getStoreTokenResponse.error === 'PANO_NOT_CONNECTED') {
       data.accountConnected = false;
 
       return;
     }
 
     if (
-      getStoreTokenResponse.error === "NOT_FOUND" ||
-      getStoreTokenResponse.error === "BAD_REQUEST"
+      getStoreTokenResponse.error === 'NOT_FOUND' ||
+      getStoreTokenResponse.error === 'BAD_REQUEST'
     ) {
-      await goto("/error-404");
+      await goto('/error-404');
 
       return;
     }
@@ -220,9 +213,7 @@
 
     // Encode dynamic parts to ensure the URL is safe
     const storeAuthToken = encodeURIComponent(token);
-    const encodedRedirectUrl = encodeURIComponent(
-      page.url.origin + page.url.pathname,
-    );
+    const encodedRedirectUrl = encodeURIComponent(page.url.origin + page.url.pathname);
     const encodedState = encodeURIComponent(state);
 
     // Redirect to the constructed URL
@@ -234,7 +225,7 @@
   }
 
   onConfirmInstallResourceModalHide(() => {
-    goto(base + `/` + (data.pageType === PageTypes.ADDON ? "addons" : "view"));
+    goto(base + `/` + (data.pageType === PageTypes.ADDON ? 'addons' : 'view'));
   });
 
   setConfirmInstallResourceCallback(async () => {
@@ -245,7 +236,7 @@
     modalShown = true;
 
     await showInstallingResourceModal(
-      data.pageType === PageTypes.ADDON ? "PLUGIN" : "THEME",
+      data.pageType === PageTypes.ADDON ? 'PLUGIN' : 'THEME',
       null,
       data.install,
       async () => {
@@ -291,7 +282,7 @@
     connecting = true;
 
     ApiUtil.post({
-      path: "/api/panel/platform/code",
+      path: '/api/panel/platform/code',
       handler: async (body, reject) => {
         if (body.error) {
           location.reload();
@@ -303,7 +294,7 @@
         // Encode dynamic parts to ensure the URL is safe
         const encodedPublicKey = encodeURIComponent(publicKey);
         const encodedRedirectUrl = encodeURIComponent(
-          page.url.origin + base + "/settings/platform",
+          page.url.origin + base + '/settings/platform',
         );
         const encodedState = encodeURIComponent(state);
 

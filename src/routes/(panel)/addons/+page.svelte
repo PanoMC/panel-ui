@@ -1,7 +1,7 @@
-<Addons data="{data}" />
+<Addons {data} />
 
 <script>
-  import Addons from "$lib/pages/Addons.svelte";
+  import Addons from '$lib/pages/Addons.svelte';
 
   export let data;
 </script>

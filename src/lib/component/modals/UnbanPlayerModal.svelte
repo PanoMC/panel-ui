@@ -1,10 +1,5 @@
 <!-- Unban Player Modal -->
-<div
-  aria-hidden="true"
-  class="modal fade"
-  bind:this="{$modalElement}"
-  role="dialog"
-  tabindex="-1">
+<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-body text-center">
@@ -17,15 +12,15 @@
         <button
           class="btn btn-link col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          on:click="{hide}">
+          class:disabled={loading}
+          on:click={hide}>
           {$_('buttons.cancel')}
         </button>
         <button
           class="btn btn-danger col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          on:click="{onSubmit}">
+          class:disabled={loading}
+          on:click={onSubmit}>
           {$_('buttons.yes')}
         </button>
       </div>
@@ -34,7 +29,7 @@
 </div>
 
 <script context="module">
-  import { get, writable } from "svelte/store";
+  import { get, writable } from 'svelte/store';
 
   const modalElement = writable();
   const player = writable({});
@@ -47,7 +42,7 @@
     player.set(newPlayer);
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
 
@@ -70,10 +65,10 @@
 </script>
 
 <script>
-  import ApiUtil from "$lib/api.util.js";
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
+  import ApiUtil from '$lib/api.util.js';
+  import { show as showToast } from '$lib/component/ToastContainer.svelte';
 
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
   let loading;
   // let sendNotification = false;
@@ -85,7 +80,7 @@
       path: `/api/panel/players/${$player.username}/unban`,
       handler: (body, reject) => {
         if (body.error) {
-          if (body.error === "NOT_BANNED" || body.error === "NOT_EXISTS") {
+          if (body.error === 'NOT_BANNED' || body.error === 'NOT_EXISTS') {
             location.reload();
             return;
           }
@@ -98,13 +93,17 @@
 
         showToast('components.toasts.player-unban.the-player', {
           username: $player.username,
-          event: body.error ? $_('components.toasts.player-unban.could-not-remove-ban', {values: $_('errors.' + body.error)}): $_('components.toasts.player-unban.removed-ban')
+          event: body.error
+            ? $_('components.toasts.player-unban.could-not-remove-ban', {
+                values: $_('errors.' + body.error),
+              })
+            : $_('components.toasts.player-unban.removed-ban'),
         });
 
         callback($player);
 
         loading = false;
-      }
-    })
+      },
+    });
   }
 </script>

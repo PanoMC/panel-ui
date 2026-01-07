@@ -2,16 +2,10 @@
   <div class="d-flex flex-row justify-content-between align-items-center mb-3">
     <h6 class="mb-0">Permission Nodes</h6>
     <div class="d-flex gap-2">
-      <button
-        type="button"
-        class="btn btn-sm btn-primary"
-        on:click={openAddPermissionModal}>
+      <button type="button" class="btn btn-sm btn-primary" on:click={openAddPermissionModal}>
         <i class="fa fa-plus me-1"></i>Add Node ({permissions.length})
       </button>
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        on:click={handleAddPermGroup}>
+      <button type="button" class="btn btn-sm btn-secondary" on:click={handleAddPermGroup}>
         <i class="fa fa-plus me-1"></i>Add Perm Group ({permissionGroupsCount})
       </button>
     </div>
@@ -40,8 +34,8 @@
               <button
                 type="button"
                 class="btn-close"
-                aria-label={$_("buttons.remove")}
-                title={$_("buttons.remove")}
+                aria-label={$_('buttons.remove')}
+                title={$_('buttons.remove')}
                 on:click={() => removePermissionNode(index)}>
               </button>
             </td>
@@ -52,8 +46,7 @@
                 class="form-control form-control-sm"
                 value={node.permission}
                 placeholder="Enter permission..."
-                on:input={(e) =>
-                  updatePermissionNode(index, "permission", e.target.value)} />
+                on:input={(e) => updatePermissionNode(index, 'permission', e.target.value)} />
             </td>
 
             <!-- Value -->
@@ -61,12 +54,7 @@
               <select
                 class="form-select form-select-sm"
                 value={node.value}
-                on:change={(e) =>
-                  updatePermissionNode(
-                    index,
-                    "value",
-                    e.target.value === "true",
-                  )}>
+                on:change={(e) => updatePermissionNode(index, 'value', e.target.value === 'true')}>
                 <option value="true">true</option>
                 <option value="false">false</option>
               </select>
@@ -76,7 +64,7 @@
             <td>
               <select
                 class="form-select form-select-sm"
-                value={node.expiry ? "date" : "never"}
+                value={node.expiry ? 'date' : 'never'}
                 on:change={(e) => handleExpiryChange(index, e.target.value)}>
                 <option value="never">Never</option>
                 <option value="date">Date</option>
@@ -87,11 +75,7 @@
                   class="form-control form-control-sm mt-1"
                   value={node.expiry.toISOString().slice(0, 16)}
                   on:change={(e) =>
-                    updatePermissionNode(
-                      index,
-                      "expiry",
-                      new Date(e.target.value),
-                    )} />
+                    updatePermissionNode(index, 'expiry', new Date(e.target.value))} />
               {/if}
             </td>
 
@@ -107,8 +91,8 @@
 {/if}
 
 <script>
-  import { createEventDispatcher } from "svelte";
-  import NoContent from "$lib/component/NoContent.svelte";
+  import { createEventDispatcher } from 'svelte';
+  import NoContent from '$lib/component/NoContent.svelte';
 
   export let permissions = [];
   export let permissionGroupsCount = 0;
@@ -118,12 +102,7 @@
   const dispatch = createEventDispatcher();
 
   // Permission node structure
-  function createPermissionNode(
-    permission = "",
-    value = true,
-    expiry = null,
-    contexts = "none",
-  ) {
+  function createPermissionNode(permission = '', value = true, expiry = null, contexts = 'none') {
     return {
       permission,
       value,
@@ -133,26 +112,24 @@
   }
 
   function handleAddPermGroup() {
-    dispatch("addPermGroup");
+    dispatch('addPermGroup');
   }
 
   function removePermissionNode(index) {
     permissions = permissions.filter((_, i) => i !== index);
-    dispatch("permissionsChanged", { permissions });
+    dispatch('permissionsChanged', { permissions });
   }
 
   function updatePermissionNode(index, field, value) {
-    permissions = permissions.map((node, i) =>
-      i === index ? { ...node, [field]: value } : node,
-    );
-    dispatch("permissionsChanged", { permissions });
+    permissions = permissions.map((node, i) => (i === index ? { ...node, [field]: value } : node));
+    dispatch('permissionsChanged', { permissions });
   }
 
   function handleExpiryChange(index, value) {
-    if (value === "never") {
-      updatePermissionNode(index, "expiry", null);
+    if (value === 'never') {
+      updatePermissionNode(index, 'expiry', null);
     } else {
-      updatePermissionNode(index, "expiry", new Date(value));
+      updatePermissionNode(index, 'expiry', new Date(value));
     }
   }
 </script>

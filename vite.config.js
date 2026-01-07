@@ -1,27 +1,27 @@
-import { sveltekit } from "@sveltejs/kit/vite";
-import { loadEnv } from "vite";
-import fs from "fs";
-import path from "path";
-import { collectLicenses } from "./scripts/generate-licenses.js";
+import { sveltekit } from '@sveltejs/kit/vite';
+import { loadEnv } from 'vite';
+import fs from 'fs';
+import path from 'path';
+import { collectLicenses } from './scripts/generate-licenses.js';
 
-const env = loadEnv("", process.cwd());
+const env = loadEnv('', process.cwd());
 
 // Global flag to ensure licenses are generated only once per build
 let licensesGenerated = false;
 
 function copyLangFolderPlugin() {
-  let outDir = "";
+  let outDir = '';
 
   return {
-    name: "copy-lang-folder",
-    apply: "build", // Run only during build
+    name: 'copy-lang-folder',
+    apply: 'build', // Run only during build
     configResolved(config) {
       // Get the output directory from Vite config
-      outDir = "build/";
+      outDir = 'build/';
     },
     async closeBundle() {
-      const srcDir = path.resolve(process.cwd(), "lang");
-      const destDir = path.resolve(process.cwd(), outDir, "lang");
+      const srcDir = path.resolve(process.cwd(), 'lang');
+      const destDir = path.resolve(process.cwd(), outDir, 'lang');
 
       if (!fs.existsSync(srcDir)) {
         console.warn(`Source folder "lang" not found at: ${srcDir}`);
@@ -33,20 +33,20 @@ function copyLangFolderPlugin() {
         await fs.promises.cp(srcDir, destDir, { recursive: true });
         console.log(`Copied "lang" folder from ${srcDir} to ${destDir}`);
       } catch (error) {
-        console.error("Error copying \"lang\" folder:", error);
+        console.error('Error copying "lang" folder:', error);
       }
-    }
+    },
   };
 }
 
-function copyManifestPlugin(filename = "manifest.json") {
-  let outDir = "";
+function copyManifestPlugin(filename = 'manifest.json') {
+  let outDir = '';
 
   return {
-    name: "copy-manifest-json",
-    apply: "build",
+    name: 'copy-manifest-json',
+    apply: 'build',
     configResolved(config) {
-      outDir = "build/";
+      outDir = 'build/';
     },
     async closeBundle() {
       const srcPath = path.resolve(process.cwd(), filename);
@@ -61,24 +61,24 @@ function copyManifestPlugin(filename = "manifest.json") {
         await fs.promises.copyFile(srcPath, destPath);
         console.log(`Copied manifest from ${srcPath} to ${destPath}`);
       } catch (err) {
-        console.error("Failed to copy manifest.json:", err);
+        console.error('Failed to copy manifest.json:', err);
       }
-    }
+    },
   };
 }
 
 function generateLicensesPlugin() {
-  let outDir = "";
+  let outDir = '';
 
   return {
-    name: "generate-licenses",
-    apply: "build",
+    name: 'generate-licenses',
+    apply: 'build',
     configResolved(config) {
-      outDir = path.resolve(process.cwd(), "build");
+      outDir = path.resolve(process.cwd(), 'build');
     },
     async closeBundle() {
       // Don't regenerate if file already exists (SSR and client build run in separate processes)
-      const licensesPath = path.join(outDir, "licenses.json");
+      const licensesPath = path.join(outDir, 'licenses.json');
       if (fs.existsSync(licensesPath)) {
         return;
       }
@@ -87,33 +87,27 @@ function generateLicensesPlugin() {
       if (!licensesGenerated) {
         licensesGenerated = true;
         try {
-          console.log("Generating licenses...");
+          console.log('Generating licenses...');
           // Ensure the build directory exists
           if (!fs.existsSync(outDir)) {
             fs.mkdirSync(outDir, { recursive: true });
           }
           collectLicenses(outDir);
-          console.log("Licenses generated successfully.");
+          console.log('Licenses generated successfully.');
         } catch (err) {
-          console.error("Failed to generate licenses:", err);
+          console.error('Failed to generate licenses:', err);
           // Don't fail the build, just warn
         }
       }
-    }
+    },
   };
 }
 
-
 /** @type {import('vite').UserConfig} */
 const config = {
-  plugins: [
-    sveltekit(),
-    generateLicensesPlugin(),
-    copyLangFolderPlugin(),
-    copyManifestPlugin()
-  ],
+  plugins: [sveltekit(), generateLicensesPlugin(), copyLangFolderPlugin(), copyManifestPlugin()],
   ssr: {
-    noExternal: ["chart.js"],
+    noExternal: ['chart.js'],
   },
   css: {
     preprocessorOptions: {
@@ -125,15 +119,15 @@ const config = {
     },
   },
   optimizeDeps: {
-    exclude: ['@panomc/sdk']
+    exclude: ['@panomc/sdk'],
   },
   server: {
     proxy: {
-      "/api": env.VITE_API_URL.replace("/api", ""),
-      '/panel/api': env.VITE_API_URL.replace("/api", "")
+      '/api': env.VITE_API_URL.replace('/api', ''),
+      '/panel/api': env.VITE_API_URL.replace('/api', ''),
     },
-    allowedHosts: true
-  }
+    allowedHosts: true,
+  },
 };
 
 export default config;

@@ -5,16 +5,14 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            href="{base + item.href}"
+            href={base + item.href}
             class:active={matching($page.url.pathname, base + item.href, item.startsWith)}>
             {#if item.hasUpdate}
               <span class="position-relative" class:pe-2={$session.basicData.hasUpdate}>
                 <i class="{item.icon} me-2"></i>
                 {$_(item.text)}
                 {#if $session.basicData.hasUpdate}
-                  <span
-                    class="position-absolute bg-warning rounded-circle p-1 top-0 end-0">
-                  </span>
+                  <span class="position-absolute bg-warning rounded-circle p-1 top-0 end-0"> </span>
                 {/if}
               </span>
             {:else}
@@ -29,103 +27,103 @@
 </nav>
 
 <script context="module">
-  import { Permissions } from "$lib/auth.util.js";
+  import { Permissions } from '$lib/auth.util.js';
 
   export const originalSiteNavItems = [
     {
-      href: "/",
-      icon: "fas fa-table-columns",
-      text: "components.site-navigation-menu.panel",
-      startsWith: false
+      href: '/',
+      icon: 'fas fa-table-columns',
+      text: 'components.site-navigation-menu.panel',
+      startsWith: false,
     },
     {
-      href: "/statistics",
-      icon: "fas fa-chart-simple",
-      text: "components.site-navigation-menu.statistics",
-      startsWith: true
-    },
-    {
-      href: "/posts",
-      icon: "fas fa-pen",
-      text: "components.site-navigation-menu.posts",
+      href: '/statistics',
+      icon: 'fas fa-chart-simple',
+      text: 'components.site-navigation-menu.statistics',
       startsWith: true,
-      permission: Permissions.MANAGE_POSTS
     },
     {
-      href: "/tickets",
-      icon: "fas fa-ticket",
-      text: "components.site-navigation-menu.tickets",
+      href: '/posts',
+      icon: 'fas fa-pen',
+      text: 'components.site-navigation-menu.posts',
       startsWith: true,
-      permission: Permissions.MANAGE_TICKETS
+      permission: Permissions.MANAGE_POSTS,
     },
     {
-      href: "/players",
-      icon: "fas fa-users",
-      text: "components.site-navigation-menu.players",
+      href: '/tickets',
+      icon: 'fas fa-ticket',
+      text: 'components.site-navigation-menu.tickets',
       startsWith: true,
-      permission: Permissions.MANAGE_PLAYERS
+      permission: Permissions.MANAGE_TICKETS,
     },
     {
-      href: "/permissions",
-      icon: "fas fa-gavel",
-      text: "components.site-navigation-menu.permissions",
+      href: '/players',
+      icon: 'fas fa-users',
+      text: 'components.site-navigation-menu.players',
       startsWith: true,
-      permission: Permissions.MANAGE_PERMISSION_GROUPS
+      permission: Permissions.MANAGE_PLAYERS,
     },
     {
-      href: "/view",
-      icon: "fas fa-palette",
-      text: "components.site-navigation-menu.view",
+      href: '/permissions',
+      icon: 'fas fa-gavel',
+      text: 'components.site-navigation-menu.permissions',
       startsWith: true,
-      permission: Permissions.MANAGE_VIEW
+      permission: Permissions.MANAGE_PERMISSION_GROUPS,
     },
     {
-      href: "/translations",
-      icon: "fa-solid fa-language",
-      text: "components.site-navigation-menu.translations",
+      href: '/view',
+      icon: 'fas fa-palette',
+      text: 'components.site-navigation-menu.view',
       startsWith: true,
-      permission: Permissions.MANAGE_TRANSLATIONS
+      permission: Permissions.MANAGE_VIEW,
     },
     {
-      href: "/addons",
-      icon: "fas fa-puzzle-piece",
-      text: "components.site-navigation-menu.addons",
+      href: '/translations',
+      icon: 'fa-solid fa-language',
+      text: 'components.site-navigation-menu.translations',
       startsWith: true,
-      permission: Permissions.MANAGE_ADDONS
+      permission: Permissions.MANAGE_TRANSLATIONS,
     },
     {
-      href: "/logs",
-      icon: "fas fa-align-left",
-      text: "components.site-navigation-menu.logs",
-      startsWith: true
+      href: '/addons',
+      icon: 'fas fa-puzzle-piece',
+      text: 'components.site-navigation-menu.addons',
+      startsWith: true,
+      permission: Permissions.MANAGE_ADDONS,
     },
     {
-      href: "/settings",
-      icon: "fas fa-cog",
-      text: "components.site-navigation-menu.settings",
+      href: '/logs',
+      icon: 'fas fa-align-left',
+      text: 'components.site-navigation-menu.logs',
+      startsWith: true,
+    },
+    {
+      href: '/settings',
+      icon: 'fas fa-cog',
+      text: 'components.site-navigation-menu.settings',
       startsWith: true,
       permission: Permissions.MANAGE_PLATFORM_SETTINGS,
-      hasUpdate: true
-    }
+      hasUpdate: true,
+    },
   ];
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { base } from "$app/paths";
-  import { page } from "$app/stores";
+  import { base } from '$app/paths';
+  import { page } from '$app/stores';
 
-  import { hasPermission } from "$lib/auth.util.js";
-  import { siteNavigationItems } from "$lib/PluginAPI.js";
+  import { hasPermission } from '$lib/auth.util.js';
+  import { siteNavigationItems } from '$lib/PluginAPI.js';
 
-  const session = getContext("session")
+  const session = getContext('session');
 
   function matching(path, pathName, startsWith = false) {
     return (
       path.toUpperCase() === pathName.toUpperCase() ||
-      path.toUpperCase() === (pathName + "/").toUpperCase() ||
+      path.toUpperCase() === (pathName + '/').toUpperCase() ||
       (startsWith && path.startsWith(pathName))
     );
   }

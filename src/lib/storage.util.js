@@ -1,13 +1,11 @@
-import { browser } from "$app/environment";
+import { browser } from '$app/environment';
 
-const SIDEBAR_STORAGE_STATUS = "sidebar_storage_status";
-const SIDEBAR_TABS_STORAGE_STATE = "sidebar_tabs_storage_state";
+const SIDEBAR_STORAGE_STATUS = 'sidebar_storage_status';
+const SIDEBAR_TABS_STORAGE_STATE = 'sidebar_tabs_storage_state';
 
 export const PanelSidebarStorageUtil = {
   getSidebarOpenStatus() {
-    return browser
-      ? localStorage.getItem(SIDEBAR_STORAGE_STATUS) === "true"
-      : true;
+    return browser ? localStorage.getItem(SIDEBAR_STORAGE_STATUS) === 'true' : true;
   },
 
   savePanelSidebarStorageUtil(status) {
@@ -19,9 +17,7 @@ export const PanelSidebarStorageUtil = {
   },
 
   getSidebarTabsState() {
-    return browser
-      ? localStorage.getItem(SIDEBAR_TABS_STORAGE_STATE)
-      : "website";
+    return browser ? localStorage.getItem(SIDEBAR_TABS_STORAGE_STATE) : 'website';
   },
 
   setSidebarTabsState(state) {

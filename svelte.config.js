@@ -1,5 +1,5 @@
-import SveltePreprocess from "svelte-preprocess";
-import NodeAdapter from "@sveltejs/adapter-node";
+import SveltePreprocess from 'svelte-preprocess';
+import NodeAdapter from '@sveltejs/adapter-node';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -7,15 +7,15 @@ const config = {
     adapter: NodeAdapter(),
 
     paths: {
-      base: "/panel",
+      base: '/panel',
     },
   },
 
   preprocess: SveltePreprocess({
     scss: {
-      api: "modern-compiler",
+      api: 'modern-compiler',
       quietDeps: true,
-      silenceDeprecations: ["mixed-decls", "color-functions", "global-builtin", "import"],
+      silenceDeprecations: ['mixed-decls', 'color-functions', 'global-builtin', 'import'],
     },
   }),
 
@@ -24,11 +24,11 @@ const config = {
       return;
     }
 
-    if (warning.code === "vite-plugin-svelte-preprocess-many-dependencies") {
+    if (warning.code === 'vite-plugin-svelte-preprocess-many-dependencies') {
       return;
     }
 
-    console.log(warning.code)
+    console.log(warning.code);
 
     handler(warning);
   },

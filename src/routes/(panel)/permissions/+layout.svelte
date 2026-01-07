@@ -3,5 +3,5 @@
 </Layout>
 
 <script>
-  import Layout from "$lib/layouts/PermissionsLayout.svelte";
+  import Layout from '$lib/layouts/PermissionsLayout.svelte';
 </script>

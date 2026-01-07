@@ -1,19 +1,23 @@
 <!-- Add Resource Modal -->
-<div
-  role="dialog"
-  class="modal modal-lg fade"
-  bind:this={$modalElement}
-  aria-hidden="true">
+<div role="dialog" class="modal modal-lg fade" bind:this={$modalElement} aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header border-0">
-        <h5 class="modal-title">{$_('components.modals.install-resource.title', {values: {type: $_('components.modals.install-resource.' + ($type === "PLUGIN" ? "addon" : "theme"))}})}</h5>
+        <h5 class="modal-title">
+          {$_('components.modals.install-resource.title', {
+            values: {
+              type: $_(
+                'components.modals.install-resource.' + ($type === 'PLUGIN' ? 'addon' : 'theme'),
+              ),
+            },
+          })}
+        </h5>
         <button
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
-          aria-label="{$_('buttons.close')}"
-          title="{$_('buttons.close')}"
+          aria-label={$_('buttons.close')}
+          title={$_('buttons.close')}
           on:click={hide}></button>
       </div>
       <div class="modal-body">
@@ -29,7 +33,7 @@
             on:dragleave={handleDragLeave}>
             <input
               type="file"
-              accept="{$type === 'THEME' ? '.zip,application/zip' : '.jar,application/java-archive'}"
+              accept={$type === 'THEME' ? '.zip,application/zip' : '.jar,application/java-archive'}
               class="d-none"
               bind:this={fileInput}
               on:change={handleFileChange} />
@@ -57,22 +61,22 @@
 </div>
 
 <script context="module">
-  import { writable, get } from "svelte/store";
-  import { base } from "$app/paths";
+  import { writable, get } from 'svelte/store';
+  import { base } from '$app/paths';
 
   const modalElement = writable();
   const loading = writable(false);
   const defaultErrors = {};
   const errors = writable(defaultErrors);
   const submitLoading = writable(false);
-  const type = writable("PLUGIN")
+  const type = writable('PLUGIN');
 
   let callback = () => {};
   let hideCallback = () => {};
   let modal;
 
   export function show(newType) {
-    type.set(newType)
+    type.set(newType);
     errors.set(defaultErrors);
     submitLoading.set(false);
 
@@ -98,8 +102,8 @@
 </script>
 
 <script>
-  import { _ } from "svelte-i18n";
-  import { show as showInstallingModal } from "$lib/component/modals/InstallingResourceModal.svelte"
+  import { _ } from 'svelte-i18n';
+  import { show as showInstallingModal } from '$lib/component/modals/InstallingResourceModal.svelte';
 
   let dropZoneActive = false;
   let fileInput;
@@ -131,12 +135,12 @@
   function handleFileChange(event) {
     const files = event.target.files;
 
-    handleFileUpload(files[0])
+    handleFileUpload(files[0]);
   }
 
   function handleFileUpload(file) {
     hide();
 
-    showInstallingModal($type, file)
+    showInstallingModal($type, file);
   }
 </script>

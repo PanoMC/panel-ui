@@ -27,8 +27,8 @@
 </script>
 
 <script>
-  import { onDestroy, onMount, mount, unmount, hydrate } from "svelte";
-  import { browser } from "$app/environment";
+  import { onDestroy, onMount, mount, unmount, hydrate } from 'svelte';
+  import { browser } from '$app/environment';
 
   export let data;
 
@@ -48,13 +48,10 @@
               target: viewContainer,
               props: data.props || {},
             });
-            console.log("Plugin Hydration Success");
+            console.log('Plugin Hydration Success');
           } catch (hErr) {
-            console.warn(
-              "Plugin Hydration Failed (Mismatch), falling back to Clean Mount:",
-              hErr,
-            );
-            viewContainer.innerHTML = "";
+            console.warn('Plugin Hydration Failed (Mismatch), falling back to Clean Mount:', hErr);
+            viewContainer.innerHTML = '';
             componentInstance = data.component.mount({
               target: viewContainer,
               props: data.props || {},
@@ -70,7 +67,7 @@
               props: data.props || {},
             });
           } catch (hErr) {
-            viewContainer.innerHTML = "";
+            viewContainer.innerHTML = '';
             componentInstance = mount(data.component.default, {
               target: viewContainer,
               props: data.props || {},
@@ -78,7 +75,7 @@
           }
         }
       } catch (err) {
-        console.warn("Mount failed completely:", err);
+        console.warn('Mount failed completely:', err);
       }
     }
   });

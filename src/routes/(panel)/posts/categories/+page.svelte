@@ -1,7 +1,7 @@
-<PostCategories data="{data}" />
+<PostCategories {data} />
 
 <script>
-  import PostCategories from "$lib/pages/posts/PostCategories.svelte";
+  import PostCategories from '$lib/pages/posts/PostCategories.svelte';
 
   export let data;
 </script>

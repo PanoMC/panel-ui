@@ -3,15 +3,12 @@
 <!-- Action Menu -->
 <PageActions middleClasses="d-lg-flex d-none">
   <div slot="left">
-    <span class="small" use:tooltip={["Last Check", { placement: "bottom" }]}>
+    <span class="small" use:tooltip={['Last Check', { placement: 'bottom' }]}>
       <i class="fa-regular fa-clock me-2"></i>
       {#if data.lastCheckedAt}
-        <Date
-          time={data.lastCheckedAt.value}
-          relativeFormat={true}
-          tooltip={false} />
+        <Date time={data.lastCheckedAt.value} relativeFormat={true} tooltip={false} />
       {:else}
-        {$_("pages.settings.updates.never")}
+        {$_('pages.settings.updates.never')}
       {/if}
     </span>
   </div>
@@ -21,22 +18,18 @@
       class:disabled={loading || $platformUpdating || inProgressResource}
       on:click={checkUpdate}>
       <i class="fa-regular fa-arrows-rotate" class:fa-spin={loading}></i>
-      <span class="d-lg-inline d-none ms-2">{$_("buttons.check-updates")}</span>
+      <span class="d-lg-inline d-none ms-2">{$_('buttons.check-updates')}</span>
     </button>
   </div>
 </PageActions>
 
 <div class="card">
   <div class="card-header">
-    {$_(
-      "pages.settings.updates.platform-updates",
-    )}&nbsp;{#if data.platformUpdate}(1){/if}
+    {$_('pages.settings.updates.platform-updates')}&nbsp;{#if data.platformUpdate}(1){/if}
   </div>
   <!-- Pending Update List -->
   {#if !data.platformUpdate}
-    <NoContent
-      icon="fas fa-check fa-3x"
-      text={$_("pages.settings.updates.using-latest-pano")} />
+    <NoContent icon="fas fa-check fa-3x" text={$_('pages.settings.updates.using-latest-pano')} />
   {:else}
     <div class="card-body">
       <ul class="list-group">
@@ -52,15 +45,14 @@
             </div>
             <div class="col">
               <div class="flex-grow-1 w-100">
-                <div
-                  class="d-flex justify-content-between flex-wrap align-items-start gap-3">
+                <div class="d-flex justify-content-between flex-wrap align-items-start gap-3">
                   <!-- Left: Info -->
                   <div class="vstack gap-2">
                     <div class="d-flex align-items-center gap-2 flex-wrap">
                       <h5 class="mb-0">Pano</h5>
                       <i
                         class="fa-regular fa-circle-check text-success"
-                        title={$_("pages.settings.updates.verified")}></i>
+                        title={$_('pages.settings.updates.verified')}></i>
 
                       <span class="badge text-bg-primary">
                         {data.platformUpdate.channel.capitalize()}
@@ -71,8 +63,7 @@
                         {data.platformUpdate.version}</span>
 
                       <div>
-                        {$_("pages.settings.updates.by")}&nbsp;<strong
-                          >Pano</strong>
+                        {$_('pages.settings.updates.by')}&nbsp;<strong>Pano</strong>
                       </div>
                     </div>
 
@@ -100,7 +91,7 @@
                         {#if $platformUpdating}
                           <i class="fa-solid fa-arrows-rotate fa-spin"></i>
                         {/if}
-                        {$_("buttons.update")}
+                        {$_('buttons.update')}
                       </button>
                       <button
                         type="button"
@@ -117,19 +108,15 @@
                         <li>
                           <button
                             class="dropdown-item"
-                            on:click={() =>
-                              showChangelogModal(
-                                data.platformUpdate.changelog,
-                              )}>
-                            {$_("pages.settings.updates.changelog")}
+                            on:click={() => showChangelogModal(data.platformUpdate.changelog)}>
+                            {$_('pages.settings.updates.changelog')}
                           </button>
                         </li>
                         <li>
                           <button
                             class="dropdown-item"
-                            on:click={() =>
-                              copyHashToClipboard(data.platformUpdate.hash)}>
-                            {$_("pages.settings.updates.copy-hash")}
+                            on:click={() => copyHashToClipboard(data.platformUpdate.hash)}>
+                            {$_('pages.settings.updates.copy-hash')}
                           </button>
                         </li>
                       </ul>
@@ -164,21 +151,18 @@
                   <p class="small mb-0" in:fade out:fade>
                     {#if platformUpdateError}
                       <span class="text-danger"
-                        >{$_(
-                          "components.modals.installing-resource.error-text",
-                          {
-                            values: {
-                              error: $_("errors." + platformUpdateError),
-                            },
+                        >{$_('components.modals.installing-resource.error-text', {
+                          values: {
+                            error: $_('errors.' + platformUpdateError),
                           },
-                        )}</span>
+                        })}</span>
                     {:else if !isPlatformUpdateFinished(platformUpdatingStep)}
                       {$_(
-                        "pages.settings.updates.platform-update-steps." +
+                        'pages.settings.updates.platform-update-steps.' +
                           platformUpdateProcesses[platformUpdatingStep - 1],
                       )}
                     {:else}
-                      {$_("pages.settings.updates.install-complete-restarting")}
+                      {$_('pages.settings.updates.install-complete-restarting')}
                       <i class="me-2 fas fa-arrows-rotate fa-spin"></i>
                     {/if}
                   </p>
@@ -196,20 +180,16 @@
   <CardHeader>
     <div slot="left">
       {$_(
-        "pages.settings.updates.resource-updates",
-      )}&nbsp;{#if data.resourceUpdates.length > 0}({data.resourceUpdates
-          .length}){/if}
+        'pages.settings.updates.resource-updates',
+      )}&nbsp;{#if data.resourceUpdates.length > 0}({data.resourceUpdates.length}){/if}
     </div>
     <div slot="right">
       {#if data.resourceUpdates?.length > 1}
         <button
           type="button"
           class="btn btn-sm btn-outline-primary"
-          class:disabled={loading ||
-            $platformUpdating ||
-            inProgressResource ||
-            updatingAll}
-          on:click={onUpdateAllClick}>{$_("buttons.update-all")}</button>
+          class:disabled={loading || $platformUpdating || inProgressResource || updatingAll}
+          on:click={onUpdateAllClick}>{$_('buttons.update-all')}</button>
       {/if}
     </div>
   </CardHeader>
@@ -217,12 +197,12 @@
     {#if !data.panoAccount}
       <NoContent
         icon="fas fa-sync fa-3x"
-        text={$_("pages.settings.updates.connect-pano-account")}
+        text={$_('pages.settings.updates.connect-pano-account')}
         dark={false} />
     {:else if data.resourceUpdates.length === 0}
       <NoContent
         icon="fas fa-sync fa-3x"
-        text={$_("pages.settings.updates.no-update-found")}
+        text={$_('pages.settings.updates.no-update-found')}
         dark={false} />
     {:else}
       <ul class="list-group">
@@ -232,7 +212,7 @@
               <div class="col-md-auto">
                 <!-- Logo -->
                 <a
-                  href={`${PANO_WEBSITE_URL}/${update.type === "PLUGIN" ? "addons" : "themes"}/${update.id}`}
+                  href={`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}
                   target="_blank">
                   <img
                     width="64"
@@ -245,22 +225,18 @@
               </div>
               <div class="col">
                 <div class="flex-grow-1 w-100">
-                  <div
-                    class="d-flex justify-content-between flex-wrap align-items-start gap-3">
+                  <div class="d-flex justify-content-between flex-wrap align-items-start gap-3">
                     <!-- Left: Info -->
                     <div class="vstack gap-2">
                       <div class="d-flex align-items-center gap-2 flex-wrap">
                         <h5 class="mb-0">
                           <a
-                            href={`${PANO_WEBSITE_URL}/${update.type === "PLUGIN" ? "addons" : "themes"}/${update.id}`}
+                            href={`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}
                             target="_blank"
-                            >{update.id}<i
-                              class="fa-solid fa-arrow-up-right-from-square ms-2"
-                            ></i
+                            >{update.id}<i class="fa-solid fa-arrow-up-right-from-square ms-2"></i
                             ></a>
                         </h5>
-                        <VerifiedStatus
-                          status={getVerifiedStatus(update.verified)} />
+                        <VerifiedStatus status={getVerifiedStatus(update.verified)} />
 
                         <span class="badge text-bg-primary"
                           >{update.oldVersion}
@@ -268,13 +244,12 @@
                           {update.version}</span>
 
                         <div>
-                          {$_("pages.settings.updates.by")}&nbsp;<a
+                          {$_('pages.settings.updates.by')}&nbsp;<a
                             href={`${PANO_WEBSITE_URL}/users/${update.developer}`}
                             target="_blank"
                             ><strong
                               >{update.developer}<i
-                                class="fa-solid fa-arrow-up-right-from-square ms-2"
-                              ></i
+                                class="fa-solid fa-arrow-up-right-from-square ms-2"></i
                               ></strong
                             ></a>
                         </div>
@@ -303,7 +278,7 @@
                         {#if inProgressResource?.id === update.id}
                           <i class="fa-solid fa-arrows-rotate fa-spin"></i>
                         {/if}
-                        {$_("buttons.update")}
+                        {$_('buttons.update')}
                       </button>
                       <button
                         type="button"
@@ -320,17 +295,15 @@
                         <li>
                           <button
                             class="dropdown-item"
-                            on:click={() =>
-                              showChangelogModal(update.changelog)}>
-                            {$_("pages.settings.updates.changelog")}
+                            on:click={() => showChangelogModal(update.changelog)}>
+                            {$_('pages.settings.updates.changelog')}
                           </button>
                         </li>
                         <li>
                           <button
                             class="dropdown-item"
-                            on:click={() =>
-                              copyHashToClipboard(`sha256:${update.hash}`)}>
-                            {$_("pages.settings.updates.copy-hash")}
+                            on:click={() => copyHashToClipboard(`sha256:${update.hash}`)}>
+                            {$_('pages.settings.updates.copy-hash')}
                           </button>
                         </li>
                       </ul>
@@ -364,23 +337,18 @@
                     <p class="small mb-0" in:fade out:fade>
                       {#if resourceUpdateError}
                         <span class="text-danger"
-                          >{$_(
-                            "components.modals.installing-resource.error-text",
-                            {
-                              values: {
-                                error: $_(
-                                  "errors." + resourceUpdateError.error,
-                                ),
-                              },
+                          >{$_('components.modals.installing-resource.error-text', {
+                            values: {
+                              error: $_('errors.' + resourceUpdateError.error),
                             },
-                          )}</span>
+                          })}</span>
                       {:else if !isResourceUpdateFinished(resourceUpdateStep)}
                         {$_(
-                          "pages.settings.updates.resource-update-steps." +
+                          'pages.settings.updates.resource-update-steps.' +
                             resourceUpdateProcesses[resourceUpdateStep - 1],
                         )}
                       {:else}
-                        {$_("pages.settings.updates.install-complete")}
+                        {$_('pages.settings.updates.install-complete')}
                       {/if}
                     </p>
                   {/if}
@@ -400,7 +368,7 @@
 <ChangelogModal />
 
 <script context="module">
-  import ApiUtil, { buildQueryParams } from "$lib/api.util";
+  import ApiUtil, { buildQueryParams } from '$lib/api.util';
 
   /**
    * @type {import("@sveltejs/kit").Load}
@@ -410,61 +378,61 @@
     await parent();
 
     const queryParams = buildQueryParams({
-      type: "UPDATES",
+      type: 'UPDATES',
     });
 
     return await ApiUtil.get({
-      path: "/api/panel/settings" + queryParams,
+      path: '/api/panel/settings' + queryParams,
       request: event,
     });
   }
 </script>
 
 <script>
-  import { getContext, onDestroy, onMount } from "svelte";
-  import { fade } from "svelte/transition";
-  import { _ } from "svelte-i18n";
-  import copy from "copy-to-clipboard";
+  import { getContext, onDestroy, onMount } from 'svelte';
+  import { fade } from 'svelte/transition';
+  import { _ } from 'svelte-i18n';
+  import copy from 'copy-to-clipboard';
 
-  import { base } from "$app/paths";
-  import { beforeNavigate, invalidateAll } from "$app/navigation";
-  import { browser } from "$app/environment";
+  import { base } from '$app/paths';
+  import { beforeNavigate, invalidateAll } from '$app/navigation';
+  import { browser } from '$app/environment';
 
-  import { formatBytes } from "$lib/string.util";
-  import { PANO_WEBSITE_URL } from "$lib/variables";
+  import { formatBytes } from '$lib/string.util';
+  import { PANO_WEBSITE_URL } from '$lib/variables';
 
-  import tooltip from "$lib/tooltip.util";
+  import tooltip from '$lib/tooltip.util';
 
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
+  import { show as showToast } from '$lib/component/ToastContainer.svelte';
 
-  import PageActions from "$lib/component/PageActions.svelte";
-  import NoContent from "$lib/component/NoContent.svelte";
-  import Date from "$lib/component/Date.svelte";
-  import MarkdownRenderer from "$lib/component/MarkdownRenderer.svelte";
-  import VerifiedStatus from "$lib/component/VerifiedStatus.svelte";
-  import CardHeader from "$lib/component/CardHeader.svelte";
+  import PageActions from '$lib/component/PageActions.svelte';
+  import NoContent from '$lib/component/NoContent.svelte';
+  import Date from '$lib/component/Date.svelte';
+  import MarkdownRenderer from '$lib/component/MarkdownRenderer.svelte';
+  import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
+  import CardHeader from '$lib/component/CardHeader.svelte';
 
   import ConfirmUpdatePlatformModal, {
     show as showUpdatePlatformModal,
-  } from "$lib/component/modals/ConfirmUpdatePlatformModal.svelte";
+  } from '$lib/component/modals/ConfirmUpdatePlatformModal.svelte';
 
   import ConfirmUpdateResourceModal, {
     show as showUpdateResourceModal,
-  } from "$lib/component/modals/ConfirmUpdateResourceModal.svelte";
+  } from '$lib/component/modals/ConfirmUpdateResourceModal.svelte';
 
   import ConfirmUpdateResourcesModal, {
     show as showUpdateResourcesModal,
-  } from "$lib/component/modals/ConfirmUpdateResourcesModal.svelte";
+  } from '$lib/component/modals/ConfirmUpdateResourcesModal.svelte';
 
   import ChangelogModal, {
     show as showChangelogModal,
-  } from "$lib/component/modals/ChangelogModal.svelte";
+  } from '$lib/component/modals/ChangelogModal.svelte';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
-  pageTitle.set("pages.settings.updates.title");
+  pageTitle.set('pages.settings.updates.title');
 
   let loading, platformUpdateError, confetti;
   let platformUpdatingStep = 1;
@@ -475,21 +443,21 @@
   let updatingAll;
   let platformUpdateFinished;
 
-  const platformUpdating = getContext("platformUpdating");
+  const platformUpdating = getContext('platformUpdating');
 
   const platformUpdateProcesses = [
-    "getting-platform-update-info",
-    "downloading-update",
-    "verifying-hash",
-    "extracting-updater",
-    "installing-new-update",
+    'getting-platform-update-info',
+    'downloading-update',
+    'verifying-hash',
+    'extracting-updater',
+    'installing-new-update',
   ];
 
   const resourceUpdateProcesses = [
-    "getting-version-info",
-    "downloading-update",
-    "preparing",
-    "installing-new-update",
+    'getting-version-info',
+    'downloading-update',
+    'preparing',
+    'installing-new-update',
   ];
 
   function delay(time) {
@@ -498,19 +466,19 @@
 
   async function copyHashToClipboard(hash) {
     try {
-      copy(hash)
-      await showToast("components.toasts.hash-copied");
+      copy(hash);
+      await showToast('components.toasts.hash-copied');
     } catch (err) {
-      console.error("Failed to copy hash:", err);
-      await showToast("components.toasts.hash-copy-failed");
+      console.error('Failed to copy hash:', err);
+      await showToast('components.toasts.hash-copy-failed');
     }
   }
 
   async function isPanoHealthy() {
     try {
-      const getHealthResponse = await ApiUtil.get({ path: "/api/health" });
+      const getHealthResponse = await ApiUtil.get({ path: '/api/health' });
 
-      return getHealthResponse.result === "ok";
+      return getHealthResponse.result === 'ok';
     } catch (_) {
       return false;
     }
@@ -518,16 +486,16 @@
 
   if (browser) {
     (async () => {
-      confetti = await import("canvas-confetti");
+      confetti = await import('canvas-confetti');
     })();
   }
 
   async function handlePlatformUpdateSSEMessage(message) {
-    if (message.result === "ok") {
+    if (message.result === 'ok') {
       platformUpdatingStep++;
 
       if (platformUpdatingStep === platformUpdateProcesses.length + 1) {
-        await showToast("components.toasts.platform-update-success");
+        await showToast('components.toasts.platform-update-success');
 
         confetti.default({
           particleCount: 100,
@@ -546,7 +514,7 @@
         location.reload();
       }
     } else {
-      await showToast("components.toasts.platform-update-failed");
+      await showToast('components.toasts.platform-update-failed');
 
       platformUpdateError = message.error;
       console.error(message.error, message.message);
@@ -555,11 +523,11 @@
   }
 
   async function handleResourceUpdateSSEMessage(update, message) {
-    if (message.result === "ok") {
+    if (message.result === 'ok') {
       resourceUpdateStep++;
 
       if (resourceUpdateStep === resourceUpdateProcesses.length + 1) {
-        await showToast("components.toasts.resource-update-success", {
+        await showToast('components.toasts.resource-update-success', {
           id: update.id,
         });
 
@@ -572,13 +540,11 @@
 
         await delay(1000);
 
-        data.resourceUpdates = data.resourceUpdates.filter(
-          (item) => item.id !== update.id,
-        );
+        data.resourceUpdates = data.resourceUpdates.filter((item) => item.id !== update.id);
         inProgressResource = null;
       }
     } else {
-      await showToast("components.toasts.resource-update-failed", {
+      await showToast('components.toasts.resource-update-failed', {
         id: update.id,
       });
 
@@ -683,32 +649,28 @@
     loading = true;
     await Promise.all([
       ApiUtil.get({
-        path: "/api/panel/updates/platform",
+        path: '/api/panel/updates/platform',
         handler: async (body) => {
           await invalidateAll();
           loading = false;
 
-          if (body.error === "PANO_CONNECT_FAILED") {
-            await showToast(
-              "components.toasts.check-resources-update-failed-pano-account",
-            );
+          if (body.error === 'PANO_CONNECT_FAILED') {
+            await showToast('components.toasts.check-resources-update-failed-pano-account');
             return;
           }
 
-          if (body.error === "PANO_NOT_CONNECTED") {
+          if (body.error === 'PANO_NOT_CONNECTED') {
             await invalidateAll();
-            await showToast(
-              "components.toasts.check-resources-update-failed-pano-account-needed",
-            );
+            await showToast('components.toasts.check-resources-update-failed-pano-account-needed');
             return;
           }
 
-          if (body.result !== "ok") {
-            await showToast("components.toasts.check-update-failed");
+          if (body.result !== 'ok') {
+            await showToast('components.toasts.check-update-failed');
             return;
           }
 
-          await showToast("components.toasts.check-update-success");
+          await showToast('components.toasts.check-update-success');
         },
       }),
     ]);
@@ -719,31 +681,31 @@
   };
 
   function getVerifiedStatus(status) {
-    if (typeof status === "undefined") {
-      return "UNKNOWN";
+    if (typeof status === 'undefined') {
+      return 'UNKNOWN';
     } else if (status) {
-      return "VERIFIED";
+      return 'VERIFIED';
     } else {
-      return "NOT_VERIFIED";
+      return 'NOT_VERIFIED';
     }
   }
 
   const leaveHandler = (e) => {
     if (!platformUpdateFinished && ($platformUpdating || inProgressResource)) {
       e.preventDefault();
-      e.returnValue = ""; // Necessary for some browsers
+      e.returnValue = ''; // Necessary for some browsers
     }
   };
 
   onMount(() => {
     if (browser) {
-      window?.addEventListener("beforeunload", leaveHandler);
+      window?.addEventListener('beforeunload', leaveHandler);
     }
   });
 
   onDestroy(() => {
     if (browser) {
-      window?.removeEventListener("beforeunload", leaveHandler);
+      window?.removeEventListener('beforeunload', leaveHandler);
     }
   });
 
@@ -752,7 +714,7 @@
       browser &&
       !platformUpdateFinished &&
       ($platformUpdating || inProgressResource) &&
-      !confirm($_("pages.settings.updates.updating-leave-alert"))
+      !confirm($_('pages.settings.updates.updating-leave-alert'))
     ) {
       nav.cancel();
     }

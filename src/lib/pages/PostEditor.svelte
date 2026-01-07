@@ -21,15 +21,14 @@
       role="button"
       slot="left">
       <i class="fas fa-arrow-left"></i>
-      <span class="d-lg-inline d-none ms-2">
-        {$_("pages.post-editor.posts")}</span>
+      <span class="d-lg-inline d-none ms-2"> {$_('pages.post-editor.posts')}</span>
     </a>
 
     <div slot="right">
       {#if data.mode === Modes.EDIT}
         <button
-          title={$_("buttons.remove")}
-          aria-label={$_("buttons.remove")}
+          title={$_('buttons.remove')}
+          aria-label={$_('buttons.remove')}
           class="btn btn-link"
           type="button"
           on:click={() => showDeletePostModal(data.post)}>
@@ -38,8 +37,8 @@
       {/if}
       {#if data.post.status !== StatusTypes.DRAFT && data.mode === Modes.EDIT}
         <button
-          title={$_("pages.post-editor.move-to-drafts")}
-          aria-label={$_("pages.post-editor.move-to-drafts")}
+          title={$_('pages.post-editor.move-to-drafts')}
+          aria-label={$_('pages.post-editor.move-to-drafts')}
           class="btn btn-link"
           type="button"
           class:disabled={loading}
@@ -50,25 +49,19 @@
       <a
         class="btn btn-link"
         role="button"
-        aria-label={$_("buttons.view")}
-        title={$_("buttons.view")}
+        aria-label={$_('buttons.view')}
+        title={$_('buttons.view')}
         target="_blank"
         href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{data.post.id}">
         <i class="fas fa-eye"></i>
       </a>
       {#if data.post.status !== StatusTypes.PUBLISHED}
         <button
-          title={$_(
-            data.mode === Modes.CREATE ? "buttons.save" : "buttons.update",
-          )}
-          aria-label={$_(
-            data.mode === Modes.CREATE ? "buttons.save" : "buttons.update",
-          )}
+          title={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
+          aria-label={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
           class="btn btn-link"
           type="button"
-          class:disabled={loading ||
-            isEditorEmpty ||
-            data.post.title.length === 0}
+          class:disabled={loading || isEditorEmpty || data.post.title.length === 0}
           on:click={() => submit(false)}>
           <i class="fas fa-save"></i>
         </button>
@@ -76,15 +69,13 @@
       <button
         class="btn btn-secondary"
         type="button"
-        class:disabled={loading ||
-          isEditorEmpty ||
-          data.post.title.length === 0}
+        class:disabled={loading || isEditorEmpty || data.post.title.length === 0}
         on:click={() => submit(true)}>
         <i class="fas fa-save"></i>
         <span class="d-lg-inline d-none ms-2">
           {data.post.status === StatusTypes.PUBLISHED
-            ? $_("buttons.update")
-            : $_("pages.post-editor.publish")}</span>
+            ? $_('buttons.update')
+            : $_('pages.post-editor.publish')}</span>
       </button>
     </div>
   </PageActions>
@@ -98,14 +89,12 @@
           <input
             class="form-control form-control-lg"
             type="text"
-            placeholder={$_("pages.post-editor.inputs.title.placeholder")}
+            placeholder={$_('pages.post-editor.inputs.title.placeholder')}
             bind:value={data.post.title} />
 
           <div class="align-self-center w-100 h-75">
             <!-- Editor -->
-            <Editor
-              bind:content={data.post.text}
-              bind:isEmpty={isEditorEmpty} />
+            <Editor bind:content={data.post.text} bind:isEmpty={isEditorEmpty} />
             <!-- Editor End -->
           </div>
         </div>
@@ -119,7 +108,7 @@
           <ul class="list-group p-0 m-0">
             <li class="list-group-item">
               <div class="d-flex justify-content-between align-items-center">
-                {$_("pages.post-editor.status")}
+                {$_('pages.post-editor.status')}
                 <div>
                   {$_(getStatusByPostStatus(data.post.status))}
                 </div>
@@ -127,14 +116,14 @@
             </li>
             <li class="list-group-item">
               <div class="d-flex justify-content-between align-items-center">
-                {$_("pages.post-editor.views")}
-                <div>{data.mode === Modes.CREATE ? "0" : data.post.views}</div>
+                {$_('pages.post-editor.views')}
+                <div>{data.mode === Modes.CREATE ? '0' : data.post.views}</div>
               </div>
             </li>
             {#if data.post.status === StatusTypes.PUBLISHED}
               <li class="list-group-item">
                 <div class="d-flex justify-content-between align-items-center">
-                  {$_("pages.post-editor.created-at")}
+                  {$_('pages.post-editor.created-at')}
                   <div class="text-end">
                     <Date time={data.post.date} relativeFormat />
                   </div>
@@ -142,9 +131,8 @@
               </li>
               {#if data.post.moveDate}
                 <li class="list-group-item">
-                  <div
-                    class="d-flex justify-content-between align-items-center">
-                    {$_("pages.post-editor.updated-at")}
+                  <div class="d-flex justify-content-between align-items-center">
+                    {$_('pages.post-editor.updated-at')}
                     <div><Date time={data.post.moveDate} relativeFormat /></div>
                   </div>
                 </li>
@@ -152,14 +140,12 @@
             {/if}
             <li class="list-group-item">
               <div class="d-flex justify-content-between align-items-center">
-                {$_("pages.post-editor.category")}
+                {$_('pages.post-editor.category')}
 
                 <form>
-                  <select
-                    class="form-control form-control-sm"
-                    bind:value={data.post.category}>
+                  <select class="form-control form-control-sm" bind:value={data.post.category}>
                     <option class="text-primary" value={-1}
-                      >{$_("pages.post-editor.no-category")}</option>
+                      >{$_('pages.post-editor.no-category')}</option>
 
                     {#each data.categories as category, index (category)}
                       <option value={category.id}>{category.title}</option>
@@ -177,16 +163,13 @@
                     <button
                       type="button"
                       class="btn border-0 shadow-none w-100 h-100 p-0 bg-transparent"
-                      use:tooltip={[
-                        $_("buttons.change"),
-                        { placement: "bottom" },
-                      ]}
+                      use:tooltip={[$_('buttons.change'), { placement: 'bottom' }]}
                       on:click={() => thumbnailInput.click()}>
                       <img
                         src={thumbnail || data.post.thumbnailUrl}
                         class="img-fluid w-100 h-100 object-fit-cover"
-                        title={$_("pages.post-editor.small-image")}
-                        alt={$_("pages.post-editor.small-image")} />
+                        title={$_('pages.post-editor.small-image')}
+                        alt={$_('pages.post-editor.small-image')} />
                     </button>
                   </div>
 
@@ -195,8 +178,8 @@
                       type="button"
                       class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle"
                       on:click={onRemoveThumbnailClick}
-                      title={$_("buttons.remove")}
-                      aria-label={$_("buttons.remove")}>
+                      title={$_('buttons.remove')}
+                      aria-label={$_('buttons.remove')}>
                       <i class="fas fa-minus"></i>
                     </button>
                   {/if}
@@ -212,7 +195,7 @@
                   on:dragleave={handleDragLeave}>
                   <i class="fas fa-image fa-3x mb-2"></i>
                   <p class="mb-0">
-                    {@html $_("pages.post-editor.thumbnail-not-determined")}
+                    {@html $_('pages.post-editor.thumbnail-not-determined')}
                   </p>
                 </button>
               {/if}
@@ -235,18 +218,18 @@
 <AddEditPostCategoryModal />
 
 <script context="module">
-  import ApiUtil from "$lib/api.util";
-  import { error } from "@sveltejs/kit";
+  import ApiUtil from '$lib/api.util';
+  import { error } from '@sveltejs/kit';
 
   export const Modes = Object.freeze({
-    EDIT: "edit",
-    CREATE: "create",
+    EDIT: 'edit',
+    CREATE: 'create',
   });
 
   export const StatusTypes = Object.freeze({
-    PUBLISHED: "PUBLISHED",
-    DRAFT: "DRAFT",
-    TRASH: "TRASH",
+    PUBLISHED: 'PUBLISHED',
+    DRAFT: 'DRAFT',
+    TRASH: 'TRASH',
   });
 
   export const DefaultMode = Modes.CREATE;
@@ -261,12 +244,12 @@
     let data = {
       post: {
         id: -1,
-        title: "",
-        text: "",
+        title: '',
+        text: '',
         category: -1,
         status: -1,
         date: 0,
-        thumbnailUrl: "",
+        thumbnailUrl: '',
       },
       categoryCount: 0,
       categories: [],
@@ -283,7 +266,7 @@
       });
 
       if (postBody.error) {
-        if (postBody.error === "POST_NOT_FOUND") {
+        if (postBody.error === 'POST_NOT_FOUND') {
           throw error(404, postBody.error);
         }
 
@@ -296,7 +279,7 @@
     }
 
     const categoriesBody = await ApiUtil.get({
-      path: "/api/panel/post/categories",
+      path: '/api/panel/post/categories',
       request: event,
     });
 
@@ -307,39 +290,36 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { base } from "$app/paths";
-  import { goto } from "$app/navigation";
+  import { base } from '$app/paths';
+  import { goto } from '$app/navigation';
 
-  import tooltip from "$lib/tooltip.util";
+  import tooltip from '$lib/tooltip.util';
 
-  import { UI_URL } from "$lib/variables";
+  import { UI_URL } from '$lib/variables';
 
   import {
     setCallback as setDeletePostModalCallback,
     show as showDeletePostModal,
-  } from "$lib/component/modals/ConfirmDeletePostModal.svelte";
+  } from '$lib/component/modals/ConfirmDeletePostModal.svelte';
 
   import AddEditPostCategoryModal, {
     // show as showAddEditPostCategoryModal,
     setCallback as setCallbackForAddEditPostCategoryModal,
-  } from "$lib/component/modals/AddEditPostCategoryModal.svelte";
+  } from '$lib/component/modals/AddEditPostCategoryModal.svelte';
 
-  import { show as showDraftPostModal } from "$lib/component/modals/ConfirmDraftPostModal.svelte";
+  import { show as showDraftPostModal } from '$lib/component/modals/ConfirmDraftPostModal.svelte';
 
-  import { show as showPublishPostModal } from "$lib/component/modals/ConfirmPublishPostModal.svelte";
+  import { show as showPublishPostModal } from '$lib/component/modals/ConfirmPublishPostModal.svelte';
 
-  import Editor from "$lib/component/Editor.svelte";
+  import Editor from '$lib/component/Editor.svelte';
 
-  import {
-    show as showToast,
-    limitTitle,
-  } from "$lib/component/ToastContainer.svelte";
+  import { show as showToast, limitTitle } from '$lib/component/ToastContainer.svelte';
 
-  import PageActions from "$lib/component/PageActions.svelte";
-  import Date from "$lib/component/Date.svelte";
+  import PageActions from '$lib/component/PageActions.svelte';
+  import Date from '$lib/component/Date.svelte';
 
   export let data;
 
@@ -354,12 +334,10 @@
   let thumbnailInput;
   let thumbnailFiles = null;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
   pageTitle.set(
-    data.mode === Modes.EDIT
-      ? "pages.post-editor.title-edit"
-      : "pages.post-editor.title-create",
+    data.mode === Modes.EDIT ? 'pages.post-editor.title-edit' : 'pages.post-editor.title-create',
   );
 
   let dropZoneActive = false;
@@ -405,12 +383,12 @@
 
   function getStatusByPostStatus(status) {
     return status === StatusTypes.TRASH
-      ? "pages.post-editor.trash"
+      ? 'pages.post-editor.trash'
       : status === StatusTypes.PUBLISHED
-        ? "pages.post-editor.published"
+        ? 'pages.post-editor.published'
         : status === StatusTypes.DRAFT
-          ? "pages.post-editor.draft"
-          : "pages.post-editor.new";
+          ? 'pages.post-editor.draft'
+          : 'pages.post-editor.new';
   }
 
   function submit(publish) {
@@ -418,11 +396,11 @@
       loading = true;
 
       const bodyHandler = (body, reject) => {
-        if (body.result === "ok") {
+        if (body.result === 'ok') {
           loading = false;
 
           if (data.mode === Modes.CREATE) {
-            goto(base + "/posts/detail/" + body.id);
+            goto(base + '/posts/detail/' + body.id);
           }
 
           if (data.mode === Modes.EDIT && publish) {
@@ -432,13 +410,13 @@
           if (publish) {
             const title = limitTitle(data.post.title);
 
-            showToast("components.toasts.post-published", {
+            showToast('components.toasts.post-published', {
               title,
             });
           } else {
             const title = limitTitle(data.post.title);
 
-            showToast("components.toasts.post-saved", {
+            showToast('components.toasts.post-saved', {
               title,
             });
           }
@@ -448,7 +426,7 @@
           thumbnailFiles = null;
 
           return;
-        } else if (body.result === "error") {
+        } else if (body.result === 'error') {
           loading = false;
 
           data.error = body.error;
@@ -461,20 +439,20 @@
 
       const body = new FormData();
 
-      body.append("publish", publish);
-      body.append("title", data.post.title);
-      body.append("category", data.post.category);
-      body.append("text", data.post.text);
+      body.append('publish', publish);
+      body.append('title', data.post.title);
+      body.append('category', data.post.category);
+      body.append('text', data.post.text);
 
       if (isThumbnailRemoved) {
-        body.append("removeThumbnail", true);
+        body.append('removeThumbnail', true);
       } else if (thumbnailFiles && thumbnailFiles[0]) {
-        body.append("thumbnail", thumbnailFiles[0]);
+        body.append('thumbnail', thumbnailFiles[0]);
       }
 
       if (data.post.id === -1) {
         ApiUtil.post({
-          path: "/api/panel/post",
+          path: '/api/panel/post',
           body,
           handler: bodyHandler,
         });
@@ -497,7 +475,7 @@
       ApiUtil.put({
         path: `/api/panel/posts/${data.post.id}/status`,
         body: {
-          to: "DRAFT",
+          to: 'DRAFT',
         },
         handler: async (body, reject) => {
           if (body.error) {
@@ -508,11 +486,11 @@
 
           loading = false;
 
-          await goto(base + "/posts?pageType=DRAFT");
+          await goto(base + '/posts?pageType=DRAFT');
 
           const title = `<a href="${base}/posts?pageType=DRAFT" target="_blank">${limitTitle(data.post.title)}</a>`;
 
-          await showToast("components.toasts.post-moved-to-draft", { title });
+          await showToast('components.toasts.post-moved-to-draft', { title });
         },
       });
     });
@@ -532,7 +510,7 @@
 
   setCallbackForAddEditPostCategoryModal((routeFirstPage, category) => {
     ApiUtil.get({
-      path: "/api/panel/post/categories",
+      path: '/api/panel/post/categories',
       handler: (body, reject) => {
         if (body.error) {
           reject();
@@ -549,9 +527,9 @@
 
   setDeletePostModalCallback((post) => {
     if (post.status === StatusTypes.TRASH) {
-      goto(base + "/posts");
+      goto(base + '/posts');
     } else {
-      goto(base + "/posts?pageType=TRASH");
+      goto(base + '/posts?pageType=TRASH');
     }
   });
 </script>

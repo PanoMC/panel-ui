@@ -1,10 +1,10 @@
 <slot />
 
 <script context="module">
-  import { redirect } from "@sveltejs/kit";
-  import { base } from "$app/paths";
+  import { redirect } from '@sveltejs/kit';
+  import { base } from '$app/paths';
 
-  import { hasPermission, Permissions } from "$lib/auth.util.js";
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
 
   /**
    * @type {import('@sveltejs/kit').LayoutLoad}

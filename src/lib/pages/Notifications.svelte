@@ -6,12 +6,11 @@
       {#if $notifications.length !== 0}
         <button
           type="button"
-          aria-label={$_("pages.notifications.delete-all")}
+          aria-label={$_('pages.notifications.delete-all')}
           class="btn btn-secondary"
           on:click={() => onDeleteAllClick()}>
           <i class="fa fa-trash"></i>
-          <span class="d-lg-inline d-none ms-2">
-            {$_("pages.notifications.delete-all")}</span>
+          <span class="d-lg-inline d-none ms-2"> {$_('pages.notifications.delete-all')}</span>
         </button>
       {/if}
     </div>
@@ -20,30 +19,26 @@
   <!-- All Notifications -->
 
   <div class="card">
-    <div class="card-header">{$_("pages.notifications.title")}</div>
-    <div
-      class="card-body vstack gap-3"
-      class:d-none={$notifications.length === 0}>
+    <div class="card-header">{$_('pages.notifications.title')}</div>
+    <div class="card-body vstack gap-3" class:d-none={$notifications.length === 0}>
       <div class="list-group">
         {#each $notifications as notification (notification)}
           <div
             class="list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
-            class:notification-unread={notification.status === "NOT_READ"}>
+            class:notification-unread={notification.status === 'NOT_READ'}>
             <button
               type="button"
-              title={$_("buttons.view")}
+              title={$_('buttons.view')}
               on:click={() => onNotificationClick(notification)}
               class="btn btn-link text-decoration-none flex-grow-1 text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
               <span class="d-flex align-items-center">
                 {#if notification.details.faIcon}
-                  <i
-                    class="{notification.details
-                      .faIcon} fa-fw fa-xl text-primary"></i>
+                  <i class="{notification.details.faIcon} fa-fw fa-xl text-primary"></i>
                 {:else if notification.details.image || notification.details.username}
                   <img
                     src={notification.details.image ||
                       `https://minotar.net/avatar/${notification.details.username}/64`}
-                    alt={$_("buttons.view")}
+                    alt={$_('buttons.view')}
                     width="30"
                     height="30"
                     class="rounded" />
@@ -54,7 +49,7 @@
 
               <div class="fw-normal">
                 <span class="text-wrap markdown-renderer"
-                  >{@html $_("notifications." + notification.type, {
+                  >{@html $_('notifications.' + notification.type, {
                     values: { ...sanitizeObject(notification.details || {}) },
                   })}</span>
                 <br />
@@ -71,11 +66,8 @@
             <button
               type="button"
               class="btn-close ms-2"
-              aria-label={$_("pages.notifications.delete-notification")}
-              use:tooltip={[
-                $_("pages.notifications.delete-notification"),
-                { placement: "bottom" },
-              ]}
+              aria-label={$_('pages.notifications.delete-notification')}
+              use:tooltip={[$_('pages.notifications.delete-notification'), { placement: 'bottom' }]}
               on:click={() => onDeleteNotificationClick(notification.id)}>
             </button>
           </div>
@@ -92,7 +84,7 @@
           class="btn btn-sm btn-outline-primary"
           class:disabled={loadMoreLoading}
           on:click={loadMore}
-          >{$_("pages.notifications.show-more", {
+          >{$_('pages.notifications.show-more', {
             values: { count: $count - $notifications.length },
           })}
         </button>
@@ -104,11 +96,11 @@
 <ConfirmRemoveAllNotificationsModal />
 
 <script context="module">
-  import { writable, get } from "svelte/store";
+  import { writable, get } from 'svelte/store';
 
-  import { browser } from "$app/environment";
+  import { browser } from '$app/environment';
 
-  import ApiUtil from "$lib/api.util.js";
+  import ApiUtil from '$lib/api.util.js';
 
   const notifications = writable([]);
   const count = writable(0);
@@ -153,7 +145,7 @@
     await parent();
 
     const body = await ApiUtil.get({
-      path: "/api/panel/notifications",
+      path: '/api/panel/notifications',
       request: event,
     });
 
@@ -161,12 +153,12 @@
 
     if (browser) {
       body.notifications.slice(0, 5).forEach((notification) => {
-        if (notification.status === "NOT_READ") {
+        if (notification.status === 'NOT_READ') {
           setTimeout(() => {
             notifications.update((notifications) => {
               notifications.forEach((subNotification) => {
                 if (subNotification.id === notification.id) {
-                  notification.status = "READ";
+                  notification.status = 'READ';
                 }
               });
 
@@ -184,29 +176,29 @@
 </script>
 
 <script>
-  import { getContext, onDestroy, onMount } from "svelte";
-  import { formatDistanceToNow } from "date-fns";
-  import { _ } from "svelte-i18n";
-  import * as locales from "date-fns/locale";
-  import { sanitize } from "@jill64/universal-sanitizer";
+  import { getContext, onDestroy, onMount } from 'svelte';
+  import { formatDistanceToNow } from 'date-fns';
+  import { _ } from 'svelte-i18n';
+  import * as locales from 'date-fns/locale';
+  import { sanitize } from '@jill64/universal-sanitizer';
 
-  import tooltip from "$lib/tooltip.util";
+  import tooltip from '$lib/tooltip.util';
 
   import ConfirmRemoveAllNotificationsModal, {
     show as showDeleteAllNotificationsModal,
     setCallback as setDeleteAllNotificationsModalCallback,
-  } from "$lib/component/modals/ConfirmRemoveAllNotificationsModal.svelte";
-  import { onNotificationClick } from "$lib/NotificationManager.js";
+  } from '$lib/component/modals/ConfirmRemoveAllNotificationsModal.svelte';
+  import { onNotificationClick } from '$lib/NotificationManager.js';
 
-  import NoContent from "$lib/component/NoContent.svelte";
-  import { currentLanguage } from "$lib/language.util.js";
-  import PageActions from "$lib/component/PageActions.svelte";
+  import NoContent from '$lib/component/NoContent.svelte';
+  import { currentLanguage } from '$lib/language.util.js';
+  import PageActions from '$lib/component/PageActions.svelte';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
-  pageTitle.set("pages.notifications.title");
+  pageTitle.set('pages.notifications.title');
 
   let notificationProcessID = 0;
   let page = 0;
@@ -223,13 +215,13 @@
     await delay(1000);
 
     ApiUtil.get({
-      path: "/api/panel/notifications",
+      path: '/api/panel/notifications',
       handler: (body) => {
         if (notificationProcessID !== id) {
           return;
         }
 
-        if (body.result === "ok") {
+        if (body.result === 'ok') {
           setNotifications(body.notifications);
 
           count.set(parseInt(body.notificationCount));
@@ -242,12 +234,12 @@
         }, 1000);
 
         $notifications.forEach((notification) => {
-          if (notification.status === "NOT_READ") {
+          if (notification.status === 'NOT_READ') {
             setTimeout(() => {
               notifications.update((notifications) => {
                 notifications.forEach((subNotification) => {
                   if (subNotification.id === notification.id) {
-                    notification.status = "READ";
+                    notification.status = 'READ';
                   }
                 });
 
@@ -264,9 +256,7 @@
     loadMoreLoading = true;
 
     ApiUtil.get({
-      path: `/api/panel/notifications/${
-        get(notifications)[get(notifications).length - 1].id
-      }/more`,
+      path: `/api/panel/notifications/${get(notifications)[get(notifications).length - 1].id}/more`,
       handler: (body, reject) => {
         if (body.error) {
           reject();
@@ -275,9 +265,7 @@
         }
 
         body.notifications.forEach((notification) => {
-          notifications.update((value) =>
-            value.insert(value.length, notification),
-          );
+          notifications.update((value) => value.insert(value.length, notification));
         });
 
         loadMoreLoading = false;

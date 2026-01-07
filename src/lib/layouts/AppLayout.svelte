@@ -3,7 +3,7 @@
 
   <title>{title}</title>
 
-  <meta content={$session.basicData.panelTheme || "dark"} name="x-theme" />
+  <meta content={$session.basicData.panelTheme || 'dark'} name="x-theme" />
 </svelte:head>
 
 <App>
@@ -33,75 +33,75 @@
 </App>
 
 <script context="module">
-  import { writable } from "svelte/store";
-  import { _ } from "svelte-i18n";
-  import { setPanoContext } from "@panomc/sdk/internal";
+  import { writable } from 'svelte/store';
+  import { _ } from 'svelte-i18n';
+  import { setPanoContext } from '@panomc/sdk/internal';
 
-  import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
-  import { base } from "$app/paths";
-  import { browser } from "$app/environment";
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
+  import { base } from '$app/paths';
+  import { browser } from '$app/environment';
 
-  import {navigating} from "$app/stores";
+  import { navigating } from '$app/stores';
 
-  import PageActions from "$lib/component/PageActions.svelte"
-  import PageLoader from "$lib/component/PageLoader.svelte"
-  import PageNavItem from "$lib/component/PageNavItem.svelte"
-  import PageNav from "$lib/component/PageNav.svelte"
-  import Pagination from "$lib/component/Pagination.svelte"
-  import PageLoading from "$lib/component/PageLoading.svelte"
-  import Toast from "$lib/component/Toast.svelte"
-  import CardFilters from "$lib/component/CardFilters.svelte"
-  import CardFiltersItem from "$lib/component/CardFiltersItem.svelte"
-  import CardHeader from "$lib/component/CardHeader.svelte"
-  import CardMenu from "$lib/component/CardMenu.svelte"
-  import CardMenuItem from "$lib/component/CardMenuItem.svelte"
-  import Date from "$lib/component/Date.svelte"
-  import NoContent from "$lib/component/NoContent.svelte"
+  import PageActions from '$lib/component/PageActions.svelte';
+  import PageLoader from '$lib/component/PageLoader.svelte';
+  import PageNavItem from '$lib/component/PageNavItem.svelte';
+  import PageNav from '$lib/component/PageNav.svelte';
+  import Pagination from '$lib/component/Pagination.svelte';
+  import PageLoading from '$lib/component/PageLoading.svelte';
+  import Toast from '$lib/component/Toast.svelte';
+  import CardFilters from '$lib/component/CardFilters.svelte';
+  import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
+  import CardHeader from '$lib/component/CardHeader.svelte';
+  import CardMenu from '$lib/component/CardMenu.svelte';
+  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import Date from '$lib/component/Date.svelte';
+  import NoContent from '$lib/component/NoContent.svelte';
 
-  import tooltip from "$lib/tooltip.util"
+  import tooltip from '$lib/tooltip.util';
 
-  import * as languageStuff from "$lib/language.util";
-  import ApiUtil, * as ApiUtilStuff from "$lib/api.util.js";
-  import * as toastStuff from "$lib/component/ToastContainer.svelte";
-  import * as variableStuff from "$lib/variables";
+  import * as languageStuff from '$lib/language.util';
+  import ApiUtil, * as ApiUtilStuff from '$lib/api.util.js';
+  import * as toastStuff from '$lib/component/ToastContainer.svelte';
+  import * as variableStuff from '$lib/variables';
 
-  import { networkErrorCallbacks, showNetworkError } from "$lib/Store.js";
+  import { networkErrorCallbacks, showNetworkError } from '$lib/Store.js';
 
-  import { addListener } from "$lib/NotificationManager.js";
+  import { addListener } from '$lib/NotificationManager.js';
 
-  import { show as showServerRequestModal } from "$lib/component/modals/ServerRequestModal.svelte";
-  import { initializePlugins, preparePlugins } from "$lib/PluginManager.js";
-  import { updateApiUrl, updatePanoWebsiteUrl } from "$lib/variables.js";
+  import { show as showServerRequestModal } from '$lib/component/modals/ServerRequestModal.svelte';
+  import { initializePlugins, preparePlugins } from '$lib/PluginManager.js';
+  import { updateApiUrl, updatePanoWebsiteUrl } from '$lib/variables.js';
 
-  const initLanguage = languageStuff.init
+  const initLanguage = languageStuff.init;
 
   function initNotificationListeners() {
-    addListener("NEW_TICKET", (notification) => {
+    addListener('NEW_TICKET', (notification) => {
       const {
         details: { id },
       } = notification;
 
-      goto(base + "/tickets/detail/" + id, { invalidateAll: true });
+      goto(base + '/tickets/detail/' + id, { invalidateAll: true });
     });
 
-    addListener("NEW_TICKET_MESSAGE", (notification) => {
+    addListener('NEW_TICKET_MESSAGE', (notification) => {
       const {
         details: { id },
       } = notification;
 
-      goto(base + "/tickets/detail/" + id, { invalidateAll: true });
+      goto(base + '/tickets/detail/' + id, { invalidateAll: true });
     });
 
-    addListener("TICKET_CLOSED_BY_USER", (notification) => {
+    addListener('TICKET_CLOSED_BY_USER', (notification) => {
       const {
         details: { id },
       } = notification;
 
-      goto(base + "/tickets/detail/" + id, { invalidateAll: true });
+      goto(base + '/tickets/detail/' + id, { invalidateAll: true });
     });
 
-    addListener("SERVER_CONNECT_REQUEST", (notification) => {
+    addListener('SERVER_CONNECT_REQUEST', (notification) => {
       const {
         details: { id },
       } = notification;
@@ -109,8 +109,8 @@
       showServerRequestModal(id);
     });
 
-    addListener("PANO_UPDATE_FOUND", () => {
-      goto(base + "/settings/updates", { invalidateAll: true });
+    addListener('PANO_UPDATE_FOUND', () => {
+      goto(base + '/settings/updates', { invalidateAll: true });
     });
   }
 
@@ -119,17 +119,11 @@
    */
   export async function loadServer(event) {
     const {
-      locals: {
-        basicData,
-        csrfToken,
-        apiUrlEnv,
-        panoWebsiteUrlEnv,
-        panoWebsiteApiUrlEnv,
-      },
+      locals: { basicData, csrfToken, apiUrlEnv, panoWebsiteUrlEnv, panoWebsiteApiUrlEnv },
     } = event;
 
     let siteInfo = await ApiUtil.get({
-      path: "/api/siteInfo",
+      path: '/api/siteInfo',
       request: event,
       csrfToken,
     });
@@ -151,14 +145,7 @@
    */
   export async function load(event) {
     const {
-      data: {
-        basicData,
-        csrfToken,
-        siteInfo,
-        apiUrlEnv,
-        panoWebsiteUrlEnv,
-        panoWebsiteApiUrlEnv,
-      },
+      data: { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv, panoWebsiteApiUrlEnv },
       parent,
     } = event;
     await parent();
@@ -194,27 +181,27 @@
         CardMenu,
         CardMenuItem,
         Date,
-        NoContent
+        NoContent,
       },
       utils: {
         api: {
           ApiUtil,
-          ...ApiUtilStuff
+          ...ApiUtilStuff,
         },
         language: {
           ...languageStuff,
           _,
         },
         tooltip: {
-          tooltip
+          tooltip,
         },
         toast: {
-          ...toastStuff
-        }
+          ...toastStuff,
+        },
       },
       variables: {
-        ...variableStuff
-      }
+        ...variableStuff,
+      },
     });
 
     await initializePlugins(siteInfo);
@@ -236,10 +223,9 @@
       },
       user: basicData.user || {},
       website: basicData.website || {},
-      platformServerMatchKey: basicData.platformServerMatchKey || "",
-      platformKeyRefreshedTime:
-        basicData.platformServerMatchKeyTimeStarted || Date.now(),
-      platformHostAddress: basicData.platformHostAddress || "",
+      platformServerMatchKey: basicData.platformServerMatchKey || '',
+      platformKeyRefreshedTime: basicData.platformServerMatchKeyTimeStarted || Date.now(),
+      platformHostAddress: basicData.platformHostAddress || '',
       notificationCount: basicData.notificationCount || 0,
       mainServer: basicData.mainServer || {},
       selectedServer: basicData.selectedServer,
@@ -248,7 +234,7 @@
       resetLayout: writable(false),
     };
 
-    if (basicData.result !== "ok") {
+    if (basicData.result !== 'ok') {
       output.NETWORK_ERROR = true;
     }
 
@@ -257,20 +243,20 @@
 </script>
 
 <script>
-  import { onDestroy, onMount, setContext } from "svelte";
-  import { get } from "svelte/store";
+  import { onDestroy, onMount, setContext } from 'svelte';
+  import { get } from 'svelte/store';
 
-  import { options, logoutLoading, initialized } from "$lib/Store";
-  import { hasPermission, Permissions } from "$lib/auth.util.js";
-  import { PanelSidebarStorageUtil } from "$lib/storage.util.js";
+  import { options, logoutLoading, initialized } from '$lib/Store';
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { PanelSidebarStorageUtil } from '$lib/storage.util.js';
 
-  import Splash from "$lib/component/Splash.svelte";
-  import App from "$lib/component/App.svelte";
-  import NotificationContainer from "$lib/component/NotificationContainer.svelte";
-  import ServerRequestModal from "$lib/component/modals/ServerRequestModal.svelte";
-  import InstallingResourceModal from "$lib/component/modals/InstallingResourceModal.svelte";
-  import MainLayout from "$lib/layouts/MainLayout.svelte";
-  import ToastContainer from "$lib/component/ToastContainer.svelte";
+  import Splash from '$lib/component/Splash.svelte';
+  import App from '$lib/component/App.svelte';
+  import NotificationContainer from '$lib/component/NotificationContainer.svelte';
+  import ServerRequestModal from '$lib/component/modals/ServerRequestModal.svelte';
+  import InstallingResourceModal from '$lib/component/modals/InstallingResourceModal.svelte';
+  import MainLayout from '$lib/layouts/MainLayout.svelte';
+  import ToastContainer from '$lib/component/ToastContainer.svelte';
 
   export let data;
 
@@ -288,7 +274,7 @@
   const showSplash = writable(true);
   const platformUpdating = writable(false);
   const platformRestarting = writable(false);
-  const panelTheme = writable(data.session.basicData.panelTheme || "dark");
+  const panelTheme = writable(data.session.basicData.panelTheme || 'dark');
   const { resetLayout } = data;
 
   const pageTitle = writable(null);
@@ -312,31 +298,30 @@
     selectedServer.set(data.selectedServer);
     connectedServerCount.set(data.connectedServerCount);
     siteInfo.set(data.siteInfo);
-    panelTheme.set(data.session.basicData.panelTheme || "dark");
+    panelTheme.set(data.session.basicData.panelTheme || 'dark');
 
     sidebarTabsState.set(getCurrentSidebarState());
   });
 
-  setContext("pageTitle", pageTitle);
+  setContext('pageTitle', pageTitle);
 
-  setContext("session", session);
-  setContext("user", user);
-  setContext("website", website);
-  setContext("platformServerMatchKey", platformServerMatchKey);
-  setContext("platformKeyRefreshedTime", platformKeyRefreshedTime);
-  setContext("platformHostAddress", platformHostAddress);
-  setContext("notificationCount", notificationCount);
-  setContext("mainServer", mainServer);
-  setContext("selectedServer", selectedServer);
-  setContext("connectedServerCount", connectedServerCount);
+  setContext('session', session);
+  setContext('user', user);
+  setContext('website', website);
+  setContext('platformServerMatchKey', platformServerMatchKey);
+  setContext('platformKeyRefreshedTime', platformKeyRefreshedTime);
+  setContext('platformHostAddress', platformHostAddress);
+  setContext('notificationCount', notificationCount);
+  setContext('mainServer', mainServer);
+  setContext('selectedServer', selectedServer);
+  setContext('connectedServerCount', connectedServerCount);
 
-  setContext("sidebarTabsState", sidebarTabsState);
-  setContext("isSidebarOpen", isSidebarOpen);
-  setContext("siteInfo", siteInfo);
-  setContext("platformUpdating", platformUpdating);
-  setContext("platformRestarting", platformRestarting);
-  setContext("panelTheme", panelTheme);
-
+  setContext('sidebarTabsState', sidebarTabsState);
+  setContext('isSidebarOpen', isSidebarOpen);
+  setContext('siteInfo', siteInfo);
+  setContext('platformUpdating', platformUpdating);
+  setContext('platformRestarting', platformRestarting);
+  setContext('panelTheme', panelTheme);
 
   $: title = $pageTitle
     ? `${$_($pageTitle)} \u2014 ${options.DEFAULT_PAGE_TITLE}`
@@ -348,14 +333,14 @@
 
   function getCurrentSidebarState() {
     if (!hasPermission(Permissions.MANAGE_SERVERS)) {
-      return "website";
+      return 'website';
     }
 
     if (PanelSidebarStorageUtil.isThereSideBarTabsState()) {
       return PanelSidebarStorageUtil.getSidebarTabsState();
     }
 
-    return "website";
+    return 'website';
   }
 
   setTimeout(function () {

@@ -1,19 +1,15 @@
 <!-- Add Resource Modal -->
-<div
-  role="dialog"
-  class="modal modal-lg fade"
-  bind:this={$modalElement}
-  aria-hidden="true">
+<div role="dialog" class="modal modal-lg fade" bind:this={$modalElement} aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header border-0">
         <h5 class="modal-title">
           {#if $installError}
-            {$_("components.modals.installing-resource.error")}
+            {$_('components.modals.installing-resource.error')}
           {:else if !isFinished($installingStep)}
-            {$_("components.modals.installing-resource.installing")}
+            {$_('components.modals.installing-resource.installing')}
           {:else}
-            {$_("components.modals.installing-resource.completed")}
+            {$_('components.modals.installing-resource.completed')}
           {/if}
         </h5>
       </div>
@@ -31,8 +27,7 @@
               : !isFinished($installingStep)
                 ? 'progress-bar-animated bg-primary'
                 : 'bg-success'}"
-            style="width: {(Math.min($installingStep - 1, $processes.length) /
-              $processes.length) *
+            style="width: {(Math.min($installingStep - 1, $processes.length) / $processes.length) *
               100}%">
           </div>
         </div>
@@ -40,13 +35,13 @@
         <p class="small mb-0" in:fade out:fade>
           {#if $installError}
             <span class="text-danger"
-              >{$_("components.modals.installing-resource.error-text", {
-                values: { error: $_("errors." + $installError) },
+              >{$_('components.modals.installing-resource.error-text', {
+                values: { error: $_('errors.' + $installError) },
               })}</span>
           {:else if !isFinished($installingStep)}
             {$_($processes[$installingStep - 1])}
           {:else}
-            🎉 {$_("components.modals.installing-resource.install-complete")}
+            🎉 {$_('components.modals.installing-resource.install-complete')}
           {/if}
         </p>
       </div>
@@ -57,22 +52,22 @@
             data-bs-dismiss="modal"
             type="button"
             on:click={() =>
-              goto(`${base}/${$type === "PLUGIN" ? "addons" : "view"}/store`, {
+              goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}/store`, {
                 invalidateAll: true,
               }) && callback()}>
             <i class="fas fa-store me-2"></i>
-            {$_("buttons.go-to-store")}
+            {$_('buttons.go-to-store')}
           </button>
           <button
             class="btn btn-primary col-6 m-0"
             data-bs-dismiss="modal"
             type="button"
             on:click={() =>
-              goto(`${base}/${$type === "PLUGIN" ? "addons" : "view"}`, {
+              goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}`, {
                 invalidateAll: true,
               })}>
             <i class="fas fa-arrow-left me-2"></i>
-            {$_("buttons." + ($type === "PLUGIN" ? "addons" : "themes"))}
+            {$_('buttons.' + ($type === 'PLUGIN' ? 'addons' : 'themes'))}
           </button>
         </div>
       {/if}
@@ -81,18 +76,18 @@
 </div>
 
 <script context="module">
-  import { writable, get } from "svelte/store";
+  import { writable, get } from 'svelte/store';
 
-  import { browser } from "$app/environment";
-  import { base } from "$app/paths";
+  import { browser } from '$app/environment';
+  import { base } from '$app/paths';
 
-  import ApiUtil from "$lib/api.util";
+  import ApiUtil from '$lib/api.util';
 
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import { show as showInstallResourceModal } from "$lib/component/modals/InstallResourceModal.svelte";
+  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showInstallResourceModal } from '$lib/component/modals/InstallResourceModal.svelte';
 
   const modalElement = writable();
-  const type = writable("PLUGIN");
+  const type = writable('PLUGIN');
 
   const processes = writable([]);
 
@@ -107,7 +102,7 @@
 
   if (browser) {
     (async () => {
-      confetti = await import("canvas-confetti");
+      confetti = await import('canvas-confetti');
     })();
   }
 
@@ -119,8 +114,8 @@
 
   async function validateFile(file) {
     if (
-      (get(type) === "THEME" && file.name.endsWith(".zip")) ||
-      (get(type) === "PLUGIN" && file.name.endsWith(".jar"))
+      (get(type) === 'THEME' && file.name.endsWith('.zip')) ||
+      (get(type) === 'PLUGIN' && file.name.endsWith('.jar'))
     ) {
       return true;
     }
@@ -128,7 +123,7 @@
     hide();
     showInstallResourceModal(get(type));
 
-    await showToast("components.toasts.invalid-resource-file-type");
+    await showToast('components.toasts.invalid-resource-file-type');
 
     return false;
   }
@@ -136,7 +131,7 @@
   async function uploadFile(file) {
     const body = new FormData();
 
-    body.append("file", file);
+    body.append('file', file);
 
     const uploadResponse = await ApiUtil.put({
       path: `/api/panel/install/upload`,
@@ -159,7 +154,7 @@
   }
 
   async function handleSSEMessage(message) {
-    if (message.result === "ok") {
+    if (message.result === 'ok') {
       installingStep.set(get(installingStep) + 1);
 
       if (get(installingStep) === get(processes).length + 1) {
@@ -190,17 +185,13 @@
   }
 
   async function installResourceFromStore(versionId) {
-    const eventSource = new EventSource(
-      `/api/panel/install/store/${versionId}/stream`,
-    );
+    const eventSource = new EventSource(`/api/panel/install/store/${versionId}/stream`);
 
     handleEventSource(eventSource);
   }
 
   async function installResourceFromLocal(fileName) {
-    const eventSource = new EventSource(
-      `/api/panel/install/local/${get(type)}/${fileName}/stream`,
-    );
+    const eventSource = new EventSource(`/api/panel/install/local/${get(type)}/${fileName}/stream`);
 
     handleEventSource(eventSource);
   }
@@ -213,21 +204,21 @@
     installing = true;
 
     processes.set([
-      "components.modals.installing-resource.processes.version-info",
-      "components.modals.installing-resource.processes.downloading",
-      "components.modals.installing-resource.processes.preparing",
-      "components.modals.installing-resource.processes.installing",
+      'components.modals.installing-resource.processes.version-info',
+      'components.modals.installing-resource.processes.downloading',
+      'components.modals.installing-resource.processes.preparing',
+      'components.modals.installing-resource.processes.installing',
     ]);
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
     modal.show();
 
     if (newFile) {
       processes.set([
-        "components.modals.installing-resource.processes.uploading",
+        'components.modals.installing-resource.processes.uploading',
         ...get(processes).slice(2),
       ]);
 
@@ -259,11 +250,11 @@
 </script>
 
 <script>
-  import { _ } from "svelte-i18n";
-  import { fade } from "svelte/transition";
+  import { _ } from 'svelte-i18n';
+  import { fade } from 'svelte/transition';
 
-  import { beforeNavigate, goto } from "$app/navigation";
-  import { onDestroy, onMount } from "svelte";
+  import { beforeNavigate, goto } from '$app/navigation';
+  import { onDestroy, onMount } from 'svelte';
 
   function isFinished(installingStep) {
     return installingStep === $processes.length + 1;
@@ -272,19 +263,19 @@
   const leaveHandler = (e) => {
     if (installing) {
       e.preventDefault();
-      e.returnValue = ""; // Necessary for some browsers
+      e.returnValue = ''; // Necessary for some browsers
     }
   };
 
   onMount(() => {
     if (browser) {
-      window?.addEventListener("beforeunload", leaveHandler);
+      window?.addEventListener('beforeunload', leaveHandler);
     }
   });
 
   onDestroy(() => {
     if (browser) {
-      window?.removeEventListener("beforeunload", leaveHandler);
+      window?.removeEventListener('beforeunload', leaveHandler);
     }
   });
 
@@ -292,7 +283,7 @@
     if (
       browser &&
       installing &&
-      !confirm($_("components.installing-resource.installing-leave-alert"))
+      !confirm($_('components.installing-resource.installing-leave-alert'))
     ) {
       nav.cancel();
     }

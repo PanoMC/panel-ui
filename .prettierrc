@@ -1,8 +1,9 @@
 {
-  "svelteSortOrder": "styles-markup-options-scripts",
-  "svelteStrictMode": true,
-  "svelteBracketNewLine": false,
-  "svelteAllowShorthand": false,
+  "plugins": ["prettier-plugin-svelte"],
   "quoteProps": "preserve",
-  "bracketSameLine": true
+  "bracketSameLine": true,
+  "svelteSortOrder": "styles-markup-options-scripts",
+  "singleQuote": true,
+  "trailingComma": "all",
+  "printWidth": 100
 }

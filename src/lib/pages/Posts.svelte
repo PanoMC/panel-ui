@@ -5,22 +5,17 @@
     <!-- Submenu -->
     <CardMenu slot="middle">
       {#if !data.categoryUrl}
-        <CardMenuItem href="/posts" startsWith
-          >{$_("pages.post-categories.posts")}</CardMenuItem>
+        <CardMenuItem href="/posts" startsWith>{$_('pages.post-categories.posts')}</CardMenuItem>
         <CardMenuItem href="/posts/categories" startsWith
-          >{$_("pages.posts.post-categories-button")}</CardMenuItem>
+          >{$_('pages.posts.post-categories-button')}</CardMenuItem>
       {/if}
     </CardMenu>
 
     <div slot="right">
       {#if !data.categoryUrl}
-        <a
-          href="{base}/posts/create-post"
-          class="btn btn-secondary"
-          role="button">
+        <a href="{base}/posts/create-post" class="btn btn-secondary" role="button">
           <i class="fas fa-plus"></i>
-          <span class="d-lg-inline d-none ms-2">
-            {$_("pages.posts.create-post-button")}</span>
+          <span class="d-lg-inline d-none ms-2"> {$_('pages.posts.create-post-button')}</span>
         </a>
       {/if}
     </div>
@@ -31,17 +26,17 @@
   <div class="card">
     <CardHeader>
       <div slot="left">
-        {$_("pages.posts.table-title", {
+        {$_('pages.posts.table-title', {
           values: {
             postCount: data.postCount,
             pageType:
               data.pageType === PageTypes.PUBLISHED
-                ? $_("pages.posts.published") + " "
+                ? $_('pages.posts.published') + ' '
                 : data.pageType === PageTypes.DRAFT
-                  ? $_("pages.posts.draft") + " "
+                  ? $_('pages.posts.draft') + ' '
                   : data.pageType === PageTypes.BANNED
-                    ? $_("pages.posts.banned") + " "
-                    : "",
+                    ? $_('pages.posts.banned') + ' '
+                    : '',
           },
         })}
       </div>
@@ -49,20 +44,14 @@
       <!-- Filters -->
       <CardFilters slot="right">
         {#if !data.categoryUrl}
-          <CardFiltersItem
-            href="/posts"
-            active={data.pageType === PageTypes.PUBLISHED}>
-            {$_("pages.posts.published")}
+          <CardFiltersItem href="/posts" active={data.pageType === PageTypes.PUBLISHED}>
+            {$_('pages.posts.published')}
           </CardFiltersItem>
-          <CardFiltersItem
-            href="/posts?pageType=DRAFT"
-            active={data.pageType === PageTypes.DRAFT}>
-            {$_("pages.posts.draft")}
+          <CardFiltersItem href="/posts?pageType=DRAFT" active={data.pageType === PageTypes.DRAFT}>
+            {$_('pages.posts.draft')}
           </CardFiltersItem>
-          <CardFiltersItem
-            href="/posts?pageType=TRASH"
-            active={data.pageType === PageTypes.TRASH}>
-            {$_("pages.posts.trash")}
+          <CardFiltersItem href="/posts?pageType=TRASH" active={data.pageType === PageTypes.TRASH}>
+            {$_('pages.posts.trash')}
           </CardFiltersItem>
         {/if}
       </CardFilters>
@@ -78,31 +67,24 @@
             <tr>
               <th scope="col"></th>
               <th scope="col"></th>
-              <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.posts.table.title")}</th>
-              <th
-                scope="col"
-                class="align-middle text-nowrap"
-                class:table-active={data.categoryUrl}
-                >{$_("pages.posts.table.category")}</th>
+              <th class="align-middle text-nowrap" scope="col">{$_('pages.posts.table.title')}</th>
+              <th scope="col" class="align-middle text-nowrap" class:table-active={data.categoryUrl}
+                >{$_('pages.posts.table.category')}</th>
+              <th scope="col" class="align-middle text-nowrap">{$_('pages.posts.table.views')}</th>
+              <th scope="col" class="align-middle text-nowrap">{$_('pages.posts.table.author')}</th>
               <th scope="col" class="align-middle text-nowrap"
-                >{$_("pages.posts.table.views")}</th>
-              <th scope="col" class="align-middle text-nowrap"
-                >{$_("pages.posts.table.author")}</th>
-              <th scope="col" class="align-middle text-nowrap"
-                >{$_("pages.posts.table.last-update")}</th>
+                >{$_('pages.posts.table.last-update')}</th>
             </tr>
           </thead>
           <tbody>
             {#each data.posts as post, index (post)}
               <PostRow
-                post={post}
+                {post}
                 pageType={data.pageType}
-                buttonsLoading={buttonsLoading}
+                {buttonsLoading}
                 on:moveToDraft={(event) => onMoveToDraftClick(event.detail.id)}
                 on:publish={(event) => onPublishClick(event.detail.id)}
-                on:deletePost={(event) =>
-                  onDeletePostClick(event.detail.post)} />
+                on:deletePost={(event) => onDeletePostClick(event.detail.post)} />
             {/each}
           </tbody>
         </table>
@@ -121,13 +103,13 @@
 </article>
 
 <script context="module">
-  import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
-  import { error, redirect } from "@sveltejs/kit";
+  import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
+  import { error, redirect } from '@sveltejs/kit';
 
   export const PageTypes = Object.freeze({
-    PUBLISHED: "PUBLISHED",
-    DRAFT: "DRAFT",
-    TRASH: "TRASH",
+    PUBLISHED: 'PUBLISHED',
+    DRAFT: 'DRAFT',
+    TRASH: 'TRASH',
   });
 
   export const DefaultPageType = PageTypes.PUBLISHED;
@@ -142,12 +124,12 @@
     } = event;
     await parent();
 
-    let page = searchParams.get("page") || 1;
-    const categoryUrl = searchParams.get("categoryUrl");
-    const pageType = searchParams.get("pageType") || DefaultPageType;
+    let page = searchParams.get('page') || 1;
+    const categoryUrl = searchParams.get('categoryUrl');
+    const pageType = searchParams.get('pageType') || DefaultPageType;
 
     if (!Object.values(PageTypes).includes(pageType)) {
-      throw error(404, "PAGE_NOT_FOUND");
+      throw error(404, 'PAGE_NOT_FOUND');
     }
 
     const queryParams = buildQueryParams({
@@ -163,7 +145,7 @@
       throw error(500, err);
     });
 
-    if (body.error === "PAGE_NOT_FOUND") {
+    if (body.error === 'PAGE_NOT_FOUND') {
       page = 1;
 
       const queryParams = buildQueryParams({
@@ -188,68 +170,65 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { goto, invalidate } from "$app/navigation";
-  import { base } from "$app/paths";
+  import { goto, invalidate } from '$app/navigation';
+  import { base } from '$app/paths';
 
-  import Pagination from "$lib/component/Pagination.svelte";
+  import Pagination from '$lib/component/Pagination.svelte';
 
   import {
     setCallback as setDeletePostModalCallback,
     show as showDeletePostModal,
     onHide as onDeletePostModalHide,
-  } from "$lib/component/modals/ConfirmDeletePostModal.svelte";
+  } from '$lib/component/modals/ConfirmDeletePostModal.svelte';
 
   import {
     show as showDraftPostModal,
     onHide as onDraftPostModalHide,
-  } from "$lib/component/modals/ConfirmDraftPostModal.svelte";
+  } from '$lib/component/modals/ConfirmDraftPostModal.svelte';
 
   import {
     show as showPublishPostModal,
     onHide as onPublishPostModalHide,
-  } from "$lib/component/modals/ConfirmPublishPostModal.svelte";
-  import PostRow from "$lib/component/rows/PostRow.svelte";
+  } from '$lib/component/modals/ConfirmPublishPostModal.svelte';
+  import PostRow from '$lib/component/rows/PostRow.svelte';
 
-  import {
-    show as showToast,
-    limitTitle,
-  } from "$lib/component/ToastContainer.svelte";
-  import NoContent from "$lib/component/NoContent.svelte";
-  import PageActions from "$lib/component/PageActions.svelte";
-  import CardHeader from "$lib/component/CardHeader.svelte";
-  import CardMenu from "$lib/component/CardMenu.svelte";
-  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
-  import CardFilters from "$lib/component/CardFilters.svelte";
-  import CardFiltersItem from "$lib/component/CardFiltersItem.svelte";
+  import { show as showToast, limitTitle } from '$lib/component/ToastContainer.svelte';
+  import NoContent from '$lib/component/NoContent.svelte';
+  import PageActions from '$lib/component/PageActions.svelte';
+  import CardHeader from '$lib/component/CardHeader.svelte';
+  import CardMenu from '$lib/component/CardMenu.svelte';
+  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import CardFilters from '$lib/component/CardFilters.svelte';
+  import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
   $: {
     pageTitle.set(
       data.categoryUrl
-        ? $_("pages.posts.category-posts-title", {
+        ? $_('pages.posts.category-posts-title', {
             values: {
               category:
-                (data.category?.title || "-") === "-"
-                  ? $_("pages.posts.no-category")
-                  : data.category?.title || "-",
+                (data.category?.title || '-') === '-'
+                  ? $_('pages.posts.no-category')
+                  : data.category?.title || '-',
             },
           })
-        : $_("pages.posts.title", {
+        : $_('pages.posts.title', {
             values: {
               pageType:
                 data.pageType === PageTypes.PUBLISHED
-                  ? $_("pages.posts.published") + " "
+                  ? $_('pages.posts.published') + ' '
                   : data.pageType === PageTypes.DRAFT
-                    ? $_("pages.posts.draft") + " "
+                    ? $_('pages.posts.draft') + ' '
                     : data.pageType === PageTypes.TRASH
-                      ? $_("pages.posts.trash") + " "
-                      : "",
+                      ? $_('pages.posts.trash') + ' '
+                      : '',
             },
           }),
     );
@@ -271,7 +250,7 @@
       ApiUtil.put({
         path: `/api/panel/posts/${id}/status`,
         body: {
-          to: "DRAFT",
+          to: 'DRAFT',
         },
         handler: async (body) => {
           if (body.error) {
@@ -286,7 +265,7 @@
 
           await invalidate((_) => true);
 
-          await showToast("components.toasts.post-moved-to-draft", {
+          await showToast('components.toasts.post-moved-to-draft', {
             title,
           });
         },
@@ -304,7 +283,7 @@
       ApiUtil.put({
         path: `/api/panel/posts/${id}/status`,
         body: {
-          to: "PUBLISHED",
+          to: 'PUBLISHED',
         },
         handler: async (body) => {
           if (body.error) {
@@ -315,12 +294,12 @@
 
           buttonsLoading = false;
 
-          await goto(base + "/posts");
+          await goto(base + '/posts');
 
           const foundTitle = data.posts.find((post) => post.id === id).title;
           const title = `<a href="${base}/posts/detail/${id}">${limitTitle(foundTitle)}</a>`;
 
-          await showToast("components.toasts.post-published", {
+          await showToast('components.toasts.post-published', {
             postId: id,
             title,
           });

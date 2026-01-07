@@ -1,7 +1,7 @@
-<Languages data="{data}" />
+<Languages {data} />
 
 <script>
-  import Languages from "$lib/pages/translations/Languages.svelte";
+  import Languages from '$lib/pages/translations/Languages.svelte';
 
   export let data;
 </script>

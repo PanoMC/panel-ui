@@ -1,10 +1,5 @@
 <!-- Confirm Close Ticket Modal -->
-<div
-  aria-hidden="true"
-  class="modal fade"
-  bind:this={$modalElement}
-  role="dialog"
-  tabindex="-1">
+<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-body text-center">
@@ -12,8 +7,8 @@
           <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
         </div>
         {$selectedTickets.length === 1
-          ? $_("components.modals.confirm-close-ticket.title-single")
-          : $_("components.modals.confirm-close-ticket.title-multi")}
+          ? $_('components.modals.confirm-close-ticket.title-single')
+          : $_('components.modals.confirm-close-ticket.title-multi')}
       </div>
       <div class="modal-footer flex-nowrap">
         <button
@@ -23,7 +18,7 @@
           class:disabled={loading}
           aria-disabled={loading}
           on:click={hide}>
-          {$_("buttons.cancel")}
+          {$_('buttons.cancel')}
         </button>
         <button
           class="btn btn-secondary col-6 m-0"
@@ -31,7 +26,7 @@
           class:disabled={loading}
           aria-disabled={loading}
           on:click={onYesClick}>
-          {$_("buttons.yes")}
+          {$_('buttons.yes')}
         </button>
       </div>
     </div>
@@ -39,7 +34,7 @@
 </div>
 
 <script context="module">
-  import { writable, get } from "svelte/store";
+  import { writable, get } from 'svelte/store';
 
   const modalElement = writable();
   const selectedTickets = writable([]);
@@ -52,7 +47,7 @@
     selectedTickets.set(newSelectedTickets);
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
     modal.show();
@@ -74,13 +69,13 @@
 </script>
 
 <script>
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
-  import ApiUtil from "$lib/api.util";
+  import ApiUtil from '$lib/api.util';
 
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
-  import { TicketStatuses } from "$lib/component/badges/TicketStatusBadge.svelte";
-  import { base } from "$app/paths";
+  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { TicketStatuses } from '$lib/component/badges/TicketStatusBadge.svelte';
+  import { base } from '$app/paths';
 
   let loading;
 
@@ -92,7 +87,7 @@
     loading = true;
 
     ApiUtil.put({
-      path: "/api/panel/tickets",
+      path: '/api/panel/tickets',
       body: {
         tickets: Object.values(get(selectedTickets).map((id) => parseInt(id))),
         status: TicketStatuses.CLOSED,
@@ -112,8 +107,8 @@
 
         await showToast(
           count > 1
-            ? "components.toasts.ticket-closed.multi"
-            : "components.toasts.ticket-closed.single",
+            ? 'components.toasts.ticket-closed.multi'
+            : 'components.toasts.ticket-closed.single',
           { count: `<a href="${base}/tickets?pageType=CLOSED">${count}</a>` },
         );
 

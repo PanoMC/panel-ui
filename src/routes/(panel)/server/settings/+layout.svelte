@@ -3,5 +3,5 @@
 </Layout>
 
 <script>
-  import Layout from "$lib/layouts/ServerSettingsLayout.svelte";
+  import Layout from '$lib/layouts/ServerSettingsLayout.svelte';
 </script>

@@ -8,6 +8,6 @@
 </main>
 
 <script context="module">
-  import Sidebar from "$lib/component/Sidebar.svelte";
-  import Navbar from "$lib/component/Navbar.svelte";
+  import Sidebar from '$lib/component/Sidebar.svelte';
+  import Navbar from '$lib/component/Navbar.svelte';
 </script>

@@ -1,1 +1,1 @@
-export { load } from "$lib/pages/settings/PlatformSettings.svelte";
+export { load } from '$lib/pages/settings/PlatformSettings.svelte';

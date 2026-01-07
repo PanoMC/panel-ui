@@ -1,4 +1,4 @@
-import { load as loadLayout } from "./+layout.svelte"
+import { load as loadLayout } from './+layout.svelte';
 
 /**
  * @type {import('@sveltejs/kit').PageLoad}

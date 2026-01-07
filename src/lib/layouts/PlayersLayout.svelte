@@ -6,18 +6,18 @@
 <UnbanPlayerModal />
 
 <script context="module">
-  import { redirect } from "@sveltejs/kit";
+  import { redirect } from '@sveltejs/kit';
 
-  import { base } from "$app/paths";
+  import { base } from '$app/paths';
 
-  import { hasPermission, Permissions } from "$lib/auth.util.js";
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
 
   /** @type {import('./$types').LayoutLoad} */
   export async function load({ parent, url: { pathname } }) {
     const parentData = await parent();
     const { user } = parentData;
 
-    if (pathname.startsWith("/players/detail/")) {
+    if (pathname.startsWith('/players/detail/')) {
       return parentData;
     }
 
@@ -30,8 +30,8 @@
 </script>
 
 <script>
-  import EditPlayerModal from "$lib/component/modals/EditPlayerModal.svelte";
-  import ConfirmBanPlayerModal from "$lib/component/modals/ConfirmBanPlayerModal.svelte";
-  import UnbanPlayerModal from "$lib/component/modals/UnbanPlayerModal.svelte";
-  import ConfirmDeletePlayerModal from "$lib/component/modals/ConfirmDeletePlayerModal.svelte";
+  import EditPlayerModal from '$lib/component/modals/EditPlayerModal.svelte';
+  import ConfirmBanPlayerModal from '$lib/component/modals/ConfirmBanPlayerModal.svelte';
+  import UnbanPlayerModal from '$lib/component/modals/UnbanPlayerModal.svelte';
+  import ConfirmDeletePlayerModal from '$lib/component/modals/ConfirmDeletePlayerModal.svelte';
 </script>

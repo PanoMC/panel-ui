@@ -1,12 +1,12 @@
 <nav>
   <ul class="pagination pagination-sm mb-0 justify-content-start">
-    <li class="page-item" class:disabled="{parseInt(page) === 1}">
+    <li class="page-item" class:disabled={parseInt(page) === 1}>
       <a
         class="page-link"
         href="javascript:void(0);"
-        title="{$_('components.pagination.previous-page')}"
-        on:click="{onFirstPageClick}"
-        aria-hidden="{parseInt(page) === 1}">
+        title={$_('components.pagination.previous-page')}
+        on:click={onFirstPageClick}
+        aria-hidden={parseInt(page) === 1}>
         <i class="fa-solid fa-caret-left"></i>
       </a>
     </li>
@@ -14,25 +14,25 @@
     {#each pages as index}
       <li
         class="page-item"
-        class:active="{parseInt(page) === index}"
-        aria-current="{parseInt(page) === index ? 'page' : ''}">
+        class:active={parseInt(page) === index}
+        aria-current={parseInt(page) === index ? 'page' : ''}>
         <a
           class="page-link"
           href="javascript:void(0);"
-          on:click="{onPageLinkClick(index)}"
-          aria-hidden="{parseInt(page) === index}">
+          on:click={onPageLinkClick(index)}
+          aria-hidden={parseInt(page) === index}>
           {index}
         </a>
       </li>
     {/each}
 
-    <li class="page-item" class:disabled="{parseInt(page) === totalPage}">
+    <li class="page-item" class:disabled={parseInt(page) === totalPage}>
       <a
         class="page-link"
         href="javascript:void(0);"
-        title="{$_('components.pagination.next-page')}"
-        on:click="{onLastPageClick}"
-        aria-hidden="{parseInt(page) === totalPage}">
+        title={$_('components.pagination.next-page')}
+        on:click={onLastPageClick}
+        aria-hidden={parseInt(page) === totalPage}>
         <i class="fa-solid fa-caret-right"></i>
       </a>
     </li>
@@ -40,8 +40,8 @@
 </nav>
 
 <script>
-  import { createEventDispatcher } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { createEventDispatcher } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
   const dispatch = createEventDispatcher();
   let pages;
@@ -58,15 +58,15 @@
   }
 
   function onFirstPageClick() {
-    dispatch("firstPageClick", {});
+    dispatch('firstPageClick', {});
   }
 
   function onLastPageClick() {
-    dispatch("lastPageClick", {});
+    dispatch('lastPageClick', {});
   }
 
   function onPageLinkClick(index) {
-    dispatch("pageLinkClick", {
+    dispatch('pageLinkClick', {
       page: index,
     });
   }

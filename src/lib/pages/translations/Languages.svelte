@@ -4,26 +4,20 @@
   <PageActions leftClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
-      <CardMenuItem href="/translations"
-        >{$_("pages.translations.title")}</CardMenuItem>
+      <CardMenuItem href="/translations">{$_('pages.translations.title')}</CardMenuItem>
       <CardMenuItem href="/translations/languages">
-        {$_("buttons.languages")}</CardMenuItem>
+        {$_('buttons.languages')}</CardMenuItem>
     </CardMenu>
 
-    <button
-      class="btn btn-secondary"
-      type="button"
-      slot="right"
-      on:click={onCreateLanguageClick}>
+    <button class="btn btn-secondary" type="button" slot="right" on:click={onCreateLanguageClick}>
       <i class="fas fa-plus"></i>
-      <span class="d-lg-inline d-none ms-2"
-        >{$_("buttons.create-language")}</span>
+      <span class="d-lg-inline d-none ms-2">{$_('buttons.create-language')}</span>
     </button>
   </PageActions>
 
   <div class="card">
     <div class="card-header">
-      {$_("pages.languages.card-title", {
+      {$_('pages.languages.card-title', {
         values: { count: data.meta.totalCount },
       })}
     </div>
@@ -39,27 +33,23 @@
           <thead>
             <tr>
               <th scope="col"></th>
-              <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.languages.name")}</th>
+              <th class="align-middle text-nowrap" scope="col">{$_('pages.languages.name')}</th>
+              <th scope="col" class="align-middle text-nowrap">{$_('pages.languages.code')}</th>
               <th scope="col" class="align-middle text-nowrap"
-                >{$_("pages.languages.code")}</th>
+                >{$_('pages.languages.date-fns-code')}</th>
               <th scope="col" class="align-middle text-nowrap"
-                >{$_("pages.languages.date-fns-code")}</th>
+                >{$_('pages.languages.derivatives')}</th>
               <th scope="col" class="align-middle text-nowrap"
-                >{$_("pages.languages.derivatives")}</th>
-              <th scope="col" class="align-middle text-nowrap"
-                >{$_("pages.languages.defined-by")}</th>
+                >{$_('pages.languages.defined-by')}</th>
             </tr>
           </thead>
           <tbody>
             {#each data.locales as locale, index (locale)}
               <LocaleRow
-                locale={locale}
-                index={index}
-                on:editClick={(event) =>
-                  onShowEditLanguageButtonClick(event.detail.index)}
-                on:deleteClick={(event) =>
-                  onShowDeleteLanguageModalClick(event.detail.index)} />
+                {locale}
+                {index}
+                on:editClick={(event) => onShowEditLanguageButtonClick(event.detail.index)}
+                on:deleteClick={(event) => onShowDeleteLanguageModalClick(event.detail.index)} />
             {/each}
           </tbody>
         </table>
@@ -82,8 +72,8 @@
 <AddEditLanguageModal />
 
 <script context="module">
-  import ApiUtil, { buildQueryParams } from "$lib/api.util";
-  import { error } from "@sveltejs/kit";
+  import ApiUtil, { buildQueryParams } from '$lib/api.util';
+  import { error } from '@sveltejs/kit';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -95,7 +85,7 @@
     } = event;
     await parent();
 
-    const page = searchParams.get("page") || 1;
+    const page = searchParams.get('page') || 1;
     const queryParams = buildQueryParams({ page });
 
     const body = await ApiUtil.get({
@@ -104,7 +94,7 @@
     });
 
     if (body.error) {
-      if (body.error === "PAGE_NOT_FOUND") {
+      if (body.error === 'PAGE_NOT_FOUND') {
         throw error(404, body.error);
       }
 
@@ -119,36 +109,36 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { goto } from "$app/navigation";
+  import { goto } from '$app/navigation';
 
-  import Pagination from "$lib/component/Pagination.svelte";
+  import Pagination from '$lib/component/Pagination.svelte';
 
   import AddEditLanguageModal, {
     show as showAddEditLanguageModal,
     setCallback as setCallbackForAddEditLanguageModal,
     onHide as onAddEditLanguageModalHide,
-  } from "$lib/component/modals/AddEditLanguageModal.svelte";
+  } from '$lib/component/modals/AddEditLanguageModal.svelte';
   import ConfirmDeleteLanguageModal, {
     setCallback as setDeleteLanguageModalCallback,
     show as showDeleteLanguageModal,
     onHide as onConfirmDeleteLanguageModalHide,
-  } from "$lib/component/modals/ConfirmDeleteLanguageModal.svelte";
+  } from '$lib/component/modals/ConfirmDeleteLanguageModal.svelte';
 
-  import NoContent from "$lib/component/NoContent.svelte";
-  import PageActions from "$lib/component/PageActions.svelte";
-  import CardHeader from "$lib/component/CardHeader.svelte";
-  import LocaleRow from "$lib/component/rows/LocaleRow.svelte";
-  import CardMenu from "$lib/component/CardMenu.svelte";
-  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
+  import NoContent from '$lib/component/NoContent.svelte';
+  import PageActions from '$lib/component/PageActions.svelte';
+  import CardHeader from '$lib/component/CardHeader.svelte';
+  import LocaleRow from '$lib/component/rows/LocaleRow.svelte';
+  import CardMenu from '$lib/component/CardMenu.svelte';
+  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
-  pageTitle.set("pages.languages.title");
+  pageTitle.set('pages.languages.title');
 
   async function refreshData() {
     const queryParams = buildQueryParams({
@@ -165,13 +155,13 @@
   }
 
   function onCreateLanguageClick() {
-    showAddEditLanguageModal("create");
+    showAddEditLanguageModal('create');
   }
 
   function onShowEditLanguageButtonClick(index) {
     data.locales[index].selected = true;
 
-    showAddEditLanguageModal("edit", data.locales[index]);
+    showAddEditLanguageModal('edit', data.locales[index]);
   }
 
   setCallbackForAddEditLanguageModal((routeFirstPage) => {

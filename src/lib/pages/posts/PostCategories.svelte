@@ -2,28 +2,23 @@
 <article class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions leftClasses="d-lg-flex d-none">
-    <button
-      class="btn btn-secondary"
-      type="button"
-      on:click={onCreateCategoryClick}
-      slot="right">
+    <button class="btn btn-secondary" type="button" on:click={onCreateCategoryClick} slot="right">
       <i class="fas fa-plus"></i>
       <span class="d-lg-inline d-none ms-2"
-        >{$_("pages.post-categories.create-category-button")}
+        >{$_('pages.post-categories.create-category-button')}
       </span>
     </button>
     <CardMenu slot="middle">
-      <CardMenuItem href="/posts"
-        >{$_("pages.post-categories.posts")}</CardMenuItem>
+      <CardMenuItem href="/posts">{$_('pages.post-categories.posts')}</CardMenuItem>
       <CardMenuItem href="/posts/categories" startsWith
-        >{$_("pages.posts.post-categories-button")}</CardMenuItem>
+        >{$_('pages.posts.post-categories-button')}</CardMenuItem>
     </CardMenu>
   </PageActions>
 
   <!-- Post Categories -->
   <div class="card">
     <div class="card-header">
-      {$_("pages.post-categories.card-title", {
+      {$_('pages.post-categories.card-title', {
         values: { count: data.categoryCount },
       })}
     </div>
@@ -40,22 +35,21 @@
             <tr>
               <th scope="col"></th>
               <th class="align-middle text-nowrap" scope="col"
-                >{$_("pages.post-categories.category")}</th>
+                >{$_('pages.post-categories.category')}</th>
               <th scope="col" class="align-middle text-nowrap"
-                >{$_("pages.post-categories.description")}</th>
+                >{$_('pages.post-categories.description')}</th>
               <th scope="col" class="align-middle text-nowrap"
-                >{$_("pages.post-categories.url")}</th>
+                >{$_('pages.post-categories.url')}</th>
               <th scope="col" class="d-none align-middle text-nowrap"
-                >{$_("pages.post-categories.color")}</th>
+                >{$_('pages.post-categories.color')}</th>
             </tr>
           </thead>
           <tbody>
             {#each data.categories as category, index (category)}
               <PostCategoryRow
-                category={category}
-                index={index}
-                on:editClick={(event) =>
-                  onShowEditCategoryButtonClick(event.detail.index)}
+                {category}
+                {index}
+                on:editClick={(event) => onShowEditCategoryButtonClick(event.detail.index)}
                 on:deleteClick={(event) =>
                   onShowDeletePostCategoryModalClick(event.detail.index)} />
             {/each}
@@ -82,8 +76,8 @@
 <AddEditPostCategoryModal />
 
 <script context="module">
-  import ApiUtil, { buildQueryParams } from "$lib/api.util";
-  import { error } from "@sveltejs/kit";
+  import ApiUtil, { buildQueryParams } from '$lib/api.util';
+  import { error } from '@sveltejs/kit';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -95,7 +89,7 @@
     } = event;
     await parent();
 
-    const page = searchParams.get("page") || 1;
+    const page = searchParams.get('page') || 1;
     const queryParams = buildQueryParams({ page });
 
     const body = await ApiUtil.get({
@@ -104,7 +98,7 @@
     });
 
     if (body.error) {
-      if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
+      if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
         throw error(404, body.error);
       }
 
@@ -118,37 +112,37 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { goto } from "$app/navigation";
-  import { base } from "$app/paths";
+  import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
 
-  import Pagination from "$lib/component/Pagination.svelte";
+  import Pagination from '$lib/component/Pagination.svelte';
 
   import AddEditPostCategoryModal, {
     show as showAddEditPostCategoryModal,
     setCallback as setCallbackForAddEditPostCategoryModal,
     onHide as onAddEditPostCategoryModalHide,
-  } from "$lib/component/modals/AddEditPostCategoryModal.svelte";
+  } from '$lib/component/modals/AddEditPostCategoryModal.svelte';
   import ConfirmDeletePostCategoryModal, {
     setCallback as setDeletePostCategoryModalCallback,
     show as showDeletePostCategoryModal,
     onHide as onConfirmDeletePostCategoryModalHide,
-  } from "$lib/component/modals/ConfirmDeletePostCategoryModal.svelte";
+  } from '$lib/component/modals/ConfirmDeletePostCategoryModal.svelte';
 
-  import NoContent from "$lib/component/NoContent.svelte";
-  import PostCategoryRow from "$lib/component/rows/PostCategoryRow.svelte";
-  import PageActions from "$lib/component/PageActions.svelte";
-  import CardHeader from "$lib/component/CardHeader.svelte";
-  import CardMenu from "$lib/component/CardMenu.svelte";
-  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
+  import NoContent from '$lib/component/NoContent.svelte';
+  import PostCategoryRow from '$lib/component/rows/PostCategoryRow.svelte';
+  import PageActions from '$lib/component/PageActions.svelte';
+  import CardHeader from '$lib/component/CardHeader.svelte';
+  import CardMenu from '$lib/component/CardMenu.svelte';
+  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
-  pageTitle.set("pages.post-categories.title");
+  pageTitle.set('pages.post-categories.title');
 
   async function refreshData() {
     const queryParams = buildQueryParams({
@@ -165,13 +159,13 @@
   }
 
   function onCreateCategoryClick() {
-    showAddEditPostCategoryModal("create");
+    showAddEditPostCategoryModal('create');
   }
 
   function onShowEditCategoryButtonClick(index) {
     data.categories[index].selected = true;
 
-    showAddEditPostCategoryModal("edit", data.categories[index]);
+    showAddEditPostCategoryModal('edit', data.categories[index]);
   }
 
   function onShowDeletePostCategoryModalClick(index) {

@@ -1,7 +1,7 @@
-<TicketDetail data="{data}" />
+<TicketDetail {data} />
 
 <script>
-  import TicketDetail from "$lib/pages/tickets/TicketDetail.svelte";
+  import TicketDetail from '$lib/pages/tickets/TicketDetail.svelte';
 
   export let data;
 </script>

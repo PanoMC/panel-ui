@@ -1,1 +1,1 @@
-export { loadServer as load } from "$lib/layouts/AppLayout.svelte";
+export { loadServer as load } from '$lib/layouts/AppLayout.svelte';

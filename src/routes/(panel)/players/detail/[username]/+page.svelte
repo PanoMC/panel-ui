@@ -1,7 +1,7 @@
-<Player data="{data}" />
+<Player {data} />
 
 <script>
-  import Player from "$lib/pages/players/PlayerDetail.svelte";
+  import Player from '$lib/pages/players/PlayerDetail.svelte';
 
   export let data;
 </script>

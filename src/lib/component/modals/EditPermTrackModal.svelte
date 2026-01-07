@@ -1,25 +1,20 @@
 <!-- Edit Permission Track Modal -->
-<div
-  class="modal fade"
-  bind:this={$modalElement}
-  tabindex="-1"
-  role="dialog"
-  aria-hidden="true">
+<div class="modal fade" bind:this={$modalElement} tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
           {#if $isEdit}
-            {$_("pages.permission-groups.tracks.edit-permission-track")}
+            {$_('pages.permission-groups.tracks.edit-permission-track')}
           {:else}
-            {$_("pages.permission-groups.tracks.add-permission-track")}
+            {$_('pages.permission-groups.tracks.add-permission-track')}
           {/if}
         </h5>
         <button
           type="button"
           class="btn-close"
-          aria-label={$_("buttons.close")}
-          title={$_("buttons.close")}
+          aria-label={$_('buttons.close')}
+          title={$_('buttons.close')}
           on:click={hide}></button>
       </div>
       <div class="modal-body">
@@ -28,34 +23,33 @@
             id="editTrackName"
             class="form-control"
             type="text"
-            placeholder={$_("pages.permission-groups.tracks.form.name")}
+            placeholder={$_('pages.permission-groups.tracks.form.name')}
             bind:value={$draft.name}
             maxlength="128" />
-          <label for="editTrackName"
-            >{$_("pages.permission-groups.tracks.form.name")}</label>
+          <label for="editTrackName">{$_('pages.permission-groups.tracks.form.name')}</label>
         </div>
 
         <div class="form-floating mb-3">
           <textarea
             id="editTrackDescription"
             class="form-control"
-            placeholder={$_("pages.permission-groups.tracks.form.description")}
+            placeholder={$_('pages.permission-groups.tracks.form.description')}
             rows="4"
             style="height: 140px;"
             bind:value={$draft.description}></textarea>
           <label for="editTrackDescription"
-            >{$_("pages.permission-groups.tracks.form.description")}</label>
+            >{$_('pages.permission-groups.tracks.form.description')}</label>
         </div>
 
         <div class="mb-3">
           <label class="form-label" for="selectableGroups"
-            >{$_("pages.permission-groups.tracks.groups.title")}</label>
+            >{$_('pages.permission-groups.tracks.groups.title')}</label>
           <small class="d-block mb-2">
-            {$_("pages.permission-groups.tracks.groups.help")}
+            {$_('pages.permission-groups.tracks.groups.help')}
           </small>
           {#if $permissionGroups.length === 0}
             <small>
-              {$_("pages.permission-groups.tracks.groups.no-groups-available")}
+              {$_('pages.permission-groups.tracks.groups.no-groups-available')}
             </small>
           {:else}
             <div
@@ -65,8 +59,7 @@
               {#each sortedPermissionGroups.filter((g) => !($draft.groupNames || []).includes(g.name)) as group (group.name)}
                 <button
                   type="button"
-                  class="btn btn-sm btn-secondary rounded-pill {draggingAvailableName ===
-                  group.name
+                  class="btn btn-sm btn-secondary rounded-pill {draggingAvailableName === group.name
                     ? 'opacity-50'
                     : ''}"
                   draggable="true"
@@ -81,16 +74,14 @@
           {/if}
         </div>
 
-
         {#if $draft.groupNames.length > 0}
           <div class="mb-3">
             <label class="form-label" for="selectedNodes">
-              {$_("pages.permission-groups.tracks.selected.title")}
+              {$_('pages.permission-groups.tracks.selected.title')}
             </label>
             <div
               id="selectedNodes"
-              class={"list-group " +
-                (isDragOverSelected ? "border border-primary rounded" : "")}
+              class={'list-group ' + (isDragOverSelected ? 'border border-primary rounded' : '')}
               role="list"
               on:dragover|preventDefault={() => (isDragOverSelected = true)}
               on:dragleave={() => (isDragOverSelected = false)}
@@ -110,16 +101,15 @@
                   }}>
                   <div class="d-flex align-items-center overflow-hidden">
                     <span class="me-2" style="cursor: grab;">≡</span>
-                    <span class="badge text-bg-secondary me-2 rounded-pill"
-                      >{idx + 1}</span>
+                    <span class="badge text-bg-secondary me-2 rounded-pill">{idx + 1}</span>
                     <span class="text-truncate">{groupLabel(gname)}</span>
                   </div>
                   <button
                     type="button"
                     class="btn-close"
                     on:click={() => removeGroupFromTrack(gname)}
-                    aria-label={$_("buttons.remove")}
-                    title={$_("buttons.remove")}>
+                    aria-label={$_('buttons.remove')}
+                    title={$_('buttons.remove')}>
                   </button>
                 </div>
                 {#if idx < $draft.groupNames.length - 1}
@@ -132,12 +122,9 @@
           </div>
         {:else}
           <div
-            class={"p-3 border rounded " +
-              (isDragOverSelected ? "border-primary" : "")}
+            class={'p-3 border rounded ' + (isDragOverSelected ? 'border-primary' : '')}
             role="region"
-            aria-label={$_(
-              "pages.permission-groups.tracks.selected.dropzone-aria",
-            )}
+            aria-label={$_('pages.permission-groups.tracks.selected.dropzone-aria')}
             on:dragover|preventDefault={() => (isDragOverSelected = true)}
             on:dragleave={() => (isDragOverSelected = false)}
             on:drop|preventDefault={(e) => onDropIntoList(e)}>
@@ -146,11 +133,8 @@
         {/if}
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-primary w-100"
-          on:click={handleSave}>
-          {$_("buttons.save")}
+        <button type="button" class="btn btn-primary w-100" on:click={handleSave}>
+          {$_('buttons.save')}
         </button>
       </div>
     </div>
@@ -158,15 +142,15 @@
 </div>
 
 <script context="module">
-  import { writable, get } from "svelte/store";
+  import { writable, get } from 'svelte/store';
 
   const modalElement = writable();
   const permissionGroups = writable([]);
   const track = writable(null);
   const isEdit = writable(false);
   const draft = writable({
-    name: "",
-    description: "",
+    name: '',
+    description: '',
     groupNames: [],
   });
 
@@ -174,7 +158,7 @@
     const out = [];
     const seen = new Set();
     (arr || []).forEach((x) => {
-      const v = String(x || "").trim();
+      const v = String(x || '').trim();
       if (!v) return;
       if (seen.has(v)) return;
       seen.add(v);
@@ -193,15 +177,13 @@
     track.set(t);
     isEdit.set(!!t);
     draft.set({
-      name: t?.name || "",
-      description: t?.description || "",
-      groupNames: uniquePreserveOrder(
-        Array.isArray(t?.groupNames) ? t.groupNames : [],
-      ),
+      name: t?.name || '',
+      description: t?.description || '',
+      groupNames: uniquePreserveOrder(Array.isArray(t?.groupNames) ? t.groupNames : []),
     });
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
     modal.show();
@@ -222,8 +204,8 @@
 </script>
 
 <script>
-  import { _ } from "svelte-i18n";
-  import NoContent from "../NoContent.svelte";
+  import { _ } from 'svelte-i18n';
+  import NoContent from '../NoContent.svelte';
 
   let draggedName = null;
   let draggedFrom = null; // "available" | "selected" | null
@@ -232,54 +214,52 @@
   let draggingAvailableName = null;
 
   function groupLabel(name) {
-    const n = String(name || "").trim();
-    if (!n) return "";
-    const g = ($permissionGroups || []).find(
-      (x) => String(x?.name || "").trim() === n,
-    );
-    const dn = String(g?.displayName || "").trim();
+    const n = String(name || '').trim();
+    if (!n) return '';
+    const g = ($permissionGroups || []).find((x) => String(x?.name || '').trim() === n);
+    const dn = String(g?.displayName || '').trim();
     if (!dn || dn === n) return n;
     return `${dn} (${n})`;
   }
 
   $: {
     sortedPermissionGroups = [...($permissionGroups || [])].sort((a, b) =>
-      String(a?.name || "").localeCompare(String(b?.name || "")),
+      String(a?.name || '').localeCompare(String(b?.name || '')),
     );
   }
 
   function onAvailableDragStart(e, name) {
-    const g = String(name || "").trim();
+    const g = String(name || '').trim();
     if (!g) return;
     draggedName = g;
-    draggedFrom = "available";
+    draggedFrom = 'available';
     draggingAvailableName = g;
     try {
       if (e && e.dataTransfer) {
-        e.dataTransfer.setData("text/plain", g);
-        e.dataTransfer.setData("application/x-pano-track-group", g);
+        e.dataTransfer.setData('text/plain', g);
+        e.dataTransfer.setData('application/x-pano-track-group', g);
         // From the pool into selected list: behaves like "move" (it will disappear after drop)
-        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.effectAllowed = 'move';
       }
     } catch (_) {}
   }
 
   function onSelectedDragStart(e, name) {
-    const g = String(name || "").trim();
+    const g = String(name || '').trim();
     if (!g) return;
     draggedName = g;
-    draggedFrom = "selected";
+    draggedFrom = 'selected';
     try {
       if (e && e.dataTransfer) {
-        e.dataTransfer.setData("text/plain", g);
-        e.dataTransfer.setData("application/x-pano-track-group", g);
-        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData('text/plain', g);
+        e.dataTransfer.setData('application/x-pano-track-group', g);
+        e.dataTransfer.effectAllowed = 'move';
       }
     } catch (_) {}
   }
 
   function dropGroupIntoList(name) {
-    const g = String(name || "").trim();
+    const g = String(name || '').trim();
     if (!g) return;
     draft.update((d) => {
       const arr = Array.isArray(d.groupNames) ? [...d.groupNames] : [];
@@ -303,9 +283,9 @@
 
   function extractDraggedName(e) {
     const fromDT =
-      e?.dataTransfer?.getData("application/x-pano-track-group") ||
-      e?.dataTransfer?.getData("text/plain");
-    const v = String(fromDT || draggedName || "").trim();
+      e?.dataTransfer?.getData('application/x-pano-track-group') ||
+      e?.dataTransfer?.getData('text/plain');
+    const v = String(fromDT || draggedName || '').trim();
     return v || null;
   }
 
@@ -315,7 +295,7 @@
     if (!g) return;
     draggingAvailableName = null;
 
-    if (draggedFrom === "selected") {
+    if (draggedFrom === 'selected') {
       // dropping to list container => move to end
       draft.update((d) => {
         const arr = Array.isArray(d.groupNames) ? [...d.groupNames] : [];
@@ -338,7 +318,7 @@
     if (!g) return;
     draggingAvailableName = null;
 
-    if (draggedFrom === "selected") {
+    if (draggedFrom === 'selected') {
       reorderWithinList(g, targetName);
       return;
     }
@@ -348,7 +328,7 @@
   }
 
   function removeGroupFromTrack(name) {
-    const g = String(name || "").trim();
+    const g = String(name || '').trim();
     if (!g) return;
     draft.update((d) => {
       const arr = Array.isArray(d.groupNames) ? d.groupNames : [];
@@ -366,19 +346,15 @@
       callback({
         ...t,
         name: d.name.trim(),
-        description: d.description || "",
-        groupNames: uniquePreserveOrder(
-          Array.isArray(d.groupNames) ? d.groupNames : [],
-        ),
+        description: d.description || '',
+        groupNames: uniquePreserveOrder(Array.isArray(d.groupNames) ? d.groupNames : []),
       });
       return;
     }
     callback({
       name: d.name.trim(),
-      description: d.description || "",
-      groupNames: uniquePreserveOrder(
-        Array.isArray(d.groupNames) ? d.groupNames : [],
-      ),
+      description: d.description || '',
+      groupNames: uniquePreserveOrder(Array.isArray(d.groupNames) ? d.groupNames : []),
     });
   }
 </script>

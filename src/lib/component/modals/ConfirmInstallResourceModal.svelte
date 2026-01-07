@@ -1,33 +1,30 @@
-<div
-  aria-hidden="true"
-  class="modal fade"
-  bind:this="{$modalElement}"
-  role="dialog"
-  tabindex="-1">
+<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
           <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
         </div>
-        {$_('components.modals.confirm-install-resource.title', {values: {...$versionInfoObj?.version}})}
+        {$_('components.modals.confirm-install-resource.title', {
+          values: { ...$versionInfoObj?.version },
+        })}
       </div>
       <div class="modal-footer flex-nowrap">
         <button
           class="btn btn-link col-6 m-0"
           data-bs-dismiss="modal"
           type="button"
-          class:disabled="{loading}"
-          on:click="{hide}">
+          class:disabled={loading}
+          on:click={hide}>
           {$_('buttons.cancel')}
         </button>
         <button
           class="btn col-6 m-0"
-          class:btn-secondary="{!installed}"
+          class:btn-secondary={!installed}
           class:btn-success={installed}
           type="button"
-          class:disabled="{loading || installed}"
-          on:click="{onYesClick}">
+          class:disabled={loading || installed}
+          on:click={onYesClick}>
           {#if installed}
             <i class="fas fa-check"></i>
           {/if}
@@ -39,7 +36,7 @@
 </div>
 
 <script context="module">
-  import { writable, get } from "svelte/store";
+  import { writable, get } from 'svelte/store';
 
   const modalElement = writable();
   const versionInfoObj = writable({});
@@ -51,10 +48,10 @@
   export function show(versionInfo) {
     versionInfoObj.set(versionInfo);
 
-    console.log(versionInfo)
+    console.log(versionInfo);
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
     modal.show();
@@ -76,11 +73,11 @@
 </script>
 
 <script>
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
   let loading;
 
-  $: installed = $versionInfoObj?.installed?.version === $versionInfoObj?.version?.tag
+  $: installed = $versionInfoObj?.installed?.version === $versionInfoObj?.version?.tag;
 
   function onYesClick() {
     modal.hide();

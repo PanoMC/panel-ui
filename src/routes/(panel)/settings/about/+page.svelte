@@ -1,7 +1,7 @@
-<About data="{data}" />
+<About {data} />
 
 <script>
-  import About from "$lib/pages/settings/About.svelte";
+  import About from '$lib/pages/settings/About.svelte';
 
   export let data;
 </script>

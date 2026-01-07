@@ -4,74 +4,69 @@
     <!-- Submenu -->
     <a slot="left" class="btn btn-link" role="button" href="{base}/players">
       <i class="fas fa-arrow-left"></i>
-      <span class="d-lg-inline d-none ms-2">{$_("buttons.players")}</span>
+      <span class="d-lg-inline d-none ms-2">{$_('buttons.players')}</span>
     </a>
 
     <div slot="right" class="hstack gap-2">
       {#if hasPermission(Permissions.MANAGE_PLAYERS)}
         <button
-          aria-label={$_("buttons.delete")}
-          title={$_("buttons.delete")}
+          aria-label={$_('buttons.delete')}
+          title={$_('buttons.delete')}
           class="btn btn-link"
-          use:tooltip={[$_("buttons.delete"), { placement: "bottom" }]}
+          use:tooltip={[$_('buttons.delete'), { placement: 'bottom' }]}
           on:click={() => showConfirmDeletePlayerModal(data.player)}
           class:disabled={$user.username === data.player.username ||
-            (data.player.permissionGroup === "admin" && !$user.admin)}>
+            (data.player.permissionGroup === 'admin' && !$user.admin)}>
           <i class="fas fa-trash"></i>
         </button>
         {#if data.player.isBanned}
           <button
-            aria-label={$_("pages.player-detail.un-ban")}
-            title={$_("pages.player-detail.un-ban")}
+            aria-label={$_('pages.player-detail.un-ban')}
+            title={$_('pages.player-detail.un-ban')}
             class="btn btn-link"
-            use:tooltip={[
-              $_("pages.player-detail.un-ban"),
-              { placement: "bottom" },
-            ]}
+            use:tooltip={[$_('pages.player-detail.un-ban'), { placement: 'bottom' }]}
             on:click={() => showUnbanPlayerModal(data.player)}
             class:disabled={$user.username === data.player.username ||
-              (data.player.permissionGroup === "admin" && !$user.admin)}>
+              (data.player.permissionGroup === 'admin' && !$user.admin)}>
             <i class="fas fa-gavel"></i>
           </button>
         {:else}
           <button
             <button
-            aria-label={$_("pages.player-detail.un-ban")}
-            title={$_("pages.player-detail.un-ban")}
+            aria-label={$_('pages.player-detail.un-ban')}
+            title={$_('pages.player-detail.un-ban')}
             class="btn btn-link"
             on:click={() => showConfirmBanPlayerModal(data.player)}
             class:disabled={$user.username === data.player.username ||
-              (data.player.permissionGroup === "admin" && !$user.admin)}>
+              (data.player.permissionGroup === 'admin' && !$user.admin)}>
             <i class="fas fa-gavel"></i>
           </button>
         {/if}
         {#if !data.player.isEmailVerified}
           <button
-            aria-label={$_("pages.player-detail.send-verification-mail")}
-            title={$_("pages.player-detail.send-verification-mail")}
+            aria-label={$_('pages.player-detail.send-verification-mail')}
+            title={$_('pages.player-detail.send-verification-mail')}
             class="btn btn-link"
             on:click={sendVerification}
             class:disabled={sendingVerificationMail ||
               $user.username === data.player.username ||
-              (data.player.permissionGroup === "admin" && !$user.admin) ||
+              (data.player.permissionGroup === 'admin' && !$user.admin) ||
               !$siteInfo.emailEnabled}>
             <i class="fas fa-envelope"></i>
             {#if sendingVerificationMail}
-              <span
-                class="spinner-border spinner-border-sm ms-2"
-                role="status"
-                aria-hidden="true"></span>
+              <span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"
+              ></span>
             {/if}
           </button>
         {/if}
 
         <a
           href="{base}/permissions"
-          aria-label={$_("pages.player-detail.authorize")}
-          title={$_("pages.player-detail.authorize")}
+          aria-label={$_('pages.player-detail.authorize')}
+          title={$_('pages.player-detail.authorize')}
           class="btn btn-link"
           class:disabled={$user.username === data.player.username ||
-            (data.player.permissionGroup === "admin" && !$user.admin)}>
+            (data.player.permissionGroup === 'admin' && !$user.admin)}>
           <i class="fas fa-user-circle"></i>
         </a>
       {/if}
@@ -79,10 +74,9 @@
         <button
           class="btn btn-secondary"
           on:click={() => showEditPlayerModal(data.player)}
-          class:disabled={data.player.permissionGroup === "admin" &&
-            !$user.admin}>
+          class:disabled={data.player.permissionGroup === 'admin' && !$user.admin}>
           <i class="fas fa-pencil-alt"></i>
-          <span class="d-lg-inline d-none ms-2"> {$_("buttons.edit")}</span>
+          <span class="d-lg-inline d-none ms-2"> {$_('buttons.edit')}</span>
         </button>
       {/if}
     </div>
@@ -109,47 +103,43 @@
             src="https://minotar.net/avatar/{data.player.username}"
             use:tooltip={!data.player.isBanned && [
               isOnline
-                ? $_("pages.player-detail.online-text", {
+                ? $_('pages.player-detail.online-text', {
                     values: {
                       whereOnline: data.player.inGame
-                        ? $_("pages.player-detail.in-game")
-                        : $_("pages.player-detail.in-website"),
+                        ? $_('pages.player-detail.in-game')
+                        : $_('pages.player-detail.in-website'),
                     },
                   })
-                : getOfflineRelativeDateText(
-                    checkTime,
-                    locales[$currentLanguage.dateFnsCode],
-                  ),
-              { placement: "bottom" },
+                : getOfflineRelativeDateText(checkTime, locales[$currentLanguage.dateFnsCode]),
+              { placement: 'bottom' },
             ]} />
 
           {#if data.player.isBanned}
             <div class="badge text-bg-danger">
-              {$_("pages.player-detail.banned")}
+              {$_('pages.player-detail.banned')}
             </div>
           {:else}
-            <PlayerPermissionBadge
-              permissionGroup={data.player.permissionGroup} />
+            <PlayerPermissionBadge permissionGroup={data.player.permissionGroup} />
           {/if}
         </div>
         <table class="table">
           <tbody>
             <tr>
-              <td>{$_("pages.player-detail.email")}</td>
+              <td>{$_('pages.player-detail.email')}</td>
               <td>
                 {#if data.player.isEmailVerified}
-                  {$_("pages.player-detail.email-verified")}
+                  {$_('pages.player-detail.email-verified')}
                 {:else}
-                  {$_("pages.player-detail.email-not-verified")}
+                  {$_('pages.player-detail.email-not-verified')}
                 {/if}
               </td>
             </tr>
             <tr>
-              <td>{$_("pages.player-detail.last-entrance")}</td>
+              <td>{$_('pages.player-detail.last-entrance')}</td>
               <td><DateComponent time={data.player.lastLoginDate} /></td>
             </tr>
             <tr>
-              <td>{$_("pages.player-detail.register-date")}</td>
+              <td>{$_('pages.player-detail.register-date')}</td>
               <td><DateComponent time={data.player.registerDate} /></td>
             </tr>
           </tbody>
@@ -161,7 +151,7 @@
         <!-- Tickets -->
         <div class="card">
           <div class="card-header">
-            {$_("pages.player-detail.last-tickets")}
+            {$_('pages.player-detail.last-tickets')}
           </div>
           {#if data.ticketCount === 0}
             <NoContent />
@@ -172,18 +162,15 @@
                   <tbody>
                     <tr>
                       <td class="align-middle text-nowrap">
-                        <a
-                          href="{base}/tickets/detail/{ticket.id}"
-                          title={$_("buttons.view")}
+                        <a href="{base}/tickets/detail/{ticket.id}" title={$_('buttons.view')}
                           >#{ticket.id} {ticket.title}</a>
                       </td>
                       <td class="align-middle text-nowrap">
                         <a
-                          title={$_("pages.player-detail.filter")}
-                          href="{base}/tickets?categoryUrl={ticket.category
-                            .url}">
-                          {ticket.category.title === "-"
-                            ? $_("pages.player-detail.no-category")
+                          title={$_('pages.player-detail.filter')}
+                          href="{base}/tickets?categoryUrl={ticket.category.url}">
+                          {ticket.category.title === '-'
+                            ? $_('pages.player-detail.no-category')
                             : ticket.category.title}
                         </a>
                       </td>
@@ -191,8 +178,7 @@
                         <TicketStatusBadge status={ticket.status} />
                       </td>
                       <td class="align-middle text-nowrap"
-                        ><span><DateComponent time={ticket.lastUpdate} /></span
-                        ></td>
+                        ><span><DateComponent time={ticket.lastUpdate} /></span></td>
                     </tr>
                   </tbody>
                 {/each}
@@ -204,10 +190,8 @@
                 page={data.ticketsPage}
                 totalPage={data.ticketTotalPage}
                 on:firstPageClick={() => onTicketsPageClick(1)}
-                on:lastPageClick={() =>
-                  onTicketsPageClick(data.ticketTotalPage)}
-                on:pageLinkClick={(event) =>
-                  onTicketsPageClick(event.detail.page)} />
+                on:lastPageClick={() => onTicketsPageClick(data.ticketTotalPage)}
+                on:pageLinkClick={(event) => onTicketsPageClick(event.detail.page)} />
             </div>
           {/if}
         </div>
@@ -216,7 +200,7 @@
       <!-- Ban History -->
       <div class="card">
         <div class="card-header">
-          {$_("pages.player-detail.ban-history")}
+          {$_('pages.player-detail.ban-history')}
         </div>
         {#if data.banHistoryCount === 0}
           <NoContent />
@@ -225,21 +209,17 @@
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th class="align-middle"
-                    >{$_("pages.player-detail.ban-duration")}</th>
-                  <th class="align-middle"
-                    >{$_("pages.player-detail.ban-reason")}</th>
+                  <th class="align-middle">{$_('pages.player-detail.ban-duration')}</th>
+                  <th class="align-middle">{$_('pages.player-detail.ban-reason')}</th>
                   <th class="align-middle text-center"
-                    >{$_("pages.player-detail.email-notification")}</th>
-                  <th class="align-middle"
-                    >{$_("pages.player-detail.banned-by")}</th>
-                  <th class="align-middle"
-                    >{$_("pages.player-detail.banned-at")}</th>
+                    >{$_('pages.player-detail.email-notification')}</th>
+                  <th class="align-middle">{$_('pages.player-detail.banned-by')}</th>
+                  <th class="align-middle">{$_('pages.player-detail.banned-at')}</th>
                 </tr>
               </thead>
               <tbody>
                 {#each data.banHistory as banHistory, index (banHistory)}
-                  <BanHistoryRow banHistory={banHistory} />
+                  <BanHistoryRow {banHistory} />
                 {/each}
               </tbody>
             </table>
@@ -250,10 +230,8 @@
               page={data.banHistoryPage}
               totalPage={data.banHistoryTotalPage}
               on:firstPageClick={() => onBanHistoryPageClick(1)}
-              on:lastPageClick={() =>
-                onBanHistoryPageClick(data.banHistoryTotalPage)}
-              on:pageLinkClick={(event) =>
-                onBanHistoryPageClick(event.detail.page)} />
+              on:lastPageClick={() => onBanHistoryPageClick(data.banHistoryTotalPage)}
+              on:pageLinkClick={(event) => onBanHistoryPageClick(event.detail.page)} />
           </div>
         {/if}
       </div>
@@ -262,8 +240,8 @@
 </div>
 
 <script context="module">
-  import ApiUtil, { buildQueryParams } from "$lib/api.util";
-  import { error } from "@sveltejs/kit";
+  import ApiUtil, { buildQueryParams } from '$lib/api.util';
+  import { error } from '@sveltejs/kit';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -276,8 +254,8 @@
     await parent();
 
     const username = event.params.username;
-    const ticketsPage = searchParams.get("ticketsPage") || 1;
-    const banHistoryPage = searchParams.get("banHistoryPage") || 1;
+    const ticketsPage = searchParams.get('ticketsPage') || 1;
+    const banHistoryPage = searchParams.get('banHistoryPage') || 1;
 
     const queryParams = buildQueryParams({
       ticketsPage,
@@ -290,7 +268,7 @@
     });
 
     if (body.error) {
-      if (body.error === "NOT_EXISTS" || body.error === "PAGE_NOT_FOUND") {
+      if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
         throw error(404, body.error);
       }
 
@@ -306,49 +284,49 @@
 </script>
 
 <script>
-  import { formatRelative } from "date-fns";
-  import { getContext, onDestroy, onMount } from "svelte";
-  import { _ } from "svelte-i18n";
-  import * as locales from "date-fns/locale";
+  import { formatRelative } from 'date-fns';
+  import { getContext, onDestroy, onMount } from 'svelte';
+  import { _ } from 'svelte-i18n';
+  import * as locales from 'date-fns/locale';
 
-  import { goto, invalidate } from "$app/navigation";
-  import { base } from "$app/paths";
+  import { goto, invalidate } from '$app/navigation';
+  import { base } from '$app/paths';
 
-  import tooltip from "$lib/tooltip.util";
-  import { hasPermission, Permissions } from "$lib/auth.util.js";
-  import { currentLanguage } from "$lib/language.util.js";
+  import tooltip from '$lib/tooltip.util';
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { currentLanguage } from '$lib/language.util.js';
 
   import {
     show as showEditPlayerModal,
     setCallback as setEditPlayerModalCallback,
-  } from "$lib/component/modals/EditPlayerModal.svelte";
+  } from '$lib/component/modals/EditPlayerModal.svelte';
   import {
     show as showConfirmBanPlayerModal,
     setCallback as setConfirmBanPlayerModalCallback,
-  } from "$lib/component/modals/ConfirmBanPlayerModal.svelte";
+  } from '$lib/component/modals/ConfirmBanPlayerModal.svelte';
   import {
     show as showUnbanPlayerModal,
     setCallback as setUnbanPlayerModalCallback,
-  } from "$lib/component/modals/UnbanPlayerModal.svelte";
-  import { show as showConfirmDeletePlayerModal } from "$lib/component/modals/ConfirmDeletePlayerModal.svelte";
+  } from '$lib/component/modals/UnbanPlayerModal.svelte';
+  import { show as showConfirmDeletePlayerModal } from '$lib/component/modals/ConfirmDeletePlayerModal.svelte';
 
-  import TicketStatusBadge from "$lib/component/badges/TicketStatusBadge.svelte";
-  import DateComponent from "$lib/component/Date.svelte";
-  import Pagination from "$lib/component/Pagination.svelte";
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
+  import TicketStatusBadge from '$lib/component/badges/TicketStatusBadge.svelte';
+  import DateComponent from '$lib/component/Date.svelte';
+  import Pagination from '$lib/component/Pagination.svelte';
+  import { show as showToast } from '$lib/component/ToastContainer.svelte';
 
-  import NoContent from "$lib/component/NoContent.svelte";
-  import PlayerPermissionBadge from "$lib/component/badges/PlayerPermissionBadge.svelte";
-  import PageActions from "$lib/component/PageActions.svelte";
-  import BanHistoryRow from "$lib/component/rows/BanHistoryRow.svelte";
-  import CardMenu from "$lib/component/CardMenu.svelte";
-  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
+  import NoContent from '$lib/component/NoContent.svelte';
+  import PlayerPermissionBadge from '$lib/component/badges/PlayerPermissionBadge.svelte';
+  import PageActions from '$lib/component/PageActions.svelte';
+  import BanHistoryRow from '$lib/component/rows/BanHistoryRow.svelte';
+  import CardMenu from '$lib/component/CardMenu.svelte';
+  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
-  const user = getContext("user");
-  const siteInfo = getContext("siteInfo");
+  const pageTitle = getContext('pageTitle');
+  const user = getContext('user');
+  const siteInfo = getContext('siteInfo');
 
   pageTitle.set(data.username);
 
@@ -357,9 +335,7 @@
   let checkTime = 0;
   let interval;
 
-  $: isOnline =
-    data.player.lastActivityTime > Date.now() - 5 * 60 * 1000 ||
-    data.player.inGame;
+  $: isOnline = data.player.lastActivityTime > Date.now() - 5 * 60 * 1000 || data.player.inGame;
 
   async function refreshData() {
     const queryParams = buildQueryParams({
@@ -390,20 +366,17 @@
       handler: async (body, reject) => {
         sendingVerificationMail = false;
 
-        if (body.result === "ok") {
-          await showToast(
-            "components.toasts.verification-email-sent-successful",
-            {
-              username: data.player.username,
-            },
-          );
+        if (body.result === 'ok') {
+          await showToast('components.toasts.verification-email-sent-successful', {
+            username: data.player.username,
+          });
 
           return;
         }
 
-        await showToast("components.toasts.verification-email-sent-error", {
+        await showToast('components.toasts.verification-email-sent-error', {
           username: data.player.username,
-          errorCode: $_("errors." + body.error),
+          errorCode: $_('errors.' + body.error),
         });
       },
     });
@@ -411,7 +384,7 @@
 
   setEditPlayerModalCallback((newPlayer) => {
     if (data.player.username !== newPlayer.username) {
-      goto(base + "/players/detail/" + newPlayer.username);
+      goto(base + '/players/detail/' + newPlayer.username);
 
       return;
     }
@@ -428,11 +401,9 @@
   });
 
   function getOfflineRelativeDateText(checkTime, locale) {
-    return formatRelative(
-      new Date(parseInt(data.player.lastActivityTime)),
-      new Date(),
-      { locale },
-    ).capitalize();
+    return formatRelative(new Date(parseInt(data.player.lastActivityTime)), new Date(), {
+      locale,
+    }).capitalize();
   }
 
   onMount(() => {

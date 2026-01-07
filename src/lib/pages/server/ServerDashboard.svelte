@@ -1,18 +1,17 @@
 <div class="container vstack gap-3">
-  <div
-    class="row g-3 justify-content-between animate__animated animate__slideInUp">
+  <div class="row g-3 justify-content-between animate__animated animate__slideInUp">
     <div class="col-lg-4">
       <div
         class="card h-100"
         class:text-bg-success={data.server.status === ServerStatus.ONLINE}
         class:text-bg-danger={data.server.status === ServerStatus.OFFLINE}>
         <div class="card-body">
-          {$_("pages.server.dashboard.server-status", {
+          {$_('pages.server.dashboard.server-status', {
             values: {
               status:
                 data.server.status === ServerStatus.ONLINE
-                  ? $_("pages.server.dashboard.online")
-                  : $_("pages.server.dashboard.offline"),
+                  ? $_('pages.server.dashboard.online')
+                  : $_('pages.server.dashboard.offline'),
             },
           })}
         </div>
@@ -21,7 +20,7 @@
     <div class="col-lg-4">
       <div class="card text-bg-primary h-100">
         <div class="card-body">
-          {$_("pages.server.dashboard.player", {
+          {$_('pages.server.dashboard.player', {
             values: {
               playerCount: data.server.playerCount,
               maxPlayerCount: data.server.maxPlayerCount,
@@ -34,16 +33,13 @@
       <div class="card text-bg-info h-100">
         <div class="card-body">
           {#if data.server.status === ServerStatus.ONLINE}
-            {$_("pages.server.dashboard.working-time", {
+            {$_('pages.server.dashboard.working-time', {
               values: {
-                upTime: getUptime(
-                  data.server.startTime,
-                  checkTime
-                ),
+                upTime: getUptime(data.server.startTime, checkTime),
               },
             })}
           {:else}
-            {$_("pages.server.dashboard.last-online")}
+            {$_('pages.server.dashboard.last-online')}
             <DateComponent time={data.server.stopTime} />
           {/if}
         </div>
@@ -53,33 +49,32 @@
 
   <!-- Statistic Table -->
   <div class="card">
-    <div class="card-header">{$_("pages.server.dashboard.statistics")}</div>
+    <div class="card-header">{$_('pages.server.dashboard.statistics')}</div>
     <div class="table-responsive">
       <table class="table table-hover">
         <tbody>
           <tr>
-            <th scope="row">{$_("pages.server.dashboard.server-name")}</th>
+            <th scope="row">{$_('pages.server.dashboard.server-name')}</th>
             <td>{data.server.customName || data.server.name}</td>
           </tr>
           <tr>
-            <th scope="row">{$_("pages.server.dashboard.server-type")}</th>
+            <th scope="row">{$_('pages.server.dashboard.server-type')}</th>
             <td>{data.server.type}</td>
           </tr>
           <tr>
-            <th scope="row">{$_("pages.server.dashboard.local-ip-address")}</th>
+            <th scope="row">{$_('pages.server.dashboard.local-ip-address')}</th>
             <td>{data.server.host}:{data.server.port}</td>
           </tr>
           <tr>
-            <th scope="row">{$_("pages.server.dashboard.server-version")}</th>
+            <th scope="row">{$_('pages.server.dashboard.server-version')}</th>
             <td>{data.server.version}</td>
           </tr>
           <tr>
-            <th scope="row"
-              >{$_("pages.server.dashboard.total-connected-servers")}</th>
+            <th scope="row">{$_('pages.server.dashboard.total-connected-servers')}</th>
             <td>{data.connectedServerCount}</td>
           </tr>
           <tr>
-            <th scope="row">{$_("pages.server.dashboard.date-added")}</th>
+            <th scope="row">{$_('pages.server.dashboard.date-added')}</th>
             <td><DateComponent time={data.server.acceptedTime} /></td>
           </tr>
         </tbody>
@@ -89,11 +84,11 @@
 </div>
 
 <script context="module">
-  import ApiUtil from "$lib/api.util.js";
+  import ApiUtil from '$lib/api.util.js';
 
   export const ServerStatus = Object.freeze({
-    ONLINE: "ONLINE",
-    OFFLINE: "OFFLINE",
+    ONLINE: 'ONLINE',
+    OFFLINE: 'OFFLINE',
   });
 
   /**
@@ -112,15 +107,15 @@
 </script>
 
 <script>
-  import { getContext, onDestroy, onMount } from "svelte";
-  import { differenceInCalendarDays, intervalToDuration } from "date-fns";
-  import { _ } from "svelte-i18n";
+  import { getContext, onDestroy, onMount } from 'svelte';
+  import { differenceInCalendarDays, intervalToDuration } from 'date-fns';
+  import { _ } from 'svelte-i18n';
 
-  import DateComponent from "$lib/component/Date.svelte";
+  import DateComponent from '$lib/component/Date.svelte';
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
-  pageTitle.set("pages.server.dashboard.title");
+  pageTitle.set('pages.server.dashboard.title');
 
   export let data;
 
@@ -136,9 +131,9 @@
     });
 
     const days = differenceInCalendarDays(time, now);
-    const hours = duration["hours"] || 0;
-    const minutes = duration["minutes"] || 0;
-    const seconds = duration["seconds"] || 0;
+    const hours = duration['hours'] || 0;
+    const minutes = duration['minutes'] || 0;
+    const seconds = duration['seconds'] || 0;
 
     return `${days}:${hours}:${minutes}:${seconds}`;
   }

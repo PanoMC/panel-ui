@@ -1,7 +1,7 @@
-<TicketCategories data="{data}" />
+<TicketCategories {data} />
 
 <script>
-  import TicketCategories from "$lib/pages/tickets/TicketCategories.svelte";
+  import TicketCategories from '$lib/pages/tickets/TicketCategories.svelte';
 
   export let data;
 </script>

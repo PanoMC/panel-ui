@@ -1,11 +1,11 @@
-import { get, writable } from "svelte/store";
+import { get, writable } from 'svelte/store';
 
-import { invalidateAll } from "$app/navigation";
+import { invalidateAll } from '$app/navigation';
 
-import { PanelSidebarStorageUtil } from "$lib/storage.util";
+import { PanelSidebarStorageUtil } from '$lib/storage.util';
 
 export const options = Object.freeze({
-  DEFAULT_PAGE_TITLE: "Pano",
+  DEFAULT_PAGE_TITLE: 'Pano',
 });
 
 export const networkErrorCallbacks = writable([]);
@@ -15,7 +15,7 @@ export const quickNotifications = writable([]);
 
 export const logoutLoading = writable(false);
 
-export const websiteLogoSrc = writable("/api/websiteLogo");
+export const websiteLogoSrc = writable('/api/websiteLogo');
 
 export const initialized = writable(false);
 
@@ -40,7 +40,7 @@ export function showNetworkError(callback) {
 function check(currentList, calledList) {
   for (const item of currentList) {
     if (calledList.indexOf(item) === -1) {
-      return
+      return;
     }
   }
 
@@ -55,13 +55,11 @@ export async function resumeAfterNetworkError() {
 
   for (const callback of currentList) {
     try {
-      await callback(true)
+      await callback(true);
 
       calledList.push(callback);
 
-      networkErrorCallbacks.update((list) =>
-        list.filter((item) => item !== callback),
-      );
+      networkErrorCallbacks.update((list) => list.filter((item) => item !== callback));
 
       check(currentList, calledList);
     } catch (_) {

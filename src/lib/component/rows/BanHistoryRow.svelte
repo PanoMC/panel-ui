@@ -3,50 +3,44 @@
     {#if banHistory.bannedUntil}
       <span
         use:tooltip={[
-          format(new Date(banHistory.bannedUntil), "dd/MM/yyyy, HH:mm"),
+          format(new Date(banHistory.bannedUntil), 'dd/MM/yyyy, HH:mm'),
           {
-            placement: "bottom",
+            placement: 'bottom',
             locale: locales[$currentLanguage.dateFnsCode],
           },
         ]}>
         {getBanDurationText(banHistory.createdAt, banHistory.bannedUntil)}
       </span>
     {:else}
-      <span>{$_("pages.player-detail.permanent-ban")}</span>
+      <span>{$_('pages.player-detail.permanent-ban')}</span>
     {/if}
   </td>
   <td class="align-middle">
     {#if banHistory.reason}
       <span title={banHistory.reason}
         >{banHistory.reason.length > 36
-          ? banHistory.reason.substring(0, 36) + "..."
+          ? banHistory.reason.substring(0, 36) + '...'
           : banHistory.reason}</span>
     {:else}
-      <span>{$_("pages.player-detail.no-reason")}</span>
+      <span>{$_('pages.player-detail.no-reason')}</span>
     {/if}
   </td>
   <td class="align-middle text-center">
     {#if banHistory.emailNotified}
       <i
         class="fas fa-check text-success"
-        use:tooltip={[
-          $_("pages.player-detail.email-notified"),
-          { placement: "bottom" },
-        ]}></i>
+        use:tooltip={[$_('pages.player-detail.email-notified'), { placement: 'bottom' }]}></i>
     {:else}
       <i
         class="fas fa-times text-danger"
-        use:tooltip={[
-          $_("pages.player-detail.email-not-notified"),
-          { placement: "bottom" },
-        ]}></i>
+        use:tooltip={[$_('pages.player-detail.email-not-notified'), { placement: 'bottom' }]}></i>
     {/if}
   </td>
   <td class="align-middle text-nowrap">
     {#if banHistory.bannedBy}
       <a
         href="{base}/players/detail/{banHistory.bannedBy}"
-        title={$_("buttons.view")}
+        title={$_('buttons.view')}
         class="d-inline-block rounded-circle focus-ring me-2">
         <img
           src="https://minotar.net/avatar/{banHistory.bannedBy}/24"
@@ -57,13 +51,12 @@
       </a>
       <a
         href="{base}/players/detail/{banHistory.bannedBy}"
-        title={$_("buttons.view")}
+        title={$_('buttons.view')}
         class="rounded focus-ring">
         {banHistory.bannedBy}
       </a>
     {:else}
-      <span class="badge text-bg-primary"
-        >{$_("pages.player-detail.system-ban")}</span>
+      <span class="badge text-bg-primary">{$_('pages.player-detail.system-ban')}</span>
     {/if}
   </td>
   <td class="align-middle text-nowrap">
@@ -72,16 +65,16 @@
 </tr>
 
 <script>
-  import { _ } from "svelte-i18n";
-  import { format, formatDuration, intervalToDuration } from "date-fns";
-  import * as locales from "date-fns/locale";
+  import { _ } from 'svelte-i18n';
+  import { format, formatDuration, intervalToDuration } from 'date-fns';
+  import * as locales from 'date-fns/locale';
 
-  import { base } from "$app/paths";
+  import { base } from '$app/paths';
 
-  import { currentLanguage } from "$lib/language.util.js";
-  import tooltip from "$lib/tooltip.util";
+  import { currentLanguage } from '$lib/language.util.js';
+  import tooltip from '$lib/tooltip.util';
 
-  import DateComponent from "$lib/component/Date.svelte";
+  import DateComponent from '$lib/component/Date.svelte';
 
   export let banHistory;
 

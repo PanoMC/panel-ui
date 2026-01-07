@@ -1,31 +1,26 @@
-<div
-  aria-hidden="true"
-  class="modal fade"
-  bind:this={$modalElement}
-  role="dialog"
-  tabindex="-1">
+<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
           <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
         </div>
-        {$_("components.modals.confirm-remove-pano-account.title")}
+        {$_('components.modals.confirm-remove-pano-account.title')}
       </div>
       <div class="modal-footer flex-nowrap">
         <button
           class="btn btn-link col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          on:click="{hide}">
-          {$_("buttons.cancel")}
+          class:disabled={loading}
+          on:click={hide}>
+          {$_('buttons.cancel')}
         </button>
         <button
           class="btn btn-danger col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          on:click="{onYesClick}">
-          {$_("buttons.yes")}
+          class:disabled={loading}
+          on:click={onYesClick}>
+          {$_('buttons.yes')}
         </button>
       </div>
     </div>
@@ -33,7 +28,7 @@
 </div>
 
 <script context="module">
-  import { get, writable } from "svelte/store";
+  import { get, writable } from 'svelte/store';
 
   const modalElement = writable();
 
@@ -48,7 +43,7 @@
     continueProcessObj.set(continueProcess);
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
 
@@ -71,7 +66,7 @@
 </script>
 
 <script>
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
   let loading = false;
 
@@ -81,7 +76,7 @@
 
     await $continueProcessObj();
 
-    hide()
+    hide();
     loading = false;
   }
 </script>

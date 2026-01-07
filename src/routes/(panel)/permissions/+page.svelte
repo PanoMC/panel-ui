@@ -1,7 +1,7 @@
-<Permissions data={data} />
+<Permissions {data} />
 
 <script>
-  import Permissions from "$lib/pages/Permissions.svelte";
+  import Permissions from '$lib/pages/Permissions.svelte';
 
   export let data;
 </script>

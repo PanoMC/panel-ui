@@ -2,20 +2,17 @@
   <slot />
 {:else}
   <div bind:this={layoutContainer} class="plugin-layout-container"></div>
-  <div
-    bind:this={slotContentContainer}
-    class="plugin-content-wrapper"
-    style="display: none;">
+  <div bind:this={slotContentContainer} class="plugin-content-wrapper" style="display: none;">
     <slot />
   </div>
 {/if}
 
 <script context="module">
-  import { getContext } from "svelte";
-  import { error } from "@sveltejs/kit";
+  import { getContext } from 'svelte';
+  import { error } from '@sveltejs/kit';
 
-  import { registeredPages } from "$lib/PluginManager.js";
-  import { base } from "$app/paths";
+  import { registeredPages } from '$lib/PluginManager.js';
+  import { base } from '$app/paths';
 
   function removePrefix(str, prefix) {
     return str.startsWith(prefix) ? str.slice(prefix.length) : str;
@@ -43,7 +40,7 @@
     if (registeredPage.layout) {
       // Check if layout is a function (async import) or object
       const layoutModule =
-        typeof registeredPage.layout === "function"
+        typeof registeredPage.layout === 'function'
           ? await registeredPage.layout()
           : registeredPage.layout;
       layout = layoutModule;
@@ -54,8 +51,8 @@
 </script>
 
 <script>
-  import { onMount, onDestroy, mount, unmount } from "svelte";
-  import { browser } from "$app/environment";
+  import { onMount, onDestroy, mount, unmount } from 'svelte';
+  import { browser } from '$app/environment';
 
   export let data;
 
@@ -143,29 +140,27 @@
           // 3. Common class: .content / .page-content
           // 4. Semantic Article: article
           const anchor = layoutContainer.querySelector(
-            "[data-pano-content], main, .content, .page-content, article",
+            '[data-pano-content], main, .content, .page-content, article',
           );
 
           if (anchor && slotContentContainer) {
             anchor.appendChild(slotContentContainer);
-            slotContentContainer.style.display = "";
+            slotContentContainer.style.display = '';
           } else if (slotContentContainer) {
             // Fallback: If layout has a single root element (wrapper), try appending there?
             // Or just append to container (Default behavior)
 
             // Experimental: Try to append to the first root element if exists
             if (layoutContainer.firstElementChild) {
-              layoutContainer.firstElementChild.appendChild(
-                slotContentContainer,
-              );
+              layoutContainer.firstElementChild.appendChild(slotContentContainer);
             } else {
               // Empty layout? Just show.
             }
-            slotContentContainer.style.display = "";
+            slotContentContainer.style.display = '';
           }
         }, 0);
       } catch (e) {
-        console.error("Failed to mount layout", e);
+        console.error('Failed to mount layout', e);
       }
     }
   });

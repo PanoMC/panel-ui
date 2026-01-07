@@ -100,8 +100,8 @@
       "unknown": "Bilinmiyor"
     },
     "addons": {
-    "title": "Eklentiler",
-    "version": "Versiyon",
+      "title": "Eklentiler",
+      "version": "Versiyon",
       "card-title": {
         "active": "{amount} Aktif Eklenti",
         "inactive": "{amount} Devre Dışı Eklenti",
@@ -1274,11 +1274,11 @@
     "RESTARTED_PANO": "**{username}** Pano'yu yeniden başlattı."
   },
   "notifications": {
-    "NEW_TICKET_MESSAGE" : "<b>{username}</b> destek talebinde mesaj gönderdi (<b>#{id}</b>).",
-    "NEW_TICKET" : "<b>{username}</b> yeni bir destek talebi oluşturdu (<b>#{id}</b>).",
-    "TICKET_CLOSED_BY_USER" : "<b>{username}</b> destek talebini kapattı (<b>#{id}</b>).",
-    "PANO_UPDATE_FOUND" : "İyi haber! Yeni bir Pano güncellemesi bulundu!",
-    "SERVER_CONNECT_REQUEST" : "Bir sunucu, Pano'ya bağlanma isteği gönderdi."
+    "NEW_TICKET_MESSAGE": "<b>{username}</b> destek talebinde mesaj gönderdi (<b>#{id}</b>).",
+    "NEW_TICKET": "<b>{username}</b> yeni bir destek talebi oluşturdu (<b>#{id}</b>).",
+    "TICKET_CLOSED_BY_USER": "<b>{username}</b> destek talebini kapattı (<b>#{id}</b>).",
+    "PANO_UPDATE_FOUND": "İyi haber! Yeni bir Pano güncellemesi bulundu!",
+    "SERVER_CONNECT_REQUEST": "Bir sunucu, Pano'ya bağlanma isteği gönderdi."
   },
   "errors": {
     "NETWORK_ERROR": "Bağlantı hatası! Lütfen bağlantınızı kontrol edin.",

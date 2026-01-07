@@ -1,15 +1,13 @@
 <div class="card animate__animated animate__fadeIn">
-  <div class="card-header">{$_("pages.server.game-integration.minecraft")}</div>
+  <div class="card-header">{$_('pages.server.game-integration.minecraft')}</div>
   <div class="card-body">
     <div class="row">
       <label class="col-md-4 col-form-label" for="authIntegration">
-        {$_("pages.server.game-integration.auth-integration")}
+        {$_('pages.server.game-integration.auth-integration')}
         <small class="d-block"
-          >{$_(
-            "pages.server.game-integration.auth-integration-description",
-          )}<br />
+          >{$_('pages.server.game-integration.auth-integration-description')}<br />
           <a href="" target="_blank"
-            >{$_("buttons.see-docs")} <i class="fas fa-external-link"></i></a
+            >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
           ></small>
       </label>
       <div class="col col-form-label">
@@ -24,22 +22,18 @@
       </div>
     </div>
     <div class="row">
-      <label
-        class="col-md-4 col-form-label position-relative"
-        for="authRequireVerified">
+      <label class="col-md-4 col-form-label position-relative" for="authRequireVerified">
         <span
           class="position-absolute start-0 top-0 bottom-0 border-start border-2"
           class:border-secondary={serverSettings.authIntegration}
           class:border-muted={!serverSettings.authIntegration}
           style="width: 2px;"></span>
         <span class="ps-3 d-block">
-          {$_("pages.server.game-integration.auth-require-verified")}
+          {$_('pages.server.game-integration.auth-require-verified')}
           <small class="d-block"
-            >{$_(
-              "pages.server.game-integration.auth-require-verified-description",
-            )}<br />
+            >{$_('pages.server.game-integration.auth-require-verified-description')}<br />
             <a href="" target="_blank"
-              >{$_("buttons.see-docs")} <i class="fas fa-external-link"></i></a
+              >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
             ></small>
         </span>
       </label>
@@ -56,22 +50,18 @@
       </div>
     </div>
     <div class="row">
-      <label
-        class="col-md-4 col-form-label position-relative"
-        for="authKickAfterRegister">
+      <label class="col-md-4 col-form-label position-relative" for="authKickAfterRegister">
         <span
           class="position-absolute start-0 top-0 bottom-0 border-start border-2"
           class:border-secondary={serverSettings.authIntegration}
           class:border-muted={!serverSettings.authIntegration}
           style="width: 2px;"></span>
         <span class="ps-3 d-block">
-          {$_("pages.server.game-integration.auth-kick-after-register")}
+          {$_('pages.server.game-integration.auth-kick-after-register')}
           <small class="d-block"
-            >{$_(
-              "pages.server.game-integration.auth-kick-after-register-description",
-            )}<br />
+            >{$_('pages.server.game-integration.auth-kick-after-register-description')}<br />
             <a href="" target="_blank"
-              >{$_("buttons.see-docs")} <i class="fas fa-external-link"></i></a
+              >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
             ></small>
         </span>
       </label>
@@ -89,13 +79,11 @@
     </div>
     <div class="row">
       <label class="col-md-4 col-form-label" for="banIntegration">
-        {$_("pages.server.game-integration.ban-integration")}
+        {$_('pages.server.game-integration.ban-integration')}
         <small class="d-block"
-          >{$_(
-            "pages.server.game-integration.ban-integration-description",
-          )}<br />
+          >{$_('pages.server.game-integration.ban-integration-description')}<br />
           <a href="" target="_blank"
-            >{$_("buttons.see-docs")} <i class="fas fa-external-link"></i></a
+            >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
           ></small>
       </label>
       <div class="col col-form-label">
@@ -111,13 +99,11 @@
     </div>
     <div class="row">
       <label class="col-md-4 col-form-label" for="permissionIntegration">
-        {$_("pages.server.game-integration.permission-integration")}
+        {$_('pages.server.game-integration.permission-integration')}
         <small class="d-block"
-          >{$_(
-            "pages.server.game-integration.permission-integration-description",
-          )}<br />
+          >{$_('pages.server.game-integration.permission-integration-description')}<br />
           <a href="" target="_blank"
-            >{$_("buttons.see-docs")} <i class="fas fa-external-link"></i></a
+            >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
           ></small>
       </label>
       <div class="col col-form-label">
@@ -137,13 +123,13 @@
       class:disabled={saving || saveDisabled}
       aria-disabled={saving || saveDisabled}
       on:click={save}>
-      {$_("buttons.save")}
+      {$_('buttons.save')}
     </button>
   </div>
 </div>
 
 <script context="module">
-  import ApiUtil from "$lib/api.util.js";
+  import ApiUtil from '$lib/api.util.js';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -168,12 +154,12 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  const pageTitle = getContext("pageTitle");
+  const pageTitle = getContext('pageTitle');
 
-  pageTitle.set("pages.server.game-integration.title");
+  pageTitle.set('pages.server.game-integration.title');
 
   export let data;
 
@@ -182,8 +168,7 @@
   let saving;
 
   $: saveDisabled =
-    saving ||
-    JSON.stringify(serverSettings) === JSON.stringify(serverSettingsOriginal);
+    saving || JSON.stringify(serverSettings) === JSON.stringify(serverSettingsOriginal);
 
   function save() {
     saving = true;
@@ -194,7 +179,7 @@
       handler: async (body, reject) => {
         saving = false;
 
-        if (body.result !== "ok") {
+        if (body.result !== 'ok') {
           reject();
 
           return;

@@ -1,8 +1,14 @@
-import { browser } from "$app/environment";
-import { get, writable } from "svelte/store";
-import { getLocaleFromNavigator, init as initI18n, locale, register, waitLocale } from "svelte-i18n";
-import { base } from "$app/paths";
-import ApiUtil from "$lib/api.util.js";
+import { browser } from '$app/environment';
+import { get, writable } from 'svelte/store';
+import {
+  getLocaleFromNavigator,
+  init as initI18n,
+  locale,
+  register,
+  waitLocale,
+} from 'svelte-i18n';
+import { base } from '$app/paths';
+import ApiUtil from '$lib/api.util.js';
 
 export const languageLoading = writable(false);
 export const currentLanguage = writable(null);
@@ -12,10 +18,10 @@ async function fetchLanguages(event) {
   const response = await ApiUtil.get({
     path: `/api/locales`,
     request: event,
-  })
-  const locales = response.data
+  });
+  const locales = response.data;
 
-  Languages.set(Object.fromEntries(locales.map(item => [item.code, item])));
+  Languages.set(Object.fromEntries(locales.map((item) => [item.code, item])));
 }
 
 export async function init(initialLocale, event) {
@@ -30,29 +36,29 @@ export async function init(initialLocale, event) {
   }
 
   const language = getLanguageByLocale(initialLocale);
-  const languageToLoad = language || get(Languages)["en-US"];
+  const languageToLoad = language || get(Languages)['en-US'];
 
-  await loadLanguage(get(Languages)["en-US"], event);
+  await loadLanguage(get(Languages)['en-US'], event);
   await loadLanguage(languageToLoad, event);
   currentLanguage.set(languageToLoad);
 
   await waitLocale();
 
   initI18n({
-    fallbackLocale: "en-US",
+    fallbackLocale: 'en-US',
     initialLocale: languageToLoad.code,
   });
 }
 
 export function getAcceptedLanguage(headers) {
   if (
-    typeof headers.get("accept-language") === "undefined" ||
-    headers.get("accept-language") == null
+    typeof headers.get('accept-language') === 'undefined' ||
+    headers.get('accept-language') == null
   ) {
-    return "";
+    return '';
   }
 
-  return headers.get("accept-language").split(",")[0];
+  return headers.get('accept-language').split(',')[0];
 }
 
 export async function loadLanguage(language, event) {
@@ -67,9 +73,12 @@ export async function loadLanguage(language, event) {
   ]);
 
   const languageFile = await localTranslationsResponse.json();
-  const customTranslations = translationsResponse.result !== "ok" ? {} : translationsResponse.data
+  const customTranslations = translationsResponse.result !== 'ok' ? {} : translationsResponse.data;
 
-  const translations = unflattenObject({...flattenObject(languageFile), ...flattenObject(customTranslations)})
+  const translations = unflattenObject({
+    ...flattenObject(languageFile),
+    ...flattenObject(customTranslations),
+  });
 
   register(language.code, async () => translations);
 

@@ -1,5 +1,5 @@
-import path from "path";
-import fs from "fs";
+import path from 'path';
+import fs from 'fs';
 import mime from 'mime-types';
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
@@ -7,8 +7,8 @@ export async function GET({ params }) {
   const { pluginId, fileName } = params;
 
   // Ensure pluginId and fileName are safe and sanitize inputs
-  if (!pluginId || !fileName || typeof pluginId !== "string" || typeof fileName !== "string") {
-    return new Response("Invalid parameters.", { status: 400 });
+  if (!pluginId || !fileName || typeof pluginId !== 'string' || typeof fileName !== 'string') {
+    return new Response('Invalid parameters.', { status: 400 });
   }
 
   // Sanitize pluginId and fileName to prevent directory traversal
@@ -20,7 +20,7 @@ export async function GET({ params }) {
 
   // Ensure that the file exists and belongs to the intended plugin
   if (!filePath.startsWith(path.resolve(`plugins/${safePluginId}/client/`))) {
-    return new Response("Access to this file is forbidden.", { status: 403 });
+    return new Response('Access to this file is forbidden.', { status: 403 });
   }
 
   try {
@@ -30,10 +30,10 @@ export async function GET({ params }) {
     const contentType = mime.lookup(fileName) || 'application/octet-stream'; // Default to 'application/octet-stream' if mime type is unknown
 
     return new Response(data, {
-      headers: { "Content-Type": contentType }
+      headers: { 'Content-Type': contentType },
     });
   } catch (error) {
-    console.log(error)
-    return new Response("File not found or unable to read.", { status: 404 });
+    console.log(error);
+    return new Response('File not found or unable to read.', { status: 404 });
   }
 }

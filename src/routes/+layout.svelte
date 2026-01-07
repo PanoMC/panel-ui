@@ -1,9 +1,9 @@
-<AppLayout data="{data}">
+<AppLayout {data}>
   <slot />
 </AppLayout>
 
 <script>
-  import AppLayout from "$lib/layouts/AppLayout.svelte";
+  import AppLayout from '$lib/layouts/AppLayout.svelte';
 
   export let data;
 </script>

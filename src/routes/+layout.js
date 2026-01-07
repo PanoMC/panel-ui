@@ -1,1 +1,1 @@
-export { load } from "$lib/layouts/AppLayout.svelte";
+export { load } from '$lib/layouts/AppLayout.svelte';

@@ -1,7 +1,6 @@
-<div
-  class="card border-0 opacity-50 bg-transparent animate__animated animate__zoomIn">
+<div class="card border-0 opacity-50 bg-transparent animate__animated animate__zoomIn">
   <div class="card-body vstack gap-3 text-center">
-    <span class="{icon}"></span>
+    <span class={icon}></span>
     <p class="mb-0">{text}</p>
   </div>
 </div>
@@ -9,8 +8,8 @@
 <slot />
 
 <script>
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
-  export let icon = "fa-solid fa-ghost fa-3x";
-  export let text = $_("components.no-content.here-is-empty");
+  export let icon = 'fa-solid fa-ghost fa-3x';
+  export let text = $_('components.no-content.here-is-empty');
 </script>

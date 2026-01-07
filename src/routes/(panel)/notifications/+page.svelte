@@ -1,7 +1,7 @@
-<Notifications data="{data}" />
+<Notifications {data} />
 
 <script>
-  import Notifications from "$lib/pages/Notifications.svelte";
+  import Notifications from '$lib/pages/Notifications.svelte';
 
   export let data;
 </script>

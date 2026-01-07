@@ -1,7 +1,3 @@
-<div class="chart-container">
-  <canvas id="websiteActivityChart" bind:this="{element}"></canvas>
-</div>
-
 <style>
   .chart-container {
     position: relative;
@@ -10,8 +6,12 @@
   }
 </style>
 
+<div class="chart-container">
+  <canvas id="websiteActivityChart" bind:this={element}></canvas>
+</div>
+
 <script>
-  import { _, locale } from "svelte-i18n";
+  import { _, locale } from 'svelte-i18n';
   import {
     Chart,
     LineController,
@@ -24,15 +24,15 @@
     Legend,
     Filler,
     Colors,
-  } from "chart.js";
-  import "chartjs-adapter-date-fns";
-  import { onDestroy, onMount } from "svelte";
-  import { subWeeks, subMonths, startOfDay, endOfDay, subDays } from "date-fns";
+  } from 'chart.js';
+  import 'chartjs-adapter-date-fns';
+  import { onDestroy, onMount } from 'svelte';
+  import { subWeeks, subMonths, startOfDay, endOfDay, subDays } from 'date-fns';
 
-  import { DashboardPeriod } from "$lib/pages/Statistics.svelte";
-  import { hasPermission, Permissions } from "$lib/auth.util.js";
-  import { currentLanguage } from "$lib/language.util.js";
-  import { get } from "svelte/store";
+  import { DashboardPeriod } from '$lib/pages/Statistics.svelte';
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { currentLanguage } from '$lib/language.util.js';
+  import { get } from 'svelte/store';
 
   // Chart.js v4 - Register required components with Colors plugin for default palette
   Chart.register(
@@ -45,7 +45,7 @@
     Tooltip,
     Legend,
     Filler,
-    Colors
+    Colors,
   );
 
   let element;
@@ -90,7 +90,7 @@
       minDate = from.getTime();
       maxDate = to.getTime();
 
-      displayFormats = { day: "eee" };
+      displayFormats = { day: 'eee' };
     } else {
       // Start: 1 month ago at 00:00 (relative, not calendar-aligned)
       const from = startOfDay(subMonths(currentDate, 1));
@@ -100,30 +100,25 @@
       minDate = from.getTime();
       maxDate = to.getTime();
 
-      displayFormats = { day: "dd, eee" };
+      displayFormats = { day: 'dd, eee' };
     }
   }
 
   // Reload chart when data props or period changes
   $: if (chart && newRegisterData && ticketsData && visitorData && viewData) {
-    reloadChart(
-      newRegisterData,
-      ticketsData,
-      visitorData,
-      viewData,
-    );
+    reloadChart(newRegisterData, ticketsData, visitorData, viewData);
   }
 
   const unsubscribeCurrentLanguage = currentLanguage.subscribe(() => {
     if (chart) {
-      reloadChart()
+      reloadChart();
     }
-  })
+  });
 
   // Return colors based on dark mode
   function getColors() {
     const dark = checkDarkMode();
-    
+
     return {
       grid: dark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
       text: dark ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)',
@@ -150,8 +145,8 @@
 
     Object.values(datasets).forEach((dataset) => {
       dataset.forEach((data) => {
-        if (data["y"] > highestValue) {
-          highestValue = data["y"];
+        if (data['y'] > highestValue) {
+          highestValue = data['y'];
         }
       });
     });
@@ -163,7 +158,7 @@
     newRegisterDataObj = newRegisterData,
     ticketsDataObj = ticketsData,
     visitorDataObj = visitorData,
-    viewDataObj = viewData
+    viewDataObj = viewData,
   ) {
     const convertedNewRegisterData = convertDataForChartJS(newRegisterDataObj);
     const convertedTicketsData = convertDataForChartJS(ticketsDataObj);
@@ -190,7 +185,7 @@
 
     // Use Chart.js default palette for modern, smooth lines (no fill)
     datasets.push({
-      label: $_("components.website-activity-chart.new-registration"),
+      label: $_('components.website-activity-chart.new-registration'),
       data: convertedNewRegisterData,
       borderWidth: 3,
       pointRadius: 4,
@@ -202,7 +197,7 @@
     });
 
     datasets.push({
-      label: $_("components.website-activity-chart.new-ticket"),
+      label: $_('components.website-activity-chart.new-ticket'),
       data: convertedTicketsData,
       borderWidth: 3,
       pointRadius: 4,
@@ -214,7 +209,7 @@
     });
 
     datasets.push({
-      label: $_("components.website-activity-chart.visitor"),
+      label: $_('components.website-activity-chart.visitor'),
       data: convertedVisitorData,
       borderWidth: 3,
       pointRadius: 4,
@@ -226,7 +221,7 @@
     });
 
     datasets.push({
-      label: $_("buttons.view"),
+      label: $_('buttons.view'),
       data: convertedViewData,
       borderWidth: 3,
       pointRadius: 4,
@@ -244,13 +239,13 @@
     newRegisterDataObj = newRegisterData,
     ticketsDataObj = ticketsData,
     visitorDataObj = visitorData,
-    viewDataObj = viewData
+    viewDataObj = viewData,
   ) {
     const convertedDatasets = getConvertedDatasets(
       newRegisterDataObj,
       ticketsDataObj,
       visitorDataObj,
-      viewDataObj
+      viewDataObj,
     );
 
     chart.data.datasets = getDatasets(convertedDatasets);
@@ -270,7 +265,7 @@
     const colors = getColors();
 
     chart = new Chart(element, {
-      type: "line",
+      type: 'line',
       data: {
         datasets: getDatasets(convertedDatasets),
       },
@@ -279,7 +274,7 @@
         maintainAspectRatio: false,
         resizeDelay: 0,
         interaction: {
-          mode: "index",
+          mode: 'index',
           intersect: false,
         },
         plugins: {
@@ -289,13 +284,13 @@
           },
           legend: {
             display: true,
-            position: "top",
+            position: 'top',
             labels: {
               usePointStyle: true,
               padding: 15,
               font: {
                 size: 12,
-                weight: "500",
+                weight: '500',
               },
               color: colors.text,
             },
@@ -312,9 +307,9 @@
             usePointStyle: true,
             callbacks: {
               label: function (context) {
-                let label = context.dataset.label || "";
+                let label = context.dataset.label || '';
                 if (label) {
-                  label += ": ";
+                  label += ': ';
                 }
                 label += context.parsed.y;
                 return label;
@@ -324,9 +319,9 @@
         },
         scales: {
           x: {
-            type: "time",
+            type: 'time',
             time: {
-              unit: "day",
+              unit: 'day',
               displayFormats,
               isoWeekday: true,
             },
@@ -371,42 +366,42 @@
   // Listen for theme changes and refresh the chart
   function updateChartColors() {
     if (!chart) return;
-    
+
     const colors = getColors();
-    
+
     // Legend renkleri
     chart.options.plugins.legend.labels.color = colors.text;
-    
+
     // Tooltip renkleri
     chart.options.plugins.tooltip.backgroundColor = colors.tooltipBg;
     chart.options.plugins.tooltip.titleColor = colors.tooltipText;
     chart.options.plugins.tooltip.bodyColor = colors.tooltipText;
     chart.options.plugins.tooltip.borderColor = colors.tooltipBorder;
-    
+
     // Grid ve tick renkleri
     chart.options.scales.x.grid.color = colors.grid;
     chart.options.scales.x.ticks.color = colors.text;
     chart.options.scales.y.grid.color = colors.grid;
     chart.options.scales.y.ticks.color = colors.text;
-    
+
     chart.update();
   }
 
   onMount(() => {
     renderChart();
-    
+
     // Listen for theme changes
     themeObserver = new MutationObserver(() => {
       updateChartColors();
     });
-    
+
     if (typeof document !== 'undefined') {
       themeObserver.observe(document.documentElement, {
         attributes: true,
         attributeFilter: ['data-bs-theme', 'class'],
       });
     }
-    
+
     // Also listen for color scheme changes
     if (typeof window !== 'undefined') {
       mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -418,15 +413,15 @@
     if (chart) {
       chart.destroy();
     }
-    
+
     if (themeObserver) {
       themeObserver.disconnect();
     }
-    
+
     if (mediaQuery) {
       mediaQuery.removeEventListener('change', updateChartColors);
     }
-    
+
     unsubscribeCurrentLanguage();
   });
 </script>

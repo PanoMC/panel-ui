@@ -1,7 +1,7 @@
-<PostEditor data="{data}" />
+<PostEditor {data} />
 
 <script>
-  import PostEditor from "$lib/pages/PostEditor.svelte";
+  import PostEditor from '$lib/pages/PostEditor.svelte';
 
   export let data;
 </script>

@@ -1,1 +1,1 @@
-export { load } from "$lib/layouts/TicketsLayout.svelte";
+export { load } from '$lib/layouts/TicketsLayout.svelte';

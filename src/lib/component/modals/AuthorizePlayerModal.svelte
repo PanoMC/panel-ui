@@ -1,9 +1,5 @@
 <!-- Authorize Player Modal -->
-<div
-  class="modal fade"
-  bind:this={$modalElement}
-  tabindex="-1"
-  aria-hidden="true">
+<div class="modal fade" bind:this={$modalElement} tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       {#if $loading}
@@ -15,43 +11,41 @@
       {:else}
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">
-            {$_("components.modals.authorize-player.title")}
+            {$_('components.modals.authorize-player.title')}
           </h5>
           <button
             type="button"
             class="btn-close"
             data-bs-dismiss="modal"
-            aria-label={$_("buttons.close")}
-            title={$_("buttons.close")}
+            aria-label={$_('buttons.close')}
+            title={$_('buttons.close')}
             on:click={hide}></button>
         </div>
         <div class="modal-body">
           <div class="vstack gap-2">
-            <label for="authorizePlayerPermGroup">{$_("components.modals.authorize-player.permission-group-label")}</label>
+            <label for="authorizePlayerPermGroup"
+              >{$_('components.modals.authorize-player.permission-group-label')}</label>
             <div class="hstack gap-2">
               <select
                 class="form-control"
                 id="authorizePlayerPermGroup"
                 bind:value={$player.permissionGroup}>
                 <option class="text-primary" value="-"
-                  >{$_("components.modals.authorize-player.player")}</option>
+                  >{$_('components.modals.authorize-player.player')}</option>
 
                 {#each $permissionGroups as permissionGroup, index (permissionGroup)}
-                  <option value={permissionGroup.name}
-                    >{permissionGroup.name}</option>
+                  <option value={permissionGroup.name}>{permissionGroup.name}</option>
                 {/each}
               </select>
 
               <!-- Remove Button -->
               <button
                 class="btn-close"
-                aria-label={$_("buttons.remove")}
-                title={$_("buttons.remove")}></button>
+                aria-label={$_('buttons.remove')}
+                title={$_('buttons.remove')}></button>
             </div>
             <!-- Add Button -->
-            <button class="btn btn-primary btn-sm"
-              >{$_("buttons.add")} 1/1
-            </button>
+            <button class="btn btn-primary btn-sm">{$_('buttons.add')} 1/1 </button>
 
             <label for="authorizePlayerPermissions">Yetkiler</label>
             <div class="list-group">
@@ -66,10 +60,7 @@
                 Example Permission
 
                 <div class="form-check form-switch">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="example-permission" />
+                  <input type="checkbox" class="form-check-input" id="example-permission" />
                 </div>
               </label>
             </div>
@@ -80,7 +71,7 @@
             type="button"
             class="btn btn-primary w-100"
             class:disabled={$submitLoading}
-            on:click={onSubmit}>{$_("buttons.save")}</button>
+            on:click={onSubmit}>{$_('buttons.save')}</button>
         </div>
       {/if}
     </div>
@@ -88,16 +79,16 @@
 </div>
 
 <script context="module">
-  import { writable, get } from "svelte/store";
+  import { writable, get } from 'svelte/store';
 
-  import ApiUtil from "$lib/api.util";
+  import ApiUtil from '$lib/api.util';
 
   const modalElement = writable();
   const player = writable({});
   const loading = writable(true);
   const permissionGroups = writable([]);
   const defaultErrors = {
-    "LAST_ADMIN": false,
+    'LAST_ADMIN': false,
   };
   const errors = writable(defaultErrors);
   const submitLoading = writable(false);
@@ -114,7 +105,7 @@
     initData();
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
     modal.show();
@@ -140,7 +131,7 @@
     loading.set(true);
 
     ApiUtil.get({
-      path: "/api/panel/permissionGroups",
+      path: '/api/panel/permissionGroups',
       handler: (body, reject) => {
         if (body.error) {
           reject();
@@ -156,9 +147,9 @@
 </script>
 
 <script>
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
+  import { show as showToast } from '$lib/component/ToastContainer.svelte';
 
   function onSubmit() {
     submitLoading.set(true);
@@ -169,17 +160,17 @@
         permissionGroup: get(player).permissionGroup,
       },
       handler: async (body, reject) => {
-        if (body.result === "ok") {
+        if (body.result === 'ok') {
           submitLoading.set(false);
 
           hide();
 
           await callback(get(player));
 
-          await showToast("components.toasts.player-authorized-success");
+          await showToast('components.toasts.player-authorized-success');
 
           return;
-        } else if (body.result === "NOT_EXISTS") {
+        } else if (body.result === 'NOT_EXISTS') {
           location.reload();
 
           return;

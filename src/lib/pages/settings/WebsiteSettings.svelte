@@ -1,27 +1,25 @@
 <!-- Site Settings Sub Page -->
 <div class="card">
   <div class="card-header">
-    {$_("pages.settings.site-settings.preferences")}
+    {$_('pages.settings.site-settings.preferences')}
   </div>
   <div class="card-body animate__animated animate__fadeIn">
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteTitle"
-        >{$_("pages.settings.site-settings.inputs.website-name.label")}</label>
+        >{$_('pages.settings.site-settings.inputs.website-name.label')}</label>
       <div class="col-md-6">
         <input
           bind:value={data.websiteName}
           aria-describedby="siteTitle"
           class="form-control"
-          placeholder={$_(
-            "pages.settings.site-settings.inputs.website-name.placeholder",
-          )}
+          placeholder={$_('pages.settings.site-settings.inputs.website-name.placeholder')}
           id="siteTitle"
           type="text" />
       </div>
     </div>
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteDesc">
-        {$_("pages.settings.site-settings.inputs.website-description.label")}
+        {$_('pages.settings.site-settings.inputs.website-description.label')}
       </label>
       <div class="col-md-6">
         <textarea
@@ -34,22 +32,20 @@
     </div>
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="websiteUrl"
-        >{$_("pages.settings.site-settings.inputs.website-url.label")}</label>
+        >{$_('pages.settings.site-settings.inputs.website-url.label')}</label>
       <div class="col-md-6">
         <input
           bind:value={data.websiteUrl}
           aria-describedby="websiteUrl"
           class="form-control"
-          placeholder={$_(
-            "pages.settings.site-settings.inputs.website-url.placeholder",
-          )}
+          placeholder={$_('pages.settings.site-settings.inputs.website-url.placeholder')}
           id="websiteUrl"
           type="text" />
       </div>
     </div>
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteRegisterAgreement">
-        {$_("pages.settings.site-settings.inputs.register-agreement.label")}
+        {$_('pages.settings.site-settings.inputs.register-agreement.label')}
       </label>
       <div class="col-md-6">
         <textarea
@@ -59,15 +55,13 @@
           id="siteRegisterAgreement"
           rows="2"></textarea>
         <small for="siteRegisterAgreement"
-          >{$_(
-            "pages.settings.site-settings.inputs.register-agreement.small-note",
-          )}</small>
+          >{$_('pages.settings.site-settings.inputs.register-agreement.small-note')}</small>
       </div>
     </div>
 
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="ipAddress">
-        {$_("pages.settings.site-settings.inputs.game-server-ip-address.label")}
+        {$_('pages.settings.site-settings.inputs.game-server-ip-address.label')}
       </label>
       <div class="col-md-6">
         <input
@@ -82,7 +76,7 @@
 
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="serverGameVersion">
-        {$_("pages.settings.site-settings.inputs.game-server-version.label")}
+        {$_('pages.settings.site-settings.inputs.game-server-version.label')}
       </label>
       <div class="col-md-6">
         <input
@@ -97,7 +91,7 @@
 
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="supportEmailAddress">
-        {$_("pages.settings.site-settings.inputs.support-email-address.label")}
+        {$_('pages.settings.site-settings.inputs.support-email-address.label')}
       </label>
       <div class="col-md-6">
         <input
@@ -111,7 +105,7 @@
     </div>
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteKeywords">
-        {$_("pages.settings.site-settings.inputs.keywords.label")}
+        {$_('pages.settings.site-settings.inputs.keywords.label')}
       </label>
       <div class="col-md-6">
         <form on:submit|preventDefault={addKeyWord}>
@@ -119,9 +113,7 @@
             id="siteKeywords"
             class="form-control mb-2"
             class:border-danger={keywordInputError}
-            placeholder={$_(
-              "pages.settings.site-settings.inputs.keywords.placeholder",
-            )}
+            placeholder={$_('pages.settings.site-settings.inputs.keywords.placeholder')}
             type="text"
             name="keyword"
             bind:value={keyword} />
@@ -131,7 +123,7 @@
             <button
               type="button"
               class="btn btn-link btn-sm"
-              use:tooltip={[$_("buttons.remove"), { placement: "bottom" }]}
+              use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
               on:click={() => removeKeyWord(index)}>
               {keyword}
             </button>
@@ -143,22 +135,20 @@
     <!-- Favicon section -->
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteFavicon">
-        {$_("pages.settings.site-settings.inputs.favicon.label")}
+        {$_('pages.settings.site-settings.inputs.favicon.label')}
       </label>
       <div class="col-md-6">
-        <div
-          class="position-relative d-inline-block"
-          style="width: 64px; height: 64px;">
+        <div class="position-relative d-inline-block" style="width: 64px; height: 64px;">
           <img
-            alt={$_("pages.settings.site-settings.inputs.favicon.select")}
+            alt={$_('pages.settings.site-settings.inputs.favicon.select')}
             src={favicon}
             class="border rounded w-100 h-100" />
           <button
             type="button"
             class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
             on:click={() => faviconInput.click()}
-            title={$_("buttons.change")}
-            aria-label={$_("buttons.change")}>
+            title={$_('buttons.change')}
+            aria-label={$_('buttons.change')}>
             <i class="fas fa-pen"></i>
           </button>
         </div>
@@ -171,7 +161,7 @@
           bind:this={faviconInput}
           accept="image/*" />
         <small class=" d-block mt-2">
-          {$_("pages.settings.site-settings.inputs.favicon.helper")}
+          {$_('pages.settings.site-settings.inputs.favicon.helper')}
         </small>
       </div>
     </div>
@@ -179,7 +169,7 @@
     <!-- Website logo section -->
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteLogo">
-        {$_("pages.settings.site-settings.inputs.website-logo.label")}
+        {$_('pages.settings.site-settings.inputs.website-logo.label')}
       </label>
       <div class="col-md-6">
         <div class="position-relative w-100" style="max-width: 300px;">
@@ -187,16 +177,14 @@
             <img
               src={websiteLogo}
               class="object-fit-contain w-100 h-100"
-              alt={$_(
-                "pages.settings.site-settings.inputs.website-logo.server-icon",
-              )} />
+              alt={$_('pages.settings.site-settings.inputs.website-logo.server-icon')} />
           </div>
           <button
             type="button"
             class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
             on:click={() => websiteLogoInput.click()}
-            title={$_("buttons.change")}
-            aria-label={$_("buttons.change")}>
+            title={$_('buttons.change')}
+            aria-label={$_('buttons.change')}>
             <i class="fas fa-pencil"></i>
           </button>
         </div>
@@ -209,7 +197,7 @@
           bind:this={websiteLogoInput}
           accept="image/*" />
         <small class=" d-block mt-2">
-          {$_("pages.settings.site-settings.inputs.website-logo.helper")}
+          {$_('pages.settings.site-settings.inputs.website-logo.helper')}
         </small>
       </div>
     </div>
@@ -219,14 +207,14 @@
       class:disabled={saveButtonLoading || isSaveButtonDisabled}
       aria-disabled={saveButtonLoading || isSaveButtonDisabled}
       on:click={save}>
-      {$_("buttons.save")}
+      {$_('buttons.save')}
     </button>
   </div>
 </div>
 
 <script context="module">
-  import ApiUtil, { buildQueryParams } from "$lib/api.util.js";
-  import tooltip from "$lib/tooltip.util";
+  import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
+  import tooltip from '$lib/tooltip.util';
 
   /**
    * @type {import("@sveltejs/kit").Load}
@@ -236,11 +224,11 @@
     await parent();
 
     const queryParams = buildQueryParams({
-      type: "WEBSITE",
+      type: 'WEBSITE',
     });
 
     const body = await ApiUtil.get({
-      path: "/api/panel/settings" + queryParams,
+      path: '/api/panel/settings' + queryParams,
       request: event,
     });
 
@@ -252,19 +240,19 @@
 </script>
 
 <script>
-  import { getContext } from "svelte";
-  import { _ } from "svelte-i18n";
+  import { getContext } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
-  import { websiteLogoSrc } from "$lib/Store.js";
+  import { websiteLogoSrc } from '$lib/Store.js';
 
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
+  import { show as showToast } from '$lib/component/ToastContainer.svelte';
 
   export let data;
 
-  const pageTitle = getContext("pageTitle");
-  const website = getContext("website");
+  const pageTitle = getContext('pageTitle');
+  const website = getContext('website');
 
-  pageTitle.set("pages.settings.site-settings.title");
+  pageTitle.set('pages.settings.site-settings.title');
 
   let faviconFiles = null;
   let websiteLogoFiles = null;
@@ -285,32 +273,37 @@
     data.oldSettings.supportEmail === data.supportEmail &&
     data.oldSettings.serverIpAddress === data.serverIpAddress &&
     data.oldSettings.serverGameVersion === data.serverGameVersion &&
-    JSON.stringify(data.oldSettings.keywords) ===
-      JSON.stringify(data.keywords) &&
+    JSON.stringify(data.oldSettings.keywords) === JSON.stringify(data.keywords) &&
     selectedFaviconFiles.length === 0 &&
     selectedWebsiteLogoFiles.length === 0;
 
   let keywordInputError = false;
 
-  let favicon = "/api/favicon?_=" + Date.now();
-  let websiteLogo = "/api/websiteLogo?_=" + Date.now();
+  let favicon = '/api/favicon?_=' + Date.now();
+  let websiteLogo = '/api/websiteLogo?_=' + Date.now();
 
   async function onFaviconChange(event) {
     const file = event.target.files[0];
-    
+
     if (!file) {
       return;
     }
 
     // Favicon validasyonu: max 1MB, PNG, JPG, JPEG, GIF, ICO
     const maxSize = 1 * 1024 * 1024; // 1MB
-    const allowedTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/x-icon', 'image/vnd.microsoft.icon'];
+    const allowedTypes = [
+      'image/png',
+      'image/jpeg',
+      'image/gif',
+      'image/x-icon',
+      'image/vnd.microsoft.icon',
+    ];
     const allowedExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.ico'];
-    
+
     // File size check
     if (file.size > maxSize) {
-      await showToast("components.toasts.favicon-exceeds-size");
-      faviconInput.value = "";
+      await showToast('components.toasts.favicon-exceeds-size');
+      faviconInput.value = '';
       faviconFiles = null;
       selectedFaviconFiles = [];
       return;
@@ -318,11 +311,12 @@
 
     // File type check
     const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-    const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
-    
+    const isValidType =
+      allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
+
     if (!isValidType) {
-      await showToast("components.toasts.favicon-wrong-content-type");
-      faviconInput.value = "";
+      await showToast('components.toasts.favicon-wrong-content-type');
+      faviconInput.value = '';
       faviconFiles = null;
       selectedFaviconFiles = [];
       return;
@@ -340,7 +334,7 @@
 
   async function onWebsiteLogoChange(event) {
     const file = event.target.files[0];
-    
+
     if (!file) {
       return;
     }
@@ -349,11 +343,11 @@
     const maxSize = 2 * 1024 * 1024; // 2MB
     const allowedTypes = ['image/png', 'image/jpeg', 'image/gif'];
     const allowedExtensions = ['.png', '.jpg', '.jpeg', '.gif'];
-    
+
     // File size check
     if (file.size > maxSize) {
-      await showToast("components.toasts.website-logo-exceeds-size");
-      websiteLogoInput.value = "";
+      await showToast('components.toasts.website-logo-exceeds-size');
+      websiteLogoInput.value = '';
       websiteLogoFiles = null;
       selectedWebsiteLogoFiles = [];
       return;
@@ -361,11 +355,12 @@
 
     // File type check
     const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-    const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
-    
+    const isValidType =
+      allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
+
     if (!isValidType) {
-      await showToast("components.toasts.website-logo-wrong-content-type");
-      websiteLogoInput.value = "";
+      await showToast('components.toasts.website-logo-wrong-content-type');
+      websiteLogoInput.value = '';
       websiteLogoFiles = null;
       selectedWebsiteLogoFiles = [];
       return;
@@ -386,30 +381,30 @@
 
     const formData = new FormData();
 
-    formData.append("websiteName", data.websiteName);
-    formData.append("websiteDescription", data.websiteDescription);
-    formData.append("websiteUrl", data.websiteUrl);
-    formData.append("registerAgreement", data.registerAgreement);
-    formData.append("supportEmail", data.supportEmail);
-    formData.append("serverIpAddress", data.serverIpAddress);
-    formData.append("serverGameVersion", data.serverGameVersion);
-    formData.append("keywords", data.keywords);
+    formData.append('websiteName', data.websiteName);
+    formData.append('websiteDescription', data.websiteDescription);
+    formData.append('websiteUrl', data.websiteUrl);
+    formData.append('registerAgreement', data.registerAgreement);
+    formData.append('supportEmail', data.supportEmail);
+    formData.append('serverIpAddress', data.serverIpAddress);
+    formData.append('serverGameVersion', data.serverGameVersion);
+    formData.append('keywords', data.keywords);
 
     if (faviconFiles && faviconFiles[0]) {
-      formData.append("favicon", faviconFiles[0]);
+      formData.append('favicon', faviconFiles[0]);
     }
 
     if (websiteLogoFiles && websiteLogoFiles[0]) {
-      formData.append("websiteLogo", websiteLogoFiles[0]);
+      formData.append('websiteLogo', websiteLogoFiles[0]);
     }
 
     ApiUtil.put({
-      path: "/api/panel/settings",
+      path: '/api/panel/settings',
       body: formData,
       handler: async (body, reject) => {
         saveButtonLoading = false;
 
-        if (body.result === "ok") {
+        if (body.result === 'ok') {
           website.update((website) => {
             return {
               ...website,
@@ -419,7 +414,7 @@
           });
 
           data.oldSettings = Object.keys(data)
-            .filter((key) => key !== "oldSettings" && key !== "keywords")
+            .filter((key) => key !== 'oldSettings' && key !== 'keywords')
             .reduce((obj, key) => {
               obj[key] = data[key];
               return obj;
@@ -427,9 +422,9 @@
 
           data.oldSettings.keywords = [...data.keywords];
 
-          await showToast("components.toasts.settings-save-success");
+          await showToast('components.toasts.settings-save-success');
 
-          if (websiteLogoInput.value !== "") {
+          if (websiteLogoInput.value !== '') {
             const reader = new FileReader();
             const image = websiteLogoFiles[0];
 
@@ -443,16 +438,16 @@
           selectedFaviconFiles = [];
           selectedWebsiteLogoFiles = [];
 
-          faviconInput.value = "";
-          websiteLogoInput.value = "";
+          faviconInput.value = '';
+          websiteLogoInput.value = '';
         } else if (
-          body.error === "FAVICON_WRONG_CONTENT_TYPE" ||
-          body.error === "FAVICON_EXCEEDS_SIZE" ||
-          body.error === "WEBSITE_LOGO_WRONG_CONTENT_TYPE" ||
-          body.error === "WEBSITE_LOGO_EXCEEDS_SIZE"
+          body.error === 'FAVICON_WRONG_CONTENT_TYPE' ||
+          body.error === 'FAVICON_EXCEEDS_SIZE' ||
+          body.error === 'WEBSITE_LOGO_WRONG_CONTENT_TYPE' ||
+          body.error === 'WEBSITE_LOGO_EXCEEDS_SIZE'
         ) {
-          await showToast("components.toasts.settings-save-error", {
-            errorCode: $_("errors." + body.error),
+          await showToast('components.toasts.settings-save-error', {
+            errorCode: $_('errors.' + body.error),
           });
         } else reject();
       },
@@ -484,7 +479,7 @@
 
     data.keywords = data.keywords;
 
-    keyword = "";
+    keyword = '';
   }
 
   function removeKeyWord(index) {
@@ -511,5 +506,5 @@
     return true;
   };
   // Hide method from for-in loops
-  Object.defineProperty(Array.prototype, "equals", { enumerable: false });
+  Object.defineProperty(Array.prototype, 'equals', { enumerable: false });
 </script>

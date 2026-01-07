@@ -1,21 +1,16 @@
 <!-- Post Category Delete Confirmation Modal -->
-<div
-  aria-hidden="true"
-  class="modal fade"
-  bind:this={$modalElement}
-  role="dialog"
-  tabindex="-1">
+<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
           <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
         </div>
-        {$_("components.modals.confirm-delete-post-category.title")}
+        {$_('components.modals.confirm-delete-post-category.title')}
         {#if $category.postCount !== 0}
           <div class="mt-3 alert alert-warning text-start mb-0">
             <p>
-              {$_("components.modals.confirm-delete-post-category.description")}
+              {$_('components.modals.confirm-delete-post-category.description')}
             </p>
             <ul class="list-unstyled">
               {#each $category.posts as post, index (post)}
@@ -31,7 +26,7 @@
             </ul>
           </div>
           {#if $category.postCount > 5}
-            {$_("components.modals.confirm-delete-post-category.more-posts", {
+            {$_('components.modals.confirm-delete-post-category.more-posts', {
               values: { count: $category.postCount - 5 },
             })}
           {/if}
@@ -43,14 +38,14 @@
           type="button"
           class:disabled={loading}
           on:click={hide}>
-          {$_("buttons.cancel")}
+          {$_('buttons.cancel')}
         </button>
         <button
           class="btn btn-danger col-6 m-0"
           type="button"
           class:disabled={loading}
           on:click={onYesClick}>
-          {$_("buttons.yes")}
+          {$_('buttons.yes')}
         </button>
       </div>
     </div>
@@ -58,7 +53,7 @@
 </div>
 
 <script context="module">
-  import { writable, get } from "svelte/store";
+  import { writable, get } from 'svelte/store';
 
   const modalElement = writable();
   const category = writable({
@@ -73,7 +68,7 @@
     category.set(newCategory);
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
     modal.show();
@@ -95,15 +90,12 @@
 </script>
 
 <script>
-  import { base } from "$app/paths";
+  import { base } from '$app/paths';
 
-  import ApiUtil from "$lib/api.util";
+  import ApiUtil from '$lib/api.util';
 
-  import {
-    show as showToast,
-    limitTitle,
-  } from "$lib/component/ToastContainer.svelte";
-  import { _ } from "svelte-i18n";
+  import { show as showToast, limitTitle } from '$lib/component/ToastContainer.svelte';
+  import { _ } from 'svelte-i18n';
 
   let loading = false;
 
@@ -126,7 +118,7 @@
 
         hide();
 
-        showToast("components.toasts.post-category-deleted-permanently", {
+        showToast('components.toasts.post-category-deleted-permanently', {
           title: limitTitle(get(category).title),
         });
 

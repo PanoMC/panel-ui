@@ -1,10 +1,5 @@
 <!-- Confirm Ban Player Modal -->
-<div
-  aria-hidden="true"
-  class="modal fade"
-  bind:this="{$modalElement}"
-  role="dialog"
-  tabindex="-1">
+<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-body text-center">
@@ -17,14 +12,15 @@
 
         <!-- Ban Message -->
         <div class="form-group text-start mb-3">
-          <label for="banMessage" class="form-label">{$_('components.modals.confirm-ban-player.ban-message')}</label>
+          <label for="banMessage" class="form-label"
+            >{$_('components.modals.confirm-ban-player.ban-message')}</label>
           <textarea
             class="form-control"
             id="banMessage"
             rows="3"
             maxlength="255"
-            placeholder="{$_('components.modals.confirm-ban-player.ban-message-placeholder')}"
-            bind:value="{$banMessage}">
+            placeholder={$_('components.modals.confirm-ban-player.ban-message-placeholder')}
+            bind:value={$banMessage}>
           </textarea>
           <small class="float-end">{$banMessage.length}/255</small>
         </div>
@@ -40,7 +36,7 @@
               type="radio"
               class="btn-check"
               value="permanent"
-              bind:group="{$banDuration}"
+              bind:group={$banDuration}
               id="banPermanent"
               autocomplete="off" />
             <label class="btn btn-outline-primary" for="banPermanent">
@@ -52,7 +48,7 @@
               type="radio"
               class="btn-check"
               value="custom"
-              bind:group="{$banDuration}"
+              bind:group={$banDuration}
               id="banCustom"
               autocomplete="off" />
             <label class="btn btn-outline-primary" for="banCustom">
@@ -64,7 +60,7 @@
               type="radio"
               class="btn-check"
               value="datetime"
-              bind:group="{$banDuration}"
+              bind:group={$banDuration}
               id="banDateTime"
               autocomplete="off" />
             <label class="btn btn-outline-primary" for="banDateTime">
@@ -75,8 +71,9 @@
           <!-- Custom Duration Selector -->
           {#if $banDuration === 'custom'}
             <div class="mt-2">
-              <select class="form-select" bind:value="{$customDuration}">
-                <option value="">{$_('components.modals.confirm-ban-player.select-duration')}</option>
+              <select class="form-select" bind:value={$customDuration}>
+                <option value=""
+                  >{$_('components.modals.confirm-ban-player.select-duration')}</option>
                 <option value="15m">{$_('components.modals.confirm-ban-player.15-minutes')}</option>
                 <option value="30m">{$_('components.modals.confirm-ban-player.30-minutes')}</option>
                 <option value="1h">{$_('components.modals.confirm-ban-player.1-hour')}</option>
@@ -99,8 +96,8 @@
               <input
                 type="datetime-local"
                 class="form-control"
-                bind:value="{$customDateTime}"
-                min="{new Date().toISOString().slice(0, 16)}"
+                bind:value={$customDateTime}
+                min={new Date().toISOString().slice(0, 16)}
                 step="60" />
             </div>
           {/if}
@@ -111,7 +108,7 @@
             class="form-check-input"
             type="checkbox"
             value=""
-            bind:checked="{$sendNotification}"
+            bind:checked={$sendNotification}
             id="notifyBanEmail" />
           <label class="form-check-label" for="notifyBanEmail">
             {$_('components.modals.confirm-ban-player.notify-with-email')}
@@ -122,15 +119,15 @@
         <button
           class="btn btn-link col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          on:click="{hide}">
+          class:disabled={loading}
+          on:click={hide}>
           {$_('buttons.cancel')}
         </button>
         <button
           class="btn btn-danger col-6 m-0"
           type="button"
-          class:disabled="{loading}"
-          on:click="{onSubmit}">
+          class:disabled={loading}
+          on:click={onSubmit}>
           {$_('buttons.yes')}
         </button>
       </div>
@@ -139,7 +136,7 @@
 </div>
 
 <script context="module">
-  import { get, writable } from "svelte/store";
+  import { get, writable } from 'svelte/store';
 
   const modalElement = writable();
   const player = writable({});
@@ -163,7 +160,7 @@
     customDateTime.set('');
 
     modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
     });
 
@@ -186,10 +183,10 @@
 </script>
 
 <script>
-  import ApiUtil from "$lib/api.util.js";
-  import { show as showToast } from "$lib/component/ToastContainer.svelte";
+  import ApiUtil from '$lib/api.util.js';
+  import { show as showToast } from '$lib/component/ToastContainer.svelte';
 
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
   let loading;
 
@@ -203,19 +200,44 @@
       let durationMs = 0;
 
       switch ($customDuration) {
-        case '15m': durationMs = 15 * 60 * 1000; break; // 15 mins
-        case '30m': durationMs = 30 * 60 * 1000; break; // 30 mins
-        case '1h': durationMs = 1 * 60 * 60 * 1000; break;
-        case '3h': durationMs = 3 * 60 * 60 * 1000; break;
-        case '6h': durationMs = 6 * 60 * 60 * 1000; break;
-        case '12h': durationMs = 12 * 60 * 60 * 1000; break;
-        case '1d': durationMs = 24 * 60 * 60 * 1000; break;
-        case '3d': durationMs = 3 * 24 * 60 * 60 * 1000; break;
-        case '7d': durationMs = 7 * 24 * 60 * 60 * 1000; break;
-        case '30d': durationMs = 30 * 24 * 60 * 60 * 1000; break;
-        case '180d': durationMs = 180 * 24 * 60 * 60 * 1000; break; // 6 month
-        case '365d': durationMs = 365 * 24 * 60 * 60 * 1000; break; // 1 year
-        default: return null;
+        case '15m':
+          durationMs = 15 * 60 * 1000;
+          break; // 15 mins
+        case '30m':
+          durationMs = 30 * 60 * 1000;
+          break; // 30 mins
+        case '1h':
+          durationMs = 1 * 60 * 60 * 1000;
+          break;
+        case '3h':
+          durationMs = 3 * 60 * 60 * 1000;
+          break;
+        case '6h':
+          durationMs = 6 * 60 * 60 * 1000;
+          break;
+        case '12h':
+          durationMs = 12 * 60 * 60 * 1000;
+          break;
+        case '1d':
+          durationMs = 24 * 60 * 60 * 1000;
+          break;
+        case '3d':
+          durationMs = 3 * 24 * 60 * 60 * 1000;
+          break;
+        case '7d':
+          durationMs = 7 * 24 * 60 * 60 * 1000;
+          break;
+        case '30d':
+          durationMs = 30 * 24 * 60 * 60 * 1000;
+          break;
+        case '180d':
+          durationMs = 180 * 24 * 60 * 60 * 1000;
+          break; // 6 month
+        case '365d':
+          durationMs = 365 * 24 * 60 * 60 * 1000;
+          break; // 1 year
+        default:
+          return null;
       }
 
       return now.getTime() + durationMs; // Java System.currentTimeMillis() format
@@ -239,7 +261,7 @@
     };
 
     if (duration !== null) {
-        body.duration = duration;
+      body.duration = duration;
     }
 
     ApiUtil.post({
@@ -247,7 +269,7 @@
       body,
       handler: (body, reject) => {
         if (body.error) {
-          if (body.error === "ALREADY_BANNED" || body.error === "NOT_EXISTS") {
+          if (body.error === 'ALREADY_BANNED' || body.error === 'NOT_EXISTS') {
             location.reload();
             return;
           }
@@ -260,15 +282,19 @@
 
         showToast('components.toasts.player-ban.the-player', {
           username: $player.username,
-          event: body.error ? $_('components.toasts.player-ban.could-not-ban', {values: $_('errors.' + body.error)}): $_('components.toasts.player-ban.banned')
+          event: body.error
+            ? $_('components.toasts.player-ban.could-not-ban', {
+                values: $_('errors.' + body.error),
+              })
+            : $_('components.toasts.player-ban.banned'),
         });
 
-        if (body.result === "ok") {
+        if (body.result === 'ok') {
           callback($player);
         }
 
         loading = false;
-      }
-    })
+      },
+    });
   }
 </script>

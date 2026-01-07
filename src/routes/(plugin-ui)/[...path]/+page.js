@@ -1,4 +1,4 @@
-import { load as loadPage } from "./+page.svelte"
+import { load as loadPage } from './+page.svelte';
 
 /**
  * @type {import('@sveltejs/kit').PageLoad}

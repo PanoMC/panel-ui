@@ -1,3 +1,7 @@
+{#await removeFirstPTag(marked.parse(sanitize(content))) then content}
+  {@html content}
+{/await}
+
 <script>
   import { sanitize } from '@jill64/universal-sanitizer';
   import { marked } from 'marked';
@@ -7,20 +11,21 @@
 
   // Add target="_blank" to links in Markdown
   const renderer = {
-    link({href, title, text}) {
+    link({ href, title, text }) {
       const safeHref = sanitize(href);
       const titleAttr = title ? ` title="${title}"` : '';
       return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer"${titleAttr}>${text}</a>`;
-    }
+    },
   };
 
   marked.use({
     gfm: true,
-    renderer
+    renderer,
   });
 
   async function removeFirstPTag(html) {
-    if (browser) { // CSR
+    if (browser) {
+      // CSR
       const container = document.createElement('div');
       container.innerHTML = html;
       const firstChild = container.firstElementChild;
@@ -34,7 +39,8 @@
       }
 
       return container.innerHTML;
-    } else { // SSR
+    } else {
+      // SSR
       const cheerio = await import('cheerio');
       const $ = cheerio.load(html);
       const p = $('body').children().first();
@@ -46,7 +52,3 @@
     }
   }
 </script>
-
-{#await removeFirstPTag(marked.parse(sanitize(content))) then content}
-  {@html content}
-{/await}
