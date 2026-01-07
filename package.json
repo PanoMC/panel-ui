@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@jill64/universal-sanitizer": "^1.4.6",
+    "@panomc/sdk": "file:./src/pano-sdk",
     "@rollup/plugin-json": "^6.1.0",
     "@sveltejs/adapter-node": "^5.4.0",
     "@sveltejs/kit": "^2.49.0",

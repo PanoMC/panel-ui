@@ -1,4 +1,4 @@
-import { baseAPI, pageAPI } from "../pano-ui/js/PluginAPI";
+import { baseAPI, pageAPI } from "../pano-sdk/core/js/PluginAPI";
 import { originalSiteNavItems } from "$lib/component/sidebar/SiteNavigationMenu.svelte";
 import { originalServerNavItems } from "$lib/component/sidebar/ServerNavigationMenu.svelte";
 

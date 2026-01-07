@@ -44,7 +44,7 @@
 <script>
   import { createEventDispatcher } from "svelte";
   import { _ } from "svelte-i18n";
-  import { UI_URL } from "../../../pano-ui/js/variables.js";
+  import { UI_URL } from "$lib/variables";
 
   export let category;
   export let index;

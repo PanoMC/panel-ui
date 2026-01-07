@@ -1,5 +1,5 @@
-import { default as Default } from "../pano-ui/js/csrf.js";
+import { default as Default } from "../pano-sdk/core/js/csrf.js";
 
-export * from "../pano-ui/js/csrf.js";
+export * from "../pano-sdk/core/js/csrf.js";
 
 export default Default;

@@ -11,7 +11,13 @@ const config = {
     },
   },
 
-  preprocess: SveltePreprocess(),
+  preprocess: SveltePreprocess({
+    scss: {
+      api: "modern-compiler",
+      quietDeps: true,
+      silenceDeprecations: ["mixed-decls", "color-functions", "global-builtin", "import"],
+    },
+  }),
 
   onwarn: (warning, handler) => {
     if (warning.code.startsWith('a11y-')) {

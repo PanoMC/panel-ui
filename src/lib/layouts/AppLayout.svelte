@@ -11,12 +11,12 @@
     <Splash />
   {/if}
 
-  <div class:d-flex="{!$showSplash}" hidden="{$showSplash}">
+  <div class:d-flex={!$showSplash} hidden={$showSplash}>
     {#if $resetLayout}
       <slot />
     {:else}
       <MainLayout>
-        <slot/>
+        <slot />
       </MainLayout>
     {/if}
   </div>
@@ -28,19 +28,42 @@
   {/if}
 
   {#if hasPermission(Permissions.MANAGE_VIEW) || hasPermission(Permissions.MANAGE_ADDONS)}
-    <InstallingResourceModal/>
+    <InstallingResourceModal />
   {/if}
 </App>
 
 <script context="module">
   import { writable } from "svelte/store";
+  import { _ } from "svelte-i18n";
+  import { setPanoContext } from "@panomc/sdk/internal";
 
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import { base } from "$app/paths";
   import { browser } from "$app/environment";
 
-  import { init as initLanguage } from "$lib/language.util";
-  import ApiUtil from "$lib/api.util.js";
+  import {navigating} from "$app/stores";
+
+  import PageActions from "$lib/component/PageActions.svelte"
+  import PageLoader from "$lib/component/PageLoader.svelte"
+  import PageNavItem from "$lib/component/PageNavItem.svelte"
+  import PageNav from "$lib/component/PageNav.svelte"
+  import Pagination from "$lib/component/Pagination.svelte"
+  import PageLoading from "$lib/component/PageLoading.svelte"
+  import Toast from "$lib/component/Toast.svelte"
+  import CardFilters from "$lib/component/CardFilters.svelte"
+  import CardFiltersItem from "$lib/component/CardFiltersItem.svelte"
+  import CardHeader from "$lib/component/CardHeader.svelte"
+  import CardMenu from "$lib/component/CardMenu.svelte"
+  import CardMenuItem from "$lib/component/CardMenuItem.svelte"
+  import Date from "$lib/component/Date.svelte"
+
+  import tooltip from "$lib/tooltip.util"
+
+  import * as languageStuff from "$lib/language.util";
+  import ApiUtil, * as ApiUtilStuff from "$lib/api.util.js";
+  import * as toastStuff from "$lib/component/ToastContainer.svelte";
+  import * as variableStuff from "$lib/variables";
 
   import { networkErrorCallbacks, showNetworkError } from "$lib/Store.js";
 
@@ -49,6 +72,8 @@
   import { show as showServerRequestModal } from "$lib/component/modals/ServerRequestModal.svelte";
   import { initializePlugins, preparePlugins } from "$lib/PluginManager.js";
   import { updateApiUrl, updatePanoWebsiteUrl } from "$lib/variables.js";
+
+  const initLanguage = languageStuff.init
 
   function initNotificationListeners() {
     addListener("NEW_TICKET", (notification) => {
@@ -93,7 +118,13 @@
    */
   export async function loadServer(event) {
     const {
-      locals: { basicData, csrfToken, apiUrlEnv, panoWebsiteUrlEnv, panoWebsiteApiUrlEnv },
+      locals: {
+        basicData,
+        csrfToken,
+        apiUrlEnv,
+        panoWebsiteUrlEnv,
+        panoWebsiteApiUrlEnv,
+      },
     } = event;
 
     let siteInfo = await ApiUtil.get({
@@ -104,7 +135,14 @@
 
     await preparePlugins(siteInfo);
 
-    return { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv, panoWebsiteApiUrlEnv };
+    return {
+      basicData,
+      csrfToken,
+      siteInfo,
+      apiUrlEnv,
+      panoWebsiteUrlEnv,
+      panoWebsiteApiUrlEnv,
+    };
   }
 
   /**
@@ -112,7 +150,14 @@
    */
   export async function load(event) {
     const {
-      data: { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv, panoWebsiteApiUrlEnv },
+      data: {
+        basicData,
+        csrfToken,
+        siteInfo,
+        apiUrlEnv,
+        panoWebsiteUrlEnv,
+        panoWebsiteApiUrlEnv,
+      },
       parent,
     } = event;
     await parent();
@@ -122,12 +167,53 @@
     }
 
     if (panoWebsiteUrlEnv) {
-      updatePanoWebsiteUrl(panoWebsiteUrlEnv)
+      updatePanoWebsiteUrl(panoWebsiteUrlEnv);
     }
 
     if (panoWebsiteApiUrlEnv) {
-      updatePanoWebsiteUrl(panoWebsiteApiUrlEnv)
+      updatePanoWebsiteUrl(panoWebsiteApiUrlEnv);
     }
+
+    setPanoContext({
+      page,
+      base,
+      navigating,
+      _,
+      browser,
+      components: {
+        PageActions,
+        PageLoader,
+        PageNavItem,
+        PageNav,
+        Pagination,
+        PageLoading,
+        Toast,
+        CardFilters,
+        CardFiltersItem,
+        CardHeader,
+        CardMenu,
+        CardMenuItem,
+        Date
+      },
+      utils: {
+        api: {
+          ApiUtil,
+          ...ApiUtilStuff
+        },
+        language: {
+          ...languageStuff
+        },
+        tooltip: {
+          tooltip
+        },
+        toast: {
+          ...toastStuff
+        }
+      },
+      variables: {
+        ...variableStuff
+      }
+    });
 
     await initializePlugins(siteInfo);
 
@@ -135,7 +221,7 @@
 
     if (browser) {
       ApiUtil.interceptors.errorHandler = (requestProcess) => {
-        showNetworkError(requestProcess)
+        showNetworkError(requestProcess);
       };
 
       initNotificationListeners();
@@ -157,7 +243,7 @@
       selectedServer: basicData.selectedServer,
       connectedServerCount: basicData.connectedServerCount,
       siteInfo,
-      resetLayout: writable(false)
+      resetLayout: writable(false),
     };
 
     if (basicData.result !== "ok") {
@@ -171,19 +257,16 @@
 <script>
   import { onDestroy, onMount, setContext } from "svelte";
   import { get } from "svelte/store";
-  import { _ } from "svelte-i18n";
-
-  import { page } from "$app/stores";
 
   import { options, logoutLoading, initialized } from "$lib/Store";
   import { hasPermission, Permissions } from "$lib/auth.util.js";
-  import { PanelSidebarStorageUtil } from "$lib/storage.util.js"
+  import { PanelSidebarStorageUtil } from "$lib/storage.util.js";
 
   import Splash from "$lib/component/Splash.svelte";
   import App from "$lib/component/App.svelte";
   import NotificationContainer from "$lib/component/NotificationContainer.svelte";
-  import ToastContainer from "$lib/component/ToastContainer.svelte";
-  import ServerRequestModal from "$lib/component/modals/ServerRequestModal.svelte";;
+  import { ToastContainer } from "@panomc/sdk/internal";
+  import ServerRequestModal from "$lib/component/modals/ServerRequestModal.svelte";
   import InstallingResourceModal from "$lib/component/modals/InstallingResourceModal.svelte";
   import MainLayout from "$lib/layouts/MainLayout.svelte";
 
@@ -252,6 +335,7 @@
   setContext("platformRestarting", platformRestarting);
   setContext("panelTheme", panelTheme);
 
+
   $: title = $pageTitle
     ? `${$_($pageTitle)} \u2014 ${options.DEFAULT_PAGE_TITLE}`
     : options.DEFAULT_PAGE_TITLE;
@@ -304,7 +388,7 @@
     networkErrorCallbacks.subscribe((value) => {
       if (!$showSplash && value.length !== 0) {
         if ($platformUpdating || $platformRestarting) {
-          return
+          return;
         }
 
         $showSplash = true;

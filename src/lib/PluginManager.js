@@ -1,1 +1,1 @@
-export * from "../pano-ui/js/PluginManager.js";
+export * from "../pano-sdk/core/js/PluginManager.js";

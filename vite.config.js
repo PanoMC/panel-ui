@@ -115,6 +115,18 @@ const config = {
   ssr: {
     noExternal: ["chart.js"],
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler',
+        quietDeps: true,
+        silenceDeprecations: ['mixed-decls', 'color-functions', 'global-builtin', 'import'],
+      },
+    },
+  },
+  optimizeDeps: {
+    exclude: ['@panomc/sdk']
+  },
   server: {
     proxy: {
       "/api": env.VITE_API_URL.replace("/api", ""),

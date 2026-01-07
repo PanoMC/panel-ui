@@ -21,7 +21,7 @@
 </span>
 
 <script>
-  import { format, formatRelative } from "date-fns";
+  import { format, formatRelative, parseISO } from "date-fns";
   import * as locales from "date-fns/locale";
 
   import useTooltip from "$lib/tooltip.util";
@@ -37,8 +37,6 @@
   export let tooltip = true;
 
   $: date = time;
-
-  import { parseISO } from 'date-fns'
 
   /**
    * Converts a value to a JavaScript Date object, handling:

@@ -1,18 +1,20 @@
-{#if browser}
-  <div bind:this={$view} id="{viewId}"></div>
+{#if !browser}
+  <!-- Server Side: Native Rendering to preserve Context ($page store) -->
+  <svelte:component this={data.component.default} {...data.props || {}} />
 {:else}
-  <svelte:component this={data.component.default} />
+  <!-- Client Side: Manual Mount to prevent Runtime Mismatch (effect_orphan) -->
+  <div bind:this={viewContainer} class="plugin-view-container"></div>
 {/if}
 
 <script context="module">
   /**
-	 * @type {import('@sveltejs/kit').PageLoad}
-	 */
-	export async function load(event) {
+   * @type {import('@sveltejs/kit').PageLoad}
+   */
+  export async function load(event) {
     const { parent } = event;
     const { registeredPage } = await parent();
 
-    let componentOutput = {}
+    let componentOutput = {};
 
     const component = await registeredPage.component();
 
@@ -21,30 +23,77 @@
     }
 
     return { registeredPage, component, ...componentOutput };
-	}
+  }
 </script>
 
 <script>
-  import { onDestroy } from "svelte";
-  import { writable } from "svelte/store";
-  import { v4 as uuidv4 } from 'uuid';
-
+  import { onDestroy, onMount, mount, unmount, hydrate } from "svelte";
   import { browser } from "$app/environment";
 
   export let data;
 
-  const view = writable();
-  const viewId = `plugin-view-${uuidv4()}`;
-  let component;
+  let viewContainer;
+  let componentInstance;
 
-  if (browser) {
-    onDestroy(
-      view.subscribe((value) => {
-        if (typeof value !== "undefined" && value !== null) {
-          component = new data.component.default({target: document.querySelector("#"+ viewId), props: {name: "ahmet"}})
+  onMount(() => {
+    if (browser && viewContainer && data.component?.default) {
+      try {
+        // STRATEGY: True Hydration Attempt
+        // The container already has the SSR HTML injected via {@html ssrHtml} below.
+        // We ask the Plugin (via Bridge) to hydrate this content.
+
+        if (data.component.hydrate) {
+          try {
+            componentInstance = data.component.hydrate({
+              target: viewContainer,
+              props: data.props || {},
+            });
+            console.log("Plugin Hydration Success");
+          } catch (hErr) {
+            console.warn(
+              "Plugin Hydration Failed (Mismatch), falling back to Clean Mount:",
+              hErr,
+            );
+            viewContainer.innerHTML = "";
+            componentInstance = data.component.mount({
+              target: viewContainer,
+              props: data.props || {},
+            });
+          }
         }
-      })
-    )
-    onDestroy(() => component?.$destroy());
-  }
+        // Legacy/Fallback for non-bridged (Native)
+        else {
+          // ... Same as before ...
+          try {
+            componentInstance = hydrate(data.component.default, {
+              target: viewContainer,
+              props: data.props || {},
+            });
+          } catch (hErr) {
+            viewContainer.innerHTML = "";
+            componentInstance = mount(data.component.default, {
+              target: viewContainer,
+              props: data.props || {},
+            });
+          }
+        }
+      } catch (err) {
+        console.warn("Mount failed completely:", err);
+      }
+    }
+  });
+
+  onDestroy(() => {
+    if (componentInstance) {
+      try {
+        if (data.component?.unmount) {
+          data.component.unmount(componentInstance);
+        } else {
+          unmount(componentInstance);
+        }
+      } catch (e) {
+        if (componentInstance?.$destroy) componentInstance.$destroy();
+      }
+    }
+  });
 </script>

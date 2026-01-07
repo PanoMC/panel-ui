@@ -1,0 +1,4 @@
+[submodule "src/pano-sdk"]
+	path = src/pano-sdk
+	url = https://github.com/PanoMC/sdk.git
+	branch = dev
