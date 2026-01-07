@@ -265,10 +265,10 @@
   import Splash from "$lib/component/Splash.svelte";
   import App from "$lib/component/App.svelte";
   import NotificationContainer from "$lib/component/NotificationContainer.svelte";
-  import { ToastContainer } from "@panomc/sdk/internal";
   import ServerRequestModal from "$lib/component/modals/ServerRequestModal.svelte";
   import InstallingResourceModal from "$lib/component/modals/InstallingResourceModal.svelte";
   import MainLayout from "$lib/layouts/MainLayout.svelte";
+  import ToastContainer from "$lib/component/ToastContainer.svelte";
 
   export let data;
 
