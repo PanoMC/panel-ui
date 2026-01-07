@@ -22,7 +22,7 @@
       componentOutput = await component.load(event);
     }
 
-    return { registeredPage, component, ...componentOutput };
+    return { registeredPage, component, props: componentOutput };
   }
 </script>
 
