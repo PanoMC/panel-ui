@@ -30,7 +30,7 @@
 
     const registeredPage = findMatch(registeredPages, removePrefix(pathname, base));
 
-    if (registeredPage === undefined) {
+    if (registeredPage === undefined || registeredPage === null) {
       throw error(404);
     }
 
