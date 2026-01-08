@@ -58,6 +58,7 @@
   import CardMenuItem from '$lib/component/CardMenuItem.svelte';
   import Date from '$lib/component/Date.svelte';
   import NoContent from '$lib/component/NoContent.svelte';
+  import Editor from '$lib/component/Editor.svelte';
 
   import tooltip from '$lib/tooltip.util';
 
@@ -182,6 +183,7 @@
         CardMenuItem,
         Date,
         NoContent,
+        Editor
       },
       utils: {
         api: {
