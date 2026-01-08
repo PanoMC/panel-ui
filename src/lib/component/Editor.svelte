@@ -27,7 +27,7 @@
         <!-- Headings -->
         <button
           class="btn btn-link btn-sm"
-          on:click={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          onclick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           class:border-primary={editor.isActive('heading', { level: 1 })}
           class:text-primary={editor.isActive('heading', { level: 1 })}
           use:tooltip={[
@@ -38,7 +38,7 @@
         </button>
         <button
           class="btn btn-link btn-sm"
-          on:click={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          onclick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           class:border-primary={editor.isActive('heading', { level: 2 })}
           class:text-primary={editor.isActive('heading', { level: 2 })}
           use:tooltip={[
@@ -49,7 +49,7 @@
         </button>
         <button
           class="btn btn-link btn-sm"
-          on:click={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          onclick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           class:border-primary={editor.isActive('heading', { level: 3 })}
           class:text-primary={editor.isActive('heading', { level: 3 })}
           use:tooltip={[
@@ -62,7 +62,7 @@
         <!-- Text Formatting -->
         <button
           class="btn btn-link btn-sm"
-          on:click={() => editor.chain().focus().toggleBold().run()}
+          onclick={() => editor.chain().focus().toggleBold().run()}
           class:border-primary={editor.isActive('bold')}
           class:text-primary={editor.isActive('bold')}
           use:tooltip={[$_('components.editor.bold'), { placement: 'bottom' }]}>
@@ -70,7 +70,7 @@
         </button>
         <button
           class="btn btn-link btn-sm"
-          on:click={() => editor.chain().focus().toggleItalic().run()}
+          onclick={() => editor.chain().focus().toggleItalic().run()}
           class:border-primary={editor.isActive('italic')}
           class:text-primary={editor.isActive('italic')}
           use:tooltip={[$_('components.editor.italic'), { placement: 'bottom' }]}>
@@ -78,7 +78,7 @@
         </button>
         <button
           class="btn btn-link btn-sm"
-          on:click={() => editor.chain().focus().toggleUnderline().run()}
+          onclick={() => editor.chain().focus().toggleUnderline().run()}
           class:border-primary={editor.isActive('underline')}
           class:text-primary={editor.isActive('underline')}
           use:tooltip={[$_('components.editor.underline'), { placement: 'bottom' }]}>
@@ -86,7 +86,7 @@
         </button>
         <button
           class="btn btn-link btn-sm"
-          on:click={() => editor.chain().focus().toggleStrike().run()}
+          onclick={() => editor.chain().focus().toggleStrike().run()}
           class:border-primary={editor.isActive('strike')}
           class:text-primary={editor.isActive('strike')}
           use:tooltip={[$_('components.editor.strike'), { placement: 'bottom' }]}>
@@ -96,7 +96,7 @@
         <!-- Lists -->
         <button
           class="btn btn-link btn-sm"
-          on:click={() => editor.chain().focus().toggleBulletList().run()}
+          onclick={() => editor.chain().focus().toggleBulletList().run()}
           class:border-primary={editor.isActive('bulletList')}
           class:text-primary={editor.isActive('bulletList')}
           use:tooltip={[$_('components.editor.bullet-list'), { placement: 'bottom' }]}>
@@ -104,7 +104,7 @@
         </button>
         <button
           class="btn btn-link btn-sm"
-          on:click={() => editor.chain().focus().toggleOrderedList().run()}
+          onclick={() => editor.chain().focus().toggleOrderedList().run()}
           class:border-primary={editor.isActive('orderedList')}
           class:text-primary={editor.isActive('orderedList')}
           use:tooltip={[$_('components.editor.ordered-list'), { placement: 'bottom' }]}>
@@ -114,13 +114,13 @@
         <!-- Media -->
         <button
           class="btn btn-link btn-sm"
-          on:click={addImage}
+          onclick={addImage}
           use:tooltip={[$_('components.editor.image'), { placement: 'bottom' }]}>
           <i class="fas fa-image"></i>
         </button>
         <button
           class="btn btn-link btn-sm"
-          on:click={setLink}
+          onclick={setLink}
           use:tooltip={[$_('components.editor.link'), { placement: 'bottom' }]}
           class:border-primary={editor.isActive('link')}
           class:text-primary={editor.isActive('link')}>
@@ -128,7 +128,7 @@
         </button>
         <button
           class="btn btn-link btn-sm"
-          on:click={openColorPicker}
+          onclick={openColorPicker}
           use:tooltip={[$_('components.editor.text-color'), { placement: 'bottom' }]}>
           <i
             class="fas fa-tint"
@@ -140,13 +140,13 @@
           type="color"
           bind:this={colorPickerElement}
           value={editor.getAttributes('textStyle').color}
-          on:input={(event) =>
+          oninput={(event) =>
             editor.chain().focus().setColor(event.target.value).run()}
           hidden />
 
         <button
           class="btn btn-link btn-sm"
-          on:click={() => editor.chain().focus().unsetColor().run()}
+          onclick={() => editor.chain().focus().unsetColor().run()}
           use:tooltip={[
             $_('components.editor.remove-text-color'),
             { placement: 'bottom' },
@@ -161,7 +161,7 @@
         <button
           class="btn btn-link btn-sm"
           class:text-primary={isHtmlView}
-          on:click={() => (isHtmlView = !isHtmlView)}>
+          onclick={() => (isHtmlView = !isHtmlView)}>
           <i class="fas fa-code"></i>
           {isHtmlView ? 'Rich Text' : 'HTML'}
         </button>
@@ -181,7 +181,7 @@
   <textarea
     class="form-control editor-height"
     bind:value={content}
-    on:input={() => (isEmpty = content.trim().length === 0)}></textarea>
+    oninput={() => (isEmpty = content.trim().length === 0)}></textarea>
 {/if}
 
 <script>
@@ -192,29 +192,68 @@
   import StarterKit from '@tiptap/starter-kit';
   import Image from '@tiptap/extension-image';
   import { TextStyleKit } from '@tiptap/extension-text-style';
-  import Color from '@tiptap/extension-color';
 
   import tooltip from '$lib/tooltip.util';
 
-  let element;
-  let colorPickerElement;
-  let editor;
-  let editorContent = '';
-  let isHtmlView = false;
+  let element = $state();
+  let colorPickerElement = $state();
+  let editorContent = $state("");
+  let isHtmlView = $state(false);
 
-  export let contentStyles = "";
-  export let content = '';
-  export let isEmpty = true;
-  export let showHtml = false;
-  export let html = false;
+  let {
+    content = $bindable(),
+    isEmpty = $bindable(true),
+    showHtml = false,
+    html = false,
+    contentStyles = ""
+  } = $props();
 
-  $: isHtmlView = html;
+  let editor = new Editor({
+    element: undefined,
+    content: {type: 'doc', content: [{type: 'paragraph', content: []}]},
+    extensions: [
+      StarterKit,
+      Image,
+      TextStyleKit.configure({
+        backgroundColor: {
+          types: ['textStyle'],
+        },
+        color: {
+          types: ['textStyle'],
+        },
+        fontFamily: {
+          types: ['textStyle'],
+        },
+        fontSize: {
+          types: ['textStyle'],
+        },
+        lineHeight: {
+          types: ['textStyle'],
+        },
+      }),
+    ],
+    onTransaction: () => {
+      // force re-render so `editor.isActive` works as expected
+      editor = editor
+    },
+    onUpdate: ({ editor }) => {
+      content = editor.getHTML();
+      editorContent = editor.getHTML();
+      isEmpty = editor.isEmpty;
+    },
+    onCreate: ({ editor }) => {
+      content = editor.getHTML();
+      editorContent = editor.getHTML();
+      isEmpty = editor.isEmpty;
+    },
+  });
 
-  $: {
-    if (editor && !isHtmlView && editorContent !== content) {
-      editor.commands.setContent(content);
+  $effect(() => {
+    // isHtmlView = html;
+    if (!isHtmlView && editorContent !== content) {
+      editor?.commands.setContent(content);
     }
-  }
+  });
 
   function openColorPicker() {
     colorPickerElement.click();
@@ -249,51 +288,12 @@
   }
 
   onMount(() => {
-    editor = new Editor({
-      element: element,
-      extensions: [
-        StarterKit,
-        Image,
-        TextStyleKit.configure({
-          backgroundColor: {
-            types: ['textStyle'],
-          },
-          color: {
-            types: ['textStyle'],
-          },
-          fontFamily: {
-            types: ['textStyle'],
-          },
-          fontSize: {
-            types: ['textStyle'],
-          },
-          lineHeight: {
-            types: ['textStyle'],
-          },
-        }),
-        Color,
-      ],
-      content: content,
-      onTransaction: () => {
-        // force re-render so `editor.isActive` works as expected
-        editor = editor;
-      },
-      onUpdate: ({ editor }) => {
-        content = editor.getHTML();
-        editorContent = editor.getHTML();
-        isEmpty = editor.isEmpty;
-      },
-      onCreate: ({ editor }) => {
-        content = editor.getHTML();
-        editorContent = editor.getHTML();
-        isEmpty = editor.isEmpty;
-      },
-    });
+    editor?.mount(element);
   });
 
   onDestroy(() => {
-    if (editor) {
-      editor.destroy();
-    }
+    // if (editor) {
+    //   editor.destroy();
+    // }
   });
 </script>
