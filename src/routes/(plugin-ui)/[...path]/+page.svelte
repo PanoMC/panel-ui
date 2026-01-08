@@ -18,6 +18,11 @@
 
     const component = await registeredPage.component();
 
+    // Inject plugin-specific params into the event
+    if (registeredPage.params) {
+      event.params = { ...event.params, ...registeredPage.params };
+    }
+
     if (component.load !== undefined) {
       componentOutput = await component.load(event);
     }

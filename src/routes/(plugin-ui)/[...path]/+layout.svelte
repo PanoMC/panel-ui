@@ -11,7 +11,7 @@
   import { getContext } from 'svelte';
   import { error } from '@sveltejs/kit';
 
-  import { registeredPages } from '$lib/PluginManager.js';
+  import { registeredPages, findMatch } from '$lib/PluginManager.js';
   import { base } from '$app/paths';
 
   function removePrefix(str, prefix) {
@@ -28,7 +28,7 @@
     } = event;
     const { resetLayout } = await parent();
 
-    const registeredPage = registeredPages[removePrefix(pathname, base)];
+    const registeredPage = findMatch(registeredPages, removePrefix(pathname, base));
 
     if (registeredPage === undefined) {
       throw error(404);
@@ -51,7 +51,7 @@
       }
     }
 
-    return { registeredPage, layout, props: layoutOutput };
+    return { registeredPage, layout, props: layoutOutput, params: registeredPage.params };
   }
 </script>
 
