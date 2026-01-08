@@ -232,6 +232,7 @@
       connectedServerCount: basicData.connectedServerCount,
       siteInfo,
       resetLayout: writable(false),
+      pageTitle: writable(null)
     };
 
     if (basicData.result !== 'ok') {
@@ -275,9 +276,7 @@
   const platformUpdating = writable(false);
   const platformRestarting = writable(false);
   const panelTheme = writable(data.session.basicData.panelTheme || 'dark');
-  const { resetLayout } = data;
-
-  const pageTitle = writable(null);
+  const { resetLayout, pageTitle } = data;
 
   const sidebarTabsState = writable(getCurrentSidebarState());
   const isSidebarOpen = writable(
