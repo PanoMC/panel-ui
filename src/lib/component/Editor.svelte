@@ -2,13 +2,21 @@
   /* Mobile */
   .editor-height {
     min-height: auto;
+    height: 100%;
   }
 
   /* md and above (tablet + desktop) */
   @media (min-width: 768px) {
     .editor-height {
       min-height: 100%;
+      height: 100%;
     }
+  }
+
+  :global(.ProseMirror) {
+    min-height: 100%;
+    height: 100%;
+    outline: none;
   }
 </style>
 
@@ -164,7 +172,8 @@
 
 <!-- Editor Content -->
 <div
-  class="form-control h-auto editor-height"
+  class="form-control editor-height"
+  style="{contentStyles}"
   class:d-none={isHtmlView}
   bind:this={element}></div>
 
@@ -193,6 +202,7 @@
   let editorContent = '';
   let isHtmlView = false;
 
+  export let contentStyles = "";
   export let content = '';
   export let isEmpty = true;
   export let showHtml = false;
