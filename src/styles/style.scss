@@ -14,14 +14,14 @@
 
 /* Hover effect */
 .drop-zone:hover {
-  background-color: var(--pano-light);
+  background-color: var(--pano-light, $light);
   transition: all 0.2s ease-in-out;
 }
 
 /* Drag effect */
 .drag-over {
-  border: 2px dashed var(--pano-primary) !important;
-  background-color: rgba(var(--pano-primary-rgb), 0.1) !important;
+  border: 2px dashed var(--pano-primary, $primary) !important;
+  background-color: rgba(var(--pano-primary-rgb, $primary), 0.1) !important;
 }
 
 /* License details icon rotation */
