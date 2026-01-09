@@ -3,7 +3,9 @@
   <svelte:component this={data.component.default} {...data.props || {}} />
 {:else}
   <!-- Client Side: Manual Mount to prevent Runtime Mismatch (effect_orphan) -->
-  <div bind:this={viewContainer} class="plugin-view-container"></div>
+  {#key data}
+    <div use:mountPlugin class="plugin-view-container"></div>
+  {/key}
 {/if}
 
 <script context="module">
@@ -32,70 +34,66 @@
 </script>
 
 <script>
-  import { onDestroy, onMount, mount, unmount, hydrate } from 'svelte';
+  import { mount, unmount, hydrate } from 'svelte';
   import { browser } from '$app/environment';
 
   export let data;
 
-  let viewContainer;
-  let componentInstance;
+  function mountPlugin(viewContainer) {
+    if (!browser || !viewContainer || !data.component?.default) return;
 
-  onMount(() => {
-    if (browser && viewContainer && data.component?.default) {
-      try {
-        // STRATEGY: True Hydration Attempt
-        // The container already has the SSR HTML injected via {@html ssrHtml} below.
-        // We ask the Plugin (via Bridge) to hydrate this content.
+    let componentInstance;
 
-        if (data.component.hydrate) {
+    try {
+      if (data.component.hydrate) {
+        try {
+          componentInstance = data.component.hydrate({
+            target: viewContainer,
+            props: data.props || {},
+          });
+          console.log('Plugin Hydration Success');
+        } catch (hErr) {
+          console.warn('Plugin Hydration Failed (Mismatch), falling back to Clean Mount:', hErr);
+          viewContainer.innerHTML = '';
+          componentInstance = data.component.mount({
+            target: viewContainer,
+            props: data.props || {},
+          });
+        }
+      }
+      // Legacy/Fallback for non-bridged (Native)
+      else {
+        try {
+          componentInstance = hydrate(data.component.default, {
+            target: viewContainer,
+            props: data.props || {},
+          });
+        } catch (hErr) {
+          viewContainer.innerHTML = '';
+          componentInstance = mount(data.component.default, {
+            target: viewContainer,
+            props: data.props || {},
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Mount failed completely:', err);
+    }
+
+    return {
+      destroy() {
+        if (componentInstance) {
           try {
-            componentInstance = data.component.hydrate({
-              target: viewContainer,
-              props: data.props || {},
-            });
-            console.log('Plugin Hydration Success');
-          } catch (hErr) {
-            console.warn('Plugin Hydration Failed (Mismatch), falling back to Clean Mount:', hErr);
-            viewContainer.innerHTML = '';
-            componentInstance = data.component.mount({
-              target: viewContainer,
-              props: data.props || {},
-            });
+            if (data.component?.unmount) {
+              data.component.unmount(componentInstance);
+            } else {
+              unmount(componentInstance);
+            }
+          } catch (e) {
+            if (componentInstance?.$destroy) componentInstance.$destroy();
           }
         }
-        // Legacy/Fallback for non-bridged (Native)
-        else {
-          // ... Same as before ...
-          try {
-            componentInstance = hydrate(data.component.default, {
-              target: viewContainer,
-              props: data.props || {},
-            });
-          } catch (hErr) {
-            viewContainer.innerHTML = '';
-            componentInstance = mount(data.component.default, {
-              target: viewContainer,
-              props: data.props || {},
-            });
-          }
-        }
-      } catch (err) {
-        console.warn('Mount failed completely:', err);
       }
-    }
-  });
-
-  onDestroy(() => {
-    if (componentInstance) {
-      try {
-        if (data.component?.unmount) {
-          data.component.unmount(componentInstance);
-        } else {
-          unmount(componentInstance);
-        }
-      } catch (e) {
-        if (componentInstance?.$destroy) componentInstance.$destroy();
-      }
-    }
-  });
+    };
+  }
 </script>

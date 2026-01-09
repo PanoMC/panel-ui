@@ -1,14 +1,15 @@
 {#if !data.layout}
   <slot />
 {:else}
-  <div bind:this={layoutContainer} class="plugin-layout-container"></div>
+  {#key data}
+    <div use:mountLayout class="plugin-layout-container"></div>
+  {/key}
   <div bind:this={slotContentContainer} class="plugin-content-wrapper" style="display: none;">
     <slot />
   </div>
 {/if}
 
 <script context="module">
-  import { getContext } from 'svelte';
   import { error } from '@sveltejs/kit';
 
   import { registeredPages, findMatch } from '$lib/PluginManager.js';
@@ -56,74 +57,62 @@
 </script>
 
 <script>
-  import { onMount, onDestroy, mount, unmount } from 'svelte';
+  import { mount, unmount } from 'svelte';
   import { browser } from '$app/environment';
 
   export let data;
 
-  let layoutContainer;
-  let layoutInstance;
   let slotContentContainer;
 
-  onMount(() => {
-    if (browser && layoutContainer && data.layout) {
-      const layoutComp = data.layout.default || data.layout;
+  function mountLayout(layoutContainer) {
+    if (!browser || !layoutContainer || !data.layout) return;
 
-      try {
-        // Check for bridge
-        if (data.layout.mount) {
-          layoutInstance = data.layout.mount({
-            target: layoutContainer,
-            props: data.props || {},
-          });
-        } else {
-          layoutInstance = mount(layoutComp, {
-            target: layoutContainer,
-            props: data.props || {},
-          });
-        }
+    const layoutComp = data.layout.default || data.layout;
+    let layoutInstance;
 
-        // SLOT BRIDGE: Smart Injection
-        setTimeout(() => {
-          // Heuristics:
-          // 1. Explicit anchor: [data-pano-content]
-          // 2. Semantic Main: main
-          // 3. Common class: .content / .page-content
-          // 4. Semantic Article: article
-          const anchor = layoutContainer.querySelector(
-            '[data-pano-content], main, .content, .page-content, article',
-          );
-
-          if (anchor && slotContentContainer) {
-            anchor.appendChild(slotContentContainer);
-            slotContentContainer.style.display = '';
-          } else if (slotContentContainer) {
-            // Fallback: If layout has a single root element (wrapper), try appending there?
-            // Or just append to container (Default behavior)
-
-            // Experimental: Try to append to the first root element if exists
-            if (layoutContainer.firstElementChild) {
-              layoutContainer.firstElementChild.appendChild(slotContentContainer);
-            } else {
-              // Empty layout? Just show.
-            }
-            slotContentContainer.style.display = '';
-          }
-        }, 0);
-      } catch (e) {
-        console.error('Failed to mount layout', e);
+    try {
+      // Check for bridge
+      if (data.layout.mount) {
+        layoutInstance = data.layout.mount({
+          target: layoutContainer,
+          props: data.props || {},
+        });
+      } else {
+        layoutInstance = mount(layoutComp, {
+          target: layoutContainer,
+          props: data.props || {},
+        });
       }
-    }
-  });
 
-  onDestroy(() => {
-    if (layoutInstance) {
-      try {
-        if (data.layout?.unmount) data.layout.unmount(layoutInstance);
-        else unmount(layoutInstance);
-      } catch (e) {}
+      // SLOT BRIDGE: Smart Injection
+      setTimeout(() => {
+        const anchor = layoutContainer.querySelector(
+          '[data-pano-content], main, .content, .page-content, article',
+        );
+
+        if (anchor && slotContentContainer) {
+          anchor.appendChild(slotContentContainer);
+          slotContentContainer.style.display = '';
+        } else if (slotContentContainer) {
+          if (layoutContainer.firstElementChild) {
+            layoutContainer.firstElementChild.appendChild(slotContentContainer);
+          }
+          slotContentContainer.style.display = '';
+        }
+      }, 0);
+    } catch (e) {
+      console.error('Failed to mount layout', e);
     }
-    // Note: Svelte might error specifically if we reparented the slot container and then destroyed it.
-    // However, usually it just removes the nodes.
-  });
+
+    return {
+      destroy() {
+        if (layoutInstance) {
+          try {
+            if (data.layout?.unmount) data.layout.unmount(layoutInstance);
+            else unmount(layoutInstance);
+          } catch (e) {}
+        }
+      }
+    };
+  }
 </script>
