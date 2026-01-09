@@ -168,6 +168,7 @@
       base,
       navigating,
       browser,
+      goto,
       components: {
         PageActions,
         PageLoader,
