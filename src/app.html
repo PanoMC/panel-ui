@@ -3,9 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    %pano_lib_import%
     %sveltekit.head%
-
     <script>
       (function () {
         const m = document.querySelector('meta[name="x-theme"]');
@@ -14,8 +13,7 @@
       })();
     </script>
   </head>
-
   <body>
-    <div id="svelte">%sveltekit.body%</div>
+    <div>%sveltekit.body%</div>
   </body>
 </html>

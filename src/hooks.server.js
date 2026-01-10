@@ -16,9 +16,21 @@ async function fetchBasicData(token, csrfToken) {
   );
 }
 
+function stripModulePreload(linkHeader) {
+  const parts = linkHeader
+    .split(',')
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+  const kept = parts.filter((p) => !/;\s*rel="?modulepreload"?/i.test(p));
+
+  return kept.length ? kept.join(', ') : null;
+}
+
 /** @type {import('@sveltejs/kit').Handle} */
-export async function handle({ event, event: { cookies }, resolve }) {
-  const locals = {};
+export async function handle({ event, resolve }) {
+  const { cookies } = event;
+  const locals = event.locals;
 
   // noinspection JSUnresolvedReference
   const apiUrlEnv = process.env.API_URL;
@@ -44,17 +56,48 @@ export async function handle({ event, event: { cookies }, resolve }) {
     locals.panoWebsiteApiUrlEnv = panoWebsiteApiUrlEnv;
   }
 
-  const jwt = cookies.get([COOKIE_PREFIX + JWT_COOKIE_NAME]);
-  const csrfToken = cookies.get([COOKIE_PREFIX + CSRF_TOKEN_COOKIE_NAME]);
-
+  const jwt = cookies.get(COOKIE_PREFIX + JWT_COOKIE_NAME);
+  const csrfToken = cookies.get(COOKIE_PREFIX + CSRF_TOKEN_COOKIE_NAME);
   locals.basicData = await fetchBasicData(jwt, csrfToken);
-
   locals.jwt = jwt;
   locals.csrfToken = csrfToken;
 
-  event.locals = locals;
+  const response = await resolve(event, {
+    transformPageChunk: ({ html }) => {
+      const importMap = `
+  <script type="importmap" crossorigin="anonymous">
+  {
+    "imports": {
+      "svelte": "https://esm.sh/svelte@5.46.1",
+      "svelte/": "https://esm.sh/svelte@5.46.1/"
+    }
+  }
+  </script>`;
+      return html.replace('%pano_lib_import%', importMap);
+    },
+  });
 
-  return resolve(event);
+  const ct = response.headers.get('content-type') || '';
+  if (ct.includes('text/html')) {
+    const link = response.headers.get('link');
+    if (link) {
+      const filtered = stripModulePreload(link);
+      if (filtered) response.headers.set('link', filtered);
+      else response.headers.delete('link');
+    }
+  }
+
+  return response;
+}
+
+/** @type {import('@sveltejs/kit').HandleServerError} */
+export function handleError({ error, event }) {
+  console.log("!!! [GLOBAL ERROR EVENT]:", event.url.href);
+  console.error("!!! [GLOBAL ERROR CONTENT]:", error);
+  return {
+    message: 'Internal Error',
+    code: error?.code
+  };
 }
 
 /** @type {import('@sveltejs/kit').HandleFetch} */

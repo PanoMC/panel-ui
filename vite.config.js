@@ -1,5 +1,5 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { loadEnv } from 'vite';
+import { loadEnv, defineConfig } from 'vite';
 import fs from 'fs';
 import path from 'path';
 import { collectLicenses } from './scripts/generate-licenses.js';
@@ -103,31 +103,42 @@ function generateLicensesPlugin() {
   };
 }
 
-/** @type {import('vite').UserConfig} */
-const config = {
-  plugins: [sveltekit(), generateLicensesPlugin(), copyLangFolderPlugin(), copyManifestPlugin()],
-  ssr: {
-    noExternal: ['chart.js'],
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        api: 'modern-compiler',
-        quietDeps: true,
-        silenceDeprecations: ['mixed-decls', 'color-functions', 'global-builtin', 'import'],
+export default defineConfig(({ isSsrBuild }) => {
+  return {
+    plugins: [sveltekit(), generateLicensesPlugin(), copyLangFolderPlugin(), copyManifestPlugin()],
+    ssr: {
+      noExternal: [
+        'chart.js',
+        '@tiptap/**',
+        'prosemirror-**',
+        '@tiptap/pm',
+        '@jill64/universal-sanitizer',
+      ],
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler',
+          quietDeps: true,
+          silenceDeprecations: ['mixed-decls', 'color-functions', 'global-builtin', 'import'],
+        },
       },
     },
-  },
-  optimizeDeps: {
-    exclude: ['@panomc/sdk'],
-  },
-  server: {
-    proxy: {
-      '/api': env.VITE_API_URL.replace('/api', ''),
-      '/panel/api': env.VITE_API_URL.replace('/api', ''),
+    optimizeDeps: {
+      exclude: ['@panomc/sdk'],
     },
-    allowedHosts: true,
-  },
-};
-
-export default config;
+    server: {
+      proxy: {
+        '/api': env.VITE_API_URL.replace('/api', ''),
+        '/panel/api': env.VITE_API_URL.replace('/api', ''),
+      },
+      allowedHosts: true,
+    },
+    build: {
+      manifest: true,
+      rollupOptions: {
+        external: isSsrBuild ? [] : (id) => id === 'svelte' || id.startsWith('svelte/'),
+      },
+    },
+  };
+});
