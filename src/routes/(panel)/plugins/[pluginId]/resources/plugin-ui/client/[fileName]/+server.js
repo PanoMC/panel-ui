@@ -32,8 +32,7 @@ export async function GET({ params }) {
     return new Response(data, {
       headers: { 'Content-Type': contentType },
     });
-  } catch (error) {
-    console.log(error);
+  } catch (_) {
     return new Response('File not found or unable to read.', { status: 404 });
   }
 }
