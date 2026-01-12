@@ -29,7 +29,7 @@
       type="button"
       title={$_('buttons.reload')}
       aria-label={$_('buttons.reload')}
-      class="btn btn-outline-primary"
+      class="btn btn-link"
       class:active={reloading}
       on:click={reloadThemes}>
       <i class="fas fa-sync" class:fa-spin={reloading}></i>

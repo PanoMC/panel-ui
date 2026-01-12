@@ -312,7 +312,7 @@
                   title={$_('pages.permissions.panel.nodes.add-node')}
                   aria-label={$_('pages.permissions.panel.nodes.add-node')}
                   on:click={() => addNode('GROUP')}>
-                  <i class="fa fa-plus"></i><span class="d-lg-inline d-none"
+                  <i class="fa fa-plus"></i><span class="d-lg-inline d-none ms-2"
                     >{$_('pages.permissions.panel.nodes.add-node')}</span>
                 </button>
               </div>
@@ -351,13 +351,14 @@
               </div>
 
               <div class="hstack gap-2">
-                <button class="btn btn-sm btn-primary" on:click={() => addNode('USER')}>
-                  <i class="fa fa-plus me-1"></i>{$_('pages.permissions.panel.nodes.node')}
+                <button class="btn btn-primary" on:click={() => addNode('USER')}>
+                  <i class="fa fa-plus"></i><span class="d-lg-inline d-none ms-2"
+                    >{$_('pages.permissions.panel.nodes.add-node')}</span>
                 </button>
                 {#if !isSelfUser(selectedUser)}
                   <button
                     type="button"
-                    class="btn btn-sm btn-link"
+                    class="btn btn-link"
                     aria-label={$_('pages.permissions.panel.user.delete')}
                     title={$_('pages.permissions.panel.user.delete')}
                     on:click={() => showRemoveUserModal(selectedUser)}>
@@ -443,20 +444,24 @@
             </div>
             <div class="hstack gap-2">
               <button
-                class="btn btn-sm btn-outline-primary"
+                class="btn btn-link"
+                title={$_('buttons.edit')}
+                aria-label={$_('buttons.edit')}
                 on:click={() => {
                   selectedTrackForEdit = selectedTrack;
                   showEditTrackModal();
                 }}>
-                <i class="fa fa-pen me-1"></i>{$_('buttons.edit')}
+                <i class="fa fa-pen"></i>
               </button>
               <button
-                class="btn btn-sm btn-outline-danger"
+                class="btn btn-link"
+                title={$_('buttons.remove')}
+                aria-label={$_('buttons.remove')}
                 on:click={() => {
                   selectedTrackForEdit = selectedTrack;
                   showRemoveTrackModal();
                 }}>
-                <i class="fa fa-trash me-1"></i>{$_('pages.permissions.panel.actions.remove')}
+                <i class="fa fa-trash"></i>
               </button>
             </div>
           </div>

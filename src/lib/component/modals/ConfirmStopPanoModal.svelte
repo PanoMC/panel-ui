@@ -5,7 +5,7 @@
       <form on:submit|preventDefault={sendStopPano}>
         <div class="modal-body text-center">
           <div class="pb-3">
-            <i class="fas fa-stop-circle fa-3x d-block m-auto text-danger"></i>
+            <i class="fas fa-stop-circle fa-3x d-block m-auto text-gray"></i>
           </div>
           {$_('components.modals.confirm-stop-pano.title')}
 

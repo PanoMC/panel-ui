@@ -422,8 +422,7 @@
         "actions": {
           "create-group": "Create Group",
           "create-track": "Create Track",
-          "add-player": "Add Player",
-          "remove": "Remove"
+          "add-player": "Add Player"
         },
         "accordions": {
           "tracks": "Tracks",

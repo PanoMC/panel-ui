@@ -422,8 +422,7 @@
         "actions": {
           "create-group": "Grup Oluştur",
           "create-track": "Track Oluştur",
-          "add-player": "Oyuncu Ekle",
-          "remove": "Kaldır"
+          "add-player": "Oyuncu Ekle"
         },
         "accordions": {
           "tracks": "Trackler",
