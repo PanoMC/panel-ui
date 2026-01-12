@@ -84,15 +84,11 @@
                         <div class="overflow-hidden vstack gap-1">
                           <p class="fw-bold text-truncate mb-0">
                             <i class="fa {p.icon || 'fa-key'} me-2 opacity-75"></i>
-                            {#if p.type === 'panel' || p.type === 'plugin'}
-                              {$_(p.titleKey)}
-                            {:else}
-                              {p.title}
-                            {/if}
+                            {p.title}
                             {#if p.type === 'plugin'}
                               <span class="badge text-bg-secondary ms-2 small" style="font-size: 0.7em;">
-                                {$_(`plugins.${p.pluginId}.title`) !== `plugins.${p.pluginId}.title`
-                                  ? $_(`plugins.${p.pluginId}.title`)
+                                {p.pluginTitle !== `plugins.${p.pluginId}.title`
+                                  ? p.pluginTitle
                                   : p.pluginId}
                               </span>
                             {/if}
@@ -100,9 +96,9 @@
                           <div class="text-truncate font-monospace small opacity-75">
                             {p.node}
                           </div>
-                          {#if (p.type === 'panel' || p.type === 'plugin') ? $_(p.descKey) : p.desc}
+                          {#if p.desc}
                             <small class="mb-0 opacity-75">
-                              {p.type === 'panel' || p.type === 'plugin' ? $_(p.descKey) : p.desc}
+                              {p.desc}
                             </small>
                           {/if}
                         </div>
@@ -314,59 +310,82 @@
 
   $: permsMap = $registeredPermissions || {};
 
-  $: panelNodes = (permsMap.platform || []).map((p) => ({
-    key: `PLATFORM:${p.node}`,
-    permKey: p.key,
-    node: p.node,
-    icon: p.icon,
-    titleKey: `permissions.${p.key}.title`,
-    descKey: `permissions.${p.key}.description`,
-    type: 'panel',
-  }));
+  $: panelNodes = (permsMap.platform || []).map((p) => {
+    const title = $_(`permissions.${p.key}.title`);
+    const desc = $_(`permissions.${p.key}.description`);
+    const node = p.node || '';
+    const permKey = p.key || '';
+    return {
+      key: `PLATFORM:${node}`,
+      permKey,
+      node,
+      icon: p.icon,
+      title,
+      desc,
+      searchString: `${node} ${permKey} ${title} ${desc}`.toLowerCase(),
+      type: 'panel',
+    };
+  });
 
   $: pluginNodes = Object.entries(permsMap).flatMap(([pluginId, perms]) => {
     if (pluginId === 'platform') return [];
-    return (perms || []).map((p) => ({
-      key: `PLUGIN:${pluginId}:${p.node}`,
-      permKey: p.key,
-      node: p.node,
-      icon: p.icon,
-      titleKey: `plugins.${pluginId}.permissions.${p.key}.title`,
-      descKey: `plugins.${pluginId}.permissions.${p.key}.description`,
-      pluginId,
-      type: 'plugin',
-    }));
+    const pluginTitle = $_(`plugins.${pluginId}.title`);
+    return (perms || []).map((p) => {
+      const title = $_(`plugins.${pluginId}.permissions.${p.key}.title`);
+      const desc = $_(`plugins.${pluginId}.permissions.${p.key}.description`);
+      const node = p.node || '';
+      const permKey = p.key || '';
+      return {
+        key: `PLUGIN:${pluginId}:${node}`,
+        permKey,
+        node,
+        icon: p.icon,
+        title,
+        desc,
+        pluginId,
+        pluginTitle,
+        searchString: `${node} ${permKey} ${title} ${desc} ${pluginId} ${pluginTitle}`.toLowerCase(),
+        type: 'plugin',
+      };
+    });
   });
 
   $: fallbackPanelNodes =
     panelNodes.length === 0
-      ? Object.keys($dictionary[$locale]?.permissions || {}).map((key) => ({
-          key: `FALLBACK:${key}`,
-          permKey: key,
-          node: `pano.panel.${key.toLowerCase().replaceAll('_', '.')}`,
-          titleKey: `permissions.${key}.title`,
-          descKey: `permissions.${key}.description`,
-          type: 'panel',
-        }))
+      ? Object.keys($dictionary[$locale]?.permissions || {}).map((key) => {
+          const title = $_(`permissions.${key}.title`);
+          const desc = $_(`permissions.${key}.description`);
+          const node = `pano.panel.${key.toLowerCase().replaceAll('_', '.')}`;
+          return {
+            key: `FALLBACK:${key}`,
+            permKey: key,
+            node,
+            title,
+            desc,
+            searchString: `${node} ${key} ${title} ${desc}`.toLowerCase(),
+            type: 'panel',
+          };
+        })
       : [];
 
-  const groupNodes = (groups) =>
-    (groups || []).map((g) => ({
+  $: groupNodes = ($permissionGroups || []).map((g) => {
+    const title = g.displayName || g.name;
+    const desc = `(${g.name})`;
+    const node = `group.${g.name}`;
+    return {
       key: `GROUP:${g.name}`,
-      node: `group.${g.name}`,
-      title: g.displayName || g.name,
-      desc: `(${g.name})`,
+      node,
+      title,
+      desc,
+      searchString: `${node} ${title} ${desc} group`.toLowerCase(),
       type: 'group',
-    }));
+    };
+  });
 
   let showNodeSuggestions = false;
   $: nodeQuery = ($draft?.nodeValue || '').trim().toLowerCase();
   $: suggestions = showNodeSuggestions
-    ? [
-        ...(panelNodes.length > 0 ? panelNodes : fallbackPanelNodes),
-        ...pluginNodes,
-        ...groupNodes($permissionGroups),
-      ]
+    ? [...(panelNodes.length > 0 ? panelNodes : fallbackPanelNodes), ...pluginNodes, ...groupNodes]
     : [];
 
   $: filteredPanelNodes = suggestions
@@ -374,19 +393,7 @@
       // If no query, show everything up to limit
       if (!nodeQuery) return true;
 
-      const searchableFields = [
-        s.node,
-        s.permKey,
-        s.key,
-        s.type,
-        s.source,
-        s.pluginId,
-        s.type === 'panel' || s.type === 'plugin' ? $_(s.titleKey) : s.title,
-        s.type === 'panel' || s.type === 'plugin' ? $_(s.descKey) : s.desc,
-        s.type === 'plugin' ? $_(`plugins.${s.pluginId}.title`) : '',
-      ].map((f) => String(f || '').toLowerCase());
-
-      return searchableFields.some((f) => f.includes(nodeQuery));
+      return s.searchString.includes(nodeQuery);
     })
     .slice(0, 15);
 
