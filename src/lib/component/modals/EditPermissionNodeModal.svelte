@@ -81,17 +81,31 @@
                         draft.update((d) => ({ ...d, nodeValue: p.node }));
                         showNodeSuggestions = false;
                       }}>
-                      <div class="overflow-hidden vstack gap-1">
-                        <p class="fw-bold text-truncate mb-0">
-                          {p.type === 'panel' ? $_(p.titleKey) : p.title}
-                        </p>
-                        <div class="text-truncate font-monospace">
-                          {p.node}
+                        <div class="overflow-hidden vstack gap-1">
+                          <p class="fw-bold text-truncate mb-0">
+                            <i class="fa {p.icon || 'fa-key'} me-2 opacity-75"></i>
+                            {#if p.type === 'panel' || p.type === 'plugin'}
+                              {$_(p.titleKey)}
+                            {:else}
+                              {p.title}
+                            {/if}
+                            {#if p.type === 'plugin'}
+                              <span class="badge text-bg-secondary ms-2 small" style="font-size: 0.7em;">
+                                {$_(`plugins.${p.pluginId}.title`) !== `plugins.${p.pluginId}.title`
+                                  ? $_(`plugins.${p.pluginId}.title`)
+                                  : p.pluginId}
+                              </span>
+                            {/if}
+                          </p>
+                          <div class="text-truncate font-monospace small opacity-75">
+                            {p.node}
+                          </div>
+                          {#if (p.type === 'panel' || p.type === 'plugin') ? $_(p.descKey) : p.desc}
+                            <small class="mb-0 opacity-75">
+                              {p.type === 'panel' || p.type === 'plugin' ? $_(p.descKey) : p.desc}
+                            </small>
+                          {/if}
                         </div>
-                        <small class="mb-0">
-                          {p.type === 'panel' ? $_(p.descKey) : p.desc}
-                        </small>
-                      </div>
                     </button>
                   {/each}
                 </div>
@@ -221,6 +235,7 @@
   const modalElement = writable();
   const node = writable(null);
   const permissionGroups = writable([]);
+  const registeredPermissions = writable({});
   const draft = writable({
     nodeValue: '',
     active: true,
@@ -262,6 +277,21 @@
       keyboard: false,
     });
     modal.show();
+
+    fetchRegisteredPermissions();
+  }
+
+  function fetchRegisteredPermissions() {
+    import('$lib/api.util').then(({ default: ApiUtil }) => {
+      ApiUtil.get({
+        path: '/api/panel/permission/registered',
+        handler: (body) => {
+          if (body.result === 'ok') {
+            registeredPermissions.set(body.data || {});
+          }
+        },
+      });
+    });
   }
 
   export function hide() {
@@ -279,29 +309,46 @@
 </script>
 
 <script>
-  import { _ } from 'svelte-i18n';
+  import { _, dictionary, locale } from 'svelte-i18n';
   import NoContent from '$lib/component/NoContent.svelte';
 
-  const PANEL_PERMISSION_KEYS = [
-    'ACCESS_PANEL',
-    'MANAGE_SERVERS',
-    'MANAGE_POSTS',
-    'MANAGE_TICKETS',
-    'MANAGE_PLAYERS',
-    'MANAGE_VIEW',
-    'MANAGE_ADDONS',
-    'MANAGE_PLATFORM_SETTINGS',
-    'MANAGE_PERMISSION_GROUPS',
-    'ACCESS_ACTIVITY_LOGS',
-    'MANAGE_TRANSLATIONS',
-  ];
+  $: permsMap = $registeredPermissions || {};
 
-  const panelPermissionNodes = PANEL_PERMISSION_KEYS.map((key) => ({
-    key,
-    node: `pano.panel.${key.toLowerCase().replaceAll('_', '.')}`,
-    titleKey: `permissions.${key}.title`,
-    descKey: `permissions.${key}.description`,
+  $: panelNodes = (permsMap.platform || []).map((p) => ({
+    key: `PLATFORM:${p.node}`,
+    permKey: p.key,
+    node: p.node,
+    icon: p.icon,
+    titleKey: `permissions.${p.key}.title`,
+    descKey: `permissions.${p.key}.description`,
+    type: 'panel',
   }));
+
+  $: pluginNodes = Object.entries(permsMap).flatMap(([pluginId, perms]) => {
+    if (pluginId === 'platform') return [];
+    return (perms || []).map((p) => ({
+      key: `PLUGIN:${pluginId}:${p.node}`,
+      permKey: p.key,
+      node: p.node,
+      icon: p.icon,
+      titleKey: `plugins.${pluginId}.permissions.${p.key}.title`,
+      descKey: `plugins.${pluginId}.permissions.${p.key}.description`,
+      pluginId,
+      type: 'plugin',
+    }));
+  });
+
+  $: fallbackPanelNodes =
+    panelNodes.length === 0
+      ? Object.keys($dictionary[$locale]?.permissions || {}).map((key) => ({
+          key: `FALLBACK:${key}`,
+          permKey: key,
+          node: `pano.panel.${key.toLowerCase().replaceAll('_', '.')}`,
+          titleKey: `permissions.${key}.title`,
+          descKey: `permissions.${key}.description`,
+          type: 'panel',
+        }))
+      : [];
 
   const groupNodes = (groups) =>
     (groups || []).map((g) => ({
@@ -312,41 +359,36 @@
       type: 'group',
     }));
 
-  const panelNodes = panelPermissionNodes.map((p) => ({
-    key: p.key,
-    node: p.node,
-    titleKey: p.titleKey,
-    descKey: p.descKey,
-    type: 'panel',
-  }));
-
   let showNodeSuggestions = false;
   $: nodeQuery = ($draft?.nodeValue || '').trim().toLowerCase();
-  $: suggestions = showNodeSuggestions ? [...panelNodes, ...groupNodes($permissionGroups)] : [];
-
-  $: filteredPanelNodes = showNodeSuggestions
-    ? suggestions
-        .filter((s) => {
-          if (!nodeQuery) return true;
-          const node = String(s.node || '').toLowerCase();
-          const key = String(s.key || '').toLowerCase();
-          const title =
-            s.type === 'panel'
-              ? String($_(s.titleKey) || '').toLowerCase()
-              : String(s.title || '').toLowerCase();
-          const desc =
-            s.type === 'panel'
-              ? String($_(s.descKey) || '').toLowerCase()
-              : String(s.desc || '').toLowerCase();
-          return (
-            node.includes(nodeQuery) ||
-            key.includes(nodeQuery) ||
-            title.includes(nodeQuery) ||
-            desc.includes(nodeQuery)
-          );
-        })
-        .slice(0, 12)
+  $: suggestions = showNodeSuggestions
+    ? [
+        ...(panelNodes.length > 0 ? panelNodes : fallbackPanelNodes),
+        ...pluginNodes,
+        ...groupNodes($permissionGroups),
+      ]
     : [];
+
+  $: filteredPanelNodes = suggestions
+    .filter((s) => {
+      // If no query, show everything up to limit
+      if (!nodeQuery) return true;
+
+      const searchableFields = [
+        s.node,
+        s.permKey,
+        s.key,
+        s.type,
+        s.source,
+        s.pluginId,
+        s.type === 'panel' || s.type === 'plugin' ? $_(s.titleKey) : s.title,
+        s.type === 'panel' || s.type === 'plugin' ? $_(s.descKey) : s.desc,
+        s.type === 'plugin' ? $_(`plugins.${s.pluginId}.title`) : '',
+      ].map((f) => String(f || '').toLowerCase());
+
+      return searchableFields.some((f) => f.includes(nodeQuery));
+    })
+    .slice(0, 15);
 
   function addContext() {
     const d = get(draft);
