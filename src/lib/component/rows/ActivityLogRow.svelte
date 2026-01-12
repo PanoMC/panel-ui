@@ -5,7 +5,7 @@
   on:click={onClick}
   title={$_('buttons.view')}>
   <span class="fw-normal d-block markdown-renderer">
-    <MarkdownRenderer content={$_('activity-logs.' + log.type, { values: log.details })} />
+    <MarkdownRenderer content={translation} />
   </span>
   <Date time={log.createdAt} />
 </button>
@@ -18,6 +18,26 @@
   import MarkdownRenderer from '$lib/component/MarkdownRenderer.svelte';
 
   export let log;
+
+  $: translation = (() => {
+    const globalKey = 'activity-logs.' + log.type;
+    const globalTranslation = $_(globalKey, { values: log.details });
+
+    if (globalTranslation !== globalKey) {
+      return globalTranslation;
+    }
+
+    if (log.pluginId) {
+      const pluginKey = `plugins.${log.pluginId}.activity-logs.${log.type}`;
+      const pluginTranslation = $_(pluginKey, { values: log.details });
+
+      if (pluginTranslation !== pluginKey) {
+        return pluginTranslation;
+      }
+    }
+
+    return globalTranslation;
+  })();
 
   const dispatch = createEventDispatcher();
 
