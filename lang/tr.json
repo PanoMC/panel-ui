@@ -643,6 +643,10 @@
     }
   },
   "components": {
+    "alerts": {
+      "dev-mode-title": "Geliştirici Modu Aktif",
+      "dev-mode-description": "Şu anda geliştirici modundasınız. Bazı güvenlik özellikleri devre dışı kalmış olabilir ve sistem normalden farklı davranabilir."
+    },
     "store-loading": {
       "store-loading": "Mağaza yükleniyor…",
       "please-wait": "Lütfen bekleyin.",

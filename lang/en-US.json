@@ -643,6 +643,10 @@
     }
   },
   "components": {
+    "alerts": {
+      "dev-mode-title": "Development Mode Active",
+      "dev-mode-description": "You are currently in development mode. Some security features may be disabled and the system may behave differently than usual."
+    },
     "store-loading": {
       "store-loading": "Store loading…",
       "please-wait": "Please wait.",

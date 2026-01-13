@@ -586,6 +586,15 @@
           await changeLanguage(getLanguageByLocale(data.locale));
         }
 
+        await invalidateAll();
+
+        siteInfo.update((info) => ({
+          ...info,
+          developmentMode: data.developmentMode,
+          locale: data.locale,
+          allowUserLocaleSelection: data.allowUserLocaleSelection,
+        }));
+
         await showToast('components.toasts.settings-save-success');
       },
     });

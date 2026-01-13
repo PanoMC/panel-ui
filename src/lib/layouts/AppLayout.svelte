@@ -279,6 +279,7 @@
   const platformUpdating = writable(false);
   const platformRestarting = writable(false);
   const panelTheme = writable(data.session.basicData.panelTheme || 'dark');
+  const showDevModeAlert = writable(data.session.basicData.showDevModeAlert);
   const { resetLayout, pageTitle } = data;
 
   const sidebarTabsState = writable(getCurrentSidebarState());
@@ -301,6 +302,7 @@
     connectedServerCount.set(data.connectedServerCount);
     siteInfo.set(data.siteInfo);
     panelTheme.set(data.session.basicData.panelTheme || 'dark');
+    showDevModeAlert.set(data.session.basicData.showDevModeAlert);
 
     sidebarTabsState.set(getCurrentSidebarState());
   });
@@ -324,6 +326,7 @@
   setContext('platformUpdating', platformUpdating);
   setContext('platformRestarting', platformRestarting);
   setContext('panelTheme', panelTheme);
+  setContext('showDevModeAlert', showDevModeAlert);
 
   $: title = $pageTitle
     ? `${$_($pageTitle)} \u2014 ${options.DEFAULT_PAGE_TITLE}`
