@@ -422,7 +422,8 @@
         "actions": {
           "create-group": "Create Group",
           "create-track": "Create Track",
-          "add-player": "Add Player"
+          "add-player": "Add Player",
+          "confirm-reset-title": "Are you sure you want to reset all unsaved changes?"
         },
         "accordions": {
           "tracks": "Tracks",
@@ -440,7 +441,9 @@
           "expiry": "Expiry",
           "pano-only-alert": "This permission node will only work in Pano and will not be reflected in the game.",
           "game-only-alert": "This permission node will only work in the game and will not be reflected in Pano.",
-          "pano-only-alert-link": "Read documentation"
+          "pano-only-alert-link": "Read documentation",
+          "admin-group-delete-warning": "This is an administrator group with full permissions (*). Deleting it may cause players in this group to lose their access.",
+          "admin-group-last-warning": "ATTENTION: This is the LAST administrator group in the system. If you delete this group, there may be no one left with full permissions on the platform!"
         },
         "user": {
           "groups": "Groups",

@@ -9,9 +9,23 @@
         on:change={(e) => (globalSearchQuery = e.detail.value)} />
     </div>
     <div slot="right" class="hstack gap-2">
-      <button type="button" title={$_('buttons.save')} class="btn btn-link" on:click={saveSnapshot}>
-        <i class="fa fa-save"></i>
-      </button>
+      {#if hasChanges}
+        <button
+          type="button"
+          title={$_('buttons.save')}
+          class="btn btn-link"
+          on:click={saveSnapshot}>
+          <i class="fa fa-save"></i>
+        </button>
+
+        <button
+          type="button"
+          title={$_('buttons.refresh')}
+          class="btn btn-link"
+          on:click={showResetModal}>
+          <i class="fa fa-undo"></i>
+        </button>
+      {/if}
 
       {#if showGroups}
         <button type="button" class="btn btn-secondary" on:click={createGroup}>
@@ -77,13 +91,17 @@
                           id={'trackHeading-' + (track.id ?? track.name)}>
                           <button
                             type="button"
-                            class="accordion-button collapsed py-2"
+                            class="accordion-button collapsed py-2 {newTrackIds.has(String(track.id))
+                              ? 'indicator-added'
+                              : trackIdsWithChangedGroups.has(String(track.id))
+                                ? 'indicator-modified'
+                                : ''}"
                             data-bs-toggle="collapse"
                             data-bs-target={'#trackCollapse-' + (track.id ?? track.name)}
                             aria-controls={'trackCollapse-' + (track.id ?? track.name)}
                             on:click={() => selectTrack(track)}>
                             <div class="d-flex flex-column text-start w-100">
-                              <div class="text-truncate">{track.name}</div>
+                              <div class="text-truncate {newTrackIds.has(String(track.id)) ? 'text-added' : (modifiedTrackIds.has(String(track.id)) || trackIdsWithChangedGroups.has(String(track.id))) ? 'text-modified' : ''}">{track.name}</div>
                               <small class=" text-truncate">{track.description}</small>
                             </div>
                           </button>
@@ -160,10 +178,14 @@
                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {selectedGroup &&
                       selectedGroup.id === group.id
                         ? 'active'
-                        : ''}"
+                        : ''} {newGroupIds.has(String(group.id))
+                        ? 'indicator-added'
+                        : groupIdsWithChangedNodes.has(String(group.id))
+                          ? 'indicator-modified'
+                          : ''}"
                       on:click={() => selectGroup(group)}>
                       <div>
-                        <div class="fw-normal">
+                        <div class="fw-normal {newGroupIds.has(String(group.id)) ? 'text-added' : modifiedGroupIds.has(String(group.id)) ? 'text-modified' : ''}">
                           {group.displayName}
                         </div>
                         <small class="font-monospace">({group.name})</small>
@@ -218,7 +240,7 @@
                       class="list-group-item d-flex justify-content-between align-items-center {selectedUser &&
                       selectedUser.id === user.id
                         ? 'active'
-                        : ''}"
+                        : ''} {newUserIds.has(String(user.id)) ? 'indicator-added' : userIdsWithChangedNodes.has(String(user.id)) ? 'indicator-modified' : ''}"
                       role="button"
                       tabindex="0"
                       on:click={() => selectUser(user)}
@@ -387,7 +409,12 @@
                 </thead>
                 <tbody>
                   {#each filteredCurrentNodes as node (node.id ?? `${node.holderType}:${node.holderId}:${node.node}:${node.createdAt}`)}
-                    <tr>
+                    <tr
+                      class={newNodeIds.has(String(node.id))
+                        ? 'indicator-added'
+                        : modifiedNodeIds.has(String(node.id))
+                          ? 'indicator-modified'
+                          : ''}>
                       <td class="d-table-cell text-center hstack gap-2 text-nowrap">
                         <button
                           class="btn btn-link"
@@ -501,6 +528,7 @@
 <ConfirmRemovePermTrackModal />
 <ConfirmRemovePermGroupModal />
 <ConfirmRemovePermUserModal />
+<ConfirmResetPermissionsModal />
 
 <script context="module">
   import { error } from '@sveltejs/kit';
@@ -520,7 +548,8 @@
 </script>
 
 <script>
-  import { getContext } from 'svelte';
+  import { getContext, onMount } from 'svelte';
+  import { beforeNavigate } from '$app/navigation';
   import { _ } from 'svelte-i18n';
 
   import ApiUtil from '$lib/api.util.js';
@@ -549,6 +578,10 @@
     show as showConfirmRemovePermUserModal,
     setCallback as setConfirmRemovePermUserModalCallback,
   } from '$lib/component/modals/ConfirmRemovePermUserModal.svelte';
+  import ConfirmResetPermissionsModal, {
+    show as showConfirmResetPermissionsModal,
+    setCallback as setConfirmResetPermissionsModalCallback,
+  } from '$lib/component/modals/ConfirmResetPermissionsModal.svelte';
   import SearchPlayerModal, {
     show as showSearchPlayerModal,
     setCallback as setSearchPlayerModalCallback,
@@ -571,7 +604,7 @@
   let selectedTrack = null;
 
   // Snapshot state (server shape: groups/tracks/nodes/users)
-  let snapshot = data?.snapshot || {};
+  let snapshot = JSON.parse(JSON.stringify(data?.snapshot || {}));
   let permissionGroups = snapshot.groups || [];
   let tracks = snapshot.tracks || [];
   let nodes = snapshot.nodes || [];
@@ -584,6 +617,180 @@
   let filteredCurrentNodes = [];
   let selectedGroupParents = [];
   let nodeActionLabels = { edit: 'Düzenle', delete: 'Sil' };
+  $: hasChanges = (function () {
+    const normalize = (gs, ts, ns) => {
+      const sortedGroups = [...(gs || [])]
+        .map((g) => ({
+          name: g.name,
+          displayName: g.displayName || g.name,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      const sortedTracks = [...(ts || [])]
+        .map((t) => ({
+          name: t.name,
+          description: t.description || '',
+          groupNames: [...(t.groupNames || [])],
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      const sortedNodes = [...(ns || [])]
+        .filter((n) => {
+          // Skip the default active group node for users because server often treats it as implicit or strips it
+          if (
+            n.holderType === 'USER' &&
+            n.node === 'group.default' &&
+            (n.active === true || n.active === undefined)
+          ) {
+            return false;
+          }
+          return true;
+        })
+        .map((n) => {
+          // Stable context normalization
+          const ctx = n.context || {};
+          const sortedCtx = Object.keys(ctx)
+            .sort()
+            .reduce((acc, key) => {
+              acc[key] = ctx[key];
+              return acc;
+            }, {});
+
+          return {
+            holderType: n.holderType,
+            // For groups, name is the key. For users, ID is the key.
+            holderKey: n.holderType === 'GROUP' ? n.holderName : n.holderId,
+            node: n.node,
+            active: n.active !== false, // default true
+            context: JSON.stringify(sortedCtx),
+            expiresAt: n.expiresAt || null,
+          };
+        })
+        .sort((a, b) => {
+          const keyA = `${a.holderType}:${a.holderKey}:${a.node}:${a.active}:${a.context}`;
+          const keyB = `${b.holderType}:${b.holderKey}:${b.node}:${b.active}:${b.context}`;
+          return keyA.localeCompare(keyB);
+        });
+
+      return JSON.stringify({
+        groups: sortedGroups,
+        tracks: sortedTracks,
+        nodes: sortedNodes,
+      });
+    };
+
+    return (
+      normalize(permissionGroups, tracks, nodes) !==
+      normalize(snapshot.groups, snapshot.tracks, snapshot.nodes)
+    );
+  })();
+
+  $: newGroupIds = new Set(
+    (permissionGroups || [])
+      .filter((g) => g.id && !snapshot.groups?.some((og) => String(og.id) === String(g.id)))
+      .map((g) => String(g.id)),
+  );
+  $: modifiedGroupIds = new Set(
+    (permissionGroups || [])
+      .filter((g) => {
+        if (!g.id) return false;
+        const og = snapshot.groups?.find((x) => String(x.id) === String(g.id));
+        return og && (og.name !== g.name || og.displayName !== g.displayName);
+      })
+      .map((g) => String(g.id)),
+  );
+  $: groupIdsWithChangedNodes = new Set(
+    (permissionGroups || []).filter(g => {
+        const gid = String(g.id);
+        const hasNew = (nodes || []).some(n => n.holderType === 'GROUP' && String(n.holderId) === gid && newNodeIds.has(String(n.id)));
+        const hasModified = (nodes || []).some(n => n.holderType === 'GROUP' && String(n.holderId) === gid && modifiedNodeIds.has(String(n.id)));
+        const hasRemoved = (snapshot.nodes || []).some(sn => sn.holderType === 'GROUP' && String(sn.holderId) === gid && !(nodes || []).some(n => String(n.id) === String(sn.id)));
+        return hasNew || hasModified || hasRemoved;
+    }).map(g => String(g.id))
+  );
+  $: newTrackIds = new Set(
+    (tracks || [])
+      .filter((t) => t.id && !snapshot.tracks?.some((ot) => String(ot.id) === String(t.id)))
+      .map((t) => String(t.id)),
+  );
+  $: modifiedTrackIds = new Set(
+    (tracks || [])
+      .filter((t) => {
+        if (!t.id) return false;
+        const ot = snapshot.tracks?.find((x) => String(x.id) === String(t.id));
+        return (
+          ot && (norm(ot.name) !== norm(t.name) || (ot.description || '') !== (t.description || ''))
+        );
+      })
+      .map((t) => String(t.id)),
+  );
+  $: trackIdsWithChangedGroups = new Set(
+    (tracks || [])
+      .filter((t) => {
+        if (!t.id) return false;
+        const ot = snapshot.tracks?.find((x) => String(x.id) === String(t.id));
+        if (!ot) return false;
+        const oldG = JSON.stringify(Array.isArray(ot.groupNames) ? ot.groupNames : []);
+        const newG = JSON.stringify(Array.isArray(t.groupNames) ? t.groupNames : []);
+        return oldG !== newG;
+      })
+      .map((t) => String(t.id)),
+  );
+  $: newUserIds = new Set(
+    (users || [])
+      .filter((u) => u.id && !snapshot.users?.some((ou) => String(ou.id) === String(u.id)))
+      .map((u) => String(u.id)),
+  );
+  $: userIdsWithChangedNodes = new Set(
+    (users || []).filter(u => {
+        const uid = String(u.id);
+        const hasNew = (nodes || []).some(n => n.holderType === 'USER' && String(n.holderId) === uid && newNodeIds.has(String(n.id)));
+        const hasModified = (nodes || []).some(n => n.holderType === 'USER' && String(n.holderId) === uid && modifiedNodeIds.has(String(n.id)));
+        const hasRemoved = (snapshot.nodes || []).some(sn => sn.holderType === 'USER' && String(sn.holderId) === uid && !(nodes || []).some(n => String(n.id) === String(sn.id)));
+        return hasNew || hasModified || hasRemoved;
+    }).map(u => String(u.id))
+  );
+  $: newNodeIds = new Set(
+    (nodes || [])
+      .filter((n) => n.id && !snapshot.nodes?.some((on) => String(on.id) === String(n.id)))
+      .map((n) => String(n.id)),
+  );
+  $: modifiedNodeIds = new Set(
+    (nodes || [])
+      .filter((n) => {
+        if (!n.id) return false;
+        const on = snapshot.nodes?.find((x) => String(x.id) === String(n.id));
+        return (
+          on &&
+          (on.node !== n.node ||
+            on.active !== n.active ||
+            on.expiresAt !== n.expiresAt ||
+            JSON.stringify(on.context || {}) !== JSON.stringify(n.context || {}))
+        );
+      })
+      .map((n) => String(n.id)),
+  );
+
+  beforeNavigate((navigation) => {
+    if (hasChanges) {
+      if (!confirm($_('pages.translations.unsaved-changes-alert-text'))) {
+        navigation.cancel();
+      }
+    }
+  });
+
+  onMount(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  });
 
   let showGroups = false;
   let showTracks = false;
@@ -733,7 +940,7 @@
       const n = nodes[i];
       if (
         n?.holderType === 'GROUP' &&
-        n?.holderId === groupId &&
+        String(n?.holderId) === String(groupId) &&
         typeof n?.node === 'string' &&
         n.node.startsWith('displayname.')
       ) {
@@ -808,7 +1015,7 @@
       const n = nodes[i];
       if (
         n?.holderType === 'GROUP' &&
-        n?.holderId === groupId &&
+        String(n?.holderId) === String(groupId) &&
         typeof n?.node === 'string' &&
         n.node.startsWith('weight.')
       ) {
@@ -1026,19 +1233,44 @@
   // Modal callbacks are wired once below via setCallback(...)
 
   async function loadSnapshot() {
+    const prevGroupId = selectedGroup?.id;
+    const prevGroupName = selectedGroup?.name;
+    const prevTrackId = selectedTrack?.id;
+    const prevTrackName = selectedTrack?.name;
+    const prevUserId = selectedUser?.id;
+    const prevUserName = selectedUser?.username;
+
     const res = await ApiUtil.get({ path: '/api/panel/permission/snapshot' });
     if (res?.error) {
       console.error('Failed to load snapshot:', res.error);
       return;
     }
-    snapshot = res;
+    snapshot = JSON.parse(JSON.stringify(res || {}));
     permissionGroups = snapshot.groups || [];
     tracks = snapshot.tracks || [];
     nodes = snapshot.nodes || [];
     users = snapshot.users || [];
-    selectedGroup = null;
-    selectedUser = null;
-    selectedTrack = null;
+
+    // Re-select previous items if they still exist
+    if (prevGroupId || prevGroupName) {
+      selectedGroup = permissionGroups.find(g => 
+        (prevGroupId != null && g.id === prevGroupId) || 
+        (prevGroupName != null && g.name === prevGroupName)
+      ) || null;
+    }
+    if (prevTrackId || prevTrackName) {
+      selectedTrack = tracks.find(t => 
+        (prevTrackId != null && t.id === prevTrackId) || 
+        (prevTrackName != null && t.name === prevTrackName)
+      ) || null;
+    }
+    if (prevUserId || prevUserName) {
+      selectedUser = users.find(u => 
+        (prevUserId != null && u.id === prevUserId) || 
+        (prevUserName != null && u.username === prevUserName)
+      ) || null;
+    }
+
     refreshCurrentNodes();
   }
 
@@ -1049,6 +1281,7 @@
     // - holderId: group.id
     // This keeps snapshot consistent even if the UI edits displayName only on the group object.
     const now = Date.now();
+    let i = 0;
     for (const g of permissionGroups || []) {
       if (!g?.id) continue;
       const dn = String(g.displayName || g.name || '').trim();
@@ -1056,7 +1289,7 @@
         groupId: g.id,
         groupName: g.name,
         displayName: dn,
-        now,
+        now: now + (i++), // Ensure unique prefix for potential new IDs
       });
     }
 
@@ -1078,6 +1311,18 @@
     }
     await loadSnapshot();
     await showToast('components.toasts.settings-save-success');
+  }
+
+  function showResetModal() {
+    showConfirmResetPermissionsModal();
+  }
+
+  function resetChanges() {
+    permissionGroups = JSON.parse(JSON.stringify(snapshot.groups || []));
+    tracks = JSON.parse(JSON.stringify(snapshot.tracks || []));
+    nodes = JSON.parse(JSON.stringify(snapshot.nodes || []));
+    users = JSON.parse(JSON.stringify(snapshot.users || []));
+    refreshCurrentNodes();
   }
 
   function createGroup() {
@@ -1233,7 +1478,7 @@
   function showRemoveGroupModal() {
     if (!selectedGroup) return;
     if (selectedGroup.name === 'default') return;
-    showConfirmRemovePermGroupModal(selectedGroup);
+    showConfirmRemovePermGroupModal(selectedGroup, nodes);
   }
 
   function removeGroupConfirmed(groupToRemove) {
@@ -1385,33 +1630,52 @@
           g.id === editingGroupId ? updatedGroup : g,
         );
 
-        // Remove old parent nodes for this group
+        // Update holderName for remaining group-held nodes and sync parents
+        const oldParentNodes = (nodes || []).filter(
+          (n) =>
+            n.holderType === 'GROUP' &&
+            String(n.holderId) === String(editingGroupId) &&
+            typeof n.node === 'string' &&
+            n.node.startsWith('group.'),
+        );
+
+        const currentParentNodes = groupMetaNodes({
+          now,
+          groupId: editingGroupId,
+          groupName: updatedGroup.name,
+          parents,
+        });
+
+        // 1. Remove old parents
         nodes = (nodes || []).filter(
           (n) =>
             !(
               n.holderType === 'GROUP' &&
-              n.holderId === editingGroupId &&
+              String(n.holderId) === String(editingGroupId) &&
               typeof n.node === 'string' &&
               n.node.startsWith('group.')
             ),
         );
 
-        // Update holderName for remaining group-held nodes
+        // 2. Update existing nodes holderName
         nodes = (nodes || []).map((n) =>
-          n.holderType === 'GROUP' && n.holderId === editingGroupId
+          n.holderType === 'GROUP' && String(n.holderId) === String(editingGroupId)
             ? { ...n, holderName: updatedGroup.name }
             : n,
         );
 
-        nodes = [
-          ...(nodes || []),
-          ...groupMetaNodes({
-            now,
-            groupId: editingGroupId,
-            groupName: updatedGroup.name,
-            parents,
-          }),
-        ];
+        // 3. Keep old parent nodes if they match (to preserve IDs) or add new ones
+        const finalParentNodes = [];
+        for (const newNode of currentParentNodes) {
+          const matchingOld = oldParentNodes.find((on) => on.node === newNode.node);
+          if (matchingOld) {
+            finalParentNodes.push({ ...matchingOld, holderName: updatedGroup.name });
+          } else {
+            finalParentNodes.push(newNode);
+          }
+        }
+
+        nodes = [...(nodes || []), ...finalParentNodes];
 
         upsertGroupWeightNode({
           groupId: editingGroupId,
@@ -1591,6 +1855,7 @@
   setConfirmRemovePermUserModalCallback((removedUser) => {
     removeUserConfirmed(removedUser);
   });
+  setConfirmResetPermissionsModalCallback(resetChanges);
 
   // Initialize and update filtered groups and tracks reactively
   $: {
@@ -1655,3 +1920,29 @@
       : currentNodes;
   }
 </script>
+
+<style>
+  :global(.indicator-added) {
+    border-left: 5px solid #198754 !important;
+    padding-left: 0.75rem !important;
+  }
+  :global(.indicator-modified) {
+    border-left: 5px solid #fd7e14 !important;
+    padding-left: 0.75rem !important;
+  }
+
+  :global(.text-added) {
+    color: #198754 !important;
+  }
+  :global(.text-modified) {
+    color: #fd7e14 !important;
+  }
+
+  /* Table row indicators */
+  :global(tr.indicator-added td:first-child) {
+    box-shadow: inset 4px 0 0 0 #198754 !important;
+  }
+  :global(tr.indicator-modified td:first-child) {
+    box-shadow: inset 4px 0 0 0 #fd7e14 !important;
+  }
+</style>

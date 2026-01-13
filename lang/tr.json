@@ -422,7 +422,8 @@
         "actions": {
           "create-group": "Grup Oluştur",
           "create-track": "Track Oluştur",
-          "add-player": "Oyuncu Ekle"
+          "add-player": "Oyuncu Ekle",
+          "confirm-reset-title": "Tüm kaydedilmemiş değişiklikleri sıfırlamak istediğinizden emin misiniz?"
         },
         "accordions": {
           "tracks": "Trackler",
@@ -440,7 +441,9 @@
           "expiry": "Süre",
           "pano-only-alert": "Bu permission node sadece Pano'da çalışacak ve oyuna yansımayacak.",
           "game-only-alert": "Bu permission node sadece oyunda çalışacak ama Pano'da çalışmayacak.",
-          "pano-only-alert-link": "Dokümantasyonu oku"
+          "pano-only-alert-link": "Dokümantasyonu oku",
+          "admin-group-delete-warning": "Bu grup tam yetkiye (*) sahip bir yönetici grubudur. Silmeniz durumunda bu gruptaki oyuncular yetkilerini kaybedebilir.",
+          "admin-group-last-warning": "DİKKAT: Bu, sistemdeki SON yönetici grubudur. Bu grubu silerseniz platformda tam yetkili hiç kimse kalmayabilir!"
         },
         "user": {
           "groups": "Gruplar",
