@@ -2,7 +2,9 @@
   <PageActions leftClasses="d-lg-flex d-none">
     <CardMenu slot="middle">
       {#each themeMenuItems as item}
-        <CardMenuItem href={item.href}>{$_(item.text)}</CardMenuItem>
+        {#if !item.permission || hasPermission(item.permission)}
+          <CardMenuItem href={item.href}>{$_(item.text)}</CardMenuItem>
+        {/if}
       {/each}
     </CardMenu>
 
