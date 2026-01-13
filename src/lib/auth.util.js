@@ -37,7 +37,7 @@ export function hasPermission(permission, user) {
     if (!raw) return '';
 
     const lower = raw.toLowerCase();
-    if (lower.startsWith('pano.panel.')) {
+    if (lower.startsWith('pano.panel.') || lower.startsWith('pano.plugin.')) {
       return lower;
     }
 
