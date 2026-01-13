@@ -1,5 +1,5 @@
 {#if data.systemLayout}
-  <svelte:component this={data.systemLayout}>
+  <svelte:component this={data.systemLayout} {data}>
     {#if !data.layout}
       <slot />
     {:else}
@@ -29,12 +29,13 @@
 
   import { registeredPages, findMatch } from '$lib/PluginManager.js';
   import { base } from '$app/paths';
+  import { hasPermission } from "$lib/auth.util.js";
 
   const layouts = import.meta.glob('$lib/layouts/*.svelte', { eager: true });
 
   const layoutMap = Object.keys(layouts).reduce((acc, path) => {
     const name = path.split('/').pop().replace('.svelte', '');
-    acc[name] = layouts[path].default;
+    acc[name] = layouts[path];
     return acc;
   }, {});
 
@@ -50,7 +51,7 @@
       url: { pathname },
       parent,
     } = event;
-    const { resetLayout } = await parent();
+    const { resetLayout, user } = await parent();
 
     const registeredPage = findMatch(registeredPages, removePrefix(pathname, base));
 
@@ -58,11 +59,22 @@
       throw error(404);
     }
 
+    if (registeredPage.permission && !hasPermission(registeredPage.permission, user)) {
+      throw error(404);
+    }
+
     resetLayout.set(registeredPage.resetLayout || false);
 
     let systemLayout = null;
+    let systemLayoutOutput = {};
     if (registeredPage.systemLayout) {
-      systemLayout = layoutMap[registeredPage.systemLayout] || null;
+      const systemLayoutModule = layoutMap[registeredPage.systemLayout];
+      if (systemLayoutModule) {
+        systemLayout = systemLayoutModule.default;
+        if (typeof systemLayoutModule.load === 'function') {
+          systemLayoutOutput = await systemLayoutModule.load(event);
+        }
+      }
     }
 
     let layoutOutput = {};
@@ -80,7 +92,14 @@
       }
     }
 
-    return { registeredPage, layout, systemLayout, props: layoutOutput, params: registeredPage.params };
+    return {
+      registeredPage,
+      layout,
+      systemLayout,
+      props: layoutOutput,
+      params: registeredPage.params,
+      ...systemLayoutOutput
+    };
   }
 </script>
 
