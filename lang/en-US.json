@@ -652,7 +652,11 @@
       "please-wait": "Please wait.",
       "loading": "Loading...",
       "account-not-connected": "Pano account is not connected!",
-      "not-connected-description": "To access Store you must connect a Pano account."
+      "not-connected-description": "You must connect a Pano account to access the store."
+    },
+    "restarting-pano": {
+      "title": "Restarting",
+      "description": "The platform is restarting, please wait. This process may take a few seconds."
     },
     "failed-login-pano-store": "Failed login to Pano store! Try again later or reconnect your Pano account.",
     "verified-status": {

@@ -654,6 +654,14 @@
       "account-not-connected": "Pano hesabı bağlı değil!",
       "not-connected-description": "Mağazaya erişmek için bir Pano hesabı bağlamalısınız."
     },
+    "installing-resource": {
+      "title": "Kaynak Yükleniyor",
+      "description": "Kaynak yükleniyor, lütfen bekleyin. Bu işlem birkaç saniye sürebilir."
+    },
+    "restarting-pano": {
+      "title": "Yeniden Başlatılıyor",
+      "description": "Platform yeniden başlatılıyor, lütfen bekleyin. Bu işlem birkaç saniye sürebilir."
+    },
     "failed-login-pano-store": "Pano mağazasına giriş yapılamadı! Lütfen daha sonra tekrar deneyin veya Pano hesabınızı yeniden bağlayın.",
     "verified-status": {
       "verified": "Pano tarafından doğrulandı",
@@ -1232,10 +1240,6 @@
     "ACCESS_ACTIVITY_LOGS": {
       "title": "Aktivite Kayıtlarına Erişim",
       "description": "Aktivite kayıtlarını görüntüleyebilir. Dikkat: Aktivite kayıtları hassas veriler içerebilir."
-    },
-    "MANAGE_TRANSLATIONS": {
-      "title": "Çevirileri Yönet",
-      "description": "Çevirileri ve dilleri ekleyebilir, düzenleyebilir ve silebilir."
     }
   },
   "activity-logs": {

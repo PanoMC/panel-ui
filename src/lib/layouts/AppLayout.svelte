@@ -30,6 +30,8 @@
   {#if hasPermission(Permissions.MANAGE_VIEW) || hasPermission(Permissions.MANAGE_ADDONS)}
     <InstallingResourceModal />
   {/if}
+  
+  <RestartingModal />
 </App>
 
 <script context="module">
@@ -261,6 +263,7 @@
   import InstallingResourceModal from '$lib/component/modals/InstallingResourceModal.svelte';
   import MainLayout from '$lib/layouts/MainLayout.svelte';
   import ToastContainer from '$lib/component/ToastContainer.svelte';
+  import RestartingModal from '$lib/component/modals/RestartingModal.svelte';
 
   export let data;
 

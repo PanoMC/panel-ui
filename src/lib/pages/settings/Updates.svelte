@@ -444,6 +444,7 @@
   let platformUpdateFinished;
 
   const platformUpdating = getContext('platformUpdating');
+  const platformRestarting = getContext('platformRestarting');
 
   const platformUpdateProcesses = [
     'getting-platform-update-info',
@@ -506,6 +507,7 @@
 
         await delay(1000);
 
+        $platformRestarting = true;
         while (!(await isPanoHealthy())) {
           await delay(1000);
         }
