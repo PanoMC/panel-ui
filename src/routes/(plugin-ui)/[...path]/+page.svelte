@@ -34,10 +34,12 @@
 </script>
 
 <script>
-  import { mount, unmount, hydrate } from 'svelte';
+  import { mount, unmount, hydrate, getAllContexts } from 'svelte';
   import { browser } from '$app/environment';
 
   export let data;
+
+  const contexts = getAllContexts();
 
   function mountPlugin(viewContainer) {
     if (!browser || !viewContainer || !data.component?.default) return;
@@ -49,7 +51,8 @@
         try {
           componentInstance = data.component.hydrate({
             target: viewContainer,
-            props: data.props || {},
+            props: { ...(data.props || {}), panoContexts: contexts },
+            context: contexts
           });
           console.log('Plugin Hydration Success');
         } catch (hErr) {
@@ -57,7 +60,8 @@
           viewContainer.innerHTML = '';
           componentInstance = data.component.mount({
             target: viewContainer,
-            props: data.props || {},
+            props: { ...(data.props || {}), panoContexts: contexts },
+            context: contexts
           });
         }
       }
@@ -66,13 +70,15 @@
         try {
           componentInstance = hydrate(data.component.default, {
             target: viewContainer,
-            props: data.props || {},
+            props: { ...(data.props || {}), panoContexts: contexts },
+            context: contexts
           });
         } catch (hErr) {
           viewContainer.innerHTML = '';
           componentInstance = mount(data.component.default, {
             target: viewContainer,
-            props: data.props || {},
+            props: { ...(data.props || {}), panoContexts: contexts },
+            context: contexts
           });
         }
       }

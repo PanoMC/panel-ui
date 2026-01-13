@@ -1,10 +1,3 @@
-<PageActions leftClasses="d-lg-flex d-none" rightClasses="d-lg-flex d-none">
-  <CardMenu slot="middle">
-    <CardMenuItem href="/view">{$_('buttons.themes')}</CardMenuItem>
-    <CardMenuItem href="/view/theme-settings">{$_('buttons.theme-settings')}</CardMenuItem>
-  </CardMenu>
-</PageActions>
-
 {#if loading || alwaysLoading}
   <div class="d-flex align-items-center justify-content-center" style="height: 500px;">
     <div class="spinner-border text-primary" role="status" aria-label="Loading"></div>
@@ -44,10 +37,6 @@
   import { _ } from 'svelte-i18n';
   import { fade } from 'svelte/transition';
   import { base } from '$app/paths';
-
-  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
-  import PageActions from '$lib/component/PageActions.svelte';
-  import CardMenu from '$lib/component/CardMenu.svelte';
 
   const pageTitle = getContext('pageTitle');
   const panelTheme = getContext('panelTheme');

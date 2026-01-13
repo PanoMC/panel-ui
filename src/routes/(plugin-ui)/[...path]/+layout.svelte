@@ -1,12 +1,27 @@
-{#if !data.layout}
-  <slot />
+{#if data.systemLayout}
+  <svelte:component this={data.systemLayout}>
+    {#if !data.layout}
+      <slot />
+    {:else}
+      {#key data}
+        <div use:mountLayout class="plugin-layout-container"></div>
+      {/key}
+      <div bind:this={slotContentContainer} class="plugin-content-wrapper" style="display: none;">
+        <slot />
+      </div>
+    {/if}
+  </svelte:component>
 {:else}
-  {#key data}
-    <div use:mountLayout class="plugin-layout-container"></div>
-  {/key}
-  <div bind:this={slotContentContainer} class="plugin-content-wrapper" style="display: none;">
+  {#if !data.layout}
     <slot />
-  </div>
+  {:else}
+    {#key data}
+      <div use:mountLayout class="plugin-layout-container"></div>
+    {/key}
+    <div bind:this={slotContentContainer} class="plugin-content-wrapper" style="display: none;">
+      <slot />
+    </div>
+  {/if}
 {/if}
 
 <script context="module">
@@ -14,6 +29,14 @@
 
   import { registeredPages, findMatch } from '$lib/PluginManager.js';
   import { base } from '$app/paths';
+
+  const layouts = import.meta.glob('$lib/layouts/*.svelte', { eager: true });
+
+  const layoutMap = Object.keys(layouts).reduce((acc, path) => {
+    const name = path.split('/').pop().replace('.svelte', '');
+    acc[name] = layouts[path].default;
+    return acc;
+  }, {});
 
   function removePrefix(str, prefix) {
     return str.startsWith(prefix) ? str.slice(prefix.length) : str;
@@ -37,6 +60,11 @@
 
     resetLayout.set(registeredPage.resetLayout || false);
 
+    let systemLayout = null;
+    if (registeredPage.systemLayout) {
+      systemLayout = layoutMap[registeredPage.systemLayout] || null;
+    }
+
     let layoutOutput = {};
     let layout = null;
     if (registeredPage.layout) {
@@ -52,15 +80,17 @@
       }
     }
 
-    return { registeredPage, layout, props: layoutOutput, params: registeredPage.params };
+    return { registeredPage, layout, systemLayout, props: layoutOutput, params: registeredPage.params };
   }
 </script>
 
 <script>
-  import { mount, unmount } from 'svelte';
+  import { mount, unmount, getAllContexts } from 'svelte';
   import { browser } from '$app/environment';
 
   export let data;
+
+  const contexts = getAllContexts();
 
   let slotContentContainer;
 
@@ -75,12 +105,14 @@
       if (data.layout.mount) {
         layoutInstance = data.layout.mount({
           target: layoutContainer,
-          props: data.props || {},
+          props: { ...(data.props || {}), panoContexts: contexts },
+          context: contexts
         });
       } else {
         layoutInstance = mount(layoutComp, {
           target: layoutContainer,
-          props: data.props || {},
+          props: { ...(data.props || {}), panoContexts: contexts },
+          context: contexts
         });
       }
 

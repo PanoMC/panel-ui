@@ -19,30 +19,24 @@
   <FailedLoginPanoStoreAlert />
 {/if}
 
-<PageActions leftClasses="d-lg-flex d-none">
-  <CardMenu slot="middle">
-    <CardMenuItem href="/view">{$_('buttons.themes')}</CardMenuItem>
-    <CardMenuItem href="/view/theme-settings">{$_('buttons.theme-settings')}</CardMenuItem>
-  </CardMenu>
-  <div slot="right" class="hstack gap-2">
-    <button
-      type="button"
-      title={$_('buttons.reload')}
-      aria-label={$_('buttons.reload')}
-      class="btn btn-link"
-      class:active={reloading}
-      on:click={reloadThemes}>
-      <i class="fas fa-sync" class:fa-spin={reloading}></i>
-    </button>
-    <button
-      type="button"
-      class="btn btn-secondary"
-      on:click={() => showInstallResourceModal('THEME')}>
-      <i class="fas fa-plus"></i>
-      <span class="d-lg-inline d-none ms-2">{$_('buttons.install-theme')}</span>
-    </button>
-  </div>
-</PageActions>
+{#snippet right()}
+  <button
+    type="button"
+    title={$_('buttons.reload')}
+    aria-label={$_('buttons.reload')}
+    class="btn btn-link"
+    class:active={reloading}
+    on:click={reloadThemes}>
+    <i class="fas fa-sync" class:fa-spin={reloading}></i>
+  </button>
+  <button
+    type="button"
+    class="btn btn-secondary"
+    on:click={() => showInstallResourceModal('THEME')}>
+    <i class="fas fa-plus"></i>
+    <span class="d-lg-inline d-none ms-2">{$_('buttons.install-theme')}</span>
+  </button>
+{/snippet}
 
 <div class="card">
   <div class="card-header">
@@ -138,6 +132,17 @@
       failedLogin,
     };
   }
+
+  export const originalThemeMenuItems = [
+    {
+      href: '/view',
+      text: 'buttons.themes',
+    },
+    {
+      href: '/view/theme-settings',
+      text: 'buttons.theme-settings',
+    },
+  ];
 </script>
 
 <script>
@@ -160,6 +165,7 @@
   import InstallResourceModal, {
     show as showInstallResourceModal,
   } from '$lib/component/modals/InstallResourceModal.svelte';
+  import { themeMenuItems } from '$lib/PluginAPI.js';
   import FailedLoginPanoStoreAlert from '$lib/component/FailedLoginPanoStoreAlert.svelte';
 
   export let data;
@@ -195,4 +201,7 @@
 
     return `${firstKey}?hash=${theme.screenshots[firstKey]}`;
   }
+
+  const slots = getContext("layout-slots");
+  Object.assign(slots, {right});
 </script>
