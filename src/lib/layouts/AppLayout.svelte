@@ -56,7 +56,7 @@
   import CardHeader from '$lib/component/CardHeader.svelte';
   import CardMenu from '$lib/component/CardMenu.svelte';
   import CardMenuItem from '$lib/component/CardMenuItem.svelte';
-  import Date from '$lib/component/Date.svelte';
+  import DateComponent from '$lib/component/Date.svelte';
   import NoContent from '$lib/component/NoContent.svelte';
   import Editor from '$lib/component/Editor.svelte';
 
@@ -182,7 +182,7 @@
         CardHeader,
         CardMenu,
         CardMenuItem,
-        Date,
+        Date: DateComponent,
         NoContent,
         Editor
       },
