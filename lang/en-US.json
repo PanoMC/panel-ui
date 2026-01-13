@@ -696,7 +696,9 @@
       "website": "Website",
       "server": "Server",
       "show-website": "Show Website",
-      "show-servers": "Show Servers"
+      "show-servers": "Show Servers",
+      "version-alpha-tooltip": "Experimental version. May contain bugs, use with caution.",
+      "version-beta-tooltip": "Preview version. Stable but still in testing phase."
     },
     "server-navigation-menu": {
       "statistics": "Statistics",

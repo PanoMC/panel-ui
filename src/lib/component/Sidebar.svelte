@@ -23,8 +23,21 @@
           <i class="fa-solid fa-bars"></i>
         </button>
 
-        <a class="navbar-brand m-auto btn btn-primary shadow-none" href="{base}/">
+        <a class="navbar-brand m-auto btn btn-primary shadow-none position-relative" href="{base}/">
           <img alt="Pano" title="Pano" src={base + '/assets/img/logo.svg'} width="20" />
+          {#if isAlpha}
+            <span
+              class="version-indicator alpha"
+              use:tooltip={[$_('components.sidebar.version-alpha-tooltip'), { placement: 'bottom' }]}>
+              Alpha
+            </span>
+          {:else if isBeta}
+            <span
+              class="version-indicator beta"
+              use:tooltip={[$_('components.sidebar.version-beta-tooltip'), { placement: 'bottom' }]}>
+              Beta
+            </span>
+          {/if}
         </a>
       </div>
 
@@ -90,12 +103,10 @@
   </div>
 </div>
 
-<!--<div class="sidebar bg-primary min-vh-100" class:active={$isSidebarOpen} hidden>-->
-<!--</div>-->
-
 <script>
   import { getContext, onDestroy, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   import { base } from '$app/paths';
 
@@ -117,6 +128,11 @@
 
   const sidebarTabsState = getContext('sidebarTabsState');
   const isSidebarOpen = getContext('isSidebarOpen');
+  const siteInfo = getContext('siteInfo');
+
+  $: panoVersion = $siteInfo?.panoVersion || '';
+  $: isAlpha = panoVersion.toLowerCase().includes('alpha') || panoVersion === 'local-build';
+  $: isBeta = panoVersion.toLowerCase().includes('beta');
 
   const unsubscribeSidebarTabsState = sidebarTabsState.subscribe((value) => {
     if (value === 'website' || !hasPermission(Permissions.MANAGE_SERVERS)) {
@@ -159,3 +175,33 @@
     });
   });
 </script>
+
+<style>
+  .version-indicator {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 7px;
+    padding: 1px 4px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 900;
+    line-height: 1;
+    pointer-events: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    z-index: 2;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    white-space: nowrap;
+  }
+
+  .version-indicator.alpha {
+    background: linear-gradient(45deg, #0dcaf0, #0aa2c0);
+    color: #000;
+  }
+
+  .version-indicator.beta {
+    background: linear-gradient(45deg, #4776e6, #8e54e9);
+    color: white;
+  }
+</style>

@@ -697,7 +697,9 @@
       "website": "Website",
       "server": "Sunucu",
       "show-website": "Website'yi Görüntüle",
-      "show-servers": "Sunucuları Göster"
+      "show-servers": "Sunucuları Göster",
+      "version-alpha-tooltip": "Deneysel sürüm. Hatalar içerebilir, dikkatli kullanın.",
+      "version-beta-tooltip": "Önizleme sürümü. Stabildir ancak hala test aşamasındadır."
     },
     "server-navigation-menu": {
       "statistics": "İstatistikler",
