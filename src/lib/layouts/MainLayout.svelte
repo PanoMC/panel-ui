@@ -28,6 +28,7 @@
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import { invalidateAll } from '$app/navigation';
   import ApiUtil from '$lib/api.util.js';
 
   const showDevModeAlert = getContext('showDevModeAlert');
@@ -36,7 +37,9 @@
     $showDevModeAlert = false;
     ApiUtil.post({
       path: '/api/panel/dashboard/closeDevModeAlert',
-      handler: () => {},
+      handler: async () => {
+        await invalidateAll();
+      },
     });
   }
 </script>

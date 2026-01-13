@@ -305,10 +305,13 @@
     connectedServerCount.set(data.connectedServerCount);
     siteInfo.set(data.siteInfo);
     panelTheme.set(data.session.basicData.panelTheme || 'dark');
-    showDevModeAlert.set(data.session.basicData.showDevModeAlert);
 
     sidebarTabsState.set(getCurrentSidebarState());
   });
+
+  $: if (data?.session?.basicData) {
+    showDevModeAlert.set(data.session.basicData.showDevModeAlert);
+  }
 
   setContext('pageTitle', pageTitle);
 
