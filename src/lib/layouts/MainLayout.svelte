@@ -3,7 +3,7 @@
 <!--  Main  -->
 <main class="w-100 min-vh-100 overflow-auto pb-5">
   {#if $showDevModeAlert}
-    <div class="alert alert-warning alert-dismissible fade show rounded-0 border-0 mb-0 shadow-sm" role="alert" style="z-index: 1060;">
+    <div class="alert alert-warning alert-dismissible fade show rounded-0 border-0 mb-0 shadow-sm" role="alert">
       <div class="container-fluid d-flex align-items-center">
         <i class="fa-solid fa-triangle-exclamation me-3 fa-lg"></i>
         <div>
