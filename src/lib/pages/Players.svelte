@@ -4,7 +4,7 @@
   <PageActions leftClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
-      <CardMenuItem href="/players" matchingList={['/players?pageType=HAS_PERM', '/players']}>
+      <CardMenuItem href="/players" active={data.pageType === "ALL"}>
         {$_('buttons.players')}</CardMenuItem>
       <CardMenuItem href="/players?pageType=BANNED" matchingList={['/players?pageType=BANNED']}>
         {$_('buttons.bans')}</CardMenuItem>
@@ -193,6 +193,7 @@
   import CardFilters from '$lib/component/CardFilters.svelte';
   import CardMenu from '$lib/component/CardMenu.svelte';
   import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import { page } from "$app/stores";
 
   export let data;
 
