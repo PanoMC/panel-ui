@@ -80,7 +80,7 @@
     <div class="vstack gap-3">
       <div class="accordion accordion-flush mb-2">
         {#if data.type === PageTypes.PLUGIN}
-          {#each Object.keys(filteredTranslations) as pluginId, index (pluginId)}
+          {#each Object.keys(filteredTranslations).slice(0, pluginLimit) as pluginId, index (pluginId)}
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button
@@ -93,23 +93,29 @@
               </h2>
               <div id="collapsePlugin{pluginId}" class="accordion-collapse collapse show">
                 <div class="accordion-body">
-                  {#if (splitByPlugin[pluginId]?.notExists || []).length > 0}
-                    <UnnecessaryTranslationsAlert
-                      translations={splitByPlugin[pluginId].notExists}
-                      {pluginId}
-                      on:customInputChange={handleCustomInputChange}
-                      on:deleteClick={handleOnDeleteClick}
-                      open={data.filter === FilterTypes.NOT_EXISTS} />
-                  {/if}
-
-                  {#if (splitByPlugin[pluginId]?.existing || []).length > 0}
-                    {#each splitByPlugin[pluginId].existing as translation, index (translation)}
-                      <TranslationRow
-                        {translation}
+                  {#if !ready}
+                    {#each Array(8) as _}
+                      <TranslationSkeleton />
+                    {/each}
+                  {:else}
+                    {#if (splitByPlugin[pluginId]?.notExists || []).length > 0}
+                      <UnnecessaryTranslationsAlert
+                        translations={splitByPlugin[pluginId].notExists}
                         {pluginId}
                         on:customInputChange={handleCustomInputChange}
-                        on:deleteClick={handleOnDeleteClick} />
-                    {/each}
+                        on:deleteClick={handleOnDeleteClick}
+                        open={data.filter === FilterTypes.NOT_EXISTS} />
+                    {/if}
+
+                    {#if (splitByPlugin[pluginId]?.existing || []).length > 0}
+                      {#each splitByPlugin[pluginId].existing.slice(0, renderingLimit) as translation, index (translation)}
+                        <TranslationRow
+                          {translation}
+                          {pluginId}
+                          on:customInputChange={handleCustomInputChange}
+                          on:deleteClick={handleOnDeleteClick} />
+                      {/each}
+                    {/if}
                   {/if}
                 </div>
               </div>
@@ -130,28 +136,40 @@
             </h2>
             <div id="collapse{data.type}Translations" class="accordion-collapse collapse show">
               <div class="accordion-body">
-                {#if splitFlat.notExists.length > 0}
-                  <UnnecessaryTranslationsAlert
-                    translations={splitFlat.notExists}
-                    on:customInputChange={handleCustomInputChange}
-                    on:deleteClick={handleOnDeleteClick}
-                    open={data.filter === FilterTypes.NOT_EXISTS} />
-                {/if}
-                {#if splitFlat.existing.length > 0}
-                  {#each splitFlat.existing as translation, index (translation)}
-                    <TranslationRow
-                      {translation}
-                      on:customInputChange={handleCustomInputChange}
-                      on:deleteClick={handleOnDeleteClick} />
+                {#if !ready}
+                  {#each Array(12) as _}
+                    <TranslationSkeleton />
                   {/each}
-                {:else if splitFlat.notExists.length === 0}
-                  <NoContent />
+                {:else}
+                  {#if splitFlat.notExists.length > 0}
+                    <UnnecessaryTranslationsAlert
+                      translations={splitFlat.notExists}
+                      on:customInputChange={handleCustomInputChange}
+                      on:deleteClick={handleOnDeleteClick}
+                      open={data.filter === FilterTypes.NOT_EXISTS} />
+                  {/if}
+                  {#if splitFlat.existing.length > 0}
+                    {#each splitFlat.existing.slice(0, renderingLimit) as translation, index (translation)}
+                      <TranslationRow
+                        {translation}
+                        on:customInputChange={handleCustomInputChange}
+                        on:deleteClick={handleOnDeleteClick} />
+                    {/each}
+                  {:else if splitFlat.notExists.length === 0}
+                    <NoContent />
+                  {/if}
                 {/if}
               </div>
             </div>
           </div>
         {/if}
       </div>
+      {#if ready && hasMore}
+        <div use:observer class="py-2 text-center text-muted small">
+          <i class="fas fa-circle-notch fa-spin me-2"></i>
+          {$_('components.store-loading.loading')}
+        </div>
+      {/if}
     </div>
   </div>
 </div>
@@ -283,17 +301,22 @@
   import CardMenuItem from '$lib/component/CardMenuItem.svelte';
   import PageActions from '$lib/component/PageActions.svelte';
   import TranslationRow from '$lib/component/rows/TranslationRow.svelte';
+  import TranslationSkeleton from '$lib/component/rows/TranslationSkeleton.svelte';
   import UnnecessaryTranslationsAlert from '$lib/component/UnnecessaryTranslationsAlert.svelte';
   import TranslationSearchInput from '$lib/component/TranslationSearchInput.svelte';
   import NoContent from '$lib/component/NoContent.svelte';
   import { browser } from '$app/environment';
+  import { navigating } from '$app/stores';
 
   export let data;
   let refreshing;
   let saving;
   let searchQuery = '';
-  let filteredTranslations;
+  let filteredTranslations = [];
   let searching = false;
+  let ready = false;
+  let renderingLimit = 40;
+  let pluginLimit = 15;
 
   let searchWorker;
   let lastRequestId = 0;
@@ -410,11 +433,49 @@
   $: {
     const nextToken = `${data?.localeId ?? ''}|${data?.type ?? ''}|${data?.filter ?? ''}|${data?.meta?.totalCount ?? ''}`;
     if (nextToken && nextToken !== datasetToken) {
+      ready = false;
       datasetToken = nextToken;
+      renderingLimit = 40;
+      pluginLimit = 15;
+
       rebuildIndexes();
       initWorkerData();
       runSearchInBackground(searchQuery);
+
+      // Defer rendering
+      tick().then(() => {
+        setTimeout(() => {
+          ready = true;
+        }, 100);
+      });
     }
+  }
+
+  $: hasMore =
+    data.type === PageTypes.PLUGIN
+      ? pluginLimit < Object.keys(filteredTranslations).length ||
+        Object.values(filteredTranslations)
+          .slice(0, pluginLimit)
+          .some((list) => list.length > renderingLimit)
+      : renderingLimit < filteredTranslations.length;
+
+  function handleIntersect(entries) {
+    if (entries[0].isIntersecting && ready && hasMore) {
+      renderingLimit += 40;
+      pluginLimit += 15;
+    }
+  }
+
+  function observer(node) {
+    const ob = new IntersectionObserver(handleIntersect, {
+      rootMargin: '200px',
+    });
+    ob.observe(node);
+    return {
+      destroy() {
+        ob.disconnect();
+      },
+    };
   }
 
   // Run search in background on query changes (non-blocking)
