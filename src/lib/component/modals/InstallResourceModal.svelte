@@ -22,24 +22,15 @@
       </div>
       <div class="modal-body">
         <div class="list-group list-group-horizontal">
-          <button
-            type="button"
-            class="btn list-group-item border list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-50 text-center shadow-none rounded-end-0"
-            class:drag-over={dropZoneActive}
+          <DragAndDropZone
+            className="btn list-group-item border list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-50 text-center shadow-none rounded-end-0"
             style="height: 250px; cursor: pointer;"
-            on:click={openFileDialog}
-            on:drop={handleDrop}
-            on:dragover={handleDragOver}
-            on:dragleave={handleDragLeave}>
-            <input
-              type="file"
-              accept={$type === 'THEME' ? '.zip,application/zip' : '.jar,application/java-archive'}
-              class="d-none"
-              bind:this={fileInput}
-              on:change={handleFileChange} />
+            accept={$type === 'THEME' ? ['.zip', 'application/zip'] : ['.jar', 'application/java-archive']}
+            on:drop={(e) => handleFileUpload(e.detail)}
+          >
             <i class="fas fa-upload fa-2x mb-2"></i>
             <p class="mb-0">{@html $_('components.modals.install-resource.drag-here')}</p>
-          </button>
+          </DragAndDropZone>
 
           <a
             href="{base}/{$type === 'PLUGIN' ? 'addons' : 'view'}/store"
@@ -104,39 +95,7 @@
 <script>
   import { _ } from 'svelte-i18n';
   import { show as showInstallingModal } from '$lib/component/modals/InstallingResourceModal.svelte';
-
-  let dropZoneActive = false;
-  let fileInput;
-
-  function handleDrop(event) {
-    event.preventDefault();
-    dropZoneActive = false;
-
-    const files = event.dataTransfer.files;
-
-    if (files.length > 0) {
-      handleFileUpload(files[0]);
-    }
-  }
-
-  function handleDragOver(event) {
-    event.preventDefault();
-    dropZoneActive = true;
-  }
-
-  function handleDragLeave() {
-    dropZoneActive = false;
-  }
-
-  function openFileDialog() {
-    fileInput.click();
-  }
-
-  function handleFileChange(event) {
-    const files = event.target.files;
-
-    handleFileUpload(files[0]);
-  }
+  import DragAndDropZone from '$lib/component/DragAndDropZone.svelte';
 
   function handleFileUpload(file) {
     hide();

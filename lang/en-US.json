@@ -308,7 +308,35 @@
             "label": "Website Logo",
             "server-icon": "Server Icon",
             "helper": "PNG, JPEG, GIF format, maximum 2 mb."
-          }
+          },
+          "http-port": {
+            "label": "HTTP Port"
+          },
+          "https-port": {
+            "label": "HTTPS Port"
+          },
+          "ssl-mode": {
+            "label": "SSL Mode"
+          },
+          "ssl-cert": {
+            "label": "SSL Certificate"
+          },
+          "ssl-key": {
+            "label": "SSL Private Key"
+          },
+          "requires-restart": "This setting requires a restart to take effect."
+        },
+        "ssl": {
+          "title": "SSL & Port Settings",
+          "lets-encrypt-warning": "Note: Let's Encrypt requires a valid Website URL and your server must be accessible via port 80 and 443.",
+          "lets-encrypt-invalid-config": "Let's Encrypt requires a valid public domain (not localhost), HTTP Port 80, HTTPS Port 443, and your current browser address must match the Website URL.",
+          "modes": {
+            "disabled": "Disabled",
+            "lets-encrypt": "Let's Encrypt (Automatic)",
+            "manual": "Manual (Certificate & Key)"
+          },
+          "restart-required-alert": "You have changed critical settings. You must restart Pano to apply these changes.",
+          "restart-now": "Restart Now"
         }
       },
       "platform": {
@@ -823,6 +851,10 @@
       },
       "confirm-install-resource": {
         "title": "Are you sure to install \"{title}\" ({resourceId})?"
+      },
+      "confirm-save-critical-settings": {
+        "title": "You are changing critical website settings. These changes might require a server restart and could affect your website's accessibility. Please enter your account password to confirm.",
+        "account-password": "Account Password"
       },
       "confirm-draft-post": {
         "title": "Are you sure to move this post to draft?"

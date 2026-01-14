@@ -305,10 +305,38 @@
             "helper": "PNG, ICO, GIF, JPG formatında, maksimum 1 mb ve 16x16 piksel olmalı."
           },
           "website-logo": {
-            "label": "Website Logo",
+            "label": "Website Logosu",
             "server-icon": "Sunucu İkonu",
             "helper": "PNG, JPEG, GIF formatında, maksimum 2 mb olmalı."
-          }
+          },
+          "http-port": {
+            "label": "HTTP Portu"
+          },
+          "https-port": {
+            "label": "HTTPS Portu"
+          },
+          "ssl-mode": {
+            "label": "SSL Modu"
+          },
+          "ssl-cert": {
+            "label": "SSL Sertifikası"
+          },
+          "ssl-key": {
+            "label": "SSL Özel Anahtarı (Private Key)"
+          },
+          "requires-restart": "Bu ayarın etkili olması için yeniden başlatma gerekir."
+        },
+        "ssl": {
+          "title": "SSL & Port Ayarları",
+          "lets-encrypt-warning": "Not: Let's Encrypt geçerli bir Website Adresi gerektirir ve sunucunuza 80 ile 443 portlarından erişilebiliyor olmalıdır.",
+          "lets-encrypt-invalid-config": "Let's Encrypt için geçerli bir genel alan adı (localhost olamaz), HTTP Portu 80, HTTPS Portu 443 olmalı ve şu anki tarayıcı adresiniz Web Sitesi URL'si ile eşleşmelidir.",
+          "modes": {
+            "disabled": "Devre Dışı",
+            "lets-encrypt": "Let's Encrypt (Otomatik)",
+            "manual": "Manuel (Sertifika & Anahtar)"
+          },
+          "restart-required-alert": "Kritik ayarları değiştirdiniz. Bu değişikliklerin uygulanması için Pano'yu yeniden başlatmalısınız.",
+          "restart-now": "Şimdi Yeniden Başlat"
         }
       },
       "platform": {
@@ -828,6 +856,10 @@
       },
       "confirm-install-resource": {
         "title": "\"{title}\" ({resourceId}) kurmak istediğinize emin misiniz?"
+      },
+      "confirm-save-critical-settings": {
+        "title": "Kritik web sitesi ayarlarını değiştiriyorsunuz. Bu değişiklikler sunucunun yeniden başlatılmasını gerektirebilir ve web sitenizin erişilebilirliğini etkileyebilir. Onaylamak için lütfen hesap şifrenizi girin.",
+        "account-password": "Hesap Şifresi"
       },
       "confirm-draft-post": {
         "title": "Bu gönderiyi taslağa taşımak istediğinize emin misiniz?"
