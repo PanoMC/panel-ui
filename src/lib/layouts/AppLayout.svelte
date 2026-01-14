@@ -61,6 +61,7 @@
   import DateComponent from '$lib/component/Date.svelte';
   import NoContent from '$lib/component/NoContent.svelte';
   import Editor from '$lib/component/Editor.svelte';
+  import DragAndDropZone from '$lib/component/DragAndDropZone.svelte';
 
   import tooltip from '$lib/tooltip.util';
 
@@ -186,7 +187,8 @@
         CardMenuItem,
         Date: DateComponent,
         NoContent,
-        Editor
+        Editor,
+        DragAndDropZone
       },
       utils: {
         api: {
