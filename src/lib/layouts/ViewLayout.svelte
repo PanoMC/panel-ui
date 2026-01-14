@@ -1,6 +1,6 @@
 <div class="container vstack gap-3">
-  <PageActions leftClasses="d-lg-flex d-none">
-    <CardMenu slot="middle">
+  <PageActions leftClasses="col-lg-8" middleClasses="d-none">
+    <CardMenu slot="left">
       {#each themeMenuItems as item}
         {#if !item.permission || hasPermission(item.permission)}
           <CardMenuItem href={item.href}>{$_(item.text)}</CardMenuItem>
