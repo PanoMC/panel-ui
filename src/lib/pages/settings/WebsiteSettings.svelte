@@ -192,7 +192,24 @@
           class="form-control"
           class:is-invalid={data.sslMode === 'LETS_ENCRYPT' && !isHttpsPortValidForLE}
           type="number"
+          disabled={data.sslMode === 'DISABLED'}
           bind:value={data.httpsPort} />
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="redirectHttps">
+        {$_('pages.settings.site-settings.inputs.redirect-https.label')}
+      </label>
+      <div class="col-md-6 d-flex align-items-center">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="redirectHttps"
+            disabled={data.sslMode === 'DISABLED'}
+            bind:checked={data.redirectHttps} />
+        </div>
       </div>
     </div>
 
@@ -463,6 +480,7 @@
       data.oldSettings.sslMode === data.sslMode &&
       data.oldSettings.sslCert === data.sslCert &&
       data.oldSettings.sslKey === data.sslKey &&
+      data.oldSettings.redirectHttps === data.redirectHttps &&
       selectedFaviconFiles.length === 0 &&
       selectedWebsiteLogoFiles.length === 0) ||
     isLetsEncryptInvalid ||
@@ -563,6 +581,7 @@
     formData.append('httpPort', data.httpPort);
     formData.append('httpsPort', data.httpsPort);
     formData.append('sslMode', data.sslMode);
+    formData.append('redirectHttps', data.redirectHttps);
     if (data.sslCert) formData.append('sslCert', data.sslCert);
     if (data.sslKey) formData.append('sslKey', data.sslKey);
     if (password) formData.append('password', password);
@@ -581,7 +600,8 @@
       data.oldSettings.httpsPort !== data.httpsPort ||
       data.oldSettings.sslMode !== data.sslMode ||
       data.oldSettings.sslCert !== data.sslCert ||
-      data.oldSettings.sslKey !== data.sslKey;
+      data.oldSettings.sslKey !== data.sslKey ||
+      data.oldSettings.redirectHttps !== data.redirectHttps;
 
     ApiUtil.put({
       path: '/api/panel/settings',
@@ -686,7 +706,8 @@
       data.oldSettings.httpsPort !== data.httpsPort ||
       data.oldSettings.sslMode !== data.sslMode ||
       data.oldSettings.sslCert !== data.sslCert ||
-      data.oldSettings.sslKey !== data.sslKey;
+      data.oldSettings.sslKey !== data.sslKey ||
+      data.oldSettings.redirectHttps !== data.redirectHttps;
 
     if (needsRestart) {
       showConfirmSaveCriticalSettingsModal((password) => {
