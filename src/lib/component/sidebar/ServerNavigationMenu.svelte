@@ -18,18 +18,20 @@
       {/each}
     </ul>
   {:else if $connectedServerCount > 0}
-    <NoContent
-      icon="fas fa-cube fa-3x"
-      text={$_('components.server-navigation-menu.no-selected-server')}
-      dark={true} />
+    <div data-bs-theme="dark">
+      <NoContent
+        icon="fas fa-cube fa-3x"
+        text={$_('components.server-navigation-menu.no-selected-server')}/>
+    </div>
   {:else}
-    <NoContent
-      icon="fas fa-cube fa-3x"
-      text={$_('components.server-navigation-menu.no-server-text')}
-      dark={true}>
-    </NoContent>
+    <div data-bs-theme="dark">
+      <NoContent
+        icon="fas fa-cube fa-3x"
+        text={$_('components.server-navigation-menu.no-server-text')} />
+    </div>
   {/if}
 </nav>
+
 
 <script context="module">
   export const originalServerNavItems = [
