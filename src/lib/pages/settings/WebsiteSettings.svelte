@@ -321,7 +321,7 @@
             accept={['image/png', 'image/jpeg', 'image/gif', 'image/x-icon', 'image/vnd.microsoft.icon']}
             maxFileSize={1 * 1024 * 1024}
             on:drop={(e) => onFaviconDrop(e.detail)}
-            on:error={handleFileError}
+            on:error={(e) => handleFileError(e, 'favicon')}
           >
             <img
               alt={$_('pages.settings.site-settings.inputs.favicon.select')}
@@ -358,7 +358,7 @@
                 accept={['image/png', 'image/jpeg', 'image/gif']}
                 maxFileSize={2 * 1024 * 1024}
                 on:drop={(e) => onWebsiteLogoDrop(e.detail)}
-                on:error={handleFileError}
+                on:error={(e) => handleFileError(e, 'logo')}
              >
                <img
                  src={websiteLogo}
@@ -527,12 +527,12 @@
 
   $: isManualInvalid = data.sslMode === 'MANUAL' && (!data.sslCert || !data.sslKey);
 
-  function handleFileError(event) {
+  function handleFileError(event, type = 'favicon') {
     const { error } = event.detail;
     if (error === 'INVALID_SIZE') {
-      showToast('components.toasts.favicon-exceeds-size'); // Reusing favicon error for both for simplicity or specific messages
+      showToast(type === 'favicon' ? 'components.toasts.favicon-exceeds-size' : 'components.toasts.website-logo-exceeds-size');
     } else if (error === 'INVALID_TYPE') {
-        showToast('components.toasts.favicon-wrong-content-type');
+      showToast(type === 'favicon' ? 'components.toasts.favicon-wrong-content-type' : 'components.toasts.website-logo-wrong-content-type');
     }
   }
 
