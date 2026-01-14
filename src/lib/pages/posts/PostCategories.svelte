@@ -1,27 +1,18 @@
-<!-- Categories Page -->
-<article class="container vstack gap-3">
-  <!-- Action Menu -->
-  <PageActions leftClasses="d-lg-flex d-none">
-    <button class="btn btn-secondary" type="button" on:click={onCreateCategoryClick} slot="right">
-      <i class="fas fa-plus"></i>
-      <span class="d-lg-inline d-none ms-2"
-        >{$_('pages.post-categories.create-category-button')}
-      </span>
-    </button>
-    <CardMenu slot="middle">
-      <CardMenuItem href="/posts">{$_('pages.post-categories.posts')}</CardMenuItem>
-      <CardMenuItem href="/posts/categories" startsWith
-        >{$_('pages.posts.post-categories-button')}</CardMenuItem>
-    </CardMenu>
-  </PageActions>
+{#snippet right()}
+  <button class="btn btn-secondary" type="button" on:click={onCreateCategoryClick}>
+    <i class="fas fa-plus"></i>
+    <span class="d-lg-inline d-none ms-2">{$_('pages.post-categories.create-category-button')}
+    </span>
+  </button>
+{/snippet}
 
-  <!-- Post Categories -->
-  <div class="card">
-    <div class="card-header">
-      {$_('pages.post-categories.card-title', {
-        values: { count: data.categoryCount },
-      })}
-    </div>
+<!-- Post Categories -->
+<div class="card">
+  <div class="card-header">
+    {$_('pages.post-categories.card-title', {
+      values: { count: data.categoryCount },
+    })}
+  </div>
     <!-- No Content -->
     {#if data.categoryCount === 0}
       <NoContent />
@@ -67,7 +58,6 @@
         on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
     </div>
   </div>
-</article>
 
 <!-- Post Category Delete Confirmation Modal -->
 <ConfirmDeletePostCategoryModal />
@@ -75,7 +65,7 @@
 <!-- Add / Edit Post Category Modal -->
 <AddEditPostCategoryModal />
 
-<script context="module">
+<script module>
   import ApiUtil, { buildQueryParams } from '$lib/api.util';
   import { error } from '@sveltejs/kit';
 
@@ -133,14 +123,12 @@
 
   import NoContent from '$lib/component/NoContent.svelte';
   import PostCategoryRow from '$lib/component/rows/PostCategoryRow.svelte';
-  import PageActions from '$lib/component/PageActions.svelte';
-  import CardHeader from '$lib/component/CardHeader.svelte';
-  import CardMenu from '$lib/component/CardMenu.svelte';
-  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
 
-  export let data;
+  const { data = $bindable() } = $props();
 
   const pageTitle = getContext('pageTitle');
+  const slots = getContext("layout-slots");
+  Object.assign(slots, { right });
 
   pageTitle.set('pages.post-categories.title');
 

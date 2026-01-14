@@ -8,80 +8,78 @@
   }
 </style>
 
-<article class="container vstack gap-3">
-  <!-- Action Menu -->
-  <PageActions middleClasses="d-lg-flex d-none">
-    <a
-      href="{base}/posts{data.post.status === StatusTypes.TRASH
-        ? '?pageType=TRASH'
-        : data.post.status === StatusTypes.DRAFT
-          ? '?pageType=DRAFT'
-          : ''}"
+{#snippet left()}
+  <a
+    href="{base}/posts{data.post.status === StatusTypes.TRASH
+      ? '?pageType=TRASH'
+      : data.post.status === StatusTypes.DRAFT
+        ? '?pageType=DRAFT'
+        : ''}"
+    class="btn btn-link"
+    role="button">
+    <i class="fas fa-arrow-left"></i>
+    <span class="d-lg-inline d-none ms-2"> {$_('pages.post-editor.posts')}</span>
+  </a>
+{/snippet}
+
+{#snippet right()}
+  {#if data.mode === Modes.EDIT}
+    <button
+      title={$_('buttons.remove')}
+      aria-label={$_('buttons.remove')}
       class="btn btn-link"
-      role="button"
-      slot="left">
-      <i class="fas fa-arrow-left"></i>
-      <span class="d-lg-inline d-none ms-2"> {$_('pages.post-editor.posts')}</span>
-    </a>
+      type="button"
+      on:click={() => showDeletePostModal(data.post)}>
+      <i class="fas fa-trash"></i>
+    </button>
+  {/if}
+  {#if data.post.status !== StatusTypes.DRAFT && data.mode === Modes.EDIT}
+    <button
+      title={$_('pages.post-editor.move-to-drafts')}
+      aria-label={$_('pages.post-editor.move-to-drafts')}
+      class="btn btn-link"
+      type="button"
+      class:disabled={loading}
+      on:click={onDraftClick}>
+      <i class="fa-solid fa-sheet-plastic"></i>
+    </button>
+  {/if}
+  <a
+    class="btn btn-link"
+    role="button"
+    aria-label={$_('buttons.view')}
+    title={$_('buttons.view')}
+    target="_blank"
+    href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{data.post.id}">
+    <i class="fas fa-eye"></i>
+  </a>
+  {#if data.post.status !== StatusTypes.PUBLISHED}
+    <button
+      title={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
+      aria-label={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
+      class="btn btn-link"
+      type="button"
+      class:disabled={loading || isEditorEmpty || data.post.title.length === 0}
+      on:click={() => submit(false)}>
+      <i class="fas fa-save"></i>
+    </button>
+  {/if}
+  <button
+    class="btn btn-secondary"
+    type="button"
+    class:disabled={loading || isEditorEmpty || data.post.title.length === 0}
+    on:click={() => submit(true)}>
+    <i class="fas fa-save"></i>
+    <span class="d-lg-inline d-none ms-2">
+      {data.post.status === StatusTypes.PUBLISHED
+        ? $_('buttons.update')
+        : $_('pages.post-editor.publish')}</span>
+  </button>
+{/snippet}
 
-    <div slot="right">
-      {#if data.mode === Modes.EDIT}
-        <button
-          title={$_('buttons.remove')}
-          aria-label={$_('buttons.remove')}
-          class="btn btn-link"
-          type="button"
-          on:click={() => showDeletePostModal(data.post)}>
-          <i class="fas fa-trash"></i>
-        </button>
-      {/if}
-      {#if data.post.status !== StatusTypes.DRAFT && data.mode === Modes.EDIT}
-        <button
-          title={$_('pages.post-editor.move-to-drafts')}
-          aria-label={$_('pages.post-editor.move-to-drafts')}
-          class="btn btn-link"
-          type="button"
-          class:disabled={loading}
-          on:click={onDraftClick}>
-          <i class="fa-solid fa-sheet-plastic"></i>
-        </button>
-      {/if}
-      <a
-        class="btn btn-link"
-        role="button"
-        aria-label={$_('buttons.view')}
-        title={$_('buttons.view')}
-        target="_blank"
-        href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{data.post.id}">
-        <i class="fas fa-eye"></i>
-      </a>
-      {#if data.post.status !== StatusTypes.PUBLISHED}
-        <button
-          title={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
-          aria-label={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
-          class="btn btn-link"
-          type="button"
-          class:disabled={loading || isEditorEmpty || data.post.title.length === 0}
-          on:click={() => submit(false)}>
-          <i class="fas fa-save"></i>
-        </button>
-      {/if}
-      <button
-        class="btn btn-secondary"
-        type="button"
-        class:disabled={loading || isEditorEmpty || data.post.title.length === 0}
-        on:click={() => submit(true)}>
-        <i class="fas fa-save"></i>
-        <span class="d-lg-inline d-none ms-2">
-          {data.post.status === StatusTypes.PUBLISHED
-            ? $_('buttons.update')
-            : $_('pages.post-editor.publish')}</span>
-      </button>
-    </div>
-  </PageActions>
+<!-- Post & Post Options -->
+<section class="row g-3 animate__animated animate__fadeIn">
 
-  <!-- Post & Post Options -->
-  <section class="row g-3 animate__animated animate__fadeIn">
     <!-- Post -->
     <div class="col-lg-9">
       <div class="card h-100 w-100">
@@ -213,11 +211,10 @@
       </div>
     </div>
   </section>
-</article>
 
 <AddEditPostCategoryModal />
 
-<script context="module">
+<script module>
   import ApiUtil from '$lib/api.util';
   import { error } from '@sveltejs/kit';
 
@@ -318,29 +315,30 @@
 
   import { show as showToast, limitTitle } from '$lib/component/ToastContainer.svelte';
 
-  import PageActions from '$lib/component/PageActions.svelte';
   import Date from '$lib/component/Date.svelte';
 
-  export let data;
+  const { data = $bindable() } = $props();
 
-  let isEditorEmpty = true;
-  let loading = false;
+  let isEditorEmpty = $state(true);
+  let loading = $state(false);
 
-  let thumbnail;
+  let thumbnail = $state();
 
-  let isThumbnailSaved;
-  let isThumbnailRemoved;
+  let isThumbnailSaved = $state();
+  let isThumbnailRemoved = $state();
 
-  let thumbnailInput;
-  let thumbnailFiles = null;
+  let thumbnailInput = $state();
+  let thumbnailFiles = $state(null);
 
   const pageTitle = getContext('pageTitle');
+  const slots = getContext("layout-slots");
+  Object.assign(slots, { left, right });
 
   pageTitle.set(
     data.mode === Modes.EDIT ? 'pages.post-editor.title-edit' : 'pages.post-editor.title-create',
   );
 
-  let dropZoneActive = false;
+  let dropZoneActive = $state(false);
 
   function handleDrop(event) {
     event.preventDefault();

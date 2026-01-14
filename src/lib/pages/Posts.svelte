@@ -1,108 +1,92 @@
-<!-- Posts Page -->
-<article class="container vstack gap-3">
-  <!-- Action Menu -->
-  <PageActions leftClasses="d-lg-flex d-none">
-    <!-- Submenu -->
-    <CardMenu slot="middle">
-      {#if !data.categoryUrl}
-        <CardMenuItem href="/posts" startsWith>{$_('pages.post-categories.posts')}</CardMenuItem>
-        <CardMenuItem href="/posts/categories" startsWith
-          >{$_('pages.posts.post-categories-button')}</CardMenuItem>
-      {/if}
-    </CardMenu>
+{#snippet right()}
+  {#if !data.categoryUrl}
+    <a href="{base}/posts/create-post" class="btn btn-secondary" role="button">
+      <i class="fas fa-plus"></i>
+      <span class="d-lg-inline d-none ms-2"> {$_('pages.posts.create-post-button')}</span>
+    </a>
+  {/if}
+{/snippet}
 
-    <div slot="right">
-      {#if !data.categoryUrl}
-        <a href="{base}/posts/create-post" class="btn btn-secondary" role="button">
-          <i class="fas fa-plus"></i>
-          <span class="d-lg-inline d-none ms-2"> {$_('pages.posts.create-post-button')}</span>
-        </a>
-      {/if}
+<!-- All Posts -->
+<div class="card">
+  <CardHeader>
+    <div slot="left">
+      {$_('pages.posts.table-title', {
+        values: {
+          postCount: data.postCount,
+          pageType:
+            data.pageType === PageTypes.PUBLISHED
+              ? $_('pages.posts.published') + ' '
+              : data.pageType === PageTypes.DRAFT
+                ? $_('pages.posts.draft') + ' '
+                : data.pageType === PageTypes.BANNED
+                  ? $_('pages.posts.banned') + ' '
+                  : '',
+        },
+      })}
     </div>
-  </PageActions>
 
-  <!-- All Posts -->
-
-  <div class="card">
-    <CardHeader>
-      <div slot="left">
-        {$_('pages.posts.table-title', {
-          values: {
-            postCount: data.postCount,
-            pageType:
-              data.pageType === PageTypes.PUBLISHED
-                ? $_('pages.posts.published') + ' '
-                : data.pageType === PageTypes.DRAFT
-                  ? $_('pages.posts.draft') + ' '
-                  : data.pageType === PageTypes.BANNED
-                    ? $_('pages.posts.banned') + ' '
-                    : '',
-          },
-        })}
-      </div>
-
-      <!-- Filters -->
-      <CardFilters slot="right">
-        {#if !data.categoryUrl}
-          <CardFiltersItem href="/posts" active={data.pageType === PageTypes.PUBLISHED}>
-            {$_('pages.posts.published')}
-          </CardFiltersItem>
-          <CardFiltersItem href="/posts?pageType=DRAFT" active={data.pageType === PageTypes.DRAFT}>
-            {$_('pages.posts.draft')}
-          </CardFiltersItem>
-          <CardFiltersItem href="/posts?pageType=TRASH" active={data.pageType === PageTypes.TRASH}>
-            {$_('pages.posts.trash')}
-          </CardFiltersItem>
-        {/if}
-      </CardFilters>
-    </CardHeader>
-    <!-- No Posts -->
-    {#if data.postCount === 0}
-      <NoContent />
-    {:else}
-      <!-- Posts Table -->
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col"></th>
-              <th class="align-middle text-nowrap" scope="col">{$_('pages.posts.table.title')}</th>
-              <th scope="col" class="align-middle text-nowrap" class:table-active={data.categoryUrl}
-                >{$_('pages.posts.table.category')}</th>
-              <th scope="col" class="align-middle text-nowrap">{$_('pages.posts.table.views')}</th>
-              <th scope="col" class="align-middle text-nowrap">{$_('pages.posts.table.author')}</th>
-              <th scope="col" class="align-middle text-nowrap"
-                >{$_('pages.posts.table.last-update')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each data.posts as post, index (post)}
-              <PostRow
-                {post}
-                pageType={data.pageType}
-                {buttonsLoading}
-                on:moveToDraft={(event) => onMoveToDraftClick(event.detail.id)}
-                on:publish={(event) => onPublishClick(event.detail.id)}
-                on:deletePost={(event) => onDeletePostClick(event.detail.post)} />
-            {/each}
-          </tbody>
-        </table>
-      </div>
-    {/if}
-    <div class="card-footer">
-      <!-- Pagination -->
-      <Pagination
-        page={data.page}
-        totalPage={data.totalPage}
-        on:firstPageClick={() => onPageClick(1)}
-        on:lastPageClick={() => onPageClick(data.totalPage)}
-        on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
+    <!-- Filters -->
+    <CardFilters slot="right">
+      {#if !data.categoryUrl}
+        <CardFiltersItem href="/posts" active={data.pageType === PageTypes.PUBLISHED}>
+          {$_('pages.posts.published')}
+        </CardFiltersItem>
+        <CardFiltersItem href="/posts?pageType=DRAFT" active={data.pageType === PageTypes.DRAFT}>
+          {$_('pages.posts.draft')}
+        </CardFiltersItem>
+        <CardFiltersItem href="/posts?pageType=TRASH" active={data.pageType === PageTypes.TRASH}>
+          {$_('pages.posts.trash')}
+        </CardFiltersItem>
+      {/if}
+    </CardFilters>
+  </CardHeader>
+  <!-- No Posts -->
+  {#if data.postCount === 0}
+    <NoContent />
+  {:else}
+    <!-- Posts Table -->
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th class="align-middle text-nowrap" scope="col">{$_('pages.posts.table.title')}</th>
+            <th scope="col" class="align-middle text-nowrap" class:table-active={data.categoryUrl}
+              >{$_('pages.posts.table.category')}</th>
+            <th scope="col" class="align-middle text-nowrap">{$_('pages.posts.table.views')}</th>
+            <th scope="col" class="align-middle text-nowrap">{$_('pages.posts.table.author')}</th>
+            <th scope="col" class="align-middle text-nowrap"
+              >{$_('pages.posts.table.last-update')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each data.posts as post, index (post)}
+            <PostRow
+              {post}
+              pageType={data.pageType}
+              {buttonsLoading}
+              on:moveToDraft={(event) => onMoveToDraftClick(event.detail.id)}
+              on:publish={(event) => onPublishClick(event.detail.id)}
+              on:deletePost={(event) => onDeletePostClick(event.detail.post)} />
+          {/each}
+        </tbody>
+      </table>
     </div>
+  {/if}
+  <div class="card-footer">
+    <!-- Pagination -->
+    <Pagination
+      page={data.page}
+      totalPage={data.totalPage}
+      on:firstPageClick={() => onPageClick(1)}
+      on:lastPageClick={() => onPageClick(data.totalPage)}
+      on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
   </div>
-</article>
+</div>
 
-<script context="module">
+<script module>
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
   import { error, redirect } from '@sveltejs/kit';
 
@@ -113,6 +97,18 @@
   });
 
   export const DefaultPageType = PageTypes.PUBLISHED;
+
+  export const originalPostMenuItems = [
+    {
+      href: '/posts',
+      text: 'pages.post-categories.posts',
+    },
+    {
+      href: '/posts/categories',
+      text: 'pages.posts.post-categories-button',
+      startsWith: true,
+    },
+  ];
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -197,18 +193,17 @@
 
   import { show as showToast, limitTitle } from '$lib/component/ToastContainer.svelte';
   import NoContent from '$lib/component/NoContent.svelte';
-  import PageActions from '$lib/component/PageActions.svelte';
   import CardHeader from '$lib/component/CardHeader.svelte';
-  import CardMenu from '$lib/component/CardMenu.svelte';
-  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
   import CardFilters from '$lib/component/CardFilters.svelte';
   import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
 
-  export let data;
+  const { data = $bindable() } = $props();
 
   const pageTitle = getContext('pageTitle');
+  const slots = getContext("layout-slots");
+  Object.assign(slots, { right });
 
-  $: {
+  $effect(() => {
     pageTitle.set(
       data.categoryUrl
         ? $_('pages.posts.category-posts-title', {
@@ -232,9 +227,9 @@
             },
           }),
     );
-  }
+  });
 
-  let buttonsLoading = false;
+  let buttonsLoading = $state(false);
 
   function refreshBrowserPage() {
     location.reload();
