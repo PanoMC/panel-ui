@@ -160,7 +160,7 @@ export const panoApi = {
         });
       },
       get(name) {
-        return derived(hooks, $h => ($h[name] || []).map(h => h.component || h));
+        return derived(hooks, $h => ($h[name] || []));
       }
     }
   },
