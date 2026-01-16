@@ -22,9 +22,10 @@
         <a
           href={`${PANO_WEBSITE_URL}/themes/${theme.id}`}
           target="_blank"
-          class="btn btn-outline-primary">
-          <i class="fas fa-store me-2"></i>
-          {$_('buttons.show-in-store')}
+          class="btn btn-link"
+          title={$_('buttons.show-in-store')}
+          aria-label={$_('buttons.show-in-store')}>
+          <i class="fas fa-store"></i>
         </a>
       {/if}
       {#if theme.running}
@@ -44,8 +45,8 @@
           type="button"
           on:click={onStartClick}
           class:disabled={stoping}>
-          <i class="fas fa-play me-2"></i>
-          {$_('buttons.start')}
+          <i class="fas fa-play"></i>
+          <span class="d-lg-inline d-none ms-2">{$_('buttons.start')}</span>
         </button>
       {/if}
       {#if !theme.active}
@@ -78,10 +79,13 @@
             <div class="carousel-inner">
               {#each theme.screenshots.length === 0 ? { 'screenshot.png': '' } : Object.keys(theme.screenshots) as key, i}
                 <div class={'carousel-item' + (i === 0 ? ' active' : '')}>
-                  <img
-                    src={`/api/panel/themes/${theme.id}/screenshots/${key}?hash=${theme.screenshots[key]}`}
-                    class="d-block w-100"
-                    alt={$_('pages.theme-detail.screenshot') + ` ${i + 1}`} />
+                  <div class="ratio ratio-1x1">
+                    <img
+                      src={`/api/panel/themes/${theme.id}/screenshots/${key}?hash=${theme.screenshots[key]}`}
+                      class="d-block w-100"
+                      style="object-fit: cover;"
+                      alt={$_('pages.theme-detail.screenshot') + ` ${i + 1}`} />
+                  </div>
                 </div>
               {/each}
             </div>

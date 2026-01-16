@@ -8,7 +8,7 @@
     "yes": "Evet",
     "cancel": "İptal",
     "download": "İndir",
-    "enable": "Aktif Et",
+    "enable": "Aktifleştir",
     "validate": "Doğrula",
     "players": "Oyuncular",
     "posts": "Yazılar",
@@ -682,7 +682,6 @@
       "store-loading": "Mağaza yükleniyor…",
       "please-wait": "Lütfen bekleyin.",
       "loading": "Yükleniyor...",
-      "account-not-connected": "Pano hesabı bağlı değil!",
       "not-connected-description": "Mağazaya erişmek için bir Pano hesabı bağlamalısınız."
     },
     "installing-resource": {
@@ -752,7 +751,7 @@
       "connect-server": "Sunucu Bağla"
     },
     "post-row": {
-      "actions": "Eylemler",
+      "actions": "İşlemler",
       "move-to-draft": "Taslaklara Taşı",
       "publish": "Yayımla",
       "move-to-trash": "Çöp Kutusuna Taşı",
@@ -766,7 +765,7 @@
       "player-name": "Oyuncu Adı"
     },
     "player-row": {
-      "actions": "Eylemler",
+      "actions": "İşlemler",
       "authorize": "Yetkilendir",
       "remove-ban": "Yasağı Kaldır",
       "ban": "Yasakla"
