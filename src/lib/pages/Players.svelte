@@ -60,18 +60,24 @@
           <thead>
             <tr>
               <th class="align-middle text-nowrap" scope="col"></th>
+              <Hook name="panel:players:table:header:start" tag="th" class="align-middle text-nowrap" scope="col" />
               <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.name')}</th>
+              <Hook name="panel:players:table:header:after-name" tag="th" class="align-middle text-nowrap" scope="col" />
               <th
                 class="align-middle text-nowrap"
                 scope="col"
                 class:table-active={data.permissionGroup}
                 >{$_('pages.players.table.perm-group')}</th>
+              <Hook name="panel:players:table:header:after-perm-group" tag="th" class="align-middle text-nowrap" scope="col" />
               <th class="align-middle text-nowrap" scope="col"
                 >{$_('pages.players.table.status')}</th>
+              <Hook name="panel:players:table:header:after-status" tag="th" class="align-middle text-nowrap" scope="col" />
               <th class="align-middle text-nowrap" scope="col"
                 >{$_('pages.players.table.last-login')}</th>
+              <Hook name="panel:players:table:header:after-last-login" tag="th" class="align-middle text-nowrap" scope="col" />
               <th class="align-middle text-nowrap" scope="col"
                 >{$_('pages.players.table.register-date')}</th>
+              <Hook name="panel:players:table:header:end" tag="th" class="align-middle text-nowrap" scope="col" />
             </tr>
           </thead>
           <tbody>
@@ -184,6 +190,7 @@
   } from '$lib/component/modals/UnbanPlayerModal.svelte';
 
   import PlayerRow from '$lib/component/rows/PlayerRow.svelte';
+  import Hook from '$lib/component/Hook.svelte';
 
   import NoContent from '$lib/component/NoContent.svelte';
   import { hasPermission, Permissions } from '$lib/auth.util.js';

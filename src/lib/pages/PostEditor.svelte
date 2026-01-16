@@ -75,6 +75,7 @@
         ? $_('buttons.update')
         : $_('pages.post-editor.publish')}</span>
   </button>
+  <Hook name="panel:post-editor:actions:right" post={data.post} />
 {/snippet}
 
 <!-- Post & Post Options -->
@@ -101,6 +102,7 @@
 
     <!-- Post Option Cards -->
     <div class="col-lg-3">
+      <Hook name="panel:post-editor:sidebar:before" post={data.post} />
       <div class="card">
         <div class="card-body">
           <ul class="list-group p-0 m-0">
@@ -209,14 +211,20 @@
           </ul>
         </div>
       </div>
+      <Hook name="panel:post-editor:sidebar:after" post={data.post} />
     </div>
   </section>
+  
+  <div class="mt-3">
+    <Hook name="panel:post-editor:content:bottom" post={data.post} />
+  </div>
 
 <AddEditPostCategoryModal />
 
 <script module>
   import ApiUtil from '$lib/api.util';
   import { error } from '@sveltejs/kit';
+  import { executeHookLoad } from '$lib/PluginAPI.js';
 
   export const Modes = Object.freeze({
     EDIT: 'edit',
@@ -252,6 +260,7 @@
       categories: [],
       mode,
       error: {},
+      hookProps: {}
     };
 
     if (mode === Modes.EDIT) {
@@ -281,6 +290,8 @@
     });
 
     data = { ...data, ...categoriesBody };
+
+    data.hookProps['panel:post-editor:content:bottom'] = await executeHookLoad('panel:post-editor:content:bottom', event);
 
     return data;
   }
@@ -316,6 +327,7 @@
   import { show as showToast, limitTitle } from '$lib/component/ToastContainer.svelte';
 
   import Date from '$lib/component/Date.svelte';
+  import Hook from '$lib/component/Hook.svelte';
 
   const { data = $bindable() } = $props();
 

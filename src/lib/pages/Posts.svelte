@@ -51,14 +51,20 @@
         <thead>
           <tr>
             <th scope="col"></th>
+            <Hook name="panel:posts:table:header:start" tag="th" class="align-middle text-nowrap" scope="col" />
             <th scope="col"></th>
             <th class="align-middle text-nowrap" scope="col">{$_('pages.posts.table.title')}</th>
+            <Hook name="panel:posts:table:header:after-title" tag="th" class="align-middle text-nowrap" scope="col" />
             <th scope="col" class="align-middle text-nowrap" class:table-active={data.categoryUrl}
               >{$_('pages.posts.table.category')}</th>
+            <Hook name="panel:posts:table:header:after-category" tag="th" class="align-middle text-nowrap" scope="col" />
             <th scope="col" class="align-middle text-nowrap">{$_('pages.posts.table.views')}</th>
+            <Hook name="panel:posts:table:header:after-views" tag="th" class="align-middle text-nowrap" scope="col" />
             <th scope="col" class="align-middle text-nowrap">{$_('pages.posts.table.author')}</th>
+            <Hook name="panel:posts:table:header:after-author" tag="th" class="align-middle text-nowrap" scope="col" />
             <th scope="col" class="align-middle text-nowrap"
               >{$_('pages.posts.table.last-update')}</th>
+            <Hook name="panel:posts:table:header:end" tag="th" class="align-middle text-nowrap" scope="col" />
           </tr>
         </thead>
         <tbody>
@@ -89,6 +95,7 @@
 <script module>
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
   import { error, redirect } from '@sveltejs/kit';
+  import { executeHookLoad, executeLifecycle } from '$lib/PluginAPI.js';
 
   export const PageTypes = Object.freeze({
     PUBLISHED: 'PUBLISHED',
@@ -161,6 +168,12 @@
     body.pageType = pageType;
     body.categoryUrl = categoryUrl;
 
+    await executeLifecycle('panel:posts:load', body, event);
+
+    body.hookProps = {};
+    body.hookProps['panel:posts:table-header:after-views'] = await executeHookLoad('panel:posts:table-header:after-views', event);
+    body.hookProps['panel:posts:table-row:after-views'] = await executeHookLoad('panel:posts:table-row:after-views', event);
+
     return body;
   }
 </script>
@@ -179,6 +192,7 @@
     show as showDeletePostModal,
     onHide as onDeletePostModalHide,
   } from '$lib/component/modals/ConfirmDeletePostModal.svelte';
+  import Hook from '$lib/component/Hook.svelte';
 
   import {
     show as showDraftPostModal,

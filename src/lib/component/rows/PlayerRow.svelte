@@ -46,6 +46,7 @@
       </div>
     </div>
   </th>
+  <Hook name="panel:players:table:row:start" {player} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">
     <a
       class="d-inline-block focus-ring rounded-circle"
@@ -67,9 +68,11 @@
       {player.username}
     </a>
   </td>
+  <Hook name="panel:players:table:row:after-name" {player} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap text-capitalize">
     <PlayerPermissionBadge permissionGroup={player.permissionGroup} />
   </td>
+  <Hook name="panel:players:table:row:after-perm-group" {player} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">
     <PlayerStatusBadge
       banned={player.isBanned}
@@ -77,10 +80,13 @@
       inGame={player.inGame}
       {checkTime} />
   </td>
+  <Hook name="panel:players:table:row:after-status" {player} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap"><Date time={player.lastLoginDate} /></td>
+  <Hook name="panel:players:table:row:after-last-login" {player} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">
     <Date time={player.registerDate} />
   </td>
+  <Hook name="panel:players:table:row:end" {player} tag="td" class="align-middle text-nowrap" />
 </tr>
 
 <script>
@@ -92,6 +98,7 @@
   import Date from '$lib/component/Date.svelte';
   import PlayerStatusBadge from '$lib/component/badges/PlayerStatusBadge.svelte';
   import PlayerPermissionBadge from '$lib/component/badges/PlayerPermissionBadge.svelte';
+  import Hook from '$lib/component/Hook.svelte';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
 
   const user = getContext('user');

@@ -18,6 +18,7 @@
       {#if slots.right}
         {@render slots.right()}
       {/if}
+      <Hook name="panel:posts:layout:actions:right" />
     </div>
   </PageActions>
 
@@ -67,6 +68,7 @@
   import ConfirmDeletePostModal from '$lib/component/modals/ConfirmDeletePostModal.svelte';
   import ConfirmDraftPostModal from '$lib/component/modals/ConfirmDraftPostModal.svelte';
   import ConfirmPublishPostModal from '$lib/component/modals/ConfirmPublishPostModal.svelte';
+  import Hook from '$lib/component/Hook.svelte';
 
   import { postMenuItems } from "$lib/PluginAPI.js"
 

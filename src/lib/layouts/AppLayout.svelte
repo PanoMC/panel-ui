@@ -39,7 +39,7 @@
   import { _ } from 'svelte-i18n';
   import { setPanoContext } from '@panomc/sdk/internal';
 
-  import { goto } from '$app/navigation';
+  import { goto, invalidate, invalidateAll } from '$app/navigation';
   import { page } from '$app/stores';
   import { base } from '$app/paths';
   import { browser } from '$app/environment';
@@ -172,6 +172,8 @@
       navigating,
       browser,
       goto,
+      invalidate,
+      invalidateAll,
       components: {
         PageActions,
         PageLoader,

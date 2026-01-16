@@ -72,6 +72,7 @@
       </div>
     </div>
   </th>
+  <Hook name="panel:posts:table:row:start" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle">
     <div class="post-row-thumbnail">
       {#if post.thumbnailUrl}
@@ -97,6 +98,7 @@
       {/if}
     </div>
   </td>
+  <Hook name="panel:posts:table:row:after-thumbnail" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">
     <a
       href={base + '/posts/detail/' + post.id}
@@ -105,6 +107,7 @@
       {post.title && post.title.length > 50 ? post.title.slice(0, 50) + '...' : post.title}
     </a>
   </td>
+  <Hook name="panel:posts:table:row:after-title" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">
     <CategoryBadge
       category={post.category}
@@ -112,7 +115,9 @@
       filterTitle={$_('components.post-row.filter')}
       noCategoryText={$_('components.post-row.no-category')} />
   </td>
+  <Hook name="panel:posts:table:row:after-category" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">{post.views}</td>
+  <Hook name="panel:posts:table:row:after-views" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle">
     <a
       href="{base}/players/detail/{post.writer.username}"
@@ -126,9 +131,11 @@
         src="https://minotar.net/avatar/{post.writer.username}" />
     </a>
   </td>
+  <Hook name="panel:posts:table:row:after-author" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">
     <Date time={post.date} />
   </td>
+  <Hook name="panel:posts:table:row:end" {post} tag="td" class="align-middle text-nowrap" />
 </tr>
 
 <script>
@@ -139,6 +146,7 @@
 
   import Date from '$lib/component/Date.svelte';
   import CategoryBadge from '$lib/component/badges/CategoryBadge.svelte';
+  import Hook from '$lib/component/Hook.svelte';
 
   import tooltip from '$lib/tooltip.util.js';
   import { UI_URL } from '$lib/variables.js';

@@ -25,14 +25,19 @@
           <thead>
             <tr>
               <th scope="col"></th>
+              <Hook name="panel:post-categories:table:header:start" tag="th" class="align-middle text-nowrap" scope="col" />
               <th class="align-middle text-nowrap" scope="col"
                 >{$_('pages.post-categories.category')}</th>
+              <Hook name="panel:post-categories:table:header:after-category" tag="th" class="align-middle text-nowrap" scope="col" />
               <th scope="col" class="align-middle text-nowrap"
                 >{$_('pages.post-categories.description')}</th>
+              <Hook name="panel:post-categories:table:header:after-description" tag="th" class="align-middle text-nowrap" scope="col" />
               <th scope="col" class="align-middle text-nowrap"
                 >{$_('pages.post-categories.url')}</th>
+              <Hook name="panel:post-categories:table:header:after-url" tag="th" class="align-middle text-nowrap" scope="col" />
               <th scope="col" class="d-none align-middle text-nowrap"
                 >{$_('pages.post-categories.color')}</th>
+              <Hook name="panel:post-categories:table:header:end" tag="th" class="align-middle text-nowrap" scope="col" />
             </tr>
           </thead>
           <tbody>
@@ -123,6 +128,7 @@
 
   import NoContent from '$lib/component/NoContent.svelte';
   import PostCategoryRow from '$lib/component/rows/PostCategoryRow.svelte';
+  import Hook from '$lib/component/Hook.svelte';
 
   const { data = $bindable() } = $props();
 
