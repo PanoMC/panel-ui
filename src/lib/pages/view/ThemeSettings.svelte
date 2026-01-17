@@ -50,6 +50,7 @@
   let error;
 
   let alwaysLoading = false;
+  let sent = false;
 
   function handleMessage(e) {
     if (childOrigin !== '*' && e.origin !== childOrigin) return;
@@ -71,12 +72,18 @@
     }
 
     if (data.type === 'theme-settings-ready') {
+      if (!sent) {
+        sendTheme();
+        sendCSS();
+      }
       loading = false;
     }
   }
 
   function sendTheme(theme) {
     if (!frame?.contentWindow || !childOrigin) return;
+
+    sent = true;
 
     // Get theme from panelTheme store
     const bsTheme = theme || $panelTheme;
@@ -93,6 +100,8 @@
 
   async function sendCSS() {
     if (!frame?.contentWindow || !childOrigin) return;
+
+    sent = true;
 
     // Collect global CSS (non-scoped styles)
     // Get all style tags present in DOM at runtime
@@ -189,6 +198,7 @@
 
     loading = true;
     error = null;
+    sent = false;
 
     try {
       src = '/theme-settings';
