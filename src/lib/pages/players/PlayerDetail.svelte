@@ -238,6 +238,7 @@
           </div>
         {/if}
       </div>
+      <Hook name="panel:player-detail:bottom" playerData={data} />
     </div>
   </div>
 </div>
@@ -245,6 +246,7 @@
 <script context="module">
   import ApiUtil, { buildQueryParams } from '$lib/api.util';
   import { error } from '@sveltejs/kit';
+  import { executeHookLoad } from '$lib/PluginAPI.js';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -281,6 +283,9 @@
     body.username = username;
     body.ticketsPage = parseInt(ticketsPage);
     body.banHistoryPage = parseInt(banHistoryPage);
+
+    body.hookProps = {};
+    body.hookProps['panel:player-detail:bottom'] = await executeHookLoad('panel:player-detail:bottom', event);
 
     return body;
   }
@@ -324,6 +329,7 @@
   import BanHistoryRow from '$lib/component/rows/BanHistoryRow.svelte';
   import CardMenu from '$lib/component/CardMenu.svelte';
   import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import Hook from '$lib/component/Hook.svelte';
 
   export let data;
 
