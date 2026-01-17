@@ -133,6 +133,9 @@ export default defineConfig(({ isSsrBuild }) => {
         '/panel/api': env.VITE_API_URL.replace('/api', ''),
       },
       allowedHosts: true,
+      hmr: {
+        path: '/panel/',
+      },
     },
     build: {
       manifest: true,
