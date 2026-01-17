@@ -148,13 +148,25 @@
         </div>
       </div>
     </div>
-    <div class="card-body">PLUGIN_CONTENT</div>
+    <div class="card-body">
+      {#if $hookStore.length > 0}
+        <Hook name="panel:plugin-detail:content" {addon} />
+      {:else}
+        <NoContent
+          title={$_('pages.addon-detail.no-settings', { default: 'No Settings' })}
+          description={$_('pages.addon-detail.no-settings-desc', {
+            default: 'This addon has no configurable settings.',
+          })}
+          icon="fas fa-cog" />
+      {/if}
+    </div>
   </div>
 </div>
 
 <script context="module">
   import ApiUtil from '$lib/api.util.js';
   import { error } from '@sveltejs/kit';
+  import { executeLifecycle } from '$lib/PluginAPI.js';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -169,10 +181,12 @@
       path: `/api/panel/plugins/${addonId}`,
       request: event,
     });
-
+    
     if (body.error === 'NOT_FOUND') {
       throw error(404, body.error);
     }
+    
+    await executeLifecycle('panel:addon-detail:load', { addon: body.data }, event);
 
     return { addon: body.data };
   }
@@ -209,10 +223,15 @@
   } from '$lib/component/modals/ConfirmRemoveAddonWillCauseMoreUnloadModal.svelte';
   import PageActions from '$lib/component/PageActions.svelte';
   import RefreshRequiredAlert from '$lib/component/RefreshRequiredAlert.svelte';
+  import Hook from '$lib/component/Hook.svelte';
+  import NoContent from '$lib/component/NoContent.svelte';
+  import { panoApiClient } from '$lib/PluginAPI.js';
 
   export let data;
   let addon, removing;
   let refreshRequired = false;
+
+  const hookStore = panoApiClient.ui.hook.get('panel:plugin-detail:content');
 
   $: {
     addon = data.addon;

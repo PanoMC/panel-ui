@@ -141,6 +141,11 @@ export const panoApi = {
         panoApi.ui.lifecycle.on('panel:posts:load', handler);
       }
     },
+    addon: {
+      onLoad(handler) {
+        panoApi.ui.lifecycle.on('panel:addon-detail:load', handler);
+      }
+    },
     lifecycle: {
       on(name, handler) {
         lifecycleHandlers.update(h => {
