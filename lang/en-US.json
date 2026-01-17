@@ -447,6 +447,7 @@
     "permissions": {
       "title": "Permissions",
       "panel": {
+        "luckperms-alert": "This page is designed to be compatible with LuckPerms and offers advanced permission management features. For more information, you can check the documentation.",
         "search": {
           "placeholder": "Search (group, player, node)"
         },

@@ -447,6 +447,7 @@
     "permissions": {
       "title": "Yetkiler",
       "panel": {
+        "luckperms-alert": "Bu sayfa LuckPerms ile uyumlu çalışacak şekilde tasarlanmıştır ve gelişmiş izin yönetimi özellikleri sunar. Daha fazla bilgi için dokümantasyona göz atabilirsiniz.",
         "search": {
           "placeholder": "Ara (grup, oyuncu, node)"
         },

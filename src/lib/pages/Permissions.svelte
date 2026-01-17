@@ -1,4 +1,17 @@
 <div class="container vstack gap-3">
+{#if showLuckPermsAlert}
+  <div class="alert alert-info d-flex align-items-center mb-0 alert-dismissible" role="alert">
+    <i class="fas fa-info-circle me-3 fa-lg"></i>
+    <div>
+      {$_('pages.permissions.panel.luckperms-alert')}
+      <a href="{PANO_WEBSITE_URL}/docs" target="_blank" class="alert-link ms-1">
+        {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
+        <i class="fas fa-external-link-alt ms-1 small"></i>
+      </a>
+    </div>
+    <button type="button" class="btn-close" on:click={dismissAlert} title="{$_('buttons.close')}" aria-label="{$_('buttons.close')}"></button>
+  </div>
+{/if}
   <PageActions>
     <div slot="middle" class="hstack gap-2">
       <SearchInput
@@ -549,6 +562,7 @@
 
 <script>
   import { getContext, onMount } from 'svelte';
+  import { browser } from '$app/environment';
   import { beforeNavigate } from '$app/navigation';
   import { _ } from 'svelte-i18n';
 
@@ -590,6 +604,7 @@
   import NoContent from '$lib/component/NoContent.svelte';
   import SearchInput from '$lib/component/SearchInput.svelte';
   import { currentLanguage } from '$lib/language.util.js';
+  import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
   export let data;
 
@@ -597,6 +612,15 @@
   const currentUser = getContext('user');
 
   pageTitle.set('pages.permissions.title');
+
+  let showLuckPermsAlert = browser ? localStorage.getItem('hide_luckperms_alert') !== 'true' : true;
+
+  function dismissAlert() {
+    showLuckPermsAlert = false;
+    if (browser) {
+      localStorage.setItem('hide_luckperms_alert', 'true');
+    }
+  }
 
   // Variables for editor functionality
   let selectedGroup = null;
