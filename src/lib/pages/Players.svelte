@@ -35,6 +35,15 @@
       </div>
 
       <!-- Filters -->
+      <div slot="middle" style="width: 250px;">
+        <SearchInput
+          initialValue={search}
+          showSpinner={false}
+          debounceMs={500}
+          on:change={onSearchInput} />
+      </div>
+
+      <!-- Filters -->
       <CardFilters slot="right">
         {#if !data.permissionGroup}
           <!-- Filters -->
@@ -133,6 +142,7 @@
     const page = parseInt(searchParams.get('page')) || 1;
     const permissionGroup = searchParams.get('permissionGroup');
     const pageType = searchParams.get('pageType') || DefaultPageType;
+    const search = searchParams.get('search');
 
     if (!Object.values(PageTypes).includes(pageType)) {
       throw error(404, 'PAGE_NOT_FOUND');
@@ -142,6 +152,7 @@
       page,
       status: pageType,
       permissionGroup,
+      search,
     });
 
     const body = await ApiUtil.get({
@@ -159,6 +170,7 @@
 
     body.page = page;
     body.pageType = pageType;
+    body.search = search;
 
     return body;
   }
@@ -200,14 +212,19 @@
   import CardFilters from '$lib/component/CardFilters.svelte';
   import CardMenu from '$lib/component/CardMenu.svelte';
   import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import SearchInput from '$lib/component/SearchInput.svelte';
   import { page } from "$app/stores";
 
   export let data;
+  let search = data.search || '';
+  let searchTimeout;
 
   let checkTime = 0;
   let interval;
 
   const pageTitle = getContext('pageTitle');
+
+  $: search = data.search || '';
 
   $: {
     pageTitle.set(
@@ -230,11 +247,19 @@
     );
   }
 
+  function onSearchInput(event) {
+    search = event.detail.value;
+
+    data.page = 1;
+    refreshData();
+  }
+
   async function refreshData() {
     const queryParams = buildQueryParams({
       page: data.page,
       permissionGroup: data.permissionGroup?.name,
       pageType: data.pageType,
+      search: search || undefined,
     });
 
     await goto(queryParams, { invalidateAll: true });

@@ -58,7 +58,7 @@
       </div>
       <!-- Search -->
       <div slot="middle">
-        <TranslationSearchInput {searching} on:change={(e) => (searchQuery = e.detail.value)} />
+        <SearchInput {searching} on:change={(e) => (searchQuery = e.detail.value)} />
       </div>
       <!-- Filters -->
       <CardFilters slot="right">
@@ -303,7 +303,7 @@
   import TranslationRow from '$lib/component/rows/TranslationRow.svelte';
   import TranslationSkeleton from '$lib/component/rows/TranslationSkeleton.svelte';
   import UnnecessaryTranslationsAlert from '$lib/component/UnnecessaryTranslationsAlert.svelte';
-  import TranslationSearchInput from '$lib/component/TranslationSearchInput.svelte';
+  import SearchInput from '$lib/component/SearchInput.svelte';
   import NoContent from '$lib/component/NoContent.svelte';
   import { browser } from '$app/environment';
   import { navigating } from '$app/stores';

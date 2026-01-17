@@ -1,7 +1,7 @@
 <div class="container vstack gap-3">
   <PageActions>
     <div slot="middle" class="hstack gap-2">
-      <TranslationSearchInput
+      <SearchInput
         showSpinner={false}
         placeholderKey="pages.permissions.panel.search.placeholder"
         ariaLabelKey="pages.permissions.panel.search.placeholder"
@@ -588,7 +588,7 @@
   } from '$lib/component/modals/SearchPlayerModal.svelte';
   import PageActions from '$lib/component/PageActions.svelte';
   import NoContent from '$lib/component/NoContent.svelte';
-  import TranslationSearchInput from '$lib/component/TranslationSearchInput.svelte';
+  import SearchInput from '$lib/component/SearchInput.svelte';
   import { currentLanguage } from '$lib/language.util.js';
 
   export let data;
