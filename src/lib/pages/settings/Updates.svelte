@@ -140,10 +140,12 @@
                           ? 'progress-bar-animated bg-primary'
                           : 'bg-success'}"
                       style="width: {(Math.min(
-                        platformUpdatingStep - 1,
-                        platformUpdateProcesses.length,
+                        platformUpdatingStep >= 2
+                          ? platformUpdatingStep - 2 + currentPlatformProgress
+                          : 0,
+                        platformUpdateProcesses.length - 1,
                       ) /
-                        platformUpdateProcesses.length) *
+                        (platformUpdateProcesses.length - 1)) *
                         100}%">
                     </div>
                   </div>
@@ -326,10 +328,12 @@
                             ? 'progress-bar-animated bg-primary'
                             : 'bg-success'}"
                         style="width: {(Math.min(
-                          resourceUpdateStep - 1,
-                          resourceUpdateProcesses.length,
+                          resourceUpdateStep >= 2
+                            ? resourceUpdateStep - 2 + currentResourceProgress
+                            : 0,
+                          resourceUpdateProcesses.length - 1,
                         ) /
-                          resourceUpdateProcesses.length) *
+                          (resourceUpdateProcesses.length - 1)) *
                           100}%">
                       </div>
                     </div>
@@ -442,6 +446,8 @@
   let resourceUpdateStep = 1;
   let updatingAll;
   let platformUpdateFinished;
+  let currentPlatformProgress = 0;
+  let currentResourceProgress = 0;
 
   const platformUpdating = getContext('platformUpdating');
   const platformRestarting = getContext('platformRestarting');
@@ -493,6 +499,12 @@
 
   async function handlePlatformUpdateSSEMessage(message) {
     if (message.result === 'ok') {
+      if (message.status === 'progress') {
+        currentPlatformProgress = message.progress;
+        return;
+      }
+
+      currentPlatformProgress = 0;
       platformUpdatingStep++;
 
       if (platformUpdatingStep === platformUpdateProcesses.length + 1) {
@@ -526,6 +538,12 @@
 
   async function handleResourceUpdateSSEMessage(update, message) {
     if (message.result === 'ok') {
+      if (message.status === 'progress') {
+        currentResourceProgress = message.progress;
+        return;
+      }
+
+      currentResourceProgress = 0;
       resourceUpdateStep++;
 
       if (resourceUpdateStep === resourceUpdateProcesses.length + 1) {
@@ -586,6 +604,7 @@
 
   async function installPlatformUpdate() {
     platformUpdatingStep = 1;
+    currentPlatformProgress = 0;
     $platformUpdating = true;
     platformUpdateError = null;
 
@@ -608,6 +627,7 @@
     resourceUpdateError = null;
     inProgressResource = update;
     resourceUpdateStep = 1;
+    currentResourceProgress = 0;
     await delay(500);
 
     const eventSource = new EventSource(

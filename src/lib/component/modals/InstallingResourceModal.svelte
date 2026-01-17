@@ -27,7 +27,15 @@
               : !isFinished($installingStep)
                 ? 'progress-bar-animated bg-primary'
                 : 'bg-success'}"
-            style="width: {(Math.min($installingStep - 1, $processes.length) / $processes.length) *
+            style="width: {(Math.min(
+              ($versionId
+                ? $installingStep >= 2
+                  ? $installingStep - 2 + $currentProgress
+                  : 0
+                : $installingStep - 1 + $currentProgress),
+              $processes.length - ($versionId ? 1 : 0)
+            ) /
+              ($processes.length - ($versionId ? 1 : 0))) *
               100}%">
           </div>
         </div>
@@ -92,6 +100,7 @@
   const processes = writable([]);
 
   const installingStep = writable(1);
+  const currentProgress = writable(0);
   const installError = writable();
 
   let callback = () => {};
@@ -144,6 +153,7 @@
       return null;
     }
 
+    currentProgress.set(0);
     installingStep.set(get(installingStep) + 1);
 
     return uploadResponse.data.fileName;
@@ -155,6 +165,12 @@
 
   async function handleSSEMessage(message) {
     if (message.result === 'ok') {
+      if (message.status === 'progress') {
+        currentProgress.set(message.progress);
+        return;
+      }
+
+      currentProgress.set(0);
       installingStep.set(get(installingStep) + 1);
 
       if (get(installingStep) === get(processes).length + 1) {
@@ -196,8 +212,10 @@
     handleEventSource(eventSource);
   }
 
-  export async function show(newType, newFile, versionId, storeCallback) {
+  export async function show(newType, newFile, newVersionId, storeCallback) {
     installingStep.set(1);
+    currentProgress.set(0);
+    versionId.set(newVersionId);
     installError.set(null);
     type.set(newType);
     callback = storeCallback;
@@ -235,10 +253,13 @@
       return;
     }
 
-    if (versionId) {
-      await installResourceFromStore(versionId);
+    if (newVersionId) {
+      await installResourceFromStore(newVersionId);
     }
   }
+
+  // To make type checking easier in the template
+  const versionId = writable(null);
 
   export function setCallback(newCallback) {
     callback = newCallback;
