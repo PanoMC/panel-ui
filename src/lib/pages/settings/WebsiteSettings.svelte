@@ -152,6 +152,79 @@
       </div>
     </div>
 
+    <!-- Favicon section -->
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="siteFavicon">
+        {$_('pages.settings.site-settings.inputs.favicon.label')}
+      </label>
+      <div class="col-md-6">
+        <div class="position-relative d-inline-block" style="width: 64px; height: 64px;">
+          <DragAndDropZone
+            bind:this={faviconZone}
+            className="p-0 border rounded overflow-hidden w-100 h-100"
+            accept={['image/png', 'image/jpeg', 'image/gif', 'image/x-icon', 'image/vnd.microsoft.icon']}
+            maxFileSize={1 * 1024 * 1024}
+            on:drop={(e) => onFaviconDrop(e.detail)}
+            on:error={(e) => handleFileError(e, 'favicon')}
+          >
+            <img
+              alt={$_('pages.settings.site-settings.inputs.favicon.select')}
+              src={favicon}
+              class="w-100 h-100" 
+              style="object-fit: contain;" />
+          </DragAndDropZone>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
+            on:click={() => faviconZone.click()}
+            title={$_('buttons.change')}
+            aria-label={$_('buttons.change')}>
+            <i class="fas fa-pen"></i>
+          </button>
+        </div>
+        <small class=" d-block mt-2">
+          {$_('pages.settings.site-settings.inputs.favicon.helper')}
+        </small>
+      </div>
+    </div>
+
+    <!-- Website logo section -->
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="siteLogo">
+        {$_('pages.settings.site-settings.inputs.website-logo.label')}
+      </label>
+      <div class="col-md-6">
+        <div class="position-relative w-100" style="max-width: 300px;">
+          <div class="ratio ratio-16x9">
+             <DragAndDropZone
+                bind:this={logoZone}
+                className="border rounded overflow-hidden p-0 w-100 h-100 position-absolute start-0 top-0"
+                accept={['image/png', 'image/jpeg', 'image/gif']}
+                maxFileSize={2 * 1024 * 1024}
+                on:drop={(e) => onWebsiteLogoDrop(e.detail)}
+                on:error={(e) => handleFileError(e, 'logo')}
+             >
+               <img
+                 src={websiteLogo}
+                 class="object-fit-contain w-100 h-100"
+                 alt={$_('pages.settings.site-settings.inputs.website-logo.server-icon')} />
+             </DragAndDropZone>
+          </div>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
+            on:click={() => logoZone.click()}
+            title={$_('buttons.change')}
+            aria-label={$_('buttons.change')}>
+            <i class="fas fa-pencil"></i>
+          </button>
+        </div>
+        <small class=" d-block mt-2">
+          {$_('pages.settings.site-settings.inputs.website-logo.helper')}
+        </small>
+      </div>
+    </div>
+
     <!-- SSL and Port Settings -->
     <hr />
     <h5 class="mb-3">{$_('pages.settings.site-settings.ssl.title')}</h5>
@@ -308,78 +381,7 @@
       </div>
     {/if}
 
-    <!-- Favicon section -->
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="siteFavicon">
-        {$_('pages.settings.site-settings.inputs.favicon.label')}
-      </label>
-      <div class="col-md-6">
-        <div class="position-relative d-inline-block" style="width: 64px; height: 64px;">
-          <DragAndDropZone
-            bind:this={faviconZone}
-            className="p-0 border rounded overflow-hidden w-100 h-100"
-            accept={['image/png', 'image/jpeg', 'image/gif', 'image/x-icon', 'image/vnd.microsoft.icon']}
-            maxFileSize={1 * 1024 * 1024}
-            on:drop={(e) => onFaviconDrop(e.detail)}
-            on:error={(e) => handleFileError(e, 'favicon')}
-          >
-            <img
-              alt={$_('pages.settings.site-settings.inputs.favicon.select')}
-              src={favicon}
-              class="w-100 h-100" 
-              style="object-fit: contain;" />
-          </DragAndDropZone>
-          <button
-            type="button"
-            class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
-            on:click={() => faviconZone.click()}
-            title={$_('buttons.change')}
-            aria-label={$_('buttons.change')}>
-            <i class="fas fa-pen"></i>
-          </button>
-        </div>
-        <small class=" d-block mt-2">
-          {$_('pages.settings.site-settings.inputs.favicon.helper')}
-        </small>
-      </div>
-    </div>
 
-    <!-- Website logo section -->
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="siteLogo">
-        {$_('pages.settings.site-settings.inputs.website-logo.label')}
-      </label>
-      <div class="col-md-6">
-        <div class="position-relative w-100" style="max-width: 300px;">
-          <div class="ratio ratio-16x9">
-             <DragAndDropZone
-                bind:this={logoZone}
-                className="border rounded overflow-hidden p-0 w-100 h-100 position-absolute start-0 top-0"
-                accept={['image/png', 'image/jpeg', 'image/gif']}
-                maxFileSize={2 * 1024 * 1024}
-                on:drop={(e) => onWebsiteLogoDrop(e.detail)}
-                on:error={(e) => handleFileError(e, 'logo')}
-             >
-               <img
-                 src={websiteLogo}
-                 class="object-fit-contain w-100 h-100"
-                 alt={$_('pages.settings.site-settings.inputs.website-logo.server-icon')} />
-             </DragAndDropZone>
-          </div>
-          <button
-            type="button"
-            class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
-            on:click={() => logoZone.click()}
-            title={$_('buttons.change')}
-            aria-label={$_('buttons.change')}>
-            <i class="fas fa-pencil"></i>
-          </button>
-        </div>
-        <small class=" d-block mt-2">
-          {$_('pages.settings.site-settings.inputs.website-logo.helper')}
-        </small>
-      </div>
-    </div>
 
     <button
       class="btn btn-secondary"
