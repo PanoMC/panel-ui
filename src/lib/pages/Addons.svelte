@@ -34,6 +34,13 @@
                 values: { amount: data.plugins.length },
               })}
       </div>
+      <div slot="middle" style="width: 250px;">
+        <SearchInput
+          initialValue={search}
+          searching={isSearching}
+          debounceMs={500}
+          on:change={onSearchInput} />
+      </div>
       <!-- Filters -->
       <CardFilters slot="right">
         <CardFiltersItem href="/addons" active={data.pageType === PageTypes.ALL}
@@ -152,13 +159,14 @@
     await parent();
 
     const status = searchParams.get('status') || DefaultPageType;
+    const search = searchParams.get('search');
     const failedLogin = searchParams.has('failedLogin');
 
     if (!Object.values(PageTypes).includes(status)) {
       throw error(404, 'PAGE_NOT_FOUND');
     }
 
-    const queryParams = buildQueryParams({ status });
+    const queryParams = buildQueryParams({ status, search });
     const body = await ApiUtil.get({
       path: `/api/panel/plugins` + queryParams,
       request: event,
@@ -206,8 +214,29 @@
   import FailedLoginPanoStoreAlert from '$lib/component/FailedLoginPanoStoreAlert.svelte';
   import RefreshRequiredAlert from '$lib/component/RefreshRequiredAlert.svelte';
 
+  import SearchInput from '$lib/component/SearchInput.svelte';
+  import { goto } from '$app/navigation';
+
   export let data;
   let refreshRequired = false;
+  let search = '';
+  let isSearching = false;
+
+  function onSearchInput(event) {
+    search = event.detail.value;
+    refreshData();
+  }
+
+  async function refreshData() {
+    isSearching = true;
+    const queryParams = buildQueryParams({
+      status: data.pageType,
+      search: search || undefined
+    });
+
+    await goto(`${base}/addons${queryParams}`, { invalidateAll: true, keepFocus: true });
+    isSearching = false;
+  }
 
   $: {
     if (data.refreshRequired) {

@@ -39,11 +39,20 @@
 {/snippet}
 
 <div class="card">
-  <div class="card-header">
-    {$_('pages.themes.card-title', {
-      values: { amount: data.themes.length },
-    })}
-  </div>
+  <CardHeader>
+    <div slot="left">
+      {$_('pages.themes.card-title', {
+        values: { amount: data.themes.length },
+      })}
+    </div>
+    <div slot="middle" style="width: 250px;">
+      <SearchInput
+        initialValue={search}
+        searching={isSearching}
+        debounceMs={500}
+        on:change={onSearchInput} />
+    </div>
+  </CardHeader>
   <div class="card-body">
     {#if data.themes.length === 0}
       <NoContent />
@@ -109,13 +118,14 @@
     await parent();
 
     const status = searchParams.get('status') || DefaultPageType;
+    const search = searchParams.get('search');
     const failedLogin = searchParams.has('failedLogin');
 
     if (!Object.values(PageTypes).includes(status)) {
       throw error(404, 'PAGE_NOT_FOUND');
     }
 
-    const queryParams = buildQueryParams({ status });
+    const queryParams = buildQueryParams({ status, search });
     const body = await ApiUtil.get({
       path: `/api/panel/themes` + queryParams,
       request: event,
@@ -150,10 +160,10 @@
   import { _ } from 'svelte-i18n';
 
   import { base } from '$app/paths';
-  import { invalidate } from '$app/navigation';
+  import SearchInput from '$lib/component/SearchInput.svelte';
+  import { goto, invalidate } from '$app/navigation';
 
   import tooltip from '$lib/tooltip.util';
-
   import { show as showToast } from '$lib/component/ToastContainer.svelte';
 
   import CardMenuItem from '$lib/component/CardMenuItem.svelte';
@@ -169,6 +179,25 @@
   import FailedLoginPanoStoreAlert from '$lib/component/FailedLoginPanoStoreAlert.svelte';
 
   export let data;
+
+  let search = '';
+  let isSearching = false;
+
+  function onSearchInput(event) {
+     search = event.detail.value;
+     refreshData();
+  }
+
+  async function refreshData() {
+    isSearching = true;
+    const queryParams = buildQueryParams({
+        status: data.pageType,
+        search: search || undefined
+    });
+
+    await goto(`${base}/view${queryParams}`, { invalidateAll: true, keepFocus: true });
+    isSearching = false;
+  }
 
   const pageTitle = getContext('pageTitle');
 
