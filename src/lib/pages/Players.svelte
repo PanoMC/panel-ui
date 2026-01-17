@@ -38,7 +38,7 @@
       <div slot="middle" style="width: 250px;">
         <SearchInput
           initialValue={search}
-          showSpinner={false}
+          searching={isSearching}
           debounceMs={500}
           on:change={onSearchInput} />
       </div>
@@ -218,6 +218,7 @@
   export let data;
   let search = data.search || '';
   let searchTimeout;
+  let isSearching = false;
 
   let checkTime = 0;
   let interval;
@@ -255,6 +256,7 @@
   }
 
   async function refreshData() {
+    isSearching = true;
     const queryParams = buildQueryParams({
       page: data.page,
       permissionGroup: data.permissionGroup?.name,
@@ -262,7 +264,8 @@
       search: search || undefined,
     });
 
-    await goto(queryParams, { invalidateAll: true });
+    await goto(queryParams, { invalidateAll: true, keepFocus: true });
+    isSearching = false;
   }
 
   async function onPageClick(page) {

@@ -174,7 +174,7 @@
       search: search || undefined
     });
 
-    await goto(queryParams, { invalidateAll: true });
+    await goto(queryParams, { invalidateAll: true, keepFocus: true });
     isSearching = false;
   }
 
