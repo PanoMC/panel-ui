@@ -1,12 +1,18 @@
 <div class="container vstack gap-3">
   <PageActions leftClasses="col-lg-8" middleClasses="d-none">
-    <CardMenu slot="left">
-      {#each themeMenuItems as item}
-        {#if !item.permission || hasPermission(item.permission)}
-          <CardMenuItem href={item.href}>{$_(item.text)}</CardMenuItem>
-        {/if}
-      {/each}
-    </CardMenu>
+    <div slot="left">
+      {#if slots.left}
+        {@render slots.left()}
+      {:else}
+        <CardMenu>
+          {#each themeMenuItems as item}
+            {#if !item.permission || hasPermission(item.permission)}
+              <CardMenuItem href={item.href}>{$_(item.text)}</CardMenuItem>
+            {/if}
+          {/each}
+        </CardMenu>
+      {/if}
+    </div>
 
     <div slot="right" class="hstack gap-2" data-layout-actions="right">
       {#if slots.right}
@@ -65,6 +71,6 @@
   const slots = initSlots();
 
   beforeNavigate(() =>{
-    Object.assign(slots, {right: null})
+    Object.assign(slots, {right: null, left: null})
   })
 </script>

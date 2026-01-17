@@ -1,61 +1,59 @@
-<div class="container vstack gap-3">
-  <!-- Action Menu -->
-  <PageActions middleClasses="d-lg-flex d-none">
-    <a slot="left" href="{base}/view" class="btn btn-link">
-      <i class="fas fa-arrow-left"></i>
-      <span class="d-lg-inline d-none ms-2"> {$_('buttons.themes')}</span>
-    </a>
+{#snippet left()}
+  <a href="{base}/view" class="btn btn-link">
+    <i class="fas fa-arrow-left"></i>
+    <span class="d-lg-inline d-none ms-2"> {$_('buttons.themes')}</span>
+  </a>
+{/snippet}
 
-    <div class="hstack gap-2" slot="right">
-      {#if theme.installedBy !== 'SYSTEM'}
-        <button
-          aria-label={$_('buttons.remove')}
-          class="btn btn-link"
-          type="button"
-          on:click={onRemoveClick}
-          title={$_('buttons.remove')}
-          class:disabled={removing}>
-          <i class="fas fa-trash"></i>
-        </button>
-      {/if}
-      {#if theme.verifyStatus !== 'UNKNOWN'}
-        <a
-          href={`${PANO_WEBSITE_URL}/themes/${theme.id}`}
-          target="_blank"
-          class="btn btn-link"
-          title={$_('buttons.show-in-store')}
-          aria-label={$_('buttons.show-in-store')}>
-          <i class="fas fa-store"></i>
-        </a>
-      {/if}
-      {#if theme.running}
-        <button
-          class="btn btn-danger"
-          type="button"
-          aria-label={$_('buttons.stop')}
-          on:click={onStopClick}
-          class:disabled={stoping}>
-          <i class="fas fa-stop"></i>
-          <span class="d-lg-inline d-none ms-2">{$_('buttons.stop')}</span>
-        </button>
-      {/if}
-      {#if !theme.running && theme.active}
-        <button
-          class="btn btn-secondary"
-          type="button"
-          on:click={onStartClick}
-          class:disabled={stoping}>
-          <i class="fas fa-play"></i>
-          <span class="d-lg-inline d-none ms-2">{$_('buttons.start')}</span>
-        </button>
-      {/if}
-      {#if !theme.active}
-        <button class="btn btn-secondary" on:click={activate} disabled={activating}>
-          {$_('buttons.activate')}{#if activating}<i class="fas fa-spinner fa-spin ms-2"></i>{/if}
-        </button>
-      {/if}
-    </div>
-  </PageActions>
+{#snippet right()}
+  {#if theme.installedBy !== 'SYSTEM'}
+    <button
+      aria-label={$_('buttons.remove')}
+      class="btn btn-link"
+      type="button"
+      on:click={onRemoveClick}
+      title={$_('buttons.remove')}
+      class:disabled={removing}>
+      <i class="fas fa-trash"></i>
+    </button>
+  {/if}
+  {#if theme.verifyStatus !== 'UNKNOWN'}
+    <a
+      href={`${PANO_WEBSITE_URL}/themes/${theme.id}`}
+      target="_blank"
+      class="btn btn-link"
+      title={$_('buttons.show-in-store')}
+      aria-label={$_('buttons.show-in-store')}>
+      <i class="fas fa-store"></i>
+    </a>
+  {/if}
+  {#if theme.running}
+    <button
+      class="btn btn-danger"
+      type="button"
+      aria-label={$_('buttons.stop')}
+      on:click={onStopClick}
+      class:disabled={stoping}>
+      <i class="fas fa-stop"></i>
+      <span class="d-lg-inline d-none ms-2">{$_('buttons.stop')}</span>
+    </button>
+  {/if}
+  {#if !theme.running && theme.active}
+    <button
+      class="btn btn-secondary"
+      type="button"
+      on:click={onStartClick}
+      class:disabled={stoping}>
+      <i class="fas fa-play"></i>
+      <span class="d-lg-inline d-none ms-2">{$_('buttons.start')}</span>
+    </button>
+  {/if}
+  {#if !theme.active}
+    <button class="btn btn-secondary" on:click={activate} disabled={activating}>
+      {$_('buttons.activate')}{#if activating}<i class="fas fa-spinner fa-spin ms-2"></i>{/if}
+    </button>
+  {/if}
+{/snippet}
 
   <div class="card">
     <div class="card-body">
@@ -185,7 +183,6 @@
             </ul>
           </div>
         </div>
-      </div>
     </div>
   </div>
 </div>
@@ -249,6 +246,9 @@
   $: {
     theme = data.theme;
   }
+
+  const slots = getContext('layout-slots');
+  Object.assign(slots, { left, right });
 
   let activating, removing, stoping, starting;
 
