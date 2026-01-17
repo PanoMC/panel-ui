@@ -215,9 +215,7 @@
     </div>
   </section>
   
-  <div class="mt-3">
-    <Hook name="panel:post-editor:content:bottom" post={data.post} />
-  </div>
+  <Hook name="panel:post-editor:content:bottom" post={data.post} />
 
 <AddEditPostCategoryModal />
 
