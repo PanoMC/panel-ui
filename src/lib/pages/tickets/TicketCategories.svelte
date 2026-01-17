@@ -18,11 +18,20 @@
   <!-- Ticket Categories -->
 
   <div class="card">
-    <div class="card-header">
-      {$_('pages.ticket-categories.card-title', {
-        values: { count: data.categoryCount },
-      })}
-    </div>
+    <CardHeader>
+      <div slot="left">
+        {$_('pages.ticket-categories.card-title', {
+          values: { count: data.categoryCount },
+        })}
+      </div>
+      <div slot="middle" style="width: 250px;">
+        <SearchInput
+          initialValue={search}
+          searching={isSearching}
+          debounceMs={500}
+          on:change={onSearchInput} />
+      </div>
+    </CardHeader>
     <!-- No Category -->
     {#if data.categoryCount === 0}
       <NoContent />
@@ -87,9 +96,11 @@
     await parent();
 
     const page = searchParams.get('page') || 1;
+    const search = searchParams.get('search');
 
     const queryParams = buildQueryParams({
       page,
+      search
     });
 
     const body = await ApiUtil.get({
@@ -106,6 +117,7 @@
     }
 
     body.page = parseInt(page);
+    body.search = search;
 
     return body;
   }
@@ -138,18 +150,33 @@
   import CardMenu from '$lib/component/CardMenu.svelte';
   import CardMenuItem from '$lib/component/CardMenuItem.svelte';
 
+  import SearchInput from '$lib/component/SearchInput.svelte';
+
   export let data;
 
   const pageTitle = getContext('pageTitle');
 
   pageTitle.set('pages.ticket-categories.title');
 
+  let search = data.search || '';
+  let isSearching = false;
+
+  function onSearchInput(event) {
+    search = event.detail.value;
+
+    data.page = 1;
+    refreshData();
+  }
+
   async function refreshData() {
+    isSearching = true;
     const queryParams = buildQueryParams({
       page: data.page === 1 ? null : data.page,
+      search: search || undefined
     });
 
     await goto(queryParams, { invalidateAll: true });
+    isSearching = false;
   }
 
   async function onPageClick(page) {

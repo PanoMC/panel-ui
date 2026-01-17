@@ -77,6 +77,15 @@
       </div>
 
       <!-- Filters -->
+      <div slot="middle" style="width: 250px;">
+        <SearchInput
+          initialValue={search}
+          searching={isSearching}
+          debounceMs={500}
+          on:change={onSearchInput} />
+      </div>
+
+      <!-- Filters -->
       <CardFilters slot="right">
         {#if !data.categoryUrl}
           <CardFiltersItem href="/tickets" active={data.pageType === PageTypes.ALL}>
@@ -185,6 +194,7 @@
     const page = parseInt(searchParams.get('page')) || 1;
     const categoryUrl = searchParams.get('categoryUrl');
     const pageType = searchParams.get('pageType') || DefaultPageType;
+    const search = searchParams.get('search');
 
     if (!Object.values(PageTypes).includes(pageType)) {
       throw error(404, 'PAGE_NOT_FOUND');
@@ -194,6 +204,7 @@
       page,
       pageType,
       categoryUrl,
+      search,
     });
 
     const body = await ApiUtil.get({
@@ -212,6 +223,7 @@
     body.page = page;
     body.pageType = pageType;
     body.categoryUrl = categoryUrl;
+    body.search = search;
 
     return body;
   }
@@ -245,6 +257,7 @@
   import CardFilters from '$lib/component/CardFilters.svelte';
   import CardMenu from '$lib/component/CardMenu.svelte';
   import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import SearchInput from '$lib/component/SearchInput.svelte';
 
   export let data;
 
@@ -276,14 +289,27 @@
 
   let firstLoad = true;
 
+  let search = data.search || '';
+  let isSearching = false;
+  
+  function onSearchInput(event) {
+    search = event.detail.value;
+
+    data.page = 1;
+    refreshData();
+  }
+
   async function refreshData() {
+    isSearching = true;
     const queryParams = buildQueryParams({
       page: data.page,
       categoryUrl: data.categoryUrl,
       pageType: data.pageType,
+      search: search || undefined,
     });
 
-    await goto(queryParams);
+    await goto(queryParams, { invalidateAll: true });
+    isSearching = false;
   }
 
   async function onPageClick(page) {

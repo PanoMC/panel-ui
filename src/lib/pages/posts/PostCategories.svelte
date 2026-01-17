@@ -8,11 +8,20 @@
 
 <!-- Post Categories -->
 <div class="card">
-  <div class="card-header">
-    {$_('pages.post-categories.card-title', {
-      values: { count: data.categoryCount },
-    })}
-  </div>
+  <CardHeader>
+    <div slot="left">
+      {$_('pages.post-categories.card-title', {
+        values: { count: data.categoryCount },
+      })}
+    </div>
+    <div slot="middle" style="width: 250px;">
+      <SearchInput
+        initialValue={search}
+        searching={isSearching}
+        debounceMs={500}
+        on:change={onSearchInput} />
+    </div>
+  </CardHeader>
     <!-- No Content -->
     {#if data.categoryCount === 0}
       <NoContent />
@@ -85,7 +94,12 @@
     await parent();
 
     const page = searchParams.get('page') || 1;
-    const queryParams = buildQueryParams({ page });
+    const search = searchParams.get('search');
+    
+    const queryParams = buildQueryParams({
+       page,
+       search
+    });
 
     const body = await ApiUtil.get({
       path: `/api/panel/post/categories` + queryParams,
@@ -93,7 +107,7 @@
     });
 
     if (body.error) {
-      if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
+           if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
         throw error(404, body.error);
       }
 
@@ -101,6 +115,7 @@
     }
 
     body.page = parseInt(page);
+    body.search = search;
 
     return body;
   }
@@ -129,6 +144,8 @@
   import NoContent from '$lib/component/NoContent.svelte';
   import PostCategoryRow from '$lib/component/rows/PostCategoryRow.svelte';
   import Hook from '$lib/component/Hook.svelte';
+  import SearchInput from '$lib/component/SearchInput.svelte';
+  import CardHeader from '$lib/component/CardHeader.svelte';
 
   const { data = $bindable() } = $props();
 
@@ -138,12 +155,27 @@
 
   pageTitle.set('pages.post-categories.title');
 
+
+
+  let search = data.search || '';
+  let isSearching = false;
+
+  function onSearchInput(event) {
+    search = event.detail.value;
+
+    data.page = 1;
+    refreshData();
+  }
+
   async function refreshData() {
+    isSearching = true;
     const queryParams = buildQueryParams({
       page: data.page === 1 ? null : data.page,
+      search: search || undefined
     });
 
     await goto(queryParams, { invalidateAll: true });
+    isSearching = false;
   }
 
   async function onPageClick(page) {
