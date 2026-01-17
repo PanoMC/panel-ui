@@ -37,6 +37,9 @@
   import { _ } from 'svelte-i18n';
   import { fade } from 'svelte/transition';
   import { base } from '$app/paths';
+  import { browser } from '$app/environment';
+  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showConfirm } from '$lib/component/modals/ConfirmActionModal.svelte';
 
   const pageTitle = getContext('pageTitle');
   const panelTheme = getContext('panelTheme');
@@ -64,6 +67,16 @@
     if (data.type === 'theme-iframe-height' && frame) {
       const h = Number(data.height) || 0;
       if (h > 0) frame.style.height = h + 'px';
+    }
+
+    if (data.type === 'show-confirm') {
+      showConfirm(data.title, () => {
+        frame?.contentWindow?.postMessage({ type: 'confirm-callback', id: data.id }, childOrigin);
+      });
+    }
+
+    if (data.type === 'show-toast') {
+      showToast(data.text, data.params, data.toastComponent);
     }
 
     if (data.type === 'theme-settings-loaded') {
@@ -99,6 +112,7 @@
   }
 
   async function sendCSS() {
+    if (!browser) return;
     if (!frame?.contentWindow || !childOrigin) return;
 
     sent = true;
@@ -193,8 +207,10 @@
   }
 
   async function load() {
-    window.removeEventListener('message', handleMessage);
-    window.addEventListener('message', handleMessage);
+    if (browser) {
+      window.removeEventListener('message', handleMessage);
+      window.addEventListener('message', handleMessage);
+    }
 
     loading = true;
     error = null;
@@ -202,7 +218,7 @@
 
     try {
       src = '/theme-settings';
-      const url = new URL(src, window.location.href);
+      const url = new URL(src, typeof window !== 'undefined' ? window.location.href : 'http://localhost');
       childOrigin = url.origin;
     } catch (_) {
       childOrigin = '*';
@@ -224,14 +240,17 @@
 
     return () => {
       frame?.removeEventListener('load', onLoad);
-      window.removeEventListener('message', handleMessage);
+      if (browser) {
+        window.removeEventListener('message', handleMessage);
+      }
     };
   }
 
   let unsubscribeTheme;
+  let cleanupLoad;
 
   onMount(() => {
-    load();
+    cleanupLoad = load();
 
     unsubscribeTheme = panelTheme.subscribe((value) => {
       sendTheme(value);
@@ -241,6 +260,16 @@
   onDestroy(() => {
     if (unsubscribeTheme) {
       unsubscribeTheme();
+    }
+    if (cleanupLoad && typeof cleanupLoad === 'function') {
+      cleanupLoad();
+    } else if (typeof cleanupLoad?.then === 'function') {
+      cleanupLoad.then((cleanup) => {
+        if (typeof cleanup === 'function') cleanup();
+      });
+    }
+    if (browser) {
+      window.removeEventListener('message', handleMessage);
     }
   });
 </script>

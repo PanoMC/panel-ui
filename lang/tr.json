@@ -863,6 +863,12 @@
         "title": "Kritik web sitesi ayarlarını değiştiriyorsunuz. Bu değişiklikler sunucunun yeniden başlatılmasını gerektirebilir ve web sitenizin erişilebilirliğini etkileyebilir. Onaylamak için lütfen hesap şifrenizi girin.",
         "account-password": "Hesap Şifresi"
       },
+      "confirm-reset-tab": {
+        "title": "Bu sekmedeki ayarları sıfırlamak istediğinize emin misiniz?"
+      },
+      "confirm-reset-all": {
+        "title": "Tüm tema ayarlarını sıfırlamak istediğinize emin misiniz?"
+      },
       "confirm-draft-post": {
         "title": "Bu gönderiyi taslağa taşımak istediğinize emin misiniz?"
       },

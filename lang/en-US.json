@@ -859,6 +859,12 @@
         "title": "You are changing critical website settings. These changes might require a server restart and could affect your website's accessibility. Please enter your account password to confirm.",
         "account-password": "Account Password"
       },
+      "confirm-reset-tab": {
+        "title": "Are you sure you want to reset the settings in this tab?"
+      },
+      "confirm-reset-all": {
+        "title": "Are you sure you want to reset all theme settings?"
+      },
       "confirm-draft-post": {
         "title": "Are you sure to move this post to draft?"
       },

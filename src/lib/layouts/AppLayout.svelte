@@ -32,6 +32,7 @@
   {/if}
   
   <RestartingModal />
+  <ConfirmActionModal />
 </App>
 
 <script context="module">
@@ -268,6 +269,7 @@
   import MainLayout from '$lib/layouts/MainLayout.svelte';
   import ToastContainer from '$lib/component/ToastContainer.svelte';
   import RestartingModal from '$lib/component/modals/RestartingModal.svelte';
+  import ConfirmActionModal from '$lib/component/modals/ConfirmActionModal.svelte';
 
   export let data;
 
