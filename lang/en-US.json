@@ -690,6 +690,7 @@
       "description": "The platform is restarting, please wait. This process may take a few seconds."
     },
     "failed-login-pano-store": "Failed login to Pano store! Try again later or reconnect your Pano account.",
+    "refresh-required-alert": "You have changed the status of an addon. Please refresh the page to apply changes.",
     "verified-status": {
       "verified": "Verified by Pano",
       "not-verified": "Not verified by Pano, use at your own risk!"

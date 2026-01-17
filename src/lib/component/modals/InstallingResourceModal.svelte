@@ -71,7 +71,7 @@
             data-bs-dismiss="modal"
             type="button"
             on:click={() =>
-              goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}`, {
+              goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}?refreshRequired=true`, {
                 invalidateAll: true,
               })}>
             <i class="fas fa-arrow-left me-2"></i>

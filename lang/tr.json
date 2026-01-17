@@ -693,6 +693,7 @@
       "description": "Platform yeniden başlatılıyor, lütfen bekleyin. Bu işlem birkaç saniye sürebilir."
     },
     "failed-login-pano-store": "Pano mağazasına giriş yapılamadı! Lütfen daha sonra tekrar deneyin veya Pano hesabınızı yeniden bağlayın.",
+    "refresh-required-alert": "Bir eklentinin durumunu değiştirdiniz. Değişiklikleri uygulamak için lütfen sayfayı yenileyin.",
     "verified-status": {
       "verified": "Pano tarafından doğrulandı",
       "not-verified": "Pano tarafından doğrulanmadı, kendi sorumluluğunuzda kullanın!"

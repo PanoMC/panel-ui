@@ -3,6 +3,9 @@
   {#if data.failedLogin}
     <FailedLoginPanoStoreAlert />
   {/if}
+  {#if refreshRequired}
+    <RefreshRequiredAlert />
+  {/if}
   <!-- Action Menu -->
   <PageActions middleClasses="d-lg-flex d-none" leftClasses="d-lg-flex d-none">
     <div slot="right" class="hstack gap-2">
@@ -165,7 +168,9 @@
       throw error(500, body);
     }
 
-    return { plugins: body.data, pageType: status, failedLogin };
+    const refreshRequired = searchParams.has('refreshRequired');
+
+    return { plugins: body.data, pageType: status, failedLogin, refreshRequired };
   }
 </script>
 
@@ -174,6 +179,7 @@
   import { _ } from 'svelte-i18n';
 
   import { base } from '$app/paths';
+  import { browser } from '$app/environment';
 
   import { PANO_WEBSITE_URL } from '$lib/variables';
 
@@ -198,8 +204,22 @@
   import NoContent from '$lib/component/NoContent.svelte';
   import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
   import FailedLoginPanoStoreAlert from '$lib/component/FailedLoginPanoStoreAlert.svelte';
+  import RefreshRequiredAlert from '$lib/component/RefreshRequiredAlert.svelte';
 
   export let data;
+  let refreshRequired = false;
+
+  $: {
+    if (data.refreshRequired) {
+      refreshRequired = true;
+
+      if (browser) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('refreshRequired');
+        history.replaceState(history.state, '', url);
+      }
+    }
+  }
 
   const pageTitle = getContext('pageTitle');
 
@@ -288,6 +308,7 @@
 
         plugin.loading = false;
         data.plugins = data.plugins;
+        refreshRequired = true;
 
         callback();
       },
