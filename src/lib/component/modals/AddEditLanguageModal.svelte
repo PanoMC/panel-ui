@@ -55,17 +55,21 @@
                 addKeyWord();
               }
             }} />
-          {#each $locale.derivatives as derivative, index (derivative)}
-            <a
-              class="d-inline-block mt-2"
-              use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
-              href="javascript:void(0);"
-              on:click={() => removeKeyWord(index)}>
-              <span class="badge rounded-pill bg-light link-primary">
-                {derivative}
-              </span>
-            </a>
-          {/each}
+          {#if $locale.derivatives.length > 0}
+            <div class="hstack gap-2 flex-wrap">
+              {#each $locale.derivatives as derivative, index (derivative)}
+                <button
+                  type="button"
+                  class="btn btn-link p-0 d-inline-block mt-2 text-decoration-none"
+                  use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
+                  on:click={() => removeKeyWord(index)}>
+                  <span class="badge text-bg-primary">
+                    {derivative}
+                  </span>
+                </button>
+              {/each}
+            </div>
+          {/if}
         </div>
         <div class="modal-footer">
           <button
