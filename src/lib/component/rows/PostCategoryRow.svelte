@@ -10,20 +10,22 @@
     </button>
   </th>
   <Hook name="panel:post-categories:table:row:start" category={category} tag="td" class="align-middle text-nowrap" />
-  <td class="align-middle text-nowrap">
-    <button
-      class="btn btn-link p-0"
-      type="button"
-      title={$_('buttons.edit')}
-      on:click={onEditClick}>
-      {category.title}
-    </button>
+  <td class="align-middle" style="max-width: 250px;">
+    <div class="text-truncate">
+      <button
+        class="btn btn-link p-0 text-start text-decoration-none w-100 text-truncate"
+        type="button"
+        title={category.title}
+        on:click={onEditClick}>
+        {category.title}
+      </button>
+    </div>
   </td>
   <Hook name="panel:post-categories:table:row:after-category" category={category} tag="td" class="align-middle text-nowrap" />
-  <td class="align-middle text-nowrap">
-    {category.description && category.description.length > 50
-      ? category.description.slice(0, 50) + '...'
-      : category.description}
+  <td class="align-middle" style="max-width: 300px;">
+    <div class="text-truncate" title={category.description}>
+      {category.description}
+    </div>
   </td>
   <Hook name="panel:post-categories:table:row:after-description" category={category} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle">

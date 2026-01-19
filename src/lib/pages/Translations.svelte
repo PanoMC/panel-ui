@@ -165,7 +165,7 @@
         {/if}
       </div>
       {#if ready && hasMore}
-        <div use:observer class="py-2 text-center text-muted small">
+        <div use:observer class="py-2 text-center small">
           <i class="fas fa-circle-notch fa-spin me-2"></i>
           {$_('components.store-loading.loading')}
         </div>

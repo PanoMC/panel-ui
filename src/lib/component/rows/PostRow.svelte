@@ -99,13 +99,15 @@
     </div>
   </td>
   <Hook name="panel:posts:table:row:after-thumbnail" {post} tag="td" class="align-middle text-nowrap" />
-  <td class="align-middle text-nowrap">
-    <a
-      href={base + '/posts/detail/' + post.id}
-      title={$_('buttons.edit')}
-      class="rounded focus-ring">
-      {post.title && post.title.length > 50 ? post.title.slice(0, 50) + '...' : post.title}
-    </a>
+  <td class="align-middle" style="max-width: 300px;">
+    <div class="text-truncate">
+      <a
+        href={base + '/posts/detail/' + post.id}
+        title={post.title}
+        class="rounded focus-ring text-decoration-none d-block text-truncate">
+        {post.title}
+      </a>
+    </div>
   </td>
   <Hook name="panel:posts:table:row:after-title" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">

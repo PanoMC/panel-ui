@@ -10,14 +10,14 @@
         <div class="col-lg-4">
           <ul class="mb-0">
             <li>
-              <a
-                href="javascript:void(0)"
-                class="alert-link"
+              <button
+                type="button"
+                class="btn btn-link alert-link p-0 border-0 text-start text-decoration-none"
                 data-bs-target="#connectServer"
                 data-bs-toggle="modal">
                 <i class="fa-solid fa-gamepad me-2"></i>
                 {$_('pages.dashboard.welcome-card.connect-server')}
-              </a>
+              </button>
               <span class="d-block">
                 {$_('pages.dashboard.welcome-card.connect-server-description')}
               </span>

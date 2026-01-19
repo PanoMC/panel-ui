@@ -6,7 +6,8 @@
         class="form-control font-monospace"
         id="KeyTranslation"
         readonly
-        value={pluginId ? translation.key.replace(`plugins.${pluginId}.`, '') : translation.key} />
+        value={pluginId ? translation.key.replace(`plugins.${pluginId}.`, '') : translation.key}
+        title={pluginId ? translation.key.replace(`plugins.${pluginId}.`, '') : translation.key} />
       <label for="KeyTranslation">Key</label>
     </div>
   </div>
@@ -17,7 +18,8 @@
         class="form-control"
         id="OriginalTranslation"
         readonly
-        value={translation.original}></textarea>
+        value={translation.original}
+        title={translation.original}></textarea>
       <label for="OriginalTranslation">Original</label>
     </div>
   </div>
@@ -28,6 +30,7 @@
         class="form-control"
         id="CustomTranslation"
         bind:value={translation.custom}
+        title={translation.custom}
         on:input={onCustomInputChange}></textarea>
       <label for="CustomTranslation">Custom</label>
     </div>

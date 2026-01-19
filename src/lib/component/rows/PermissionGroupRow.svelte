@@ -11,9 +11,15 @@
       </button>
     {/if}
   </th>
-  <td class="align-middle text-nowrap">
-    <a title={$_('buttons.edit')} href="{base}/players/permissions/detail/{permissionGroup.id}"
-      >{permissionGroup.name}</a>
+  <td class="align-middle" style="max-width: 200px;">
+    <div class="text-truncate">
+      <a
+        title={permissionGroup.name}
+        class="text-decoration-none d-block text-truncate"
+        href="{base}/players/permissions/detail/{permissionGroup.id}">
+        {permissionGroup.name}
+      </a>
+    </div>
   </td>
   <td class="align-middle text-nowrap"
     >{#if permissionGroup.name === 'tayyip' || permissionGroup.name === 'admin'}

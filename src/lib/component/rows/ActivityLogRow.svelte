@@ -4,7 +4,7 @@
   class:bg-secondary-subtle={log.selected}
   on:click={onClick}
   title={$_('buttons.view')}>
-  <span class="fw-normal d-block markdown-renderer">
+  <span class="fw-normal d-block text-truncate markdown-renderer" title={translation}>
     <MarkdownRenderer content={translation} />
   </span>
   <Date time={log.createdAt} />

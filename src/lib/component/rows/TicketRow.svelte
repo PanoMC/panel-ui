@@ -12,13 +12,15 @@
   <td class="align-middle text-nowrap">
     <code>#{ticket.id}</code>
   </td>
-  <td class="align-middle text-nowrap">
-    <a
-      href="{base}/tickets/detail/{ticket.id}"
-      class="rounded focus-ring"
-      title={$_('buttons.view')}>
-      {ticket.title}
-    </a>
+  <td class="align-middle" style="max-width: 250px;">
+    <div class="text-truncate">
+      <a
+        href="{base}/tickets/detail/{ticket.id}"
+        class="rounded focus-ring text-decoration-none d-block text-truncate"
+        title={ticket.title}>
+        {ticket.title}
+      </a>
+    </div>
   </td>
   <td class="align-middle text-nowrap">
     <CategoryBadge
@@ -27,24 +29,26 @@
       filterTitle={$_('components.ticket-row.filter')}
       noCategoryText={$_('components.ticket-row.no-category')} />
   </td>
-  <td class="align-middle text-nowrap">
-    <a
-      href="{base}/players/detail/{ticket.writer.username}"
-      title={$_('buttons.view')}
-      class="d-inline-block rounded-circle focus-ring">
-      <img
-        src="https://minotar.net/avatar/{ticket.writer.username}/32"
-        alt={$_('components.ticket-row.player-name')}
-        class="rounded-circle animate__animated animate__zoomIn"
-        height="32"
-        width="32" />
-    </a>
-    <a
-      href="{base}/players/detail/{ticket.writer.username}"
-      title={$_('buttons.view')}
-      class="rounded focus-ring ms-2">
-      {ticket.writer.username}
-    </a>
+  <td class="align-middle" style="max-width: 200px;">
+    <div class="text-truncate d-flex align-items-center">
+      <a
+        href="{base}/players/detail/{ticket.writer.username}"
+        title={$_('buttons.view')}
+        class="flex-shrink-0 d-inline-block rounded-circle focus-ring">
+        <img
+          src="https://minotar.net/avatar/{ticket.writer.username}/32"
+          alt={$_('components.ticket-row.player-name')}
+          class="rounded-circle animate__animated animate__zoomIn"
+          height="32"
+          width="32" />
+      </a>
+      <a
+        href="{base}/players/detail/{ticket.writer.username}"
+        title={ticket.writer.username}
+        class="rounded focus-ring ms-2 text-decoration-none text-truncate">
+        {ticket.writer.username}
+      </a>
+    </div>
   </td>
   <td class="align-middle text-nowrap">
     <TicketStatusBadge status={ticket.status} />

@@ -47,26 +47,28 @@
     </div>
   </th>
   <Hook name="panel:players:table:row:start" {player} tag="td" class="align-middle text-nowrap" />
-  <td class="align-middle text-nowrap">
-    <a
-      class="d-inline-block focus-ring rounded-circle"
-      title={$_('buttons.view')}
-      href="{base}/players/detail/{player.username}">
-      <img
-        src="https://minotar.net/avatar/{player.username}"
-        alt={player.username}
-        width="32"
-        height="32"
-        class="rounded-circle animate__animated animate__zoomIn" />
-    </a>
-    <a
-      class="rounded focus-ring ms-2"
-      class:text-danger={player.isBanned}
-      class:text-decoration-line-through={player.isBanned}
-      title={$_('buttons.view')}
-      href="{base}/players/detail/{player.username}">
-      {player.username}
-    </a>
+  <td class="align-middle" style="max-width: 200px;">
+    <div class="text-truncate d-flex align-items-center">
+      <a
+        class="flex-shrink-0 d-inline-block focus-ring rounded-circle"
+        title={$_('buttons.view')}
+        href="{base}/players/detail/{player.username}">
+        <img
+          src="https://minotar.net/avatar/{player.username}"
+          alt={player.username}
+          width="32"
+          height="32"
+          class="rounded-circle animate__animated animate__zoomIn" />
+      </a>
+      <a
+        class="rounded focus-ring ms-2 text-decoration-none text-truncate"
+        class:text-danger={player.isBanned}
+        class:text-decoration-line-through={player.isBanned}
+        title={$_('buttons.view')}
+        href="{base}/players/detail/{player.username}">
+        {player.username}
+      </a>
+    </div>
   </td>
   <Hook name="panel:players:table:row:after-name" {player} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap text-capitalize">

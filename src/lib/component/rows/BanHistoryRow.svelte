@@ -15,15 +15,14 @@
       <span>{$_('pages.player-detail.permanent-ban')}</span>
     {/if}
   </td>
-  <td class="align-middle">
-    {#if banHistory.reason}
-      <span title={banHistory.reason}
-        >{banHistory.reason.length > 36
-          ? banHistory.reason.substring(0, 36) + '...'
-          : banHistory.reason}</span>
-    {:else}
-      <span>{$_('pages.player-detail.no-reason')}</span>
-    {/if}
+  <td class="align-middle" style="max-width: 250px;">
+    <div class="text-truncate">
+      {#if banHistory.reason}
+        <span title={banHistory.reason}>{banHistory.reason}</span>
+      {:else}
+        <span>{$_('pages.player-detail.no-reason')}</span>
+      {/if}
+    </div>
   </td>
   <td class="align-middle text-center">
     {#if banHistory.emailNotified}
@@ -36,28 +35,30 @@
         use:tooltip={[$_('pages.player-detail.email-not-notified'), { placement: 'bottom' }]}></i>
     {/if}
   </td>
-  <td class="align-middle text-nowrap">
-    {#if banHistory.bannedBy}
-      <a
-        href="{base}/players/detail/{banHistory.bannedBy}"
-        title={$_('buttons.view')}
-        class="d-inline-block rounded-circle focus-ring me-2">
-        <img
-          src="https://minotar.net/avatar/{banHistory.bannedBy}/24"
-          alt={banHistory.bannedBy}
-          class="rounded-circle"
-          height="24"
-          width="24" />
-      </a>
-      <a
-        href="{base}/players/detail/{banHistory.bannedBy}"
-        title={$_('buttons.view')}
-        class="rounded focus-ring">
-        {banHistory.bannedBy}
-      </a>
-    {:else}
-      <span class="badge text-bg-primary">{$_('pages.player-detail.system-ban')}</span>
-    {/if}
+  <td class="align-middle" style="max-width: 180px;">
+    <div class="text-truncate d-flex align-items-center">
+      {#if banHistory.bannedBy}
+        <a
+          href="{base}/players/detail/{banHistory.bannedBy}"
+          title={$_('buttons.view')}
+          class="flex-shrink-0 d-inline-block rounded-circle focus-ring me-2">
+          <img
+            src="https://minotar.net/avatar/{banHistory.bannedBy}/24"
+            alt={banHistory.bannedBy}
+            class="rounded-circle"
+            height="24"
+            width="24" />
+        </a>
+        <a
+          href="{base}/players/detail/{banHistory.bannedBy}"
+          title={banHistory.bannedBy}
+          class="rounded focus-ring text-decoration-none text-truncate">
+          {banHistory.bannedBy}
+        </a>
+      {:else}
+        <span class="badge text-bg-primary">{$_('pages.player-detail.system-ban')}</span>
+      {/if}
+    </div>
   </td>
   <td class="align-middle text-nowrap">
     <DateComponent time={banHistory.createdAt} />

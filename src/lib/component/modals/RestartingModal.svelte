@@ -12,7 +12,7 @@
             <i class="fas fa-arrows-rotate fa-3x text-primary spin"></i>
           </div>
           <h4 class="mb-3 fw-bold">{$_('components.restarting-pano.title')}</h4>
-          <p class="text-muted mb-0">{$_('components.restarting-pano.description')}</p>
+          <p class="mb-0">{$_('components.restarting-pano.description')}</p>
         </div>
       </div>
     </div>
@@ -45,13 +45,5 @@
     animation: spin 2s linear infinite;
   }
   
-  .animate__infinite {
-    animation-iteration-count: infinite;
-  }
-  
-  .animate__pulse {
-    animation-name: pulse;
-    animation-duration: 1s;
-    animation-timing-function: ease-in-out;
-  }
+
 </style>

@@ -11,20 +11,41 @@
       </button>
     {/if}
   </th>
-  <td class="align-middle text-nowrap">
-    {#if locale.definedBy !== 'SYSTEM'}
-      <button class="btn btn-sm btn-link" type="button" on:click={onEditClick}>
-        {locale.name}
-      </button>
-    {:else}
-      {locale.name}
-    {/if}
+  <td class="align-middle" style="max-width: 250px;">
+    <div class="text-truncate">
+      {#if locale.definedBy !== 'SYSTEM'}
+        <button
+          class="btn btn-sm btn-link p-0 text-start text-decoration-none w-100 text-truncate"
+          type="button"
+          on:click={onEditClick}
+          title={locale.name}>
+          {locale.name}
+        </button>
+      {:else}
+        <span title={locale.name}>{locale.name}</span>
+      {/if}
+    </div>
   </td>
-  <td class="align-middle text-nowrap">{locale.code}</td>
-  <td class="align-middle text-nowrap">{locale.dateFnsCode}</td>
-  <td class="align-middle text-nowrap">{locale.derivatives}</td>
-  <td class="align-middle text-nowrap"
-    >{$_('pages.languages.defined-by-options.' + locale.definedBy)}</td>
+  <td class="align-middle text-nowrap" style="max-width: 150px;">
+    <div class="text-truncate" title={locale.code}>
+      {locale.code}
+    </div>
+  </td>
+  <td class="align-middle text-nowrap" style="max-width: 150px;">
+    <div class="text-truncate" title={locale.dateFnsCode}>
+      {locale.dateFnsCode}
+    </div>
+  </td>
+  <td class="align-middle text-nowrap" style="max-width: 150px;">
+    <div class="text-truncate" title={locale.derivatives}>
+      {locale.derivatives}
+    </div>
+  </td>
+  <td class="align-middle" style="max-width: 200px;">
+    <div class="text-truncate" title={$_('pages.languages.defined-by-options.' + locale.definedBy)}>
+      {$_('pages.languages.defined-by-options.' + locale.definedBy)}
+    </div>
+  </td>
 </tr>
 
 <script>

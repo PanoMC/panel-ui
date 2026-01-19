@@ -9,16 +9,22 @@
       <i class="fas fa-trash"></i>
     </button>
   </th>
-  <td class="text-nowrap align-middle">
-    <button
-      type="button"
-      class="btn btn-sm btn-link"
-      title={$_('buttons.edit')}
-      on:click={onEditClick}>
-      {category.title}
-    </button>
+  <td class="align-middle" style="max-width: 200px;">
+    <div class="text-truncate">
+      <button
+        type="button"
+        class="btn btn-sm btn-link p-0 text-start text-decoration-none w-100 text-truncate"
+        title={$_('buttons.edit')}
+        on:click={onEditClick}>
+        {category.title}
+      </button>
+    </div>
   </td>
-  <td class="text-nowrap align-middle">{category.description}</td>
+  <td class="align-middle" style="max-width: 300px;">
+    <div class="text-truncate" title={category.description}>
+      {category.description}
+    </div>
+  </td>
 </tr>
 
 <script>
