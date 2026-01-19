@@ -84,7 +84,7 @@
 
   <div class="row g-3">
     <div class="col-lg-3">
-      <div class="card h-100">
+      <div class="card">
         <div class="card-header">
           {data.player.username}
         </div>

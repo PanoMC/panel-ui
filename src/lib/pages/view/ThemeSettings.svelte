@@ -5,7 +5,7 @@
 {/if}
 
 {#if error}
-  <div class="alert alert-danger text-center mb-0" role="alert">
+  <div class="alert alert-danger mb-0" role="alert">
     <i class="fas fa-exclamation-triangle me-2"></i>
     {$_('pages.theme-settings.error')}
   </div>
