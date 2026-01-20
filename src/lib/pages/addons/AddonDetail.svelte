@@ -80,87 +80,87 @@
           </h5>
 
           {addon.description}
-
-          <ul class="list-group mt-3">
-            <li class="list-group-item">
-              <strong>ID:</strong>
-              <span class="user-select-all font-monospace text-break">{addon.id}</span>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.version')}:</strong>
-              <span class="user-select-all font-monospace text-break">{addon.version}</span>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.pano-version')}:</strong>
-              <span class="user-select-all font-monospace text-break">{addon.panoVersion}</span>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.developer')}:</strong>
-              <span class="text-break">{addon.developer}</span>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.license')}:</strong>
-              <span class="text-break">{addon.license || $_('pages.addon-detail.unknown')}</span>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.source')}:</strong>
-              <a href={addon.sourceUrl} target="_blank" class="text-break"
-                >{addon.sourceUrl || $_('pages.addon-detail.unknown')}</a>
-            </li>
-          </ul>
-
-          <button
-            class="btn btn-link p-0 mt-2"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#addonDetailsCollapse"
-            aria-expanded="false"
-            aria-controls="addonDetailsCollapse"
-            title={$_('buttons.toggle-details')}
-            aria-label={$_('buttons.toggle-details')}>
-            <i class="fas fa-chevron-right me-1"></i>
-            {$_('buttons.show-more-details')}
-          </button>
-
-          <div class="collapse mt-3" id="addonDetailsCollapse">
-            <ul class="list-group">
-              <li class="list-group-item">
-                <strong>{$_('pages.addon-detail.dependencies')}:</strong>
-                <span class="text-break"
-                  >{@html isBlank(addon.dependencies)
-                    ? '-'
-                    : addon.dependencies.map((dependency) => getDependencyText(dependency))}</span>
-              </li>
-              <li class="list-group-item">
-                <strong>{$_('pages.addon-detail.requires')}:</strong>
-                <span class="text-break">{isBlank(addon.requires) ? '-' : addon.requires}</span>
-              </li>
-              <li class="list-group-item">
-                <strong>Hash:</strong>
-                <code class="overflow-auto text-break user-select-all">sha256:{addon.hash}</code>
-              </li>
-              <li class="list-group-item">
-                <strong>{$_('pages.addon-detail.size')}:</strong>
-                <span class="text-break">{formatBytes(addon.size)}</span>
-              </li>
-            </ul>
-          </div>
         </div>
       </div>
     </div>
     <div class="card-body">
-      {#if $hookStore.length > 0}
-        <Hook name="panel:plugin-detail:content" {addon} />
-      {:else}
-        <NoContent
-          title={$_('pages.addon-detail.no-settings', { default: 'No Settings' })}
-          description={$_('pages.addon-detail.no-settings-desc', {
-            default: 'This addon has no configurable settings.',
-          })}
-          icon="fas fa-cog" />
-      {/if}
+      <ul class="list-group">
+        <li class="list-group-item">
+          <strong>ID:</strong>
+          <span class="user-select-all font-monospace text-break">{addon.id}</span>
+        </li>
+        <li class="list-group-item">
+          <strong>{$_('pages.addon-detail.version')}:</strong>
+          <span class="user-select-all font-monospace text-break">{addon.version}</span>
+        </li>
+        <li class="list-group-item">
+          <strong>{$_('pages.addon-detail.pano-version')}:</strong>
+          <span class="user-select-all font-monospace text-break">{addon.panoVersion}</span>
+        </li>
+        <li class="list-group-item">
+          <strong>{$_('pages.addon-detail.developer')}:</strong>
+          <span class="text-break">{addon.developer}</span>
+        </li>
+        <li class="list-group-item">
+          <strong>{$_('pages.addon-detail.license')}:</strong>
+          <span class="text-break">{addon.license || $_('pages.addon-detail.unknown')}</span>
+        </li>
+        <li class="list-group-item">
+          <strong>{$_('pages.addon-detail.source')}:</strong>
+          <a href={addon.sourceUrl} target="_blank" class="text-break"
+            >{addon.sourceUrl || $_('pages.addon-detail.unknown')}</a>
+        </li>
+      </ul>
+
+      <button
+        class="btn btn-link p-0 mt-2"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#addonDetailsCollapse"
+        aria-expanded="false"
+        aria-controls="addonDetailsCollapse"
+        title={$_('buttons.toggle-details')}
+        aria-label={$_('buttons.toggle-details')}>
+        <i class="fas fa-chevron-right me-1"></i>
+        {$_('buttons.show-more-details')}
+      </button>
+
+      <div class="collapse mt-3" id="addonDetailsCollapse">
+        <ul class="list-group">
+          <li class="list-group-item">
+            <strong>{$_('pages.addon-detail.dependencies')}:</strong>
+            <span class="text-break"
+              >{@html isBlank(addon.dependencies)
+                ? '-'
+                : addon.dependencies.map((dependency) => getDependencyText(dependency))}</span>
+          </li>
+          <li class="list-group-item">
+            <strong>{$_('pages.addon-detail.requires')}:</strong>
+            <span class="text-break">{isBlank(addon.requires) ? '-' : addon.requires}</span>
+          </li>
+          <li class="list-group-item">
+            <strong>Hash:</strong>
+            <code class="overflow-auto text-break user-select-all">sha256:{addon.hash}</code>
+          </li>
+          <li class="list-group-item">
+            <strong>{$_('pages.addon-detail.size')}:</strong>
+            <span class="text-break">{formatBytes(addon.size)}</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
+
+  {#if $hookStore.length > 0}
+    <Hook name="panel:plugin-detail:content" {addon} />
+  {:else}
+    <NoContent
+      title={$_('pages.addon-detail.no-settings', { default: 'No Settings' })}
+      description={$_('pages.addon-detail.no-settings-desc', {
+        default: 'This addon has no configurable settings.',
+      })}
+      icon="fas fa-cog" />
+  {/if}
 </div>
 
 <script context="module">
@@ -181,11 +181,11 @@
       path: `/api/panel/plugins/${addonId}`,
       request: event,
     });
-    
+
     if (body.error === 'NOT_FOUND') {
       throw error(404, body.error);
     }
-    
+
     await executeLifecycle('panel:addon-detail:load', { addon: body.data }, event);
 
     return { addon: body.data };
