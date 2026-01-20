@@ -75,7 +75,9 @@
   const { data, children } = $props();
   const slots = initSlots();
 
-  beforeNavigate(() =>{
-    Object.assign(slots, {right: null, left: null})
-  })
+  beforeNavigate(({ from, to }) => {
+    if (from?.route.id !== to?.route.id) {
+      Object.assign(slots, { right: null, left: null });
+    }
+  });
 </script>
