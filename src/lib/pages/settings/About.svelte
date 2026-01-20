@@ -73,7 +73,7 @@
                 <strong class="me-2">{license.name}</strong>
                 <span class="small">v{license.version}</span>
                 {#if license.license && license.license !== 'Unknown'}
-                  <span class="badge text-bg-primary">{license.license}</span>
+                  <span class="badge text-bg-secondary">{license.license}</span>
                 {/if}
               </div>
               {#if license.homepage}

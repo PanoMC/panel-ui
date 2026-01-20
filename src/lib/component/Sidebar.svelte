@@ -4,7 +4,7 @@
 {/if}
 
 <div
-  class="offcanvas offcanvas-start bg-primary vh-100 sticky-top"
+  class="offcanvas offcanvas-start bg-primary h-100"
   tabindex="-1"
   id="sidebar"
   aria-labelledby="sidebarLabel"
@@ -205,7 +205,15 @@
     color: white;
   }
 
-  .offcanvas {
-    align-self: flex-start;
+  @media (min-width: 992px) {
+    .offcanvas-lg {
+      min-height: 100dvh !important;
+      height: 100dvh !important;
+      position: sticky !important;
+      top: 0;
+      width: 280px !important;
+      flex-shrink: 0;
+      align-self: stretch;
+    }
   }
 </style>

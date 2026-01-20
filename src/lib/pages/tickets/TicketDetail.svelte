@@ -98,21 +98,20 @@
           {#if message.panel}
             <div class="row g-2 flex-nowrap">
               <div class="col d-flex justify-content-end">
-                <div class="card">
-                  <div class="card-body answer">
-                    {@html message.message}
+                <Date time={message.date}>
+                  <div class="card rounded-5">
+                    <div class="card-body answer px-3">
+                      {@html message.message}
+                    </div>
                   </div>
-                  <div class="card-footer">
-                    <small><Date time={message.date} /></small>
-                  </div>
-                </div>
+                </Date>
               </div>
               <div class="col-auto">
                 <a href="{base}/players/detail/{message.username}" class="rounded focus-ring">
                   <img
                     src="https://minotar.net/avatar/{message.username}/48"
                     alt={message.username}
-                    class="rounded animate__animated animate__zoomIn"
+                    class="rounded-circle animate__animated animate__zoomIn"
                     use:tooltip={[message.username, { placement: 'bottom' }]}
                     width="48"
                     height="48" />
@@ -126,21 +125,20 @@
                   <img
                     src="https://minotar.net/avatar/{message.username}/48"
                     alt={message.username}
-                    class="rounded animate__animated animate__zoomIn"
+                    class="rounded-circle animate__animated animate__zoomIn"
                     use:tooltip={[message.username, { placement: 'bottom' }]}
                     width="48"
                     height="48" />
                 </a>
               </div>
               <div class="col hstack gap-2">
-                <div class="card">
-                  <div class="card-body">
-                    {message.message}
+                <Date time={message.date}>
+                  <div class="card rounded-5">
+                    <div class="card-body px-3">
+                      {message.message}
+                    </div>
                   </div>
-                  <div class="card-footer">
-                    <small><Date time={message.date} /></small>
-                  </div>
-                </div>
+                </Date>
               </div>
             </div>
           {/if}

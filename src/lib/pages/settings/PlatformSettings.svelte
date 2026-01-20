@@ -70,7 +70,7 @@
         {:else}
           <button
             type="button"
-            class="btn btn-sm btn-primary lh-base"
+            class="btn btn-sm btn-secondary lh-base"
             on:click={onConnectClick}
             disabled={connecting}>
             <img
@@ -177,7 +177,8 @@
         </select>
 
         {#if data.releaseChannel && data.releaseChannel !== 'RELEASE'}
-          <div class="alert alert-warning small py-2 mt-2 mb-0" role="alert">
+          <div class="alert alert-warning mt-2" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
             {@html $_('pages.settings.platform.release-channel-warning')}
             {#if data.releaseChannel === 'BETA'}
               <br />
