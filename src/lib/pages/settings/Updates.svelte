@@ -26,7 +26,7 @@
 <div class="card">
   <div class="card-header">
     {#if data.platformUpdate}
-      {$_('pages.settings.updates.platform-updates-count', { count: 1 })}
+      {$_('pages.settings.updates.platform-updates-count', { values: { count: 1 } })}
     {:else}
       {$_('pages.settings.updates.platform-updates')}
     {/if}
@@ -187,7 +187,9 @@
     <div slot="left">
       {#if data.resourceUpdates.length > 0}
         {$_('pages.settings.updates.resource-updates-count', {
-          count: data.resourceUpdates.length,
+          values: {
+            count: data.resourceUpdates.length,
+          },
         })}
       {:else}
         {$_('pages.settings.updates.resource-updates')}

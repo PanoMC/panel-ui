@@ -4,12 +4,16 @@
     <div class="d-flex gap-2">
       <button type="button" class="btn btn-sm btn-primary" on:click={openAddPermissionModal}>
         <i class="fa fa-plus me-1"></i>{$_('pages.permissions.panel.editor.add-node-count', {
-          count: permissions.length,
+          values: {
+            count: permissions.length,
+          },
         })}
       </button>
       <button type="button" class="btn btn-sm btn-secondary" on:click={handleAddPermGroup}>
         <i class="fa fa-plus me-1"></i>{$_('pages.permissions.panel.editor.add-group-count', {
-          count: permissionGroupsCount,
+          values: {
+            count: permissionGroupsCount,
+          },
         })}
       </button>
     </div>

@@ -53,7 +53,9 @@
     <CardHeader>
       <div slot="left">
         {$_('pages.translations.card-title', {
-          count: data.filter !== FilterTypes.ALL ? data.meta.filterCount : data.meta.totalCount,
+          values: {
+            count: data.filter !== FilterTypes.ALL ? data.meta.filterCount : data.meta.totalCount,
+          },
         })}
       </div>
       <!-- Search -->
