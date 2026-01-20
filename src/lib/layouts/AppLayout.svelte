@@ -45,6 +45,7 @@
   import { page } from '$app/stores';
   import { base } from '$app/paths';
   import { browser } from '$app/environment';
+  import { error } from "@sveltejs/kit"
 
   import { navigating } from '$app/stores';
 
@@ -176,6 +177,7 @@
       goto,
       invalidate,
       invalidateAll,
+      error,
       components: {
         PageActions,
         PageLoader,
