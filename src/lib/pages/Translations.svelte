@@ -52,9 +52,9 @@
   <div class="card">
     <CardHeader>
       <div slot="left">
-        {$_('pages.translations.title')} ({data.filter !== FilterTypes.ALL
-          ? data.meta.filterCount
-          : data.meta.totalCount})
+        {$_('pages.translations.card-title', {
+          count: data.filter !== FilterTypes.ALL ? data.meta.filterCount : data.meta.totalCount,
+        })}
       </div>
       <!-- Search -->
       <div slot="middle">
@@ -88,7 +88,8 @@
                   type="button"
                   data-bs-toggle="collapse"
                   data-bs-target="#collapsePlugin{pluginId}">
-                  {pluginId} ({filteredTranslations[pluginId].length})
+                  {filteredTranslations[pluginId].length}
+                  {pluginId}
                 </button>
               </h2>
               <div id="collapsePlugin{pluginId}" class="accordion-collapse collapse show">
@@ -131,7 +132,8 @@
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapse{data.type}Translations">
-                {$_('buttons.' + data.type.toLowerCase().replace('_', '-'))} ({filteredTranslations.length})
+                {filteredTranslations.length}
+                {$_('buttons.' + data.type.toLowerCase().replace('_', '-'))}
               </button>
             </h2>
             <div id="collapse{data.type}Translations" class="accordion-collapse collapse show">

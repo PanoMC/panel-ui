@@ -25,7 +25,11 @@
 
 <div class="card">
   <div class="card-header">
-    {$_('pages.settings.updates.platform-updates')}&nbsp;{#if data.platformUpdate}(1){/if}
+    {#if data.platformUpdate}
+      {$_('pages.settings.updates.platform-updates-count', { count: 1 })}
+    {:else}
+      {$_('pages.settings.updates.platform-updates')}
+    {/if}
   </div>
   <!-- Pending Update List -->
   {#if !data.platformUpdate}
@@ -181,9 +185,13 @@
 <div class="card">
   <CardHeader>
     <div slot="left">
-      {$_(
-        'pages.settings.updates.resource-updates',
-      )}&nbsp;{#if data.resourceUpdates.length > 0}({data.resourceUpdates.length}){/if}
+      {#if data.resourceUpdates.length > 0}
+        {$_('pages.settings.updates.resource-updates-count', {
+          count: data.resourceUpdates.length,
+        })}
+      {:else}
+        {$_('pages.settings.updates.resource-updates')}
+      {/if}
     </div>
     <div slot="right">
       {#if data.resourceUpdates?.length > 1}

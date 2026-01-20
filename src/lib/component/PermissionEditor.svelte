@@ -1,12 +1,16 @@
 {#if showHeader}
   <div class="d-flex flex-row justify-content-between align-items-center mb-3">
-    <h6 class="mb-0">Permission Nodes</h6>
+    <h6 class="mb-0">{$_('pages.permissions.panel.editor.title')}</h6>
     <div class="d-flex gap-2">
       <button type="button" class="btn btn-sm btn-primary" on:click={openAddPermissionModal}>
-        <i class="fa fa-plus me-1"></i>Add Node ({permissions.length})
+        <i class="fa fa-plus me-1"></i>{$_('pages.permissions.panel.editor.add-node-count', {
+          count: permissions.length,
+        })}
       </button>
       <button type="button" class="btn btn-sm btn-secondary" on:click={handleAddPermGroup}>
-        <i class="fa fa-plus me-1"></i>Add Perm Group ({permissionGroupsCount})
+        <i class="fa fa-plus me-1"></i>{$_('pages.permissions.panel.editor.add-group-count', {
+          count: permissionGroupsCount,
+        })}
       </button>
     </div>
   </div>
@@ -20,10 +24,10 @@
       <thead>
         <tr>
           <th style="width: 10%;"></th>
-          <th style="width: 35%;">Permission</th>
-          <th style="width: 15%;">Value</th>
-          <th style="width: 25%;">Expiry</th>
-          <th style="width: 15%;">Contexts</th>
+          <th style="width: 35%;">{$_('pages.permissions.panel.editor.permission')}</th>
+          <th style="width: 15%;">{$_('pages.permissions.panel.editor.value')}</th>
+          <th style="width: 25%;">{$_('pages.permissions.panel.editor.expiry')}</th>
+          <th style="width: 15%;">{$_('pages.permissions.panel.editor.contexts')}</th>
         </tr>
       </thead>
       <tbody>
@@ -45,7 +49,7 @@
                 type="text"
                 class="form-control form-control-sm"
                 value={node.permission}
-                placeholder="Enter permission..."
+                placeholder={$_('pages.permissions.panel.editor.placeholder')}
                 on:input={(e) => updatePermissionNode(index, 'permission', e.target.value)} />
             </td>
 
@@ -66,8 +70,8 @@
                 class="form-select form-select-sm"
                 value={node.expiry ? 'date' : 'never'}
                 on:change={(e) => handleExpiryChange(index, e.target.value)}>
-                <option value="never">Never</option>
-                <option value="date">Date</option>
+                <option value="never">{$_('pages.permissions.panel.editor.never')}</option>
+                <option value="date">{$_('pages.permissions.panel.editor.date')}</option>
               </select>
               {#if node.expiry}
                 <input
@@ -92,6 +96,7 @@
 
 <script>
   import { createEventDispatcher } from 'svelte';
+  import { _ } from 'svelte-i18n';
   import NoContent from '$lib/component/NoContent.svelte';
 
   export let permissions = [];

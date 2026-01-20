@@ -33,6 +33,7 @@
     "view": "Görüntüle",
     "closed": "Kapalı",
     "show-all": "Tümünü Göster",
+    "show-all-count": "{count} Tümünü Göster",
     "installed": "Yüklü",
     "clear": "Temizle",
     "change": "Değiştir",
@@ -121,11 +122,12 @@
       "unknown": "Bilinmiyor"
     },
     "activity-logs": {
-      "title": "Aktivite Kayıtları"
+      "title": "Aktivite Kayıtları",
+      "card-title": "{count} Aktivite Kaydı"
     },
     "languages": {
       "title": "Diller",
-      "card-title": "Diller ({count})",
+      "card-title": "{count} Dil",
       "name": "İsmi",
       "code": "Kodu",
       "date-fns-code": "Date-Fns Kodu",
@@ -138,7 +140,8 @@
     },
     "translations": {
       "unsaved-changes-alert-text": "Kaydedilmemiş değişiklikleriniz var! Emin misiniz?",
-      "title": "Çeviriler"
+      "title": "Çeviriler",
+      "card-title": "{count} Çeviri"
     },
     "dashboard": {
       "title": "Panel",
@@ -252,7 +255,7 @@
       "title": "Bildirimler",
       "delete-all": "Tümünü Sil",
       "delete-notification": "Bildirimi Sil",
-      "show-more": "Daha Fazla Göster ({count})"
+      "show-more": "{count} Daha Fazla Göster"
     },
     "settings": {
       "about": {
@@ -391,6 +394,7 @@
         "title": "Güncellemeler",
         "never": "Asla",
         "platform-updates": "Platform Güncellemeleri",
+        "platform-updates-count": "{count} Platform Güncellemesi",
         "using-latest-pano": "Pano'nun en son sürümünü kullanıyorsunuz.",
         "verified": "Doğrulandı",
         "by": "geliştirici",
@@ -405,6 +409,7 @@
           "installing-new-update": "Yeni güncelleme yükleniyor..."
         },
         "resource-updates": "Kaynak Güncellemeleri",
+        "resource-updates-count": "{count} Kaynak Güncellemesi",
         "connect-pano-account": "Kaynak güncellemelerini almak için bir Pano hesabı bağlayın.",
         "no-update-found": "Herhangi bir güncelleme bulunamadı.",
         "install-complete": "🎉 Kurulum tamamlandı!",
@@ -423,7 +428,7 @@
       "by-who": "{username} tarafından",
       "opened-in-category": "{category} kategorisinde açıldı.",
       "no-category": "-",
-      "previous-messages": "Önceki Mesajlar ({count})",
+      "previous-messages": "{count} Önceki Mesaj",
       "send-button": "Gönder"
     },
     "post-categories": {
@@ -484,6 +489,18 @@
         "empty": {
           "no-nodes": "Node yok.",
           "select-something": "Grup, oyuncu veya track seçin."
+        },
+        "editor": {
+          "title": "Yetki Node'ları",
+          "add-node-count": "{count} Yetki Ekle",
+          "add-group-count": "{count} Yetki Grubu Ekle",
+          "permission": "Yetki",
+          "value": "Değer",
+          "expiry": "Süre",
+          "contexts": "Bağlamlar",
+          "placeholder": "Yetki girin...",
+          "never": "Asla",
+          "date": "Tarih"
         }
       },
       "create-permission-group-button": "Yetki Grubu Oluştur",

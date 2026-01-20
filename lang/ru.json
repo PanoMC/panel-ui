@@ -33,6 +33,7 @@
     "view": "Просмотр",
     "closed": "Закрыто",
     "show-all": "Показать все",
+    "show-all-count": "{count} Показать все",
     "installed": "Установлено",
     "clear": "Очистить",
     "change": "Изменить",
@@ -121,7 +122,8 @@
       "unknown": "Неизвестно"
     },
     "activity-logs": {
-      "title": "Логи активности"
+      "title": "Логи активности",
+      "card-title": "{count} Логов активности"
     },
     "languages": {
       "title": "Языки",
@@ -138,7 +140,8 @@
     },
     "translations": {
       "unsaved-changes-alert-text": "У вас есть несохраненные изменения, вы уверены?",
-      "title": "Переводы"
+      "title": "Переводы",
+      "card-title": "{count} Переводов"
     },
     "dashboard": {
       "title": "Панель",
@@ -252,7 +255,7 @@
       "title": "Уведомления",
       "delete-all": "Удалить все",
       "delete-notification": "Удалить уведомление",
-      "show-more": "Показать больше ({count})"
+      "show-more": "{count} Показать больше"
     },
     "settings": {
       "about": {
@@ -391,6 +394,7 @@
         "title": "Обновления",
         "never": "Никогда",
         "platform-updates": "Обновления платформы",
+        "platform-updates-count": "{count} Обновлений платформы",
         "using-latest-pano": "Вы используете последнюю версию Pano.",
         "verified": "Подтвержден",
         "by": "от",
@@ -405,6 +409,7 @@
           "installing-new-update": "Установка нового обновления..."
         },
         "resource-updates": "Обновления ресурсов",
+        "resource-updates-count": "{count} Обновлений ресурсов",
         "connect-pano-account": "Подключите аккаунт Pano для получения обновлений ресурсов.",
         "no-update-found": "Обновлений не найдено.",
         "install-complete": "🎉 Установка завершена!",
@@ -423,7 +428,7 @@
       "by-who": "От {username}",
       "opened-in-category": "открыто в категории {category}.",
       "no-category": "-",
-      "previous-messages": "Предыдущие сообщения ({count})",
+      "previous-messages": "{count} Предыдущие сообщения",
       "send-button": "Отправить"
     },
     "post-categories": {
@@ -484,6 +489,18 @@
         "empty": {
           "no-nodes": "Узлов нет.",
           "select-something": "Выберите группу, игрока или трек."
+        },
+        "editor": {
+          "title": "Узлы разрешений",
+          "add-node-count": "{count} Добавить узел",
+          "add-group-count": "{count} Добавить группу разрешений",
+          "permission": "Разрешение",
+          "value": "Значение",
+          "expiry": "Срок действия",
+          "contexts": "Контексты",
+          "placeholder": "Введите разрешение...",
+          "never": "Никогда",
+          "date": "Дата"
         }
       },
       "create-permission-group-button": "Создать группу разрешений",

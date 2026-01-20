@@ -1,6 +1,8 @@
 <div class="container vstack gap-3">
   <div class="card">
-    <div class="card-header">{$_('pages.activity-logs.title')} ({data.meta.totalCount})</div>
+    <div class="card-header">
+      {$_('pages.activity-logs.card-title', { count: data.meta.totalCount })}
+    </div>
     {#if data.meta.totalCount === 0}
       <NoContent />
     {:else}

@@ -33,6 +33,7 @@
     "view": "View",
     "closed": "Closed",
     "show-all": "Show All",
+    "show-all-count": "{count} Show All",
     "installed": "Installed",
     "clear": "Clear",
     "change": "Change",
@@ -121,7 +122,8 @@
       "unknown": "Unknown"
     },
     "activity-logs": {
-      "title": "Activity Logs"
+      "title": "Activity Logs",
+      "card-title": "{count} Activity Logs"
     },
     "languages": {
       "title": "Languages",
@@ -138,7 +140,8 @@
     },
     "translations": {
       "unsaved-changes-alert-text": "You have unsaved changes, are you sure?",
-      "title": "Translations"
+      "title": "Translations",
+      "card-title": "{count} Translations"
     },
     "dashboard": {
       "title": "Panel",
@@ -252,7 +255,7 @@
       "title": "Notifications",
       "delete-all": "Delete All",
       "delete-notification": "Delete Notification",
-      "show-more": "Show More ({count})"
+      "show-more": "{count} Show More"
     },
     "settings": {
       "about": {
@@ -391,6 +394,7 @@
         "title": "Updates",
         "never": "Never",
         "platform-updates": "Platform Updates",
+        "platform-updates-count": "{count} Platform Updates",
         "using-latest-pano": "You are using latest version of Pano.",
         "verified": "Verified",
         "by": "by",
@@ -405,6 +409,7 @@
           "installing-new-update": "Installing new update..."
         },
         "resource-updates": "Resource Updates",
+        "resource-updates-count": "{count} Resource Updates",
         "connect-pano-account": "Connect a Pano account to get resource updates.",
         "no-update-found": "No update found.",
         "install-complete": "\uD83C\uDF89 Install complete!",
@@ -423,7 +428,7 @@
       "by-who": "By {username}",
       "opened-in-category": "opened in {category} category.",
       "no-category": "-",
-      "previous-messages": "Previous Messages ({count})",
+      "previous-messages": "{count} Previous Messages",
       "send-button": "Send"
     },
     "post-categories": {
@@ -484,6 +489,18 @@
         "empty": {
           "no-nodes": "No nodes.",
           "select-something": "Select a group, player or track."
+        },
+        "editor": {
+          "title": "Permission Nodes",
+          "add-node-count": "{count} Add Node",
+          "add-group-count": "{count} Add Perm Group",
+          "permission": "Permission",
+          "value": "Value",
+          "expiry": "Expiry",
+          "contexts": "Contexts",
+          "placeholder": "Enter permission...",
+          "never": "Never",
+          "date": "Date"
         }
       },
       "create-permission-group-button": "Create Permission Group",

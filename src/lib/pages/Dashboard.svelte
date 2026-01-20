@@ -155,7 +155,7 @@
         <div slot="right">
           {#if data.activityLogs.meta.totalCount > 10}
             <a href="{base}/logs" class="btn btn-link">
-              {$_('buttons.show-all')} ({data.activityLogs.meta.totalCount})
+              {$_('buttons.show-all-count', { count: data.activityLogs.meta.totalCount })}
             </a>
           {/if}
         </div>
