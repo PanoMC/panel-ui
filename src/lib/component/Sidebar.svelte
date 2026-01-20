@@ -4,7 +4,7 @@
 {/if}
 
 <div
-  class="offcanvas offcanvas-start bg-primary"
+  class="offcanvas offcanvas-start bg-primary vh-100 sticky-top"
   tabindex="-1"
   id="sidebar"
   aria-labelledby="sidebarLabel"
@@ -203,5 +203,9 @@
   .version-indicator.beta {
     background: linear-gradient(45deg, #4776e6, #8e54e9);
     color: white;
+  }
+
+  .offcanvas {
+    align-self: flex-start;
   }
 </style>
