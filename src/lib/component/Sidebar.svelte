@@ -87,8 +87,7 @@
             data-bs-toggle="modal"
             aria-label={$_('components.server-navigation-menu.connect-server')}
             type="button"
-            title="
-          {$_('components.server-navigation-menu.connect-server')}">
+            title="{$_('components.server-navigation-menu.connect-server')}">
             <i class="fa-solid fa-plus"></i>
           </button>
         </div>
