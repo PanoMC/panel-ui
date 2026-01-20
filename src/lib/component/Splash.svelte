@@ -13,23 +13,18 @@
   role="status"
   in:fade
   out:fade>
-  <div class="loader-content d-flex align-items-center justify-content-center position-relative" style="height: 100px; width: 100px;">
+  <div class="loader-content position-relative" style="height: 100px; width: 100px;">
     {#if networkErrors}
-      <div class="logo-wrapper" class:pulse={$retryingNetworkErrors}>
+      <div class="logo-wrapper position-absolute center-content" class:pulse={$retryingNetworkErrors}>
         <img alt="Pano" src="{base}/assets/img/logo.svg" class="logo-img" />
       </div>
     {:else}
-      {#key currentStep}
-        {#if currentStep === 0}
-          <div class="logo-wrapper zoom-in">
-            <img alt="Pano" src="{base}/assets/img/logo.svg" class="logo-img" />
-          </div>
-        {:else}
-          <div class="zoom-in">
-            <img alt="Minecraft" src="{base}/assets/img/minecraft-icon.png" class="mc-img" />
-          </div>
-        {/if}
-      {/key}
+      <div class="logo-wrapper pano-anim center-content">
+        <img alt="Pano" src="{base}/assets/img/logo.svg" class="logo-img" />
+      </div>
+      <div class="mc-img-wrapper mc-anim center-content">
+        <img alt="Minecraft" src="{base}/assets/img/minecraft-icon.png" class="mc-img" />
+      </div>
     {/if}
   </div>
 
@@ -56,16 +51,78 @@
 </div>
 
 <style>
+  .center-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .logo-wrapper {
     background-color: var(--bs-primary);
     padding: 8px;
     border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 64px;
     height: 64px;
+  }
+
+  .mc-img-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .pano-anim {
+    animation: logo-swap-pano 2.5s infinite ease-in-out;
+  }
+
+  .mc-anim {
+    animation: logo-swap-mc 2.5s infinite ease-in-out;
+  }
+
+  @keyframes logo-swap-pano {
+    0%, 40% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50%, 90% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.6);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  @keyframes logo-swap-mc {
+    0%, 40% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.6);
+    }
+    50%, 90% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.6);
+    }
+  }
+
+  .logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .mc-img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
   }
 
   .pulse {
@@ -81,37 +138,10 @@
       opacity: 0.3;
     }
   }
-
-  .logo-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  .mc-img {
-    height: 80px;
-    width: auto;
-    object-fit: contain;
-  }
-
-  .zoom-in {
-    animation: zoom-in 0.8s ease-out forwards;
-  }
-
-  @keyframes zoom-in {
-    0% {
-      transform: scale(0.7);
-      opacity: 0;
-    }
-    100% {
-      transform: scale(1.1);
-      opacity: 1;
-    }
-  }
 </style>
 
 <script>
-  import { getContext, onDestroy, onMount } from 'svelte';
+  import { getContext, onDestroy } from 'svelte';
   import { fade } from 'svelte/transition';
   import { _ } from 'svelte-i18n';
 
@@ -123,7 +153,6 @@
   import { base } from '$app/paths';
 
   let networkErrors = false;
-  let currentStep = 0;
 
   const session = getContext('session');
 
@@ -137,14 +166,6 @@
       networkErrors = value.length !== 0;
     }),
   );
-
-  onMount(() => {
-    const interval = setInterval(() => {
-      currentStep = (currentStep + 1) % 2;
-    }, 800);
-
-    return () => clearInterval(interval);
-  });
 
   async function onResumeClick() {
     if (notLoggedIn || noPermission) {
