@@ -39,6 +39,7 @@
   import { writable } from 'svelte/store';
   import { _ } from 'svelte-i18n';
   import { setPanoContext } from '@panomc/sdk/internal';
+  import copy from 'copy-to-clipboard';
 
   import { goto, invalidate, invalidateAll } from '$app/navigation';
   import { page } from '$app/stores';
@@ -208,6 +209,9 @@
         toast: {
           ...toastStuff,
         },
+        text: {
+          copy
+        }
       },
       variables: {
         ...variableStuff,
