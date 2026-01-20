@@ -1,3 +1,45 @@
+<style>
+  .version-indicator {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 7px;
+    padding: 1px 4px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 900;
+    line-height: 1;
+    pointer-events: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    z-index: 2;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    white-space: nowrap;
+  }
+
+  .version-indicator.alpha {
+    background: linear-gradient(45deg, #0dcaf0, #0aa2c0);
+    color: #000;
+  }
+
+  .version-indicator.beta {
+    background: linear-gradient(45deg, #4776e6, #8e54e9);
+    color: white;
+  }
+
+  @media (min-width: 992px) {
+    .offcanvas-lg {
+      min-height: 100dvh !important;
+      height: 100dvh !important;
+      position: sticky !important;
+      top: 0;
+      width: 280px !important;
+      flex-shrink: 0;
+      align-self: stretch;
+    }
+  }
+</style>
+
 {#if hasPermission(Permissions.MANAGE_SERVERS)}
   <ServersModal />
   <ConnectServerModal />
@@ -28,13 +70,19 @@
           {#if isAlpha}
             <span
               class="version-indicator alpha"
-              use:tooltip={[$_('components.sidebar.version-alpha-tooltip'), { placement: 'bottom' }]}>
+              use:tooltip={[
+                $_('components.sidebar.version-alpha-tooltip'),
+                { placement: 'bottom' },
+              ]}>
               Alpha
             </span>
           {:else if isBeta}
             <span
               class="version-indicator beta"
-              use:tooltip={[$_('components.sidebar.version-beta-tooltip'), { placement: 'bottom' }]}>
+              use:tooltip={[
+                $_('components.sidebar.version-beta-tooltip'),
+                { placement: 'bottom' },
+              ]}>
               Beta
             </span>
           {/if}
@@ -174,45 +222,3 @@
     });
   });
 </script>
-
-<style>
-  .version-indicator {
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 7px;
-    padding: 1px 4px;
-    border-radius: 4px;
-    text-transform: uppercase;
-    font-weight: 900;
-    line-height: 1;
-    pointer-events: auto;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-    z-index: 2;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    white-space: nowrap;
-  }
-
-  .version-indicator.alpha {
-    background: linear-gradient(45deg, #0dcaf0, #0aa2c0);
-    color: #000;
-  }
-
-  .version-indicator.beta {
-    background: linear-gradient(45deg, #4776e6, #8e54e9);
-    color: white;
-  }
-
-  @media (min-width: 992px) {
-    .offcanvas-lg {
-      min-height: 100dvh !important;
-      height: 100dvh !important;
-      position: sticky !important;
-      top: 0;
-      width: 280px !important;
-      flex-shrink: 0;
-      align-self: stretch;
-    }
-  }
-</style>

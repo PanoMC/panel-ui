@@ -108,7 +108,9 @@
         <li class="list-group-item">
           <strong>{$_('pages.addon-detail.source')}:</strong>
           <a href={addon.sourceUrl} target="_blank" class="text-break"
-            >{addon.sourceUrl || $_('pages.addon-detail.unknown')}</a>
+            >{addon.sourceUrl || $_('pages.addon-detail.unknown')}<i
+              class="fa-solid fa-arrow-up-right-from-square ms-2"></i
+            ></a>
         </li>
       </ul>
 
