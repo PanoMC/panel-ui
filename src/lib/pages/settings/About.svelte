@@ -58,7 +58,7 @@
 
 <div class="card">
   <div class="card-header">
-    <span class="animate__animated animate__heartBeat animate__slower d-inline-block">
+    <span class="animate__animated animate__heartBeat d-inline-block">
       {$_('pages.settings.about.open-source-licenses')} ❤️
     </span>
   </div>
