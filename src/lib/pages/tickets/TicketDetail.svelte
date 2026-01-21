@@ -154,9 +154,10 @@
           class="btn btn-secondary"
           on:click={sendMessage}
           class:disabled={messageSendLoading || isEditorEmpty}
-          disabled={messageSendLoading || isEditorEmpty}>
+          disabled={messageSendLoading || isEditorEmpty}
+          title={$_('pages.ticket-detail.send-button')}
+          aria-label={$_('pages.ticket-detail.send-button')}>
           <i class="fas fa-paper-plane"></i>
-          <span class="ms-2">{$_('pages.ticket-detail.send-button')}</span>
         </button>
       </Editor>
     </div>
