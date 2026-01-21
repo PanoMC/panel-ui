@@ -25,6 +25,9 @@
       <div class="mc-img-wrapper mc-anim center-content">
         <img alt="Minecraft" src="{base}/assets/img/minecraft-icon.png" class="mc-img" />
       </div>
+      <div class="hytale-img-wrapper hytale-anim center-content">
+        <img alt="Hytale" src="{base}/assets/img/hytale-icon.png" class="hytale-img" />
+      </div>
     {/if}
   </div>
 
@@ -75,20 +78,31 @@
     height: 80px;
   }
 
+  .hytale-img-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
   .pano-anim {
-    animation: logo-swap-pano 2.5s infinite ease-in-out;
+    animation: logo-swap-pano 4.5s infinite ease-in-out;
   }
 
   .mc-anim {
-    animation: logo-swap-mc 2.5s infinite ease-in-out;
+    animation: logo-swap-mc 4.5s infinite ease-in-out;
+  }
+
+  .hytale-anim {
+    animation: logo-swap-hytale 4.5s infinite ease-in-out;
   }
 
   @keyframes logo-swap-pano {
-    0%, 40% {
+    0%,
+    28% {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
     }
-    50%, 90% {
+    33%,
+    95% {
       opacity: 0;
       transform: translate(-50%, -50%) scale(0.6);
     }
@@ -99,11 +113,31 @@
   }
 
   @keyframes logo-swap-mc {
-    0%, 40% {
+    0%,
+    28% {
       opacity: 0;
       transform: translate(-50%, -50%) scale(0.6);
     }
-    50%, 90% {
+    33%,
+    61% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+    66%,
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.6);
+    }
+  }
+
+  @keyframes logo-swap-hytale {
+    0%,
+    61% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.6);
+    }
+    66%,
+    95% {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1.1);
     }
@@ -120,6 +154,12 @@
   }
 
   .mc-img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
+
+  .hytale-img {
     height: 100%;
     width: 100%;
     object-fit: contain;
