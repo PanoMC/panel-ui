@@ -648,11 +648,6 @@
           restartRequired = true;
         }
 
-        if (websiteLogoInput && websiteLogoInput.value !== '') {
-          // No longer using input value check logic as component handles it
-          // But we need to update store image if changed
-        }
-        
         // Update Store if logo changed
         if (selectedWebsiteLogoFiles && selectedWebsiteLogoFiles.length > 0) {
            const reader = new FileReader();
