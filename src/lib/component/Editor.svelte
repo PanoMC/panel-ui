@@ -26,110 +26,113 @@
       {#if !isHtmlView}
         <!-- Headings -->
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           class:border-primary={editor.isActive('heading', { level: 1 })}
           class:text-primary={editor.isActive('heading', { level: 1 })}
-          use:tooltip={[
-            $_('components.editor.title', { values: { number: 1 } }),
-            { placement: 'bottom' },
-          ]}>
+          title={$_('components.editor.title', { values: { number: 1 } })}
+          aria-label={$_('components.editor.title', { values: { number: 1 } })}>
           H1
         </button>
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           class:border-primary={editor.isActive('heading', { level: 2 })}
           class:text-primary={editor.isActive('heading', { level: 2 })}
-          use:tooltip={[
-            $_('components.editor.title', { values: { number: 2 } }),
-            { placement: 'bottom' },
-          ]}>
+          title={$_('components.editor.title', { values: { number: 2 } })}
+          aria-label={$_('components.editor.title', { values: { number: 2 } })}>
           H2
         </button>
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           class:border-primary={editor.isActive('heading', { level: 3 })}
           class:text-primary={editor.isActive('heading', { level: 3 })}
-          use:tooltip={[
-            $_('components.editor.title', { values: { number: 3 } }),
-            { placement: 'bottom' },
-          ]}>
+          title={$_('components.editor.title', { values: { number: 3 } })}
+          aria-label={$_('components.editor.title', { values: { number: 3 } })}>
           H3
         </button>
 
         <!-- Text Formatting -->
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={() => editor.chain().focus().toggleBold().run()}
           class:border-primary={editor.isActive('bold')}
           class:text-primary={editor.isActive('bold')}
-          use:tooltip={[$_('components.editor.bold'), { placement: 'bottom' }]}>
+          title={$_('components.editor.bold')}
+          aria-label={$_('components.editor.bold')}>
           <b>B</b>
         </button>
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={() => editor.chain().focus().toggleItalic().run()}
           class:border-primary={editor.isActive('italic')}
           class:text-primary={editor.isActive('italic')}
-          use:tooltip={[$_('components.editor.italic'), { placement: 'bottom' }]}>
+          title={$_('components.editor.italic')}
+          aria-label={$_('components.editor.italic')}>
           <i>I</i>
         </button>
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={() => editor.chain().focus().toggleUnderline().run()}
           class:border-primary={editor.isActive('underline')}
           class:text-primary={editor.isActive('underline')}
-          use:tooltip={[$_('components.editor.underline'), { placement: 'bottom' }]}>
+          title={$_('components.editor.underline')}
+          aria-label={$_('components.editor.underline')}>
           <u>U</u>
         </button>
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={() => editor.chain().focus().toggleStrike().run()}
           class:border-primary={editor.isActive('strike')}
           class:text-primary={editor.isActive('strike')}
-          use:tooltip={[$_('components.editor.strike'), { placement: 'bottom' }]}>
+          title={$_('components.editor.strike')}
+          aria-label={$_('components.editor.strike')}>
           <s>S</s>
         </button>
 
         <!-- Lists -->
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={() => editor.chain().focus().toggleBulletList().run()}
           class:border-primary={editor.isActive('bulletList')}
           class:text-primary={editor.isActive('bulletList')}
-          use:tooltip={[$_('components.editor.bullet-list'), { placement: 'bottom' }]}>
+          title={$_('components.editor.bullet-list')}
+          aria-label={$_('components.editor.bullet-list')}>
           <i class="fas fa-list"></i>
         </button>
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={() => editor.chain().focus().toggleOrderedList().run()}
           class:border-primary={editor.isActive('orderedList')}
           class:text-primary={editor.isActive('orderedList')}
-          use:tooltip={[$_('components.editor.ordered-list'), { placement: 'bottom' }]}>
+          title={$_('components.editor.ordered-list')}
+          aria-label={$_('components.editor.ordered-list')}>
           <i class="fas fa-list-ol"></i>
         </button>
 
         <!-- Media -->
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={addImage}
-          use:tooltip={[$_('components.editor.image'), { placement: 'bottom' }]}>
+          title={$_('components.editor.image')}
+          aria-label={$_('components.editor.image')}>
           <i class="fas fa-image"></i>
         </button>
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={setLink}
-          use:tooltip={[$_('components.editor.link'), { placement: 'bottom' }]}
+          title={$_('components.editor.link')}
+          aria-label={$_('components.editor.link')}
           class:border-primary={editor.isActive('link')}
           class:text-primary={editor.isActive('link')}>
           <i class="fas fa-link"></i>
         </button>
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={openColorPicker}
-          use:tooltip={[$_('components.editor.text-color'), { placement: 'bottom' }]}>
+          title={$_('components.editor.text-color')}
+          aria-label={$_('components.editor.text-color')}>
           <i
             class="fas fa-tint"
             style={editor.getAttributes('textStyle').color &&
@@ -140,68 +143,72 @@
           type="color"
           bind:this={colorPickerElement}
           value={editor.getAttributes('textStyle').color}
-          oninput={(event) =>
-            editor.chain().focus().setColor(event.target.value).run()}
+          oninput={(event) => editor.chain().focus().setColor(event.target.value).run()}
           hidden />
 
         <button
-          class="btn btn-link btn-sm"
+          class="btn btn-link btn-sm text-decoration-none"
           onclick={() => editor.chain().focus().unsetColor().run()}
-          use:tooltip={[
-            $_('components.editor.remove-text-color'),
-            { placement: 'bottom' },
-          ]}>
+          title={$_('components.editor.remove-text-color')}
+          aria-label={$_('components.editor.remove-text-color')}>
           <i class="fas fa-tint-slash"></i>
         </button>
       {/if}
     </div>
 
     {#if showHtml}
-    <div class="d-flex gap-2">
-      {#if showPreview}
-        <button
-          class="btn btn-link btn-sm"
-          class:text-primary={isPreview}
-          onclick={() => (isPreview = !isPreview)}>
-          <i class="fas fa-eye"></i>
-          {isPreview ? 'Edit' : 'Preview'}
-        </button>
-      {/if}
+      <div class="d-flex gap-2">
+        {#if showPreview}
+          <button
+            class="btn btn-link btn-sm"
+            class:text-primary={isPreview}
+            onclick={() => (isPreview = !isPreview)}>
+            <i class="fas fa-eye"></i>
+            {isPreview ? 'Edit' : 'Preview'}
+          </button>
+        {/if}
 
-      {#if showHtml}
-        <button
-          class="btn btn-link btn-sm"
-          class:text-primary={isHtmlView}
-          onclick={() => (isHtmlView = !isHtmlView)}>
-          <i class="fas fa-code"></i>
-          {isHtmlView ? 'Rich Text' : 'HTML'}
-        </button>
-      {/if}
-    </div>
+        {#if showHtml}
+          <button
+            class="btn btn-link btn-sm"
+            class:text-primary={isHtmlView}
+            onclick={() => (isHtmlView = !isHtmlView)}>
+            <i class="fas fa-code"></i>
+            {isHtmlView ? 'Rich Text' : 'HTML'}
+          </button>
+        {/if}
+      </div>
     {/if}
   </div>
 {/if}
 
 <!-- Editor Content -->
-<div
-  class="form-control editor-height"
-  style="{contentStyles}"
-  class:d-none={isHtmlView || isPreview}
-  bind:this={element}></div>
-
-{#if isHtmlView}
-  <textarea
+<div class="input-group">
+  <div
     class="form-control editor-height"
-    style="{contentStyles}"
-    bind:value={content}
-    oninput={() => (isEmpty = content.trim().length === 0)}></textarea>
-{/if}
-
-{#if isPreview}
-  <div class="form-control editor-height overflow-auto" style="{contentStyles}">
-    {@html content}
+    style={contentStyles}
+    class:d-none={isHtmlView || isPreview}
+    bind:this={element}>
   </div>
-{/if}
+
+  {#if isHtmlView}
+    <textarea
+      class="form-control editor-height"
+      style={contentStyles}
+      bind:value={content}
+      oninput={() => (isEmpty = content.trim().length === 0)}></textarea>
+  {/if}
+
+  {#if isPreview}
+    <div class="form-control editor-height overflow-auto" style={contentStyles}>
+      {@html content}
+    </div>
+  {/if}
+
+  {#if children}
+    {@render children()}
+  {/if}
+</div>
 
 <script>
   import { onMount, onDestroy } from 'svelte';
@@ -212,11 +219,9 @@
   import Image from '@tiptap/extension-image';
   import { TextStyleKit } from '@tiptap/extension-text-style';
 
-  import tooltip from '$lib/tooltip.util';
-
   let element = $state();
   let colorPickerElement = $state();
-  let editorContent = $state("");
+  let editorContent = $state('');
   let isHtmlView = $state(false);
   let isPreview = $state(false);
 
@@ -226,12 +231,13 @@
     showHtml = false,
     showPreview = false,
     html = false,
-    contentStyles = ""
+    contentStyles = '',
+    children,
   } = $props();
 
   let editor = new Editor({
     element: undefined,
-    content: {type: 'doc', content: [{type: 'paragraph', content: []}]},
+    content: { type: 'doc', content: [{ type: 'paragraph', content: [] }] },
     extensions: [
       StarterKit,
       Image,
@@ -255,7 +261,7 @@
     ],
     onTransaction: () => {
       // force re-render so `editor.isActive` works as expected
-      editor = editor
+      editor = editor;
     },
     onUpdate: ({ editor }) => {
       content = editor.getHTML();

@@ -78,9 +78,9 @@
       bind:this={messagesSectionDiv}
       bind:clientHeight={$messagesSectionClientHeight}>
       {#if data.ticket.messages.length < data.ticket.count && data.ticket.count > 5}
-        <div class="position-relative">
+        <div class="d-flex justify-content-center mb-3">
           <button
-            class="btn btn-sm btn-primary position-absolute top-50 start-50 translate-middle"
+            class="btn btn-sm btn-secondary"
             class:disabled={loadMoreLoading}
             on:click={loadMore}
             ><i class="fas fa-arrow-up me-2"></i>
@@ -97,14 +97,15 @@
         {#each data.ticket.messages as message, index (message)}
           {#if message.panel}
             <div class="row g-2 flex-nowrap">
-              <div class="col d-flex justify-content-end">
-                <Date time={message.date}>
-                  <div class="card rounded-5">
-                    <div class="card-body answer px-3">
-                      {@html message.message}
-                    </div>
+              <div class="col vstack align-items-end">
+                <div class="card rounded-5 bg-transparent border shadow-sm">
+                  <div class="card-body answer px-3">
+                    {@html message.message}
                   </div>
-                </Date>
+                </div>
+                <small class="text-body-secondary mt-1">
+                  <Date time={message.date} relativeFormat={true} />
+                </small>
               </div>
               <div class="col-auto">
                 <a href="{base}/players/detail/{message.username}" class="rounded focus-ring">
@@ -131,14 +132,15 @@
                     height="48" />
                 </a>
               </div>
-              <div class="col hstack gap-2">
-                <Date time={message.date}>
-                  <div class="card rounded-5">
-                    <div class="card-body px-3">
-                      {message.message}
-                    </div>
+              <div class="col vstack align-items-start">
+                <div class="card rounded-5 text-bg-primary border-0 shadow-sm">
+                  <div class="card-body px-3">
+                    {message.message}
                   </div>
-                </Date>
+                </div>
+                <small class="text-body-secondary mt-1">
+                  <Date time={message.date} relativeFormat={true} />
+                </small>
               </div>
             </div>
           {/if}
@@ -147,23 +149,16 @@
     </div>
     <div class="card-footer" class:d-none={data.ticket.status === TicketStatuses.CLOSED}>
       <!-- Send Message Section -->
-      <div class="row align-items-end g-2">
-        <div class="col">
-          <!-- Editor -->
-          <Editor bind:content={messageText} bind:isEmpty={isEditorEmpty} />
-          <!-- Editor End -->
-        </div>
-        <div class="col-auto">
-          <button
-            class="btn btn-secondary mt-lg-0 mt-3"
-            on:click={sendMessage}
-            class:disabled={messageSendLoading || isEditorEmpty}
-            :disabled={messageSendLoading || isEditorEmpty}>
-            <i class="fas fa-paper-plane"></i>
-            <span class="d-lg-inline d-none ms-2">{$_('pages.ticket-detail.send-button')}</span>
-          </button>
-        </div>
-      </div>
+      <Editor bind:content={messageText} bind:isEmpty={isEditorEmpty}>
+        <button
+          class="btn btn-secondary"
+          on:click={sendMessage}
+          class:disabled={messageSendLoading || isEditorEmpty}
+          disabled={messageSendLoading || isEditorEmpty}>
+          <i class="fas fa-paper-plane"></i>
+          <span class="ms-2">{$_('pages.ticket-detail.send-button')}</span>
+        </button>
+      </Editor>
     </div>
   </div>
 </div>
