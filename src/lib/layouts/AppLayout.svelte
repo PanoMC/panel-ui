@@ -147,6 +147,10 @@
     };
   }
 
+  // Stable singletons for stores that must persist across navigations
+  let clientResetLayout;
+  let clientPageTitle;
+
   /**
    * @type {import('@sveltejs/kit').LayoutLoad}
    */
@@ -247,8 +251,9 @@
       selectedServer: basicData.selectedServer,
       connectedServerCount: basicData.connectedServerCount,
       siteInfo,
-      resetLayout: writable(false),
-      pageTitle: writable(null)
+      siteInfo,
+      resetLayout: browser ? (clientResetLayout || (clientResetLayout = writable(false))) : writable(false),
+      pageTitle: browser ? (clientPageTitle || (clientPageTitle = writable(null))) : writable(null)
     };
 
     if (basicData.result !== 'ok') {
@@ -295,7 +300,12 @@
   const platformRestarting = writable(false);
   const panelTheme = writable(data.session.basicData.panelTheme || 'dark');
   const showDevModeAlert = writable(data.session.basicData.showDevModeAlert);
-  const { resetLayout, pageTitle } = data;
+  let { resetLayout, pageTitle } = data;
+  $: ({ resetLayout, pageTitle } = data);
+
+  // Re-establish contexts reactively to handle potential store swaps (though unlikely with singletons)
+  $: setContext('resetLayout', resetLayout);
+  $: setContext('pageTitle', pageTitle);
 
   const sidebarTabsState = writable(getCurrentSidebarState());
   const isSidebarOpen = writable(
@@ -304,7 +314,7 @@
       : true,
   );
 
-  const pageUnsubscribe = page.subscribe((page) => {
+  const pageUnsubscribe = page.subscribe((p) => {
     session.set(data.session);
     user.set(data.user);
     website.set(data.website);
@@ -319,6 +329,11 @@
     panelTheme.set(data.session.basicData.panelTheme || 'dark');
 
     sidebarTabsState.set(getCurrentSidebarState());
+
+    // Auto-Reset Layout State: If we navigate to a non-plugin route, force resetLayout to false
+    if (browser && p.route && p.route.id && !p.route.id.includes('(plugin-ui)')) {
+      resetLayout.set(false);
+    }
   });
 
   $: if (data?.session?.basicData) {

@@ -54,9 +54,7 @@
             props: { ...(data.props || {}), panoContexts: contexts },
             context: contexts
           });
-          console.log('Plugin Hydration Success');
         } catch (hErr) {
-          console.warn('Plugin Hydration Failed (Mismatch), falling back to Clean Mount:', hErr);
           viewContainer.innerHTML = '';
           componentInstance = data.component.mount({
             target: viewContainer,

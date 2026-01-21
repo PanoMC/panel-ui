@@ -1,7 +1,7 @@
 <nav class="sidebar-nav navbar-dark animate__animated animate__fadeIn">
   {#if $selectedServer}
     <ul class="navbar-nav px-3">
-      {#each serverNavigationItems as item}
+      {#each $serverNavigationItems as item}
         <li class="nav-item">
           <a
             class="nav-link"

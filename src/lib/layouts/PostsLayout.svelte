@@ -5,7 +5,7 @@
         {@render slots.left()}
       {:else if !data.categoryUrl}
         <CardMenu>
-          {#each postMenuItems as item}
+          {#each $postMenuItems as item}
             {#if !item.permission || hasPermission(item.permission)}
               <CardMenuItem href={item.href} startsWith={item.startsWith}>{$_(item.text)}</CardMenuItem>
             {/if}

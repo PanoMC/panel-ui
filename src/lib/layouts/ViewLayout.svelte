@@ -5,7 +5,7 @@
         {@render slots.left()}
       {:else}
         <CardMenu>
-          {#each themeMenuItems as item}
+          {#each $themeMenuItems as item}
             {#if !item.permission || hasPermission(item.permission)}
               <CardMenuItem href={item.href}>{$_(item.text)}</CardMenuItem>
             {/if}

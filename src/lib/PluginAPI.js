@@ -7,16 +7,16 @@ import { originalPostMenuItems } from '$lib/pages/Posts.svelte';
 
 const hooks = writable({});
 
-export let siteNavigationItems = [];
-export let serverNavigationItems = [];
-export let themeMenuItems = [];
-export let postMenuItems = [];
+export const siteNavigationItems = writable([]);
+export const serverNavigationItems = writable([]);
+export const themeMenuItems = writable([]);
+export const postMenuItems = writable([]);
 
 export async function init() {
-  siteNavigationItems = structuredClone(originalSiteNavItems);
-  serverNavigationItems = structuredClone(originalServerNavItems);
-  themeMenuItems = structuredClone(originalThemeMenuItems);
-  postMenuItems = structuredClone(originalPostMenuItems);
+  siteNavigationItems.set(structuredClone(originalSiteNavItems));
+  serverNavigationItems.set(structuredClone(originalServerNavItems));
+  themeMenuItems.set(structuredClone(originalThemeMenuItems));
+  postMenuItems.set(structuredClone(originalPostMenuItems));
   hooks.set({});
   lifecycleHandlers.set({});
 }
@@ -117,25 +117,25 @@ export const panoApi = {
     nav: {
       site: {
         async editNavLinks(handler = async (navigationItems) => navigationItems) {
-          siteNavigationItems = await handler(siteNavigationItems);
+          siteNavigationItems.set(await handler(get(siteNavigationItems)));
         },
       },
       server: {
         async editNavLinks(handler = async (navigationItems) => navigationItems) {
-          serverNavigationItems = await handler(serverNavigationItems);
+          serverNavigationItems.set(await handler(get(serverNavigationItems)));
         },
       },
     },
     view: {
       themes: {
         async editMenu(handler = async (items) => items) {
-          themeMenuItems = await handler(themeMenuItems);
+          themeMenuItems.set(await handler(get(themeMenuItems)));
         },
       },
     },
     posts: {
       async editMenu(handler = async (items) => items) {
-        postMenuItems = await handler(postMenuItems);
+        postMenuItems.set(await handler(get(postMenuItems)));
       },
       onLoad(handler) {
         panoApi.ui.lifecycle.on('panel:posts:load', handler);

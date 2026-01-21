@@ -1,6 +1,6 @@
 <nav class="navbar-dark animate__animated animate__slideInLeft">
   <ul class="navbar-nav flex-column px-3">
-    {#each siteNavigationItems as item}
+    {#each $siteNavigationItems as item}
       {#if !item.permission || hasPermission(item.permission)}
         <li class="nav-item">
           <a

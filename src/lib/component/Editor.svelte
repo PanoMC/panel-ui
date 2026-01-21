@@ -157,7 +157,18 @@
     </div>
 
     {#if showHtml}
-      <div>
+    <div class="d-flex gap-2">
+      {#if showPreview}
+        <button
+          class="btn btn-link btn-sm"
+          class:text-primary={isPreview}
+          onclick={() => (isPreview = !isPreview)}>
+          <i class="fas fa-eye"></i>
+          {isPreview ? 'Edit' : 'Preview'}
+        </button>
+      {/if}
+
+      {#if showHtml}
         <button
           class="btn btn-link btn-sm"
           class:text-primary={isHtmlView}
@@ -165,7 +176,8 @@
           <i class="fas fa-code"></i>
           {isHtmlView ? 'Rich Text' : 'HTML'}
         </button>
-      </div>
+      {/if}
+    </div>
     {/if}
   </div>
 {/if}
@@ -174,14 +186,21 @@
 <div
   class="form-control editor-height"
   style="{contentStyles}"
-  class:d-none={isHtmlView}
+  class:d-none={isHtmlView || isPreview}
   bind:this={element}></div>
 
 {#if isHtmlView}
   <textarea
     class="form-control editor-height"
+    style="{contentStyles}"
     bind:value={content}
     oninput={() => (isEmpty = content.trim().length === 0)}></textarea>
+{/if}
+
+{#if isPreview}
+  <div class="form-control editor-height overflow-auto" style="{contentStyles}">
+    {@html content}
+  </div>
 {/if}
 
 <script>
@@ -199,11 +218,13 @@
   let colorPickerElement = $state();
   let editorContent = $state("");
   let isHtmlView = $state(false);
+  let isPreview = $state(false);
 
   let {
     content = $bindable(),
     isEmpty = $bindable(true),
     showHtml = false,
+    showPreview = false,
     html = false,
     contentStyles = ""
   } = $props();

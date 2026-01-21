@@ -5,10 +5,10 @@
     {:else}
       {#key data}
         <div use:mountLayout class="plugin-layout-container"></div>
+        <div bind:this={slotContentContainer} class="plugin-content-wrapper" style="display: none;">
+          <slot />
+        </div>
       {/key}
-      <div bind:this={slotContentContainer} class="plugin-content-wrapper" style="display: none;">
-        <slot />
-      </div>
     {/if}
   </svelte:component>
 {:else}
@@ -17,10 +17,10 @@
   {:else}
     {#key data}
       <div use:mountLayout class="plugin-layout-container"></div>
+      <div bind:this={slotContentContainer} class="plugin-content-wrapper" style="display: none;">
+        <slot />
+      </div>
     {/key}
-    <div bind:this={slotContentContainer} class="plugin-content-wrapper" style="display: none;">
-      <slot />
-    </div>
   {/if}
 {/if}
 
@@ -106,6 +106,7 @@
 <script>
   import { mount, unmount, getAllContexts } from 'svelte';
   import { browser } from '$app/environment';
+  import { page } from '$app/stores';
 
   export let data;
 
@@ -137,6 +138,8 @@
 
       // SLOT BRIDGE: Smart Injection
       setTimeout(() => {
+        if (!layoutContainer) return; // Guard against early destroy
+
         const anchor = layoutContainer.querySelector(
           '[data-pano-content], main, .content, .page-content, article',
         );
@@ -147,12 +150,14 @@
         } else if (slotContentContainer) {
           if (layoutContainer.firstElementChild) {
             layoutContainer.firstElementChild.appendChild(slotContentContainer);
+          } else {
+            layoutContainer.appendChild(slotContentContainer);
           }
           slotContentContainer.style.display = '';
         }
-      }, 0);
+      }, 50); // Increased delay to 50ms for improved stability
     } catch (e) {
-      console.error('Failed to mount layout', e);
+      console.error('[Layout] Failed to mount layout', e);
     }
 
     return {
