@@ -79,7 +79,7 @@
 
   import { show as showServerRequestModal } from '$lib/component/modals/ServerRequestModal.svelte';
   import { initializePlugins, preparePlugins } from '$lib/PluginManager.js';
-  import { updateApiUrl, updatePanoWebsiteUrl } from '$lib/variables.js';
+  import { updateApiUrl, updatePanoWebsiteUrl, updatePanoWebsiteApiUrl, checkDomainRedirection } from '$lib/variables.js';
 
   const initLanguage = languageStuff.init;
 
@@ -170,7 +170,11 @@
     }
 
     if (panoWebsiteApiUrlEnv) {
-      updatePanoWebsiteUrl(panoWebsiteApiUrlEnv);
+      updatePanoWebsiteApiUrl(panoWebsiteApiUrlEnv);
+    }
+
+    if (browser) {
+      checkDomainRedirection();
     }
 
     setPanoContext({
