@@ -4,7 +4,7 @@
       type="button"
       title={$_('buttons.delete')}
       aria-label={$_('buttons.delete')}
-      class="btn btn-sm btn-link"
+      class="btn btn-link"
       on:click={onDeleteClick}>
       <i class="fas fa-trash"></i>
     </button>
@@ -13,7 +13,7 @@
     <div class="text-truncate">
       <button
         type="button"
-        class="btn btn-sm btn-link p-0 text-start text-decoration-none w-100 text-truncate"
+        class="btn btn-link p-0 text-start text-decoration-none w-100 text-truncate"
         title={$_('buttons.edit')}
         on:click={onEditClick}>
         {category.title}

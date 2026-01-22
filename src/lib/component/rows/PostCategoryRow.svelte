@@ -4,7 +4,7 @@
       type="button"
       aria-label={$_('buttons.delete')}
       title={$_('buttons.delete')}
-      class="btn btn-sm btn-link"
+      class="btn btn-link"
       on:click={onDeleteClick}>
       <i class="fas fa-trash"></i>
     </button>

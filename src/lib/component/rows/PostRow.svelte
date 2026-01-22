@@ -21,7 +21,7 @@
     <div class="dropdown position-static">
       <button
         type="button"
-        class="btn btn-sm btn-link"
+        class="btn btn-link"
         data-bs-toggle="dropdown"
         title={$_('components.post-row.actions')}
         aria-label={$_('components.post-row.actions')}>
@@ -98,16 +98,18 @@
       {/if}
     </div>
   </td>
-  <Hook name="panel:posts:table:row:after-thumbnail" {post} tag="td" class="align-middle text-nowrap" />
+  <Hook
+    name="panel:posts:table:row:after-thumbnail"
+    {post}
+    tag="td"
+    class="align-middle text-nowrap" />
   <td class="align-middle" style="max-width: 300px;">
-    <div class="text-truncate">
-      <a
-        href={base + '/posts/detail/' + post.id}
-        title={post.title}
-        class="rounded focus-ring text-decoration-none d-block text-truncate">
-        {post.title}
-      </a>
-    </div>
+    <a
+      href={base + '/posts/detail/' + post.id}
+      title={post.title}
+      class="rounded focus-ring text-decoration-none d-block text-truncate">
+      {post.title}
+    </a>
   </td>
   <Hook name="panel:posts:table:row:after-title" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">
@@ -117,7 +119,11 @@
       filterTitle={$_('components.post-row.filter')}
       noCategoryText={$_('components.post-row.no-category')} />
   </td>
-  <Hook name="panel:posts:table:row:after-category" {post} tag="td" class="align-middle text-nowrap" />
+  <Hook
+    name="panel:posts:table:row:after-category"
+    {post}
+    tag="td"
+    class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">{post.views}</td>
   <Hook name="panel:posts:table:row:after-views" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle">
@@ -133,7 +139,11 @@
         src="https://minotar.net/avatar/{post.writer.username}" />
     </a>
   </td>
-  <Hook name="panel:posts:table:row:after-author" {post} tag="td" class="align-middle text-nowrap" />
+  <Hook
+    name="panel:posts:table:row:after-author"
+    {post}
+    tag="td"
+    class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">
     <Date time={post.date} />
   </td>

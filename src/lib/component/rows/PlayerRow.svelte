@@ -3,7 +3,7 @@
     <div class="dropdown position-static">
       <button
         type="button"
-        class="btn btn-sm btn-link"
+        class="btn btn-link"
         aria-expanded="false"
         aria-haspopup="true"
         data-bs-toggle="dropdown"
@@ -70,11 +70,19 @@
       </a>
     </div>
   </td>
-  <Hook name="panel:players:table:row:after-name" {player} tag="td" class="align-middle text-nowrap" />
+  <Hook
+    name="panel:players:table:row:after-name"
+    {player}
+    tag="td"
+    class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap text-capitalize">
     <PlayerPermissionBadge permissionGroup={player.permissionGroup} />
   </td>
-  <Hook name="panel:players:table:row:after-perm-group" {player} tag="td" class="align-middle text-nowrap" />
+  <Hook
+    name="panel:players:table:row:after-perm-group"
+    {player}
+    tag="td"
+    class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">
     <PlayerStatusBadge
       banned={player.isBanned}
@@ -82,9 +90,17 @@
       inGame={player.inGame}
       {checkTime} />
   </td>
-  <Hook name="panel:players:table:row:after-status" {player} tag="td" class="align-middle text-nowrap" />
+  <Hook
+    name="panel:players:table:row:after-status"
+    {player}
+    tag="td"
+    class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap"><Date time={player.lastLoginDate} /></td>
-  <Hook name="panel:players:table:row:after-last-login" {player} tag="td" class="align-middle text-nowrap" />
+  <Hook
+    name="panel:players:table:row:after-last-login"
+    {player}
+    tag="td"
+    class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">
     <Date time={player.registerDate} />
   </td>

@@ -5,7 +5,7 @@
         type="button"
         aria-label={$_('buttons.delete')}
         title={$_('buttons.delete')}
-        class="btn btn-sm btn-link"
+        class="btn btn-link"
         on:click={onDeleteClick}>
         <i class="fas fa-trash"></i>
       </button>
@@ -15,7 +15,7 @@
     <div class="text-truncate">
       {#if locale.definedBy !== 'SYSTEM'}
         <button
-          class="btn btn-sm btn-link p-0 text-start text-decoration-none w-100 text-truncate"
+          class="btn btn-link p-0 text-start text-decoration-none w-100 text-truncate"
           type="button"
           on:click={onEditClick}
           title={locale.name}>
