@@ -184,15 +184,15 @@
   let isSearching = false;
 
   function onSearchInput(event) {
-     search = event.detail.value;
-     refreshData();
+    search = event.detail.value;
+    refreshData();
   }
 
   async function refreshData() {
     isSearching = true;
     const queryParams = buildQueryParams({
-        status: data.pageType,
-        search: search || undefined
+      status: data.pageType,
+      search: search || undefined,
     });
 
     await goto(`${base}/view${queryParams}`, { invalidateAll: true, keepFocus: true });
@@ -231,6 +231,6 @@
     return `${firstKey}?hash=${theme.screenshots[firstKey]}`;
   }
 
-  const slots = getContext("layout-slots");
-  Object.assign(slots, {right});
+  const slots = getContext('layout-slots');
+  Object.assign(slots, { right });
 </script>

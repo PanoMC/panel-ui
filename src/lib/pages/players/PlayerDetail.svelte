@@ -285,7 +285,10 @@
     body.banHistoryPage = parseInt(banHistoryPage);
 
     body.hookProps = {};
-    body.hookProps['panel:player-detail:bottom'] = await executeHookLoad('panel:player-detail:bottom', event);
+    body.hookProps['panel:player-detail:bottom'] = await executeHookLoad(
+      'panel:player-detail:bottom',
+      event,
+    );
 
     return body;
   }

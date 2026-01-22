@@ -1,58 +1,3 @@
-<svelte:head>
-  {#if networkErrors}
-    <style>
-      .show {
-        display: none !important;
-      }
-    </style>
-  {/if}
-</svelte:head>
-
-<div
-  class="d-flex align-items-center justify-content-center vh-100 w-100 flex-column"
-  role="status"
-  in:fade
-  out:fade>
-  <div class="loader-content position-relative" style="height: 100px; width: 100px;">
-    {#if networkErrors}
-      <div class="logo-wrapper position-absolute center-content" class:pulse={$retryingNetworkErrors}>
-        <img alt="Pano" src="{base}/assets/img/logo.svg" class="logo-img" />
-      </div>
-    {:else}
-      <div class="logo-wrapper pano-anim center-content">
-        <img alt="Pano" src="{base}/assets/img/logo.svg" class="logo-img" />
-      </div>
-      <div class="mc-img-wrapper mc-anim center-content">
-        <img alt="Minecraft" src="{base}/assets/img/minecraft-icon.png" class="mc-img" />
-      </div>
-      <div class="hytale-img-wrapper hytale-anim center-content">
-        <img alt="Hytale" src="{base}/assets/img/hytale-icon.png" class="hytale-img" />
-      </div>
-    {/if}
-  </div>
-
-  {#if networkErrors}
-    <div class="mt-4 text-center">
-      {#if notLoggedIn}
-        {$_('components.splash.errors.session')}
-      {:else if noPermission}
-        {$_('components.splash.errors.permission')}
-      {:else}
-        {$_('components.splash.errors.connection')}
-      {/if}
-      <br />
-      <button
-        class="btn btn-secondary mt-3"
-        on:click={onResumeClick}
-        class:disabled={$retryingNetworkErrors}>
-        {$retryingNetworkErrors
-          ? $_('components.splash.refreshing')
-          : $_('components.splash.refresh')}
-      </button>
-    </div>
-  {/if}
-</div>
-
 <style>
   .center-content {
     position: absolute;
@@ -179,6 +124,63 @@
     }
   }
 </style>
+
+<svelte:head>
+  {#if networkErrors}
+    <style>
+      .show {
+        display: none !important;
+      }
+    </style>
+  {/if}
+</svelte:head>
+
+<div
+  class="d-flex align-items-center justify-content-center vh-100 w-100 flex-column"
+  role="status"
+  in:fade
+  out:fade>
+  <div class="loader-content position-relative" style="height: 100px; width: 100px;">
+    {#if networkErrors}
+      <div
+        class="logo-wrapper position-absolute center-content"
+        class:pulse={$retryingNetworkErrors}>
+        <img alt="Pano" src="{base}/assets/img/logo.svg" class="logo-img" />
+      </div>
+    {:else}
+      <div class="logo-wrapper pano-anim center-content">
+        <img alt="Pano" src="{base}/assets/img/logo.svg" class="logo-img" />
+      </div>
+      <div class="mc-img-wrapper mc-anim center-content">
+        <img alt="Minecraft" src="{base}/assets/img/minecraft-icon.png" class="mc-img" />
+      </div>
+      <div class="hytale-img-wrapper hytale-anim center-content">
+        <img alt="Hytale" src="{base}/assets/img/hytale-icon.png" class="hytale-img" />
+      </div>
+    {/if}
+  </div>
+
+  {#if networkErrors}
+    <div class="mt-4 text-center">
+      {#if notLoggedIn}
+        {$_('components.splash.errors.session')}
+      {:else if noPermission}
+        {$_('components.splash.errors.permission')}
+      {:else}
+        {$_('components.splash.errors.connection')}
+      {/if}
+      <br />
+      <button
+        class="btn btn-secondary mt-3"
+        on:click={onResumeClick}
+        class:disabled={$retryingNetworkErrors}>
+        {$retryingNetworkErrors
+          ? $_('components.splash.refreshing')
+          : $_('components.splash.refresh')}
+      </button>
+    </div>
+  {/if}
+</div>
 
 <script>
   import { getContext, onDestroy } from 'svelte';

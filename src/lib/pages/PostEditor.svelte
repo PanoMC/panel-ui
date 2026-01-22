@@ -80,142 +80,141 @@
 
 <!-- Post & Post Options -->
 <section class="row g-3 animate__animated animate__fadeIn">
+  <!-- Post -->
+  <div class="col-lg-9">
+    <div class="card h-100 w-100">
+      <div class="card-body">
+        <input
+          class="form-control form-control-lg"
+          type="text"
+          placeholder={$_('pages.post-editor.inputs.title.placeholder')}
+          bind:value={data.post.title} />
 
-    <!-- Post -->
-    <div class="col-lg-9">
-      <div class="card h-100 w-100">
-        <div class="card-body">
-          <input
-            class="form-control form-control-lg"
-            type="text"
-            placeholder={$_('pages.post-editor.inputs.title.placeholder')}
-            bind:value={data.post.title} />
-
-          <div class="align-self-center w-100 h-75">
-            <!-- Editor -->
-            <Editor bind:content={data.post.text} bind:isEmpty={isEditorEmpty} />
-            <!-- Editor End -->
-          </div>
+        <div class="align-self-center w-100 h-75">
+          <!-- Editor -->
+          <Editor bind:content={data.post.text} bind:isEmpty={isEditorEmpty} />
+          <!-- Editor End -->
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Post Option Cards -->
-    <div class="col-lg-3">
-      <Hook name="panel:post-editor:sidebar:before" post={data.post} />
-      <div class="card">
-        <div class="card-body">
-          <ul class="list-group p-0 m-0">
+  <!-- Post Option Cards -->
+  <div class="col-lg-3">
+    <Hook name="panel:post-editor:sidebar:before" post={data.post} />
+    <div class="card">
+      <div class="card-body">
+        <ul class="list-group p-0 m-0">
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+              {$_('pages.post-editor.status')}
+              <div>
+                {$_(getStatusByPostStatus(data.post.status))}
+              </div>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+              {$_('pages.post-editor.views')}
+              <div>{data.mode === Modes.CREATE ? '0' : data.post.views}</div>
+            </div>
+          </li>
+          {#if data.post.status === StatusTypes.PUBLISHED}
             <li class="list-group-item">
               <div class="d-flex justify-content-between align-items-center">
-                {$_('pages.post-editor.status')}
-                <div>
-                  {$_(getStatusByPostStatus(data.post.status))}
+                {$_('pages.post-editor.created-at')}
+                <div class="text-end">
+                  <Date time={data.post.date} relativeFormat />
                 </div>
               </div>
             </li>
-            <li class="list-group-item">
-              <div class="d-flex justify-content-between align-items-center">
-                {$_('pages.post-editor.views')}
-                <div>{data.mode === Modes.CREATE ? '0' : data.post.views}</div>
-              </div>
-            </li>
-            {#if data.post.status === StatusTypes.PUBLISHED}
+            {#if data.post.moveDate}
               <li class="list-group-item">
                 <div class="d-flex justify-content-between align-items-center">
-                  {$_('pages.post-editor.created-at')}
-                  <div class="text-end">
-                    <Date time={data.post.date} relativeFormat />
-                  </div>
+                  {$_('pages.post-editor.updated-at')}
+                  <div><Date time={data.post.moveDate} relativeFormat /></div>
                 </div>
               </li>
-              {#if data.post.moveDate}
-                <li class="list-group-item">
-                  <div class="d-flex justify-content-between align-items-center">
-                    {$_('pages.post-editor.updated-at')}
-                    <div><Date time={data.post.moveDate} relativeFormat /></div>
-                  </div>
-                </li>
-              {/if}
             {/if}
-            <li class="list-group-item">
-              <div class="d-flex justify-content-between align-items-center">
-                {$_('pages.post-editor.category')}
+          {/if}
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+              {$_('pages.post-editor.category')}
 
-                <form>
-                  <select class="form-control form-control-sm" bind:value={data.post.category}>
-                    <option class="text-primary" value={-1}
-                      >{$_('pages.post-editor.no-category')}</option>
+              <form>
+                <select class="form-control form-control-sm" bind:value={data.post.category}>
+                  <option class="text-primary" value={-1}
+                    >{$_('pages.post-editor.no-category')}</option>
 
-                    {#each data.categories as category, index (category)}
-                      <option value={category.id}>{category.title}</option>
-                    {/each}
-                  </select>
-                </form>
-              </div>
-            </li>
-            <li
-              class="list-group-item p-0 d-flex justify-content-center align-items-center"
-              class:drag-over={dropZoneActive}>
-              {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
-                <div class="thumbnail-wrapper">
-                  <div class="ratio ratio-16x9 w-100 rounded overflow-hidden">
-                    <button
-                      type="button"
-                      class="btn border-0 shadow-none w-100 h-100 p-0 bg-transparent"
-                      use:tooltip={[$_('buttons.change'), { placement: 'bottom' }]}
-                      on:click={() => thumbnailInput.click()}>
-                      <img
-                        src={thumbnail || data.post.thumbnailUrl}
-                        class="img-fluid w-100 h-100 object-fit-cover"
-                        title={$_('pages.post-editor.small-image')}
-                        alt={$_('pages.post-editor.small-image')} />
-                    </button>
-                  </div>
-
-                  {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle"
-                      on:click={onRemoveThumbnailClick}
-                      title={$_('buttons.remove')}
-                      aria-label={$_('buttons.remove')}>
-                      <i class="fas fa-minus"></i>
-                    </button>
-                  {/if}
+                  {#each data.categories as category, index (category)}
+                    <option value={category.id}>{category.title}</option>
+                  {/each}
+                </select>
+              </form>
+            </div>
+          </li>
+          <li
+            class="list-group-item p-0 d-flex justify-content-center align-items-center"
+            class:drag-over={dropZoneActive}>
+            {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
+              <div class="thumbnail-wrapper">
+                <div class="ratio ratio-16x9 w-100 rounded overflow-hidden">
+                  <button
+                    type="button"
+                    class="btn border-0 shadow-none w-100 h-100 p-0 bg-transparent"
+                    use:tooltip={[$_('buttons.change'), { placement: 'bottom' }]}
+                    on:click={() => thumbnailInput.click()}>
+                    <img
+                      src={thumbnail || data.post.thumbnailUrl}
+                      class="img-fluid w-100 h-100 object-fit-cover"
+                      title={$_('pages.post-editor.small-image')}
+                      alt={$_('pages.post-editor.small-image')} />
+                  </button>
                 </div>
-              {:else}
-                <button
-                  type="button"
-                  class="btn list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-100 text-center shadow-none border-0 m-0"
-                  style="height: 240px; cursor: pointer;"
-                  on:click={() => thumbnailInput.click()}
-                  on:drop={handleDrop}
-                  on:dragover={handleDragOver}
-                  on:dragleave={handleDragLeave}>
-                  <i class="fas fa-image fa-3x mb-2"></i>
-                  <p class="mb-0">
-                    {@html $_('pages.post-editor.thumbnail-not-determined')}
-                  </p>
-                </button>
-              {/if}
-              <input
-                class="d-none"
-                type="file"
-                id="uploadPostThumbnailInput"
-                bind:files={thumbnailFiles}
-                on:change={onThumbnailChange}
-                bind:this={thumbnailInput}
-                accept="image/*" />
-            </li>
-          </ul>
-        </div>
+
+                {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle"
+                    on:click={onRemoveThumbnailClick}
+                    title={$_('buttons.remove')}
+                    aria-label={$_('buttons.remove')}>
+                    <i class="fas fa-minus"></i>
+                  </button>
+                {/if}
+              </div>
+            {:else}
+              <button
+                type="button"
+                class="btn list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-100 text-center shadow-none border-0 m-0"
+                style="height: 240px; cursor: pointer;"
+                on:click={() => thumbnailInput.click()}
+                on:drop={handleDrop}
+                on:dragover={handleDragOver}
+                on:dragleave={handleDragLeave}>
+                <i class="fas fa-image fa-3x mb-2"></i>
+                <p class="mb-0">
+                  {@html $_('pages.post-editor.thumbnail-not-determined')}
+                </p>
+              </button>
+            {/if}
+            <input
+              class="d-none"
+              type="file"
+              id="uploadPostThumbnailInput"
+              bind:files={thumbnailFiles}
+              on:change={onThumbnailChange}
+              bind:this={thumbnailInput}
+              accept="image/*" />
+          </li>
+        </ul>
       </div>
-      <Hook name="panel:post-editor:sidebar:after" post={data.post} />
     </div>
-  </section>
-  
-  <Hook name="panel:post-editor:content:bottom" post={data.post} />
+    <Hook name="panel:post-editor:sidebar:after" post={data.post} />
+  </div>
+</section>
+
+<Hook name="panel:post-editor:content:bottom" post={data.post} />
 
 <AddEditPostCategoryModal />
 
@@ -258,7 +257,7 @@
       categories: [],
       mode,
       error: {},
-      hookProps: {}
+      hookProps: {},
     };
 
     if (mode === Modes.EDIT) {
@@ -289,7 +288,10 @@
 
     data = { ...data, ...categoriesBody };
 
-    data.hookProps['panel:post-editor:content:bottom'] = await executeHookLoad('panel:post-editor:content:bottom', event);
+    data.hookProps['panel:post-editor:content:bottom'] = await executeHookLoad(
+      'panel:post-editor:content:bottom',
+      event,
+    );
 
     return data;
   }
@@ -341,7 +343,7 @@
   let thumbnailFiles = $state(null);
 
   const pageTitle = getContext('pageTitle');
-  const slots = getContext("layout-slots");
+  const slots = getContext('layout-slots');
   Object.assign(slots, { left, right });
 
   pageTitle.set(

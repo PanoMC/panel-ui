@@ -1,3 +1,20 @@
+<style>
+  .label-restart-info {
+    font-size: 0.55rem;
+    position: absolute;
+    top: -0.1rem;
+    right: -0.8rem;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    cursor: help;
+  }
+
+  .label-restart-info:hover {
+    opacity: 1;
+    color: var(--bs-warning) !important;
+  }
+</style>
+
 <!-- Site Settings Sub Page -->
 <div class="card">
   <div class="card-header">
@@ -5,7 +22,8 @@
   </div>
   <div class="card-body animate__animated animate__fadeIn">
     {#if restartRequired}
-      <div class="alert alert-warning animate__animated animate__fadeIn d-flex align-items-center justify-content-between mb-4">
+      <div
+        class="alert alert-warning animate__animated animate__fadeIn d-flex align-items-center justify-content-between mb-4">
         <div>
           <i class="fas fa-triangle-exclamation me-2"></i>
           {$_('pages.settings.site-settings.ssl.restart-required-alert')}
@@ -48,8 +66,7 @@
           {$_('pages.settings.site-settings.inputs.website-url.label')}
           <i
             class="fas fa-circle-info label-restart-info text-secondary"
-            use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}
-          ></i>
+            use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
         </span>
       </label>
       <div class="col-md-6">
@@ -162,15 +179,20 @@
           <DragAndDropZone
             bind:this={faviconZone}
             className="p-0 border rounded overflow-hidden w-100 h-100"
-            accept={['image/png', 'image/jpeg', 'image/gif', 'image/x-icon', 'image/vnd.microsoft.icon']}
+            accept={[
+              'image/png',
+              'image/jpeg',
+              'image/gif',
+              'image/x-icon',
+              'image/vnd.microsoft.icon',
+            ]}
             maxFileSize={1 * 1024 * 1024}
             on:drop={(e) => onFaviconDrop(e.detail)}
-            on:error={(e) => handleFileError(e, 'favicon')}
-          >
+            on:error={(e) => handleFileError(e, 'favicon')}>
             <img
               alt={$_('pages.settings.site-settings.inputs.favicon.select')}
               src={favicon}
-              class="w-100 h-100" 
+              class="w-100 h-100"
               style="object-fit: contain;" />
           </DragAndDropZone>
           <button
@@ -196,19 +218,18 @@
       <div class="col-md-6">
         <div class="position-relative w-100" style="max-width: 300px;">
           <div class="ratio ratio-16x9">
-             <DragAndDropZone
-                bind:this={logoZone}
-                className="border rounded overflow-hidden p-0 w-100 h-100 position-absolute start-0 top-0"
-                accept={['image/png', 'image/jpeg', 'image/gif']}
-                maxFileSize={2 * 1024 * 1024}
-                on:drop={(e) => onWebsiteLogoDrop(e.detail)}
-                on:error={(e) => handleFileError(e, 'logo')}
-             >
-               <img
-                 src={websiteLogo}
-                 class="object-fit-contain w-100 h-100"
-                 alt={$_('pages.settings.site-settings.inputs.website-logo.server-icon')} />
-             </DragAndDropZone>
+            <DragAndDropZone
+              bind:this={logoZone}
+              className="border rounded overflow-hidden p-0 w-100 h-100 position-absolute start-0 top-0"
+              accept={['image/png', 'image/jpeg', 'image/gif']}
+              maxFileSize={2 * 1024 * 1024}
+              on:drop={(e) => onWebsiteLogoDrop(e.detail)}
+              on:error={(e) => handleFileError(e, 'logo')}>
+              <img
+                src={websiteLogo}
+                class="object-fit-contain w-100 h-100"
+                alt={$_('pages.settings.site-settings.inputs.website-logo.server-icon')} />
+            </DragAndDropZone>
           </div>
           <button
             type="button"
@@ -235,8 +256,7 @@
           {$_('pages.settings.site-settings.inputs.http-port.label')}
           <i
             class="fas fa-circle-info label-restart-info text-secondary"
-            use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}
-          ></i>
+            use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
         </span>
       </label>
       <div class="col-md-6">
@@ -255,8 +275,7 @@
           {$_('pages.settings.site-settings.inputs.https-port.label')}
           <i
             class="fas fa-circle-info label-restart-info text-secondary"
-            use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}
-          ></i>
+            use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
         </span>
       </label>
       <div class="col-md-6">
@@ -292,8 +311,7 @@
           {$_('pages.settings.site-settings.inputs.ssl-mode.label')}
           <i
             class="fas fa-circle-info label-restart-info text-secondary"
-            use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}
-          ></i>
+            use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
         </span>
       </label>
       <div class="col-md-6">
@@ -320,8 +338,7 @@
             {$_('pages.settings.site-settings.inputs.ssl-cert.label')}
             <i
               class="fas fa-circle-info label-restart-info text-secondary"
-              use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}
-            ></i>
+              use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
           </span>
         </label>
         <div class="col-md-6">
@@ -337,8 +354,7 @@
             {#if data.sslCert === '****************'}
               <button
                 class="btn btn-sm btn-secondary position-absolute top-50 start-50 translate-middle"
-                on:click|preventDefault={() => revealSsl('sslCert')}
-              >
+                on:click|preventDefault={() => revealSsl('sslCert')}>
                 <i class="fas fa-eye me-1"></i>
                 {$_('buttons.reveal')}
               </button>
@@ -353,8 +369,7 @@
             {$_('pages.settings.site-settings.inputs.ssl-key.label')}
             <i
               class="fas fa-circle-info label-restart-info text-secondary"
-              use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}
-            ></i>
+              use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
           </span>
         </label>
         <div class="col-md-6">
@@ -370,8 +385,7 @@
             {#if data.sslKey === '****************'}
               <button
                 class="btn btn-sm btn-secondary position-absolute top-50 start-50 translate-middle"
-                on:click|preventDefault={() => revealSsl('sslKey')}
-              >
+                on:click|preventDefault={() => revealSsl('sslKey')}>
                 <i class="fas fa-eye me-1"></i>
                 {$_('buttons.reveal')}
               </button>
@@ -380,8 +394,6 @@
         </div>
       </div>
     {/if}
-
-
 
     <button
       class="btn btn-secondary"
@@ -455,10 +467,9 @@
 
   let selectedFaviconFiles = [];
   let selectedWebsiteLogoFiles = [];
-  
+
   let faviconZone;
   let logoZone;
-
 
   let restartRequired = false;
 
@@ -518,23 +529,29 @@
     domainFromUrl.includes('.');
   $: isPortValidForLE = data.httpPort === 80;
   $: isHttpsPortValidForLE = data.httpsPort === 443;
-  $: isCurrentDomainMatched = typeof window !== 'undefined' && domainFromUrl === window.location.hostname;
+  $: isCurrentDomainMatched =
+    typeof window !== 'undefined' && domainFromUrl === window.location.hostname;
 
   $: isLetsEncryptInvalid =
     data.sslMode === 'LETS_ENCRYPT' &&
-    (!isDomainValidForLE ||
-      !isPortValidForLE ||
-      !isHttpsPortValidForLE ||
-      !isCurrentDomainMatched);
+    (!isDomainValidForLE || !isPortValidForLE || !isHttpsPortValidForLE || !isCurrentDomainMatched);
 
   $: isManualInvalid = data.sslMode === 'MANUAL' && (!data.sslCert || !data.sslKey);
 
   function handleFileError(event, type = 'favicon') {
     const { error } = event.detail;
     if (error === 'INVALID_SIZE') {
-      showToast(type === 'favicon' ? 'components.toasts.favicon-exceeds-size' : 'components.toasts.website-logo-exceeds-size');
+      showToast(
+        type === 'favicon'
+          ? 'components.toasts.favicon-exceeds-size'
+          : 'components.toasts.website-logo-exceeds-size',
+      );
     } else if (error === 'INVALID_TYPE') {
-      showToast(type === 'favicon' ? 'components.toasts.favicon-wrong-content-type' : 'components.toasts.website-logo-wrong-content-type');
+      showToast(
+        type === 'favicon'
+          ? 'components.toasts.favicon-wrong-content-type'
+          : 'components.toasts.website-logo-wrong-content-type',
+      );
     }
   }
 
@@ -650,11 +667,11 @@
 
         // Update Store if logo changed
         if (selectedWebsiteLogoFiles && selectedWebsiteLogoFiles.length > 0) {
-           const reader = new FileReader();
-           reader.readAsDataURL(selectedWebsiteLogoFiles[0]);
-           reader.onload = (e) => {
-             websiteLogoSrc.set(e.target.result);
-           };
+          const reader = new FileReader();
+          reader.readAsDataURL(selectedWebsiteLogoFiles[0]);
+          reader.onload = (e) => {
+            websiteLogoSrc.set(e.target.result);
+          };
         }
 
         selectedFaviconFiles = [];
@@ -685,13 +702,13 @@
           }
 
           hideSaveCriticalSettingsModal();
-          
+
           if (field === 'sslCert') {
             data.sslCert = body.sslCert;
           } else if (field === 'sslKey') {
             data.sslKey = body.sslKey;
           }
-        }
+        },
       });
     });
   }
@@ -769,20 +786,3 @@
   // Hide method from for-in loops
   Object.defineProperty(Array.prototype, 'equals', { enumerable: false });
 </script>
-
-<style>
-  .label-restart-info {
-    font-size: 0.55rem;
-    position: absolute;
-    top: -0.1rem;
-    right: -0.8rem;
-    opacity: 0.5;
-    transition: opacity 0.2s;
-    cursor: help;
-  }
-
-  .label-restart-info:hover {
-    opacity: 1;
-    color: var(--bs-warning) !important;
-  }
-</style>

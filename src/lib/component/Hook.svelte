@@ -1,16 +1,12 @@
 {#each hookList as module, i}
   {@const props = hookProps[i] || {}}
   {#if module && (module.default || !isFunction(module))}
-    {#key name + i + (rest.post?.id || rest.id || "")}
+    {#key name + i + (rest.post?.id || rest.id || '')}
       {@const Component = module.default || module}
 
       {#if !browser}
         <!-- Server Side SSR -->
-        <svelte:element
-          this={tag}
-          hookName={name}
-          {...props}
-          {...rest}>
+        <svelte:element this={tag} hookName={name} {...props} {...rest}>
           {#if Component}
             <Component hookName={name} {...props} {...rest} />
           {/if}
@@ -29,21 +25,23 @@
 {/each}
 
 <script>
-  import { panoApiClient } from "$lib/PluginAPI.js";
-  import { browser } from "$app/environment";
-  import { page } from "$app/stores";
-  import { mount, unmount, getAllContexts, untrack } from "svelte";
-  import { hasPermission } from "$lib/auth.util.js";
+  import { panoApiClient } from '$lib/PluginAPI.js';
+  import { browser } from '$app/environment';
+  import { page } from '$app/stores';
+  import { mount, unmount, getAllContexts, untrack } from 'svelte';
+  import { hasPermission } from '$lib/auth.util.js';
 
-  let { name, tag = "div", ...rest } = $props();
+  let { name, tag = 'div', ...rest } = $props();
 
   const hookStore = $derived(panoApiClient.ui.hook.get(name));
-  
-  const filteredHooks = $derived(($hookStore || []).filter(h => !h.permission || hasPermission(h.permission, $page.data.user)));
+
+  const filteredHooks = $derived(
+    ($hookStore || []).filter((h) => !h.permission || hasPermission(h.permission, $page.data.user)),
+  );
 
   let resolvedHooks = $state([]);
   const hookList = $derived(
-    resolvedHooks.length > 0 ? resolvedHooks : filteredHooks.map(h => h.component || h),
+    resolvedHooks.length > 0 ? resolvedHooks : filteredHooks.map((h) => h.component || h),
   );
 
   const contexts = getAllContexts();
@@ -57,8 +55,8 @@
 
   $effect(() => {
     // Sync with store and resolve any functions if needed (Client only)
-    const current = filteredHooks.map(h => h.component || h);
-    if (browser && current.some((h) => typeof h === "function" && !h.prototype)) {
+    const current = filteredHooks.map((h) => h.component || h);
+    if (browser && current.some((h) => typeof h === 'function' && !h.prototype)) {
       resolveHooks(current);
     } else {
       resolvedHooks = [];
@@ -68,7 +66,7 @@
   async function resolveHooks(list) {
     const resolved = await Promise.all(
       list.map(async (h) => {
-        if (typeof h === "function" && !h.prototype) {
+        if (typeof h === 'function' && !h.prototype) {
           return await h();
         }
         return h;
@@ -105,7 +103,7 @@
         });
       }
     } catch (err) {
-      console.warn("[Hook] Mount failed completely:", err);
+      console.warn('[Hook] Mount failed completely:', err);
     }
 
     return {

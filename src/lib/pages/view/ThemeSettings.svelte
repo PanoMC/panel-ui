@@ -210,7 +210,10 @@
 
     try {
       src = '/theme-settings';
-      const url = new URL(src, typeof window !== 'undefined' ? window.location.href : 'http://localhost');
+      const url = new URL(
+        src,
+        typeof window !== 'undefined' ? window.location.href : 'http://localhost',
+      );
       childOrigin = url.origin;
     } catch (_) {
       childOrigin = '*';

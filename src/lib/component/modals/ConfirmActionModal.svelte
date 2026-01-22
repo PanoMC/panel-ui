@@ -8,16 +8,10 @@
         {$_($titleValue)}
       </div>
       <div class="modal-footer flex-nowrap">
-        <button
-          class="btn btn-link col-6 m-0"
-          type="button"
-          on:click={hide}>
+        <button class="btn btn-link col-6 m-0" type="button" on:click={hide}>
           {$_('buttons.cancel')}
         </button>
-        <button
-          class="btn btn-danger col-6 m-0"
-          type="button"
-          on:click={onYesClick}>
+        <button class="btn btn-danger col-6 m-0" type="button" on:click={onYesClick}>
           {$_('buttons.yes')}
         </button>
       </div>
@@ -49,7 +43,7 @@
       backdrop: 'static',
       keyboard: false,
     });
-    
+
     modal.show();
   }
 

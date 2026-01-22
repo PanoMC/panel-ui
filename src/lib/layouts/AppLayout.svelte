@@ -30,7 +30,7 @@
   {#if hasPermission(Permissions.MANAGE_VIEW) || hasPermission(Permissions.MANAGE_ADDONS)}
     <InstallingResourceModal />
   {/if}
-  
+
   <RestartingModal />
   <ConfirmActionModal />
 </App>
@@ -45,7 +45,7 @@
   import { page } from '$app/stores';
   import { base } from '$app/paths';
   import { browser } from '$app/environment';
-  import { error } from "@sveltejs/kit"
+  import { error } from '@sveltejs/kit';
 
   import { navigating } from '$app/stores';
 
@@ -79,7 +79,12 @@
 
   import { show as showServerRequestModal } from '$lib/component/modals/ServerRequestModal.svelte';
   import { initializePlugins, preparePlugins } from '$lib/PluginManager.js';
-  import { updateApiUrl, updatePanoWebsiteUrl, updatePanoWebsiteApiUrl, checkDomainRedirection } from '$lib/variables.js';
+  import {
+    updateApiUrl,
+    updatePanoWebsiteUrl,
+    updatePanoWebsiteApiUrl,
+    checkDomainRedirection,
+  } from '$lib/variables.js';
 
   const initLanguage = languageStuff.init;
 
@@ -202,7 +207,7 @@
         Date: DateComponent,
         NoContent,
         Editor,
-        DragAndDropZone
+        DragAndDropZone,
       },
       utils: {
         api: {
@@ -220,8 +225,8 @@
           ...toastStuff,
         },
         text: {
-          copy
-        }
+          copy,
+        },
       },
       variables: {
         ...variableStuff,
@@ -256,8 +261,10 @@
       connectedServerCount: basicData.connectedServerCount,
       siteInfo,
       siteInfo,
-      resetLayout: browser ? (clientResetLayout || (clientResetLayout = writable(false))) : writable(false),
-      pageTitle: browser ? (clientPageTitle || (clientPageTitle = writable(null))) : writable(null)
+      resetLayout: browser
+        ? clientResetLayout || (clientResetLayout = writable(false))
+        : writable(false),
+      pageTitle: browser ? clientPageTitle || (clientPageTitle = writable(null)) : writable(null),
     };
 
     if (basicData.result !== 'ok') {

@@ -57,15 +57,15 @@
 </script>
 
 <script>
-  import {_} from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
-  import { beforeNavigate } from "$app/navigation";
+  import { beforeNavigate } from '$app/navigation';
 
-  import PageActions from "$lib/component/PageActions.svelte";
-  import CardMenu from "$lib/component/CardMenu.svelte";
-  import CardMenuItem from "$lib/component/CardMenuItem.svelte";
+  import PageActions from '$lib/component/PageActions.svelte';
+  import CardMenu from '$lib/component/CardMenu.svelte';
+  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
 
-  import { themeMenuItems } from "$lib/PluginAPI.js"
+  import { themeMenuItems } from '$lib/PluginAPI.js';
 
   const { children } = $props();
   const slots = initSlots();

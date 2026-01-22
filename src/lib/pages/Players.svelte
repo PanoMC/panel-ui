@@ -4,7 +4,7 @@
   <PageActions leftClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
-      <CardMenuItem href="/players" active={data.pageType === "ALL"}>
+      <CardMenuItem href="/players" active={data.pageType === 'ALL'}>
         {$_('buttons.players')}</CardMenuItem>
       <CardMenuItem href="/players?pageType=BANNED" matchingList={['/players?pageType=BANNED']}>
         {$_('buttons.bans')}</CardMenuItem>
@@ -69,24 +69,48 @@
           <thead>
             <tr>
               <th class="align-middle text-nowrap" scope="col"></th>
-              <Hook name="panel:players:table:header:start" tag="th" class="align-middle text-nowrap" scope="col" />
+              <Hook
+                name="panel:players:table:header:start"
+                tag="th"
+                class="align-middle text-nowrap"
+                scope="col" />
               <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.name')}</th>
-              <Hook name="panel:players:table:header:after-name" tag="th" class="align-middle text-nowrap" scope="col" />
+              <Hook
+                name="panel:players:table:header:after-name"
+                tag="th"
+                class="align-middle text-nowrap"
+                scope="col" />
               <th
                 class="align-middle text-nowrap"
                 scope="col"
                 class:table-active={data.permissionGroup}
                 >{$_('pages.players.table.perm-group')}</th>
-              <Hook name="panel:players:table:header:after-perm-group" tag="th" class="align-middle text-nowrap" scope="col" />
+              <Hook
+                name="panel:players:table:header:after-perm-group"
+                tag="th"
+                class="align-middle text-nowrap"
+                scope="col" />
               <th class="align-middle text-nowrap" scope="col"
                 >{$_('pages.players.table.status')}</th>
-              <Hook name="panel:players:table:header:after-status" tag="th" class="align-middle text-nowrap" scope="col" />
+              <Hook
+                name="panel:players:table:header:after-status"
+                tag="th"
+                class="align-middle text-nowrap"
+                scope="col" />
               <th class="align-middle text-nowrap" scope="col"
                 >{$_('pages.players.table.last-login')}</th>
-              <Hook name="panel:players:table:header:after-last-login" tag="th" class="align-middle text-nowrap" scope="col" />
+              <Hook
+                name="panel:players:table:header:after-last-login"
+                tag="th"
+                class="align-middle text-nowrap"
+                scope="col" />
               <th class="align-middle text-nowrap" scope="col"
                 >{$_('pages.players.table.register-date')}</th>
-              <Hook name="panel:players:table:header:end" tag="th" class="align-middle text-nowrap" scope="col" />
+              <Hook
+                name="panel:players:table:header:end"
+                tag="th"
+                class="align-middle text-nowrap"
+                scope="col" />
             </tr>
           </thead>
           <tbody>
@@ -213,7 +237,7 @@
   import CardMenu from '$lib/component/CardMenu.svelte';
   import CardMenuItem from '$lib/component/CardMenuItem.svelte';
   import SearchInput from '$lib/component/SearchInput.svelte';
-  import { page } from "$app/stores";
+  import { page } from '$app/stores';
 
   export let data;
   let search = data.search || '';

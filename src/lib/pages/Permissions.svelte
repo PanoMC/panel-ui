@@ -1,17 +1,48 @@
+<style>
+  :global(.indicator-added) {
+    border-left: 5px solid #198754 !important;
+    padding-left: 0.75rem !important;
+  }
+  :global(.indicator-modified) {
+    border-left: 5px solid #fd7e14 !important;
+    padding-left: 0.75rem !important;
+  }
+
+  :global(.text-added) {
+    color: #198754 !important;
+  }
+  :global(.text-modified) {
+    color: #fd7e14 !important;
+  }
+
+  /* Table row indicators */
+  :global(tr.indicator-added td:first-child) {
+    box-shadow: inset 4px 0 0 0 #198754 !important;
+  }
+  :global(tr.indicator-modified td:first-child) {
+    box-shadow: inset 4px 0 0 0 #fd7e14 !important;
+  }
+</style>
+
 <div class="container vstack gap-3">
-{#if showLuckPermsAlert}
-  <div class="alert alert-info d-flex align-items-center mb-0 alert-dismissible" role="alert">
-    <i class="fas fa-info-circle me-3 fa-lg"></i>
-    <div>
-      {$_('pages.permissions.panel.luckperms-alert')}
-      <a href="{PANO_WEBSITE_URL}/docs" target="_blank" class="alert-link ms-1">
-        {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
-        <i class="fas fa-external-link-alt ms-1 small"></i>
-      </a>
+  {#if showLuckPermsAlert}
+    <div class="alert alert-info d-flex align-items-center mb-0 alert-dismissible" role="alert">
+      <i class="fas fa-info-circle me-3 fa-lg"></i>
+      <div>
+        {$_('pages.permissions.panel.luckperms-alert')}
+        <a href="{PANO_WEBSITE_URL}/docs" target="_blank" class="alert-link ms-1">
+          {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
+          <i class="fas fa-external-link-alt ms-1 small"></i>
+        </a>
+      </div>
+      <button
+        type="button"
+        class="btn-close"
+        on:click={dismissAlert}
+        title={$_('buttons.close')}
+        aria-label={$_('buttons.close')}></button>
     </div>
-    <button type="button" class="btn-close" on:click={dismissAlert} title="{$_('buttons.close')}" aria-label="{$_('buttons.close')}"></button>
-  </div>
-{/if}
+  {/if}
   <PageActions>
     <div slot="middle" class="hstack gap-2">
       <SearchInput
@@ -104,7 +135,9 @@
                           id={'trackHeading-' + (track.id ?? track.name)}>
                           <button
                             type="button"
-                            class="accordion-button collapsed py-2 {newTrackIds.has(String(track.id))
+                            class="accordion-button collapsed py-2 {newTrackIds.has(
+                              String(track.id),
+                            )
                               ? 'indicator-added'
                               : trackIdsWithChangedGroups.has(String(track.id))
                                 ? 'indicator-modified'
@@ -114,7 +147,15 @@
                             aria-controls={'trackCollapse-' + (track.id ?? track.name)}
                             on:click={() => selectTrack(track)}>
                             <div class="d-flex flex-column text-start w-100">
-                              <div class="text-truncate {newTrackIds.has(String(track.id)) ? 'text-added' : (modifiedTrackIds.has(String(track.id)) || trackIdsWithChangedGroups.has(String(track.id))) ? 'text-modified' : ''}">{track.name}</div>
+                              <div
+                                class="text-truncate {newTrackIds.has(String(track.id))
+                                  ? 'text-added'
+                                  : modifiedTrackIds.has(String(track.id)) ||
+                                      trackIdsWithChangedGroups.has(String(track.id))
+                                    ? 'text-modified'
+                                    : ''}">
+                                {track.name}
+                              </div>
                               <small class=" text-truncate">{track.description}</small>
                             </div>
                           </button>
@@ -198,7 +239,12 @@
                           : ''}"
                       on:click={() => selectGroup(group)}>
                       <div>
-                        <div class="fw-normal {newGroupIds.has(String(group.id)) ? 'text-added' : modifiedGroupIds.has(String(group.id)) ? 'text-modified' : ''}">
+                        <div
+                          class="fw-normal {newGroupIds.has(String(group.id))
+                            ? 'text-added'
+                            : modifiedGroupIds.has(String(group.id))
+                              ? 'text-modified'
+                              : ''}">
                           {group.displayName}
                         </div>
                         <small class="font-monospace">({group.name})</small>
@@ -253,7 +299,11 @@
                       class="list-group-item d-flex justify-content-between align-items-center {selectedUser &&
                       selectedUser.id === user.id
                         ? 'active'
-                        : ''} {newUserIds.has(String(user.id)) ? 'indicator-added' : userIdsWithChangedNodes.has(String(user.id)) ? 'indicator-modified' : ''}"
+                        : ''} {newUserIds.has(String(user.id))
+                        ? 'indicator-added'
+                        : userIdsWithChangedNodes.has(String(user.id))
+                          ? 'indicator-modified'
+                          : ''}"
                       role="button"
                       tabindex="0"
                       on:click={() => selectUser(user)}
@@ -724,13 +774,28 @@
       .map((g) => String(g.id)),
   );
   $: groupIdsWithChangedNodes = new Set(
-    (permissionGroups || []).filter(g => {
+    (permissionGroups || [])
+      .filter((g) => {
         const gid = String(g.id);
-        const hasNew = (nodes || []).some(n => n.holderType === 'GROUP' && String(n.holderId) === gid && newNodeIds.has(String(n.id)));
-        const hasModified = (nodes || []).some(n => n.holderType === 'GROUP' && String(n.holderId) === gid && modifiedNodeIds.has(String(n.id)));
-        const hasRemoved = (snapshot.nodes || []).some(sn => sn.holderType === 'GROUP' && String(sn.holderId) === gid && !(nodes || []).some(n => String(n.id) === String(sn.id)));
+        const hasNew = (nodes || []).some(
+          (n) =>
+            n.holderType === 'GROUP' && String(n.holderId) === gid && newNodeIds.has(String(n.id)),
+        );
+        const hasModified = (nodes || []).some(
+          (n) =>
+            n.holderType === 'GROUP' &&
+            String(n.holderId) === gid &&
+            modifiedNodeIds.has(String(n.id)),
+        );
+        const hasRemoved = (snapshot.nodes || []).some(
+          (sn) =>
+            sn.holderType === 'GROUP' &&
+            String(sn.holderId) === gid &&
+            !(nodes || []).some((n) => String(n.id) === String(sn.id)),
+        );
         return hasNew || hasModified || hasRemoved;
-    }).map(g => String(g.id))
+      })
+      .map((g) => String(g.id)),
   );
   $: newTrackIds = new Set(
     (tracks || [])
@@ -766,13 +831,28 @@
       .map((u) => String(u.id)),
   );
   $: userIdsWithChangedNodes = new Set(
-    (users || []).filter(u => {
+    (users || [])
+      .filter((u) => {
         const uid = String(u.id);
-        const hasNew = (nodes || []).some(n => n.holderType === 'USER' && String(n.holderId) === uid && newNodeIds.has(String(n.id)));
-        const hasModified = (nodes || []).some(n => n.holderType === 'USER' && String(n.holderId) === uid && modifiedNodeIds.has(String(n.id)));
-        const hasRemoved = (snapshot.nodes || []).some(sn => sn.holderType === 'USER' && String(sn.holderId) === uid && !(nodes || []).some(n => String(n.id) === String(sn.id)));
+        const hasNew = (nodes || []).some(
+          (n) =>
+            n.holderType === 'USER' && String(n.holderId) === uid && newNodeIds.has(String(n.id)),
+        );
+        const hasModified = (nodes || []).some(
+          (n) =>
+            n.holderType === 'USER' &&
+            String(n.holderId) === uid &&
+            modifiedNodeIds.has(String(n.id)),
+        );
+        const hasRemoved = (snapshot.nodes || []).some(
+          (sn) =>
+            sn.holderType === 'USER' &&
+            String(sn.holderId) === uid &&
+            !(nodes || []).some((n) => String(n.id) === String(sn.id)),
+        );
         return hasNew || hasModified || hasRemoved;
-    }).map(u => String(u.id))
+      })
+      .map((u) => String(u.id)),
   );
   $: newNodeIds = new Set(
     (nodes || [])
@@ -1277,22 +1357,28 @@
 
     // Re-select previous items if they still exist
     if (prevGroupId || prevGroupName) {
-      selectedGroup = permissionGroups.find(g => 
-        (prevGroupId != null && g.id === prevGroupId) || 
-        (prevGroupName != null && g.name === prevGroupName)
-      ) || null;
+      selectedGroup =
+        permissionGroups.find(
+          (g) =>
+            (prevGroupId != null && g.id === prevGroupId) ||
+            (prevGroupName != null && g.name === prevGroupName),
+        ) || null;
     }
     if (prevTrackId || prevTrackName) {
-      selectedTrack = tracks.find(t => 
-        (prevTrackId != null && t.id === prevTrackId) || 
-        (prevTrackName != null && t.name === prevTrackName)
-      ) || null;
+      selectedTrack =
+        tracks.find(
+          (t) =>
+            (prevTrackId != null && t.id === prevTrackId) ||
+            (prevTrackName != null && t.name === prevTrackName),
+        ) || null;
     }
     if (prevUserId || prevUserName) {
-      selectedUser = users.find(u => 
-        (prevUserId != null && u.id === prevUserId) || 
-        (prevUserName != null && u.username === prevUserName)
-      ) || null;
+      selectedUser =
+        users.find(
+          (u) =>
+            (prevUserId != null && u.id === prevUserId) ||
+            (prevUserName != null && u.username === prevUserName),
+        ) || null;
     }
 
     refreshCurrentNodes();
@@ -1313,7 +1399,7 @@
         groupId: g.id,
         groupName: g.name,
         displayName: dn,
-        now: now + (i++), // Ensure unique prefix for potential new IDs
+        now: now + i++, // Ensure unique prefix for potential new IDs
       });
     }
 
@@ -1944,29 +2030,3 @@
       : currentNodes;
   }
 </script>
-
-<style>
-  :global(.indicator-added) {
-    border-left: 5px solid #198754 !important;
-    padding-left: 0.75rem !important;
-  }
-  :global(.indicator-modified) {
-    border-left: 5px solid #fd7e14 !important;
-    padding-left: 0.75rem !important;
-  }
-
-  :global(.text-added) {
-    color: #198754 !important;
-  }
-  :global(.text-modified) {
-    color: #fd7e14 !important;
-  }
-
-  /* Table row indicators */
-  :global(tr.indicator-added td:first-child) {
-    box-shadow: inset 4px 0 0 0 #198754 !important;
-  }
-  :global(tr.indicator-modified td:first-child) {
-    box-shadow: inset 4px 0 0 0 #fd7e14 !important;
-  }
-</style>

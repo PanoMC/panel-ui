@@ -34,84 +34,82 @@
               </div>
             </div>
           {/each}
+        {:else if $servers.length === 0 && !$loading}
+          <NoContent />
         {:else}
-          {#if $servers.length === 0 && !$loading}
-            <NoContent />
-          {:else}
-            <div class="row row-cols-1 row-cols-lg-3 g-3">
-              {#each $servers as server, index (server)}
-                <!-- Server Card -->
+          <div class="row row-cols-1 row-cols-lg-3 g-3">
+            {#each $servers as server, index (server)}
+              <!-- Server Card -->
 
-                <div class="col">
-                  <div class="ratio ratio-1x1">
-                    <div class="card">
-                      <div
-                        class="card-header d-flex justify-content-center align-items-center vstack gap-2">
-                        <img
-                          src={server.favicon ? server.favicon : base + '/assets/img/server-icon.png'}
-                          class="rounded border"
-                          height="64"
-                          width="64"
-                          title={server.customName || server.name}
-                          alt={server.customName || server.name} />
+              <div class="col">
+                <div class="ratio ratio-1x1">
+                  <div class="card">
+                    <div
+                      class="card-header d-flex justify-content-center align-items-center vstack gap-2">
+                      <img
+                        src={server.favicon ? server.favicon : base + '/assets/img/server-icon.png'}
+                        class="rounded border"
+                        height="64"
+                        width="64"
+                        title={server.customName || server.name}
+                        alt={server.customName || server.name} />
 
-                        <div>
-                          {#if server.id === $mainServer.id}
-                            <i
-                              class="fa fa-crown me-1 text-secondary"
-                              title={$_('components.modals.servers.main-server')}>
-                            </i>
-                          {/if}
-                          {server.customName || server.name}
-                        </div>
+                      <div>
+                        {#if server.id === $mainServer.id}
+                          <i
+                            class="fa fa-crown me-1 text-secondary"
+                            title={$_('components.modals.servers.main-server')}>
+                          </i>
+                        {/if}
+                        {server.customName || server.name}
                       </div>
-                      <div class="card-body d-flex flex-column justify-content-center">
-                        <ul class="list-unstyled d-flex flex-column gap-2 text-center">
-                          <li>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-center">
+                      <ul class="list-unstyled d-flex flex-column gap-2 text-center">
+                        <li>
+                          <div
+                            class="badge rounded-pill text-bg-primary"
+                            class:text-bg-success={server.status === 'ONLINE'}>
                             <div
-                              class="badge rounded-pill text-bg-primary"
-                              class:text-bg-success={server.status === 'ONLINE'}>
-                              <div
-                                use:tooltip={[
+                              use:tooltip={[
                                 $_('components.modals.servers.online'),
                                 { placement: 'bottom' },
                               ]}>
-                                {server.type}
-                              </div>
+                              {server.type}
                             </div>
-                          </li>
-                          <li>
-                            <code class="user-select-all">{server.host}:{server.port}</code>
-                          </li>
-                          <li>
-                            {server.playerCount}/{server.maxPlayerCount}
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="card-footer d-flex justify-content-center">
-                        <button
-                          type="button"
-                          class:active={$selectedServer?.id === server.id}
-                          data-bs-toggle="button"
-                          class="btn"
-                          class:btn-primary={$selectedServer?.id === server.id}
-                          class:btn-outline-primary={$selectedServer?.id !== server.id}
-                          class:disabled={$selectedServer?.id === server.id}
-                          on:click={() => ($selectingServer ? {} : onSelect(server))}
-                        >
-                          {#if $selectedServer?.id === server.id}
-                            <i class="fas fa-check-circle"></i>
-                          {:else}
-                            <i class="far fa-check-circle"></i>
-                          {/if}
-                        </button>
-                      </div>
+                          </div>
+                        </li>
+                        <li>
+                          <code class="user-select-all">{server.host}:{server.port}</code>
+                        </li>
+                        <li>
+                          {server.playerCount}/{server.maxPlayerCount}
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                      <button
+                        type="button"
+                        class:active={$selectedServer?.id === server.id}
+                        data-bs-toggle="button"
+                        class="btn"
+                        class:btn-primary={$selectedServer?.id === server.id}
+                        class:btn-outline-primary={$selectedServer?.id !== server.id}
+                        class:disabled={$selectedServer?.id === server.id}
+                        on:click={() => ($selectingServer ? {} : onSelect(server))}>
+                        {#if $selectedServer?.id === server.id}
+                          <i class="fas fa-check-circle"></i>
+                        {:else}
+                          <i class="far fa-check-circle"></i>
+                        {/if}
+                      </button>
                     </div>
                   </div>
                 </div>
-              {/each}  <!-- No Server -->
-            </div>
-          {/if}
+              </div>
+            {/each}
+            <!-- No Server -->
+          </div>
         {/if}
       </div>
     </div>
@@ -126,10 +124,8 @@
 
   const modalElement = writable();
 
-  let callback = () => {
-  };
-  let hideCallback = () => {
-  };
+  let callback = () => {};
+  let hideCallback = () => {};
   let modal;
 
   const servers = writable([]);

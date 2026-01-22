@@ -7,7 +7,8 @@
         <CardMenu>
           {#each $postMenuItems as item}
             {#if !item.permission || hasPermission(item.permission)}
-              <CardMenuItem href={item.href} startsWith={item.startsWith}>{$_(item.text)}</CardMenuItem>
+              <CardMenuItem href={item.href} startsWith={item.startsWith}
+                >{$_(item.text)}</CardMenuItem>
             {/if}
           {/each}
         </CardMenu>
@@ -61,7 +62,7 @@
 
 <script>
   import { _ } from 'svelte-i18n';
-  import { beforeNavigate } from "$app/navigation";
+  import { beforeNavigate } from '$app/navigation';
   import PageActions from '$lib/component/PageActions.svelte';
   import CardMenu from '$lib/component/CardMenu.svelte';
   import CardMenuItem from '$lib/component/CardMenuItem.svelte';
@@ -70,7 +71,7 @@
   import ConfirmPublishPostModal from '$lib/component/modals/ConfirmPublishPostModal.svelte';
   import Hook from '$lib/component/Hook.svelte';
 
-  import { postMenuItems } from "$lib/PluginAPI.js"
+  import { postMenuItems } from '$lib/PluginAPI.js';
 
   const { data, children } = $props();
   const slots = initSlots();

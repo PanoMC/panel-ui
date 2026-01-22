@@ -125,8 +125,7 @@
                     type="checkbox" />
                 </div>
               </th>
-              <th class="align-middle text-nowrap" scope="col"
-                >{$_('pages.tickets.table.id')}</th>
+              <th class="align-middle text-nowrap" scope="col">{$_('pages.tickets.table.id')}</th>
               <th class="align-middle text-nowrap" scope="col"
                 >{$_('pages.tickets.table.title')}</th>
               <th class="align-middle" scope="col" class:table-active={data.categoryUrl}
@@ -291,7 +290,7 @@
 
   let search = data.search || '';
   let isSearching = false;
-  
+
   function onSearchInput(event) {
     search = event.detail.value;
 

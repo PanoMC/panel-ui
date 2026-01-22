@@ -1,7 +1,8 @@
 {#snippet right()}
   <button class="btn btn-secondary" type="button" on:click={onCreateCategoryClick}>
     <i class="fas fa-plus"></i>
-    <span class="d-lg-inline d-none ms-2">{$_('pages.post-categories.create-category-button')}
+    <span class="d-lg-inline d-none ms-2"
+      >{$_('pages.post-categories.create-category-button')}
     </span>
   </button>
 {/snippet}
@@ -22,56 +23,74 @@
         on:change={onSearchInput} />
     </div>
   </CardHeader>
-    <!-- No Content -->
-    {#if data.categoryCount === 0}
-      <NoContent />
-    {/if}
+  <!-- No Content -->
+  {#if data.categoryCount === 0}
+    <NoContent />
+  {/if}
 
-    <!-- Tickets Table -->
-    {#if data.categoryCount > 0}
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <Hook name="panel:post-categories:table:header:start" tag="th" class="align-middle text-nowrap" scope="col" />
-              <th class="align-middle text-nowrap" scope="col"
-                >{$_('pages.post-categories.category')}</th>
-              <Hook name="panel:post-categories:table:header:after-category" tag="th" class="align-middle text-nowrap" scope="col" />
-              <th scope="col" class="align-middle text-nowrap"
-                >{$_('pages.post-categories.description')}</th>
-              <Hook name="panel:post-categories:table:header:after-description" tag="th" class="align-middle text-nowrap" scope="col" />
-              <th scope="col" class="align-middle text-nowrap"
-                >{$_('pages.post-categories.url')}</th>
-              <Hook name="panel:post-categories:table:header:after-url" tag="th" class="align-middle text-nowrap" scope="col" />
-              <th scope="col" class="d-none align-middle text-nowrap"
-                >{$_('pages.post-categories.color')}</th>
-              <Hook name="panel:post-categories:table:header:end" tag="th" class="align-middle text-nowrap" scope="col" />
-            </tr>
-          </thead>
-          <tbody>
-            {#each data.categories as category, index (category)}
-              <PostCategoryRow
-                {category}
-                {index}
-                on:editClick={(event) => onShowEditCategoryButtonClick(event.detail.index)}
-                on:deleteClick={(event) =>
-                  onShowDeletePostCategoryModalClick(event.detail.index)} />
-            {/each}
-          </tbody>
-        </table>
-      </div>
-    {/if}
-    <div class="card-footer">
-      <!-- Pagination -->
-      <Pagination
-        page={data.page}
-        totalPage={data.totalPage}
-        on:firstPageClick={() => onPageClick(1)}
-        on:lastPageClick={() => onPageClick(data.totalPage)}
-        on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
+  <!-- Tickets Table -->
+  {#if data.categoryCount > 0}
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <Hook
+              name="panel:post-categories:table:header:start"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
+            <th class="align-middle text-nowrap" scope="col"
+              >{$_('pages.post-categories.category')}</th>
+            <Hook
+              name="panel:post-categories:table:header:after-category"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
+            <th scope="col" class="align-middle text-nowrap"
+              >{$_('pages.post-categories.description')}</th>
+            <Hook
+              name="panel:post-categories:table:header:after-description"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
+            <th scope="col" class="align-middle text-nowrap">{$_('pages.post-categories.url')}</th>
+            <Hook
+              name="panel:post-categories:table:header:after-url"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
+            <th scope="col" class="d-none align-middle text-nowrap"
+              >{$_('pages.post-categories.color')}</th>
+            <Hook
+              name="panel:post-categories:table:header:end"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
+          </tr>
+        </thead>
+        <tbody>
+          {#each data.categories as category, index (category)}
+            <PostCategoryRow
+              {category}
+              {index}
+              on:editClick={(event) => onShowEditCategoryButtonClick(event.detail.index)}
+              on:deleteClick={(event) => onShowDeletePostCategoryModalClick(event.detail.index)} />
+          {/each}
+        </tbody>
+      </table>
     </div>
+  {/if}
+  <div class="card-footer">
+    <!-- Pagination -->
+    <Pagination
+      page={data.page}
+      totalPage={data.totalPage}
+      on:firstPageClick={() => onPageClick(1)}
+      on:lastPageClick={() => onPageClick(data.totalPage)}
+      on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
   </div>
+</div>
 
 <!-- Post Category Delete Confirmation Modal -->
 <ConfirmDeletePostCategoryModal />
@@ -95,10 +114,10 @@
 
     const page = searchParams.get('page') || 1;
     const search = searchParams.get('search');
-    
+
     const queryParams = buildQueryParams({
-       page,
-       search
+      page,
+      search,
     });
 
     const body = await ApiUtil.get({
@@ -107,7 +126,7 @@
     });
 
     if (body.error) {
-           if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
+      if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
         throw error(404, body.error);
       }
 
@@ -150,12 +169,10 @@
   const { data = $bindable() } = $props();
 
   const pageTitle = getContext('pageTitle');
-  const slots = getContext("layout-slots");
+  const slots = getContext('layout-slots');
   Object.assign(slots, { right });
 
   pageTitle.set('pages.post-categories.title');
-
-
 
   let search = data.search || '';
   let isSearching = false;
@@ -171,7 +188,7 @@
     isSearching = true;
     const queryParams = buildQueryParams({
       page: data.page === 1 ? null : data.page,
-      search: search || undefined
+      search: search || undefined,
     });
 
     await goto(queryParams, { invalidateAll: true, keepFocus: true });

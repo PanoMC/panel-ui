@@ -28,12 +28,12 @@
                 ? 'progress-bar-animated bg-primary'
                 : 'bg-success'}"
             style="width: {(Math.min(
-              ($versionId
+              $versionId
                 ? $installingStep >= 2
                   ? $installingStep - 2 + $currentProgress
                   : 0
-                : $installingStep - 1 + $currentProgress),
-              $processes.length - ($versionId ? 1 : 0)
+                : $installingStep - 1 + $currentProgress,
+              $processes.length - ($versionId ? 1 : 0),
             ) /
               ($processes.length - ($versionId ? 1 : 0))) *
               100}%">

@@ -60,20 +60,44 @@
         <thead>
           <tr>
             <th scope="col"></th>
-            <Hook name="panel:posts:table:header:start" tag="th" class="align-middle text-nowrap" scope="col" />
+            <Hook
+              name="panel:posts:table:header:start"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
             <th scope="col"></th>
             <th class="align-middle text-nowrap" scope="col">{$_('pages.posts.table.title')}</th>
-            <Hook name="panel:posts:table:header:after-title" tag="th" class="align-middle text-nowrap" scope="col" />
+            <Hook
+              name="panel:posts:table:header:after-title"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
             <th scope="col" class="align-middle text-nowrap" class:table-active={data.categoryUrl}
               >{$_('pages.posts.table.category')}</th>
-            <Hook name="panel:posts:table:header:after-category" tag="th" class="align-middle text-nowrap" scope="col" />
+            <Hook
+              name="panel:posts:table:header:after-category"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
             <th scope="col" class="align-middle text-nowrap">{$_('pages.posts.table.views')}</th>
-            <Hook name="panel:posts:table:header:after-views" tag="th" class="align-middle text-nowrap" scope="col" />
+            <Hook
+              name="panel:posts:table:header:after-views"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
             <th scope="col" class="align-middle text-nowrap">{$_('pages.posts.table.author')}</th>
-            <Hook name="panel:posts:table:header:after-author" tag="th" class="align-middle text-nowrap" scope="col" />
+            <Hook
+              name="panel:posts:table:header:after-author"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
             <th scope="col" class="align-middle text-nowrap"
               >{$_('pages.posts.table.last-update')}</th>
-            <Hook name="panel:posts:table:header:end" tag="th" class="align-middle text-nowrap" scope="col" />
+            <Hook
+              name="panel:posts:table:header:end"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
           </tr>
         </thead>
         <tbody>
@@ -183,8 +207,14 @@
     await executeLifecycle('panel:posts:load', body, event);
 
     body.hookProps = {};
-    body.hookProps['panel:posts:table-header:after-views'] = await executeHookLoad('panel:posts:table-header:after-views', event);
-    body.hookProps['panel:posts:table-row:after-views'] = await executeHookLoad('panel:posts:table-row:after-views', event);
+    body.hookProps['panel:posts:table-header:after-views'] = await executeHookLoad(
+      'panel:posts:table-header:after-views',
+      event,
+    );
+    body.hookProps['panel:posts:table-row:after-views'] = await executeHookLoad(
+      'panel:posts:table-row:after-views',
+      event,
+    );
 
     return body;
   }
@@ -227,7 +257,7 @@
   const { data = $bindable() } = $props();
 
   const pageTitle = getContext('pageTitle');
-  const slots = getContext("layout-slots");
+  const slots = getContext('layout-slots');
   Object.assign(slots, { right });
 
   $effect(() => {
@@ -332,11 +362,9 @@
     });
   }
 
-
-  
   let search = data.search || '';
   let isSearching = false;
-  
+
   function onSearchInput(event) {
     search = event.detail.value;
 
@@ -350,7 +378,7 @@
       page: data.page,
       categoryUrl: data.categoryUrl,
       pageType: data.pageType,
-      search: search || undefined
+      search: search || undefined,
     });
 
     await goto(queryParams, { invalidateAll: true, keepFocus: true });

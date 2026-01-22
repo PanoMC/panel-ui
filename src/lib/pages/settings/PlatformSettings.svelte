@@ -9,9 +9,12 @@
 
 <PageActions leftClasses="d-none" middleClasses="d-none" rightClasses="col-lg-12">
   <div class="hstack gap-2 ms-lg-auto" slot="right">
-    <button class="btn btn-link" title="{$_('buttons.stop')}" data-bs-target="{$_('buttons.stop')}" on:click={onStopPanoClick}>
+    <button
+      class="btn btn-link"
+      title={$_('buttons.stop')}
+      data-bs-target={$_('buttons.stop')}
+      on:click={onStopPanoClick}>
       <i class="fas fa-stop"></i>
-      
     </button>
     <button class="btn btn-secondary" on:click={onRestartPanoClick}>
       <i class="fa-regular fa-arrows-rotate"></i>

@@ -9,7 +9,11 @@
       <i class="fas fa-trash"></i>
     </button>
   </th>
-  <Hook name="panel:post-categories:table:row:start" category={category} tag="td" class="align-middle text-nowrap" />
+  <Hook
+    name="panel:post-categories:table:row:start"
+    {category}
+    tag="td"
+    class="align-middle text-nowrap" />
   <td class="align-middle" style="max-width: 250px;">
     <div class="text-truncate">
       <button
@@ -21,13 +25,21 @@
       </button>
     </div>
   </td>
-  <Hook name="panel:post-categories:table:row:after-category" category={category} tag="td" class="align-middle text-nowrap" />
+  <Hook
+    name="panel:post-categories:table:row:after-category"
+    {category}
+    tag="td"
+    class="align-middle text-nowrap" />
   <td class="align-middle" style="max-width: 300px;">
     <div class="text-truncate" title={category.description}>
       {category.description}
     </div>
   </td>
-  <Hook name="panel:post-categories:table:row:after-description" category={category} tag="td" class="align-middle text-nowrap" />
+  <Hook
+    name="panel:post-categories:table:row:after-description"
+    {category}
+    tag="td"
+    class="align-middle text-nowrap" />
   <td class="align-middle">
     <a
       class="rounded focus-ring"
@@ -37,7 +49,11 @@
       /category/{category.url}
     </a>
   </td>
-  <Hook name="panel:post-categories:table:row:after-url" category={category} tag="td" class="align-middle text-nowrap" />
+  <Hook
+    name="panel:post-categories:table:row:after-url"
+    {category}
+    tag="td"
+    class="align-middle text-nowrap" />
   <td class="d-none">
     <input
       value="#{category.color}"
@@ -45,7 +61,11 @@
       disabled
       type="color" />
   </td>
-  <Hook name="panel:post-categories:table:row:end" category={category} tag="td" class="align-middle text-nowrap" />
+  <Hook
+    name="panel:post-categories:table:row:end"
+    {category}
+    tag="td"
+    class="align-middle text-nowrap" />
 </tr>
 
 <script>

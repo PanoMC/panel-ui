@@ -100,7 +100,7 @@
 
     const queryParams = buildQueryParams({
       page,
-      search
+      search,
     });
 
     const body = await ApiUtil.get({
@@ -172,7 +172,7 @@
     isSearching = true;
     const queryParams = buildQueryParams({
       page: data.page === 1 ? null : data.page,
-      search: search || undefined
+      search: search || undefined,
     });
 
     await goto(queryParams, { invalidateAll: true, keepFocus: true });

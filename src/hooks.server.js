@@ -92,11 +92,11 @@ export async function handle({ event, resolve }) {
 
 /** @type {import('@sveltejs/kit').HandleServerError} */
 export function handleError({ error, event }) {
-  console.log("!!! [GLOBAL ERROR EVENT]:", event.url.href);
-  console.error("!!! [GLOBAL ERROR CONTENT]:", error);
+  console.log('!!! [GLOBAL ERROR EVENT]:', event.url.href);
+  console.error('!!! [GLOBAL ERROR CONTENT]:', error);
   return {
     message: 'Internal Error',
-    code: error?.code
+    code: error?.code,
   };
 }
 

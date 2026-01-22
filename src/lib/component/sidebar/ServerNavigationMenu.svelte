@@ -21,7 +21,7 @@
     <div data-bs-theme="dark">
       <NoContent
         icon="fas fa-cube fa-3x"
-        text={$_('components.server-navigation-menu.no-selected-server')}/>
+        text={$_('components.server-navigation-menu.no-selected-server')} />
     </div>
   {:else}
     <div data-bs-theme="dark">
@@ -31,7 +31,6 @@
     </div>
   {/if}
 </nav>
-
 
 <script context="module">
   export const originalServerNavItems = [

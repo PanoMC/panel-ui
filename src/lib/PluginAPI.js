@@ -1,5 +1,5 @@
 import { baseAPI, pageAPI } from '../pano-sdk/core/js/PluginAPI';
-import { derived, writable, get } from "svelte/store";
+import { derived, writable, get } from 'svelte/store';
 import { originalSiteNavItems } from '$lib/component/sidebar/SiteNavigationMenu.svelte';
 import { originalServerNavItems } from '$lib/component/sidebar/ServerNavigationMenu.svelte';
 import { originalThemeMenuItems } from '$lib/pages/view/Themes.svelte';
@@ -62,7 +62,7 @@ export async function executeHookLoad(name, event) {
     if (typeof raw === 'function' && !raw.prototype) {
       module = await raw();
       // Cache the resolved module back into the hooks store
-      hooks.update(h => {
+      hooks.update((h) => {
         if (h[name]) {
           if (h[name][i].component) {
             h[name][i].component = Object.assign(module, { _original: raw });
@@ -139,16 +139,16 @@ export const panoApi = {
       },
       onLoad(handler) {
         panoApi.ui.lifecycle.on('panel:posts:load', handler);
-      }
+      },
     },
     addon: {
       onLoad(handler) {
         panoApi.ui.lifecycle.on('panel:addon-detail:load', handler);
-      }
+      },
     },
     lifecycle: {
       on(name, handler) {
-        lifecycleHandlers.update(h => {
+        lifecycleHandlers.update((h) => {
           if (!h[name]) h[name] = [];
           h[name].push(handler);
           return h;
@@ -158,16 +158,16 @@ export const panoApi = {
     hook: {
       register(options) {
         const { name } = options;
-        hooks.update(h => {
+        hooks.update((h) => {
           if (!h[name]) h[name] = [];
           h[name].push(options);
           return h;
         });
       },
       get(name) {
-        return derived(hooks, $h => ($h[name] || []));
-      }
-    }
+        return derived(hooks, ($h) => $h[name] || []);
+      },
+    },
   },
 };
 

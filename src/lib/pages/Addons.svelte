@@ -231,7 +231,7 @@
     isSearching = true;
     const queryParams = buildQueryParams({
       status: data.pageType,
-      search: search || undefined
+      search: search || undefined,
     });
 
     await goto(`${base}/addons${queryParams}`, { invalidateAll: true, keepFocus: true });

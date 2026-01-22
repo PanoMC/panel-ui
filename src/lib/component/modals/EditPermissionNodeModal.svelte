@@ -81,27 +81,29 @@
                         draft.update((d) => ({ ...d, nodeValue: p.node }));
                         showNodeSuggestions = false;
                       }}>
-                        <div class="overflow-hidden vstack gap-1">
-                          <p class="fw-bold text-truncate mb-0">
-                            <i class="fa {p.icon || 'fa-key'} me-2 opacity-75"></i>
-                            {p.title}
-                            {#if p.type === 'plugin'}
-                              <span class="badge text-bg-secondary ms-2 small" style="font-size: 0.7em;">
-                                {p.pluginTitle !== `plugins.${p.pluginId}.title`
-                                  ? p.pluginTitle
-                                  : p.pluginId}
-                              </span>
-                            {/if}
-                          </p>
-                          <div class="text-truncate font-monospace small opacity-75">
-                            {p.node}
-                          </div>
-                          {#if p.desc}
-                            <small class="mb-0 opacity-75">
-                              {p.desc}
-                            </small>
+                      <div class="overflow-hidden vstack gap-1">
+                        <p class="fw-bold text-truncate mb-0">
+                          <i class="fa {p.icon || 'fa-key'} me-2 opacity-75"></i>
+                          {p.title}
+                          {#if p.type === 'plugin'}
+                            <span
+                              class="badge text-bg-secondary ms-2 small"
+                              style="font-size: 0.7em;">
+                              {p.pluginTitle !== `plugins.${p.pluginId}.title`
+                                ? p.pluginTitle
+                                : p.pluginId}
+                            </span>
                           {/if}
+                        </p>
+                        <div class="text-truncate font-monospace small opacity-75">
+                          {p.node}
                         </div>
+                        {#if p.desc}
+                          <small class="mb-0 opacity-75">
+                            {p.desc}
+                          </small>
+                        {/if}
+                      </div>
                     </button>
                   {/each}
                 </div>
@@ -344,7 +346,8 @@
         desc,
         pluginId,
         pluginTitle,
-        searchString: `${node} ${permKey} ${title} ${desc} ${pluginId} ${pluginTitle}`.toLowerCase(),
+        searchString:
+          `${node} ${permKey} ${title} ${desc} ${pluginId} ${pluginTitle}`.toLowerCase(),
         type: 'plugin',
       };
     });

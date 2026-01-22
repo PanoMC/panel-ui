@@ -1,3 +1,31 @@
+<style>
+  /* Ensure the pulsate animation is available if animate.css is not globally loaded */
+  @keyframes pulse {
+    from {
+      transform: scale3d(1, 1, 1);
+    }
+    50% {
+      transform: scale3d(1.05, 1.05, 1.05);
+    }
+    to {
+      transform: scale3d(1, 1, 1);
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .spin {
+    animation: spin 2s linear infinite;
+  }
+</style>
+
 {#if $platformRestarting}
   <div
     class="modal show"
@@ -6,7 +34,9 @@
     role="dialog"
     aria-hidden="false">
     <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content text-center shadow-lg border-0" style="pointer-events: auto; border-radius: 1.5rem;">
+      <div
+        class="modal-content text-center shadow-lg border-0"
+        style="pointer-events: auto; border-radius: 1.5rem;">
         <div class="modal-body p-5">
           <div class="mb-4">
             <i class="fas fa-arrows-rotate fa-3x text-primary spin"></i>
@@ -27,23 +57,3 @@
 
   const platformRestarting = getContext('platformRestarting');
 </script>
-
-<style>
-  /* Ensure the pulsate animation is available if animate.css is not globally loaded */
-  @keyframes pulse {
-    from { transform: scale3d(1, 1, 1); }
-    50% { transform: scale3d(1.05, 1.05, 1.05); }
-    to { transform: scale3d(1, 1, 1); }
-  }
-  
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .spin {
-    animation: spin 2s linear infinite;
-  }
-  
-
-</style>

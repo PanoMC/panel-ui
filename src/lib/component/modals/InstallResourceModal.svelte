@@ -25,9 +25,10 @@
           <DragAndDropZone
             className="btn list-group-item border list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-50 text-center shadow-none rounded-end-0"
             style="height: 250px; cursor: pointer;"
-            accept={$type === 'THEME' ? ['.zip', 'application/zip'] : ['.jar', 'application/java-archive']}
-            on:drop={(e) => handleFileUpload(e.detail)}
-          >
+            accept={$type === 'THEME'
+              ? ['.zip', 'application/zip']
+              : ['.jar', 'application/java-archive']}
+            on:drop={(e) => handleFileUpload(e.detail)}>
             <i class="fas fa-upload fa-2x mb-2"></i>
             <p class="mb-0">{@html $_('components.modals.install-resource.drag-here')}</p>
           </DragAndDropZone>
