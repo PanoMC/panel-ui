@@ -1,4 +1,4 @@
-<div class="row d-flex align-items-center">
+<div class="row d-flex align-items-center gy-3">
   {#if leftClasses !== null}
     <div
       class="col-lg-4 col-12 d-flex justify-content-lg-start justify-content-center {leftClasses}">
