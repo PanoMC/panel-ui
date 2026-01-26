@@ -8,6 +8,10 @@
 
 // Panel UI Styles
 
+.animate__animated.animate__zoomIn {
+  --animate-duration: 300ms;
+}
+
 /* Hover effect */
 .drop-zone:hover {
   background-color: var(--pano-light, $light);

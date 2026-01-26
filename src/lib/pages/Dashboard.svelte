@@ -2,7 +2,7 @@
 <div class="container vstack gap-3">
   <!-- Welcome Alerts -->
   {#if data.gettingStartedBlocks.welcomeBoard}
-    <div class="alert alert-success alert-dismissible mb-0 animate__animated animate__zoomIn">
+    <div class="alert alert-info alert-dismissible mb-0 animate__animated animate__zoomIn">
       <div class="row">
         <h5 class="mb-3">
           {@html $_('pages.dashboard.welcome-card.description')}

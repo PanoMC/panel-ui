@@ -28,8 +28,7 @@
             class="hstack gap-2 animate__animated animate__faster {getListOfChecked($checkedList)
               .length > 0
               ? 'animate__slideInUp'
-              : 'animate__slideOutDown'}
-        faster">
+              : 'animate__slideOutDown'}">
             <button
               title={$_('buttons.delete')}
               aria-label={$_('buttons.delete')}

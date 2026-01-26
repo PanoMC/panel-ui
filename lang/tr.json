@@ -328,7 +328,7 @@
             "label": "SSL Özel Anahtarı (Private Key)"
           },
           "redirect-https": {
-            "label": "HTTP -> HTTPS Yönlendirme"
+            "label": "HTTP -> HTTPS Yönlendir"
           },
           "requires-restart": "Bu ayarın etkili olması için yeniden başlatma gerekir."
         },
