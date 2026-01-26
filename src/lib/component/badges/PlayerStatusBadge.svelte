@@ -1,5 +1,6 @@
 {#if banned}
   <div class="badge rounded-pill text-bg-danger">
+    <i class="fa-solid fa-hammer me-1"></i>
     {$_('components.player-status-badge.banned')}
   </div>
 {:else if isOnline}
@@ -13,7 +14,14 @@
         $_('components.player-status-badge.online'),
       { placement: 'bottom' },
     ]}>
-    <span>{$_('components.player-status-badge.online')}</span>
+    <span>
+      {#if inGame}
+        <i class="fa-solid fa-gamepad me-1"></i>
+      {:else}
+        <i class="fa-solid fa-globe me-1"></i>
+      {/if}
+      {$_('components.player-status-badge.online')}
+    </span>
   </div>
 {:else}
   <div
