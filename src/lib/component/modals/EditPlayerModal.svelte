@@ -117,7 +117,7 @@
                   role="switch"
                   id="canCreateTicketCheckbox"
                   bind:checked={$player.canCreateTicket}
-                  disabled={$player.username === $user.username} />
+                  disabled={$playerBackup.username === $user.username} />
                 <label class="form-check-label" for="canCreateTicketCheckbox"
                   >{$_('components.modals.edit-player.inputs.can-open-ticket')}</label>
               </div>
@@ -131,7 +131,7 @@
                   aria-checked="true"
                   id="emailVerifiedCheckbox"
                   bind:checked={$player.isEmailVerified}
-                  disabled={$player.username === $user.username} />
+                  disabled={$playerBackup.username === $user.username} />
                 <label class="form-check-label" for="emailVerifiedCheckbox"
                   >{$_('components.modals.edit-player.inputs.email-verified')}</label>
               </div>
