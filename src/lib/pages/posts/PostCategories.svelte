@@ -79,17 +79,17 @@
           {/each}
         </tbody>
       </table>
-    </div>
-  {/if}
-  <div class="card-footer">
-    <!-- Pagination -->
-    <Pagination
-      page={data.page}
-      totalPage={data.totalPage}
-      on:firstPageClick={() => onPageClick(1)}
-      on:lastPageClick={() => onPageClick(data.totalPage)}
-      on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
-  </div>
+      </div>
+      <div class="card-footer">
+        <!-- Pagination -->
+        <Pagination
+          page={data.page}
+          totalPage={data.totalPage}
+          on:firstPageClick={() => onPageClick(1)}
+          on:lastPageClick={() => onPageClick(data.totalPage)}
+          on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
+      </div>
+    {/if}
 </div>
 
 <!-- Post Category Delete Confirmation Modal -->
