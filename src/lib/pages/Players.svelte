@@ -4,9 +4,9 @@
   <PageActions leftClasses="d-lg-flex d-none">
     <!-- Submenu -->
     <CardMenu slot="middle">
-      <CardMenuItem href="/players" active={data.pageType === 'ALL'}>
+      <CardMenuItem href="/players" active={data.pageType === PageTypes.ALL || data.pageType === PageTypes.HAS_PERM}>
         {$_('buttons.players')}</CardMenuItem>
-      <CardMenuItem href="/players?pageType=BANNED" matchingList={['/players?pageType=BANNED']}>
+      <CardMenuItem href="/players?pageType=BANNED" active={data.pageType === PageTypes.BANNED}>
         {$_('buttons.bans')}</CardMenuItem>
     </CardMenu>
     <div slot="right">
@@ -45,7 +45,7 @@
 
       <!-- Filters -->
       <CardFilters slot="right">
-        {#if !data.permissionGroup}
+        {#if !data.permissionGroup && data.pageType !== PageTypes.BANNED}
           <!-- Filters -->
           <CardFiltersItem href="/players" active={data.pageType === PageTypes.ALL}>
             {$_('pages.players.all')}
