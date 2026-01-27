@@ -23,7 +23,8 @@
       bind:this={frame}
       {src}
       title={$_('pages.theme-settings.title')}
-      style="width:100%; border:0; display:block; background:transparent; bg-dark"
+      class="bg-dark"
+      style="width:100%; border:0; display:block; background:transparent;"
       scrolling="no"
       allowtransparency="true"
       sandbox="allow-same-origin allow-scripts allow-forms"
@@ -111,79 +112,44 @@
     if (!frame?.contentWindow || !childOrigin) return;
 
     // Collect global CSS (non-scoped styles)
-    // Get all style tags present in DOM at runtime
     const allStyles = Array.from(document.querySelectorAll('style'));
     const globalStyles = allStyles
       .filter((style) => {
-        // Exclude scoped styles (those with data-svelte-h attribute)
-        return !style.hasAttribute('data-svelte-h');
+        // Only exclude styles that are clearly marked as svelte-hoisted if we want,
+        // but it's safer to include more than less.
+        // We exclude the ones already injected in case this is called multiple times.
+        return style.id !== 'panel-injected-css' && !style.hasAttribute('data-panel-injected');
       })
       .map((style) => {
-        // Use textContent or innerHTML
         return style.textContent || style.innerHTML || '';
       })
-      .filter((css) => css.trim().length > 0) // Filter out empty ones
+      .filter((css) => css.trim().length > 0)
       .join('\n\n');
 
-    // If we have inline styles, send them
-    if (globalStyles) {
-      console.log('Sending inline CSS to iframe:', globalStyles.substring(0, 100) + '...');
-      frame.contentWindow.postMessage(
-        {
-          type: 'inject-css',
-          css: globalStyles,
-        },
-        childOrigin,
-      );
-    } else {
-      // If no inline styles, check for link tags (build mode)
-      const cssLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
-      const baseUrl = window.location.origin + base;
-      const globalLinks = cssLinks
-        .filter((link) => {
-          // Include only global CSS links (exclude theme-specific ones)
-          const href = link.href || '';
-          // Exclude theme-specific links, include _app links (build output)
-          return href.includes('_app') && !href.includes('theme');
-        })
-        .map((link) => {
-          const href = link.href || '';
-          try {
-            const url = new URL(href);
-            // If URL doesn't start with base + /_app, remove the part between base and /_app
-            if (url.origin === window.location.origin && url.pathname.includes('/_app')) {
-              const appIndex = url.pathname.indexOf('/_app');
-              const expectedBasePath = base + '/_app';
-              if (appIndex > 0 && !url.pathname.startsWith(expectedBasePath)) {
-                // Remove everything between origin+base and /_app
-                return (
-                  baseUrl +
-                  '/_app' +
-                  url.pathname.substring(appIndex + '/_app'.length) +
-                  (url.search || '') +
-                  (url.hash || '')
-                );
-              }
-            }
-            return href;
-          } catch (e) {
-            return href;
-          }
-        });
+    // Collect all stylesheet links
+    const cssLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+    const globalLinks = cssLinks
+      .filter((link) => {
+        const href = link.href || '';
+        // Include everything except themes and the already injected ones
+        return !href.includes('theme') && link.getAttribute('data-panel-injected') !== 'true';
+      })
+      .map((link) => link.href)
+      .filter(Boolean);
 
-      if (globalLinks.length > 0) {
-        console.log('Sending CSS links to iframe:', globalLinks);
-        frame.contentWindow.postMessage(
-          {
-            type: 'inject-css-links',
-            links: globalLinks,
-          },
-          childOrigin,
-        );
-      } else {
-        console.warn('No global CSS found to send (neither style tags nor link tags)');
-      }
-    }
+    console.log('Sending CSS to iframe:', { 
+      inlineLength: globalStyles.length, 
+      linkCount: globalLinks.length 
+    });
+
+    frame.contentWindow.postMessage(
+      {
+        type: 'inject-css-all',
+        css: globalStyles,
+        links: globalLinks,
+      },
+      childOrigin,
+    );
   }
 
   function delay(time) {
