@@ -94,130 +94,126 @@
   {/if}
 
   <!-- Masonry Layout for Cards -->
-  <masonry-layout cols={$mansoryLayoutCols}>
+  <masonry-layout cols={$mansoryLayoutCols} gap="16">
     <!-- Latest Tickets Card -->
     {#if hasPermission(Permissions.MANAGE_TICKETS)}
-      <div class="card mb-3">
-        <div class="card-header">
-          {$_('pages.dashboard.last-tickets.title')}
-        </div>
-
-        {#if data.tickets.length === 0}
-          <NoContent />
-        {:else}
-          <div class="table-responsive">
-            <table class="table table-hover">
-              {#each data.tickets as ticket, index (ticket)}
-                <tbody>
-                  <tr>
-                    <td class="align-middle">
-                      <a
-                        class="focus-ring rounded-circle d-inline-block"
-                        use:tooltip={[ticket.writer.username, { placement: 'bottom' }]}
-                        href="{base}/players/detail/{ticket.writer.username}">
-                        <img
-                          src="https://minotar.net/avatar/{ticket.writer.username}/32"
-                          alt={$_('pages.dashboard.last-tickets.player-name')}
-                          class="rounded-circle animate__animated animate__zoomIn"
-                          height="32"
-                          width="32" />
-                      </a>
-                    </td>
-                    <td class="align-middle text-nowrap">
-                      <a
-                        class="btn btn-link p-0"
-                        href="{base}/tickets/detail/{ticket.id}"
-                        title={$_('buttons.view')}>
-                        {ticket.title}
-                      </a>
-                    </td>
-                    <td class="align-middle text-nowrap">
-                      <TicketStatusBadge status={ticket.status} />
-                    </td>
-                    <td class="align-middle text-nowrap">
-                      <span><Date time={ticket.lastUpdate} /></span>
-                    </td>
-                  </tr>
-                </tbody>
-              {/each}
-            </table>
+      <div class="ratio ratio-1x1">
+        <div class="card mb-3">
+          <div class="card-header">
+            {$_('pages.dashboard.last-tickets.title')}
           </div>
-        {/if}
+
+          <div class="card-body p-0 overflow-auto">
+            {#if data.tickets.length === 0}
+              <NoContent />
+            {:else}
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  {#each data.tickets as ticket, index (ticket)}
+                    <tbody>
+                      <tr>
+                        <td class="align-middle text-nowrap d-flex align-items-center">
+                          <a
+                            class="focus-ring rounded-circle d-inline-block me-2"
+                            use:tooltip={[ticket.writer.username, { placement: 'bottom' }]}
+                            href="{base}/players/detail/{ticket.writer.username}">
+                            <img
+                              src="https://minotar.net/avatar/{ticket.writer.username}/32"
+                              alt={$_('pages.dashboard.last-tickets.player-name')}
+                              class="rounded-circle animate__animated animate__zoomIn"
+                              height="32"
+                              width="32" />
+                          </a>
+                          <a
+                            class="text-decoration-none w-100 rounded focus-ring d-block text-truncate p-1"
+                            href="{base}/tickets/detail/{ticket.id}"
+                            title={$_('buttons.view')}>
+                            {ticket.title}
+                          </a>
+                        </td>
+                        <td class="align-middle text-nowrap">
+                          <TicketStatusBadge status={ticket.status} />
+                        </td>
+                      </tr>
+                    </tbody>
+                  {/each}
+                </table>
+              </div>
+            {/if}
+          </div>
+        </div>
       </div>
     {/if}
 
     <!-- Latest Activity Logs Card -->
-    <div class="card mb-3">
-      <CardHeader>
-        <div slot="left">
+    <div class="ratio ratio-1x1">
+      <div class="card mb-3">
+        <div class="card-header">
           {$_('pages.dashboard.logs.title')}
         </div>
-        <div slot="right">
-          {#if data.activityLogs.meta.totalCount > 10}
-            <a href="{base}/logs" class="btn btn-link">
-              {$_('buttons.show-all-count', {
-                values: { count: data.activityLogs.meta.totalCount },
-              })}
-            </a>
-          {/if}
+        <div class="card-body p-0 overflow-auto">
+          <ul class="list-group list-group-flush">
+            {#each data.activityLogs.data as log, index (log)}
+              <ActivityLogRow {log} on:click={onShowViewActivityLogModalClick} />
+            {:else}
+              <NoContent />
+            {/each}
+          </ul>
         </div>
-      </CardHeader>
-      <ul class="list-group list-group-flush">
-        {#each data.activityLogs.data as log, index (log)}
-          <ActivityLogRow {log} on:click={onShowViewActivityLogModalClick} />
-        {:else}
-          <NoContent />
-        {/each}
-      </ul>
+      </div>
     </div>
 
     <!-- Latest Registers Card -->
     {#if hasPermission(Permissions.MANAGE_PLAYERS)}
-      <div class="card mb-3">
-        <div class="card-header">
-          {$_('pages.dashboard.last-registers.title')}
-        </div>
-
-        {#if data.lastRegisters.length === 0}
-          <NoContent />
-        {:else}
-          <div class="table-responsive">
-            <table class="table table-hover">
-              {#each data.lastRegisters as player, index (player)}
-                <tbody>
-                  <tr>
-                    <td class="align-middle text-nowrap">
-                      <a title={$_('buttons.view')} href="{base}/players/detail/{player.username}">
-                        <img
-                          alt={player.username}
-                          class="rounded-circle me-2 animate__animated animate__zoomIn"
-                          height="32"
-                          width="32"
-                          src="https://minotar.net/avatar/{player.username}" />
-                      </a>
-                      <a
-                        class="btn btn-link p-0"
-                        title={$_('buttons.view')}
-                        href="{base}/players/detail/{player.username}">
-                        {player.username}
-                      </a>
-                    </td>
-                    <td class="align-middle">
-                      <PlayerStatusBadge
-                        banned={player.banned}
-                        lastActivityTime={player.lastActivityTime}
-                        inGame={player.inGame}
-                        checkTime={0} />
-                    </td>
-                    <td class="align-middle text-nowrap">
-                      <Date time={player.registerDate} />
-                    </td>
-                  </tr>
-                </tbody>
-              {/each}
-            </table>
+      <div class="ratio ratio-1x1">
+        <div class="card mb-3">
+          <div class="card-header">
+            {$_('pages.dashboard.last-registers.title')}
           </div>
-        {/if}
+
+          <div class="card-body p-0 overflow-auto">
+            {#if data.lastRegisters.length === 0}
+              <NoContent />
+            {:else}
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  {#each data.lastRegisters as player, index (player)}
+                    <tbody>
+                      <tr>
+                        <td class="align-middle text-nowrap d-flex align-items-center">
+                          <a
+                            class="focus-ring rounded-circle d-inline-block me-2"
+                            use:tooltip={[player.username, { placement: 'bottom' }]}
+                            href="{base}/players/detail/{player.username}">
+                            <img
+                              alt={player.username}
+                              class="rounded-circle animate__animated animate__zoomIn"
+                              height="32"
+                              width="32"
+                              src="https://minotar.net/avatar/{player.username}" />
+                          </a>
+                          <a
+                            class="text-decoration-none w-100 rounded focus-ring d-block text-truncate p-1"
+                            title={$_('buttons.view')}
+                            href="{base}/players/detail/{player.username}">
+                            {player.username}
+                          </a>
+                        </td>
+                        <td class="align-middle">
+                          <PlayerStatusBadge
+                            banned={player.banned}
+                            lastActivityTime={player.lastActivityTime}
+                            inGame={player.inGame}
+                            checkTime={0} />
+                        </td>
+                      </tr>
+                    </tbody>
+                  {/each}
+                </table>
+              </div>
+            {/if}
+          </div>
+        </div>
       </div>
     {/if}
   </masonry-layout>
@@ -309,11 +305,12 @@
   const mansoryLayoutCols = writable(2);
 
   function checkMobile() {
-    // Below 768px -> mobile
-    if (window.innerWidth < 768) {
-      mansoryLayoutCols.set(1);
-    } else {
+    if (window.innerWidth >= 992) {
+      mansoryLayoutCols.set(3);
+    } else if (window.innerWidth >= 768) {
       mansoryLayoutCols.set(2);
+    } else {
+      mansoryLayoutCols.set(1);
     }
   }
 
