@@ -269,7 +269,11 @@
         "author": "Yazar",
         "repository": "Depo",
         "license": "Lisans",
-        "no-licenses": "Lisans bilgisi bulunamadı. Lütfen 'npm run generate-licenses' komutunu çalıştırın."
+        "no-licenses": "Lisans bilgisi bulunamadı. Lütfen 'npm run generate-licenses' komutunu çalıştırın.",
+        "support-pano": "Pano'yu Destekle",
+        "support-pano-text": "Pano, tamamen açık kaynaklı bir platformdur. Gelişimine destek olmak için GitHub üzerinden yıldız verebilirsiniz.",
+        "support-pano-button": "GitHub'da Yıldız Ver",
+        "support-pano-donate": "Bağış Yap"
       },
       "site-settings": {
         "title": "Website Ayarları",

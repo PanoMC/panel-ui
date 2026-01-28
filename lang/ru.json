@@ -268,7 +268,11 @@
         "author": "Автор",
         "repository": "Репозиторий",
         "license": "Лицензия",
-        "no-licenses": "Информация о лицензиях не найдена. Пожалуйста, запустите команду 'npm run generate-licenses'."
+        "no-licenses": "Информация о лицензиях не найдена. Пожалуйста, запустите команду 'npm run generate-licenses'.",
+        "support-pano": "Поддержите Pano",
+        "support-pano-text": "Pano — это платформа с полностью открытым исходным кодом. Вы можете поддержать его разработку, поставив звезду на GitHub.",
+        "support-pano-button": "Поставить звезду на GitHub",
+        "support-pano-donate": "Пожертвовать"
       },
       "site-settings": {
         "title": "Настройки сайта",

@@ -1,66 +1,86 @@
-<!-- About Sup Page -->
-<div class="card">
-  <div class="card-header">Pano Platform Info</div>
-  <div class="card-body">
-    <form class="animate__animated animate__fadeIn">
-      <div class="row">
-        <label class="col-md-6 col-form-label" for="panoVersion">
-          {$_('pages.settings.about.version')}
-        </label>
-        <div class="col-md-6 col-form-label">
-          <span
-            class="user-select-all font-monospace"
-            aria-describedby="panoVersion"
-            id="panoVersion">{data.platformVersion}</span>
-        </div>
+<div class="row g-3">
+  <div class="col-lg-6">
+    <!-- About Sup Page -->
+    <div class="card">
+      <div class="card-header">Pano Platform Info</div>
+      <div class="card-body">
+        <form class="animate__animated animate__fadeIn">
+          <div class="row">
+            <label class="col-md-6 col-form-label" for="panoVersion">
+              {$_('pages.settings.about.version')}
+            </label>
+            <div class="col-md-6 col-form-label">
+              <span
+                class="user-select-all font-monospace"
+                aria-describedby="panoVersion"
+                id="panoVersion">{data.platformVersion}</span>
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-md-6 col-form-label" for="siteKeywords">
+              {$_('pages.settings.about.release')}
+            </label>
+            <div class="col-md-6 col-form-label">
+              <span aria-describedby="panoRelease" id="panoRelease">{data.platformStage}</span>
+            </div>
+          </div>
+          <div class="row mb-0">
+            <label class="col-md-6 col-form-label" for="siteKeywords">
+              {$_('pages.settings.about.website')}
+            </label>
+            <div class="col-md-6 col-form-label">
+              <a
+                aria-describedby="panoWebsite"
+                href={PANO_WEBSITE_URL}
+                id="panoWebsite"
+                target="_blank">
+                {getDomain(PANO_WEBSITE_URL)}
+                <i class="fa-solid fa-up-right-from-square ms-2"></i>
+              </a>
+            </div>
+          </div>
+          <div class="row mb-0">
+            <label class="col-md-6 col-form-label" for="siteKeywords">
+              {$_('pages.settings.about.discord')}
+            </label>
+            <div class="col-md-6 col-form-label">
+              <a
+                aria-describedby="panoWebsite"
+                href="{PANO_WEBSITE_URL}/discord"
+                id="panoWebsite"
+                target="_blank">
+                {getDomain(PANO_WEBSITE_URL)}/discord
+                <i class="fa-solid fa-up-right-from-square ms-2"></i>
+              </a>
+            </div>
+          </div>
+        </form>
       </div>
-      <div class="row">
-        <label class="col-md-6 col-form-label" for="siteKeywords">
-          {$_('pages.settings.about.release')}
-        </label>
-        <div class="col-md-6 col-form-label">
-          <span aria-describedby="panoRelease" id="panoRelease">{data.platformStage}</span>
-        </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="alert alert-primary h-100 mb-0 d-flex flex-column animate__animated animate__zoomIn">
+      <h5 class="alert-heading">{$_('pages.settings.about.support-pano')} ❤️</h5>
+      <p>
+        {$_('pages.settings.about.support-pano-text')}
+      </p>
+      <div class="mt-auto d-flex gap-2">
+        <a href="https://github.com/PanoMC/Panel" target="_blank" class="btn btn-primary">
+          <i class="fa-brands fa-github me-1"></i>
+          {$_('pages.settings.about.support-pano-button')}
+        </a>
+        <a href="{PANO_WEBSITE_URL}/donate" target="_blank" class="btn btn-link text-decoration-none">
+          <i class="fa-solid fa-heart me-2"></i>
+          {$_('pages.settings.about.support-pano-donate')}
+        </a>
       </div>
-      <div class="row mb-0">
-        <label class="col-md-6 col-form-label" for="siteKeywords">
-          {$_('pages.settings.about.website')}
-        </label>
-        <div class="col-md-6 col-form-label">
-          <a
-            aria-describedby="panoWebsite"
-            href={PANO_WEBSITE_URL}
-            id="panoWebsite"
-            target="_blank">
-            {getDomain(PANO_WEBSITE_URL)}
-            <i class="fa-solid fa-up-right-from-square ms-2"></i>
-          </a>
-        </div>
-      </div>
-      <div class="row mb-0">
-        <label class="col-md-6 col-form-label" for="siteKeywords">
-          {$_('pages.settings.about.discord')}
-        </label>
-        <div class="col-md-6 col-form-label">
-          <a
-            aria-describedby="panoWebsite"
-            href="{PANO_WEBSITE_URL}/discord"
-            id="panoWebsite"
-            target="_blank">
-            {getDomain(PANO_WEBSITE_URL)}/discord
-            <i class="fa-solid fa-up-right-from-square ms-2"></i>
-          </a>
-        </div>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
 
 <div class="card">
   <div class="card-header">
-    <span class="animate__animated animate__heartBeat d-inline-block">
-      {$_('pages.settings.about.open-source-licenses')} ❤️
-    </span>
+    {$_('pages.settings.about.open-source-licenses')}
   </div>
   <div class="card-body animate__animated animate__fadeIn">
     {#if licenses && licenses.length > 0}
@@ -72,9 +92,6 @@
                 <i class="fa-solid fa-chevron-right me-2"></i>
                 <strong class="me-2">{license.name}</strong>
                 <span class="small">v{license.version}</span>
-                {#if license.license && license.license !== 'Unknown'}
-                  <span class="badge text-bg-secondary">{license.license}</span>
-                {/if}
               </div>
               {#if license.homepage}
                 <a
