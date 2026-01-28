@@ -1,8 +1,8 @@
 <div class="card animate__animated animate__fadeIn">
   <div class="card-header">{$_('pages.server.game-integration.minecraft')}</div>
   <div class="card-body">
-    <div class="row">
-      <label class="col-md-4 col-form-label" for="authIntegration">
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="authIntegration">
         {$_('pages.server.game-integration.auth-integration')}
         <small class="d-block"
           >{$_('pages.server.game-integration.auth-integration-description')}<br />
@@ -21,8 +21,8 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <label class="col-md-4 col-form-label position-relative" for="authRequireVerified">
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label position-relative" for="authRequireVerified">
         <span
           class="position-absolute start-0 top-0 bottom-0 border-start border-2"
           class:border-secondary={serverSettings.authIntegration}
@@ -49,8 +49,8 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <label class="col-md-4 col-form-label position-relative" for="authKickAfterRegister">
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label position-relative" for="authKickAfterRegister">
         <span
           class="position-absolute start-0 top-0 bottom-0 border-start border-2"
           class:border-secondary={serverSettings.authIntegration}
@@ -77,8 +77,8 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <label class="col-md-4 col-form-label" for="banIntegration">
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="banIntegration">
         {$_('pages.server.game-integration.ban-integration')}
         <small class="d-block"
           >{$_('pages.server.game-integration.ban-integration-description')}<br />
@@ -97,8 +97,8 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <label class="col-md-4 col-form-label" for="permissionIntegration">
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="permissionIntegration">
         {$_('pages.server.game-integration.permission-integration')}
         <small class="d-block"
           >{$_('pages.server.game-integration.permission-integration-description')}<br />
