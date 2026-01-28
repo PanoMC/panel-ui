@@ -10,6 +10,23 @@
     transform: translateY(-4px) scale(1.02);
     box-shadow: $box-shadow-sm;
   }
+  .overlay-gradient {
+    background: linear-gradient(
+      to top,
+      rgba(var(--bs-body-bg-rgb), 0.9),
+      rgba(var(--bs-body-bg-rgb), 0)
+    ) !important;
+  }
+  :global([data-bs-theme='dark']) .overlay-gradient {
+    background: linear-gradient(
+      to top,
+      rgba(var(--bs-dark-rgb), 0.8),
+      rgba(var(--bs-dark-rgb), 0)
+    ) !important;
+  }
+  .object-fit-cover {
+    object-fit: cover;
+  }
 </style>
 
 <!-- Theme Settings -->
@@ -57,31 +74,42 @@
     {#if data.themes.length === 0}
       <NoContent />
     {/if}
-    <div class="row g-3">
+    <div class="row row-cols-xl-2 row-cols-1 g-3">
       {#each data.themes as theme}
-        <div class="col-xl-4 col-md-6">
+        <div class="col">
           <a href="{base}/view/detail/{theme.id}" class="text-decoration-none">
-            <div class="card text-white position-relative overflow-hidden theme-card h-100">
-              <img
-                src="/api/panel/themes/{theme.id}/screenshots/{getFirstScreenshotUrl(theme) ||
-                  'screenshot.png'}"
-                class="card-img w-100 h-100 object-fit-cover"
-                alt={theme.title}
-                style="object-position:center;" />
+            <div class="card rounded-4 position-relative overflow-hidden theme-card">
+              <div class="ratio ratio-16x9">
+                <img
+                  src="/api/panel/themes/{theme.id}/screenshots/{getFirstScreenshotUrl(theme) ||
+                    'screenshot.png'}"
+                  class="card-img-top object-fit-cover"
+                  style="background-color: #eee;"
+                  alt={theme.title} />
+              </div>
+
               <div
-                class="card-img-overlay d-flex flex-column justify-content-end"
-                style="background: linear-gradient(to top, rgba(0,0,0,0.3), rgba(0,0,0,0)); padding:1.25rem;">
-                <h5 class="card-title">
+                class="card-img-overlay d-flex flex-column justify-content-end p-3 overlay-gradient">
+                <h5 class="card-title mb-1 text-truncate" title={theme.title}>
                   {theme.title}
                   <VerifiedStatus status={theme.verifyStatus} />
                 </h5>
-                <p class="card-subtitle text-light">
+
+                <small class="mb-2 text-truncate opacity-75">
                   {@html $_('pages.themes.by', {
                     values: { author: theme.author },
                   })}
-                </p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <small class="font-monospace user-select-all">{theme.version}</small>
+                </small>
+
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <div class="d-flex gap-2">
+                    <small class="font-monospace user-select-all opacity-75">
+                      <i class="fa-solid fa-file fa-fw me-1"></i>{formatBytes(theme.size)}
+                    </small>
+                    <small class="font-monospace user-select-all opacity-75">
+                      <i class="fa-solid fa-code fa-fw me-1"></i>{theme.version}
+                    </small>
+                  </div>
                   {#if theme.active}
                     <span class="badge text-bg-success">{$_('pages.themes.active')}</span>
                   {/if}
@@ -162,6 +190,7 @@
   import { base } from '$app/paths';
   import SearchInput from '$lib/component/SearchInput.svelte';
   import { goto, invalidate } from '$app/navigation';
+  import { formatBytes } from '$lib/string.util.js';
 
   import tooltip from '$lib/tooltip.util';
   import { show as showToast } from '$lib/component/ToastContainer.svelte';
