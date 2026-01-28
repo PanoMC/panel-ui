@@ -115,7 +115,7 @@
 
   <!-- Addon Details -->
   <div class="card">
-    <div class="card-header">
+    <div class="card-body">
       <div class="row g-3">
         <div
           class="col-auto d-flex justify-content-center align-items-start rounded-start rounded-top">
