@@ -63,7 +63,7 @@
               class="card h-100 position-relative
         {plugin.status === 'FAILED' && 'border-danger border-2'}">
               <!-- STATUS ACTIONS -->
-              <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
+              <div class="position-absolute top-0 end-0 m-2 d-flex gap-2">
                 {#if plugin.status === 'FAILED'}
                   <button
                     type="button"
@@ -96,37 +96,32 @@
               </div>
 
               <div class="card-body d-flex flex-column">
-                <div class="row g-3">
-                  <div class="col-auto vstack gap-2">
+                <div class="vstack gap-2">
+                  <a href="{base}/addons/detail/{plugin.id}" class="text-decoration-none">
+                    <img
+                      src="/api/panel/plugins/{plugin.id}/logo"
+                      class="rounded"
+                      width="64"
+                      height="64"
+                      alt={plugin.name} />
+                  </a>
+                  <div class="hstack gap-2 flex-wrap">
                     <a href="{base}/addons/detail/{plugin.id}" class="text-decoration-none">
-                      <img
-                        src="/api/panel/plugins/{plugin.id}/logo"
-                        class="rounded"
-                        width="64"
-                        height="64"
-                        alt={plugin.name} />
+                      <h5 class="text-truncate word-break mb-0">
+                        {plugin.name}
+                      </h5>
                     </a>
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                      <a href="{base}/addons/detail/{plugin.id}" class="text-decoration-none">
-                        <h5 class="text-truncate word-break mb-0">
-                          {plugin.name}
-                        </h5>
-                      </a>
-                      <VerifiedStatus status={plugin.verifyStatus} />
-                      <div>
-                        by <span class="fw-bolder">{plugin.developer}</span>
-                      </div>
-                    </div>
-
-                    <small class="d-block mb-3"> {@html plugin.description}</small>
-
-                    <div class="small hstack gap-2" title={$_('pages.addons.version')}>
-                      <i class="fa fa-code-branch"></i>
-                      <div class="font-monospace user-select-all">
-                        {plugin.version}
-                      </div>
-                    </div>
+                    <VerifiedStatus status={plugin.verifyStatus} /> 
                   </div>
+                  <small>
+                    by {plugin.developer}
+                  </small>
+
+                  <small class="d-block mb-2"> {@html plugin.description}</small>
+
+                  <small class="font-monospace user-select-all">
+                    {plugin.version}
+                  </small>
                 </div>
               </div>
             </div>

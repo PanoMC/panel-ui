@@ -2,7 +2,6 @@
   import { _ } from 'svelte-i18n';
   import { base } from '$app/paths';
   import { panoApiClient } from '$lib/PluginAPI.js';
-  import tooltip from '$lib/tooltip.util';
 
   export let plugin;
 
@@ -12,9 +11,8 @@
 {#if ($hooks.length > 0) && plugin.status === 'STARTED'}
   <a
     href="{base}/addons/detail/{plugin.id}"
-    class="btn btn-link text-secondary p-0 me-2"
-    aria-label={$_('buttons.settings')}
-    use:tooltip={[$_('buttons.settings'), { placement: 'top' }]}>
+    class="btn btn-link p-0 me-2"
+    title={$_('buttons.settings')}>
     <i class="fa-solid fa-gear"></i>
   </a>
 {/if}

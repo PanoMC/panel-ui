@@ -115,7 +115,7 @@
       </ul>
 
       <button
-        class="btn btn-link p-0 mt-2"
+        class="btn btn-link p-0 mt-2 text-decoration-none"
         type="button"
         data-bs-toggle="collapse"
         data-bs-target="#addonDetailsCollapse"
