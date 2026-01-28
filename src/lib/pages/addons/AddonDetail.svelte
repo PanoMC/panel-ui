@@ -153,25 +153,27 @@
     </div>
   </div>
 
-  {#if $hookStore.length > 0 || specificHooks.length > 0}
-    <div class="animate__animated animate__fadeIn d-flex flex-column gap-3">
-      <Hook name="panel:plugin-detail:content" {addon} />
-      <Hook name={`panel:plugin-detail:content:${addon.id}`} {addon} />
-    </div>
-  {:else}
-    <NoContent
-      title={$_('pages.addon-detail.no-settings', { default: 'No Settings' })}
-      description={$_('pages.addon-detail.no-settings-desc', {
-        default: 'This addon has no configurable settings.',
-      })}
-      icon="fas fa-cog" />
-  {/if}
+  <div class="mt-3">
+    {#if $hookStore.length > 0 || specificHooks.length > 0}
+      <div class="d-flex flex-column gap-3">
+        <Hook name="panel:plugin-detail:content" {addon} />
+        <Hook name={`panel:plugin-detail:content:${addon.id}`} {addon} />
+      </div>
+    {:else}
+      <NoContent
+        title={$_('pages.addon-detail.no-settings', { default: 'No Settings' })}
+        description={$_('pages.addon-detail.no-settings-desc', {
+          default: 'This addon has no configurable settings.',
+        })}
+        icon="fas fa-cog" />
+    {/if}
+  </div>
 </div>
 
 <script context="module">
   import ApiUtil from '$lib/api.util.js';
   import { error } from '@sveltejs/kit';
-  import { executeLifecycle } from '$lib/PluginAPI.js';
+  import { executeLifecycle, executeHookLoad } from '$lib/PluginAPI.js';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -191,14 +193,27 @@
       throw error(404, body.error);
     }
 
+    // Pre-resolve hooks and their data to ensure they render simultaneously with the page
+    const [globalHookProps, specificHookProps] = await Promise.all([
+      executeHookLoad('panel:plugin-detail:content', event),
+      executeHookLoad(`panel:plugin-detail:content:${addonId}`, event),
+    ]);
+
     await executeLifecycle('panel:addon-detail:load', { addon: body.data }, event);
 
-    return { addon: body.data };
+    return {
+      addon: body.data,
+      hookProps: {
+        'panel:plugin-detail:content': globalHookProps,
+        [`panel:plugin-detail:content:${addonId}`]: specificHookProps,
+      },
+    };
   }
 </script>
 
 <script>
   import { getContext, onDestroy } from "svelte";
+  import { get } from 'svelte/store';
   import { _ } from 'svelte-i18n';
 
   import { goto, invalidate } from '$app/navigation';
@@ -233,30 +248,37 @@
   import { panoApiClient } from '$lib/PluginAPI.js';
 
   export let data;
-  let addon, removing;
+  let addon = data.addon;
+  let removing;
   let refreshRequired = false;
 
   const hookStore = panoApiClient.ui.hook.get('panel:plugin-detail:content');
-  let specificHooks = [];
+
+  function getSpecificHooks(id) {
+    if (!id) return [];
+    return get(panoApiClient.ui.hook.get(`panel:plugin-detail:content:${id}`));
+  }
+
+  let specificHooks = getSpecificHooks(addon?.id);
   let unsub;
+
   $: {
+    addon = data.addon;
     if (unsub) unsub();
     if (addon?.id) {
-       unsub = panoApiClient.ui.hook.get(`panel:plugin-detail:content:${addon.id}`).subscribe(value => {
-         specificHooks = value;
-       });
+      const store = panoApiClient.ui.hook.get(`panel:plugin-detail:content:${addon.id}`);
+      specificHooks = get(store);
+      unsub = store.subscribe((value) => {
+        specificHooks = value;
+      });
     } else {
-       specificHooks = [];
+      specificHooks = [];
     }
   }
 
   onDestroy(() => {
     if (unsub) unsub();
   });
-
-  $: {
-    addon = data.addon;
-  }
 
   const pageTitle = getContext('pageTitle');
 
