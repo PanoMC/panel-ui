@@ -65,7 +65,7 @@
               tag="th"
               class="align-middle text-nowrap"
               scope="col" />
-            <th scope="col"></th>
+            <th scope="col" class="align-middle text-nowrap">{$_('pages.posts.table.image')}</th>
             <th class="align-middle text-nowrap" scope="col">{$_('pages.posts.table.title')}</th>
             <Hook
               name="panel:posts:table:header:after-title"

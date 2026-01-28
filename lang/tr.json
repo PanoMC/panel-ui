@@ -229,7 +229,8 @@
         "category": "Kategori",
         "views": "Görüntülenme",
         "author": "Yazar",
-        "last-update": "Son Güncellenme"
+        "last-update": "Son Güncellenme",
+        "image": "Küçük Resim"
       }
     },
     "tickets": {

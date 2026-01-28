@@ -73,7 +73,7 @@
     </div>
   </th>
   <Hook name="panel:posts:table:row:start" {post} tag="td" class="align-middle text-nowrap" />
-  <td class="align-middle">
+  <td class="align-middle" title={$_('pages.posts.table.image')}>
     <div class="post-row-thumbnail">
       {#if post.thumbnailUrl}
         <a href="{base}/posts/detail/{post.id}" class="focus-ring d-block">
@@ -94,7 +94,9 @@
           </div>
         </a>
       {:else}
-        <div class="ratio ratio-16x9 thumbnail-frame"></div>
+        <div
+          class="ratio ratio-16x9 thumbnail-frame bg-black bg-opacity-10 d-flex align-items-center justify-content-center">
+        </div>
       {/if}
     </div>
   </td>

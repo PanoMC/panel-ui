@@ -229,7 +229,8 @@
         "category": "Category",
         "views": "Views",
         "author": "Author",
-        "last-update": "Last Update"
+        "last-update": "Last Update",
+        "image": "Thumbnail"
       }
     },
     "tickets": {
