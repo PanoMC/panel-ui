@@ -68,7 +68,8 @@
     "remote": "Remote",
     "toggle-details": "Toggle Details",
     "show-more-details": "Show More Details",
-    "show-less-details": "Show Less Details"
+    "show-less-details": "Show Less Details",
+    "settings": "Settings"
   },
   "pages": {
     "themes": {

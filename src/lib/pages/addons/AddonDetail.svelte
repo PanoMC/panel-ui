@@ -153,8 +153,11 @@
     </div>
   </div>
 
-  {#if $hookStore.length > 0}
-    <Hook name="panel:plugin-detail:content" {addon} />
+  {#if $hookStore.length > 0 || specificHooks.length > 0}
+    <div class="animate__animated animate__fadeIn d-flex flex-column gap-3">
+      <Hook name="panel:plugin-detail:content" {addon} />
+      <Hook name={`panel:plugin-detail:content:${addon.id}`} {addon} />
+    </div>
   {:else}
     <NoContent
       title={$_('pages.addon-detail.no-settings', { default: 'No Settings' })}
@@ -195,7 +198,7 @@
 </script>
 
 <script>
-  import { getContext } from 'svelte';
+  import { getContext, onDestroy } from "svelte";
   import { _ } from 'svelte-i18n';
 
   import { goto, invalidate } from '$app/navigation';
@@ -234,6 +237,22 @@
   let refreshRequired = false;
 
   const hookStore = panoApiClient.ui.hook.get('panel:plugin-detail:content');
+  let specificHooks = [];
+  let unsub;
+  $: {
+    if (unsub) unsub();
+    if (addon?.id) {
+       unsub = panoApiClient.ui.hook.get(`panel:plugin-detail:content:${addon.id}`).subscribe(value => {
+         specificHooks = value;
+       });
+    } else {
+       specificHooks = [];
+    }
+  }
+
+  onDestroy(() => {
+    if (unsub) unsub();
+  });
 
   $: {
     addon = data.addon;

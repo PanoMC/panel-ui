@@ -80,6 +80,7 @@
                 {#if plugin.loading}
                   <i class="fa-solid fa-spinner fa-spin me-2"></i>
                 {:else}
+                  <AddonSettingsButton {plugin} />
                   <div class="form-check form-switch m-0">
                     <input
                       class="form-check-input"
@@ -216,6 +217,8 @@
 
   import SearchInput from '$lib/component/SearchInput.svelte';
   import { goto } from '$app/navigation';
+  import { panoApiClient } from '$lib/PluginAPI.js';
+  import AddonSettingsButton from '$lib/pages/addons/AddonSettingsButton.svelte';
 
   export let data;
   let refreshRequired = false;
