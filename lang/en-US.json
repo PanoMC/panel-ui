@@ -66,10 +66,11 @@
     "bans": "Bans",
     "local": "Local",
     "remote": "Remote",
-    "toggle-details": "Toggle Details",
+    "toggle-details": "Addon Details",
     "show-more-details": "Show More Details",
     "show-less-details": "Show Less Details",
-    "settings": "Settings"
+    "settings": "Settings",
+    "preferences": "Preferences"
   },
   "pages": {
     "themes": {

@@ -1,6 +1,63 @@
 <ConfirmRemoveAddonModal />
 <ConfirmRemoveAddonWillCauseMoreUnloadModal />
 
+<div
+  class="modal fade"
+  id="addonInfoModal"
+  tabindex="-1"
+  aria-labelledby="addonInfoModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    {#if addon}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addonInfoModalLabel">{$_('buttons.toggle-details')}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body p-0">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <strong>{$_('pages.addon-detail.developer')}:</strong>
+              <span class="text-break">{addon.developer}</span>
+            </li>
+            <li class="list-group-item">
+              <strong>{$_('pages.addon-detail.license')}:</strong>
+              <span class="text-break">{addon.license || $_('pages.addon-detail.unknown')}</span>
+            </li>
+            <li class="list-group-item">
+              <strong>{$_('pages.addon-detail.source')}:</strong>
+              <a href={addon.sourceUrl} target="_blank" class="text-break"
+                >{addon.sourceUrl || $_('pages.addon-detail.unknown')}<i
+                  class="fa-solid fa-arrow-up-right-from-square ms-2"></i
+                ></a>
+            </li>
+            <li class="list-group-item">
+              <strong>{$_('pages.addon-detail.dependencies')}:</strong>
+              <span class="text-break"
+                >{@html isBlank(addon.dependencies)
+                  ? '-'
+                  : addon.dependencies.map((dependency) => getDependencyText(dependency))}</span>
+            </li>
+            <li class="list-group-item">
+              <strong>{$_('pages.addon-detail.requires')}:</strong>
+              <span class="text-break">{isBlank(addon.requires) ? '-' : addon.requires}</span>
+            </li>
+            <li class="list-group-item">
+              <strong>Hash:</strong>
+              <code class="overflow-auto text-break user-select-all">sha256:{addon.hash}</code>
+            </li>
+            <li class="list-group-item">
+              <strong>{$_('pages.addon-detail.size')}:</strong>
+              <span class="text-break">{formatBytes(addon.size)}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    {/if}
+  </div>
+</div>
+
 <div class="container vstack gap-3">
   {#if refreshRequired}
     <RefreshRequiredAlert />
@@ -23,6 +80,15 @@
           <i class="fas fa-store"></i>
         </a>
       {/if}
+      <button
+        class="btn btn-link"
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#addonInfoModal"
+        title={$_('buttons.toggle-details')}
+        aria-label={$_('buttons.toggle-details')}>
+        <i class="fas fa-circle-info"></i>
+      </button>
       <button
         class="btn btn-link"
         type="button"
@@ -69,7 +135,7 @@
               <button
                 type="button"
                 aria-label={$_('buttons.error-log')}
-                class="btn btn-link text-danger ps-2"
+                class="btn btn-link link-danger ps-2"
                 data-bs-toggle="popover"
                 data-bs-trigger="focus"
                 data-bs-title={$_('buttons.error-log')}
@@ -79,95 +145,39 @@
             {/if}
           </h5>
 
+          <div class="small mb-2 hstack gap-2">
+            <span title="ID" class="user-select-all font-monospace">{addon.id}</span>
+            <span class="vr"></span>
+            <span title={$_('pages.addon-detail.version')} class="user-select-all font-monospace">
+              {addon.version}
+            </span>
+            <span class="vr"></span>
+            <span
+              title={$_('pages.addon-detail.pano-version')}
+              class="user-select-all font-monospace">
+              {addon.panoVersion}
+            </span>
+          </div>
+
           {addon.description}
         </div>
       </div>
     </div>
-    <div class="card-body">
-      <ul class="list-group">
-        <li class="list-group-item">
-          <strong>ID:</strong>
-          <span class="user-select-all font-monospace text-break">{addon.id}</span>
-        </li>
-        <li class="list-group-item">
-          <strong>{$_('pages.addon-detail.version')}:</strong>
-          <span class="user-select-all font-monospace text-break">{addon.version}</span>
-        </li>
-        <li class="list-group-item">
-          <strong>{$_('pages.addon-detail.pano-version')}:</strong>
-          <span class="user-select-all font-monospace text-break">{addon.panoVersion}</span>
-        </li>
-        <li class="list-group-item">
-          <strong>{$_('pages.addon-detail.developer')}:</strong>
-          <span class="text-break">{addon.developer}</span>
-        </li>
-        <li class="list-group-item">
-          <strong>{$_('pages.addon-detail.license')}:</strong>
-          <span class="text-break">{addon.license || $_('pages.addon-detail.unknown')}</span>
-        </li>
-        <li class="list-group-item">
-          <strong>{$_('pages.addon-detail.source')}:</strong>
-          <a href={addon.sourceUrl} target="_blank" class="text-break"
-            >{addon.sourceUrl || $_('pages.addon-detail.unknown')}<i
-              class="fa-solid fa-arrow-up-right-from-square ms-2"></i
-            ></a>
-        </li>
-      </ul>
+  </div>
 
-      <button
-        class="btn btn-link p-0 mt-2 text-decoration-none"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#addonDetailsCollapse"
-        aria-expanded="false"
-        aria-controls="addonDetailsCollapse"
-        title={$_('buttons.toggle-details')}
-        aria-label={$_('buttons.toggle-details')}>
-        <i class="fas fa-chevron-right me-1"></i>
-        {$_('buttons.show-more-details')}
-      </button>
-
-      <div class="collapse mt-3" id="addonDetailsCollapse">
-        <ul class="list-group">
-          <li class="list-group-item">
-            <strong>{$_('pages.addon-detail.dependencies')}:</strong>
-            <span class="text-break"
-              >{@html isBlank(addon.dependencies)
-                ? '-'
-                : addon.dependencies.map((dependency) => getDependencyText(dependency))}</span>
-          </li>
-          <li class="list-group-item">
-            <strong>{$_('pages.addon-detail.requires')}:</strong>
-            <span class="text-break">{isBlank(addon.requires) ? '-' : addon.requires}</span>
-          </li>
-          <li class="list-group-item">
-            <strong>Hash:</strong>
-            <code class="overflow-auto text-break user-select-all">sha256:{addon.hash}</code>
-          </li>
-          <li class="list-group-item">
-            <strong>{$_('pages.addon-detail.size')}:</strong>
-            <span class="text-break">{formatBytes(addon.size)}</span>
-          </li>
-        </ul>
-      </div>
+  {#if $hookStore.length > 0 || specificHooks.length > 0}
+    <div class="d-flex flex-column gap-3">
+      <Hook name="panel:plugin-detail:content" {addon} />
+      <Hook name={`panel:plugin-detail:content:${addon.id}`} {addon} />
     </div>
-  </div>
-
-  <div class="mt-3">
-    {#if $hookStore.length > 0 || specificHooks.length > 0}
-      <div class="d-flex flex-column gap-3">
-        <Hook name="panel:plugin-detail:content" {addon} />
-        <Hook name={`panel:plugin-detail:content:${addon.id}`} {addon} />
-      </div>
-    {:else}
-      <NoContent
-        title={$_('pages.addon-detail.no-settings', { default: 'No Settings' })}
-        description={$_('pages.addon-detail.no-settings-desc', {
-          default: 'This addon has no configurable settings.',
-        })}
-        icon="fas fa-cog" />
-    {/if}
-  </div>
+  {:else}
+    <NoContent
+      title={$_('pages.addon-detail.no-settings', { default: 'No Settings' })}
+      description={$_('pages.addon-detail.no-settings-desc', {
+        default: 'This addon has no configurable settings.',
+      })}
+      icon="fas fa-cog" />
+  {/if}
 </div>
 
 <script context="module">
@@ -212,7 +222,7 @@
 </script>
 
 <script>
-  import { getContext, onDestroy } from "svelte";
+  import { getContext, onDestroy } from 'svelte';
   import { get } from 'svelte/store';
   import { _ } from 'svelte-i18n';
 
@@ -398,23 +408,4 @@
 
     return text;
   }
-
-  // Handle collapse icon rotation
-  import { onMount } from 'svelte';
-
-  onMount(() => {
-    const collapseElement = document.getElementById('addonDetailsCollapse');
-    const toggleButton = document.querySelector('[data-bs-target="#addonDetailsCollapse"]');
-    const icon = toggleButton.querySelector('i');
-
-    collapseElement.addEventListener('show.bs.collapse', () => {
-      icon.classList.remove('fa-chevron-right');
-      icon.classList.add('fa-chevron-down');
-    });
-
-    collapseElement.addEventListener('hide.bs.collapse', () => {
-      icon.classList.remove('fa-chevron-down');
-      icon.classList.add('fa-chevron-right');
-    });
-  });
 </script>

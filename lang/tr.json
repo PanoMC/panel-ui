@@ -66,10 +66,11 @@
     "bans": "Yasaklar",
     "local": "Yerel",
     "remote": "Uzaktan",
-    "toggle-details": "Detayları Aç/Kapat",
+    "toggle-details": "Eklenti Detayları",
     "show-more-details": "Daha Fazla Detay Göster",
     "show-less-details": "Daha Az Detay Göster",
-    "settings": "Ayarlar"
+    "settings": "Ayarlar",
+    "preferences": "Tercihler"
   },
   "pages": {
     "themes": {

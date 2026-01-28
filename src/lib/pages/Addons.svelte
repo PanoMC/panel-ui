@@ -68,7 +68,7 @@
                   <button
                     type="button"
                     aria-label={$_('buttons.error-log')}
-                    class="btn btn-link text-danger p-0 me-2"
+                    class="btn btn-link link-danger"
                     data-bs-toggle="popover"
                     data-bs-trigger="focus"
                     data-bs-title={$_('buttons.error-log')}
@@ -95,34 +95,34 @@
                 {/if}
               </div>
 
-              <div class="card-body d-flex flex-column">
-                <div class="vstack gap-2">
-                  <a href="{base}/addons/detail/{plugin.id}" class="text-decoration-none">
-                    <img
-                      src="/api/panel/plugins/{plugin.id}/logo"
-                      class="rounded"
-                      width="64"
-                      height="64"
-                      alt={plugin.name} />
+              <div class="card-body">
+                <a
+                  href="{base}/addons/detail/{plugin.id}"
+                  class="text-decoration-none rounded focus-ring mb-2">
+                  <img
+                    src="/api/panel/plugins/{plugin.id}/logo"
+                    class="rounded mb-2"
+                    width="64"
+                    height="64"
+                    alt={plugin.name} />
+                </a>
+                <div class="hstack gap-2">
+                  <a
+                    href="{base}/addons/detail/{plugin.id}"
+                    class="text-decoration-none focus-ring rounded">
+                    <h5 class="text-truncate">
+                      {plugin.name}
+                    </h5>
+
+                    <VerifiedStatus status={plugin.verifyStatus} />
                   </a>
-                  <div class="hstack gap-2 flex-wrap">
-                    <a href="{base}/addons/detail/{plugin.id}" class="text-decoration-none">
-                      <h5 class="text-truncate word-break mb-0">
-                        {plugin.name}
-                      </h5>
-                    </a>
-                    <VerifiedStatus status={plugin.verifyStatus} /> 
-                  </div>
-                  <small>
-                    by {plugin.developer}
-                  </small>
-
-                  <small class="d-block mb-2"> {@html plugin.description}</small>
-
-                  <small class="font-monospace user-select-all">
-                    {plugin.version}
-                  </small>
                 </div>
+
+                <small class="d-block mb-2"> {@html plugin.description}</small>
+
+                <small class="font-monospace user-select-all">
+                  {plugin.version}
+                </small>
               </div>
             </div>
           </div>

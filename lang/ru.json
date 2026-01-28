@@ -66,9 +66,10 @@
     "bans": "Баны",
     "local": "Локальный",
     "remote": "Удаленный",
-    "toggle-details": "Детали",
+    "toggle-details": "Детали аддона",
     "show-more-details": "Больше деталей",
-    "show-less-details": "Меньше деталей"
+    "show-less-details": "Меньше деталей",
+    "preferences": "Предпочтения"
   },
   "pages": {
     "themes": {
