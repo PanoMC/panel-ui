@@ -77,7 +77,7 @@
           <div class="carousel-inner">
             {#each theme.screenshots.length === 0 ? { 'screenshot.png': '' } : Object.keys(theme.screenshots) as key, i}
               <div class={'carousel-item' + (i === 0 ? ' active' : '')}>
-                <div class="ratio ratio-1x1">
+                <div class="ratio ratio-16x9">
                   <img
                     src={`/api/panel/themes/${theme.id}/screenshots/${key}?hash=${theme.screenshots[key]}`}
                     class="d-block w-100"
@@ -120,23 +120,26 @@
                 <span class="badge text-bg-success">{$_('pages.theme-detail.in-use')}</span>
               {/if}
             </div>
+
+            <div class="small mb-2 hstack gap-2">
+              <span title="ID" class="user-select-all font-monospace">{theme.id}</span>
+              <span class="vr"></span>
+              <span title={$_('pages.theme-detail.version')} class="user-select-all font-monospace">
+                {theme.version}
+              </span>
+              <span class="vr"></span>
+              <span
+                title={$_('pages.theme-detail.pano-version')}
+                class="user-select-all font-monospace">
+                {theme.panoVersion}
+              </span>
+            </div>
+
             <p>{theme.description}</p>
           </div>
 
           <!-- Metadata -->
           <ul class="list-group">
-            <li class="list-group-item">
-              <strong>ID:</strong>
-              <span class="font-monospace user-select-all"> {theme.id}</span>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_('pages.theme-detail.version')}:</strong>
-              <span class="user-select-all font-monospace">{theme.version}</span>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_('pages.theme-detail.pano-version')}:</strong>
-              <span class="user-select-all font-monospace">{theme.panoVersion}</span>
-            </li>
             <li class="list-group-item">
               <strong>{$_('pages.theme-detail.developer')}:</strong>
               <a target="_blank" href="{PANO_WEBSITE_URL}/users/{theme.author}"
@@ -161,7 +164,7 @@
             </li>
             <li class="list-group-item">
               <strong>Hash:</strong>
-              <code class="overflow-auto text-nowrap d-block user-select-all"
+              <code class="overflow-auto text-nowrap d-block user-select-all py-1"
                 >sha256:{theme.hash}</code>
             </li>
             <li class="list-group-item">
