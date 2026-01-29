@@ -1,3 +1,4 @@
+import { base } from '$app/paths';
 import {
   COOKIE_PREFIX,
   JWT_COOKIE_NAME,
@@ -68,8 +69,19 @@ export async function handle({ event, resolve }) {
   <script type="importmap" crossorigin="anonymous">
   {
     "imports": {
-      "svelte": "https://esm.sh/svelte@5.46.1",
-      "svelte/": "https://esm.sh/svelte@5.46.1/"
+      "svelte": "${base}/lib/svelte/index.js",
+      "svelte/animate": "${base}/lib/svelte/animate.js",
+      "svelte/easing": "${base}/lib/svelte/easing.js",
+      "svelte/motion": "${base}/lib/svelte/motion.js",
+      "svelte/store": "${base}/lib/svelte/store.js",
+      "svelte/transition": "${base}/lib/svelte/transition.js",
+      "svelte/internal": "${base}/lib/svelte/internal.js",
+      "svelte/internal/client": "${base}/lib/svelte/internal-client.js",
+      "svelte/internal/disclose-version": "${base}/lib/svelte/internal-disclose-version.js",
+      "svelte/internal/flags/legacy": "${base}/lib/svelte/internal-flags-legacy.js",
+      "svelte/internal/flags/async": "${base}/lib/svelte/internal-flags-async.js",
+      "svelte/internal/flags/tracing": "${base}/lib/svelte/internal-flags-tracing.js",
+      "svelte/events": "${base}/lib/svelte/events.js"
     }
   }
   </script>`;
