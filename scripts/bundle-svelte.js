@@ -24,6 +24,8 @@ const entries = {
     "internal-flags-legacy": "svelte/internal/flags/legacy",
     "internal-flags-async": "svelte/internal/flags/async",
     "internal-flags-tracing": "svelte/internal/flags/tracing",
+    "internal-server": "svelte/internal/server",
+    "legacy": "svelte/legacy",
     "events": "svelte/events",
 };
 
