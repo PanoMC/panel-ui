@@ -183,17 +183,31 @@
 </div>
 
 <div class="card">
-  <div class="card-header">
-    {#if data.resourceUpdates.length > 0}
-      {$_('pages.settings.updates.resource-updates-count', {
-        values: {
-          count: data.resourceUpdates.length,
-        },
-      })}
-    {:else}
-      {$_('pages.settings.updates.resource-updates')}
-    {/if}
-  </div>
+  <CardHeader>
+    <div slot="left">
+      {#if data.resourceUpdates.length > 0}
+        {$_('pages.settings.updates.resource-updates-count', {
+          values: {
+            count: data.resourceUpdates.length,
+          },
+        })}
+      {:else}
+        {$_('pages.settings.updates.resource-updates')}
+      {/if}
+    </div>
+    <div slot="right">
+      <button
+        class="btn btn-sm btn-secondary"
+        on:click={onUpdateAllClick}
+        class:disabled={loading ||
+          $platformUpdating ||
+          inProgressResource ||
+          updatingAll ||
+          data.resourceUpdates.length === 0}>
+        {$_('buttons.update-all')}
+      </button>
+    </div>
+  </CardHeader>
   <div class="card-body">
     {#if !data.panoAccount}
       <NoContent
