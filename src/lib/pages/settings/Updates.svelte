@@ -1,3 +1,16 @@
+<style>
+  @media (max-width: 767.98px) {
+    .mobile-absolute-actions {
+      position: absolute !important;
+      top: 0;
+      right: 0;
+    }
+    .mobile-info-padding {
+      padding-right: 110px !important;
+    }
+  }
+</style>
+
 <!-- Updates Sub Page -->
 
 <!-- Action Menu -->
@@ -65,8 +78,6 @@
                         >{data.platformUpdate.oldVersion}
                         <i class="fas fa-arrow-right fa-xs"></i>
                         {data.platformUpdate.version}</span>
-
-
                     </div>
 
                     <div class="d-flex flex-wrap gap-2 small mb-0">
@@ -97,7 +108,7 @@
                     <button
                       class="btn btn-sm btn-link"
                       aria-label={$_('pages.settings.updates.copy-hash')}
-                      use:tooltip={[$_('pages.settings.updates.copy-hash'), { placement: 'bottom' }]}
+                      title={$_('pages.settings.updates.copy-hash')}
                       class:disabled={loading ||
                         $platformUpdating ||
                         inProgressResource ||
@@ -117,7 +128,6 @@
                       {:else}
                         <i class="fas fa-download"></i>
                       {/if}
-                      <span class="d-none d-md-inline">{$_('buttons.update')}</span>
                     </button>
                     <!-- Dropped btn-group since only one button remains in the main action area -->
                   </div>
@@ -227,12 +237,24 @@
                 <a
                   href={`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}
                   target="_blank">
-                  <img
-                    width={update.type === 'THEME' ? 114 : 64}
-                    height="64"
-                    class="rounded"
-                    src={`/api/panel/updates/icon/${update.iconFileName}?type=${update.type}`}
-                    alt={update.name || update.id} />
+                  {#if update.iconFileName}
+                    <img
+                      width={update.type === 'THEME' ? 114 : 64}
+                      height="64"
+                      class="rounded"
+                      src={`/api/panel/updates/icon/${update.iconFileName}?type=${update.type}`}
+                      alt={update.name || update.id} />
+                  {:else}
+                    <div
+                      class="rounded bg-black bg-opacity-10 text-gray overflow-hidden position-relative"
+                      style="width: {update.type === 'THEME' ? 114 : 64}px; height: 64px;">
+                      <i
+                        class="fas fa-{update.type === 'THEME'
+                          ? 'palette'
+                          : 'puzzle-piece'} position-absolute"
+                        style="font-size: 100px; bottom: -35px; right: -30px; opacity: 0.15;"></i>
+                    </div>
+                  {/if}
                 </a>
               </div>
 
@@ -245,29 +267,27 @@
                         href={`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}
                         target="_blank"
                         class="text-decoration-none focus-ring rounded hstack gap-2">
-                        <h5
-                          class="text-truncate mb-0 text-break text-wrap"
-                          use:tooltip={[update.id, { placement: 'bottom' }]}>
+                        <h5 class="text-truncate mb-0 text-break text-wrap">
                           {update.resourceTitle || update.name || update.id}
+                          <i class="fas fa-external-link-alt fa-xs ms-1"></i>
                         </h5>
                         <VerifiedStatus status={getVerifiedStatus(update.verified)} />
                       </a>
-                      <span class="small"
-                        >{$_('pages.settings.updates.by')}
-                        <a
-                          href={`${PANO_WEBSITE_URL}/users/${update.developer}`}
-                          target="_blank"
-                          class="text-decoration-none small">{update.developer}</a
-                        ></span>
-
                       <span class="badge text-bg-primary">
                         {update.oldVersion}
                         <i class="fas fa-arrow-right fa-xs"></i>
                         {update.version}
                       </span>
                     </div>
-
-                    <div class="hstack gap-2 small d-none d-md-flex">
+                    <div class="small font-monospace">{update.id}</div>
+                    <div class="hstack gap-3 small flex-wrap">
+                      <span>
+                        {$_('pages.settings.updates.by')}
+                        <a
+                          href={`${PANO_WEBSITE_URL}/users/${update.developer}`}
+                          target="_blank"
+                          class="text-decoration-none">{update.developer}</a>
+                      </span>
                       <span>
                         <i class="fas fa-database me-2"></i>{formatBytes(update.size)}
                       </span>
@@ -278,7 +298,8 @@
                   </div>
 
                   <!-- Right: Actions -->
-                  <div class="d-flex align-items-center gap-1 flex-shrink-0 mobile-absolute-actions">
+                  <div
+                    class="d-flex align-items-center gap-1 flex-shrink-0 mobile-absolute-actions">
                     <button
                       class="btn btn-sm btn-link"
                       title={$_('pages.settings.updates.changelog')}
@@ -294,7 +315,7 @@
                     <button
                       class="btn btn-sm btn-link"
                       aria-label={$_('pages.settings.updates.copy-hash')}
-                      use:tooltip={[$_('pages.settings.updates.copy-hash'), { placement: 'bottom' }]}
+                      title={$_('pages.settings.updates.copy-hash')}
                       class:disabled={loading ||
                         $platformUpdating ||
                         inProgressResource ||
@@ -304,6 +325,8 @@
                     </button>
 
                     <button
+                      title={$_('pages.settings.updates.download')}
+                      aria-label={$_('pages.settings.updates.download')}
                       class="btn btn-sm btn-secondary d-flex align-items-center gap-2"
                       class:disabled={loading ||
                         $platformUpdating ||
@@ -311,7 +334,6 @@
                         updatingAll}
                       on:click={() => onUpdateResourceClick(update)}>
                       <i class="fas fa-download"></i>
-                      <span class="d-none d-md-inline">{$_('buttons.update')}</span>
                     </button>
                   </div>
                 </div>
@@ -361,14 +383,7 @@
                   </p>
                 {/if}
               </div>
-              <div class="d-flex d-md-none flex-wrap align-items-center gap-3 small mt-1 w-100">
-                <span>
-                  <i class="fas fa-database me-2"></i>{formatBytes(update.size)}
-                </span>
-                <span>
-                  <i class="fa-regular fa-calendar me-2"></i><Date time={update.createdAt} />
-                </span>
-              </div>
+
             </div>
           </li>
         {/each}
@@ -762,16 +777,3 @@
     }
   });
 </script>
-
-<style>
-  @media (max-width: 767.98px) {
-    .mobile-absolute-actions {
-      position: absolute !important;
-      top: 0;
-      right: 0;
-    }
-    .mobile-info-padding {
-      padding-right: 110px !important;
-    }
-  }
-</style>
