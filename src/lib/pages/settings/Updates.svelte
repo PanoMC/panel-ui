@@ -234,7 +234,7 @@
                       width="64"
                       height="64"
                       class="rounded mb-2"
-                      src={`/api/panel/updates/icon/${update.iconFileName}`}
+                      src={`/api/panel/updates/icon/${update.iconFileName}?type=${update.type}`}
                       alt={update.name || update.id} />
                   </a>
                 </div>
