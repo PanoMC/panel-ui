@@ -219,7 +219,7 @@
                     <img
                       width="64"
                       height="64"
-                      class="rounded mb-lg-0 mb-2"
+                      class="rounded mb-2"
                       src={`/api/panel/updates/icon/${update.iconFileName}`}
                       alt={update.name || update.id} />
                   </a>
@@ -231,13 +231,13 @@
                     <a
                       href={`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}
                       target="_blank"
-                      class="text-decoration-none focus-ring rounded">
+                      class="text-decoration-none focus-ring rounded hstack gap-2">
                       <h5 class="text-truncate mb-0 text-break text-wrap">
                         #{update.name || update.id}
                       </h5>
                       <VerifiedStatus status={getVerifiedStatus(update.verified)} />
                     </a>
-                    <span class="small text-monospace">{update.id}</span>
+                    <span class="small font-monospace">{update.id}</span>
                     <span class="small"
                       >{$_('pages.settings.updates.by')}
                       <a
@@ -261,7 +261,7 @@
                   <!-- Right: Actions -->
                   <button
                     class="btn btn-sm btn-link"
-                    use:tooltip={$_('pages.settings.updates.changelog')}
+                    title={$_('pages.settings.updates.changelog')}
                     aria-label={$_('pages.settings.updates.changelog')}
                     class:disabled={loading ||
                       $platformUpdating ||
@@ -274,7 +274,6 @@
                   <div class="btn-group" role="group">
                     <button
                       class="btn btn-sm btn-secondary d-flex align-items-center gap-2"
-                      use:tooltip={$_('buttons.update')}
                       class:disabled={loading ||
                         $platformUpdating ||
                         inProgressResource ||
