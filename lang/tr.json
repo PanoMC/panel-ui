@@ -71,7 +71,8 @@
     "show-less-details": "Daha Az Detay Göster",
     "settings": "Ayarlar",
     "preferences": "Tercihler",
-    "select-option": "Seç"
+    "select-option": "Seç",
+    "logout": "Çıkış Yap"
   },
   "pages": {
     "themes": {
@@ -669,6 +670,12 @@
       }
     },
     "player-detail": {
+      "overview": "Genel Bakış",
+      "sessions": "Oturumlar",
+      "browser": "Tarayıcı",
+      "last-entrance": "Son Giriş",
+      "expire-date": "Bitiş Tarihi",
+      "current-session": "Şu Anki Oturum",
       "players": "Oyuncular",
       "un-ban": "Yasağı Kaldır",
       "ban": "Yasakla",
@@ -684,7 +691,6 @@
       "email": "E-Posta",
       "email-verified": "Doğrulandı",
       "email-not-verified": "Doğrulanmadı",
-      "last-entrance": "Son Giriş",
       "register-date": "Kayıt",
       "ban-history": "Ban Geçmişi",
       "permanent-ban": "Kalıcı Ban",
@@ -1249,6 +1255,7 @@
       "language-created-successfully": "\"{name}\" başarıyla oluşturuldu.",
       "reload-themes-success": "Temalar başarıyla yenilendi.",
       "activate-theme-success": "Tema başarıyla aktifleştirildi.",
+      "session-logged-out-successful": "Oturum başarıyla kapatıldı!",
       "removed-theme-success": "Tema başarıyla kaldırıldı.",
       "stop-theme-success": "Tema başarıyla sonlandırıldı.",
       "start-theme-success": "Tema başarıyla başlatıldı.",

@@ -71,7 +71,8 @@
     "show-less-details": "Show Less Details",
     "settings": "Settings",
     "preferences": "Preferences",
-    "select-option": "Select"
+    "select-option": "Select",
+    "logout": "Logout"
   },
   "pages": {
     "themes": {
@@ -669,6 +670,12 @@
       }
     },
     "player-detail": {
+      "overview": "Overview",
+      "sessions": "Sessions",
+      "browser": "Browser",
+      "last-entrance": "Last Entrance",
+      "expire-date": "Expire Date",
+      "current-session": "Current Session",
       "players": "Players",
       "un-ban": "Remove Ban",
       "ban": "Ban",
@@ -684,7 +691,6 @@
       "email": "E-Mail",
       "email-verified": "Verified",
       "email-not-verified": "Not Verified",
-      "last-entrance": "Last Entrance",
       "register-date": "Register Date",
       "ban-history": "Ban History",
       "permanent-ban": "Permanent Ban",
@@ -1237,8 +1243,7 @@
       "pano-account-disconnect-fail-cant-connect": "An error occurred during the removing Pano account: Can't connect to Pano, try again later.",
       "pano-account-disconnect-fail": "An error occurred during the removing Pano account, try again later!",
       "email-config-validate-success": "E-Mail validated successfully!",
-      "smtp-disabled-success": "E-mail disabled successfully!",
-      "smtp-enabled-success": "E-mail enabled successfully!",
+      "session-logged-out-successful": "Session logged out successfully!",
       "translations-save-success": "Saved changes.",
       "language-deleted-permanently": "\"{name}\" deleted permanently.",
       "language-updated-successfully": "\"{name}\" updated successfully.",
