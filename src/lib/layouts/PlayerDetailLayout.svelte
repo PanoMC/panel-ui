@@ -1,13 +1,15 @@
 <div class="container vstack gap-3">
-  <PageActions leftClasses="col-lg-8" middleClasses="d-none">
+  <PageActions>
     <div slot="left">
       {#if slots.left}
         {@render slots.left()}
       {:else}
-        <CardMenu>
-          <CardMenuItem href="/players/detail/{data.player.username}">{$_('pages.player-detail.overview')}</CardMenuItem>
-          <CardMenuItem href="/players/detail/{data.player.username}/sessions">{$_('pages.player-detail.sessions')}</CardMenuItem>
-        </CardMenu>
+        <PageNav>
+          <PageNavItem href="/players/detail/{data.player.username}"
+            >{$_('pages.player-detail.overview')}</PageNavItem>
+          <PageNavItem href="/players/detail/{data.player.username}/sessions"
+            >{$_('pages.player-detail.sessions')}</PageNavItem>
+        </PageNav>
       {/if}
     </div>
 
@@ -61,8 +63,10 @@
                   !$siteInfo.emailEnabled}>
                 <i class="fas fa-envelope"></i>
                 {#if sendingVerificationMail}
-                  <span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"
-                  ></span>
+                  <span
+                    class="spinner-border spinner-border-sm ms-2"
+                    role="status"
+                    aria-hidden="true"></span>
                 {/if}
               </button>
             {/if}
@@ -181,48 +185,48 @@
   }
 
   /**
-    * @type {import('@sveltejs/kit').LayoutLoad}
-    */
+   * @type {import('@sveltejs/kit').LayoutLoad}
+   */
   export async function load(event) {
-      const {
-          parent,
-          url: { searchParams },
-      } = event;
-      await parent();
+    const {
+      parent,
+      url: { searchParams },
+    } = event;
+    await parent();
 
-      const username = event.params.username;
-      const ticketsPage = searchParams.get('ticketsPage') || 1;
-      const banHistoryPage = searchParams.get('banHistoryPage') || 1;
+    const username = event.params.username;
+    const ticketsPage = searchParams.get('ticketsPage') || 1;
+    const banHistoryPage = searchParams.get('banHistoryPage') || 1;
 
-      const queryParams = buildQueryParams({
-          ticketsPage,
-          banHistoryPage,
-      });
+    const queryParams = buildQueryParams({
+      ticketsPage,
+      banHistoryPage,
+    });
 
-      const body = await ApiUtilModule.get({
-          path: `/api/panel/players/${username}` + queryParams,
-          request: event,
-      });
+    const body = await ApiUtilModule.get({
+      path: `/api/panel/players/${username}` + queryParams,
+      request: event,
+    });
 
-      if (body.error) {
-          if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
-              throw error(404, body.error);
-          }
-
-          throw error(500, body.error);
+    if (body.error) {
+      if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
+        throw error(404, body.error);
       }
 
-      body.username = username;
-      body.ticketsPage = parseInt(ticketsPage);
-      body.banHistoryPage = parseInt(banHistoryPage);
+      throw error(500, body.error);
+    }
 
-      body.hookProps = {};
-      body.hookProps['panel:player-detail:bottom'] = await executeHookLoad(
-          'panel:player-detail:bottom',
-          event,
-      );
+    body.username = username;
+    body.ticketsPage = parseInt(ticketsPage);
+    body.banHistoryPage = parseInt(banHistoryPage);
 
-      return body;
+    body.hookProps = {};
+    body.hookProps['panel:player-detail:bottom'] = await executeHookLoad(
+      'panel:player-detail:bottom',
+      event,
+    );
+
+    return body;
   }
 </script>
 
@@ -235,8 +239,8 @@
   import { formatRelative } from 'date-fns';
 
   import PageActions from '$lib/component/PageActions.svelte';
-  import CardMenu from '$lib/component/CardMenu.svelte';
-  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import PageNav from '$lib/component/PageNav.svelte';
+  import PageNavItem from '$lib/component/PageNavItem.svelte';
   import DateComponent from '$lib/component/Date.svelte';
   import PlayerPermissionBadge from '$lib/component/badges/PlayerPermissionBadge.svelte';
   import tooltip from '$lib/tooltip.util';
@@ -280,7 +284,7 @@
   let interval;
 
   const isOnline = $derived(
-    data.player.lastActivityTime > Date.now() - 5 * 60 * 1000 || data.player.inGame
+    data.player.lastActivityTime > Date.now() - 5 * 60 * 1000 || data.player.inGame,
   );
 
   function getOfflineRelativeDateText(checkTime, locale) {
