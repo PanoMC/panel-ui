@@ -63,12 +63,12 @@
               class="card h-100 position-relative
         {plugin.status === 'FAILED' && 'border-danger border-2'}">
               <!-- STATUS ACTIONS -->
-              <div class="position-absolute top-0 end-0 m-2 d-flex gap-2">
+              <div class="position-absolute top-0 end-0 m-2 d-flex align-items-center gap-2">
                 {#if plugin.status === 'FAILED'}
                   <button
                     type="button"
                     aria-label={$_('buttons.error-log')}
-                    class="btn btn-link link-danger"
+                    class="btn btn-link link-danger p-0"
                     data-bs-toggle="popover"
                     data-bs-trigger="focus"
                     data-bs-title={$_('buttons.error-log')}
@@ -81,9 +81,9 @@
                   <i class="fa-solid fa-spinner fa-spin me-2"></i>
                 {:else}
                   <AddonSettingsButton {plugin} />
-                  <div class="form-check form-switch m-0">
+                  <div class="form-check form-switch m-0 ps-0">
                     <input
-                      class="form-check-input"
+                      class="form-check-input ms-0"
                       type="checkbox"
                       role="switch"
                       checked={plugin.status === 'STARTED'}

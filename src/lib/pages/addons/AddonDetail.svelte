@@ -76,12 +76,12 @@
           aria-label={$_('buttons.show-in-store')}
           href={`${PANO_WEBSITE_URL}/addons/${addon.id}`}
           target="_blank"
-          class="btn btn-link">
+          class="btn btn-link p-0">
           <i class="fas fa-store"></i>
         </a>
       {/if}
       <button
-        class="btn btn-link"
+        class="btn btn-link p-0"
         type="button"
         data-bs-toggle="modal"
         data-bs-target="#addonInfoModal"
@@ -90,7 +90,7 @@
         <i class="fas fa-circle-info"></i>
       </button>
       <button
-        class="btn btn-link"
+        class="btn btn-link p-0"
         type="button"
         on:click={onRemoveClick}
         title={$_('buttons.remove')}
@@ -98,9 +98,9 @@
         class:disabled={removing}>
         <i class="fas fa-trash"></i>
       </button>
-      <div class="form-check form-switch m-0">
+      <div class="form-check form-switch m-0 ps-0">
         <input
-          class="form-check-input"
+          class="form-check-input ms-0"
           type="checkbox"
           role="switch"
           checked={addon.status === 'STARTED'}
