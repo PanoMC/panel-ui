@@ -266,8 +266,8 @@
                       <a
                         href={`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}
                         target="_blank"
-                        class="text-decoration-none focus-ring rounded hstack gap-2">
-                        <h5 class="text-truncate mb-0 text-break text-wrap">
+                        class="text-decoration-none focus-ring rounded d-inline-flex align-items-center gap-2">
+                        <h5 class="text-truncate mb-0">
                           {update.resourceTitle || update.name || update.id}
                           <i class="fas fa-external-link-alt fa-xs ms-1"></i>
                         </h5>

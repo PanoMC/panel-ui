@@ -90,8 +90,8 @@
 
               <div
                 class="card-img-overlay d-flex flex-column justify-content-end p-3 overlay-gradient">
-                <h5 class="card-title mb-1 text-truncate" title={theme.title}>
-                  {theme.title}
+                <h5 class="card-title mb-1 text-truncate d-flex align-items-center gap-2" title={theme.title}>
+                  <span class="text-truncate">{theme.title}</span>
                   <VerifiedStatus status={theme.verifyStatus} />
                 </h5>
 

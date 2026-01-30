@@ -128,7 +128,7 @@
         </div>
 
         <div class="col">
-          <h5 class="card-title" class:text-danger={addon.status === 'FAILED'}>
+          <h5 class="card-title d-inline-flex align-items-center gap-2 mb-2" class:text-danger={addon.status === 'FAILED'}>
             {addon.name}
             <VerifiedStatus status={addon.verifyStatus} />
             {#if addon.status === 'FAILED'}

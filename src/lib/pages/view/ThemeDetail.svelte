@@ -113,7 +113,7 @@
           <!-- Title & Status -->
           <div>
             <div class="d-flex justify-content-between align-items-start">
-              <h5 class="card-title">
+              <h5 class="card-title d-flex align-items-center gap-2">
                 {theme.title}<VerifiedStatus status={theme.verifyStatus} />
               </h5>
               {#if theme.active}

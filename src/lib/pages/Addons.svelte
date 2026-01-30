@@ -106,17 +106,15 @@
                     height="64"
                     alt={plugin.name} />
                 </a>
-                <div class="hstack gap-2">
-                  <a
-                    href="{base}/addons/detail/{plugin.id}"
-                    class="text-decoration-none focus-ring rounded">
-                    <h5 class="text-truncate">
-                      {plugin.name}
-                    </h5>
+                <a
+                  href="{base}/addons/detail/{plugin.id}"
+                  class="text-decoration-none focus-ring rounded d-flex align-items-center gap-2 mb-2">
+                  <h5 class="text-truncate mb-0">
+                    {plugin.name}
+                  </h5>
 
-                    <VerifiedStatus status={plugin.verifyStatus} />
-                  </a>
-                </div>
+                  <VerifiedStatus status={plugin.verifyStatus} />
+                </a>
 
                 <small class="d-block mb-2"> {@html plugin.description}</small>
 
