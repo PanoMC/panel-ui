@@ -80,8 +80,8 @@
       </CardFilters>
     </CardHeader>
     <div class="vstack gap-3">
-      <div class="accordion accordion-flush mb-2">
-        {#if data.type === PageTypes.PLUGIN}
+      {#if data.type === PageTypes.PLUGIN}
+        <div class="accordion accordion-flush mb-2">
           {#each Object.keys(filteredTranslations).slice(0, pluginLimit) as pluginId, index (pluginId)}
             <div class="accordion-item">
               <h2 class="accordion-header">
@@ -126,52 +126,40 @@
           {:else}
             <NoContent />
           {/each}
-        {:else}
-          <div class="accordion-item">
-            <h2 class="accordion-header">
-              <button
-                class="accordion-button"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#collapse{data.type}Translations">
-                {filteredTranslations.length}
-                {$_('buttons.' + data.type.toLowerCase().replace('_', '-'))}
-              </button>
-            </h2>
-            <div id="collapse{data.type}Translations" class="accordion-collapse collapse show">
-              <div class="accordion-body">
-                {#if !ready}
-                  {#each Array(12) as _}
-                    <TranslationSkeleton />
-                  {/each}
-                {:else}
-                  {#if splitFlat.notExists.length > 0}
-                    <UnnecessaryTranslationsAlert
-                      translations={splitFlat.notExists}
-                      on:customInputChange={handleCustomInputChange}
-                      on:deleteClick={handleOnDeleteClick}
-                      open={data.filter === FilterTypes.NOT_EXISTS} />
-                  {/if}
-                  {#if splitFlat.existing.length > 0}
-                    {#each splitFlat.existing.slice(0, renderingLimit) as translation, index (translation)}
-                      <TranslationRow
-                        {translation}
-                        on:customInputChange={handleCustomInputChange}
-                        on:deleteClick={handleOnDeleteClick} />
-                    {/each}
-                  {:else if splitFlat.notExists.length === 0}
-                    <NoContent />
-                  {/if}
-                {/if}
-              </div>
-            </div>
-          </div>
-        {/if}
-      </div>
+        </div>
+      {:else}
+        <div class="p-3">
+          {#if !ready}
+            {#each Array(12) as _}
+              <TranslationSkeleton />
+            {/each}
+          {:else}
+            {#if splitFlat.notExists.length > 0}
+              <UnnecessaryTranslationsAlert
+                translations={splitFlat.notExists}
+                on:customInputChange={handleCustomInputChange}
+                on:deleteClick={handleOnDeleteClick}
+                open={data.filter === FilterTypes.NOT_EXISTS} />
+            {/if}
+            {#if splitFlat.existing.length > 0}
+              {#each splitFlat.existing.slice(0, renderingLimit) as translation, index (translation)}
+                <TranslationRow
+                  {translation}
+                  on:customInputChange={handleCustomInputChange}
+                  on:deleteClick={handleOnDeleteClick} />
+              {/each}
+            {:else if splitFlat.notExists.length === 0}
+              <NoContent />
+            {/if}
+          {/if}
+        </div>
+      {/if}
       {#if ready && hasMore}
-        <div use:observer class="py-2 text-center small">
-          <i class="fas fa-circle-notch fa-spin me-2"></i>
-          {$_('components.store-loading.loading')}
+        <div use:observer class="py-3 text-center small" style="min-height: 50px;">
+          {#if searching}
+            <i class="fas fa-circle-notch fa-spin me-2"></i>
+            {$_('components.store-loading.loading')}
+          {/if}
         </div>
       {/if}
     </div>
@@ -261,16 +249,22 @@
     });
 
     let translations = translationsBody.data;
-    const originalTranslations = translations.map((t) => ({ ...t }));
-    const translationInputs = translations.map((t) => ({ ...t }));
     const meta = translationsBody.meta;
 
+    if (filter !== DefaultFilter && meta.filterResult) {
+      translations = meta.filterResult;
+    }
+
+    const originalTranslations = translations.map((t) => ({ ...t }));
+    const translationInputs = translations.map((t) => ({ ...t }));
+
+    let translationsToReturn = translations;
     if (type === PageTypes.PLUGIN) {
-      translations = groupTranslationsByPluginId(translations, filter, meta.filterResult);
-    } else {
-      if (filter !== DefaultFilter) {
-        translations = meta.filterResult;
-      }
+      translationsToReturn = groupTranslationsByPluginId(
+        translations,
+        filter,
+        meta.filterResult,
+      );
     }
 
     return {
@@ -279,7 +273,7 @@
       locales,
       type,
       filter,
-      translations,
+      translations: translationsToReturn,
       translationInputs,
       originalTranslations,
       meta,
