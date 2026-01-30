@@ -41,7 +41,7 @@
 <!-- Dashboard Page -->
 <div class="container vstack gap-3">
   <!-- Welcome Alerts -->
-  {#if true}
+  {#if data.gettingStartedBlocks.welcomeBoard}
     <div
       class="alert alert-secondary alert-dismissible mb-0 animate__animated animate__zoomIn welcome-board border">
       <div class="row">
