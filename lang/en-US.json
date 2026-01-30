@@ -695,7 +695,8 @@
       "ban-reason": "Reason",
       "email-notification": "Email Notification",
       "banned-by": "Banned By",
-      "banned-at": "Banned At"
+      "banned-at": "Banned At",
+      "register-ip": "Register IP"
     }
   },
   "components": {

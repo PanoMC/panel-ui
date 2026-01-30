@@ -142,6 +142,10 @@
               <td>{$_('pages.player-detail.register-date')}</td>
               <td><DateComponent time={data.player.registerDate} /></td>
             </tr>
+            <tr>
+              <td>{$_('pages.player-detail.register-ip')}</td>
+              <td>{data.player.registeredIp}</td>
+            </tr>
           </tbody>
         </table>
       </div>

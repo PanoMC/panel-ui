@@ -695,7 +695,8 @@
       "ban-reason": "Sebep",
       "email-notification": "E-posta Bildirimi",
       "banned-by": "Banlayan",
-      "banned-at": "Tarih"
+      "banned-at": "Tarih",
+      "register-ip": "Kayıt IP"
     }
   },
   "components": {

@@ -694,7 +694,8 @@
       "ban-reason": "Причина",
       "email-notification": "E-Mail уведомление",
       "banned-by": "Забанен кем",
-      "banned-at": "Забанен когда"
+      "banned-at": "Забанен когда",
+      "register-ip": "IP-адрес при регистрации"
     }
   },
   "components": {
