@@ -70,7 +70,8 @@
     "show-more-details": "Show More Details",
     "show-less-details": "Show Less Details",
     "settings": "Settings",
-    "preferences": "Preferences"
+    "preferences": "Preferences",
+    "select-option": "Select"
   },
   "pages": {
     "themes": {
@@ -932,8 +933,13 @@
         "inputs": {
           "name": "Name",
           "code": "Code",
+          "code-helper": "Standard locale code (e.g., en-US, tr-TR).",
+          "code-lookup-text": "Look up locale codes",
+          "code-lookup-url": "https://en.wikipedia.org/wiki/IETF_language_tag#List_of_common_IETF_language_tags",
           "date-fns-code": "Date-fns Code",
-          "derivatives": "Press Enter to insert"
+          "date-fns-code-helper": "Used for formatting dates and times in your language.",
+          "derivatives": "Press Enter to insert",
+          "derivatives-helper": "Alternative codes that should use this language (e.g., en, en-GB)."
         }
       },
       "authorize-player": {

@@ -69,7 +69,8 @@
     "toggle-details": "Детали аддона",
     "show-more-details": "Больше деталей",
     "show-less-details": "Меньше деталей",
-    "preferences": "Предпочтения"
+    "preferences": "Предпочтения",
+    "select-option": "Выбрать"
   },
   "pages": {
     "themes": {
@@ -931,8 +932,13 @@
         "inputs": {
           "name": "Имя",
           "code": "Код",
+          "code-helper": "Стандартный код локали (например: en-US, ru-RU).",
+          "code-lookup-text": "Посмотреть коды языков",
+          "code-lookup-url": "https://en.wikipedia.org/wiki/IETF_language_tag#List_of_common_IETF_language_tags",
           "date-fns-code": "Date-fns Code",
-          "derivatives": "Нажмите Enter для вставки"
+          "date-fns-code-helper": "Используется для форматирования дат и времени на вашем языке.",
+          "derivatives": "Нажмите Enter для вставки",
+          "derivatives-helper": "Альтернативные коды, которые должны использовать этот язык (например: ru, ru-UA)."
         }
       },
       "authorize-player": {

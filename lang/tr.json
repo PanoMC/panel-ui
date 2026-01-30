@@ -70,7 +70,8 @@
     "show-more-details": "Daha Fazla Detay Göster",
     "show-less-details": "Daha Az Detay Göster",
     "settings": "Ayarlar",
-    "preferences": "Tercihler"
+    "preferences": "Tercihler",
+    "select-option": "Seç"
   },
   "pages": {
     "themes": {
@@ -936,8 +937,13 @@
         "inputs": {
           "name": "İsim",
           "code": "Kodu",
+          "code-helper": "Standart dil kodu (örneğin: en-US, tr-TR).",
+          "code-lookup-text": "Dil kodlarına göz at",
+          "code-lookup-url": "https://en.wikipedia.org/wiki/IETF_language_tag#List_of_common_IETF_language_tags",
           "date-fns-code": "Date-fns Kodu",
-          "derivatives": "Eklemek için Enter'a basın"
+          "date-fns-code-helper": "Tarih ve saatlerin dilinize göre formatlanması için kullanılır.",
+          "derivatives": "Eklemek için Enter'a basın",
+          "derivatives-helper": "Bu dili kullanması gereken alternatif kodlar (örneğin: en, en-GB)."
         }
       },
       "authorize-player": {
