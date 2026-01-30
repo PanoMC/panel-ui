@@ -1,14 +1,55 @@
+<style>
+  .welcome-board {
+    background-image:
+      var(--welcome-gradient),
+      url('/assets/img/MCV_SummerDrop_Hero_DotNet_Downloadable_Wallpaper_r1920x1080.png');
+    background-size: cover;
+    background-position: center;
+    border: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  :global([data-bs-theme='light']) .welcome-board {
+    --welcome-gradient: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.95) 20%,
+      rgba(255, 255, 255, 0.5) 100%
+    );
+  }
+
+  :global([data-bs-theme='dark']) .welcome-board,
+  :global([data-bs-theme='copper']) .welcome-board {
+    --welcome-gradient: linear-gradient(
+      90deg,
+      rgba(20, 22, 25, 0.95) 20%,
+      rgba(20, 22, 25, 0.5) 100%
+    );
+  }
+
+  @media (max-width: 991.98px) {
+    .welcome-board {
+      --welcome-gradient: linear-gradient(
+        180deg,
+        rgba(var(--bs-body-bg-rgb), 0.95) 40%,
+        rgba(var(--bs-body-bg-rgb), 0.8) 100%
+      ) !important;
+    }
+  }
+</style>
+
 <!-- Dashboard Page -->
 <div class="container vstack gap-3">
   <!-- Welcome Alerts -->
-  {#if data.gettingStartedBlocks.welcomeBoard}
-    <div class="alert alert-info alert-dismissible mb-0 animate__animated animate__zoomIn">
+  {#if true}
+    <div
+      class="alert alert-secondary alert-dismissible mb-0 animate__animated animate__zoomIn welcome-board border">
       <div class="row">
-        <h5 class="mb-3">
+        <div class="mb-3">
           {@html $_('pages.dashboard.welcome-card.description')}
-        </h5>
+        </div>
         <div class="col-lg-4">
-          <ul class="mb-0">
+          <ul class="mb-0 list-unstyled">
             <li>
               <button
                 type="button"
@@ -25,7 +66,7 @@
           </ul>
         </div>
         <div class="col-lg-4">
-          <ul class="mb-0">
+          <ul class="mb-0 list-unstyled">
             <li>
               <a class="alert-link" href="{base}/posts/create-post">
                 <i class="fa-solid fa-pen me-2"></i>
@@ -54,7 +95,7 @@
           </ul>
         </div>
         <div class="col-lg-4">
-          <ul>
+          <ul class="list-unstyled">
             <li>
               <a class="alert-link" href="{PANO_WEBSITE_URL}/addons" target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
