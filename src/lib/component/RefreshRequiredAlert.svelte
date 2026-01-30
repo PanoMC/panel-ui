@@ -6,9 +6,13 @@
       <i class="fa-solid fa-triangle-exclamation me-2"></i>
       <span>{$_('components.refresh-required-alert')}</span>
     </div>
-    <button type="button" class="btn btn-warning btn-sm ms-3" on:click={() => location.reload()}>
-      <i class="fa-solid fa-sync me-1"></i>
-      {$_('buttons.refresh')}
+    <button
+      type="button"
+      title={$_('buttons.refresh')}
+      aria-label={$_('buttons.refresh')}
+      class="btn btn-warning btn-sm ms-3"
+      onclick={() => location.reload()}>
+      <i class="fa-solid fa-sync"></i>
     </button>
   </div>
 </div>

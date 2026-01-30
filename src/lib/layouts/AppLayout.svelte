@@ -59,8 +59,7 @@
   import CardFilters from '$lib/component/CardFilters.svelte';
   import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
   import CardHeader from '$lib/component/CardHeader.svelte';
-  import CardMenu from '$lib/component/CardMenu.svelte';
-  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+
   import DateComponent from '$lib/component/Date.svelte';
   import NoContent from '$lib/component/NoContent.svelte';
   import Editor from '$lib/component/Editor.svelte';
@@ -202,8 +201,7 @@
         CardFilters,
         CardFiltersItem,
         CardHeader,
-        CardMenu,
-        CardMenuItem,
+
         Date: DateComponent,
         NoContent,
         Editor,
