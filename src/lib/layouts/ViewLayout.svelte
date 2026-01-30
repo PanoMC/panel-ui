@@ -1,16 +1,16 @@
 <div class="container vstack gap-3">
-  <PageActions leftClasses="col-lg-8" middleClasses="d-none">
+  <PageActions>
     <div slot="left">
       {#if slots.left}
         {@render slots.left()}
       {:else}
-        <CardMenu>
+        <PageNav>
           {#each $themeMenuItems as item}
             {#if !item.permission || hasPermission(item.permission)}
-              <CardMenuItem href={item.href}>{$_(item.text)}</CardMenuItem>
+              <PageNavItem href={item.href}>{$_(item.text)}</PageNavItem>
             {/if}
           {/each}
-        </CardMenu>
+        </PageNav>
       {/if}
     </div>
 
@@ -62,8 +62,8 @@
   import { beforeNavigate } from '$app/navigation';
 
   import PageActions from '$lib/component/PageActions.svelte';
-  import CardMenu from '$lib/component/CardMenu.svelte';
-  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import PageNav from '$lib/component/PageNav.svelte';
+  import PageNavItem from '$lib/component/PageNavItem.svelte';
 
   import { themeMenuItems } from '$lib/PluginAPI.js';
 

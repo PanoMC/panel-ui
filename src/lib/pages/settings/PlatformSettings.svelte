@@ -7,8 +7,8 @@
   </div>
 {/if}
 
-<PageActions leftClasses="d-none" middleClasses="d-none" rightClasses="col-lg-12">
-  <div class="hstack gap-2 ms-lg-auto" slot="right">
+<PageActions leftClasses="d-lg-flex d-none" middleClasses="d-none d-lg-flex">
+  <div class="hstack gap-2" slot="right">
     <button
       class="btn btn-link"
       title={$_('buttons.stop')}

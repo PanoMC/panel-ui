@@ -43,7 +43,7 @@
         aria-label={$_('buttons.close')}></button>
     </div>
   {/if}
-  <PageActions>
+  <PageActions leftClasses="d-lg-flex d-none">
     <div slot="middle" class="hstack gap-2">
       <SearchInput
         showSpinner={false}

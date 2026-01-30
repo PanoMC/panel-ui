@@ -11,22 +11,20 @@
     </PageActions>
   {:else}
     <!-- Action Menu -->
-    <PageActions
-      leftClasses="d-lg-flex d-none"
-      rightClasses={getListOfChecked($checkedList).length > 0 ? true : null}>
+    <PageActions rightClasses={checkedItems.length > 0 ? '' : null}>
       <!-- Submenu -->
-      <CardMenu slot="middle">
+      <PageNav slot="left">
         {#if !data.categoryUrl}
-          <CardMenuItem href="/tickets">{$_('pages.ticket-categories.tickets')}</CardMenuItem>
-          <CardMenuItem href="/tickets/categories">{$_('buttons.categories')}</CardMenuItem>
+          <PageNavItem href="/tickets">{$_('pages.ticket-categories.tickets')}</PageNavItem>
+          <PageNavItem href="/tickets/categories">{$_('buttons.categories')}</PageNavItem>
         {/if}
-      </CardMenu>
+      </PageNav>
+
       <div slot="right">
-        {#if getListOfChecked($checkedList).length > 0}
+        {#if checkedItems.length > 0}
           <div
             class:d-none={firstLoad}
-            class="hstack gap-2 animate__animated animate__faster {getListOfChecked($checkedList)
-              .length > 0
+            class="hstack gap-2 animate__animated animate__faster {checkedItems.length > 0
               ? 'animate__slideInUp'
               : 'animate__slideOutDown'}">
             <button
@@ -67,10 +65,10 @@
                   : '',
           },
         }) +
-          (getListOfChecked($checkedList).length > 0
+          (checkedItems.length > 0
             ? ', ' +
               $_('pages.tickets.amount-selected', {
-                values: { amount: getListOfChecked($checkedList).length },
+                values: { amount: checkedItems.length },
               })
             : '')}
       </div>
@@ -253,8 +251,8 @@
   import CardHeader from '$lib/component/CardHeader.svelte';
   import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
   import CardFilters from '$lib/component/CardFilters.svelte';
-  import CardMenu from '$lib/component/CardMenu.svelte';
-  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import PageNav from '$lib/component/PageNav.svelte';
+  import PageNavItem from '$lib/component/PageNavItem.svelte';
   import SearchInput from '$lib/component/SearchInput.svelte';
 
   export let data;
@@ -287,6 +285,9 @@
 
   let firstLoad = true;
 
+  $: checkedItems = Object.keys($checkedList).filter((key) => $checkedList[key]);
+  $: if (checkedItems.length > 0) firstLoad = false;
+
   let search = data.search || '';
   let isSearching = false;
 
@@ -317,11 +318,7 @@
   }
 
   function getListOfChecked(list) {
-    const result = Object.keys(list).filter((key) => list[key]);
-
-    if (result.length > 0) firstLoad = false;
-
-    return result;
+    return Object.keys(list).filter((key) => list[key]);
   }
 
   function onSelectAllClick() {

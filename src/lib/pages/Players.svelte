@@ -1,14 +1,16 @@
 <!-- All Players Page -->
 <div class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions leftClasses="d-lg-flex d-none">
+  <PageActions>
     <!-- Submenu -->
-    <CardMenu slot="middle">
-      <CardMenuItem href="/players" active={data.pageType === PageTypes.ALL || data.pageType === PageTypes.HAS_PERM}>
-        {$_('buttons.players')}</CardMenuItem>
-      <CardMenuItem href="/players?pageType=BANNED" active={data.pageType === PageTypes.BANNED}>
-        {$_('buttons.bans')}</CardMenuItem>
-    </CardMenu>
+    <PageNav slot="middle">
+      <PageNavItem
+        href="/players"
+        active={data.pageType === PageTypes.ALL || data.pageType === PageTypes.HAS_PERM}>
+        {$_('buttons.players')}</PageNavItem>
+      <PageNavItem href="/players?pageType=BANNED" active={data.pageType === PageTypes.BANNED}>
+        {$_('buttons.bans')}</PageNavItem>
+    </PageNav>
     <div slot="right">
       <a href="{base}/settings/migration" class="btn btn-secondary">
         <i class="fa fa-file-import"></i>
@@ -126,7 +128,7 @@
             {/each}
           </tbody>
         </table>
-        </div>
+      </div>
       <div class="card-footer">
         <!-- Pagination -->
         <Pagination
@@ -234,8 +236,8 @@
   import CardHeader from '$lib/component/CardHeader.svelte';
   import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
   import CardFilters from '$lib/component/CardFilters.svelte';
-  import CardMenu from '$lib/component/CardMenu.svelte';
-  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import PageNav from '$lib/component/PageNav.svelte';
+  import PageNavItem from '$lib/component/PageNavItem.svelte';
   import SearchInput from '$lib/component/SearchInput.svelte';
   import { page } from '$app/stores';
 

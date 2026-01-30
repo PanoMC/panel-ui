@@ -4,11 +4,13 @@
     class="nav-link {disabled && 'disabled'} {classes}"
     aria-current="page"
     aria-disabled={disabled}
-    class:active={active || matching($page.url.pathname, base + href, startsWith)}
+    class:active={active !== undefined
+      ? active
+      : matching($page.url.pathname, base + href, startsWith)}
     {...aProps}
     {...buttonProps}
     {onclick}>
-    <slot />
+    {@render children()}
   </svelte:element>
 </li>
 
@@ -16,7 +18,8 @@
   import { page } from '$app/stores';
   import { base } from '$app/paths';
 
-  let { href, startsWith, disabled, active, button, onclick, classes, liClazz } = $props();
+  let { href, startsWith, disabled, active, button, onclick, classes, liClazz, children } =
+    $props();
 
   const aProps = $derived(!button && { href: base + href });
   const buttonProps = $derived(button && { type: 'button' });

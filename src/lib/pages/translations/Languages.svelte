@@ -1,13 +1,13 @@
 <!-- Categories Page -->
 <article class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions leftClasses="d-lg-flex d-none">
+  <PageActions middleClasses={null}>
     <!-- Submenu -->
-    <CardMenu slot="middle">
-      <CardMenuItem href="/translations">{$_('pages.translations.title')}</CardMenuItem>
-      <CardMenuItem href="/translations/languages">
-        {$_('buttons.languages')}</CardMenuItem>
-    </CardMenu>
+    <PageNav slot="left">
+      <PageNavItem href="/translations">{$_('pages.translations.title')}</PageNavItem>
+      <PageNavItem href="/translations/languages">
+        {$_('buttons.languages')}</PageNavItem>
+    </PageNav>
 
     <button class="btn btn-secondary" type="button" slot="right" on:click={onCreateLanguageClick}>
       <i class="fas fa-plus"></i>
@@ -131,8 +131,8 @@
   import PageActions from '$lib/component/PageActions.svelte';
   import CardHeader from '$lib/component/CardHeader.svelte';
   import LocaleRow from '$lib/component/rows/LocaleRow.svelte';
-  import CardMenu from '$lib/component/CardMenu.svelte';
-  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import PageNav from '$lib/component/PageNav.svelte';
+  import PageNavItem from '$lib/component/PageNavItem.svelte';
 
   export let data;
 

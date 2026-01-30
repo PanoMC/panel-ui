@@ -90,7 +90,9 @@
 
               <div
                 class="card-img-overlay d-flex flex-column justify-content-end p-3 overlay-gradient">
-                <h5 class="card-title mb-1 text-truncate d-flex align-items-center gap-2" title={theme.title}>
+                <h5
+                  class="card-title mb-1 text-truncate d-flex align-items-center gap-2"
+                  title={theme.title}>
                   <span class="text-truncate">{theme.title}</span>
                   <VerifiedStatus status={theme.verifyStatus} />
                 </h5>
@@ -195,9 +197,7 @@
   import tooltip from '$lib/tooltip.util';
   import { show as showToast } from '$lib/component/ToastContainer.svelte';
 
-  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
   import PageActions from '$lib/component/PageActions.svelte';
-  import CardMenu from '$lib/component/CardMenu.svelte';
   import NoContent from '$lib/component/NoContent.svelte';
   import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
   import CardHeader from '$lib/component/CardHeader.svelte';

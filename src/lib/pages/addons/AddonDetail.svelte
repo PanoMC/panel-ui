@@ -63,7 +63,7 @@
     <RefreshRequiredAlert />
   {/if}
   <!-- Action Menu -->
-  <PageActions middleClasses="d-lg-flex d-none">
+  <PageActions>
     <a slot="left" href="{base}/addons" class="btn btn-link" role="button">
       <i class="fas fa-arrow-left"></i>
       <span class="d-lg-inline d-none ms-2">{$_('buttons.addons')}</span>
@@ -76,12 +76,12 @@
           aria-label={$_('buttons.show-in-store')}
           href={`${PANO_WEBSITE_URL}/addons/${addon.id}`}
           target="_blank"
-          class="btn btn-link p-0">
+          class="btn btn-link">
           <i class="fas fa-store"></i>
         </a>
       {/if}
       <button
-        class="btn btn-link p-0"
+        class="btn btn-link"
         type="button"
         data-bs-toggle="modal"
         data-bs-target="#addonInfoModal"
@@ -90,7 +90,7 @@
         <i class="fas fa-circle-info"></i>
       </button>
       <button
-        class="btn btn-link p-0"
+        class="btn btn-link"
         type="button"
         on:click={onRemoveClick}
         title={$_('buttons.remove')}
@@ -98,9 +98,9 @@
         class:disabled={removing}>
         <i class="fas fa-trash"></i>
       </button>
-      <div class="form-check form-switch m-0 ps-0">
+      <div class="form-check form-switch">
         <input
-          class="form-check-input ms-0"
+          class="form-check-input"
           type="checkbox"
           role="switch"
           checked={addon.status === 'STARTED'}
@@ -128,7 +128,9 @@
         </div>
 
         <div class="col">
-          <h5 class="card-title d-inline-flex align-items-center gap-2 mb-2" class:text-danger={addon.status === 'FAILED'}>
+          <h5
+            class="card-title d-inline-flex align-items-center gap-2 mb-2"
+            class:text-danger={addon.status === 'FAILED'}>
             {addon.name}
             <VerifiedStatus status={addon.verifyStatus} />
             {#if addon.status === 'FAILED'}

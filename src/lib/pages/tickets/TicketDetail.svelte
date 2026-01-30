@@ -6,7 +6,7 @@
 
 <div class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions middleClasses="d-lg-flex d-none">
+  <PageActions>
     <a
       class="btn btn-link"
       title={$_('pages.ticket-detail.tickets')}

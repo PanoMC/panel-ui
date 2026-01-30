@@ -1,43 +1,27 @@
 <!-- Server Settings Contents -->
 <div class="container">
-  <div class="row justify-content-around">
-    <div class="col-auto">
-      <!-- Server Settings Nav -->
-      <div class="nav nav-pills d-flex flex-row justify-content-center mb-3 w-100">
-        <a
-          class="nav-item nav-link"
-          href="{base}/server/settings"
-          class:active={matching($page.url.pathname, base + '/server/settings')}>
+  <PageActions leftClasses="d-none" rightClasses="d-none">
+    <div slot="middle">
+      <PageNav>
+        <PageNavItem href="/server/settings">
           {$_('components.server-settings-layout.server')}
-        </a>
-        <a
-          class="nav-item nav-link"
-          href="{base}/server/settings/game-integration"
-          class:active={matching(
-            $page.url.pathname,
-            base + '/server/settings/game-integration',
-            true,
-          )}>
+        </PageNavItem>
+        <PageNavItem href="/server/settings/game-integration" startsWith>
           {$_('components.server-settings-layout.game-integration')}
-        </a>
-      </div>
+        </PageNavItem>
+      </PageNav>
     </div>
-  </div>
+  </PageActions>
 
-  <slot />
+  <div class="mt-3">
+    <slot />
+  </div>
 </div>
 
 <script>
   import { _ } from 'svelte-i18n';
 
-  import { base } from '$app/paths';
-  import { page } from '$app/stores';
-
-  function matching(path, pathName, startsWith = false) {
-    return (
-      path.toUpperCase() === pathName.toUpperCase() ||
-      path.toUpperCase() === (pathName + '/').toUpperCase() ||
-      (startsWith && path.startsWith(pathName))
-    );
-  }
+  import PageActions from '$lib/component/PageActions.svelte';
+  import PageNav from '$lib/component/PageNav.svelte';
+  import PageNavItem from '$lib/component/PageNavItem.svelte';
 </script>

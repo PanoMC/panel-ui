@@ -1,18 +1,16 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions leftClasses="d-lg-flex d-none">
+  <PageActions middleClasses={null}>
     <!-- Submenu -->
-    <CardMenu slot="middle">
-      <CardMenuItem href="/translations">{$_('pages.translations.title')}</CardMenuItem>
-      <CardMenuItem href="/translations/languages">
-        {$_('buttons.languages')}</CardMenuItem>
-    </CardMenu>
+    <PageNav slot="left">
+      <PageNavItem href="/translations">{$_('pages.translations.title')}</PageNavItem>
+      <PageNavItem href="/translations/languages">
+        {$_('buttons.languages')}</PageNavItem>
+    </PageNav>
 
     <div slot="right" class="hstack gap-2">
       {#if refreshing || saving}
-        <div>
-          <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
-        </div>
+        <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
       {/if}
       <div class="input-group">
         <select
@@ -260,11 +258,7 @@
 
     let translationsToReturn = translations;
     if (type === PageTypes.PLUGIN) {
-      translationsToReturn = groupTranslationsByPluginId(
-        translations,
-        filter,
-        meta.filterResult,
-      );
+      translationsToReturn = groupTranslationsByPluginId(translations, filter, meta.filterResult);
     }
 
     return {
@@ -295,8 +289,8 @@
   import CardFilters from '$lib/component/CardFilters.svelte';
   import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
   import CardHeader from '$lib/component/CardHeader.svelte';
-  import CardMenu from '$lib/component/CardMenu.svelte';
-  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import PageNav from '$lib/component/PageNav.svelte';
+  import PageNavItem from '$lib/component/PageNavItem.svelte';
   import PageActions from '$lib/component/PageActions.svelte';
   import TranslationRow from '$lib/component/rows/TranslationRow.svelte';
   import TranslationSkeleton from '$lib/component/rows/TranslationSkeleton.svelte';

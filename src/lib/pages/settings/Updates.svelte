@@ -246,7 +246,7 @@
                       alt={update.name || update.id} />
                   {:else}
                     <div
-                      class="rounded bg-black bg-opacity-10 text-gray overflow-hidden position-relative"
+                      class="rounded text-body overflow-hidden position-relative"
                       style="width: {update.type === 'THEME' ? 114 : 64}px; height: 64px;">
                       <i
                         class="fas fa-{update.type === 'THEME'
@@ -383,7 +383,6 @@
                   </p>
                 {/if}
               </div>
-
             </div>
           </li>
         {/each}

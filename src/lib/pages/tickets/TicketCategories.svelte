@@ -1,12 +1,12 @@
 <!-- Ticket Categories Page -->
 <article class="container vstack gap-3">
   <!-- Action Menu -->
-  <PageActions leftClasses="d-lg-flex d-none">
+  <PageActions>
     <!-- Submenu -->
-    <CardMenu slot="middle">
-      <CardMenuItem href="/tickets">{$_('pages.ticket-categories.tickets')}</CardMenuItem>
-      <CardMenuItem href="/tickets/categories">{$_('buttons.categories')}</CardMenuItem>
-    </CardMenu>
+    <PageNav slot="left">
+      <PageNavItem href="/tickets">{$_('pages.ticket-categories.tickets')}</PageNavItem>
+      <PageNavItem href="/tickets/categories">{$_('buttons.categories')}</PageNavItem>
+    </PageNav>
 
     <button class="btn btn-secondary" type="button" on:click={onCreateCategoryClick} slot="right">
       <i class="fas fa-plus"></i>
@@ -16,7 +16,6 @@
   </PageActions>
 
   <!-- Ticket Categories -->
-
   <div class="card">
     <CardHeader>
       <div slot="left">
@@ -61,7 +60,7 @@
             {/each}
           </tbody>
         </table>
-        </div>
+      </div>
       <div class="card-footer">
         <!-- Pagination -->
         <Pagination
@@ -147,8 +146,8 @@
   import TicketCategoryRow from '$lib/component/rows/TicketCategoryRow.svelte';
   import PageActions from '$lib/component/PageActions.svelte';
   import CardHeader from '$lib/component/CardHeader.svelte';
-  import CardMenu from '$lib/component/CardMenu.svelte';
-  import CardMenuItem from '$lib/component/CardMenuItem.svelte';
+  import PageNav from '$lib/component/PageNav.svelte';
+  import PageNavItem from '$lib/component/PageNavItem.svelte';
 
   import SearchInput from '$lib/component/SearchInput.svelte';
 
