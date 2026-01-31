@@ -373,6 +373,8 @@
         "user": "User",
         "online-account": "Online Account",
         "online-account-description": "Connect your online Pano account to access plugins, themes, and updates.",
+        "connect-online-account-alert": "Connect your online Pano account to access plugins, themes, and updates.",
+        "connected-account-description": "Your online Pano account is successfully connected. You can now access plugins, themes, and updates.",
         "inputs": {
           "check-auto-updates": {
             "never": "Never",

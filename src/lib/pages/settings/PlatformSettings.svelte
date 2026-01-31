@@ -1,3 +1,39 @@
+<style>
+  .connect-account-board {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  :global([data-bs-theme='light']) .connect-account-board {
+    --welcome-gradient: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.95) 20%,
+      rgba(255, 255, 255, 0.5) 100%
+    );
+  }
+
+  :global([data-bs-theme='dark']) .connect-account-board,
+  :global([data-bs-theme='copper']) .connect-account-board {
+    --welcome-gradient: linear-gradient(
+      90deg,
+      rgba(20, 22, 25, 0.95) 20%,
+      rgba(20, 22, 25, 0.5) 100%
+    );
+  }
+
+  @media (max-width: 991.98px) {
+    .connect-account-board {
+      --welcome-gradient: linear-gradient(
+        180deg,
+        rgba(var(--bs-body-bg-rgb), 0.95) 40%,
+        rgba(var(--bs-body-bg-rgb), 0.8) 100%
+      ) !important;
+    }
+  }
+</style>
+
 {#if !data.panoAccount && data.platformConnectFailed}
   <!-- Error Alert -->
   <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
@@ -23,45 +59,28 @@
   </div>
 </PageActions>
 
-<!-- Platform Settings Sub Page -->
-<div class="card">
-  <div class="card-header">
-    {$_('pages.settings.platform.account')}
-  </div>
-  <div class="card-body animate__animated animate__fadeIn">
-    {#if data.panoAccount}
-      <div class="row mb-3">
-        <label class="col-md-6" for="platformId">{$_('pages.settings.platform.platform-id')}</label>
-        <span class="col user-select-all font-monospace" id="platformId"
-          >{data.panoAccount.platformId}</span>
+{#if showAlert}
+  <div
+    class="alert alert-secondary animate__animated animate__zoomIn connect-account-board border mb-0"
+    role="alert"
+    style="background-image: var(--welcome-gradient), url('{base}/assets/img/connect-pano-bg.png');">
+    <div class="row align-items-center">
+      <div class="col-lg-9">
+        <h5 class="alert-heading mb-2">
+          {data.panoAccount
+            ? '@' + data.panoAccount.username
+            : $_('pages.settings.platform.online-account')}
+        </h5>
+        <p class="mb-0 text-body">
+          {data.panoAccount
+            ? $_('pages.settings.platform.connected-account-description')
+            : $_('pages.settings.platform.connect-online-account-alert')}
+        </p>
       </div>
-
-      <div class="row mb-3">
-        <label class="col-md-6" for="panoAccountUsername"
-          >{$_('pages.settings.platform.user')}</label>
-        <div class="col" id="panoAccountUsername">
-          <a
-            href={PANO_WEBSITE_URL + '/users/' + data.panoAccount.username}
-            title={$_('buttons.view')}
-            target="_blank">
-            @{data.panoAccount.username}
-            <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
-          </a>
-        </div>
-      </div>
-    {/if}
-
-    <div class="row">
-      <label class="col-md-6" for="connectPanoAccount"
-        >{$_('pages.settings.platform.online-account')}
-        <small class="d-block">
-          {$_('pages.settings.platform.online-account-description')}
-        </small>
-      </label>
-      <div class="col d-flex align-items-center" id="connectPanoAccount">
+      <div class="col-lg-3 text-lg-end mt-3 mt-lg-0">
         {#if data.panoAccount}
-          <div class="hstack gap-2">
-            <span class="badge text-bg-primary">{maskEmail(data.panoAccount.email)}</span>
+          <div class="hstack gap-2 justify-content-lg-end">
+            <span class="badge text-bg-gray">{maskEmail(data.panoAccount.email)}</span>
             <button
               type="button"
               class="btn-close"
@@ -73,7 +92,7 @@
         {:else}
           <button
             type="button"
-            class="btn btn-sm btn-secondary lh-base"
+            class="btn btn-secondary lh-base btn-lg-lg"
             on:click={onConnectClick}
             disabled={connecting}>
             <img
@@ -93,7 +112,7 @@
       </div>
     </div>
   </div>
-</div>
+{/if}
 
 <div class="card">
   <div class="card-header">
@@ -404,7 +423,7 @@
 </script>
 
 <script>
-  import { getContext } from 'svelte';
+  import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
 
   import { page } from '$app/stores';
@@ -439,6 +458,18 @@
   pageTitle.set('pages.settings.platform.title');
 
   export let data;
+
+  let showAlert = false;
+
+  onMount(() => {
+    if (browser) {
+      if (data.panoAccount) {
+        showAlert = true;
+      } else if (!localStorage.getItem('connect_online_account_alert_seen')) {
+        showAlert = true;
+      }
+    }
+  });
 
   // Backwards-compatible default (stable) in case older servers don't send this field.
   data.releaseChannel = data.releaseChannel || 'RELEASE';
@@ -757,5 +788,10 @@
 
   function onRestartPanoClick() {
     showConfirmRestartPanoModal();
+  }
+
+  function onCloseAlertClick() {
+    showAlert = false;
+    localStorage.setItem('connect_online_account_alert_seen', 'true');
   }
 </script>

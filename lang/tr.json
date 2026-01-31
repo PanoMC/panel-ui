@@ -372,7 +372,9 @@
         "platform-id": "Platform ID",
         "user": "Kullanıcı",
         "online-account": "Çevrimiçi Hesap",
-        "online-account-description": "Eklenti, tema ve güncellemelere erişebilmek için çevrimiçi Pano hesabınızı bağlayın.",
+        "online-account-description": "Eklentilere, temalara ve güncellemelere erişebilmek için çevrimiçi Pano hesabınızı bağlayın.",
+        "connect-online-account-alert": "Eklentilere, temalara ve güncellemelere erişebilmek için çevrimiçi Pano hesabınızı bağlayın.",
+        "connected-account-description": "Çevrimiçi Pano hesabınız başarıyla bağlandı. Artık eklentilere, temalara ve güncellemelere erişebilirsiniz.",
         "inputs": {
           "check-auto-updates": {
             "never": "Asla",
