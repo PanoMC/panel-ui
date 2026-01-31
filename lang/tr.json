@@ -79,7 +79,8 @@
       "title": "Temalar",
       "card-title": "{amount} Yüklü Tema",
       "by": "<strong>{author}</strong> tarafından",
-      "active": "Aktif"
+      "active": "Aktif",
+      "update-available": "Güncelleme Mevcut"
     },
     "theme-settings": {
       "title": "Tema Ayarları",
@@ -111,7 +112,8 @@
         "active": "{amount} Aktif Eklenti",
         "inactive": "{amount} Devre Dışı Eklenti",
         "installed": "{amount} Yüklü Eklenti"
-      }
+      },
+      "update-available": "Güncelleme Mevcut"
     },
     "addon-detail": {
       "title": "Eklenti Detayı",

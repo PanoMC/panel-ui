@@ -11,7 +11,7 @@
       aria-label={$_('buttons.remove')}
       class="btn btn-link"
       type="button"
-      on:click={onRemoveClick}
+      onclick={onRemoveClick}
       title={$_('buttons.remove')}
       class:disabled={removing}>
       <i class="fas fa-trash"></i>
@@ -27,29 +27,37 @@
       <i class="fas fa-store"></i>
     </a>
   {/if}
+  <button
+    type="button"
+    class="btn btn-link position-relative"
+    title={$_('pages.themes.update-available')}
+    aria-label={$_('pages.themes.update-available')}
+    onclick={() => goto(`${base}/settings/updates`)}>
+    <i class="fas fa-sync"></i>
+    <span
+      class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-secondary p-1">
+      <span class="visually-hidden">{$_('pages.themes.update-available')}</span>
+    </span>
+  </button>
   {#if theme.running}
     <button
       class="btn btn-danger"
       type="button"
       aria-label={$_('buttons.stop')}
-      on:click={onStopClick}
+      onclick={onStopClick}
       class:disabled={stoping}>
       <i class="fas fa-stop"></i>
       <span class="d-lg-inline d-none ms-2">{$_('buttons.stop')}</span>
     </button>
   {/if}
   {#if !theme.running && theme.active}
-    <button
-      class="btn btn-secondary"
-      type="button"
-      on:click={onStartClick}
-      class:disabled={stoping}>
+    <button class="btn btn-secondary" type="button" onclick={onStartClick} class:disabled={stoping}>
       <i class="fas fa-play"></i>
       <span class="d-lg-inline d-none ms-2">{$_('buttons.start')}</span>
     </button>
   {/if}
   {#if !theme.active}
-    <button class="btn btn-secondary" on:click={activate} disabled={activating}>
+    <button class="btn btn-secondary" onclick={activate} disabled={activating}>
       {$_('buttons.activate')}{#if activating}<i class="fas fa-spinner fa-spin ms-2"></i>{/if}
     </button>
   {/if}
@@ -222,6 +230,7 @@
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   import { goto, invalidate } from '$app/navigation';
   import { base } from '$app/paths';

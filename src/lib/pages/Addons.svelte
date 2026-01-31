@@ -68,7 +68,7 @@
                   <button
                     type="button"
                     aria-label={$_('buttons.error-log')}
-                    class="btn btn-link link-danger p-0"
+                    class="btn btn-link link-danger"
                     data-bs-toggle="popover"
                     data-bs-trigger="focus"
                     data-bs-title={$_('buttons.error-log')}
@@ -80,10 +80,21 @@
                 {#if plugin.loading}
                   <i class="fa-solid fa-spinner fa-spin me-2"></i>
                 {:else}
+                  <button
+                    type="button"
+                    class="btn btn-link"
+                    title={$_('pages.addons.update-available')}
+                    aria-label={$_('pages.addons.update-available')}
+                    on:click={(e) => {
+                      e.preventDefault();
+                      goto(`${base}/settings/updates`);
+                    }}>
+                    <i class="fas fa-sync"></i>
+                  </button>
                   <AddonSettingsButton {plugin} />
-                  <div class="form-check form-switch m-0 ps-0">
+                  <div class="form-check form-switch">
                     <input
-                      class="form-check-input ms-0"
+                      class="form-check-input"
                       type="checkbox"
                       role="switch"
                       checked={plugin.status === 'STARTED'}
@@ -179,6 +190,7 @@
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   import { base } from '$app/paths';
   import { browser } from '$app/environment';

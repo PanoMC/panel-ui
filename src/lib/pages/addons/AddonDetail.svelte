@@ -81,6 +81,18 @@
         </a>
       {/if}
       <button
+        type="button"
+        class="btn btn-link position-relative"
+        title={$_('pages.addons.update-available')}
+        aria-label={$_('pages.addons.update-available')}
+        on:click={() => goto(`${base}/settings/updates`)}>
+        <i class="fas fa-sync"></i>
+        <span
+          class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-secondary p-1">
+          <span class="visually-hidden">{$_('pages.addons.update-available')}</span>
+        </span>
+      </button>
+      <button
         class="btn btn-link"
         type="button"
         data-bs-toggle="modal"
@@ -227,6 +239,7 @@
   import { getContext, onDestroy } from 'svelte';
   import { get } from 'svelte/store';
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   import { goto, invalidate } from '$app/navigation';
   import { base } from '$app/paths';

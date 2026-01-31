@@ -43,13 +43,10 @@
     aria-label={$_('buttons.reload')}
     class="btn btn-link"
     class:active={reloading}
-    on:click={reloadThemes}>
+    onclick={reloadThemes}>
     <i class="fas fa-sync" class:fa-spin={reloading}></i>
   </button>
-  <button
-    type="button"
-    class="btn btn-secondary"
-    on:click={() => showInstallResourceModal('THEME')}>
+  <button type="button" class="btn btn-secondary" onclick={() => showInstallResourceModal('THEME')}>
     <i class="fas fa-plus"></i>
     <span class="d-lg-inline d-none ms-2">{$_('buttons.install-theme')}</span>
   </button>
@@ -67,7 +64,7 @@
         initialValue={search}
         searching={isSearching}
         debounceMs={500}
-        on:change={onSearchInput} />
+        onchange={onSearchInput} />
     </div>
   </CardHeader>
   <div class="card-body">
@@ -112,11 +109,27 @@
                       <i class="fa-solid fa-code fa-fw me-1"></i>{theme.version}
                     </small>
                   </div>
-                  {#if theme.active}
-                    <span class="badge text-bg-success">{$_('pages.themes.active')}</span>
-                  {/if}
+                  <div class="hstack gap-2">
+                    {#if theme.active}
+                      <span class="badge text-bg-success">{$_('pages.themes.active')}</span>
+                    {/if}
+                  </div>
                 </div>
               </div>
+
+              <!-- Fake Update Indicator -->
+              <button
+                type="button"
+                class="position-absolute top-0 end-0 m-3 btn btn-sm btn-primary rounded-circle shadow-sm"
+                title={$_('pages.themes.update-available')}
+                aria-label={$_('pages.themes.update-available')}
+                onclick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  goto(`${base}/settings/updates`);
+                }}>
+                <i class="fas fa-sync text-white"></i>
+              </button>
             </div>
           </a>
         </div>

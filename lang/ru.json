@@ -77,7 +77,8 @@
       "title": "Темы",
       "card-title": "{amount} Установленных тем",
       "by": "от <strong>{author}</strong>",
-      "active": "Активно"
+      "active": "Активно",
+      "update-available": "Доступно обновление"
     },
     "theme-settings": {
       "title": "Настройки темы",
@@ -109,7 +110,8 @@
         "active": "{amount} Активных аддонов",
         "inactive": "{amount} Неактивных аддонов",
         "installed": "{amount} Установленных аддонов"
-      }
+      },
+      "update-available": "Доступно обновление"
     },
     "addon-detail": {
       "title": "Детали аддона",

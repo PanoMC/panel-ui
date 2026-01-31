@@ -79,7 +79,8 @@
       "title": "Themes",
       "card-title": "{amount} Installed Theme",
       "by": "by <strong>{author}</strong>",
-      "active": "Active"
+      "active": "Active",
+      "update-available": "Update Available"
     },
     "theme-settings": {
       "title": "Theme Settings",
@@ -111,7 +112,8 @@
         "active": "{amount} Active Addon",
         "inactive": "{amount} Inactive Addon",
         "installed": "{amount} Installed Addon"
-      }
+      },
+      "update-available": "Update Available"
     },
     "addon-detail": {
       "title": "Addon Detail",
