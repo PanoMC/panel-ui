@@ -19,7 +19,7 @@
     <span class="small" use:tooltip={['Last Check', { placement: 'bottom' }]}>
       <i class="fa-regular fa-clock me-2"></i>
       {#if data.lastCheckedAt}
-        <Date time={data.lastCheckedAt.value} relativeFormat={true} tooltip={false} />
+        <DateTime time={data.lastCheckedAt.value} relativeFormat={true} tooltip={false} />
       {:else}
         {$_('pages.settings.updates.never')}
       {/if}
@@ -71,10 +71,10 @@
                         class="fa-regular fa-circle-check text-success"
                         title={$_('pages.settings.updates.verified')}></i>
 
-                      <span class="badge text-bg-primary">
+                      <span class="badge text-bg-secondary">
                         {data.platformUpdate.channel.capitalize()}
                       </span>
-                      <span class="badge text-bg-primary"
+                      <span class="badge text-bg-gray"
                         >{data.platformUpdate.oldVersion}
                         <i class="fas fa-arrow-right fa-xs"></i>
                         {data.platformUpdate.version}</span>
@@ -87,7 +87,7 @@
                       </div>
                       <div>
                         <i class="fas fa-calendar me-1"></i>
-                        <Date time={data.platformUpdate.releaseDate} />
+                        <DateTime time={data.platformUpdate.releaseDate} />
                       </div>
                     </div>
                   </div>
@@ -273,13 +273,26 @@
                         </h5>
                         <VerifiedStatus status={getVerifiedStatus(update.verified)} />
                       </a>
-                      <span class="badge text-bg-primary">
+                      <span class="badge text-bg-gray">
                         {update.oldVersion}
                         <i class="fas fa-arrow-right fa-xs"></i>
                         {update.version}
                       </span>
                     </div>
-                    <div class="small font-monospace">{update.id}</div>
+                    <div class="small font-monospace d-flex align-items-center gap-2">
+                      {update.id}
+                      {#if update.incompatible}
+                        <span class="text-danger small hstack gap-1">
+                          <i class="fas fa-triangle-exclamation"></i>
+                          {$_('pages.settings.updates.incompatible-version', {
+                            default: 'Pano version incompatible',
+                          })}
+                          {#if update.requiredPanoVersion}
+                            ({update.requiredPanoVersion}+)
+                          {/if}
+                        </span>
+                      {/if}
+                    </div>
                     <div class="hstack gap-3 small flex-wrap">
                       <span>
                         {$_('pages.settings.updates.by')}
@@ -292,7 +305,8 @@
                         <i class="fas fa-database me-2"></i>{formatBytes(update.size)}
                       </span>
                       <span>
-                        <i class="fa-regular fa-calendar me-2"></i><Date time={update.createdAt} />
+                        <i class="fa-regular fa-calendar me-2"></i><DateTime
+                          time={update.createdAt} />
                       </span>
                     </div>
                   </div>
@@ -331,7 +345,8 @@
                       class:disabled={loading ||
                         $platformUpdating ||
                         inProgressResource ||
-                        updatingAll}
+                        updatingAll ||
+                        update.incompatible}
                       on:click={() => onUpdateResourceClick(update)}>
                       <i class="fas fa-download"></i>
                     </button>
@@ -436,7 +451,7 @@
 
   import PageActions from '$lib/component/PageActions.svelte';
   import NoContent from '$lib/component/NoContent.svelte';
-  import Date from '$lib/component/Date.svelte';
+  import DateTime from '$lib/component/Date.svelte';
   import MarkdownRenderer from '$lib/component/MarkdownRenderer.svelte';
   import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
   import CardHeader from '$lib/component/CardHeader.svelte';
@@ -473,6 +488,63 @@
   let platformUpdateFinished;
   let currentPlatformProgress = 0;
   let currentResourceProgress = 0;
+
+  let demoMode = false;
+  const demoUpdates = [
+    {
+      id: 'pano-plugin-demo',
+      type: 'PLUGIN',
+      resourceTitle: 'Demo Plugin',
+      verified: true,
+      oldVersion: '1.0.0',
+      version: '2.0.0',
+      developer: 'PanoMC',
+      size: 1024 * 1024 * 5,
+      createdAt: new Date().toISOString(),
+      changelog: '### Yenilikler\n- Bu bir demo güncellemedir.\n- Arayüz geliştirmeleri yapıldı.',
+      hash: 'demo-hash-123',
+      incompatible: true,
+      requiredPanoVersion: '1.1.0',
+    },
+    {
+      id: 'pano-theme-demo',
+      type: 'THEME',
+      resourceTitle: 'Demo Theme',
+      verified: false,
+      oldVersion: '1.2.3',
+      version: '1.3.0',
+      developer: 'Selim',
+      size: 1024 * 1024 * 2.5,
+      createdAt: new Date().toISOString(),
+      changelog: '### Değişiklikler\n- Tema renkleri güncellendi.',
+      hash: 'demo-hash-456',
+      incompatible: true,
+      requiredPanoVersion: '1.2.0',
+    },
+  ];
+
+  $: if (demoMode && data) {
+    if (data.resourceUpdates && !data.resourceUpdates.find((u) => u.id.endsWith('-demo'))) {
+      data.resourceUpdates = [...demoUpdates, ...data.resourceUpdates];
+    }
+
+    if (!data.platformUpdate) {
+      data.platformUpdate = {
+        channel: 'stable',
+        oldVersion: '1.0.0',
+        version: '1.1.0-demo',
+        size: 1024 * 1024 * 50,
+        releaseDate: new Date().toISOString(),
+        changelog: '### Yenilikler\n- Demo platform güncellemesi.',
+        hash: 'demo-platform-hash',
+        state: 'demo',
+      };
+    }
+
+    if (!data.panoAccount) {
+      data.panoAccount = { username: 'demo' };
+    }
+  }
 
   const platformUpdating = getContext('platformUpdating');
   const platformRestarting = getContext('platformRestarting');
