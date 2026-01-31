@@ -398,7 +398,8 @@
           "port": "Port",
           "auth-methods": "Auth Methods",
           "description": "Pano requires an email provider to be able to send emails. Please log in with the e-mail service you want to use.",
-          "email-validation-error": "Couldn't validate e-mail settings: {mailError}"
+          "email-validation-error": "Couldn't validate e-mail settings: {mailError}",
+          "smtp-disabled-alert": "E-Mail (SMTP) is currently disabled. Pano will not be able to send emails for registration or password recovery."
         },
         "smtp-settings": "E-Mail (SMTP)",
         "toggle-smtp": "Toggle SMTP"

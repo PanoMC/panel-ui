@@ -246,6 +246,16 @@
     </div>
   </div>
   <div class="card-body" class:opacity-50={smtpDisabled}>
+    {#if smtpDisabled}
+      <div class="alert alert-warning border mb-3" role="alert">
+        <div class="hstack gap-3">
+          <i class="fa-solid fa-triangle-exclamation fs-4"></i>
+          <div>
+            {$_('pages.settings.platform.smtp.smtp-disabled-alert')}
+          </div>
+        </div>
+      </div>
+    {/if}
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="mailUsername"
         >{$_('pages.settings.platform.smtp.username')}</label>

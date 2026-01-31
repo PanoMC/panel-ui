@@ -398,7 +398,8 @@
           "port": "Port",
           "auth-methods": "Giriş Methodu",
           "description": "Pano, e-posta gönderebilmek için bir e-posta sağlayıcısına ihtiyaç duyar. Lütfen kullanmak istediğiniz e-posta servisi ile oturum açın.",
-          "email-validation-error": "E-mail ayarlarınız doğrulanamadı: {mailError}"
+          "email-validation-error": "E-mail ayarları doğrulanamadı: {mailError}",
+          "smtp-disabled-alert": "E-Posta (SMTP) şu anda devre dışı. Pano; kayıt veya şifre kurtarma işlemleri için e-posta gönderemeyecektir."
         },
         "smtp-settings": "E-Mail (SMTP)",
         "toggle-smtp": "SMTP'yi Değiştir"
