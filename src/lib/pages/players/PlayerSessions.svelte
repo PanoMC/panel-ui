@@ -10,6 +10,7 @@
         <thead>
           <tr>
             <th class="align-middle">ID</th>
+            <th class="align-middle"></th>
             <th class="align-middle">{$_('pages.player-detail.browser')}</th>
             <th class="align-middle">IP</th>
             <th class="align-middle">{$_('pages.player-detail.last-entrance')}</th>
@@ -22,10 +23,11 @@
             <tr class:table-active={session.isCurrent}>
               <td class="align-middle">
                 <code>#{session.id}</code>
+              </td>
+              <td class="align-middle">
                 {#if session.isCurrent}
-                  <span class="badge text-bg-primary ms-2"
-                    >{$_('pages.player-detail.current-session')}</span
-                  >
+                  <span class="badge text-bg-primary"
+                    >{$_('pages.player-detail.current-session')}</span>
                 {/if}
               </td>
               <td class="align-middle">
@@ -41,7 +43,8 @@
               <td class="align-middle text-end">
                 <button
                   class="btn btn-link text-danger"
-                  use:tooltip={[$_('buttons.logout'), { placement: 'bottom', animation: false }]}
+                  title={$_('buttons.logout')}
+                  aria-label={$_('buttons.logout')}
                   onclick={() => logoutSession(session.id, session.isCurrent)}
                   disabled={loadingSessionId === session.id}>
                   {#if loadingSessionId === session.id}
@@ -69,14 +72,14 @@
     const username = event.params.username;
 
     const body = await ApiUtil.get({
-        path: `/api/panel/players/${username}/sessions`,
-        request: event,
+      path: `/api/panel/players/${username}/sessions`,
+      request: event,
     });
 
     if (!body.error) {
-        data.sessions = body.sessions;
+      data.sessions = body.sessions;
     } else {
-        throw error(500, body.error);
+      throw error(500, body.error);
     }
 
     return data;
