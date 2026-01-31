@@ -668,6 +668,8 @@
       }
     },
     "player-detail": {
+      "status": "Статус",
+      "overview": "Детали",
       "players": "Игроки",
       "un-ban": "Разбанить",
       "ban": "Забанить",
@@ -686,14 +688,14 @@
       "last-entrance": "Последний вход",
       "register-date": "Дата регистрации",
       "ban-history": "История банов",
-      "permanent-ban": "Постоянный бан",
-      "no-reason": "Причина не указана",
-      "email-notified": "Уведомление по E-mail отправлено",
-      "email-not-notified": "Уведомление по E-mail не отправлено",
+      "permanent-ban": "Постоянно",
+      "no-reason": "Без причины",
+      "email-notified": "Отправлено",
+      "email-not-notified": "Не отправлено",
       "system-ban": "Система",
       "ban-duration": "Длительность",
       "ban-reason": "Причина",
-      "email-notification": "E-Mail уведомление",
+      "email-notification": "Уведомление",
       "banned-by": "Забанен кем",
       "banned-at": "Забанен когда",
       "register-ip": "IP-адрес при регистрации"

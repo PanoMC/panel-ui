@@ -141,13 +141,28 @@
         <table class="table">
           <tbody>
             <tr>
+              <td>{$_('pages.player-detail.status')}</td>
+              <td>
+                <PlayerStatusBadge
+                  banned={data.player.isBanned}
+                  lastActivityTime={data.player.lastActivityTime}
+                  inGame={data.player.inGame}
+                  {checkTime} />
+              </td>
+            </tr>
+            <tr>
               <td>{$_('pages.player-detail.email')}</td>
               <td>
-                {#if data.player.isEmailVerified}
-                  {$_('pages.player-detail.email-verified')}
-                {:else}
-                  {$_('pages.player-detail.email-not-verified')}
-                {/if}
+                <span
+                  class="badge {data.player.isEmailVerified
+                    ? 'text-bg-success'
+                    : 'text-bg-danger'}">
+                  {#if data.player.isEmailVerified}
+                    {$_('pages.player-detail.email-verified')}
+                  {:else}
+                    {$_('pages.player-detail.email-not-verified')}
+                  {/if}
+                </span>
               </td>
             </tr>
             <tr>
@@ -241,6 +256,7 @@
   import PageActions from '$lib/component/PageActions.svelte';
   import PageNav from '$lib/component/PageNav.svelte';
   import PageNavItem from '$lib/component/PageNavItem.svelte';
+  import PlayerStatusBadge from '$lib/component/badges/PlayerStatusBadge.svelte';
   import DateComponent from '$lib/component/Date.svelte';
   import PlayerPermissionBadge from '$lib/component/badges/PlayerPermissionBadge.svelte';
   import tooltip from '$lib/tooltip.util';

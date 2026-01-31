@@ -26,13 +26,9 @@
   </td>
   <td class="align-middle text-center">
     {#if banHistory.emailNotified}
-      <i
-        class="fas fa-check text-success"
-        use:tooltip={[$_('pages.player-detail.email-notified'), { placement: 'bottom' }]}></i>
+      <span class="badge text-bg-success">{$_('pages.player-detail.email-notified')}</span>
     {:else}
-      <i
-        class="fas fa-times text-danger"
-        use:tooltip={[$_('pages.player-detail.email-not-notified'), { placement: 'bottom' }]}></i>
+      <span class="badge text-bg-danger">{$_('pages.player-detail.email-not-notified')}</span>
     {/if}
   </td>
   <td class="align-middle" style="max-width: 180px;">
