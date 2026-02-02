@@ -94,11 +94,7 @@
               </h2>
               <div id="collapsePlugin{pluginId}" class="accordion-collapse collapse show">
                 <div class="accordion-body">
-                  {#if !ready}
-                    {#each Array(8) as _}
-                      <TranslationSkeleton />
-                    {/each}
-                  {:else}
+                  {#if ready}
                     {#if (splitByPlugin[pluginId]?.notExists || []).length > 0}
                       <UnnecessaryTranslationsAlert
                         translations={splitByPlugin[pluginId].notExists}
@@ -127,11 +123,7 @@
         </div>
       {:else}
         <div class="p-3">
-          {#if !ready}
-            {#each Array(12) as _}
-              <TranslationSkeleton />
-            {/each}
-          {:else}
+          {#if ready}
             {#if splitFlat.notExists.length > 0}
               <UnnecessaryTranslationsAlert
                 translations={splitFlat.notExists}
@@ -293,7 +285,6 @@
   import PageNavItem from '$lib/component/PageNavItem.svelte';
   import PageActions from '$lib/component/PageActions.svelte';
   import TranslationRow from '$lib/component/rows/TranslationRow.svelte';
-  import TranslationSkeleton from '$lib/component/rows/TranslationSkeleton.svelte';
   import UnnecessaryTranslationsAlert from '$lib/component/UnnecessaryTranslationsAlert.svelte';
   import SearchInput from '$lib/component/SearchInput.svelte';
   import NoContent from '$lib/component/NoContent.svelte';
