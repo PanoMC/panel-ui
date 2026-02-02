@@ -51,8 +51,8 @@
     <div class="card-body">
       <ul class="list-group">
         <li class="list-group-item">
-          <div class="row gx-3">
-            <div class="col-md-auto">
+          <div class="d-flex gap-3 flex-wrap position-relative">
+            <div class="flex-shrink-0">
               <!-- Logo -->
               <div
                 class="d-inline-flex rounded justify-content-center align-items-center bg-primary"
@@ -60,9 +60,8 @@
                 <i class="fas fa-box fa-2x text-white" title="Pano"></i>
               </div>
             </div>
-            <div class="col">
-              <div class="flex-grow-1 w-100">
-                <div class="d-flex justify-content-between flex-wrap align-items-start gap-3">
+            <div class="flex-grow-1 min-w-0 mobile-info-padding">
+              <div class="d-flex justify-content-between align-items-start gap-3">
                   <!-- Left: Info -->
                   <div class="vstack gap-2">
                     <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -92,7 +91,7 @@
                     </div>
                   </div>
                   <!-- Right: Actions -->
-                  <div class="d-flex align-items-center gap-1">
+                  <div class="d-flex align-items-center gap-1 flex-shrink-0 mobile-absolute-actions">
                     <button
                       class="btn btn-sm btn-link"
                       title={$_('pages.settings.updates.changelog')}
@@ -178,7 +177,6 @@
                     {/if}
                   </p>
                 {/if}
-              </div>
             </div>
           </div>
         </li>

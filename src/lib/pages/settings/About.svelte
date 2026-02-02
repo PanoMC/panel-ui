@@ -1,5 +1,5 @@
 <div class="row g-3">
-  <div class="col-lg-6">
+  <div class="col-lg-6 order-2 order-lg-1">
     <!-- About Sup Page -->
     <div class="card">
       <div class="card-header">Pano Platform Info</div>
@@ -58,7 +58,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-6">
+  <div class="col-lg-6 order-1 order-lg-2">
     <div class="alert alert-primary h-100 mb-0 d-flex flex-column animate__animated animate__zoomIn">
       <h5 class="alert-heading">{$_('pages.settings.about.support-pano')} ❤️</h5>
       <p>
