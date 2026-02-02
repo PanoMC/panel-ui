@@ -188,7 +188,7 @@
 </div>
 
 <div class="card">
-  <CardHeader>
+  <CardHeader showRight={data.resourceUpdates.length > 1}>
     <div slot="left">
       {#if data.resourceUpdates.length > 0}
         {$_('pages.settings.updates.resource-updates-count', {
@@ -201,19 +201,17 @@
       {/if}
     </div>
     <div slot="right">
-      {#if data.resourceUpdates.length > 1}
-        <button
-          class="btn btn-sm btn-secondary"
-          on:click={onUpdateAllClick}
-          class:disabled={loading ||
-            $platformUpdating ||
-            inProgressResource ||
-            updatingAll ||
-            data.resourceUpdates.length === 0}>
-          <i class="fas fa-download me-2"></i>
-          {$_('buttons.update-all')}
-        </button>
-      {/if}
+      <button
+        class="btn btn-sm btn-secondary"
+        on:click={onUpdateAllClick}
+        class:disabled={loading ||
+          $platformUpdating ||
+          inProgressResource ||
+          updatingAll ||
+          data.resourceUpdates.length === 0}>
+        <i class="fas fa-download me-2"></i>
+        {$_('buttons.update-all')}
+      </button>
     </div>
   </CardHeader>
   <div class="card-body">
