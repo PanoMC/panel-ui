@@ -1,4 +1,4 @@
-<div class="w-100 d-flex align-items-center blocks" style="min-height: calc(100vh - 124px);">
+<div class="w-100 flex-grow-1 h-100 d-flex align-items-center">
   <div class="container">
     <div class="col-lg-6 mx-auto">
       <img

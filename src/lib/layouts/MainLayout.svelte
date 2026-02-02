@@ -1,7 +1,7 @@
 <Sidebar />
 
 <!--  Main  -->
-<main class="w-100 min-vh-100 overflow-auto pb-5">
+<main class="w-100 min-vh-100 overflow-auto pb-5 d-flex flex-column">
   {#if $showDevModeAlert}
     <div
       class="alert alert-warning alert-dismissible fade show rounded-0 border-0 mb-0 shadow-sm"

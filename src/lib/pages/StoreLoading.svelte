@@ -1,55 +1,67 @@
-<div class="w-100 d-flex align-items-center blocks" style="min-height: calc(100vh - 124px);">
+<div class="w-100 flex-grow-1 d-flex align-items-center">
   <div class="container">
     <div class="col-lg-6 mx-auto vstack gap-3">
       {#if !data.accountConnected}
-        <img
-          src={base + '/assets/img/not-connected.png'}
-          alt="Not Connected"
-          width="250"
-          class="img-fluid d-block m-auto" />
-
-        <div class="alert alert-danger mb-0 d-flex align-items-center gap-3">
-          <i class="fa-solid fa-circle-exclamation"></i>
-          <div>
-            <strong>
-              {$_('components.store-loading.account-not-connected')}
-            </strong>
-            <br />
-            {$_('components.store-loading.not-connected-description')}
-          </div>
-        </div>
-
-        <button class="btn btn-secondary" on:click={onConnectClick} disabled={connecting}>
-          {connecting ? $_('buttons.connecting') : $_('buttons.connect')}
-        </button>
+        {@render accountNotConnectedSnippet()}
       {:else if data.installingView}
-        <div class="row" hidden={modalShown}>
-          <div class="col-auto min-h-100 d-flex align-items-center">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
-            </div>
-          </div>
-        </div>
+        {@render installingSnippet()}
       {:else}
-        <div class="vstack gap-3 text-center">
-          <div
-            class="spinner-border text-primary mx-auto"
-            role="status"
-            style="width: 1.5rem; height: 1.5rem;">
-            <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
-          </div>
-
-          <div>
-            <strong>{$_('components.store-loading.store-loading')}</strong><br />
-            <small>{$_('components.store-loading.please-wait')}</small>
-          </div>
-        </div>
+        {@render loadingSnippet()}
       {/if}
     </div>
   </div>
 </div>
 
 <ConfirmInstallResourceModal />
+
+{#snippet accountNotConnectedSnippet()}
+  <img
+    src={base + '/assets/img/not-connected.png'}
+    alt="Not Connected"
+    width="250"
+    class="img-fluid d-block m-auto" />
+
+  <div class="alert alert-danger mb-0 d-flex align-items-center gap-3">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <div>
+      <strong>
+        {$_('components.store-loading.account-not-connected')}
+      </strong>
+      <br />
+      {$_('components.store-loading.not-connected-description')}
+    </div>
+  </div>
+
+  <button class="btn btn-secondary" on:click={onConnectClick} disabled={connecting}>
+    {connecting ? $_('buttons.connecting') : $_('buttons.connect')}
+  </button>
+{/snippet}
+
+{#snippet installingSnippet()}
+  <div class="row" hidden={modalShown}>
+    <div class="col-auto min-h-100 d-flex align-items-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
+      </div>
+    </div>
+  </div>
+{/snippet}
+
+{#snippet loadingSnippet()}
+  <div class="vstack gap-3 text-center">
+    <div
+      class="spinner-border text-primary mx-auto"
+      role="status"
+      style="width: 1.5rem; height: 1.5rem;">
+      <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
+    </div>
+
+    <div>
+      <strong>{$_('components.store-loading.store-loading')}</strong><br />
+      <small>{$_('components.store-loading.please-wait')}</small>
+    </div>
+  </div>
+{/snippet}
 
 <script context="module">
   import { redirect } from '@sveltejs/kit';
@@ -126,7 +138,7 @@
   let versionInfo;
   let modalShown;
   let connecting;
-  let storeLoading;
+  let storeLoading = true;
 
   async function waitSplash() {
     while ($showSplash) {

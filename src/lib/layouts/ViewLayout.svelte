@@ -1,28 +1,32 @@
-<div class="container vstack gap-3">
-  <PageActions>
-    <div slot="left">
-      {#if slots.left}
-        {@render slots.left()}
-      {:else}
-        <PageNav>
-          {#each $themeMenuItems as item}
-            {#if !item.permission || hasPermission(item.permission)}
-              <PageNavItem href={item.href}>{$_(item.text)}</PageNavItem>
-            {/if}
-          {/each}
-        </PageNav>
-      {/if}
-    </div>
-
-    <div slot="right" class="hstack gap-2" data-layout-actions="right">
-      {#if slots.right}
-        {@render slots.right()}
-      {/if}
-    </div>
-  </PageActions>
-
+{#if $page.url.pathname === `${base}/view/store`}
   {@render children()}
-</div>
+{:else}
+  <div class="container vstack gap-3">
+    <PageActions>
+      <div slot="left">
+        {#if slots.left}
+          {@render slots.left()}
+        {:else}
+          <PageNav>
+            {#each $themeMenuItems as item}
+              {#if !item.permission || hasPermission(item.permission)}
+                <PageNavItem href={item.href}>{$_(item.text)}</PageNavItem>
+              {/if}
+            {/each}
+          </PageNav>
+        {/if}
+      </div>
+
+      <div slot="right" class="hstack gap-2" data-layout-actions="right">
+        {#if slots.right}
+          {@render slots.right()}
+        {/if}
+      </div>
+    </PageActions>
+
+    {@render children()}
+  </div>
+{/if}
 
 <script context="module">
   import { redirect } from '@sveltejs/kit';
@@ -59,6 +63,7 @@
 <script>
   import { _ } from 'svelte-i18n';
 
+  import { page } from '$app/stores';
   import { beforeNavigate } from '$app/navigation';
 
   import PageActions from '$lib/component/PageActions.svelte';
