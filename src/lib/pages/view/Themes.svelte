@@ -103,9 +103,6 @@
                 <div class="d-flex justify-content-between align-items-center mt-2">
                   <div class="d-flex gap-2">
                     <small class="font-monospace user-select-all opacity-75">
-                      <i class="fa-solid fa-file fa-fw me-1"></i>{formatBytes(theme.size)}
-                    </small>
-                    <small class="font-monospace user-select-all opacity-75">
                       <i class="fa-solid fa-code fa-fw me-1"></i>{theme.version}
                     </small>
                   </div>
@@ -205,19 +202,15 @@
   import { base } from '$app/paths';
   import SearchInput from '$lib/component/SearchInput.svelte';
   import { goto, invalidate } from '$app/navigation';
-  import { formatBytes } from '$lib/string.util.js';
 
-  import tooltip from '$lib/tooltip.util';
   import { show as showToast } from '$lib/component/ToastContainer.svelte';
 
-  import PageActions from '$lib/component/PageActions.svelte';
   import NoContent from '$lib/component/NoContent.svelte';
   import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
   import CardHeader from '$lib/component/CardHeader.svelte';
   import InstallResourceModal, {
     show as showInstallResourceModal,
   } from '$lib/component/modals/InstallResourceModal.svelte';
-  import { themeMenuItems } from '$lib/PluginAPI.js';
   import FailedLoginPanoStoreAlert from '$lib/component/FailedLoginPanoStoreAlert.svelte';
 
   export let data;
