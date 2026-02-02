@@ -267,6 +267,7 @@
     "settings": {
       "about": {
         "title": "Hakkında",
+        "info": "Pano Platform Bilgisi",
         "version": "Versiyon",
         "release": "Sürüm",
         "website": "Website",

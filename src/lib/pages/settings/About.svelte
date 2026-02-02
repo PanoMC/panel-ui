@@ -2,7 +2,7 @@
   <div class="col-lg-6 order-2 order-lg-1">
     <!-- About Sup Page -->
     <div class="card">
-      <div class="card-header">Pano Platform Info</div>
+      <div class="card-header">{$_('pages.settings.about.info')}</div>
       <div class="card-body">
         <form class="animate__animated animate__fadeIn">
           <div class="row">
@@ -88,7 +88,7 @@
         {#each licenses as license}
           <details class="list-group-item">
             <summary class="d-flex justify-content-between align-items-center list-unstyled mb-0">
-              <div class="d-flex align-items-center flex-wrap gap-2">
+              <div class="d-flex align-items-center flex-wrap gap-2 text-break">
                 <i class="fa-solid fa-chevron-right me-2"></i>
                 <strong class="me-2">{license.name}</strong>
                 <span class="small">v{license.version}</span>
@@ -119,7 +119,7 @@
                     href={license.repository}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="ms-1">
+                    class="ms-1 text-break">
                     {license.repository}
                     <i class="fa-solid fa-up-right-from-square ms-1"></i>
                   </a>
@@ -128,7 +128,7 @@
               {#if license.licenseText}
                 <pre
                   class="bg-body-secondary p-3 rounded small border"
-                  style="max-height: 300px; overflow-y: auto;"><code class="text-body"
+                  style="max-height: 300px; overflow: auto;"><code class="text-body"
                     >{license.licenseText}</code></pre>
               {:else}
                 <p>

@@ -267,6 +267,7 @@
     "settings": {
       "about": {
         "title": "About",
+        "info": "Pano Platform Info",
         "version": "Version",
         "release": "Release",
         "website": "Website",

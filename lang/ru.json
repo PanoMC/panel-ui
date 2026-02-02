@@ -265,6 +265,7 @@
     "settings": {
       "about": {
         "title": "О платформе",
+        "info": "Информация о платформе Pano",
         "version": "Версия",
         "release": "Релиз",
         "website": "Веб-сайт",
