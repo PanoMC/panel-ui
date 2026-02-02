@@ -74,7 +74,8 @@
               <input
                 id="derivatives"
                 class="form-control"
-                class:is-invalid={$error === 'derivatives' || $error === 'INVALID_LOCALE_DERIVATIVE'}
+                class:is-invalid={$error === 'derivatives' ||
+                  $error === 'INVALID_LOCALE_DERIVATIVE'}
                 placeholder={$_('components.modals.add-edit-language.inputs.derivatives')}
                 type="text"
                 name="derivative"

@@ -1,12 +1,22 @@
-<div class="w-100 vh-100 d-flex align-items-center blocks">
-  <div class="m-auto p-3" style="max-width: 330px;">
-    <div class="vstack gap-3">
+<div class="w-100 d-flex align-items-center blocks" style="min-height: calc(100vh - 124px);">
+  <div class="container">
+    <div class="col-lg-6 mx-auto vstack gap-3">
       {#if !data.accountConnected}
-        <div class="alert alert-danger mb-0">
-          <strong>
-            {$_('components.store-loading.account-not-connected')}
-          </strong>
-          {$_('components.store-loading.not-connected-description')}
+        <img
+          src={base + '/assets/img/not-connected.png'}
+          alt="Not Connected"
+          width="250"
+          class="img-fluid d-block m-auto" />
+
+        <div class="alert alert-danger mb-0 d-flex align-items-center gap-3">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <div>
+            <strong>
+              {$_('components.store-loading.account-not-connected')}
+            </strong>
+            <br />
+            {$_('components.store-loading.not-connected-description')}
+          </div>
         </div>
 
         <button class="btn btn-secondary" on:click={onConnectClick} disabled={connecting}>
@@ -14,32 +24,16 @@
         </button>
       {:else if data.installingView}
         <div class="row" hidden={modalShown}>
-          <div
-            class="d-inline-flex rounded justify-content-start align-items-start ps-2 pt-2"
-            style="height: 350px;">
-            <div class="col-auto min-h-100 d-flex align-items-center">
-              <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
-              </div>
+          <div class="col-auto min-h-100 d-flex align-items-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
             </div>
           </div>
         </div>
       {:else}
-        <div class="d-flex align-items-center gap-3 border rounded p-3">
+        <div class="vstack gap-3 text-center">
           <div
-            class="d-inline-flex rounded justify-content-start align-items-start bg-primary ps-2 pt-2"
-            style="width: 64px; height: 64px;">
-            <img
-              style="transform: rotate(-0.05turn);"
-              src={base + '/assets/img/logo.svg'}
-              width="auto"
-              height="60"
-              alt="Pano"
-              title="Pano" />
-          </div>
-
-          <div
-            class="spinner-border text-primary"
+            class="spinner-border text-primary mx-auto"
             role="status"
             style="width: 1.5rem; height: 1.5rem;">
             <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
@@ -132,6 +126,7 @@
   let versionInfo;
   let modalShown;
   let connecting;
+  let storeLoading;
 
   async function waitSplash() {
     while ($showSplash) {
@@ -252,6 +247,7 @@
   });
 
   (async () => {
+    if (storeLoading) return;
     if (!browser) {
       return;
     }

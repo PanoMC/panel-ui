@@ -721,6 +721,7 @@
       "store-loading": "Mağaza yükleniyor…",
       "please-wait": "Lütfen bekleyin.",
       "loading": "Yükleniyor...",
+      "account-not-connected": "Pano hesabı bağlı değil!",
       "not-connected-description": "Mağazaya erişmek için bir Pano hesabı bağlamalısınız."
     },
     "installing-resource": {
