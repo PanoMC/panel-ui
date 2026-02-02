@@ -138,7 +138,7 @@
   let versionInfo;
   let modalShown;
   let connecting;
-  let storeLoading = true;
+  let storeLoading;
 
   async function waitSplash() {
     while ($showSplash) {
