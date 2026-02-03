@@ -80,18 +80,23 @@
           <i class="fas fa-store"></i>
         </a>
       {/if}
-      <button
-        type="button"
-        class="btn btn-link position-relative"
-        title={$_('pages.addons.update-available')}
-        aria-label={$_('pages.addons.update-available')}
-        on:click={() => goto(`${base}/settings/updates`)}>
-        <i class="fas fa-sync"></i>
-        <span
-          class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-secondary p-1">
-          <span class="visually-hidden">{$_('pages.addons.update-available')}</span>
-        </span>
-      </button>
+      {#if addon.updateVersion}
+        <button
+          type="button"
+          class="btn btn-link position-relative"
+          use:tooltip={[
+            $_('pages.addons.update-available') + ' (v' + addon.updateVersion + ')',
+            { placement: 'bottom' },
+          ]}
+          aria-label={$_('pages.addons.update-available')}
+          on:click={() => goto(`${base}/settings/updates`)}>
+          <i class="fas fa-sync"></i>
+          <span
+            class="position-absolute top-0 start-100 translate-middle mt-2 badge rounded-pill bg-secondary p-1">
+            <span class="visually-hidden">{$_('pages.addons.update-available')}</span>
+          </span>
+        </button>
+      {/if}
       <button
         class="btn btn-link"
         type="button"

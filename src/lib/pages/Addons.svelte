@@ -80,17 +80,22 @@
                 {#if plugin.loading}
                   <i class="fa-solid fa-spinner fa-spin me-2"></i>
                 {:else}
-                  <button
-                    type="button"
-                    class="btn btn-link"
-                    title={$_('pages.addons.update-available')}
-                    aria-label={$_('pages.addons.update-available')}
-                    on:click={(e) => {
-                      e.preventDefault();
-                      goto(`${base}/settings/updates`);
-                    }}>
-                    <i class="fas fa-sync"></i>
-                  </button>
+                  {#if plugin.updateVersion}
+                    <button
+                      type="button"
+                      class="btn btn-link"
+                      use:tooltip={[
+                        $_('pages.addons.update-available') + ' (v' + plugin.updateVersion + ')',
+                        { placement: 'bottom' },
+                      ]}
+                      aria-label={$_('pages.addons.update-available')}
+                      on:click={(e) => {
+                        e.preventDefault();
+                        goto(`${base}/settings/updates`);
+                      }}>
+                      <i class="fas fa-sync"></i>
+                    </button>
+                  {/if}
                   <AddonSettingsButton {plugin} />
                   <div class="form-check form-switch">
                     <input

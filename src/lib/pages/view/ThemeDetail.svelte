@@ -27,18 +27,23 @@
       <i class="fas fa-store"></i>
     </a>
   {/if}
-  <button
-    type="button"
-    class="btn btn-link position-relative"
-    title={$_('pages.themes.update-available')}
-    aria-label={$_('pages.themes.update-available')}
-    onclick={() => goto(`${base}/settings/updates`)}>
-    <i class="fas fa-sync"></i>
-    <span
-      class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-secondary p-1">
-      <span class="visually-hidden">{$_('pages.themes.update-available')}</span>
-    </span>
-  </button>
+  {#if theme.updateVersion}
+    <button
+      type="button"
+      class="btn btn-link position-relative"
+      use:tooltip={[
+        $_('pages.themes.update-available') + ' (v' + theme.updateVersion + ')',
+        { placement: 'bottom' },
+      ]}
+      aria-label={$_('pages.themes.update-available')}
+      onclick={() => goto(`${base}/settings/updates`)}>
+      <i class="fas fa-sync"></i>
+      <span
+        class="position-absolute top-0 start-100 translate-middle mt-2 badge rounded-pill bg-secondary p-1">
+        <span class="visually-hidden">{$_('pages.themes.update-available')}</span>
+      </span>
+    </button>
+  {/if}
   {#if theme.running}
     <button
       class="btn btn-danger"

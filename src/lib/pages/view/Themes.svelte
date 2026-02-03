@@ -114,19 +114,24 @@
                 </div>
               </div>
 
-              <!-- Fake Update Indicator -->
-              <button
-                type="button"
-                class="position-absolute top-0 end-0 m-3 btn btn-sm btn-primary rounded-circle shadow-sm"
-                title={$_('pages.themes.update-available')}
-                aria-label={$_('pages.themes.update-available')}
-                onclick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goto(`${base}/settings/updates`);
-                }}>
-                <i class="fas fa-sync text-white"></i>
-              </button>
+              <!-- Update Indicator -->
+              {#if theme.updateVersion}
+                <button
+                  type="button"
+                  class="position-absolute top-0 end-0 m-3 btn btn-sm btn-primary rounded-circle shadow-sm"
+                  use:tooltip={[
+                    $_('pages.themes.update-available') + ' (v' + theme.updateVersion + ')',
+                    { placement: 'bottom' },
+                  ]}
+                  aria-label={$_('pages.themes.update-available')}
+                  onclick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goto(`${base}/settings/updates`);
+                  }}>
+                  <i class="fas fa-sync text-white"></i>
+                </button>
+              {/if}
             </div>
           </a>
         </div>
@@ -198,6 +203,7 @@
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   import { base } from '$app/paths';
   import SearchInput from '$lib/component/SearchInput.svelte';
