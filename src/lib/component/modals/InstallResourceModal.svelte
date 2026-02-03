@@ -35,7 +35,7 @@
 
           <a
             href="{base}/{$type === 'PLUGIN' ? 'addons' : 'view'}/store"
-            class="list-group-item list-group-item-action d-flex flex-column align-items-center justify-content-center w-50"
+            class="list-group-item list-group-item-action d-flex flex-column align-items-center justify-content-center w-50 text-center"
             style="height: 250px;"
             on:click={hide}>
             <img
