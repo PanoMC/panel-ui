@@ -117,6 +117,7 @@
     },
     "addon-detail": {
       "title": "Eklenti Detayı",
+      "overview": "Detaylar",
       "version": "Versiyon",
       "pano-version": "Pano Versiyonu",
       "developer": "Geliştirici",

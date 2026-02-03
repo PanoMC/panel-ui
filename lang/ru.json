@@ -115,6 +115,7 @@
     },
     "addon-detail": {
       "title": "Детали аддона",
+      "overview": "Детали",
       "version": "Версия",
       "pano-version": "Версия Pano",
       "developer": "Разработчик",

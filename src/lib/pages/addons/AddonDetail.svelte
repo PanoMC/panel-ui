@@ -1,418 +1,56 @@
-<ConfirmRemoveAddonModal />
-<ConfirmRemoveAddonWillCauseMoreUnloadModal />
-
-<div
-  class="modal fade"
-  id="addonInfoModal"
-  tabindex="-1"
-  aria-labelledby="addonInfoModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    {#if addon}
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addonInfoModalLabel">{$_('buttons.toggle-details')}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body p-0">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.developer')}:</strong>
-              <span class="text-break">{addon.developer}</span>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.license')}:</strong>
-              <span class="text-break">{addon.license || $_('pages.addon-detail.unknown')}</span>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.source')}:</strong>
-              <a href={addon.sourceUrl} target="_blank" class="text-break"
-                >{addon.sourceUrl || $_('pages.addon-detail.unknown')}<i
-                  class="fa-solid fa-arrow-up-right-from-square ms-2"></i
-                ></a>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.dependencies')}:</strong>
-              <span class="text-break"
-                >{@html isBlank(addon.dependencies)
-                  ? '-'
-                  : addon.dependencies.map((dependency) => getDependencyText(dependency))}</span>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.requires')}:</strong>
-              <span class="text-break">{isBlank(addon.requires) ? '-' : addon.requires}</span>
-            </li>
-            <li class="list-group-item">
-              <strong>Hash:</strong>
-              <code class="overflow-auto text-break user-select-all">sha256:{addon.hash}</code>
-            </li>
-            <li class="list-group-item">
-              <strong>{$_('pages.addon-detail.size')}:</strong>
-              <span class="text-break">{formatBytes(addon.size)}</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    {/if}
+<div class="card">
+  <div class="card-header">
+    {$_('buttons.toggle-details')}
   </div>
-</div>
-
-<div class="container vstack gap-3">
-  {#if refreshRequired}
-    <RefreshRequiredAlert />
-  {/if}
-  <!-- Action Menu -->
-  <PageActions>
-    <a slot="left" href="{base}/addons" class="btn btn-link" role="button">
-      <i class="fas fa-arrow-left"></i>
-      <span class="d-lg-inline d-none ms-2">{$_('buttons.addons')}</span>
-    </a>
-
-    <div slot="right" class="hstack gap-2">
-      {#if addon.verifyStatus !== 'UNKNOWN'}
-        <a
-          title={$_('buttons.show-in-store')}
-          aria-label={$_('buttons.show-in-store')}
-          href={`${PANO_WEBSITE_URL}/addons/${addon.id}`}
-          target="_blank"
-          class="btn btn-link">
-          <i class="fas fa-store"></i>
+  <div class="card-body p-0">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <strong>{$_('pages.addon-detail.developer')}:</strong>
+        <span class="text-break">{data.addon.developer}</span>
+      </li>
+      <li class="list-group-item">
+        <strong>{$_('pages.addon-detail.license')}:</strong>
+        <span class="text-break">{data.addon.license || $_('pages.addon-detail.unknown')}</span>
+      </li>
+      <li class="list-group-item">
+        <strong>{$_('pages.addon-detail.source')}:</strong>
+        <a href={data.addon.sourceUrl} target="_blank" class="text-break">
+          {data.addon.sourceUrl || $_('pages.addon-detail.unknown')}
+          <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
         </a>
-      {/if}
-      {#if addon.updateVersion}
-        <button
-          type="button"
-          class="btn btn-link position-relative"
-          use:tooltip={[
-            $_('pages.addons.update-available') + ' (v' + addon.updateVersion + ')',
-            { placement: 'bottom' },
-          ]}
-          aria-label={$_('pages.addons.update-available')}
-          on:click={() => goto(`${base}/settings/updates`)}>
-          <i class="fas fa-sync"></i>
-          <span
-            class="position-absolute top-0 start-100 translate-middle mt-2 badge rounded-pill bg-secondary p-1">
-            <span class="visually-hidden">{$_('pages.addons.update-available')}</span>
-          </span>
-        </button>
-      {/if}
-      <button
-        class="btn btn-link"
-        type="button"
-        data-bs-toggle="modal"
-        data-bs-target="#addonInfoModal"
-        title={$_('buttons.toggle-details')}
-        aria-label={$_('buttons.toggle-details')}>
-        <i class="fas fa-circle-info"></i>
-      </button>
-      <button
-        class="btn btn-link"
-        type="button"
-        on:click={onRemoveClick}
-        title={$_('buttons.remove')}
-        aria-label={$_('buttons.remove')}
-        class:disabled={removing}>
-        <i class="fas fa-trash"></i>
-      </button>
-      <div class="form-check form-switch">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          role="switch"
-          checked={addon.status === 'STARTED'}
-          disabled={addon.loading}
-          on:click={(e) => {
-            e.preventDefault();
-            onTogglePluginStateClick();
-          }} />
-      </div>
-    </div>
-  </PageActions>
-
-  <!-- Addon Details -->
-  <div class="card">
-    <div class="card-body">
-      <div class="row g-3">
-        <div
-          class="col-auto d-flex justify-content-center align-items-start rounded-start rounded-top">
-          <img
-            src="/api/panel/plugins/{addon.id}/logo"
-            class="img-fluid rounded"
-            alt={addon.name}
-            height="86"
-            width="86" />
-        </div>
-
-        <div class="col">
-          <h5
-            class="card-title d-inline-flex align-items-center gap-2 mb-2"
-            class:text-danger={addon.status === 'FAILED'}>
-            {addon.name}
-            <VerifiedStatus status={addon.verifyStatus} />
-            {#if addon.status === 'FAILED'}
-              <button
-                type="button"
-                aria-label={$_('buttons.error-log')}
-                class="btn btn-link link-danger ps-2"
-                data-bs-toggle="popover"
-                data-bs-trigger="focus"
-                data-bs-title={$_('buttons.error-log')}
-                data-bs-content={addon.error}>
-                <i class="fa-solid fa-circle-exclamation"></i>
-              </button>
-            {/if}
-          </h5>
-
-          <div class="small mb-2 hstack gap-2">
-            <span title="ID" class="user-select-all font-monospace">{addon.id}</span>
-            <span class="vr"></span>
-            <span title={$_('pages.addon-detail.version')} class="user-select-all font-monospace">
-              {addon.version}
-            </span>
-            <span class="vr"></span>
-            <span
-              title={$_('pages.addon-detail.pano-version')}
-              class="user-select-all font-monospace">
-              {addon.panoVersion}
-            </span>
-          </div>
-
-          {addon.description}
-        </div>
-      </div>
-    </div>
+      </li>
+      <li class="list-group-item">
+        <strong>{$_('pages.addon-detail.dependencies')}:</strong>
+        <span class="text-break">
+          {@html isBlank(data.addon.dependencies)
+            ? '-'
+            : data.addon.dependencies.map((dependency) => getDependencyText(dependency)).join(', ')}
+        </span>
+      </li>
+      <li class="list-group-item">
+        <strong>{$_('pages.addon-detail.requires')}:</strong>
+        <span class="text-break">{isBlank(data.addon.requires) ? '-' : data.addon.requires}</span>
+      </li>
+      <li class="list-group-item">
+        <strong>Hash:</strong>
+        <code class="overflow-auto text-break user-select-all">sha256:{data.addon.hash}</code>
+      </li>
+      <li class="list-group-item rounded-bottom">
+        <strong>{$_('pages.addon-detail.size')}:</strong>
+        <span class="text-break">{formatBytes(data.addon.size)}</span>
+      </li>
+    </ul>
   </div>
-
-  {#if $hookStore.length > 0 || specificHooks.length > 0}
-    <div class="d-flex flex-column gap-3">
-      <Hook name="panel:plugin-detail:content" {addon} />
-      <Hook name={`panel:plugin-detail:content:${addon.id}`} {addon} />
-    </div>
-  {:else}
-    <NoContent
-      title={$_('pages.addon-detail.no-settings', { default: 'No Settings' })}
-      description={$_('pages.addon-detail.no-settings-desc', {
-        default: 'This addon has no configurable settings.',
-      })}
-      icon="fas fa-cog" />
-  {/if}
 </div>
-
-<script context="module">
-  import ApiUtil from '$lib/api.util.js';
-  import { error } from '@sveltejs/kit';
-  import { executeLifecycle, executeHookLoad } from '$lib/PluginAPI.js';
-
-  /**
-   * @type {import('@sveltejs/kit').PageLoad}
-   */
-  export async function load(event) {
-    const { parent } = event;
-    await parent();
-
-    const addonId = event.params.addonId;
-
-    const body = await ApiUtil.get({
-      path: `/api/panel/plugins/${addonId}`,
-      request: event,
-    });
-
-    if (body.error === 'NOT_FOUND') {
-      throw error(404, body.error);
-    }
-
-    // Pre-resolve hooks and their data to ensure they render simultaneously with the page
-    const [globalHookProps, specificHookProps] = await Promise.all([
-      executeHookLoad('panel:plugin-detail:content', event),
-      executeHookLoad(`panel:plugin-detail:content:${addonId}`, event),
-    ]);
-
-    await executeLifecycle('panel:addon-detail:load', { addon: body.data }, event);
-
-    return {
-      addon: body.data,
-      hookProps: {
-        'panel:plugin-detail:content': globalHookProps,
-        [`panel:plugin-detail:content:${addonId}`]: specificHookProps,
-      },
-    };
-  }
-</script>
 
 <script>
-  import { getContext, onDestroy } from 'svelte';
-  import { get } from 'svelte/store';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
-
-  import { goto, invalidate } from '$app/navigation';
-  import { base } from '$app/paths';
-
   import { formatBytes } from '$lib/string.util';
-  import { PANO_WEBSITE_URL } from '$lib/variables';
 
-  import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
-
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
-
-  import {
-    show as showConfirmDisableAddonModal,
-    setCallback as setCallbackConfirmDisableAddonModal,
-  } from '$lib/component/modals/ConfirmDisableAddonWillCauseMoreDisableModal.svelte';
-  import {
-    show as showConfirmEnablingAddonModal,
-    setCallback as setCallbackConfirmEnablingAddonModal,
-  } from '$lib/component/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte';
-  import ConfirmRemoveAddonModal, {
-    show as showConfirmRemoveAddonModal,
-  } from '$lib/component/modals/ConfirmRemoveAddonModal.svelte';
-  import ConfirmRemoveAddonWillCauseMoreUnloadModal, {
-    show as showConfirmRemoveAddonCauseMoreModal,
-    setCallback as setCallbackConfirmRemoveAddonCauseMoreModal,
-  } from '$lib/component/modals/ConfirmRemoveAddonWillCauseMoreUnloadModal.svelte';
-  import PageActions from '$lib/component/PageActions.svelte';
-  import RefreshRequiredAlert from '$lib/component/RefreshRequiredAlert.svelte';
-  import Hook from '$lib/component/Hook.svelte';
-  import NoContent from '$lib/component/NoContent.svelte';
-  import { panoApiClient } from '$lib/PluginAPI.js';
-
-  export let data;
-  let addon = data.addon;
-  let removing;
-  let refreshRequired = false;
-
-  const hookStore = panoApiClient.ui.hook.get('panel:plugin-detail:content');
-
-  function getSpecificHooks(id) {
-    if (!id) return [];
-    return get(panoApiClient.ui.hook.get(`panel:plugin-detail:content:${id}`));
-  }
-
-  let specificHooks = getSpecificHooks(addon?.id);
-  let unsub;
-
-  $: {
-    addon = data.addon;
-    if (unsub) unsub();
-    if (addon?.id) {
-      const store = panoApiClient.ui.hook.get(`panel:plugin-detail:content:${addon.id}`);
-      specificHooks = get(store);
-      unsub = store.subscribe((value) => {
-        specificHooks = value;
-      });
-    } else {
-      specificHooks = [];
-    }
-  }
-
-  onDestroy(() => {
-    if (unsub) unsub();
-  });
-
-  const pageTitle = getContext('pageTitle');
-
-  pageTitle.set('pages.addon-detail.title');
+  let { data } = $props();
 
   function isBlank(value) {
     return value === null || value === undefined || value.toString().trim() === '';
-  }
-
-  setCallbackConfirmDisableAddonModal((_, hideModal) => {
-    togglePluginState(false, () => {
-      hideModal();
-    });
-  });
-
-  setCallbackConfirmEnablingAddonModal((_, hideModal) => {
-    togglePluginState(true, () => {
-      hideModal();
-    });
-  });
-
-  setCallbackConfirmRemoveAddonCauseMoreModal((_, hideModal) => {
-    removeAddon(() => {
-      hideModal();
-    });
-  });
-
-  function onRemoveClick() {
-    if (addon.removeDependents.length > 0) {
-      showConfirmRemoveAddonCauseMoreModal(addon);
-      return;
-    }
-
-    showConfirmRemoveAddonModal(addon.id, () => {
-      removeAddon();
-    });
-  }
-
-  function removeAddon(callback = () => {}) {
-    addon.removing = true;
-
-    ApiUtil.delete({
-      path: `/api/panel/plugins/${addon.id}`,
-      handler: async (body, reject) => {
-        if (body.result !== 'ok') {
-          location.reload();
-
-          return;
-        }
-
-        await goto(base + '/addons?refreshRequired=true');
-
-        await showToast('components.toasts.remove-addon-success');
-
-        callback();
-      },
-    });
-  }
-
-  function onTogglePluginStateClick() {
-    if (addon.status === 'STARTED' && addon.dependents.length > 0) {
-      showConfirmDisableAddonModal(addon);
-      return;
-    }
-
-    if (addon.status !== 'STARTED' && addon.notStartedDependencies.length > 0) {
-      showConfirmEnablingAddonModal(addon);
-      return;
-    }
-
-    togglePluginState(addon.status !== 'STARTED');
-  }
-
-  function togglePluginState(status, callback = () => {}) {
-    addon.loading = true;
-
-    ApiUtil.put({
-      path: `/api/panel/plugins/${addon.id}`,
-      body: { status },
-      handler: async (body, reject) => {
-        if (body.result !== 'ok') {
-          reject(body.error);
-
-          return;
-        }
-
-        if (body.status === 'CREATED') {
-          await showToast('components.toasts.settings-save-error', {
-            addon: addon.id,
-          });
-        }
-
-        if (body.status === 'FAILED') {
-          await showToast('components.toasts.failed-to-enable-addon-error', {
-            addon: addon.id,
-          });
-        }
-
-        await invalidate((_) => true);
-
-        refreshRequired = true;
-        callback();
-      },
-    });
   }
 
   function getDependencyText(dependency) {

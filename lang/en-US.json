@@ -117,6 +117,7 @@
     },
     "addon-detail": {
       "title": "Addon Detail",
+      "overview": "Details",
       "version": "Version",
       "pano-version": "Pano Version",
       "developer": "Developer",
