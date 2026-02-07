@@ -2,7 +2,7 @@
 <div role="dialog" class="modal modal-lg fade" bind:this={$modalElement} aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header border-0">
+      <div class="modal-header">
         <h5 class="modal-title">
           {$_('components.modals.install-resource.title', {
             values: {
@@ -23,14 +23,14 @@
       <div class="modal-body">
         <div class="list-group list-group-horizontal">
           <DragAndDropZone
-            className="btn list-group-item border list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-50 text-center shadow-none rounded-end-0"
+            className="btn list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-50 text-center rounded-end-0"
             style="height: 250px; cursor: pointer;"
             accept={$type === 'THEME'
               ? ['.zip', 'application/zip']
               : ['.jar', 'application/java-archive']}
             on:drop={(e) => handleFileUpload(e.detail)}>
             <i class="fas fa-upload fa-2x mb-2"></i>
-            <p class="mb-0">{@html $_('components.modals.install-resource.drag-here')}</p>
+            {@html $_('components.modals.install-resource.drag-here')}
           </DragAndDropZone>
 
           <a
@@ -38,13 +38,8 @@
             class="list-group-item list-group-item-action d-flex flex-column align-items-center justify-content-center w-50 text-center"
             style="height: 250px;"
             on:click={hide}>
-            <img
-              src="{base}/assets/img/logo.svg"
-              width="48"
-              height="48"
-              class="bg-dark rounded-circle mb-2"
-              alt="Pano" />
-            <span>{$_('components.modals.install-resource.install-from-pano-store')}</span>
+            <i class="fas fa-store fa-2x mb-2"></i>
+            {$_('components.modals.install-resource.install-from-pano-store')}
           </a>
         </div>
       </div>

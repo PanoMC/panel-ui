@@ -1,8 +1,8 @@
 <!-- Add Resource Modal -->
-<div role="dialog" class="modal modal-lg fade" bind:this={$modalElement} aria-hidden="true">
+<div role="dialog" class="modal fade" bind:this={$modalElement} aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header border-0">
+      <div class="modal-header">
         <h5 class="modal-title">
           {#if $installError}
             {$_('components.modals.installing-resource.error')}
@@ -63,7 +63,6 @@
               goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}/store`, {
                 invalidateAll: true,
               }) && callback()}>
-            <i class="fas fa-store me-2"></i>
             {$_('buttons.go-to-store')}
           </button>
           <button

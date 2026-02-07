@@ -729,10 +729,10 @@
       "version-loading": "Sürüm yükleniyor...",
       "account-not-connected": "Pano hesabı bağlı değil!",
       "not-connected-description": "Mağazaya erişmek için bir Pano hesabı bağlamalısınız.",
-      "install-title": "{name} {version} Yüklensin mi?",
-      "update-title": "{name}, {version} sürümüne güncellensin mi?",
-      "downgrade-title": "{name}, {version} sürümüne indirgensin mi?",
-      "reinstall-title": "{name} {version} yeniden yüklensin mi?",
+      "install-title": "Bu kaynağı kurmak istediğinize emin misiniz?",
+      "update-title": "Bu kaynağı güncellemek istediğinize emin misiniz?",
+      "downgrade-title": "Bu kaynağı düşürmek istediğinize emin misiniz?",
+      "reinstall-title": "Bu kaynağı yeniden kurmak istediğinize emin misiniz?",
       "install-description": "Bu kaynağı yüklemek üzeresiniz. Bu işlem geri alınamaz.",
       "update-description": "Bu kaynağı {from} sürümünden {to} sürümüne güncellemek üzeresiniz.",
       "downgrade-description": "Bu kaynağı {from} sürümünden {to} sürümüne indirgemek üzeresiniz.",
@@ -740,14 +740,11 @@
       "downgrade-warning-title": "Uyarı: Sürüm düşürmek sorunlara yol açabilir!",
       "downgrade-warning-description": "Daha eski bir sürüme geçmek veri kaybına veya uyumsuzluk sorunlarına neden olabilir. Dikkatli ilerleyin.",
       "unverified-resource-warning-title": "Doğrulanmamış Kaynak",
-      "unverified-resource-warning-description": "Bu kaynak PanoMC tarafından doğrulanmamıştır. Riski size ait olmak üzere yükleyin."
+      "unverified-resource-warning-description": "Bu kaynak PanoMC tarafından doğrulanmamıştır. Riski size ait olmak üzere yükleyin.",
+      "author": "Yazar",
+      "size": "Boyut"
     },
-    "modals": {
-      "confirm-downgrade": {
-        "title": "Sürüm Düşürmeyi Onayla",
-        "description": "Sürüm düşürmek istediğinize emin misiniz? Bu işlem veri kaybına veya uyumsuzluk sorunlarına yol açabilir."
-      }
-    },
+
     "installing-resource": {
       "title": "Kaynak Yükleniyor",
       "description": "Kaynak yükleniyor, lütfen bekleyin. Bu işlem birkaç saniye sürebilir."

@@ -729,10 +729,10 @@
       "version-loading": "Loading version...",
       "account-not-connected": "Pano account is not connected!",
       "not-connected-description": "You must connect a Pano account to access the store.",
-      "install-title": "Install {name} {version}?",
-      "update-title": "Update {name} to {version}?",
-      "downgrade-title": "Downgrade {name} to {version}?",
-      "reinstall-title": "Reinstall {name} {version}?",
+      "install-title": "Are you sure you want to install this resource?",
+      "update-title": "Are you sure you want to update this resource?",
+      "downgrade-title": "Are you sure you want to downgrade this resource?",
+      "reinstall-title": "Are you sure you want to reinstall this resource?",
       "install-description": "You are about to install this resource. This action cannot be undone.",
       "update-description": "You are about to update this resource from version {from} to {to}.",
       "downgrade-description": "You are about to downgrade this resource from version {from} to {to}.",
@@ -740,14 +740,11 @@
       "downgrade-warning-title": "Warning: Downgrading may cause issues!",
       "downgrade-warning-description": "Downgrading to an older version may cause data loss or incompatibility issues. Proceed with caution.",
       "unverified-resource-warning-title": "Unverified Resource",
-      "unverified-resource-warning-description": "This resource has not been verified by PanoMC. Install at your own risk."
+      "unverified-resource-warning-description": "This resource has not been verified by PanoMC. Install at your own risk.",
+      "author": "Author",
+      "size": "Size"
     },
-    "modals": {
-      "confirm-downgrade": {
-        "title": "Confirm Downgrade",
-        "description": "Are you sure you want to downgrade? This action may cause data loss or incompatibility issues."
-      }
-    },
+
     "restarting-pano": {
       "title": "Restarting",
       "description": "The platform is restarting, please wait. This process may take a few seconds."
