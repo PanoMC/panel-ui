@@ -36,6 +36,12 @@
   </div>
 </PageActions>
 
+{#if refreshRequired}
+  <div class="mb-3">
+    <RefreshRequiredAlert />
+  </div>
+{/if}
+
 <div class="card">
   <div class="card-header">
     {#if data.platformUpdate}
@@ -451,6 +457,7 @@
   import MarkdownRenderer from '$lib/component/MarkdownRenderer.svelte';
   import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
   import CardHeader from '$lib/component/CardHeader.svelte';
+  import RefreshRequiredAlert from '$lib/component/RefreshRequiredAlert.svelte';
 
   import ConfirmUpdatePlatformModal, {
     show as showUpdatePlatformModal,
@@ -486,6 +493,7 @@
   let currentResourceProgress = 0;
 
   let demoMode = false;
+  let refreshRequired = false;
   const demoUpdates = [
     {
       id: 'pano-plugin-demo',
@@ -643,6 +651,8 @@
         await showToast('components.toasts.resource-update-success', {
           id: update.id,
         });
+
+        refreshRequired = true;
 
         if (!updatingAll) {
           confetti.default({
