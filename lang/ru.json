@@ -5,6 +5,7 @@
     "connect": "Подключить",
     "connecting": "Подключение...",
     "close": "Закрыть",
+    "install": "Установить",
     "yes": "Да",
     "cancel": "Отмена",
     "download": "Скачать",
@@ -70,7 +71,9 @@
     "show-more-details": "Больше деталей",
     "show-less-details": "Меньше деталей",
     "preferences": "Предпочтения",
-    "select-option": "Выбрать"
+    "select-option": "Выбрать",
+    "downgrade": "Понизить версию",
+    "reinstall": "Переустановить"
   },
   "pages": {
     "themes": {
@@ -717,8 +720,27 @@
       "store-loading": "Загрузка магазина…",
       "please-wait": "Пожалуйста, подождите.",
       "loading": "Загрузка...",
+      "version-loading": "Загрузка версии...",
       "account-not-connected": "Аккаунт Pano не подключен!",
-      "not-connected-description": "Вы должны подключить аккаунт Pano для доступа к магазину."
+      "not-connected-description": "Вы должны подключить аккаунт Pano для доступа к магазину.",
+      "install-title": "Установить {name} {version}?",
+      "update-title": "Обновить {name} до {version}?",
+      "downgrade-title": "Понизить {name} до {version}?",
+      "reinstall-title": "Переустановить {name} {version}?",
+      "install-description": "Вы собираетесь установить этот ресурс. Это действие нельзя отменить.",
+      "update-description": "Вы собираетесь обновить этот ресурс с версии {from} до {to}.",
+      "downgrade-description": "Вы собираетесь понизить версию этого ресурса с {from} до {to}.",
+      "reinstall-description": "Вы собираетесь переустановить версию {version}. Существующие файлы будут перезаписаны.",
+      "downgrade-warning-title": "Внимание: Понижение версии может вызвать проблемы!",
+      "downgrade-warning-description": "Переход на более старую версию может привести к потере данных или проблемам совместимости. Будьте осторожны.",
+      "unverified-resource-warning-title": "Непроверенный Ресурс",
+      "unverified-resource-warning-description": "Этот ресурс не был проверен PanoMC. Устанавливайте на свой страх и риск."
+    },
+    "modals": {
+      "confirm-downgrade": {
+        "title": "Подтвердите понижение версии",
+        "description": "Вы уверены, что хотите понизить версию? Это действие может привести к потере данных или проблемам совместимости."
+      }
     },
     "restarting-pano": {
       "title": "Перезагрузка",

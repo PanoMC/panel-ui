@@ -5,6 +5,7 @@
     "connect": "Connect",
     "connecting": "Connecting...",
     "close": "Close",
+    "install": "Install",
     "yes": "Yes",
     "cancel": "Cancel",
     "download": "Download",
@@ -72,6 +73,8 @@
     "settings": "Settings",
     "preferences": "Preferences",
     "select-option": "Select",
+    "downgrade": "Downgrade",
+    "reinstall": "Reinstall",
     "logout": "Logout"
   },
   "pages": {
@@ -723,8 +726,27 @@
       "store-loading": "Store loading…",
       "please-wait": "Please wait.",
       "loading": "Loading...",
+      "version-loading": "Loading version...",
       "account-not-connected": "Pano account is not connected!",
-      "not-connected-description": "You must connect a Pano account to access the store."
+      "not-connected-description": "You must connect a Pano account to access the store.",
+      "install-title": "Install {name} {version}?",
+      "update-title": "Update {name} to {version}?",
+      "downgrade-title": "Downgrade {name} to {version}?",
+      "reinstall-title": "Reinstall {name} {version}?",
+      "install-description": "You are about to install this resource. This action cannot be undone.",
+      "update-description": "You are about to update this resource from version {from} to {to}.",
+      "downgrade-description": "You are about to downgrade this resource from version {from} to {to}.",
+      "reinstall-description": "You are about to reinstall version {version}. This will overwrite existing files.",
+      "downgrade-warning-title": "Warning: Downgrading may cause issues!",
+      "downgrade-warning-description": "Downgrading to an older version may cause data loss or incompatibility issues. Proceed with caution.",
+      "unverified-resource-warning-title": "Unverified Resource",
+      "unverified-resource-warning-description": "This resource has not been verified by PanoMC. Install at your own risk."
+    },
+    "modals": {
+      "confirm-downgrade": {
+        "title": "Confirm Downgrade",
+        "description": "Are you sure you want to downgrade? This action may cause data loss or incompatibility issues."
+      }
     },
     "restarting-pano": {
       "title": "Restarting",

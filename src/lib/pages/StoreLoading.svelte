@@ -3,9 +3,7 @@
     <div class="col-lg-6 mx-auto vstack gap-3">
       {#if !data.accountConnected}
         {@render accountNotConnectedSnippet()}
-      {:else if data.installingView}
-        {@render installingSnippet()}
-      {:else}
+      {:else if !modalOpen}
         {@render loadingSnippet()}
       {/if}
     </div>
@@ -37,15 +35,6 @@
   </button>
 {/snippet}
 
-{#snippet installingSnippet()}
-  <div class="row" hidden={modalShown}>
-    <div class="col-auto min-h-100 d-flex align-items-center">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">{$_('components.store-loading.loading')}</span>
-      </div>
-    </div>
-  </div>
-{/snippet}
 
 {#snippet loadingSnippet()}
   <div class="vstack gap-3 text-center">
@@ -57,7 +46,13 @@
     </div>
 
     <div>
-      <strong>{$_('components.store-loading.store-loading')}</strong><br />
+      <strong>
+        {#if data.installingView}
+          {$_('components.store-loading.version-loading')}
+        {:else}
+          {$_('components.store-loading.store-loading')}
+        {/if}
+      </strong><br />
       <small>{$_('components.store-loading.please-wait')}</small>
     </div>
   </div>
@@ -105,7 +100,7 @@
     return {
       pageType,
       accountConnected: !DEFAULT_ACCOUNT_NOT_CONNECTED_VIEW,
-      installingView: DEFAULT_INSTALLING_VIEW,
+      installingView: !!install,
       install,
       fromInstall,
     };
@@ -124,21 +119,21 @@
   import ApiUtil from '$lib/api.util.js';
   import { currentLanguage } from '$lib/language.util.js';
 
-  import ConfirmInstallResourceModal, {
-    setCallback as setConfirmInstallResourceCallback,
-    show as showConfirmInstallResourceModal,
-    onHide as onConfirmInstallResourceModalHide,
-  } from '$lib/component/modals/ConfirmInstallResourceModal.svelte';
   import { show as showInstallingResourceModal } from '$lib/component/modals/InstallingResourceModal.svelte';
+  import ConfirmInstallResourceModal, {
+    show as showConfirmInstallResourceModal,
+    setCallback as setConfirmInstallResourceCallback,
+    onHide as onConfirmInstallResourceHide,
+  } from '$lib/component/modals/ConfirmInstallResourceModal.svelte';
 
   export let data;
 
   const showSplash = getContext('showSplash');
 
   let versionInfo;
-  let modalShown;
   let connecting;
   let storeLoading;
+  let modalOpen = false;
 
   async function waitSplash() {
     while ($showSplash) {
@@ -210,9 +205,11 @@
 
     versionInfo = getStoreTokenResponse.data;
 
-    modalShown = true;
+    modalOpen = true;
 
-    showConfirmInstallResourceModal(versionInfo);
+    setConfirmInstallResourceCallback(startInstall);
+    onConfirmInstallResourceHide(onCancelClick);
+    showConfirmInstallResourceModal(versionInfo, data.pageType === PageTypes.ADDON ? 'ADDON' : 'THEME');
   }
 
   async function goToStore(getStoreTokenResponse) {
@@ -231,18 +228,12 @@
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  onConfirmInstallResourceModalHide(() => {
+  function onCancelClick() {
     goto(base + `/` + (data.pageType === PageTypes.ADDON ? 'addons' : 'view'));
-  });
+  }
 
-  setConfirmInstallResourceCallback(async () => {
-    modalShown = false;
-
-    await sleep(500);
-
-    modalShown = true;
-
-    await showInstallingResourceModal(
+  function startInstall() {
+    showInstallingResourceModal(
       data.pageType === PageTypes.ADDON ? 'PLUGIN' : 'THEME',
       null,
       data.install,
@@ -255,8 +246,9 @@
 
         await goToStore(storeTokenResponse);
       },
+      versionInfo.action
     );
-  });
+  }
 
   (async () => {
     if (storeLoading) return;
@@ -269,7 +261,8 @@
 
     await sleep(500);
 
-    if (data.install && !data.installingView) {
+    if (data.install) {
+      data.installingView = true;
       await getVersionInfo();
 
       return;

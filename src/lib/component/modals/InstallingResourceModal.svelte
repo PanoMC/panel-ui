@@ -212,7 +212,7 @@
     handleEventSource(eventSource);
   }
 
-  export async function show(newType, newFile, newVersionId, storeCallback) {
+  export async function show(newType, newFile, newVersionId, storeCallback, action = 'INSTALL') {
     installingStep.set(1);
     currentProgress.set(0);
     versionId.set(newVersionId);

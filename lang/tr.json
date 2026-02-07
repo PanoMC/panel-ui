@@ -5,6 +5,7 @@
     "connect": "Bağla",
     "connecting": "Bağlanıyor...",
     "close": "Kapat",
+    "install": "Yükle",
     "yes": "Evet",
     "cancel": "İptal",
     "download": "İndir",
@@ -72,6 +73,8 @@
     "settings": "Ayarlar",
     "preferences": "Tercihler",
     "select-option": "Seç",
+    "downgrade": "Sürüm Düşür",
+    "reinstall": "Yeniden Yükle",
     "logout": "Çıkış Yap"
   },
   "pages": {
@@ -723,8 +726,27 @@
       "store-loading": "Mağaza yükleniyor…",
       "please-wait": "Lütfen bekleyin.",
       "loading": "Yükleniyor...",
+      "version-loading": "Sürüm yükleniyor...",
       "account-not-connected": "Pano hesabı bağlı değil!",
-      "not-connected-description": "Mağazaya erişmek için bir Pano hesabı bağlamalısınız."
+      "not-connected-description": "Mağazaya erişmek için bir Pano hesabı bağlamalısınız.",
+      "install-title": "{name} {version} Yüklensin mi?",
+      "update-title": "{name}, {version} sürümüne güncellensin mi?",
+      "downgrade-title": "{name}, {version} sürümüne indirgensin mi?",
+      "reinstall-title": "{name} {version} yeniden yüklensin mi?",
+      "install-description": "Bu kaynağı yüklemek üzeresiniz. Bu işlem geri alınamaz.",
+      "update-description": "Bu kaynağı {from} sürümünden {to} sürümüne güncellemek üzeresiniz.",
+      "downgrade-description": "Bu kaynağı {from} sürümünden {to} sürümüne indirgemek üzeresiniz.",
+      "reinstall-description": "{version} sürümünü yeniden yüklemek üzeresiniz. Mevcut dosyalar üzerine yazılacaktır.",
+      "downgrade-warning-title": "Uyarı: Sürüm düşürmek sorunlara yol açabilir!",
+      "downgrade-warning-description": "Daha eski bir sürüme geçmek veri kaybına veya uyumsuzluk sorunlarına neden olabilir. Dikkatli ilerleyin.",
+      "unverified-resource-warning-title": "Doğrulanmamış Kaynak",
+      "unverified-resource-warning-description": "Bu kaynak PanoMC tarafından doğrulanmamıştır. Riski size ait olmak üzere yükleyin."
+    },
+    "modals": {
+      "confirm-downgrade": {
+        "title": "Sürüm Düşürmeyi Onayla",
+        "description": "Sürüm düşürmek istediğinize emin misiniz? Bu işlem veri kaybına veya uyumsuzluk sorunlarına yol açabilir."
+      }
     },
     "installing-resource": {
       "title": "Kaynak Yükleniyor",
