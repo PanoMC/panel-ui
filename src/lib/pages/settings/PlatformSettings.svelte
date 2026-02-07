@@ -591,6 +591,8 @@
 
           data.panoAccount = null;
 
+          await invalidateAll();
+
           disconnecting = false;
         },
       });
