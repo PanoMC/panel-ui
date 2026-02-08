@@ -119,11 +119,10 @@
 
       <!-- Sidebar Site Navigation Menu || Sidebar Server Navigation Menu -->
       <svelte:component this={menuComponent} />
-
-      <!-- Sidebar Bottom -->
-      <Bottom />
     </div>
   </div>
+  <!-- Sidebar Bottom -->
+  <Bottom />
 </div>
 
 <script>
