@@ -24,7 +24,9 @@
   aria-labelledby="sidebarLabel"
   class:offcanvas-lg={$isSidebarOpen}>
   <div class="offcanvas-body p-0">
-    <div class="container-fluid">
+    <div
+      class="container-fluid pb-5 position-relative"
+      style="min-height: 100%;">
       <!-- Sidebar Toggler & Logo -->
       <div class="navbar navbar-expand navbar-dark bg-body-primary">
         <button
