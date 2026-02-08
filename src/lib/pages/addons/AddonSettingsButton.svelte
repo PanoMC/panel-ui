@@ -10,7 +10,7 @@
 
 {#if ($hooks.length > 0) && plugin.status === 'STARTED'}
   <a
-    href="{base}/addons/detail/{plugin.id}"
+    href="{base}/addons/detail/{plugin.id}/settings"
     class="btn btn-link p-0"
     title={$_('buttons.preferences')}>
     <i class="fa-solid fa-sliders-h"></i>
