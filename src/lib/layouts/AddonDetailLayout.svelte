@@ -196,7 +196,7 @@
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
 
-  import { goto, invalidate } from '$app/navigation';
+  import { goto, invalidateAll } from '$app/navigation';
   import { base } from '$app/paths';
 
   import { formatBytes } from '$lib/string.util';
@@ -331,7 +331,7 @@
           });
         }
 
-        await invalidate((_) => true);
+        await invalidateAll();
 
         refreshRequired = true;
         callback();
