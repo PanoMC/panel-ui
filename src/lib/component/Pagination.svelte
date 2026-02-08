@@ -1,5 +1,5 @@
 <nav>
-  <ul class="pagination pagination-sm mb-0 justify-content-start">
+  <ul class="pagination pagination-sm mb-0 justify-content-start flex-wrap">
     <li class="page-item" class:disabled={parseInt(page) === 1}>
       <button
         type="button"
