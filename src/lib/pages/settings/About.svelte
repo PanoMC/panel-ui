@@ -99,7 +99,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                   class="text-decoration-none ms-2"
-                  aria-label="Open {license.name} homepage"
+                  aria-label={$_('pages.settings.about.open-homepage', { values: { name: license.name } })}
                   onclick={(e) => e.stopPropagation()}>
                   <i class="fa-solid fa-external-link"></i>
                 </a>

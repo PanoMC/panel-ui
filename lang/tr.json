@@ -284,7 +284,8 @@
         "support-pano": "Pano'yu Destekle",
         "support-pano-text": "Pano, tamamen açık kaynaklı bir platformdur. Gelişimine destek olmak için GitHub üzerinden yıldız verebilirsiniz.",
         "support-pano-button": "GitHub'da Yıldız Ver",
-        "support-pano-donate": "Bağış Yap"
+        "support-pano-donate": "Bağış Yap",
+        "open-homepage": "{name} ana sayfasını aç"
       },
       "site-settings": {
         "title": "Website Ayarları",

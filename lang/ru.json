@@ -282,7 +282,8 @@
         "support-pano": "Поддержите Pano",
         "support-pano-text": "Pano — это платформа с полностью открытым исходным кодом. Вы можете поддержать его разработку, поставив звезду на GitHub.",
         "support-pano-button": "Поставить звезду на GitHub",
-        "support-pano-donate": "Пожертвовать"
+        "support-pano-donate": "Пожертвовать",
+        "open-homepage": "Открыть главную страницу {name}"
       },
       "site-settings": {
         "title": "Настройки сайта",

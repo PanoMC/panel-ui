@@ -284,7 +284,8 @@
         "support-pano": "Support Pano",
         "support-pano-text": "Pano is a completely open-source platform. You can support its development by giving it a star on GitHub.",
         "support-pano-button": "Star on GitHub",
-        "support-pano-donate": "Donate"
+        "support-pano-donate": "Donate",
+        "open-homepage": "Open {name} homepage"
       },
       "site-settings": {
         "title": "Website Settings",
