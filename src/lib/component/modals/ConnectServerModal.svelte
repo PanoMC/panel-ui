@@ -154,7 +154,7 @@
   import ApiUtil from '$lib/api.util';
   import tooltip from '$lib/tooltip.util';
 
-  import { PANO_WEBSITE_URL, PRERELEASE } from '$lib/variables.js';
+  import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
   const platformServerMatchKey = getContext('platformServerMatchKey');
   const platformKeyRefreshedTime = getContext('platformKeyRefreshedTime');
