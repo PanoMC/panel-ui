@@ -65,7 +65,7 @@
         {$_('pages.settings.about.support-pano-text')}
       </p>
       <div class="mt-auto d-flex gap-2">
-        <a href="https://github.com/PanoMC/Panel" target="_blank" class="btn btn-primary">
+        <a href="{PANO_WEBSITE_URL}/source-code" target="_blank" class="btn btn-primary">
           <i class="fa-brands fa-github me-1"></i>
           {$_('pages.settings.about.support-pano-button')}
         </a>
