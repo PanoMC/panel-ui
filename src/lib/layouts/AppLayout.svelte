@@ -33,6 +33,7 @@
 
   <RestartingModal />
   <ConfirmActionModal />
+  <WhatsNewModal />
 </App>
 
 <script context="module">
@@ -290,6 +291,7 @@
   import ToastContainer from '$lib/component/ToastContainer.svelte';
   import RestartingModal from '$lib/component/modals/RestartingModal.svelte';
   import ConfirmActionModal from '$lib/component/modals/ConfirmActionModal.svelte';
+  import WhatsNewModal, { show as showWhatsNewModal } from '$lib/component/modals/WhatsNewModal.svelte';
 
   export let data;
 
@@ -417,6 +419,11 @@
       $showSplash = false;
     }
   });
+
+  $: if (!$showSplash && data.session.basicData.showWhatsNew) {
+    showWhatsNewModal();
+    data.session.basicData.showWhatsNew = false;
+  }
 
   onDestroy(
     networkErrorCallbacks.subscribe((value) => {

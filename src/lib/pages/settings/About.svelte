@@ -14,6 +14,13 @@
                 class="user-select-all font-monospace"
                 aria-describedby="panoVersion"
                 id="panoVersion">{data.platformVersion}</span>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-primary ms-2"
+                onclick={() => showWhatsNewModal(false)}>
+                <i class="fa-solid fa-sparkles me-1"></i>
+                {$_('components.whats-new.title')}
+              </button>
             </div>
           </div>
           <div class="row">
@@ -198,6 +205,7 @@
   import { _ } from 'svelte-i18n';
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
+  import { show as showWhatsNewModal } from '$lib/component/modals/WhatsNewModal.svelte';
 
   export let data;
 

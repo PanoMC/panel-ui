@@ -719,6 +719,23 @@
     }
   },
   "components": {
+    "whats-new": {
+      "title": "Neler Yeni?",
+      "description": "Pano Beta artık yayında! 🚀 Sunucu yönetim deneyiminizi geliştirmek için birkaç temel özellik ekledik.",
+      "features": {
+        "beta": "Pano Beta",
+        "beta-description": "Resmi olarak Beta yayındayız! Daha fazla stabilite ve özellik yolda.",
+        "integration": "Derin Oyun Entegrasyonu",
+        "integration-description": "LuckPerms, AuthMe ve Yasaklama yönetim sistemleri ile sorunsuz entegrasyon.",
+        "management": "Gelişmiş Sunucu Yönetimi",
+        "management-description": "Sunucularınızı doğrudan panelden başlatın, durdurun ve yeniden başlatın.",
+        "e2ee": "Uçtan Uca Şifreleme",
+        "e2ee-description": "RSA + AES-256 kullanarak oyun sunucularınız ve Pano arasında güvenli iletişim.",
+        "cms": "Güçlü CMS Özellikleri",
+        "cms-description": "Blog yazılarınızı, taleplerinizi ve oyuncularınızı kolayca yönetin."
+      },
+      "dont-show-again": "Bir daha gösterme"
+    },
     "alerts": {
       "dev-mode-title": "Geliştirici Modu Aktif",
       "dev-mode-description": "Şu anda geliştirici modundasınız. Bazı güvenlik özellikleri devre dışı kalmış olabilir ve sistem normalden farklı davranabilir."

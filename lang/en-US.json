@@ -719,6 +719,23 @@
     }
   },
   "components": {
+    "whats-new": {
+      "title": "What's New?",
+      "description": "Pano Beta is now live! 🚀 We've introduced several key features to enhance your server management experience.",
+      "features": {
+        "beta": "Pano Beta",
+        "beta-description": "We are officially in Beta! More stability and features are coming.",
+        "integration": "Deep Game Integration",
+        "integration-description": "Seamlessly integrate with LuckPerms, AuthMe, and Ban management systems.",
+        "management": "Advanced Server Management",
+        "management-description": "Start, stop, and restart your servers directly from the panel.",
+        "e2ee": "End-To-End Encryption",
+        "e2ee-description": "Secure communication between your game servers and Pano using RSA + AES-256.",
+        "cms": "Powerful CMS Features",
+        "cms-description": "Manage your blog posts, tickets, and players with ease."
+      },
+      "dont-show-again": "Don't show again"
+    },
     "alerts": {
       "dev-mode-title": "Development Mode Active",
       "dev-mode-description": "You are currently in development mode. Some security features may be disabled and the system may behave differently than usual."
