@@ -78,8 +78,8 @@
             href="https://github.com/PanoMC/Pano/issues/new"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Report a bug"
-            title="Report a bug">
+            aria-label={$_('components.navbar.report-a-bug')}
+            title={$_('components.navbar.report-a-bug')}>
             <i class="fa-solid fa-bug"></i>
           </a>
         </div>

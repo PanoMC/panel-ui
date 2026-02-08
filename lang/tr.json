@@ -744,7 +744,6 @@
       "author": "Yazar",
       "size": "Boyut"
     },
-
     "installing-resource": {
       "title": "Kaynak Yükleniyor",
       "description": "Kaynak yükleniyor, lütfen bekleyin. Bu işlem birkaç saniye sürebilir."
@@ -790,6 +789,7 @@
       "notifications": "Bildirimler",
       "panel-theme": "Panel Teması",
       "show-all": "Tümünü Görüntüle",
+      "report-a-bug": "Hata Bildir",
       "account-dropdown": {
         "session": "Oturum",
         "profile": "Profil",

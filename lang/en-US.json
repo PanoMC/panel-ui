@@ -744,7 +744,6 @@
       "author": "Author",
       "size": "Size"
     },
-
     "restarting-pano": {
       "title": "Restarting",
       "description": "The platform is restarting, please wait. This process may take a few seconds."
@@ -785,6 +784,7 @@
       "notifications": "Notifications",
       "panel-theme": "Panel Theme",
       "show-all": "Show All",
+      "report-a-bug": "Report a Bug",
       "account-dropdown": {
         "session": "Session",
         "profile": "Profile",
