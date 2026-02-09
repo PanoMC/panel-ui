@@ -4,14 +4,14 @@
   "scripts": {
     "dev": "cross-env DEV=true vite dev --host=0.0.0.0 --port=3001",
     "build": "cross-env DEV=false vite build",
-    "postinstall": "bun scripts/bundle-svelte.js",
+    "postinstall": "bun scripts/bundle-internal-libs.js",
     "preview": "cross-env DEV=false vite preview ",
     "lint": "npm-run-all -c lint:*",
     "lint:prettier": "prettier -c . --config .prettierrc",
     "format": "npm-run-all -c format:*",
     "format:prettier": "prettier --write . --config .prettierrc",
     "generate-licenses": "node scripts/generate-licenses.js",
-    "bundle:svelte": "bun scripts/bundle-svelte.js"
+    "bundle:libs": "bun scripts/bundle-internal-libs.js"
   },
   "husky": {
     "hooks": {}

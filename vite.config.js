@@ -103,17 +103,22 @@ function generateLicensesPlugin() {
   };
 }
 
-export default defineConfig(({ isSsrBuild }) => {
+export default defineConfig(({ isSsrBuild, command }) => {
   return {
     plugins: [sveltekit(), generateLicensesPlugin(), copyLangFolderPlugin(), copyManifestPlugin()],
     ssr: {
-      noExternal: [
-        'chart.js',
-        '@tiptap/**',
-        'prosemirror-**',
-        '@tiptap/pm',
-        '@jill64/universal-sanitizer',
-      ],
+      noExternal:
+        command === 'build'
+          ? true
+          : [
+              'chart.js',
+              '@tiptap/**',
+              'prosemirror-**',
+              '@tiptap/pm',
+              '@jill64/universal-sanitizer',
+              '@panomc/sdk',
+              'svelte-i18n',
+            ],
     },
     css: {
       preprocessorOptions: {
@@ -125,6 +130,7 @@ export default defineConfig(({ isSsrBuild }) => {
       },
     },
     optimizeDeps: {
+      include: ['deepmerge', 'svelte-i18n'],
       exclude: ['@panomc/sdk'],
     },
     server: {
@@ -137,10 +143,19 @@ export default defineConfig(({ isSsrBuild }) => {
         path: '/panel/',
       },
     },
+    resolve: {
+      dedupe: ['svelte', '@panomc/sdk', 'svelte-i18n'],
+    },
     build: {
       manifest: true,
       rollupOptions: {
-        external: isSsrBuild ? [] : (id) => id === 'svelte' || id.startsWith('svelte/'),
+        // Only externalize in the client-side build to support the importmap.
+        // We let SSR build handle dependencies normally to avoid node_modules resolution issues.
+        ...(isSsrBuild
+          ? {}
+          : {
+              external: (id) => id.startsWith('svelte') || id.startsWith('@panomc/sdk'),
+            }),
       },
     },
   };
