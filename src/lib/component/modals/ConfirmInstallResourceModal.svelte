@@ -69,7 +69,7 @@
               <div class="row align-items-center">
                 <div class="col-auto">
                   <div
-                    class="d-flex align-items-center justify-content-center bg-body-secondary rounded border overflow-hidden position-relative"
+                    class="d-flex align-items-center justify-content-center rounded border overflow-hidden position-relative"
                     style="width: 64px; height: 64px;">
                     {#if $type === 'ADDON'}
                       <img
