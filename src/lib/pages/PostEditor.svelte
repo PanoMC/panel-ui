@@ -83,14 +83,14 @@
   <!-- Post -->
   <div class="col-lg-9">
     <div class="card h-100 w-100">
-      <div class="card-body">
+      <div class="card-body d-flex flex-column gap-3">
         <input
           class="form-control form-control-lg"
           type="text"
           placeholder={$_('pages.post-editor.inputs.title.placeholder')}
           bind:value={data.post.title} />
 
-        <div class="align-self-center w-100 h-75">
+        <div class="w-100 flex-grow-1 d-flex flex-column">
           <!-- Editor -->
           <Editor bind:content={data.post.text} bind:isEmpty={isEditorEmpty} />
           <!-- Editor End -->

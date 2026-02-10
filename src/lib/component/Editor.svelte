@@ -183,7 +183,7 @@
 {/if}
 
 <!-- Editor Content -->
-<div class="input-group">
+<div class="input-group flex-grow-1">
   <div
     class="form-control editor-height"
     style={contentStyles}
