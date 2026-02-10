@@ -720,8 +720,8 @@
   },
   "components": {
     "whats-new": {
-      "title": "Neler Yeni?",
-      "description": "Pano Beta artık yayında! 🚀 Sunucu yönetim deneyiminizi geliştirmek için birkaç temel özellik ekledik.",
+      "title": "Pano Beta",
+      "description": "Pano Beta artık yayında!",
       "features": {
         "beta": "Pano Beta",
         "beta-description": "Resmi olarak Beta yayındayız! Daha fazla stabilite ve özellik yolda.",
