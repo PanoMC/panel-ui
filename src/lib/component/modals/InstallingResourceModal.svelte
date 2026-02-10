@@ -12,6 +12,13 @@
             {$_('components.modals.installing-resource.completed')}
           {/if}
         </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label={$_('buttons.close')}
+          title={$_('buttons.close')}
+          on:click={hide}></button>
       </div>
       <div class="modal-body">
         <div
@@ -229,7 +236,7 @@
 
     modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: 'static',
-      keyboard: false,
+      keyboard: true,
     });
     modal.show();
 

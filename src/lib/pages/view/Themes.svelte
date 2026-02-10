@@ -59,7 +59,7 @@
         values: { amount: data.themes.length },
       })}
     </div>
-    <div slot="middle" style="width: 250px;">
+    <div slot="right" style="width: 250px;">
       <SearchInput
         initialValue={search}
         searching={isSearching}
