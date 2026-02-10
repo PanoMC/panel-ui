@@ -28,6 +28,46 @@ function stripModulePreload(linkHeader) {
   return kept.length ? kept.join(', ') : null;
 }
 
+const isDev = process.env.NODE_ENV === 'development';
+const IMPORT_MAP = `
+  <script type="importmap" crossorigin="anonymous">
+  {
+    "imports": {
+      "svelte": "${base}${isDev ? '/@id/svelte' : '/lib/svelte/index.js'}",
+      "svelte/animate": "${base}${isDev ? '/@id/svelte/animate' : '/lib/svelte/animate.js'}",
+      "svelte/easing": "${base}${isDev ? '/@id/svelte/easing' : '/lib/svelte/easing.js'}",
+      "svelte/motion": "${base}${isDev ? '/@id/svelte/motion' : '/lib/svelte/motion.js'}",
+      "svelte/store": "${base}${isDev ? '/@id/svelte/store' : '/lib/svelte/store.js'}",
+      "svelte/transition": "${base}${isDev ? '/@id/svelte/transition' : '/lib/svelte/transition.js'}",
+      "svelte/internal": "${base}${isDev ? '/@id/svelte/internal' : '/lib/svelte/internal.js'}",
+      "svelte/internal/client": "${base}${isDev ? '/@id/svelte/internal/client' : '/lib/svelte/internal-client.js'}",
+      "svelte/internal/disclose-version": "${base}${isDev ? '/@id/svelte/internal/disclose-version' : '/lib/svelte/internal-disclose-version.js'}",
+      "svelte/internal/flags/legacy": "${base}${isDev ? '/@id/svelte/internal/flags/legacy' : '/lib/svelte/internal-flags-legacy.js'}",
+      "svelte/internal/flags/async": "${base}${isDev ? '/@id/svelte/internal/flags/async' : '/lib/svelte/internal-flags-async.js'}",
+      "svelte/internal/flags/tracing": "${base}${isDev ? '/@id/svelte/internal/flags/tracing' : '/lib/svelte/internal-flags-tracing.js'}",
+      "svelte/internal/server": "${base}${isDev ? '/@id/svelte/internal/server' : '/lib/svelte/internal-server.js'}",
+      "svelte/legacy": "${base}${isDev ? '/@id/svelte/legacy' : '/lib/svelte/legacy.js'}",
+      "svelte/events": "${base}${isDev ? '/@id/svelte/events' : '/lib/svelte/events.js'}",
+      "svelte-i18n": "${base}${isDev ? '/@id/svelte-i18n' : '/lib/svelte/i18n.js'}",
+      "@panomc/sdk": "${base}/lib/sdk/index.js",
+      "@panomc/sdk/components/theme": "${base}/lib/sdk/components-theme.js",
+      "@panomc/sdk/components/panel": "${base}/lib/sdk/components-panel.js",
+      "@panomc/sdk/toasts": "${base}/lib/sdk/toasts.js",
+      "@panomc/sdk/utils/api": "${base}/lib/sdk/utils-api.js",
+      "@panomc/sdk/utils/auth": "${base}/lib/sdk/utils-auth.js",
+      "@panomc/sdk/utils/tooltip": "${base}/lib/sdk/utils-tooltip.js",
+      "@panomc/sdk/utils/language": "${base}/lib/sdk/utils-language.js",
+      "@panomc/sdk/utils/component": "${base}/lib/sdk/utils-component.js",
+      "@panomc/sdk/utils/text": "${base}/lib/sdk/utils-text.js",
+      "@panomc/sdk/variables": "${base}/lib/sdk/variables.js",
+      "@panomc/sdk/svelte": "${base}/lib/sdk/svelte.js",
+      "@panomc/sdk/internal": "${base}/lib/sdk/internal.js"
+    }
+  }
+  </script>`;
+const PLACEHOLDER = '%pano_lib_import%';
+const PLACEHOLDER_LEN = PLACEHOLDER.length;
+
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
   const { cookies } = event;
@@ -65,44 +105,9 @@ export async function handle({ event, resolve }) {
 
   const response = await resolve(event, {
     transformPageChunk: ({ html }) => {
-      const isDev = process.env.NODE_ENV === 'development';
-      const importMap = `
- <script type="importmap" crossorigin="anonymous">
-  {
-    "imports": {
-      "svelte": "${base}${isDev ? '/@id/svelte' : '/lib/svelte/index.js'}",
-      "svelte/animate": "${base}${isDev ? '/@id/svelte/animate' : '/lib/svelte/animate.js'}",
-      "svelte/easing": "${base}${isDev ? '/@id/svelte/easing' : '/lib/svelte/easing.js'}",
-      "svelte/motion": "${base}${isDev ? '/@id/svelte/motion' : '/lib/svelte/motion.js'}",
-      "svelte/store": "${base}${isDev ? '/@id/svelte/store' : '/lib/svelte/store.js'}",
-      "svelte/transition": "${base}${isDev ? '/@id/svelte/transition' : '/lib/svelte/transition.js'}",
-      "svelte/internal": "${base}${isDev ? '/@id/svelte/internal' : '/lib/svelte/internal.js'}",
-      "svelte/internal/client": "${base}${isDev ? '/@id/svelte/internal/client' : '/lib/svelte/internal-client.js'}",
-      "svelte/internal/disclose-version": "${base}${isDev ? '/@id/svelte/internal/disclose-version' : '/lib/svelte/internal-disclose-version.js'}",
-      "svelte/internal/flags/legacy": "${base}${isDev ? '/@id/svelte/internal/flags/legacy' : '/lib/svelte/internal-flags-legacy.js'}",
-      "svelte/internal/flags/async": "${base}${isDev ? '/@id/svelte/internal/flags/async' : '/lib/svelte/internal-flags-async.js'}",
-      "svelte/internal/flags/tracing": "${base}${isDev ? '/@id/svelte/internal/flags/tracing' : '/lib/svelte/internal-flags-tracing.js'}",
-      "svelte/internal/server": "${base}${isDev ? '/@id/svelte/internal/server' : '/lib/svelte/internal-server.js'}",
-      "svelte/legacy": "${base}${isDev ? '/@id/svelte/legacy' : '/lib/svelte/legacy.js'}",
-      "svelte/events": "${base}${isDev ? '/@id/svelte/events' : '/lib/svelte/events.js'}",
-      "svelte-i18n": "${base}${isDev ? '/@id/svelte-i18n' : '/lib/svelte/i18n.js'}",
-      "@panomc/sdk": "${base}/lib/sdk/index.js",
-      "@panomc/sdk/components/theme": "${base}/lib/sdk/components-theme.js",
-      "@panomc/sdk/components/panel": "${base}/lib/sdk/components-panel.js",
-      "@panomc/sdk/toasts": "${base}/lib/sdk/toasts.js",
-      "@panomc/sdk/utils/api": "${base}/lib/sdk/utils-api.js",
-      "@panomc/sdk/utils/auth": "${base}/lib/sdk/utils-auth.js",
-      "@panomc/sdk/utils/tooltip": "${base}/lib/sdk/utils-tooltip.js",
-      "@panomc/sdk/utils/language": "${base}/lib/sdk/utils-language.js",
-      "@panomc/sdk/utils/component": "${base}/lib/sdk/utils-component.js",
-      "@panomc/sdk/utils/text": "${base}/lib/sdk/utils-text.js",
-      "@panomc/sdk/variables": "${base}/lib/sdk/variables.js",
-      "@panomc/sdk/svelte": "${base}/lib/sdk/svelte.js",
-      "@panomc/sdk/internal": "${base}/lib/sdk/internal.js"
-    }
-  }
-  </script>`;
-      return html.replace('%pano_lib_import%', importMap);
+      const index = html.indexOf(PLACEHOLDER);
+      if (index === -1) return html;
+      return html.substring(0, index) + IMPORT_MAP + html.substring(index + PLACEHOLDER_LEN);
     },
   });
 
