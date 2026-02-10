@@ -379,6 +379,7 @@
   let showSplashAlways = false;
   let waitAnimation = false;
   let mounted = false;
+  let whatsNewShown = false;
 
   function getCurrentSidebarState() {
     if (!hasPermission(Permissions.MANAGE_SERVERS)) {
@@ -420,8 +421,9 @@
     }
   });
 
-  $: if (!$showSplash && data.session.basicData.showWhatsNew) {
+  $: if (!$showSplash && data.session.basicData.showWhatsNew && !whatsNewShown) {
     showWhatsNewModal();
+    whatsNewShown = true;
     data.session.basicData.showWhatsNew = false;
   }
 
