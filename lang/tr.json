@@ -906,6 +906,9 @@
         "title": "Aktivite Kaydı Detayı",
         "json": "JSON:"
       },
+      "logout-session-confirm": {
+        "title": "Mevcut oturumunuzdan çıkış yapmak istediğinizden emin misiniz?"
+      },
       "confirm-remove-pano-account": {
         "title": "Çevrimiçi Pano hesabınızı platformdan kaldırmak istediğinize emin misiniz?"
       },

@@ -213,7 +213,7 @@
   import { page } from '$app/stores';
 
   import ApiUtil from '$lib/api.util';
-  import { logoutLoading, options, quickNotifications, toggleSidebar } from '$lib/Store';
+  import { logout, logoutLoading, options, quickNotifications, toggleSidebar } from '$lib/Store';
 
   import { currentLanguage } from '$lib/language.util';
 
@@ -274,14 +274,7 @@
   }
 
   function onLogout() {
-    logoutLoading.set(true);
-
-    ApiUtil.post({
-      path: '/api/auth/logout',
-      handler: () => {
-        window.location.href = '/';
-      },
-    });
+    logout();
   }
 
   function delay(time) {

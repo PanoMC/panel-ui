@@ -1,8 +1,7 @@
 import { get, writable } from 'svelte/store';
 
-import { invalidateAll } from '$app/navigation';
-
 import { PanelSidebarStorageUtil } from '$lib/storage.util';
+import ApiUtil from '$lib/api.util';
 
 export const options = Object.freeze({
   DEFAULT_PAGE_TITLE: 'Pano',
@@ -68,4 +67,14 @@ export async function resumeAfterNetworkError() {
       check(currentList, calledList);
     }
   }
+}
+export async function logout() {
+  logoutLoading.set(true);
+
+  await ApiUtil.post({
+    path: '/api/auth/logout',
+    handler: () => {
+      window.location.href = '/';
+    },
+  });
 }

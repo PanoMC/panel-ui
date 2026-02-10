@@ -96,17 +96,22 @@
   import NoContent from '$lib/component/NoContent.svelte';
   import DateComponent from '$lib/component/Date.svelte';
   import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showConfirmModal } from '$lib/component/modals/ConfirmActionModal.svelte';
+  import { logout } from '$lib/Store';
 
   let { data } = $props();
 
   let loadingSessionId = $state(null);
 
   function logoutSession(sessionId, isCurrent) {
-    loadingSessionId = sessionId;
-
     if (isCurrent) {
-      logoutLoading.set(true);
+      showConfirmModal('components.modals.logout-session-confirm.title', () => {
+        logout();
+      });
+      return;
     }
+
+    loadingSessionId = sessionId;
 
     ApiUtil.delete({
       path: `/api/panel/players/${data.username}/sessions/${sessionId}`,
@@ -114,15 +119,7 @@
         loadingSessionId = null;
 
         if (body.error) {
-          if (isCurrent) {
-            logoutLoading.set(false);
-          }
           await showToast('errors.' + body.error);
-          return;
-        }
-
-        if (isCurrent) {
-          window.location.href = '/';
           return;
         }
 

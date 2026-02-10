@@ -901,6 +901,9 @@
         "title": "Activity Log Detail",
         "json": "JSON:"
       },
+      "logout-session-confirm": {
+        "title": "Are you sure you want to logout from your current session?"
+      },
       "confirm-remove-pano-account": {
         "title": "Are you sure to disconnect your online Pano account from this platform?"
       },
