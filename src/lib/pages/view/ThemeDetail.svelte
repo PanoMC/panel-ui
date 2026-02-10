@@ -253,6 +253,7 @@
   import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
   import ConfirmStopThemeModal, {
     show as showStopModal,
+    passwordError,
   } from '$lib/component/modals/ConfirmStopThemeModal.svelte';
 
   const pageTitle = getContext('pageTitle');
@@ -294,23 +295,38 @@
   }
 
   function onStopClick() {
-    showStopModal(() => {
+    showStopModal((password) => {
       stoping = true;
 
-      ApiUtil.delete({
-        path: `/api/panel/themes`,
-        handler: async (stopResponse) => {
-          if (stopResponse.result !== 'ok') {
-            location.reload();
-            return;
-          }
+      return new Promise((resolve) => {
+        ApiUtil.customRequest({
+          path: `/api/panel/themes`,
+          data: {
+            method: 'DELETE',
+            body: { password },
+          },
+          handler: async (stopResponse) => {
+            if (stopResponse.result !== 'ok') {
+              if (stopResponse.error === 'NO_PERMISSION') {
+                stoping = false;
+                passwordError.set(true);
+                resolve(false);
+                return;
+              }
 
-          await invalidate((_) => true);
+              location.reload();
+              resolve(false);
+              return;
+            }
 
-          await showToast('components.toasts.stop-theme-success');
+            await invalidate((_) => true);
 
-          stoping = false;
-        },
+            await showToast('components.toasts.stop-theme-success');
+
+            stoping = false;
+            resolve(true);
+          },
+        });
       });
     });
   }

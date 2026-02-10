@@ -917,7 +917,8 @@
         "title": "Are you sure to update all the resources? If you leave this page, only the last resource update will continue in the background."
       },
       "confirm-stop-theme": {
-        "title": "Are you sure to stop current active theme? This will cause website unreachable!"
+        "title": "Are you sure to stop current active theme? This will cause website unreachable!",
+        "account-password": "Account Password"
       },
       "confirm-stop-pano": {
         "title": "Are you sure to stop Pano? This will cause the website to be unreachable!",

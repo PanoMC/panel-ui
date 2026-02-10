@@ -922,7 +922,8 @@
         "title": "Tüm kaynakları güncellemek istediğinize emin misiniz? Bu sayfadan ayrılsanız bile yalnızca son kaynağın güncellemesi arka planda devam edecektir."
       },
       "confirm-stop-theme": {
-        "title": "Mevcut aktif temayı durdurmak istediğinize emin misiniz? Bu, sitenin erişilemez olmasına neden olacaktır!"
+        "title": "Mevcut aktif temayı durdurmak istediğinize emin misiniz? Bu, sitenin erişilemez olmasına neden olacaktır!",
+        "account-password": "Hesap Şifresi"
       },
       "confirm-stop-pano": {
         "title": "Pano'yu durdurmak istediğinize emin misiniz? Bu, sitenin erişilemez olmasına neden olacaktır!",
