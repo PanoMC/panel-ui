@@ -1244,6 +1244,7 @@
       "refresh": "Yenile"
     },
     "toasts": {
+      "demo-mode-restricted": "Bu özellik demo modunda devre dışı bırakılmıştır.",
       "accepted-server-connect-request": "Sunucu bağlantı isteği kabul edildi.",
       "expired-server-connect-request": "Geçersiz sunucu bağlantı isteği.",
       "notifications-deleted-permanently": "Tüm bildirimler silindi.",

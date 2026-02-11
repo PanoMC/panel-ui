@@ -1232,6 +1232,7 @@
       "refresh": "Обновить"
     },
     "toasts": {
+      "demo-mode-restricted": "Это действие недоступно в демо-режиме.",
       "accepted-server-connect-request": "Запрос на подключение сервера принят.",
       "expired-server-connect-request": "Недействительный запрос на подключение сервера.",
       "notifications-deleted-permanently": "Все уведомления были удалены.",

@@ -1239,6 +1239,7 @@
       "refresh": "Refresh"
     },
     "toasts": {
+      "demo-mode-restricted": "This action is disabled in demo mode.",
       "accepted-server-connect-request": "Server connection request accepted.",
       "expired-server-connect-request": "Invalid server connection request.",
       "notifications-deleted-permanently": "All notifications have been deleted.",
