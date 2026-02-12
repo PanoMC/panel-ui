@@ -16,8 +16,8 @@
   import { get } from 'svelte/store';
   import { _ } from 'svelte-i18n';
   import { onDestroy } from 'svelte';
-  import Hook from '$lib/component/Hook.svelte';
-  import NoContent from '$lib/component/NoContent.svelte';
+  import Hook from '$lib/components/Hook.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
   import { panoApiClient } from '$lib/PluginAPI.js';
 
   let { data } = $props();

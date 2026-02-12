@@ -111,7 +111,7 @@
   import { differenceInCalendarDays, intervalToDuration } from 'date-fns';
   import { _ } from 'svelte-i18n';
 
-  import DateComponent from '$lib/component/Date.svelte';
+  import DateComponent from '$lib/components/Date.svelte';
 
   const pageTitle = getContext('pageTitle');
 

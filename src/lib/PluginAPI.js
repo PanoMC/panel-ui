@@ -1,7 +1,7 @@
 import { baseAPI, pageAPI } from '../pano-sdk/core/js/PluginAPI';
 import { derived, writable, get } from 'svelte/store';
-import { originalSiteNavItems } from '$lib/component/sidebar/SiteNavigationMenu.svelte';
-import { originalServerNavItems } from '$lib/component/sidebar/ServerNavigationMenu.svelte';
+import { originalSiteNavItems } from '$lib/components/sidebar/SiteNavigationMenu.svelte';
+import { originalServerNavItems } from '$lib/components/sidebar/ServerNavigationMenu.svelte';
 import { originalThemeMenuItems } from '$lib/pages/view/Themes.svelte';
 import { originalPostMenuItems } from '$lib/pages/Posts.svelte';
 

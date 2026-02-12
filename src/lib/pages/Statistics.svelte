@@ -157,11 +157,11 @@
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import WebsiteActivityChart from '$lib/component/charts/Dashboard/WebsiteActivityChart.svelte';
+  import WebsiteActivityChart from '$lib/components/charts/Dashboard/WebsiteActivityChart.svelte';
   import { goto } from '$app/navigation';
-  import CardHeader from '$lib/component/CardHeader.svelte';
-  import CardFilters from '$lib/component/CardFilters.svelte';
-  import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
+  import CardFilters from '$lib/components/CardFilters.svelte';
+  import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
 
   export let data;
   let reloading = false;

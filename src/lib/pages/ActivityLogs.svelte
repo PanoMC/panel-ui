@@ -71,13 +71,13 @@
 
   import { buildQueryParams } from '$lib/api.util.js';
 
-  import Pagination from '$lib/component/Pagination.svelte';
-  import NoContent from '$lib/component/NoContent.svelte';
-  import ActivityLogRow from '$lib/component/rows/ActivityLogRow.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import ActivityLogRow from '$lib/components/rows/ActivityLogRow.svelte';
   import ViewActivityLogModal, {
     show as showViewActivityLogModal,
     onHide as onViewActivityLogModalHide,
-  } from '$lib/component/modals/ViewActivityLogModal.svelte';
+  } from '$lib/components/modals/ViewActivityLogModal.svelte';
 
   export let data;
 

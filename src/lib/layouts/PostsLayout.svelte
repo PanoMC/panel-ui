@@ -63,13 +63,13 @@
 <script>
   import { _ } from 'svelte-i18n';
   import { beforeNavigate } from '$app/navigation';
-  import PageActions from '$lib/component/PageActions.svelte';
-  import PageNav from '$lib/component/PageNav.svelte';
-  import PageNavItem from '$lib/component/PageNavItem.svelte';
-  import ConfirmDeletePostModal from '$lib/component/modals/ConfirmDeletePostModal.svelte';
-  import ConfirmDraftPostModal from '$lib/component/modals/ConfirmDraftPostModal.svelte';
-  import ConfirmPublishPostModal from '$lib/component/modals/ConfirmPublishPostModal.svelte';
-  import Hook from '$lib/component/Hook.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
+  import ConfirmDeletePostModal from '$lib/components/modals/ConfirmDeletePostModal.svelte';
+  import ConfirmDraftPostModal from '$lib/components/modals/ConfirmDraftPostModal.svelte';
+  import ConfirmPublishPostModal from '$lib/components/modals/ConfirmPublishPostModal.svelte';
+  import Hook from '$lib/components/Hook.svelte';
 
   import { postMenuItems } from '$lib/PluginAPI.js';
 

@@ -93,10 +93,10 @@
   import tooltip from '$lib/tooltip.util';
   import { parseUserAgent } from '$lib/string.util';
   import { logoutLoading } from '$lib/Store';
-  import NoContent from '$lib/component/NoContent.svelte';
-  import DateComponent from '$lib/component/Date.svelte';
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
-  import { show as showConfirmModal } from '$lib/component/modals/ConfirmActionModal.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import DateComponent from '$lib/components/Date.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { show as showConfirmModal } from '$lib/components/modals/ConfirmActionModal.svelte';
   import { logout } from '$lib/Store';
 
   let { data } = $props();

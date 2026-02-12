@@ -119,12 +119,12 @@
   import ApiUtil from '$lib/api.util.js';
   import { currentLanguage } from '$lib/language.util.js';
 
-  import { show as showInstallingResourceModal } from '$lib/component/modals/InstallingResourceModal.svelte';
+  import { show as showInstallingResourceModal } from '$lib/components/modals/InstallingResourceModal.svelte';
   import ConfirmInstallResourceModal, {
     show as showConfirmInstallResourceModal,
     setCallback as setConfirmInstallResourceCallback,
     onHide as onConfirmInstallResourceHide,
-  } from '$lib/component/modals/ConfirmInstallResourceModal.svelte';
+  } from '$lib/components/modals/ConfirmInstallResourceModal.svelte';
 
   export let data;
 

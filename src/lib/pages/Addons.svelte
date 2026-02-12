@@ -202,30 +202,30 @@
 
   import { PANO_WEBSITE_URL } from '$lib/variables';
 
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
-  import PageActions from '$lib/component/PageActions.svelte';
-  import CardHeader from '$lib/component/CardHeader.svelte';
-  import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
-  import CardFilters from '$lib/component/CardFilters.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
+  import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
+  import CardFilters from '$lib/components/CardFilters.svelte';
   import InstallResourceModal, {
     show as showInstallResourceModal,
-  } from '$lib/component/modals/InstallResourceModal.svelte';
+  } from '$lib/components/modals/InstallResourceModal.svelte';
   import {
     show as showConfirmDisableAddonModal,
     setCallback as setCallbackConfirmDisableAddonModal,
-  } from '$lib/component/modals/ConfirmDisableAddonWillCauseMoreDisableModal.svelte';
+  } from '$lib/components/modals/ConfirmDisableAddonWillCauseMoreDisableModal.svelte';
   import {
     show as showConfirmEnablingAddonModal,
     setCallback as setCallbackConfirmEnablingAddonModal,
-  } from '$lib/component/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte';
+  } from '$lib/components/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte';
 
-  import NoContent from '$lib/component/NoContent.svelte';
-  import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
-  import FailedLoginPanoStoreAlert from '$lib/component/FailedLoginPanoStoreAlert.svelte';
-  import RefreshRequiredAlert from '$lib/component/RefreshRequiredAlert.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
+  import FailedLoginPanoStoreAlert from '$lib/components/FailedLoginPanoStoreAlert.svelte';
+  import RefreshRequiredAlert from '$lib/components/RefreshRequiredAlert.svelte';
 
-  import SearchInput from '$lib/component/SearchInput.svelte';
+  import SearchInput from '$lib/components/SearchInput.svelte';
   import { goto } from '$app/navigation';
   import { panoApiClient } from '$lib/PluginAPI.js';
   import AddonSettingsButton from '$lib/pages/addons/AddonSettingsButton.svelte';

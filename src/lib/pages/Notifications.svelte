@@ -187,12 +187,12 @@
   import ConfirmRemoveAllNotificationsModal, {
     show as showDeleteAllNotificationsModal,
     setCallback as setDeleteAllNotificationsModalCallback,
-  } from '$lib/component/modals/ConfirmRemoveAllNotificationsModal.svelte';
+  } from '$lib/components/modals/ConfirmRemoveAllNotificationsModal.svelte';
   import { onNotificationClick } from '$lib/NotificationManager.js';
 
-  import NoContent from '$lib/component/NoContent.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
   import { currentLanguage } from '$lib/language.util.js';
-  import PageActions from '$lib/component/PageActions.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
 
   export let data;
 

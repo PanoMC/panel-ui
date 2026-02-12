@@ -253,31 +253,31 @@
   import * as locales from 'date-fns/locale';
   import { formatRelative } from 'date-fns';
 
-  import PageActions from '$lib/component/PageActions.svelte';
-  import PageNav from '$lib/component/PageNav.svelte';
-  import PageNavItem from '$lib/component/PageNavItem.svelte';
-  import PlayerStatusBadge from '$lib/component/badges/PlayerStatusBadge.svelte';
-  import DateComponent from '$lib/component/Date.svelte';
-  import PlayerPermissionBadge from '$lib/component/badges/PlayerPermissionBadge.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
+  import PlayerStatusBadge from '$lib/components/badges/PlayerStatusBadge.svelte';
+  import DateComponent from '$lib/components/Date.svelte';
+  import PlayerPermissionBadge from '$lib/components/badges/PlayerPermissionBadge.svelte';
   import tooltip from '$lib/tooltip.util';
   import { currentLanguage } from '$lib/language.util.js';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import ApiUtil from '$lib/api.util';
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
   import {
     show as showEditPlayerModal,
     setCallback as setEditPlayerModalCallback,
-  } from '$lib/component/modals/EditPlayerModal.svelte';
+  } from '$lib/components/modals/EditPlayerModal.svelte';
   import {
     show as showConfirmBanPlayerModal,
     setCallback as setConfirmBanPlayerModalCallback,
-  } from '$lib/component/modals/ConfirmBanPlayerModal.svelte';
+  } from '$lib/components/modals/ConfirmBanPlayerModal.svelte';
   import {
     show as showUnbanPlayerModal,
     setCallback as setUnbanPlayerModalCallback,
-  } from '$lib/component/modals/UnbanPlayerModal.svelte';
-  import { show as showConfirmDeletePlayerModal } from '$lib/component/modals/ConfirmDeletePlayerModal.svelte';
+  } from '$lib/components/modals/UnbanPlayerModal.svelte';
+  import { show as showConfirmDeletePlayerModal } from '$lib/components/modals/ConfirmDeletePlayerModal.svelte';
 
   let { data, children } = $props();
   const slots = initSlots();

@@ -232,28 +232,28 @@
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';
 
-  import Pagination from '$lib/component/Pagination.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
 
   import {
     setCallback as setCloseTicketModalCallback,
     show as showCloseTicketModal,
     onHide as onConfirmCloseTicketModalHide,
-  } from '$lib/component/modals/ConfirmCloseTicketModal.svelte';
+  } from '$lib/components/modals/ConfirmCloseTicketModal.svelte';
   import {
     setCallback as setDeleteTicketModalCallback,
     show as showDeleteTicketModal,
     onHide as onConfirmDeleteTicketModalHide,
-  } from '$lib/component/modals/ConfirmDeleteTicketModal.svelte';
+  } from '$lib/components/modals/ConfirmDeleteTicketModal.svelte';
 
-  import TicketRow from '$lib/component/rows/TicketRow.svelte';
-  import NoContent from '$lib/component/NoContent.svelte';
-  import PageActions from '$lib/component/PageActions.svelte';
-  import CardHeader from '$lib/component/CardHeader.svelte';
-  import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
-  import CardFilters from '$lib/component/CardFilters.svelte';
-  import PageNav from '$lib/component/PageNav.svelte';
-  import PageNavItem from '$lib/component/PageNavItem.svelte';
-  import SearchInput from '$lib/component/SearchInput.svelte';
+  import TicketRow from '$lib/components/rows/TicketRow.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
+  import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
+  import CardFilters from '$lib/components/CardFilters.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
+  import SearchInput from '$lib/components/SearchInput.svelte';
 
   export let data;
 

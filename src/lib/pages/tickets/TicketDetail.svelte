@@ -169,8 +169,8 @@
 
   import ApiUtil from '$lib/api.util.js';
 
-  import { TicketStatuses } from '$lib/component/badges/TicketStatusBadge.svelte';
-  import Editor from '$lib/component/Editor.svelte';
+  import { TicketStatuses } from '$lib/components/badges/TicketStatusBadge.svelte';
+  import Editor from '$lib/components/Editor.svelte';
   import { error } from '@sveltejs/kit';
 
   /**
@@ -213,15 +213,15 @@
   import {
     setCallback as setCloseTicketModalCallback,
     show as showCloseTicketModal,
-  } from '$lib/component/modals/ConfirmCloseTicketModal.svelte';
+  } from '$lib/components/modals/ConfirmCloseTicketModal.svelte';
   import {
     setCallback as setDeleteTicketModalCallback,
     show as showDeleteTicketModal,
-  } from '$lib/component/modals/ConfirmDeleteTicketModal.svelte';
+  } from '$lib/components/modals/ConfirmDeleteTicketModal.svelte';
 
-  import Date from '$lib/component/Date.svelte';
-  import TicketStatusBadge from '$lib/component/badges/TicketStatusBadge.svelte';
-  import PageActions from '$lib/component/PageActions.svelte';
+  import Date from '$lib/components/Date.svelte';
+  import TicketStatusBadge from '$lib/components/badges/TicketStatusBadge.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
 
   export let data;
 

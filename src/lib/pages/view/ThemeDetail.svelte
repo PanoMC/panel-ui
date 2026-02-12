@@ -243,18 +243,18 @@
   import { formatBytes } from '$lib/string.util';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
-  import PageActions from '$lib/component/PageActions.svelte';
-  import Date from '$lib/component/Date.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import Date from '$lib/components/Date.svelte';
   import ConfirmRemoveThemeModal, {
     show as showRemoveModal,
-  } from '$lib/component/modals/ConfirmRemoveThemeModal.svelte';
-  import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
+  } from '$lib/components/modals/ConfirmRemoveThemeModal.svelte';
+  import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
   import ConfirmStopThemeModal, {
     show as showStopModal,
     passwordError,
-  } from '$lib/component/modals/ConfirmStopThemeModal.svelte';
+  } from '$lib/components/modals/ConfirmStopThemeModal.svelte';
 
   const pageTitle = getContext('pageTitle');
 

@@ -209,36 +209,36 @@
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';
 
-  import Pagination from '$lib/component/Pagination.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
 
   import {
     show as showEditPlayerModal,
     setCallback as setEditPlayerModalCallback,
     onHide as onEditPlayerModalHide,
-  } from '$lib/component/modals/EditPlayerModal.svelte';
+  } from '$lib/components/modals/EditPlayerModal.svelte';
   import {
     show as showConfirmBanPlayerModal,
     setCallback as setConfirmBanPlayerModalCallback,
     onHide as onConfirmBanPlayerModalHide,
-  } from '$lib/component/modals/ConfirmBanPlayerModal.svelte';
+  } from '$lib/components/modals/ConfirmBanPlayerModal.svelte';
   import {
     show as showUnbanPlayerModal,
     setCallback as setUnbanPlayerModalCallback,
     onHide as onUnbanPlayerModalHide,
-  } from '$lib/component/modals/UnbanPlayerModal.svelte';
+  } from '$lib/components/modals/UnbanPlayerModal.svelte';
 
-  import PlayerRow from '$lib/component/rows/PlayerRow.svelte';
-  import Hook from '$lib/component/Hook.svelte';
+  import PlayerRow from '$lib/components/rows/PlayerRow.svelte';
+  import Hook from '$lib/components/Hook.svelte';
 
-  import NoContent from '$lib/component/NoContent.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
-  import PageActions from '$lib/component/PageActions.svelte';
-  import CardHeader from '$lib/component/CardHeader.svelte';
-  import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
-  import CardFilters from '$lib/component/CardFilters.svelte';
-  import PageNav from '$lib/component/PageNav.svelte';
-  import PageNavItem from '$lib/component/PageNavItem.svelte';
-  import SearchInput from '$lib/component/SearchInput.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
+  import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
+  import CardFilters from '$lib/components/CardFilters.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
+  import SearchInput from '$lib/components/SearchInput.svelte';
   import { page } from '$app/stores';
 
   export let data;

@@ -66,9 +66,9 @@
   import { page } from '$app/stores';
   import { beforeNavigate } from '$app/navigation';
 
-  import PageActions from '$lib/component/PageActions.svelte';
-  import PageNav from '$lib/component/PageNav.svelte';
-  import PageNavItem from '$lib/component/PageNavItem.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
 
   import { themeMenuItems } from '$lib/PluginAPI.js';
 

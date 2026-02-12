@@ -375,7 +375,7 @@
 </div>
 
 <script>
-  import NoContent from '$lib/component/NoContent.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
 
   // File upload states
   let configFileInput;

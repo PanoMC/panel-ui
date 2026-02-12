@@ -114,25 +114,25 @@
 
   import { goto } from '$app/navigation';
 
-  import Pagination from '$lib/component/Pagination.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
 
   import AddEditLanguageModal, {
     show as showAddEditLanguageModal,
     setCallback as setCallbackForAddEditLanguageModal,
     onHide as onAddEditLanguageModalHide,
-  } from '$lib/component/modals/AddEditLanguageModal.svelte';
+  } from '$lib/components/modals/AddEditLanguageModal.svelte';
   import ConfirmDeleteLanguageModal, {
     setCallback as setDeleteLanguageModalCallback,
     show as showDeleteLanguageModal,
     onHide as onConfirmDeleteLanguageModalHide,
-  } from '$lib/component/modals/ConfirmDeleteLanguageModal.svelte';
+  } from '$lib/components/modals/ConfirmDeleteLanguageModal.svelte';
 
-  import NoContent from '$lib/component/NoContent.svelte';
-  import PageActions from '$lib/component/PageActions.svelte';
-  import CardHeader from '$lib/component/CardHeader.svelte';
-  import LocaleRow from '$lib/component/rows/LocaleRow.svelte';
-  import PageNav from '$lib/component/PageNav.svelte';
-  import PageNavItem from '$lib/component/PageNavItem.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
+  import LocaleRow from '$lib/components/rows/LocaleRow.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
 
   export let data;
 

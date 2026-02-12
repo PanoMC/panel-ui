@@ -205,7 +205,7 @@
   import { _ } from 'svelte-i18n';
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
-  import { show as showWhatsNewModal } from '$lib/component/modals/WhatsNewModal.svelte';
+  import { show as showWhatsNewModal } from '$lib/components/modals/WhatsNewModal.svelte';
 
   export let data;
 

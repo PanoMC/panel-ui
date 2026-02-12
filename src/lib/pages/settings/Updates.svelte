@@ -449,31 +449,31 @@
 
   import tooltip from '$lib/tooltip.util';
 
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
-  import PageActions from '$lib/component/PageActions.svelte';
-  import NoContent from '$lib/component/NoContent.svelte';
-  import DateTime from '$lib/component/Date.svelte';
-  import MarkdownRenderer from '$lib/component/MarkdownRenderer.svelte';
-  import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
-  import CardHeader from '$lib/component/CardHeader.svelte';
-  import RefreshRequiredAlert from '$lib/component/RefreshRequiredAlert.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import DateTime from '$lib/components/Date.svelte';
+  import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
+  import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
+  import RefreshRequiredAlert from '$lib/components/RefreshRequiredAlert.svelte';
 
   import ConfirmUpdatePlatformModal, {
     show as showUpdatePlatformModal,
-  } from '$lib/component/modals/ConfirmUpdatePlatformModal.svelte';
+  } from '$lib/components/modals/ConfirmUpdatePlatformModal.svelte';
 
   import ConfirmUpdateResourceModal, {
     show as showUpdateResourceModal,
-  } from '$lib/component/modals/ConfirmUpdateResourceModal.svelte';
+  } from '$lib/components/modals/ConfirmUpdateResourceModal.svelte';
 
   import ConfirmUpdateResourcesModal, {
     show as showUpdateResourcesModal,
-  } from '$lib/component/modals/ConfirmUpdateResourcesModal.svelte';
+  } from '$lib/components/modals/ConfirmUpdateResourcesModal.svelte';
 
   import ChangelogModal, {
     show as showChangelogModal,
-  } from '$lib/component/modals/ChangelogModal.svelte';
+  } from '$lib/components/modals/ChangelogModal.svelte';
 
   export let data;
 

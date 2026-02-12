@@ -100,13 +100,13 @@
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { buildQueryParams } from '$lib/api.util';
 
-  import TicketStatusBadge from '$lib/component/badges/TicketStatusBadge.svelte';
-  import DateComponent from '$lib/component/Date.svelte';
-  import Pagination from '$lib/component/Pagination.svelte';
+  import TicketStatusBadge from '$lib/components/badges/TicketStatusBadge.svelte';
+  import DateComponent from '$lib/components/Date.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
 
-  import NoContent from '$lib/component/NoContent.svelte';
-  import BanHistoryRow from '$lib/component/rows/BanHistoryRow.svelte';
-  import Hook from '$lib/component/Hook.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import BanHistoryRow from '$lib/components/rows/BanHistoryRow.svelte';
+  import Hook from '$lib/components/Hook.svelte';
 
   let { data = $bindable() } = $props();
 

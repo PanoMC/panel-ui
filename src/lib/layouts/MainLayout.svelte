@@ -40,8 +40,8 @@
 </main>
 
 <script context="module">
-  import Sidebar from '$lib/component/Sidebar.svelte';
-  import Navbar from '$lib/component/Navbar.svelte';
+  import Sidebar from '$lib/components/Sidebar.svelte';
+  import Navbar from '$lib/components/Navbar.svelte';
 </script>
 
 <script>

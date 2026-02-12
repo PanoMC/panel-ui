@@ -21,7 +21,7 @@
 <script>
   import { _ } from 'svelte-i18n';
 
-  import PageActions from '$lib/component/PageActions.svelte';
-  import PageNav from '$lib/component/PageNav.svelte';
-  import PageNavItem from '$lib/component/PageNavItem.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
 </script>

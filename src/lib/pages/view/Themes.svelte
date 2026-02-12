@@ -206,18 +206,18 @@
   import tooltip from '$lib/tooltip.util';
 
   import { base } from '$app/paths';
-  import SearchInput from '$lib/component/SearchInput.svelte';
+  import SearchInput from '$lib/components/SearchInput.svelte';
   import { goto, invalidate } from '$app/navigation';
 
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
-  import NoContent from '$lib/component/NoContent.svelte';
-  import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
-  import CardHeader from '$lib/component/CardHeader.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
   import InstallResourceModal, {
     show as showInstallResourceModal,
-  } from '$lib/component/modals/InstallResourceModal.svelte';
-  import FailedLoginPanoStoreAlert from '$lib/component/FailedLoginPanoStoreAlert.svelte';
+  } from '$lib/components/modals/InstallResourceModal.svelte';
+  import FailedLoginPanoStoreAlert from '$lib/components/FailedLoginPanoStoreAlert.svelte';
 
   export let data;
 

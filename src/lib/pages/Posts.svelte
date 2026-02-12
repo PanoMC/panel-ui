@@ -227,32 +227,32 @@
   import { goto, invalidate } from '$app/navigation';
   import { base } from '$app/paths';
 
-  import Pagination from '$lib/component/Pagination.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
 
   import {
     setCallback as setDeletePostModalCallback,
     show as showDeletePostModal,
     onHide as onDeletePostModalHide,
-  } from '$lib/component/modals/ConfirmDeletePostModal.svelte';
-  import Hook from '$lib/component/Hook.svelte';
+  } from '$lib/components/modals/ConfirmDeletePostModal.svelte';
+  import Hook from '$lib/components/Hook.svelte';
 
   import {
     show as showDraftPostModal,
     onHide as onDraftPostModalHide,
-  } from '$lib/component/modals/ConfirmDraftPostModal.svelte';
+  } from '$lib/components/modals/ConfirmDraftPostModal.svelte';
 
   import {
     show as showPublishPostModal,
     onHide as onPublishPostModalHide,
-  } from '$lib/component/modals/ConfirmPublishPostModal.svelte';
-  import PostRow from '$lib/component/rows/PostRow.svelte';
+  } from '$lib/components/modals/ConfirmPublishPostModal.svelte';
+  import PostRow from '$lib/components/rows/PostRow.svelte';
 
-  import { show as showToast, limitTitle } from '$lib/component/ToastContainer.svelte';
-  import NoContent from '$lib/component/NoContent.svelte';
-  import CardHeader from '$lib/component/CardHeader.svelte';
-  import CardFilters from '$lib/component/CardFilters.svelte';
-  import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
-  import SearchInput from '$lib/component/SearchInput.svelte';
+  import { show as showToast, limitTitle } from '$lib/components/ToastContainer.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
+  import CardFilters from '$lib/components/CardFilters.svelte';
+  import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
+  import SearchInput from '$lib/components/SearchInput.svelte';
 
   const { data = $bindable() } = $props();
 

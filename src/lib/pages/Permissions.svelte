@@ -617,42 +617,42 @@
   import { _ } from 'svelte-i18n';
 
   import ApiUtil from '$lib/api.util.js';
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
   import CreatePermissionGroupModal, {
     show as showCreatePermissionGroupModal,
     setCallback as setCreatePermissionGroupModalCallback,
-  } from '$lib/component/modals/CreatePermissionGroupModal.svelte';
+  } from '$lib/components/modals/CreatePermissionGroupModal.svelte';
   import EditPermTrackModal, {
     show as showEditPermTrackModal,
     setCallback as setEditPermTrackModalCallback,
-  } from '$lib/component/modals/EditPermTrackModal.svelte';
+  } from '$lib/components/modals/EditPermTrackModal.svelte';
   import EditPermissionNodeModal, {
     show as showEditPermissionNodeModal,
     setCallback as setEditPermissionNodeModalCallback,
-  } from '$lib/component/modals/EditPermissionNodeModal.svelte';
+  } from '$lib/components/modals/EditPermissionNodeModal.svelte';
   import ConfirmRemovePermTrackModal, {
     show as showConfirmRemovePermTrackModal,
     setCallback as setConfirmRemovePermTrackModalCallback,
-  } from '$lib/component/modals/ConfirmRemovePermTrackModal.svelte';
+  } from '$lib/components/modals/ConfirmRemovePermTrackModal.svelte';
   import ConfirmRemovePermGroupModal, {
     show as showConfirmRemovePermGroupModal,
     setCallback as setConfirmRemovePermGroupModalCallback,
-  } from '$lib/component/modals/ConfirmRemovePermGroupModal.svelte';
+  } from '$lib/components/modals/ConfirmRemovePermGroupModal.svelte';
   import ConfirmRemovePermUserModal, {
     show as showConfirmRemovePermUserModal,
     setCallback as setConfirmRemovePermUserModalCallback,
-  } from '$lib/component/modals/ConfirmRemovePermUserModal.svelte';
+  } from '$lib/components/modals/ConfirmRemovePermUserModal.svelte';
   import ConfirmResetPermissionsModal, {
     show as showConfirmResetPermissionsModal,
     setCallback as setConfirmResetPermissionsModalCallback,
-  } from '$lib/component/modals/ConfirmResetPermissionsModal.svelte';
+  } from '$lib/components/modals/ConfirmResetPermissionsModal.svelte';
   import SearchPlayerModal, {
     show as showSearchPlayerModal,
     setCallback as setSearchPlayerModalCallback,
-  } from '$lib/component/modals/SearchPlayerModal.svelte';
-  import PageActions from '$lib/component/PageActions.svelte';
-  import NoContent from '$lib/component/NoContent.svelte';
-  import SearchInput from '$lib/component/SearchInput.svelte';
+  } from '$lib/components/modals/SearchPlayerModal.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import SearchInput from '$lib/components/SearchInput.svelte';
   import { currentLanguage } from '$lib/language.util.js';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 

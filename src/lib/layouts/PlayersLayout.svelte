@@ -30,8 +30,8 @@
 </script>
 
 <script>
-  import EditPlayerModal from '$lib/component/modals/EditPlayerModal.svelte';
-  import ConfirmBanPlayerModal from '$lib/component/modals/ConfirmBanPlayerModal.svelte';
-  import UnbanPlayerModal from '$lib/component/modals/UnbanPlayerModal.svelte';
-  import ConfirmDeletePlayerModal from '$lib/component/modals/ConfirmDeletePlayerModal.svelte';
+  import EditPlayerModal from '$lib/components/modals/EditPlayerModal.svelte';
+  import ConfirmBanPlayerModal from '$lib/components/modals/ConfirmBanPlayerModal.svelte';
+  import UnbanPlayerModal from '$lib/components/modals/UnbanPlayerModal.svelte';
+  import ConfirmDeletePlayerModal from '$lib/components/modals/ConfirmDeletePlayerModal.svelte';
 </script>

@@ -103,10 +103,10 @@
 
   import MakeMainServerModal, {
     show as showMakeMainServerModal,
-  } from '$lib/component/modals/MakeMainServerModal.svelte';
+  } from '$lib/components/modals/MakeMainServerModal.svelte';
   import RemoveServerModal, {
     show as showRemoveServerModal,
-  } from '$lib/component/modals/RemoveServerModal.svelte';
+  } from '$lib/components/modals/RemoveServerModal.svelte';
 
   export let data;
 

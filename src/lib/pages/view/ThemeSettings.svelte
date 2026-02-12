@@ -38,8 +38,8 @@
   import { fade } from 'svelte/transition';
   import { base } from '$app/paths';
   import { browser } from '$app/environment';
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
-  import { show as showConfirm } from '$lib/component/modals/ConfirmActionModal.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { show as showConfirm } from '$lib/components/modals/ConfirmActionModal.svelte';
 
   const pageTitle = getContext('pageTitle');
   const panelTheme = getContext('panelTheme');

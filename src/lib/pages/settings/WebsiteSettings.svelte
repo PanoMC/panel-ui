@@ -438,22 +438,22 @@
 <script>
   import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import DragAndDropZone from '$lib/component/DragAndDropZone.svelte';
+  import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
 
   import { websiteLogoSrc } from '$lib/Store.js';
 
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
   import ConfirmRestartPanoModal, {
     show as showConfirmRestartPanoModal,
-  } from '$lib/component/modals/ConfirmRestartPanoModal.svelte';
+  } from '$lib/components/modals/ConfirmRestartPanoModal.svelte';
 
   import ConfirmSaveCriticalSettingsModal, {
     show as showConfirmSaveCriticalSettingsModal,
     setError as setSaveCriticalSettingsError,
     setLoading as setSaveCriticalSettingsLoading,
     hide as hideSaveCriticalSettingsModal,
-  } from '$lib/component/modals/ConfirmSaveCriticalSettingsModal.svelte';
+  } from '$lib/components/modals/ConfirmSaveCriticalSettingsModal.svelte';
 
   export let data;
 

@@ -202,29 +202,29 @@
   import { formatBytes } from '$lib/string.util';
   import { PANO_WEBSITE_URL } from '$lib/variables';
 
-  import VerifiedStatus from '$lib/component/VerifiedStatus.svelte';
+  import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
 
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
   import {
     show as showConfirmDisableAddonModal,
     setCallback as setCallbackConfirmDisableAddonModal,
-  } from '$lib/component/modals/ConfirmDisableAddonWillCauseMoreDisableModal.svelte';
+  } from '$lib/components/modals/ConfirmDisableAddonWillCauseMoreDisableModal.svelte';
   import {
     show as showConfirmEnablingAddonModal,
     setCallback as setCallbackConfirmEnablingAddonModal,
-  } from '$lib/component/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte';
+  } from '$lib/components/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte';
   import ConfirmRemoveAddonModal, {
     show as showConfirmRemoveAddonModal,
-  } from '$lib/component/modals/ConfirmRemoveAddonModal.svelte';
+  } from '$lib/components/modals/ConfirmRemoveAddonModal.svelte';
   import ConfirmRemoveAddonWillCauseMoreUnloadModal, {
     show as showConfirmRemoveAddonCauseMoreModal,
     setCallback as setCallbackConfirmRemoveAddonCauseMoreModal,
-  } from '$lib/component/modals/ConfirmRemoveAddonWillCauseMoreUnloadModal.svelte';
-  import PageActions from '$lib/component/PageActions.svelte';
-  import PageNav from '$lib/component/PageNav.svelte';
-  import PageNavItem from '$lib/component/PageNavItem.svelte';
-  import RefreshRequiredAlert from '$lib/component/RefreshRequiredAlert.svelte';
+  } from '$lib/components/modals/ConfirmRemoveAddonWillCauseMoreUnloadModal.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
+  import RefreshRequiredAlert from '$lib/components/RefreshRequiredAlert.svelte';
 
   let { data, children } = $props();
   const slots = initSlots();

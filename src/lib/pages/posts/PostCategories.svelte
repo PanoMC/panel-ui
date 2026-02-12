@@ -147,24 +147,24 @@
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';
 
-  import Pagination from '$lib/component/Pagination.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
 
   import AddEditPostCategoryModal, {
     show as showAddEditPostCategoryModal,
     setCallback as setCallbackForAddEditPostCategoryModal,
     onHide as onAddEditPostCategoryModalHide,
-  } from '$lib/component/modals/AddEditPostCategoryModal.svelte';
+  } from '$lib/components/modals/AddEditPostCategoryModal.svelte';
   import ConfirmDeletePostCategoryModal, {
     setCallback as setDeletePostCategoryModalCallback,
     show as showDeletePostCategoryModal,
     onHide as onConfirmDeletePostCategoryModalHide,
-  } from '$lib/component/modals/ConfirmDeletePostCategoryModal.svelte';
+  } from '$lib/components/modals/ConfirmDeletePostCategoryModal.svelte';
 
-  import NoContent from '$lib/component/NoContent.svelte';
-  import PostCategoryRow from '$lib/component/rows/PostCategoryRow.svelte';
-  import Hook from '$lib/component/Hook.svelte';
-  import SearchInput from '$lib/component/SearchInput.svelte';
-  import CardHeader from '$lib/component/CardHeader.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import PostCategoryRow from '$lib/components/rows/PostCategoryRow.svelte';
+  import Hook from '$lib/components/Hook.svelte';
+  import SearchInput from '$lib/components/SearchInput.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
 
   const { data = $bindable() } = $props();
 

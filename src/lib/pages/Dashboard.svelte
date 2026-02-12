@@ -299,18 +299,18 @@
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
-  import NoContent from '$lib/component/NoContent.svelte';
-  import TicketStatusBadge from '$lib/component/badges/TicketStatusBadge.svelte';
-  import Date from '$lib/component/Date.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import TicketStatusBadge from '$lib/components/badges/TicketStatusBadge.svelte';
+  import Date from '$lib/components/Date.svelte';
 
-  import ActivityLogRow from '$lib/component/rows/ActivityLogRow.svelte';
+  import ActivityLogRow from '$lib/components/rows/ActivityLogRow.svelte';
   import ViewActivityLogModal, {
     show as showViewActivityLogModal,
     onHide as onViewActivityLogModalHide,
-  } from '$lib/component/modals/ViewActivityLogModal.svelte';
-  import CardHeader from '$lib/component/CardHeader.svelte';
-  import PlayerStatusBadge from '$lib/component/badges/PlayerStatusBadge.svelte';
-  import PlayerPermissionBadge from '$lib/component/badges/PlayerPermissionBadge.svelte';
+  } from '$lib/components/modals/ViewActivityLogModal.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
+  import PlayerStatusBadge from '$lib/components/badges/PlayerStatusBadge.svelte';
+  import PlayerPermissionBadge from '$lib/components/badges/PlayerPermissionBadge.svelte';
 
   export let data;
 

@@ -26,6 +26,6 @@
 </script>
 
 <script>
-  import ConfirmCloseTicketModal from '$lib/component/modals/ConfirmCloseTicketModal.svelte';
-  import ConfirmDeleteTicketModal from '$lib/component/modals/ConfirmDeleteTicketModal.svelte';
+  import ConfirmCloseTicketModal from '$lib/components/modals/ConfirmCloseTicketModal.svelte';
+  import ConfirmDeleteTicketModal from '$lib/components/modals/ConfirmDeleteTicketModal.svelte';
 </script>

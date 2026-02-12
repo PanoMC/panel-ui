@@ -10,8 +10,8 @@
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
 
-  import ConfirmDisableAddonWillCauseMoreDisableModal from '$lib/component/modals/ConfirmDisableAddonWillCauseMoreDisableModal.svelte';
-  import ConfirmEnablingAddonWillCauseMoreEnableModal from '$lib/component/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte';
+  import ConfirmDisableAddonWillCauseMoreDisableModal from '$lib/components/modals/ConfirmDisableAddonWillCauseMoreDisableModal.svelte';
+  import ConfirmEnablingAddonWillCauseMoreEnableModal from '$lib/components/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte';
 
   /**
    * @type {import('@sveltejs/kit').LayoutLoad}

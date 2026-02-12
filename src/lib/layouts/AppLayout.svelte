@@ -50,34 +50,34 @@
 
   import { navigating } from '$app/stores';
 
-  import PageActions from '$lib/component/PageActions.svelte';
-  import PageLoader from '$lib/component/PageLoader.svelte';
-  import PageNavItem from '$lib/component/PageNavItem.svelte';
-  import PageNav from '$lib/component/PageNav.svelte';
-  import Pagination from '$lib/component/Pagination.svelte';
-  import PageLoading from '$lib/component/PageLoading.svelte';
-  import Toast from '$lib/component/Toast.svelte';
-  import CardFilters from '$lib/component/CardFilters.svelte';
-  import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
-  import CardHeader from '$lib/component/CardHeader.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import PageLoader from '$lib/components/PageLoader.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
+  import PageLoading from '$lib/components/PageLoading.svelte';
+  import Toast from '$lib/components/Toast.svelte';
+  import CardFilters from '$lib/components/CardFilters.svelte';
+  import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
 
-  import DateComponent from '$lib/component/Date.svelte';
-  import NoContent from '$lib/component/NoContent.svelte';
-  import Editor from '$lib/component/Editor.svelte';
-  import DragAndDropZone from '$lib/component/DragAndDropZone.svelte';
+  import DateComponent from '$lib/components/Date.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
+  import Editor from '$lib/components/Editor.svelte';
+  import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
 
   import tooltip from '$lib/tooltip.util';
 
   import * as languageStuff from '$lib/language.util';
   import ApiUtil, * as ApiUtilStuff from '$lib/api.util.js';
-  import * as toastStuff from '$lib/component/ToastContainer.svelte';
+  import * as toastStuff from '$lib/components/ToastContainer.svelte';
   import * as variableStuff from '$lib/variables';
 
   import { networkErrorCallbacks, showNetworkError } from '$lib/Store.js';
 
   import { addListener } from '$lib/NotificationManager.js';
 
-  import { show as showServerRequestModal } from '$lib/component/modals/ServerRequestModal.svelte';
+  import { show as showServerRequestModal } from '$lib/components/modals/ServerRequestModal.svelte';
   import { initializePlugins, preparePlugins } from '$lib/PluginManager.js';
   import {
     updateApiUrl,
@@ -282,16 +282,16 @@
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { PanelSidebarStorageUtil } from '$lib/storage.util.js';
 
-  import Splash from '$lib/component/Splash.svelte';
-  import App from '$lib/component/App.svelte';
-  import NotificationContainer from '$lib/component/NotificationContainer.svelte';
-  import ServerRequestModal from '$lib/component/modals/ServerRequestModal.svelte';
-  import InstallingResourceModal from '$lib/component/modals/InstallingResourceModal.svelte';
+  import Splash from '$lib/components/Splash.svelte';
+  import App from '$lib/components/App.svelte';
+  import NotificationContainer from '$lib/components/NotificationContainer.svelte';
+  import ServerRequestModal from '$lib/components/modals/ServerRequestModal.svelte';
+  import InstallingResourceModal from '$lib/components/modals/InstallingResourceModal.svelte';
   import MainLayout from '$lib/layouts/MainLayout.svelte';
-  import ToastContainer from '$lib/component/ToastContainer.svelte';
-  import RestartingModal from '$lib/component/modals/RestartingModal.svelte';
-  import ConfirmActionModal from '$lib/component/modals/ConfirmActionModal.svelte';
-  import WhatsNewModal, { show as showWhatsNewModal } from '$lib/component/modals/WhatsNewModal.svelte';
+  import ToastContainer from '$lib/components/ToastContainer.svelte';
+  import RestartingModal from '$lib/components/modals/RestartingModal.svelte';
+  import ConfirmActionModal from '$lib/components/modals/ConfirmActionModal.svelte';
+  import WhatsNewModal, { show as showWhatsNewModal } from '$lib/components/modals/WhatsNewModal.svelte';
 
   export let data;
 

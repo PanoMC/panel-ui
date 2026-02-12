@@ -276,18 +276,18 @@
 
   import { loadLanguage } from '$lib/language.util.js';
 
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
-  import CardFilters from '$lib/component/CardFilters.svelte';
-  import CardFiltersItem from '$lib/component/CardFiltersItem.svelte';
-  import CardHeader from '$lib/component/CardHeader.svelte';
-  import PageNav from '$lib/component/PageNav.svelte';
-  import PageNavItem from '$lib/component/PageNavItem.svelte';
-  import PageActions from '$lib/component/PageActions.svelte';
-  import TranslationRow from '$lib/component/rows/TranslationRow.svelte';
-  import UnnecessaryTranslationsAlert from '$lib/component/UnnecessaryTranslationsAlert.svelte';
-  import SearchInput from '$lib/component/SearchInput.svelte';
-  import NoContent from '$lib/component/NoContent.svelte';
+  import CardFilters from '$lib/components/CardFilters.svelte';
+  import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
+  import TranslationRow from '$lib/components/rows/TranslationRow.svelte';
+  import UnnecessaryTranslationsAlert from '$lib/components/UnnecessaryTranslationsAlert.svelte';
+  import SearchInput from '$lib/components/SearchInput.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
   import { browser } from '$app/environment';
   import { navigating } from '$app/stores';
 

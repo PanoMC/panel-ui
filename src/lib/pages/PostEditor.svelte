@@ -311,23 +311,23 @@
   import {
     setCallback as setDeletePostModalCallback,
     show as showDeletePostModal,
-  } from '$lib/component/modals/ConfirmDeletePostModal.svelte';
+  } from '$lib/components/modals/ConfirmDeletePostModal.svelte';
 
   import AddEditPostCategoryModal, {
     // show as showAddEditPostCategoryModal,
     setCallback as setCallbackForAddEditPostCategoryModal,
-  } from '$lib/component/modals/AddEditPostCategoryModal.svelte';
+  } from '$lib/components/modals/AddEditPostCategoryModal.svelte';
 
-  import { show as showDraftPostModal } from '$lib/component/modals/ConfirmDraftPostModal.svelte';
+  import { show as showDraftPostModal } from '$lib/components/modals/ConfirmDraftPostModal.svelte';
 
-  import { show as showPublishPostModal } from '$lib/component/modals/ConfirmPublishPostModal.svelte';
+  import { show as showPublishPostModal } from '$lib/components/modals/ConfirmPublishPostModal.svelte';
 
-  import Editor from '$lib/component/Editor.svelte';
+  import Editor from '$lib/components/Editor.svelte';
 
-  import { show as showToast, limitTitle } from '$lib/component/ToastContainer.svelte';
+  import { show as showToast, limitTitle } from '$lib/components/ToastContainer.svelte';
 
-  import Date from '$lib/component/Date.svelte';
-  import Hook from '$lib/component/Hook.svelte';
+  import Date from '$lib/components/Date.svelte';
+  import Hook from '$lib/components/Hook.svelte';
 
   const { data = $bindable() } = $props();
 

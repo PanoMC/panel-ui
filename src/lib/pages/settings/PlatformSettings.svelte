@@ -444,23 +444,23 @@
   import { buildQueryParams } from '$lib/api.util.js';
   import { currentLanguage } from '$lib/language.util.js';
 
-  import { show as showToast } from '$lib/component/ToastContainer.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
   import { changeLanguage, getLanguageByLocale, Languages } from '$lib/language.util';
 
   import ConfirmRemovePanoAccountModal, {
     show as showConfirmRemovePanoAccountModal,
-  } from '$lib/component/modals/ConfirmRemovePanoAccountModal.svelte';
+  } from '$lib/components/modals/ConfirmRemovePanoAccountModal.svelte';
 
   import ConfirmDisableEmailModal, {
     show as showConfirmDisableEmailModal,
-  } from '$lib/component/modals/ConfirmDisableEmailModal.svelte';
+  } from '$lib/components/modals/ConfirmDisableEmailModal.svelte';
   import ConfirmStopPanoModal, {
     show as showConfirmStopPanoModal,
-  } from '$lib/component/modals/ConfirmStopPanoModal.svelte';
+  } from '$lib/components/modals/ConfirmStopPanoModal.svelte';
   import ConfirmRestartPanoModal, {
     show as showConfirmRestartPanoModal,
-  } from '$lib/component/modals/ConfirmRestartPanoModal.svelte';
-  import PageActions from '$lib/component/PageActions.svelte';
+  } from '$lib/components/modals/ConfirmRestartPanoModal.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
 
   const pageTitle = getContext('pageTitle');
   const siteInfo = getContext('siteInfo');
