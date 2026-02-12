@@ -639,6 +639,7 @@
       },
       "settings": {
         "title": "Настройки сервера",
+        "preferences": "Предпочтения",
         "server-name": "Имя сервера",
         "main-server": "Главный сервер",
         "already-main-server": "{serverName} — главный сервер",
