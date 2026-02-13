@@ -130,14 +130,8 @@
               { placement: 'bottom' },
             ]} />
 
-          {#if data.player.isBanned}
-            <div class="badge text-bg-danger">
-              {$_('pages.player-detail.banned')}
-            </div>
-          {:else}
-            <PlayerPermissionBadge permissionGroup={data.player.permissionGroup} />
-          {/if}
         </div>
+
         <table class="table">
           <tbody>
             <tr>
@@ -148,6 +142,12 @@
                   lastActivityTime={data.player.lastActivityTime}
                   inGame={data.player.inGame}
                   {checkTime} />
+              </td>
+            </tr>
+            <tr>
+              <td>{$_('pages.players.table.perm-group')}</td>
+              <td>
+                <PlayerPermissionBadge permissionGroup={data.player.permissionGroup} />
               </td>
             </tr>
             <tr>

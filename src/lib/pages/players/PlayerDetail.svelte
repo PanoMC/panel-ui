@@ -89,6 +89,7 @@
     </div>
   {/if}
 </div>
+
 <Hook name="panel:player-detail:bottom" playerData={data} />
 
 <script>
