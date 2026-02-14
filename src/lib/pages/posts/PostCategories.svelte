@@ -1,5 +1,5 @@
 {#snippet right()}
-  <button class="btn btn-secondary" type="button" on:click={onCreateCategoryClick}>
+  <button class="btn btn-secondary" type="button" onclick={onCreateCategoryClick}>
     <i class="fas fa-plus"></i>
     <span class="d-lg-inline d-none ms-2"
       >{$_('pages.post-categories.create-category-button')}
@@ -15,7 +15,7 @@
         values: { count: data.categoryCount },
       })}
     </div>
-    <div slot="middle" style="width: 250px;">
+    <div slot="right" style="width: 250px;">
       <SearchInput
         initialValue={search}
         searching={isSearching}
@@ -174,8 +174,8 @@
 
   pageTitle.set('pages.post-categories.title');
 
-  let search = data.search || '';
-  let isSearching = false;
+  let search = $state(data.search || '');
+  let isSearching = $state(false);
 
   function onSearchInput(event) {
     search = event.detail.value;
