@@ -73,7 +73,8 @@
     "preferences": "Предпочтения",
     "select-option": "Выбрать",
     "downgrade": "Понизить версию",
-    "reinstall": "Переустановить"
+    "reinstall": "Переустановить",
+    "go": "Перейти"
   },
   "pages": {
     "themes": {
@@ -1231,7 +1232,9 @@
     },
     "pagination": {
       "previous-page": "Предыдущая страница",
-      "next-page": "Следующая страница"
+      "next-page": "Следующая страница",
+      "jump-to-page": "Перейти к странице",
+      "enter-page-number": "Введите номер страницы:"
     },
     "splash": {
       "errors": {

@@ -75,7 +75,8 @@
     "select-option": "Seç",
     "downgrade": "Sürüm Düşür",
     "reinstall": "Yeniden Yükle",
-    "logout": "Çıkış Yap"
+    "logout": "Çıkış Yap",
+    "go": "Git"
   },
   "pages": {
     "themes": {
@@ -1243,7 +1244,9 @@
     },
     "pagination": {
       "previous-page": "Önceki Sayfa",
-      "next-page": "Sonraki Sayfa"
+      "next-page": "Sonraki Sayfa",
+      "jump-to-page": "Sayfaya Git",
+      "enter-page-number": "Sayfa numarası girin:"
     },
     "splash": {
       "errors": {

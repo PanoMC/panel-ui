@@ -53,7 +53,7 @@
             <li>
               <button
                 type="button"
-                class="btn btn-link alert-link p-0 border-0 text-start text-decoration-none"
+                class="btn btn-link alert-link p-0 border-0 text-start text-decoration-none focus-ring rounded"
                 data-bs-target="#connectServer"
                 data-bs-toggle="modal">
                 <i class="fa-solid fa-gamepad me-2"></i>
@@ -68,25 +68,25 @@
         <div class="col-lg-4">
           <ul class="mb-0 list-unstyled">
             <li>
-              <a class="alert-link" href="{base}/posts/create-post">
+              <a class="alert-link focus-ring rounded" href="{base}/posts/create-post">
                 <i class="fa-solid fa-pen me-2"></i>
                 {$_('pages.dashboard.welcome-card.publish-your-first-post')}
               </a>
             </li>
             <li>
-              <a class="alert-link" href="{base}/view">
+              <a class="alert-link focus-ring rounded" href="{base}/view">
                 <i class="fa-solid fa-brush me-2"></i>
                 {$_('pages.dashboard.welcome-card.change-theme')}
               </a>
             </li>
             <li>
-              <a class="alert-link" href="{base}/addons">
+              <a class="alert-link focus-ring rounded" href="{base}/addons">
                 <i class="fa-solid fa-puzzle-piece me-2"></i>
                 {$_('pages.dashboard.welcome-card.manage-addons')}
               </a>
             </li>
             <li>
-              <a class="alert-link" href="{base}/players">
+              <a class="alert-link focus-ring rounded" href="{base}/players">
                 <i class="fa-solid fa-user-cog me-2"></i>{$_(
                   'pages.dashboard.welcome-card.manage-players',
                 )}
@@ -97,25 +97,25 @@
         <div class="col-lg-4">
           <ul class="list-unstyled">
             <li>
-              <a class="alert-link" href="{PANO_WEBSITE_URL}/addons" target="_blank">
+              <a class="alert-link focus-ring rounded" href="{PANO_WEBSITE_URL}/addons" target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
                 {$_('pages.dashboard.welcome-card.get-themes-and-extensions')}
               </a>
             </li>
             <li>
-              <a class="alert-link" href="{PANO_WEBSITE_URL}/docs" target="_blank">
+              <a class="alert-link focus-ring rounded" href="{PANO_WEBSITE_URL}/docs" target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
                 {$_('pages.dashboard.welcome-card.documentations')}
               </a>
             </li>
             <li>
-              <a class="alert-link" href={PANO_WEBSITE_URL} target="_blank">
+              <a class="alert-link focus-ring rounded" href={PANO_WEBSITE_URL} target="_blank">
                 <i class="fa-solid fa-globe me-2"></i>
                 {$_('pages.dashboard.welcome-card.website')}
               </a>
             </li>
             <li>
-              <a class="alert-link" href="{PANO_WEBSITE_URL}/discord" target="_blank">
+              <a class="alert-link focus-ring rounded" href="{PANO_WEBSITE_URL}/discord" target="_blank">
                 <i class="fab fa-discord me-2"></i>
                 {$_('pages.dashboard.welcome-card.discord')}
               </a>
@@ -140,7 +140,7 @@
     {#if hasPermission(Permissions.MANAGE_TICKETS)}
       <div class="ratio ratio-1x1">
         <div class="card mb-3">
-          <div class="card-header">
+          <div class="card-header" use:tooltip={[$_('buttons.view')]}>
             {$_('pages.dashboard.last-tickets.title')}
           </div>
 
@@ -208,7 +208,7 @@
     {#if hasPermission(Permissions.MANAGE_PLAYERS)}
       <div class="ratio ratio-1x1">
         <div class="card mb-3">
-          <div class="card-header">
+          <div class="card-header" use:tooltip={[$_('buttons.view')]}>
             {$_('pages.dashboard.last-registers.title')}
           </div>
 

@@ -10,6 +10,18 @@
       align-self: stretch;
     }
   }
+
+  .nav-pills .nav-link.active {
+    background-color: #fff !important;
+    color: var(--bs-primary) !important;
+    box-shadow: var(--bs-box-shadow-sm);
+  }
+
+  /* Hover state for inactive tabs to make them more interactive */
+  .nav-pills .nav-link:not(.active):hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
 </style>
 
 {#if hasPermission(Permissions.MANAGE_SERVERS)}
@@ -39,7 +51,7 @@
           <i class="fa-solid fa-bars"></i>
         </button>
 
-        <a class="navbar-brand m-auto btn btn-primary shadow-none position-relative" href="{base}/">
+        <a class="navbar-brand m-auto position-relative focus-ring" href="{base}/">
           <img alt="Pano" use:tooltip={["Pano"]} src={base + '/assets/img/logo.svg'} width="20" />
           {#if isAlpha}
             <span
@@ -65,35 +77,8 @@
         </a>
       </div>
 
-      <!-- Sidebar Tabs -->
-      <div class="navbar-dark">
-        <ul class="navbar-nav flex-row nav-fill">
-          <li class="nav-item">
-            <button
-              class="nav-link text-center"
-              on:click={onWebsiteMenuClick}
-              class:active={$sidebarTabsState === 'website'}>
-              <i class="fas fa-globe fa-lg mb-3 d-block"></i>
-              {$_('components.sidebar.website')}
-            </button>
-          </li>
-          {#if hasPermission(Permissions.MANAGE_SERVERS)}
-            <li class="nav-item">
-              <button
-                class="nav-link text-center"
-                on:click={onGameMenuClick}
-                class:active={$sidebarTabsState === 'game'}>
-                <i class="fas fa-cube fa-lg mb-3 d-block"></i>
-
-                {$_('components.sidebar.server')}
-              </button>
-            </li>
-          {/if}
-        </ul>
-      </div>
-
-      <!-- Sidebar Info Section -->
-      {#if $sidebarTabsState === 'website'}
+      <div class="my-3">
+              {#if $sidebarTabsState === 'website'}
         <a type="button" href={UI_URL} class="btn btn-sm btn-secondary w-100" target="_blank">
           {$_('components.sidebar.show-website')}
           <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
@@ -116,6 +101,33 @@
           </button>
         </div>
       {/if}
+      </div>
+
+      <!-- Sidebar Tabs -->
+      <ul class="nav nav-pills nav-fill mb-2 gap-2" data-bs-theme="dark">
+        <li class="nav-item">
+          <button
+            class="nav-link text-center"
+            aria-label={$_('components.sidebar.website')}
+            use:tooltip={[$_('components.sidebar.website'), { placement: 'bottom' }]}
+            on:click={onWebsiteMenuClick}
+            class:active={$sidebarTabsState === 'website'}>
+            <i class="fas fa-globe fa-lg my-2 d-block"></i>
+          </button>
+        </li>
+        {#if hasPermission(Permissions.MANAGE_SERVERS)}
+          <li class="nav-item">
+            <button
+              class="nav-link text-center"
+              aria-label={$_('components.sidebar.server')}
+              use:tooltip={[$_('components.sidebar.server'), { placement: 'bottom' }]}
+              on:click={onGameMenuClick}
+              class:active={$sidebarTabsState === 'game'}>
+              <i class="fas fa-cube fa-lg my-2 d-block"></i>
+            </button>
+          </li>
+        {/if}
+      </ul>
 
       <!-- Sidebar Site Navigation Menu || Sidebar Server Navigation Menu -->
       <svelte:component this={menuComponent} />

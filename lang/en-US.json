@@ -75,7 +75,8 @@
     "select-option": "Select",
     "downgrade": "Downgrade",
     "reinstall": "Reinstall",
-    "logout": "Logout"
+    "logout": "Logout",
+    "go": "Go"
   },
   "pages": {
     "themes": {
@@ -156,7 +157,7 @@
     "dashboard": {
       "title": "Panel",
       "welcome-card": {
-        "description": "Pano is successfully installed and ready for use. \uD83D\uDE80 <br /> Here's what you can do to get started:",
+        "description": "Pano is successfully installed and ready for use. 🚀 <br /> Here's what you can do to get started:",
         "connect-server": "Connect Server",
         "connect-server-description": "Connect your game server and access more management features.",
         "menu-title": "The Menu",
@@ -418,7 +419,7 @@
         "using-latest-pano": "You are using latest version of Pano.",
         "verified": "Verified",
         "by": "by",
-        "install-complete-restarting": "\uD83C\uDF89 Install complete! Restarting...",
+        "install-complete-restarting": "🎉 Install complete! Restarting...",
         "changelog": "Changelog",
         "copy-hash": "Copy Hash",
         "platform-update-steps": {
@@ -432,7 +433,7 @@
         "resource-updates-count": "{count} Resource Updates",
         "connect-pano-account": "Connect a Pano account to get resource updates.",
         "no-update-found": "No update found.",
-        "install-complete": "\uD83C\uDF89 Install complete!",
+        "install-complete": "🎉 Install complete!",
         "resource-update-steps": {
           "getting-version-info": "Getting version info...",
           "downloading-update": "Downloading update...",
@@ -1238,7 +1239,9 @@
     },
     "pagination": {
       "previous-page": "Previous Page",
-      "next-page": "Next Page"
+      "next-page": "Next Page",
+      "jump-to-page": "Jump to Page",
+      "enter-page-number": "Enter page number:"
     },
     "splash": {
       "errors": {
