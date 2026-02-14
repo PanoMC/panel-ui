@@ -31,7 +31,7 @@
                 {/if}
               </td>
               <td class="align-middle">
-                <span title={session.userAgent}>
+                <span use:tooltip={[session.userAgent]}>
                   {parseUserAgent(session.userAgent)}
                 </span>
               </td>
@@ -43,7 +43,7 @@
               <td class="align-middle text-end">
                 <button
                   class="btn btn-link text-danger"
-                  title={$_('buttons.logout')}
+                  use:tooltip={[$_('buttons.logout')]}
                   aria-label={$_('buttons.logout')}
                   onclick={() => logoutSession(session.id, session.isCurrent)}
                   disabled={loadingSessionId === session.id}>

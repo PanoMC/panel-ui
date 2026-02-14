@@ -28,7 +28,7 @@
             class:notification-unread={notification.status === 'NOT_READ'}>
             <button
               type="button"
-              title={$_('buttons.view')}
+              use:tooltip={[$_('buttons.view')]}
               on:click={() => onNotificationClick(notification)}
               class="btn btn-link text-decoration-none flex-grow-1 text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
               <span class="d-flex align-items-center">
@@ -194,7 +194,7 @@
   import { currentLanguage } from '$lib/language.util.js';
   import PageActions from '$lib/components/PageActions.svelte';
 
-  export let data;
+
 
   const pageTitle = getContext('pageTitle');
 

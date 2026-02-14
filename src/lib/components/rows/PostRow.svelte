@@ -23,7 +23,7 @@
         type="button"
         class="btn btn-link"
         data-bs-toggle="dropdown"
-        title={$_('components.post-row.actions')}
+        use:tooltip={[$_('components.post-row.actions')]}
         aria-label={$_('components.post-row.actions')}>
         <span class="fas fa-ellipsis-v"></span>
       </button>
@@ -31,7 +31,8 @@
         <a
           class="dropdown-item"
           target="_blank"
-          href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{post.id}">
+          href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{post.id}"
+          use:tooltip={[$_('buttons.view')]}>
           <i class="fas fa-eye me-2"></i>
           {$_('buttons.view')}
         </a>
@@ -73,10 +74,14 @@
     </div>
   </th>
   <Hook name="panel:posts:table:row:start" {post} tag="td" class="align-middle text-nowrap" />
-  <td class="align-middle" title={$_('pages.posts.table.image')}>
+  <td class="align-middle">
     <div class="post-row-thumbnail">
       {#if post.thumbnailUrl}
-        <a href="{base}/posts/detail/{post.id}" class="focus-ring d-block">
+        <a
+          href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{post.id}"
+          target="_blank"
+          use:tooltip={[$_('buttons.view')]}
+          class="focus-ring d-block">
           <div class="ratio ratio-16x9 thumbnail-frame">
             <img
               src={post.thumbnailUrl
@@ -108,7 +113,7 @@
   <td class="align-middle" style="max-width: 300px;">
     <a
       href={base + '/posts/detail/' + post.id}
-      title={post.title}
+      use:tooltip={[$_('buttons.edit')]}
       class="rounded focus-ring text-decoration-none d-block text-truncate">
       {post.title}
     </a>
@@ -161,7 +166,6 @@
   import Date from '$lib/components/Date.svelte';
   import CategoryBadge from '$lib/components/badges/CategoryBadge.svelte';
   import Hook from '$lib/components/Hook.svelte';
-
   import tooltip from '$lib/tooltip.util.js';
   import { UI_URL } from '$lib/variables.js';
 

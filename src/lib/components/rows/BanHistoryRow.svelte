@@ -36,20 +36,15 @@
       {#if banHistory.bannedBy}
         <a
           href="{base}/players/detail/{banHistory.bannedBy}"
-          title={$_('buttons.view')}
-          class="flex-shrink-0 d-inline-block rounded-circle focus-ring me-2">
+          use:tooltip={[$_('buttons.view')]}
+          class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center">
           <img
             src="https://minotar.net/avatar/{banHistory.bannedBy}/24"
             alt={banHistory.bannedBy}
-            class="rounded-circle"
+            class="rounded-circle me-2 flex-shrink-0"
             height="24"
             width="24" />
-        </a>
-        <a
-          href="{base}/players/detail/{banHistory.bannedBy}"
-          title={banHistory.bannedBy}
-          class="rounded focus-ring text-decoration-none text-truncate">
-          {banHistory.bannedBy}
+          <span class="text-truncate">{banHistory.bannedBy}</span>
         </a>
       {:else}
         <span class="badge text-bg-primary">{$_('pages.player-detail.system-ban')}</span>

@@ -25,7 +25,7 @@
 {#snippet right()}
   {#if data.mode === Modes.EDIT}
     <button
-      title={$_('buttons.remove')}
+      use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
       aria-label={$_('buttons.remove')}
       class="btn btn-link"
       type="button"
@@ -35,7 +35,7 @@
   {/if}
   {#if data.post.status !== StatusTypes.DRAFT && data.mode === Modes.EDIT}
     <button
-      title={$_('pages.post-editor.move-to-drafts')}
+      use:tooltip={[$_('pages.post-editor.move-to-drafts'), { placement: 'bottom' }]}
       aria-label={$_('pages.post-editor.move-to-drafts')}
       class="btn btn-link"
       type="button"
@@ -48,14 +48,14 @@
     class="btn btn-link"
     role="button"
     aria-label={$_('buttons.view')}
-    title={$_('buttons.view')}
+    use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}
     target="_blank"
     href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{data.post.id}">
     <i class="fas fa-eye"></i>
   </a>
   {#if data.post.status !== StatusTypes.PUBLISHED}
     <button
-      title={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
+      use:tooltip={[$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update'), { placement: 'bottom' }]}
       aria-label={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
       class="btn btn-link"
       type="button"
@@ -167,7 +167,7 @@
                     <img
                       src={thumbnail || data.post.thumbnailUrl}
                       class="img-fluid w-100 h-100 object-fit-cover"
-                      title={$_('pages.post-editor.small-image')}
+                      use:tooltip={[$_('pages.post-editor.small-image')]}
                       alt={$_('pages.post-editor.small-image')} />
                   </button>
                 </div>
@@ -177,7 +177,7 @@
                     type="button"
                     class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle"
                     on:click={onRemoveThumbnailClick}
-                    title={$_('buttons.remove')}
+                    use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
                     aria-label={$_('buttons.remove')}>
                     <i class="fas fa-minus"></i>
                   </button>

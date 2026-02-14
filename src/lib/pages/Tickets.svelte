@@ -28,7 +28,7 @@
               ? 'animate__slideInUp'
               : 'animate__slideOutDown'}">
             <button
-              title={$_('buttons.delete')}
+              use:tooltip={[$_('buttons.delete'), { placement: 'bottom' }]}
               aria-label={$_('buttons.delete')}
               class="btn btn-link"
               class:disabled={getListOfChecked($checkedList).length === 0}
@@ -38,8 +38,6 @@
             </button>
             <button
               class="btn btn-secondary"
-              title={$_('buttons.close')}
-              aria-label={$_('buttons.close')}
               class:disabled={getListOfChecked($checkedList).length === 0}
               type="button"
               on:click={onShowCloseTicketsModalClick}>
@@ -114,7 +112,7 @@
               <th class="align-middle" scope="col">
                 <div class="form-check d-flex justify-content-center align-items-center">
                   <input
-                    title={$_('pages.tickets.select-all')}
+                    use:tooltip={[$_('pages.tickets.select-all')]}
                     class="form-check-input"
                     on:click={onSelectAllClick}
                     checked={isAllTicketsSelected(data.tickets, $checkedList)}
@@ -231,6 +229,8 @@
 
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';
+
+  import tooltip from '$lib/tooltip.util';
 
   import Pagination from '$lib/components/Pagination.svelte';
 

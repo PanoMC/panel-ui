@@ -2,7 +2,7 @@
   <th scope="row" class="align-middle text-center">
     <button
       type="button"
-      title={$_('buttons.delete')}
+      use:tooltip={[$_('buttons.delete')]}
       aria-label={$_('buttons.delete')}
       class="btn btn-link"
       on:click={onDeleteClick}>
@@ -14,7 +14,8 @@
       <button
         type="button"
         class="btn btn-link p-0 text-start text-decoration-none w-100 text-truncate"
-        title={$_('buttons.edit')}
+        title={category.title}
+        use:tooltip={[$_('buttons.edit')]}
         on:click={onEditClick}>
         {category.title}
       </button>
@@ -30,6 +31,7 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   export let category;
   export let index;

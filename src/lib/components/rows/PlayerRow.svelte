@@ -7,7 +7,7 @@
         aria-expanded="false"
         aria-haspopup="true"
         data-bs-toggle="dropdown"
-        title={$_('components.player-row.actions')}
+        use:tooltip={[$_('components.player-row.actions')]}
         aria-label={$_('components.player-row.actions')}>
         <span class="fas fa-ellipsis-v"></span>
       </button>
@@ -50,23 +50,18 @@
   <td class="align-middle" style="max-width: 200px;">
     <div class="text-truncate d-flex align-items-center">
       <a
-        class="flex-shrink-0 d-inline-block focus-ring rounded-circle"
-        title={$_('buttons.view')}
+        class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center"
+        class:text-danger={player.isBanned}
+        class:text-decoration-line-through={player.isBanned}
+        use:tooltip={[$_('buttons.view')]}
         href="{base}/players/detail/{player.username}">
         <img
           src="https://minotar.net/avatar/{player.username}"
           alt={player.username}
           width="32"
           height="32"
-          class="rounded-circle animate__animated animate__zoomIn" />
-      </a>
-      <a
-        class="rounded focus-ring ms-2 text-decoration-none text-truncate"
-        class:text-danger={player.isBanned}
-        class:text-decoration-line-through={player.isBanned}
-        title={$_('buttons.view')}
-        href="{base}/players/detail/{player.username}">
-        {player.username}
+          class="rounded-circle animate__animated animate__zoomIn me-2 flex-shrink-0" />
+        <span class="text-truncate">{player.username}</span>
       </a>
     </div>
   </td>
@@ -108,6 +103,7 @@
 </tr>
 
 <script>
+  import tooltip from '$lib/tooltip.util';
   import { createEventDispatcher, getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
 

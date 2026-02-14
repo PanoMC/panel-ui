@@ -1,7 +1,7 @@
 <div class="input-group">
   <input
     type="text"
-    class="form-control form-control-sm {String(value || '').trim() ? 'border-secondary' : ''}"
+    class="form-control form-control-sm focus-ring {String(value || '').trim() ? 'border-secondary' : ''}"
     placeholder={$_(placeholderKey)}
     aria-label={$_(ariaLabelKey)}
     aria-describedby="find-addon"

@@ -3,8 +3,8 @@
   class="list-group-item list-group-item-action focus-ring"
   class:bg-secondary-subtle={log.selected}
   on:click={onClick}
-  title={$_('buttons.view')}>
-  <span class="fw-normal d-block text-truncate markdown-renderer" title={translation}>
+  use:tooltip={[$_('buttons.view')]}>
+  <span class="fw-normal d-block text-truncate markdown-renderer">
     <MarkdownRenderer content={translation} />
   </span>
   <Date time={log.createdAt} />
@@ -13,6 +13,7 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   import Date from '$lib/components/Date.svelte';
   import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';

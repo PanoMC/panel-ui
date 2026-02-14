@@ -2,7 +2,7 @@
   <th scope="row" class="align-middle">
     <div class="form-check d-flex justify-content-center align-items-center">
       <input
-        title={$_('components.ticket-row.select')}
+        use:tooltip={[$_('components.ticket-row.select')]}
         class="form-check-input"
         id="postCheck{ticket.id}"
         type="checkbox"
@@ -17,7 +17,9 @@
       <a
         href="{base}/tickets/detail/{ticket.id}"
         class="rounded focus-ring text-decoration-none d-block text-truncate"
-        title={ticket.title}>
+        title={ticket.title}
+        use:tooltip={[$_('buttons.view')]}
+        >
         {ticket.title}
       </a>
     </div>
@@ -33,20 +35,15 @@
     <div class="text-truncate d-flex align-items-center">
       <a
         href="{base}/players/detail/{ticket.writer.username}"
-        title={$_('buttons.view')}
-        class="flex-shrink-0 d-inline-block rounded-circle focus-ring">
+        use:tooltip={[$_('buttons.view')]}
+        class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center">
         <img
           src="https://minotar.net/avatar/{ticket.writer.username}/32"
           alt={$_('components.ticket-row.player-name')}
-          class="rounded-circle animate__animated animate__zoomIn"
+          class="rounded-circle animate__animated animate__zoomIn me-2 flex-shrink-0"
           height="32"
           width="32" />
-      </a>
-      <a
-        href="{base}/players/detail/{ticket.writer.username}"
-        title={ticket.writer.username}
-        class="rounded focus-ring ms-2 text-decoration-none text-truncate">
-        {ticket.writer.username}
+        <span class="text-truncate">{ticket.writer.username}</span>
       </a>
     </div>
   </td>
@@ -59,6 +56,7 @@
 </tr>
 
 <script>
+  import tooltip from '$lib/tooltip.util';
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
 

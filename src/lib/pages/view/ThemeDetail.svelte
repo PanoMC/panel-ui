@@ -12,7 +12,7 @@
       class="btn btn-link"
       type="button"
       onclick={onRemoveClick}
-      title={$_('buttons.remove')}
+      use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
       class:disabled={removing}>
       <i class="fas fa-trash"></i>
     </button>
@@ -22,7 +22,7 @@
       href={`${PANO_WEBSITE_URL}/themes/${theme.id}`}
       target="_blank"
       class="btn btn-link"
-      title={$_('buttons.show-in-store')}
+      use:tooltip={[$_('buttons.show-in-store'), { placement: 'bottom' }]}
       aria-label={$_('buttons.show-in-store')}>
       <i class="fas fa-store"></i>
     </a>
@@ -135,14 +135,14 @@
             </div>
 
             <div class="small mb-2 hstack gap-2">
-              <span title="ID" class="user-select-all font-monospace">{theme.id}</span>
+              <span class="user-select-all font-monospace">{theme.id}</span>
               <span class="vr"></span>
-              <span title={$_('pages.theme-detail.version')} class="user-select-all font-monospace">
+              <span use:tooltip={[$_('pages.theme-detail.version')]} class="user-select-all font-monospace">
                 {theme.version}
               </span>
               <span class="vr"></span>
               <span
-                title={$_('pages.theme-detail.pano-version')}
+                use:tooltip={[$_('pages.theme-detail.pano-version')]}
                 class="user-select-all font-monospace">
                 {theme.panoVersion}
               </span>

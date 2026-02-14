@@ -3,7 +3,7 @@
     <button
       type="button"
       aria-label={$_('buttons.delete')}
-      title={$_('buttons.delete')}
+      use:tooltip={[$_('buttons.delete')]}
       class="btn btn-link"
       on:click={onDeleteClick}>
       <i class="fas fa-trash"></i>
@@ -20,6 +20,7 @@
         class="btn btn-link p-0 text-start text-decoration-none w-100 text-truncate"
         type="button"
         title={category.title}
+        use:tooltip={[$_('buttons.edit')]}
         on:click={onEditClick}>
         {category.title}
       </button>
@@ -45,7 +46,7 @@
       class="rounded focus-ring"
       href="{UI_URL === '/' ? '' : UI_URL}/blog/category/{category.url}"
       target="_blank"
-      title={$_('buttons.view')}>
+      use:tooltip={[$_('buttons.view')]}>
       /category/{category.url}
     </a>
   </td>
@@ -71,6 +72,7 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
   import { UI_URL } from '$lib/variables';
   import Hook from '$lib/components/Hook.svelte';
 

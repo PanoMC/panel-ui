@@ -21,7 +21,6 @@
           {#if hasPermission(Permissions.MANAGE_PLAYERS)}
             <button
               aria-label={$_('buttons.delete')}
-              title={$_('buttons.delete')}
               class="btn btn-link"
               use:tooltip={[$_('buttons.delete'), { placement: 'bottom' }]}
               on:click={() => showConfirmDeletePlayerModal(data.player)}
@@ -32,7 +31,6 @@
             {#if data.player.isBanned}
               <button
                 aria-label={$_('pages.player-detail.un-ban')}
-                title={$_('pages.player-detail.un-ban')}
                 class="btn btn-link"
                 use:tooltip={[$_('pages.player-detail.un-ban'), { placement: 'bottom' }]}
                 on:click={() => showUnbanPlayerModal(data.player)}
@@ -42,9 +40,9 @@
               </button>
             {:else}
               <button
-                aria-label={$_('pages.player-detail.un-ban')}
-                title={$_('pages.player-detail.un-ban')}
+                aria-label={$_('pages.player-detail.ban')}
                 class="btn btn-link"
+                use:tooltip={[$_('pages.player-detail.ban'), { placement: 'bottom' }]}
                 on:click={() => showConfirmBanPlayerModal(data.player)}
                 class:disabled={$user.username === data.player.username ||
                   (data.player.permissionGroup === 'admin' && !$user.admin)}>
@@ -54,8 +52,11 @@
             {#if !data.player.isEmailVerified}
               <button
                 aria-label={$_('pages.player-detail.send-verification-mail')}
-                title={$_('pages.player-detail.send-verification-mail')}
                 class="btn btn-link"
+                use:tooltip={[
+                  $_('pages.player-detail.send-verification-mail'),
+                  { placement: 'bottom' },
+                ]}
                 on:click={sendVerification}
                 class:disabled={sendingVerificationMail ||
                   $user.username === data.player.username ||
@@ -74,8 +75,8 @@
             <a
               href="{base}/permissions"
               aria-label={$_('pages.player-detail.authorize')}
-              title={$_('pages.player-detail.authorize')}
               class="btn btn-link"
+              use:tooltip={[$_('pages.player-detail.authorize'), { placement: 'bottom' }]}
               class:disabled={$user.username === data.player.username ||
                 (data.player.permissionGroup === 'admin' && !$user.admin)}>
               <i class="fas fa-user-circle"></i>

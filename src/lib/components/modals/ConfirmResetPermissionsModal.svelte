@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
-          <i class="fas fa-history fa-3x d-block m-auto text-primary"></i>
+          <i class="fas fa-history fa-3x d-block m-auto"></i>
         </div>
         {$_('pages.permissions.panel.actions.confirm-reset-title')}
       </div>

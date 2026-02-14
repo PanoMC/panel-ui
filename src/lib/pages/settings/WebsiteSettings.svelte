@@ -199,7 +199,7 @@
             type="button"
             class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
             on:click={() => faviconZone.click()}
-            title={$_('buttons.change')}
+            use:tooltip={[$_('buttons.change'), { placement: 'bottom' }]}
             aria-label={$_('buttons.change')}>
             <i class="fas fa-pen"></i>
           </button>
@@ -235,7 +235,7 @@
             type="button"
             class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
             on:click={() => logoZone.click()}
-            title={$_('buttons.change')}
+            use:tooltip={[$_('buttons.change'), { placement: 'bottom' }]}
             aria-label={$_('buttons.change')}>
             <i class="fas fa-pencil"></i>
           </button>
@@ -410,7 +410,6 @@
 
 <script context="module">
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
-  import tooltip from '$lib/tooltip.util';
 
   /**
    * @type {import("@sveltejs/kit").Load}
@@ -438,6 +437,7 @@
 <script>
   import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
 
   import { websiteLogoSrc } from '$lib/Store.js';

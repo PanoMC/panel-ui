@@ -74,7 +74,7 @@
                       <h5 class="mb-0">Pano</h5>
                       <i
                         class="fa-regular fa-circle-check text-success"
-                        title={$_('pages.settings.updates.verified')}></i>
+                        use:tooltip={[$_('pages.settings.updates.verified')]}></i>
 
                       <span class="badge text-bg-secondary">
                         {data.platformUpdate.channel.capitalize()}
@@ -100,7 +100,7 @@
                   <div class="d-flex align-items-center gap-1 flex-shrink-0 mobile-absolute-actions">
                     <button
                       class="btn btn-sm btn-link"
-                      title={$_('pages.settings.updates.changelog')}
+                      use:tooltip={[$_('pages.settings.updates.changelog'), { placement: 'bottom' }]}
                       aria-label={$_('pages.settings.updates.changelog')}
                       class:disabled={loading ||
                         $platformUpdating ||
@@ -113,7 +113,7 @@
                     <button
                       class="btn btn-sm btn-link"
                       aria-label={$_('pages.settings.updates.copy-hash')}
-                      title={$_('pages.settings.updates.copy-hash')}
+                      use:tooltip={[$_('pages.settings.updates.copy-hash'), { placement: 'bottom' }]}
                       class:disabled={loading ||
                         $platformUpdating ||
                         inProgressResource ||
@@ -318,7 +318,7 @@
                     class="d-flex align-items-center gap-1 flex-shrink-0 mobile-absolute-actions">
                     <button
                       class="btn btn-sm btn-link"
-                      title={$_('pages.settings.updates.changelog')}
+                      use:tooltip={[$_('pages.settings.updates.changelog'), { placement: 'bottom' }]}
                       aria-label={$_('pages.settings.updates.changelog')}
                       class:disabled={loading ||
                         $platformUpdating ||
@@ -331,7 +331,7 @@
                     <button
                       class="btn btn-sm btn-link"
                       aria-label={$_('pages.settings.updates.copy-hash')}
-                      title={$_('pages.settings.updates.copy-hash')}
+                      use:tooltip={[$_('pages.settings.updates.copy-hash'), { placement: 'bottom' }]}
                       class:disabled={loading ||
                         $platformUpdating ||
                         inProgressResource ||
@@ -341,7 +341,7 @@
                     </button>
 
                     <button
-                      title={$_('pages.settings.updates.download')}
+                      use:tooltip={[$_('pages.settings.updates.download'), { placement: 'bottom' }]}
                       aria-label={$_('pages.settings.updates.download')}
                       class="btn btn-sm btn-secondary d-flex align-items-center gap-2"
                       class:disabled={loading ||

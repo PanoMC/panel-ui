@@ -28,7 +28,7 @@
         <div class="hstack gap-2">
           {#if data.addon.verifyStatus !== 'UNKNOWN'}
             <a
-              title={$_('buttons.show-in-store')}
+              use:tooltip={[$_('buttons.show-in-store'), { placement: 'bottom' }]}
               aria-label={$_('buttons.show-in-store')}
               href={`${PANO_WEBSITE_URL}/addons/${data.addon.id}`}
               target="_blank"
@@ -57,7 +57,7 @@
             class="btn btn-link"
             type="button"
             onclick={onRemoveClick}
-            title={$_('buttons.remove')}
+            use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
             aria-label={$_('buttons.remove')}
             class:disabled={removing}>
             <i class="fas fa-trash"></i>
@@ -113,14 +113,16 @@
           </h5>
 
           <div class="small mb-2 hstack gap-2">
-            <span title="ID" class="user-select-all font-monospace">{data.addon.id}</span>
+            <span use:tooltip={['ID']} class="user-select-all font-monospace">{data.addon.id}</span>
             <span class="vr"></span>
-            <span title={$_('pages.addon-detail.version')} class="user-select-all font-monospace">
+            <span
+              use:tooltip={[$_('pages.addon-detail.version')]}
+              class="user-select-all font-monospace">
               {data.addon.version}
             </span>
             <span class="vr"></span>
             <span
-              title={$_('pages.addon-detail.pano-version')}
+              use:tooltip={[$_('pages.addon-detail.pano-version')]}
               class="user-select-all font-monospace">
               {data.addon.panoVersion}
             </span>
