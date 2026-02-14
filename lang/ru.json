@@ -478,6 +478,8 @@
           "create-group": "Создать группу",
           "create-track": "Создать трек",
           "add-player": "Добавить игрока",
+          "go-to-group": "Перейти к группе: {name}",
+          "go-to-parent-group": "Перейти к родительской группе: {name}",
           "confirm-reset-title": "Вы уверены, что хотите сбросить все несохраненные изменения?"
         },
         "accordions": {
@@ -586,10 +588,12 @@
         "groups": {
           "title": "Группы трека",
           "help": "Перетащите группы сверху в выбранный список. Выбранные группы можно переупорядочить путем перетаскивания.",
-          "no-groups-available": "Нет доступных групп."
+          "no-groups-available": "Нет доступных групп.",
+          "drag-to-add": "Перетащите, чтобы добавить: {name}"
         },
         "selected": {
-          "title": "Выбранные группы"
+          "title": "Выбранные группы",
+          "dropzone-aria": "Список групп в треке"
         }
       }
     },
@@ -995,7 +999,8 @@
         "title": "Авторизовать игрока",
         "player": "Игрок",
         "permission-group-label": "Группа разрешений",
-        "select-group": "Выберите группу разрешений"
+        "select-group": "Выберите группу разрешений",
+        "permissions-label": "Разрешения"
       },
       "confirm-ban-player": {
         "title": "Вы уверены, что хотите забанить этого игрока?",
@@ -1127,7 +1132,12 @@
         "context-label": "Контекст:",
         "context-key-placeholder": "Ключ",
         "add-context-button": "Добавить контекст",
-        "add-permissions-button": "Добавить {count} разрешение(-ий)"
+        "add-permissions-button": "Добавить {count} разрешение(-ий)",
+        "context-types": {
+          "world": "Мир",
+          "server": "Сервер",
+          "custom": "Свой"
+        }
       },
       "connect-server": {
         "title": "Подключить сервер",

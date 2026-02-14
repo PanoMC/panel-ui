@@ -5,7 +5,6 @@
       <div class="modal-header">
         <h5 class="modal-title">{$_('components.modals.edit-player.title')}</h5>
         <button
-          title={$_('buttons.close')}
           aria-label={$_('buttons.close')}
           type="button"
           class="btn-close"
@@ -206,6 +205,7 @@
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   import ApiUtil from '$lib/api.util';
 

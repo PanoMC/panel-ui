@@ -17,7 +17,6 @@
           class="btn-close"
           data-bs-dismiss="modal"
           aria-label={$_('buttons.close')}
-          title={$_('buttons.close')}
           on:click={hide}></button>
       </div>
       <div class="modal-body">
@@ -278,6 +277,7 @@
 
 <script>
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
   import { fade } from 'svelte/transition';
 
   import { beforeNavigate, goto } from '$app/navigation';

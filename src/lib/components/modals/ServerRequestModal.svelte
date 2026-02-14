@@ -14,7 +14,6 @@
             class="btn-close"
             aria-label={$_('buttons.close')}
             data-bs-dismiss="modal"
-            title={$_('buttons.close')}
             type="button">
           </button>
         </div>
@@ -161,6 +160,7 @@
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   import { invalidateAll } from '$app/navigation';
 

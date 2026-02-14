@@ -480,6 +480,8 @@
           "create-group": "Create Group",
           "create-track": "Create Track",
           "add-player": "Add Player",
+          "go-to-group": "Go to group: {name}",
+          "go-to-parent-group": "Go to parent group: {name}",
           "confirm-reset-title": "Are you sure you want to reset all unsaved changes?"
         },
         "accordions": {
@@ -588,10 +590,12 @@
         "groups": {
           "title": "Track Groups",
           "help": "Drag groups from above into the selected list. Selected groups can be reordered via drag & drop.",
-          "no-groups-available": "No groups available."
+          "no-groups-available": "No groups available.",
+          "drag-to-add": "Drag to add: {name}"
         },
         "selected": {
-          "title": "Selected groups"
+          "title": "Selected groups",
+          "dropzone-aria": "Permission track groups list"
         }
       }
     },
@@ -1002,7 +1006,8 @@
         "title": "Authorize Player",
         "player": "Player",
         "permission-group-label": "Permission Group",
-        "select-group": "Select permission group"
+        "select-group": "Select permission group",
+        "permissions-label": "Permissions"
       },
       "confirm-ban-player": {
         "title": "Are you sure you want to ban this player?",
@@ -1134,7 +1139,12 @@
         "context-label": "Context:",
         "context-key-placeholder": "Key",
         "add-context-button": "Add Context",
-        "add-permissions-button": "Add {count} Permission{plural}"
+        "add-permissions-button": "Add {count} Permission{plural}",
+        "context-types": {
+          "world": "World",
+          "server": "Server",
+          "custom": "Custom"
+        }
       },
       "connect-server": {
         "title": "Connect Server",

@@ -9,7 +9,6 @@
             : $_('components.modals.add-edit-post-category.edit-category')}
         </h5>
         <button
-          title={$_('buttons.close')}
           aria-label={$_('buttons.close')}
           type="button"
           class="btn-close"
@@ -125,6 +124,7 @@
 
 <script>
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   import ApiUtil from '$lib/api.util';
 

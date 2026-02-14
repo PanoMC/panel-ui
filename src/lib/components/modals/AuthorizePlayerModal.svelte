@@ -18,7 +18,6 @@
             class="btn-close"
             data-bs-dismiss="modal"
             aria-label={$_('buttons.close')}
-            title={$_('buttons.close')}
             on:click={hide}></button>
         </div>
         <div class="modal-body">
@@ -42,12 +41,12 @@
               <button
                 class="btn-close"
                 aria-label={$_('buttons.remove')}
-                title={$_('buttons.remove')}></button>
+                use:tooltip={[$_('buttons.remove')]}></button>
             </div>
             <!-- Add Button -->
             <button class="btn btn-primary btn-sm">{$_('buttons.add')} 1/1 </button>
 
-            <label for="authorizePlayerPermissions">Yetkiler</label>
+            <label for="authorizePlayerPermissions">{$_('components.modals.authorize-player.permissions-label')}</label>
             <div class="list-group">
               <label
                 for="example-permission"
@@ -148,6 +147,7 @@
 
 <script>
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
 

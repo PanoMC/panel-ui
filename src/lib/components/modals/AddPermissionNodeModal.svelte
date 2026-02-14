@@ -7,7 +7,7 @@
     }}
     role="button"
     tabindex="0"
-    aria-label="Close modal">
+    aria-label={$_('buttons.close')}>
   </div>
   <div class="modal fade show d-block" tabindex="-1" role="dialog">
     <div class="modal-dialog">
@@ -20,7 +20,6 @@
             type="button"
             class="btn-close"
             on:click={closeModal}
-            title={$_('buttons.close')}
             aria-label={$_('buttons.close')}></button>
         </div>
         <div class="modal-body">
@@ -46,7 +45,7 @@
               <p class="mb-2 fw-bold">
                 {$_('components.modals.add-permission-node.selected-permissions-label')}
               </p>
-              <div class="d-flex flex-wrap gap-2" aria-label="Selected permissions list">
+              <div class="d-flex flex-wrap gap-2" aria-label={$_('components.modals.add-permission-node.selected-permissions-label')}>
                 {#each selectedPermissions as permission (permission)}
                   <span class="badge bg-primary d-flex align-items-center">
                     {permission}
@@ -56,7 +55,7 @@
                       style="width: 0.5rem; height: 0.5rem; padding: 0;"
                       on:click={() => removePermission(permission)}
                       aria-label={$_('buttons.remove')}
-                      title={$_('buttons.remove')}></button>
+                      use:tooltip={[$_('buttons.remove')]}></button>
                   </span>
                 {/each}
               </div>
@@ -82,7 +81,7 @@
             <p class="mb-2 fw-bold">
               {$_('components.modals.add-permission-node.expiry-label')}
             </p>
-            <div class="btn-group w-100" role="group" aria-label="Expiry options">
+            <div class="btn-group w-100" role="group" aria-label={$_('components.modals.add-permission-node.expiry-label')}>
               <input
                 type="radio"
                 class="btn-check"
@@ -122,9 +121,9 @@
               <div class="hstack gap-2 mb-2">
                 <div class="input-group">
                   <select class="form-select" bind:value={context.keyType}>
-                    <option value="world">World</option>
-                    <option value="server">Server</option>
-                    <option value="custom">Custom</option>
+                    <option value="world">{$_('components.modals.add-permission-node.context-types.world')}</option>
+                    <option value="server">{$_('components.modals.add-permission-node.context-types.server')}</option>
+                    <option value="custom">{$_('components.modals.add-permission-node.context-types.custom')}</option>
                   </select>
                   {#if context.keyType === 'custom'}
                     <input
@@ -146,7 +145,7 @@
                   class="btn-close"
                   on:click={() => removeContext(index)}
                   aria-label={$_('buttons.remove')}
-                  title={$_('buttons.remove')}>
+                  use:tooltip={[$_('buttons.remove')]}>
                 </button>
               </div>
             {/each}
@@ -164,8 +163,10 @@
             on:click={addPermissions}
             disabled={selectedPermissions.length === 0}>
             {$_('components.modals.add-permission-node.add-permissions-button', {
-              count: selectedPermissions.length,
-              plural: selectedPermissions.length !== 1 ? 's' : '',
+              values: {
+                count: selectedPermissions.length,
+                plural: selectedPermissions.length !== 1 ? 's' : '',
+              },
             })}
           </button>
         </div>
@@ -177,6 +178,7 @@
 <!-- Add Permission Node Modal -->
 <script>
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
   import { createEventDispatcher } from 'svelte';
 
   export let showModal = false;

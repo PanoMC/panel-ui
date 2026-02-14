@@ -14,7 +14,10 @@
               </span>
             {:else}
               <input
-                title={$_('components.modals.connect-server.toggle-connect-server')}
+                use:tooltip={[
+                  $_('components.modals.connect-server.toggle-connect-server'),
+                  { placement: 'right' },
+                ]}
                 aria-label={$_('components.modals.connect-server.toggle-connect-server')}
                 class="form-check-input"
                 type="checkbox"
@@ -34,7 +37,6 @@
           class="btn-close"
           aria-label={$_('buttons.close')}
           data-bs-dismiss="modal"
-          title={$_('buttons.close')}
           type="button">
         </button>
       </div>

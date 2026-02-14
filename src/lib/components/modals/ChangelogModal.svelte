@@ -7,7 +7,6 @@
           type="button"
           class="btn-close"
           aria-label={$_('buttons.close')}
-          title={$_('buttons.close')}
           onclick={hide}></button>
       </div>
       <div class="modal-body">

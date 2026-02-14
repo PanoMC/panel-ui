@@ -480,6 +480,8 @@
           "create-group": "Grup Oluştur",
           "create-track": "Track Oluştur",
           "add-player": "Oyuncu Ekle",
+          "go-to-group": "Gruba git: {name}",
+          "go-to-parent-group": "Üst gruba git: {name}",
           "confirm-reset-title": "Tüm kaydedilmemiş değişiklikleri sıfırlamak istediğinizden emin misiniz?"
         },
         "accordions": {
@@ -588,10 +590,12 @@
         "groups": {
           "title": "Track Grupları",
           "help": "Grupları üstten sürükleyip seçili listeye bırakın. Seçili grupları sürükleyerek yeniden sıralayabilirsiniz.",
-          "no-groups-available": "Kullanılabilir grup yok."
+          "no-groups-available": "Kullanılabilir grup yok.",
+          "drag-to-add": "Eklemek için sürükleyin: {name}"
         },
         "selected": {
-          "title": "Seçilen Gruplar"
+          "title": "Seçilen Gruplar",
+          "dropzone-aria": "Yetki takip grubu listesi"
         }
       }
     },
@@ -1007,7 +1011,8 @@
         "title": "Oyuncuyu Yetkilendir",
         "player": "Oyuncu",
         "permission-group-label": "Yetki Grubu",
-        "select-group": "Yetki grubu seçin"
+        "select-group": "Yetki grubu seçin",
+        "permissions-label": "Yetkiler"
       },
       "confirm-ban-player": {
         "title": "Bu oyuncuyu yasaklamak istediğinizden emin misiniz?",
@@ -1139,7 +1144,12 @@
         "context-label": "Bağlam",
         "context-key-placeholder": "Anahtar",
         "add-context-button": "Bağlam Ekle",
-        "add-permissions-button": "{count} İzin Ekle"
+        "add-permissions-button": "{count} İzin Ekle",
+        "context-types": {
+          "world": "Dünya",
+          "server": "Sunucu",
+          "custom": "Özel"
+        }
       },
       "connect-server": {
         "title": "Sunucu Bağla",

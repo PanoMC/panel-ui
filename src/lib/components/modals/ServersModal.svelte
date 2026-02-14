@@ -10,7 +10,6 @@
           aria-label={$_('buttons.close')}
           class="btn-close"
           on:click={hide}
-          title={$_('buttons.close')}
           type="button">
         </button>
       </div>
@@ -51,14 +50,14 @@
                         class="rounded border"
                         height="64"
                         width="64"
-                        title={server.customName || server.name}
+                        use:tooltip={[server.customName || server.name]}
                         alt={server.customName || server.name} />
 
                       <div>
                         {#if server.id === $mainServer.id}
                           <i
                             class="fa fa-crown me-1 text-secondary"
-                            title={$_('components.modals.servers.main-server')}>
+                            use:tooltip={[$_('components.modals.servers.main-server')]}>
                           </i>
                         {/if}
                         {server.customName || server.name}

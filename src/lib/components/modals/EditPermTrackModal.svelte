@@ -14,7 +14,6 @@
           type="button"
           class="btn-close"
           aria-label={$_('buttons.close')}
-          title={$_('buttons.close')}
           on:click={hide}></button>
       </div>
       <div class="modal-body">
@@ -65,8 +64,8 @@
                   draggable="true"
                   on:dragstart={(e) => onAvailableDragStart(e, group.name)}
                   on:dragend={() => (draggingAvailableName = null)}
-                  aria-label={`Drag to add: ${group.name}`}
-                  title={`Drag to add: ${group.name}`}>
+                  aria-label={$_('pages.permission-groups.tracks.groups.drag-to-add', { values: { name: group.name } })}
+                  use:tooltip={[$_('pages.permission-groups.tracks.groups.drag-to-add', { values: { name: group.name } })]}>
                   <span>{groupLabel(group.name)}</span>
                 </button>
               {/each}
@@ -109,7 +108,7 @@
                     class="btn-close"
                     on:click={() => removeGroupFromTrack(gname)}
                     aria-label={$_('buttons.remove')}
-                    title={$_('buttons.remove')}>
+                    use:tooltip={[$_('buttons.remove')]}>
                   </button>
                 </div>
                 {#if idx < $draft.groupNames.length - 1}
@@ -205,6 +204,7 @@
 
 <script>
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
   import NoContent from '../NoContent.svelte';
 
   let draggedName = null;

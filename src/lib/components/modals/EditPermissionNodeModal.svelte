@@ -8,7 +8,6 @@
           type="button"
           class="btn-close"
           aria-label={$_('buttons.close')}
-          title={$_('buttons.close')}
           on:click={hide}></button>
       </div>
       <div class="modal-body" style="overflow: visible;">
@@ -202,7 +201,7 @@
                     type="button"
                     on:click={() => removeContext(index)}
                     aria-label={$_('buttons.remove')}
-                    title={$_('buttons.remove')}>
+                    use:tooltip={[$_('buttons.remove')]}>
                   </button>
                 </div>
               {/each}
@@ -308,6 +307,7 @@
 
 <script>
   import { _, dictionary, locale } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
   import NoContent from '$lib/components/NoContent.svelte';
 
   $: permsMap = $registeredPermissions || {};

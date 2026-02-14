@@ -8,7 +8,6 @@
           type="button"
           class="btn-close"
           aria-label={$_('buttons.close')}
-          title={$_('buttons.close')}
           on:click={hide}></button>
       </div>
       <div class="modal-body">
@@ -16,7 +15,7 @@
           <div class="position-relative">
             <input
               class="form-control form-control-lg"
-              type="search"
+              type="text"
               bind:value={$query}
               placeholder={$_('buttons.find')}
               on:keydown={(e) => {
@@ -26,7 +25,8 @@
               <button
                 type="button"
                 class="btn-close position-absolute top-50 end-0 translate-middle-y me-2"
-                title={$_('buttons.clear')}
+                aria-label={$_('buttons.clear')}
+                use:tooltip={[$_('buttons.clear')]}
                 on:click={() => query.set('')}>
               </button>
             {/if}
@@ -138,6 +138,7 @@
 
 <script>
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
   import ApiUtil from '$lib/api.util';
   import NoContent from '$lib/components/NoContent.svelte';
 

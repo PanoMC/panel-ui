@@ -8,7 +8,6 @@
             : $_('components.modals.add-edit-language.create-language')}
         </h5>
         <button
-          title={$_('buttons.close')}
           aria-label={$_('buttons.close')}
           type="button"
           class="btn-close"
@@ -96,6 +95,7 @@
                     <button
                       type="button"
                       class="btn btn-link p-0 d-inline-block mt-2 text-decoration-none"
+                      aria-label={$_('buttons.remove')}
                       use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
                       on:click={() => removeKeyWord(index)}>
                       <span class="badge text-bg-primary">

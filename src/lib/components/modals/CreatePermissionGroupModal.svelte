@@ -10,7 +10,6 @@
           type="button"
           class="btn-close"
           aria-label={$_('buttons.close')}
-          title={$_('buttons.close')}
           on:click={hide}></button>
       </div>
       <div class="modal-body">
@@ -21,7 +20,6 @@
               class="form-control form-control-lg"
               id="groupDisplayName"
               bind:value={$newGroup.displayName}
-              title={$_('pages.permission-groups.form.display-name')}
               maxlength="30" />
             <label for="groupDisplayName">
               {$_('pages.permission-groups.form.display-name')}
@@ -37,8 +35,7 @@
                 disabled={$lockGroupName}
                 aria-disabled={$lockGroupName}
                 maxlength="30"
-                required
-                title={$_('pages.permission-groups.form.group-name')} />
+                required />
               <label for="groupName">
                 {$_('pages.permission-groups.form.group-name')}
               </label>
@@ -51,8 +48,7 @@
                 bind:value={$newGroup.weight}
                 inputmode="numeric"
                 on:blur={() =>
-                  newGroup.update((g) => ({ ...g, weight: normalizeWeight(g.weight) }))}
-                title={$_('pages.permission-groups.form.weight')} />
+                  newGroup.update((g) => ({ ...g, weight: normalizeWeight(g.weight) }))} />
               <label for="groupWeight">
                 {$_('pages.permission-groups.form.weight')}
               </label>
@@ -73,7 +69,7 @@
                   <button
                     type="button"
                     class="btn-close"
-                    title={$_('buttons.remove')}
+                    use:tooltip={[$_('buttons.remove')]}
                     aria-label={$_('buttons.remove')}
                     on:click={() => removeParent(p)}>
                   </button>
@@ -95,7 +91,7 @@
               <button
                 type="button"
                 class="btn btn-primary"
-                title={$_('buttons.add')}
+                use:tooltip={[$_('buttons.add')]}
                 aria-label={$_('buttons.add')}
                 disabled={!String(parentToAdd || '').trim()}
                 aria-disabled={!String(parentToAdd || '').trim()}
@@ -180,6 +176,7 @@
 
 <script>
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
   import NoContent from '../NoContent.svelte';
 
   const isValidGroupName = (raw) => {
