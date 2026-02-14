@@ -1314,6 +1314,9 @@
       "favicon-wrong-content-type": "Неверный тип файла favicon. Разрешены только файлы PNG, JPG, JPEG, GIF и ICO.",
       "website-logo-exceeds-size": "Логотип сайта превышает максимально допустимый размер (2 МБ).",
       "website-logo-wrong-content-type": "Неверный тип файла логотипа сайта. Разрешены только файлы PNG, JPG, JPEG и GIF."
+    },
+    "search-input": {
+      "searching": "Поиск..."
     }
   },
   "page-error": {

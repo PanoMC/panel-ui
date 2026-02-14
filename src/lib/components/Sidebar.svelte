@@ -33,14 +33,14 @@
           type="button"
           class="navbar-toggler d-block float-left position-absolute"
           aria-label={$_('components.sidebar.sidebar-toggle-tooltip')}
-          title={$_('components.sidebar.sidebar-toggle-tooltip')}
+          use:tooltip={[$_('components.sidebar.sidebar-toggle-tooltip')]}
           on:click={onMobileSideBarCollapseClick}
           data-bs-dismiss="offcanvas">
           <i class="fa-solid fa-bars"></i>
         </button>
 
         <a class="navbar-brand m-auto btn btn-primary shadow-none position-relative" href="{base}/">
-          <img alt="Pano" title="Pano" src={base + '/assets/img/logo.svg'} width="20" />
+          <img alt="Pano" use:tooltip={["Pano"]} src={base + '/assets/img/logo.svg'} width="20" />
           {#if isAlpha}
             <span
               class="badge text-bg-info position-absolute top-100 start-50 translate-middle"
@@ -111,7 +111,7 @@
             data-bs-toggle="modal"
             aria-label={$_('components.server-navigation-menu.connect-server')}
             type="button"
-            title={$_('components.server-navigation-menu.connect-server')}>
+            use:tooltip={[$_('components.server-navigation-menu.connect-server')]}>
             <i class="fa-solid fa-plus"></i>
           </button>
         </div>

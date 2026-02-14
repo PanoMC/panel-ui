@@ -1327,6 +1327,9 @@
       "favicon-wrong-content-type": "Favicon dosya türü geçersiz. Sadece PNG, JPG, JPEG, GIF ve ICO dosyalarına izin verilir.",
       "website-logo-exceeds-size": "Web sitesi logosu izin verilen maksimum boyutu (2 MB) aşıyor.",
       "website-logo-wrong-content-type": "Web sitesi logosu dosya türü geçersiz. Sadece PNG, JPG, JPEG ve GIF dosyalarına izin verilir."
+    },
+    "search-input": {
+      "searching": "Aranıyor..."
     }
   },
   "page-error": {

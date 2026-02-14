@@ -9,7 +9,7 @@
           class="navbar-toggler d-inline-block me-2"
           type="button"
           aria-label={$_('components.navbar.navbar-toggle-tooltip')}
-          title={$_('components.navbar.navbar-toggle-tooltip')}
+          use:tooltip={[$_('components.navbar.navbar-toggle-tooltip')]}
           on:click={onSideBarCollapseClick}
           data-bs-toggle="offcanvas"
           data-bs-target="#sidebar"
@@ -22,7 +22,7 @@
             <i class="nav-link fa-solid fa-spinner fa-spin"></i>
           {:else}
             <button
-              title={$_('components.navbar.panel-theme')}
+            use:tooltip={[$_('components.navbar.panel-theme')]}
               aria-label={$_('components.navbar.panel-theme')}
               class="nav-link"
               data-bs-toggle="dropdown"
@@ -79,7 +79,7 @@
             target="_blank"
             rel="noopener noreferrer"
             aria-label={$_('components.navbar.report-a-bug')}
-            title={$_('components.navbar.report-a-bug')}>
+            use:tooltip={[$_('components.navbar.report-a-bug')]}>
             <i class="fa-solid fa-bug"></i>
           </a>
         </div>
@@ -91,7 +91,7 @@
             data-bs-toggle="dropdown"
             type="button"
             aria-label={$_('components.navbar.notifications')}
-            title={$_('components.navbar.notifications')}>
+            use:tooltip={[$_('components.navbar.notifications')]}>
             <i class="fa-regular fa-bolt"></i>
             {#if $notificationCount !== 0}
               <span
@@ -119,7 +119,7 @@
                     class:notification-unread={notification.status === 'NOT_READ'}>
                     <button
                       type="button"
-                      title={$_('buttons.view')}
+                      use:tooltip={[$_('buttons.view')]}
                       on:click={() => onNotificationClick(notification)}
                       class="text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
                       <div class="d-flex align-items-center">
@@ -174,7 +174,7 @@
             class="nav-link h-100 d-flex align-items-center"
             data-bs-toggle="dropdown"
             aria-label={$_('components.navbar.account-dropdown.session')}
-            title={$_('components.navbar.account-dropdown.session')}>
+            use:tooltip={[$_('components.navbar.account-dropdown.session')]}>
             <img
               src="https://minotar.net/avatar/{$user.username}"
               width="20"

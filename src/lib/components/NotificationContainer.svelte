@@ -31,7 +31,7 @@
           class="fw-normal list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap">
           <button
             type="button"
-            title={$_('buttons.view')}
+            use:tooltip={[$_('buttons.view')]}
             on:click={() => onNotificationClick(notification)}
             class="text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
             <span class="d-flex align-items-center">
@@ -137,6 +137,7 @@
 <script>
   import { getContext, onDestroy, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
   import * as locales from 'date-fns/locale';
   import { sanitize } from '@jill64/universal-sanitizer';
 

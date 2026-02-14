@@ -9,8 +9,8 @@
     on:input={onInput} />
 
   {#if showSpinner && (searching || pending)}
-    <span class="input-group-text" title="Searching..." aria-label="Searching...">
-      <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
+    <span class="input-group-text" aria-label={$_('components.search-input.searching')}>
+      <span class="spinner-border spinner-border-sm" role="status"></span>
     </span>
   {/if}
 </div>

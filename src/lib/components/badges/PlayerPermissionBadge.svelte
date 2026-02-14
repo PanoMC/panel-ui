@@ -1,6 +1,6 @@
 <a
   class="badge rounded-pill text-bg-secondary focus-ring text-decoration-none"
-  title={$_('components.player-permission-badge.filter')}
+  use:tooltip={[$_('components.player-permission-badge.filter')]}
   href="{base}/players?permissionGroup={permissionGroup.name}">
   {permissionGroup.displayName.capitalize()}
 </a>
@@ -13,6 +13,7 @@
 
 <script>
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   import { base } from '$app/paths';
 
