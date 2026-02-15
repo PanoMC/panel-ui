@@ -73,7 +73,7 @@
   import * as toastStuff from '$lib/components/ToastContainer.svelte';
   import * as variableStuff from '$lib/variables';
 
-  import { networkErrorCallbacks, showNetworkError } from '$lib/Store.js';
+  import { networkErrorCallbacks, showNetworkError, avatarVersion } from '$lib/Store.js';
 
   import { addListener } from '$lib/NotificationManager.js';
 
@@ -142,6 +142,8 @@
 
     await preparePlugins(siteInfo);
 
+    const avatarVersionDate = `&v=${Date.now()}`
+
     return {
       basicData,
       csrfToken,
@@ -149,6 +151,7 @@
       apiUrlEnv,
       panoWebsiteUrlEnv,
       panoWebsiteApiUrlEnv,
+      avatarVersionDate
     };
   }
 
@@ -161,10 +164,11 @@
    */
   export async function load(event) {
     const {
-      data: { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv, panoWebsiteApiUrlEnv },
+      data: { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv, panoWebsiteApiUrlEnv, avatarVersionDate },
       parent,
     } = event;
     await parent();
+    avatarVersion.set(avatarVersionDate);
 
     if (apiUrlEnv) {
       updateApiUrl(apiUrlEnv);
@@ -259,7 +263,6 @@
       selectedServer: basicData.selectedServer,
       connectedServerCount: basicData.connectedServerCount,
       siteInfo,
-      siteInfo,
       resetLayout: browser
         ? clientResetLayout || (clientResetLayout = writable(false))
         : writable(false),
@@ -278,7 +281,7 @@
   import { onDestroy, onMount, setContext } from 'svelte';
   import { get } from 'svelte/store';
 
-  import { options, logoutLoading, initialized, avatarVersion } from '$lib/Store';
+  import { options, logoutLoading, initialized } from '$lib/Store';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { PanelSidebarStorageUtil } from '$lib/storage.util.js';
 
@@ -405,8 +408,6 @@
       $showSplash = false;
     }
   }, 1500);
-
-  avatarVersion.set(`&v=${Date.now()}`);
 
   onMount(() => {
     mounted = true;
