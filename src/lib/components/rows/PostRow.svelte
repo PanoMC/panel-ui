@@ -143,7 +143,7 @@
         class="rounded-circle"
         width="32"
         height="32"
-        src="/api/profile/picture?username={post.writer.username}{$avatarVersion}" />
+        src="/api/profile/picture/{post.writer.username}?{$avatarVersion}" />
     </a>
   </td>
   <Hook

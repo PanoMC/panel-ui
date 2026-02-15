@@ -39,7 +39,7 @@
           use:tooltip={[$_('buttons.view')]}
           class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center">
           <img
-            src="/api/profile/picture?username={banHistory.bannedBy}{$avatarVersion}"
+            src="/api/profile/picture/{banHistory.bannedBy}?{$avatarVersion}"
             alt={banHistory.bannedBy}
             class="rounded-circle me-2 flex-shrink-0"
             height="24"

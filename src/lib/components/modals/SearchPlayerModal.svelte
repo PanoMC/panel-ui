@@ -202,7 +202,7 @@
     const u = String(username || '').trim();
     if (!u) return null;
     const encoded = encodeURIComponent(u);
-    return `/api/profile/picture?username=${encoded}`;
+    return `/api/profile/picture/${encoded}`;
   }
 
   async function search(q, token) {

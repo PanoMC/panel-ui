@@ -128,7 +128,7 @@
                         {:else if notification.details.image || notification.details.username}
                           <img
                             src={notification.details.image ||
-                              `/api/profile/picture?username=${notification.details.username}${$avatarVersion}`}
+                              `/api/profile/picture/${notification.details.username}?${$avatarVersion}`}
                             alt={$_('buttons.view')}
                             width="18"
                             height="18"
@@ -176,7 +176,7 @@
             aria-label={$_('components.navbar.account-dropdown.session')}
             use:tooltip={[$_('components.navbar.account-dropdown.session')]}>
             <img
-              src="/api/profile/picture?username={$user.username}{$avatarVersion}"
+              src="/api/profile/picture/{$user.username}?{$avatarVersion}"
               width="20"
               height="20"
               class="rounded-circle animate__animated animate__zoomIn"

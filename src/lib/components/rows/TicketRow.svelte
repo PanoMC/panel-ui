@@ -38,7 +38,7 @@
         use:tooltip={[$_('buttons.view')]}
         class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center">
         <img
-          src="/api/profile/picture?username={ticket.writer.username}{$avatarVersion}"
+          src="/api/profile/picture/{ticket.writer.username}?{$avatarVersion}"
           alt={$_('components.ticket-row.player-name')}
           class="rounded-circle animate__animated animate__zoomIn me-2 flex-shrink-0"
           height="32"

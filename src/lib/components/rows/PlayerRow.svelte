@@ -56,7 +56,7 @@
         use:tooltip={[$_('buttons.view')]}
         href="{base}/players/detail/{player.username}">
         <img
-          src="/api/profile/picture?username={player.username}{$avatarVersion}"
+          src="/api/profile/picture/{player.username}?{$avatarVersion}"
           alt={player.username}
           width="32"
           height="32"

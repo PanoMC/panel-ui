@@ -117,7 +117,7 @@
             class:border-3={isOnline || data.player.isBanned}
             class:border-success={!data.player.isBanned && isOnline}
             class:border-danger={data.player.isBanned}
-            src="/api/profile/picture?username={data.player.username}{$avatarVersion}"
+            src="/api/profile/picture/{data.player.username}?{$avatarVersion}"
             use:tooltip={!data.player.isBanned && [
               isOnline
                 ? $_('pages.player-detail.online-text', {

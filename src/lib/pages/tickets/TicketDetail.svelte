@@ -110,7 +110,7 @@
               <div class="col-auto">
                 <a href="{base}/players/detail/{message.username}" class="rounded focus-ring">
                   <img
-                    src="/api/profile/picture?username={message.username}{$avatarVersion}"
+                    src="/api/profile/picture/{message.username}?{$avatarVersion}"
                     alt={message.username}
                     class="rounded-circle animate__animated animate__zoomIn"
                     use:tooltip={[message.username, { placement: 'bottom' }]}
@@ -124,7 +124,7 @@
               <div class="col-auto">
                 <a href="{base}/players/detail/{message.username}">
                   <img
-                    src="/api/profile/picture?username={message.username}{$avatarVersion}"
+                    src="/api/profile/picture/{message.username}?{$avatarVersion}"
                     alt={message.username}
                     class="rounded-circle animate__animated animate__zoomIn"
                     use:tooltip={[message.username, { placement: 'bottom' }]}
