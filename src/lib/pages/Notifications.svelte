@@ -37,7 +37,7 @@
                 {:else if notification.details.image || notification.details.username}
                   <img
                     src={notification.details.image ||
-                      `https://minotar.net/avatar/${notification.details.username}/64`}
+                      `/api/profile/picture?username=${notification.details.username}${$avatarVersion}`}
                     alt={$_('buttons.view')}
                     width="30"
                     height="30"
@@ -192,6 +192,7 @@
 
   import NoContent from '$lib/components/NoContent.svelte';
   import { currentLanguage } from '$lib/language.util.js';
+  import { avatarVersion } from '$lib/Store';
   import PageActions from '$lib/components/PageActions.svelte';
 
 

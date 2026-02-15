@@ -17,6 +17,7 @@ export const logoutLoading = writable(false);
 export const websiteLogoSrc = writable('/api/websiteLogo');
 
 export const initialized = writable(false);
+export const avatarVersion = writable('');
 
 export function toggleSidebar(isSidebarOpen) {
   isSidebarOpen.update((value) => {

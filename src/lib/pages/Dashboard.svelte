@@ -159,7 +159,7 @@
                             use:tooltip={[ticket.writer.username, { placement: 'bottom' }]}
                             href="{base}/players/detail/{ticket.writer.username}">
                             <img
-                              src="https://minotar.net/avatar/{ticket.writer.username}/32"
+                              src="/api/profile/picture?username={ticket.writer.username}{$avatarVersion}"
                               alt={$_('pages.dashboard.last-tickets.player-name')}
                               class="rounded-circle animate__animated animate__zoomIn"
                               height="32"
@@ -231,7 +231,7 @@
                               class="rounded-circle animate__animated animate__zoomIn"
                               height="32"
                               width="32"
-                              src="https://minotar.net/avatar/{player.username}" />
+                              src="/api/profile/picture?username={player.username}{$avatarVersion}" />
                           </a>
                           <a
                             class="text-decoration-none w-100 rounded focus-ring d-block text-truncate p-1"
@@ -300,6 +300,7 @@
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
   import NoContent from '$lib/components/NoContent.svelte';
+  import { avatarVersion } from '$lib/Store';
   import TicketStatusBadge from '$lib/components/badges/TicketStatusBadge.svelte';
   import Date from '$lib/components/Date.svelte';
 

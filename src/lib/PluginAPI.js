@@ -4,6 +4,7 @@ import { originalSiteNavItems } from '$lib/components/sidebar/SiteNavigationMenu
 import { originalServerNavItems } from '$lib/components/sidebar/ServerNavigationMenu.svelte';
 import { originalThemeMenuItems } from '$lib/pages/view/Themes.svelte';
 import { originalPostMenuItems } from '$lib/pages/Posts.svelte';
+import { avatarVersion } from './Store.js';
 
 const hooks = writable({});
 
@@ -166,6 +167,11 @@ export const panoApi = {
       },
       get(name) {
         return derived(hooks, ($h) => $h[name] || []);
+      },
+    },
+    avatar: {
+      updateVersion() {
+        avatarVersion.set(`&v=${Date.now()}`);
       },
     },
   },

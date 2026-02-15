@@ -143,7 +143,7 @@
         class="rounded-circle"
         width="32"
         height="32"
-        src="https://minotar.net/avatar/{post.writer.username}" />
+        src="/api/profile/picture?username={post.writer.username}{$avatarVersion}" />
     </a>
   </td>
   <Hook
@@ -160,6 +160,7 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import { avatarVersion } from '$lib/Store';
 
   import { base } from '$app/paths';
 

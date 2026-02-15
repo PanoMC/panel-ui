@@ -278,7 +278,7 @@
   import { onDestroy, onMount, setContext } from 'svelte';
   import { get } from 'svelte/store';
 
-  import { options, logoutLoading, initialized } from '$lib/Store';
+  import { options, logoutLoading, initialized, avatarVersion } from '$lib/Store';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { PanelSidebarStorageUtil } from '$lib/storage.util.js';
 
@@ -405,6 +405,8 @@
       $showSplash = false;
     }
   }, 1500);
+
+  avatarVersion.set(`&v=${Date.now()}`);
 
   onMount(() => {
     mounted = true;

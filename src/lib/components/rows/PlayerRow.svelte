@@ -56,7 +56,7 @@
         use:tooltip={[$_('buttons.view')]}
         href="{base}/players/detail/{player.username}">
         <img
-          src="https://minotar.net/avatar/{player.username}"
+          src="/api/profile/picture?username={player.username}{$avatarVersion}"
           alt={player.username}
           width="32"
           height="32"
@@ -104,6 +104,7 @@
 
 <script>
   import tooltip from '$lib/tooltip.util';
+  import { avatarVersion } from '$lib/Store';
   import { createEventDispatcher, getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
 

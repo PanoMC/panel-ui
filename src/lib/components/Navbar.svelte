@@ -128,7 +128,7 @@
                         {:else if notification.details.image || notification.details.username}
                           <img
                             src={notification.details.image ||
-                              `https://minotar.net/avatar/${notification.details.username}/64`}
+                              `/api/profile/picture?username=${notification.details.username}${$avatarVersion}`}
                             alt={$_('buttons.view')}
                             width="18"
                             height="18"
@@ -176,7 +176,7 @@
             aria-label={$_('components.navbar.account-dropdown.session')}
             use:tooltip={[$_('components.navbar.account-dropdown.session')]}>
             <img
-              src="https://minotar.net/avatar/{$user.username}"
+              src="/api/profile/picture?username={$user.username}{$avatarVersion}"
               width="20"
               height="20"
               class="rounded-circle animate__animated animate__zoomIn"
@@ -213,7 +213,7 @@
   import { page } from '$app/stores';
 
   import ApiUtil from '$lib/api.util';
-  import { logout, logoutLoading, options, quickNotifications, toggleSidebar } from '$lib/Store';
+  import { logout, logoutLoading, options, quickNotifications, toggleSidebar, avatarVersion } from '$lib/Store';
 
   import { currentLanguage } from '$lib/language.util';
 

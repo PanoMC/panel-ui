@@ -110,7 +110,7 @@
               <div class="col-auto">
                 <a href="{base}/players/detail/{message.username}" class="rounded focus-ring">
                   <img
-                    src="https://minotar.net/avatar/{message.username}/48"
+                    src="/api/profile/picture?username={message.username}{$avatarVersion}"
                     alt={message.username}
                     class="rounded-circle animate__animated animate__zoomIn"
                     use:tooltip={[message.username, { placement: 'bottom' }]}
@@ -124,7 +124,7 @@
               <div class="col-auto">
                 <a href="{base}/players/detail/{message.username}">
                   <img
-                    src="https://minotar.net/avatar/{message.username}/48"
+                    src="/api/profile/picture?username={message.username}{$avatarVersion}"
                     alt={message.username}
                     class="rounded-circle animate__animated animate__zoomIn"
                     use:tooltip={[message.username, { placement: 'bottom' }]}
@@ -222,6 +222,7 @@
   import Date from '$lib/components/Date.svelte';
   import TicketStatusBadge from '$lib/components/badges/TicketStatusBadge.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
+  import { avatarVersion } from '$lib/Store';
 
   export let data;
 

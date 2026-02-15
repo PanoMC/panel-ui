@@ -38,7 +38,7 @@
         use:tooltip={[$_('buttons.view')]}
         class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center">
         <img
-          src="https://minotar.net/avatar/{ticket.writer.username}/32"
+          src="/api/profile/picture?username={ticket.writer.username}{$avatarVersion}"
           alt={$_('components.ticket-row.player-name')}
           class="rounded-circle animate__animated animate__zoomIn me-2 flex-shrink-0"
           height="32"
@@ -59,6 +59,7 @@
   import tooltip from '$lib/tooltip.util';
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import { avatarVersion } from '$lib/Store';
 
   import { base } from '$app/paths';
 

@@ -40,7 +40,7 @@
               {:else if notification.details.image || notification.details.username}
                 <img
                   src={notification.details.image ||
-                    `https://minotar.net/avatar/${notification.details.username}/64`}
+                    `/api/profile/picture?username=${notification.details.username}${$avatarVersion}`}
                   alt={$_('buttons.view')}
                   width="48"
                   height="48"
@@ -141,7 +141,7 @@
   import * as locales from 'date-fns/locale';
   import { sanitize } from '@jill64/universal-sanitizer';
 
-  import { quickNotifications } from '$lib/Store';
+  import { quickNotifications, avatarVersion } from '$lib/Store';
   import ApiUtil from '$lib/api.util';
   import { formatDistanceToNow } from 'date-fns';
   import { onNotificationClick } from '$lib/NotificationManager.js';

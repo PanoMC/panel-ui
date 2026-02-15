@@ -57,7 +57,7 @@
                 <div class="d-flex align-items-center overflow-hidden">
                   {#if minotarAvatarUrl(u.username, 24)}
                     <img
-                      src={minotarAvatarUrl(u.username, 24)}
+                      src={minotarAvatarUrl(u.username, 24) + $avatarVersion}
                       alt={`${u.username} avatar`}
                       width="24"
                       height="24"
@@ -141,6 +141,7 @@
   import tooltip from '$lib/tooltip.util';
   import ApiUtil from '$lib/api.util';
   import NoContent from '$lib/components/NoContent.svelte';
+  import { avatarVersion } from '$lib/Store';
 
   let debounceTimer;
   let activeSearchToken = 0;
@@ -201,7 +202,7 @@
     const u = String(username || '').trim();
     if (!u) return null;
     const encoded = encodeURIComponent(u);
-    return `https://minotar.net/avatar/${encoded}/${size}`;
+    return `/api/profile/picture?username=${encoded}`;
   }
 
   async function search(q, token) {

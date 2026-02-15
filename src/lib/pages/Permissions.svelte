@@ -312,7 +312,7 @@
                       <div class="me-2 d-flex align-items-center overflow-hidden">
                         {#if minotarAvatarUrl(user.username, 24)}
                           <img
-                            src={minotarAvatarUrl(user.username, 24)}
+                            src={minotarAvatarUrl(user.username, 24) + $avatarVersion}
                             alt={`${user.username} avatar`}
                             width="24"
                             height="24"
@@ -405,7 +405,7 @@
                 <h5 class="mb-0 d-flex align-items-center">
                   {#if minotarAvatarUrl(selectedUser.username, 28)}
                     <img
-                      src={minotarAvatarUrl(selectedUser.username, 28)}
+                      src={minotarAvatarUrl(selectedUser.username, 28) + $avatarVersion}
                       alt={`${selectedUser.username} avatar`}
                       width="28"
                       height="28"
@@ -638,6 +638,7 @@
     show as showConfirmRemovePermGroupModal,
     setCallback as setConfirmRemovePermGroupModalCallback,
   } from '$lib/components/modals/ConfirmRemovePermGroupModal.svelte';
+  import { avatarVersion } from '$lib/Store';
   import ConfirmRemovePermUserModal, {
     show as showConfirmRemovePermUserModal,
     setCallback as setConfirmRemovePermUserModalCallback,
@@ -968,7 +969,7 @@
     const u = String(username || '').trim();
     if (!u) return null;
     const encoded = encodeURIComponent(u);
-    return `https://minotar.net/avatar/${encoded}/${size}`;
+    return `/api/profile/picture?username=${encoded}`;
   }
 
   function formatNodeContext(ctx) {
