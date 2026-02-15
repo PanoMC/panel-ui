@@ -54,6 +54,7 @@
         class:text-danger={player.isBanned}
         class:text-decoration-line-through={player.isBanned}
         use:tooltip={[$_('buttons.view')]}
+        title={player.username}
         href="{base}/players/detail/{player.username}">
         <img
           src="/api/profile/picture/{player.username}?{$avatarVersion}"

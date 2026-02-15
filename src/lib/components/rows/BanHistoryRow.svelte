@@ -18,7 +18,7 @@
   <td class="align-middle" style="max-width: 250px;">
     <div class="text-truncate">
       {#if banHistory.reason}
-        <span title={banHistory.reason}>{banHistory.reason}</span>
+        <span use:tooltip={[banHistory.reason]}>{banHistory.reason}</span>
       {:else}
         <span>{$_('pages.player-detail.no-reason')}</span>
       {/if}

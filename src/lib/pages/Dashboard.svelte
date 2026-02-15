@@ -168,7 +168,9 @@
                           <a
                             class="text-decoration-none w-100 rounded focus-ring d-block text-truncate p-1"
                             href="{base}/tickets/detail/{ticket.id}"
-                            title={$_('buttons.view')}>
+                            title={ticket.title}
+                            use:tooltip={[$_('buttons.view')]}
+                            aria-label={$_('buttons.view')}>
                             {ticket.title}
                           </a>
                         </td>
@@ -235,7 +237,9 @@
                           </a>
                           <a
                             class="text-decoration-none w-100 rounded focus-ring d-block text-truncate p-1"
-                            title={$_('buttons.view')}
+                            use:tooltip={[$_('buttons.view')]}
+                            aria-label={$_('buttons.view')}
+                            title={player.username}
                             href="{base}/players/detail/{player.username}">
                             {player.username}
                           </a>

@@ -114,6 +114,7 @@
     <a
       href={base + '/posts/detail/' + post.id}
       use:tooltip={[$_('buttons.edit')]}
+      title={post.title}
       class="rounded focus-ring text-decoration-none d-block text-truncate">
       {post.title}
     </a>

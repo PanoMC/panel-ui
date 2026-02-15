@@ -804,6 +804,7 @@
       "translations": "Translations"
     },
     "navbar": {
+      "navbar-toggle-tooltip": "Open/Close Menu",
       "selected-server": "Selected Server",
       "notifications": "Notifications",
       "panel-theme": "Panel Theme",
