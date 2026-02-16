@@ -21,6 +21,12 @@
         </div>
       </div>
     </div>
+    {#if !requireEmailVerification}
+      <div class="alert alert-warning py-2 mb-3 animate__animated animate__fadeIn" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {$_('pages.server.game-integration.auth-require-verified-disabled-warning')}
+      </div>
+    {/if}
     <div class="row mb-3">
       <label class="col-md-6 col-form-label position-relative" for="authRequireVerified">
         <span
@@ -44,7 +50,7 @@
             type="checkbox"
             id="authRequireVerified"
             bind:checked={serverSettings.authRequireVerified}
-            disabled={!serverSettings.authIntegration}
+            disabled={!serverSettings.authIntegration || !requireEmailVerification}
             autocomplete="off" />
         </div>
       </div>
@@ -145,10 +151,12 @@
     });
 
     const serverSettings = response.server.settings;
+    const requireEmailVerification = response.requireEmailVerification;
 
     return {
       serverSettings,
       serverSettingsOriginal: structuredClone(serverSettings),
+      requireEmailVerification,
     };
   }
 </script>
@@ -163,7 +171,7 @@
 
   export let data;
 
-  let { serverSettings, serverSettingsOriginal } = data;
+  let { serverSettings, serverSettingsOriginal, requireEmailVerification } = data;
 
   let saving;
 

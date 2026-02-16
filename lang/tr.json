@@ -76,9 +76,14 @@
     "downgrade": "Sürüm Düşür",
     "reinstall": "Yeniden Yükle",
     "logout": "Çıkış Yap",
-    "go": "Git"
+    "go": "Git",
+    "login": "Giriş Yap",
+    "forgot-password": "Şifremi Unuttum?"
   },
   "pages": {
+    "login": {
+      "demo-mode-alert": "Bu işlem demo modunda devre dışıdır."
+    },
     "themes": {
       "title": "Temalar",
       "card-title": "{amount} Yüklü Tema",
@@ -366,6 +371,7 @@
       "platform": {
         "title": "Platform Ayarları",
         "preferences": "Tercihler",
+        "authentication": "Kimlik Doğrulama",
         "developer-mode": "Geliştirici Modu",
         "allow-user-locale-selection": "Kullanıcı Dil Seçimi",
         "allow-user-locale-selection-description": "Kullanıcıların kendi dilini seçmelerine izin ver, platformdan bağımsız.",
@@ -409,7 +415,13 @@
           "smtp-disabled-alert": "E-Posta (SMTP) şu anda devre dışı. Pano; kayıt veya şifre kurtarma işlemleri için e-posta gönderemeyecektir."
         },
         "smtp-settings": "E-Mail (SMTP)",
-        "toggle-smtp": "SMTP'yi Değiştir"
+        "toggle-smtp": "SMTP'yi Değiştir",
+        "auth": {
+          "require-email-verification": "E-posta Doğrulaması Gereksin",
+          "require-email-verification-sub": "Kullanıcıların giriş yapmadan önce e-posta adreslerini doğrulamalarını gerektir.",
+          "require-email-verification-warning": "Bu özelliğin devre dışı bırakılması güvenlik riskleri oluşturabilir. E-posta doğrulaması, bot saldırılarına karşı korunmak için önemlidir.",
+          "email-disabled-warning": "SMTP ayarları devre dışı. Kullanıcılar varsayılan olarak e-posta doğrulaması olmadan giriş yapabilecekler."
+        }
       },
       "updates": {
         "title": "Güncellemeler",
@@ -665,6 +677,7 @@
         "auth-integration-description": "Pano'nun Fabric'daki kimlik doğrulama eklentilerine bağlanmasına izin verin.",
         "auth-require-verified": "E-Mail Doğrulama Gerekli",
         "auth-require-verified-description": "Giriş yapmadan önce oyuncunun email doğrulamasını kontrol eder.",
+        "auth-require-verified-disabled-warning": "Bu seçenek, global 'E-posta Doğrulaması' kapalı olduğu için devre dışıdır. Bunu Panel -> Ayarlar -> Platform -> Kimlik Doğrulama kısmından değiştirebilirsiniz.",
         "auth-kick-after-register": "Kayıt Sonrası At",
         "auth-kick-after-register-description": "Kayıt gerçekleştiği gibi oyuncu email doğrulaması için atılacaktır.",
         "ban-integration": "Yasaklama Entegrasyonu",
@@ -890,6 +903,17 @@
       "game-integration": "Oyun Entegrasyonu"
     },
     "modals": {
+      "login": {
+        "title": "Giriş Yap",
+        "inputs": {
+          "username-email": "Kullanıcı Adı veya E-Posta",
+          "password": "Şifre",
+          "link-code": "Bağlantı Kodu (/pano link)",
+          "email": "E-Posta",
+          "new-password": "Yeni Şifre",
+          "repeat-password": "Şifre Tekrarı"
+        }
+      },
       "install-resource": {
         "title": "{type} Kur",
         "theme": "Tema",

@@ -214,16 +214,61 @@
 
     <button
       class="btn btn-secondary"
-      class:disabled={savePreferencesLoading || preferencesSaveDisabled}
-      aria-disabled={savePreferencesLoading || preferencesSaveDisabled}
+      disabled={savePreferencesLoading || preferencesSaveDisabled}
       on:click={onSavePreferencesClick}
       >{$_('buttons.save')}
     </button>
   </div>
 </div>
 
+<div class="card">
+  <div class="card-header">
+    {$_("pages.settings.platform.authentication")}
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <label class="col-md-6" for="requireEmailVerification">
+        {$_("pages.settings.platform.auth.require-email-verification")}
+        <small class="d-block text-muted">
+          {$_("pages.settings.platform.auth.require-email-verification-sub")}
+        </small>
+      </label>
+      <div class="col d-flex align-items-center">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="requireEmailVerification"
+            autocomplete="off"
+            disabled={smtpDisabled}
+            bind:checked={data.requireEmailVerification} />
+        </div>
+      </div>
+    </div>
+
+    {#if smtpDisabled}
+      <div class="alert alert-warning mt-3">
+        {$_("pages.settings.platform.auth.email-disabled-warning")}
+      </div>
+    {:else if !data.requireEmailVerification}
+      <div class="alert alert-warning mt-3">
+        {$_("pages.settings.platform.auth.require-email-verification-warning")}
+      </div>
+    {/if}
+
+    <div class="mt-3">
+      <button
+        class="btn btn-secondary"
+        disabled={saveAuthLoading || authSaveDisabled}
+        on:click={onSaveAuthClick}
+        >{$_('buttons.save')}
+      </button>
+    </div>
+  </div>
+</div>
+
 {#if mailError}
-  <!-- Error Alert -->
   <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     {$_('pages.settings.platform.smtp.email-validation-error', {
@@ -257,6 +302,7 @@
         </div>
       </div>
     {/if}
+
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="mailUsername"
         >{$_('pages.settings.platform.smtp.username')}</label>
@@ -358,10 +404,10 @@
     </div>
 
     <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="port"
+      <label class="col-md-6 col-form-label" for="authMethods"
         >{$_('pages.settings.platform.smtp.auth-methods')}</label>
       <div class="col-md-6">
-        <select class="form-select" bind:value={data.email.authMethods} disabled={smtpDisabled}>
+        <select class="form-select" id="authMethods" bind:value={data.email.authMethods} disabled={smtpDisabled}>
           <option value="PLAIN">PLAIN</option>
           <option value=""></option>
         </select>
@@ -395,7 +441,7 @@
 
 <script context="module">
   import { base } from '$app/paths';
-  import ApiUtil from '$lib/api.util.js';
+  import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
 
   export const UpdatePeriod = Object.freeze({
     NEVER: 'NEVER',
@@ -414,14 +460,18 @@
     } = event;
     await parent();
 
-    const queryParams = buildQueryParams({
-      type: 'GENERAL',
-    });
+    const [generalSettings, authSettings] = await Promise.all([
+      ApiUtil.get({
+        path: '/api/panel/settings' + buildQueryParams({ type: 'GENERAL' }),
+        request: event,
+      }),
+      ApiUtil.get({
+        path: '/api/panel/settings' + buildQueryParams({ type: 'AUTH' }),
+        request: event,
+      }),
+    ]);
 
-    const body = await ApiUtil.get({
-      path: '/api/panel/settings' + queryParams,
-      request: event,
-    });
+    const body = { ...generalSettings, ...authSettings };
 
     body.oldSettings = structuredClone(body);
 
@@ -443,7 +493,6 @@
   import { browser } from '$app/environment';
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
-  import { buildQueryParams } from '$lib/api.util.js';
   import { currentLanguage } from '$lib/language.util.js';
 
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
@@ -490,6 +539,7 @@
   }
 
   let savePreferencesLoading;
+  let saveAuthLoading;
   let saveEmailLoading;
   let connecting = !data.panoAccount && data.state && data.encodedData;
   let disconnecting;
@@ -503,6 +553,8 @@
     data.oldSettings.locale === data.locale &&
     data.oldSettings.allowUserLocaleSelection === data.allowUserLocaleSelection &&
     data.oldSettings.developmentMode === data.developmentMode;
+
+  $: authSaveDisabled = data.oldSettings.requireEmailVerification === data.requireEmailVerification;
 
   $: emailSaveDisabled =
     JSON.stringify(data.oldSettings.email) === JSON.stringify(data.email) || !data.email.password;
@@ -643,6 +695,32 @@
           locale: data.locale,
           allowUserLocaleSelection: data.allowUserLocaleSelection,
         }));
+
+        await showToast('components.toasts.settings-save-success');
+      },
+    });
+  }
+
+  function onSaveAuthClick() {
+    saveAuthLoading = true;
+
+    const formData = new FormData();
+    formData.append('requireEmailVerification', data.requireEmailVerification);
+
+    ApiUtil.put({
+      path: '/api/panel/settings',
+      body: formData,
+      handler: async (body, reject) => {
+        if (body.error) {
+          reject();
+          return;
+        }
+
+        saveAuthLoading = false;
+
+        data.oldSettings.requireEmailVerification = data.requireEmailVerification;
+
+        await invalidateAll();
 
         await showToast('components.toasts.settings-save-success');
       },
