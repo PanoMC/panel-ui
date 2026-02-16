@@ -76,9 +76,14 @@
     "downgrade": "Downgrade",
     "reinstall": "Reinstall",
     "logout": "Logout",
-    "go": "Go"
+    "go": "Go",
+    "login": "Login",
+    "forgot-password": "Forgot Password?"
   },
   "pages": {
+    "login": {
+      "demo-mode-alert": "This action is disabled in demo mode."
+    },
     "themes": {
       "title": "Themes",
       "card-title": "{amount} Installed Theme",
@@ -366,6 +371,7 @@
       "platform": {
         "title": "Platform Settings",
         "preferences": "Preferences",
+        "authentication": "Authentication",
         "developer-mode": "Developer Mode",
         "allow-user-locale-selection": "User Language Selection",
         "allow-user-locale-selection-description": "Allow users to choose their own language, independent from platform.",
@@ -409,7 +415,13 @@
           "smtp-disabled-alert": "E-Mail (SMTP) is currently disabled. Pano will not be able to send emails for registration or password recovery."
         },
         "smtp-settings": "E-Mail (SMTP)",
-        "toggle-smtp": "Toggle SMTP"
+        "toggle-smtp": "Toggle SMTP",
+        "auth": {
+          "require-email-verification": "Require Email Verification",
+          "require-email-verification-sub": "Require users to verify their email address before logging in.",
+          "require-email-verification-warning": "Disabling this feature may pose security risks. Email verification is important for protection against bot attacks.",
+          "email-disabled-warning": "SMTP settings are disabled. Users will be able to login without email verification by default."
+        }
       },
       "updates": {
         "title": "Updates",
@@ -664,7 +676,8 @@
         "auth-integration": "Auth Integration",
         "auth-integration-description": "Let Pano hook into auth plugins in Fabric.",
         "auth-require-verified": "Require Email Verification",
-        "auth-require-verified-description": "Checks player's email verified status before allowing login.",
+        "auth-require-verified-description": "Checks the player's email verification before logging in.",
+        "auth-require-verified-disabled-warning": "This option is disabled because global 'Email Verification' is turned off. You can change this in Panel -> Settings -> Platform -> Auth.",
         "auth-kick-after-register": "Kick After Register",
         "auth-kick-after-register-description": "Player will be kicked immediately after registration for email verification.",
         "ban-integration": "Ban Integration",
@@ -882,6 +895,17 @@
       "game-integration": "Game Integration"
     },
     "modals": {
+      "login": {
+        "title": "Login",
+        "inputs": {
+          "username-email": "Username or Email",
+          "password": "Password",
+          "link-code": "Link Code (/pano link)",
+          "email": "E-Mail",
+          "new-password": "New Password",
+          "repeat-password": "Repeat Password"
+        }
+      },
       "install-resource": {
         "title": "Install {type}",
         "theme": "Theme",

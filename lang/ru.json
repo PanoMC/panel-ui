@@ -74,9 +74,15 @@
     "select-option": "Выбрать",
     "downgrade": "Понизить версию",
     "reinstall": "Переустановить",
-    "go": "Перейти"
+    "go": "Перейти",
+    "logout": "Выйти",
+    "login": "Войти",
+    "forgot-password": "Забыли пароль?"
   },
   "pages": {
+    "login": {
+      "demo-mode-alert": "Это действие отключено в демо-режиме."
+    },
     "themes": {
       "title": "Темы",
       "card-title": "{amount} Установленных тем",
@@ -364,6 +370,7 @@
       "platform": {
         "title": "Настройки платформы",
         "preferences": "Предпочтения",
+        "authentication": "Аутентификация",
         "developer-mode": "Режим разработчика",
         "allow-user-locale-selection": "Выбор языка пользователем",
         "allow-user-locale-selection-description": "Позволить пользователям выбирать собственный язык независимо от платформы.",
@@ -407,7 +414,13 @@
           "smtp-disabled-alert": "Электронная почта (SMTP) в данный момент отключена. Pano не сможет отправлять электронные письма для регистрации или восстановления пароля."
         },
         "smtp-settings": "Электронная почта (SMTP)",
-        "toggle-smtp": "Переключить SMTP"
+        "toggle-smtp": "Переключить SMTP",
+        "auth": {
+          "require-email-verification": "Требовать подтверждение Email",
+          "require-email-verification-sub": "Требовать от пользователей подтвердить адрес электронной почты перед входом.",
+          "require-email-verification-warning": "Отключение этой функции может создать риски для безопасности. Подтверждение по электронной почте важно для защиты от атак ботов.",
+          "email-disabled-warning": "Настройки SMTP отключены. Пользователи смогут войти без подтверждения Email по умолчанию."
+        }
       },
       "updates": {
         "title": "Обновления",
@@ -663,6 +676,7 @@
         "auth-integration-description": "Позволить Pano подключаться к плагинам авторизации в Fabric.",
         "auth-require-verified": "Требовать подтверждение E-Mail",
         "auth-require-verified-description": "Проверяет статус подтверждения email игрока перед входом.",
+        "auth-require-verified-disabled-warning": "Эта опция отключена, так как отключена глобальная 'Подтверждение Email'. Вы можете изменить это в Панель -> Настройки -> Платформа -> Аутентификация.",
         "auth-kick-after-register": "Кикать после регистрации",
         "auth-kick-after-register-description": "Игрок будет немедленно кикнут после регистрации для подтверждения email.",
         "ban-integration": "Интеграция банов",
@@ -875,6 +889,17 @@
       "game-integration": "Интеграция с игрой"
     },
     "modals": {
+      "login": {
+        "title": "Войти",
+        "inputs": {
+          "username-email": "Имя пользователя или E-Mail",
+          "password": "Пароль",
+          "link-code": "Код привязки (/pano link)",
+          "email": "E-Mail",
+          "new-password": "Новый пароль",
+          "repeat-password": "Повторите пароль"
+        }
+      },
       "install-resource": {
         "title": "Установить {type}",
         "theme": "Тема",
