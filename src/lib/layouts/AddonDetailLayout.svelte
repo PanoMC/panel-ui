@@ -15,8 +15,10 @@
         {@render slots.left()}
       {:else}
         <PageNav>
-          <PageNavItem href="/addons/detail/{data.addon.id}">{$_('pages.addon-detail.overview')}</PageNavItem>
-          <PageNavItem href="/addons/detail/{data.addon.id}/settings">{$_('buttons.settings')}</PageNavItem>
+          <PageNavItem href="/addons/detail/{data.addon.id}"
+            >{$_('pages.addon-detail.overview')}</PageNavItem>
+          <PageNavItem href="/addons/detail/{data.addon.id}/settings"
+            >{$_('buttons.settings')}</PageNavItem>
         </PageNav>
       {/if}
     </div>
@@ -127,8 +129,13 @@
               {data.addon.panoVersion}
             </span>
             <span class="vr"></span>
-            <span class="badge {data.addon.status === 'STARTED' ? 'text-bg-success' : 'text-bg-secondary'}">
-              {data.addon.status}
+            <span
+              class="badge {data.addon.status === 'STARTED'
+                ? 'text-bg-success'
+                : 'text-bg-secondary'}">
+              {$_('components.addon-status-badge.' + data.addon.status, {
+                default: data.addon.status,
+              })}
             </span>
           </div>
 

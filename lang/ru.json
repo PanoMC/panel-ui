@@ -852,6 +852,10 @@
       "online": "В сети",
       "offline": "Не в сети"
     },
+    "addon-status-badge": {
+      "STARTED": "Запущено",
+      "FAILED": "Ошибка"
+    },
     "player-permission-badge": {
       "filter": "Фильтр",
       "player": "Игрок"

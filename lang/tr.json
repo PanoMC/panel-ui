@@ -863,6 +863,10 @@
       "online": "Çevrimiçi",
       "offline": "Çevrimdışı"
     },
+    "addon-status-badge": {
+      "STARTED": "Başlatıldı",
+      "FAILED": "Hata oluştu"
+    },
     "player-permission-badge": {
       "filter": "Filtrele",
       "player": "Oyuncu"

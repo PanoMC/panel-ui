@@ -859,6 +859,10 @@
       "online": "Online",
       "offline": "Offline"
     },
+    "addon-status-badge": {
+      "STARTED": "Started",
+      "FAILED": "Failed"
+    },
     "player-permission-badge": {
       "filter": "Filter",
       "player": "Player"
