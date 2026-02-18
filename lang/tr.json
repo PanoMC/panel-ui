@@ -78,7 +78,8 @@
     "logout": "Çıkış Yap",
     "go": "Git",
     "login": "Giriş Yap",
-    "forgot-password": "Şifremi Unuttum?"
+    "forgot-password": "Şifremi Unuttum?",
+    "reset": "Sıfırla"
   },
   "pages": {
     "login": {
@@ -1126,6 +1127,7 @@
       },
       "edit-permission-node": {
         "title": "Yetki Düzenle",
+        "add-title": "Yetki Ekle",
         "states": {
           "no-node-selected": "Node seçilmedi."
         },

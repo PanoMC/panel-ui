@@ -64,12 +64,13 @@
 
         <button
           type="button"
-          use:tooltip={[$_('buttons.refresh'), { placement: 'bottom' }]}
-          aria-label={$_('buttons.refresh')}
+          use:tooltip={[$_('buttons.reset'), { placement: 'bottom' }]}
+          aria-label={$_('buttons.reset')}
           class="btn btn-link"
           on:click={showResetModal}>
           <i class="fa fa-undo"></i>
         </button>
+
       {/if}
 
       {#if showGroups}
@@ -405,7 +406,7 @@
                 <h5 class="mb-0 d-flex align-items-center">
                   {#if selectedUser.username}
                     <img
-                      src={`/api/profile/picture/${encodeURIComponent(selectedUser.username)}${$avatarVersion}`}
+                      src={`/api/profile/picture/${encodeURIComponent(selectedUser.username)}?${$avatarVersion}`}
                       alt={`${selectedUser.username} avatar`}
                       width="28"
                       height="28"
@@ -1233,6 +1234,7 @@
       showEditPermissionNodeModal({
         node: selectedNodeForEdit,
         permissionGroups,
+        isAdd: true,
       });
       return;
     }
@@ -1252,6 +1254,7 @@
       showEditPermissionNodeModal({
         node: selectedNodeForEdit,
         permissionGroups,
+        isAdd: true,
       });
     }
   }

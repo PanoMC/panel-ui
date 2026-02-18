@@ -77,7 +77,8 @@
     "go": "Перейти",
     "logout": "Выйти",
     "login": "Войти",
-    "forgot-password": "Забыли пароль?"
+    "forgot-password": "Забыли пароль?",
+    "reset": "Сбросить"
   },
   "pages": {
     "login": {
@@ -1115,6 +1116,7 @@
       },
       "edit-permission-node": {
         "title": "Редактировать узел разрешений",
+        "add-title": "Добавить узел разрешений",
         "states": {
           "no-node-selected": "Узел не выбран."
         },

@@ -3,7 +3,11 @@
   <div class="modal-dialog">
     <div class="modal-content" style="overflow: visible;">
       <div class="modal-header">
-        <h5 class="modal-title">{$_('components.modals.edit-permission-node.title')}</h5>
+        <h5 class="modal-title">
+          {$isAddMode
+            ? $_('components.modals.edit-permission-node.add-title')
+            : $_('components.modals.edit-permission-node.title')}
+        </h5>
         <button
           type="button"
           class="btn-close"
@@ -45,66 +49,89 @@
               >{$_('components.modals.edit-permission-node.form.node')}</label>
 
             <div class="position-relative">
-              <input
-                id="nodeValue"
-                class="form-control form-control-lg font-monospace"
-                type="text"
-                bind:value={$draft.nodeValue}
-                placeholder={$_('components.modals.edit-permission-node.form.node-placeholder')}
-                autocomplete="off"
-                on:focus={() => (showNodeSuggestions = true)}
-                on:keydown={(e) => {
-                  // Tab selects the first suggestion (LuckPerms-like), then allow focus to move on.
-                  if (e.key === 'Tab' && showNodeSuggestions && filteredPanelNodes.length > 0) {
-                    const first = filteredPanelNodes[0];
-                    if (first?.node) {
-                      draft.update((d) => ({ ...d, nodeValue: first.node }));
+                <input
+                  id="nodeValue"
+                  class="form-control form-control-lg font-monospace"
+                  type="text"
+                  bind:value={$draft.nodeValue}
+                  placeholder={$_('components.modals.edit-permission-node.form.node-placeholder')}
+                  autocomplete="off"
+                  on:focus={() => (showNodeSuggestions = true)}
+                  on:keydown={(e) => {
+                    if (!showNodeSuggestions || filteredPanelNodes.length === 0) {
+                      if (e.key === 'ArrowDown') showNodeSuggestions = true;
+                      return;
                     }
-                    showNodeSuggestions = false;
-                  }
-                }}
-                on:blur={() => {
-                  // allow click on suggestion before closing
-                  setTimeout(() => (showNodeSuggestions = false), 120);
-                }} />
 
-              {#if showNodeSuggestions && filteredPanelNodes.length > 0}
-                <div
-                  class="list-group position-absolute w-100"
-                  style="z-index: 2000; max-height: 280px; overflow: auto; top: calc(100% + 4px);">
-                  {#each filteredPanelNodes as p (p.key)}
-                    <button
-                      type="button"
-                      class="list-group-item list-group-item-action"
-                      on:click={() => {
-                        draft.update((d) => ({ ...d, nodeValue: p.node }));
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault();
+                      activeSuggestionIndex = (activeSuggestionIndex + 1) % filteredPanelNodes.length;
+                    } else if (e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      activeSuggestionIndex =
+                        (activeSuggestionIndex - 1 + filteredPanelNodes.length) %
+                        filteredPanelNodes.length;
+                    } else if (e.key === 'Enter' || e.key === 'Tab') {
+                      const selected = filteredPanelNodes[activeSuggestionIndex];
+                      if (selected?.node) {
+                        e.preventDefault();
+                        draft.update((d) => ({ ...d, nodeValue: selected.node }));
                         showNodeSuggestions = false;
-                      }}>
-                      <div class="overflow-hidden vstack gap-1">
-                        <p class="fw-bold text-truncate mb-0">
-                          <i class="fa {p.icon || 'fa-key'} me-2 opacity-75"></i>
-                          {p.title}
-                          {#if p.type === 'plugin'}
-                            <span
-                              class="badge text-bg-secondary ms-2 small"
-                              style="font-size: 0.7em;">
-                              {p.pluginTitle !== `plugins.${p.pluginId}.title`
-                                ? p.pluginTitle
-                                : p.pluginId}
-                            </span>
+                      }
+                    } else if (e.key === 'Escape') {
+                      showNodeSuggestions = false;
+                    }
+                  }}
+                  on:input={() => {
+                    showNodeSuggestions = true;
+                  }}
+                  on:blur={() => {
+                    // allow click on suggestion before closing
+                    setTimeout(() => (showNodeSuggestions = false), 300);
+                  }} />
+
+              {#if showNodeSuggestions}
+                <div
+                  class="list-group position-absolute w-100 shadow-lg autocomplete-list"
+                  on:mousedown|preventDefault
+                  role="listbox"
+                  style="z-index: 2000; max-height: calc(100vh - 340px); overflow: auto; top: calc(100% + 4px);">
+                  {#if filteredPanelNodes.length > 0}
+                    {#each filteredPanelNodes as p, i (p.key)}
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={i === activeSuggestionIndex}
+                        class="list-group-item list-group-item-action {i === activeSuggestionIndex ? 'active' : ''}"
+                        on:mouseenter={() => (activeSuggestionIndex = i)}
+                        on:click={() => {
+                          draft.update((d) => ({ ...d, nodeValue: p.node }));
+                          showNodeSuggestions = false;
+                        }}>
+                        <div class="overflow-hidden vstack gap-1">
+                          <p class="fw-bold text-truncate mb-0">
+                            <i class="fa {p.icon || 'fa-key'} me-2 opacity-75"></i>
+                            {p.title}
+                            {#if p.type === 'plugin'}
+                              <span class="badge text-bg-secondary ms-2 small" style="font-size: 0.7em;">
+                                {p.pluginTitle !== `plugins.${p.pluginId}.title` ? p.pluginTitle : p.pluginId}
+                              </span>
+                            {/if}
+                          </p>
+                          <div class="text-truncate font-monospace small opacity-75">
+                            {p.node}
+                          </div>
+                          {#if p.desc}
+                            <small class="mb-0 opacity-75">{p.desc}</small>
                           {/if}
-                        </p>
-                        <div class="text-truncate font-monospace small opacity-75">
-                          {p.node}
                         </div>
-                        {#if p.desc}
-                          <small class="mb-0 opacity-75">
-                            {p.desc}
-                          </small>
-                        {/if}
-                      </div>
-                    </button>
-                  {/each}
+                      </button>
+                    {/each}
+                  {:else if nodeQuery}
+                    <div class="list-group-item disabled">
+                      <NoContent />
+                    </div>
+                  {/if}
                 </div>
               {/if}
             </div>
@@ -219,7 +246,7 @@
           class="btn btn-primary w-100"
           on:click={handleSave}
           disabled={!$node || !$draft.nodeValue.trim()}>
-          {$_('buttons.save')}
+          {$isAddMode ? $_('buttons.add') : $_('buttons.save')}
         </button>
       </div>
     </div>
@@ -240,6 +267,7 @@
     expiryDate: '',
     contexts: [],
   });
+  const isAddMode = writable(false);
 
   let callback = (node) => {};
   let hideCallback = () => {};
@@ -252,6 +280,7 @@
     const n = payload?.node ?? payload ?? null;
     node.set(n);
     permissionGroups.set(payload?.permissionGroups ?? []);
+    isAddMode.set(!!payload?.isAdd);
 
     const toLocalDatetime = (ms) => {
       if (!ms) return '';
@@ -388,6 +417,12 @@
   });
 
   let showNodeSuggestions = false;
+  let activeSuggestionIndex = 0;
+
+  $: {
+    nodeQuery;
+    activeSuggestionIndex = 0;
+  }
   $: nodeQuery = ($draft?.nodeValue || '').trim().toLowerCase();
   $: suggestions = showNodeSuggestions
     ? [...(panelNodes.length > 0 ? panelNodes : fallbackPanelNodes), ...pluginNodes, ...groupNodes]
@@ -400,7 +435,7 @@
 
       return s.searchString.includes(nodeQuery);
     })
-    .slice(0, 15);
+    .slice(0, 50);
 
   function addContext() {
     const d = get(draft);

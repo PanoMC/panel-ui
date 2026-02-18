@@ -78,7 +78,8 @@
     "logout": "Logout",
     "go": "Go",
     "login": "Login",
-    "forgot-password": "Forgot Password?"
+    "forgot-password": "Forgot Password?",
+    "reset": "Reset"
   },
   "pages": {
     "login": {
@@ -1122,6 +1123,7 @@
       },
       "edit-permission-node": {
         "title": "Edit Permission Node",
+        "add-title": "Add Permission Node",
         "states": {
           "no-node-selected": "No node selected."
         },
