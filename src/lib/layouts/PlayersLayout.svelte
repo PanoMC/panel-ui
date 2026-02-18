@@ -4,6 +4,7 @@
 <ConfirmBanPlayerModal />
 <ConfirmDeletePlayerModal />
 <UnbanPlayerModal />
+<ConfirmSendVerificationEmailModal />
 
 <script context="module">
   import { redirect } from '@sveltejs/kit';
@@ -34,4 +35,5 @@
   import ConfirmBanPlayerModal from '$lib/components/modals/ConfirmBanPlayerModal.svelte';
   import UnbanPlayerModal from '$lib/components/modals/UnbanPlayerModal.svelte';
   import ConfirmDeletePlayerModal from '$lib/components/modals/ConfirmDeletePlayerModal.svelte';
+  import ConfirmSendVerificationEmailModal from '$lib/components/modals/ConfirmSendVerificationEmailModal.svelte';
 </script>

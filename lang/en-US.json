@@ -1032,6 +1032,10 @@
           "derivatives-helper": "Alternative codes that should use this language (e.g., en, en-GB)."
         }
       },
+      "confirm-send-verification-email": {
+        "title": "Send E-Mail?",
+        "description": "Are you sure you want to send a verification email?"
+      },
       "authorize-player": {
         "title": "Authorize Player",
         "player": "Player",
@@ -1278,6 +1282,8 @@
         "permission": "Permission error",
         "connection": "Connection error"
       },
+      "stuck-text": "Stuck here? Try manual refresh.",
+      "manual-refresh": "Manual Refresh",
       "refreshing": "Refreshing...",
       "refresh": "Refresh"
     },

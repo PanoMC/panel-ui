@@ -57,18 +57,11 @@
                   $_('pages.player-detail.send-verification-mail'),
                   { placement: 'bottom' },
                 ]}
-                on:click={sendVerification}
-                class:disabled={sendingVerificationMail ||
-                  $user.username === data.player.username ||
+                on:click={() => showConfirmSendVerificationEmailModal(data.player)}
+                class:disabled={$user.username === data.player.username ||
                   (data.player.permissionGroup === 'admin' && !$user.admin) ||
                   !$siteInfo.emailEnabled}>
                 <i class="fas fa-envelope"></i>
-                {#if sendingVerificationMail}
-                  <span
-                    class="spinner-border spinner-border-sm ms-2"
-                    role="status"
-                    aria-hidden="true"></span>
-                {/if}
               </button>
             {/if}
 
@@ -280,6 +273,7 @@
     setCallback as setUnbanPlayerModalCallback,
   } from '$lib/components/modals/UnbanPlayerModal.svelte';
   import { show as showConfirmDeletePlayerModal } from '$lib/components/modals/ConfirmDeletePlayerModal.svelte';
+  import { show as showConfirmSendVerificationEmailModal } from '$lib/components/modals/ConfirmSendVerificationEmailModal.svelte';
 
   let { data, children } = $props();
   const slots = initSlots();
@@ -311,31 +305,7 @@
     }).capitalize();
   }
 
-  let sendingVerificationMail = $state(false);
 
-  function sendVerification() {
-    sendingVerificationMail = true;
-
-    ApiUtil.post({
-      path: `/api/panel/players/${data.player.username}/verificationMail`,
-      handler: async (body, reject) => {
-        sendingVerificationMail = false;
-
-        if (body.result === 'ok') {
-          await showToast('components.toasts.verification-email-sent-successful', {
-            username: data.player.username,
-          });
-
-          return;
-        }
-
-        await showToast('components.toasts.verification-email-sent-error', {
-          username: data.player.username,
-          errorCode: $_('errors.' + body.error),
-        });
-      },
-    });
-  }
 
   setEditPlayerModalCallback((newPlayer) => {
     if (data.player.username !== newPlayer.username) {

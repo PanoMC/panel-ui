@@ -1036,6 +1036,10 @@
           "derivatives-helper": "Bu dili kullanması gereken alternatif kodlar (örneğin: en, en-GB)."
         }
       },
+      "confirm-send-verification-email": {
+        "title": "E-Posta Gönderilsin mi?",
+        "description": "Gerçekten aktivasyon emaili göndermek istediğinize emin misiniz?"
+      },
       "authorize-player": {
         "title": "Oyuncuyu Yetkilendir",
         "player": "Oyuncu",
@@ -1282,6 +1286,8 @@
         "permission": "Yetki hatası",
         "connection": "Bağlantı hatası"
       },
+      "stuck-text": "Burada mı takıldın? Manuel olarak yenilemeyi dene.",
+      "manual-refresh": "Manuel Yenile",
       "refreshing": "Yenileniyor...",
       "refresh": "Yenile"
     },
