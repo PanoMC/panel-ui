@@ -179,11 +179,21 @@
           : $_('components.splash.refresh')}
       </button>
     </div>
+  {:else if showStuckUI}
+    <div class="mt-4 text-center" in:fade>
+      <small class="text-secondary d-block mb-3">
+        {$_('components.splash.stuck-text')}
+      </small>
+      <button class="btn btn-outline-secondary btn-sm" on:click={() => location.reload()}>
+        <i class="fas fa-sync-alt me-2"></i>
+        {$_('components.splash.manual-refresh')}
+      </button>
+    </div>
   {/if}
 </div>
 
 <script>
-  import { getContext, onDestroy } from 'svelte';
+  import { getContext, onDestroy, onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import { _ } from 'svelte-i18n';
 
@@ -195,6 +205,8 @@
   import { base } from '$app/paths';
 
   let networkErrors = false;
+  let showStuckUI = false;
+  let stuckTimer;
 
   const session = getContext('session');
 
@@ -203,11 +215,20 @@
   $: notLoggedIn = basicData.error === 'NOT_LOGGED_IN';
   $: noPermission = basicData.error === 'NO_PERMISSION';
 
-  onDestroy(
-    networkErrorCallbacks.subscribe((value) => {
-      networkErrors = value.length !== 0;
-    }),
-  );
+  onMount(() => {
+    stuckTimer = setTimeout(() => {
+      showStuckUI = true;
+    }, 6000);
+  });
+
+  onDestroy(() => {
+    clearTimeout(stuckTimer);
+    if (unsubscribe) unsubscribe();
+  });
+
+  const unsubscribe = networkErrorCallbacks.subscribe((value) => {
+    networkErrors = value.length !== 0;
+  });
 
   async function onResumeClick() {
     if (notLoggedIn || noPermission) {
