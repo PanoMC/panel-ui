@@ -1,4 +1,9 @@
-<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog">
+<div
+  aria-hidden="true"
+  class="modal fade"
+  bind:this={$modalElement}
+  role="dialog"
+  tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -7,7 +12,7 @@
           type="button"
           class="btn-close"
           aria-label={$_('buttons.close')}
-          onclick={hide}></button>
+          on:click={hide}></button>
       </div>
       <div class="modal-body">
         <label for="activityLogJson" class="form-label"
@@ -37,10 +42,14 @@
   export function show(_activityLog) {
     activityLog.set({ ..._activityLog });
 
-    modal = new window.bootstrap.Modal(get(modalElement), {
-      backdrop: 'static',
-      keyboard: false,
-    });
+    if (!modal) {
+      const el = get(modalElement);
+      modal = new window.bootstrap.Modal(el);
+
+      el.addEventListener('hidden.bs.modal', () => {
+        hideCallback(get(activityLog));
+      });
+    }
 
     modal.show();
   }
@@ -50,8 +59,6 @@
   }
 
   export function hide() {
-    hideCallback(get(activityLog));
-
     modal.hide();
   }
 
