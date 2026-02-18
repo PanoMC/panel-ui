@@ -653,7 +653,30 @@
     });
   }
 
-  function onSavePreferencesClick() {
+  async function onSavePreferencesClick() {
+    if ($siteInfo?.isDemo) {
+      data.oldSettings = Object.keys(data)
+        .filter((key) => key !== 'oldSettings')
+        .reduce((obj, key) => {
+          obj[key] = data[key];
+          return obj;
+        }, {});
+
+      if (!$siteInfo.userLocaleCode) {
+        await changeLanguage(getLanguageByLocale(data.locale));
+      }
+
+      siteInfo.update((info) => ({
+        ...info,
+        developmentMode: data.developmentMode,
+        locale: data.locale,
+        allowUserLocaleSelection: data.allowUserLocaleSelection,
+      }));
+
+      await showToast('components.toasts.settings-save-success');
+      return;
+    }
+
     savePreferencesLoading = true;
 
     const formData = new FormData();
