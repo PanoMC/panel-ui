@@ -310,9 +310,9 @@
                       on:click={() => selectUser(user)}
                       on:keydown={(e) => onActionKeydown(e, () => selectUser(user))}>
                       <div class="me-2 d-flex align-items-center overflow-hidden">
-                        {#if minotarAvatarUrl(user.username, 24)}
+                        {#if user.username}
                           <img
-                            src={minotarAvatarUrl(user.username, 24) + $avatarVersion}
+                            src={`/api/profile/picture/${encodeURIComponent(user.username)}?${$avatarVersion}`}
                             alt={`${user.username} avatar`}
                             width="24"
                             height="24"
@@ -403,9 +403,9 @@
             {:else}
               <div>
                 <h5 class="mb-0 d-flex align-items-center">
-                  {#if minotarAvatarUrl(selectedUser.username, 28)}
+                  {#if selectedUser.username}
                     <img
-                      src={minotarAvatarUrl(selectedUser.username, 28) + $avatarVersion}
+                      src={`/api/profile/picture/${encodeURIComponent(selectedUser.username)}${$avatarVersion}`}
                       alt={`${selectedUser.username} avatar`}
                       width="28"
                       height="28"
@@ -965,12 +965,7 @@
     return uniqueActive;
   }
 
-  function minotarAvatarUrl(username, size = 24) {
-    const u = String(username || '').trim();
-    if (!u) return null;
-    const encoded = encodeURIComponent(u);
-    return `/api/profile/picture/${encoded}`;
-  }
+
 
   function formatNodeContext(ctx) {
     if (!ctx || typeof ctx !== 'object') return [];

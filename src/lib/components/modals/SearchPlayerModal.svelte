@@ -55,9 +55,9 @@
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 on:click={() => selectUser(u)}>
                 <div class="d-flex align-items-center overflow-hidden">
-                  {#if minotarAvatarUrl(u.username, 24)}
+                  {#if u.username}
                     <img
-                      src={minotarAvatarUrl(u.username, 24) + $avatarVersion}
+                      src={`/api/profile/picture/${encodeURIComponent(u.username)}?${$avatarVersion}`}
                       alt={`${u.username} avatar`}
                       width="24"
                       height="24"
@@ -198,12 +198,7 @@
     return id != null && ($existingUserIds || []).includes(id);
   }
 
-  function minotarAvatarUrl(username, size = 24) {
-    const u = String(username || '').trim();
-    if (!u) return null;
-    const encoded = encodeURIComponent(u);
-    return `/api/profile/picture/${encoded}`;
-  }
+
 
   async function search(q, token) {
     // If a newer search started, ignore this one
