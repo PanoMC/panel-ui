@@ -18,7 +18,7 @@
                 type="button"
                 class="btn btn-sm btn-outline-primary ms-2"
                 onclick={() => showWhatsNewModal(false)}>
-                <i class="fa-solid fa-sparkles me-1"></i>
+                <i class="fa-solid fa-magic-wand-sparkles me-1"></i>
                 {$_('components.whats-new.title')}
               </button>
             </div>
