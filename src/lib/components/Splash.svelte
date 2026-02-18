@@ -203,6 +203,7 @@
     retryingNetworkErrors,
   } from '$lib/Store';
   import { base } from '$app/paths';
+  import { browser } from "$app/environment";
 
   let networkErrors = false;
   let showStuckUI = false;
@@ -215,11 +216,11 @@
   $: notLoggedIn = basicData.error === 'NOT_LOGGED_IN';
   $: noPermission = basicData.error === 'NO_PERMISSION';
 
-  onMount(() => {
+  if (browser) {
     stuckTimer = setTimeout(() => {
       showStuckUI = true;
     }, 6000);
-  });
+  }
 
   onDestroy(() => {
     clearTimeout(stuckTimer);
