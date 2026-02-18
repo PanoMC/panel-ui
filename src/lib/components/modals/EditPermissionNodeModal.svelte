@@ -22,7 +22,7 @@
               role="alert">
               <i class="fa fa-info-circle me-1"></i>
               {$_('pages.permissions.panel.nodes.pano-only-alert')}
-              <a href="https://docs.panomc.com" target="_blank" class="alert-link ms-1">
+              <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms/#%F0%9F%8C%90-pano-exclusive-permissions" target="_blank" class="alert-link ms-1">
                 {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
                 <i class="fa fa-external-link-alt ms-1 small"></i>
               </a>
@@ -33,7 +33,7 @@
             <div class="alert alert-info alert-dismissible fade show mb-3 p-2 small" role="alert">
               <i class="fa fa-info-circle me-1"></i>
               {$_('pages.permissions.panel.nodes.game-only-alert')}
-              <a href="https://docs.panomc.com" target="_blank" class="alert-link ms-1">
+              <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms/#%F0%9F%8C%90-pano-exclusive-permissions" target="_blank" class="alert-link ms-1">
                 {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
                 <i class="fa fa-external-link-alt ms-1 small"></i>
               </a>
@@ -309,6 +309,8 @@
   import { _, dictionary, locale } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
   import NoContent from '$lib/components/NoContent.svelte';
+
+  import { PANO_WEBSITE_URL } from "$lib/variables.js";
 
   $: permsMap = $registeredPermissions || {};
 

@@ -6,7 +6,7 @@
         {$_('pages.server.game-integration.auth-integration')}
         <small class="d-block"
           >{$_('pages.server.game-integration.auth-integration-description')}<br />
-          <a href="" target="_blank"
+          <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/authme" target="_blank"
             >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
           ></small>
       </label>
@@ -38,7 +38,7 @@
           {$_('pages.server.game-integration.auth-require-verified')}
           <small class="d-block"
             >{$_('pages.server.game-integration.auth-require-verified-description')}<br />
-            <a href="" target="_blank"
+            <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/authme/#step-3-verify-auth-integration-is-enabled-in-panel" target="_blank"
               >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
             ></small>
         </span>
@@ -66,7 +66,7 @@
           {$_('pages.server.game-integration.auth-kick-after-register')}
           <small class="d-block"
             >{$_('pages.server.game-integration.auth-kick-after-register-description')}<br />
-            <a href="" target="_blank"
+            <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/authme/#step-3-verify-auth-integration-is-enabled-in-panel" target="_blank"
               >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
             ></small>
         </span>
@@ -84,11 +84,31 @@
       </div>
     </div>
     <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="permissionIntegration">
+        {$_('pages.server.game-integration.permission-integration')}
+        <small class="d-block"
+        >{$_('pages.server.game-integration.permission-integration-description')}<br />
+          <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms/" target="_blank"
+          >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
+          ></small>
+      </label>
+      <div class="col col-form-label">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="permissionIntegration"
+            bind:checked={serverSettings.permissionIntegration}
+            autocomplete="off" />
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="banIntegration">
         {$_('pages.server.game-integration.ban-integration')}
         <small class="d-block"
           >{$_('pages.server.game-integration.ban-integration-description')}<br />
-          <a href="" target="_blank"
+          <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/ban-management/" target="_blank"
             >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
           ></small>
       </label>
@@ -99,26 +119,6 @@
             type="checkbox"
             id="banIntegration"
             bind:checked={serverSettings.banIntegration}
-            autocomplete="off" />
-        </div>
-      </div>
-    </div>
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="permissionIntegration">
-        {$_('pages.server.game-integration.permission-integration')}
-        <small class="d-block"
-          >{$_('pages.server.game-integration.permission-integration-description')}<br />
-          <a href="" target="_blank"
-            >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
-          ></small>
-      </label>
-      <div class="col col-form-label">
-        <div class="form-check form-switch">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="permissionIntegration"
-            bind:checked={serverSettings.permissionIntegration}
             autocomplete="off" />
         </div>
       </div>
@@ -164,6 +164,7 @@
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import { PANO_WEBSITE_URL } from "../../../pano-sdk/core/js/variables.js";
 
   const pageTitle = getContext('pageTitle');
 

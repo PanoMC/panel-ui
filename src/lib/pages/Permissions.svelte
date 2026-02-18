@@ -30,7 +30,7 @@
       <i class="fas fa-info-circle me-3 fa-lg"></i>
       <div>
         {$_('pages.permissions.panel.luckperms-alert')}
-        <a href="{PANO_WEBSITE_URL}/docs" target="_blank" class="alert-link ms-1">
+        <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms" target="_blank" class="alert-link ms-1">
           {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
           <i class="fas fa-external-link-alt ms-1 small"></i>
         </a>
@@ -313,7 +313,7 @@
                         {#if user.username}
                           <img
                             src={`/api/profile/picture/${encodeURIComponent(user.username)}?${$avatarVersion}`}
-                            alt={`${user.username} avatar`}
+                            alt={`${user.username}`}
                             width="24"
                             height="24"
                             class="rounded me-2 flex-shrink-0"

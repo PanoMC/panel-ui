@@ -58,7 +58,7 @@
                   {#if u.username}
                     <img
                       src={`/api/profile/picture/${encodeURIComponent(u.username)}?${$avatarVersion}`}
-                      alt={`${u.username} avatar`}
+                      alt={`${u.username}`}
                       width="24"
                       height="24"
                       class="rounded me-2 flex-shrink-0"
