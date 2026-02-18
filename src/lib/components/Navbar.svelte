@@ -231,6 +231,7 @@
   const session = getContext('session');
   const panelTheme = getContext('panelTheme');
   const sidebarTabsState = getContext('sidebarTabsState');
+  const siteInfo = getContext('siteInfo');
 
   const panelThemes = ['light', 'dark', 'copper'];
 
@@ -254,6 +255,13 @@
   }
 
   function changePanelTheme(theme) {
+    if ($siteInfo?.isDemo) {
+      document.documentElement.setAttribute('data-bs-theme', theme);
+      $session.basicData.panelTheme = theme;
+      $panelTheme = theme;
+      return;
+    }
+
     selectingPanelTheme = true;
 
     ApiUtil.put({
