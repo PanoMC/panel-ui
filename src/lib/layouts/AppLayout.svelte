@@ -284,6 +284,7 @@
   import { options, logoutLoading, initialized } from '$lib/Store';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { PanelSidebarStorageUtil } from '$lib/storage.util.js';
+  import { WHATS_NEW_VERSION } from '$lib/components/modals/WhatsNewModal.svelte';
 
   import Splash from '$lib/components/Splash.svelte';
   import App from '$lib/components/App.svelte';
@@ -424,10 +425,15 @@
     }
   });
 
-  $: if (!$showSplash && data.session.basicData.showWhatsNew && !whatsNewShown) {
-    showWhatsNewModal();
-    whatsNewShown = true;
-    data.session.basicData.showWhatsNew = false;
+  $: if (!$showSplash && !whatsNewShown) {
+    const backendDismissedVersion = data.session.basicData.dismissedWhatsNewVersion;
+
+    if (backendDismissedVersion === WHATS_NEW_VERSION) {
+      whatsNewShown = true;
+    } else {
+      showWhatsNewModal();
+      whatsNewShown = true;
+    }
   }
 
   onDestroy(

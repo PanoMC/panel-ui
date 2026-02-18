@@ -96,7 +96,8 @@
               class="form-check-input"
               type="checkbox"
               id="dontShowAgain"
-              bind:checked={dontShowAgain} />
+              autocomplete="off"
+              bind:checked={$dontShowAgain} />
             <label class="form-check-label small" for="dontShowAgain">
               {$_('components.whats-new.dont-show-again')}
             </label>
@@ -109,6 +110,9 @@
 
 <script context="module">
   import { writable, get } from 'svelte/store';
+  export const dontShowAgain = writable(false);
+
+  export const WHATS_NEW_VERSION = '1';
 
   const modalElement = writable();
   let modal;
@@ -121,6 +125,7 @@
 
   export async function show(requestedShowDonotShowAgain = true) {
     showDonotShowAgain.set(requestedShowDonotShowAgain);
+    dontShowAgain.set(false);
     while (!window.bootstrap) {
       await delay(50);
     }
@@ -147,20 +152,33 @@
   import { _ } from 'svelte-i18n';
   import { base } from '$app/paths';
   import ApiUtil from '$lib/api.util.js';
-  import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
-  let dontShowAgain = false;
 
-  // onMount(() => {
-  //   show();
-  // });
+  onMount(() => {
+    const element = get(modalElement);
+    if (element) {
+      element.addEventListener('hidden.bs.modal', handleDismissal);
+    }
 
-  async function handleClose() {
-    if ($showDonotShowAgain && dontShowAgain) {
+    return () => {
+      if (element) {
+        element.removeEventListener('hidden.bs.modal', handleDismissal);
+      }
+    };
+  });
+
+  async function handleDismissal() {
+    if (get(showDonotShowAgain) && get(dontShowAgain)) {
       await ApiUtil.post({
         path: '/api/panel/dismissWhatsNew',
+        body: {
+          version: WHATS_NEW_VERSION,
+        },
       });
     }
+  }
+
+  function handleClose() {
     hide();
   }
 </script>
