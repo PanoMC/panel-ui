@@ -1,4 +1,5 @@
 <InstallResourceModal />
+<AddonStartupErrorModal />
 <div class="container vstack gap-3">
   {#if data.failedLogin}
     <FailedLoginPanoStoreAlert />
@@ -69,10 +70,7 @@
                     type="button"
                     aria-label={$_('buttons.error-log')}
                     class="btn btn-link link-danger"
-                    data-bs-toggle="popover"
-                    data-bs-trigger="focus"
-                    data-bs-title={$_('buttons.error-log')}
-                    data-bs-content={plugin.error}>
+                    on:click={() => showAddonStartupErrorModal(plugin.error)}>
                     <i class="fa-solid fa-circle-exclamation"></i>
                   </button>
                 {/if}
@@ -211,6 +209,9 @@
   import InstallResourceModal, {
     show as showInstallResourceModal,
   } from '$lib/components/modals/InstallResourceModal.svelte';
+  import AddonStartupErrorModal, {
+    show as showAddonStartupErrorModal,
+  } from '$lib/components/modals/AddonStartupErrorModal.svelte';
   import {
     show as showConfirmDisableAddonModal,
     setCallback as setCallbackConfirmDisableAddonModal,

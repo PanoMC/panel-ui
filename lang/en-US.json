@@ -79,7 +79,8 @@
     "go": "Go",
     "login": "Login",
     "forgot-password": "Forgot Password?",
-    "reset": "Reset"
+    "reset": "Reset",
+    "copy": "Copy"
   },
   "pages": {
     "login": {

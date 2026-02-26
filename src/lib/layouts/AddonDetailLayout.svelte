@@ -1,5 +1,6 @@
 <ConfirmRemoveAddonModal />
 <ConfirmRemoveAddonWillCauseMoreUnloadModal />
+<AddonStartupErrorModal />
 
 <div class="container vstack gap-3">
   {#if refreshRequired}
@@ -105,10 +106,7 @@
                 type="button"
                 aria-label={$_('buttons.error-log')}
                 class="btn btn-link link-danger ps-2"
-                data-bs-toggle="popover"
-                data-bs-trigger="focus"
-                data-bs-title={$_('buttons.error-log')}
-                data-bs-content={data.addon.error}>
+                onclick={() => showAddonStartupErrorModal(data.addon.error)}>
                 <i class="fa-solid fa-circle-exclamation"></i>
               </button>
             {/if}
@@ -230,6 +228,9 @@
     show as showConfirmRemoveAddonCauseMoreModal,
     setCallback as setCallbackConfirmRemoveAddonCauseMoreModal,
   } from '$lib/components/modals/ConfirmRemoveAddonWillCauseMoreUnloadModal.svelte';
+  import AddonStartupErrorModal, {
+    show as showAddonStartupErrorModal,
+  } from '$lib/components/modals/AddonStartupErrorModal.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
   import PageNav from '$lib/components/PageNav.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';

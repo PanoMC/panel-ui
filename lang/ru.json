@@ -78,7 +78,8 @@
     "logout": "Выйти",
     "login": "Войти",
     "forgot-password": "Забыли пароль?",
-    "reset": "Сбросить"
+    "reset": "Сбросить",
+    "copy": "Копировать"
   },
   "pages": {
     "login": {

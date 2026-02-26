@@ -79,7 +79,8 @@
     "go": "Git",
     "login": "Giriş Yap",
     "forgot-password": "Şifremi Unuttum?",
-    "reset": "Sıfırla"
+    "reset": "Sıfırla",
+    "copy": "Kopyala"
   },
   "pages": {
     "login": {
