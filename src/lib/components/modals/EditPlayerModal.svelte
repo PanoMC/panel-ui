@@ -13,6 +13,14 @@
       </div>
       <form on:submit|preventDefault={onSubmit}>
         <div class="modal-body">
+          {#each $resolvedCardRowItems as row (row.id)}
+            {#if !row.permission || hasPermission(row.permission, $page.data.user)}
+              <ViewComponent
+                component={row.component}
+                playerData={$player}
+                onHookRegister={(handler) => registerPluginHandler(row.id, handler)} />
+            {/if}
+          {/each}
           <div class="row">
             <div class="col-12">
               <input
@@ -152,6 +160,7 @@
 
 <script context="module">
   import { writable, get } from 'svelte/store';
+  import { executeLifecycle, panoApiClient } from '$lib/PluginAPI.js';
 
   const modalElement = writable();
   const player = writable({});
@@ -168,7 +177,13 @@
   let hideCallback = (player) => {};
   let modal;
 
-  export function show(newPlayer) {
+  // Plugin save/isDirty handler storage
+  const pluginHandlers = writable({});
+
+  // Resolved cardRow items (lazy components resolved to modules)
+  const resolvedCardRowItems = writable([]);
+
+  export async function show(newPlayer) {
     player.set({ ...newPlayer });
     player.update((player) => {
       player.newPassword = '';
@@ -179,6 +194,29 @@
     playerBackup.set({ ...get(player) });
 
     errors.set(defaultErrors);
+    pluginHandlers.set({});
+
+    // Execute lifecycle so plugins can load data for this player
+    await executeLifecycle('panel:player-detail:edit-modal:load', { player: get(player) });
+
+    // Resolve lazy cardRow components
+    const items = get(panoApiClient.ui.player.editModal.cardRows.get());
+    const resolved = await Promise.all(
+      items.map(async (item) => {
+        let comp = item.component;
+        if (typeof comp === 'function' && !comp.prototype) {
+          try {
+            const module = await comp();
+            return { ...item, component: module };
+          } catch (e) {
+            console.error(`[EditPlayerModal] Failed to resolve component ${item.id}`, e);
+            return null;
+          }
+        }
+        return item;
+      })
+    );
+    resolvedCardRowItems.set(resolved.filter(Boolean));
 
     modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: 'static',
@@ -210,6 +248,18 @@
   import ApiUtil from '$lib/api.util';
 
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { hasPermission } from '$lib/auth.util.js';
+  import { page } from '$app/stores';
+  import ViewComponent from '$lib/components/ViewComponent.svelte';
+
+  function registerPluginHandler(id, handler) {
+    if (handler) {
+      pluginHandlers.update((h) => {
+        h[id] = handler;
+        return { ...h };
+      });
+    }
+  }
 
   import { changeLanguage, getLanguageByLocale, Languages } from '$lib/language.util';
 
@@ -223,10 +273,14 @@
 
   const user = getContext('user');
 
+  // Check if any plugin handler reports dirty state
+  $: pluginsDirty = Object.values($pluginHandlers).some((h) => h && h.isDirty);
+
   $: saveDisabled =
     !$player.username ||
     !$player.email ||
-    ($player.username === $playerBackup.username &&
+    (!pluginsDirty &&
+      $player.username === $playerBackup.username &&
       $player.email === $playerBackup.email &&
       (!$player.newPassword ||
         ($player.newPassword && $player.newPassword !== $player.newPasswordRepeat)) &&
@@ -234,8 +288,20 @@
       $player.isEmailVerified === $playerBackup.isEmailVerified &&
       $player.localeCode === $playerBackup.localeCode);
 
-  function onSubmit() {
+  async function onSubmit() {
     loading = true;
+
+    // Execute all plugin save handlers first
+    const handlers = Object.values(get(pluginHandlers));
+    for (const handler of handlers) {
+      if (handler && handler.save) {
+        try {
+          await handler.save();
+        } catch (e) {
+          console.error('[EditPlayerModal] Plugin save failed:', e);
+        }
+      }
+    }
 
     ApiUtil.put({
       path: `/api/panel/players/${get(player).id}`,

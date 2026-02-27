@@ -7,6 +7,18 @@ import { originalPostMenuItems } from '$lib/pages/Posts.svelte';
 import { avatarVersion } from './Store.js';
 
 const hooks = writable({});
+const uiItems = writable({});
+
+// Deduplicate items by id, keeping the last occurrence
+function deduplicateById(arr) {
+  const seen = new Map();
+  for (const item of arr) {
+    if (item.id) seen.set(item.id, item);
+    else seen.set(Symbol(), item);
+  }
+  arr.length = 0;
+  arr.push(...seen.values());
+}
 
 export const siteNavigationItems = writable([]);
 export const serverNavigationItems = writable([]);
@@ -19,6 +31,7 @@ export async function init() {
   themeMenuItems.set(structuredClone(originalThemeMenuItems));
   postMenuItems.set(structuredClone(originalPostMenuItems));
   hooks.set({});
+  uiItems.set({});
   lifecycleHandlers.set({});
 }
 
@@ -145,6 +158,30 @@ export const panoApi = {
     addon: {
       onLoad(handler) {
         panoApi.ui.lifecycle.on('panel:addon-detail:load', handler);
+      },
+    },
+    player: {
+      onEditLoad(handler) {
+        panoApi.ui.lifecycle.on('panel:player-detail:edit-modal:load', handler);
+      },
+      editModal: {
+        cardRows: {
+          edit(callback) {
+            uiItems.update((items) => {
+              if (!items['player-edit-modal-rows']) items['player-edit-modal-rows'] = [];
+              callback(items['player-edit-modal-rows']);
+              deduplicateById(items['player-edit-modal-rows']);
+              return items;
+            });
+          },
+          get() {
+            return derived(uiItems, ($items) => {
+              return ($items['player-edit-modal-rows'] || [])
+                .filter((item) => !item.hidden)
+                .sort((a, b) => (b.priority || 0) - (a.priority || 0));
+            });
+          },
+        },
       },
     },
     lifecycle: {
