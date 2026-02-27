@@ -112,19 +112,20 @@ export default defineConfig(({ isSsrBuild, command }) => {
         command === 'build'
           ? true
           : [
-              'chart.js',
-              '@tiptap/**',
-              'prosemirror-**',
-              '@tiptap/pm',
-              '@jill64/universal-sanitizer',
-              '@panomc/sdk',
-              'svelte-i18n',
-            ],
+            'chart.js',
+            '@tiptap/**',
+            'prosemirror-**',
+            '@tiptap/pm',
+            '@jill64/universal-sanitizer',
+            '@panomc/sdk',
+            'svelte-i18n',
+          ],
     },
     css: {
       preprocessorOptions: {
         scss: {
           api: 'modern-compiler',
+          loadPaths: [process.cwd(), path.resolve(process.cwd(), 'node_modules')],
           quietDeps: true,
           silenceDeprecations: ['mixed-decls', 'color-functions', 'global-builtin', 'import'],
         },
@@ -161,8 +162,8 @@ export default defineConfig(({ isSsrBuild, command }) => {
         ...(isSsrBuild
           ? {}
           : {
-              external: (id) => id.startsWith('svelte') || id.startsWith('@panomc/sdk'),
-            }),
+            external: (id) => id.startsWith('svelte') || id.startsWith('@panomc/sdk'),
+          }),
       },
     },
   };

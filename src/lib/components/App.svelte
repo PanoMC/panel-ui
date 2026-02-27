@@ -1,6 +1,6 @@
 <svelte:head>
   {#if dev}
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/panel/style.css" />
   {/if}
 </svelte:head>
 
