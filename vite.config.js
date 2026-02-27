@@ -105,6 +105,7 @@ function generateLicensesPlugin() {
 
 export default defineConfig(({ isSsrBuild, command }) => {
   return {
+    clearScreen: false,
     plugins: [sveltekit(), generateLicensesPlugin(), copyLangFolderPlugin(), copyManifestPlugin()],
     ssr: {
       noExternal:
@@ -144,6 +145,12 @@ export default defineConfig(({ isSsrBuild, command }) => {
       },
     },
     resolve: {
+      alias: {
+        '@theme-style':
+          command === 'serve'
+            ? path.resolve(process.cwd(), 'src/styles/_empty.scss')
+            : path.resolve(process.cwd(), 'src/styles/style.scss'),
+      },
       dedupe: ['svelte', '@panomc/sdk', 'svelte-i18n'],
     },
     build: {

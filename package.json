@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "cross-env DEV=true vite dev --host=0.0.0.0 --port=3001",
+    "dev:ui": "sass src/styles/style.scss static/style.css --watch --load-path=. --quiet-deps --no-source-map",
+    "build:ui": "sass src/styles/style.scss static/style.css --load-path=. --quiet-deps --no-source-map",
     "build": "cross-env DEV=false vite build",
     "postinstall": "bun scripts/bundle-internal-libs.js",
     "preview": "cross-env DEV=false vite preview ",
@@ -44,11 +46,11 @@
     "prettier-plugin-svelte": "^3.3.3",
     "sass": "^1.94.2",
     "svelte": "^5.46.1",
+    "svelte-i18n": "^4.0.1",
     "svelte-preprocess": "^6.0.3",
     "tippy.js": "^6.3.7",
     "uuid": "^13.0.0",
-    "vite": "^7.2.4",
-    "svelte-i18n": "^4.0.1"
+    "vite": "^7.2.4"
   },
   "type": "module",
   "dependencies": {

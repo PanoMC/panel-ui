@@ -1,16 +1,19 @@
-<style lang="scss" global>
-  @import 'src/styles/style';
-</style>
+<svelte:head>
+  {#if dev}
+    <link rel="stylesheet" href="/style.css" />
+  {/if}
+</svelte:head>
 
 <PageLoader />
 
 <slot />
 
 <script>
-  import { browser } from '$app/environment';
+  import { browser, dev } from '$app/environment';
   import { page } from '$app/stores';
   import { onDestroy } from 'svelte';
   import PageLoader from '$lib/components/PageLoader.svelte';
+  import "@theme-style";
 
   function loadPopOver() {
     if (window.bootstrap) {
