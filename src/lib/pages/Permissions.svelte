@@ -296,7 +296,7 @@
             <div class="accordion-body p-0">
               {#if Array.isArray(filteredUsers) && filteredUsers.length > 0}
                 <div class="list-group list-group-flush" style={listStyle(320)}>
-                  {#each filteredUsers as user (user.id ?? user.username)}
+                  {#each filteredUsers as user, i (user.id ?? user.username)}
                     <div
                       class="list-group-item d-flex justify-content-between align-items-center {selectedUser &&
                       selectedUser.id === user.id
@@ -305,7 +305,7 @@
                         ? 'indicator-added'
                         : userIdsWithChangedNodes.has(String(user.id))
                           ? 'indicator-modified'
-                          : ''}"
+                          : ''} {i === filteredUsers.length - 1 ? 'rounded-bottom' : ''}"
                       role="button"
                       tabindex="0"
                       on:click={() => selectUser(user)}
@@ -330,7 +330,7 @@
                   {/each}
                 </div>
               {:else}
-                <div style={listStyle(320)}>
+                <div style={listStyle(320)} class="rounded-bottom">
                   <NoContent />
                 </div>
               {/if}
