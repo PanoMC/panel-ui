@@ -150,6 +150,9 @@
     const uploadResponse = await ApiUtil.put({
       path: `/api/panel/install/upload`,
       body,
+      onUploadProgress: (progress) => {
+        currentProgress.set(progress);
+      },
     });
 
     if (uploadResponse.error) {
