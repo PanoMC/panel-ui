@@ -113,7 +113,7 @@ export async function executeHookLoad(name, event) {
         }
       }
     }
-    results.push(props || {});
+    results.push(props && typeof props === "object" && Object.keys(props).length > 0 ? props : {});
   }
 
   // Cache the final results for this specific hook name
