@@ -132,8 +132,8 @@ export default defineConfig(({ isSsrBuild, command }) => {
       },
     },
     optimizeDeps: {
-      include: ['svelte', 'deepmerge', 'svelte-i18n'],
-      exclude: ['@panomc/sdk'],
+      include: ['deepmerge', 'svelte-i18n'],
+      exclude: ['@panomc/sdk', 'svelte'],
     },
     server: {
       proxy: {
