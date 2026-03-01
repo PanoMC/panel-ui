@@ -112,14 +112,14 @@ export default defineConfig(({ isSsrBuild, command }) => {
         command === 'build'
           ? true
           : [
-            'chart.js',
-            '@tiptap/**',
-            'prosemirror-**',
-            '@tiptap/pm',
-            '@jill64/universal-sanitizer',
-            '@panomc/sdk',
-            'svelte-i18n',
-          ],
+              'chart.js',
+              '@tiptap/**',
+              'prosemirror-**',
+              '@tiptap/pm',
+              '@jill64/universal-sanitizer',
+              '@panomc/sdk',
+              'svelte-i18n',
+            ],
     },
     css: {
       preprocessorOptions: {
@@ -132,7 +132,7 @@ export default defineConfig(({ isSsrBuild, command }) => {
       },
     },
     optimizeDeps: {
-      include: ['deepmerge', 'svelte-i18n'],
+      include: ['svelte', 'deepmerge', 'svelte-i18n'],
       exclude: ['@panomc/sdk'],
     },
     server: {
@@ -152,6 +152,7 @@ export default defineConfig(({ isSsrBuild, command }) => {
             ? path.resolve(process.cwd(), 'src/styles/_empty.scss')
             : path.resolve(process.cwd(), 'src/styles/style.scss'),
       },
+      preserveSymlinks: true,
       dedupe: ['svelte', '@panomc/sdk', 'svelte-i18n'],
     },
     build: {
@@ -162,8 +163,8 @@ export default defineConfig(({ isSsrBuild, command }) => {
         ...(isSsrBuild
           ? {}
           : {
-            external: (id) => id.startsWith('svelte') || id.startsWith('@panomc/sdk'),
-          }),
+              external: (id) => id.startsWith('svelte') || id.startsWith('@panomc/sdk'),
+            }),
       },
     },
   };
