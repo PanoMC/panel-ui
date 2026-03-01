@@ -210,6 +210,9 @@ export const panoApi = {
       updateVersion() {
         avatarVersion.set(`&v=${Date.now()}`);
       },
+      getVersion() {
+        return avatarVersion;
+      },
     },
   },
 };
