@@ -124,20 +124,24 @@
       .map((link) => link.href || '')
       .filter((href) => {
         if (!href) return false;
-        // In build mode, SvelteKit assets are usually in _app/immutable/assets
-        // We want to include these, but exclude anything that might be theme-specific if we are in the panel
+        // Include SvelteKit assets or our global style.css
+        // We exclude anything that might be theme-specific if we are in the panel
         const isAppAsset = href.includes('/_app/');
+        const isGlobalStyle = href.includes('style.css');
         const isThemeAsset = href.includes('/theme/');
-        return isAppAsset && !isThemeAsset;
+        return (isAppAsset || isGlobalStyle) && !isThemeAsset;
       })
       .map((href) => {
         try {
           const url = new URL(href);
-          if (url.origin === window.location.origin && url.pathname.includes('/_app')) {
-            const appIndex = url.pathname.indexOf('/_app');
-            const expectedBasePath = (base || '') + '/_app';
-            if (appIndex > 0 && !url.pathname.startsWith(expectedBasePath)) {
-              return baseUrl + '/_app' + url.pathname.substring(appIndex + '/_app'.length) + (url.search || '') + (url.hash || '');
+          if (url.origin === window.location.origin) {
+            // Handle SvelteKit immutable assets base path
+            if (url.pathname.includes('/_app')) {
+              const appIndex = url.pathname.indexOf('/_app');
+              const expectedBasePath = (base || '') + '/_app';
+              if (appIndex > 0 && !url.pathname.startsWith(expectedBasePath)) {
+                return baseUrl + '/_app' + url.pathname.substring(appIndex + '/_app'.length) + (url.search || '') + (url.hash || '');
+              }
             }
           }
           return href;
@@ -147,6 +151,8 @@
       });
 
     console.log('Sending combined CSS to iframe. Inline length:', inlineCSS.length, 'Links:', globalLinks.length);
+    console.log('Inline CSS content:', inlineCSS);
+    console.log('Global Links:', globalLinks);
     
     frame.contentWindow.postMessage(
       {
