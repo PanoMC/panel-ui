@@ -65,6 +65,7 @@
   import NoContent from '$lib/components/NoContent.svelte';
   import Editor from '$lib/components/Editor.svelte';
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
+  import SearchInput from '$lib/components/SearchInput.svelte';
 
   import tooltip from '$lib/tooltip.util';
 
@@ -211,6 +212,7 @@
         NoContent,
         Editor,
         DragAndDropZone,
+        SearchInput,
       },
       utils: {
         api: {
