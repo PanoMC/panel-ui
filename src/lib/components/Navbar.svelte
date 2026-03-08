@@ -31,7 +31,7 @@
               disabled={selectingPanelTheme}>
               <i class="fa-solid fa-palette"></i>
             </button>
-            <ul class="dropdown-menu dropdown-menu-start animate__animated animate__zoomIn">
+            <ul class="dropdown-menu dropdown-menu-start animate__animated animate__fadeIn" style="animation-duration: 500ms;">
               <h6 class="dropdown-header">{$_('components.navbar.panel-theme')}</h6>
               {#each panelThemes as theme}
                 <li>

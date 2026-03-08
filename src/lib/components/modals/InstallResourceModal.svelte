@@ -22,15 +22,14 @@
       <div class="modal-body">
         <div class="list-group list-group-horizontal">
           <DragAndDropZone
-            className="btn list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-50 text-center rounded-end-0"
+            class="list-group-item list-group-item-action w-50 rounded-end-0"
             style="height: 250px; cursor: pointer;"
+            icon="fas fa-upload fa-2x"
+            title={$_('components.modals.install-resource.drag-here')}
             accept={$type === 'THEME'
               ? ['.zip', 'application/zip']
               : ['.jar', 'application/java-archive']}
-            on:drop={(e) => handleFileUpload(e.detail)}>
-            <i class="fas fa-upload fa-2x mb-2"></i>
-            {@html $_('components.modals.install-resource.drag-here')}
-          </DragAndDropZone>
+            on:drop={(e) => handleFileUpload(e.detail)} />
 
           <a
             href="{base}/{$type === 'PLUGIN' ? 'addons' : 'view'}/store"

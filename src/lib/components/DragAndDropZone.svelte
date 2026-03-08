@@ -1,30 +1,35 @@
 <style>
   .drop-zone {
-    transition: all 0.2s ease-in-out;
-    background-color: var(--bs-body-bg);
-    cursor: pointer;
-    user-select: none;
-    box-sizing: border-box;
+    border-style: dashed !important;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .drop-zone:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.05) !important;
+  }
+
+  .drop-zone.drag-over {
+    border-style: solid !important;
+    background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+    transform: scale(0.995);
+  }
+
+  .drop-zone.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    border-style: solid !important;
   }
 
   :global(.list-group-horizontal) .drop-zone {
     height: 100%;
   }
-
-  .drop-zone:hover,
-  .drop-zone.drag-over {
-    background-color: var(--bs-tertiary-bg) !important;
-    border-color: var(--bs-primary) !important;
-  }
-
-  .drop-zone.disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
 </style>
 
 <div
-  class="{className} {$$props.class || ''} drop-zone"
+  class="p-3 w-100 h-100 d-flex flex-column align-items-center justify-content-center border rounded overflow-hidden text-center {$$props.class ||
+    ''} drop-zone"
   class:drag-over={isDragOver}
   class:disabled
   {style}
@@ -35,9 +40,22 @@
   on:drop={handleDrop}
   on:dragover={handleDragOver}
   on:dragleave={handleDragLeave}>
-  <slot {isDragOver}></slot>
+  {#if icon || title || subtitle}
+    {#if icon}
+      <i class="{icon} mb-2"></i>
+    {/if}
+    {#if title}
+      <p class="mb-0">{@html title}</p>
+    {/if}
+    {#if subtitle}
+      <small class="opacity-75">{subtitle}</small>
+    {/if}
+  {:else}
+    <slot {isDragOver}></slot>
+  {/if}
 
   <input
+    {id}
     type="file"
     class="d-none"
     bind:this={fileInput}
@@ -56,6 +74,10 @@
   export let style = '';
   export let multiple = false;
   export let maxFileSize = null;
+  export let icon = '';
+  export let title = '';
+  export let subtitle = '';
+  export let id = null;
 
   let isDragOver = false;
   let fileInput;
@@ -144,7 +166,4 @@
   export function click() {
     onClick();
   }
-
-  export let className =
-    'btn w-100 h-100 list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center border rounded shadow-none m-0';
 </script>
