@@ -740,8 +740,8 @@
       "register-ip": "IP-адрес при регистрации"
     },
     "migration": {
-      "platforms-title": "Миграция из платформ и CMS в Pano",
-      "plugins-title": "Миграция из плагинов в Pano",
+      "platforms-title": "Импорт из платформы",
+      "plugins-title": "Импорт из плагинов",
       "not-available": "Недоступно.",
       "craftweb-tribute": "Мы с уважением вспоминаем CraftWeb, который начал этот путь. Здесь нет миграции, но наша благодарность живёт.",
       "authme": {

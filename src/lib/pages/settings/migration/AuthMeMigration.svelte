@@ -1,7 +1,8 @@
 {#if currentStep === 'upload'}
-  <div class="alert alert-info">
-    <h5>{$_('pages.migration.authme.supported-info-title')}</h5>
-    <ul class="list-unstyled">
+  <div class="alert alert-info mb-4">
+    <i class="fas fa-info-circle me-1"></i>
+    <strong>{$_('pages.migration.authme.supported-info-title')}</strong>
+    <ul class="mb-0 mt-1">
       <li>{$_('pages.migration.authme.supported-backends')}</li>
       <li>{$_('pages.migration.authme.supported-hashes')}</li>
       <li>{$_('pages.migration.authme.unsupported-note')}</li>

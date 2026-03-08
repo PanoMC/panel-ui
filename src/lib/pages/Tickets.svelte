@@ -22,11 +22,7 @@
 
       <div slot="right">
         {#if checkedItems.length > 0}
-          <div
-            class:d-none={firstLoad}
-            class="hstack gap-2 animate__animated animate__faster {checkedItems.length > 0
-              ? 'animate__slideInUp'
-              : 'animate__slideOutDown'}">
+          <div class:d-none={firstLoad} class="hstack gap-2">
             <button
               use:tooltip={[$_('buttons.delete'), { placement: 'bottom' }]}
               aria-label={$_('buttons.delete')}

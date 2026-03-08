@@ -98,6 +98,13 @@
       startsWith: true,
     },
     {
+      href: '/migration',
+      icon: 'fas fa-right-left',
+      text: 'components.settings-layout.migration',
+      startsWith: true,
+      permission: Permissions.MANAGE_PLATFORM_SETTINGS,
+    },
+    {
       href: '/settings',
       icon: 'fas fa-cog',
       text: 'components.site-navigation-menu.settings',

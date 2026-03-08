@@ -32,6 +32,14 @@
       ) !important;
     }
   }
+
+  .connect-account-board .alert-link {
+    text-decoration: none;
+  }
+
+  .connect-account-board.interactive {
+    cursor: pointer;
+  }
 </style>
 
 {#if !data.panoAccount && data.platformConnectFailed}
@@ -61,13 +69,18 @@
 </PageActions>
 
 {#if showAlert}
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
   <div
-    class="alert alert-secondary animate__animated animate__zoomIn connect-account-board border mb-0"
+    class="alert alert-secondary animate__animated animate__fadeIn connect-account-board border mb-0 focus-ring"
+    class:interactive={!data.panoAccount && !connecting}
     role="alert"
+    on:click={!data.panoAccount && !connecting ? onConnectClick : null}
     style="background-image: var(--welcome-gradient), url('{base}/assets/img/connect-pano-bg.png');">
     <div class="row align-items-center">
       <div class="col-lg-9">
         <h5 class="alert-heading mb-2">
+          <i class="fa-solid fa-arrows-rotate me-2"></i>
           {data.panoAccount
             ? '@' + data.panoAccount.username
             : $_('pages.settings.platform.online-account')}
@@ -91,24 +104,15 @@
               disabled={disconnecting}></button>
           </div>
         {:else}
-          <button
-            type="button"
-            class="btn btn-secondary lh-base btn-lg-lg"
-            on:click={onConnectClick}
-            disabled={connecting}>
-            <img
-              src="{base}/assets/img/logo.svg"
-              width="20"
-              height="20"
-              class="me-2 bg-dark p-1 rounded"
-              alt="Pano" />
-
+          <div class="alert-link rounded border-0 bg-transparent p-0">
             {connecting ? $_('buttons.connecting') : $_('buttons.connect')}
 
             {#if connecting}
               <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+            {:else}
+              <i class="fa-solid fa-arrow-right ms-1"></i>
             {/if}
-          </button>
+          </div>
         {/if}
       </div>
     </div>
@@ -223,14 +227,14 @@
 
 <div class="card">
   <div class="card-header">
-    {$_("pages.settings.platform.authentication")}
+    {$_('pages.settings.platform.authentication')}
   </div>
   <div class="card-body">
     <div class="row">
       <label class="col-md-6" for="requireEmailVerification">
-        {$_("pages.settings.platform.auth.require-email-verification")}
+        {$_('pages.settings.platform.auth.require-email-verification')}
         <small class="d-block text-muted">
-          {$_("pages.settings.platform.auth.require-email-verification-sub")}
+          {$_('pages.settings.platform.auth.require-email-verification-sub')}
         </small>
       </label>
       <div class="col d-flex align-items-center">
@@ -249,11 +253,11 @@
 
     {#if smtpDisabled}
       <div class="alert alert-warning mt-3">
-        {$_("pages.settings.platform.auth.email-disabled-warning")}
+        {$_('pages.settings.platform.auth.email-disabled-warning')}
       </div>
     {:else if !data.requireEmailVerification}
       <div class="alert alert-warning mt-3">
-        {$_("pages.settings.platform.auth.require-email-verification-warning")}
+        {$_('pages.settings.platform.auth.require-email-verification-warning')}
       </div>
     {/if}
 
@@ -261,14 +265,18 @@
 
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="passwordHashAlgorithm">
-        {$_("pages.settings.platform.auth.password-hash-algorithm")}
+        {$_('pages.settings.platform.auth.password-hash-algorithm')}
         <small class="d-block text-muted">
-          {$_("pages.settings.platform.auth.password-hash-algorithm-sub")}
+          {$_('pages.settings.platform.auth.password-hash-algorithm-sub')}
         </small>
       </label>
       <div class="col-md-6">
-        <select class="form-control" id="passwordHashAlgorithm" bind:value={data.passwordHashAlgorithm}>
-          <option value="ARGON2ID">Argon2id ({$_('pages.settings.platform.auth.recommended')})</option>
+        <select
+          class="form-control"
+          id="passwordHashAlgorithm"
+          bind:value={data.passwordHashAlgorithm}>
+          <option value="ARGON2ID"
+            >Argon2id ({$_('pages.settings.platform.auth.recommended')})</option>
           <option value="BCRYPT">BCrypt</option>
           <option value="SHA256">SHA-256</option>
           <option value="MD5">MD5</option>
@@ -279,7 +287,7 @@
     {#if data.passwordHashAlgorithm === 'MD5'}
       <div class="alert alert-danger mt-2">
         <i class="fas fa-exclamation-triangle me-2"></i>
-        {$_("pages.settings.platform.auth.password-hash-algorithm-warning")}
+        {$_('pages.settings.platform.auth.password-hash-algorithm-warning')}
       </div>
     {/if}
 
@@ -433,7 +441,11 @@
       <label class="col-md-6 col-form-label" for="authMethods"
         >{$_('pages.settings.platform.smtp.auth-methods')}</label>
       <div class="col-md-6">
-        <select class="form-select" id="authMethods" bind:value={data.email.authMethods} disabled={smtpDisabled}>
+        <select
+          class="form-select"
+          id="authMethods"
+          bind:value={data.email.authMethods}
+          disabled={smtpDisabled}>
           <option value="PLAIN">PLAIN</option>
           <option value=""></option>
         </select>
@@ -580,7 +592,9 @@
     data.oldSettings.allowUserLocaleSelection === data.allowUserLocaleSelection &&
     data.oldSettings.developmentMode === data.developmentMode;
 
-  $: authSaveDisabled = data.oldSettings.requireEmailVerification === data.requireEmailVerification && data.oldSettings.passwordHashAlgorithm === data.passwordHashAlgorithm;
+  $: authSaveDisabled =
+    data.oldSettings.requireEmailVerification === data.requireEmailVerification &&
+    data.oldSettings.passwordHashAlgorithm === data.passwordHashAlgorithm;
 
   $: emailSaveDisabled =
     JSON.stringify(data.oldSettings.email) === JSON.stringify(data.email) || !data.email.password;

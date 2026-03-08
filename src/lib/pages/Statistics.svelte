@@ -1,6 +1,6 @@
 <!-- Statistics Page -->
 <div class="container vstack gap-3">
-  <div class="row g-3 justify-content-between animate__animated animate__slideInDown" style="--animate-duration: 500ms;">
+  <div class="row g-3 justify-content-between">
     <div class="col-lg-4">
       <div class="card text-bg-secondary h-100">
         <div class="card-body">

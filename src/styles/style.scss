@@ -2,7 +2,6 @@ $pano-asset-path: '/panel/assets/';
 @import '../pano-sdk/core/scss/main';
 $fa-font-path: '#{$pano-asset-path}webfonts';
 
-@import 'node_modules/animate.css/animate.min';
 @import 'node_modules/tippy.js/dist/tippy';
 
 @import 'node_modules/@fortawesome/fontawesome-free/scss/fontawesome';

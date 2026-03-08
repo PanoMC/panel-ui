@@ -22,7 +22,7 @@
             <i class="nav-link fa-solid fa-spinner fa-spin"></i>
           {:else}
             <button
-            use:tooltip={[$_('components.navbar.panel-theme')]}
+              use:tooltip={[$_('components.navbar.panel-theme')]}
               aria-label={$_('components.navbar.panel-theme')}
               class="nav-link"
               data-bs-toggle="dropdown"
@@ -31,7 +31,7 @@
               disabled={selectingPanelTheme}>
               <i class="fa-solid fa-palette"></i>
             </button>
-            <ul class="dropdown-menu dropdown-menu-start animate__animated animate__fadeIn" style="animation-duration: 500ms;">
+            <ul class="dropdown-menu dropdown-menu-start">
               <h6 class="dropdown-header">{$_('components.navbar.panel-theme')}</h6>
               {#each panelThemes as theme}
                 <li>
@@ -101,9 +101,7 @@
             {/if}
           </button>
 
-          <div
-            style="width: 300px;"
-            class="dropdown-menu dropdown-menu-end animate__animated animate__zoomIn">
+          <div style="width: 300px;" class="dropdown-menu dropdown-menu-end">
             <h6 class="dropdown-header">
               {$_('components.navbar.notifications')}
               {$notificationCount === 0 ? '' : '(' + $notificationCount + ')'}
@@ -179,10 +177,10 @@
               src="/api/profile/picture/{$user.username}?{$avatarVersion}"
               width="20"
               height="20"
-              class="rounded-circle animate__animated animate__zoomIn"
+              class="rounded-circle"
               alt={$user.username} />
           </button>
-          <ul class="dropdown-menu dropdown-menu-end animate__animated animate__zoomIn">
+          <ul class="dropdown-menu dropdown-menu-end">
             <h6 class="dropdown-header">{$user.username}</h6>
             <li>
               <a class="dropdown-item focus-ring" href="{base}/players/detail/{$user.username}">
@@ -213,7 +211,14 @@
   import { page } from '$app/stores';
 
   import ApiUtil from '$lib/api.util';
-  import { logout, logoutLoading, options, quickNotifications, toggleSidebar, avatarVersion } from '$lib/Store';
+  import {
+    logout,
+    logoutLoading,
+    options,
+    quickNotifications,
+    toggleSidebar,
+    avatarVersion,
+  } from '$lib/Store';
 
   import { currentLanguage } from '$lib/language.util';
 

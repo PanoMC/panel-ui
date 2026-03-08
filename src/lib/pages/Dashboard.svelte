@@ -36,6 +36,14 @@
       ) !important;
     }
   }
+
+  .welcome-board .alert-link {
+    text-decoration: none;
+  }
+
+  .welcome-board li:not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
 </style>
 
 <!-- Dashboard Page -->
@@ -43,7 +51,7 @@
   <!-- Welcome Alerts -->
   {#if data.gettingStartedBlocks.welcomeBoard}
     <div
-      class="alert alert-secondary alert-dismissible mb-0 animate__animated animate__slideInDown welcome-board border" style="--animate-duration: 500ms;">
+      class="alert alert-secondary alert-dismissible mb-0 border">
       <div class="row">
         <div class="mb-3">
           {@html $_('pages.dashboard.welcome-card.description')}
@@ -53,15 +61,18 @@
             <li>
               <button
                 type="button"
-                class="btn btn-link alert-link p-0 border-0 text-start text-decoration-none focus-ring rounded"
+                class="alert-link focus-ring rounded border-0 bg-transparent p-0"
                 data-bs-target="#connectServer"
                 data-bs-toggle="modal">
                 <i class="fa-solid fa-gamepad me-2"></i>
                 {$_('pages.dashboard.welcome-card.connect-server')}
               </button>
-              <span class="d-block">
-                {$_('pages.dashboard.welcome-card.connect-server-description')}
-              </span>
+            </li>
+            <li>
+              <a class="alert-link focus-ring rounded" href="{base}/migration">
+                <i class="fa-solid fa-file-import me-2"></i>
+                {$_('pages.dashboard.welcome-card.import-data')}
+              </a>
             </li>
           </ul>
         </div>
@@ -97,13 +108,19 @@
         <div class="col-lg-4">
           <ul class="list-unstyled">
             <li>
-              <a class="alert-link focus-ring rounded" href="{PANO_WEBSITE_URL}/addons" target="_blank">
-                <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
+              <a
+                class="alert-link focus-ring rounded"
+                href="{PANO_WEBSITE_URL}/addons"
+                target="_blank">
+                <i class="fa-solid fa-bag-shopping me-2"></i>
                 {$_('pages.dashboard.welcome-card.get-themes-and-extensions')}
               </a>
             </li>
             <li>
-              <a class="alert-link focus-ring rounded" href="{PANO_WEBSITE_URL}/docs" target="_blank">
+              <a
+                class="alert-link focus-ring rounded"
+                href="{PANO_WEBSITE_URL}/docs"
+                target="_blank">
                 <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
                 {$_('pages.dashboard.welcome-card.documentations')}
               </a>
@@ -115,7 +132,10 @@
               </a>
             </li>
             <li>
-              <a class="alert-link focus-ring rounded" href="{PANO_WEBSITE_URL}/discord" target="_blank">
+              <a
+                class="alert-link focus-ring rounded"
+                href="{PANO_WEBSITE_URL}/discord"
+                target="_blank">
                 <i class="fab fa-discord me-2"></i>
                 {$_('pages.dashboard.welcome-card.discord')}
               </a>
@@ -166,7 +186,7 @@
                               width="32" />
                           </a>
                           <a
-                            class="badge bg-primary-subtile text-decoration-none rounded focus-ring"
+                            class="badge text-bg-primary text-decoration-none rounded focus-ring"
                             href="{base}/tickets/detail/{ticket.id}"
                             title={ticket.title}
                             use:tooltip={[$_('buttons.view')]}

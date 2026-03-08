@@ -112,7 +112,7 @@
                   <img
                     src="/api/profile/picture/{message.username}?{$avatarVersion}"
                     alt={message.username}
-                    class="rounded-circle animate__animated animate__zoomIn"
+                    class="rounded-circle"
                     use:tooltip={[message.username, { placement: 'bottom' }]}
                     width="48"
                     height="48" />
@@ -126,7 +126,7 @@
                   <img
                     src="/api/profile/picture/{message.username}?{$avatarVersion}"
                     alt={message.username}
-                    class="rounded-circle animate__animated animate__zoomIn"
+                    class="rounded-circle"
                     use:tooltip={[message.username, { placement: 'bottom' }]}
                     width="48"
                     height="48" />

@@ -4,16 +4,10 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .logo-wrapper {
-    background-color: var(--bs-primary);
-    padding: 8px;
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 64px;
     height: 64px;
   }
@@ -92,24 +86,6 @@
     }
   }
 
-  .logo-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  .mc-img {
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
-  }
-
-  .hytale-img {
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
-  }
-
   .pulse {
     animation: pulse 1.5s infinite ease-in-out;
   }
@@ -143,19 +119,28 @@
   <div class="loader-content position-relative" style="height: 100px; width: 100px;">
     {#if networkErrors}
       <div
-        class="logo-wrapper position-absolute center-content"
+        class="logo-wrapper bg-primary p-2 shadow-sm position-absolute center-content d-flex align-items-center justify-content-center"
         class:pulse={$retryingNetworkErrors}>
-        <img alt="Pano" src="{base}/assets/img/logo.svg" class="logo-img" />
+        <img alt="Pano" src="{base}/assets/img/logo.svg" class="w-100 h-100 object-fit-contain" />
       </div>
     {:else}
-      <div class="logo-wrapper pano-anim center-content">
-        <img alt="Pano" src="{base}/assets/img/logo.svg" class="logo-img" />
+      <div
+        class="logo-wrapper bg-primary p-2 shadow-sm pano-anim center-content d-flex align-items-center justify-content-center">
+        <img alt="Pano" src="{base}/assets/img/logo.svg" class="w-100 h-100 object-fit-contain" />
       </div>
-      <div class="mc-img-wrapper mc-anim center-content">
-        <img alt="Minecraft" src="{base}/assets/img/minecraft-icon.png" class="mc-img" />
+      <div
+        class="mc-img-wrapper mc-anim center-content d-flex align-items-center justify-content-center">
+        <img
+          alt="Minecraft"
+          src="{base}/assets/img/minecraft-icon.png"
+          class="w-100 h-100 object-fit-contain" />
       </div>
-      <div class="hytale-img-wrapper hytale-anim center-content">
-        <img alt="Hytale" src="{base}/assets/img/hytale-icon.png" class="hytale-img" />
+      <div
+        class="hytale-img-wrapper hytale-anim center-content d-flex align-items-center justify-content-center">
+        <img
+          alt="Hytale"
+          src="{base}/assets/img/hytale-icon.png"
+          class="w-100 h-100 object-fit-contain" />
       </div>
     {/if}
   </div>
@@ -203,7 +188,7 @@
     retryingNetworkErrors,
   } from '$lib/Store';
   import { base } from '$app/paths';
-  import { browser } from "$app/environment";
+  import { browser } from '$app/environment';
 
   let networkErrors = false;
   let showStuckUI = false;

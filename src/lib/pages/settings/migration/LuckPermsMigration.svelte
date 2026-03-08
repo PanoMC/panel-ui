@@ -86,7 +86,7 @@
 {#if currentStep === 'upload'}
   <!-- Step 1: File Upload Section -->
 
-  <div class="alert alert-info mb-4 small">
+  <div class="alert alert-info mb-4">
     <i class="fas fa-info-circle me-1"></i>
     <strong>{$_('pages.migration.luckperms.supported-info-title')}</strong>
     <ul class="mb-0 mt-1">
@@ -99,25 +99,23 @@
   <div class="mb-4">
     <label class="form-label" for="lpUploadConfig">Upload config.yml</label>
     <div
-      class="file-drop-zone {configDragOver ? 'drag-over' : ''} {configFile
-        ? 'has-file'
-        : ''}"
+      class="file-drop-zone {configDragOver ? 'drag-over' : ''} {configFile ? 'has-file' : ''}"
       role="button"
       tabindex="0"
       on:dragover|preventDefault={() => (configDragOver = true)}
       on:dragleave|preventDefault={() => (configDragOver = false)}
       on:drop|preventDefault={handleConfigDrop}
       on:click={() => configFileInput.click()}
-      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') configFileInput.click(); }}>
+      on:keydown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') configFileInput.click();
+      }}>
       {#if configFile}
         <i class="fas fa-file-alt text-success fs-1"></i>
         <p class="mb-1 fw-semibold">{configFile.name}</p>
         <p class="small mb-2">
           {(configFile.size / 1024).toFixed(2)} KB
         </p>
-        <button
-          class="btn btn-sm btn-outline-danger"
-          on:click|stopPropagation={removeConfigFile}>
+        <button class="btn btn-sm btn-outline-danger" on:click|stopPropagation={removeConfigFile}>
           <i class="fas fa-trash"></i> Remove
         </button>
       {:else}
@@ -138,9 +136,11 @@
   <!-- H2 Database Section (conditional) -->
   {#if showDatabaseUpload}
     <div class="mb-4">
-      <label class="form-label fw-semibold" for="lpDbFile">H2 Database (luckperms-h2-v2.mv.db)</label>
+      <label class="form-label fw-semibold" for="lpDbFile"
+        >H2 Database (luckperms-h2-v2.mv.db)</label>
       <p class="small mb-2">
-        <i class="fas fa-info-circle"></i> Your config.yml indicates H2 is used. Please upload your database file.
+        <i class="fas fa-info-circle"></i> Your config.yml indicates H2 is used. Please upload your database
+        file.
       </p>
       <div
         class="file-drop-zone {dbDragOver ? 'drag-over' : ''} {dbFile ? 'has-file' : ''}"
@@ -150,16 +150,16 @@
         on:dragleave|preventDefault={() => (dbDragOver = false)}
         on:drop|preventDefault={handleDbDrop}
         on:click={() => dbFileInput.click()}
-        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') dbFileInput.click(); }}>
+        on:keydown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') dbFileInput.click();
+        }}>
         {#if dbFile}
           <i class="fas fa-database text-success fs-1"></i>
           <p class="mb-1 fw-semibold">{dbFile.name}</p>
           <p class="small mb-2">
             {(dbFile.size / 1024).toFixed(2)} KB
           </p>
-          <button
-            class="btn btn-sm btn-outline-danger"
-            on:click|stopPropagation={removeDbFile}>
+          <button class="btn btn-sm btn-outline-danger" on:click|stopPropagation={removeDbFile}>
             <i class="fas fa-trash"></i> Remove
           </button>
         {:else}
@@ -191,31 +191,55 @@
         <div class="row g-2 mb-2">
           <div class="col-8">
             <label class="form-label small mb-1" for="lpDbHost">Host</label>
-            <input type="text" class="form-control form-control-sm" id="lpDbHost" bind:value={dbConnectionInfo.host} />
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              id="lpDbHost"
+              bind:value={dbConnectionInfo.host} />
           </div>
           <div class="col-4">
             <label class="form-label small mb-1" for="lpDbPort">Port</label>
-            <input type="text" class="form-control form-control-sm" id="lpDbPort" bind:value={dbConnectionInfo.port} />
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              id="lpDbPort"
+              bind:value={dbConnectionInfo.port} />
           </div>
         </div>
         <div class="row g-2 mb-2">
           <div class="col-6">
             <label class="form-label small mb-1" for="lpDbName">Database</label>
-            <input type="text" class="form-control form-control-sm" id="lpDbName" bind:value={dbConnectionInfo.database} />
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              id="lpDbName"
+              bind:value={dbConnectionInfo.database} />
           </div>
           <div class="col-6">
             <label class="form-label small mb-1" for="lpDbPrefix">Table Prefix</label>
-            <input type="text" class="form-control form-control-sm" id="lpDbPrefix" bind:value={dbConnectionInfo.tablePrefix} />
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              id="lpDbPrefix"
+              bind:value={dbConnectionInfo.tablePrefix} />
           </div>
         </div>
         <div class="row g-2">
           <div class="col-6">
             <label class="form-label small mb-1" for="lpDbUser">Username</label>
-            <input type="text" class="form-control form-control-sm" id="lpDbUser" bind:value={dbConnectionInfo.username} />
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              id="lpDbUser"
+              bind:value={dbConnectionInfo.username} />
           </div>
           <div class="col-6">
             <label class="form-label small mb-1" for="lpDbPass">Password</label>
-            <input type="password" class="form-control form-control-sm" id="lpDbPass" bind:value={dbConnectionInfo.password} />
+            <input
+              type="password"
+              class="form-control form-control-sm"
+              id="lpDbPass"
+              bind:value={dbConnectionInfo.password} />
           </div>
         </div>
       </div>
@@ -261,7 +285,6 @@
       {uploadError}
     </div>
   {/if}
-
 {:else if currentStep === 'review'}
   <!-- Step 2: Review & Configure -->
 
@@ -278,10 +301,12 @@
       {#if previewData.existingPanoNodeCount > 0}
         <div class="alert alert-warning small mb-3">
           <i class="fas fa-exclamation-triangle me-1"></i>
-          {$_('pages.migration.luckperms.existing-data-warning', { values: {
-            groupCount: previewData.existingPanoGroupCount,
-            nodeCount: previewData.existingPanoNodeCount
-          }})}
+          {$_('pages.migration.luckperms.existing-data-warning', {
+            values: {
+              groupCount: previewData.existingPanoGroupCount,
+              nodeCount: previewData.existingPanoNodeCount,
+            },
+          })}
         </div>
       {/if}
       <div class="form-check mb-2">
@@ -295,7 +320,8 @@
         <label class="form-check-label" for="strategyMerge">
           <strong>{$_('pages.migration.luckperms.strategy-merge')}</strong>
           <br />
-          <small class="text-body-secondary">{$_('pages.migration.luckperms.strategy-merge-desc')}</small>
+          <small class="text-body-secondary"
+            >{$_('pages.migration.luckperms.strategy-merge-desc')}</small>
         </label>
       </div>
       <div class="form-check">
@@ -309,7 +335,8 @@
         <label class="form-check-label" for="strategyReplace">
           <strong class="text-danger">{$_('pages.migration.luckperms.strategy-replace')}</strong>
           <br />
-          <small class="text-body-secondary">{$_('pages.migration.luckperms.strategy-replace-desc')}</small>
+          <small class="text-body-secondary"
+            >{$_('pages.migration.luckperms.strategy-replace-desc')}</small>
         </label>
       </div>
     </div>
@@ -322,7 +349,8 @@
         <i class="fas fa-layer-group me-2"></i>
         {$_('pages.migration.luckperms.groups-title')}
         <span class="badge bg-success ms-1">{previewData.newGroupCount} New</span>
-        <span class="badge bg-warning text-dark ms-1">{previewData.existingGroupCount} Existing</span>
+        <span class="badge bg-warning text-dark ms-1"
+          >{previewData.existingGroupCount} Existing</span>
       </span>
       <div class="d-flex gap-2">
         <button class="btn btn-sm btn-outline-secondary" on:click={selectAllGroups}>
@@ -378,7 +406,10 @@
                       class="expand-btn"
                       on:click={() => toggleGroupExpand(group.name)}
                       title="Show/hide permission nodes">
-                      <i class="fas fa-chevron-{expandedGroups.has(group.name) ? 'up' : 'down'} small"></i>
+                      <i
+                        class="fas fa-chevron-{expandedGroups.has(group.name)
+                          ? 'up'
+                          : 'down'} small"></i>
                     </button>
                   {/if}
                 </td>
@@ -407,8 +438,10 @@
                                   <span class="badge bg-danger">✗</span>
                                 {/if}
                               </td>
-                              <td class="text-body-secondary">{node.server === 'global' ? '—' : node.server}</td>
-                              <td class="text-body-secondary">{node.world === 'global' ? '—' : node.world}</td>
+                              <td class="text-body-secondary"
+                                >{node.server === 'global' ? '—' : node.server}</td>
+                              <td class="text-body-secondary"
+                                >{node.world === 'global' ? '—' : node.world}</td>
                             </tr>
                           {/each}
                         </tbody>
@@ -493,16 +526,18 @@
 
   <!-- User permissions -->
   {#if previewData.players && previewData.players.length > 0}
-    {@const panoPlayers = previewData.players.filter(p => p.existsInPano)}
-    {@const missingPlayers = previewData.players.filter(p => !p.existsInPano)}
+    {@const panoPlayers = previewData.players.filter((p) => p.existsInPano)}
+    {@const missingPlayers = previewData.players.filter((p) => !p.existsInPano)}
     <div class="card mb-3">
       <div class="card-header d-flex justify-content-between align-items-center">
         <span>
           <i class="fas fa-users me-2"></i>
           {$_('pages.migration.luckperms.user-perms-title')}
-          <span class="badge bg-success ms-1">{panoPlayers.length} {$_('pages.migration.luckperms.in-pano')}</span>
+          <span class="badge bg-success ms-1"
+            >{panoPlayers.length} {$_('pages.migration.luckperms.in-pano')}</span>
           {#if missingPlayers.length > 0}
-            <span class="badge bg-danger ms-1">{missingPlayers.length} {$_('pages.migration.luckperms.not-in-pano')}</span>
+            <span class="badge bg-danger ms-1"
+              >{missingPlayers.length} {$_('pages.migration.luckperms.not-in-pano')}</span>
           {/if}
         </span>
       </div>
@@ -516,7 +551,8 @@
           <label class="form-check-label" for="importUserPerms">
             <strong>{$_('pages.migration.luckperms.import-user-perms')}</strong>
             <br />
-            <small class="text-body-secondary">{$_('pages.migration.luckperms.import-user-perms-desc')}</small>
+            <small class="text-body-secondary"
+              >{$_('pages.migration.luckperms.import-user-perms-desc')}</small>
           </label>
         </div>
 
@@ -528,10 +564,12 @@
         {:else if missingPlayers.length > 0}
           <div class="alert alert-info small mb-0">
             <i class="fas fa-info-circle me-1"></i>
-            {$_('pages.migration.luckperms.missing-players-info', { values: {
-              count: missingPlayers.length,
-              total: previewData.players.length
-            }})}
+            {$_('pages.migration.luckperms.missing-players-info', {
+              values: {
+                count: missingPlayers.length,
+                total: previewData.players.length,
+              },
+            })}
           </div>
         {/if}
       </div>
@@ -555,29 +593,46 @@
                   <tr
                     class="player-row"
                     on:click={() => player.permissionCount > 0 && togglePlayerExpand(player.uuid)}
-                    on:keydown={(e) => { if (e.key === 'Enter' && player.permissionCount > 0) togglePlayerExpand(player.uuid); }}>
+                    on:keydown={(e) => {
+                      if (e.key === 'Enter' && player.permissionCount > 0)
+                        togglePlayerExpand(player.uuid);
+                    }}>
                     <td class="text-center">
                       {#if player.permissionCount > 0}
                         <button
                           class="expand-btn"
                           on:click|stopPropagation={() => togglePlayerExpand(player.uuid)}
                           title="Show/hide permissions">
-                          <i class="fas fa-chevron-{expandedPlayers.has(player.uuid) ? 'up' : 'down'} small"></i>
+                          <i
+                            class="fas fa-chevron-{expandedPlayers.has(player.uuid)
+                              ? 'up'
+                              : 'down'} small"></i>
                         </button>
                       {/if}
                     </td>
                     <td class="fw-semibold">
                       {player.username}
-                      <span class="text-body-secondary fw-normal ms-1" style="font-size: 0.7rem;">{player.uuid}</span>
+                      <span class="text-body-secondary fw-normal ms-1" style="font-size: 0.7rem;"
+                        >{player.uuid}</span>
                     </td>
-                    <td><span class="badge border text-body-secondary">{player.primaryGroup}</span></td>
-                    <td class="text-center"><span class="badge bg-secondary">{player.permissionCount}</span></td>
-                    <td class="text-center"><span class="badge bg-success"><i class="fas fa-check me-1"></i>{$_('pages.migration.luckperms.will-import')}</span></td>
+                    <td
+                      ><span class="badge border text-body-secondary">{player.primaryGroup}</span
+                      ></td>
+                    <td class="text-center"
+                      ><span class="badge bg-secondary">{player.permissionCount}</span></td>
+                    <td class="text-center"
+                      ><span class="badge bg-success"
+                        ><i class="fas fa-check me-1"></i>{$_(
+                          'pages.migration.luckperms.will-import',
+                        )}</span
+                      ></td>
                   </tr>
                   {#if expandedPlayers.has(player.uuid)}
                     <tr>
                       <td colspan="5" class="p-0">
-                        <div class="node-detail-panel p-2" style="max-height: 250px; overflow-y: auto;">
+                        <div
+                          class="node-detail-panel p-2"
+                          style="max-height: 250px; overflow-y: auto;">
                           <table class="table table-sm mb-0" style="font-size: 0.8rem;">
                             <thead>
                               <tr class="text-body-secondary">
@@ -598,8 +653,10 @@
                                       <span class="badge bg-danger">✗</span>
                                     {/if}
                                   </td>
-                                  <td class="text-body-secondary">{node.server === 'global' ? '—' : node.server}</td>
-                                  <td class="text-body-secondary">{node.world === 'global' ? '—' : node.world}</td>
+                                  <td class="text-body-secondary"
+                                    >{node.server === 'global' ? '—' : node.server}</td>
+                                  <td class="text-body-secondary"
+                                    >{node.world === 'global' ? '—' : node.world}</td>
                                 </tr>
                               {/each}
                             </tbody>
@@ -613,29 +670,46 @@
                   <tr
                     class="player-row missing"
                     on:click={() => player.permissionCount > 0 && togglePlayerExpand(player.uuid)}
-                    on:keydown={(e) => { if (e.key === 'Enter' && player.permissionCount > 0) togglePlayerExpand(player.uuid); }}>
+                    on:keydown={(e) => {
+                      if (e.key === 'Enter' && player.permissionCount > 0)
+                        togglePlayerExpand(player.uuid);
+                    }}>
                     <td class="text-center">
                       {#if player.permissionCount > 0}
                         <button
                           class="expand-btn"
                           on:click|stopPropagation={() => togglePlayerExpand(player.uuid)}
                           title="Show/hide permissions">
-                          <i class="fas fa-chevron-{expandedPlayers.has(player.uuid) ? 'up' : 'down'} small"></i>
+                          <i
+                            class="fas fa-chevron-{expandedPlayers.has(player.uuid)
+                              ? 'up'
+                              : 'down'} small"></i>
                         </button>
                       {/if}
                     </td>
                     <td class="fw-semibold">
                       {player.username}
-                      <span class="text-body-secondary fw-normal ms-1" style="font-size: 0.7rem;">{player.uuid}</span>
+                      <span class="text-body-secondary fw-normal ms-1" style="font-size: 0.7rem;"
+                        >{player.uuid}</span>
                     </td>
-                    <td><span class="badge border text-body-secondary">{player.primaryGroup}</span></td>
-                    <td class="text-center"><span class="badge bg-secondary">{player.permissionCount}</span></td>
-                    <td class="text-center"><span class="badge bg-warning text-dark"><i class="fas fa-ban me-1"></i>{$_('pages.migration.luckperms.will-skip')}</span></td>
+                    <td
+                      ><span class="badge border text-body-secondary">{player.primaryGroup}</span
+                      ></td>
+                    <td class="text-center"
+                      ><span class="badge bg-secondary">{player.permissionCount}</span></td>
+                    <td class="text-center"
+                      ><span class="badge bg-warning text-dark"
+                        ><i class="fas fa-ban me-1"></i>{$_(
+                          'pages.migration.luckperms.will-skip',
+                        )}</span
+                      ></td>
                   </tr>
                   {#if expandedPlayers.has(player.uuid)}
                     <tr>
                       <td colspan="5" class="p-0">
-                        <div class="node-detail-panel p-2" style="max-height: 250px; overflow-y: auto;">
+                        <div
+                          class="node-detail-panel p-2"
+                          style="max-height: 250px; overflow-y: auto;">
                           <table class="table table-sm mb-0" style="font-size: 0.8rem;">
                             <thead>
                               <tr class="text-body-secondary">
@@ -656,8 +730,10 @@
                                       <span class="badge bg-danger">✗</span>
                                     {/if}
                                   </td>
-                                  <td class="text-body-secondary">{node.server === 'global' ? '—' : node.server}</td>
-                                  <td class="text-body-secondary">{node.world === 'global' ? '—' : node.world}</td>
+                                  <td class="text-body-secondary"
+                                    >{node.server === 'global' ? '—' : node.server}</td>
+                                  <td class="text-body-secondary"
+                                    >{node.world === 'global' ? '—' : node.world}</td>
                                 </tr>
                               {/each}
                             </tbody>
@@ -697,9 +773,7 @@
   {#if isImporting}
     <div class="mt-3">
       <div class="d-flex justify-content-between mb-1">
-        <small class="text-body-secondary">
-          Importing permissions...
-        </small>
+        <small class="text-body-secondary"> Importing permissions... </small>
         <small class="text-body-secondary">{Math.round(importProgress * 100)}%</small>
       </div>
       <div class="progress" style="height: 6px;">
@@ -714,7 +788,6 @@
       </div>
     </div>
   {/if}
-
 {:else if currentStep === 'result'}
   <!-- Step 3: Import Results -->
   <div class="alert alert-success d-flex align-items-center" role="alert">
@@ -723,13 +796,13 @@
       <h6 class="alert-heading mb-1">{$_('pages.migration.luckperms.result-title')}</h6>
       <p class="mb-0 small">
         <strong>{importResult.importedGroups}</strong> groups imported{#if importResult.updatedGroups > 0},
-        <strong>{importResult.updatedGroups}</strong> updated{/if},
+          <strong>{importResult.updatedGroups}</strong> updated{/if},
         <strong>{importResult.importedGroupNodes}</strong> group nodes,
         <strong>{importResult.importedUserNodes}</strong> user nodes
         {#if importResult.importedTracks > 0},
-        <strong>{importResult.importedTracks}</strong> tracks{/if}
+          <strong>{importResult.importedTracks}</strong> tracks{/if}
         {#if importResult.skippedNodes > 0},
-        <strong>{importResult.skippedNodes}</strong> skipped{/if}.
+          <strong>{importResult.skippedNodes}</strong> skipped{/if}.
       </p>
     </div>
   </div>
@@ -751,7 +824,6 @@
     <i class="fas fa-redo me-2"></i>
     Start New Migration
   </button>
-
 {/if}
 
 <script>
@@ -815,7 +887,14 @@
       const text = await file.text();
       const lines = text.split('\n');
       let storageMethod = '';
-      let connInfo = { host: 'localhost', port: '3306', database: 'minecraft', tablePrefix: 'luckperms_', username: 'root', password: '' };
+      let connInfo = {
+        host: 'localhost',
+        port: '3306',
+        database: 'minecraft',
+        tablePrefix: 'luckperms_',
+        username: 'root',
+        password: '',
+      };
 
       for (const line of lines) {
         const trimmed = line.trim();
@@ -843,7 +922,7 @@
 
       detectedBackend = storageMethod;
       showDatabaseUpload = storageMethod === 'H2';
-      dbConnectionInfo = (storageMethod === 'MYSQL' || storageMethod === 'MARIADB') ? connInfo : null;
+      dbConnectionInfo = storageMethod === 'MYSQL' || storageMethod === 'MARIADB' ? connInfo : null;
     } catch (error) {
       console.error('Error parsing config:', error);
     }
@@ -936,12 +1015,12 @@
         previewData = result;
 
         // Pre-select all groups
-        selectedGroups = new Set(result.groups.map(g => g.name));
+        selectedGroups = new Set(result.groups.map((g) => g.name));
         selectedGroups = selectedGroups;
 
         // Pre-select all tracks
         if (result.tracks) {
-          selectedTracks = new Set(result.tracks.map(t => t.name));
+          selectedTracks = new Set(result.tracks.map((t) => t.name));
           selectedTracks = selectedTracks;
         }
 
@@ -968,12 +1047,12 @@
     if (selectedGroups.size === previewData.groups.length) {
       selectedGroups = new Set();
     } else {
-      selectedGroups = new Set(previewData.groups.map(g => g.name));
+      selectedGroups = new Set(previewData.groups.map((g) => g.name));
     }
   }
 
   function selectAllGroups() {
-    selectedGroups = new Set(previewData.groups.map(g => g.name));
+    selectedGroups = new Set(previewData.groups.map((g) => g.name));
   }
 
   function deselectAllGroups() {
@@ -992,7 +1071,7 @@
 
   function getGroupNodes(groupName) {
     if (!previewData || !previewData.groupPermissions) return [];
-    return previewData.groupPermissions.filter(p => p.groupName === groupName);
+    return previewData.groupPermissions.filter((p) => p.groupName === groupName);
   }
 
   // Player expand/collapse for viewing permission nodes
@@ -1007,7 +1086,7 @@
 
   function getPlayerNodes(uuid) {
     if (!previewData || !previewData.userPermissions) return [];
-    return previewData.userPermissions.filter(p => p.uuid === uuid);
+    return previewData.userPermissions.filter((p) => p.uuid === uuid);
   }
 
   // Track selection
@@ -1024,12 +1103,12 @@
     if (selectedTracks.size === previewData.tracks.length) {
       selectedTracks = new Set();
     } else {
-      selectedTracks = new Set(previewData.tracks.map(t => t.name));
+      selectedTracks = new Set(previewData.tracks.map((t) => t.name));
     }
   }
 
   function selectAllTracks() {
-    selectedTracks = new Set(previewData.tracks.map(t => t.name));
+    selectedTracks = new Set(previewData.tracks.map((t) => t.name));
   }
 
   function deselectAllTracks() {
@@ -1042,11 +1121,14 @@
     importProgress = 0;
 
     const totalActions = selectedGroups.size + selectedTracks.size;
-    const progressInterval = setInterval(() => {
-      if (importProgress < 0.9) {
-        importProgress += 0.05;
-      }
-    }, Math.max(100, totalActions * 10));
+    const progressInterval = setInterval(
+      () => {
+        if (importProgress < 0.9) {
+          importProgress += 0.05;
+        }
+      },
+      Math.max(100, totalActions * 10),
+    );
 
     try {
       const result = await ApiUtil.post({
@@ -1055,7 +1137,7 @@
           selectedGroups: Array.from(selectedGroups),
           selectedTracks: Array.from(selectedTracks),
           importUserPermissions: importUserPermissions,
-          mergeStrategy: mergeStrategy
+          mergeStrategy: mergeStrategy,
         },
         handler: (response, reject) => {
           if (response.result === 'error') {

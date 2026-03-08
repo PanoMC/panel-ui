@@ -169,6 +169,7 @@
         "description": "Pano is successfully installed and ready for use. 🚀 <br /> Here's what you can do to get started:",
         "connect-server": "Connect Server",
         "connect-server-description": "Connect your game server and access more management features.",
+        "import-data": "Import Data",
         "menu-title": "The Menu",
         "links-title": "Links",
         "publish-your-first-post": "Publish First Post",
@@ -745,8 +746,8 @@
       "register-ip": "Register IP"
     },
     "migration": {
-      "platforms-title": "From platforms & CMS to Pano",
-      "plugins-title": "From plugins to Pano",
+      "platforms-title": "Import from Platform",
+      "plugins-title": "Import from Plugins",
       "not-available": "Not available.",
       "craftweb-tribute": "We remember CraftWeb with respect, which started us on this journey. There is no migration here, but our gratitude lives on.",
       "authme": {

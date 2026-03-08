@@ -12,7 +12,7 @@
         {$_('buttons.bans')}</PageNavItem>
     </PageNav>
     <div slot="right">
-      <a href="{base}/settings/migration" class="btn btn-secondary">
+      <a href="{base}/migration" class="btn btn-secondary">
         <i class="fa fa-file-import"></i>
         <span class="d-lg-inline d-none ms-2">İçe Aktar</span>
       </a>

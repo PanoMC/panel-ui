@@ -169,6 +169,7 @@
         "description": "Pano başarıyla kuruldu ve kullanıma hazır. \uD83D\uDE80 <br /> İşte başlarken yapabileceklerin:",
         "connect-server": "Sunucu Bağla",
         "connect-server-description": "Oyun sunucunu bağla ve daha fazla yönetim özelliklerine eriş.",
+        "import-data": "Verileri İçe Aktar",
         "menu-title": "Menü",
         "links-title": "Bağlantılar",
         "publish-your-first-post": "İlk Yazıyı Yayımla",
@@ -745,8 +746,8 @@
       "register-ip": "Kayıt IP"
     },
     "migration": {
-      "platforms-title": "Platformlardan & CMS'lerden Pano'ya",
-      "plugins-title": "Eklentilerden Pano'ya",
+      "platforms-title": "Platform",
+      "plugins-title": "Minecraft Eklenti",
       "not-available": "Henüz mevcut değil.",
       "craftweb-tribute": "Bizi bu yolculuğa başlatan CraftWeb'i saygıyla anıyoruz. Burada bir migration yok, ancak minnettarlığımız yaşamaya devam ediyor.",
       "authme": {
@@ -960,7 +961,7 @@
     "settings-layout": {
       "website": "Website",
       "platform": "Platform",
-      "migration": "Taşıma",
+      "migration": "Migrasyon",
       "updates": "Güncellemeler",
       "about": "Hakkında"
     },

@@ -20,10 +20,9 @@
   <div class="card-header">
     {$_('pages.settings.site-settings.preferences')}
   </div>
-  <div class="card-body animate__animated animate__fadeIn">
+  <div class="card-body">
     {#if restartRequired}
-      <div
-        class="alert alert-warning animate__animated animate__fadeIn d-flex align-items-center justify-content-between mb-4">
+      <div class="alert alert-warning d-flex align-items-center justify-content-between mb-4">
         <div>
           <i class="fas fa-triangle-exclamation me-2"></i>
           {$_('pages.settings.site-settings.ssl.restart-required-alert')}
@@ -323,7 +322,7 @@
         </select>
 
         {#if isLetsEncryptInvalid}
-          <div class="alert alert-danger mt-2 mb-0 animate__animated animate__shakeX">
+          <div class="alert alert-danger mt-2 mb-0">
             <i class="fas fa-circle-exclamation me-2"></i>
             {$_('pages.settings.site-settings.ssl.lets-encrypt-invalid-config')}
           </div>
@@ -332,7 +331,7 @@
     </div>
 
     {#if data.sslMode === 'MANUAL'}
-      <div class="row mb-3 animate__animated animate__fadeIn">
+      <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="sslCert">
           <span class="d-inline-block position-relative">
             {$_('pages.settings.site-settings.inputs.ssl-cert.label')}
@@ -363,7 +362,7 @@
         </div>
       </div>
 
-      <div class="row mb-3 animate__animated animate__fadeIn">
+      <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="sslKey">
           <span class="d-inline-block position-relative">
             {$_('pages.settings.site-settings.inputs.ssl-key.label')}

@@ -2,7 +2,6 @@
   @media (min-width: 992px) {
     .offcanvas-lg {
       min-height: 100dvh !important;
-      height: 100dvh !important;
       position: sticky !important;
       top: 0;
       width: 280px !important;
