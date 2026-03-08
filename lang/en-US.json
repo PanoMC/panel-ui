@@ -773,6 +773,32 @@
         "update-username-desc": "Update the display username to match AuthMe's realName.",
         "update-email": "Update email",
         "update-email-desc": "Update the email address if AuthMe has one and it's different."
+      },
+      "luckperms": {
+        "supported-info-title": "Supported formats:",
+        "supported-backends": "Backends: H2 (default), MySQL, MariaDB",
+        "supported-data": "Data: Permission groups, tracks, group permissions, and user-specific permissions.",
+        "merge-note": "Existing Pano permission data can be merged with or replaced by LuckPerms data.",
+        "db-connect-info": "backend detected. Pano will connect using the credentials below. You can edit them if needed before uploading.",
+        "merge-strategy-title": "Import Strategy",
+        "merge-strategy-desc": "Choose how LuckPerms data should be combined with your existing Pano permissions:",
+        "existing-data-warning": "You currently have {groupCount} permission groups and {nodeCount} permission nodes in Pano.",
+        "strategy-merge": "Merge (recommended)",
+        "strategy-merge-desc": "Add new groups and permissions alongside existing ones. Existing groups will be kept and their permissions will be added.",
+        "strategy-replace": "Replace all",
+        "strategy-replace-desc": "Remove all existing Pano permission data and replace it entirely with LuckPerms data. This cannot be undone!",
+        "groups-title": "Permission Groups",
+        "tracks-title": "Permission Tracks",
+        "user-perms-title": "User Permissions",
+        "import-user-perms": "Import user-specific permissions",
+        "import-user-perms-desc": "Import individual player permission nodes for players that exist in Pano. Players not registered in Pano will be skipped.",
+        "no-pano-players-warning": "None of the LuckPerms players currently exist in Pano. User permissions will not be imported.",
+        "missing-players-info": "{count} out of {total} LuckPerms players do not exist in Pano. Their permissions will be skipped during import.",
+        "in-pano": "in Pano",
+        "not-in-pano": "not in Pano",
+        "will-import": "Will import",
+        "will-skip": "Will skip",
+        "result-title": "LuckPerms Migration Completed!"
       }
     }
   },

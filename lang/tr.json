@@ -773,6 +773,32 @@
         "update-username-desc": "Görünen kullanıcı adını AuthMe'nin realName değeri ile eşleştir.",
         "update-email": "E-postayı güncelle",
         "update-email-desc": "AuthMe'de e-posta varsa ve farklıysa e-posta adresini güncelle."
+      },
+      "luckperms": {
+        "supported-info-title": "Desteklenen formatlar:",
+        "supported-backends": "Veritabanları: H2 (varsayılan), MySQL, MariaDB",
+        "supported-data": "Veri: Yetki grupları, track'ler, grup yetkileri ve kullanıcıya özel yetkiler.",
+        "merge-note": "Mevcut Pano yetki verileri LuckPerms verileriyle birleştirilebilir veya değiştirilebilir.",
+        "db-connect-info": "veritabanı algılandı. Pano aşağıdaki bilgilerle bağlanacaktır. Yüklemeden önce gerekirse düzenleyebilirsiniz.",
+        "merge-strategy-title": "İçe Aktarma Stratejisi",
+        "merge-strategy-desc": "LuckPerms verilerinin mevcut Pano yetkileriyle nasıl birleştirileceğini seçin:",
+        "existing-data-warning": "Şu anda Pano'da {groupCount} yetki grubu ve {nodeCount} yetki node'u bulunuyor.",
+        "strategy-merge": "Birleştir (önerilen)",
+        "strategy-merge-desc": "Yeni grupları ve yetkileri mevcut olanların yanına ekle. Mevcut gruplar korunacak ve yetkileri eklenecek.",
+        "strategy-replace": "Tümünü değiştir",
+        "strategy-replace-desc": "Tüm mevcut Pano yetki verilerini kaldır ve tamamen LuckPerms verileriyle değiştir. Bu işlem geri alınamaz!",
+        "groups-title": "Yetki Grupları",
+        "tracks-title": "Yetki Track'leri",
+        "user-perms-title": "Kullanıcı Yetkileri",
+        "import-user-perms": "Kullanıcıya özel yetkileri içe aktar",
+        "import-user-perms-desc": "Pano'da kayıtlı oyuncuların bireysel yetki node'larını içe aktar. Pano'da kayıtlı olmayan oyuncular atlanacaktır.",
+        "no-pano-players-warning": "LuckPerms oyuncularının hiçbiri şu anda Pano'da mevcut değil. Kullanıcı yetkileri içe aktarılmayacak.",
+        "missing-players-info": "LuckPerms'teki {total} oyuncunun {count} tanesi Pano'da mevcut değil. Bu oyuncuların yetkileri içe aktarma sırasında atlanacak.",
+        "in-pano": "Pano'da",
+        "not-in-pano": "Pano'da değil",
+        "will-import": "İçe aktarılacak",
+        "will-skip": "Atlanacak",
+        "result-title": "LuckPerms Taşıma İşlemi Tamamlandı!"
       }
     }
   },

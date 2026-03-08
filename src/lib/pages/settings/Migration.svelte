@@ -88,8 +88,7 @@
           type="button"
           role="tab"
           aria-controls="luckperms"
-          aria-selected="false"
-          disabled>
+          aria-selected="false">
           LuckPerms
         </button>
       </li>
@@ -118,7 +117,7 @@
       </div>
 
       <div class="tab-pane" id="luckperms" role="tabpanel" aria-labelledby="luckperms-tab">
-        <NoContent text="Not available yet." />
+        <LuckPermsMigration />
       </div>
 
       <div class="tab-pane" id="other" role="tabpanel" aria-labelledby="other-tab">
@@ -134,4 +133,5 @@
   import NoContent from '$lib/components/NoContent.svelte';
   import CraftWebTribute from './migration/CraftWebTribute.svelte';
   import AuthMeMigration from './migration/AuthMeMigration.svelte';
+  import LuckPermsMigration from './migration/LuckPermsMigration.svelte';
 </script>
