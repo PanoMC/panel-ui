@@ -55,7 +55,10 @@
   </a>
   {#if data.post.status !== StatusTypes.PUBLISHED}
     <button
-      use:tooltip={[$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update'), { placement: 'bottom' }]}
+      use:tooltip={[
+        $_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update'),
+        { placement: 'bottom' },
+      ]}
       aria-label={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
       class="btn btn-link"
       type="button"
@@ -153,59 +156,38 @@
               </form>
             </div>
           </li>
-          <li
-            class="list-group-item p-0 d-flex justify-content-center align-items-center"
-            class:drag-over={dropZoneActive}>
+          <li class="list-group-item p-2">
             {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
               <div class="thumbnail-wrapper">
-                <div class="ratio ratio-16x9 w-100 rounded overflow-hidden">
-                  <button
-                    type="button"
-                    class="btn border-0 shadow-none w-100 h-100 p-0 bg-transparent"
-                    use:tooltip={[$_('buttons.change'), { placement: 'bottom' }]}
-                    on:click={() => thumbnailInput.click()}>
+                <div class="ratio ratio-16x9 w-100 rounded overflow-hidden shadow-sm">
+                  <DragAndDropZone
+                    accept={['image/*']}
+                    on:drop={(e) => handleThumbnailFile(e.detail)}
+                    class="p-0 border-0">
                     <img
                       src={thumbnail || data.post.thumbnailUrl}
                       class="img-fluid w-100 h-100 object-fit-cover"
-                      use:tooltip={[$_('pages.post-editor.small-image')]}
                       alt={$_('pages.post-editor.small-image')} />
-                  </button>
+                  </DragAndDropZone>
                 </div>
 
-                {#if !isThumbnailRemoved && (thumbnail || data.post.thumbnailUrl)}
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle"
-                    on:click={onRemoveThumbnailClick}
-                    use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
-                    aria-label={$_('buttons.remove')}>
-                    <i class="fas fa-minus"></i>
-                  </button>
-                {/if}
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle shadow-sm"
+                  on:click={onRemoveThumbnailClick}
+                  use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
+                  aria-label={$_('buttons.remove')}>
+                  <i class="fas fa-minus"></i>
+                </button>
               </div>
             {:else}
-              <button
-                type="button"
-                class="btn list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center w-100 text-center shadow-none border-0 m-0"
-                style="height: 240px; cursor: pointer;"
-                on:click={() => thumbnailInput.click()}
-                on:drop={handleDrop}
-                on:dragover={handleDragOver}
-                on:dragleave={handleDragLeave}>
-                <i class="fas fa-image fa-3x mb-2"></i>
-                <p class="mb-0">
-                  {@html $_('pages.post-editor.thumbnail-not-determined')}
-                </p>
-              </button>
+              <DragAndDropZone
+                accept={['image/*']}
+                on:drop={(e) => handleThumbnailFile(e.detail)}
+                icon="fas fa-image fa-3x"
+                title={$_('pages.post-editor.thumbnail-not-determined')}
+                style="height: 240px;" />
             {/if}
-            <input
-              class="d-none"
-              type="file"
-              id="uploadPostThumbnailInput"
-              bind:files={thumbnailFiles}
-              on:change={onThumbnailChange}
-              bind:this={thumbnailInput}
-              accept="image/*" />
           </li>
         </ul>
       </div>
@@ -323,6 +305,7 @@
   import { show as showPublishPostModal } from '$lib/components/modals/ConfirmPublishPostModal.svelte';
 
   import Editor from '$lib/components/Editor.svelte';
+  import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
 
   import { show as showToast, limitTitle } from '$lib/components/ToastContainer.svelte';
 
@@ -350,42 +333,21 @@
     data.mode === Modes.EDIT ? 'pages.post-editor.title-edit' : 'pages.post-editor.title-create',
   );
 
-  let dropZoneActive = $state(false);
-
-  function handleDrop(event) {
-    event.preventDefault();
-    dropZoneActive = false;
-
-    const files = event.dataTransfer.files;
-
-    if (files.length > 0) {
-      handleThumbnailChange(files[0]);
+  function onThumbnailChange(event) {
+    if (event.target.files && event.target.files.length > 0) {
+      handleThumbnailFile(event.target.files[0]);
     }
   }
 
-  function handleDragOver(event) {
-    event.preventDefault();
-    dropZoneActive = true;
-  }
+  function handleThumbnailFile(file) {
+    if (!file) return;
 
-  function handleDragLeave() {
-    dropZoneActive = false;
-  }
-
-  function onThumbnailChange(event) {
     isThumbnailSaved = false;
     isThumbnailRemoved = false;
+    thumbnailFiles = [file]; // Store as array for the FormData append in submit()
 
-    const newImage = event.target.files[0];
-
-    handleThumbnailChange(newImage);
-  }
-
-  function handleThumbnailChange(newImage) {
     const reader = new FileReader();
-
-    reader.readAsDataURL(newImage);
-
+    reader.readAsDataURL(file);
     reader.onload = (e) => {
       thumbnail = e.target.result;
     };

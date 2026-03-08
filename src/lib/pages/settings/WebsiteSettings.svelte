@@ -178,7 +178,7 @@
         <div class="position-relative d-inline-block" style="width: 64px; height: 64px;">
           <DragAndDropZone
             bind:this={faviconZone}
-            className="p-0 border rounded overflow-hidden w-100 h-100"
+            class="p-0"
             accept={[
               'image/png',
               'image/jpeg',
@@ -220,7 +220,7 @@
           <div class="ratio ratio-16x9">
             <DragAndDropZone
               bind:this={logoZone}
-              className="border rounded overflow-hidden p-0 w-100 h-100 position-absolute start-0 top-0"
+              class="p-0 position-absolute start-0 top-0"
               accept={['image/png', 'image/jpeg', 'image/gif']}
               maxFileSize={2 * 1024 * 1024}
               on:drop={(e) => onWebsiteLogoDrop(e.detail)}

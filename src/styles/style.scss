@@ -11,10 +11,6 @@ $fa-font-path: '#{$pano-asset-path}webfonts';
 
 // Panel UI Styles
 
-.animate__animated.animate__zoomIn {
-  --animate-duration: 300ms;
-}
-
 /* Hover effect */
 .drop-zone:hover {
   background-color: var(--pano-light, $light);
@@ -34,4 +30,9 @@ details summary .fa-chevron-right {
 
 details[open] summary .fa-chevron-right {
   transform: rotate(90deg);
+}
+
+/* Container expansion */
+.container {
+  max-width: 1550px;
 }

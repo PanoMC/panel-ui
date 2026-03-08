@@ -43,7 +43,7 @@
   <!-- Welcome Alerts -->
   {#if data.gettingStartedBlocks.welcomeBoard}
     <div
-      class="alert alert-secondary alert-dismissible mb-0 animate__animated animate__zoomIn welcome-board border">
+      class="alert alert-secondary alert-dismissible mb-0 animate__animated animate__slideInDown welcome-board border" style="--animate-duration: 500ms;">
       <div class="row">
         <div class="mb-3">
           {@html $_('pages.dashboard.welcome-card.description')}
@@ -161,12 +161,12 @@
                             <img
                               src="/api/profile/picture/{ticket.writer.username}?{$avatarVersion}"
                               alt={$_('pages.dashboard.last-tickets.player-name')}
-                              class="rounded-circle animate__animated animate__zoomIn"
+                              class="rounded-circle"
                               height="32"
                               width="32" />
                           </a>
                           <a
-                            class="text-decoration-none w-100 rounded focus-ring d-block text-truncate p-1"
+                            class="badge bg-primary-subtile text-decoration-none rounded focus-ring"
                             href="{base}/tickets/detail/{ticket.id}"
                             title={ticket.title}
                             use:tooltip={[$_('buttons.view')]}
@@ -230,7 +230,7 @@
                             href="{base}/players/detail/{player.username}">
                             <img
                               alt={player.username}
-                              class="rounded-circle animate__animated animate__zoomIn"
+                              class="rounded-circle"
                               height="32"
                               width="32"
                               src="/api/profile/picture/{player.username}?{$avatarVersion}" />

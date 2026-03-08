@@ -30,15 +30,13 @@
 {/if}
 
 <div
-  class="offcanvas offcanvas-start bg-primary h-100"
+  class="offcanvas offcanvas-start bg-primary h-100 p-2 rounded-end-4"
   tabindex="-1"
   id="sidebar"
   aria-labelledby="sidebarLabel"
   class:offcanvas-lg={$isSidebarOpen}>
   <div class="offcanvas-body p-0">
-    <div
-      class="container-fluid pb-5 position-relative"
-      style="min-height: 100%;">
+    <div class="container-fluid position-relative">
       <!-- Sidebar Toggler & Logo -->
       <div class="navbar navbar-expand navbar-dark bg-body-primary">
         <button
@@ -52,7 +50,7 @@
         </button>
 
         <a class="navbar-brand m-auto position-relative focus-ring" href="{base}/">
-          <img alt="Pano" use:tooltip={["Pano"]} src={base + '/assets/img/logo.svg'} width="20" />
+          <img alt="Pano" use:tooltip={['Pano']} src={base + '/assets/img/logo.svg'} width="20" />
           {#if isAlpha}
             <span
               class="badge text-bg-info position-absolute top-100 start-50 translate-middle"
@@ -77,34 +75,37 @@
         </a>
       </div>
 
-      <div class="my-3">
-              {#if $sidebarTabsState === 'website'}
-        <a type="button" href={UI_URL} class="btn btn-sm btn-secondary w-100" target="_blank">
-          {$_('components.sidebar.show-website')}
-          <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
-        </a>
-      {/if}
+      <div class="my-2">
+        {#if $sidebarTabsState === 'website'}
+          <a type="button" href={UI_URL} class="btn btn-sm btn-secondary w-100" target="_blank">
+            {$_('components.sidebar.show-website')}
+            <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
+          </a>
+        {/if}
 
-      {#if $sidebarTabsState === 'game'}
-        <div class="hstack gap-1">
-          <button class="btn btn-sm btn-secondary w-100" type="button" on:click={showServersModal}>
-            {$_('components.sidebar.show-servers')}
-          </button>
-          <button
-            class="btn btn-sm btn-secondary"
-            data-bs-target="#connectServer"
-            data-bs-toggle="modal"
-            aria-label={$_('components.server-navigation-menu.connect-server')}
-            type="button"
-            use:tooltip={[$_('components.server-navigation-menu.connect-server')]}>
-            <i class="fa-solid fa-plus"></i>
-          </button>
-        </div>
-      {/if}
+        {#if $sidebarTabsState === 'game'}
+          <div class="hstack gap-1">
+            <button
+              class="btn btn-sm btn-secondary w-100"
+              type="button"
+              on:click={showServersModal}>
+              {$_('components.sidebar.show-servers')}
+            </button>
+            <button
+              class="btn btn-sm btn-secondary"
+              data-bs-target="#connectServer"
+              data-bs-toggle="modal"
+              aria-label={$_('components.server-navigation-menu.connect-server')}
+              type="button"
+              use:tooltip={[$_('components.server-navigation-menu.connect-server')]}>
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        {/if}
       </div>
 
       <!-- Sidebar Tabs -->
-      <ul class="nav nav-pills nav-fill mb-2 gap-2" data-bs-theme="dark">
+      <ul class="nav nav-pills nav-fill mb-2 gap-2 p-2 rounded-5" data-bs-theme="dark">
         <li class="nav-item">
           <button
             class="nav-link text-center"

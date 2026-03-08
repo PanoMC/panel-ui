@@ -1,40 +1,28 @@
-<div class="input-group">
-  <input
-    type="text"
-    class="form-control form-control-sm focus-ring {String(value || '').trim() ? 'border-secondary' : ''}"
-    placeholder={$_(placeholderKey)}
-    aria-label={$_(ariaLabelKey)}
-    aria-describedby="find-addon"
-    {value}
-    on:input={onInput} />
-
-  {#if showSpinner && (searching || pending)}
-    <span class="input-group-text" aria-label={$_('components.search-input.searching')}>
-      <span class="spinner-border spinner-border-sm" role="status"></span>
-    </span>
-  {/if}
-</div>
-
 <script>
-  import { createEventDispatcher, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { _ } from 'svelte-i18n';
+  
+  let { 
+    placeholderKey = 'buttons.find', 
+    ariaLabelKey = 'buttons.find', 
+    debounceMs = 250, 
+    initialValue = '', 
+    searching = false, 
+    showSpinner = true, 
+    onchange 
+  } = $props();
 
-  export let placeholderKey = 'buttons.find';
-  export let ariaLabelKey = 'buttons.find';
-  export let debounceMs = 250;
-  export let initialValue = '';
-  export let searching = false;
-  export let showSpinner = true;
-
-  const dispatch = createEventDispatcher();
-
-  let value = initialValue;
+  let value = $state(initialValue);
   let t;
-  let pending = false;
+  let pending = $state(false);
+
+  $effect(() => {
+    value = initialValue;
+  });
 
   function emitNow(v) {
     pending = false;
-    dispatch('change', { value: v });
+    if (onchange) onchange(v);
   }
 
   function onInput(e) {
@@ -48,3 +36,20 @@
     if (t) clearTimeout(t);
   });
 </script>
+
+<div class="input-group">
+  <input
+    type="text"
+    class="form-control form-control-sm focus-ring {String(value || '').trim() ? 'border-secondary' : ''}"
+    placeholder={$_(placeholderKey)}
+    aria-label={$_(ariaLabelKey)}
+    aria-describedby="find-addon"
+    {value}
+    oninput={onInput} />
+
+  {#if showSpinner && (searching || pending)}
+    <span class="input-group-text" aria-label={$_('components.search-input.searching')}>
+      <span class="spinner-border spinner-border-sm" role="status"></span>
+    </span>
+  {/if}
+</div>

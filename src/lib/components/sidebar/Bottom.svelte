@@ -1,4 +1,4 @@
-<nav class="nav justify-content-around position-absolute bottom-0 w-100">
+<nav class="nav justify-content-around w-100 mt-auto py-2">
   <a
     class="nav-link text-light"
     href="{PANO_WEBSITE_URL}/docs"
