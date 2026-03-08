@@ -782,14 +782,12 @@
         onUploadProgress: (progress) => {
           uploadProgress = progress;
         },
-        handler: (response, reject) => {
-          if (response.result === 'error') {
-            reject(response.message || response.error || 'Upload failed');
-            return;
-          }
-          return response;
-        },
       });
+
+      if (result?.result === 'error') {
+        uploadError = result.message || result.error || 'Upload failed';
+        return;
+      }
 
       if (result) {
         previewData = result;
@@ -895,17 +893,15 @@
           passwordStrategy: passwordStrategy,
           existingUserUpdates: existingUserUpdates,
         },
-        handler: (response, reject) => {
-          if (response.result === 'error') {
-            reject(response.message || response.error || 'Import failed');
-            return;
-          }
-          return response;
-        },
       });
 
       clearInterval(progressInterval);
       importProgress = 1;
+
+      if (result?.result === 'error') {
+        uploadError = result.message || result.error || 'Import failed';
+        return;
+      }
 
       if (result) {
         importResult = result;
