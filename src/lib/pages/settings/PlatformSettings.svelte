@@ -257,6 +257,32 @@
       </div>
     {/if}
 
+    <hr />
+
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="passwordHashAlgorithm">
+        {$_("pages.settings.platform.auth.password-hash-algorithm")}
+        <small class="d-block text-muted">
+          {$_("pages.settings.platform.auth.password-hash-algorithm-sub")}
+        </small>
+      </label>
+      <div class="col-md-6">
+        <select class="form-control" id="passwordHashAlgorithm" bind:value={data.passwordHashAlgorithm}>
+          <option value="ARGON2ID">Argon2id ({$_('pages.settings.platform.auth.recommended')})</option>
+          <option value="BCRYPT">BCrypt</option>
+          <option value="SHA256">SHA-256</option>
+          <option value="MD5">MD5</option>
+        </select>
+      </div>
+    </div>
+
+    {#if data.passwordHashAlgorithm === 'MD5'}
+      <div class="alert alert-danger mt-2">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {$_("pages.settings.platform.auth.password-hash-algorithm-warning")}
+      </div>
+    {/if}
+
     <div class="mt-3">
       <button
         class="btn btn-secondary"
@@ -554,7 +580,7 @@
     data.oldSettings.allowUserLocaleSelection === data.allowUserLocaleSelection &&
     data.oldSettings.developmentMode === data.developmentMode;
 
-  $: authSaveDisabled = data.oldSettings.requireEmailVerification === data.requireEmailVerification;
+  $: authSaveDisabled = data.oldSettings.requireEmailVerification === data.requireEmailVerification && data.oldSettings.passwordHashAlgorithm === data.passwordHashAlgorithm;
 
   $: emailSaveDisabled =
     JSON.stringify(data.oldSettings.email) === JSON.stringify(data.email) || !data.email.password;
@@ -729,6 +755,7 @@
 
     const formData = new FormData();
     formData.append('requireEmailVerification', data.requireEmailVerification);
+    formData.append('passwordHashAlgorithm', data.passwordHashAlgorithm);
 
     ApiUtil.put({
       path: '/api/panel/settings',
@@ -742,6 +769,7 @@
         saveAuthLoading = false;
 
         data.oldSettings.requireEmailVerification = data.requireEmailVerification;
+        data.oldSettings.passwordHashAlgorithm = data.passwordHashAlgorithm;
 
         await invalidateAll();
 

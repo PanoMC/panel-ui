@@ -80,7 +80,9 @@
     "login": "Login",
     "forgot-password": "Forgot Password?",
     "reset": "Reset",
-    "copy": "Copy"
+    "copy": "Copy",
+    "select-all": "Select All",
+    "deselect-all": "Deselect All"
   },
   "pages": {
     "login": {
@@ -422,7 +424,11 @@
           "require-email-verification": "Require Email Verification",
           "require-email-verification-sub": "Require users to verify their email address before logging in.",
           "require-email-verification-warning": "Disabling this feature may pose security risks. Email verification is important for protection against bot attacks.",
-          "email-disabled-warning": "SMTP settings are disabled. Users will be able to login without email verification by default."
+          "email-disabled-warning": "SMTP settings are disabled. Users will be able to login without email verification by default.",
+          "password-hash-algorithm": "Password Hash Algorithm",
+          "password-hash-algorithm-sub": "The algorithm used to hash new passwords. Existing passwords will be automatically upgraded upon next login.",
+          "password-hash-algorithm-warning": "MD5 is not recommended for production use. It is vulnerable to dictionary and rainbow table attacks.",
+          "recommended": "Recommended"
         }
       },
       "updates": {
@@ -737,6 +743,37 @@
       "banned-by": "Banned By",
       "banned-at": "Banned At",
       "register-ip": "Register IP"
+    },
+    "migration": {
+      "platforms-title": "From platforms & CMS to Pano",
+      "plugins-title": "From plugins to Pano",
+      "not-available": "Not available.",
+      "craftweb-tribute": "We remember CraftWeb with respect, which started us on this journey. There is no migration here, but our gratitude lives on.",
+      "authme": {
+        "supported-info-title": "Supported formats:",
+        "supported-backends": "Backends: MySQL, MariaDB, SQLite",
+        "supported-hashes": "Password hashes: SHA256 ($SHA$salt$hash), BCrypt, Argon2, MD5. These will be preserved and auto-upgraded on next login.",
+        "unsupported-note": "Unsupported: Separate salt columns (SALTED2MD5, XAUTH, etc.) and legacy hashes are not supported. Users with these formats can be re-hashed or linked in-game.",
+        "db-connect-info": "backend detected. Pano will connect using the credentials below. You can edit them if needed before uploading.",
+        "password-info": "Existing password hashes will be preserved as-is and automatically upgraded to the platform's default hashing algorithm upon the user's next login.",
+        "no-password-warning": "Some selected users have no password or an unsupported hash format. They will need to use the password reset feature to set a new password after import.",
+        "pano-only-title": "{count} Pano users not found in AuthMe",
+        "pano-only-warning": "Selected users will be permanently deleted from Pano. This action cannot be undone.",
+        "password-strategy-title": "Password Handling Strategy",
+        "password-strategy-desc": "The source uses an unsupported or plaintext password format. Choose how to handle these passwords during import:",
+        "strategy-hash": "Hash with default algorithm",
+        "strategy-hash-desc": "Passwords will be hashed using the platform's default algorithm. Users can log in with their existing passwords.",
+        "strategy-reset": "Require in-game linking",
+        "strategy-reset-desc": "Passwords will not be imported. Users will need to link their account from in-game using the /link command.",
+        "existing-strategy-title": "Existing User Update",
+        "existing-strategy-desc": "Some users already exist in Pano. Select which fields to update from AuthMe data for existing users:",
+        "update-password": "Update password",
+        "update-password-desc": "Overwrite the existing password with the AuthMe password hash.",
+        "update-username": "Update username",
+        "update-username-desc": "Update the display username to match AuthMe's realName.",
+        "update-email": "Update email",
+        "update-email-desc": "Update the email address if AuthMe has one and it's different."
+      }
     }
   },
   "components": {
@@ -893,6 +930,7 @@
     "settings-layout": {
       "website": "Website",
       "platform": "Platform",
+      "migration": "Migration",
       "updates": "Updates",
       "about": "About"
     },

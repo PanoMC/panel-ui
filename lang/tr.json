@@ -80,7 +80,9 @@
     "login": "Giriş Yap",
     "forgot-password": "Şifremi Unuttum?",
     "reset": "Sıfırla",
-    "copy": "Kopyala"
+    "copy": "Kopyala",
+    "select-all": "Tümünü Seç",
+    "deselect-all": "Seçimi Kaldır"
   },
   "pages": {
     "login": {
@@ -422,7 +424,11 @@
           "require-email-verification": "E-posta Doğrulaması Gereksin",
           "require-email-verification-sub": "Kullanıcıların giriş yapmadan önce e-posta adreslerini doğrulamalarını gerektir.",
           "require-email-verification-warning": "Bu özelliğin devre dışı bırakılması güvenlik riskleri oluşturabilir. E-posta doğrulaması, bot saldırılarına karşı korunmak için önemlidir.",
-          "email-disabled-warning": "SMTP ayarları devre dışı. Kullanıcılar varsayılan olarak e-posta doğrulaması olmadan giriş yapabilecekler."
+          "email-disabled-warning": "SMTP ayarları devre dışı. Kullanıcılar varsayılan olarak e-posta doğrulaması olmadan giriş yapabilecekler.",
+          "password-hash-algorithm": "Şifre Hash Algoritması",
+          "password-hash-algorithm-sub": "Yeni şifreleri hashlemek için kullanılan algoritma. Mevcut şifreler bir sonraki girişte otomatik olarak yükseltilecektir.",
+          "password-hash-algorithm-warning": "MD5, üretim kullanımı için önerilmez. Sözlük ve gökkuşağı tablosu saldırılarına karşı savunmasızdır.",
+          "recommended": "Önerilen"
         }
       },
       "updates": {
@@ -737,6 +743,37 @@
       "banned-by": "Banlayan",
       "banned-at": "Tarih",
       "register-ip": "Kayıt IP"
+    },
+    "migration": {
+      "platforms-title": "Platformlardan & CMS'lerden Pano'ya",
+      "plugins-title": "Eklentilerden Pano'ya",
+      "not-available": "Henüz mevcut değil.",
+      "craftweb-tribute": "Bizi bu yolculuğa başlatan CraftWeb'i saygıyla anıyoruz. Burada bir migration yok, ancak minnettarlığımız yaşamaya devam ediyor.",
+      "authme": {
+        "supported-info-title": "Desteklenen formatlar:",
+        "supported-backends": "Veritabanları: MySQL, MariaDB, SQLite",
+        "supported-hashes": "Şifre hash'leri: SHA256 ($SHA$salt$hash), BCrypt, Argon2, MD5. Bunlar korunacak ve bir sonraki girişte otomatik yükseltilecektir.",
+        "unsupported-note": "Desteklenmeyen: Ayrı salt kolonları (SALTED2MD5, XAUTH vb.) ve legacy hash'ler desteklenmez. Bu formatlardaki kullanıcılar yeniden hash'lenebilir veya oyun içi /link ile bağlanabilir.",
+        "db-connect-info": "veritabanı algılandı. Pano aşağıdaki bilgilerle bağlanacaktır. Yüklemeden önce gerekirse düzenleyebilirsiniz.",
+        "password-info": "Mevcut şifre hash'leri olduğu gibi korunacak ve kullanıcının bir sonraki girişinde platformun varsayılan hash algoritmasına otomatik olarak yükseltilecektir.",
+        "no-password-warning": "Seçilen bazı kullanıcıların şifresi yok veya desteklenmeyen bir hash formatı kullanıyor. İçe aktarma sonrasında yeni bir şifre belirlemek için şifre sıfırlama özelliğini kullanmaları gerekecektir.",
+        "pano-only-title": "AuthMe'de bulunmayan {count} Pano kullanıcısı",
+        "pano-only-warning": "Seçilen kullanıcılar Pano'dan kalıcı olarak silinecektir. Bu işlem geri alınamaz.",
+        "password-strategy-title": "Şifre İşleme Stratejisi",
+        "password-strategy-desc": "Kaynak, desteklenmeyen veya düz metin şifre formatı kullanıyor. İçe aktarma sırasında bu şifrelerin nasıl işleneceğini seçin:",
+        "strategy-hash": "Varsayılan algoritma ile şifrele",
+        "strategy-hash-desc": "Şifreler platformun varsayılan algoritması ile hash'lenecektir. Kullanıcılar mevcut şifreleriyle giriş yapabilir.",
+        "strategy-reset": "Oyun içi bağlantı gerektir",
+        "strategy-reset-desc": "Şifreler içe aktarılmayacaktır. Kullanıcıların hesaplarını oyun içinden /link komutu ile bağlamaları gerekecektir.",
+        "existing-strategy-title": "Mevcut Kullanıcı Güncelleme",
+        "existing-strategy-desc": "Bazı kullanıcılar zaten Pano'da mevcut. Mevcut kullanıcılar için AuthMe verilerinden hangi alanların güncelleneceğini seçin:",
+        "update-password": "Şifreyi güncelle",
+        "update-password-desc": "Mevcut şifreyi AuthMe şifre hash'i ile değiştir.",
+        "update-username": "Kullanıcı adını güncelle",
+        "update-username-desc": "Görünen kullanıcı adını AuthMe'nin realName değeri ile eşleştir.",
+        "update-email": "E-postayı güncelle",
+        "update-email-desc": "AuthMe'de e-posta varsa ve farklıysa e-posta adresini güncelle."
+      }
     }
   },
   "components": {
@@ -897,6 +934,7 @@
     "settings-layout": {
       "website": "Website",
       "platform": "Platform",
+      "migration": "Taşıma",
       "updates": "Güncellemeler",
       "about": "Hakkında"
     },
