@@ -121,10 +121,6 @@
               componentProps[key] = nextCombined[key];
             }
           }
-          // Support for legacy components that might not see $state changes
-          if (componentInstance && componentInstance.$set) {
-            componentInstance.$set(nextCombined);
-          }
         });
       },
       destroy() {
