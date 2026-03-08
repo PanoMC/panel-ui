@@ -1,4 +1,4 @@
-<nav class="sidebar-nav navbar-dark animate__animated animate__fadeIn">
+<nav class="sidebar-nav navbar-dark">
   {#if $selectedServer}
     <ul class="navbar-nav px-3">
       {#each $serverNavigationItems as item}

@@ -103,7 +103,7 @@
           align-items-center vstack gap-3">
           <img
             alt={data.player.username}
-            class="img-thumbnail rounded animate__animated animate__zoomIn"
+            class="img-thumbnail rounded"
             width="128"
             height="128"
             class:border={isOnline || data.player.isBanned}

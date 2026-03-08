@@ -7,7 +7,7 @@
         src="{base}/assets/img/404.png"
         width="280" />
 
-      <div class="alert alert-danger animated bounceInDown" role="alert">
+      <div class="alert alert-danger" role="alert">
         {$_('page-error.' + $page.status) || $page.error.message}
       </div>
     </div>

@@ -82,7 +82,7 @@
 {/snippet}
 
 <!-- Post & Post Options -->
-<section class="row g-3 animate__animated animate__fadeIn">
+<section class="row g-3">
   <!-- Post -->
   <div class="col-lg-9">
     <div class="card h-100 w-100">

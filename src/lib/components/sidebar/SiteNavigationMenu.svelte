@@ -1,4 +1,4 @@
-<nav class="navbar-dark animate__animated animate__slideInLeft">
+<nav class="navbar-dark">
   <ul class="navbar-nav flex-column px-3">
     {#each $siteNavigationItems as item}
       {#if !item.permission || hasPermission(item.permission)}

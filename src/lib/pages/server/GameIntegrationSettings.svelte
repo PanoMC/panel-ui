@@ -1,4 +1,4 @@
-<div class="card animate__animated animate__fadeIn">
+<div class="card">
   <div class="card-header">{$_('pages.server.game-integration.minecraft')}</div>
   <div class="card-body">
     <div class="row mb-3">
@@ -22,7 +22,7 @@
       </div>
     </div>
     {#if !requireEmailVerification}
-      <div class="alert alert-warning py-2 mb-3 animate__animated animate__fadeIn" role="alert">
+      <div class="alert alert-warning py-2 mb-3" role="alert">
         <i class="fas fa-exclamation-triangle me-2"></i>
         {$_('pages.server.game-integration.auth-require-verified-disabled-warning')}
       </div>

@@ -89,7 +89,7 @@
           class="col-auto d-flex justify-content-center align-items-start rounded-start rounded-top">
           <img
             src="/api/panel/plugins/{data.addon.id}/logo"
-            class="img-fluid rounded animate__animated animate__zoomIn"
+            class="img-fluid rounded"
             alt={data.addon.name}
             height="86"
             width="86" />

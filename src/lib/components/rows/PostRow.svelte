@@ -27,7 +27,7 @@
         aria-label={$_('components.post-row.actions')}>
         <span class="fas fa-ellipsis-v"></span>
       </button>
-      <div class="dropdown-menu dropdown-menu-start animate__animated animate__fadeIn">
+      <div class="dropdown-menu dropdown-menu-start">
         <a
           class="dropdown-item"
           target="_blank"

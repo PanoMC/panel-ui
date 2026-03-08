@@ -40,7 +40,7 @@
         <img
           src="/api/profile/picture/{ticket.writer.username}?{$avatarVersion}"
           alt={$_('components.ticket-row.player-name')}
-          class="rounded-circle animate__animated animate__zoomIn me-2 flex-shrink-0"
+          class="rounded-circle me-2 flex-shrink-0"
           height="32"
           width="32" />
         <span class="text-truncate">{ticket.writer.username}</span>

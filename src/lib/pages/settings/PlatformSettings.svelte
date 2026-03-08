@@ -72,7 +72,7 @@
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
   <div
-    class="alert alert-secondary animate__animated animate__fadeIn connect-account-board border mb-0 focus-ring"
+    class="alert alert-secondary connect-account-board border mb-0 focus-ring"
     class:interactive={!data.panoAccount && !connecting}
     role="alert"
     on:click={!data.panoAccount && !connecting ? onConnectClick : null}
@@ -123,7 +123,7 @@
   <div class="card-header">
     {$_('pages.settings.platform.preferences')}
   </div>
-  <div class="card-body animate__animated animate__fadeIn">
+  <div class="card-body">
     <div class="row mb-3">
       <label class="col-md-6" for="platformDevMode"
         >{$_('pages.settings.platform.developer-mode')}</label>

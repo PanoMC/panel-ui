@@ -1,4 +1,4 @@
-<div class="alert alert-warning animate__animated animate__slideInUp" role="alert">
+<div class="alert alert-warning" role="alert">
   <details {open}>
     <summary> These translations are not used anymore, you can delete them: </summary>
     {#each translations as translation, index (translation)}

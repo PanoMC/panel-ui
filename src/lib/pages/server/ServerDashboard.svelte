@@ -1,5 +1,5 @@
 <div class="container vstack gap-3">
-  <div class="row g-3 justify-content-between animate__animated animate__slideInUp">
+  <div class="row g-3 justify-content-between">
     <div class="col-lg-4">
       <div
         class="card h-100"

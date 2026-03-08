@@ -4,7 +4,7 @@
     <div class="card">
       <div class="card-header">{$_('pages.settings.about.info')}</div>
       <div class="card-body">
-        <form class="animate__animated animate__fadeIn">
+        <form>
           <div class="row">
             <label class="col-md-6 col-form-label" for="panoVersion">
               {$_('pages.settings.about.version')}
@@ -66,7 +66,7 @@
     </div>
   </div>
   <div class="col-lg-6 order-1 order-lg-2">
-    <div class="alert alert-primary h-100 mb-0 d-flex flex-column animate__animated animate__zoomIn">
+    <div class="alert alert-primary h-100 mb-0 d-flex flex-column">
       <h5 class="alert-heading">{$_('pages.settings.about.support-pano')} ❤️</h5>
       <p>
         {$_('pages.settings.about.support-pano-text')}
@@ -89,7 +89,7 @@
   <div class="card-header">
     {$_('pages.settings.about.open-source-licenses')}
   </div>
-  <div class="card-body animate__animated animate__fadeIn">
+  <div class="card-body">
     {#if licenses && licenses.length > 0}
       <div class="list-group">
         {#each licenses as license}

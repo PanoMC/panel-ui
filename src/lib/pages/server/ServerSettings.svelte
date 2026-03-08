@@ -1,5 +1,5 @@
 <!-- Server Settings Sub Page -->
-<div class="card animate__animated animate__fadeIn">
+<div class="card">
   <div class="card-header">{$_('pages.server.settings.preferences')}</div>
   <div class="card-body">
     <div class="row mb-3">

@@ -11,7 +11,7 @@
         aria-label={$_('components.player-row.actions')}>
         <span class="fas fa-ellipsis-v"></span>
       </button>
-      <div class="dropdown-menu dropdown-menu-start animate__animated animate__fadeIn">
+      <div class="dropdown-menu dropdown-menu-start">
         {#if hasPermission(Permissions.MANAGE_PERMISSION_GROUPS)}
           <a
             href="{base}/permissions"
@@ -61,7 +61,7 @@
           alt={player.username}
           width="32"
           height="32"
-          class="rounded-circle animate__animated animate__zoomIn me-2 flex-shrink-0" />
+          class="rounded-circle me-2 flex-shrink-0" />
         <span class="text-truncate">{player.username}</span>
       </a>
     </div>

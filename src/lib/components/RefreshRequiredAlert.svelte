@@ -1,4 +1,4 @@
-<div class="animate__animated animate__fadeInUp">
+<div>
   <div
     class="alert alert-warning d-flex align-items-center justify-content-between mb-0"
     role="alert">
