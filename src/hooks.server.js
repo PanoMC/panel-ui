@@ -29,42 +29,46 @@ function stripModulePreload(linkHeader) {
 }
 
 const isDev = process.env.NODE_ENV === 'development';
+// Cache buster to prevent stale browser cache when switching themes.
+// Each process start generates a new value, forcing fresh file downloads.
+const v = isDev ? '' : `?v=${Date.now()}`;
 const IMPORT_MAP = `
   <script type="importmap" crossorigin="anonymous">
   {
     "imports": {
-      "svelte": "${base}${isDev ? '/@id/svelte' : '/lib/svelte/index.js'}",
-      "svelte/animate": "${base}${isDev ? '/@id/svelte/animate' : '/lib/svelte/animate.js'}",
-      "svelte/easing": "${base}${isDev ? '/@id/svelte/easing' : '/lib/svelte/easing.js'}",
-      "svelte/motion": "${base}${isDev ? '/@id/svelte/motion' : '/lib/svelte/motion.js'}",
-      "svelte/store": "${base}${isDev ? '/@id/svelte/store' : '/lib/svelte/store.js'}",
-      "svelte/transition": "${base}${isDev ? '/@id/svelte/transition' : '/lib/svelte/transition.js'}",
-      "svelte/internal": "${base}${isDev ? '/@id/svelte/internal' : '/lib/svelte/internal.js'}",
-      "svelte/internal/client": "${base}${isDev ? '/@id/svelte/internal/client' : '/lib/svelte/internal-client.js'}",
-      "svelte/internal/disclose-version": "${base}${isDev ? '/@id/svelte/internal/disclose-version' : '/lib/svelte/internal-disclose-version.js'}",
-      "svelte/internal/flags/legacy": "${base}${isDev ? '/@id/svelte/internal/flags/legacy' : '/lib/svelte/internal-flags-legacy.js'}",
-      "svelte/internal/flags/async": "${base}${isDev ? '/@id/svelte/internal/flags/async' : '/lib/svelte/internal-flags-async.js'}",
-      "svelte/internal/flags/tracing": "${base}${isDev ? '/@id/svelte/internal/flags/tracing' : '/lib/svelte/internal-flags-tracing.js'}",
-      "svelte/internal/server": "${base}${isDev ? '/@id/svelte/internal/server' : '/lib/svelte/internal-server.js'}",
-      "svelte/legacy": "${base}${isDev ? '/@id/svelte/legacy' : '/lib/svelte/legacy.js'}",
-      "svelte/events": "${base}${isDev ? '/@id/svelte/events' : '/lib/svelte/events.js'}",
-      "svelte-i18n": "${base}${isDev ? '/@id/svelte-i18n' : '/lib/svelte/i18n.js'}",
-      "@panomc/sdk": "${base}/lib/sdk/index.js",
-      "@panomc/sdk/components/theme": "${base}/lib/sdk/components-theme.js",
-      "@panomc/sdk/components/panel": "${base}/lib/sdk/components-panel.js",
-      "@panomc/sdk/toasts": "${base}/lib/sdk/toasts.js",
-      "@panomc/sdk/utils/api": "${base}/lib/sdk/utils-api.js",
-      "@panomc/sdk/utils/auth": "${base}/lib/sdk/utils-auth.js",
-      "@panomc/sdk/utils/tooltip": "${base}/lib/sdk/utils-tooltip.js",
-      "@panomc/sdk/utils/language": "${base}/lib/sdk/utils-language.js",
-      "@panomc/sdk/utils/component": "${base}/lib/sdk/utils-component.js",
-      "@panomc/sdk/utils/text": "${base}/lib/sdk/utils-text.js",
-      "@panomc/sdk/variables": "${base}/lib/sdk/variables.js",
-      "@panomc/sdk/svelte": "${base}/lib/sdk/svelte.js",
-      "@panomc/sdk/internal": "${base}/lib/sdk/internal.js"
+      "svelte": "${base}${isDev ? '/@id/svelte' : `/lib/svelte/index.js${v}`}",
+      "svelte/animate": "${base}${isDev ? '/@id/svelte/animate' : `/lib/svelte/animate.js${v}`}",
+      "svelte/easing": "${base}${isDev ? '/@id/svelte/easing' : `/lib/svelte/easing.js${v}`}",
+      "svelte/motion": "${base}${isDev ? '/@id/svelte/motion' : `/lib/svelte/motion.js${v}`}",
+      "svelte/store": "${base}${isDev ? '/@id/svelte/store' : `/lib/svelte/store.js${v}`}",
+      "svelte/transition": "${base}${isDev ? '/@id/svelte/transition' : `/lib/svelte/transition.js${v}`}",
+      "svelte/internal": "${base}${isDev ? '/@id/svelte/internal' : `/lib/svelte/internal.js${v}`}",
+      "svelte/internal/client": "${base}${isDev ? '/@id/svelte/internal/client' : `/lib/svelte/internal-client.js${v}`}",
+      "svelte/internal/disclose-version": "${base}${isDev ? '/@id/svelte/internal/disclose-version' : `/lib/svelte/internal-disclose-version.js${v}`}",
+      "svelte/internal/flags/legacy": "${base}${isDev ? '/@id/svelte/internal/flags/legacy' : `/lib/svelte/internal-flags-legacy.js${v}`}",
+      "svelte/internal/flags/async": "${base}${isDev ? '/@id/svelte/internal/flags/async' : `/lib/svelte/internal-flags-async.js${v}`}",
+      "svelte/internal/flags/tracing": "${base}${isDev ? '/@id/svelte/internal/flags/tracing' : `/lib/svelte/internal-flags-tracing.js${v}`}",
+      "svelte/internal/server": "${base}${isDev ? '/@id/svelte/internal/server' : `/lib/svelte/internal-server.js${v}`}",
+      "svelte/legacy": "${base}${isDev ? '/@id/svelte/legacy' : `/lib/svelte/legacy.js${v}`}",
+      "svelte/events": "${base}${isDev ? '/@id/svelte/events' : `/lib/svelte/events.js${v}`}",
+      "svelte-i18n": "${base}${isDev ? '/@id/svelte-i18n' : `/lib/svelte/i18n.js${v}`}",
+      "@panomc/sdk": "${base}/lib/sdk/index.js${v}",
+      "@panomc/sdk/components/theme": "${base}/lib/sdk/components-theme.js${v}",
+      "@panomc/sdk/components/panel": "${base}/lib/sdk/components-panel.js${v}",
+      "@panomc/sdk/toasts": "${base}/lib/sdk/toasts.js${v}",
+      "@panomc/sdk/utils/api": "${base}/lib/sdk/utils-api.js${v}",
+      "@panomc/sdk/utils/auth": "${base}/lib/sdk/utils-auth.js${v}",
+      "@panomc/sdk/utils/tooltip": "${base}/lib/sdk/utils-tooltip.js${v}",
+      "@panomc/sdk/utils/language": "${base}/lib/sdk/utils-language.js${v}",
+      "@panomc/sdk/utils/component": "${base}/lib/sdk/utils-component.js${v}",
+      "@panomc/sdk/utils/text": "${base}/lib/sdk/utils-text.js${v}",
+      "@panomc/sdk/variables": "${base}/lib/sdk/variables.js${v}",
+      "@panomc/sdk/svelte": "${base}/lib/sdk/svelte.js${v}",
+      "@panomc/sdk/internal": "${base}/lib/sdk/internal.js${v}"
     }
   }
-  </script>`;
+  </script>
+  <script src="${base}/lib/bootstrap/bootstrap.bundle.min.js${v}"></script>`;
 const PLACEHOLDER = '%pano_lib_import%';
 const PLACEHOLDER_LEN = PLACEHOLDER.length;
 

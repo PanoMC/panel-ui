@@ -107,10 +107,6 @@
   }
 
   export async function show(id) {
-    while (!window.bootstrap) {
-      await delay(50);
-    }
-
     await tick();
 
     const notificationElement = document.getElementById('notificationToast' + id);

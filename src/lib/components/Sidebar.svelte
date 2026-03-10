@@ -196,7 +196,6 @@
 
   onMount(async () => {
     const sidebar = document.getElementById('sidebar');
-    while (!window.bootstrap) await delay();
     const off = window.bootstrap.Offcanvas.getOrCreateInstance(sidebar);
 
     sidebar.addEventListener('click', (e) => {

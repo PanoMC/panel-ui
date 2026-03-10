@@ -30,10 +30,6 @@
   }
 
   export async function show(text, params = {}, toastComponent = DefaultToast) {
-    while (!window.bootstrap) {
-      await delay(50);
-    }
-
     if (text) {
       params.text = text;
     }

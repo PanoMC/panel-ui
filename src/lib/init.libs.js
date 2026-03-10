@@ -1,6 +1,5 @@
-import Popper from 'popper.js';
-import * as bootstrap from 'bootstrap';
-import '@appnest/masonry-layout';
+// Bootstrap is now loaded via static <script> tag in app.html
+// No dynamic imports needed — window.bootstrap is available immediately.
 
-window.Popper = Popper;
-window.bootstrap = bootstrap;
+// masonry-layout is a web component used by Dashboard
+import '@appnest/masonry-layout';

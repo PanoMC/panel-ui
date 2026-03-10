@@ -88,6 +88,22 @@ async function bundle(entries, outDir, label) {
 await bundle(svelteEntries, svelteOutDir, 'Svelte');
 await bundle(sdkEntries, sdkOutDir, 'SDK');
 
+// Copy Bootstrap bundle (pre-built, no need to re-bundle)
+const bootstrapOutDir = './static/lib/bootstrap';
+if (existsSync(bootstrapOutDir)) rmSync(bootstrapOutDir, { recursive: true, force: true });
+mkdirSync(bootstrapOutDir, { recursive: true });
+
+const bootstrapSrc = './node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
+const bootstrapDest = join(bootstrapOutDir, 'bootstrap.bundle.min.js');
+
+if (existsSync(bootstrapSrc)) {
+  const { copyFileSync } = await import('node:fs');
+  copyFileSync(bootstrapSrc, bootstrapDest);
+  console.log('Copied Bootstrap bundle to static/lib/bootstrap/');
+} else {
+  console.warn('Bootstrap bundle not found at:', bootstrapSrc);
+}
+
 // Cleanup
 rmSync(tempEntryDir, { recursive: true, force: true });
 

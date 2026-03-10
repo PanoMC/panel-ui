@@ -126,9 +126,6 @@
   export async function show(requestedShowDonotShowAgain = true) {
     showDonotShowAgain.set(requestedShowDonotShowAgain);
     dontShowAgain.set(false);
-    while (!window.bootstrap) {
-      await delay(50);
-    }
 
     if (!modal) {
       modal = new window.bootstrap.Modal(get(modalElement), {

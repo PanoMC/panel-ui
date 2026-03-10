@@ -35,10 +35,6 @@
     titleValue.set(newTitle);
     callback = newCallback;
 
-    while (!window.bootstrap) {
-      await delay(50);
-    }
-
     modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: 'static',
       keyboard: false,
