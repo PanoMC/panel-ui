@@ -39,8 +39,11 @@
                 <i class="{notification.details.faIcon} fa-fw"></i>
               {:else if notification.details.image || notification.details.username}
                 <img
-                  src={notification.details.image ||
-                    `/api/profile/picture/${notification.details.username}?${$avatarVersion}`}
+                  src={sanitizeImageSrc(
+                    notification.details.image ||
+                      `/api/profile/picture/${notification.details.username}?${$avatarVersion}`,
+                    '/api/server/icon/default'
+                  )}
                   alt={$_('buttons.view')}
                   width="48"
                   height="48"
@@ -136,6 +139,7 @@
   import tooltip from '$lib/tooltip.util';
   import * as locales from 'date-fns/locale';
   import { sanitize } from '@jill64/universal-sanitizer';
+  import { sanitizeImageSrc } from '$lib/security.util.js';
 
   import { quickNotifications, avatarVersion } from '$lib/Store';
   import ApiUtil from '$lib/api.util';

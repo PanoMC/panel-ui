@@ -125,8 +125,11 @@
                           <i class="{notification.details.faIcon} fa-lg fa-fw text-primary"></i>
                         {:else if notification.details.image || notification.details.username}
                           <img
-                            src={notification.details.image ||
-                              `/api/profile/picture/${notification.details.username}?${$avatarVersion}`}
+                            src={sanitizeImageSrc(
+                              notification.details.image ||
+                                `/api/profile/picture/${notification.details.username}?${$avatarVersion}`,
+                              '/api/server/icon/default'
+                            )}
                             alt={$_('buttons.view')}
                             width="18"
                             height="18"
@@ -206,6 +209,7 @@
   import { formatDistanceToNow } from 'date-fns';
   import * as locales from 'date-fns/locale';
   import { sanitize } from '@jill64/universal-sanitizer';
+  import { sanitizeImageSrc } from '$lib/security.util.js';
 
   import { base } from '$app/paths';
   import { page } from '$app/stores';

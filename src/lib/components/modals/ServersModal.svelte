@@ -46,7 +46,10 @@
                     <div
                       class="card-header d-flex justify-content-center align-items-center vstack gap-2">
                       <img
-                        src={server.favicon ? server.favicon : base + '/assets/img/server-icon.png'}
+                        src={sanitizeImageSrc(
+                          server.favicon ? server.favicon : base + '/assets/img/server-icon.png',
+                          base + '/assets/img/server-icon.png'
+                        )}
                         class="rounded border"
                         height="64"
                         width="64"
@@ -182,6 +185,7 @@
 
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
+  import { sanitizeImageSrc } from '$lib/security.util.js';
 
   const mainServer = getContext('mainServer');
   const selectedServer = getContext('selectedServer');

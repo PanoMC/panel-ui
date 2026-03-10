@@ -36,8 +36,11 @@
                   <i class="{notification.details.faIcon} fa-fw fa-xl text-primary"></i>
                 {:else if notification.details.image || notification.details.username}
                   <img
-                    src={notification.details.image ||
-                      `/api/profile/picture/${notification.details.username}?${$avatarVersion}`}
+                    src={sanitizeImageSrc(
+                      notification.details.image ||
+                        `/api/profile/picture/${notification.details.username}?${$avatarVersion}`,
+                      '/api/server/icon/default'
+                    )}
                     alt={$_('buttons.view')}
                     width="30"
                     height="30"
@@ -181,6 +184,7 @@
   import { _ } from 'svelte-i18n';
   import * as locales from 'date-fns/locale';
   import { sanitize } from '@jill64/universal-sanitizer';
+  import { sanitizeImageSrc } from '$lib/security.util.js';
 
   import tooltip from '$lib/tooltip.util';
 

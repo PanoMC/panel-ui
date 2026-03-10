@@ -31,7 +31,10 @@
               <div class="row">
                 <div class="col-auto">
                   <img
-                    src={$server.favicon ? $server.favicon : '/api/server/icon/default'}
+                    src={sanitizeImageSrc(
+                      $server.favicon ? $server.favicon : '/api/server/icon/default',
+                      '/api/server/icon/default'
+                    )}
                     class="rounded border"
                     width="48"
                     height="48"
@@ -161,6 +164,7 @@
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
+  import { sanitizeImageSrc } from '$lib/security.util.js';
 
   import { invalidateAll } from '$app/navigation';
 
