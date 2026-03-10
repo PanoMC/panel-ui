@@ -341,8 +341,8 @@
                     </button>
 
                     <button
-                      use:tooltip={[$_('pages.settings.updates.download'), { placement: 'bottom' }]}
-                      aria-label={$_('pages.settings.updates.download')}
+                      use:tooltip={[$_('buttons.install'), { placement: 'bottom' }]}
+                      aria-label={$_('buttons.install')}
                       class="btn btn-sm btn-secondary d-flex align-items-center gap-2"
                       class:disabled={loading ||
                         $platformUpdating ||
