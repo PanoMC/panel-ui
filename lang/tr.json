@@ -11,6 +11,7 @@
     "download": "İndir",
     "enable": "Aktifleştir",
     "validate": "Doğrula",
+    "import": "İçe Aktar",
     "players": "Oyuncular",
     "posts": "Yazılar",
     "tickets": "Talepler",
@@ -82,7 +83,9 @@
     "reset": "Sıfırla",
     "copy": "Kopyala",
     "select-all": "Tümünü Seç",
-    "deselect-all": "Seçimi Kaldır"
+    "deselect-all": "Seçimi Kaldır",
+    "disable-all-addons": "Tüm eklentileri devre dışı bırak",
+    "selected": "Seçildi"
   },
   "pages": {
     "login": {
@@ -126,7 +129,8 @@
         "inactive": "{amount} Devre Dışı Eklenti",
         "installed": "{amount} Yüklü Eklenti"
       },
-      "update-available": "Güncelleme Mevcut"
+      "update-available": "Güncelleme Mevcut",
+      "disable-all-confirm": "Tüm eklentileri devre dışı bırakmak istediğinizden emin misiniz?"
     },
     "addon-detail": {
       "title": "Eklenti Detayı",
@@ -494,7 +498,7 @@
     "permissions": {
       "title": "Yetkiler",
       "panel": {
-        "luckperms-alert": "Bu sayfa LuckPerms ile uyumlu çalışacak şekilde tasarlanmıştır ve gelişmiş izin yönetimi özellikleri sunar. Daha fazla bilgi için dokümantasyona göz atabilirsiniz.",
+        "luckperms-alert": "Bu sayfa LuckPerms ile uyumlu çalışacak şekilde tasarlanmıştır ve gelişmiş izin yönetimi özellikleri sunar.",
         "search": {
           "placeholder": "Ara (grup, oyuncu, node)"
         },
@@ -756,24 +760,24 @@
         "supported-hashes": "Şifre hash'leri: SHA256 ($SHA$salt$hash), BCrypt, Argon2, MD5. Bunlar korunacak ve bir sonraki girişte otomatik yükseltilecektir.",
         "unsupported-note": "Desteklenmeyen: Ayrı salt kolonları (SALTED2MD5, XAUTH vb.) ve legacy hash'ler desteklenmez. Bu formatlardaki kullanıcılar yeniden hash'lenebilir veya oyun içi /link ile bağlanabilir.",
         "db-connect-info": "veritabanı algılandı. Pano aşağıdaki bilgilerle bağlanacaktır. Yüklemeden önce gerekirse düzenleyebilirsiniz.",
-        "password-info": "Mevcut şifre hash'leri olduğu gibi korunacak ve kullanıcının bir sonraki girişinde platformun varsayılan hash algoritmasına otomatik olarak yükseltilecektir.",
-        "no-password-warning": "Seçilen bazı kullanıcıların şifresi yok veya desteklenmeyen bir hash formatı kullanıyor. İçe aktarma sonrasında yeni bir şifre belirlemek için şifre sıfırlama özelliğini kullanmaları gerekecektir.",
-        "pano-only-title": "AuthMe'de bulunmayan {count} Pano kullanıcısı",
-        "pano-only-warning": "Seçilen kullanıcılar Pano'dan kalıcı olarak silinecektir. Bu işlem geri alınamaz.",
-        "password-strategy-title": "Şifre İşleme Stratejisi",
-        "password-strategy-desc": "Kaynak, desteklenmeyen veya düz metin şifre formatı kullanıyor. İçe aktarma sırasında bu şifrelerin nasıl işleneceğini seçin:",
-        "strategy-hash": "Varsayılan algoritma ile şifrele",
-        "strategy-hash-desc": "Şifreler platformun varsayılan algoritması ile hash'lenecektir. Kullanıcılar mevcut şifreleriyle giriş yapabilir.",
-        "strategy-reset": "Oyun içi bağlantı gerektir",
-        "strategy-reset-desc": "Şifreler içe aktarılmayacaktır. Kullanıcıların hesaplarını oyun içinden /link komutu ile bağlamaları gerekecektir.",
-        "existing-strategy-title": "Mevcut Kullanıcı Güncelleme",
-        "existing-strategy-desc": "Bazı kullanıcılar zaten Pano'da mevcut. Mevcut kullanıcılar için AuthMe verilerinden hangi alanların güncelleneceğini seçin:",
-        "update-password": "Şifreyi güncelle",
-        "update-password-desc": "Mevcut şifreyi AuthMe şifre hash'i ile değiştir.",
-        "update-username": "Kullanıcı adını güncelle",
-        "update-username-desc": "Görünen kullanıcı adını AuthMe'nin realName değeri ile eşleştir.",
-        "update-email": "E-postayı güncelle",
-        "update-email-desc": "AuthMe'de e-posta varsa ve farklıysa e-posta adresini güncelle."
+        "password-info": "Mevcut şifreler korunacak ve ilk girişte otomatik olarak güncellenecektir.",
+        "no-password-warning": "Bazı kullanıcıların şifresi yok. Giriş yapabilmeleri için şifre sıfırlama yapmaları gerekecektir.",
+        "pano-only-title": "AuthMe'de Bulunmayan {count} Oyuncu",
+        "pano-only-warning": "Seçilen oyuncular Pano'dan kalıcı olarak silinecek.",
+        "password-strategy-title": "Şifre İşleme",
+        "password-strategy-desc": "Bazı kullanıcıların şifre formatı uyumsuz veya desteklenmiyor. Lütfen bir işlem seçin:",
+        "strategy-hash": "Şifreleri Aktar (Önerilen)",
+        "strategy-hash-desc": "Kullanıcılar mevcut şifreleriyle giriş yapabilir, şifreler otomatik güncellenir.",
+        "strategy-reset": "Şifreleri Aktarma",
+        "strategy-reset-desc": "Şifreler aktarılmaz. Kullanıcıların oyun içinden /link komutuyla tekrar bağlanması gerekir.",
+        "existing-strategy-title": "Mevcut Kullanıcılar",
+        "existing-strategy-desc": "Hesabı olan kullanıcıların hangi verileri güncellensin?",
+        "update-password": "Şifreleri Güncelle",
+        "update-password-desc": "Pano şifresini AuthMe şifresi ile değiştirir.",
+        "update-username": "İsimleri Güncelle",
+        "update-username-desc": "Görünen ismi AuthMe'deki gerçek ismi ile günceller.",
+        "update-email": "E-postaları Güncelle",
+        "update-email-desc": "AuthMe'deki e-posta adresini Pano'ya aktarır."
       },
       "luckperms": {
         "supported-info-title": "Desteklenen formatlar:",
@@ -823,7 +827,9 @@
     },
     "alerts": {
       "dev-mode-title": "Geliştirici Modu Aktif",
-      "dev-mode-description": "Şu anda geliştirici modundasınız. Bazı güvenlik özellikleri devre dışı kalmış olabilir ve sistem normalden farklı davranabilir."
+      "dev-mode-description": "Bazı güvenlik özellikleri devre dışı kalmış olabilir ve sistem normalden farklı davranabilir.",
+      "demo-mode-title": "Demo Modu",
+      "demo-mode-description": "Bu panel demo modunda çalışıyor. Bazı işlemler kısıtlanmıştır."
     },
     "store-loading": {
       "store-loading": "Mağaza yükleniyor…",
@@ -888,7 +894,7 @@
     },
     "navbar": {
       "selected-server": "Seçili Sunucu",
-      "navbar-toggle-tooltip": "Menüyü Aç/Kapa",
+      "show-menu": "Menüyü Getir",
       "notifications": "Bildirimler",
       "panel-theme": "Panel Teması",
       "show-all": "Tümünü Görüntüle",
@@ -900,7 +906,7 @@
       }
     },
     "sidebar": {
-      "sidebar-toggle-tooltip": "Menüyü Aç/Kapa",
+      "hide-menu": "Menüyü Gizle",
       "website": "Website",
       "server": "Sunucu",
       "show-website": "Website'yi Görüntüle",
@@ -1281,9 +1287,11 @@
       },
       "servers": {
         "connect-server-button": "Sunucu Bağla",
-        "servers": "Sunucular",
+        "servers": "Seç",
         "main-server": "Ana Sunucu",
-        "online": "Çevrimiçi"
+        "online": "Çevrimiçi",
+        "search-placeholder": "Sunucu ara...",
+        "select-server-tooltip": "Seçili Sunucu Yap"
       },
       "unban-player": {
         "title": "Bu oyuncunun yasağını kaldırmak istediğinizden emin misiniz?"

@@ -8,13 +8,13 @@
           class:d-lg-none={$isSidebarOpen}
           class="navbar-toggler d-inline-block me-2"
           type="button"
-          aria-label={$_('components.navbar.navbar-toggle-tooltip')}
-          use:tooltip={[$_('components.navbar.navbar-toggle-tooltip')]}
+          aria-label={$_('components.navbar.show-menu')}
+          use:tooltip={[$_('components.navbar.show-menu'), { placement: 'bottom' }]}
           on:click={onSideBarCollapseClick}
           data-bs-toggle="offcanvas"
           data-bs-target="#sidebar"
           aria-controls="sidebar">
-          <i class="fa-solid fa-bars"></i>
+          <i class="fa-solid fa-step-forward"></i>
         </button>
         <!-- Panel Theme Switcher -->
         <div class="nav-item dropdown">
@@ -22,7 +22,7 @@
             <i class="nav-link fa-solid fa-spinner fa-spin"></i>
           {:else}
             <button
-              use:tooltip={[$_('components.navbar.panel-theme')]}
+              use:tooltip={[$_('components.navbar.panel-theme'), { placement: 'bottom' }]}
               aria-label={$_('components.navbar.panel-theme')}
               class="nav-link"
               data-bs-toggle="dropdown"
@@ -50,14 +50,26 @@
         {#if $selectedServer && showSelectedServer}
           <!-- Selected Server -->
           <div class="nav-item">
-            <span class="nav-link">
+            <span class="nav-link d-flex align-items-center">
               <i
-                class="fa-solid fa-server"
+                class="fas fa-check-circle me-lg-2 d-none d-lg-inline"
+                class:text-success={$selectedServer.status === 'ONLINE'}
+                class:text-danger={$selectedServer.status !== 'ONLINE'}></i>
+              <span
+                class="d-none d-lg-inline text-truncate"
+                class:text-success={$selectedServer.status === 'ONLINE'}
+                class:text-danger={$selectedServer.status !== 'ONLINE'}
+                style="max-width: 150px;">
+                {$selectedServer.customName || $selectedServer.name}
+              </span>
+              <i
+                class="fas fa-check-circle d-lg-none mt-1"
+                class:text-success={$selectedServer.status === 'ONLINE'}
+                class:text-danger={$selectedServer.status !== 'ONLINE'}
                 use:tooltip={[
-                  `${$_('components.navbar.selected-server')}: ${$selectedServer.customName || $selectedServer.name} (${$selectedServer.host}:${$selectedServer.port})`,
+                  `${$_('components.navbar.selected-server')}: ${$selectedServer.customName || $selectedServer.name}`,
                   { placement: 'bottom' },
-                ]}>
-              </i>
+                ]}></i>
             </span>
           </div>
         {/if}
@@ -79,7 +91,7 @@
             target="_blank"
             rel="noopener noreferrer"
             aria-label={$_('components.navbar.report-a-bug')}
-            use:tooltip={[$_('components.navbar.report-a-bug')]}>
+            use:tooltip={[$_('components.navbar.report-a-bug'), { placement: 'bottom' }]}>
             <i class="fa-solid fa-bug"></i>
           </a>
         </div>
@@ -91,7 +103,7 @@
             data-bs-toggle="dropdown"
             type="button"
             aria-label={$_('components.navbar.notifications')}
-            use:tooltip={[$_('components.navbar.notifications')]}>
+            use:tooltip={[$_('components.navbar.notifications'), { placement: 'bottom' }]}>
             <i class="fa-regular fa-bolt"></i>
             {#if $notificationCount !== 0}
               <span
@@ -117,7 +129,7 @@
                     class:notification-unread={notification.status === 'NOT_READ'}>
                     <button
                       type="button"
-                      use:tooltip={[$_('buttons.view')]}
+                      use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}
                       on:click={() => onNotificationClick(notification)}
                       class="text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
                       <div class="d-flex align-items-center">
@@ -175,7 +187,7 @@
             class="nav-link h-100 d-flex align-items-center"
             data-bs-toggle="dropdown"
             aria-label={$_('components.navbar.account-dropdown.session')}
-            use:tooltip={[$_('components.navbar.account-dropdown.session')]}>
+            use:tooltip={[$_('components.navbar.account-dropdown.session'), { placement: 'bottom' }]}>
             <img
               src="/api/profile/picture/{$user.username}?{$avatarVersion}"
               width="20"

@@ -11,6 +11,7 @@
     "download": "Download",
     "enable": "Enable",
     "validate": "Validate",
+    "import": "Import",
     "players": "Players",
     "posts": "Posts",
     "tickets": "Tickets",
@@ -82,7 +83,9 @@
     "reset": "Reset",
     "copy": "Copy",
     "select-all": "Select All",
-    "deselect-all": "Deselect All"
+    "deselect-all": "Deselect All",
+    "selected": "Selected",
+    "disable-all-addons": "Disable all addons"
   },
   "pages": {
     "login": {
@@ -126,7 +129,8 @@
         "inactive": "{amount} Inactive Addon",
         "installed": "{amount} Installed Addon"
       },
-      "update-available": "Update Available"
+      "update-available": "Update Available",
+      "disable-all-confirm": "Are you sure you want to disable all addons?"
     },
     "addon-detail": {
       "title": "Addon Detail",
@@ -494,7 +498,7 @@
     "permissions": {
       "title": "Permissions",
       "panel": {
-        "luckperms-alert": "This page is designed to be compatible with LuckPerms and offers advanced permission management features. For more information, you can check the documentation.",
+        "luckperms-alert": "This page is designed to be compatible with LuckPerms and offers advanced permission management features.",
         "search": {
           "placeholder": "Search (group, player, node)"
         },
@@ -756,24 +760,24 @@
         "supported-hashes": "Password hashes: SHA256 ($SHA$salt$hash), BCrypt, Argon2, MD5. These will be preserved and auto-upgraded on next login.",
         "unsupported-note": "Unsupported: Separate salt columns (SALTED2MD5, XAUTH, etc.) and legacy hashes are not supported. Users with these formats can be re-hashed or linked in-game.",
         "db-connect-info": "backend detected. Pano will connect using the credentials below. You can edit them if needed before uploading.",
-        "password-info": "Existing password hashes will be preserved as-is and automatically upgraded to the platform's default hashing algorithm upon the user's next login.",
-        "no-password-warning": "Some selected users have no password or an unsupported hash format. They will need to use the password reset feature to set a new password after import.",
-        "pano-only-title": "{count} Pano users not found in AuthMe",
-        "pano-only-warning": "Selected users will be permanently deleted from Pano. This action cannot be undone.",
-        "password-strategy-title": "Password Handling Strategy",
-        "password-strategy-desc": "The source uses an unsupported or plaintext password format. Choose how to handle these passwords during import:",
-        "strategy-hash": "Hash with default algorithm",
-        "strategy-hash-desc": "Passwords will be hashed using the platform's default algorithm. Users can log in with their existing passwords.",
-        "strategy-reset": "Require in-game linking",
-        "strategy-reset-desc": "Passwords will not be imported. Users will need to link their account from in-game using the /link command.",
-        "existing-strategy-title": "Existing User Update",
-        "existing-strategy-desc": "Some users already exist in Pano. Select which fields to update from AuthMe data for existing users:",
-        "update-password": "Update password",
-        "update-password-desc": "Overwrite the existing password with the AuthMe password hash.",
-        "update-username": "Update username",
-        "update-username-desc": "Update the display username to match AuthMe's realName.",
-        "update-email": "Update email",
-        "update-email-desc": "Update the email address if AuthMe has one and it's different."
+        "password-info": "Passwords will be preserved and automatically updated on first login.",
+        "no-password-warning": "Some users have no password. They will need to reset it to log in.",
+        "pano-only-title": "{count} Players Not Found in AuthMe",
+        "pano-only-warning": "These players will be permanently deleted from Pano.",
+        "password-strategy-title": "Password Handling",
+        "password-strategy-desc": "Some user passwords have incompatible formats. Please choose how to proceed:",
+        "strategy-hash": "Migrate Passwords (Recommended)",
+        "strategy-hash-desc": "Users can log in with their existing passwords; they will be updated automatically.",
+        "strategy-reset": "Do Not Migrate",
+        "strategy-reset-desc": "Passwords will not be imported. Users must link their accounts in-game.",
+        "existing-strategy-title": "Existing Users",
+        "existing-strategy-desc": "Which data should be updated for users who already have an account?",
+        "update-password": "Update Passwords",
+        "update-password-desc": "Replaces the Pano password with the AuthMe password.",
+        "update-username": "Update Usernames",
+        "update-username-desc": "Updates the display name to match AuthMe's real name.",
+        "update-email": "Update Emails",
+        "update-email-desc": "Transfers the email address from AuthMe to Pano."
       },
       "luckperms": {
         "supported-info-title": "Supported formats:",
@@ -823,7 +827,9 @@
     },
     "alerts": {
       "dev-mode-title": "Development Mode Active",
-      "dev-mode-description": "You are currently in development mode. Some security features may be disabled and the system may behave differently than usual."
+      "dev-mode-description": "Some security features may be disabled and the system may behave differently than usual.",
+      "demo-mode-title": "Demo Mode",
+      "demo-mode-description": "This panel is running in demo mode. Some actions are restricted."
     },
     "store-loading": {
       "store-loading": "Store loading…",
@@ -883,7 +889,7 @@
       "translations": "Translations"
     },
     "navbar": {
-      "navbar-toggle-tooltip": "Open/Close Menu",
+      "show-menu": "Show Menu",
       "selected-server": "Selected Server",
       "notifications": "Notifications",
       "panel-theme": "Panel Theme",
@@ -896,7 +902,7 @@
       }
     },
     "sidebar": {
-      "sidebar-toggle-tooltip": "Open/Close Menu",
+      "hide-menu": "Hide Menu",
       "website": "Website",
       "server": "Server",
       "show-website": "Show Website",
@@ -1277,9 +1283,11 @@
       },
       "servers": {
         "connect-server-button": "Connect Server",
-        "servers": "Servers",
+        "servers": "Select",
         "main-server": "Main Server",
-        "online": "Online"
+        "online": "Online",
+        "search-placeholder": "Search servers...",
+        "select-server-tooltip": "Set as selected server"
       },
       "unban-player": {
         "title": "Are you sure you want to unban this player?"

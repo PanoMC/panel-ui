@@ -13,13 +13,6 @@
   .nav-pills .nav-link.active {
     background-color: #fff !important;
     color: var(--bs-primary) !important;
-    box-shadow: var(--bs-box-shadow-sm);
-  }
-
-  /* Hover state for inactive tabs to make them more interactive */
-  .nav-pills .nav-link:not(.active):hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
   }
 </style>
 
@@ -29,7 +22,7 @@
 {/if}
 
 <div
-  class="offcanvas offcanvas-start bg-primary h-100 p-2 rounded-end-4"
+  class="offcanvas offcanvas-start bg-primary h-100 rounded-end-4"
   tabindex="-1"
   id="sidebar"
   aria-labelledby="sidebarLabel"
@@ -41,11 +34,11 @@
         <button
           type="button"
           class="navbar-toggler d-block float-left position-absolute"
-          aria-label={$_('components.sidebar.sidebar-toggle-tooltip')}
-          use:tooltip={[$_('components.sidebar.sidebar-toggle-tooltip')]}
+          aria-label={$_('components.sidebar.hide-menu')}
+          use:tooltip={[$_('components.sidebar.hide-menu')]}
           on:click={onMobileSideBarCollapseClick}
           data-bs-dismiss="offcanvas">
-          <i class="fa-solid fa-bars"></i>
+          <i class="fa-solid fa-step-backward"></i>
         </button>
 
         <a class="navbar-brand m-auto position-relative focus-ring" href="{base}/">
@@ -104,7 +97,7 @@
       </div>
 
       <!-- Sidebar Tabs -->
-      <ul class="nav nav-pills nav-fill mb-2 gap-2 p-2 rounded-5" data-bs-theme="dark">
+      <ul class="nav nav-pills nav-fill mb-2" data-bs-theme="dark">
         <li class="nav-item">
           <button
             class="nav-link text-center"
