@@ -1,5 +1,6 @@
 <InstallResourceModal />
 <AddonStartupErrorModal />
+<ConfirmActionModal />
 <div class="container vstack gap-3">
   {#if data.failedLogin}
     <FailedLoginPanoStoreAlert />
@@ -10,6 +11,27 @@
   <!-- Action Menu -->
   <PageActions middleClasses="d-lg-flex d-none" leftClasses="d-lg-flex d-none">
     <div slot="right" class="hstack gap-2">
+      <div class="btn-group">
+        <button
+          type="button"
+          class="btn btn-link"
+          aria-label={$_('buttons.enable-all-addons')}
+          use:tooltip={[$_('buttons.enable-all-addons'), { placement: 'bottom' }]}
+          on:click={enableAllAddons}
+          disabled={data.plugins.every((p) => p.status === 'STARTED')}>
+          <i class="fa-solid fa-play"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-link"
+          aria-label={$_('buttons.disable-all-addons')}
+          use:tooltip={[$_('buttons.disable-all-addons'), { placement: 'bottom' }]}
+          on:click={disableAllAddons}
+          disabled={data.plugins.every((p) => p.status !== 'STARTED')}>
+          <i class="fa-solid fa-power-off"></i>
+        </button>
+      </div>
+
       <button
         type="button"
         class="btn btn-secondary"
@@ -220,6 +242,9 @@
     show as showConfirmEnablingAddonModal,
     setCallback as setCallbackConfirmEnablingAddonModal,
   } from '$lib/components/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte';
+  import ConfirmActionModal, {
+    show as showConfirmActionModal,
+  } from '$lib/components/modals/ConfirmActionModal.svelte';
 
   import NoContent from '$lib/components/NoContent.svelte';
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
@@ -355,6 +380,60 @@
 
         callback();
       },
+    });
+  }
+
+  async function disableAllAddons() {
+    const activePlugins = data.plugins.filter((p) => p.status === 'STARTED');
+    if (activePlugins.length === 0) return;
+
+    showConfirmActionModal('pages.addons.disable-all-confirm', async () => {
+      for (const plugin of activePlugins) {
+        plugin.loading = true;
+      }
+      data.plugins = data.plugins;
+
+      await Promise.all(
+        activePlugins.map(
+          (plugin) =>
+            new Promise((resolve) => {
+              ApiUtil.put({
+                path: `/api/panel/plugins/${plugin.id}`,
+                body: { status: false },
+                handler: (body) => resolve(body),
+              });
+            }),
+        ),
+      );
+
+      await refreshData();
+    });
+  }
+
+  async function enableAllAddons() {
+    const inactivePlugins = data.plugins.filter((p) => p.status !== 'STARTED');
+    if (inactivePlugins.length === 0) return;
+
+    showConfirmActionModal('pages.addons.enable-all-confirm', async () => {
+      for (const plugin of inactivePlugins) {
+        plugin.loading = true;
+      }
+      data.plugins = data.plugins;
+
+      await Promise.all(
+        inactivePlugins.map(
+          (plugin) =>
+            new Promise((resolve) => {
+              ApiUtil.put({
+                path: `/api/panel/plugins/${plugin.id}`,
+                body: { status: true },
+                handler: (body) => resolve(body),
+              });
+            }),
+        ),
+      );
+
+      await refreshData();
     });
   }
 </script>

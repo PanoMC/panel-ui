@@ -20,10 +20,10 @@
           on:click={hide}></button>
       </div>
       <div class="modal-body">
-        <div class="list-group list-group-horizontal">
+        <div class="list-group list-group-horizontal w-100" style="height: 250px;">
           <DragAndDropZone
-            class="list-group-item list-group-item-action w-50 rounded-end-0"
-            style="height: 250px; cursor: pointer;"
+            class="list-group-item rounded-end-0 h-100"
+            style="cursor: pointer; flex: 1;"
             icon="fas fa-upload fa-2x"
             title={$_('components.modals.install-resource.drag-here')}
             accept={$type === 'THEME'
@@ -33,8 +33,8 @@
 
           <a
             href="{base}/{$type === 'PLUGIN' ? 'addons' : 'view'}/store"
-            class="list-group-item list-group-item-action d-flex flex-column align-items-center justify-content-center w-50 text-center"
-            style="height: 250px;"
+            class="list-group-item d-flex flex-column align-items-center justify-content-center text-center h-100 text-decoration-none"
+            style="flex: 1;"
             on:click={hide}>
             <i class="fas fa-store fa-2x mb-2"></i>
             {$_('components.modals.install-resource.install-from-pano-store')}

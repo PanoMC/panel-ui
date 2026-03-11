@@ -84,7 +84,8 @@
     "copy": "Kopyala",
     "select-all": "Tümünü Seç",
     "deselect-all": "Seçimi Kaldır",
-    "disable-all-addons": "Tüm eklentileri devre dışı bırak",
+    "enable-all-addons": "Tüm Eklentileri Etkinleştir",
+    "disable-all-addons": "Tüm Eklentileri Devre Dışı Bırak",
     "selected": "Seçildi"
   },
   "pages": {
@@ -130,6 +131,7 @@
         "installed": "{amount} Yüklü Eklenti"
       },
       "update-available": "Güncelleme Mevcut",
+      "enable-all-confirm": "Tüm eklentileri etkinleştirmek istediğinizden emin misiniz?",
       "disable-all-confirm": "Tüm eklentileri devre dışı bırakmak istediğinizden emin misiniz?"
     },
     "addon-detail": {

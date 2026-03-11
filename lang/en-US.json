@@ -85,7 +85,8 @@
     "select-all": "Select All",
     "deselect-all": "Deselect All",
     "selected": "Selected",
-    "disable-all-addons": "Disable all addons"
+    "enable-all-addons": "Enable All Addons",
+    "disable-all-addons": "Disable All Addons"
   },
   "pages": {
     "login": {
@@ -130,6 +131,7 @@
         "installed": "{amount} Installed Addon"
       },
       "update-available": "Update Available",
+      "enable-all-confirm": "Are you sure you want to enable all addons?",
       "disable-all-confirm": "Are you sure you want to disable all addons?"
     },
     "addon-detail": {
