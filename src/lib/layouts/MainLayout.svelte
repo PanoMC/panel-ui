@@ -1,34 +1,39 @@
+<style>
+  .main-container {
+    background-image: radial-gradient(circle at 50% 0%, var(--bs-body-bg) 0%, transparent 500%);
+    background-attachment: fixed;
+  }
+</style>
+
 <Sidebar />
 
 <!--  Main  -->
-<main class="w-100 min-vh-100 overflow-auto pb-5 d-flex flex-column">
+<main class="main-container d-flex min-vh-100 w-100 flex-column overflow-auto pb-5">
   {#if $siteInfo?.isDemo}
-    <div
-      class="alert alert-info fade show rounded-0 border-0 mb-0 shadow-sm"
-      role="alert">
+    <div class="alert alert-info fade show mb-0" role="alert">
       <div class="container-fluid d-flex align-items-center">
-        <i class="fa-solid fa-circle-info me-3 fa-lg"></i>
+        <i class="fa-solid fa-circle-info me-3"></i>
         <div>
-          <strong class="me-2">Demo Mode</strong>
-          <span class="small py-1">This panel is running in demo mode. Some actions are restricted.</span>
+          <strong class="me-2">{$_('components.alerts.demo-mode-title')}</strong>
+          {$_('components.alerts.demo-mode-description')}
         </div>
       </div>
     </div>
   {/if}
   {#if $showDevModeAlert}
     <div
-      class="alert alert-warning alert-dismissible fade show rounded-0 border-0 mb-0 shadow-sm"
+      class="alert alert-warning alert-dismissible fade show mb-0"
       role="alert">
       <div class="container-fluid d-flex align-items-center">
-        <i class="fa-solid fa-triangle-exclamation me-3 fa-lg"></i>
+        <i class="fa-solid fa-triangle-exclamation me-3"></i>
         <div>
           <strong class="me-2">{$_('components.alerts.dev-mode-title')}</strong>
-          <span class="small py-1">{$_('components.alerts.dev-mode-description')}</span>
+          {$_('components.alerts.dev-mode-description')}
         </div>
         <button
           type="button"
-          class="btn-close shadow-none"
-          aria-label="Close"
+          class="btn-close"
+          aria-label={$_('buttons.close')}
           on:click={dismissDevModeAlert}></button>
       </div>
     </div>

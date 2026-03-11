@@ -95,7 +95,7 @@
     </div>
     <div class="col-lg-3">
       <div class="card">
-        <div class="card-header">
+        <div class="card-header bg-transparent">
           {data.player.username}
         </div>
         <div
@@ -126,53 +126,55 @@
 
         </div>
 
-        <table class="table">
-          <tbody>
-            <tr>
-              <td>{$_('pages.player-detail.status')}</td>
-              <td>
-                <PlayerStatusBadge
-                  banned={data.player.isBanned}
-                  lastActivityTime={data.player.lastActivityTime}
-                  inGame={data.player.inGame}
-                  {checkTime} />
-              </td>
-            </tr>
-            <tr>
-              <td>{$_('pages.players.table.perm-group')}</td>
-              <td>
-                <PlayerPermissionBadge permissionGroup={data.player.permissionGroup} />
-              </td>
-            </tr>
-            <tr>
-              <td>{$_('pages.player-detail.email')}</td>
-              <td>
-                <span
-                  class="badge {data.player.isEmailVerified
-                    ? 'text-bg-success'
-                    : 'text-bg-danger'}">
-                  {#if data.player.isEmailVerified}
-                    {$_('pages.player-detail.email-verified')}
-                  {:else}
-                    {$_('pages.player-detail.email-not-verified')}
-                  {/if}
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td>{$_('pages.player-detail.last-entrance')}</td>
-              <td><DateComponent time={data.player.lastLoginDate} /></td>
-            </tr>
-            <tr>
-              <td>{$_('pages.player-detail.register-date')}</td>
-              <td><DateComponent time={data.player.registerDate} /></td>
-            </tr>
-            <tr>
-              <td>{$_('pages.player-detail.register-ip')}</td>
-              <td>{data.player.registeredIp}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="card-body">
+          <table class="table table-sm table-borderless mb-0 opacity-75">
+            <tbody>
+              <tr>
+                <td>{$_('pages.player-detail.status')}</td>
+                <td>
+                  <PlayerStatusBadge
+                    banned={data.player.isBanned}
+                    lastActivityTime={data.player.lastActivityTime}
+                    inGame={data.player.inGame}
+                    {checkTime} />
+                </td>
+              </tr>
+              <tr>
+                <td>{$_('pages.players.table.perm-group')}</td>
+                <td>
+                  <PlayerPermissionBadge permissionGroup={data.player.permissionGroup} />
+                </td>
+              </tr>
+              <tr>
+                <td>{$_('pages.player-detail.email')}</td>
+                <td>
+                  <span
+                    class="badge {data.player.isEmailVerified
+                      ? 'text-bg-success'
+                      : 'text-bg-danger'}">
+                    {#if data.player.isEmailVerified}
+                      {$_('pages.player-detail.email-verified')}
+                    {:else}
+                      {$_('pages.player-detail.email-not-verified')}
+                    {/if}
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>{$_('pages.player-detail.last-entrance')}</td>
+                <td><DateComponent time={data.player.lastLoginDate} /></td>
+              </tr>
+              <tr>
+                <td>{$_('pages.player-detail.register-date')}</td>
+                <td><DateComponent time={data.player.registerDate} /></td>
+              </tr>
+              <tr>
+                <td>{$_('pages.player-detail.register-ip')}</td>
+                <td>{data.player.registeredIp}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
