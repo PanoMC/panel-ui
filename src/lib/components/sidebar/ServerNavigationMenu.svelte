@@ -36,6 +36,12 @@
   export const originalServerNavItems = [
     {
       href: '/dashboard',
+      icon: 'fas fa-table-columns',
+      text: 'components.site-navigation-menu.panel',
+      startsWith: false,
+    },
+    {
+      href: '/statistics',
       icon: 'fas fa-chart-pie',
       text: 'components.server-navigation-menu.statistics',
       startsWith: false,

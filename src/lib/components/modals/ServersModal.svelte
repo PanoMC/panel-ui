@@ -148,7 +148,7 @@
                       {server.customName || server.name}
                     </div>
 
-                    <div class="small text-muted text-truncate w-100 mb-1 server-ip">
+                    <div class="small text-truncate w-100 mb-1 server-ip">
                       <code
                         class="user-select-all cursor-pointer"
                         on:click={(e) => onCopy(e, server)}

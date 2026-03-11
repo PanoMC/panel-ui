@@ -1,7 +1,7 @@
-<ServerDashboard {data} />
+<ServerPanel {data} />
 
 <script>
-  import ServerDashboard from '$lib/pages/server/ServerDashboard.svelte';
+  import ServerPanel from '$lib/pages/server/ServerPanel.svelte';
 
   export let data;
 </script>

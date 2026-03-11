@@ -27,12 +27,12 @@
 <div class="container vstack gap-3">
   {#if showLuckPermsAlert}
     <div class="alert alert-info d-flex align-items-center mb-0 alert-dismissible" role="alert">
-      <i class="fas fa-info-circle me-3 fa-lg"></i>
+      <i class="fas fa-info-circle me-3"></i>
       <div>
         {$_('pages.permissions.panel.luckperms-alert')}
         <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms" target="_blank" class="alert-link ms-1">
           {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
-          <i class="fas fa-external-link-alt ms-1 small"></i>
+          <i class="fas fa-external-link-alt ms-1"></i>
         </a>
       </div>
       <button

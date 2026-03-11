@@ -1,1 +1,1 @@
-export { load } from '$lib/pages/server/ServerDashboard.svelte';
+export { load } from '$lib/pages/server/ServerPanel.svelte';

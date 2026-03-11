@@ -50,8 +50,7 @@
 <div class="container vstack gap-3">
   <!-- Welcome Alerts -->
   {#if data.gettingStartedBlocks.welcomeBoard}
-    <div
-      class="alert alert-secondary alert-dismissible mb-0 border">
+    <div class="alert alert-secondary welcome-board alert-dismissible mb-0 border">
       <div class="row">
         <div class="mb-3">
           {@html $_('pages.dashboard.welcome-card.description')}
@@ -160,9 +159,13 @@
     {#if hasPermission(Permissions.MANAGE_TICKETS)}
       <div class="ratio ratio-1x1">
         <div class="card mb-3">
-          <div class="card-header" use:tooltip={[$_('buttons.view')]}>
-            {$_('pages.dashboard.last-tickets.title')}
-          </div>
+          <CardHeader>
+            <svelte:fragment slot="left"
+              >{$_('pages.dashboard.last-tickets.title')}</svelte:fragment>
+            <svelte:fragment slot="right">
+              <ViewAllLink href="{base}/tickets" />
+            </svelte:fragment>
+          </CardHeader>
 
           <div class="card-body p-0 overflow-auto">
             {#if data.tickets.length === 0}
@@ -189,7 +192,7 @@
                             class="badge text-bg-primary text-decoration-none rounded focus-ring"
                             href="{base}/tickets/detail/{ticket.id}"
                             title={ticket.title}
-                            use:tooltip={[$_('buttons.view')]}
+                            use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}
                             aria-label={$_('buttons.view')}>
                             {ticket.title}
                           </a>
@@ -211,9 +214,12 @@
     <!-- Latest Activity Logs Card -->
     <div class="ratio ratio-1x1">
       <div class="card mb-3">
-        <div class="card-header">
-          {$_('pages.dashboard.logs.title')}
-        </div>
+        <CardHeader>
+          <svelte:fragment slot="left">{$_('pages.dashboard.logs.title')}</svelte:fragment>
+          <svelte:fragment slot="right">
+            <ViewAllLink href="{base}/logs" />
+          </svelte:fragment>
+        </CardHeader>
         <div class="card-body p-0 overflow-auto">
           <ul class="list-group list-group-flush">
             {#each data.activityLogs.data as log, index (log)}
@@ -230,9 +236,13 @@
     {#if hasPermission(Permissions.MANAGE_PLAYERS)}
       <div class="ratio ratio-1x1">
         <div class="card mb-3">
-          <div class="card-header" use:tooltip={[$_('buttons.view')]}>
-            {$_('pages.dashboard.last-registers.title')}
-          </div>
+          <CardHeader>
+            <svelte:fragment slot="left"
+              >{$_('pages.dashboard.last-registers.title')}</svelte:fragment>
+            <svelte:fragment slot="right">
+              <ViewAllLink href="{base}/players" />
+            </svelte:fragment>
+          </CardHeader>
 
           <div class="card-body p-0 overflow-auto">
             {#if data.lastRegisters.length === 0}
@@ -257,7 +267,7 @@
                           </a>
                           <a
                             class="text-decoration-none w-100 rounded focus-ring d-block text-truncate p-1"
-                            use:tooltip={[$_('buttons.view')]}
+                            use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}
                             aria-label={$_('buttons.view')}
                             title={player.username}
                             href="{base}/players/detail/{player.username}">
@@ -281,6 +291,103 @@
         </div>
       </div>
     {/if}
+
+    <!-- Pano Platform Info Card -->
+    <div class="ratio ratio-1x1">
+      <div class="card mb-3">
+        <CardHeader>
+          <svelte:fragment slot="left">{$_('pages.settings.about.info')}</svelte:fragment>
+          <svelte:fragment slot="right">
+            <ViewAllLink href="{base}/settings/about" />
+          </svelte:fragment>
+        </CardHeader>
+
+        <div class="card-body overflow-auto">
+          <form>
+            <div class="row">
+              <label class="col-6 col-form-label" for="panoVersion">
+                {$_('pages.settings.about.version')}
+              </label>
+              <div class="col-6 col-form-label">
+                <span
+                  class="user-select-all font-monospace"
+                  aria-describedby="panoVersion"
+                  id="panoVersion">{data.about?.platformVersion || '-'}</span>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary ms-2"
+                  on:click={() => showWhatsNewModal(false)}>
+                  <i class="fa-solid fa-magic-wand-sparkles me-1"></i>
+                  {$_('components.whats-new.title')}
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-6 col-form-label" for="panoRelease">
+                {$_('pages.settings.about.release')}
+              </label>
+              <div class="col-6 col-form-label">
+                <span aria-describedby="panoRelease" id="panoRelease"
+                  >{data.about?.platformStage || '-'}</span>
+              </div>
+            </div>
+            <div class="row mb-0">
+              <label class="col-6 col-form-label" for="panoWebsite">
+                {$_('pages.settings.about.website')}
+              </label>
+              <div class="col-6 col-form-label">
+                <a
+                  aria-describedby="panoWebsite"
+                  href={PANO_WEBSITE_URL}
+                  id="panoWebsite"
+                  target="_blank">
+                  {getDomain(PANO_WEBSITE_URL)}
+                  <i class="fa-solid fa-up-right-from-square ms-2"></i>
+                </a>
+              </div>
+            </div>
+            <div class="row mb-0">
+              <label class="col-6 col-form-label" for="panoDiscord">
+                {$_('pages.settings.about.discord')}
+              </label>
+              <div class="col-6 col-form-label">
+                <a
+                  aria-describedby="panoWebsite"
+                  href="{PANO_WEBSITE_URL}/discord"
+                  id="panoWebsite"
+                  target="_blank">
+                  {getDomain(PANO_WEBSITE_URL)}/discord
+                  <i class="fa-solid fa-up-right-from-square ms-2"></i>
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support Alert Card -->
+    <div class="ratio ratio-1x1">
+      <div class="alert alert-primary h-100 mb-0 d-flex flex-column blocks">
+        <h5 class="alert-heading">{$_('pages.settings.about.support-pano')} ❤️</h5>
+        <p>
+          {$_('pages.settings.about.support-pano-text')}
+        </p>
+        <div class="mt-auto d-flex flex-column gap-2">
+          <a
+            href="{PANO_WEBSITE_URL}/donate"
+            target="_blank"
+            class="btn btn-link text-decoration-none">
+            <i class="fa-solid fa-heart me-2"></i>
+            {$_('pages.settings.about.support-pano-donate')}
+          </a>
+          <a href="{PANO_WEBSITE_URL}/source-code" target="_blank" class="btn btn-primary">
+            <i class="fa-brands fa-github me-1"></i>
+            {$_('pages.settings.about.support-pano-button')}
+          </a>
+        </div>
+      </div>
+    </div>
   </masonry-layout>
 </div>
 
@@ -296,18 +403,30 @@
     const { parent } = event;
     await parent();
 
-    const [dashboard, activityLogs] = await Promise.all([
+    const [dashboardResult, activityLogsResult, aboutResult] = await Promise.all([
       ApiUtil.get({
         path: `/api/panel/dashboard`,
         request: event,
-      }),
+      }).catch(() => null),
       ApiUtil.get({
         path: `/api/panel/logs/activity`,
         request: event,
-      }),
+      }).catch(() => null),
+      ApiUtil.get({
+        path: `/api/panel/settings?type=ABOUT`,
+        request: event,
+      }).catch(() => null),
     ]);
 
-    return { ...dashboard, activityLogs };
+    const dashboard = dashboardResult?.result === 'ok' ? dashboardResult : {};
+    const activityLogs = activityLogsResult?.result === 'ok' ? activityLogsResult : { data: [] };
+    const about = aboutResult?.data || aboutResult || {};
+
+    return {
+      ...dashboard,
+      activityLogs,
+      about,
+    };
   }
 </script>
 
@@ -333,11 +452,15 @@
     show as showViewActivityLogModal,
     onHide as onViewActivityLogModalHide,
   } from '$lib/components/modals/ViewActivityLogModal.svelte';
+  import { show as showWhatsNewModal } from '$lib/components/modals/WhatsNewModal.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
   import PlayerStatusBadge from '$lib/components/badges/PlayerStatusBadge.svelte';
   import PlayerPermissionBadge from '$lib/components/badges/PlayerPermissionBadge.svelte';
+  import ViewAllLink from '$lib/components/ViewAllLink.svelte';
 
   export let data;
+
+
 
   const pageTitle = getContext('pageTitle');
 
@@ -359,6 +482,8 @@
 
     showViewActivityLogModal(log);
   }
+
+
 
   onViewActivityLogModalHide((log) => {
     const _log = data.activityLogs.data.find((_log) => _log.id === log.id);
@@ -389,4 +514,13 @@
       window.removeEventListener('resize', checkMobile);
     };
   });
+
+  function getDomain(url) {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.hostname;
+    } catch (e) {
+      return url.replace(/^https?:\/\//, '');
+    }
+  }
 </script>

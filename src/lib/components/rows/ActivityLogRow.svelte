@@ -3,10 +3,10 @@
   class="list-group-item list-group-item-action focus-ring"
   class:bg-secondary-subtle={log.selected}
   on:click={onClick}
-  use:tooltip={[$_('buttons.view')]}>
+  use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}>
   <span
     class="fw-normal d-block text-truncate markdown-renderer"
-    title={translation.replace(/<[^>]*>?/gm, "")}>
+    title={translation.replace(/<[^>]*>?/gm, '')}>
     <MarkdownRenderer content={translation} />
   </span>
   <Date time={log.createdAt} />

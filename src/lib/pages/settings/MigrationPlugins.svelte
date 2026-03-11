@@ -1,3 +1,48 @@
+<PageActions>
+  <div slot="right" class="d-flex align-items-center gap-2">
+    {#if activeTab === 'authme'}
+      {#if authMeStep === 'upload'}
+        {#if authMeConfigFile && !authMeDbUpload}
+          <button
+            class="btn btn-primary"
+            on:click={authMeUploadAndPreview}
+            disabled={authMeProcessing}>
+            {#if authMeProcessing}
+              <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            {/if}
+            {#if authMeDbInfo}
+              <i class="fas fa-plug me-1"></i> {$_('buttons.connect')} & {$_('buttons.view')}
+            {:else}
+              <i class="fas fa-upload me-1"></i> {$_('buttons.upload')} & {$_('buttons.view')}
+            {/if}
+          </button>
+        {/if}
+      {:else if authMeStep === 'review'}
+        <button
+          class="btn btn-link text-decoration-none"
+          on:click={authMeResetForm}
+          disabled={authMeImporting}
+          use:tooltip={[$_('buttons.back')]}>
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <button
+          class="btn btn-secondary"
+          on:click={authMeImportUsers}
+          disabled={(authMeSelected.size === 0 && authMeDelete.size === 0) || authMeImporting}>
+          {#if authMeImporting}
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+          {/if}
+          <i class="fas fa-file-import me-1"></i>
+          {$_('buttons.import')} ({authMeSelected.size})
+          {#if authMeDelete.size > 0}
+            &amp; {$_('buttons.delete')} ({authMeDelete.size})
+          {/if}
+        </button>
+      {/if}
+    {/if}
+  </div>
+</PageActions>
+
 <div class="card">
   <div class="card-header pb-0 vstack gap-2">
     <!-- Nav tabs -->
@@ -11,7 +56,8 @@
           type="button"
           role="tab"
           aria-controls="authme"
-          aria-selected="true">
+          aria-selected="true"
+          on:click={() => (activeTab = 'authme')}>
           AuthMe Reloaded
         </button>
       </li>
@@ -24,7 +70,8 @@
           type="button"
           role="tab"
           aria-controls="luckperms"
-          aria-selected="false">
+          aria-selected="false"
+          on:click={() => (activeTab = 'luckperms')}>
           LuckPerms
         </button>
       </li>
@@ -49,7 +96,18 @@
     <!-- Tab panes -->
     <div class="tab-content">
       <div class="tab-pane active" id="authme" role="tabpanel" aria-labelledby="authme-tab">
-        <AuthMeMigration />
+        <AuthMeMigration
+          bind:currentStep={authMeStep}
+          bind:selectedUsers={authMeSelected}
+          bind:deleteUsers={authMeDelete}
+          bind:isImporting={authMeImporting}
+          bind:isProcessing={authMeProcessing}
+          bind:configFile={authMeConfigFile}
+          bind:showDatabaseUpload={authMeDbUpload}
+          bind:dbConnectionInfo={authMeDbInfo}
+          bind:resetForm={authMeResetForm}
+          bind:importUsers={authMeImportUsers}
+          bind:uploadAndPreview={authMeUploadAndPreview} />
       </div>
 
       <div class="tab-pane" id="luckperms" role="tabpanel" aria-labelledby="luckperms-tab">
@@ -67,6 +125,9 @@
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
 
+  import PageActions from '$lib/components/PageActions.svelte';
+  import tooltip from '$lib/tooltip.util';
+
   import NoContent from '$lib/components/NoContent.svelte';
   import AuthMeMigration from './migration/AuthMeMigration.svelte';
   import LuckPermsMigration from './migration/LuckPermsMigration.svelte';
@@ -76,4 +137,19 @@
   if (pageTitle) {
     pageTitle.set('components.settings-layout.migration');
   }
+
+  let activeTab = 'authme';
+
+  // AuthMe states
+  let authMeStep;
+  let authMeSelected = new Set();
+  let authMeDelete = new Set();
+  let authMeImporting;
+  let authMeProcessing;
+  let authMeConfigFile;
+  let authMeDbUpload;
+  let authMeDbInfo;
+  let authMeResetForm;
+  let authMeImportUsers;
+  let authMeUploadAndPreview;
 </script>

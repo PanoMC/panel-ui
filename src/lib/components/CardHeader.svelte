@@ -1,4 +1,4 @@
-<div class="card-header">
+<div class="card-header py-3">
   <div class="row d-flex align-items-center gx-0 gy-2">
     <div
       class="{$$slots.middle
@@ -7,7 +7,9 @@
           : 'col-lg-6'
         : $$slots.right && showRight
           ? 'col-lg-6'
-          : 'col-12'} d-flex justify-content-lg-between justify-content-center {leftClasses}">
+          : 'col-12'} d-flex {$$slots.right && showRight && !$$slots.middle
+        ? 'justify-content-lg-between'
+        : 'justify-content-lg-start'} justify-content-center text-center text-lg-start {leftClasses}">
       <slot name="left" />
     </div>
     {#if $$slots.middle}

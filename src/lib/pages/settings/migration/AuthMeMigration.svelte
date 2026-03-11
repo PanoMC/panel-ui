@@ -1,5 +1,5 @@
 {#if currentStep === 'upload'}
-  <div class="alert alert-info mb-4">
+  <div class="alert alert-info mb-3">
     <i class="fas fa-info-circle me-1"></i>
     <strong>{$_('pages.migration.authme.supported-info-title')}</strong>
     <ul class="mb-0 mt-1">
@@ -136,20 +136,6 @@
     </div>
   {/if}
 
-  <!-- Upload/Connect button -->
-  {#if configFile && !showDatabaseUpload}
-    <button class="btn btn-primary" on:click={uploadAndPreview} disabled={isProcessing}>
-      {#if isProcessing}
-        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-      {/if}
-      {#if dbConnectionInfo}
-        <i class="fas fa-plug me-1"></i> Connect & Preview Users
-      {:else}
-        <i class="fas fa-upload me-1"></i> Upload & Preview Users
-      {/if}
-    </button>
-  {/if}
-
   {#if isProcessing}
     <div class="mt-3">
       <div class="d-flex justify-content-between mb-1">
@@ -176,193 +162,221 @@
     </div>
   {/if}
 {:else if currentStep === 'review'}
-  <!-- Step 2: Review Users -->
+  <!-- AuthMe Migration Page -->
 
-  {#if previewData.users.some((u) => u.passwordType === 'PLAINTEXT' || u.passwordType === 'UNKNOWN')}
-    <div class="card mb-3 border-warning">
-      <div class="card-header text-bg-warning">
-        {$_('pages.migration.authme.password-strategy-title')}
-        <span class="badge text-bg-secondary ms-2">{previewData.authmeHashAlgorithm}</span>
-      </div>
-      <div class="card-body">
-        <p>
-          {$_('pages.migration.authme.password-strategy-desc')}
-        </p>
-        <div class="form-check mb-2">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="passwordStrategy"
-            id="strategyHash"
-            value="hash"
-            bind:group={passwordStrategy} />
-          <label class="form-check-label" for="strategyHash">
-            <strong>{$_('pages.migration.authme.strategy-hash')}</strong>
-            <span class="badge text-bg-success ms-1">{previewData.defaultHashAlgorithm}</span>
-            <br />
-            <small class="opacity-75">{$_('pages.migration.authme.strategy-hash-desc')}</small>
-          </label>
-        </div>
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="passwordStrategy"
-            id="strategyReset"
-            value="reset"
-            bind:group={passwordStrategy} />
-          <label class="form-check-label" for="strategyReset">
-            <strong>{$_('pages.migration.authme.strategy-reset')}</strong>
-            <br />
-            <small class="opacity-75">{$_('pages.migration.authme.strategy-reset-desc')}</small>
-          </label>
-        </div>
-      </div>
-    </div>
-  {/if}
-
-  {#if previewData.existingCount > 0}
-    <div class="card mb-3 border-info">
-      <div class="card-header text-bg-info">
-        {$_('pages.migration.authme.existing-strategy-title')} ({previewData.existingCount})
-      </div>
-      <div class="card-body">
-        <p class="small mb-3">
-          {$_('pages.migration.authme.existing-strategy-desc')}
-        </p>
-        <div class="form-check mb-2">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="updatePassword"
-            bind:checked={existingUserUpdates.password} />
-          <label class="form-check-label" for="updatePassword">
-            <strong>{$_('pages.migration.authme.update-password')}</strong>
-            <br />
-            <small class="opacity-75">{$_('pages.migration.authme.update-password-desc')}</small>
-          </label>
-        </div>
-        <div class="form-check mb-2">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="updateUsername"
-            bind:checked={existingUserUpdates.username} />
-          <label class="form-check-label" for="updateUsername">
-            <strong>{$_('pages.migration.authme.update-username')}</strong>
-            <br />
-            <small class="opacity-75">{$_('pages.migration.authme.update-username-desc')}</small>
-          </label>
-        </div>
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="updateEmail"
-            bind:checked={existingUserUpdates.email} />
-          <label class="form-check-label" for="updateEmail">
-            <strong>{$_('pages.migration.authme.update-email')}</strong>
-            <br />
-            <small class="opacity-75">{$_('pages.migration.authme.update-email-desc')}</small>
-          </label>
-        </div>
-      </div>
-    </div>
-  {/if}
-
-  <div
-    class="mb-3 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
-    <div>
-      <span class="badge text-bg-success me-2">{previewData.newCount} New</span>
-      <span class="badge text-bg-warning me-2">{previewData.existingCount} Existing</span>
-      <span class="badge text-bg-secondary">{previewData.totalCount} Total</span>
-    </div>
-    <div class="d-flex flex-wrap gap-2">
-      <button class="btn btn-sm btn-link text-decoration-none px-0 px-md-2" on:click={selectAllNew}>
-        Select All New
-      </button>
-      <button class="btn btn-sm btn-link text-decoration-none px-0 px-md-2" on:click={selectAll}>
-        Select All
-      </button>
-      <button class="btn btn-sm btn-link text-decoration-none px-0 px-md-2" on:click={deselectAll}>
-        Deselect All
-      </button>
-    </div>
-  </div>
-
-  <div class="mb-2">
-    <SearchInput
-      placeholderKey="buttons.find"
-      showSpinner={false}
-      on:change={(e) => (importSearchQuery = e.detail.value)} />
-  </div>
-
-  <div class="table-responsive">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th class="align-middle text-nowrap" scope="col" style="width: 40px;">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              checked={selectedUsers.size === previewData.users.length}
-              on:change={toggleAll} />
-          </th>
-          <th class="align-middle text-nowrap" scope="col">Username</th>
-          <th class="align-middle text-nowrap" scope="col">Email</th>
-          <th class="align-middle text-nowrap" scope="col">IP</th>
-          <th class="align-middle text-nowrap" scope="col">Status</th>
-          <th class="align-middle text-nowrap" scope="col">Password</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each filteredUsers as user}
-          <tr>
-            <td>
+  <div class="row g-3 mb-3 mt-1">
+    {#if previewData.users.some((u) => u.passwordType === 'PLAINTEXT' || u.passwordType === 'UNKNOWN')}
+      <div class="col-12 col-md-6">
+        <div class="card h-100">
+          <div class="card-header">
+            <span class="badge text-bg-warning"
+              >{$_('pages.migration.authme.password-strategy-title')}</span>
+            <span class="badge text-bg-secondary ms-1">{previewData.authmeHashAlgorithm}</span>
+          </div>
+          <div class="card-body">
+            <p class="small text-muted mb-3">
+              {$_('pages.migration.authme.password-strategy-desc')}
+            </p>
+            <div class="form-check mb-2">
               <input
-                type="checkbox"
                 class="form-check-input"
-                checked={selectedUsers.has(user.username)}
-                on:change={() => toggleUser(user.username)} />
-            </td>
-            <td class="fw-semibold">{user.realName || user.username}</td>
-            <td><span class="user-select-all">{user.email || '-'}</span></td>
-            <td><code class="user-select-all">{user.ip || '-'}</code></td>
-            <td>
-              {#if user.status === 'new'}
-                <span class="badge text-bg-success">New</span>
-              {:else}
-                <span class="badge text-bg-warning">Existing</span>
-              {/if}
-            </td>
-            <td>
-              {#if user.hasPassword && user.passwordType}
-                <span
-                  class="badge {user.passwordType === 'SHA256'
-                    ? 'text-bg-info'
-                    : user.passwordType === 'MD5'
-                      ? 'text-bg-warning '
-                      : user.passwordType === 'BCRYPT'
-                        ? 'text-bg-success'
-                        : user.passwordType === 'ARGON2ID'
-                          ? 'text-bg-success'
-                          : user.passwordType === 'PLAINTEXT'
-                            ? 'text-bg-danger'
-                            : user.passwordType === 'UNKNOWN'
-                              ? 'text-bg-secondary'
-                              : 'text-bg-secondary'}">
-                  {user.passwordType}
-                </span>
-              {:else if user.hasPassword}
-                <i class="fas fa-check text-success"></i>
-              {:else}
-                <span class="badge text-bg-danger">None</span>
-              {/if}
-            </td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
+                type="radio"
+                name="passwordStrategy"
+                id="strategyHash"
+                value="hash"
+                bind:group={passwordStrategy} />
+              <label class="form-check-label" for="strategyHash">
+                <strong>{$_('pages.migration.authme.strategy-hash')}</strong>
+                <span class="badge text-bg-success ms-1">{previewData.defaultHashAlgorithm}</span>
+                <br />
+                <small class="opacity-75">{$_('pages.migration.authme.strategy-hash-desc')}</small>
+              </label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="passwordStrategy"
+                id="strategyReset"
+                value="reset"
+                bind:group={passwordStrategy} />
+              <label class="form-check-label" for="strategyReset">
+                <strong>{$_('pages.migration.authme.strategy-reset')}</strong>
+                <br />
+                <small class="opacity-75">{$_('pages.migration.authme.strategy-reset-desc')}</small>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    {/if}
+
+    {#if previewData.existingCount > 0}
+      <div class="col-12 col-md-6">
+        <div class="card h-100">
+          <div class="card-header">
+            <span class="badge text-bg-info">
+              {$_('pages.migration.authme.existing-strategy-title')} ({previewData.existingCount})
+            </span>
+          </div>
+          <div class="card-body">
+            <p class="small text-muted mb-3">
+              {$_('pages.migration.authme.existing-strategy-desc')}
+            </p>
+            <div class="form-check mb-2">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="updatePassword"
+                bind:checked={existingUserUpdates.password} />
+              <label class="form-check-label" for="updatePassword">
+                <strong>{$_('pages.migration.authme.update-password')}</strong>
+                <br />
+                <small class="opacity-75"
+                  >{$_('pages.migration.authme.update-password-desc')}</small>
+              </label>
+            </div>
+            <div class="form-check mb-2">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="updateUsername"
+                bind:checked={existingUserUpdates.username} />
+              <label class="form-check-label" for="updateUsername">
+                <strong>{$_('pages.migration.authme.update-username')}</strong>
+                <br />
+                <small class="opacity-75"
+                  >{$_('pages.migration.authme.update-username-desc')}</small>
+              </label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="updateEmail"
+                bind:checked={existingUserUpdates.email} />
+              <label class="form-check-label" for="updateEmail">
+                <strong>{$_('pages.migration.authme.update-email')}</strong>
+                <br />
+                <small class="opacity-75">{$_('pages.migration.authme.update-email-desc')}</small>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    {/if}
+  </div>
+
+  <div class="card mb-3">
+    <CardHeader>
+      <div slot="left">
+        <span class="badge text-bg-success me-2">{previewData.newCount} New</span>
+        <span class="badge text-bg-warning me-2">{previewData.existingCount} Existing</span>
+        <span class="badge text-bg-secondary">{previewData.totalCount} Total</span>
+      </div>
+
+      <div slot="middle" style="width: 250px;">
+        <SearchInput
+          placeholderKey="buttons.find"
+          showSpinner={false}
+          on:change={(e) => (importSearchQuery = e.detail.value)} />
+      </div>
+
+      <div slot="right" class="d-flex flex-wrap gap-2">
+        <button
+          class="btn btn-sm btn-link text-decoration-none px-0 px-md-2"
+          on:click={selectAllNew}>
+          Select All New
+        </button>
+        <button class="btn btn-sm btn-link text-decoration-none px-0 px-md-2" on:click={selectAll}>
+          Select All
+        </button>
+        <button
+          class="btn btn-sm btn-link text-decoration-none px-0 px-md-2"
+          on:click={deselectAll}>
+          Deselect All
+        </button>
+      </div>
+    </CardHeader>
+
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th class="align-middle text-nowrap" scope="col" style="width: 40px;">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  checked={selectedUsers.size === previewData.users.length}
+                  on:change={toggleAll} />
+              </th>
+              <th class="align-middle text-nowrap" scope="col">Username</th>
+              <th class="align-middle text-nowrap" scope="col">Email</th>
+              <th class="align-middle text-nowrap" scope="col">IP</th>
+              <th class="align-middle text-nowrap" scope="col">Status</th>
+              <th class="align-middle text-nowrap" scope="col">Password</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each paginatedUsers as user}
+              <tr>
+                <td>
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    checked={selectedUsers.has(user.username)}
+                    on:change={() => toggleUser(user.username)} />
+                </td>
+                <td class="fw-semibold">{user.realName || user.username}</td>
+                <td><span class="user-select-all">{user.email || '-'}</span></td>
+                <td><code class="user-select-all">{user.ip || '-'}</code></td>
+                <td>
+                  {#if user.status === 'new'}
+                    <span class="badge text-bg-success">New</span>
+                  {:else}
+                    <span class="badge text-bg-warning">Existing</span>
+                  {/if}
+                </td>
+                <td>
+                  {#if user.hasPassword && user.passwordType}
+                    <span
+                      class="badge {user.passwordType === 'SHA256'
+                        ? 'text-bg-info'
+                        : user.passwordType === 'MD5'
+                          ? 'text-bg-warning '
+                          : user.passwordType === 'BCRYPT'
+                            ? 'text-bg-success'
+                            : user.passwordType === 'ARGON2ID'
+                              ? 'text-bg-success'
+                              : user.passwordType === 'PLAINTEXT'
+                                ? 'text-bg-danger'
+                                : user.passwordType === 'UNKNOWN'
+                                  ? 'text-bg-secondary'
+                                  : 'text-bg-secondary'}">
+                      {user.passwordType}
+                    </span>
+                  {:else if user.hasPassword}
+                    <i class="fas fa-check text-success"></i>
+                  {:else}
+                    <span class="badge text-bg-danger">None</span>
+                  {/if}
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <Pagination
+        page={currentPage}
+        totalPage={totalPages}
+        on:firstPageClick={() => (currentPage = 1)}
+        on:lastPageClick={() => (currentPage = totalPages)}
+        on:pageLinkClick={(e) => (currentPage = e.detail.page)} />
+    </div>
   </div>
 
   <div class="alert alert-info mt-3 mb-0">
@@ -378,22 +392,22 @@
   {/if}
 
   {#if previewData.panoOnlyUsers && previewData.panoOnlyUsers.length > 0}
-    <div class="card mt-3 border-danger">
+    <div class="card mt-3">
       <div
-        class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center text-bg-danger gap-2">
-        <span>
+        class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+        <span class="badge text-bg-danger">
           {$_('pages.migration.authme.pano-only-title', {
             values: { count: previewData.panoOnlyUsers.length },
           })}
         </span>
         <div class="d-flex flex-wrap gap-2">
           <button
-            class="btn btn-sm btn-link text-bg-danger text-decoration-none px-0 px-md-2"
+            class="btn btn-sm btn-link text-decoration-none px-0 px-md-2"
             on:click={selectAllPanoOnly}>
             {$_('buttons.select-all')}
           </button>
           <button
-            class="btn btn-sm btn-link text-bg-danger text-decoration-none px-0 px-md-2"
+            class="btn btn-sm btn-link text-decoration-none px-0 px-md-2"
             on:click={deselectAllPanoOnly}>
             {$_('buttons.deselect-all')}
           </button>
@@ -448,26 +462,7 @@
     </div>
   {/if}
 
-  <div class="mt-3 d-flex flex-column flex-sm-row gap-2">
-    <button
-      class="btn btn-link text-decoration-none order-2 order-sm-1"
-      on:click={resetForm}
-      disabled={isImporting}>
-      <i class="fas fa-arrow-left me-1"></i> Back
-    </button>
-    <button
-      class="btn btn-secondary order-1 order-sm-2"
-      on:click={importUsers}
-      disabled={(selectedUsers.size === 0 && deleteUsers.size === 0) || isImporting}>
-      {#if isImporting}
-        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-      {/if}
-      <i class="fas fa-file-import me-1"></i> Import {selectedUsers.size} Users
-      {#if deleteUsers.size > 0}
-        &amp; Delete {deleteUsers.size}
-      {/if}
-    </button>
-  </div>
+  <!-- PageActions moved to top -->
 
   {#if isImporting}
     <div class="mt-3">
@@ -530,9 +525,13 @@
   import ApiUtil from '$lib/api.util.js';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
+
+  export { resetForm, importUsers, uploadAndPreview };
 
   // ── Mock Data ──
-  const MOCK_ENABLED = false;
+  const MOCK_ENABLED = true;
 
   const mockConfigFile = new File(['backend: SQLITE\n'], 'config.yml', {
     type: 'application/x-yaml',
@@ -615,31 +614,36 @@
   };
 
   // File upload states
-  let configFile = MOCK_ENABLED ? mockConfigFile : null;
-  let dbFile = MOCK_ENABLED ? mockDbFile : null;
-  let showDatabaseUpload = MOCK_ENABLED ? true : false;
-  let detectedBackend = MOCK_ENABLED ? 'SQLITE' : '';
-  let dbConnectionInfo = null;
-  let isProcessing = false;
-  let uploadProgress = 0;
+  export let configFile = MOCK_ENABLED ? mockConfigFile : null;
+  export let dbFile = MOCK_ENABLED ? mockDbFile : null;
+  export let showDatabaseUpload = MOCK_ENABLED ? true : false;
+  export let detectedBackend = MOCK_ENABLED ? 'SQLITE' : '';
+  export let dbConnectionInfo = null;
+  export let isProcessing = false;
+  export let uploadProgress = 0;
 
   // Migration flow states
-  let currentStep = MOCK_ENABLED ? 'review' : 'upload'; // 'upload' | 'review' | 'result'
-  let previewData = MOCK_ENABLED ? mockPreviewData : null;
-  let selectedUsers = MOCK_ENABLED
+  export let currentStep = MOCK_ENABLED ? 'review' : 'upload'; // 'upload' | 'review' | 'result'
+  export let previewData = MOCK_ENABLED ? mockPreviewData : null;
+  export let selectedUsers = MOCK_ENABLED
     ? new Set(mockPreviewData.users.filter((u) => u.status === 'new').map((u) => u.username))
     : new Set();
-  let deleteUsers = new Set();
-  let passwordStrategy = 'hash'; // 'hash' or 'reset'
-  let existingUserUpdates = { password: false, username: false, email: false };
-  let isImporting = false;
-  let importProgress = 0;
-  let importResult = null;
-  let uploadError = null;
+  export let deleteUsers = new Set();
+  export let passwordStrategy = 'hash'; // 'hash' or 'reset'
+  export let existingUserUpdates = { password: false, username: false, email: false };
+  export let isImporting = false;
+  export let importProgress = 0;
+  export let importResult = null;
+  export let uploadError = null;
 
-  // Search states
-  let importSearchQuery = '';
-  let deleteSearchQuery = '';
+  // Search and Pagination states
+  export let importSearchQuery = '';
+  export let deleteSearchQuery = '';
+  let currentPage = 1;
+  let itemsPerPage = 10;
+
+  // Reset page when search changes
+  $: if (importSearchQuery) currentPage = 1;
 
   // Filtered lists (reactive)
   $: filteredUsers =
@@ -652,6 +656,12 @@
         (u.email || '').toLowerCase().includes(q)
       );
     }) ?? [];
+
+  $: paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
+  $: totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   $: filteredPanoOnlyUsers =
     previewData?.panoOnlyUsers?.filter((u) => {

@@ -66,7 +66,7 @@
     </div>
   </div>
   <div class="col-lg-6 order-1 order-lg-2">
-    <div class="alert alert-primary h-100 mb-0 d-flex flex-column">
+    <div class="alert alert-primary h-100 mb-0 d-flex flex-column blocks">
       <h5 class="alert-heading">{$_('pages.settings.about.support-pano')} ❤️</h5>
       <p>
         {$_('pages.settings.about.support-pano-text')}

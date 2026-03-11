@@ -25,7 +25,7 @@
   class="offcanvas offcanvas-start bg-primary h-100 rounded-end-4"
   tabindex="-1"
   id="sidebar"
-  aria-labelledby="sidebarLabel"
+  aria-labelledby="sidebarLabel"  data-bs-scroll="true" data-bs-backdrop="false"
   class:offcanvas-lg={$isSidebarOpen}>
   <div class="offcanvas-body p-0">
     <div class="container-fluid position-relative">

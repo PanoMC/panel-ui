@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<nav class="navbar navbar-expand navbar-light">
+<nav class="navbar navbar-expand navbar-light py-3">
   <div class="container">
     <div class="col-4 d-flex justify-content-start">
       <!-- Navbar Toggler -->

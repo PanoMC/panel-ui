@@ -1,3 +1,6 @@
+{#if !data.server}
+  <PageLoading />
+{:else}
 <div class="container vstack gap-3">
   <div class="row g-3 justify-content-between">
     <div class="col-lg-4">
@@ -82,6 +85,7 @@
     </div>
   </div>
 </div>
+{/if}
 
 <script context="module">
   import ApiUtil from '$lib/api.util.js';
@@ -112,6 +116,7 @@
   import { _ } from 'svelte-i18n';
 
   import DateComponent from '$lib/components/Date.svelte';
+  import PageLoading from '$lib/components/PageLoading.svelte';
 
   const pageTitle = getContext('pageTitle');
 
