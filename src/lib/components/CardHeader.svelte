@@ -9,7 +9,7 @@
           ? 'col-lg-6'
           : 'col-12'} d-flex {$$slots.right && showRight && !$$slots.middle
         ? 'justify-content-lg-between'
-        : 'justify-content-lg-start'} justify-content-center text-center text-lg-start {leftClasses}">
+        : 'justify-content-lg-start'} justify-content-center text-center text-lg-start text-truncate text-nowrap {leftClasses}">
       <slot name="left" />
     </div>
     {#if $$slots.middle}
