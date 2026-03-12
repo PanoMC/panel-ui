@@ -90,27 +90,38 @@
               </select>
               <button
                 type="button"
-                class="btn btn-primary"
+                class="btn btn-link text-decoration-none"
                 use:tooltip={[$_('buttons.add')]}
                 aria-label={$_('buttons.add')}
                 disabled={!String(parentToAdd || '').trim()}
                 aria-disabled={!String(parentToAdd || '').trim()}
                 on:click={addParent}>
-                <i class="fa fa-plus"></i>
-              </button>
+                <i class="fa fa-plus"></i></button
+              >
             </div>
           {/if}
         </form>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary w-100"
-          disabled={!canSave}
-          aria-disabled={!canSave}
-          on:click={handleSubmit}>
-          {$_('buttons.save')}
-        </button>
+        {#if $originalGroupName}
+          <button
+            type="button"
+            class="btn btn-primary w-100"
+            disabled={!canSave}
+            aria-disabled={!canSave}
+            on:click={handleSubmit}>
+            {$_('buttons.save')}
+          </button>
+        {:else}
+          <button
+            type="button"
+            class="btn btn-secondary w-100"
+            disabled={!canSave}
+            aria-disabled={!canSave}
+            on:click={handleSubmit}>
+            {$_('buttons.create')}
+          </button>
+        {/if}
       </div>
     </div>
   </div>

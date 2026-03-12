@@ -52,45 +52,55 @@
         on:change={(e) => (globalSearchQuery = e.detail.value)} />
     </div>
     <div slot="right" class="hstack gap-2">
-      {#if hasChanges}
-        <button
-          type="button"
-          use:tooltip={[$_('buttons.save'), { placement: 'bottom' }]}
-          aria-label={$_('buttons.save')}
-          class="btn btn-link"
-          on:click={saveSnapshot}>
-          <i class="fa fa-save"></i>
-        </button>
-
-        <button
-          type="button"
-          use:tooltip={[$_('buttons.reset'), { placement: 'bottom' }]}
-          aria-label={$_('buttons.reset')}
-          class="btn btn-link"
-          on:click={showResetModal}>
-          <i class="fa fa-undo"></i>
-        </button>
-
-      {/if}
+      <button
+        type="button"
+        use:tooltip={[$_('buttons.reset'), { placement: 'bottom' }]}
+        aria-label={$_('buttons.reset')}
+        class="btn btn-link"
+        disabled={!hasChanges}
+        on:click={showResetModal}>
+        <i class="fa fa-undo"></i>
+      </button>
 
       {#if showGroups}
-        <button type="button" class="btn btn-secondary" on:click={createGroup}>
-          <i class="fa fa-plus"></i>
-          <span class="d-lg-inline d-none"
-            >{$_('pages.permissions.panel.actions.create-group')}</span>
+        <button
+          type="button"
+          class="btn btn-link"
+          on:click={createGroup}
+          aria-label={$_('pages.permissions.panel.actions.create-group')}
+          use:tooltip={[$_('pages.permissions.panel.actions.create-group'), { placement: 'bottom' }]}>
+          <i class="fa fa-users"></i>
         </button>
       {:else if showTracks}
-        <button type="button" class="btn btn-secondary" on:click={createTrack}>
+        <button
+          type="button"
+          class="btn btn-link"
+          on:click={createTrack}
+          aria-label={$_('pages.permissions.panel.actions.create-track')}
+          use:tooltip={[$_('pages.permissions.panel.actions.create-track'), { placement: 'bottom' }]}>
           <i class="fa fa-plus"></i>
-          <span class="d-lg-inline d-none"
-            >{$_('pages.permissions.panel.actions.create-track')}</span>
         </button>
       {:else if showUsers}
-        <button type="button" class="btn btn-secondary" on:click={openUserSearch}>
-          <i class="fa fa-plus"></i>
-          <span class="d-lg-inline d-none">{$_('pages.permissions.panel.actions.add-player')}</span>
+        <button
+          type="button"
+          class="btn btn-link"
+          on:click={openUserSearch}
+          aria-label={$_('pages.permissions.panel.actions.add-player')}
+          use:tooltip={[$_('pages.permissions.panel.actions.add-player'), { placement: 'bottom' }]}>
+          <i class="fa fa-user-plus"></i>
         </button>
       {/if}
+
+      <button
+        type="button"
+        use:tooltip={[$_('buttons.save'), { placement: 'bottom' }]}
+        aria-label={$_('buttons.save')}
+        class="btn btn-secondary"
+        disabled={!hasChanges}
+        on:click={saveSnapshot}>
+        <i class="fa fa-save"></i>
+        <span class="d-lg-inline d-none ms-1">{$_('buttons.save')}</span>
+      </button>
     </div>
   </PageActions>
 
@@ -358,7 +368,7 @@
                     {#each selectedGroupParents as pg (pg.name)}
                       <button
                         type="button"
-                        class="badge text-bg-secondary rounded-pill btn btn-sm btn-link text-decoration-none focus-ring me-1"
+                        class="badge text-bg-primary rounded-pill btn btn-sm btn-link text-decoration-none focus-ring me-1"
                         style="cursor: pointer;"
                         on:click={() => selectGroupByName(pg.name)}
                         aria-label={$_('pages.permissions.panel.actions.go-to-parent-group', { values: { name: pg.name } })}
@@ -377,15 +387,7 @@
               <div class="hstack gap-2">
                 <button
                   type="button"
-                  class="btn btn-link"
-                  on:click={editSelectedGroup}
-                  aria-label={$_('buttons.edit')}
-                  use:tooltip={[$_('buttons.edit')]}>
-                  <i class="fa fa-pen"></i>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-link"
+                  class="btn btn-link link-danger"
                   disabled={selectedGroup?.name === 'default'}
                   on:click={() => selectedGroup?.name !== 'default' && showRemoveGroupModal()}
                   aria-disabled={selectedGroup?.name === 'default'}
@@ -395,10 +397,19 @@
                 </button>
                 <button
                   type="button"
-                  class="btn btn-primary"
-                  on:click={() => addNode('GROUP')}>
-                  <i class="fa fa-plus"></i><span class="d-lg-inline d-none ms-2"
-                    >{$_('pages.permissions.panel.nodes.add-node')}</span>
+                  class="btn btn-link"
+                  on:click={editSelectedGroup}
+                  aria-label={$_('buttons.edit')}
+                  use:tooltip={[$_('buttons.edit')]}>
+                  <i class="fa fa-pen"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-link"
+                  on:click={() => addNode('GROUP')}
+                  aria-label={$_('pages.permissions.panel.nodes.add-node')}
+                  use:tooltip={[$_('pages.permissions.panel.nodes.add-node')]}>
+                  <i class="fa fa-plus"></i>
                 </button>
               </div>
             {:else}
@@ -423,7 +434,7 @@
                     {#each getUserDirectGroupNames(selectedUser, nodes) as gname (gname)}
                       <button
                         type="button"
-                        class="badge text-bg-secondary ms-1 border-0"
+                        class="badge text-bg-primary ms-1"
                         style="cursor: pointer;"
                         on:click={() => selectGroupByName(gname)}
                         aria-label={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}
@@ -436,20 +447,24 @@
               </div>
 
               <div class="hstack gap-2">
-                <button class="btn btn-primary" on:click={() => addNode('USER')}>
-                  <i class="fa fa-plus"></i><span class="d-lg-inline d-none ms-2"
-                    >{$_('pages.permissions.panel.nodes.add-node')}</span>
-                </button>
                 {#if !isSelfUser(selectedUser)}
                   <button
                     type="button"
-                    class="btn btn-link"
+                    class="btn btn-link link-danger"
                     aria-label={$_('pages.permissions.panel.user.delete')}
                     use:tooltip={[$_('pages.permissions.panel.user.delete')]}
                     on:click={() => showRemoveUserModal(selectedUser)}>
                     <i class="fa fa-trash me-1"></i>
                   </button>
                 {/if}
+                <button
+                  type="button"
+                  class="btn btn-link"
+                  on:click={() => addNode('USER')}
+                  aria-label={$_('pages.permissions.panel.nodes.add-node')}
+                  use:tooltip={[$_('pages.permissions.panel.nodes.add-node')]}>
+                  <i class="fa fa-plus"></i>
+                </button>
               </div>
             {/if}
           </div>
@@ -480,18 +495,18 @@
                           : ''}>
                       <td class="d-table-cell text-center hstack gap-2 text-nowrap">
                         <button
+                          class="btn btn-link link-danger"
+                          on:click={() => removeNode(node)}
+                          aria-label={nodeActionLabels.delete}
+                          use:tooltip={[nodeActionLabels.delete]}>
+                          <i class="fa fa-eraser"></i>
+                        </button>
+                        <button
                           class="btn btn-link"
                           on:click={() => editNode(node)}
                           aria-label={nodeActionLabels.edit}
                           use:tooltip={[nodeActionLabels.edit]}>
                           <i class="fa fa-pen"></i>
-                        </button>
-                        <button
-                          class="btn btn-link"
-                          on:click={() => removeNode(node)}
-                          aria-label={nodeActionLabels.delete}
-                          use:tooltip={[nodeActionLabels.delete]}>
-                          <i class="fa fa-eraser"></i>
                         </button>
                       </td>
                       <td>
@@ -534,6 +549,16 @@
             </div>
             <div class="hstack gap-2">
               <button
+                class="btn btn-link link-danger"
+                use:tooltip={[$_('buttons.remove')]}
+                aria-label={$_('buttons.remove')}
+                on:click={() => {
+                  selectedTrackForEdit = selectedTrack;
+                  showRemoveTrackModal();
+                }}>
+                <i class="fa fa-trash"></i>
+              </button>
+              <button
                 class="btn btn-link"
                 use:tooltip={[$_('buttons.edit')]}
                 aria-label={$_('buttons.edit')}
@@ -542,16 +567,6 @@
                   showEditTrackModal();
                 }}>
                 <i class="fa fa-pen"></i>
-              </button>
-              <button
-                class="btn btn-link"
-                use:tooltip={[$_('buttons.remove')]}
-                aria-label={$_('buttons.remove')}
-                on:click={() => {
-                  selectedTrackForEdit = selectedTrack;
-                  showRemoveTrackModal();
-                }}>
-                <i class="fa fa-trash"></i>
               </button>
             </div>
           </div>

@@ -132,9 +132,15 @@
         {/if}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary w-100" on:click={handleSave}>
-          {$_('buttons.save')}
-        </button>
+        {#if $isEdit}
+          <button type="button" class="btn btn-primary w-100" on:click={handleSave}>
+            {$_('buttons.save')}
+          </button>
+        {:else}
+          <button type="button" class="btn btn-secondary w-100" on:click={handleSave}>
+            {$_('buttons.add')}
+          </button>
+        {/if}
       </div>
     </div>
   </div>

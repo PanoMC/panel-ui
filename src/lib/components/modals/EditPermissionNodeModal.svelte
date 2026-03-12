@@ -22,24 +22,24 @@
                 ?.toString()
                 .trim() === 'true')}
             <div
-              class="alert alert-warning alert-dismissible fade show mb-3 p-2 small"
+              class="alert alert-warning alert-dismissible fade show mb-3 p-2"
               role="alert">
               <i class="fa fa-info-circle me-1"></i>
               {$_('pages.permissions.panel.nodes.pano-only-alert')}
               <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms/#%F0%9F%8C%90-pano-exclusive-permissions" target="_blank" class="alert-link ms-1">
                 {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
-                <i class="fa fa-external-link-alt ms-1 small"></i>
+                <i class="fa fa-external-link-alt ms-1"></i>
               </a>
             </div>
           {:else if $draft.contexts.some((ctx) => ctx.key?.trim() === 'pano' && ctx.value
                 ?.toString()
                 .trim() === 'false')}
-            <div class="alert alert-info alert-dismissible fade show mb-3 p-2 small" role="alert">
+            <div class="alert alert-info alert-dismissible fade show mb-3 p-2" role="alert">
               <i class="fa fa-info-circle me-1"></i>
               {$_('pages.permissions.panel.nodes.game-only-alert')}
               <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms/#%F0%9F%8C%90-pano-exclusive-permissions" target="_blank" class="alert-link ms-1">
                 {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
-                <i class="fa fa-external-link-alt ms-1 small"></i>
+                <i class="fa fa-external-link-alt ms-1"></i>
               </a>
             </div>
           {/if}
@@ -234,20 +234,30 @@
               {/each}
             {/if}
 
-            <button class="btn btn-sm btn-primary w-100" type="button" on:click={addContext}>
+            <button class="btn btn-link text-decoration-none w-100" type="button" on:click={addContext}>
               <i class="fa fa-plus me-2"></i>{$_('buttons.add')}
             </button>
           </div>
         {/if}
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-primary w-100"
-          on:click={handleSave}
-          disabled={!$node || !$draft.nodeValue.trim()}>
-          {$isAddMode ? $_('buttons.add') : $_('buttons.save')}
-        </button>
+        {#if $isAddMode}
+          <button
+            type="button"
+            class="btn btn-secondary w-100"
+            on:click={handleSave}
+            disabled={!$node || !$draft.nodeValue.trim()}>
+            {$_('buttons.add')}
+          </button>
+        {:else}
+          <button
+            type="button"
+            class="btn btn-primary w-100"
+            on:click={handleSave}
+            disabled={!$node || !$draft.nodeValue.trim()}>
+            {$_('buttons.save')}
+          </button>
+        {/if}
       </div>
     </div>
   </div>

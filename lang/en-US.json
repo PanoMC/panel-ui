@@ -917,6 +917,7 @@
       "statistics": "Statistics",
       "settings": "Settings",
       "no-selected-server": "No selected server.",
+      "select-server": "Select Server",
       "no-server-text": "Connect a server to view the server menu.",
       "connect-server": "Connect Server"
     },
@@ -956,8 +957,9 @@
       "player": "Player"
     },
     "bottom": {
-      "help": "Help",
-      "pano-market": "Pano Market",
+      "documentation": "Documentation",
+      "website": "Website",
+      "github": "Github",
       "discord": "Discord"
     },
     "notification-container": {

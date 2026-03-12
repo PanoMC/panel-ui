@@ -535,7 +535,7 @@
         },
         "user": {
           "groups": "Gruplar",
-          "delete": "Oyuncuyu sil"
+          "delete": "Oyuncuyu Sil"
         },
         "empty": {
           "no-nodes": "Node yok.",
@@ -912,7 +912,7 @@
       "hide-menu": "Menüyü Gizle",
       "website": "Website",
       "server": "Sunucu",
-      "show-website": "Website'yi Görüntüle",
+      "show-website": "Web Site'yi Görüntüle",
       "show-servers": "Sunucuları Göster",
       "version-alpha-tooltip": "Deneysel sürüm. Hatalar içerebilir, dikkatli kullanın.",
       "version-beta-tooltip": "Önizleme sürümü. Stabildir ancak hala test aşamasındadır."
@@ -920,7 +920,8 @@
     "server-navigation-menu": {
       "statistics": "İstatistikler",
       "settings": "Ayarlar",
-      "no-selected-server": "Seçili sunucu yok.",
+      "no-selected-server": "Seçili Sunucu Yok",
+      "select-server": "Sunucu Seç",
       "no-server-text": "Sunucu menüsünü görüntülemek için bir sunucu bağla.",
       "connect-server": "Sunucu Bağla"
     },
@@ -960,8 +961,9 @@
       "player": "Oyuncu"
     },
     "bottom": {
-      "help": "Yardım",
-      "pano-market": "Pano Market",
+      "documentation": "Dokümantasyon",
+      "website": "Web Site",
+      "github": "Github",
       "discord": "Discord"
     },
     "notification-container": {
