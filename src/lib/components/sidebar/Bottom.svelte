@@ -1,19 +1,27 @@
-<nav class="nav justify-content-around w-100 mt-auto py-2">
+<nav class="nav justify-content-center gap-2 w-100 py-1">
   <a
     class="nav-link text-light"
     href="{PANO_WEBSITE_URL}/docs"
     target="_blank"
-    use:tooltip={[$_('components.bottom.help'), { placement: 'top' }]}
-    aria-label={$_('components.bottom.help')}>
-    <i class="fas fa-book-open"></i>
+    use:tooltip={[$_('components.bottom.documentation'), { placement: 'top' }]}
+    aria-label={$_('components.bottom.documentation')}>
+    <i class="fas fa-question-circle"></i>
   </a>
   <a
     class="nav-link text-light"
-    href="{PANO_WEBSITE_URL}/addons"
+    href="https://panomc.com"
     target="_blank"
-    use:tooltip={[$_('components.bottom.pano-market'), { placement: 'top' }]}
-    aria-label={$_('components.bottom.pano-market')}>
-    <i class="fas fa-store"></i>
+    use:tooltip={[$_('components.bottom.website'), { placement: 'top' }]}
+    aria-label={$_('components.bottom.website')}>
+    <i class="fas fa-globe"></i>
+  </a>
+  <a
+    class="nav-link text-light"
+    href="https://github.com/PanoMC"
+    target="_blank"
+    use:tooltip={[$_('components.bottom.github'), { placement: 'top' }]}
+    aria-label={$_('components.bottom.github')}>
+    <i class="fab fa-github"></i>
   </a>
   <a
     class="nav-link text-light"

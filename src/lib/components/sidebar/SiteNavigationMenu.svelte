@@ -1,30 +1,42 @@
-<nav class="navbar-dark">
-  <ul class="navbar-nav flex-column px-3">
-    {#each $siteNavigationItems as item}
-      {#if !item.permission || hasPermission(item.permission)}
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            href={base + item.href}
-            class:active={matching($page.url.pathname, base + item.href, item.startsWith)}>
-            {#if item.hasUpdate}
-              <span class="position-relative" class:pe-2={$session.basicData.hasUpdate}>
-                <i class="{item.icon} me-2"></i>
-                {$_(item.text)}
-                {#if $session.basicData.hasUpdate}
-                  <span class="position-absolute bg-warning rounded-circle p-1 top-0 end-0"> </span>
-                {/if}
-              </span>
-            {:else}
+<style>
+
+
+  .nav-pills .nav-link.active {
+    background: linear-gradient(to left, rgba(255, 255, 255, 0.15), transparent) var(--bs-primary) !important;
+    color: var(--bs-white);
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+</style>
+
+
+<ul class="nav nav-pills flex-column" data-bs-theme="dark">
+  {#each $siteNavigationItems as item}
+    {#if !item.permission || hasPermission(item.permission)}
+      <li class="nav-item">
+        <a
+          class="nav-link text-truncate p-2"
+          href={base + item.href}
+          class:active={matching($page.url.pathname, base + item.href, item.startsWith)}>
+          {#if item.hasUpdate}
+            <span class="position-relative" class:pe-2={$session.basicData.hasUpdate}>
               <i class="{item.icon} me-2"></i>
               {$_(item.text)}
-            {/if}
-          </a>
-        </li>
-      {/if}
-    {/each}
-  </ul>
-</nav>
+              {#if $session.basicData.hasUpdate}
+                <span class="position-absolute bg-warning rounded-circle p-1 top-0 end-0"> </span>
+              {/if}
+            </span>
+          {:else}
+            <i class="{item.icon} me-2"></i>
+            {$_(item.text)}
+          {/if}
+        </a>
+      </li>
+    {/if}
+  {/each}
+</ul>
 
 <script context="module">
   import { Permissions } from '$lib/auth.util.js';

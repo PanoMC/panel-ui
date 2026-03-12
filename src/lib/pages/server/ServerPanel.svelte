@@ -10,14 +10,16 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: 100%;
     padding: 1rem;
   }
 </style>
 
 <div class="container vstack gap-3">
-  <!-- Selected Server Card -->
-  <div class="row">
-    <div class="col-lg-4 col-md-6">
+  <!-- Masonry Layout for Cards -->
+  <masonry-layout cols={$mansoryLayoutCols} gap="16">
+    <!-- Selected Server Card -->
+    <div class="ratio ratio-1x1">
       <div class="card server-card">
         <CardHeader>
           <svelte:fragment slot="left">{$_('components.navbar.selected-server')}</svelte:fragment>
@@ -78,7 +80,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </masonry-layout>
 </div>
 
 <script context="module">
@@ -94,8 +96,9 @@
 </script>
 
 <script>
-  import { getContext } from 'svelte';
+  import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import { writable } from 'svelte/store';
 
   import { base } from '$app/paths';
 
@@ -131,4 +134,28 @@
       copiedId = null;
     }, 2000);
   }
+
+  const mansoryLayoutCols = writable(2);
+
+  function checkMobile() {
+    if (window.innerWidth >= 1200) {
+      mansoryLayoutCols.set(4);
+    } else if (window.innerWidth >= 992) {
+      mansoryLayoutCols.set(3);
+    } else if (window.innerWidth >= 768) {
+      mansoryLayoutCols.set(2);
+    } else {
+      mansoryLayoutCols.set(1);
+    }
+  }
+
+  onMount(() => {
+    checkMobile();
+
+    window.addEventListener('resize', checkMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  });
 </script>

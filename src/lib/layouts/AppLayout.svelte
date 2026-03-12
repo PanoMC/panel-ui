@@ -11,7 +11,7 @@
     <Splash />
   {/if}
 
-  <div class:d-flex={!$showSplash} hidden={$showSplash}>
+  <div class="vh-100 overflow-hidden" class:d-flex={!$showSplash} hidden={$showSplash}>
     {#if $resetLayout}
       <slot />
     {:else}

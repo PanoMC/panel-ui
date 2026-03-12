@@ -149,6 +149,9 @@
                     </div>
 
                     <div class="small text-truncate w-100 mb-1 server-ip">
+                      <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+                      <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+                      <!-- svelte-ignore a11y_click_events_have_key_events -->
                       <code
                         class="user-select-all cursor-pointer"
                         on:click={(e) => onCopy(e, server)}

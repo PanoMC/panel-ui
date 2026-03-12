@@ -47,30 +47,60 @@
             </ul>
           {/if}
         </div>
-        {#if $selectedServer && showSelectedServer}
-          <!-- Selected Server -->
+        {#if $sidebarTabsState === 'website'}
+          <!-- Show Website Link -->
           <div class="nav-item">
-            <span class="nav-link d-flex align-items-center">
-              <i
-                class="fas fa-check-circle me-lg-2 d-none d-lg-inline"
-                class:text-success={$selectedServer.status === 'ONLINE'}
-                class:text-danger={$selectedServer.status !== 'ONLINE'}></i>
-              <span
-                class="d-none d-lg-inline text-truncate"
-                class:text-success={$selectedServer.status === 'ONLINE'}
-                class:text-danger={$selectedServer.status !== 'ONLINE'}
-                style="max-width: 150px;">
-                {$selectedServer.customName || $selectedServer.name}
-              </span>
-              <i
-                class="fas fa-check-circle d-lg-none mt-1"
-                class:text-success={$selectedServer.status === 'ONLINE'}
-                class:text-danger={$selectedServer.status !== 'ONLINE'}
+            <a
+              href={UI_URL}
+              target="_blank"
+              class="nav-link d-flex align-items-center px-2"
+              use:tooltip={windowWidth < 992 ? [$_('components.sidebar.show-website'), { placement: 'bottom' }] : null}>
+              <i class="fas fa-globe me-2"></i>
+              <span class="d-none d-lg-inline">{$_('components.sidebar.show-website')}</span>
+            </a>
+          </div>
+        {:else if $sidebarTabsState === 'game'}
+          <!-- Selected Server & Connect button -->
+          <div class="nav-item d-flex align-items-center">
+            <div class="btn-group">
+                <button
+                type="button"
+                class="btn btn-sm btn-link nav-link d-flex align-items-center border-0 px-2"
+                on:click={showServersModal}
                 use:tooltip={[
-                  `${$_('components.navbar.selected-server')}: ${$selectedServer.customName || $selectedServer.name}`,
-                  { placement: 'bottom' },
-                ]}></i>
-            </span>
+                  $selectedServer
+                    ? $_('components.navbar.selected-server')
+                    : (windowWidth >= 992 ? $_('components.server-navigation-menu.select-server') : $_('components.server-navigation-menu.no-selected-server')),
+                  { placement: 'bottom' }
+                ]}>
+                {#if $selectedServer}
+                  <i
+                    class="fas fa-check-circle me-2 d-none d-lg-inline"
+                    class:text-success={$selectedServer.status === 'ONLINE'}
+                    class:text-danger={$selectedServer.status !== 'ONLINE'}></i>
+                  <span class="text-truncate d-none d-lg-inline" style="max-width: 150px;">
+                    {$selectedServer.customName || $selectedServer.name}
+                  </span>
+                  <!-- Mobile view icon -->
+                  <i
+                    class="fas fa-check-circle d-lg-none"
+                    class:text-success={$selectedServer.status === 'ONLINE'}
+                    class:text-danger={$selectedServer.status !== 'ONLINE'}></i>
+                {:else}
+                  <i class="fa-solid fa-ghost me-2"></i>
+                  <span>{$_('components.server-navigation-menu.no-selected-server')}</span>
+                {/if}
+              </button>
+              <button
+                class="btn btn-sm btn-link nav-link border-0 px-2"
+                data-bs-target="#connectServer"
+                data-bs-toggle="modal"
+                aria-label={$_('components.server-navigation-menu.connect-server')}
+                type="button"
+                use:tooltip={[$_('components.server-navigation-menu.connect-server'), { placement: 'bottom' }]}>
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
           </div>
         {/if}
       </div>
@@ -237,12 +267,15 @@
   } from '$lib/Store';
 
   import { currentLanguage } from '$lib/language.util';
+  import { browser } from '$app/environment';
 
   import { onNotificationClick } from '$lib/NotificationManager.js';
   import NoContent from '$lib/components/NoContent.svelte';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import SiteNavigationMenu from '$lib/components/sidebar/SiteNavigationMenu.svelte';
   import ServerNavigationMenu from '$lib/components/sidebar/ServerNavigationMenu.svelte';
+  import { show as showServersModal } from './modals/ServersModal.svelte';
+  import { UI_URL } from '$lib/variables.js';
 
   const selectedServer = getContext('selectedServer');
   const pageTitle = getContext('pageTitle');
@@ -257,6 +290,7 @@
   const panelThemes = ['light', 'dark', 'copper'];
 
   let quickNotificationProcessID = 0;
+  let windowWidth = browser ? window.innerWidth : 0;
 
   let checkTime = 0;
   let interval;
@@ -266,10 +300,6 @@
   let showSelectedServer;
 
   $: isServerPath = $page.url.pathname.startsWith((base || '') + '/server');
-
-  $: showSelectedServer =
-    isServerPath ||
-    !($sidebarTabsState === 'website' || !hasPermission(Permissions.MANAGE_SERVERS));
 
   function onSideBarCollapseClick() {
     toggleSidebar(isSidebarOpen);
@@ -389,10 +419,21 @@
     interval = setInterval(() => {
       checkTime += 1;
     }, 1000);
+
+    const onResize = () => {
+      windowWidth = window.innerWidth;
+    };
+    window.addEventListener('resize', onResize);
+    onResize();
+
+    return () => {
+      window.removeEventListener('resize', onResize);
+      clearInterval(interval);
+    };
   });
 
   onDestroy(() => {
-    clearInterval(interval);
+    // interval cleaned up in onMount return
   });
 
   // herhangi bir manuel abonelik yok

@@ -8,7 +8,7 @@
 <Sidebar />
 
 <!--  Main  -->
-<main class="main-container d-flex min-vh-100 w-100 flex-column overflow-auto pb-5">
+<main class="main-container d-flex h-100 flex-grow-1 flex-column overflow-auto">
   {#if $siteInfo?.isDemo}
     <div class="alert alert-info fade show mb-0" role="alert">
       <div class="container-fluid d-flex align-items-center">
