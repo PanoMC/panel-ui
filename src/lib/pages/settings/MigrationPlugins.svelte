@@ -61,7 +61,7 @@
           aria-controls="other"
           aria-selected="false"
           disabled>
-          Other Plugins
+          {$_('pages.migration.other-addons')}
         </button>
       </li>
     </ul>

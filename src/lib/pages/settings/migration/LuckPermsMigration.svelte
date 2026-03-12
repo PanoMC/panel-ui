@@ -1,92 +1,11 @@
 <style>
-  .file-drop-zone {
-    border: 2px dashed var(--bs-border-color);
-    border-radius: 0.5rem;
-    padding: 2rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background-color: var(--bs-body-bg);
-  }
-
-  .file-drop-zone:hover {
-    border-color: var(--bs-primary);
-    background-color: rgba(var(--bs-primary-rgb), 0.05);
-  }
-
-  .file-drop-zone.drag-over {
-    border-color: var(--bs-primary);
-    background-color: rgba(var(--bs-primary-rgb), 0.1);
-    border-style: solid;
-    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.15);
-  }
-
-  .file-drop-zone.has-file {
-    border-color: var(--bs-success);
-    background-color: rgba(var(--bs-success-rgb), 0.05);
-  }
-
-  .file-drop-zone.has-file:hover {
-    background-color: rgba(var(--bs-success-rgb), 0.1);
-  }
-
-  /* Dark theme support */
-  :global([data-bs-theme='dark']) .file-drop-zone {
-    background-color: var(--bs-dark);
-  }
-
-  :global([data-bs-theme='dark']) .file-drop-zone:hover {
-    background-color: rgba(var(--bs-primary-rgb), 0.1);
-  }
-
-  :global([data-bs-theme='dark']) .file-drop-zone.drag-over {
-    background-color: rgba(var(--bs-primary-rgb), 0.15);
-  }
-
-  :global([data-bs-theme='dark']) .file-drop-zone.has-file {
-    background-color: rgba(var(--bs-success-rgb), 0.1);
-  }
-
-  /* Expandable row styling */
-  .expand-btn {
-    background: none;
-    border: none;
-    color: var(--bs-body-color);
-    padding: 0.15rem 0.35rem;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    line-height: 1;
-    transition: all 0.15s ease;
-    opacity: 0.6;
-  }
-
-  .expand-btn:hover {
-    opacity: 1;
-    background-color: rgba(var(--bs-primary-rgb), 0.1);
-  }
-
-  .node-detail-panel {
-    background-color: var(--bs-tertiary-bg);
-    border-top: 1px solid var(--bs-border-color);
-  }
-
-  .player-row {
-    cursor: pointer;
-  }
-
-  .player-row:hover {
-    background-color: rgba(var(--bs-primary-rgb), 0.04);
-  }
-
-  .player-row.missing {
-    opacity: 0.7;
+  .fs-7 {
+    font-size: 0.85rem;
   }
 </style>
 
 {#if currentStep === 'upload'}
-  <!-- Step 1: File Upload Section -->
-
-  <div class="alert alert-info mb-4">
+  <div class="alert alert-info mb-3">
     <i class="fas fa-info-circle me-1"></i>
     <strong>{$_('pages.migration.luckperms.supported-info-title')}</strong>
     <ul class="mb-0 mt-1">
@@ -96,149 +15,122 @@
     </ul>
   </div>
 
-  <div class="mb-4">
-    <label class="form-label" for="lpUploadConfig">Upload config.yml</label>
-    <div
-      class="file-drop-zone {configDragOver ? 'drag-over' : ''} {configFile ? 'has-file' : ''}"
-      role="button"
-      tabindex="0"
-      on:dragover|preventDefault={() => (configDragOver = true)}
-      on:dragleave|preventDefault={() => (configDragOver = false)}
-      on:drop|preventDefault={handleConfigDrop}
-      on:click={() => configFileInput.click()}
-      on:keydown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') configFileInput.click();
-      }}>
-      {#if configFile}
-        <i class="fas fa-file-alt text-success fs-1"></i>
-        <p class="mb-1 fw-semibold">{configFile.name}</p>
-        <p class="small mb-2">
-          {(configFile.size / 1024).toFixed(2)} KB
-        </p>
-        <button class="btn btn-sm btn-outline-danger" on:click|stopPropagation={removeConfigFile}>
-          <i class="fas fa-trash"></i> Remove
-        </button>
-      {:else}
-        <i class="fas fa-cloud-upload-alt fs-1"></i>
-        <p class="mb-1">Drag and drop your file here</p>
-        <p class="small">or click to browse</p>
-      {/if}
+  <label class="form-label" for="lpUploadConfig">{$_('pages.migration.authme.upload-config')}</label>
+  {#if configFile}
+    <div class="position-relative">
+      <DragAndDropZone
+        id="lpUploadConfig"
+        accept={['.yml', '.yaml']}
+        on:drop={(e) => handleConfigFile(e.detail)}
+        icon="fas fa-file-alt fs-1"
+        title={configFile?.name || 'config.yml'}
+        subtitle="{(configFile.size / 1024).toFixed(2)} KB" />
+      <button
+        class="btn-close position-absolute top-0 end-0 m-2"
+        aria-label={$_('buttons.remove')}
+        use:tooltip={[$_('buttons.remove')]}
+        on:click|stopPropagation={removeConfigFile}></button>
     </div>
-    <input
+  {:else}
+    <DragAndDropZone
       id="lpUploadConfig"
-      type="file"
-      bind:this={configFileInput}
-      on:change={handleConfigFileSelect}
-      accept=".yml,.yaml"
-      class="d-none" />
-  </div>
+      accept={['.yml', '.yaml']}
+      on:drop={(e) => handleConfigFile(e.detail)}
+      icon="fas fa-cloud-upload-alt fs-1"
+      title={$_('pages.migration.authme.drag-drop-file')}
+      subtitle={$_('pages.migration.authme.click-to-browse')} />
+  {/if}
 
-  <!-- H2 Database Section (conditional) -->
   {#if showDatabaseUpload}
-    <div class="mb-4">
-      <label class="form-label fw-semibold" for="lpDbFile"
-        >H2 Database (luckperms-h2-v2.mv.db)</label>
-      <p class="small mb-2">
-        <i class="fas fa-info-circle"></i> Your config.yml indicates H2 is used. Please upload your database
-        file.
-      </p>
-      <div
-        class="file-drop-zone {dbDragOver ? 'drag-over' : ''} {dbFile ? 'has-file' : ''}"
-        role="button"
-        tabindex="0"
-        on:dragover|preventDefault={() => (dbDragOver = true)}
-        on:dragleave|preventDefault={() => (dbDragOver = false)}
-        on:drop|preventDefault={handleDbDrop}
-        on:click={() => dbFileInput.click()}
-        on:keydown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') dbFileInput.click();
-        }}>
-        {#if dbFile}
-          <i class="fas fa-database text-success fs-1"></i>
-          <p class="mb-1 fw-semibold">{dbFile.name}</p>
-          <p class="small mb-2">
-            {(dbFile.size / 1024).toFixed(2)} KB
-          </p>
-          <button class="btn btn-sm btn-outline-danger" on:click|stopPropagation={removeDbFile}>
-            <i class="fas fa-trash"></i> Remove
-          </button>
-        {:else}
-          <i class="fas fa-cloud-upload-alt fs-1"></i>
-          <p class="mb-1">
-            Drag and drop your <strong>H2 database</strong> here
-          </p>
-          <p class="small">or click to browse</p>
-        {/if}
+    <div class="mt-3">
+      <label class="form-label" for="lpUploadDb">{$_('pages.migration.luckperms.h2-database-label')}</label>
+      <div class="alert alert-warning">
+        <i class="fas fa-info-circle me-1"></i>
+        {$_('pages.migration.luckperms.h2-detected-note')}
       </div>
-      <input
-        id="lpDbFile"
-        type="file"
-        bind:this={dbFileInput}
-        on:change={handleDbFileSelect}
-        accept=".db,.mv.db"
-        class="d-none" />
+      {#if dbFile}
+        <div class="position-relative">
+          <DragAndDropZone
+            id="lpUploadDb"
+            accept={['.db', '.mv.db']}
+            on:drop={(e) => handleDbFile(e.detail)}
+            icon="fas fa-database fa-lg"
+            title={dbFile?.name || 'database.db'}
+            subtitle="{(dbFile.size / 1024).toFixed(2)} KB" />
+          <button
+            class="btn-close position-absolute top-0 end-0 m-2"
+            aria-label={$_('buttons.remove')}
+            use:tooltip={[$_('buttons.remove')]}
+            on:click|stopPropagation={removeDbFile}></button>
+        </div>
+      {:else}
+        <DragAndDropZone
+          id="lpUploadDb"
+          accept={['.db', '.mv.db']}
+          on:drop={(e) => handleDbFile(e.detail)}
+          icon="fas fa-cloud-upload-alt fs-1"
+          title={$_('pages.migration.luckperms.drag-drop-h2')} />
+      {/if}
     </div>
   {/if}
 
-  <!-- Connection details for MySQL/MariaDB -->
   {#if configFile && dbConnectionInfo}
-    <div class="card mb-3 border-warning">
-      <div class="card-header py-2">
-        <i class="fas fa-database text-warning me-1"></i>
+    <div class="card border-warning">
+      <div class="card-header bg-warning">
         <strong>{detectedBackend}</strong> — {$_('pages.migration.luckperms.db-connect-info')}
       </div>
       <div class="card-body py-3">
         <div class="row g-2 mb-2">
-          <div class="col-8">
-            <label class="form-label small mb-1" for="lpDbHost">Host</label>
+          <div class="col-12 col-sm-8">
+            <label class="form-label small mb-1" for="dbHost">{$_('pages.migration.authme.host')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
-              id="lpDbHost"
+              id="dbHost"
               bind:value={dbConnectionInfo.host} />
           </div>
-          <div class="col-4">
-            <label class="form-label small mb-1" for="lpDbPort">Port</label>
+          <div class="col-12 col-sm-4">
+            <label class="form-label small mb-1" for="dbPort">{$_('pages.migration.authme.port')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
-              id="lpDbPort"
+              id="dbPort"
               bind:value={dbConnectionInfo.port} />
           </div>
         </div>
         <div class="row g-2 mb-2">
-          <div class="col-6">
-            <label class="form-label small mb-1" for="lpDbName">Database</label>
+          <div class="col-12 col-sm-6">
+            <label class="form-label small mb-1" for="dbName">{$_('pages.migration.authme.database')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
-              id="lpDbName"
+              id="dbName"
               bind:value={dbConnectionInfo.database} />
           </div>
-          <div class="col-6">
-            <label class="form-label small mb-1" for="lpDbPrefix">Table Prefix</label>
+          <div class="col-12 col-sm-6">
+            <label class="form-label small mb-1" for="dbPrefix">{$_('pages.migration.luckperms.table-prefix')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
-              id="lpDbPrefix"
+              id="dbPrefix"
               bind:value={dbConnectionInfo.tablePrefix} />
           </div>
         </div>
         <div class="row g-2">
-          <div class="col-6">
-            <label class="form-label small mb-1" for="lpDbUser">Username</label>
+          <div class="col-12 col-sm-6">
+            <label class="form-label small mb-1" for="dbUser">{$_('pages.migration.authme.username')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
-              id="lpDbUser"
+              id="dbUser"
               bind:value={dbConnectionInfo.username} />
           </div>
-          <div class="col-6">
-            <label class="form-label small mb-1" for="lpDbPass">Password</label>
+          <div class="col-12 col-sm-6">
+            <label class="form-label small mb-1" for="dbPass">{$_('pages.migration.authme.password')}</label>
             <input
               type="password"
               class="form-control form-control-sm"
-              id="lpDbPass"
+              id="dbPass"
               bind:value={dbConnectionInfo.password} />
           </div>
         </div>
@@ -246,25 +138,26 @@
     </div>
   {/if}
 
-  <!-- Upload/Connect button -->
   {#if configFile && !showDatabaseUpload}
-    <button class="btn btn-primary" on:click={uploadAndPreview} disabled={isProcessing}>
-      {#if isProcessing}
-        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-      {/if}
-      {#if dbConnectionInfo}
-        <i class="fas fa-plug me-1"></i> Connect & Preview
-      {:else}
-        <i class="fas fa-upload me-1"></i> Upload & Preview
-      {/if}
-    </button>
+    <div class="mt-3">
+      <button class="btn btn-primary" on:click={uploadAndPreview} disabled={isProcessing}>
+        {#if isProcessing}
+          <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+        {/if}
+        {#if dbConnectionInfo}
+          <i class="fas fa-plug me-1"></i> {$_('pages.migration.luckperms.connect-preview')}
+        {:else}
+          <i class="fas fa-upload me-1"></i> {$_('pages.migration.luckperms.upload-preview')}
+        {/if}
+      </button>
+    </div>
   {/if}
 
   {#if isProcessing}
     <div class="mt-3">
       <div class="d-flex justify-content-between mb-1">
-        <small class="text-body-secondary">Uploading & processing...</small>
-        <small class="text-body-secondary">{Math.round(uploadProgress * 100)}%</small>
+        <small class="">{$_('pages.migration.authme.uploading-processing')}</small>
+        <small class="">{Math.round(uploadProgress * 100)}%</small>
       </div>
       <div class="progress" style="height: 6px;">
         <div
@@ -285,82 +178,83 @@
       {uploadError}
     </div>
   {/if}
-{:else if currentStep === 'review'}
-  <!-- Step 2: Review & Configure -->
-
-  <!-- Merge Strategy -->
-  <div class="card mb-3 border-warning">
-    <div class="card-header">
-      <i class="fas fa-cog text-warning me-2"></i>
-      {$_('pages.migration.luckperms.merge-strategy-title')}
-    </div>
-    <div class="card-body">
-      <p class="small text-body-secondary mb-3">
-        {$_('pages.migration.luckperms.merge-strategy-desc')}
-      </p>
-      {#if previewData.existingPanoNodeCount > 0}
-        <div class="alert alert-warning small mb-3">
-          <i class="fas fa-exclamation-triangle me-1"></i>
-          {$_('pages.migration.luckperms.existing-data-warning', {
-            values: {
-              groupCount: previewData.existingPanoGroupCount,
-              nodeCount: previewData.existingPanoNodeCount,
-            },
-          })}
-        </div>
-      {/if}
-      <div class="form-check mb-2">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="mergeStrategy"
-          id="strategyMerge"
-          value="merge"
-          bind:group={mergeStrategy} />
-        <label class="form-check-label" for="strategyMerge">
-          <strong>{$_('pages.migration.luckperms.strategy-merge')}</strong>
-          <br />
-          <small class="text-body-secondary"
-            >{$_('pages.migration.luckperms.strategy-merge-desc')}</small>
+{:else if currentStep === 'review' && previewData}
+  <div class="mb-4">
+    <div class="row align-items-center mb-3">
+      <div class="col-9">
+        <label class="fw-bold mb-0" for="strategyMerge">
+          {$_('pages.migration.luckperms.strategy-merge')}
         </label>
+        <small class="d-block text-muted">{$_('pages.migration.luckperms.strategy-merge-desc')}</small>
       </div>
-      <div class="form-check">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="mergeStrategy"
-          id="strategyReplace"
-          value="replace"
-          bind:group={mergeStrategy} />
-        <label class="form-check-label" for="strategyReplace">
-          <strong class="text-danger">{$_('pages.migration.luckperms.strategy-replace')}</strong>
-          <br />
-          <small class="text-body-secondary"
-            >{$_('pages.migration.luckperms.strategy-replace-desc')}</small>
+      <div class="col-3 text-end">
+        <div class="form-check form-check-inline me-0">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="mergeStrategy"
+            id="strategyMerge"
+            value="merge"
+            bind:group={mergeStrategy} />
+        </div>
+      </div>
+    </div>
+
+    <div class="row align-items-center">
+      <div class="col-9">
+        <label class="fw-bold mb-0" for="strategyReplace">
+          {$_('pages.migration.luckperms.strategy-replace')}
         </label>
+        <small class="d-block text-muted">{$_('pages.migration.luckperms.strategy-replace-desc')}</small>
+      </div>
+      <div class="col-3 text-end">
+        <div class="form-check form-check-inline me-0">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="mergeStrategy"
+            id="strategyReplace"
+            value="replace"
+            bind:group={mergeStrategy} />
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Groups -->
+  {#if previewData.existingPanoNodeCount > 0}
+    <div class="alert alert-warning mb-3">
+      <i class="fas fa-exclamation-triangle me-1"></i>
+      {$_('pages.migration.luckperms.existing-data-warning', {
+        values: {
+          groupCount: previewData.existingPanoGroupCount,
+          nodeCount: previewData.existingPanoNodeCount,
+        },
+      })}
+    </div>
+  {/if}
+
+  <hr />
+
+  <!-- Groups Table -->
   <div class="card mb-3">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <span>
-        <i class="fas fa-layer-group me-2"></i>
-        {$_('pages.migration.luckperms.groups-title')}
-        <span class="badge bg-success ms-1">{previewData.newGroupCount} New</span>
-        <span class="badge bg-warning text-dark ms-1"
-          >{previewData.existingGroupCount} Existing</span>
-      </span>
-      <div class="d-flex gap-2">
-        <button class="btn btn-sm btn-outline-secondary" on:click={selectAllGroups}>
+    <CardHeader>
+      <div slot="left">
+        <span class="me-3"><strong>{$_('pages.migration.luckperms.groups-title')}</strong></span>
+        <span class="badge text-bg-success me-2">{previewData.newGroupCount} {$_('pages.migration.authme.status-new')}</span>
+        <span class="badge text-bg-warning">{previewData.existingGroupCount} {$_('pages.migration.authme.status-existing')}</span>
+      </div>
+      <div slot="middle" style="width: 250px;">
+        <SearchInput
+          placeholderKey="buttons.find"
+          showSpinner={false}
+          on:change={(e) => (groupSearchQuery = e.detail.value)} />
+      </div>
+      <div slot="right" class="d-flex flex-wrap gap-2">
+        <button class="btn btn-link text-decoration-none px-0 px-md-2" on:click={selectAllGroups}>
           {$_('buttons.select-all')}
         </button>
-        <button class="btn btn-sm btn-outline-secondary" on:click={deselectAllGroups}>
-          {$_('buttons.deselect-all')}
-        </button>
       </div>
-    </div>
+    </CardHeader>
     <div class="card-body p-0">
       <div class="table-responsive">
         <table class="table table-hover mb-0">
@@ -373,14 +267,14 @@
                   checked={selectedGroups.size === previewData.groups.length}
                   on:change={toggleAllGroups} />
               </th>
-              <th class="align-middle text-nowrap" scope="col">Group</th>
-              <th class="align-middle text-nowrap" scope="col">Status</th>
-              <th class="align-middle text-nowrap" scope="col">Permissions</th>
+              <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.luckperms.header-group')}</th>
+              <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.luckperms.header-status')}</th>
+              <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.luckperms.header-permissions')}</th>
               <th class="align-middle text-nowrap" scope="col" style="width: 40px;"></th>
             </tr>
           </thead>
           <tbody>
-            {#each previewData.groups as group}
+            {#each paginatedGroups as group}
               <tr>
                 <td>
                   <input
@@ -392,24 +286,22 @@
                 <td class="fw-semibold">{group.name}</td>
                 <td>
                   {#if group.status === 'new'}
-                    <span class="badge bg-success">New</span>
+                    <span class="badge text-bg-success">{$_('pages.migration.authme.status-new')}</span>
                   {:else}
-                    <span class="badge bg-warning text-dark">Existing</span>
+                    <span class="badge text-bg-warning">{$_('pages.migration.authme.status-existing')}</span>
                   {/if}
                 </td>
                 <td>
-                  <span class="badge bg-secondary">{group.nodeCount} nodes</span>
+                  <span class="badge text-bg-primary">{$_('pages.migration.luckperms.nodes-count', { values: { count: group.nodeCount } })}</span>
                 </td>
-                <td>
+                <td class="text-end">
                   {#if group.nodeCount > 0}
                     <button
-                      class="expand-btn"
+                      class="btn btn-link link-dark p-0 border-0"
                       on:click={() => toggleGroupExpand(group.name)}
-                      title="Show/hide permission nodes">
-                      <i
-                        class="fas fa-chevron-{expandedGroups.has(group.name)
-                          ? 'up'
-                          : 'down'} small"></i>
+                      use:tooltip={[expandedGroups.has(group.name) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')]}
+                      aria-label={expandedGroups.has(group.name) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')}>
+                      <i class="fas fa-chevron-{expandedGroups.has(group.name) ? 'up' : 'down'}"></i>
                     </button>
                   {/if}
                 </td>
@@ -417,31 +309,29 @@
               {#if expandedGroups.has(group.name)}
                 <tr>
                   <td colspan="5" class="p-0">
-                    <div class="node-detail-panel p-2" style="max-height: 300px; overflow-y: auto;">
+                    <div class="bg-body-tertiary p-3 border-top">
                       <table class="table table-sm mb-0 small">
                         <thead>
-                          <tr class="text-body-secondary">
-                            <th>Permission</th>
-                            <th style="width: 60px;">Value</th>
-                            <th style="width: 80px;">Server</th>
-                            <th style="width: 80px;">World</th>
+                          <tr class="text-muted">
+                            <th>{$_('pages.migration.luckperms.header-permission')}</th>
+                            <th style="width: 60px;">{$_('pages.migration.luckperms.header-value')}</th>
+                            <th style="width: 80px;">{$_('pages.migration.luckperms.header-server')}</th>
+                            <th style="width: 80px;">{$_('pages.migration.luckperms.header-world')}</th>
                           </tr>
                         </thead>
                         <tbody>
                           {#each getGroupNodes(group.name) as node}
                             <tr>
-                              <td><code class="text-body">{node.permission}</code></td>
+                              <td><code class="user-select-all">{node.permission}</code></td>
                               <td>
                                 {#if node.value}
-                                  <span class="badge bg-success">✓</span>
+                                  <i class="fas fa-check text-success"></i>
                                 {:else}
-                                  <span class="badge bg-danger">✗</span>
+                                  <i class="fas fa-times text-danger"></i>
                                 {/if}
                               </td>
-                              <td class="text-body-secondary"
-                                >{node.server === 'global' ? '—' : node.server}</td>
-                              <td class="text-body-secondary"
-                                >{node.world === 'global' ? '—' : node.world}</td>
+                              <td class="text-muted">{node.server === 'global' ? '—' : node.server}</td>
+                              <td class="text-muted">{node.world === 'global' ? '—' : node.world}</td>
                             </tr>
                           {/each}
                         </tbody>
@@ -455,26 +345,30 @@
         </table>
       </div>
     </div>
+    <div class="card-footer">
+      <Pagination
+        page={groupPage}
+        totalPage={totalGroupPages}
+        on:firstPageClick={() => (groupPage = 1)}
+        on:lastPageClick={() => (groupPage = totalGroupPages)}
+        on:pageLinkClick={(e) => (groupPage = e.detail.page)} />
+    </div>
   </div>
 
-  <!-- Tracks -->
+  <!-- Tracks Table -->
   {#if previewData.tracks && previewData.tracks.length > 0}
     <div class="card mb-3">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <span>
-          <i class="fas fa-route me-2"></i>
-          {$_('pages.migration.luckperms.tracks-title')}
-          <span class="badge bg-secondary ms-1">{previewData.totalTrackCount}</span>
-        </span>
-        <div class="d-flex gap-2">
-          <button class="btn btn-sm btn-outline-secondary" on:click={selectAllTracks}>
+      <CardHeader>
+        <div slot="left">
+          <span class="me-3"><strong>{$_('pages.migration.luckperms.tracks-title')}</strong></span>
+          <span class="badge text-bg-primary">{previewData.totalTrackCount}</span>
+        </div>
+        <div slot="right" class="d-flex flex-wrap gap-2">
+          <button class="btn btn-link text-decoration-none px-0 px-md-2" on:click={selectAllTracks}>
             {$_('buttons.select-all')}
           </button>
-          <button class="btn btn-sm btn-outline-secondary" on:click={deselectAllTracks}>
-            {$_('buttons.deselect-all')}
-          </button>
         </div>
-      </div>
+      </CardHeader>
       <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-hover mb-0">
@@ -487,9 +381,9 @@
                     checked={selectedTracks.size === previewData.tracks.length}
                     on:change={toggleAllTracks} />
                 </th>
-                <th class="align-middle text-nowrap" scope="col">Track</th>
-                <th class="align-middle text-nowrap" scope="col">Status</th>
-                <th class="align-middle text-nowrap" scope="col">Groups</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.luckperms.header-track')}</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.luckperms.header-status')}</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.luckperms.header-groups')}</th>
               </tr>
             </thead>
             <tbody>
@@ -505,14 +399,14 @@
                   <td class="fw-semibold">{track.name}</td>
                   <td>
                     {#if track.status === 'new'}
-                      <span class="badge bg-success">New</span>
+                      <span class="badge text-bg-success">{$_('pages.migration.authme.status-new')}</span>
                     {:else}
-                      <span class="badge bg-warning text-dark">Existing</span>
+                      <span class="badge text-bg-warning">{$_('pages.migration.authme.status-existing')}</span>
                     {/if}
                   </td>
                   <td>
                     {#each track.groups as g}
-                      <span class="badge border text-body-secondary me-1">{g}</span>
+                      <span class="badge border text-muted fw-normal me-1">{g}</span>
                     {/each}
                   </td>
                 </tr>
@@ -524,45 +418,48 @@
     </div>
   {/if}
 
-  <!-- User permissions -->
+  <!-- User Permissions Section -->
   {#if previewData.players && previewData.players.length > 0}
     {@const panoPlayers = previewData.players.filter((p) => p.existsInPano)}
     {@const missingPlayers = previewData.players.filter((p) => !p.existsInPano)}
+    
     <div class="card mb-3">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <span>
-          <i class="fas fa-users me-2"></i>
-          {$_('pages.migration.luckperms.user-perms-title')}
-          <span class="badge bg-success ms-1"
-            >{panoPlayers.length} {$_('pages.migration.luckperms.in-pano')}</span>
+      <CardHeader>
+        <div slot="left">
+          <span class="me-3"><strong>{$_('pages.migration.luckperms.user-perms-title')}</strong></span>
+          <span class="badge text-bg-success me-2">{panoPlayers.length} {$_('pages.migration.luckperms.in-pano')}</span>
           {#if missingPlayers.length > 0}
-            <span class="badge bg-danger ms-1"
-              >{missingPlayers.length} {$_('pages.migration.luckperms.not-in-pano')}</span>
+            <span class="badge text-bg-danger">{missingPlayers.length} {$_('pages.migration.luckperms.not-in-pano')}</span>
           {/if}
-        </span>
-      </div>
-      <div class="card-body pb-2">
-        <div class="form-check mb-3">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="importUserPerms"
-            bind:checked={importUserPermissions} />
-          <label class="form-check-label" for="importUserPerms">
-            <strong>{$_('pages.migration.luckperms.import-user-perms')}</strong>
-            <br />
-            <small class="text-body-secondary"
-              >{$_('pages.migration.luckperms.import-user-perms-desc')}</small>
-          </label>
+        </div>
+      </CardHeader>
+      <div class="card-body pb-3">
+        <div class="row align-items-center">
+          <div class="col-9">
+            <label class="fw-bold mb-0" for="importUserPerms">
+              {$_('pages.migration.luckperms.import-user-perms')}
+            </label>
+            <small class="d-block text-muted">{$_('pages.migration.luckperms.import-user-perms-desc')}</small>
+          </div>
+          <div class="col-3 text-end">
+            <div class="form-check form-switch d-inline-block">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="importUserPerms"
+                bind:checked={importUserPermissions} />
+            </div>
+          </div>
         </div>
 
         {#if previewData.panoPlayerCount === 0}
-          <div class="alert alert-warning small mb-0">
+          <div class="alert alert-warning mb-0 mt-3">
             <i class="fas fa-exclamation-triangle me-1"></i>
             {$_('pages.migration.luckperms.no-pano-players-warning')}
           </div>
         {:else if missingPlayers.length > 0}
-          <div class="alert alert-info small mb-0">
+          <div class="alert alert-info mb-0 mt-3">
             <i class="fas fa-info-circle me-1"></i>
             {$_('pages.migration.luckperms.missing-players-info', {
               values: {
@@ -574,207 +471,93 @@
         {/if}
       </div>
 
-      <!-- Player list (accordion-style) -->
       {#if importUserPermissions}
-        <div class="card-body p-0">
-          <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-            <table class="table table-sm mb-0 small">
-              <thead class="sticky-top" style="z-index: 1;">
-                <tr>
-                  <th class="align-middle" scope="col" style="width: 30px;"></th>
-                  <th class="align-middle" scope="col">Player</th>
-                  <th class="align-middle" scope="col">Primary Group</th>
-                  <th class="align-middle text-center" scope="col">Permissions</th>
-                  <th class="align-middle text-center" scope="col">Status</th>
+        <div class="table-responsive border-top" style="max-height: 400px;">
+          <table class="table table-hover mb-0">
+            <thead class="sticky-top bg-body" style="z-index: 1;">
+              <tr>
+                <th style="width: 40px;"></th>
+                <th>{$_('pages.migration.luckperms.header-player')}</th>
+                <th>{$_('pages.migration.luckperms.header-primary-group')}</th>
+                <th class="text-center">{$_('pages.migration.luckperms.header-nodes')}</th>
+                <th class="text-center">{$_('pages.migration.luckperms.header-status')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each previewData.players as player}
+                <tr class={!player.existsInPano ? 'opacity-50' : ''}>
+                  <td>
+                    {#if player.permissionCount > 0}
+                      <button
+                        class="btn btn-link link-dark p-0 border-0"
+                        on:click={() => togglePlayerExpand(player.uuid)}
+                        use:tooltip={[expandedPlayers.has(player.uuid) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')]}
+                        aria-label={expandedPlayers.has(player.uuid) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')}>
+                        <i class="fas fa-chevron-{expandedPlayers.has(player.uuid) ? 'up' : 'down'} fs-7"></i>
+                      </button>
+                    {/if}
+                  </td>
+                  <td class="fw-semibold">
+                    {player.username}
+                    <div class="small text-muted fw-normal">{player.uuid}</div>
+                  </td>
+                  <td><span class="badge border text-muted fw-normal">{player.primaryGroup}</span></td>
+                  <td class="text-center"><span class="badge text-bg-primary">{player.permissionCount}</span></td>
+                  <td class="text-center">
+                    {#if player.existsInPano}
+                      <span class="text-success small fw-bold"><i class="fas fa-check me-1"></i>{$_('pages.migration.luckperms.will-import')}</span>
+                    {:else}
+                      <span class="text-muted small"><i class="fas fa-ban me-1"></i>{$_('pages.migration.luckperms.will-skip')}</span>
+                    {/if}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {#each panoPlayers as player}
-                  <tr
-                    class="player-row"
-                    on:click={() => player.permissionCount > 0 && togglePlayerExpand(player.uuid)}
-                    on:keydown={(e) => {
-                      if (e.key === 'Enter' && player.permissionCount > 0)
-                        togglePlayerExpand(player.uuid);
-                    }}>
-                    <td class="text-center">
-                      {#if player.permissionCount > 0}
-                        <button
-                          class="expand-btn"
-                          on:click|stopPropagation={() => togglePlayerExpand(player.uuid)}
-                          title="Show/hide permissions">
-                          <i
-                            class="fas fa-chevron-{expandedPlayers.has(player.uuid)
-                              ? 'up'
-                              : 'down'} small"></i>
-                        </button>
-                      {/if}
-                    </td>
-                    <td class="fw-semibold">
-                      {player.username}
-                      <span class="text-body-secondary fw-normal ms-1" style="font-size: 0.7rem;"
-                        >{player.uuid}</span>
-                    </td>
-                    <td
-                      ><span class="badge border text-body-secondary">{player.primaryGroup}</span
-                      ></td>
-                    <td class="text-center"
-                      ><span class="badge bg-secondary">{player.permissionCount}</span></td>
-                    <td class="text-center"
-                      ><span class="badge bg-success"
-                        ><i class="fas fa-check me-1"></i>{$_(
-                          'pages.migration.luckperms.will-import',
-                        )}</span
-                      ></td>
-                  </tr>
-                  {#if expandedPlayers.has(player.uuid)}
-                    <tr>
-                      <td colspan="5" class="p-0">
-                        <div
-                          class="node-detail-panel p-2"
-                          style="max-height: 250px; overflow-y: auto;">
-                          <table class="table table-sm mb-0" style="font-size: 0.8rem;">
-                            <thead>
-                              <tr class="text-body-secondary">
-                                <th>Permission</th>
-                                <th style="width: 50px;">Value</th>
-                                <th style="width: 70px;">Server</th>
-                                <th style="width: 70px;">World</th>
+                {#if expandedPlayers.has(player.uuid)}
+                  <tr>
+                    <td colspan="5" class="p-0">
+                      <div class="bg-body-tertiary p-3 border-top">
+                        <table class="table table-sm mb-0 small">
+                          <thead>
+                            <tr class="text-muted">
+                              <th>{$_('pages.migration.luckperms.header-permission')}</th>
+                              <th style="width: 60px;">{$_('pages.migration.luckperms.header-value')}</th>
+                              <th style="width: 80px;">{$_('pages.migration.luckperms.header-server')}</th>
+                              <th style="width: 80px;">{$_('pages.migration.luckperms.header-world')}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {#each getPlayerNodes(player.uuid) as node}
+                              <tr>
+                                <td><code class="user-select-all">{node.permission}</code></td>
+                                <td>
+                                  {#if node.value}
+                                    <i class="fas fa-check text-success"></i>
+                                  {:else}
+                                    <i class="fas fa-times text-danger"></i>
+                                  {/if}
+                                </td>
+                                <td class="text-muted">{node.server === 'global' ? '—' : node.server}</td>
+                                <td class="text-muted">{node.world === 'global' ? '—' : node.world}</td>
                               </tr>
-                            </thead>
-                            <tbody>
-                              {#each getPlayerNodes(player.uuid) as node}
-                                <tr>
-                                  <td><code class="text-body">{node.permission}</code></td>
-                                  <td>
-                                    {#if node.value}
-                                      <span class="badge bg-success">✓</span>
-                                    {:else}
-                                      <span class="badge bg-danger">✗</span>
-                                    {/if}
-                                  </td>
-                                  <td class="text-body-secondary"
-                                    >{node.server === 'global' ? '—' : node.server}</td>
-                                  <td class="text-body-secondary"
-                                    >{node.world === 'global' ? '—' : node.world}</td>
-                                </tr>
-                              {/each}
-                            </tbody>
-                          </table>
-                        </div>
-                      </td>
-                    </tr>
-                  {/if}
-                {/each}
-                {#each missingPlayers as player}
-                  <tr
-                    class="player-row missing"
-                    on:click={() => player.permissionCount > 0 && togglePlayerExpand(player.uuid)}
-                    on:keydown={(e) => {
-                      if (e.key === 'Enter' && player.permissionCount > 0)
-                        togglePlayerExpand(player.uuid);
-                    }}>
-                    <td class="text-center">
-                      {#if player.permissionCount > 0}
-                        <button
-                          class="expand-btn"
-                          on:click|stopPropagation={() => togglePlayerExpand(player.uuid)}
-                          title="Show/hide permissions">
-                          <i
-                            class="fas fa-chevron-{expandedPlayers.has(player.uuid)
-                              ? 'up'
-                              : 'down'} small"></i>
-                        </button>
-                      {/if}
+                            {/each}
+                          </tbody>
+                        </table>
+                      </div>
                     </td>
-                    <td class="fw-semibold">
-                      {player.username}
-                      <span class="text-body-secondary fw-normal ms-1" style="font-size: 0.7rem;"
-                        >{player.uuid}</span>
-                    </td>
-                    <td
-                      ><span class="badge border text-body-secondary">{player.primaryGroup}</span
-                      ></td>
-                    <td class="text-center"
-                      ><span class="badge bg-secondary">{player.permissionCount}</span></td>
-                    <td class="text-center"
-                      ><span class="badge bg-warning text-dark"
-                        ><i class="fas fa-ban me-1"></i>{$_(
-                          'pages.migration.luckperms.will-skip',
-                        )}</span
-                      ></td>
                   </tr>
-                  {#if expandedPlayers.has(player.uuid)}
-                    <tr>
-                      <td colspan="5" class="p-0">
-                        <div
-                          class="node-detail-panel p-2"
-                          style="max-height: 250px; overflow-y: auto;">
-                          <table class="table table-sm mb-0" style="font-size: 0.8rem;">
-                            <thead>
-                              <tr class="text-body-secondary">
-                                <th>Permission</th>
-                                <th style="width: 50px;">Value</th>
-                                <th style="width: 70px;">Server</th>
-                                <th style="width: 70px;">World</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {#each getPlayerNodes(player.uuid) as node}
-                                <tr>
-                                  <td><code class="text-body">{node.permission}</code></td>
-                                  <td>
-                                    {#if node.value}
-                                      <span class="badge bg-success">✓</span>
-                                    {:else}
-                                      <span class="badge bg-danger">✗</span>
-                                    {/if}
-                                  </td>
-                                  <td class="text-body-secondary"
-                                    >{node.server === 'global' ? '—' : node.server}</td>
-                                  <td class="text-body-secondary"
-                                    >{node.world === 'global' ? '—' : node.world}</td>
-                                </tr>
-                              {/each}
-                            </tbody>
-                          </table>
-                        </div>
-                      </td>
-                    </tr>
-                  {/if}
-                {/each}
-              </tbody>
-            </table>
-          </div>
+                {/if}
+              {/each}
+            </tbody>
+          </table>
         </div>
       {/if}
     </div>
   {/if}
 
-  <!-- Actions -->
-  <div class="mt-3 d-flex gap-2">
-    <button class="btn btn-outline-secondary" on:click={resetForm} disabled={isImporting}>
-      <i class="fas fa-arrow-left me-1"></i> Back
-    </button>
-    <button
-      class="btn btn-primary"
-      on:click={importData}
-      disabled={selectedGroups.size === 0 || isImporting}>
-      {#if isImporting}
-        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-      {/if}
-      <i class="fas fa-file-import me-1"></i> Import {selectedGroups.size} Groups
-      {#if selectedTracks.size > 0}
-        &amp; {selectedTracks.size} Tracks
-      {/if}
-    </button>
-  </div>
-
   {#if isImporting}
     <div class="mt-3">
       <div class="d-flex justify-content-between mb-1">
-        <small class="text-body-secondary"> Importing permissions... </small>
-        <small class="text-body-secondary">{Math.round(importProgress * 100)}%</small>
+        <small class="">{$_('pages.migration.luckperms.importing-permissions')}</small>
+        <small class="">{Math.round(importProgress * 100)}%</small>
       </div>
       <div class="progress" style="height: 6px;">
         <div
@@ -788,29 +571,43 @@
       </div>
     </div>
   {/if}
-{:else if currentStep === 'result'}
-  <!-- Step 3: Import Results -->
+
+  <div class="mt-4 d-flex gap-2">
+    <button
+      class="btn btn-secondary"
+      on:click={importData}
+      disabled={(selectedGroups.size === 0 && selectedTracks.size === 0) || isImporting}>
+      {#if isImporting}
+        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+      {/if}
+      {$_('buttons.import')}
+    </button>
+    <button class="btn btn-link text-decoration-none" on:click={resetForm} disabled={isImporting}>
+      {$_('buttons.cancel')}
+    </button>
+  </div>
+{:else if currentStep === 'result' && importResult}
   <div class="alert alert-success d-flex align-items-center" role="alert">
     <i class="fas fa-check-circle fs-4 me-3"></i>
     <div>
       <h6 class="alert-heading mb-1">{$_('pages.migration.luckperms.result-title')}</h6>
       <p class="mb-0 small">
-        <strong>{importResult.importedGroups}</strong> groups imported{#if importResult.updatedGroups > 0},
-          <strong>{importResult.updatedGroups}</strong> updated{/if},
-        <strong>{importResult.importedGroupNodes}</strong> group nodes,
-        <strong>{importResult.importedUserNodes}</strong> user nodes
+        <strong>{importResult.importedGroups}</strong> {$_('pages.migration.luckperms.import-summary-groups')}{#if importResult.updatedGroups > 0},
+          <strong>{importResult.updatedGroups}</strong> {$_('pages.migration.luckperms.import-summary-updated')}{/if},
+        <strong>{importResult.importedGroupNodes}</strong> {$_('pages.migration.luckperms.import-summary-group-nodes')},
+        <strong>{importResult.importedUserNodes}</strong> {$_('pages.migration.luckperms.import-summary-user-nodes')}
         {#if importResult.importedTracks > 0},
-          <strong>{importResult.importedTracks}</strong> tracks{/if}
+          <strong>{importResult.importedTracks}</strong> {$_('pages.migration.luckperms.import-summary-tracks')}{/if}
         {#if importResult.skippedNodes > 0},
-          <strong>{importResult.skippedNodes}</strong> skipped{/if}.
+          <strong>{importResult.skippedNodes}</strong> {$_('pages.migration.luckperms.import-summary-skipped')}{/if}.
       </p>
     </div>
   </div>
 
-  {#if importResult.errors && importResult.errors.length > 0}
+  {#if importResult?.errors && importResult.errors.length > 0}
     <div class="alert alert-warning mt-3">
       <h6 class="alert-heading mb-2">
-        <i class="fas fa-exclamation-triangle me-1"></i> Some issues occurred:
+        <i class="fas fa-exclamation-triangle me-1"></i> {$_('pages.migration.authme.some-issues-occurred')}
       </h6>
       <ul class="mb-0 small">
         {#each importResult.errors as err}
@@ -820,63 +617,177 @@
     </div>
   {/if}
 
-  <button class="btn btn-primary mt-3" on:click={resetForm}>
+  <button class="btn btn-primary" on:click={resetForm}>
     <i class="fas fa-redo me-2"></i>
-    Start New Migration
+    {$_('pages.migration.authme.start-new-migration')}
   </button>
 {/if}
 
 <script>
   import { _ } from 'svelte-i18n';
+  import tooltip from '$lib/tooltip.util';
 
   import ApiUtil from '$lib/api.util.js';
+  import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
+  import SearchInput from '$lib/components/SearchInput.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
+
+  export { resetForm, importData, uploadAndPreview };
+
+  // ── Mock Data ──
+  const MOCK_ENABLED = true;
+
+  const mockConfigFile = new File(['storage-method: H2\n'], 'config.yml', {
+    type: 'application/x-yaml',
+  });
+  Object.defineProperty(mockConfigFile, 'size', { value: 3456 });
+
+  const mockDbFile = new File([''], 'luckperms-h2-v2.mv.db', {
+    type: 'application/x-sqlite3',
+  });
+  Object.defineProperty(mockDbFile, 'size', { value: 1048576 });
+
+  const mockPreviewData = {
+    newGroupCount: 3,
+    existingGroupCount: 1,
+    totalTrackCount: 2,
+    panoPlayerCount: 2,
+    existingPanoNodeCount: 5,
+    existingPanoGroupCount: 2,
+    groups: [
+      { name: 'admin', status: 'new', nodeCount: 12 },
+      { name: 'mod', status: 'new', nodeCount: 8 },
+      { name: 'default', status: 'existing', nodeCount: 4 },
+      { name: 'vip', status: 'new', nodeCount: 6 },
+    ],
+    groupPermissions: [
+      {
+        groupName: 'admin',
+        permission: 'pano.admin',
+        value: true,
+        server: 'global',
+        world: 'global',
+      },
+      {
+        groupName: 'admin',
+        permission: 'minecraft.command.op',
+        value: true,
+        server: 'global',
+        world: 'global',
+      },
+      { groupName: 'mod', permission: 'pano.mod', value: true, server: 'lobby', world: 'global' },
+      {
+        groupName: 'default',
+        permission: 'pano.user',
+        value: true,
+        server: 'global',
+        world: 'global',
+      },
+    ],
+    tracks: [
+      { name: 'staff', status: 'new', groups: ['helper', 'mod', 'admin'] },
+      { name: 'donator', status: 'existing', groups: ['vip', 'vip+', 'mvp'] },
+    ],
+    players: [
+      {
+        username: 'selim',
+        uuid: 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6',
+        primaryGroup: 'admin',
+        permissionCount: 2,
+        existsInPano: true,
+      },
+      {
+        username: 'testuser',
+        uuid: '12345678-1234-1234-1234-123456789012',
+        primaryGroup: 'default',
+        permissionCount: 0,
+        existsInPano: true,
+      },
+      {
+        username: 'external_hero',
+        uuid: '87654321-4321-4321-4321-210987654321',
+        primaryGroup: 'default',
+        permissionCount: 1,
+        existsInPano: false,
+      },
+    ],
+    userPermissions: [
+      {
+        uuid: 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6',
+        permission: 'special.access',
+        value: true,
+        server: 'global',
+        world: 'global',
+      },
+      {
+        uuid: 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6',
+        permission: 'debug.mode',
+        value: false,
+        server: 'dev',
+        world: 'test',
+      },
+      {
+        uuid: '87654321-4321-4321-4321-210987654321',
+        permission: 'temporary.permit',
+        value: true,
+        server: 'global',
+        world: 'global',
+      },
+    ],
+  };
 
   // File upload states
-  let configFileInput;
-  let dbFileInput;
-  let configFile = null;
-  let dbFile = null;
-  let configDragOver = false;
-  let dbDragOver = false;
-  let showDatabaseUpload = false;
-  let detectedBackend = '';
-  let dbConnectionInfo = null;
-  let isProcessing = false;
-  let uploadProgress = 0;
+  export let configFile = MOCK_ENABLED ? mockConfigFile : null;
+  export let dbFile = MOCK_ENABLED ? mockDbFile : null;
+  export let showDatabaseUpload = MOCK_ENABLED ? true : false;
+  export let detectedBackend = MOCK_ENABLED ? 'H2' : '';
+  export let dbConnectionInfo = null;
+  export let isProcessing = false;
+  export let uploadProgress = 0;
 
   // Migration flow states
-  let currentStep = 'upload'; // 'upload' | 'review' | 'result'
-  let previewData = null;
-  let selectedGroups = new Set();
-  let selectedTracks = new Set();
-  let mergeStrategy = 'merge'; // 'merge' or 'replace'
-  let importUserPermissions = true;
-  let isImporting = false;
-  let importProgress = 0;
-  let importResult = null;
-  let uploadError = null;
-  let expandedGroups = new Set();
-  let expandedPlayers = new Set();
+  export let currentStep = MOCK_ENABLED ? 'review' : 'upload'; // 'upload' | 'review' | 'result'
+  export let previewData = MOCK_ENABLED ? mockPreviewData : null;
+  export let selectedGroups = MOCK_ENABLED
+    ? new Set(mockPreviewData.groups.map((g) => g.name))
+    : new Set();
+  export let selectedTracks = MOCK_ENABLED
+    ? new Set(mockPreviewData.tracks.map((t) => t.name))
+    : new Set();
+  export let mergeStrategy = 'merge'; // 'merge' or 'replace'
+  export let importUserPermissions = true;
+  export let isImporting = false;
+  export let importProgress = 0;
+  export let importResult = null;
+  export let uploadError = null;
+  export let expandedGroups = new Set();
+  export let expandedPlayers = new Set();
+
+  // Search & Pagination for groups (AuthMe style consistency)
+  export let groupSearchQuery = '';
+  let groupPage = 1;
+  let itemsPerPage = 10;
+
+  $: if (groupSearchQuery) groupPage = 1;
+
+  $: filteredGroups =
+    previewData?.groups?.filter((g) => {
+      if (!groupSearchQuery.trim()) return true;
+      return g.name.toLowerCase().includes(groupSearchQuery.toLowerCase());
+    }) ?? [];
+
+  $: paginatedGroups = filteredGroups.slice(
+    (groupPage - 1) * itemsPerPage,
+    groupPage * itemsPerPage,
+  );
+  $: totalGroupPages = Math.ceil(filteredGroups.length / itemsPerPage);
 
   // Config file handlers
-  function handleConfigDrop(e) {
-    configDragOver = false;
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      handleConfigFile(files[0]);
-    }
-  }
-
-  function handleConfigFileSelect(e) {
-    const files = e.target.files;
-    if (files.length > 0) {
-      handleConfigFile(files[0]);
-    }
-  }
-
   async function handleConfigFile(file) {
+    if (!file) return;
     if (!file.name.endsWith('.yml') && !file.name.endsWith('.yaml')) {
-      alert('Please upload a valid YAML file (.yml or .yaml)');
+      alert($_('pages.migration.authme.error-valid-yaml'));
       return;
     }
 
@@ -903,9 +814,12 @@
         const storageMatch = trimmed.match(/^storage-method\s*:\s*['"]?(\w+)['"]?/i);
         if (storageMatch) storageMethod = storageMatch[1].toUpperCase();
 
-        // Data section fields (indented under 'data:')
         const addressMatch = trimmed.match(/^address\s*:\s*['"]?([^'"#\s]+)['"]?/i);
-        if (addressMatch) connInfo.host = addressMatch[1];
+        if (addressMatch) {
+          const parts = addressMatch[1].split(':');
+          connInfo.host = parts[0];
+          if (parts[1]) connInfo.port = parts[1];
+        }
 
         const dbMatch = trimmed.match(/^database\s*:\s*['"]?([^'"#\s]+)['"]?/i);
         if (dbMatch) connInfo.database = dbMatch[1];
@@ -936,30 +850,15 @@
     dbConnectionInfo = null;
     dbFile = null;
     uploadError = null;
-    if (configFileInput) configFileInput.value = '';
   }
 
   // Database file handlers
-  function handleDbDrop(e) {
-    dbDragOver = false;
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      handleDbFile(files[0]);
-    }
-  }
-
-  function handleDbFileSelect(e) {
-    const files = e.target.files;
-    if (files.length > 0) {
-      handleDbFile(files[0]);
-    }
-  }
-
   async function handleDbFile(file) {
+    if (!file) return;
     const isValid = file.name.endsWith('.db') || file.name.endsWith('.mv.db');
 
     if (!isValid) {
-      alert('Please upload a valid H2 database file (.mv.db or .db)');
+      alert($_('pages.migration.luckperms.error-valid-h2'));
       return;
     }
 
@@ -973,7 +872,6 @@
   function removeDbFile(e) {
     e?.preventDefault();
     dbFile = null;
-    if (dbFileInput) dbFileInput.value = '';
   }
 
   // Step 1: Upload files and get preview
@@ -1005,27 +903,21 @@
       });
 
       if (result?.result === 'error') {
-        uploadError = result.message || result.error || 'Upload failed';
+        uploadError =
+          result.message || result.error || $_('pages.migration.authme.error-upload-failed');
         return;
       }
 
       if (result) {
         previewData = result;
-
-        // Pre-select all groups
         selectedGroups = new Set(result.groups.map((g) => g.name));
-        selectedGroups = selectedGroups;
-
-        // Pre-select all tracks
         if (result.tracks) {
           selectedTracks = new Set(result.tracks.map((t) => t.name));
-          selectedTracks = selectedTracks;
         }
-
         currentStep = 'review';
       }
     } catch (error) {
-      uploadError = error.message || 'Failed to upload files. Please try again.';
+      uploadError = error.message || $_('pages.migration.authme.error-upload-failed');
     } finally {
       isProcessing = false;
     }
@@ -1057,7 +949,7 @@
     selectedGroups = new Set();
   }
 
-  // Group expand/collapse for viewing permission nodes
+  // Group expand/collapse
   function toggleGroupExpand(name) {
     if (expandedGroups.has(name)) {
       expandedGroups.delete(name);
@@ -1072,7 +964,7 @@
     return previewData.groupPermissions.filter((p) => p.groupName === groupName);
   }
 
-  // Player expand/collapse for viewing permission nodes
+  // Player expand/collapse
   function togglePlayerExpand(uuid) {
     if (expandedPlayers.has(uuid)) {
       expandedPlayers.delete(uuid);
@@ -1143,7 +1035,8 @@
       importProgress = 1;
 
       if (result?.result === 'error') {
-        uploadError = result.message || result.error || 'Import failed';
+        uploadError =
+          result.message || result.error || $_('pages.migration.authme.error-import-failed');
         return;
       }
 
@@ -1153,7 +1046,7 @@
       }
     } catch (error) {
       clearInterval(progressInterval);
-      uploadError = error.message || 'Failed to import. Please try again.';
+      uploadError = error.message || $_('pages.migration.authme.error-import-failed');
     } finally {
       isImporting = false;
     }
@@ -1179,7 +1072,6 @@
     uploadError = null;
     expandedGroups = new Set();
     expandedPlayers = new Set();
-    if (configFileInput) configFileInput.value = '';
-    if (dbFileInput) dbFileInput.value = '';
   }
 </script>
+

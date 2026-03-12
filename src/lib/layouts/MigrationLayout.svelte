@@ -3,9 +3,11 @@
   <PageActions>
     <div slot="left">
       <PageNav>
-        <PageNavItem href="/migration">{$_('pages.migration.platforms-title')}</PageNavItem>
+        <PageNavItem href="/migration">{$_('pages.migration.server-title')}</PageNavItem>
         <PageNavItem href="/migration/plugins" startsWith
           >{$_('pages.migration.plugins-title')}</PageNavItem>
+        <PageNavItem href="/migration/other" startsWith
+          >{$_('pages.migration.platforms-title')}</PageNavItem>
       </PageNav>
     </div>
   </PageActions>
