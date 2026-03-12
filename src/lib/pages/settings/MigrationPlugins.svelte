@@ -1,44 +1,19 @@
 <PageActions>
   <div slot="right" class="d-flex align-items-center gap-2">
-    {#if activeTab === 'authme'}
-      {#if authMeStep === 'upload'}
-        {#if authMeConfigFile && !authMeDbUpload}
-          <button
-            class="btn btn-primary"
-            on:click={authMeUploadAndPreview}
-            disabled={authMeProcessing}>
-            {#if authMeProcessing}
-              <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-            {/if}
-            {#if authMeDbInfo}
-              <i class="fas fa-plug me-1"></i> {$_('buttons.connect')} & {$_('buttons.view')}
-            {:else}
-              <i class="fas fa-upload me-1"></i> {$_('buttons.upload')} & {$_('buttons.view')}
-            {/if}
-          </button>
+    {#if activeTab === 'authme' && authMeStep === 'upload' && authMeConfigFile && !authMeDbUpload}
+      <button
+        class="btn btn-primary"
+        on:click={authMeUploadAndPreview}
+        disabled={authMeProcessing}>
+        {#if authMeProcessing}
+          <span class="spinner-border spinner-border-sm me-2" role="status"></span>
         {/if}
-      {:else if authMeStep === 'review'}
-        <button
-          class="btn btn-link text-decoration-none"
-          on:click={authMeResetForm}
-          disabled={authMeImporting}
-          use:tooltip={[$_('buttons.back')]}>
-          <i class="fas fa-arrow-left"></i>
-        </button>
-        <button
-          class="btn btn-secondary"
-          on:click={authMeImportUsers}
-          disabled={(authMeSelected.size === 0 && authMeDelete.size === 0) || authMeImporting}>
-          {#if authMeImporting}
-            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-          {/if}
-          <i class="fas fa-file-import me-1"></i>
-          {$_('buttons.import')} ({authMeSelected.size})
-          {#if authMeDelete.size > 0}
-            &amp; {$_('buttons.delete')} ({authMeDelete.size})
-          {/if}
-        </button>
-      {/if}
+        {#if authMeDbInfo}
+          <i class="fas fa-plug me-1"></i> {$_('buttons.connect')} & {$_('buttons.view')}
+        {:else}
+          <i class="fas fa-upload me-1"></i> {$_('buttons.upload')} & {$_('buttons.view')}
+        {/if}
+      </button>
     {/if}
   </div>
 </PageActions>

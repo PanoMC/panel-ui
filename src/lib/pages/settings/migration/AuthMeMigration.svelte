@@ -163,116 +163,134 @@
   {/if}
 {:else if currentStep === 'review'}
   <!-- AuthMe Migration Page -->
-
-  <div class="row g-3 mb-3 mt-1">
-    {#if previewData.users.some((u) => u.passwordType === 'PLAINTEXT' || u.passwordType === 'UNKNOWN')}
-      <div class="col-12 col-md-6">
-        <div class="card h-100">
-          <div class="card-header">
-            <span class="badge text-bg-warning"
-              >{$_('pages.migration.authme.password-strategy-title')}</span>
-            <span class="badge text-bg-secondary ms-1">{previewData.authmeHashAlgorithm}</span>
-          </div>
-          <div class="card-body">
-            <p class="small text-muted mb-3">
-              {$_('pages.migration.authme.password-strategy-desc')}
-            </p>
-            <div class="form-check mb-2">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="passwordStrategy"
-                id="strategyHash"
-                value="hash"
-                bind:group={passwordStrategy} />
-              <label class="form-check-label" for="strategyHash">
-                <strong>{$_('pages.migration.authme.strategy-hash')}</strong>
-                <span class="badge text-bg-success ms-1">{previewData.defaultHashAlgorithm}</span>
-                <br />
-                <small class="opacity-75">{$_('pages.migration.authme.strategy-hash-desc')}</small>
-              </label>
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="passwordStrategy"
-                id="strategyReset"
-                value="reset"
-                bind:group={passwordStrategy} />
-              <label class="form-check-label" for="strategyReset">
-                <strong>{$_('pages.migration.authme.strategy-reset')}</strong>
-                <br />
-                <small class="opacity-75">{$_('pages.migration.authme.strategy-reset-desc')}</small>
-              </label>
-            </div>
+  {#if previewData.users.some((u) => u.passwordType === 'PLAINTEXT' || u.passwordType === 'UNKNOWN')}
+    <div class="mb-3">
+      <div class="row align-items-center mb-3">
+        <div class="col-9">
+          <label class="fw-bold mb-0" for="strategyHash">
+            {$_('pages.migration.authme.strategy-hash')}
+            <span class="badge text-bg-success ms-1">{previewData.defaultHashAlgorithm}</span>
+          </label>
+          <small class="d-block text-muted">{$_('pages.migration.authme.strategy-hash-desc')}</small>
+        </div>
+        <div class="col-3 text-end">
+          <div class="form-check form-check-inline me-0">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="passwordStrategy"
+              id="strategyHash"
+              value="hash"
+              bind:group={passwordStrategy} />
           </div>
         </div>
       </div>
-    {/if}
 
-    {#if previewData.existingCount > 0}
-      <div class="col-12 col-md-6">
-        <div class="card h-100">
-          <div class="card-header">
-            <span class="badge text-bg-info">
-              {$_('pages.migration.authme.existing-strategy-title')} ({previewData.existingCount})
-            </span>
-          </div>
-          <div class="card-body">
-            <p class="small text-muted mb-3">
-              {$_('pages.migration.authme.existing-strategy-desc')}
-            </p>
-            <div class="form-check mb-2">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="updatePassword"
-                bind:checked={existingUserUpdates.password} />
-              <label class="form-check-label" for="updatePassword">
-                <strong>{$_('pages.migration.authme.update-password')}</strong>
-                <br />
-                <small class="opacity-75"
-                  >{$_('pages.migration.authme.update-password-desc')}</small>
-              </label>
-            </div>
-            <div class="form-check mb-2">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="updateUsername"
-                bind:checked={existingUserUpdates.username} />
-              <label class="form-check-label" for="updateUsername">
-                <strong>{$_('pages.migration.authme.update-username')}</strong>
-                <br />
-                <small class="opacity-75"
-                  >{$_('pages.migration.authme.update-username-desc')}</small>
-              </label>
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="updateEmail"
-                bind:checked={existingUserUpdates.email} />
-              <label class="form-check-label" for="updateEmail">
-                <strong>{$_('pages.migration.authme.update-email')}</strong>
-                <br />
-                <small class="opacity-75">{$_('pages.migration.authme.update-email-desc')}</small>
-              </label>
-            </div>
+      <div class="row align-items-center">
+        <div class="col-9">
+          <label class="fw-bold mb-0" for="strategyReset">
+            {$_('pages.migration.authme.strategy-reset')}
+          </label>
+          <small class="d-block text-muted">{$_('pages.migration.authme.strategy-reset-desc')}</small>
+        </div>
+        <div class="col-3 text-end">
+          <div class="form-check form-check-inline me-0">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="passwordStrategy"
+              id="strategyReset"
+              value="reset"
+              bind:group={passwordStrategy} />
           </div>
         </div>
       </div>
-    {/if}
+    </div>
+    <hr />
+  {/if}
+
+  {#if previewData.existingCount > 0}
+    <div class="mb-4">
+      <div class="row align-items-center mb-3">
+        <div class="col-9">
+          <label class="fw-bold mb-0" for="updatePassword">
+            {$_('pages.migration.authme.update-password')}
+          </label>
+          <small class="d-block text-muted"
+            >{$_('pages.migration.authme.update-password-desc')}</small>
+        </div>
+        <div class="col-3 text-end">
+          <div class="form-check form-switch d-inline-block">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="updatePassword"
+              bind:checked={existingUserUpdates.password} />
+          </div>
+        </div>
+      </div>
+
+      <div class="row align-items-center mb-3">
+        <div class="col-9">
+          <label class="fw-bold mb-0" for="updateUsername">
+            {$_('pages.migration.authme.update-username')}
+          </label>
+          <small class="d-block text-muted"
+            >{$_('pages.migration.authme.update-username-desc')}</small>
+        </div>
+        <div class="col-3 text-end">
+          <div class="form-check form-switch d-inline-block">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="updateUsername"
+              bind:checked={existingUserUpdates.username} />
+          </div>
+        </div>
+      </div>
+
+      <div class="row align-items-center">
+        <div class="col-9">
+          <label class="fw-bold mb-0" for="updateEmail">
+            {$_('pages.migration.authme.update-email')}
+          </label>
+          <small class="d-block text-muted">{$_('pages.migration.authme.update-email-desc')}</small>
+        </div>
+        <div class="col-3 text-end">
+          <div class="form-check form-switch d-inline-block">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="updateEmail"
+              bind:checked={existingUserUpdates.email} />
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr />
+  {/if}
+
+  <div class="alert alert-info mt-3 mb-3">
+    <i class="fas fa-info-circle me-2"></i>
+    {$_('pages.migration.authme.password-info')}
   </div>
+
+  {#if previewData.users.some((u) => (!u.hasPassword || u.passwordType === 'UNKNOWN' || u.passwordType === 'PLAINTEXT') && selectedUsers.has(u.username))}
+    <div class="alert alert-warning mt-2 mb-3">
+      <i class="fas fa-exclamation-triangle me-2"></i>
+      {$_('pages.migration.authme.no-password-warning')}
+    </div>
+  {/if}
 
   <div class="card mb-3">
     <CardHeader>
       <div slot="left">
-        <span class="badge text-bg-success me-2">{previewData.newCount} New</span>
-        <span class="badge text-bg-warning me-2">{previewData.existingCount} Existing</span>
-        <span class="badge text-bg-secondary">{previewData.totalCount} Total</span>
+        <span class="me-3"><strong>{previewData.totalCount} Toplam Veri</strong></span>
+        <span class="badge text-bg-success me-2">{previewData.newCount} Yeni</span>
+        <span class="badge text-bg-primary">{previewData.existingCount} Mevcut</span>
       </div>
 
       <div slot="middle" style="width: 250px;">
@@ -284,17 +302,9 @@
 
       <div slot="right" class="d-flex flex-wrap gap-2">
         <button
-          class="btn btn-sm btn-link text-decoration-none px-0 px-md-2"
+          class="btn btn-link text-decoration-none px-0 px-md-2"
           on:click={selectAllNew}>
           Select All New
-        </button>
-        <button class="btn btn-sm btn-link text-decoration-none px-0 px-md-2" on:click={selectAll}>
-          Select All
-        </button>
-        <button
-          class="btn btn-sm btn-link text-decoration-none px-0 px-md-2"
-          on:click={deselectAll}>
-          Deselect All
         </button>
       </div>
     </CardHeader>
@@ -335,25 +345,12 @@
                   {#if user.status === 'new'}
                     <span class="badge text-bg-success">New</span>
                   {:else}
-                    <span class="badge text-bg-warning">Existing</span>
+                    <span class="badge text-bg-primary">Existing</span>
                   {/if}
                 </td>
                 <td>
                   {#if user.hasPassword && user.passwordType}
-                    <span
-                      class="badge {user.passwordType === 'SHA256'
-                        ? 'text-bg-info'
-                        : user.passwordType === 'MD5'
-                          ? 'text-bg-warning '
-                          : user.passwordType === 'BCRYPT'
-                            ? 'text-bg-success'
-                            : user.passwordType === 'ARGON2ID'
-                              ? 'text-bg-success'
-                              : user.passwordType === 'PLAINTEXT'
-                                ? 'text-bg-danger'
-                                : user.passwordType === 'UNKNOWN'
-                                  ? 'text-bg-secondary'
-                                  : 'text-bg-secondary'}">
+                    <span class="fw-bold fs-7">
                       {user.passwordType}
                     </span>
                   {:else if user.hasPassword}
@@ -379,47 +376,25 @@
     </div>
   </div>
 
-  <div class="alert alert-info mt-3 mb-0">
-    <i class="fas fa-info-circle me-2"></i>
-    {$_('pages.migration.authme.password-info')}
-  </div>
 
-  {#if previewData.users.some((u) => (!u.hasPassword || u.passwordType === 'UNKNOWN' || u.passwordType === 'PLAINTEXT') && selectedUsers.has(u.username))}
-    <div class="alert alert-warning mt-2 mb-0">
-      <i class="fas fa-exclamation-triangle me-2"></i>
-      {$_('pages.migration.authme.no-password-warning')}
-    </div>
-  {/if}
 
   {#if previewData.panoOnlyUsers && previewData.panoOnlyUsers.length > 0}
     <div class="card mt-3">
-      <div
-        class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
-        <span class="badge text-bg-danger">
-          {$_('pages.migration.authme.pano-only-title', {
-            values: { count: previewData.panoOnlyUsers.length },
-          })}
-        </span>
-        <div class="d-flex flex-wrap gap-2">
-          <button
-            class="btn btn-sm btn-link text-decoration-none px-0 px-md-2"
-            on:click={selectAllPanoOnly}>
-            {$_('buttons.select-all')}
-          </button>
-          <button
-            class="btn btn-sm btn-link text-decoration-none px-0 px-md-2"
-            on:click={deselectAllPanoOnly}>
-            {$_('buttons.deselect-all')}
-          </button>
+      <CardHeader>
+        <div slot="left">
+          <strong>
+            AuthMe'de Bulunmayan {previewData.panoOnlyUsers.length} Veri
+          </strong>
         </div>
-      </div>
-      <div class="card-body p-0">
-        <div class="px-3 pt-3 pb-2">
+        <div slot="middle" style="width: 250px;">
           <SearchInput
             placeholderKey="buttons.find"
             showSpinner={false}
             on:change={(e) => (deleteSearchQuery = e.detail.value)} />
         </div>
+        <div slot="right"></div>
+      </CardHeader>
+      <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-hover mb-0">
             <thead>
@@ -484,6 +459,21 @@
       </div>
     </div>
   {/if}
+
+  <div class="mt-4 d-flex gap-2">
+    <button
+      class="btn btn-secondary"
+      on:click={importUsers}
+      disabled={(selectedUsers.size === 0 && deleteUsers.size === 0) || isImporting}>
+      {#if isImporting}
+        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+      {/if}
+      {$_('buttons.import')}
+    </button>
+    <button class="btn btn-link text-decoration-none" on:click={resetForm} disabled={isImporting}>
+      İptal
+    </button>
+  </div>
 {:else if currentStep === 'result'}
   <!-- Step 3: Import Results -->
   <div class="alert alert-success d-flex align-items-center" role="alert">
@@ -844,14 +834,6 @@
     );
   }
 
-  function selectAll() {
-    selectedUsers = new Set(previewData.users.map((u) => u.username));
-  }
-
-  function deselectAll() {
-    selectedUsers = new Set();
-  }
-
   // Pano-only user delete helpers
   function toggleDeleteUser(username) {
     if (deleteUsers.has(username)) {
@@ -868,14 +850,6 @@
     } else {
       deleteUsers = new Set(previewData.panoOnlyUsers.map((u) => u.username));
     }
-  }
-
-  function selectAllPanoOnly() {
-    deleteUsers = new Set(previewData.panoOnlyUsers.map((u) => u.username));
-  }
-
-  function deselectAllPanoOnly() {
-    deleteUsers = new Set();
   }
 
   // Step 3: Import selected users
