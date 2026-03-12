@@ -1,7 +1,19 @@
 <style>
+  .nav-pills .nav-link {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+    transition: all 0.2s ease;
+  }
+
+  .nav-pills .nav-link:hover {
+    color: var(--bs-white);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
   .nav-pills .nav-link.active {
     background: linear-gradient(to left, rgba(255, 255, 255, 0.15), transparent) var(--bs-primary) !important;
     color: var(--bs-white);
+    font-weight: 600;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     border-top-left-radius: 0;

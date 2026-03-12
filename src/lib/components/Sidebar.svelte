@@ -127,10 +127,10 @@
       <!-- Buttons removed as per user request -->
 
       <!-- Sidebar Tabs -->
-      <ul class="nav nav-pills nav-fill mb-2 gap-1" data-bs-theme="dark">
+      <ul class="nav nav-pills nav-fill gap-1" data-bs-theme="dark">
         <li class="nav-item">
           <button
-            class="nav-link p-2 text-center"
+            class="nav-link p-1 text-center"
             aria-label={$_('components.sidebar.website')}
             use:tooltip={[$_('components.sidebar.website'), { placement: 'bottom' }]}
             on:click={onWebsiteMenuClick}
@@ -141,7 +141,7 @@
         {#if hasPermission(Permissions.MANAGE_SERVERS)}
           <li class="nav-item">
             <button
-              class="nav-link p-2 text-center"
+              class="nav-link p-1 text-center"
               aria-label={$_('components.sidebar.server')}
               use:tooltip={[$_('components.sidebar.server'), { placement: 'bottom' }]}
               on:click={onGameMenuClick}
