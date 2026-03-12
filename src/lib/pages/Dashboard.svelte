@@ -155,83 +155,6 @@
 
   <!-- Masonry Layout for Cards -->
   <masonry-layout cols={$mansoryLayoutCols} gap="16">
-    <!-- Latest Tickets Card -->
-    {#if hasPermission(Permissions.MANAGE_TICKETS)}
-      <div class="ratio ratio-1x1">
-        <div class="card mb-3">
-          <CardHeader>
-            <svelte:fragment slot="left"
-              >{$_('pages.dashboard.last-tickets.title')}</svelte:fragment>
-            <svelte:fragment slot="right">
-              <ViewAllLink href="{base}/tickets" />
-            </svelte:fragment>
-          </CardHeader>
-
-          <div class="card-body p-0 overflow-auto">
-            {#if data.tickets.length === 0}
-              <NoContent />
-            {:else}
-              <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                  {#each data.tickets as ticket, index (ticket)}
-                    <tbody>
-                      <tr>
-                        <td class="align-middle text-nowrap d-flex align-items-center">
-                          <a
-                            class="focus-ring rounded-circle d-inline-block me-2"
-                            use:tooltip={[ticket.writer.username, { placement: 'bottom' }]}
-                            href="{base}/players/detail/{ticket.writer.username}">
-                            <img
-                              src="/api/profile/picture/{ticket.writer.username}?{$avatarVersion}"
-                              alt={$_('pages.dashboard.last-tickets.player-name')}
-                              class="rounded-circle"
-                              height="32"
-                              width="32" />
-                          </a>
-                          <a
-                            class="badge text-bg-primary text-decoration-none rounded focus-ring"
-                            href="{base}/tickets/detail/{ticket.id}"
-                            title={ticket.title}
-                            use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}
-                            aria-label={$_('buttons.view')}>
-                            {ticket.title}
-                          </a>
-                        </td>
-                        <td class="align-middle text-nowrap">
-                          <TicketStatusBadge status={ticket.status} />
-                        </td>
-                      </tr>
-                    </tbody>
-                  {/each}
-                </table>
-              </div>
-            {/if}
-          </div>
-        </div>
-      </div>
-    {/if}
-
-    <!-- Latest Activity Logs Card -->
-    <div class="ratio ratio-1x1">
-      <div class="card mb-3">
-        <CardHeader>
-          <svelte:fragment slot="left">{$_('pages.dashboard.logs.title')}</svelte:fragment>
-          <svelte:fragment slot="right">
-            <ViewAllLink href="{base}/logs" />
-          </svelte:fragment>
-        </CardHeader>
-        <div class="card-body p-0 overflow-auto">
-          <ul class="list-group list-group-flush">
-            {#each data.activityLogs.data as log, index (log)}
-              <ActivityLogRow {log} on:click={onShowViewActivityLogModalClick} />
-            {:else}
-              <NoContent />
-            {/each}
-          </ul>
-        </div>
-      </div>
-    </div>
-
     <!-- Latest Registers Card -->
     {#if hasPermission(Permissions.MANAGE_PLAYERS)}
       <div class="ratio ratio-1x1">
@@ -292,6 +215,83 @@
       </div>
     {/if}
 
+    <!-- Latest Tickets Card -->
+    {#if hasPermission(Permissions.MANAGE_TICKETS)}
+      <div class="ratio ratio-1x1">
+        <div class="card mb-3">
+          <CardHeader>
+            <svelte:fragment slot="left"
+              >{$_('pages.dashboard.last-tickets.title')}</svelte:fragment>
+            <svelte:fragment slot="right">
+              <ViewAllLink href="{base}/tickets" />
+            </svelte:fragment>
+          </CardHeader>
+
+          <div class="card-body p-0 overflow-auto">
+            {#if data.tickets.length === 0}
+              <NoContent />
+            {:else}
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  {#each data.tickets as ticket, index (ticket)}
+                    <tbody>
+                      <tr>
+                        <td class="align-middle text-nowrap d-flex align-items-center">
+                          <a
+                            class="focus-ring rounded-circle d-inline-block me-2"
+                            use:tooltip={[ticket.writer.username, { placement: 'bottom' }]}
+                            href="{base}/players/detail/{ticket.writer.username}">
+                            <img
+                              src="/api/profile/picture/{ticket.writer.username}?{$avatarVersion}"
+                              alt={$_('pages.dashboard.last-tickets.player-name')}
+                              class="rounded-circle"
+                              height="32"
+                              width="32" />
+                          </a>
+                          <a
+                            class="text-decoration-none w-100 rounded focus-ring d-block text-truncate p-1"
+                            href="{base}/tickets/detail/{ticket.id}"
+                            title={ticket.title}
+                            use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}
+                            aria-label={$_('buttons.view')}>
+                            {ticket.title}
+                          </a>
+                        </td>
+                        <td class="align-middle text-nowrap">
+                          <TicketStatusBadge status={ticket.status} />
+                        </td>
+                      </tr>
+                    </tbody>
+                  {/each}
+                </table>
+              </div>
+            {/if}
+          </div>
+        </div>
+      </div>
+    {/if}
+
+    <!-- Latest Activity Logs Card -->
+    <div class="ratio ratio-1x1">
+      <div class="card mb-3">
+        <CardHeader>
+          <svelte:fragment slot="left">{$_('pages.dashboard.logs.title')}</svelte:fragment>
+          <svelte:fragment slot="right">
+            <ViewAllLink href="{base}/logs" />
+          </svelte:fragment>
+        </CardHeader>
+        <div class="card-body p-0 overflow-auto">
+          <ul class="list-group list-group-flush">
+            {#each data.activityLogs.data as log, index (log)}
+              <ActivityLogRow {log} on:click={onShowViewActivityLogModalClick} />
+            {:else}
+              <NoContent />
+            {/each}
+          </ul>
+        </div>
+      </div>
+    </div>
+
     <!-- Pano Platform Info Card -->
     <div class="ratio ratio-1x1">
       <div class="card mb-3">
@@ -313,13 +313,6 @@
                   class="user-select-all font-monospace"
                   aria-describedby="panoVersion"
                   id="panoVersion">{data.about?.platformVersion || '-'}</span>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-primary ms-2"
-                  on:click={() => showWhatsNewModal(false)}>
-                  <i class="fa-solid fa-magic-wand-sparkles me-1"></i>
-                  {$_('components.whats-new.title')}
-                </button>
               </div>
             </div>
             <div class="row">
@@ -337,12 +330,14 @@
               </label>
               <div class="col-6 col-form-label">
                 <a
+                  class="btn btn-sm btn-link px-0"
                   aria-describedby="panoWebsite"
+                  aria-label={$_('pages.settings.about.website')}
                   href={PANO_WEBSITE_URL}
                   id="panoWebsite"
+                  use:tooltip={[$_('pages.settings.about.website'), { placement: 'bottom' }]}
                   target="_blank">
-                  {getDomain(PANO_WEBSITE_URL)}
-                  <i class="fa-solid fa-up-right-from-square ms-2"></i>
+                  <i class="fa-solid fa-up-right-from-square"></i>
                 </a>
               </div>
             </div>
@@ -352,12 +347,14 @@
               </label>
               <div class="col-6 col-form-label">
                 <a
+                  class="btn btn-sm btn-link px-0 text-decoration-none"
                   aria-describedby="panoWebsite"
+                  aria-label="Discord"
                   href="{PANO_WEBSITE_URL}/discord"
                   id="panoWebsite"
+                  use:tooltip={['Discord', { placement: 'bottom' }]}
                   target="_blank">
-                  {getDomain(PANO_WEBSITE_URL)}/discord
-                  <i class="fa-solid fa-up-right-from-square ms-2"></i>
+                  <i class="fab fa-discord fa-lg"></i>
                 </a>
               </div>
             </div>
@@ -368,25 +365,22 @@
 
     <!-- Support Alert Card -->
     <div class="ratio ratio-1x1">
-      <div class="alert alert-primary h-100 mb-0 d-flex flex-column blocks">
+      <a
+        href="{PANO_WEBSITE_URL}/source-code"
+        target="_blank"
+        class="alert alert-primary h-100 mb-0 d-flex flex-column blocks text-decoration-none border-primary hover-shadow">
         <h5 class="alert-heading">{$_('pages.settings.about.support-pano')} ❤️</h5>
-        <p>
+        <p class="mb-0">
           {$_('pages.settings.about.support-pano-text')}
         </p>
-        <div class="mt-auto d-flex flex-column gap-2">
-          <a
-            href="{PANO_WEBSITE_URL}/donate"
-            target="_blank"
-            class="btn btn-link text-decoration-none">
-            <i class="fa-solid fa-heart me-2"></i>
-            {$_('pages.settings.about.support-pano-donate')}
-          </a>
-          <a href="{PANO_WEBSITE_URL}/source-code" target="_blank" class="btn btn-primary">
-            <i class="fa-brands fa-github me-1"></i>
-            {$_('pages.settings.about.support-pano-button')}
-          </a>
+        <div class="mt-auto d-flex align-items-center justify-content-between border-top border-primary border-opacity-25 pt-2">
+          <div class="d-flex align-items-center text-primary">
+            <i class="fa-brands fa-github fa-2x me-2"></i>
+            <span class="fw-bold">{$_('pages.settings.about.support-pano-button')}</span>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-primary"></i>
         </div>
-      </div>
+      </a>
     </div>
   </masonry-layout>
 </div>
@@ -496,7 +490,9 @@
   const mansoryLayoutCols = writable(2);
 
   function checkMobile() {
-    if (window.innerWidth >= 992) {
+    if (window.innerWidth >= 1200) {
+      mansoryLayoutCols.set(4);
+    } else if (window.innerWidth >= 992) {
       mansoryLayoutCols.set(3);
     } else if (window.innerWidth >= 768) {
       mansoryLayoutCols.set(2);

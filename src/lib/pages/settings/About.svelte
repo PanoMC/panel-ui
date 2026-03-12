@@ -37,12 +37,14 @@
             </label>
             <div class="col-md-6 col-form-label">
               <a
+                class="btn btn-sm btn-link px-0 text-decoration-none"
                 aria-describedby="panoWebsite"
+                aria-label={$_('pages.settings.about.website')}
                 href={PANO_WEBSITE_URL}
                 id="panoWebsite"
+                use:tooltip={[$_('pages.settings.about.website'), { placement: 'bottom' }]}
                 target="_blank">
-                {getDomain(PANO_WEBSITE_URL)}
-                <i class="fa-solid fa-up-right-from-square ms-2"></i>
+                <i class="fa-solid fa-up-right-from-square"></i>
               </a>
             </div>
           </div>
@@ -52,12 +54,14 @@
             </label>
             <div class="col-md-6 col-form-label">
               <a
+                class="btn btn-sm btn-link px-0 text-decoration-none"
                 aria-describedby="panoWebsite"
+                aria-label="Discord"
                 href="{PANO_WEBSITE_URL}/discord"
                 id="panoWebsite"
+                use:tooltip={['Discord', { placement: 'bottom' }]}
                 target="_blank">
-                {getDomain(PANO_WEBSITE_URL)}/discord
-                <i class="fa-solid fa-up-right-from-square ms-2"></i>
+                <i class="fab fa-discord fa-lg"></i>
               </a>
             </div>
           </div>
@@ -66,22 +70,22 @@
     </div>
   </div>
   <div class="col-lg-6 order-1 order-lg-2">
-    <div class="alert alert-primary h-100 mb-0 d-flex flex-column blocks">
+    <a
+      href="{PANO_WEBSITE_URL}/source-code"
+      target="_blank"
+      class="alert alert-primary h-100 mb-0 d-flex flex-column blocks text-decoration-none border-primary hover-shadow">
       <h5 class="alert-heading">{$_('pages.settings.about.support-pano')} ❤️</h5>
-      <p>
+      <p class="mb-0">
         {$_('pages.settings.about.support-pano-text')}
       </p>
-      <div class="mt-auto d-flex gap-2">
-        <a href="{PANO_WEBSITE_URL}/source-code" target="_blank" class="btn btn-primary">
-          <i class="fa-brands fa-github me-1"></i>
-          {$_('pages.settings.about.support-pano-button')}
-        </a>
-        <a href="{PANO_WEBSITE_URL}/donate" target="_blank" class="btn btn-link text-decoration-none">
-          <i class="fa-solid fa-heart me-2"></i>
-          {$_('pages.settings.about.support-pano-donate')}
-        </a>
+      <div class="mt-auto d-flex align-items-center justify-content-between border-top border-primary border-opacity-25 pt-2">
+        <div class="d-flex align-items-center text-primary">
+          <i class="fa-brands fa-github fa-2x me-2"></i>
+          <span class="fw-bold">{$_('pages.settings.about.support-pano-button')}</span>
+        </div>
+        <i class="fa-solid fa-arrow-up-right-from-square text-primary"></i>
       </div>
-    </div>
+    </a>
   </div>
 </div>
 
