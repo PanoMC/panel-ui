@@ -522,7 +522,7 @@
   export { resetForm, importUsers, uploadAndPreview };
 
   // ── Mock Data ──
-  const MOCK_ENABLED = true;
+  const MOCK_ENABLED = false;
 
   const mockConfigFile = new File(['backend: SQLITE\n'], 'config.yml', {
     type: 'application/x-yaml',

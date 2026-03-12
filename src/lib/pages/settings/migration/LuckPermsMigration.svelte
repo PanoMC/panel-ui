@@ -185,7 +185,7 @@
         <label class="fw-bold mb-0" for="strategyMerge">
           {$_('pages.migration.luckperms.strategy-merge')}
         </label>
-        <small class="d-block text-muted">{$_('pages.migration.luckperms.strategy-merge-desc')}</small>
+        <small class="d-block opacity-75">{$_('pages.migration.luckperms.strategy-merge-desc')}</small>
       </div>
       <div class="col-3 text-end">
         <div class="form-check form-check-inline me-0">
@@ -205,7 +205,7 @@
         <label class="fw-bold mb-0" for="strategyReplace">
           {$_('pages.migration.luckperms.strategy-replace')}
         </label>
-        <small class="d-block text-muted">{$_('pages.migration.luckperms.strategy-replace-desc')}</small>
+        <small class="d-block opacity-75">{$_('pages.migration.luckperms.strategy-replace-desc')}</small>
       </div>
       <div class="col-3 text-end">
         <div class="form-check form-check-inline me-0">
@@ -297,7 +297,7 @@
                 <td class="text-end">
                   {#if group.nodeCount > 0}
                     <button
-                      class="btn btn-link link-dark p-0 border-0"
+                      class="btn btn-link text-body p-0 border-0"
                       on:click={() => toggleGroupExpand(group.name)}
                       use:tooltip={[expandedGroups.has(group.name) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')]}
                       aria-label={expandedGroups.has(group.name) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')}>
@@ -312,7 +312,7 @@
                     <div class="bg-body-tertiary p-3 border-top">
                       <table class="table table-sm mb-0 small">
                         <thead>
-                          <tr class="text-muted">
+                          <tr class="opacity-75">
                             <th>{$_('pages.migration.luckperms.header-permission')}</th>
                             <th style="width: 60px;">{$_('pages.migration.luckperms.header-value')}</th>
                             <th style="width: 80px;">{$_('pages.migration.luckperms.header-server')}</th>
@@ -330,8 +330,8 @@
                                   <i class="fas fa-times text-danger"></i>
                                 {/if}
                               </td>
-                              <td class="text-muted">{node.server === 'global' ? '—' : node.server}</td>
-                              <td class="text-muted">{node.world === 'global' ? '—' : node.world}</td>
+                              <td class="opacity-75">{node.server === 'global' ? '—' : node.server}</td>
+                              <td class="opacity-75">{node.world === 'global' ? '—' : node.world}</td>
                             </tr>
                           {/each}
                         </tbody>
@@ -406,7 +406,7 @@
                   </td>
                   <td>
                     {#each track.groups as g}
-                      <span class="badge border text-muted fw-normal me-1">{g}</span>
+                      <span class="badge text-bg-secondary me-1">{g}</span>
                     {/each}
                   </td>
                 </tr>
@@ -439,7 +439,7 @@
             <label class="fw-bold mb-0" for="importUserPerms">
               {$_('pages.migration.luckperms.import-user-perms')}
             </label>
-            <small class="d-block text-muted">{$_('pages.migration.luckperms.import-user-perms-desc')}</small>
+            <small class="d-block opacity-75">{$_('pages.migration.luckperms.import-user-perms-desc')}</small>
           </div>
           <div class="col-3 text-end">
             <div class="form-check form-switch d-inline-block">
@@ -489,7 +489,7 @@
                   <td>
                     {#if player.permissionCount > 0}
                       <button
-                        class="btn btn-link link-dark p-0 border-0"
+                        class="btn btn-link text-body p-0 border-0"
                         on:click={() => togglePlayerExpand(player.uuid)}
                         use:tooltip={[expandedPlayers.has(player.uuid) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')]}
                         aria-label={expandedPlayers.has(player.uuid) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')}>
@@ -499,15 +499,15 @@
                   </td>
                   <td class="fw-semibold">
                     {player.username}
-                    <div class="small text-muted fw-normal">{player.uuid}</div>
+                    <div class="small opacity-75 fw-normal">{player.uuid}</div>
                   </td>
-                  <td><span class="badge border text-muted fw-normal">{player.primaryGroup}</span></td>
+                  <td><span class="badge text-bg-secondary">{player.primaryGroup}</span></td>
                   <td class="text-center"><span class="badge text-bg-primary">{player.permissionCount}</span></td>
                   <td class="text-center">
                     {#if player.existsInPano}
-                      <span class="text-success small fw-bold"><i class="fas fa-check me-1"></i>{$_('pages.migration.luckperms.will-import')}</span>
+                      <span class="text-success small fw-bold"><i class="fas fa-check me-2"></i>{$_('pages.migration.luckperms.will-import')}</span>
                     {:else}
-                      <span class="text-muted small"><i class="fas fa-ban me-1"></i>{$_('pages.migration.luckperms.will-skip')}</span>
+                      <span class="text-muted small"><i class="fas fa-ban me-2"></i>{$_('pages.migration.luckperms.will-skip')}</span>
                     {/if}
                   </td>
                 </tr>
@@ -517,7 +517,7 @@
                       <div class="bg-body-tertiary p-3 border-top">
                         <table class="table table-sm mb-0 small">
                           <thead>
-                            <tr class="text-muted">
+                            <tr class="opacity-75">
                               <th>{$_('pages.migration.luckperms.header-permission')}</th>
                               <th style="width: 60px;">{$_('pages.migration.luckperms.header-value')}</th>
                               <th style="width: 80px;">{$_('pages.migration.luckperms.header-server')}</th>
@@ -535,8 +535,8 @@
                                     <i class="fas fa-times text-danger"></i>
                                   {/if}
                                 </td>
-                                <td class="text-muted">{node.server === 'global' ? '—' : node.server}</td>
-                                <td class="text-muted">{node.world === 'global' ? '—' : node.world}</td>
+                                <td class="opacity-75">{node.server === 'global' ? '—' : node.server}</td>
+                                <td class="opacity-75">{node.world === 'global' ? '—' : node.world}</td>
                               </tr>
                             {/each}
                           </tbody>
@@ -636,7 +636,7 @@
   export { resetForm, importData, uploadAndPreview };
 
   // ── Mock Data ──
-  const MOCK_ENABLED = true;
+  const MOCK_ENABLED = false;
 
   const mockConfigFile = new File(['storage-method: H2\n'], 'config.yml', {
     type: 'application/x-yaml',
