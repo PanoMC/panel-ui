@@ -74,7 +74,7 @@
   export let style = '';
   export let multiple = false;
   export let maxFileSize = null;
-  export let icon = '';
+  export let icon = 'fas fa-star-of-life fs-1';
   export let title = '';
   export let subtitle = '';
   export let id = null;

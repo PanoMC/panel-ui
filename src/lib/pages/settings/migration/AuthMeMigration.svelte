@@ -30,7 +30,6 @@
       id="uploadConfig"
       accept={['.yml', '.yaml']}
       on:drop={(e) => handleConfigFile(e.detail)}
-      icon="fas fa-cloud-upload-alt fs-1"
       title={$_('pages.migration.authme.drag-drop-file')}
       subtitle={$_('pages.migration.authme.click-to-browse')} />
   {/if}
@@ -63,8 +62,8 @@
           id="uploadDb"
           accept={['.db', '.sqlite', '.sqlite3']}
           on:drop={(e) => handleDbFile(e.detail)}
-          icon="fas fa-cloud-upload-alt fs-1"
-          title={$_('pages.migration.authme.drag-drop-sqlite')} />
+          title={$_('pages.migration.authme.drag-drop-file')}
+          subtitle={$_('pages.migration.authme.click-to-browse')} />
       {/if}
     </div>
   {/if}
@@ -471,42 +470,6 @@
       {$_('buttons.cancel')}
     </button>
   </div>
-{:else if currentStep === 'result'}
-  <!-- Step 3: Import Results -->
-  <div class="alert alert-success d-flex align-items-center" role="alert">
-    <i class="fas fa-check-circle fs-4 me-3"></i>
-    <div>
-      <h6 class="alert-heading mb-1">{$_('pages.migration.authme.migration-completed')}</h6>
-      <p class="mb-0 small">
-        {@html $_('pages.migration.authme.result-summary-imported', { values: { count: importResult.imported } })}
-        {#if importResult.updated > 0}
-          , {@html $_('pages.migration.authme.result-summary-updated', { values: { count: importResult.updated } })}
-        {/if}
-        , {@html $_('pages.migration.authme.result-summary-skipped', { values: { count: importResult.skipped } })}
-        {#if importResult.deleted > 0}
-          , {@html $_('pages.migration.authme.result-summary-deleted', { values: { count: importResult.deleted } })}
-        {/if}.
-      </p>
-    </div>
-  </div>
-
-  {#if importResult.errors && importResult.errors.length > 0}
-    <div class="alert alert-warning mt-3">
-      <h6 class="alert-heading mb-2">
-        <i class="fas fa-exclamation-triangle me-1"></i> {$_('pages.migration.authme.some-issues-occurred')}
-      </h6>
-      <ul class="mb-0 small">
-        {#each importResult.errors as err}
-          <li><strong>{err.username}</strong>: {err.error}</li>
-        {/each}
-      </ul>
-    </div>
-  {/if}
-
-  <button class="btn btn-primary" on:click={resetForm}>
-    <i class="fas fa-redo me-2"></i>
-    {$_('pages.migration.authme.start-new-migration')}
-  </button>
 {/if}
 
 <script>
@@ -518,6 +481,7 @@
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
   export { resetForm, importUsers, uploadAndPreview };
 
@@ -889,8 +853,8 @@
       }
 
       if (result) {
-        importResult = result;
-        currentStep = 'result';
+        showToast('pages.migration.authme.migration-completed');
+        resetForm();
       }
     } catch (error) {
       clearInterval(progressInterval);

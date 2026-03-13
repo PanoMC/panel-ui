@@ -36,7 +36,6 @@
       id="lpUploadConfig"
       accept={['.yml', '.yaml']}
       on:drop={(e) => handleConfigFile(e.detail)}
-      icon="fas fa-cloud-upload-alt fs-1"
       title={$_('pages.migration.authme.drag-drop-file')}
       subtitle={$_('pages.migration.authme.click-to-browse')} />
   {/if}
@@ -68,8 +67,8 @@
           id="lpUploadDb"
           accept={['.db', '.mv.db']}
           on:drop={(e) => handleDbFile(e.detail)}
-          icon="fas fa-cloud-upload-alt fs-1"
-          title={$_('pages.migration.luckperms.drag-drop-h2')} />
+          title={$_('pages.migration.authme.drag-drop-file')}
+          subtitle={$_('pages.migration.authme.click-to-browse')} />
       {/if}
     </div>
   {/if}
