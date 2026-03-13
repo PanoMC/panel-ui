@@ -54,24 +54,29 @@
               href={UI_URL}
               target="_blank"
               class="nav-link d-flex align-items-center px-2"
-              use:tooltip={windowWidth < 992 ? [$_('components.sidebar.show-website'), { placement: 'bottom' }] : null}>
+              use:tooltip={windowWidth < 992
+                ? [$_('components.sidebar.show-website'), { placement: 'bottom' }]
+                : null}>
               <i class="fas fa-globe me-2"></i>
-              <span class="d-none d-lg-inline text-success">{$_('components.sidebar.show-website')}</span>
+              <span class="d-none d-lg-inline text-success"
+                >{$_('components.sidebar.show-website')}</span>
             </a>
           </div>
         {:else if $sidebarTabsState === 'game'}
           <!-- Selected Server & Connect button -->
           <div class="nav-item d-flex align-items-center">
             <div class="btn-group">
-                <button
+              <button
                 type="button"
                 class="btn btn-sm btn-link nav-link d-flex align-items-center border-0 px-2"
                 on:click={showServersModal}
                 use:tooltip={[
                   $selectedServer
                     ? $_('components.navbar.selected-server')
-                    : (windowWidth >= 992 ? $_('components.server-navigation-menu.select-server') : $_('components.server-navigation-menu.no-selected-server')),
-                  { placement: 'bottom' }
+                    : windowWidth >= 992
+                      ? $_('components.server-navigation-menu.select-server')
+                      : $_('components.server-navigation-menu.no-selected-server'),
+                  { placement: 'bottom' },
                 ]}>
                 {#if $selectedServer}
                   <i
@@ -80,6 +85,7 @@
                     class:text-danger={$selectedServer.status !== 'ONLINE'}></i>
                   <span
                     class="text-truncate d-none d-lg-inline"
+                    class:text-success={$selectedServer.status === 'ONLINE'}
                     class:text-danger={$selectedServer.status !== 'ONLINE'}
                     style="max-width: 150px;">
                     {$selectedServer.customName || $selectedServer.name}
@@ -100,7 +106,10 @@
                 data-bs-toggle="modal"
                 aria-label={$_('components.server-navigation-menu.connect-server')}
                 type="button"
-                use:tooltip={[$_('components.server-navigation-menu.connect-server'), { placement: 'bottom' }]}>
+                use:tooltip={[
+                  $_('components.server-navigation-menu.connect-server'),
+                  { placement: 'bottom' },
+                ]}>
                 <i class="fa-solid fa-plus"></i>
               </button>
             </div>
@@ -118,10 +127,9 @@
       <div class="navbar-nav">
         <!-- Color Options -->
         <div class="nav-item d-flex align-items-center me-2">
-          <ThemeColorMenu 
-            currentTheme={$session.basicData.panelTheme || 'dark'} 
-            onThemeSelect={changePanelTheme} 
-          />
+          <ThemeColorMenu
+            currentTheme={$session.basicData.panelTheme || 'dark'}
+            onThemeSelect={changePanelTheme} />
         </div>
         <!-- Report a bug -->
         <div class="nav-item">
@@ -180,7 +188,7 @@
                             src={sanitizeImageSrc(
                               notification.details.image ||
                                 `/api/profile/picture/${notification.details.username}?${$avatarVersion}`,
-                              '/api/server/icon/default'
+                              '/api/server/icon/default',
                             )}
                             alt={$_('buttons.view')}
                             width="18"
@@ -227,7 +235,10 @@
             class="nav-link h-100 d-flex align-items-center"
             data-bs-toggle="dropdown"
             aria-label={$_('components.navbar.account-dropdown.session')}
-            use:tooltip={[$_('components.navbar.account-dropdown.session'), { placement: 'bottom' }]}>
+            use:tooltip={[
+              $_('components.navbar.account-dropdown.session'),
+              { placement: 'bottom' },
+            ]}>
             <img
               src="/api/profile/picture/{$user.username}?{$avatarVersion}"
               width="20"

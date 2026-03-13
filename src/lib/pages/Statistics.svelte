@@ -2,7 +2,7 @@
 <div class="container vstack gap-3">
   <div class="row g-3 justify-content-between">
     <div class="col-lg-3">
-      <div class="card text-bg-secondary h-100">
+      <div class="card h-100">
         <div class="card-body">
           <p class="card-text">
             {$_('pages.statistics.online-player-text', {
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="col-lg-3">
-      <div class="card text-bg-info h-100">
+      <div class="card h-100">
         <div class="card-body">
           <p class="card-text">
             {$_('pages.statistics.new-register-text', {
@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="col-lg-3">
-      <div class="card text-bg-primary h-100">
+      <div class="card h-100">
         <div class="card-body">
           <p class="card-text">
             {$_('pages.statistics.total-player-text', {
@@ -35,7 +35,7 @@
       </div>
     </div>
     <div class="col-lg-3">
-      <div class="card text-bg-warning h-100">
+      <div class="card h-100">
         <div class="card-body">
           <p class="card-text">
             Örnek İstatistik / Example Statistic

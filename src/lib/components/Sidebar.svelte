@@ -72,6 +72,51 @@
     border-bottom-right-radius: 1rem !important;
     border: none !important;
   }
+
+  /* --- Copper Theme Specific Adjustments --- */
+  :global([data-bs-theme="copper"]) #sidebar {
+    background-color: #1a1512 !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+  }
+
+  :global([data-bs-theme="copper"]) .sidebar-header-container,
+  :global([data-bs-theme="copper"]) .sidebar-scroll-area,
+  :global([data-bs-theme="copper"]) .sidebar-bottom-container {
+    background-color: #1a1512 !important;
+  }
+
+  :global([data-bs-theme="copper"]) .sidebar-header-container {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  :global([data-bs-theme="copper"]) .sidebar-bottom-container {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  :global([data-bs-theme="copper"]) .sidebar-top-fade-overlay {
+    background: linear-gradient(to bottom, #1a1512, transparent);
+  }
+
+  :global([data-bs-theme="copper"]) .sidebar-bottom-fade-overlay {
+    background: linear-gradient(to top, #1a1512, transparent);
+  }
+
+  :global([data-bs-theme="copper"]) .nav-pills .nav-link {
+    color: rgba(255, 255, 255, 0.6) !important;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+  }
+
+  :global([data-bs-theme="copper"]) .nav-pills .nav-link:hover {
+    color: #fff !important;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  :global([data-bs-theme="copper"]) .nav-pills .nav-link.active {
+    background-color: var(--bs-primary) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 </style>
 
 {#if hasPermission(Permissions.MANAGE_SERVERS)}

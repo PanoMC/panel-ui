@@ -1,90 +1,97 @@
 {#if !data.server}
   <PageLoading />
 {:else}
-<div class="container vstack gap-3">
-  <div class="row g-3 justify-content-between">
-    <div class="col-lg-4">
-      <div
-        class="card h-100"
-        class:text-bg-success={data.server.status === ServerStatus.ONLINE}
-        class:text-bg-danger={data.server.status === ServerStatus.OFFLINE}>
-        <div class="card-body">
-          {$_('pages.server.dashboard.server-status', {
-            values: {
-              status:
-                data.server.status === ServerStatus.ONLINE
-                  ? $_('pages.server.dashboard.online')
-                  : $_('pages.server.dashboard.offline'),
-            },
-          })}
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4">
-      <div class="card text-bg-primary h-100">
-        <div class="card-body">
-          {$_('pages.server.dashboard.player', {
-            values: {
-              playerCount: data.server.playerCount,
-              maxPlayerCount: data.server.maxPlayerCount,
-            },
-          })}
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4">
-      <div class="card text-bg-info h-100">
-        <div class="card-body">
-          {#if data.server.status === ServerStatus.ONLINE}
-            {$_('pages.server.dashboard.working-time', {
+  <div class="container vstack gap-3">
+    <div class="row g-3 justify-content-between">
+      <div class="col-lg-4">
+        <div
+          class="card h-100 overflow-hidden position-relative">
+          <div class="card-body position-relative pb-5" style="z-index: 2;">
+            {$_('pages.server.dashboard.server-status', {
               values: {
-                upTime: getUptime(data.server.startTime, checkTime),
+                status:
+                  data.server?.status === ServerStatus.ONLINE
+                    ? $_('pages.server.dashboard.online')
+                    : $_('pages.server.dashboard.offline'),
               },
             })}
-          {:else}
-            {$_('pages.server.dashboard.last-online')}
-            <DateComponent time={data.server.stopTime} />
+          </div>
+          {#if data.server.status === ServerStatus.ONLINE}
+            <ServerActivityMiniChart activityData={data.server.activityData} />
           {/if}
         </div>
       </div>
+      <div class="col-lg-4">
+        <div class="card h-100">
+          <div class="card-body d-flex flex-column align-items-center justify-content-center">
+            <div class="w-100 mb-2">
+              <ServerPlayerChart
+                playerCount={data.server.playerCount}
+                maxPlayerCount={data.server.maxPlayerCount} />
+            </div>
+            <div class="fw-bold">
+              {$_('pages.server.dashboard.player', {
+                values: {
+                  playerCount: data.server.playerCount,
+                  maxPlayerCount: data.server.maxPlayerCount,
+                },
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card h-100">
+          <div class="card-body">
+            {#if data.server?.status === ServerStatus.ONLINE}
+              <div>{($_('pages.server.dashboard.working-time') || '').split(':')[0]}:</div>
+              <div class="mt-2 fs-3 font-monospace fw-bold">
+                {getUptime(data.server?.startTime, checkTime)}
+              </div>
+            {:else}
+              {$_('pages.server.dashboard.last-online')}
+              <DateComponent time={data.server.stopTime} />
+            {/if}
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- Statistic Table -->
-  <div class="card">
-    <div class="card-header">{$_('pages.server.dashboard.statistics')}</div>
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <tbody>
-          <tr>
-            <th scope="row">{$_('pages.server.dashboard.server-name')}</th>
-            <td>{data.server.customName || data.server.name}</td>
-          </tr>
-          <tr>
-            <th scope="row">{$_('pages.server.dashboard.server-type')}</th>
-            <td>{data.server.type}</td>
-          </tr>
-          <tr>
-            <th scope="row">{$_('pages.server.dashboard.local-ip-address')}</th>
-            <td>{data.server.host}:{data.server.port}</td>
-          </tr>
-          <tr>
-            <th scope="row">{$_('pages.server.dashboard.server-version')}</th>
-            <td>{data.server.version}</td>
-          </tr>
-          <tr>
-            <th scope="row">{$_('pages.server.dashboard.total-connected-servers')}</th>
-            <td>{data.connectedServerCount}</td>
-          </tr>
-          <tr>
-            <th scope="row">{$_('pages.server.dashboard.date-added')}</th>
-            <td><DateComponent time={data.server.acceptedTime} /></td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Statistic Table -->
+    <div class="card">
+      <div class="card-header">{$_('pages.server.dashboard.statistics')}</div>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <tbody>
+            <tr>
+              <th scope="row">{$_('pages.server.dashboard.server-name')}</th>
+              <td>{data.server.customName || data.server.name}</td>
+            </tr>
+            <tr>
+              <th scope="row">{$_('pages.server.dashboard.server-type')}</th>
+              <td>{data.server.type}</td>
+            </tr>
+            <tr>
+              <th scope="row">{$_('pages.server.dashboard.local-ip-address')}</th>
+              <td>{data.server.host}:{data.server.port}</td>
+            </tr>
+            <tr>
+              <th scope="row">{$_('pages.server.dashboard.server-version')}</th>
+              <td>{data.server.version}</td>
+            </tr>
+            <tr>
+              <th scope="row">{$_('pages.server.dashboard.total-connected-servers')}</th>
+              <td>{data.connectedServerCount}</td>
+            </tr>
+            <tr>
+              <th scope="row">{$_('pages.server.dashboard.date-added')}</th>
+              <td><DateComponent time={data.server.acceptedTime} /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
 {/if}
 
 <script context="module">
@@ -117,6 +124,8 @@
 
   import DateComponent from '$lib/components/Date.svelte';
   import PageLoading from '$lib/components/PageLoading.svelte';
+  import ServerPlayerChart from '$lib/components/charts/Server/ServerPlayerChart.svelte';
+  import ServerActivityMiniChart from '$lib/components/charts/Server/ServerActivityMiniChart.svelte';
 
   const pageTitle = getContext('pageTitle');
 

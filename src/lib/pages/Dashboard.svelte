@@ -44,6 +44,16 @@
   .welcome-board li:not(:last-child) {
     margin-bottom: 0.5rem;
   }
+
+  @media (max-width: 991.98px) {
+    .welcome-board li:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+
+    .welcome-board ul:not(.mb-0) {
+      margin-bottom: 1rem;
+    }
+  }
 </style>
 
 <!-- Dashboard Page -->
@@ -52,11 +62,11 @@
   {#if data.gettingStartedBlocks.welcomeBoard}
     <div class="alert alert-secondary welcome-board alert-dismissible mb-0 border">
       <div class="row">
-        <div class="mb-3">
+        <div class="mb-3 lead">
           {@html $_('pages.dashboard.welcome-card.description')}
         </div>
         <div class="col-lg-4">
-          <ul class="mb-0 list-unstyled">
+          <ul class="list-unstyled">
             <li>
               <button
                 type="button"
@@ -76,7 +86,7 @@
           </ul>
         </div>
         <div class="col-lg-4">
-          <ul class="mb-0 list-unstyled">
+          <ul class="list-unstyled">
             <li>
               <a class="alert-link focus-ring rounded" href="{base}/posts/create-post">
                 <i class="fa-solid fa-pen me-2"></i>
@@ -105,7 +115,7 @@
           </ul>
         </div>
         <div class="col-lg-4">
-          <ul class="list-unstyled">
+          <ul class="list-unstyled mb-0">
             <li>
               <a
                 class="alert-link focus-ring rounded"
