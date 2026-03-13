@@ -973,6 +973,12 @@
         "session": "Oturum",
         "profile": "Profil",
         "logout": "Çıkış Yap"
+      },
+      "theme_names": {
+        "system": "Sistem",
+        "light": "Açık",
+        "dark": "Koyu",
+        "copper": "Bakır"
       }
     },
     "sidebar": {

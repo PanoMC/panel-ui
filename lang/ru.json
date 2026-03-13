@@ -891,6 +891,12 @@
         "session": "Сессия",
         "profile": "Профиль",
         "logout": "Выйти"
+      },
+      "theme_names": {
+        "system": "Система",
+        "light": "Светлая",
+        "dark": "Темная",
+        "copper": "Медная"
       }
     },
     "sidebar": {

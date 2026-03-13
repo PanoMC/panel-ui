@@ -89,6 +89,16 @@
 
   const initLanguage = languageStuff.init;
 
+  function hideAllModals() {
+    const modals = document.querySelectorAll('.modal.show');
+    modals.forEach((modalEl) => {
+      const modal = window.bootstrap.Modal.getInstance(modalEl);
+      if (modal) {
+        modal.hide();
+      }
+    });
+  }
+
   function initNotificationListeners() {
     addListener('NEW_TICKET', (notification) => {
       const {
@@ -119,6 +129,7 @@
         details: { id },
       } = notification;
 
+      hideAllModals();
       showServerRequestModal(id);
     });
 
@@ -416,6 +427,26 @@
     mounted = true;
 
     initialized.set(true);
+
+    if (browser && !$selectedServer && data.connectedServerCount > 0) {
+      ApiUtil.get({
+        path: '/api/panel/servers',
+        handler: (body) => {
+          if (body.servers && body.servers.length > 0) {
+            const lastServer = body.servers[0];
+            ApiUtil.post({
+              path: `/api/panel/servers/${lastServer.id}/select`,
+              handler: async (selectBody) => {
+                if (selectBody.result === 'ok') {
+                  $selectedServer = lastServer;
+                  await invalidateAll();
+                }
+              },
+            });
+          }
+        },
+      });
+    }
 
     if (
       !showSplashAlways &&

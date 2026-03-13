@@ -969,6 +969,12 @@
         "session": "Session",
         "profile": "Profile",
         "logout": "Logout"
+      },
+      "theme_names": {
+        "system": "System",
+        "light": "Light",
+        "dark": "Dark",
+        "copper": "Copper"
       }
     },
     "sidebar": {
