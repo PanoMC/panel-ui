@@ -56,7 +56,7 @@
               class="nav-link d-flex align-items-center px-2"
               use:tooltip={windowWidth < 992 ? [$_('components.sidebar.show-website'), { placement: 'bottom' }] : null}>
               <i class="fas fa-globe me-2"></i>
-              <span class="d-none d-lg-inline">{$_('components.sidebar.show-website')}</span>
+              <span class="d-none d-lg-inline text-success">{$_('components.sidebar.show-website')}</span>
             </a>
           </div>
         {:else if $sidebarTabsState === 'game'}
@@ -78,7 +78,10 @@
                     class="fas fa-check-circle me-2 d-none d-lg-inline"
                     class:text-success={$selectedServer.status === 'ONLINE'}
                     class:text-danger={$selectedServer.status !== 'ONLINE'}></i>
-                  <span class="text-truncate d-none d-lg-inline" style="max-width: 150px;">
+                  <span
+                    class="text-truncate d-none d-lg-inline"
+                    class:text-danger={$selectedServer.status !== 'ONLINE'}
+                    style="max-width: 150px;">
                     {$selectedServer.customName || $selectedServer.name}
                   </span>
                   <!-- Mobile view icon -->
@@ -113,6 +116,13 @@
     </div>
     <div class="col-4 d-flex justify-content-end">
       <div class="navbar-nav">
+        <!-- Color Options -->
+        <div class="nav-item d-flex align-items-center me-2">
+          <ThemeColorMenu 
+            currentTheme={$session.basicData.panelTheme || 'dark'} 
+            onThemeSelect={changePanelTheme} 
+          />
+        </div>
         <!-- Report a bug -->
         <div class="nav-item">
           <a
@@ -276,6 +286,7 @@
   import ServerNavigationMenu from '$lib/components/sidebar/ServerNavigationMenu.svelte';
   import { show as showServersModal } from './modals/ServersModal.svelte';
   import { UI_URL } from '$lib/variables.js';
+  import ThemeColorMenu from '$lib/components/ThemeColorMenu.svelte';
 
   const selectedServer = getContext('selectedServer');
   const pageTitle = getContext('pageTitle');
