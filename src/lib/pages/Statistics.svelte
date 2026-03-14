@@ -1,7 +1,7 @@
 <!-- Statistics Page -->
 <div class="container vstack gap-3">
   <div class="row g-3 justify-content-between">
-    <div class="col-lg-3">
+    <div class="col-lg-4">
       <div class="card h-100">
         <div class="card-body">
           <p class="card-text">
@@ -12,7 +12,7 @@
         </div>
       </div>
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-4">
       <div class="card h-100">
         <div class="card-body">
           <p class="card-text">
@@ -23,22 +23,13 @@
         </div>
       </div>
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-4">
       <div class="card h-100">
         <div class="card-body">
           <p class="card-text">
             {$_('pages.statistics.total-player-text', {
               values: { totalPlayerCount: data.registeredPlayerCount },
             })}
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-3">
-      <div class="card h-100">
-        <div class="card-body">
-          <p class="card-text">
-            Örnek İstatistik / Example Statistic
           </p>
         </div>
       </div>
