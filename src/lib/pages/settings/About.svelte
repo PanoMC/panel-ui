@@ -208,6 +208,7 @@
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
 
+  import tooltip from '$lib/tooltip.util';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
   import { show as showWhatsNewModal } from '$lib/components/modals/WhatsNewModal.svelte';
 
