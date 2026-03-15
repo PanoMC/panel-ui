@@ -94,7 +94,7 @@
                   <img
                     src={`/api/panel/themes/${theme.id}/screenshots/${key}?hash=${theme.screenshots[key]}`}
                     class="d-block w-100"
-                    style="object-fit: cover;"
+                    style="object-fit: cover; object-position: top;"
                     alt={$_('pages.theme-detail.screenshot') + ` ${i + 1}`} />
                 </div>
               </div>

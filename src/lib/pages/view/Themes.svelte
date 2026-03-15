@@ -26,6 +26,7 @@
   }
   .object-fit-cover {
     object-fit: cover;
+    object-position: top;
   }
 </style>
 
