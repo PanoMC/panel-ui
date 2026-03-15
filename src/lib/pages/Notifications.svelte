@@ -6,11 +6,11 @@
       {#if $notifications.length !== 0}
         <button
           type="button"
+          use:tooltip={[ $_('pages.notifications.delete-all') ]}
           aria-label={$_('pages.notifications.delete-all')}
-          class="btn btn-secondary"
+          class="btn btn-link link-danger"
           on:click={() => onDeleteAllClick()}>
           <i class="fa fa-trash"></i>
-          <span class="d-lg-inline d-none ms-2"> {$_('pages.notifications.delete-all')}</span>
         </button>
       {/if}
     </div>

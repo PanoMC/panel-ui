@@ -139,7 +139,8 @@
           type="button"
           class="navbar-toggler d-block float-left position-absolute"
           aria-label={$_('components.sidebar.hide-menu')}
-          use:tooltip={[$_('components.sidebar.hide-menu')]}
+          title={windowWidth < 992 ? $_('components.sidebar.hide-menu') : null}
+          use:tooltip={windowWidth >= 992 ? [$_('components.sidebar.hide-menu')] : null}
           on:click={onMobileSideBarCollapseClick}
           data-bs-dismiss="offcanvas">
           <i class="fa-solid fa-step-backward"></i>
@@ -242,6 +243,8 @@
   const isSidebarOpen = getContext('isSidebarOpen');
   const siteInfo = getContext('siteInfo');
 
+  let windowWidth = browser ? window.innerWidth : 1200;
+
   $: panoVersion = $siteInfo?.panoVersion || '';
   $: isAlpha = panoVersion.toLowerCase().includes('alpha') || panoVersion === 'local-build';
   $: isBeta = panoVersion.toLowerCase().includes('beta');
@@ -296,5 +299,15 @@
         off.hide(); // href will work normally
       }
     });
+
+    const onResize = () => {
+      windowWidth = window.innerWidth;
+    };
+    window.addEventListener('resize', onResize);
+    onResize();
+
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
   });
 </script>

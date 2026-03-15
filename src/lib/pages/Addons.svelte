@@ -23,12 +23,12 @@
         </button>
         <button
           type="button"
-          class="btn btn-link"
+          class="btn btn-link link-danger"
           aria-label={$_('buttons.disable-all-addons')}
           use:tooltip={[$_('buttons.disable-all-addons'), { placement: 'bottom' }]}
           on:click={disableAllAddons}
           disabled={data.plugins.every((p) => p.status !== 'STARTED')}>
-          <i class="fa-solid fa-power-off"></i>
+          <i class="fa-solid fa-stop"></i>
         </button>
       </div>
 

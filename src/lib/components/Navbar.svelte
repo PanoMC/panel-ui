@@ -9,7 +9,8 @@
           class="navbar-toggler d-inline-block me-2"
           type="button"
           aria-label={$_('components.navbar.show-menu')}
-          use:tooltip={[$_('components.navbar.show-menu'), { placement: 'bottom' }]}
+          title={windowWidth < 992 ? $_('components.navbar.show-menu') : null}
+          use:tooltip={windowWidth >= 992 ? [$_('components.navbar.show-menu'), { placement: 'bottom' }] : null}
           on:click={onSideBarCollapseClick}
           data-bs-toggle="offcanvas"
           data-bs-target="#sidebar"

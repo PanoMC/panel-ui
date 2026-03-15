@@ -79,7 +79,7 @@
                       <span class="badge text-bg-secondary">
                         {data.platformUpdate.channel.capitalize()}
                       </span>
-                      <span class="badge text-bg-gray"
+                      <span class="badge text-bg-primary"
                         >{data.platformUpdate.oldVersion}
                         <i class="fas fa-arrow-right fa-xs"></i>
                         {data.platformUpdate.version}</span>
@@ -275,7 +275,7 @@
                         </h5>
                         <VerifiedStatus status={getVerifiedStatus(update.verified)} />
                       </a>
-                      <span class="badge text-bg-gray">
+                      <span class="badge text-bg-primary">
                         {update.oldVersion}
                         <i class="fas fa-arrow-right fa-xs"></i>
                         {update.version}

@@ -54,7 +54,7 @@
 <PageActions leftClasses="d-lg-flex d-none" middleClasses="d-none d-lg-flex">
   <div class="hstack gap-2" slot="right">
     <button
-      class="btn btn-link"
+      class="btn btn-link link-danger"
       use:tooltip={[$_('buttons.stop'), { placement: 'bottom' }]}
       aria-label={$_('buttons.stop')}
       data-bs-target={$_('buttons.stop')}

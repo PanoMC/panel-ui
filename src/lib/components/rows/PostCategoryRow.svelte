@@ -4,7 +4,7 @@
       type="button"
       aria-label={$_('buttons.delete')}
       use:tooltip={[$_('buttons.delete')]}
-      class="btn btn-link"
+      class="btn btn-link link-danger"
       on:click={onDeleteClick}>
       <i class="fas fa-trash"></i>
     </button>
