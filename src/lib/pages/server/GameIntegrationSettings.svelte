@@ -32,7 +32,7 @@
         <span
           class="position-absolute start-0 top-0 bottom-0 border-start border-2"
           class:border-secondary={serverSettings.authIntegration}
-          class:border-muted={!serverSettings.authIntegration}
+          class:border-gray={!serverSettings.authIntegration}
           style="width: 2px;"></span>
         <span class="ps-3 d-block">
           {$_('pages.server.game-integration.auth-require-verified')}
@@ -60,7 +60,7 @@
         <span
           class="position-absolute start-0 top-0 bottom-0 border-start border-2"
           class:border-secondary={serverSettings.authIntegration}
-          class:border-muted={!serverSettings.authIntegration}
+          class:border-gray={!serverSettings.authIntegration}
           style="width: 2px;"></span>
         <span class="ps-3 d-block">
           {$_('pages.server.game-integration.auth-kick-after-register')}
