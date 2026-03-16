@@ -373,25 +373,7 @@
       </div>
     </div>
 
-    <!-- Support Alert Card -->
-    <div class="ratio ratio-1x1">
-      <a
-        href="{PANO_WEBSITE_URL}/source-code"
-        target="_blank"
-        class="alert alert-primary h-100 mb-0 d-flex flex-column blocks text-decoration-none border-primary hover-shadow">
-        <h5 class="alert-heading">{$_('pages.settings.about.support-pano')} ❤️</h5>
-        <p class="mb-0">
-          {$_('pages.settings.about.support-pano-text')}
-        </p>
-        <div class="mt-auto d-flex align-items-center justify-content-between border-top border-primary border-opacity-25 pt-2">
-          <div class="d-flex align-items-center text-primary">
-            <i class="fa-brands fa-github fa-2x me-2"></i>
-            <span class="fw-bold">{$_('pages.settings.about.support-pano-button')}</span>
-          </div>
-          <i class="fa-solid fa-arrow-up-right-from-square text-primary"></i>
-        </div>
-      </a>
-    </div>
+
   </masonry-layout>
 </div>
 

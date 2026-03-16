@@ -1,15 +1,15 @@
 <!-- All Players Page -->
 <div class="container vstack gap-3">
-  <!-- Action Menu -->
   <PageActions>
-    <!-- Submenu -->
-    <PageNav slot="middle">
+    <PageNav slot="left">
       <PageNavItem
-        href="/players"
-        active={data.pageType === PageTypes.ALL || data.pageType === PageTypes.HAS_PERM}>
+        href="/players?view={Views.PLAYERS}"
+        active={data.view === Views.PLAYERS}>
         {$_('buttons.players')}</PageNavItem>
-      <PageNavItem href="/players?pageType=BANNED" active={data.pageType === PageTypes.BANNED}>
-        {$_('buttons.bans')}</PageNavItem>
+      <PageNavItem
+        href="/players?view={Views.BANS}"
+        active={data.view === Views.BANS}>
+        {$_('pages.players.bans-history-title')}</PageNavItem>
     </PageNav>
     <div slot="right">
       <a href="{base}/migration" class="btn btn-secondary">
@@ -19,21 +19,24 @@
     </div>
   </PageActions>
 
-  <!-- All Players -->
   <div class="card">
     <CardHeader>
       <div slot="left">
-        {$_('pages.players.table-title', {
-          values: {
-            playerCount: data.playerCount,
-            pageType:
-              data.pageType === PageTypes.HAS_PERM
-                ? $_('pages.players.authorized') + ' '
-                : data.pageType === PageTypes.BANNED
-                  ? $_('pages.players.banned') + ' '
-                  : '',
-          },
-        })}
+        {#if data.view === Views.PLAYERS}
+          {$_('pages.players.table-title', {
+            values: {
+              playerCount: data.playerCount,
+              pageType:
+                data.pageType === PageTypes.HAS_PERM
+                  ? $_('pages.players.authorized') + ' '
+                  : data.pageType === PageTypes.BANNED
+                    ? $_('pages.players.banned') + ' '
+                    : '',
+            },
+          })}
+        {:else}
+          {$_('pages.players.bans-history-title')}
+        {/if}
       </div>
 
       <!-- Filters -->
@@ -47,7 +50,7 @@
 
       <!-- Filters -->
       <CardFilters slot="right">
-        {#if !data.permissionGroup && data.pageType !== PageTypes.BANNED}
+        {#if data.view === Views.PLAYERS && !data.permissionGroup}
           <!-- Filters -->
           <CardFiltersItem href="/players" active={data.pageType === PageTypes.ALL}>
             {$_('pages.players.all')}
@@ -56,6 +59,11 @@
             href="/players?pageType=HAS_PERM"
             active={data.pageType === PageTypes.HAS_PERM}>
             {$_('pages.players.authorized')}
+          </CardFiltersItem>
+          <CardFiltersItem
+            href="/players?pageType=BANNED"
+            active={data.pageType === PageTypes.BANNED}>
+            {$_('pages.players.banned')}
           </CardFiltersItem>
         {/if}
       </CardFilters>
@@ -92,15 +100,22 @@
                 tag="th"
                 class="align-middle text-nowrap"
                 scope="col" />
-              <th class="align-middle text-nowrap" scope="col"
-                >{$_('pages.players.table.status')}</th>
-              <Hook
-                name="panel:players:table:header:after-status"
-                tag="th"
-                class="align-middle text-nowrap"
-                scope="col" />
-              <th class="align-middle text-nowrap" scope="col"
-                >{$_('pages.players.table.last-login')}</th>
+              {#if data.view === Views.PLAYERS}
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.players.table.status')}</th>
+                <Hook
+                  name="panel:players:table:header:after-status"
+                  tag="th"
+                  class="align-middle text-nowrap"
+                  scope="col" />
+              {/if}
+              <th class="align-middle text-nowrap" scope="col">
+                {#if data.view === Views.BANS}
+                  {$_('pages.players.table.ban-date')}
+                {:else}
+                  {$_('pages.players.table.last-login')}
+                {/if}
+              </th>
               <Hook
                 name="panel:players:table:header:after-last-login"
                 tag="th"
@@ -116,10 +131,11 @@
             </tr>
           </thead>
           <tbody>
-            {#each data.players as player, index (player)}
+            {#each data.players as player (player.username)}
               <PlayerRow
                 {player}
                 {checkTime}
+                hideStatus={data.view === Views.BANS}
                 on:showEditPlayerModalClick={(event) =>
                   onShowEditPlayerModalClick(event.detail.player)}
                 on:showBanPlayerModalClick={(event) => showBanPlayerModalClick(event.detail.player)}
@@ -147,6 +163,11 @@
 
   import ApiUtil, { buildQueryParams } from '$lib/api.util';
 
+  export const Views = Object.freeze({
+    PLAYERS: 'PLAYERS',
+    BANS: 'BANS',
+  });
+
   export const PageTypes = Object.freeze({
     ALL: 'ALL',
     HAS_PERM: 'HAS_PERM',
@@ -167,7 +188,8 @@
 
     const page = parseInt(searchParams.get('page')) || 1;
     const permissionGroup = searchParams.get('permissionGroup');
-    const pageType = searchParams.get('pageType') || DefaultPageType;
+    const view = searchParams.get('view') || Views.PLAYERS;
+    const pageType = view === Views.BANS ? PageTypes.BANNED : (searchParams.get('pageType') || DefaultPageType);
     const search = searchParams.get('search');
 
     if (!Object.values(PageTypes).includes(pageType)) {
@@ -197,6 +219,7 @@
     body.page = page;
     body.pageType = pageType;
     body.search = search;
+    body.view = view;
 
     return body;
   }
@@ -261,16 +284,18 @@
               permissionGroupName: data.permissionGroup.displayName || data.permissionGroup.name,
             },
           })
-        : $_('pages.players.title', {
-            values: {
-              pageType:
-                data.pageType === PageTypes.HAS_PERM
-                  ? $_('pages.players.authorized') + ' '
-                  : data.pageType === PageTypes.BANNED
-                    ? $_('pages.players.banned') + ' '
-                    : '',
-            },
-          }),
+        : data.view === Views.BANS
+          ? $_('pages.players.bans-history-title')
+          : $_('pages.players.title', {
+              values: {
+                pageType:
+                  data.pageType === PageTypes.HAS_PERM
+                    ? $_('pages.players.authorized') + ' '
+                    : data.pageType === PageTypes.BANNED
+                      ? $_('pages.players.banned') + ' '
+                      : '',
+              },
+            }),
     );
   }
 
@@ -287,6 +312,7 @@
       page: data.page,
       permissionGroup: data.permissionGroup?.name,
       pageType: data.pageType,
+      view: data.view,
       search: search || undefined,
     });
 

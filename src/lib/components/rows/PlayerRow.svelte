@@ -12,7 +12,7 @@
         <span class="fas fa-ellipsis-v"></span>
       </button>
       <div class="dropdown-menu dropdown-menu-start">
-        {#if hasPermission(Permissions.MANAGE_PERMISSION_GROUPS)}
+        {#if !hideStatus && hasPermission(Permissions.MANAGE_PERMISSION_GROUPS)}
           <a
             href="{base}/permissions"
             class="dropdown-item"
@@ -33,6 +33,7 @@
         <button
           type="button"
           class="dropdown-item"
+          class:link-danger={!player.isBanned}
           on:click={() => (player.isBanned ? showUnbanPlayerModal() : showBanPlayerModal())}
           class:disabled={$user.username === player.username ||
             (player.permissionGroup === 'admin' && !$user.admin)}>
@@ -79,19 +80,23 @@
     {player}
     tag="td"
     class="align-middle text-nowrap" />
+  {#if !hideStatus}
+    <td class="align-middle text-nowrap">
+      <PlayerStatusBadge
+        banned={player.isBanned}
+        lastActivityTime={player.lastActivityTime}
+        inGame={player.inGame}
+        {checkTime} />
+    </td>
+    <Hook
+      name="panel:players:table:row:after-status"
+      {player}
+      tag="td"
+      class="align-middle text-nowrap" />
+  {/if}
   <td class="align-middle text-nowrap">
-    <PlayerStatusBadge
-      banned={player.isBanned}
-      lastActivityTime={player.lastActivityTime}
-      inGame={player.inGame}
-      {checkTime} />
+    <Date time={hideStatus ? player.bannedAt : player.lastLoginDate} />
   </td>
-  <Hook
-    name="panel:players:table:row:after-status"
-    {player}
-    tag="td"
-    class="align-middle text-nowrap" />
-  <td class="align-middle text-nowrap"><Date time={player.lastLoginDate} /></td>
   <Hook
     name="panel:players:table:row:after-last-login"
     {player}
@@ -121,6 +126,7 @@
 
   export let player;
   export let checkTime;
+  export let hideStatus = false;
 
   const dispatch = createEventDispatcher();
 

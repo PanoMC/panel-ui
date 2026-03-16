@@ -226,6 +226,7 @@
     "players": {
       "title": "{pageType}Players",
       "by-perm-group-title": "\"{permissionGroupName}\" Authorized Players",
+      "bans-history-title": "Ban History",
       "authorized": "Authorized",
       "banned": "Banned",
       "permissions": "Permissions",
@@ -237,6 +238,7 @@
         "perm-group": "Permission Group",
         "status": "Status",
         "last-login": "Last Login",
+        "ban-date": "Ban Date",
         "register-date": "Register Date"
       }
     },
@@ -300,7 +302,7 @@
         "license": "License",
         "no-licenses": "No license information found. Please run 'npm run generate-licenses' command.",
         "support-pano": "Support Pano",
-        "support-pano-text": "Pano is a completely open-source platform. You can support its development by giving it a star on GitHub.",
+        "support-pano-text": "Pano is free and open source.",
         "support-pano-button": "Star on GitHub",
         "support-pano-donate": "Donate",
         "open-homepage": "Open {name} homepage"

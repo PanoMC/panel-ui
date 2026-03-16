@@ -219,6 +219,7 @@
     "players": {
       "title": "{pageType} Игроки",
       "by-perm-group-title": "\"{permissionGroupName}\" Authorized Players",
+      "bans-history-title": "История блокировок",
       "authorized": "Авторизованные",
       "banned": "Забаненные",
       "permissions": "Разрешения",
@@ -230,6 +231,7 @@
         "perm-group": "Группа разрешений",
         "status": "Статус",
         "last-login": "Последний вход",
+        "ban-date": "Дата блокировки",
         "register-date": "Дата регистрации"
       }
     },
@@ -293,7 +295,7 @@
         "license": "Лицензия",
         "no-licenses": "Информация о лицензиях не найдена. Пожалуйста, запустите команду 'npm run generate-licenses'.",
         "support-pano": "Поддержите Pano",
-        "support-pano-text": "Pano — это платформа с полностью открытым исходным кодом. Вы можете поддержать его разработку, поставив звезду на GitHub.",
+        "support-pano-text": "Pano — бесплатно и с открытым исходным кодом.",
         "support-pano-button": "Поставить звезду на GitHub",
         "support-pano-donate": "Пожертвовать",
         "open-homepage": "Открыть главную страницу {name}"

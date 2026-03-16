@@ -21,7 +21,7 @@
           {#if hasPermission(Permissions.MANAGE_PLAYERS)}
             <button
               aria-label={$_('buttons.delete')}
-              class="btn btn-link"
+              class="btn btn-link link-danger"
               use:tooltip={[$_('buttons.delete'), { placement: 'bottom' }]}
               on:click={() => showConfirmDeletePlayerModal(data.player)}
               class:disabled={$user.username === data.player.username ||
@@ -41,7 +41,7 @@
             {:else}
               <button
                 aria-label={$_('pages.player-detail.ban')}
-                class="btn btn-link"
+                class="btn btn-link link-danger"
                 use:tooltip={[$_('pages.player-detail.ban'), { placement: 'bottom' }]}
                 on:click={() => showConfirmBanPlayerModal(data.player)}
                 class:disabled={$user.username === data.player.username ||

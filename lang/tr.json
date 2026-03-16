@@ -226,6 +226,7 @@
     "players": {
       "title": "{pageType}Oyuncular",
       "by-perm-group-title": "\"{permissionGroupName}\" Yetkili Oyuncular",
+      "bans-history-title": "Yasaklama Geçmişi",
       "authorized": "Yetkili",
       "banned": "Yasaklı",
       "permissions": "Yetkiler",
@@ -233,10 +234,11 @@
       "all": "Tümü",
       "player": "Oyuncu",
       "table": {
-        "name": "Kullanıcı Adı",
+        "name": "İsim",
         "perm-group": "Yetki Grubu",
         "status": "Durum",
         "last-login": "Son Giriş",
+        "ban-date": "Yasak Tarihi",
         "register-date": "Kayıt"
       }
     },
@@ -300,7 +302,7 @@
         "license": "Lisans",
         "no-licenses": "Lisans bilgisi bulunamadı. Lütfen 'npm run generate-licenses' komutunu çalıştırın.",
         "support-pano": "Pano'yu Destekle",
-        "support-pano-text": "Pano, tamamen açık kaynaklı bir platformdur. Gelişimine destek olmak için GitHub üzerinden yıldız verebilirsiniz.",
+        "support-pano-text": "Pano, ücretsiz ve açık kaynaktır.",
         "support-pano-button": "GitHub'da Yıldız Ver",
         "support-pano-donate": "Bağış Yap",
         "open-homepage": "{name} ana sayfasını aç"

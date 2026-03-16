@@ -70,22 +70,29 @@
     </div>
   </div>
   <div class="col-lg-6 order-1 order-lg-2">
-    <a
-      href="{PANO_WEBSITE_URL}/source-code"
-      target="_blank"
-      class="alert alert-primary h-100 mb-0 d-flex flex-column blocks text-decoration-none border-primary hover-shadow">
-      <h5 class="alert-heading">{$_('pages.settings.about.support-pano')} ❤️</h5>
-      <p class="mb-0">
+    <div
+      class="alert alert-primary h-100 mb-0 d-flex flex-column blocks border">
+      <h5 class="alert-heading">{$_('pages.settings.about.support-pano')}</h5>
+      <p class="mb-3">
         {$_('pages.settings.about.support-pano-text')}
       </p>
-      <div class="mt-auto d-flex align-items-center justify-content-between border-top border-primary border-opacity-25 pt-2">
-        <div class="d-flex align-items-center text-primary">
-          <i class="fa-brands fa-github fa-2x me-2"></i>
+      <div class="mt-auto d-flex gap-3">
+        <a
+          href="{PANO_WEBSITE_URL}/source-code"
+          target="_blank"
+          class="btn btn-link p-0 text-decoration-none d-flex align-items-center">
+          <i class="fa-brands fa-github fa-lg me-2"></i>
           <span class="fw-bold">{$_('pages.settings.about.support-pano-button')}</span>
-        </div>
-        <i class="fa-solid fa-arrow-up-right-from-square text-primary"></i>
+        </a>
+        <a
+          href="{PANO_WEBSITE_URL}/donate"
+          target="_blank"
+          class="btn btn-link p-0 text-decoration-none d-flex align-items-center">
+          <i class="fa-solid fa-donate fa-lg me-2"></i>
+          <span class="fw-bold">{$_('pages.settings.about.support-pano-donate')}</span>
+        </a>
       </div>
-    </a>
+    </div>
   </div>
 </div>
 
