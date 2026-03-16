@@ -758,6 +758,8 @@
       "plugins-title": "Addons",
       "other-addons": "Other Addons",
       "not-available": "Not available.",
+      "banned": "Banned",
+      "whitelist": "Whitelist",
       "craftweb-tribute": "We remember CraftWeb with respect, which started us on this journey. There is no migration here, but our gratitude lives on.",
       "authme": {
         "supported-info-title": "Supported formats:",

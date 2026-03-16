@@ -12,7 +12,7 @@
           role="tab"
           aria-controls="vanilla"
           aria-selected="true">
-          Vanilla
+          {$_('pages.migration.banned')}
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -25,7 +25,7 @@
           role="tab"
           aria-controls="spigot"
           aria-selected="false">
-          Spigot
+          {$_('pages.migration.whitelist')}
         </button>
       </li>
     </ul>

@@ -758,6 +758,8 @@
       "plugins-title": "Eklentiler",
       "other-addons": "Diğer Eklentiler",
       "not-available": "Henüz mevcut değil.",
+      "banned": "Yasaklılar",
+      "whitelist": "Beyaz Liste",
       "craftweb-tribute": "Pano'nun ilham kaynağı CraftWeb'e teşekkürler. Burada bir içe aktarma seçeneği yok, ancak hikayesi bizimle.",
       "authme": {
         "supported-info-title": "Desteklenenler:",
