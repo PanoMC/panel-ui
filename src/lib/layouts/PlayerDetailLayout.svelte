@@ -176,6 +176,7 @@
           </table>
         </div>
       </div>
+      <Hook name="panel:player-detail:sidebar" playerData={data} />
     </div>
   </div>
 </div>
@@ -236,6 +237,10 @@
       'panel:player-detail:bottom',
       event,
     );
+    body.hookProps['panel:player-detail:sidebar'] = await executeHookLoad(
+      'panel:player-detail:sidebar',
+      event,
+    );
 
     return body;
   }
@@ -256,6 +261,7 @@
   import DateComponent from '$lib/components/Date.svelte';
   import PlayerPermissionBadge from '$lib/components/badges/PlayerPermissionBadge.svelte';
   import tooltip from '$lib/tooltip.util';
+  import Hook from '$lib/components/Hook.svelte';
   import { currentLanguage } from '$lib/language.util.js';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import ApiUtil from '$lib/api.util';
