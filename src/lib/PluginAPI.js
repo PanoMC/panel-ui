@@ -39,13 +39,15 @@ const lifecycleHandlers = writable({});
 
 export async function executeLifecycle(name, data, event) {
   const handlers = get(lifecycleHandlers)[name] || [];
-  for (const handler of handlers) {
-    try {
-      await handler(data, event);
-    } catch (e) {
-      console.error(`[Lifecycle:${name}] failed`, e);
-    }
-  }
+  await Promise.allSettled(
+    handlers.map(async (handler) => {
+      try {
+        await handler(data, event);
+      } catch (e) {
+        console.error(`[Lifecycle:${name}] failed`, e);
+      }
+    })
+  );
 }
 
 const hookExecutionCache = new WeakMap();
@@ -65,56 +67,59 @@ export async function executeHookLoad(name, event) {
 
   const $h = get(hooks);
   const list = $h[name] || [];
-  const results = [];
-
   console.debug(`[Hook:${name}] Executing ${list.length} hooks`);
 
-  for (let i = 0; i < list.length; i++) {
-    const entry = list[i];
-    const raw = entry.component || entry;
-    let module = raw;
-    if (typeof raw === 'function' && !raw.prototype) {
-      module = await raw();
-      // Cache the resolved module back into the hooks store
-      hooks.update((h) => {
-        if (h[name]) {
-          if (h[name][i].component) {
-            h[name][i].component = Object.assign(module, { _original: raw });
-          } else {
-            h[name][i] = Object.assign(module, { _original: raw });
+  // Resolve all modules and execute load functions in parallel
+  const results = await Promise.all(
+    list.map(async (entry) => {
+      const raw = entry.component || entry;
+      let module = raw;
+      if (typeof raw === 'function' && !raw.prototype) {
+        module = await raw();
+        // Cache the resolved module back into the hooks store
+        hooks.update((h) => {
+          if (h[name]) {
+            const idx = h[name].findIndex((item) => (item.component || item) === raw);
+            if (idx !== -1) {
+              if (h[name][idx].component) {
+                h[name][idx].component = Object.assign(module, { _original: raw });
+              } else {
+                h[name][idx] = Object.assign(module, { _original: raw });
+              }
+            }
+          }
+          return h;
+        });
+      } else if (typeof raw !== 'object' || !raw.default) {
+        module = { default: raw };
+      }
+
+      let props = {};
+      const Component = module.default || module;
+      const loadFn = module.load || (Component && Component.load);
+
+      if (loadFn && !entry.skipLoad) {
+        // PER-EVENT COMPONENT CACHE: reuse results if this component already loaded for another hook in this event
+        let eventCache = null;
+        if (event) {
+          if (!componentLoadCache.has(event)) componentLoadCache.set(event, new Map());
+          eventCache = componentLoadCache.get(event);
+        }
+
+        if (eventCache && eventCache.has(module)) {
+          props = eventCache.get(module);
+        } else {
+          try {
+            props = await loadFn(event);
+            if (eventCache) eventCache.set(module, props);
+          } catch (e) {
+            console.warn(`[Hook:${name}] Load failed`, e);
           }
         }
-        return h;
-      });
-    } else if (typeof raw !== 'object' || !raw.default) {
-      module = { default: raw };
-    }
-
-    let props = {};
-    const Component = module.default || module;
-    const loadFn = module.load || (Component && Component.load);
-
-    if (loadFn && !entry.skipLoad) {
-      // PER-EVENT COMPONENT CACHE: If this component already loaded for another hook in this event, reuse results.
-      let eventCache = null;
-      if (event) {
-        if (!componentLoadCache.has(event)) componentLoadCache.set(event, new Map());
-        eventCache = componentLoadCache.get(event);
       }
-
-      if (eventCache && eventCache.has(module)) {
-        props = eventCache.get(module);
-      } else {
-        try {
-          props = await loadFn(event);
-          if (eventCache) eventCache.set(module, props);
-        } catch (e) {
-          console.warn(`[Hook:${name}] Load failed`, e);
-        }
-      }
-    }
-    results.push(props && typeof props === "object" && Object.keys(props).length > 0 ? props : {});
-  }
+      return props && typeof props === "object" && Object.keys(props).length > 0 ? props : {};
+    })
+  );
 
   // Cache the final results for this specific hook name
   if (event) {
