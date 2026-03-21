@@ -253,11 +253,21 @@
 
     {#if smtpDisabled}
       <div class="alert alert-warning mt-3">
-        {$_('pages.settings.platform.auth.email-disabled-warning')}
+        <div class="hstack gap-3">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <div>
+            {$_('pages.settings.platform.auth.email-disabled-warning')}
+          </div>
+        </div>
       </div>
     {:else if !data.requireEmailVerification}
       <div class="alert alert-warning mt-3">
-        {$_('pages.settings.platform.auth.require-email-verification-warning')}
+        <div class="hstack gap-3">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <div>
+            {$_('pages.settings.platform.auth.require-email-verification-warning')}
+          </div>
+        </div>
       </div>
     {/if}
 
@@ -286,8 +296,12 @@
 
     {#if data.passwordHashAlgorithm === 'MD5'}
       <div class="alert alert-danger mt-2">
-        <i class="fas fa-exclamation-triangle me-2"></i>
-        {$_('pages.settings.platform.auth.password-hash-algorithm-warning')}
+        <div class="hstack gap-3">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <div>
+            {$_('pages.settings.platform.auth.password-hash-algorithm-warning')}
+          </div>
+        </div>
       </div>
     {/if}
 
@@ -329,7 +343,7 @@
     {#if smtpDisabled}
       <div class="alert alert-warning border mb-3" role="alert">
         <div class="hstack gap-3">
-          <i class="fa-solid fa-triangle-exclamation fs-4"></i>
+          <i class="fa-solid fa-triangle-exclamation"></i>
           <div>
             {$_('pages.settings.platform.smtp.smtp-disabled-alert')}
           </div>

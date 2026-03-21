@@ -1,3 +1,4 @@
+<svelte:window on:keydown={handleKeydown} />
 <!-- Navbar -->
 <nav class="navbar navbar-expand navbar-light py-3">
   <div class="container">
@@ -5,8 +6,12 @@
       <!-- Navbar Toggler -->
       <div class="navbar-nav">
         <button
+          bind:this={sidebarToggler}
           class:d-lg-none={$isSidebarOpen}
           class="navbar-toggler d-inline-block me-2"
+          class:active={isFocused}
+          on:focus={() => (isFocused = true)}
+          on:blur={() => (isFocused = false)}
           type="button"
           aria-label={$_('components.navbar.show-menu')}
           title={windowWidth < 992 ? $_('components.navbar.show-menu') : null}
@@ -317,6 +322,19 @@
   let selectingPanelTheme;
 
   let showSelectedServer;
+  let sidebarToggler;
+  let isFocused = false;
+
+  async function handleKeydown(event) {
+    if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+      event.preventDefault();
+      onSideBarCollapseClick();
+    }
+  }
+
+  $: if (!$isSidebarOpen && sidebarToggler && browser) {
+    sidebarToggler.focus();
+  }
 
   $: isServerPath = $page.url.pathname.startsWith((base || '') + '/server');
 

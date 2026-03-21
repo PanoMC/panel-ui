@@ -136,6 +136,10 @@
       <!-- Sidebar Toggler & Logo -->
       <div class="navbar navbar-expand navbar-dark">
         <button
+          bind:this={closeButton}
+          class:active={isFocused}
+          on:focus={() => (isFocused = true)}
+          on:blur={() => (isFocused = false)}
           type="button"
           class="navbar-toggler d-block float-left position-absolute"
           aria-label={$_('components.sidebar.hide-menu')}
@@ -244,6 +248,12 @@
   const siteInfo = getContext('siteInfo');
 
   let windowWidth = browser ? window.innerWidth : 1200;
+  let closeButton;
+  let isFocused = false;
+
+  $: if ($isSidebarOpen && closeButton && browser) {
+    closeButton.focus();
+  }
 
   $: panoVersion = $siteInfo?.panoVersion || '';
   $: isAlpha = panoVersion.toLowerCase().includes('alpha') || panoVersion === 'local-build';
