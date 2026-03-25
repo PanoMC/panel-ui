@@ -1410,7 +1410,8 @@
           },
           "locale": {
             "label": "Görüntüleme Dili",
-            "default": "Platform Varsayılanı ({defaultLocaleName})"
+            "default": "Platform Varsayılanı ({defaultLocaleName})",
+            "mismatch-warning": "Bu oyuncu platformun varsayılan dilini kullanmıyor."
           },
           "can-open-ticket": "Talep oluşturabilir",
           "email-verified": "E-Postası doğrulandı"

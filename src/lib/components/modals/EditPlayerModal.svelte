@@ -114,6 +114,13 @@
                   <option value={$Languages[language].code}>{$Languages[language].name}</option>
                 {/each}
               </select>
+
+              {#if $player.localeCode && $player.localeCode !== $siteInfo.platformLocale}
+                <div class="alert alert-info mt-2 mb-0 py-2 px-3" role="alert">
+                  <i class="fa-solid fa-circle-info me-1"></i>
+                  <small>{$_('components.modals.edit-player.inputs.locale.mismatch-warning')}</small>
+                </div>
+              {/if}
             </div>
             <div class="col-6">
               <div class="form-check form-switch">

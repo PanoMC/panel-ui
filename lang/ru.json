@@ -1325,7 +1325,8 @@
           },
           "locale": {
             "label": "Язык отображения",
-            "default": "По умолчанию ({defaultLocaleName})"
+            "default": "По умолчанию ({defaultLocaleName})",
+            "mismatch-warning": "Этот игрок не использует язык платформы по умолчанию."
           },
           "can-open-ticket": "Может создавать тикеты",
           "email-verified": "E-Mail подтвержден"

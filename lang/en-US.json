@@ -1406,7 +1406,8 @@
           },
           "locale": {
             "label": "Display Language",
-            "default": "Platform Default ({defaultLocaleName})"
+            "default": "Platform Default ({defaultLocaleName})",
+            "mismatch-warning": "This player is not using the platform's default language."
           },
           "can-open-ticket": "Can create ticket",
           "email-verified": "E-Mail is verified"
