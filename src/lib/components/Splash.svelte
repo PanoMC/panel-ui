@@ -99,6 +99,25 @@
       opacity: 0.3;
     }
   }
+
+  .stuck-ui {
+    opacity: 0;
+    pointer-events: none;
+    animation: show-stuck 0.3s ease-in forwards;
+    animation-delay: 6s;
+  }
+
+  .stuck-ui.stuck-hidden {
+    display: none !important;
+    animation: none;
+  }
+
+  @keyframes show-stuck {
+    to {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
 </style>
 
 <svelte:head>
@@ -164,17 +183,17 @@
           : $_('components.splash.refresh')}
       </button>
     </div>
-  {:else if showStuckUI}
-    <div class="mt-4 text-center" in:fade>
-      <small class="text-secondary d-block mb-3">
-        {$_('components.splash.stuck-text')}
-      </small>
-      <button class="btn btn-outline-secondary btn-sm" on:click={() => location.reload()}>
-        <i class="fas fa-sync-alt me-2"></i>
-        {$_('components.splash.manual-refresh')}
-      </button>
-    </div>
   {/if}
+
+  <div class="mt-4 text-center stuck-ui" class:stuck-hidden={networkErrors || jsLoaded}>
+    <small class="text-secondary d-block mb-3">
+      {$_('components.splash.stuck-text')}
+    </small>
+    <a href="." class="btn btn-outline-secondary btn-sm">
+      <i class="fas fa-sync-alt me-2"></i>
+      {$_('components.splash.manual-refresh')}
+    </a>
+  </div>
 </div>
 
 <script>
@@ -188,11 +207,9 @@
     retryingNetworkErrors,
   } from '$lib/Store';
   import { base } from '$app/paths';
-  import { browser } from '$app/environment';
 
   let networkErrors = false;
-  let showStuckUI = false;
-  let stuckTimer;
+  let jsLoaded = false;
 
   const session = getContext('session');
 
@@ -201,14 +218,11 @@
   $: notLoggedIn = basicData.error === 'NOT_LOGGED_IN';
   $: noPermission = basicData.error === 'NO_PERMISSION';
 
-  if (browser) {
-    stuckTimer = setTimeout(() => {
-      showStuckUI = true;
-    }, 6000);
-  }
+  onMount(() => {
+    jsLoaded = true;
+  });
 
   onDestroy(() => {
-    clearTimeout(stuckTimer);
     if (unsubscribe) unsubscribe();
   });
 
