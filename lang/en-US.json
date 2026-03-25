@@ -395,6 +395,7 @@
         "release-channel-warning": "This channel may contain the <strong>newest</strong> releases, but it may <strong>not be stable</strong>. Bugs may occur. <strong>Use at your own risk.</strong>",
         "release-channel-warning-beta": "<strong>Beta</strong> is generally more stable than <strong>alpha</strong>, but it can still contain bugs.",
         "connect-failed-alert": "Connecting your Pano account has been failed! Try again.",
+        "user-locale-mismatch-warning": "Your personal language preference differs from the platform's default language. Visitors without a personal preference will see the platform in a different language.",
         "account": "Account",
         "platform-id": "Platform ID",
         "user": "User",

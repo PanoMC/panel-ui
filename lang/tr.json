@@ -395,6 +395,7 @@
         "release-channel-warning": "Bu kanal <strong>en güncel</strong> sürümleri içerebilir fakat <strong>stabil olmayabilir</strong>. Hatalar/buglar yaşanabilir. <strong>Kendi riskinizle kullanın.</strong>",
         "release-channel-warning-beta": "<strong>Beta</strong>, genelde <strong>alpha</strong>'dan daha stabildir; yine de buglar içerebilir.",
         "connect-failed-alert": "Pano hesabınıza bağlanırken hata oluştu! Lütfen tekrar deneyin.",
+        "user-locale-mismatch-warning": "Kişisel dil tercihiniz, platformun varsayılan dilinden farklı. Kişisel tercihi olmayan ziyaretçiler platformu farklı bir dilde görecektir.",
         "account": "Hesap",
         "platform-id": "Platform ID",
         "user": "Kullanıcı",
