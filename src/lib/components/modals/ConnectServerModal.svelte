@@ -239,14 +239,19 @@
     });
   }
 
+  function cleanHostAddress(address) {
+    // Strip default/invalid ports: -1 (no port in URL) and 443 (HTTPS default)
+    return address.replace(/:(-1|443)$/, '');
+  }
+
   function updateCommandText() {
     let hostAddress;
 
     if (!isRemoteConnection) {
-      hostAddress = get(platformHostAddress);
+      hostAddress = cleanHostAddress(get(platformHostAddress));
     } else {
       // remote: use browser hostname and port from platformHostAddress if exists
-      const platformAddress = get(platformHostAddress);
+      const platformAddress = cleanHostAddress(get(platformHostAddress));
       const portMatch = platformAddress.match(/:(\d+)$/);
       const port = portMatch ? portMatch[1] : null;
       const hostname = window.location.hostname;
