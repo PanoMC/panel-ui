@@ -129,6 +129,7 @@
   export let data;
 
   const showSplash = getContext('showSplash');
+  const panelTheme = getContext('panelTheme');
 
   let versionInfo;
   let connecting;
@@ -221,7 +222,7 @@
     const encodedState = encodeURIComponent(state);
 
     // Redirect to the constructed URL
-    window.location = `${PANO_WEBSITE_URL}/auth?storeAuthorizeToken=${storeAuthToken}&panoCallback=${encodedRedirectUrl}&state=${encodedState}&type=${data.pageType}&hl=${$currentLanguage.code}`;
+    window.location = `${PANO_WEBSITE_URL}/auth?storeAuthorizeToken=${storeAuthToken}&panoCallback=${encodedRedirectUrl}&state=${encodedState}&type=${data.pageType}&hl=${$currentLanguage.code}&theme=${$panelTheme}`;
   }
 
   function sleep(ms) {
@@ -300,7 +301,7 @@
         const encodedState = encodeURIComponent(state);
 
         // Redirect to the constructed URL
-        window.location = `${PANO_WEBSITE_URL}/auth?loginPanoPlatform=${encodedPublicKey}&redirectUrl=${encodedRedirectUrl}&state=${encodedState}&hl=${$currentLanguage.code}`;
+        window.location = `${PANO_WEBSITE_URL}/auth?loginPanoPlatform=${encodedPublicKey}&redirectUrl=${encodedRedirectUrl}&state=${encodedState}&hl=${$currentLanguage.code}&theme=${$panelTheme}`;
       },
     });
   }
