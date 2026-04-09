@@ -203,7 +203,7 @@
     },
     "statistics": {
       "title": "Statistics",
-      "online-player-text": "{onlinePlayerCount} Online on Site",
+      "online-player-text": "{onlinePlayerCount} Online",
       "new-register-text": "{newRegisterCount} New Registration",
       "total-player-text": "{totalPlayerCount} Total Players",
       "website-graph": {
@@ -986,7 +986,7 @@
       "hide-menu": "Hide Menu",
       "website": "Website",
       "server": "Server",
-      "show-website": "Show Website",
+      "show-website": "Website",
       "show-servers": "Show Servers",
       "version-alpha-tooltip": "Experimental version. May contain bugs, use with caution.",
       "version-beta-tooltip": "Preview version. Stable but still in testing phase."
@@ -1720,7 +1720,6 @@
   },
   "panel-themes": {
     "light": "Light",
-    "dark": "Dark",
-    "copper": "Copper"
+    "dark": "Dark"
   }
 }

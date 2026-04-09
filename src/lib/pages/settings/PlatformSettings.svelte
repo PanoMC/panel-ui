@@ -80,12 +80,12 @@
     <div class="row align-items-center">
       <div class="col-lg-9">
         <h5 class="alert-heading mb-2">
-          <i class="fa-solid fa-arrows-rotate me-2"></i>
+          <i class="fa-solid fa-user-circle me-2"></i>
           {data.panoAccount
-            ? '@' + data.panoAccount.username
+            ? data.panoAccount.username
             : $_('pages.settings.platform.online-account')}
         </h5>
-        <p class="mb-0 text-body">
+        <p class="mb-0" class:text-success-emphasis={data.panoAccount} class:text-body={!data.panoAccount}>
           {data.panoAccount
             ? $_('pages.settings.platform.connected-account-description')
             : $_('pages.settings.platform.connect-online-account-alert')}

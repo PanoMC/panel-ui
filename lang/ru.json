@@ -82,7 +82,12 @@
     "copy": "Копировать",
     "select-all": "Выбрать все",
     "deselect-all": "Снять выбор",
-    "disable-all-addons": "Отключить все аддоны"
+    "disable-all-addons": "Отключить все аддоны",
+    "import": "Импорт",
+    "view-all": "Просмотреть все",
+    "settings": "Настройки",
+    "selected": "Выбрано",
+    "enable-all-addons": "Включить все аддоны"
   },
   "pages": {
     "login": {
@@ -127,7 +132,8 @@
         "installed": "{amount} Установленных аддонов"
       },
       "update-available": "Доступно обновление",
-      "disable-all-confirm": "Вы уверены, что хотите отключить все аддоны?"
+      "disable-all-confirm": "Вы уверены, что хотите отключить все аддоны?",
+      "enable-all-confirm": "Вы уверены, что хотите включить все аддоны?"
     },
     "addon-detail": {
       "title": "Детали аддона",
@@ -179,7 +185,8 @@
         "get-themes-and-extensions": "Получить темы и расширения",
         "documentations": "Документация",
         "website": "Веб-сайт",
-        "discord": "Discord"
+        "discord": "Discord",
+        "import-data": "Импорт данных"
       },
       "last-tickets": {
         "title": "Последние тикеты",
@@ -196,7 +203,7 @@
     },
     "statistics": {
       "title": "Статистика",
-      "online-player-text": "{onlinePlayerCount} В сети на сайте",
+      "online-player-text": "{onlinePlayerCount} В сети",
       "new-register-text": "{newRegisterCount} Новых регистраций",
       "total-player-text": "{totalPlayerCount} Всего игроков",
       "website-graph": {
@@ -742,7 +749,11 @@
       "email-notification": "Уведомление",
       "banned-by": "Забанен кем",
       "banned-at": "Забанен когда",
-      "register-ip": "IP-адрес при регистрации"
+      "register-ip": "IP-адрес при регистрации",
+      "sessions": "Сессии",
+      "browser": "Браузер",
+      "expire-date": "Дата истечения",
+      "current-session": "Текущая сессия"
     },
     "migration": {
       "platforms-title": "Импорт из платформы",
@@ -774,7 +785,43 @@
         "update-username": "Обновить имя пользователя",
         "update-username-desc": "Обновить отображаемое имя в соответствии с realName из AuthMe.",
         "update-email": "Обновить email",
-        "update-email-desc": "Обновить адрес электронной почты, если в AuthMe есть другой."
+        "update-email-desc": "Обновить адрес электронной почты, если в AuthMe есть другой.",
+        "upload-config": "Загрузить config.yml",
+        "upload-db": "Загрузить базу данных SQLite (authme.db)",
+        "drag-drop-file": "Перетащите файл сюда",
+        "click-to-browse": "или нажмите для выбора",
+        "drag-drop-sqlite": "Перетащите вашу <strong>базу данных SQLite</strong> сюда",
+        "host": "Хост",
+        "port": "Порт",
+        "database": "База данных",
+        "table": "Таблица",
+        "username": "Имя пользователя",
+        "password": "Пароль",
+        "uploading-processing": "Загрузка и обработка...",
+        "total-data": "{count} Всего данных",
+        "new": "{count} Новых",
+        "existing": "{count} Существующих",
+        "select-all-new": "Выбрать все новые",
+        "email": "Email",
+        "ip": "IP",
+        "status": "Статус",
+        "none": "Нет",
+        "importing-status": "Импорт {count} пользователей...",
+        "deleting-status": "удаление {count}...",
+        "migration-completed": "Перенос завершен!",
+        "result-summary-imported": "Импортировано пользователей: <strong>{count}</strong>",
+        "result-summary-updated": "Обновлено: <strong>{count}</strong>",
+        "result-summary-skipped": "Пропущено: <strong>{count}</strong>",
+        "result-summary-deleted": "Удалено: <strong>{count}</strong>",
+        "status-new": "Новый",
+        "status-existing": "Существующий",
+        "some-issues-occurred": "Произошли некоторые проблемы:",
+        "start-new-migration": "Начать новый перенос",
+        "sqlite-detected-note": "Ваш config.yml указывает на использование SQLite. Пожалуйста, загрузите файл базы данных.",
+        "error-valid-yaml": "Пожалуйста, загрузите корректный YAML файл (.yml или .yaml)",
+        "error-valid-sqlite": "Пожалуйста, загрузите корректный файл базы данных SQLite (.db, .sqlite или .sqlite3)",
+        "error-upload-failed": "Не удалось загрузить файлы. Пожалуйста, попробуйте еще раз.",
+        "error-import-failed": "Ошибка импорта"
       },
       "luckperms": {
         "supported-info-title": "Поддерживаемые форматы:",
@@ -800,8 +847,39 @@
         "not-in-pano": "нет в Pano",
         "will-import": "Будет импортировано",
         "will-skip": "Будет пропущено",
-        "result-title": "Миграция LuckPerms завершена!"
-      }
+        "result-title": "Миграция LuckPerms завершена!",
+        "import-summary-groups": "групп импортировано",
+        "import-summary-updated": "обновлено",
+        "import-summary-group-nodes": "узлов групп",
+        "import-summary-user-nodes": "узлов пользователей",
+        "import-summary-tracks": "треков",
+        "import-summary-skipped": "пропущено",
+        "h2-database-label": "База данных H2 (luckperms-h2-v2.mv.db)",
+        "h2-detected-note": "Ваш config.yml указывает на использование H2. Пожалуйста, загрузите файл базы данных.",
+        "drag-drop-h2": "Перетащите вашу <strong>базу данных H2</strong> сюда",
+        "table-prefix": "Префикс таблиц",
+        "connect-preview": "Подключиться и предпросмотр",
+        "upload-preview": "Загрузить и предпросмотр",
+        "nodes-count": "{count}",
+        "importing-permissions": "Импорт разрешений...",
+        "header-group": "Группа",
+        "header-status": "Статус",
+        "header-permissions": "Разрешения",
+        "header-track": "Трек",
+        "header-groups": "Группы",
+        "header-permission": "Разрешение",
+        "header-value": "Значение",
+        "header-server": "Сервер",
+        "header-world": "Мир",
+        "header-player": "Игрок",
+        "header-primary-group": "Основная группа",
+        "header-nodes": "Узлы",
+        "header-track-name": "Имя трека",
+        "header-total-nodes": "Всего узлов",
+        "error-valid-h2": "Пожалуйста, загрузите корректный файл базы данных H2 (.mv.db или .db)"
+      },
+      "server-title": "Сервер",
+      "other-addons": "Другие аддоны"
     }
   },
   "components": {
@@ -908,7 +986,7 @@
       "hide-menu": "Скрыть меню",
       "website": "Веб-сайт",
       "server": "Сервер",
-      "show-website": "Перейти на сайт",
+      "show-website": "Сайт",
       "show-servers": "Показать серверы",
       "version-alpha-tooltip": "Экспериментальная версия. Может содержать ошибки, используйте с осторожностью.",
       "version-beta-tooltip": "Предварительная версия. Стабильна, но все еще находится на стадии тестирования."
@@ -918,7 +996,8 @@
       "settings": "Настройки",
       "no-selected-server": "Сервер не выбран.",
       "no-server-text": "Подключите сервер для просмотра меню сервера.",
-      "connect-server": "Подключить сервер"
+      "connect-server": "Подключить сервер",
+      "select-server": "Выберите сервер"
     },
     "post-row": {
       "actions": "Действия",
@@ -958,7 +1037,10 @@
     "bottom": {
       "help": "Помощь",
       "pano-market": "Pano Market",
-      "discord": "Discord"
+      "discord": "Discord",
+      "documentation": "Документация",
+      "website": "Веб-сайт",
+      "github": "Github"
     },
     "notification-container": {
       "notification": "Уведомление"
@@ -1031,7 +1113,8 @@
         "title": "Вы уверены, что хотите обновить все ресурсы? Если вы покинете эту страницу, в фоновом режиме продолжится только обновление последнего ресурса."
       },
       "confirm-stop-theme": {
-        "title": "Вы уверены, что хотите остановить текущую активную тему? Это сделает сайт недоступным!"
+        "title": "Вы уверены, что хотите остановить текущую активную тему? Это сделает сайт недоступным!",
+        "account-password": "Пароль аккаунта"
       },
       "confirm-stop-pano": {
         "title": "Вы уверены, что хотите остановить Pano? Это сделает сайт недоступным!",
@@ -1447,10 +1530,15 @@
       "favicon-exceeds-size": "Favicon превышает максимально допустимый размер (1 МБ).",
       "favicon-wrong-content-type": "Неверный тип файла favicon. Разрешены только файлы PNG, JPG, JPEG, GIF и ICO.",
       "website-logo-exceeds-size": "Логотип сайта превышает максимально допустимый размер (2 МБ).",
-      "website-logo-wrong-content-type": "Неверный тип файла логотипа сайта. Разрешены только файлы PNG, JPG, JPEG и GIF."
+      "website-logo-wrong-content-type": "Неверный тип файла логотипа сайта. Разрешены только файлы PNG, JPG, JPEG и GIF.",
+      "session-logged-out-successful": "Сессия успешно завершена!"
     },
     "search-input": {
       "searching": "Поиск..."
+    },
+    "installing-resource": {
+      "title": "Загрузка ресурса",
+      "description": "Ресурс загружается, пожалуйста, подождите. Это может занять несколько секунд."
     }
   },
   "page-error": {

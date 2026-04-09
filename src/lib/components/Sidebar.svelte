@@ -7,7 +7,7 @@
       max-height: 100% !important;
       position: sticky !important;
       top: 0;
-      width: 280px !important;
+      width: 240px !important;
       flex-shrink: 0;
       align-self: stretch;
     }
@@ -66,8 +66,8 @@
     z-index: 2;
   }
 
-  /* Custom rounding for sidebar */
   #sidebar {
+    width: 240px !important;
     border-top-right-radius: 1rem !important;
     border-bottom-right-radius: 1rem !important;
     border: none !important;
@@ -117,6 +117,19 @@
     color: #fff !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
+
+  .sidebar-header-container .navbar-brand {
+    transition: none;
+  }
+
+
+  .navbar-toggler i {
+    transition: transform 0.2s ease;
+  }
+
+  .navbar-toggler:hover i {
+    transform: translateX(-2px);
+  }
 </style>
 
 {#if hasPermission(Permissions.MANAGE_SERVERS)}
@@ -147,10 +160,13 @@
           use:tooltip={windowWidth >= 992 ? [$_('components.sidebar.hide-menu')] : null}
           on:click={onMobileSideBarCollapseClick}
           data-bs-dismiss="offcanvas">
-          <i class="fa-solid fa-step-backward"></i>
+          <i class="fa-solid fa-bars"></i>
         </button>
 
-        <a class="navbar-brand m-auto position-relative focus-ring" href="{base}/">
+        <a
+          class="navbar-brand m-auto position-relative focus-ring focus-ring-white rounded d-flex align-items-center justify-content-center"
+          href="{base}/"
+          style="width: 48px; height: 48px;">
           <img alt="Pano" use:tooltip={['Pano']} src={base + '/assets/img/logo.svg'} width="20" />
           {#if isAlpha}
             <span

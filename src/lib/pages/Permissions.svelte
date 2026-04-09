@@ -69,7 +69,7 @@
           on:click={createGroup}
           aria-label={$_('pages.permissions.panel.actions.create-group')}
           use:tooltip={[$_('pages.permissions.panel.actions.create-group'), { placement: 'bottom' }]}>
-          <i class="fa fa-users"></i>
+          <i class="fa fa-plus"></i>
         </button>
       {:else if showTracks}
         <button
@@ -87,7 +87,7 @@
           on:click={openUserSearch}
           aria-label={$_('pages.permissions.panel.actions.add-player')}
           use:tooltip={[$_('pages.permissions.panel.actions.add-player'), { placement: 'bottom' }]}>
-          <i class="fa fa-user-plus"></i>
+          <i class="fa fa-plus"></i>
         </button>
       {/if}
 

@@ -185,7 +185,7 @@
         "manage-players": "Oyuncuları Yönet",
         "get-themes-and-extensions": "Tema ve Eklenti Al",
         "documentations": "Dokümantasyon",
-        "website": "Website",
+        "website": "Web Site",
         "discord": "Discord"
       },
       "last-tickets": {
@@ -203,11 +203,11 @@
     },
     "statistics": {
       "title": "İstatistikler",
-      "online-player-text": "{onlinePlayerCount} Sitede Çevrimiçi",
+      "online-player-text": "{onlinePlayerCount} Çevrimiçi",
       "new-register-text": "{newRegisterCount} Yeni Kayıt",
       "total-player-text": "{totalPlayerCount} Toplam Oyuncu",
       "website-graph": {
-        "title": "Website Aktivitesi",
+        "title": "Web Site Aktivitesi",
         "week": "Hafta",
         "month": "Ay"
       },
@@ -294,7 +294,7 @@
         "info": "Pano Platform Bilgisi",
         "version": "Versiyon",
         "release": "Sürüm",
-        "website": "Website",
+        "website": "Web Site",
         "discord": "Discord",
         "open-source-licenses": "Açık Kaynak Lisanslar",
         "author": "Yazar",
@@ -308,7 +308,7 @@
         "open-homepage": "{name} ana sayfasını aç"
       },
       "site-settings": {
-        "title": "Website Ayarları",
+        "title": "Web Site Ayarları",
         "preferences": "Tercihler",
         "inputs": {
           "website-name": {
@@ -319,7 +319,7 @@
             "label": "Site Açıklaması"
           },
           "website-url": {
-            "label": "Website Adresi",
+            "label": "Web Site Adresi",
             "placeholder": "https://benim-minecraft-sunucu-websitem.com"
           },
           "register-agreement": {
@@ -345,7 +345,7 @@
             "helper": "PNG, ICO, GIF, JPG formatında, maksimum 1 mb ve 16x16 piksel olmalı."
           },
           "website-logo": {
-            "label": "Website Logosu",
+            "label": "Web Site Logosu",
             "server-icon": "Sunucu İkonu",
             "helper": "PNG, JPEG, GIF formatında, maksimum 2 mb olmalı."
           },
@@ -371,7 +371,7 @@
         },
         "ssl": {
           "title": "SSL & Port Ayarları",
-          "lets-encrypt-warning": "Not: Let's Encrypt geçerli bir Website Adresi gerektirir ve sunucunuza 80 ile 443 portlarından erişilebiliyor olmalıdır.",
+          "lets-encrypt-warning": "Not: Let's Encrypt geçerli bir Web Site Adresi gerektirir ve sunucunuza 80 ile 443 portlarından erişilebiliyor olmalıdır.",
           "lets-encrypt-invalid-config": "Let's Encrypt için geçerli bir genel alan adı (localhost olamaz), HTTP Portu 80, HTTPS Portu 443 olmalı ve şu anki tarayıcı adresiniz Web Sitesi URL'si ile eşleşmelidir.",
           "modes": {
             "disabled": "Devre Dışı",
@@ -988,9 +988,9 @@
     },
     "sidebar": {
       "hide-menu": "Menüyü Gizle",
-      "website": "Website",
+      "website": "Web Site",
       "server": "Sunucu",
-      "show-website": "Web Site'yi Görüntüle",
+      "show-website": "Web Site",
       "show-servers": "Sunucuları Göster",
       "version-alpha-tooltip": "Deneysel sürüm. Hatalar içerebilir, dikkatli kullanın.",
       "version-beta-tooltip": "Önizleme sürümü. Stabildir ancak hala test aşamasındadır."
@@ -1048,7 +1048,7 @@
       "notification": "Bildirim"
     },
     "settings-layout": {
-      "website": "Website",
+      "website": "Web Site",
       "platform": "Platform",
       "migration": "İçe Aktar",
       "updates": "Güncellemeler",
@@ -1722,7 +1722,6 @@
   },
   "panel-themes": {
     "light": "Açık",
-    "dark": "Koyu",
-    "copper": "Bakır"
+    "dark": "Koyu"
   }
 }

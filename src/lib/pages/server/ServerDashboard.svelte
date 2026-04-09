@@ -2,64 +2,93 @@
   <PageLoading />
 {:else}
   <div class="container vstack gap-3">
-    <div class="row g-3 justify-content-between">
-      <div class="col-lg-4">
-        <div
-          class="card h-100 overflow-hidden position-relative">
-          <div class="card-body position-relative pb-5" style="z-index: 2;">
-            {$_('pages.server.dashboard.server-status', {
-              values: {
-                status:
-                  data.server?.status === ServerStatus.ONLINE
-                    ? $_('pages.server.dashboard.online')
-                    : $_('pages.server.dashboard.offline'),
-              },
-            })}
+    <div class="row g-3">
+      <!-- Server Status -->
+      <div class="col-lg-3">
+        <div class="card aspect-ratio-1x1">
+          <CardHeader>
+            <span slot="left">{$_('pages.server.dashboard.server-status').split('{')[0].trim()}</span>
+            <span slot="right">
+              {data.server?.status === ServerStatus.ONLINE
+                ? $_('pages.server.dashboard.online')
+                : $_('pages.server.dashboard.offline')}
+            </span>
+          </CardHeader>
+          <div class="card-body p-0 d-flex align-items-center justify-content-center overflow-hidden">
+            {#if data.server.status === ServerStatus.ONLINE}
+              <ServerActivityMiniChart activityData={data.server.activityData} />
+            {/if}
           </div>
-          {#if data.server.status === ServerStatus.ONLINE}
-            <ServerActivityMiniChart activityData={data.server.activityData} />
-          {/if}
         </div>
       </div>
-      <div class="col-lg-4">
-        <div class="card h-100">
-          <div class="card-body d-flex flex-column align-items-center justify-content-center">
-            <div class="w-100 mb-2">
+
+      <!-- Player Count -->
+      <div class="col-lg-3">
+        <div class="card aspect-ratio-1x1">
+          <CardHeader>
+            <span slot="left">{$_('pages.statistics.total-statistics.players').replace(':', '')}</span>
+            <span slot="right">
+              {data.server.playerCount} / {data.server.maxPlayerCount}
+            </span>
+          </CardHeader>
+          <div class="card-body d-flex flex-column align-items-center justify-content-center overflow-hidden">
+            <div class="w-100 p-2">
               <ServerPlayerChart
                 playerCount={data.server.playerCount}
                 maxPlayerCount={data.server.maxPlayerCount} />
             </div>
-            <div class="fw-bold">
-              {$_('pages.server.dashboard.player', {
-                values: {
-                  playerCount: data.server.playerCount,
-                  maxPlayerCount: data.server.maxPlayerCount,
-                },
-              })}
-            </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
-        <div class="card h-100">
-          <div class="card-body">
+
+      <!-- Uptime -->
+      <div class="col-lg-3">
+        <div class="card aspect-ratio-1x1">
+          <CardHeader>
+            <span slot="left">{($_('pages.server.dashboard.working-time') || '').split(':')[0]}</span>
+            <span slot="right">
+              {data.server?.status === ServerStatus.ONLINE ? 'Active' : 'Offline'}
+            </span>
+          </CardHeader>
+          <div class="card-body d-flex align-items-center justify-content-center text-center">
             {#if data.server?.status === ServerStatus.ONLINE}
-              <div>{($_('pages.server.dashboard.working-time') || '').split(':')[0]}:</div>
-              <div class="mt-2 fs-3 font-monospace fw-bold">
+              <div class="fs-4 font-monospace fw-bold">
                 {getUptime(data.server?.startTime, checkTime)}
               </div>
             {:else}
-              {$_('pages.server.dashboard.last-online')}
               <DateComponent time={data.server.stopTime} />
             {/if}
           </div>
         </div>
       </div>
+
+      <!-- Server Version -->
+      <div class="col-lg-3">
+        <div class="card aspect-ratio-1x1">
+          <CardHeader>
+            <span slot="left">{$_('pages.server.dashboard.server-version').replace(':', '')}</span>
+            <span slot="right">Stable</span>
+          </CardHeader>
+          <div class="card-body d-flex align-items-center justify-content-center text-center">
+            <div class="fs-4 font-monospace fw-bold">
+              {data.server.version}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <style>
+      .aspect-ratio-1x1 {
+        aspect-ratio: 1 / 1;
+      }
+    </style>
 
     <!-- Statistic Table -->
     <div class="card">
-      <div class="card-header">{$_('pages.server.dashboard.statistics')}</div>
+      <CardHeader>
+        <span slot="left">{$_('pages.server.dashboard.statistics')}</span>
+      </CardHeader>
       <div class="table-responsive">
         <table class="table table-hover">
           <tbody>
@@ -126,6 +155,7 @@
   import PageLoading from '$lib/components/PageLoading.svelte';
   import ServerPlayerChart from '$lib/components/charts/Server/ServerPlayerChart.svelte';
   import ServerActivityMiniChart from '$lib/components/charts/Server/ServerActivityMiniChart.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
 
   const pageTitle = getContext('pageTitle');
 
@@ -140,11 +170,11 @@
     const now = new Date();
 
     const duration = intervalToDuration({
-      start: time,
+      start: new Date(time),
       end: now,
     });
 
-    const days = differenceInCalendarDays(time, now);
+    const days = duration.days || 0;
     const hours = duration['hours'] || 0;
     const minutes = duration['minutes'] || 0;
     const seconds = duration['seconds'] || 0;

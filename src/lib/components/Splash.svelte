@@ -104,7 +104,7 @@
     opacity: 0;
     pointer-events: none;
     animation: show-stuck 0.3s ease-in forwards;
-    animation-delay: 6s;
+    animation-delay: 10s;
   }
 
   .stuck-ui.stuck-hidden {
@@ -167,7 +167,7 @@
   {#if networkErrors}
     <div class="mt-4 text-center">
       {#if notLoggedIn}
-        {$_('components.splash.errors.session')}
+        <small>{$_('components.splash.errors.session')}</small>
       {:else if noPermission}
         {$_('components.splash.errors.permission')}
       {:else}
@@ -175,18 +175,18 @@
       {/if}
       <br />
       <button
-        class="btn btn-secondary mt-3"
+        class="btn btn-sm btn-outline-secondary mt-3"
         on:click={onResumeClick}
         class:disabled={$retryingNetworkErrors}>
         {$retryingNetworkErrors
           ? $_('components.splash.refreshing')
-          : $_('components.splash.refresh')}
+          : $_('components.splash.manual-refresh')}
       </button>
     </div>
   {/if}
 
   <div class="mt-4 text-center stuck-ui" class:stuck-hidden={networkErrors || jsLoaded}>
-    <small class="text-secondary d-block mb-3">
+    <small class="d-block mb-3">
       {$_('components.splash.stuck-text')}
     </small>
     <a href="." class="btn btn-outline-secondary btn-sm">

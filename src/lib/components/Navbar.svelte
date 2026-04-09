@@ -20,7 +20,7 @@
           data-bs-toggle="offcanvas"
           data-bs-target="#sidebar"
           aria-controls="sidebar">
-          <i class="fa-solid fa-step-forward"></i>
+          <i class="fa-solid fa-bars"></i>
         </button>
 
         {#if $sidebarTabsState === 'website'}
@@ -33,9 +33,10 @@
               use:tooltip={windowWidth > 0 && windowWidth < 992
                 ? [$_('components.sidebar.show-website'), { placement: 'bottom' }]
                 : null}>
-              <i class="fas fa-globe text-success d-lg-none"></i>
-              <span class="d-none d-lg-inline text-success"
+              <i class="fas fa-globe d-lg-none"></i>
+              <span class="d-none d-lg-inline"
                 >{$_('components.sidebar.show-website')}</span>
+              <i class="fa-solid fa-arrow-up-right-from-square ms-2 d-none d-lg-inline-block"></i>
             </a>
           </div>
         {:else if $sidebarTabsState === 'game'}
@@ -101,50 +102,7 @@
     </div>
     <div class="col-4 d-flex justify-content-end">
       <div class="navbar-nav">
-        <!-- Panel Theme Switcher -->
-        <div class="nav-item dropdown">
-          {#if selectingPanelTheme}
-            <i class="nav-link fa-solid fa-spinner fa-spin"></i>
-          {:else}
-            <button
-              use:tooltip={[$_('components.navbar.panel-theme'), { placement: 'bottom' }]}
-              aria-label={$_('components.navbar.panel-theme')}
-              class="nav-link"
-              data-bs-toggle="dropdown"
-              type="button"
-              class:disabled={selectingPanelTheme}
-              disabled={selectingPanelTheme}>
-              <i class="fa-solid fa-palette"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <h6 class="dropdown-header">{$_('components.navbar.panel-theme')}</h6>
-              {#each panelThemes as theme}
-                <li>
-                  <button
-                    type="button"
-                    class="dropdown-item"
-                    class:active={($session.basicData.panelTheme || 'dark') === theme}
-                    on:click={() => changePanelTheme(theme)}>
-                    {$_('panel-themes.' + theme)}
-                  </button>
-                </li>
-              {/each}
-            </ul>
-          {/if}
-        </div>
 
-        <!-- Report a bug -->
-        <div class="nav-item">
-          <a
-            class="nav-link"
-            href="https://github.com/PanoMC/Pano/issues/new"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={$_('components.navbar.report-a-bug')}
-            use:tooltip={[$_('components.navbar.report-a-bug'), { placement: 'bottom' }]}>
-            <i class="fa-solid fa-bug"></i>
-          </a>
-        </div>
 
         <!-- Notifications Dropdown -->
         <div class="nav-item dropdown" id="quickNotificationsDropdown">
@@ -311,7 +269,6 @@
   const sidebarTabsState = getContext('sidebarTabsState');
   const siteInfo = getContext('siteInfo');
 
-  const panelThemes = ['light', 'dark', 'copper'];
 
   let quickNotificationProcessID = 0;
   let windowWidth = browser ? window.innerWidth : 1200;
@@ -319,7 +276,6 @@
   let checkTime = 0;
   let interval;
   let showingQuickNotification;
-  let selectingPanelTheme;
 
   let showSelectedServer;
   let sidebarToggler;
@@ -342,32 +298,6 @@
     toggleSidebar(isSidebarOpen);
   }
 
-  function changePanelTheme(theme) {
-    if ($siteInfo?.isDemo) {
-      document.documentElement.setAttribute('data-bs-theme', theme);
-      $session.basicData.panelTheme = theme;
-      $panelTheme = theme;
-      return;
-    }
-
-    selectingPanelTheme = true;
-
-    ApiUtil.put({
-      path: '/api/panel/panelTheme/select',
-      body: { theme },
-      handler: (body) => {
-        if (body.error) {
-          location.reload();
-          return;
-        }
-
-        document.documentElement.setAttribute('data-bs-theme', theme);
-        $session.basicData.panelTheme = theme;
-        $panelTheme = theme;
-        selectingPanelTheme = false;
-      },
-    });
-  }
 
   function onLogout() {
     logout();
@@ -482,3 +412,13 @@
     }, {});
   }
 </script>
+
+<style>
+  .navbar-toggler i {
+    transition: transform 0.2s ease;
+  }
+
+  .navbar-toggler:hover i {
+    transform: translateX(2px);
+  }
+</style>

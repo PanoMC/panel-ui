@@ -1,11 +1,70 @@
-<div class="w-100 flex-grow-1 d-flex align-items-center">
-  <div class="container">
-    <div class="col-lg-6 mx-auto vstack gap-3">
-      {#if !data.accountConnected}
-        {@render accountNotConnectedSnippet()}
-      {:else if !modalOpen}
-        {@render loadingSnippet()}
-      {/if}
+<style>
+  .connect-account-board {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  :global([data-bs-theme='light']) .connect-account-board {
+    --welcome-gradient: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.95) 20%,
+      rgba(255, 255, 255, 0.5) 100%
+    );
+  }
+
+  :global([data-bs-theme='dark']) .connect-account-board,
+  :global([data-bs-theme='copper']) .connect-account-board {
+    --welcome-gradient: linear-gradient(
+      90deg,
+      rgba(20, 22, 25, 0.95) 20%,
+      rgba(20, 22, 25, 0.5) 100%
+    );
+  }
+
+  @media (max-width: 991.98px) {
+    .connect-account-board {
+      --welcome-gradient: linear-gradient(
+        180deg,
+        rgba(var(--bs-body-bg-rgb), 0.95) 40%,
+        rgba(var(--bs-body-bg-rgb), 0.8) 100%
+      ) !important;
+    }
+  }
+
+  .connect-account-board .alert-link {
+    text-decoration: none;
+  }
+
+  .connect-account-board.interactive {
+    cursor: pointer;
+  }
+</style>
+
+<div class="w-100 flex-grow-1 d-flex flex-column">
+  {#if !data.accountConnected}
+    <div class="container mt-3">
+      <PageActions leftClasses="d-flex">
+        <button class="btn btn-link" on:click={onCancelClick} slot="left">
+          <i class="fas fa-arrow-left"></i>
+          <span class="d-lg-inline d-none ms-2">
+            {$_(data.pageType === PageTypes.ADDON ? 'buttons.addons' : 'buttons.themes')}
+          </span>
+        </button> 
+      </PageActions>
+    </div>
+  {/if}
+
+  <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
+    <div class="container">
+      <div class="col-lg-10 mx-auto vstack gap-3">
+        {#if !data.accountConnected}
+          {@render accountNotConnectedSnippet()}
+        {:else if !modalOpen}
+          {@render loadingSnippet()}
+        {/if}
+      </div>
     </div>
   </div>
 </div>
@@ -13,26 +72,37 @@
 <ConfirmInstallResourceModal />
 
 {#snippet accountNotConnectedSnippet()}
-  <img
-    src={base + '/assets/img/not-connected.png'}
-    alt="Not Connected"
-    width="250"
-    class="img-fluid d-block m-auto" />
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+  <div
+    class="alert alert-secondary connect-account-board border mb-0 focus-ring"
+    class:interactive={!connecting}
+    role="alert"
+    on:click={!connecting ? onConnectClick : null}
+    style="background-image: var(--welcome-gradient), url('{base}/assets/img/connect-pano-bg.png');">
+    <div class="row align-items-center">
+      <div class="col-lg-9">
+        <h5 class="alert-heading mb-2">
+          <i class="fa-solid fa-user-circle me-2"></i>
+          {$_('pages.settings.platform.online-account')}
+        </h5>
+        <p class="mb-0 text-body">
+          {$_('pages.settings.platform.connect-online-account-alert')}
+        </p>
+      </div>
+      <div class="col-lg-3 text-lg-end mt-3 mt-lg-0">
+        <div class="alert-link rounded border-0 bg-transparent p-0">
+          {connecting ? $_('buttons.connecting') : $_('buttons.connect')}
 
-  <div class="alert alert-danger mb-0 d-flex align-items-center gap-3">
-    <i class="fa-solid fa-circle-exclamation"></i>
-    <div>
-      <strong>
-        {$_('components.store-loading.account-not-connected')}
-      </strong>
-      <br />
-      {$_('components.store-loading.not-connected-description')}
+          {#if connecting}
+            <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+          {:else}
+            <i class="fa-solid fa-arrow-right ms-1"></i>
+          {/if}
+        </div>
+      </div>
     </div>
   </div>
-
-  <button class="btn btn-secondary" on:click={onConnectClick} disabled={connecting}>
-    {connecting ? $_('buttons.connecting') : $_('buttons.connect')}
-  </button>
 {/snippet}
 
 
@@ -110,6 +180,8 @@
 <script>
   import { getContext, tick } from 'svelte';
   import { _ } from 'svelte-i18n';
+
+  import PageActions from '$lib/components/PageActions.svelte';
 
   import { goto } from '$app/navigation';
   import { page } from '$app/state';

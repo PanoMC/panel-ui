@@ -1,35 +1,24 @@
 <style>
-
-
-  .nav-pills .nav-link {
-    font-weight: 500;
+  .nav .nav-link {
     color: rgba(255, 255, 255, 0.65);
-    transition: all 0.2s ease;
   }
 
-  .nav-pills .nav-link:hover {
-    color: var(--bs-white);
-    background: rgba(255, 255, 255, 0.05);
+  .nav .nav-link:hover {
+    color: var(--bs-body-color) !important;
   }
 
-  .nav-pills .nav-link.active {
-    background: linear-gradient(to left, rgba(255, 255, 255, 0.15), transparent) var(--bs-primary) !important;
-    color: var(--bs-white);
+  .nav .nav-link.active {
+    color: var(--bs-body-color) !important;
     font-weight: 600;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
   }
 </style>
 
-
-<ul class="nav nav-pills flex-column" data-bs-theme="dark">
+<ul class="nav flex-column" data-bs-theme="dark">
   {#each $siteNavigationItems as item}
     {#if !item.permission || hasPermission(item.permission)}
       <li class="nav-item">
         <a
-          class="nav-link text-truncate p-2"
+          class="nav-link text-truncate"
           href={base + item.href}
           class:active={matching($page.url.pathname, base + item.href, item.startsWith)}>
           {#if item.hasUpdate}

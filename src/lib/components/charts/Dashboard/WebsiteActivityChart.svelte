@@ -196,17 +196,6 @@
       fill: false,
     });
 
-    datasets.push({
-      label: $_('components.website-activity-chart.new-ticket'),
-      data: convertedTicketsData,
-      borderWidth: 3,
-      pointRadius: 4,
-      pointHoverRadius: 6,
-      pointBorderWidth: 2,
-      pointHoverBorderWidth: 3,
-      tension: 0.4,
-      fill: false,
-    });
 
     datasets.push({
       label: $_('components.website-activity-chart.visitor'),

@@ -1,20 +1,4 @@
-<style>
-  .post-row-thumbnail {
-    width: calc(40px * 16 / 9);
-    max-width: 100%;
-  }
 
-  .post-row-thumbnail .thumbnail-frame {
-    border-radius: var(--bs-border-radius);
-    overflow: hidden;
-  }
-
-  .post-row-thumbnail img {
-    width: 100%;
-    height: 40px;
-    object-fit: cover;
-  }
-</style>
 
 <tr class:table-active={post.selected}>
   <th scope="row" class="align-middle text-center">
@@ -75,35 +59,10 @@
   </th>
   <Hook name="panel:posts:table:row:start" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle">
-    <div class="post-row-thumbnail">
-      {#if post.thumbnailUrl}
-        <a
-          href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{post.id}"
-          target="_blank"
-          use:tooltip={[$_('buttons.view')]}
-          class="focus-ring d-block">
-          <div class="ratio ratio-16x9 thumbnail-frame">
-            <img
-              src={post.thumbnailUrl
-                ? (() => {
-                    const lastDotIndex = post.thumbnailUrl.lastIndexOf('.');
-                    return lastDotIndex > 0
-                      ? post.thumbnailUrl.substring(0, lastDotIndex) +
-                          '-preview' +
-                          post.thumbnailUrl.substring(lastDotIndex)
-                      : post.thumbnailUrl + '-preview';
-                  })()
-                : post.thumbnailUrl}
-              alt={post.title}
-              title={post.title} />
-          </div>
-        </a>
-      {:else}
-        <div
-          class="ratio ratio-16x9 thumbnail-frame bg-black bg-opacity-10 d-flex align-items-center justify-content-center">
-        </div>
-      {/if}
-    </div>
+    <TableThumbnail
+      src={post.thumbnailUrl}
+      alt={post.title}
+      href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{post.id}" />
   </td>
   <Hook
     name="panel:posts:table:row:after-thumbnail"
@@ -168,6 +127,7 @@
   import Date from '$lib/components/Date.svelte';
   import CategoryBadge from '$lib/components/badges/CategoryBadge.svelte';
   import Hook from '$lib/components/Hook.svelte';
+  import TableThumbnail from '$lib/components/rows/TableThumbnail.svelte';
   import tooltip from '$lib/tooltip.util.js';
   import { UI_URL } from '$lib/variables.js';
 
