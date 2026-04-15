@@ -23,14 +23,17 @@
           {/each}
           <div class="row">
             <div class="col-12">
-              <input
-                class="form-control form-control-lg"
-                id="username"
-                placeholder={$_('components.modals.edit-player.inputs.username.placeholder')}
-                type="text"
-                bind:value={$player.username}
-                class:is-invalid={!!$errors.username}
-                aria-describedby="validationEditUsernameInModal" />
+              <div class="form-floating mb-3">
+                <input
+                  class="form-control"
+                  id="username"
+                  placeholder={$_('components.modals.edit-player.inputs.username.placeholder')}
+                  type="text"
+                  bind:value={$player.username}
+                  class:is-invalid={!!$errors.username}
+                  aria-describedby="validationEditUsernameInModal" />
+                <label for="username">{$_('components.modals.edit-player.inputs.username.placeholder')}</label>
+              </div>
               <div id="validationEditUsernameInModal" class="invalid-feedback">
                 {#if !!$errors['username']}
                   {#if $errors['username'] === 'INVALID'}
@@ -42,16 +45,18 @@
                 {/if}
               </div>
             </div>
-            <div class="col-12 mb-3"></div>
             <div class="col-12 mb-3">
-              <label for="email">{$_('components.modals.edit-player.inputs.email.title')}</label>
-              <input
-                class="form-control"
-                id="email"
-                type="text"
-                bind:value={$player.email}
-                class:is-invalid={!!$errors.email}
-                aria-describedby="validationEditEmailInModal" />
+              <div class="form-floating">
+                <input
+                  class="form-control"
+                  id="email"
+                  type="text"
+                  placeholder="email@example.com"
+                  bind:value={$player.email}
+                  class:is-invalid={!!$errors.email}
+                  aria-describedby="validationEditEmailInModal" />
+                <label for="email">{$_('components.modals.edit-player.inputs.email.title')}</label>
+              </div>
               <div id="validationEditEmailInModal" class="invalid-feedback">
                 {#if !!$errors['email']}
                   {#if $errors['email'] === 'INVALID'}
@@ -63,16 +68,33 @@
                 {/if}
               </div>
             </div>
-            <div class="col-6 mb-3">
-              <label for="newPassword"
-                >{$_('components.modals.edit-player.inputs.new-password.title')}</label>
-              <input
-                class="form-control"
-                id="newPassword"
-                type="password"
-                bind:value={$player.newPassword}
-                class:is-invalid={!!$errors.newPassword}
-                aria-describedby="validationEditPasswordInModal" />
+            <div class="col-12 mb-3">
+              <div class="merged-grid w-100">
+                <div class="form-floating">
+                  <input
+                    class="form-control"
+                    id="newPassword"
+                    type="password"
+                    placeholder="••••••••"
+                    bind:value={$player.newPassword}
+                    class:is-invalid={!!$errors.newPassword}
+                    aria-describedby="validationEditPasswordInModal" />
+                  <label for="newPassword"
+                    >{$_('components.modals.edit-player.inputs.new-password.title')}</label>
+                </div>
+                <div class="form-floating">
+                  <input
+                    class="form-control"
+                    id="newPasswordRepeat"
+                    type="password"
+                    placeholder="••••••••"
+                    bind:value={$player.newPasswordRepeat}
+                    class:is-invalid={!!$errors.newPasswordRepeat}
+                    aria-describedby="validationEditNewPasswordInModal" />
+                  <label for="newPasswordRepeat"
+                    >{$_('components.modals.edit-player.inputs.new-password-repeat.title')}</label>
+                </div>
+              </div>
               <div id="validationEditPasswordInModal" class="invalid-feedback">
                 {#if !!$errors['newPassword']}
                   {#if $errors['newPassword'] === 'INVALID'}
@@ -80,17 +102,6 @@
                   {/if}
                 {/if}
               </div>
-            </div>
-            <div class="col-6 mb-3">
-              <label for="newPasswordRepeat"
-                >{$_('components.modals.edit-player.inputs.new-password-repeat.title')}</label>
-              <input
-                class="form-control"
-                id="newPasswordRepeat"
-                type="password"
-                bind:value={$player.newPasswordRepeat}
-                class:is-invalid={!!$errors.newPasswordRepeat}
-                aria-describedby="validationEditNewPasswordInModal" />
               <div id="validationEditNewPasswordInModal" class="invalid-feedback">
                 {#if !!$errors['newPasswordRepeat']}
                   {#if $errors['newPasswordRepeat'] === 'NOT_MATCH'}
@@ -102,18 +113,20 @@
               </div>
             </div>
             <div class="col-12 mb-3">
-              <label for="userLocaleCode">
-                {$_('components.modals.edit-player.inputs.locale.label')}
-              </label>
-              <select class="form-control" id="userLocaleCode" bind:value={$player.localeCode}>
-                <option value={null}
-                  >{$_('components.modals.edit-player.inputs.locale.default', {
-                    values: { defaultLocaleName: $Languages[$siteInfo.platformLocale].name },
-                  })}</option>
-                {#each Object.keys($Languages) as language, index (language)}
-                  <option value={$Languages[language].code}>{$Languages[language].name}</option>
-                {/each}
-              </select>
+              <div class="form-floating">
+                <select class="form-control form-select" id="userLocaleCode" bind:value={$player.localeCode}>
+                  <option value={null}
+                    >{$_('components.modals.edit-player.inputs.locale.default', {
+                      values: { defaultLocaleName: $Languages[$siteInfo.platformLocale].name },
+                    })}</option>
+                  {#each Object.keys($Languages) as language, index (language)}
+                    <option value={$Languages[language].code}>{$Languages[language].name}</option>
+                  {/each}
+                </select>
+                <label for="userLocaleCode">
+                  {$_('components.modals.edit-player.inputs.locale.label')}
+                </label>
+              </div>
 
               {#if $player.localeCode && $player.localeCode !== $siteInfo.platformLocale}
                 <div class="alert alert-info mt-2 mb-0 py-2 px-3" role="alert">
@@ -365,3 +378,73 @@
     });
   }
 </script>
+
+<style>
+  .merged-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+  
+  .merged-grid .form-control,
+  .merged-grid .form-select {
+    border-radius: 0;
+  }
+  
+  .merged-grid > .form-floating {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .merged-grid > .form-floating:focus-within {
+    z-index: 3;
+  }
+
+  /* Mobile: stacked 1x2 */
+  @media (max-width: 768px) {
+    .merged-grid > :first-child .form-control,
+    .merged-grid > :first-child .form-select {
+      border-top-left-radius: var(--bs-border-radius) !important;
+      border-top-right-radius: var(--bs-border-radius) !important;
+    }
+    .merged-grid > :last-child .form-control,
+    .merged-grid > :last-child .form-select {
+      border-bottom-left-radius: var(--bs-border-radius) !important;
+      border-bottom-right-radius: var(--bs-border-radius) !important;
+    }
+    .merged-grid > :not(:last-child) {
+      margin-bottom: -1px;
+    }
+    .merged-grid > :not(:last-child) .form-control:not(:focus),
+    .merged-grid > :not(:last-child) .form-select:not(:focus) {
+      border-bottom-color: transparent;
+    }
+  }
+
+  /* Desktop: 1x2 grid side by side */
+  @media (min-width: 769px) {
+    .merged-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .merged-grid > :nth-child(1) .form-control,
+    .merged-grid > :nth-child(1) .form-select {
+      border-top-left-radius: var(--bs-border-radius) !important;
+      border-bottom-left-radius: var(--bs-border-radius) !important;
+    }
+    .merged-grid > :nth-child(2) .form-control,
+    .merged-grid > :nth-child(2) .form-select {
+      border-top-right-radius: var(--bs-border-radius) !important;
+      border-bottom-right-radius: var(--bs-border-radius) !important;
+    }
+
+    .merged-grid > :nth-child(1) {
+      margin-right: -1px;
+    }
+
+    .merged-grid > :nth-child(1) .form-control:not(:focus),
+    .merged-grid > :nth-child(1) .form-select:not(:focus) {
+      border-right-color: transparent;
+    }
+  }
+</style>
