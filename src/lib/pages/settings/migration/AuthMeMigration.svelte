@@ -470,6 +470,36 @@
       {$_('buttons.cancel')}
     </button>
   </div>
+{:else if currentStep === 'result' && importResult}
+  <div class="alert alert-success d-flex align-items-center" role="alert">
+    <i class="fas fa-check-circle fs-4 me-3"></i>
+    <div>
+      <h6 class="alert-heading mb-1">{$_('pages.migration.authme.result-title')}</h6>
+      <p class="mb-0 small">
+        <strong>{importResult.importedCount}</strong> {$_('pages.migration.authme.result-imported')}{#if importResult.updatedCount > 0},
+          <strong>{importResult.updatedCount}</strong> {$_('pages.migration.authme.result-updated')}{/if}{#if importResult.deletedCount > 0},
+          <strong>{importResult.deletedCount}</strong> {$_('pages.migration.authme.result-deleted')}{/if}.
+      </p>
+    </div>
+  </div>
+
+  {#if importResult?.errors && importResult.errors.length > 0}
+    <div class="alert alert-warning mt-3">
+      <h6 class="alert-heading mb-2">
+        <i class="fas fa-exclamation-triangle me-1"></i> {$_('pages.migration.authme.some-issues-occurred')}
+      </h6>
+      <ul class="mb-0 small">
+        {#each importResult.errors as err}
+          <li><strong>{err.item}</strong>: {err.error}</li>
+        {/each}
+      </ul>
+    </div>
+  {/if}
+
+  <button class="btn btn-primary" on:click={resetForm}>
+    <i class="fas fa-redo me-2"></i>
+    {$_('pages.migration.authme.start-new-migration')}
+  </button>
 {/if}
 
 <script>
@@ -481,7 +511,6 @@
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
   export { resetForm, importUsers, uploadAndPreview };
 
@@ -853,8 +882,8 @@
       }
 
       if (result) {
-        showToast('pages.migration.authme.migration-completed');
-        resetForm();
+        importResult = result;
+        currentStep = 'result';
       }
     } catch (error) {
       clearInterval(progressInterval);
