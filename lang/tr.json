@@ -299,7 +299,8 @@
       "title": "Bildirimler",
       "delete-all": "Tümünü Sil",
       "delete-notification": "Bildirimi Sil",
-      "show-more": "{count} Daha Fazla Göster"
+      "show-more": "{nextBatch} tane daha yükle ({remaining})",
+      "show-more-simple": "{nextBatch} tane daha yükle"
     },
     "settings": {
       "about": {

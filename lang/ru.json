@@ -299,7 +299,8 @@
       "title": "Уведомления",
       "delete-all": "Удалить все",
       "delete-notification": "Удалить уведомление",
-      "show-more": "{count} Показать больше"
+      "show-more": "Загрузить ещё {nextBatch} ({remaining})",
+      "show-more-simple": "Загрузить ещё {nextBatch}"
     },
     "settings": {
       "about": {

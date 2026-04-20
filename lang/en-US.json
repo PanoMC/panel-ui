@@ -299,7 +299,8 @@
       "title": "Notifications",
       "delete-all": "Delete All",
       "delete-notification": "Delete Notification",
-      "show-more": "{count} Show More"
+      "show-more": "Load {nextBatch} more ({remaining})",
+      "show-more-simple": "Load {nextBatch} more"
     },
     "settings": {
       "about": {

@@ -82,13 +82,15 @@
       <NoContent />
     {/if}
     {#if $notifications.length < $count && $count > 10 + 10 * page}
-      <div class="card-footer">
+      {@const remaining = $count - $notifications.length}
+      {@const nextBatch = Math.min(10, remaining)}
+      <div class="card-footer d-flex justify-content-center">
         <button
           class="btn btn-sm btn-outline-primary"
           class:disabled={loadMoreLoading}
           on:click={loadMore}
-          >{$_('pages.notifications.show-more', {
-            values: { count: $count - $notifications.length },
+          >{$_(remaining <= 10 ? 'pages.notifications.show-more-simple' : 'pages.notifications.show-more', {
+            values: { nextBatch, remaining },
           })}
         </button>
       </div>
