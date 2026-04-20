@@ -1,5 +1,6 @@
 <script>
   import { onDestroy } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
   
   let { 
@@ -12,9 +13,10 @@
     onchange 
   } = $props();
 
-  let value = $state(initialValue);
+  let value = $state('');
   let t;
   let pending = $state(false);
+  const dispatch = createEventDispatcher();
 
   $effect(() => {
     value = initialValue;
@@ -23,6 +25,7 @@
   function emitNow(v) {
     pending = false;
     if (onchange) onchange(v);
+    dispatch('change', { value: v });
   }
 
   function onInput(e) {
