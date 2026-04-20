@@ -206,6 +206,19 @@
       "online-player-text": "{onlinePlayerCount} В сети",
       "new-register-text": "{newRegisterCount} Новых регистраций",
       "total-player-text": "{totalPlayerCount} Всего игроков",
+      "online-player-card": {
+        "title": "Игроки онлайн"
+      },
+      "new-register-card": {
+        "title": "Новые регистрации"
+      },
+      "total-player-card": {
+        "title": "Всего игроков"
+      },
+      "period-label": {
+        "week": "На этой неделе",
+        "month": "В этом месяце"
+      },
       "website-graph": {
         "title": "Активность веб-сайта",
         "week": "Неделя",
@@ -952,6 +965,11 @@
       "new-registration": "Новая регистрация",
       "new-ticket": "Новый тикет",
       "visitor": "Посетитель"
+    },
+    "summary-stat-card": {
+      "trend-up": "Рост по сравнению с предыдущим периодом",
+      "trend-down": "Снижение по сравнению с предыдущим периодом",
+      "trend-same": "Без изменений по сравнению с предыдущим периодом"
     },
     "site-navigation-menu": {
       "panel": "Панель",

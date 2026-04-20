@@ -206,6 +206,19 @@
       "online-player-text": "{onlinePlayerCount} Online",
       "new-register-text": "{newRegisterCount} New Registration",
       "total-player-text": "{totalPlayerCount} Total Players",
+      "online-player-card": {
+        "title": "Online Players"
+      },
+      "new-register-card": {
+        "title": "New Registrations"
+      },
+      "total-player-card": {
+        "title": "Total Players"
+      },
+      "period-label": {
+        "week": "This week",
+        "month": "This month"
+      },
       "website-graph": {
         "title": "Website Activity",
         "week": "Week",
@@ -952,6 +965,11 @@
       "new-registration": "New Registration",
       "new-ticket": "New Ticket",
       "visitor": "Visitor"
+    },
+    "summary-stat-card": {
+      "trend-up": "Up from previous period",
+      "trend-down": "Down from previous period",
+      "trend-same": "No change from previous period"
     },
     "site-navigation-menu": {
       "panel": "Panel",

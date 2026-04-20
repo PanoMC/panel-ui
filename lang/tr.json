@@ -206,6 +206,19 @@
       "online-player-text": "{onlinePlayerCount} Çevrimiçi",
       "new-register-text": "{newRegisterCount} Yeni Kayıt",
       "total-player-text": "{totalPlayerCount} Toplam Oyuncu",
+      "online-player-card": {
+        "title": "Çevrimiçi Oyuncular"
+      },
+      "new-register-card": {
+        "title": "Yeni Kayıtlar"
+      },
+      "total-player-card": {
+        "title": "Toplam Oyuncular"
+      },
+      "period-label": {
+        "week": "Bu hafta",
+        "month": "Bu ay"
+      },
       "website-graph": {
         "title": "Web Site Aktivitesi",
         "week": "Hafta",
@@ -956,6 +969,11 @@
       "new-registration": "Yeni Kayıt",
       "new-ticket": "Yeni Talep",
       "visitor": "Ziyaretçi"
+    },
+    "summary-stat-card": {
+      "trend-up": "Önceki döneme göre artış",
+      "trend-down": "Önceki döneme göre azalış",
+      "trend-same": "Önceki döneme göre değişim yok"
     },
     "site-navigation-menu": {
       "panel": "Panel",
