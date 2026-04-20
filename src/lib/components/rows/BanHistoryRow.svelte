@@ -1,4 +1,23 @@
 <tr>
+  {#if showBannedPlayer}
+    <td class="align-middle" style="max-width: 200px;">
+      <div class="text-truncate d-flex align-items-center">
+        <a
+          class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center"
+          use:tooltip={[$_('buttons.view')]}
+          title={banHistory.username}
+          href="{base}/players/detail/{banHistory.username}">
+          <img
+            src="/api/profile/picture/{banHistory.username}?{$avatarVersion}"
+            alt={banHistory.username}
+            width="32"
+            height="32"
+            class="rounded-circle me-2 flex-shrink-0" />
+          <span class="text-truncate">{banHistory.username}</span>
+        </a>
+      </div>
+    </td>
+  {/if}
   <td class="align-middle text-nowrap">
     {#if banHistory.bannedUntil}
       <span
@@ -9,7 +28,7 @@
             locale: locales[$currentLanguage.dateFnsCode],
           },
         ]}>
-        {getBanDurationText(banHistory.createdAt, banHistory.bannedUntil)}
+        {getBanDurationText(banHistory.bannedAt ?? banHistory.createdAt, banHistory.bannedUntil)}
       </span>
     {:else}
       <span>{$_('pages.player-detail.permanent-ban')}</span>
@@ -19,6 +38,8 @@
     <div class="text-truncate">
       {#if banHistory.reason}
         <span use:tooltip={[banHistory.reason]}>{banHistory.reason}</span>
+      {:else if banHistory.banReason}
+        <span use:tooltip={[banHistory.banReason]}>{banHistory.banReason}</span>
       {:else}
         <span>{$_('pages.player-detail.no-reason')}</span>
       {/if}
@@ -52,7 +73,7 @@
     </div>
   </td>
   <td class="align-middle text-nowrap">
-    <DateComponent time={banHistory.createdAt} />
+    <DateComponent time={banHistory.bannedAt ?? banHistory.createdAt} />
   </td>
 </tr>
 
@@ -70,6 +91,7 @@
   import DateComponent from '$lib/components/Date.svelte';
 
   export let banHistory;
+  export let showBannedPlayer = false;
 
   function getBanDurationText(createdAt, bannedUntil) {
     const createdAtDate = new Date(createdAt);

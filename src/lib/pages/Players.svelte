@@ -73,78 +73,92 @@
     {#if data.playerCount === 0}
       <NoContent />
     {:else}
-      <!-- Players Table -->
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th class="align-middle text-nowrap" scope="col"></th>
-              <Hook
-                name="panel:players:table:header:start"
-                tag="th"
-                class="align-middle text-nowrap"
-                scope="col" />
-              <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.name')}</th>
-              <Hook
-                name="panel:players:table:header:after-name"
-                tag="th"
-                class="align-middle text-nowrap"
-                scope="col" />
-              <th
-                class="align-middle text-nowrap"
-                scope="col"
-                class:table-active={data.permissionGroup}
-                >{$_('pages.players.table.perm-group')}</th>
-              <Hook
-                name="panel:players:table:header:after-perm-group"
-                tag="th"
-                class="align-middle text-nowrap"
-                scope="col" />
-              {#if data.view === Views.PLAYERS}
-                <th class="align-middle text-nowrap" scope="col"
-                  >{$_('pages.players.table.status')}</th>
+      {#if data.view === Views.BANS}
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.name')}</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-duration')}</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-reason')}</th>
+                <th class="align-middle text-nowrap text-center" scope="col"
+                  >{$_('pages.player-detail.email-notification')}</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.banned-by')}</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.banned-at')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each data.players as banHistory, index (banHistory.banHistoryId ??
+                `${banHistory.username}-${banHistory.bannedAt}-${index}`)}
+                <BanHistoryRow {banHistory} showBannedPlayer={true} />
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      {:else}
+        <!-- Players Table -->
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th class="align-middle text-nowrap" scope="col"></th>
+                <Hook
+                  name="panel:players:table:header:start"
+                  tag="th"
+                  class="align-middle text-nowrap"
+                  scope="col" />
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.name')}</th>
+                <Hook
+                  name="panel:players:table:header:after-name"
+                  tag="th"
+                  class="align-middle text-nowrap"
+                  scope="col" />
+                <th
+                  class="align-middle text-nowrap"
+                  scope="col"
+                  class:table-active={data.permissionGroup}
+                  >{$_('pages.players.table.perm-group')}</th>
+                <Hook
+                  name="panel:players:table:header:after-perm-group"
+                  tag="th"
+                  class="align-middle text-nowrap"
+                  scope="col" />
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.status')}</th>
                 <Hook
                   name="panel:players:table:header:after-status"
                   tag="th"
                   class="align-middle text-nowrap"
                   scope="col" />
-              {/if}
-              <th class="align-middle text-nowrap" scope="col">
-                {#if data.view === Views.BANS}
-                  {$_('pages.players.table.ban-date')}
-                {:else}
-                  {$_('pages.players.table.last-login')}
-                {/if}
-              </th>
-              <Hook
-                name="panel:players:table:header:after-last-login"
-                tag="th"
-                class="align-middle text-nowrap"
-                scope="col" />
-              <th class="align-middle text-nowrap" scope="col"
-                >{$_('pages.players.table.register-date')}</th>
-              <Hook
-                name="panel:players:table:header:end"
-                tag="th"
-                class="align-middle text-nowrap"
-                scope="col" />
-            </tr>
-          </thead>
-          <tbody>
-            {#each data.players as player (player.username)}
-              <PlayerRow
-                {player}
-                {checkTime}
-                hideStatus={data.view === Views.BANS}
-                on:showEditPlayerModalClick={(event) =>
-                  onShowEditPlayerModalClick(event.detail.player)}
-                on:showBanPlayerModalClick={(event) => showBanPlayerModalClick(event.detail.player)}
-                on:showUnbanPlayerModalClick={(event) =>
-                  showUnbanPlayerModalClick(event.detail.player)} />
-            {/each}
-          </tbody>
-        </table>
-      </div>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.last-login')}</th>
+                <Hook
+                  name="panel:players:table:header:after-last-login"
+                  tag="th"
+                  class="align-middle text-nowrap"
+                  scope="col" />
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.players.table.register-date')}</th>
+                <Hook
+                  name="panel:players:table:header:end"
+                  tag="th"
+                  class="align-middle text-nowrap"
+                  scope="col" />
+              </tr>
+            </thead>
+            <tbody>
+              {#each data.players as player (player.username)}
+                <PlayerRow
+                  {player}
+                  {checkTime}
+                  on:showEditPlayerModalClick={(event) =>
+                    onShowEditPlayerModalClick(event.detail.player)}
+                  on:showBanPlayerModalClick={(event) => showBanPlayerModalClick(event.detail.player)}
+                  on:showUnbanPlayerModalClick={(event) =>
+                    showUnbanPlayerModalClick(event.detail.player)} />
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      {/if}
       <div class="card-footer">
         <!-- Pagination -->
         <Pagination
@@ -199,6 +213,7 @@
     const queryParams = buildQueryParams({
       page,
       status: pageType,
+      view,
       permissionGroup,
       search,
     });
@@ -251,6 +266,7 @@
   } from '$lib/components/modals/UnbanPlayerModal.svelte';
 
   import PlayerRow from '$lib/components/rows/PlayerRow.svelte';
+  import BanHistoryRow from '$lib/components/rows/BanHistoryRow.svelte';
   import Hook from '$lib/components/Hook.svelte';
 
   import NoContent from '$lib/components/NoContent.svelte';
