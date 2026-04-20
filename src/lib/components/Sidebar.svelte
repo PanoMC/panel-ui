@@ -141,7 +141,7 @@
   class="offcanvas offcanvas-start bg-primary h-100 overflow-hidden"
   tabindex="-1"
   id="sidebar"
-  aria-labelledby="sidebarLabel" data-bs-scroll="true" data-bs-backdrop="false" class:offcanvas-lg={$isSidebarOpen}>
+  aria-labelledby="sidebarLabel" data-bs-scroll="true" data-bs-backdrop="true" class:offcanvas-lg={$isSidebarOpen}>
   <div class="offcanvas-body d-flex flex-column p-0 overflow-hidden h-100">
     <!-- Fixed Header Area -->
     <div class="sidebar-header-container p-2 flex-shrink-0">
@@ -242,6 +242,7 @@
   import { base } from '$app/paths';
 
   import { toggleSidebar, setSidebarTabsState } from '$lib/Store';
+  import { PanelSidebarStorageUtil } from '$lib/storage.util';
 
   import Bottom from './sidebar/Bottom.svelte';
 
@@ -326,6 +327,13 @@
       }
     });
 
+    /** Sync store when offcanvas closes via backdrop, ESC, or programmatic hide (navbar uses toggleSidebar). */
+    const onOffcanvasHidden = () => {
+      isSidebarOpen.set(false);
+      PanelSidebarStorageUtil.savePanelSidebarStorageUtil(false);
+    };
+    sidebar.addEventListener('hidden.bs.offcanvas', onOffcanvasHidden);
+
     const onResize = () => {
       windowWidth = window.innerWidth;
     };
@@ -333,6 +341,7 @@
     onResize();
 
     return () => {
+      sidebar.removeEventListener('hidden.bs.offcanvas', onOffcanvasHidden);
       window.removeEventListener('resize', onResize);
     };
   });
