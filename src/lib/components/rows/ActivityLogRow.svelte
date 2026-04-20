@@ -6,7 +6,7 @@
   use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}>
   <span
     class="fw-normal d-block text-truncate markdown-renderer"
-    title={translation.replace(/<[^>]*>?/gm, '')}>
+    title={stripHtmlTags(translation)}>
     <MarkdownRenderer content={translation} />
   </span>
   <Date time={log.createdAt} />
@@ -16,31 +16,14 @@
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
+  import { getActivityLogTranslation, stripHtmlTags } from '$lib/activity-log.util.js';
 
   import Date from '$lib/components/Date.svelte';
   import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
 
   export let log;
 
-  $: translation = (() => {
-    const globalKey = 'activity-logs.' + log.type;
-    const globalTranslation = $_(globalKey, { values: log.details });
-
-    if (globalTranslation !== globalKey) {
-      return globalTranslation;
-    }
-
-    if (log.pluginId) {
-      const pluginKey = `plugins.${log.pluginId}.activity-logs.${log.type}`;
-      const pluginTranslation = $_(pluginKey, { values: log.details });
-
-      if (pluginTranslation !== pluginKey) {
-        return pluginTranslation;
-      }
-    }
-
-    return globalTranslation;
-  })();
+  $: translation = getActivityLogTranslation(log, $_);
 
   const dispatch = createEventDispatcher();
 

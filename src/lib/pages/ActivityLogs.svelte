@@ -1,9 +1,20 @@
 <div class="container vstack gap-3">
   <div class="card">
-    <div class="card-header">
-      {$_('pages.activity-logs.card-title', { values: { count: data.meta.totalCount } })}
+    <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <span>
+        {$_('pages.activity-logs.card-title', { values: { count: visibleLogCount } })}
+      </span>
+      <div style="width: min(100%, 280px);">
+        <SearchInput
+          initialValue={search}
+          searching={isSearching}
+          debounceMs={300}
+          ariaLabelKey="buttons.find"
+          placeholderKey="buttons.find"
+          on:change={onSearchInput} />
+      </div>
     </div>
-    {#if data.meta.totalCount === 0}
+    {#if data.logs.length === 0}
       <NoContent />
     {:else}
       <div class="list-group list-group-flush">
@@ -13,7 +24,6 @@
       </div>
     {/if}
     <div class="card-footer">
-      <!-- Pagination -->
       <Pagination
         page={data.meta.page}
         totalPage={data.meta.totalPage}
@@ -27,7 +37,7 @@
 <ViewActivityLogModal />
 
 <script context="module">
-  import ApiUtil from '$lib/api.util.js';
+  import ApiUtil, { buildQueryParams as buildLoadQueryParams } from '$lib/api.util.js';
   import { error } from '@sveltejs/kit';
 
   /**
@@ -41,9 +51,13 @@
     await parent();
 
     const page = parseInt(searchParams.get('page')) || 1;
+    const search = searchParams.get('search')?.trim() || '';
+    const locale = searchParams.get('locale')?.trim() || '';
 
-    const queryParams = buildQueryParams({
+    const queryParams = buildLoadQueryParams({
       page,
+      search: search || undefined,
+      locale: locale || undefined,
     });
 
     const body = await ApiUtil.get({
@@ -59,20 +73,25 @@
       throw error(500, body.error);
     }
 
-    return { logs: body.data, meta: { ...body.meta, page } };
+    return {
+      logs: body.data,
+      meta: { ...body.meta, page },
+      search,
+    };
   }
 </script>
 
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
-
   import { goto } from '$app/navigation';
 
   import { buildQueryParams } from '$lib/api.util.js';
+  import { currentLanguage } from '$lib/language.util.js';
 
   import Pagination from '$lib/components/Pagination.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
+  import SearchInput from '$lib/components/SearchInput.svelte';
   import ActivityLogRow from '$lib/components/rows/ActivityLogRow.svelte';
   import ViewActivityLogModal, {
     show as showViewActivityLogModal,
@@ -81,21 +100,38 @@
 
   export let data;
 
+  let search = data.search || '';
+  let isSearching = false;
+  let visibleLogCount = data.meta.filteredCount || data.meta.totalCount;
+
   const pageTitle = getContext('pageTitle');
 
   pageTitle.set('pages.activity-logs.title');
 
+  $: visibleLogCount = data.meta.filteredCount || data.meta.totalCount;
+
+  function onSearchInput(event) {
+    search = event.detail.value;
+    data.meta.page = 1;
+    refreshData();
+  }
+
   async function refreshData() {
+    isSearching = true;
+
     const queryParams = buildQueryParams({
-      page: data.page,
+      page: data.meta.page,
+      search: search || undefined,
+      locale: search ? $currentLanguage?.code || undefined : undefined,
     });
 
-    await goto(queryParams, { invalidateAll: true });
+    await goto(queryParams, { invalidateAll: true, keepFocus: true });
+
+    isSearching = false;
   }
 
   async function onPageClick(page) {
-    data.page = page;
-
+    data.meta.page = page;
     await refreshData();
   }
 
@@ -103,8 +139,7 @@
     const log = event.detail.log;
 
     log.selected = true;
-
-    data.logs = data.logs;
+    data.logs = [...data.logs];
 
     showViewActivityLogModal(log);
   }
@@ -112,8 +147,11 @@
   onViewActivityLogModalHide((log) => {
     const _log = data.logs.find((_log) => _log.id === log.id);
 
-    _log.selected = false;
+    if (!_log) {
+      return;
+    }
 
-    data.logs = data.logs;
+    _log.selected = false;
+    data.logs = [...data.logs];
   });
 </script>
