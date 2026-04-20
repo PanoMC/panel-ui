@@ -127,7 +127,7 @@
         </div>
 
         <div class="card-body">
-          <table class="table table-sm table-borderless mb-0 opacity-75">
+          <table class="table table-sm table-borderless mb-0">
             <tbody>
               <tr>
                 <td>{$_('pages.player-detail.status')}</td>
