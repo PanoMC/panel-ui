@@ -68,6 +68,7 @@
             <th class="align-middle text-center"
               >{$_('pages.player-detail.email-notification')}</th>
             <th class="align-middle">{$_('pages.player-detail.banned-by')}</th>
+            <th class="align-middle">{$_('pages.player-detail.ban-source')}</th>
             <th class="align-middle">{$_('pages.player-detail.banned-at')}</th>
           </tr>
         </thead>

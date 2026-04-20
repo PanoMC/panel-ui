@@ -72,6 +72,13 @@
       {/if}
     </div>
   </td>
+  <td class="align-middle">
+    {#if banHistory.source}
+      <BanSourceBadge source={banHistory.source} />
+    {:else}
+      <span class="opacity-50">-</span>
+    {/if}
+  </td>
   <td class="align-middle text-nowrap">
     <DateComponent time={banHistory.bannedAt ?? banHistory.createdAt} />
   </td>
@@ -89,6 +96,7 @@
   import tooltip from '$lib/tooltip.util';
 
   import DateComponent from '$lib/components/Date.svelte';
+  import BanSourceBadge from '$lib/components/badges/BanSourceBadge.svelte';
 
   export let banHistory;
   export let showBannedPlayer = false;

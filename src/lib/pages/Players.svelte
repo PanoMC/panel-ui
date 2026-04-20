@@ -10,6 +10,10 @@
         href="/players?view={Views.BANS}"
         active={data.view === Views.BANS}>
         {$_('pages.players.bans-history-title')}</PageNavItem>
+      <PageNavItem
+        href="/players?view={Views.IP_BANS}"
+        active={data.view === Views.IP_BANS}>
+        {$_('pages.players.ip-bans-title')}</PageNavItem>
     </PageNav>
     <div slot="right">
       <a href="{base}/migration" class="btn btn-secondary">
@@ -34,8 +38,10 @@
                     : '',
             },
           })}
-        {:else}
+        {:else if data.view === Views.BANS}
           {$_('pages.players.bans-history-title')}
+        {:else}
+          {$_('pages.players.ip-bans-title')}
         {/if}
       </div>
 
@@ -84,6 +90,7 @@
                 <th class="align-middle text-nowrap text-center" scope="col"
                   >{$_('pages.player-detail.email-notification')}</th>
                 <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.banned-by')}</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-source')}</th>
                 <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.banned-at')}</th>
               </tr>
             </thead>
@@ -91,6 +98,27 @@
               {#each data.players as banHistory, index (banHistory.banHistoryId ??
                 `${banHistory.username}-${banHistory.bannedAt}-${index}`)}
                 <BanHistoryRow {banHistory} showBannedPlayer={true} />
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      {:else if data.view === Views.IP_BANS}
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.ip-bans.ip')}</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-duration')}</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-reason')}</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-source')}</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.banned-by')}</th>
+                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.banned-at')}</th>
+                <th class="align-middle text-nowrap text-end" scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each data.players as bannedIp (bannedIp.id)}
+                <IpBanRow {bannedIp} on:unban={(e) => onUnbanIp(e.detail.bannedIp)} />
               {/each}
             </tbody>
           </table>
@@ -180,6 +208,7 @@
   export const Views = Object.freeze({
     PLAYERS: 'PLAYERS',
     BANS: 'BANS',
+    IP_BANS: 'IP_BANS',
   });
 
   export const PageTypes = Object.freeze({
@@ -267,6 +296,7 @@
 
   import PlayerRow from '$lib/components/rows/PlayerRow.svelte';
   import BanHistoryRow from '$lib/components/rows/BanHistoryRow.svelte';
+  import IpBanRow from '$lib/components/rows/IpBanRow.svelte';
   import Hook from '$lib/components/Hook.svelte';
 
   import NoContent from '$lib/components/NoContent.svelte';
@@ -302,16 +332,18 @@
           })
         : data.view === Views.BANS
           ? $_('pages.players.bans-history-title')
-          : $_('pages.players.title', {
-              values: {
-                pageType:
-                  data.pageType === PageTypes.HAS_PERM
-                    ? $_('pages.players.authorized') + ' '
-                    : data.pageType === PageTypes.BANNED
-                      ? $_('pages.players.banned') + ' '
-                      : '',
-              },
-            }),
+          : data.view === Views.IP_BANS
+            ? $_('pages.players.ip-bans-title')
+            : $_('pages.players.title', {
+                values: {
+                  pageType:
+                    data.pageType === PageTypes.HAS_PERM
+                      ? $_('pages.players.authorized') + ' '
+                      : data.pageType === PageTypes.BANNED
+                        ? $_('pages.players.banned') + ' '
+                        : '',
+                },
+              }),
     );
   }
 
@@ -346,6 +378,20 @@
     data.players[data.players.indexOf(player)].selected = true;
 
     showEditPlayerModal(player);
+  }
+
+  async function onUnbanIp(bannedIp) {
+    if (!bannedIp?.id) return;
+
+    if (!window.confirm($_('pages.ip-bans.confirm-remove', { values: { ip: bannedIp.ip } }))) {
+      return;
+    }
+
+    await ApiUtil.delete({
+      path: `/api/panel/banned-ips/${bannedIp.id}`,
+    });
+
+    await refreshData();
   }
 
   function showBanPlayerModalClick(player) {
