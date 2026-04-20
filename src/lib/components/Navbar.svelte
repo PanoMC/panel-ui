@@ -73,8 +73,13 @@
                     class:text-success={$selectedServer.status === 'ONLINE'}
                     class:text-danger={$selectedServer.status !== 'ONLINE'}></i>
                 {:else}
-                  <i class="fa-solid fa-ghost me-2 d-lg-none"></i>
-                  <span>{$_('components.server-navigation-menu.no-selected-server')}</span>
+                  <i class="fa-solid fa-ghost me-lg-2" aria-hidden="true"></i>
+                  <span class="d-none d-lg-inline">
+                    {$_('components.server-navigation-menu.no-selected-server')}
+                  </span>
+                  <span class="visually-hidden d-lg-none">
+                    {$_('components.server-navigation-menu.no-selected-server')}
+                  </span>
                 {/if}
               </button>
               <button
