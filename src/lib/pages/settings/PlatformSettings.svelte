@@ -579,6 +579,12 @@
 
   export let data;
 
+  let smtpDisabled;
+
+  $: {
+    smtpDisabled = !$siteInfo.emailEnabled;
+  }
+
   let showAlert = false;
 
   onMount(() => {
@@ -619,12 +625,6 @@
 
   $: emailSaveDisabled =
     JSON.stringify(data.oldSettings.email) === JSON.stringify(data.email) || !data.email.password;
-
-  let smtpDisabled;
-
-  $: {
-    smtpDisabled = !$siteInfo.emailEnabled;
-  }
 
   if (browser) {
     if (!data.panoAccount && data.state && data.encodedData) {
