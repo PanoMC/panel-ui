@@ -194,7 +194,7 @@
         </div>
 
         <!-- Account Dropdown -->
-        <div class="nav-item dropdown d-lg-block d-none">
+        <div class="nav-item dropdown">
           <button
             type="button"
             class="nav-link h-100 d-flex align-items-center"
