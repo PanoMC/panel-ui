@@ -1,9 +1,9 @@
 <slot />
 
 <EditPlayerModal />
-<SearchPlayerModal />
 <ConfirmBanPlayerModal />
 <ConfirmBanIpModal />
+<SearchPlayerModal />
 <ConfirmDeletePlayerModal />
 <UnbanPlayerModal />
 <UnbanIpModal />

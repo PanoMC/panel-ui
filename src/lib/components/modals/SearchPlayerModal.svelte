@@ -118,15 +118,32 @@
     existingUserIds.set(payload.existingUserIds ?? []);
     selectOnlyBadge.set(payload.selectOnlyBadge === true);
 
-    modal = new window.bootstrap.Modal(get(modalElement), {
+    const el = get(modalElement);
+    modal = new window.bootstrap.Modal(el, {
       backdrop: 'static',
       keyboard: false,
     });
+
+    /** Stack above another open modal (same default z-index would paint parent modal on top). */
+    const onShown = () => {
+      el.removeEventListener('shown.bs.modal', onShown);
+      const depth = document.querySelectorAll('.modal.show').length;
+      const step = 20;
+      el.style.zIndex = String(1055 + (depth - 1) * step);
+      const backdrops = document.querySelectorAll('.modal-backdrop');
+      const lastBackdrop = backdrops[backdrops.length - 1];
+      if (lastBackdrop) {
+        lastBackdrop.style.zIndex = String(1050 + (depth - 1) * step);
+      }
+    };
+    el.addEventListener('shown.bs.modal', onShown);
     modal.show();
   }
 
   export function hide() {
     hideCallback();
+    const el = get(modalElement);
+    el?.style?.removeProperty('z-index');
     modal?.hide();
   }
 
