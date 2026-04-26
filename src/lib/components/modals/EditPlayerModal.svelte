@@ -83,6 +83,7 @@
                     type="password"
                     placeholder="••••••••"
                     bind:value={$player.newPassword}
+                    disabled={$player.clearPassword}
                     class:is-invalid={!!$errors.newPassword}
                     aria-describedby="validationEditPasswordInModal" />
                   <label for="newPassword"
@@ -95,16 +96,40 @@
                     type="password"
                     placeholder="••••••••"
                     bind:value={$player.newPasswordRepeat}
+                    disabled={$player.clearPassword}
                     class:is-invalid={!!$errors.newPasswordRepeat}
                     aria-describedby="validationEditNewPasswordInModal" />
                   <label for="newPasswordRepeat"
                     >{$_('components.modals.edit-player.inputs.new-password-repeat.title')}</label>
                 </div>
               </div>
+              {#if hasPermission(Permissions.MANAGE_PLAYERS, $page.data.user)}
+                <div class="form-check form-switch mt-2">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="clearPasswordInEditPlayerModal"
+                    checked={$player.clearPassword}
+                    on:change={onClearPasswordToggle} />
+                  <label class="form-check-label" for="clearPasswordInEditPlayerModal">
+                    {$_('components.modals.edit-player.inputs.clear-password.label')}
+                  </label>
+                </div>
+                {#if $player.clearPassword}
+                  <div class="alert alert-warning mt-2 mb-0 py-2 px-3" role="status">
+                    <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                    <small>{$_('components.modals.edit-player.inputs.clear-password.help')}</small>
+                  </div>
+                {/if}
+              {/if}
               <div id="validationEditPasswordInModal" class="invalid-feedback">
                 {#if !!$errors['newPassword']}
                   {#if $errors['newPassword'] === 'INVALID'}
                     {$_('components.modals.edit-player.inputs.new-password.errors.invalid')}
+                  {/if}
+                  {#if $errors['newPassword'] === 'CONFLICT'}
+                    {$_('components.modals.edit-player.inputs.new-password.errors.conflict-with-clear')}
                   {/if}
                 {/if}
               </div>
@@ -214,6 +239,7 @@
     player.update((player) => {
       player.newPassword = '';
       player.newPasswordRepeat = '';
+      player.clearPassword = false;
 
       return player;
     });
@@ -274,7 +300,7 @@
   import ApiUtil from '$lib/api.util';
 
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
-  import { hasPermission } from '$lib/auth.util.js';
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { page } from '$app/stores';
   import ViewComponent from '$lib/components/ViewComponent.svelte';
 
@@ -305,12 +331,25 @@
 
   const user = getContext('user');
 
+  function onClearPasswordToggle(e) {
+    const checked = e.currentTarget.checked;
+    player.update((p) => {
+      p.clearPassword = checked;
+      if (checked) {
+        p.newPassword = '';
+        p.newPasswordRepeat = '';
+      }
+      return p;
+    });
+  }
+
   // Check if any plugin handler reports dirty state
   $: pluginsDirty = Object.values($pluginHandlers).some((h) => h && h.isDirty);
 
   $: saveDisabled =
     !$player.username ||
     (!pluginsDirty &&
+      !$player.clearPassword &&
       $player.username === $playerBackup.username &&
       $player.email === $playerBackup.email &&
       (!$player.newPassword ||
@@ -334,9 +373,19 @@
       }
     }
 
+    const payloadPlayer = get(player);
     ApiUtil.put({
-      path: `/api/panel/players/${get(player).id}`,
-      body: { ...get(player), localeCode: $player.localeCode || '' },
+      path: `/api/panel/players/${payloadPlayer.id}`,
+      body: {
+        username: payloadPlayer.username,
+        email: payloadPlayer.email == null ? '' : String(payloadPlayer.email),
+        newPassword: payloadPlayer.newPassword ?? '',
+        newPasswordRepeat: payloadPlayer.newPasswordRepeat ?? '',
+        isEmailVerified: !!payloadPlayer.isEmailVerified,
+        canCreateTicket: !!payloadPlayer.canCreateTicket,
+        localeCode: payloadPlayer.localeCode || '',
+        clearPassword: !!payloadPlayer.clearPassword,
+      },
       handler: async (body, reject) => {
         if (body.result === 'ok') {
           if (get(playerBackup).username === get(user).username) {
@@ -359,6 +408,7 @@
           player.update((player) => {
             player.newPassword = '';
             player.newPasswordRepeat = '';
+            player.clearPassword = false;
 
             return player;
           });

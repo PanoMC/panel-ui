@@ -1497,8 +1497,13 @@
           "new-password": {
             "title": "Yeni Şifre",
             "errors": {
-              "invalid": "Yeni şifre minimum 6 maksimum 128 karakterden oluşmalıdır"
+              "invalid": "Yeni şifre minimum 6 maksimum 128 karakterden oluşmalıdır",
+              "conflict-with-clear": "Yeni şifre alanlarını kaldırın veya “şifreyi kaldır” seçeneğini kapatın."
             }
+          },
+          "clear-password": {
+            "label": "Web sitesi şifresini kaldır ve Minecraft bağlantısını sil",
+            "help": "Hesabın web sitesi şifresi kaldırılır ve oyun içi (Minecraft) eşleştirme temizlenir. Oyuncu yeni bir şifre belirlemek ve hesabı yeniden bağlamak için sunucudaki hesap eşleştirme akışını tekrar kullanmalıdır. Bu yapılmadan siteye parola ile giriş olmaz; yalnızca tam oyun içi yeniden tanımlama gerekirse bu seçeneği kullanın."
           },
           "new-password-repeat": {
             "title": "Yeni Şifre Tekrarı",

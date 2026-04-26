@@ -1497,8 +1497,13 @@
           "new-password": {
             "title": "New Password",
             "errors": {
-              "invalid": "The new password must have a minimum of 6 and a maximum of 128 characters"
+              "invalid": "The new password must have a minimum of 6 and a maximum of 128 characters",
+              "conflict-with-clear": "Remove the new password fields or uncheck “remove password”."
             }
+          },
+          "clear-password": {
+            "label": "Remove website password and unlink Minecraft",
+            "help": "The account will have no website password, and the Minecraft link will be cleared. The player must use the in-game account link flow again to set a new password. Until they do, they cannot sign in to the site with a password; use this when you need a full in-game re-registration."
           },
           "new-password-repeat": {
             "title": "New Password Repeat",
