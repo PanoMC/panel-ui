@@ -1545,6 +1545,7 @@
       },
       "stuck-text": "Burada mı takıldın? Manuel olarak yenilemeyi dene.",
       "manual-refresh": "Manuel Yenile",
+      "retry": "Tekrar dene",
       "refreshing": "Yenileniyor...",
       "refresh": "Yenile"
     },

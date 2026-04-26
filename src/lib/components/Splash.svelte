@@ -86,20 +86,6 @@
     }
   }
 
-  .pulse {
-    animation: pulse 1.5s infinite ease-in-out;
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.3;
-    }
-  }
-
   .stuck-ui {
     opacity: 0;
     pointer-events: none;
@@ -136,32 +122,24 @@
   in:fade
   out:fade>
   <div class="loader-content position-relative" style="height: 100px; width: 100px;">
-    {#if networkErrors}
-      <div
-        class="logo-wrapper bg-primary p-2 shadow-sm position-absolute center-content d-flex align-items-center justify-content-center"
-        class:pulse={$retryingNetworkErrors}>
-        <img alt="Pano" src="{base}/assets/img/logo.svg" class="w-100 h-100 object-fit-contain" />
-      </div>
-    {:else}
-      <div
-        class="logo-wrapper bg-primary p-2 shadow-sm pano-anim center-content d-flex align-items-center justify-content-center">
-        <img alt="Pano" src="{base}/assets/img/logo.svg" class="w-100 h-100 object-fit-contain" />
-      </div>
-      <div
-        class="mc-img-wrapper mc-anim center-content d-flex align-items-center justify-content-center">
-        <img
-          alt="Minecraft"
-          src="{base}/assets/img/minecraft-icon.png"
-          class="w-100 h-100 object-fit-contain" />
-      </div>
-      <div
-        class="hytale-img-wrapper hytale-anim center-content d-flex align-items-center justify-content-center">
-        <img
-          alt="Hytale"
-          src="{base}/assets/img/hytale-icon.png"
-          class="w-100 h-100 object-fit-contain" />
-      </div>
-    {/if}
+    <div
+      class="logo-wrapper bg-primary p-2 shadow-sm pano-anim center-content d-flex align-items-center justify-content-center">
+      <img alt="Pano" src="{base}/assets/img/logo.svg" class="w-100 h-100 object-fit-contain" />
+    </div>
+    <div
+      class="mc-img-wrapper mc-anim center-content d-flex align-items-center justify-content-center">
+      <img
+        alt="Minecraft"
+        src="{base}/assets/img/minecraft-icon.png"
+        class="w-100 h-100 object-fit-contain" />
+    </div>
+    <div
+      class="hytale-img-wrapper hytale-anim center-content d-flex align-items-center justify-content-center">
+      <img
+        alt="Hytale"
+        src="{base}/assets/img/hytale-icon.png"
+        class="w-100 h-100 object-fit-contain" />
+    </div>
   </div>
 
   {#if networkErrors}
@@ -174,14 +152,25 @@
         {$_('components.splash.errors.connection')}
       {/if}
       <br />
-      <button
-        class="btn btn-sm btn-outline-secondary mt-3"
-        on:click={onResumeClick}
-        class:disabled={$retryingNetworkErrors}>
-        {$retryingNetworkErrors
-          ? $_('components.splash.refreshing')
-          : $_('components.splash.manual-refresh')}
-      </button>
+      <div class="d-flex flex-wrap align-items-center justify-content-center gap-2 mt-3">
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          on:click={onManualRefreshClick}
+          type="button">
+          {$_('components.splash.manual-refresh')}
+        </button>
+        {#if !notLoggedIn && !noPermission}
+          <button
+            class="btn btn-sm btn-primary"
+            on:click={onRetryClick}
+            class:disabled={$retryingNetworkErrors}
+            type="button">
+            {$retryingNetworkErrors
+              ? $_('components.splash.refreshing')
+              : $_('components.splash.retry')}
+          </button>
+        {/if}
+      </div>
     </div>
   {/if}
 
@@ -198,6 +187,7 @@
 
 <script>
   import { getContext, onDestroy, onMount } from 'svelte';
+  import { get } from 'svelte/store';
   import { fade } from 'svelte/transition';
   import { _ } from 'svelte-i18n';
 
@@ -230,10 +220,12 @@
     networkErrors = value.length !== 0;
   });
 
-  async function onResumeClick() {
-    if (notLoggedIn || noPermission) {
-      location.reload();
+  function onManualRefreshClick() {
+    location.reload();
+  }
 
+  async function onRetryClick() {
+    if (get(retryingNetworkErrors)) {
       return;
     }
 

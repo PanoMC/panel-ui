@@ -1545,6 +1545,7 @@
       },
       "stuck-text": "Stuck here? Try manual refresh.",
       "manual-refresh": "Manual Refresh",
+      "retry": "Try again",
       "refreshing": "Refreshing...",
       "refresh": "Refresh"
     },
