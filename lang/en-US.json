@@ -776,9 +776,12 @@
     },
     "ip-bans": {
       "ip": "IP",
+      "add-ban": "IP ban",
       "remove": "Remove IP ban",
       "confirm-remove": "Remove IP ban for {ip}?",
-      "expired": "Expired"
+      "expired": "Expired",
+      "filter-active": "Active",
+      "filter-history": "History"
     },
     "migration": {
       "server-title": "Server",
@@ -1309,6 +1312,14 @@
         "6-months": "6 Months",
         "1-year": "1 Year"
       },
+      "confirm-ban-ip": {
+        "title": "Add IP ban",
+        "ban-message-placeholder": "Reason (optional)",
+        "find-player": "Find player (register IP)",
+        "toast-banned": "IP {ip} is banned.",
+        "toast-no-registered-ip": "This player has no register IP to use.",
+        "toast-ip-required": "Enter an IP address or pick a player."
+      },
       "confirm-close-ticket": {
         "title-single": "Are you sure you want to close this ticket?",
         "title-multi": "Are you sure you want to close these tickets?"
@@ -1462,6 +1473,9 @@
       "unban-player": {
         "title": "Are you sure you want to unban this player?"
       },
+      "unban-ip": {
+        "title": "Are you sure you want to remove the IP ban for {ip}?"
+      },
       "edit-player": {
         "title": "Edit Player Information",
         "inputs": {
@@ -1557,6 +1571,9 @@
         "the-player": "\"{username}\" user's {event}",
         "removed-ban": "ban removed.",
         "could-not-remove-ban": "couldn't remove ban, error: {error}"
+      },
+      "ip-unban": {
+        "done": "IP ban removed for {ip}."
       },
       "post-category-deleted-permanently": "\"{title}\" deleted permanently.",
       "post-deleted-permanently": "\"{title}\" is permanently deleted.",
@@ -1671,6 +1688,7 @@
   },
   "activity-logs": {
     "BANNED_PLAYER": "**{username}** banned player {player}.",
+    "BANNED_IP": "**{username}** banned IP {ip}.",
     "CLOSED_TICKETS": "**{username}** closed some tickets ({ticketIds}).",
     "CREATED_PERMISSION_GROUP": "**{username}** created \"{permissionGroupName}\" permission group.",
     "CREATED_POST_CATEGORY": "**{username}** created \"{title}\" post category.",
@@ -1688,6 +1706,7 @@
     "REPLIED_TICKET": "**{username}** replied to a ticket #{ticketId}.",
     "SENT_MANUAL_VALIDATION_EMAIL": "**{username}** sent manual validation e-mail to {email}.",
     "UNBANNED_PLAYER": "**{username}** unbanned player {player}.",
+    "UNBANNED_IP": "**{username}** removed the IP ban for {ip}.",
     "UPDATED_PERMISSION_GROUP": "**{username}** made changes in \"{permissionGroupName}\" permission group.",
     "UPDATED_PERMISSION_GROUP_PERM": "**{username}** made changes in \"{permissionGroupName}\" permission group perm.",
     "UPDATED_PLAYER": "**{username}** made changes in player \"{player}\".",
@@ -1723,6 +1742,7 @@
   "errors": {
     "NETWORK_ERROR": "Network error! Please check your connection.",
     "ALREADY_BANNED": "User is already banned!",
+    "ALREADY_IP_BANNED": "This IP is already actively banned.",
     "ALREADY_CONNECTED_TO_PANO": "Already connected an account to Pano servers!",
     "BAD_REQUEST": "Bad request, please check your data.",
     "CANT_BAN_YOURSELF": "You can't ban yourself!",

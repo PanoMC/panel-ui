@@ -776,9 +776,12 @@
     },
     "ip-bans": {
       "ip": "IP",
+      "add-ban": "Бан по IP",
       "remove": "Удалить IP-блокировку",
       "confirm-remove": "Удалить IP-блокировку для {ip}?",
-      "expired": "Истёк"
+      "expired": "Истёк",
+      "filter-active": "Активные",
+      "filter-history": "История"
     },
     "migration": {
       "platforms-title": "Импорт из платформы",
@@ -1309,6 +1312,14 @@
         "6-months": "6 месяцев",
         "1-year": "1 год"
       },
+      "confirm-ban-ip": {
+        "title": "Добавить бан по IP",
+        "ban-message-placeholder": "Причина (по желанию)",
+        "find-player": "Найти игрока (IP при регистрации)",
+        "toast-banned": "IP {ip} забанен.",
+        "toast-no-registered-ip": "У этого игрока нет IP регистрации.",
+        "toast-ip-required": "Введите IP или выберите игрока."
+      },
       "confirm-close-ticket": {
         "title-single": "Вы уверены, что хотите закрыть этот тикет?",
         "title-multi": "Вы уверены, что хотите закрыть эти тикеты?"
@@ -1462,6 +1473,9 @@
       "unban-player": {
         "title": "Вы уверены, что хотите разбанить этого игрока?"
       },
+      "unban-ip": {
+        "title": "Удалить IP-блокировку для {ip}?"
+      },
       "edit-player": {
         "title": "Редактировать информацию об игроке",
         "inputs": {
@@ -1557,6 +1571,9 @@
         "the-player": "{event} пользователя \"{username}\"",
         "removed-ban": "разбанен.",
         "could-not-remove-ban": "не удалось разбанить, ошибка: {error}"
+      },
+      "ip-unban": {
+        "done": "IP-блокировка для {ip} снята."
       },
       "post-category-deleted-permanently": "\"{title}\" удалено навсегда.",
       "post-deleted-permanently": "\"{title}\" навсегда удалено.",
@@ -1671,6 +1688,7 @@
   },
   "activity-logs": {
     "BANNED_PLAYER": "**{username}** забанил игрока {player}.",
+    "BANNED_IP": "**{username}** забанил IP {ip}.",
     "CLOSED_TICKETS": "**{username}** закрыл несколько тикетов ({ticketIds}).",
     "CREATED_PERMISSION_GROUP": "**{username}** создал группу разрешений \"{permissionGroupName}\".",
     "CREATED_POST_CATEGORY": "**{username}** создал категорию постов \"{title}\".",
@@ -1688,6 +1706,7 @@
     "REPLIED_TICKET": "**{username}** ответил на тикет #{ticketId}.",
     "SENT_MANUAL_VALIDATION_EMAIL": "**{username}** отправил письмо с подтверждением вручную на {email}.",
     "UNBANNED_PLAYER": "**{username}** разбанил игрока {player}.",
+    "UNBANNED_IP": "**{username}** снял бан с IP {ip}.",
     "UPDATED_PERMISSION_GROUP": "**{username}** внес изменения в группу разрешений \"{permissionGroupName}\".",
     "UPDATED_PERMISSION_GROUP_PERM": "**{username}** внес изменения в права группы разрешений \"{permissionGroupName}\".",
     "UPDATED_PLAYER": "**{username}** внес изменения в игрока \"{player}\".",
@@ -1723,6 +1742,7 @@
   "errors": {
     "NETWORK_ERROR": "Сетевая ошибка! Пожалуйста, проверьте подключение.",
     "ALREADY_BANNED": "Пользователь уже забанен!",
+    "ALREADY_IP_BANNED": "Этот IP уже в активной блокировке.",
     "ALREADY_CONNECTED_TO_PANO": "Аккаунт уже подключен к серверам Pano!",
     "BAD_REQUEST": "Некорректный запрос, пожалуйста, проверьте данные.",
     "CANT_BAN_YOURSELF": "Вы не можете забанить самого себя!",

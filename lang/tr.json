@@ -776,9 +776,12 @@
     },
     "ip-bans": {
       "ip": "IP",
+      "add-ban": "IP yasağı",
       "remove": "IP yasağını kaldır",
       "confirm-remove": "{ip} için IP yasağı kaldırılsın mı?",
-      "expired": "Süresi Dolmuş"
+      "expired": "Süresi Dolmuş",
+      "filter-active": "Aktif",
+      "filter-history": "Geçmiş"
     },
     "migration": {
       "server-title": "Sunucu",
@@ -1309,6 +1312,14 @@
         "6-months": "6 Ay",
         "1-year": "1 Yıl"
       },
+      "confirm-ban-ip": {
+        "title": "IP yasağı ekle",
+        "ban-message-placeholder": "Sebep (isteğe bağlı)",
+        "find-player": "Oyuncu bul (kayıt IP)",
+        "toast-banned": "{ip} IP adresi yasaklandı.",
+        "toast-no-registered-ip": "Bu oyuncunun kullanılacak bir kayıt IP adresi yok.",
+        "toast-ip-required": "Bir IP girin veya bir oyuncu seçin."
+      },
       "confirm-close-ticket": {
         "title-single": "Bu talebi kapatmak istediğinizden emin misiniz?",
         "title-multi": "Bu talepleri kapatmak istediğinizden emin misiniz?"
@@ -1462,6 +1473,9 @@
       "unban-player": {
         "title": "Bu oyuncunun yasağını kaldırmak istediğinizden emin misiniz?"
       },
+      "unban-ip": {
+        "title": "{ip} için IP yasağını kaldırmak istediğinizden emin misiniz?"
+      },
       "edit-player": {
         "title": "Oyuncu Bilgilerini Düzenle",
         "inputs": {
@@ -1557,6 +1571,9 @@
         "the-player": "\"{username}\" kullanıcısının {event}",
         "removed-ban": "yasağı kaldırıldı.",
         "could-not-remove-ban": "yasağı kaldırılamadı, hata: {error}"
+      },
+      "ip-unban": {
+        "done": "{ip} için IP yasağı kaldırıldı."
       },
       "post-category-deleted-permanently": "\"{title}\" kalıcı olarak silindi.",
       "post-deleted-permanently": "\"{title}\" kalıcı olarak silindi.",
@@ -1671,6 +1688,7 @@
   },
   "activity-logs": {
     "BANNED_PLAYER": "**{username}** {player} adlı oyuncuyu banladı.",
+    "BANNED_IP": "**{username}** {ip} IP adresine yasak uyguladı.",
     "CLOSED_TICKETS": "**{username}** bazı destek taleplerini kapattı ({ticketIds}).",
     "CREATED_PERMISSION_GROUP": "**{username}** \"{permissionGroupName}\" adlı yetki grubunu oluşturdu.",
     "CREATED_POST_CATEGORY": "**{username}** \"{title}\" adlı gönderi kategorisini oluşturdu.",
@@ -1688,6 +1706,7 @@
     "REPLIED_TICKET": "**{username}** #{ticketId} numaralı destek talebine yanıt verdi.",
     "SENT_MANUAL_VALIDATION_EMAIL": "**{username}** {email} adresine manuel doğrulama e-postası gönderdi.",
     "UNBANNED_PLAYER": "**{username}** {player} adlı oyuncunun banını kaldırdı.",
+    "UNBANNED_IP": "**{username}** {ip} IP yasağını kaldırdı.",
     "UPDATED_PERMISSION_GROUP": "**{username}** \"{permissionGroupName}\" adlı yetki grubunda değişiklik yaptı.",
     "UPDATED_PERMISSION_GROUP_PERM": "**{username}** \"{permissionGroupName}\" yetki grubunun izinlerinde değişiklik yaptı.",
     "UPDATED_PLAYER": "**{username}** \"{player}\" adlı oyuncuda değişiklik yaptı.",
@@ -1723,6 +1742,7 @@
   "errors": {
     "NETWORK_ERROR": "Bağlantı hatası! Lütfen bağlantınızı kontrol edin.",
     "ALREADY_BANNED": "Kullanıcı zaten yasaklanmış!",
+    "ALREADY_IP_BANNED": "Bu IP zaten aktif olarak yasaklı.",
     "ALREADY_CONNECTED_TO_PANO": "Zaten bir hesap Pano sunucularına bağlanmış!",
     "BAD_REQUEST": "Geçersiz istek, lütfen verilerinizi kontrol edin.",
     "CANT_BAN_YOURSELF": "Kendinizi yasaklayamazsınız!",

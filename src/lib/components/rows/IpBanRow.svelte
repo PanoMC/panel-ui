@@ -1,4 +1,29 @@
 <tr>
+  <th scope="row" class="align-middle text-center">
+    {#if hasPermission(Permissions.MANAGE_PLAYERS)}
+      <div class="dropdown position-static">
+        <button
+          type="button"
+          class="btn btn-link"
+          aria-expanded="false"
+          aria-haspopup="true"
+          data-bs-toggle="dropdown"
+          use:tooltip={[$_('components.player-row.actions')]}
+          aria-label={$_('components.player-row.actions')}>
+          <span class="fas fa-ellipsis-v"></span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-start">
+          <button
+            type="button"
+            class="dropdown-item link-danger"
+            on:click={() => dispatch('unban', { bannedIp })}>
+            <i class="fas fa-trash me-2"></i>
+            {$_('pages.ip-bans.remove')}
+          </button>
+        </div>
+      </div>
+    {/if}
+  </th>
   <td class="align-middle">
     <code class="user-select-all">{bannedIp.ip}</code>
   </td>
@@ -58,17 +83,6 @@
   </td>
   <td class="align-middle text-nowrap">
     <DateComponent time={bannedIp.createdAt} />
-  </td>
-  <td class="align-middle text-end">
-    {#if hasPermission(Permissions.MANAGE_PLAYERS)}
-      <button
-        class="btn btn-link link-danger btn-sm"
-        on:click={() => dispatch('unban', { bannedIp })}
-        use:tooltip={[$_('pages.ip-bans.remove')]}
-        aria-label={$_('pages.ip-bans.remove')}>
-        <i class="fas fa-trash"></i>
-      </button>
-    {/if}
   </td>
 </tr>
 

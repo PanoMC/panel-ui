@@ -30,6 +30,16 @@
           <i class="fas fa-gavel"></i>
           <span class="d-lg-inline d-none ms-2">{$_('pages.player-detail.ban')}</span>
         </button>
+      {:else if data.view === Views.IP_BANS}
+        <button
+          type="button"
+          class="btn btn-danger"
+          use:tooltip={[$_('pages.ip-bans.add-ban'), { placement: 'bottom' }]}
+          aria-label={$_('pages.ip-bans.add-ban')}
+          on:click={() => showConfirmBanIpModal()}>
+          <i class="fas fa-network-wired"></i>
+          <span class="d-lg-inline d-none ms-2">{$_('pages.ip-bans.add-ban')}</span>
+        </button>
       {/if}
     </div>
   </PageActions>
@@ -80,6 +90,17 @@
             active={data.pageType === PageTypes.BANNED}>
             {$_('pages.players.banned')}
           </CardFiltersItem>
+        {:else if data.view === Views.IP_BANS}
+          <CardFiltersItem
+            href="/players{ipBansFilterQuery('ACTIVE')}"
+            active={data.ipBanStatus === 'ACTIVE'}>
+            {$_('pages.ip-bans.filter-active')}
+          </CardFiltersItem>
+          <CardFiltersItem
+            href="/players{ipBansFilterQuery('HISTORY')}"
+            active={data.ipBanStatus === 'HISTORY'}>
+            {$_('pages.ip-bans.filter-history')}
+          </CardFiltersItem>
         {/if}
       </CardFilters>
     </CardHeader>
@@ -116,13 +137,13 @@
           <table class="table table-hover">
             <thead>
               <tr>
+                <th class="align-middle text-nowrap" scope="col"></th>
                 <th class="align-middle text-nowrap" scope="col">{$_('pages.ip-bans.ip')}</th>
                 <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-duration')}</th>
                 <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-reason')}</th>
                 <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-source')}</th>
                 <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.banned-by')}</th>
                 <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.banned-at')}</th>
-                <th class="align-middle text-nowrap text-end" scope="col"></th>
               </tr>
             </thead>
             <tbody>
@@ -228,6 +249,13 @@
 
   export const DefaultPageType = PageTypes.ALL;
 
+  export const IpBanStatuses = Object.freeze({
+    ACTIVE: 'ACTIVE',
+    HISTORY: 'HISTORY',
+  });
+
+  export const DefaultIpBanStatus = IpBanStatuses.ACTIVE;
+
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
@@ -243,6 +271,11 @@
     const view = searchParams.get('view') || Views.PLAYERS;
     const pageType = view === Views.BANS ? PageTypes.BANNED : (searchParams.get('pageType') || DefaultPageType);
     const search = searchParams.get('search');
+    const ipBanParam = searchParams.get('ipBanStatus')?.toUpperCase();
+    const ipBanStatus =
+      view === Views.IP_BANS && Object.values(IpBanStatuses).includes(ipBanParam)
+        ? ipBanParam
+        : DefaultIpBanStatus;
 
     if (!Object.values(PageTypes).includes(pageType)) {
       throw error(404, 'PAGE_NOT_FOUND');
@@ -254,6 +287,7 @@
       view,
       permissionGroup,
       search,
+      ipBanStatus: view === Views.IP_BANS ? ipBanStatus : undefined,
     });
 
     const body = await ApiUtil.get({
@@ -273,6 +307,7 @@
     body.pageType = pageType;
     body.search = search;
     body.view = view;
+    body.ipBanStatus = view === Views.IP_BANS ? ipBanStatus : undefined;
 
     return body;
   }
@@ -299,6 +334,10 @@
     onHide as onConfirmBanPlayerModalHide,
   } from '$lib/components/modals/ConfirmBanPlayerModal.svelte';
   import {
+    show as showConfirmBanIpModal,
+    setCallback as setConfirmBanIpModalCallback,
+  } from '$lib/components/modals/ConfirmBanIpModal.svelte';
+  import {
     show as showSearchPlayerModal,
     setCallback as setSearchPlayerModalCallback,
   } from '$lib/components/modals/SearchPlayerModal.svelte';
@@ -307,6 +346,10 @@
     setCallback as setUnbanPlayerModalCallback,
     onHide as onUnbanPlayerModalHide,
   } from '$lib/components/modals/UnbanPlayerModal.svelte';
+  import {
+    show as showUnbanIpModal,
+    setCallback as setUnbanIpModalCallback,
+  } from '$lib/components/modals/UnbanIpModal.svelte';
 
   import PlayerRow from '$lib/components/rows/PlayerRow.svelte';
   import BanHistoryRow from '$lib/components/rows/BanHistoryRow.svelte';
@@ -353,6 +396,18 @@
     });
   }
 
+  /**
+   * @param {'ACTIVE' | 'HISTORY'} status
+   */
+  function ipBansFilterQuery(status) {
+    return buildQueryParams({
+      view: 'IP_BANS',
+      ipBanStatus: status,
+      page: 1,
+      search: search || undefined,
+    });
+  }
+
   $: search = data.search || '';
 
   $: {
@@ -395,6 +450,8 @@
       pageType: data.pageType,
       view: data.view,
       search: search || undefined,
+      ipBanStatus:
+        data.view === 'IP_BANS' ? data.ipBanStatus || DefaultIpBanStatus : undefined,
     });
 
     await goto(queryParams, { invalidateAll: true, keepFocus: true });
@@ -413,18 +470,12 @@
     showEditPlayerModal(player);
   }
 
-  async function onUnbanIp(bannedIp) {
-    if (!bannedIp?.id) return;
-
-    if (!window.confirm($_('pages.ip-bans.confirm-remove', { values: { ip: bannedIp.ip } }))) {
+  function onUnbanIp(bannedIp) {
+    if (!bannedIp?.id) {
       return;
     }
 
-    await ApiUtil.delete({
-      path: `/api/panel/banned-ips/${bannedIp.id}`,
-    });
-
-    await refreshData();
+    showUnbanIpModal(bannedIp);
   }
 
   function showBanPlayerModalClick(player) {
@@ -501,6 +552,10 @@
     refreshData();
   });
 
+  setConfirmBanIpModalCallback(() => {
+    refreshData();
+  });
+
   setUnbanPlayerModalCallback((newPlayer) => {
     if (!data.players) {
       return;
@@ -514,6 +569,10 @@
 
     data.players = data.players;
 
+    refreshData();
+  });
+
+  setUnbanIpModalCallback(() => {
     refreshData();
   });
 

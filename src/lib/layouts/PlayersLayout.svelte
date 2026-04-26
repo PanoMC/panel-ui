@@ -3,8 +3,10 @@
 <EditPlayerModal />
 <SearchPlayerModal />
 <ConfirmBanPlayerModal />
+<ConfirmBanIpModal />
 <ConfirmDeletePlayerModal />
 <UnbanPlayerModal />
+<UnbanIpModal />
 <ConfirmSendVerificationEmailModal />
 
 <script context="module">
@@ -35,7 +37,9 @@
   import EditPlayerModal from '$lib/components/modals/EditPlayerModal.svelte';
   import SearchPlayerModal from '$lib/components/modals/SearchPlayerModal.svelte';
   import ConfirmBanPlayerModal from '$lib/components/modals/ConfirmBanPlayerModal.svelte';
+  import ConfirmBanIpModal from '$lib/components/modals/ConfirmBanIpModal.svelte';
   import UnbanPlayerModal from '$lib/components/modals/UnbanPlayerModal.svelte';
+  import UnbanIpModal from '$lib/components/modals/UnbanIpModal.svelte';
   import ConfirmDeletePlayerModal from '$lib/components/modals/ConfirmDeletePlayerModal.svelte';
   import ConfirmSendVerificationEmailModal from '$lib/components/modals/ConfirmSendVerificationEmailModal.svelte';
 </script>
