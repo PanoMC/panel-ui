@@ -16,10 +16,12 @@
         {$_('pages.players.ip-bans-title')}</PageNavItem>
     </PageNav>
     <div slot="right" class="hstack gap-2">
-      <a href="{base}/migration" class="btn btn-secondary">
-        <i class="fa fa-file-import"></i>
-        <span class="d-lg-inline d-none ms-2">{$_('buttons.import')}</span>
-      </a>
+      {#if data.view === Views.PLAYERS}
+        <a href="{base}/migration" class="btn btn-secondary">
+          <i class="fa fa-file-import"></i>
+          <span class="d-lg-inline d-none ms-2">{$_('buttons.import')}</span>
+        </a>
+      {/if}
       {#if data.view === Views.BANS}
         <button
           type="button"
