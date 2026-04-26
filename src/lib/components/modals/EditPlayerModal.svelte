@@ -304,7 +304,6 @@
 
   $: saveDisabled =
     !$player.username ||
-    !$player.email ||
     (!pluginsDirty &&
       $player.username === $playerBackup.username &&
       $player.email === $playerBackup.email &&
