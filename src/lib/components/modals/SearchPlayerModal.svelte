@@ -194,7 +194,8 @@
       .filter(
         (n) =>
           n?.holderType === 'USER' &&
-          n?.holderId === userId &&
+          n?.holderId != null &&
+          String(n.holderId) === String(userId) &&
           n?.active !== false &&
           typeof n?.node === 'string' &&
           n.node.startsWith('group.'),
@@ -215,7 +216,8 @@
 
   function isExisting(user) {
     const id = user?.id;
-    return id != null && ($existingUserIds || []).includes(id);
+    if (id == null) return false;
+    return ($existingUserIds || []).some((x) => String(x) === String(id));
   }
 
 

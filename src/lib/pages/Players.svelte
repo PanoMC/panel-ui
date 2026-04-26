@@ -587,7 +587,9 @@
   });
 
   onDestroy(() => {
-    setSearchPlayerModalCallback(() => {});
+    // Do not clear SearchPlayerModal callback here. The next route (e.g. /permissions) sets
+    // its own handler; destroying after mount would overwrite the new page's callback
+    // because the modal module is global.
     clearInterval(interval);
   });
 </script>

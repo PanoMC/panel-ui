@@ -309,7 +309,7 @@
                   {#each filteredUsers as user, i (user.id ?? user.username)}
                     <div
                       class="list-group-item d-flex justify-content-between align-items-center {selectedUser &&
-                      selectedUser.id === user.id
+                      sameId(selectedUser.id, user.id)
                         ? 'active'
                         : ''} {newUserIds.has(String(user.id))
                         ? 'indicator-added'
@@ -928,6 +928,12 @@
     }
   }
 
+  /** API / JSON can mix string vs number ids; use this for all user + holderId comparisons. */
+  function sameId(a, b) {
+    if (a == null || b == null) return false;
+    return String(a) === String(b);
+  }
+
   function formatUserGroups(user, currentNodesList, currentGroupList) {
     // IMPORTANT: For the UI we want ONLY direct group assignments from USER-held nodes:
     // - node: "group.<name>"
@@ -940,7 +946,7 @@
       .filter(
         (n) =>
           n?.holderType === 'USER' &&
-          n?.holderId === user.id &&
+          sameId(n?.holderId, user.id) &&
           n?.active !== false &&
           typeof n?.node === 'string' &&
           n.node.startsWith('group.'),
@@ -968,7 +974,7 @@
       .filter(
         (n) =>
           n?.holderType === 'USER' &&
-          n?.holderId === user.id &&
+          sameId(n?.holderId, user.id) &&
           n?.active !== false &&
           typeof n?.node === 'string' &&
           n.node.startsWith('group.'),
@@ -1223,7 +1229,7 @@
     }
     if (selectedUser) {
       currentNodes = (nodes || []).filter(
-        (n) => n.holderType === 'USER' && n.holderId === selectedUser.id,
+        (n) => n.holderType === 'USER' && sameId(n.holderId, selectedUser.id),
       );
       return;
     }
@@ -1388,7 +1394,7 @@
       selectedUser =
         users.find(
           (u) =>
-            (prevUserId != null && u.id === prevUserId) ||
+            (prevUserId != null && sameId(u.id, prevUserId)) ||
             (prevUserName != null && u.username === prevUserName),
         ) || null;
     }
@@ -1503,7 +1509,7 @@
 
   function handleUserSelected(u) {
     if (!u) return;
-    const existing = (users || []).find((ex) => ex.id === u.id);
+    const existing = (users || []).find((ex) => sameId(ex.id, u.id));
     if (!existing) {
       users = [...(users || []), u];
       selectedUser = u;
@@ -1513,7 +1519,7 @@
       const hasAnyDirectGroupNode = (nodes || []).some(
         (n) =>
           n?.holderType === 'USER' &&
-          n?.holderId === u.id &&
+          sameId(n?.holderId, u.id) &&
           n?.active !== false &&
           typeof n?.node === 'string' &&
           n.node.startsWith('group.'),
@@ -1522,7 +1528,7 @@
       const hasDefaultGroupNode = (nodes || []).some(
         (n) =>
           n?.holderType === 'USER' &&
-          n?.holderId === u.id &&
+          sameId(n?.holderId, u.id) &&
           typeof n?.node === 'string' &&
           n.node === 'group.default' &&
           n?.active !== false,
@@ -1583,9 +1589,9 @@
     if (!u) return;
 
     users = (users || []).filter((x) => x.id !== u.id);
-    nodes = (nodes || []).filter((n) => !(n.holderType === 'USER' && n.holderId === u.id));
+    nodes = (nodes || []).filter((n) => !(n.holderType === 'USER' && sameId(n.holderId, u.id)));
 
-    if (selectedUser && selectedUser.id === u.id) {
+    if (selectedUser && sameId(selectedUser.id, u.id)) {
       selectedUser = null;
       refreshCurrentNodes();
     }
