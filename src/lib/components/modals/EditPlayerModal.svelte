@@ -17,7 +17,7 @@
             {#if !row.permission || hasPermission(row.permission, $page.data.user)}
               <ViewComponent
                 component={row.component}
-                playerData={$player}
+                playerData={playerDataForPlugins}
                 onHookRegister={(handler) => registerPluginHandler(row.id, handler)} />
             {/if}
           {/each}
@@ -284,6 +284,12 @@
   import { changeLanguage, getLanguageByLocale, Languages } from '$lib/language.util';
 
   const siteInfo = getContext('siteInfo');
+
+  /** Plugins key off username; keep saved username until form save (avoid draft reactivity). */
+  $: playerDataForPlugins =
+    ($player.username ?? '') !== ($playerBackup.username ?? '')
+      ? { ...$player, username: $playerBackup.username }
+      : $player;
 
   function refreshBrowserPage() {
     location.reload();
