@@ -70,7 +70,7 @@
                   </div>
                 </div>
                 <span class="badge text-bg-primary">
-                  {isExisting(u)
+                  {$selectOnlyBadge || isExisting(u)
                     ? $_('components.modals.search-player.badges.select')
                     : $_('components.modals.search-player.badges.add')}
                 </span>
@@ -99,6 +99,8 @@
   const allGroups = writable([]);
   const allNodes = writable([]);
   const existingUserIds = writable([]);
+  /** When true, badge always shows "Select" (e.g. ban flow) instead of Add vs Select. */
+  const selectOnlyBadge = writable(false);
 
   let callback = (user) => {};
   let hideCallback = () => {};
@@ -114,6 +116,7 @@
     allGroups.set(payload.allGroups ?? []);
     allNodes.set(payload.nodes ?? []);
     existingUserIds.set(payload.existingUserIds ?? []);
+    selectOnlyBadge.set(payload.selectOnlyBadge === true);
 
     modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: 'static',

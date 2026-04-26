@@ -1,6 +1,7 @@
 <slot />
 
 <EditPlayerModal />
+<SearchPlayerModal />
 <ConfirmBanPlayerModal />
 <ConfirmDeletePlayerModal />
 <UnbanPlayerModal />
@@ -32,6 +33,7 @@
 
 <script>
   import EditPlayerModal from '$lib/components/modals/EditPlayerModal.svelte';
+  import SearchPlayerModal from '$lib/components/modals/SearchPlayerModal.svelte';
   import ConfirmBanPlayerModal from '$lib/components/modals/ConfirmBanPlayerModal.svelte';
   import UnbanPlayerModal from '$lib/components/modals/UnbanPlayerModal.svelte';
   import ConfirmDeletePlayerModal from '$lib/components/modals/ConfirmDeletePlayerModal.svelte';

@@ -15,11 +15,22 @@
         active={data.view === Views.IP_BANS}>
         {$_('pages.players.ip-bans-title')}</PageNavItem>
     </PageNav>
-    <div slot="right">
+    <div slot="right" class="hstack gap-2">
       <a href="{base}/migration" class="btn btn-secondary">
         <i class="fa fa-file-import"></i>
         <span class="d-lg-inline d-none ms-2">{$_('buttons.import')}</span>
       </a>
+      {#if data.view === Views.BANS}
+        <button
+          type="button"
+          class="btn btn-danger"
+          use:tooltip={[$_('pages.player-detail.ban'), { placement: 'bottom' }]}
+          aria-label={$_('pages.player-detail.ban')}
+          on:click={openBanWithPlayerSearch}>
+          <i class="fas fa-gavel"></i>
+          <span class="d-lg-inline d-none ms-2">{$_('pages.player-detail.ban')}</span>
+        </button>
+      {/if}
     </div>
   </PageActions>
 
@@ -54,10 +65,8 @@
           on:change={onSearchInput} />
       </div>
 
-      <!-- Filters -->
       <CardFilters slot="right">
         {#if data.view === Views.PLAYERS && !data.permissionGroup}
-          <!-- Filters -->
           <CardFiltersItem href="/players" active={data.pageType === PageTypes.ALL}>
             {$_('pages.players.all')}
           </CardFiltersItem>
@@ -271,6 +280,7 @@
 
 <script>
   import { getContext, onDestroy, onMount } from 'svelte';
+  import { get } from 'svelte/store';
   import { _ } from 'svelte-i18n';
 
   import { goto } from '$app/navigation';
@@ -288,6 +298,10 @@
     setCallback as setConfirmBanPlayerModalCallback,
     onHide as onConfirmBanPlayerModalHide,
   } from '$lib/components/modals/ConfirmBanPlayerModal.svelte';
+  import {
+    show as showSearchPlayerModal,
+    setCallback as setSearchPlayerModalCallback,
+  } from '$lib/components/modals/SearchPlayerModal.svelte';
   import {
     show as showUnbanPlayerModal,
     setCallback as setUnbanPlayerModalCallback,
@@ -308,7 +322,8 @@
   import PageNav from '$lib/components/PageNav.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
-  import { page } from '$app/stores';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import tooltip from '$lib/tooltip.util';
 
   export let data;
   let search = data.search || '';
@@ -319,6 +334,24 @@
   let interval;
 
   const pageTitle = getContext('pageTitle');
+  const currentUser = getContext('user');
+
+  function onPlayerSelectedForBanFromHistory(u) {
+    if (!u) return;
+    if (get(currentUser)?.username === u.username) {
+      showToast('errors.CANT_BAN_YOURSELF');
+      return;
+    }
+    showConfirmBanPlayerModal(u);
+  }
+
+  function openBanWithPlayerSearch() {
+    setSearchPlayerModalCallback(onPlayerSelectedForBanFromHistory);
+    showSearchPlayerModal({
+      localPlayers: data.view === Views.BANS && Array.isArray(data.players) ? data.players : null,
+      selectOnlyBadge: true,
+    });
+  }
 
   $: search = data.search || '';
 
@@ -485,12 +518,15 @@
   });
 
   onMount(() => {
+    setSearchPlayerModalCallback(() => {});
+
     interval = setInterval(() => {
       checkTime += 1;
     }, 1000);
   });
 
   onDestroy(() => {
+    setSearchPlayerModalCallback(() => {});
     clearInterval(interval);
   });
 </script>
