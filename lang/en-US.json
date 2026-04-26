@@ -1488,6 +1488,7 @@
           },
           "email": {
             "title": "E-Mail",
+            "empty-login-notice": "If left empty, the user will be asked to add an email address the next time they sign in.",
             "errors": {
               "invalid": "E-Mail is not valid",
               "exists": "This E-Mail address is used by another player"

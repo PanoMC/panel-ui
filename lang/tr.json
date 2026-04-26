@@ -1488,6 +1488,7 @@
           },
           "email": {
             "title": "E-Posta",
+            "empty-login-notice": "Boş bırakılırsa, bir sonraki girişte bu kullanıcıdan yeni e-posta adresi eklemesi istenir.",
             "errors": {
               "invalid": "E-Posta geçerli değil",
               "exists": "Bu E-Posta adresi başka bir oyuncu tarafından kullanılıyor"

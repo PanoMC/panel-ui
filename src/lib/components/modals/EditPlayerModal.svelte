@@ -67,6 +67,12 @@
                   {/if}
                 {/if}
               </div>
+              {#if !String($player.email ?? '').trim()}
+                <div class="alert alert-info mt-2 mb-0 py-2 px-3" role="status">
+                  <i class="fa-solid fa-circle-info me-1"></i>
+                  <small>{$_('components.modals.edit-player.inputs.email.empty-login-notice')}</small>
+                </div>
+              {/if}
             </div>
             <div class="col-12 mb-3">
               <div class="merged-grid w-100">
