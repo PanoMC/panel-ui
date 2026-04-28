@@ -24,8 +24,8 @@
       <div class="list-group">
         {#each $notifications as notification (notification)}
           <div
-            class="list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
-            class:notification-unread={notification.status === 'NOT_READ'}>
+            class="panel-notification-row list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
+            class:notification-unread={isPanelNotificationUnread(notification)}>
             <button
               type="button"
               use:tooltip={[$_('buttons.view')]}
@@ -195,36 +195,49 @@
     setCallback as setDeleteAllNotificationsModalCallback,
   } from '$lib/components/modals/ConfirmRemoveAllNotificationsModal.svelte';
   import { onNotificationClick } from '$lib/NotificationManager.js';
+  import { isPanelNotificationUnread } from '$lib/panelNotification.util.js';
 
   import NoContent from '$lib/components/NoContent.svelte';
   import { currentLanguage } from '$lib/language.util.js';
   import { avatarVersion } from '$lib/Store';
   import PageActions from '$lib/components/PageActions.svelte';
-
-
+  import { onPanelNotificationRefresh } from '$lib/panelRealtime.js';
 
   const pageTitle = getContext('pageTitle');
 
   pageTitle.set('pages.notifications.title');
 
-  let notificationProcessID = 0;
+  let listFetchInFlight = false;
+  let listFetchPending = false;
+  let listFetchGeneration = 0;
+
   let page = 0;
   let loadMoreLoading = false;
 
   let checkTime = 0;
   let interval;
 
-  function delay(time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
+  function runNextListIfPending() {
+    if (listFetchPending) {
+      listFetchPending = false;
+      fetchNotificationsListOnce();
+    }
   }
 
-  async function getNotifications(id) {
-    await delay(1000);
+  function fetchNotificationsListOnce() {
+    if (listFetchInFlight) {
+      listFetchPending = true;
+      return;
+    }
+    const gen = listFetchGeneration;
+    listFetchInFlight = true;
 
     ApiUtil.get({
       path: '/api/panel/notifications',
       handler: (body) => {
-        if (notificationProcessID !== id) {
+        listFetchInFlight = false;
+        if (gen !== listFetchGeneration) {
+          runNextListIfPending();
           return;
         }
 
@@ -232,29 +245,26 @@
           setNotifications(body.notifications);
 
           count.set(parseInt(body.notificationCount));
+
+          body.notifications.forEach((notification) => {
+            if (notification.status === 'NOT_READ') {
+              const notificationId = notification.id;
+              setTimeout(() => {
+                notifications.update((list) => {
+                  list.forEach((sub) => {
+                    if (sub.id === notificationId) {
+                      sub.status = 'READ';
+                    }
+                  });
+
+                  return list;
+                });
+              }, 3000);
+            }
+          });
         }
 
-        setTimeout(() => {
-          if (notificationProcessID === id) {
-            startnotificationCountdown();
-          }
-        }, 1000);
-
-        $notifications.forEach((notification) => {
-          if (notification.status === 'NOT_READ') {
-            setTimeout(() => {
-              notifications.update((notifications) => {
-                notifications.forEach((subNotification) => {
-                  if (subNotification.id === notification.id) {
-                    notification.status = 'READ';
-                  }
-                });
-
-                return notifications;
-              });
-            }, 3000);
-          }
-        });
+        runNextListIfPending();
       },
     });
   }
@@ -307,17 +317,9 @@
     });
   }
 
-  function startnotificationCountdown() {
-    notificationProcessID++;
-
-    const id = notificationProcessID;
-
-    getNotifications(id);
-  }
-
   function stopnotificationCountdown() {
-    notificationProcessID++;
-
+    listFetchGeneration++;
+    listFetchPending = false;
     clearInterval(interval);
   }
 
@@ -331,20 +333,22 @@
     showDeleteAllNotificationsModal();
   }
 
-  if (browser) startnotificationCountdown();
+  let offPanelNotificationRefresh;
 
   onMount(() => {
+    offPanelNotificationRefresh = onPanelNotificationRefresh(() => fetchNotificationsListOnce());
     interval = setInterval(() => {
       checkTime += 1;
     }, 1000);
   });
 
   onDestroy(() => {
+    offPanelNotificationRefresh?.();
     stopnotificationCountdown();
   });
 
   setDeleteAllNotificationsModalCallback(() => {
-    startnotificationCountdown();
+    fetchNotificationsListOnce();
   });
 
   function sanitizeObject(obj) {

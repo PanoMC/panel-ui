@@ -3,6 +3,67 @@
     background-image: radial-gradient(circle at 50% 0%, var(--bs-body-bg) 0%, transparent 500%);
     background-attachment: fixed;
   }
+
+  /*
+   * Okunmamış vurgu: alan renk değişimi `::after` + opacity ile “solarak” gider (sınıf kalkınca 0.8s+).
+   */
+  :global(.panel-notification-row.list-group-item) {
+    position: relative;
+    z-index: 0;
+    border-left: 1px solid transparent;
+    transition:
+      border-left-color 0.75s ease,
+      border-left-width 0.75s ease,
+      box-shadow 0.75s ease;
+  }
+
+  :global(.panel-notification-row.list-group-item::after) {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      var(--bs-primary-bg-subtle, rgba(13, 110, 253, 0.3)) 0%,
+      rgba(13, 110, 253, 0.08) 78%,
+      transparent 100%
+    );
+    box-shadow: inset 0 0 0 1px rgba(13, 110, 253, 0.2);
+    opacity: 0;
+    transition: opacity 0.85s ease, filter 0.25s ease;
+  }
+
+  :global(
+    .panel-notification-row.list-group-item.notification-unread:not(.active)::after
+  ) {
+    opacity: 1;
+  }
+
+  :global(
+    .panel-notification-row.list-group-item.notification-unread:not(.active)
+  ) {
+    border-left: 4px solid var(--bs-primary, #0d6efd);
+    box-shadow: 0 0 0 1px rgba(13, 110, 253, 0.1);
+  }
+
+  :global(
+    .panel-notification-row.list-group-item.notification-unread:not(.active):hover::after
+  ) {
+    filter: brightness(1.04);
+  }
+
+  :global(.panel-notification-row > *) {
+    position: relative;
+    z-index: 1;
+  }
+
+  :global(
+    .panel-notification-row.list-group-item.notification-unread .markdown-renderer
+  ) {
+    font-weight: 700;
+    transition: font-weight 0.5s ease;
+  }
 </style>
 
 <Sidebar />

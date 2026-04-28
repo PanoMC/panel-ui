@@ -1,3 +1,5 @@
+import { get } from 'svelte/store';
+
 import { base } from '$app/paths';
 
 /**
@@ -8,16 +10,28 @@ export const PANEL_SERVER_LIVE_LOAD_KEY = 'pano:panel-server-live';
 
 /** @typedef {(server: object) => void} ServerListener */
 /** @typedef {(serverId: number) => void} ServerRemovedListener */
+/** @typedef {() => void} PanelNotificationRefreshListener */
 
 const serverListeners = new Set();
 const serverRemovedListeners = new Set();
+const notificationRefreshListeners = new Set();
 
 let ws;
 let wantServersList = false;
 let wantServerId = null;
+let wantNotifications = false;
 let reconnectTimer;
 let shouldReconnect = false;
-const RECONNECT_MS = 4000;
+const RECONNECT_MS = 1000;
+/** If the socket never reaches OPEN, show the same splash as failed HTTP (expecting WS). */
+const WS_OPEN_DEADLINE_MS = 12000;
+let wsConnectWatchdog;
+/** @type {((isRetry?: boolean) => Promise<void>) | null} */
+let panelWsRecoveryCallback = null;
+
+function shouldKeepWebSocket() {
+  return wantServersList || wantServerId != null || wantNotifications;
+}
 
 function buildWsUrl() {
   if (typeof window === 'undefined') return '';
@@ -26,6 +40,48 @@ function buildWsUrl() {
   const u = new URL(path, window.location.origin);
   u.protocol = u.protocol === 'https:' ? 'wss:' : 'ws:';
   return u.toString();
+}
+
+function buildSiteInfoProbeUrl() {
+  if (typeof window === 'undefined') return '';
+  const withBase = `${base || ''}/api/siteInfo`.replace(/\/+/g, '/');
+  const path = withBase.startsWith('/') ? withBase : `/${withBase}`;
+  return new URL(path, window.location.origin).href;
+}
+
+function clearWsConnectWatchdog() {
+  if (wsConnectWatchdog) {
+    clearTimeout(wsConnectWatchdog);
+    wsConnectWatchdog = null;
+  }
+}
+
+async function registerWsBackendUnreachable() {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const { showNetworkError, networkErrorCallbacks } = await import('$lib/Store.js');
+  if (!panelWsRecoveryCallback) {
+    panelWsRecoveryCallback = async () => {
+      const url = buildSiteInfoProbeUrl();
+      const r = await fetch(url, { credentials: 'include', cache: 'no-store' });
+      if (!r.ok) {
+        throw new Error('offline');
+      }
+    };
+  }
+  if (get(networkErrorCallbacks).includes(panelWsRecoveryCallback)) {
+    return;
+  }
+  showNetworkError(panelWsRecoveryCallback);
+}
+
+async function clearWsNetworkErrorIfRegistered() {
+  if (!panelWsRecoveryCallback) {
+    return;
+  }
+  const { networkErrorCallbacks } = await import('$lib/Store.js');
+  networkErrorCallbacks.update((list) => list.filter((cb) => cb !== panelWsRecoveryCallback));
 }
 
 function sendConfig() {
@@ -38,6 +94,7 @@ function sendConfig() {
       : Number(wantServerId);
   ws.send(
     JSON.stringify({
+      subscribeNotifications: !!wantNotifications,
       subscribeServers: !!wantServersList,
       subscribeServerId: sid
     })
@@ -53,7 +110,7 @@ function scheduleReconnect() {
   }
   reconnectTimer = setTimeout(() => {
     reconnectTimer = null;
-    if (shouldReconnect && (wantServersList || wantServerId != null)) {
+    if (shouldReconnect && shouldKeepWebSocket()) {
       connect();
     }
   }, RECONNECT_MS);
@@ -67,6 +124,7 @@ function connect() {
     return;
   }
   shouldReconnect = true;
+  clearWsConnectWatchdog();
   try {
     ws = new WebSocket(buildWsUrl());
   } catch {
@@ -74,6 +132,8 @@ function connect() {
     return;
   }
   ws.onopen = () => {
+    clearWsConnectWatchdog();
+    void clearWsNetworkErrorIfRegistered();
     sendConfig();
   };
   ws.onmessage = (ev) => {
@@ -85,6 +145,16 @@ function connect() {
     }
     if (msg.type === 'ready') {
       sendConfig();
+      return;
+    }
+    if (msg.type === 'panelNotificationRefresh') {
+      notificationRefreshListeners.forEach((fn) => {
+        try {
+          fn();
+        } catch {
+          /* ignore */
+        }
+      });
       return;
     }
     if (msg.type === 'server' && msg.server) {
@@ -107,21 +177,36 @@ function connect() {
     }
   };
   ws.onclose = () => {
+    clearWsConnectWatchdog();
     ws = null;
-    if (shouldReconnect && (wantServersList || wantServerId != null)) {
+    if (shouldReconnect && shouldKeepWebSocket()) {
       scheduleReconnect();
     }
   };
   ws.onerror = () => {
     /* close handler will reconnect */
   };
+  clearWsConnectWatchdog();
+  wsConnectWatchdog = setTimeout(() => {
+    wsConnectWatchdog = null;
+    if (typeof window === 'undefined') {
+      return;
+    }
+    if (!shouldReconnect || !shouldKeepWebSocket()) {
+      return;
+    }
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      return;
+    }
+    void registerWsBackendUnreachable();
+  }, WS_OPEN_DEADLINE_MS);
 }
 
 function updateConnection() {
   if (typeof window === 'undefined') {
     return;
   }
-  if (wantServersList || wantServerId != null) {
+  if (shouldKeepWebSocket()) {
     if (!ws || ws.readyState === WebSocket.CLOSED) {
       connect();
     } else if (ws.readyState === WebSocket.OPEN) {
@@ -133,6 +218,8 @@ function updateConnection() {
       clearTimeout(reconnectTimer);
       reconnectTimer = null;
     }
+    clearWsConnectWatchdog();
+    void clearWsNetworkErrorIfRegistered();
     if (ws) {
       try {
         ws.close();
@@ -142,6 +229,15 @@ function updateConnection() {
       ws = null;
     }
   }
+}
+
+/**
+ * Panel layout: request WebSocket nudges when new panel notifications are created. Pair with `false` on unmount.
+ * @param {boolean} active
+ */
+export function setPanelNotificationsSubscription(active) {
+  wantNotifications = !!active;
+  updateConnection();
 }
 
 /**
@@ -184,17 +280,31 @@ export function onPanelServerRemoved(fn) {
   return () => serverRemovedListeners.delete(fn);
 }
 
+/**
+ * Fired when the server signals new panel notification(s); re-fetch over HTTP.
+ * @param {PanelNotificationRefreshListener} fn
+ * @returns {() => void}
+ */
+export function onPanelNotificationRefresh(fn) {
+  notificationRefreshListeners.add(fn);
+  return () => notificationRefreshListeners.delete(fn);
+}
+
 /** Drop all listeners and close the socket (e.g. full logout / teardown). */
 export function teardownPanelRealtime() {
   serverListeners.clear();
   serverRemovedListeners.clear();
+  notificationRefreshListeners.clear();
   wantServersList = false;
   wantServerId = null;
+  wantNotifications = false;
   shouldReconnect = false;
   if (reconnectTimer) {
     clearTimeout(reconnectTimer);
     reconnectTimer = null;
   }
+  clearWsConnectWatchdog();
+  void clearWsNetworkErrorIfRegistered();
   if (ws) {
     try {
       stripWebSocketHandlers(ws);
@@ -229,7 +339,7 @@ export function nudgePanelRealtimeReconnect() {
   if (typeof window === 'undefined') {
     return;
   }
-  if (!wantServersList && wantServerId == null) {
+  if (!shouldKeepWebSocket()) {
     return;
   }
   if (reconnectTimer) {

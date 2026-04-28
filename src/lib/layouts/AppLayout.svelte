@@ -319,6 +319,7 @@
     onPanelServerRemoved,
     onPanelServerUpdate,
     PANEL_SERVER_LIVE_LOAD_KEY,
+    setPanelNotificationsSubscription,
     setPanelSelectedServerSubscription,
   } from '$lib/panelRealtime.js';
   import { PanelSidebarStorageUtil } from '$lib/storage.util.js';
@@ -496,6 +497,10 @@
 
     initialized.set(true);
 
+    if (browser) {
+      setPanelNotificationsSubscription(true);
+    }
+
     if (hasPermission(Permissions.MANAGE_SERVERS)) {
       offPanelRealtimeServer = onPanelServerUpdate((server) => {
         if (!server || server.id == null) {
@@ -573,6 +578,7 @@
     offPanelRealtimeServer?.();
     offPanelRealtimeRemoved?.();
     if (browser) {
+      setPanelNotificationsSubscription(false);
       setPanelSelectedServerSubscription(null);
     }
   });

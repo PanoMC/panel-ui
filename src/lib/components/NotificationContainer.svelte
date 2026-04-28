@@ -146,11 +146,12 @@
   import { formatDistanceToNow } from 'date-fns';
   import { onNotificationClick } from '$lib/NotificationManager.js';
   import { currentLanguage } from '$lib/language.util.js';
-
-  let quickNotificationProcessID = 0;
+  import { onPanelNotificationRefresh } from '$lib/panelRealtime.js';
 
   let checkTime = 0;
   let interval;
+  let quickFetchInFlight = false;
+  let quickFetchPending = false;
 
   const notificationCount = getContext('notificationCount');
 
@@ -168,91 +169,74 @@
     show(notification.id);
   }
 
+  function normalizePanelNotificationStatus(n) {
+    if (n == null || n.status == null) {
+      return n;
+    }
+    const s = n.status;
+    if (typeof s === 'string') {
+      return n;
+    }
+    if (typeof s === 'object' && s !== null) {
+      return { ...n, status: s.name != null ? String(s.name) : s };
+    }
+    return n;
+  }
+
+  /**
+   * Replace store with the server snapshot (correct read/unread for navbar + toasts) and
+   * show a toast only for new NOT_READ ids (avoids duplicating the old poller merge bugs).
+   */
   function setNotifications(newNotifications) {
-    if (get(quickNotifications).length === 0 || newNotifications.length === 0) {
-      quickNotifications.set(newNotifications);
+    const list = Array.isArray(newNotifications) ? newNotifications : [];
+    const prev = get(quickNotifications);
+    const prevById = new Map(prev.map((p) => [p.id, p]));
 
-      newNotifications.forEach((notification) => {
-        if (notification.status === 'NOT_READ') {
-          addNotification(notification);
-        }
-      });
+    const next = list.map((n) => normalizePanelNotificationStatus(n));
+    quickNotifications.set(next);
 
+    for (const notification of next) {
+      if (notification.status !== 'NOT_READ') {
+        continue;
+      }
+      const was = prevById.get(notification.id);
+      if (was) {
+        continue;
+      }
+      addNotification(notification);
+    }
+  }
+
+  function runNextQuickFetchIfPending() {
+    if (quickFetchPending) {
+      quickFetchPending = false;
+      fetchQuickNotificationsOnce();
+    }
+  }
+
+  function fetchQuickNotificationsOnce() {
+    if (quickFetchInFlight) {
+      quickFetchPending = true;
       return;
     }
-
-    const listOfFilterIsNotificationExists = [];
-
-    newNotifications.forEach((item, index) => {
-      listOfFilterIsNotificationExists[index] = get(quickNotifications).filter(
-        (filterItem) => filterItem.id === item.id,
-      );
-    });
-
-    newNotifications.forEach((item, index) => {
-      if (listOfFilterIsNotificationExists[index].length === 0) {
-        quickNotifications.update((quickNotifications) => {
-          return quickNotifications.insert(index, item);
-        });
-
-        if (item.status === 'NOT_READ') {
-          addNotification(item);
-        }
-      }
-    });
-
-    get(quickNotifications).forEach((item, index) => {
-      const newArrayOfFilter = newNotifications.filter((filterItem) => filterItem.id === item.id);
-
-      if (newArrayOfFilter.length === 0) {
-        quickNotifications.update((quickNotifications) => {
-          return quickNotifications.remove(index);
-        });
-      }
-    });
-  }
-
-  function delay(time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-  }
-
-  async function getQuickNotifications(id) {
-    await delay();
+    quickFetchInFlight = true;
 
     ApiUtil.get({
       path: '/api/panel/notifications/quick',
       handler: (body, reject) => {
+        quickFetchInFlight = false;
         if (body.error) {
           reject();
-
-          return;
-        }
-
-        if (quickNotificationProcessID !== id) {
+          runNextQuickFetchIfPending();
           return;
         }
 
         setNotifications(body.notifications);
 
         notificationCount.set(body.notificationCount);
-
-        setTimeout(() => {
-          if (quickNotificationProcessID !== id) {
-            return;
-          }
-
-          startQuickNotificationCountDown();
-        }, 1000);
+        runNextQuickFetchIfPending();
       },
     });
-  }
-
-  function startQuickNotificationCountDown() {
-    quickNotificationProcessID++;
-
-    const id = quickNotificationProcessID;
-
-    getQuickNotifications(id);
   }
 
   function markRead(id) {
@@ -268,8 +252,11 @@
     hide(notification.id);
   }
 
+  let offPanelNotificationRefresh;
+
   onMount(() => {
-    startQuickNotificationCountDown();
+    fetchQuickNotificationsOnce();
+    offPanelNotificationRefresh = onPanelNotificationRefresh(() => fetchQuickNotificationsOnce());
 
     interval = setInterval(() => {
       checkTime += 1;
@@ -277,6 +264,7 @@
   });
 
   onDestroy(() => {
+    offPanelNotificationRefresh?.();
     clearInterval(interval);
   });
 

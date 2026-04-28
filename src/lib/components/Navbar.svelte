@@ -138,8 +138,8 @@
               <div class="list-group list-group-flush">
                 {#each $quickNotifications as notification, index (notification)}
                   <div
-                    class="fw-normal list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
-                    class:notification-unread={notification.status === 'NOT_READ'}>
+                    class="panel-notification-row fw-normal list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
+                    class:notification-unread={isPanelNotificationUnread(notification)}>
                     <button
                       type="button"
                       use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}
@@ -260,6 +260,7 @@
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import SiteNavigationMenu from '$lib/components/sidebar/SiteNavigationMenu.svelte';
   import ServerNavigationMenu from '$lib/components/sidebar/ServerNavigationMenu.svelte';
+  import { isPanelNotificationUnread } from '$lib/panelNotification.util.js';
   import { show as showServersModal } from './modals/ServersModal.svelte';
   import { UI_URL } from '$lib/variables.js';
 
@@ -416,6 +417,7 @@
       return sanitizedObj;
     }, {});
   }
+
 </script>
 
 <style>
