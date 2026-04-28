@@ -147,7 +147,7 @@ function connect() {
       sendConfig();
       return;
     }
-    if (msg.type === 'panelNotificationRefresh') {
+    if (msg.type === 'notificationRefresh' || msg.type === 'panelNotificationRefresh') {
       notificationRefreshListeners.forEach((fn) => {
         try {
           fn();
