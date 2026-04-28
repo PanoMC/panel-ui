@@ -1467,8 +1467,11 @@
         "servers": "Выбрать",
         "main-server": "Главный сервер",
         "online": "В сети",
-        "search-placeholder": "Поиск серверов...",
-        "select-server-tooltip": "Выбрать этот сервер"
+        "other-servers-heading": "Остальные серверы",
+        "search-no-matches": "По запросу не найдено других серверов",
+        "search-placeholder": "Поиск среди остальных...",
+        "select-server-tooltip": "Выбрать этот сервер",
+        "selecting-server": "Выбор…"
       },
       "unban-player": {
         "title": "Вы уверены, что хотите разбанить этого игрока?"

@@ -2,6 +2,7 @@ import { get, writable } from 'svelte/store';
 
 import { PanelSidebarStorageUtil } from '$lib/storage.util';
 import ApiUtil from '$lib/api.util';
+import { nudgePanelRealtimeReconnect } from '$lib/panelRealtime.js';
 
 export const options = Object.freeze({
   DEFAULT_PAGE_TITLE: 'Pano',
@@ -68,6 +69,8 @@ export async function resumeAfterNetworkError() {
       check(currentList, calledList);
     }
   }
+
+  nudgePanelRealtimeReconnect();
 }
 export async function logout() {
   logoutLoading.set(true);

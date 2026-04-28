@@ -1,5 +1,11 @@
 <!-- Server Connect Request Modal -->
-<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
+<div
+  id="serverRequestModal"
+  aria-hidden="true"
+  class="modal fade"
+  bind:this={$modalElement}
+  role="dialog"
+  tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       {#if $loading}
@@ -100,7 +106,8 @@
   const submitLoading = writable(false);
 
   export function show(serverId) {
-    modal = new window.bootstrap.Modal(get(modalElement));
+    const el = get(modalElement);
+    modal = window.bootstrap.Modal.getOrCreateInstance(el);
 
     loading.set(true);
     submitLoading.set(false);
@@ -112,7 +119,9 @@
   }
 
   export function hide() {
-    modal.hide();
+    const el = get(modalElement);
+    const inst = window.bootstrap.Modal.getInstance(el) || modal;
+    inst?.hide();
   }
 
   export function setCallback(newCallback) {
@@ -168,7 +177,13 @@
 
   import { invalidateAll } from '$app/navigation';
 
+  import { hideBootstrapModalAndWait } from '$lib/modal.util.js';
+
   const selectedServer = getContext('selectedServer');
+
+  function getServerRequestModalEl() {
+    return typeof document !== 'undefined' ? document.getElementById('serverRequestModal') : null;
+  }
 
   function acceptServer() {
     $submitLoading = true;
@@ -179,31 +194,27 @@
         if (body.result === 'ok') {
           callback($server);
 
-          if (body.selected) {
-            $selectedServer = $server;
-            await invalidateAll();
-            hide();
+          $selectedServer = { ...$server, permissionGranted: true };
 
-            await showToast('components.toasts.server-selected', {
-              name: $server.name,
-            });
-          } else {
-            await invalidateAll();
-            hide();
-          }
+          await hideBootstrapModalAndWait(getServerRequestModalEl());
+          await invalidateAll();
 
+          await showToast('components.toasts.server-selected', {
+            name: $server.customName || $server.name,
+          });
           await showToast('components.toasts.accepted-server-connect-request');
           $submitLoading = false;
 
           return;
         } else if (body.result === 'error') {
-          hide();
+          await hideBootstrapModalAndWait(getServerRequestModalEl());
           await showToast('components.toasts.expired-server-connect-request');
           $submitLoading = false;
 
           return;
         }
 
+        $submitLoading = false;
         reject();
       },
     });
@@ -214,22 +225,23 @@
 
     ApiUtil.post({
       path: `/api/panel/servers/${$server.id}/reject`,
-      handler: (body, reject) => {
-        $submitLoading = false;
-
+      handler: async (body, reject) => {
         if (body.result === 'ok') {
           callback($server);
-          hide();
+          await hideBootstrapModalAndWait(getServerRequestModalEl());
+          $submitLoading = false;
           showToast('components.toasts.rejected-server-connect');
 
           return;
         } else if (body.result === 'error') {
-          hide();
+          await hideBootstrapModalAndWait(getServerRequestModalEl());
+          $submitLoading = false;
           showToast('components.toasts.expired-server-connect-request');
 
           return;
         }
 
+        $submitLoading = false;
         reject();
       },
     });

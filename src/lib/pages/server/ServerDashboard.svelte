@@ -124,7 +124,11 @@
 {/if}
 
 <script context="module">
+  import { base } from '$app/paths';
+  import { redirect } from '@sveltejs/kit';
+
   import ApiUtil from '$lib/api.util.js';
+  import { PANEL_SERVER_LIVE_LOAD_KEY } from '$lib/panelRealtime.js';
 
   export const ServerStatus = Object.freeze({
     ONLINE: 'ONLINE',
@@ -135,9 +139,14 @@
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent } = event;
+    const { parent, depends } = event;
+    depends(PANEL_SERVER_LIVE_LOAD_KEY);
     const parentData = await parent();
     const { selectedServer } = parentData;
+
+    if (!selectedServer) {
+      throw redirect(302, base);
+    }
 
     return await ApiUtil.get({
       path: `/api/panel/servers/${selectedServer.id}/dashboard`,

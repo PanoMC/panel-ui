@@ -1467,8 +1467,11 @@
         "servers": "Seç",
         "main-server": "Ana Sunucu",
         "online": "Çevrimiçi",
-        "search-placeholder": "Sunucu ara...",
-        "select-server-tooltip": "Seçili Sunucu Yap"
+        "other-servers-heading": "Diğer sunucular",
+        "search-no-matches": "Aramanıza uyan başka sunucu yok",
+        "search-placeholder": "Diğer sunucularda ara...",
+        "select-server-tooltip": "Seçili Sunucu Yap",
+        "selecting-server": "Seçiliyor…"
       },
       "unban-player": {
         "title": "Bu oyuncunun yasağını kaldırmak istediğinizden emin misiniz?"

@@ -10,7 +10,8 @@
     initialValue = '', 
     searching = false, 
     showSpinner = true, 
-    onchange 
+    onchange,
+    inputId = undefined
   } = $props();
 
   let value = $state('');
@@ -43,6 +44,7 @@
 <div class="input-group">
   <input
     type="text"
+    id={inputId}
     class="form-control form-control-sm focus-ring {String(value || '').trim() ? 'border-secondary' : ''}"
     placeholder={$_(placeholderKey)}
     aria-label={$_(ariaLabelKey)}

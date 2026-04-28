@@ -81,7 +81,8 @@
 <script>
   import { _ } from 'svelte-i18n';
 
-  import { invalidateAll } from '$app/navigation';
+  import { base } from '$app/paths';
+  import { goto } from '$app/navigation';
 
   import ApiUtil from '$lib/api.util';
 
@@ -95,22 +96,24 @@
     ApiUtil.post({
       path: `/api/panel/servers/${$server.id}/delete`,
       body: { currentPassword: $currentPassword },
-      handler: (body, reject) => {
+      handler: async (body) => {
         if (body.error) {
           if (body.error === 'CURRENT_PASSWORD_NOT_CORRECT') {
             $passwordError = true;
+            $loading = false;
             return;
           }
 
-          location.reload();
+          $loading = false;
+          await showToast('components.toasts.settings-save-error', { errorCode: body.error });
           return;
         }
 
         callback($server);
         hide();
-        invalidateAll();
-        location.reload();
-        showToast('components.toasts.server-deleted-success', { name: $server.name });
+        await showToast('components.toasts.server-deleted-success', { name: $server.name });
+        await goto(base, { replaceState: true, invalidateAll: true });
+        $loading = false;
       },
     });
   }

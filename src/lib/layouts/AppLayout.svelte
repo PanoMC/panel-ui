@@ -90,12 +90,12 @@
   const initLanguage = languageStuff.init;
 
   function hideAllModals() {
-    const modals = document.querySelectorAll('.modal.show');
-    modals.forEach((modalEl) => {
-      const modal = window.bootstrap.Modal.getInstance(modalEl);
-      if (modal) {
-        modal.hide();
-      }
+    if (typeof document === 'undefined') return;
+    document.querySelectorAll('.modal.show').forEach((modalEl) => {
+      const inst =
+        window.bootstrap.Modal.getInstance(modalEl) ||
+        window.bootstrap.Modal.getOrCreateInstance(modalEl);
+      inst.hide();
     });
   }
 
@@ -129,8 +129,26 @@
         details: { id },
       } = notification;
 
+      const openModals = Array.from(document.querySelectorAll('.modal.show'));
+
+      if (openModals.length === 0) {
+        showServerRequestModal(id);
+        return;
+      }
+
+      let pendingHidden = openModals.length;
+      const onModalFullyHidden = () => {
+        pendingHidden -= 1;
+        if (pendingHidden <= 0) {
+          showServerRequestModal(id);
+        }
+      };
+
+      for (const el of openModals) {
+        el.addEventListener('hidden.bs.modal', onModalFullyHidden, { once: true });
+      }
+
       hideAllModals();
-      showServerRequestModal(id);
     });
 
     addListener('PANO_UPDATE_FOUND', () => {
@@ -293,9 +311,16 @@
 <script>
   import { onDestroy, onMount, setContext } from 'svelte';
   import { get } from 'svelte/store';
+  import { invalidateAll as runInvalidateAll, invalidate as runInvalidateByKey } from '$app/navigation';
 
   import { options, logoutLoading, initialized } from '$lib/Store';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import {
+    onPanelServerRemoved,
+    onPanelServerUpdate,
+    PANEL_SERVER_LIVE_LOAD_KEY,
+    setPanelSelectedServerSubscription,
+  } from '$lib/panelRealtime.js';
   import { PanelSidebarStorageUtil } from '$lib/storage.util.js';
   import { WHATS_NEW_VERSION } from '$lib/components/modals/WhatsNewModal.svelte';
 
@@ -351,7 +376,7 @@
     platformHostAddress.set(data.platformHostAddress);
     notificationCount.set(data.notificationCount);
     mainServer.set(data.mainServer);
-    selectedServer.set(data.selectedServer);
+    // selectedServer: keep in sync via $: if (data) below (merge with live WebSocket state)
     connectedServerCount.set(data.connectedServerCount);
     siteInfo.set(data.siteInfo);
     panelTheme.set(data.session.basicData.panelTheme || 'dark');
@@ -363,6 +388,20 @@
       resetLayout.set(false);
     }
   });
+
+  $: if (data && data.selectedServer !== undefined) {
+    const next = data.selectedServer;
+    if (next == null) {
+      selectedServer.set(null);
+    } else {
+      const cur = get(selectedServer);
+      if (cur && Number(cur.id) === Number(next.id)) {
+        selectedServer.set({ ...next, ...cur });
+      } else {
+        selectedServer.set(next);
+      }
+    }
+  }
 
   $: if (data?.session?.basicData) {
     showDevModeAlert.set(data.session.basicData.showDevModeAlert);
@@ -398,6 +437,35 @@
   let mounted = false;
   let whatsNewShown = false;
 
+  let offPanelRealtimeServer;
+  let offPanelRealtimeRemoved;
+
+  /** Re-fetch server pages that `depends(PANEL_SERVER_LIVE_LOAD_KEY)` (e.g. statistics). */
+  let serverLiveReloadTimer;
+  function scheduleServerLivePageReload() {
+    if (!browser) {
+      return;
+    }
+    if (serverLiveReloadTimer) {
+      clearTimeout(serverLiveReloadTimer);
+    }
+    serverLiveReloadTimer = setTimeout(() => {
+      serverLiveReloadTimer = null;
+      void runInvalidateByKey(PANEL_SERVER_LIVE_LOAD_KEY);
+    }, 400);
+  }
+
+  $: if (browser) {
+    if (hasPermission(Permissions.MANAGE_SERVERS)) {
+      const id = $selectedServer?.id;
+      setPanelSelectedServerSubscription(
+        id == null || id === '' ? null : id
+      );
+    } else {
+      setPanelSelectedServerSubscription(null);
+    }
+  }
+
   function getCurrentSidebarState() {
     if (!hasPermission(Permissions.MANAGE_SERVERS)) {
       return 'website';
@@ -428,23 +496,29 @@
 
     initialized.set(true);
 
-    if (browser && !$selectedServer && data.connectedServerCount > 0) {
-      ApiUtil.get({
-        path: '/api/panel/servers',
-        handler: (body) => {
-          if (body.servers && body.servers.length > 0) {
-            const lastServer = body.servers[0];
-            ApiUtil.post({
-              path: `/api/panel/servers/${lastServer.id}/select`,
-              handler: async (selectBody) => {
-                if (selectBody.result === 'ok') {
-                  $selectedServer = lastServer;
-                  await invalidateAll();
-                }
-              },
-            });
-          }
-        },
+    if (hasPermission(Permissions.MANAGE_SERVERS)) {
+      offPanelRealtimeServer = onPanelServerUpdate((server) => {
+        if (!server || server.id == null) {
+          return;
+        }
+        const sel = get(selectedServer);
+        if (sel && Number(sel.id) === Number(server.id)) {
+          selectedServer.set({ ...sel, ...server });
+          scheduleServerLivePageReload();
+        }
+        const main = get(mainServer);
+        if (main && Number(main.id) === Number(server.id)) {
+          mainServer.set({ ...main, ...server });
+        }
+      });
+      offPanelRealtimeRemoved = onPanelServerRemoved(async (serverId) => {
+        if (Number(get(selectedServer)?.id) === Number(serverId)) {
+          selectedServer.set(null);
+          await runInvalidateAll();
+        }
+        if (Number(get(mainServer)?.id) === Number(serverId)) {
+          mainServer.set(null);
+        }
       });
     }
 
@@ -491,4 +565,15 @@
   );
 
   onDestroy(pageUnsubscribe);
+
+  onDestroy(() => {
+    if (serverLiveReloadTimer) {
+      clearTimeout(serverLiveReloadTimer);
+    }
+    offPanelRealtimeServer?.();
+    offPanelRealtimeRemoved?.();
+    if (browser) {
+      setPanelSelectedServerSubscription(null);
+    }
+  });
 </script>

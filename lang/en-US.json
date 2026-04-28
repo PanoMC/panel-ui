@@ -1467,8 +1467,11 @@
         "servers": "Select",
         "main-server": "Main Server",
         "online": "Online",
-        "search-placeholder": "Search servers...",
-        "select-server-tooltip": "Set as selected server"
+        "other-servers-heading": "More servers",
+        "search-no-matches": "No other servers match your search",
+        "search-placeholder": "Search more servers...",
+        "select-server-tooltip": "Set as selected server",
+        "selecting-server": "Selecting…"
       },
       "unban-player": {
         "title": "Are you sure you want to unban this player?"

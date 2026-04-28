@@ -135,6 +135,9 @@
 </div>
 
 <script context="module">
+  import { base } from '$app/paths';
+  import { redirect } from '@sveltejs/kit';
+
   import ApiUtil from '$lib/api.util.js';
 
   /**
@@ -144,6 +147,10 @@
     const { parent } = event;
     const parentData = await parent();
     const { selectedServer } = parentData;
+
+    if (!selectedServer) {
+      throw redirect(302, base);
+    }
 
     const response = await ApiUtil.get({
       path: `/api/panel/servers/${selectedServer.id}`,
@@ -172,7 +179,15 @@
 
   export let data;
 
-  let { serverSettings, serverSettingsOriginal, requireEmailVerification } = data;
+  let serverSettings;
+  let serverSettingsOriginal;
+  let requireEmailVerification;
+
+  $: if (data?.serverSettings) {
+    serverSettings = data.serverSettings;
+    serverSettingsOriginal = structuredClone(data.serverSettingsOriginal);
+    requireEmailVerification = data.requireEmailVerification;
+  }
 
   let saving;
 

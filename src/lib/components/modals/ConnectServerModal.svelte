@@ -144,6 +144,16 @@
   </div>
 </div>
 
+<script context="module">
+  /** Open the Connect Server modal (same as #connectServer / navbar). */
+  export function show() {
+    if (typeof window === 'undefined' || !window.bootstrap?.Modal) return;
+    const el = document.getElementById('connectServer');
+    if (!el) return;
+    window.bootstrap.Modal.getOrCreateInstance(el).show();
+  }
+</script>
+
 <script>
   import { getContext, onDestroy } from 'svelte';
   import { get } from 'svelte/store';
@@ -155,6 +165,8 @@
 
   import ApiUtil from '$lib/api.util';
   import tooltip from '$lib/tooltip.util';
+
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
@@ -226,10 +238,10 @@
     toggleLoading = true;
     ApiUtil.put({
       path: '/api/panel/platformAuth/toggle',
-      handler: (body) => {
-        if (body.error) {
-          location.reload();
-
+      handler: async (body) => {
+        if (body?.error) {
+          await showToast('components.toasts.settings-save-error', { errorCode: body.error });
+          toggleLoading = false;
           return;
         }
 
