@@ -17,6 +17,10 @@ async function fetchBasicData(token, csrfToken) {
   );
 }
 
+function getCookieWithHttpFallback(cookies, baseName) {
+  return cookies.get(baseName) ?? cookies.get(`${baseName}_http`);
+}
+
 function stripModulePreload(linkHeader) {
   const parts = linkHeader
     .split(',')
@@ -101,8 +105,8 @@ export async function handle({ event, resolve }) {
     locals.panoWebsiteApiUrlEnv = panoWebsiteApiUrlEnv;
   }
 
-  const jwt = cookies.get(COOKIE_PREFIX + JWT_COOKIE_NAME);
-  const csrfToken = cookies.get(COOKIE_PREFIX + CSRF_TOKEN_COOKIE_NAME);
+  const jwt = getCookieWithHttpFallback(cookies, COOKIE_PREFIX + JWT_COOKIE_NAME);
+  const csrfToken = getCookieWithHttpFallback(cookies, COOKIE_PREFIX + CSRF_TOKEN_COOKIE_NAME);
   locals.basicData = await fetchBasicData(jwt, csrfToken);
   locals.jwt = jwt;
   locals.csrfToken = csrfToken;
