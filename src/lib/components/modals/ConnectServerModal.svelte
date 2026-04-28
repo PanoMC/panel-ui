@@ -47,7 +47,7 @@
             <br />
             <a
               class="btn btn-secondary mt-2 d-block shadow-none"
-              href="{PANO_WEBSITE_URL}/download"
+              href={`${PANO_WEBSITE_URL}/download`}
               target="_blank"
               tabindex={acceptPluginAuth ? 0 : -1}
               class:disabled={!acceptPluginAuth}
@@ -155,7 +155,7 @@
 </script>
 
 <script>
-  import { getContext, onDestroy } from 'svelte';
+  import { getContext, onDestroy, onMount } from 'svelte';
   import { get } from 'svelte/store';
   import copy from 'copy-to-clipboard';
   import { differenceInSeconds } from 'date-fns';
@@ -183,6 +183,8 @@
   let copyClickIDForCommandTextForConsole = 0;
   let firstStartCountDown = false;
   let isRemoteConnection = false;
+
+  const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '0.0.0.0']);
 
   let acceptPluginAuth = $session.basicData.acceptPluginAuth;
   let toggleLoading;
@@ -256,6 +258,19 @@
     return address.replace(/:(-1|443)$/, '');
   }
 
+  function isLocalDomain(hostname) {
+    return LOCAL_HOSTNAMES.has(hostname?.toLowerCase());
+  }
+
+  function setDefaultConnectionTab() {
+    if (!browser) {
+      isRemoteConnection = false;
+      return;
+    }
+
+    isRemoteConnection = !isLocalDomain(window.location.hostname);
+  }
+
   function updateCommandText() {
     let hostAddress;
 
@@ -311,6 +326,23 @@
   $: if (browser && typeof isRemoteConnection !== 'undefined') {
     updateCommandText();
   }
+
+  onMount(() => {
+    setDefaultConnectionTab();
+
+    const modalElement = document.getElementById('connectServer');
+    if (!modalElement) return;
+
+    const handleShow = () => {
+      setDefaultConnectionTab();
+    };
+
+    modalElement.addEventListener('show.bs.modal', handleShow);
+
+    return () => {
+      modalElement.removeEventListener('show.bs.modal', handleShow);
+    };
+  });
 
   if (browser) {
     onDestroy(
