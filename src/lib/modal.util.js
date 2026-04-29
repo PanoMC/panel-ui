@@ -13,6 +13,24 @@ export function cleanupOrphanModalBackdrops() {
 }
 
 /**
+ * Same idea but for offcanvas backdrops. The sidebar is a Bootstrap offcanvas
+ * on mobile; when a navigation interrupts its hide transition the
+ * .offcanvas-backdrop element can survive at z-index 1050 and silently swallow
+ * touch events on <main>, which manifests as "scroll suddenly stops working".
+ */
+export function cleanupOrphanOffcanvasBackdrops() {
+  if (typeof document === 'undefined') return;
+  if (document.querySelectorAll('.offcanvas.show').length > 0) return;
+  document.querySelectorAll('.offcanvas-backdrop').forEach((el) => el.remove());
+}
+
+/** Run all overlay cleanups (modal + offcanvas). */
+export function cleanupOrphanOverlays() {
+  cleanupOrphanModalBackdrops();
+  cleanupOrphanOffcanvasBackdrops();
+}
+
+/**
  * Hides a Bootstrap 5 modal and waits for its transition, then runs cleanup
  * if nothing else is open. Call before expensive navigations (e.g. invalidateAll).
  *

@@ -323,6 +323,7 @@
     setPanelSelectedServerSubscription,
   } from '$lib/panelRealtime.js';
   import { PanelSidebarStorageUtil } from '$lib/storage.util.js';
+  import { cleanupOrphanOverlays } from '$lib/modal.util.js';
   import { WHATS_NEW_VERSION } from '$lib/components/modals/WhatsNewModal.svelte';
 
   import Splash from '$lib/components/Splash.svelte';
@@ -367,6 +368,16 @@
       ? PanelSidebarStorageUtil.getSidebarOpenStatus()
       : true,
   );
+
+  // Defensive overlay cleanup after every navigation. If a Bootstrap modal or
+  // the sidebar offcanvas was mid-hide when SvelteKit moved to a new route,
+  // the backdrop element (z-index 1050, fixed) can survive and block touch
+  // scrolling on mobile. We wait for Bootstrap's transition to settle before
+  // removing any leftover backdrop / body scroll-lock styles.
+  const navigatingUnsubscribe = navigating.subscribe((nav) => {
+    if (!browser || nav !== null) return;
+    setTimeout(cleanupOrphanOverlays, 350);
+  });
 
   const pageUnsubscribe = page.subscribe((p) => {
     session.set(data.session);
@@ -570,6 +581,7 @@
   );
 
   onDestroy(pageUnsubscribe);
+  onDestroy(navigatingUnsubscribe);
 
   onDestroy(() => {
     if (serverLiveReloadTimer) {
