@@ -22,10 +22,22 @@ let wantServerId = null;
 let wantNotifications = false;
 let reconnectTimer;
 let shouldReconnect = false;
-const RECONNECT_MS = 1000;
-/** If the socket never reaches OPEN, show the same splash as failed HTTP (expecting WS). */
-const WS_OPEN_DEADLINE_MS = 12000;
-let wsConnectWatchdog;
+/**
+ * Fast retry cadence used while we still have hope (within the first MAX_FAST_RETRIES).
+ * Once a connection has reached OPEN, the counter is reset so any later disconnection
+ * starts a brand new fast-retry cycle.
+ */
+const FAST_RECONNECT_MS = 200;
+/** Number of fast retries before we hand off to the splash + HTTP recovery flow. */
+const MAX_FAST_RETRIES = 3;
+let consecutiveFailedAttempts = 0;
+/**
+ * Latched once the splash is shown. Stops the automatic retry loop so we don't busy-loop
+ * (and spam the browser console with "Firefox can't establish a connection..." noise)
+ * while the backend is unreachable. Cleared by [nudgePanelRealtimeReconnect] (which is
+ * how the splash UI / a successful HTTP probe restarts realtime).
+ */
+let splashLatched = false;
 /** @type {((isRetry?: boolean) => Promise<void>) | null} */
 let panelWsRecoveryCallback = null;
 
@@ -47,13 +59,6 @@ function buildSiteInfoProbeUrl() {
   const withBase = `${base || ''}/api/siteInfo`.replace(/\/+/g, '/');
   const path = withBase.startsWith('/') ? withBase : `/${withBase}`;
   return new URL(path, window.location.origin).href;
-}
-
-function clearWsConnectWatchdog() {
-  if (wsConnectWatchdog) {
-    clearTimeout(wsConnectWatchdog);
-    wsConnectWatchdog = null;
-  }
 }
 
 async function registerWsBackendUnreachable() {
@@ -102,7 +107,7 @@ function sendConfig() {
 }
 
 function scheduleReconnect() {
-  if (!shouldReconnect || typeof window === 'undefined') {
+  if (!shouldReconnect || splashLatched || typeof window === 'undefined') {
     return;
   }
   if (reconnectTimer) {
@@ -110,29 +115,42 @@ function scheduleReconnect() {
   }
   reconnectTimer = setTimeout(() => {
     reconnectTimer = null;
-    if (shouldReconnect && shouldKeepWebSocket()) {
+    if (shouldReconnect && !splashLatched && shouldKeepWebSocket()) {
       connect();
     }
-  }, RECONNECT_MS);
+  }, FAST_RECONNECT_MS);
 }
 
 function connect() {
   if (typeof window === 'undefined') {
     return;
   }
+  if (splashLatched) {
+    return;
+  }
   if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
     return;
   }
   shouldReconnect = true;
-  clearWsConnectWatchdog();
+
+  // Tracks whether THIS specific attempt ever made it to OPEN; closure-scoped so a late
+  // onclose from a previous socket cannot poison the next attempt's bookkeeping.
+  let attemptHasOpened = false;
+
   try {
     ws = new WebSocket(buildWsUrl());
   } catch {
-    scheduleReconnect();
+    consecutiveFailedAttempts++;
+    if (consecutiveFailedAttempts >= MAX_FAST_RETRIES) {
+      latchSplashAndStop();
+    } else {
+      scheduleReconnect();
+    }
     return;
   }
   ws.onopen = () => {
-    clearWsConnectWatchdog();
+    attemptHasOpened = true;
+    consecutiveFailedAttempts = 0;
     void clearWsNetworkErrorIfRegistered();
     sendConfig();
   };
@@ -177,29 +195,39 @@ function connect() {
     }
   };
   ws.onclose = () => {
-    clearWsConnectWatchdog();
+    const wasOpen = attemptHasOpened;
     ws = null;
-    if (shouldReconnect && shouldKeepWebSocket()) {
-      scheduleReconnect();
+    if (!shouldReconnect || !shouldKeepWebSocket()) {
+      return;
     }
+    if (wasOpen) {
+      // We had a healthy session; treat the next series as a fresh fast-retry cycle.
+      consecutiveFailedAttempts = 0;
+      scheduleReconnect();
+      return;
+    }
+    consecutiveFailedAttempts++;
+    if (consecutiveFailedAttempts >= MAX_FAST_RETRIES) {
+      // Three consecutive failures — give up the busy retry, hand off to splash. After
+      // this point the only way back into the loop is via [nudgePanelRealtimeReconnect],
+      // which the splash UI / a successful HTTP probe call when the user retries.
+      latchSplashAndStop();
+      return;
+    }
+    scheduleReconnect();
   };
   ws.onerror = () => {
     /* close handler will reconnect */
   };
-  clearWsConnectWatchdog();
-  wsConnectWatchdog = setTimeout(() => {
-    wsConnectWatchdog = null;
-    if (typeof window === 'undefined') {
-      return;
-    }
-    if (!shouldReconnect || !shouldKeepWebSocket()) {
-      return;
-    }
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      return;
-    }
-    void registerWsBackendUnreachable();
-  }, WS_OPEN_DEADLINE_MS);
+}
+
+function latchSplashAndStop() {
+  splashLatched = true;
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+  void registerWsBackendUnreachable();
 }
 
 function updateConnection() {
@@ -214,11 +242,12 @@ function updateConnection() {
     }
   } else {
     shouldReconnect = false;
+    splashLatched = false;
     if (reconnectTimer) {
       clearTimeout(reconnectTimer);
       reconnectTimer = null;
     }
-    clearWsConnectWatchdog();
+    consecutiveFailedAttempts = 0;
     void clearWsNetworkErrorIfRegistered();
     if (ws) {
       try {
@@ -299,11 +328,12 @@ export function teardownPanelRealtime() {
   wantServerId = null;
   wantNotifications = false;
   shouldReconnect = false;
+  splashLatched = false;
+  consecutiveFailedAttempts = 0;
   if (reconnectTimer) {
     clearTimeout(reconnectTimer);
     reconnectTimer = null;
   }
-  clearWsConnectWatchdog();
   void clearWsNetworkErrorIfRegistered();
   if (ws) {
     try {
@@ -346,6 +376,10 @@ export function nudgePanelRealtimeReconnect() {
     clearTimeout(reconnectTimer);
     reconnectTimer = null;
   }
+  // Recovery flows (HTTP probe succeeded, user hit "Retry"...) lift the splash latch
+  // and restart the retry budget so we get another fast-retry burst.
+  splashLatched = false;
+  consecutiveFailedAttempts = 0;
   shouldReconnect = true;
   const oldWs = ws;
   if (oldWs) {
