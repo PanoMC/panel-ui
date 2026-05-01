@@ -41,7 +41,7 @@
 
   <a
     class="nav-link text-light p-2"
-    href="https://panomc.com"
+    href={PANO_WEBSITE_URL}
     target="_blank"
     use:tooltip={[$_('components.bottom.website'), { placement: 'top' }]}
     aria-label={$_('components.bottom.website')}>

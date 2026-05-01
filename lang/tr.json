@@ -87,7 +87,11 @@
     "deselect-all": "Seçimi Kaldır",
     "enable-all-addons": "Tüm Eklentileri Etkinleştir",
     "disable-all-addons": "Tüm Eklentileri Devre Dışı Bırak",
-    "selected": "Seçildi"
+    "selected": "Seçildi",
+    "buy-license": "Lisans Satın Al",
+    "buy-addon-on-market": "Bu eklentiyi {website} üzerinden satın alın",
+    "license-issues": "Lisans Sorunları",
+    "connect-pano-account": "Pano Hesabını Bağla"
   },
   "pages": {
     "login": {
@@ -129,11 +133,13 @@
       "card-title": {
         "active": "{amount} Aktif Eklenti",
         "inactive": "{amount} Devre Dışı Eklenti",
-        "installed": "{amount} Yüklü Eklenti"
+        "installed": "{amount} Yüklü Eklenti",
+        "license-issues": "{amount} Eklentinin Lisans Sorunu Var"
       },
       "update-available": "Güncelleme Mevcut",
       "enable-all-confirm": "Tüm eklentileri etkinleştirmek istediğinizden emin misiniz?",
-      "disable-all-confirm": "Tüm eklentileri devre dışı bırakmak istediğinizden emin misiniz?"
+      "disable-all-confirm": "Tüm eklentileri devre dışı bırakmak istediğinizden emin misiniz?",
+      "license-banner": "{count} premium eklenti geçerli bir lisansa ihtiyaç duyuyor."
     },
     "addon-detail": {
       "title": "Eklenti Detayı",
@@ -141,7 +147,22 @@
       "version": "Versiyon",
       "pano-version": "Pano Versiyonu",
       "developer": "Geliştirici",
-      "license": "Lisans",
+      "open-source-license": "Açık Kaynak Lisansı",
+      "license-section": "Lisans",
+      "license": {
+        "no-purchase": "Bu bir premium eklenti ve Pano hesabınızda satın alınmamış. Etkinleştirmek için {website} üzerinden lisans satın alın.",
+        "not-connected": "Pano bir {website} hesabına bağlı değil. Premium eklenti lisanslarını doğrulamak için hesabınızı bağlayın.",
+        "needs-refresh": "Pano hesabınız bağlı ancak bu eklenti için lisans henüz çekilmedi. {website} ile doğrulamak için yukarıdan Yenile'yi kullanın.",
+        "expired": "Önbellekteki lisansınız süresi dolmuş ve yenilenemedi.",
+        "network-error": "Pano lisansı doğrulamak için {website} adresine ulaşamadı. Ağ bağlantınızı kontrol edin ve tekrar deneyin.",
+        "tampered": "Eklenti JAR'ının hash'i {website} üzerinde yayınlanan resmi sürümle uyuşmuyor. Eklenti devre dışı bırakıldı.",
+        "tampered-help": "Bilinen-iyi bir kopyayı geri yüklemek için eklentiyi {website} adresinden veya resmi mağazadan tekrar indirin.",
+        "version-mismatch": "Bu eklentiyi {website} üzerinden satın aldığınızdan ve Pano'nun aynı hesaba bağlı olduğundan emin olun.",
+        "active": "Bu eklenti Pano hesabınıza ait.",
+        "expires-at": "Bitiş",
+        "last-checked": "Son kontrol",
+        "resource-id": "Kaynak ID"
+      },
       "source": "Kaynak",
       "dependencies": "Bağımlılıklar",
       "requires": "Gerekliler",
@@ -172,6 +193,10 @@
     },
     "dashboard": {
       "title": "Panel",
+      "license-banner": {
+        "title": "{count} premium eklenti lisans gerektiriyor",
+        "description": "Bir veya daha fazla premium eklenti doğrulanamadı. Durum ve çözüm seçenekleri için Görüntüle'ye tıklayın."
+      },
       "welcome-card": {
         "description": "Pano başarıyla kuruldu ve kullanıma hazır. \uD83D\uDE80 <br /> İşte başlarken yapabileceklerin:",
         "connect-server": "Sunucu Bağla",
@@ -1023,6 +1048,27 @@
       "verified": "Pano tarafından doğrulandı",
       "not-verified": "Pano tarafından doğrulanmadı, kendi sorumluluğunuzda kullanın!"
     },
+    "license-status": {
+      "LICENSED": "Lisanslı",
+      "LICENSED-tooltip": "Bu eklenti Pano hesabınıza ait",
+      "MISSING": "Lisans Gerekli",
+      "NO_PURCHASE": "Lisans Gerekli",
+      "NO_PURCHASE-tooltip": "Bu eklenti Pano hesabınızda satın alınmamış",
+      "EXPIRED": "Süresi Dolmuş",
+      "EXPIRED-tooltip": "Lisans süresi doldu ve yenilenemedi",
+      "NETWORK_ERROR": "Bağlantı Hatası",
+      "NETWORK_ERROR-tooltip": "Lisans doğrulamak için {website} adresine ulaşılamadı",
+      "JAR_TAMPERED": "JAR Değiştirilmiş",
+      "JAR_TAMPERED-tooltip": "Eklenti JAR'ının hash'i resmi sürümle uyuşmuyor",
+      "VERSION_MISMATCH": "Geçersiz lisans",
+      "VERSION_MISMATCH-tooltip": "Satın alımını {website} üzerinden kontrol edin; Pano'da aynı hesabın bağlı olduğundan emin olun",
+      "NOT_CONNECTED": "Bağlı Değil",
+      "NOT_CONNECTED-tooltip": "Pano bir {website} hesabına bağlı değil",
+      "NEEDS_REFRESH": "Lisansı doğrula",
+      "NEEDS_REFRESH-tooltip": "Pano hesabı bağlı — {website} üzerinden lisansı almak için yenileyin",
+      "UNKNOWN": "Bilinmiyor",
+      "UNKNOWN-tooltip": "Lisans durumu bilinmiyor"
+    },
     "ticket-status-badge": {
       "filter": "Filtrele",
       "new": "Yeni",
@@ -1176,7 +1222,22 @@
           "preparing": "Hazırlanıyor...",
           "installing": "Kuruluyor..."
         },
-        "installing-leave-alert": "Kurulum devam ediyor, bu sayfadan ayrılmak bozuk özelliklere yol açabilir!"
+        "installing-leave-alert": "Kurulum devam ediyor, bu sayfadan ayrılmak bozuk özelliklere yol açabilir!",
+        "license-denied": {
+          "no-purchase": "Kurulum durdu: bağlı Pano hesabınızda bu premium eklenti için lisans yok. Önce {website} üzerinden satın alın, sonra yeniden kurun.",
+          "not-connected": "Kurulum durdu: lisansların doğrulanabilmesi için Platform ayarlarından Pano hesabınızı {website} ile bağlayın, ardından tekrar deneyin.",
+          "jar-hash-mismatch": "Kurulum durdu: bu dosya {website} üzerinde yayınlanan resmi eklentiyle eşleşmiyor. Resmi kaynaktan yeniden indirin.",
+          "version-mismatch": "Kurulum durdu: bu sürüm, {website} üzerindeki lisansınızla uyuşmuyor. Satın alımınızı doğrulayıp eşleşen sürümü kurun.",
+          "network-error": "Kurulum durdu: Pano lisansı doğrulamak için {website} adresine ulaşamadı. Ağınızı kontrol edip tekrar deneyin.",
+          "signature-invalid": "Kurulum durdu: eklenti lisans kanıtı doğrulanamadı. Platform ayarlarından lisansı yenileyin veya {website} üzerinden yeniden kurun.",
+          "expired": "Kurulum durdu: önbellekteki lisans süresi doldu ve yenilenemedi. Bağlantıyı yenileyip tekrar deneyin.",
+          "audience-mismatch": "Kurulum durdu: bu lisans bu platform kurulumu için geçerli değil.",
+          "platform-mismatch": "Kurulum durdu: bu eklenti lisansı bu dağıtım ortamı için geçerli değil.",
+          "key-not-available": "Kurulum durdu: lisans doğrulaması şu an kullanılamıyor. Bir süre sonra tekrar deneyin veya Pano hesabınızı yeniden bağlayın.",
+          "invalid-response": "Kurulum durdu: lisans servisi beklenmeyen bir yanıt döndü. Daha sonra tekrar deneyin.",
+          "unknown": "Kurulum durdu: bu premium eklenti lisanslanamadı. Pano hesap bağlantınızı ve {website} üzerindeki satın alımlarınızı kontrol edip tekrar deneyin.",
+          "generic": "Kurulum durdu: bu premium eklenti lisanslanamadı. Pano hesap bağlantınızı ve {website} üzerindeki satın alımlarınızı kontrol edip tekrar deneyin."
+        }
       },
       "view-activity-log": {
         "title": "Aktivite Kaydı Detayı",
@@ -1560,6 +1621,7 @@
     },
     "toasts": {
       "demo-mode-restricted": "Bu özellik demo modunda devre dışı bırakılmıştır.",
+      "license-refreshed": "Lisans durumu yenilendi.",
       "accepted-server-connect-request": "Sunucu bağlantı isteği kabul edildi.",
       "expired-server-connect-request": "Geçersiz sunucu bağlantı isteği.",
       "notifications-deleted-permanently": "Tüm bildirimler silindi.",
@@ -1611,6 +1673,7 @@
       "verification-email-sent-successful": "\"{username}\" kullanıcısına doğrulama e-mail'i gönderildi.",
       "enabling-addon-failed-by-dependency-error": "\"{addon}\" eklentisi bağımlı eklenti hatası sebebiyle etkinleştirilemedi!",
       "failed-to-enable-addon-error": "\"{addon}\" eklentisi etkinleştirilemedi. Eklenti hatalarını kontrol edin!",
+      "addon-license-startup-blocked": "\"{addon}\" geçerli bir premium lisans gerektiği için başlatılamadı. Çözüm için bu eklentinin sayfasındaki Lisans bölümüne bakın.",
       "pano-account-connect-success": "Pano hesabın başarıyla bağlandı!",
       "pano-account-disconnect-success": "Pano hesabı başarıyla kaldırıldı!",
       "pano-account-disconnect-fail-cant-connect": "Pano hesabı kaldırılırken hata oluştu: Pano'ya bağlanılamıyor, lütfen daha sonra tekrar deneyin.",

@@ -45,17 +45,21 @@
   <div class="card">
     <CardHeader>
       <div slot="left">
-        {data.pageType === PageTypes.ACTIVE
-          ? $_('pages.addons.card-title.active', {
+        {data.pageType === PageTypes.LICENSE_ISSUES
+          ? $_('pages.addons.card-title.license-issues', {
               values: { amount: data.plugins.length },
             })
-          : data.pageType === PageTypes.DISABLED
-            ? $_('pages.addons.card-title.inactive', {
+          : data.pageType === PageTypes.ACTIVE
+            ? $_('pages.addons.card-title.active', {
                 values: { amount: data.plugins.length },
               })
-            : $_('pages.addons.card-title.installed', {
-                values: { amount: data.plugins.length },
-              })}
+            : data.pageType === PageTypes.DISABLED
+              ? $_('pages.addons.card-title.inactive', {
+                  values: { amount: data.plugins.length },
+                })
+              : $_('pages.addons.card-title.installed', {
+                  values: { amount: data.plugins.length },
+                })}
       </div>
       <div slot="middle" style="width: 250px;">
         <SearchInput
@@ -73,6 +77,10 @@
         <CardFiltersItem
           href="/addons?status=DISABLED"
           active={data.pageType === PageTypes.DISABLED}>{$_('buttons.disabled')}</CardFiltersItem>
+        <CardFiltersItem
+          href="/addons?status=LICENSE_ISSUES"
+          active={data.pageType === PageTypes.LICENSE_ISSUES}
+          >{$_('buttons.license-issues')}</CardFiltersItem>
       </CardFilters>
     </CardHeader>
     <div class="card-body">
@@ -82,12 +90,10 @@
       <div class="row row-cols-xl-2 row-cols-1 g-3">
         {#each data.plugins as plugin}
           <div class="col">
-            <div
-              class="card h-100 position-relative
-        {plugin.status === 'FAILED' && 'border-danger border-2'}">
+            <div class="card h-100 position-relative {cardBorderClass(plugin)}">
               <!-- STATUS ACTIONS -->
               <div class="position-absolute top-0 end-0 m-2 d-flex align-items-center gap-2">
-                {#if plugin.status === 'FAILED'}
+                {#if plugin.status === 'FAILED' && !isAddonLicenseStartupBlocked(plugin)}
                   <button
                     type="button"
                     aria-label={$_('buttons.error-log')}
@@ -95,6 +101,17 @@
                     on:click={() => showAddonStartupErrorModal(plugin.error)}>
                     <i class="fa-solid fa-circle-exclamation"></i>
                   </button>
+                {/if}
+                {#if isAddonLicenseStartupBlocked(plugin) && plugin.purchaseUrl}
+                  <a
+                    href={plugin.purchaseUrl}
+                    target="_blank"
+                    rel="noopener"
+                    class="btn btn-sm btn-warning"
+                    use:tooltip={[buyAddonOnMarketLabel, { placement: 'bottom' }]}
+                    aria-label={buyAddonOnMarketLabel}>
+                    <i class="fa-solid fa-store"></i>
+                  </a>
                 {/if}
 
                 {#if plugin.loading}
@@ -123,6 +140,9 @@
                       type="checkbox"
                       role="switch"
                       checked={plugin.status === 'STARTED'}
+                      disabled={plugin.loading ||
+                        (plugin.status !== 'STARTED' &&
+                          isPremiumAddonEnableBlockedByLicense(plugin))}
                       on:click={(e) => {
                         e.preventDefault();
                         onTogglePluginStateClick(plugin);
@@ -144,12 +164,15 @@
                 </a>
                 <a
                   href="{base}/addons/detail/{plugin.id}"
-                  class="text-decoration-none focus-ring rounded d-flex align-items-center gap-2 mb-2">
+                  class="text-decoration-none focus-ring rounded d-flex align-items-center gap-2 mb-2 flex-wrap">
                   <h5 class="text-truncate mb-0">
                     {plugin.name}
                   </h5>
 
                   <VerifiedStatus status={plugin.verifyStatus} />
+                  {#if plugin.premium}
+                    <LicenseStatusBadge status={plugin.licenseStatus} />
+                  {/if}
                 </a>
 
                 <small class="d-block mb-2"> {@html plugin.description}</small>
@@ -168,12 +191,14 @@
 
 <script context="module">
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
+  import { ADDON_LICENSE_ISSUE_STATUSES } from '$lib/addon-license-issue.util.js';
   import { error } from '@sveltejs/kit';
 
   export const PageTypes = Object.freeze({
     ALL: 'ALL',
     ACTIVE: 'ACTIVE',
     DISABLED: 'DISABLED',
+    LICENSE_ISSUES: 'LICENSE_ISSUES',
   });
 
   export const DefaultPageType = PageTypes.ALL;
@@ -196,7 +221,10 @@
       throw error(404, 'PAGE_NOT_FOUND');
     }
 
-    const queryParams = buildQueryParams({ status, search });
+    // The host doesn't filter by LICENSE_ISSUES server-side, so we ask for ALL and
+    // narrow client-side. Plugin counts are typically tiny, so this is fine.
+    const serverStatus = status === PageTypes.LICENSE_ISSUES ? PageTypes.ALL : status;
+    const queryParams = buildQueryParams({ status: serverStatus, search });
     const body = await ApiUtil.get({
       path: `/api/panel/plugins` + queryParams,
       request: event,
@@ -208,7 +236,12 @@
 
     const refreshRequired = searchParams.has('refreshRequired');
 
-    return { plugins: body.data, pageType: status, failedLogin, refreshRequired };
+    let plugins = body.data;
+    if (status === PageTypes.LICENSE_ISSUES) {
+      plugins = plugins.filter((p) => p.premium && ADDON_LICENSE_ISSUE_STATUSES.has(p.licenseStatus));
+    }
+
+    return { plugins, pageType: status, failedLogin, refreshRequired };
   }
 </script>
 
@@ -220,7 +253,7 @@
   import { base } from '$app/paths';
   import { browser } from '$app/environment';
 
-  import { PANO_WEBSITE_URL } from '$lib/variables';
+  import { websiteDisplayHost } from '$lib/website-display.util.js';
 
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
@@ -248,8 +281,10 @@
 
   import NoContent from '$lib/components/NoContent.svelte';
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
+  import LicenseStatusBadge from '$lib/components/LicenseStatusBadge.svelte';
   import FailedLoginPanoStoreAlert from '$lib/components/FailedLoginPanoStoreAlert.svelte';
   import RefreshRequiredAlert from '$lib/components/RefreshRequiredAlert.svelte';
+  import { isAddonLicenseStartupBlocked, isPremiumAddonEnableBlockedByLicense } from '$lib/addon-license-issue.util.js';
 
   import SearchInput from '$lib/components/SearchInput.svelte';
   import { goto } from '$app/navigation';
@@ -260,6 +295,40 @@
   let refreshRequired = false;
   let search = '';
   let isSearching = false;
+
+  $: buyAddonOnMarketLabel = $_('buttons.buy-addon-on-market', {
+    values: { website: websiteDisplayHost() },
+  });
+
+  /**
+   * Strong borders only for real failures / integrity issues.
+   * Missing or unverified commercial license is conveyed via the key badge + store link, not card chrome.
+   */
+  function cardBorderClass(plugin) {
+    const failedNonLicense =
+      plugin.status === 'FAILED' && !isAddonLicenseStartupBlocked(plugin);
+    if (!plugin.premium) {
+      return failedNonLicense ? 'border-danger border-2' : '';
+    }
+
+    switch (plugin.licenseStatus) {
+      case 'JAR_TAMPERED':
+      case 'SIGNATURE_INVALID':
+      case 'VERSION_MISMATCH':
+      case 'AUDIENCE_MISMATCH':
+      case 'PLATFORM_MISMATCH':
+        return 'border-danger border-2';
+      case 'NO_PURCHASE':
+      case 'MISSING':
+      case 'EXPIRED':
+      case 'NOT_CONNECTED':
+      case 'NEEDS_REFRESH':
+      case 'NETWORK_ERROR':
+        return failedNonLicense ? 'border-danger border-2' : '';
+      default:
+        return plugin.status === 'FAILED' ? 'border-danger border-2' : '';
+    }
+  }
 
   function onSearchInput(event) {
     search = event.detail.value;
@@ -306,6 +375,14 @@
   });
 
   function onTogglePluginStateClick(plugin) {
+    const turningOn = plugin.status !== 'STARTED';
+    if (turningOn && isPremiumAddonEnableBlockedByLicense(plugin)) {
+      showToast('components.toasts.addon-license-startup-blocked', {
+        addon: plugin.id,
+      });
+      return;
+    }
+
     if (plugin.status === 'STARTED' && plugin.dependents.length > 0) {
       showConfirmDisableAddonModal(plugin);
       return;
@@ -320,6 +397,14 @@
   }
 
   function togglePluginState(plugin, status, callback = () => {}) {
+    if (status && isPremiumAddonEnableBlockedByLicense(plugin)) {
+      showToast('components.toasts.addon-license-startup-blocked', {
+        addon: plugin.id,
+      });
+      callback();
+      return;
+    }
+
     plugin.loading = true;
     data.plugins = data.plugins;
 
@@ -327,58 +412,69 @@
       path: `/api/panel/plugins/${plugin.id}`,
       body: { status },
       handler: async (body, reject) => {
-        if (body.result !== 'ok') {
-          reject(body.error);
+        try {
+          if (body.result !== 'ok') {
+            reject(body.error);
 
-          return;
-        }
+            return;
+          }
 
-        const queryParams = buildQueryParams({ status: data.pageType });
-        const newPluginsData = await ApiUtil.get({
-          path: `/api/panel/plugins` + queryParams,
-        });
+          const queryParams = buildQueryParams({ status: data.pageType });
+          const newPluginsData = await ApiUtil.get({
+            path: `/api/panel/plugins` + queryParams,
+          });
 
-        data.plugins.forEach((plugin) => {
-          const newPluginData = newPluginsData.data.find(
-            (newPluginData) => newPluginData.id === plugin.id,
-          );
+          data.plugins.forEach((plugin) => {
+            const newPluginData = newPluginsData.data.find(
+              (newPluginData) => newPluginData.id === plugin.id,
+            );
 
-          if (newPluginData == null) {
-            data.plugins = data.plugins.filter((filterPlugin) => filterPlugin.id !== plugin.id);
-          } else {
-            Object.keys(newPluginData).forEach((key) => {
-              plugin[key] = newPluginData[key];
+            if (newPluginData == null) {
+              data.plugins = data.plugins.filter((filterPlugin) => filterPlugin.id !== plugin.id);
+            } else {
+              Object.keys(newPluginData).forEach((key) => {
+                plugin[key] = newPluginData[key];
+              });
+            }
+          });
+
+          newPluginsData.data.forEach((newPluginData) => {
+            const pluginData = data.plugins.find((plugin) => newPluginData.id === plugin.id);
+
+            if (pluginData == null) {
+              data.plugins.push(newPluginData);
+            }
+          });
+
+          data.plugins = data.plugins;
+
+          if (body.status === 'CREATED') {
+            await showToast('components.toasts.settings-save-error', {
+              addon: plugin.id,
             });
           }
-        });
 
-        newPluginsData.data.forEach((newPluginData) => {
-          const pluginData = data.plugins.find((plugin) => newPluginData.id === plugin.id);
-
-          if (pluginData == null) {
-            data.plugins.push(newPluginData);
+          if (body.status === 'FAILED') {
+            await showToast(
+              body.startupBlockedByLicense
+                ? 'components.toasts.addon-license-startup-blocked'
+                : 'components.toasts.failed-to-enable-addon-error',
+              {
+                addon: plugin.id,
+              },
+            );
           }
-        });
 
-        data.plugins = data.plugins;
+          data.plugins = data.plugins;
+          if (body.status !== 'FAILED') {
+            refreshRequired = true;
+          }
 
-        if (body.status === 'CREATED') {
-          await showToast('components.toasts.settings-save-error', {
-            addon: plugin.id,
-          });
+          callback();
+        } finally {
+          plugin.loading = false;
+          data.plugins = data.plugins;
         }
-
-        if (body.status === 'FAILED') {
-          await showToast('components.toasts.failed-to-enable-addon-error', {
-            addon: plugin.id,
-          });
-        }
-
-        plugin.loading = false;
-        data.plugins = data.plugins;
-        refreshRequired = true;
-
-        callback();
       },
     });
   }
@@ -411,7 +507,9 @@
   }
 
   async function enableAllAddons() {
-    const inactivePlugins = data.plugins.filter((p) => p.status !== 'STARTED');
+    const inactivePlugins = data.plugins.filter(
+      (p) => p.status !== 'STARTED' && !isPremiumAddonEnableBlockedByLicense(p),
+    );
     if (inactivePlugins.length === 0) return;
 
     showConfirmActionModal('pages.addons.enable-all-confirm', async () => {

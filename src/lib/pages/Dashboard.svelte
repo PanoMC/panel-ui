@@ -58,6 +58,29 @@
 
 <!-- Dashboard Page -->
 <div class="container vstack gap-3">
+  <!--
+    Premium plugin license banner. Surfaces license failures recorded by the host's
+    LicenseManager so an admin sees them before browsing the addons page.
+    Hidden when zero failures or when the dashboard payload doesn't include the field.
+  -->
+  {#if data.licenseFailedPluginCount && data.licenseFailedPluginCount > 0}
+    <div class="alert alert-warning d-flex align-items-center gap-3 mb-0 border-warning">
+      <i class="fa-solid fa-key fa-lg"></i>
+      <div class="flex-grow-1">
+        <strong
+          >{$_('pages.dashboard.license-banner.title', {
+            values: { count: data.licenseFailedPluginCount },
+          })}</strong>
+        <div class="small text-body-secondary">
+          {$_('pages.dashboard.license-banner.description')}
+        </div>
+      </div>
+      <a class="btn btn-sm btn-warning" href="{base}/addons?status=LICENSE_ISSUES">
+        {$_('buttons.view')}
+      </a>
+    </div>
+  {/if}
+
   <!-- Welcome Alerts -->
   {#if data.gettingStartedBlocks.welcomeBoard}
     <div class="alert alert-secondary welcome-board alert-dismissible mb-0 border">

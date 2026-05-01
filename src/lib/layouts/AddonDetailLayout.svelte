@@ -71,7 +71,9 @@
               type="checkbox"
               role="switch"
               checked={data.addon.status === 'STARTED'}
-              disabled={data.addon.loading}
+              disabled={data.addon.loading ||
+                (data.addon.status !== 'STARTED' &&
+                  isPremiumAddonEnableBlockedByLicense(data.addon))}
               onclick={(e) => {
                 e.preventDefault();
                 onTogglePluginStateClick();
@@ -97,11 +99,15 @@
 
         <div class="col">
           <h5
-            class="card-title d-inline-flex align-items-center gap-2 mb-2"
-            class:text-danger={data.addon.status === 'FAILED'}>
+            class="card-title d-inline-flex align-items-center gap-2 mb-2 flex-wrap"
+            class:text-danger={data.addon.status === 'FAILED' &&
+              !isAddonLicenseStartupBlocked(data.addon)}>
             {data.addon.name}
             <VerifiedStatus status={data.addon.verifyStatus} />
-            {#if data.addon.status === 'FAILED'}
+            {#if data.addon.premium && data.addon.licenseStatus !== 'LICENSED'}
+              <LicenseStatusBadge status={data.addon.licenseStatus} />
+            {/if}
+            {#if data.addon.status === 'FAILED' && !isAddonLicenseStartupBlocked(data.addon)}
               <button
                 type="button"
                 aria-label={$_('buttons.error-log')}
@@ -210,6 +216,7 @@
   import { PANO_WEBSITE_URL } from '$lib/variables';
 
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
+  import LicenseStatusBadge from '$lib/components/LicenseStatusBadge.svelte';
 
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
@@ -235,6 +242,10 @@
   import PageNav from '$lib/components/PageNav.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';
   import RefreshRequiredAlert from '$lib/components/RefreshRequiredAlert.svelte';
+  import {
+    isAddonLicenseStartupBlocked,
+    isPremiumAddonEnableBlockedByLicense,
+  } from '$lib/addon-license-issue.util.js';
 
   let { data, children } = $props();
   const slots = initSlots();
@@ -303,6 +314,14 @@
   }
 
   function onTogglePluginStateClick() {
+    const turningOn = data.addon.status !== 'STARTED';
+    if (turningOn && isPremiumAddonEnableBlockedByLicense(data.addon)) {
+      showToast('components.toasts.addon-license-startup-blocked', {
+        addon: data.addon.id,
+      });
+      return;
+    }
+
     if (data.addon.status === 'STARTED' && data.addon.dependents.length > 0) {
       showConfirmDisableAddonModal(data.addon);
       return;
@@ -317,34 +336,53 @@
   }
 
   function togglePluginState(status, callback = () => {}) {
+    if (status && isPremiumAddonEnableBlockedByLicense(data.addon)) {
+      showToast('components.toasts.addon-license-startup-blocked', {
+        addon: data.addon.id,
+      });
+      callback();
+      return;
+    }
+
     data.addon.loading = true;
 
     ApiUtilModule.put({
       path: `/api/panel/plugins/${data.addon.id}`,
       body: { status },
       handler: async (body, reject) => {
-        if (body.result !== 'ok') {
-          reject(body.error);
+        try {
+          if (body.result !== 'ok') {
+            reject(body.error);
 
-          return;
+            return;
+          }
+
+          if (body.status === 'CREATED') {
+            await showToast('components.toasts.settings-save-error', {
+              addon: data.addon.id,
+            });
+          }
+
+          if (body.status === 'FAILED') {
+            await showToast(
+              body.startupBlockedByLicense
+                ? 'components.toasts.addon-license-startup-blocked'
+                : 'components.toasts.failed-to-enable-addon-error',
+              {
+                addon: data.addon.id,
+              },
+            );
+          }
+
+          await invalidateAll();
+
+          if (body.status !== 'FAILED') {
+            refreshRequired = true;
+          }
+          callback();
+        } finally {
+          data.addon.loading = false;
         }
-
-        if (body.status === 'CREATED') {
-          await showToast('components.toasts.settings-save-error', {
-            addon: data.addon.id,
-          });
-        }
-
-        if (body.status === 'FAILED') {
-          await showToast('components.toasts.failed-to-enable-addon-error', {
-            addon: data.addon.id,
-          });
-        }
-
-        await invalidateAll();
-
-        refreshRequired = true;
-        callback();
       },
     });
   }

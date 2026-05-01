@@ -48,10 +48,23 @@
 
         <p class="small mb-0" in:fade out:fade>
           {#if $installError}
-            <span class="text-danger"
-              >{$_('components.modals.installing-resource.error-text', {
-                values: { error: $_('errors.' + $installError) },
-              })}</span>
+            <span class="text-danger">
+              {#if $installLicenseDeniedReason}
+                {$_(
+                  'components.modals.installing-resource.license-denied.' + $installLicenseDeniedReason,
+                  {
+                    values: { website: websiteDisplayHost() },
+                    default: $_('components.modals.installing-resource.license-denied.generic', {
+                      values: { website: websiteDisplayHost() },
+                    }),
+                  },
+                )}
+              {:else}
+                {$_('components.modals.installing-resource.error-text', {
+                  values: { error: $_('errors.' + $installError) },
+                })}
+              {/if}
+            </span>
           {:else if !isFinished($installingStep)}
             {$_($processes[$installingStep - 1])}
           {:else}
@@ -107,6 +120,8 @@
   const installingStep = writable(1);
   const currentProgress = writable(0);
   const installError = writable();
+  /** Set when install failed on license check ([LicenseDeniedReason.publicId]). */
+  const installLicenseDeniedReason = writable(null);
 
   let callback = () => {};
   let hideCallback = () => {};
@@ -156,6 +171,7 @@
     });
 
     if (uploadResponse.error) {
+      installLicenseDeniedReason.set(null);
       installError.set(uploadResponse.error);
 
       return null;
@@ -193,6 +209,9 @@
       }
     } else {
       installing = false;
+      installLicenseDeniedReason.set(
+        typeof message.licenseDeniedReason === 'string' ? message.licenseDeniedReason : null,
+      );
       installError.set(message.error);
       console.error(message.error, message.message);
     }
@@ -225,6 +244,7 @@
     currentProgress.set(0);
     versionId.set(newVersionId);
     installError.set(null);
+    installLicenseDeniedReason.set(null);
     type.set(newType);
     callback = storeCallback;
     installing = true;
@@ -281,6 +301,7 @@
 <script>
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
+  import { websiteDisplayHost } from '$lib/website-display.util.js';
   import { fade } from 'svelte/transition';
 
   import { beforeNavigate, goto } from '$app/navigation';

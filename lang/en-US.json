@@ -87,7 +87,11 @@
     "deselect-all": "Deselect All",
     "selected": "Selected",
     "enable-all-addons": "Enable All Addons",
-    "disable-all-addons": "Disable All Addons"
+    "disable-all-addons": "Disable All Addons",
+    "buy-license": "Buy License",
+    "buy-addon-on-market": "Buy this addon on {website}",
+    "license-issues": "License Issues",
+    "connect-pano-account": "Connect Pano Account"
   },
   "pages": {
     "login": {
@@ -129,11 +133,13 @@
       "card-title": {
         "active": "{amount} Active Addon",
         "inactive": "{amount} Inactive Addon",
-        "installed": "{amount} Installed Addon"
+        "installed": "{amount} Installed Addon",
+        "license-issues": "{amount} Addon with License Issues"
       },
       "update-available": "Update Available",
       "enable-all-confirm": "Are you sure you want to enable all addons?",
-      "disable-all-confirm": "Are you sure you want to disable all addons?"
+      "disable-all-confirm": "Are you sure you want to disable all addons?",
+      "license-banner": "{count} premium addon needs a valid license."
     },
     "addon-detail": {
       "title": "Addon Detail",
@@ -141,7 +147,22 @@
       "version": "Version",
       "pano-version": "Pano Version",
       "developer": "Developer",
-      "license": "License",
+      "open-source-license": "Open Source License",
+      "license-section": "License",
+      "license": {
+        "no-purchase": "This is a premium addon and your Pano account hasn't purchased it yet. Buy a license on {website} to enable it.",
+        "not-connected": "Pano isn't connected to a {website} account. Connect your account to verify premium addon licenses.",
+        "needs-refresh": "Your Pano account is connected, but this addon's license hasn't been fetched yet. Use Refresh above to verify with {website}.",
+        "expired": "Your cached license expired and could not be renewed.",
+        "network-error": "Pano couldn't reach {website} to verify the license. Check your network and retry.",
+        "tampered": "The addon JAR's hash does not match the legitimate version published on {website}. The plugin has been disabled.",
+        "tampered-help": "Re-download the addon from {website} or the official store to restore a known-good copy.",
+        "version-mismatch": "Please confirm on {website} that you purchased this addon and that Pano is linked to the same account.",
+        "active": "Your Pano account owns this addon.",
+        "expires-at": "Expires",
+        "last-checked": "Last checked",
+        "resource-id": "Resource ID"
+      },
       "source": "Source",
       "dependencies": "Dependencies",
       "requires": "Requires",
@@ -172,6 +193,10 @@
     },
     "dashboard": {
       "title": "Panel",
+      "license-banner": {
+        "title": "{count} premium addon needs a license",
+        "description": "One or more premium addons couldn't be verified. Click View to see status and remediation options."
+      },
       "welcome-card": {
         "description": "Pano is successfully installed and ready for use. 🚀 <br /> Here's what you can do to get started:",
         "connect-server": "Connect Server",
@@ -1023,6 +1048,27 @@
       "verified": "Verified by Pano",
       "not-verified": "Not verified by Pano, use at your own risk!"
     },
+    "license-status": {
+      "LICENSED": "Licensed",
+      "LICENSED-tooltip": "Your Pano account owns this addon",
+      "MISSING": "License Required",
+      "NO_PURCHASE": "License Required",
+      "NO_PURCHASE-tooltip": "This addon has not been purchased on your Pano account",
+      "EXPIRED": "Expired",
+      "EXPIRED-tooltip": "License expired and could not be renewed",
+      "NETWORK_ERROR": "Connection Error",
+      "NETWORK_ERROR-tooltip": "Could not reach {website} to verify the license",
+      "JAR_TAMPERED": "JAR Tampered",
+      "JAR_TAMPERED-tooltip": "The addon JAR's hash does not match the legitimate version",
+      "VERSION_MISMATCH": "Invalid license",
+      "VERSION_MISMATCH-tooltip": "Check your purchase on {website} and that Pano uses the same account",
+      "NOT_CONNECTED": "Not Connected",
+      "NOT_CONNECTED-tooltip": "Pano isn't connected to a {website} account",
+      "NEEDS_REFRESH": "Verify license",
+      "NEEDS_REFRESH-tooltip": "Pano account is connected — refresh to fetch the license from {website}",
+      "UNKNOWN": "Unknown",
+      "UNKNOWN-tooltip": "License status is unknown"
+    },
     "ticket-status-badge": {
       "filter": "Filter",
       "new": "New",
@@ -1176,7 +1222,22 @@
           "preparing": "Preparing...",
           "installing": "Installing..."
         },
-        "installing-leave-alert": "Installing is still working, leaving this page may result in broken features!"
+        "installing-leave-alert": "Installing is still working, leaving this page may result in broken features!",
+        "license-denied": {
+          "no-purchase": "Installation stopped: your connected Pano account does not include a license for this premium addon. Purchase it on {website}, then install again.",
+          "not-connected": "Installation stopped: connect your Pano account to {website} in Platform settings so licenses can be verified, then try again.",
+          "jar-hash-mismatch": "Installation stopped: this file does not match the legitimate addon published on {website}. Download it again from the official source.",
+          "version-mismatch": "Installation stopped: this build does not match what your license covers on {website}. Confirm your purchase and install the matching version.",
+          "network-error": "Installation stopped: Pano could not reach {website} to verify the license. Check your network and try again.",
+          "signature-invalid": "Installation stopped: the license proof for this addon could not be validated. Refresh your license from Platform settings or reinstall from {website}.",
+          "expired": "Installation stopped: the cached license expired and could not be renewed. Refresh your license connection and try again.",
+          "audience-mismatch": "Installation stopped: this license is not valid for this platform instance.",
+          "platform-mismatch": "Installation stopped: this addon license is not valid for this deployment environment.",
+          "key-not-available": "Installation stopped: license verification is temporarily unavailable. Try again shortly or reconnect your Pano account.",
+          "invalid-response": "Installation stopped: the license service returned an unexpected response. Try again later.",
+          "unknown": "Installation stopped: this premium addon could not be licensed. Check your Pano account connection and purchases on {website}, then try again.",
+          "generic": "Installation stopped: this premium addon could not be licensed. Check your Pano account connection and purchases on {website}, then try again."
+        }
       },
       "view-activity-log": {
         "title": "Activity Log Detail",
@@ -1560,6 +1621,7 @@
     },
     "toasts": {
       "demo-mode-restricted": "This action is disabled in demo mode.",
+      "license-refreshed": "License status refreshed.",
       "accepted-server-connect-request": "Server connection request accepted.",
       "expired-server-connect-request": "Invalid server connection request.",
       "notifications-deleted-permanently": "All notifications have been deleted.",
@@ -1611,6 +1673,7 @@
       "verification-email-sent-successful": "A verification e-mail was sent to the user \"{username}\".",
       "enabling-addon-failed-by-dependency-error": "Failed to enable \"{addon}\" addon due to failed dependency plugins!",
       "failed-to-enable-addon-error": "Failed to enable \"{addon}\". Check out the addon logs!",
+      "addon-license-startup-blocked": "\"{addon}\" did not start because a valid premium license is required. Use the License section on this addon's page to resolve it.",
       "pano-account-connect-success": "Your Pano account has been successfully connected!",
       "pano-account-disconnect-success": "Pano account removed successfully!",
       "pano-account-disconnect-fail-cant-connect": "An error occurred during the removing Pano account: Can't connect to Pano, try again later.",
