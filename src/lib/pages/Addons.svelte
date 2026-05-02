@@ -326,7 +326,7 @@
       case 'NETWORK_ERROR':
         return failedNonLicense ? 'border-danger border-2' : '';
       default:
-        return plugin.status === 'FAILED' ? 'border-danger border-2' : '';
+        return failedNonLicense ? 'border-danger border-2' : '';
     }
   }
 
