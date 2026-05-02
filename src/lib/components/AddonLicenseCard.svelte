@@ -31,7 +31,7 @@
           {$_('pages.addon-detail.license.active')}
         </p>
       {:else}
-        {#if addon.licenseStatus === 'NO_PURCHASE' || addon.licenseStatus === 'MISSING' || addon.licenseStatus === 'NEEDS_REFRESH'}
+        {#if addon.licenseStatus === 'NO_PURCHASE' || addon.licenseStatus === 'MISSING' || addon.licenseStatus === 'NEEDS_REFRESH' || addon.licenseStatus === 'JAR_TAMPERED' || addon.licenseStatus === 'SIGNATURE_INVALID'}
           <p class="mb-3">
             {$_('pages.addon-detail.license.no-purchase', websiteI18n)}
           </p>
@@ -56,10 +56,6 @@
         {:else if addon.licenseStatus === 'NETWORK_ERROR'}
           <p class="mb-0">
             {$_('pages.addon-detail.license.network-error', websiteI18n)}
-          </p>
-        {:else if addon.licenseStatus === 'JAR_TAMPERED' || addon.licenseStatus === 'SIGNATURE_INVALID'}
-          <p class="mb-0">
-            {$_('pages.addon-detail.license.tampered', websiteI18n)}
           </p>
         {:else if addon.licenseStatus === 'VERSION_MISMATCH'}
           <p class="mb-0">

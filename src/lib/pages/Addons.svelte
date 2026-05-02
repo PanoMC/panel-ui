@@ -312,14 +312,14 @@
     }
 
     switch (plugin.licenseStatus) {
-      case 'JAR_TAMPERED':
-      case 'SIGNATURE_INVALID':
       case 'VERSION_MISMATCH':
       case 'AUDIENCE_MISMATCH':
       case 'PLATFORM_MISMATCH':
         return 'border-danger border-2';
       case 'NO_PURCHASE':
       case 'MISSING':
+      case 'JAR_TAMPERED':
+      case 'SIGNATURE_INVALID':
       case 'EXPIRED':
       case 'NOT_CONNECTED':
       case 'NEEDS_REFRESH':

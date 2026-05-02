@@ -77,8 +77,8 @@
         return {
           icon: 'fa-key',
           iconClass: 'text-danger',
-          labelKey: 'components.license-status.JAR_TAMPERED',
-          tooltipKey: 'components.license-status.JAR_TAMPERED-tooltip',
+          labelKey: 'components.license-status.NO_PURCHASE',
+          tooltipKey: 'components.license-status.NO_PURCHASE-tooltip',
         };
       case 'VERSION_MISMATCH':
       case 'AUDIENCE_MISMATCH':
