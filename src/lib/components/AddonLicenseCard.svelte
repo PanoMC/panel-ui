@@ -31,7 +31,7 @@
           {$_('pages.addon-detail.license.active')}
         </p>
       {:else}
-        {#if addon.licenseStatus === 'NO_PURCHASE' || addon.licenseStatus === 'MISSING'}
+        {#if addon.licenseStatus === 'NO_PURCHASE' || addon.licenseStatus === 'MISSING' || addon.licenseStatus === 'NEEDS_REFRESH'}
           <p class="mb-3">
             {$_('pages.addon-detail.license.no-purchase', websiteI18n)}
           </p>
@@ -41,10 +41,6 @@
               {$_('buttons.buy-addon-on-market', websiteI18n)}
             </a>
           {/if}
-        {:else if addon.licenseStatus === 'NEEDS_REFRESH'}
-          <p class="mb-0 text-body-secondary">
-            {$_('pages.addon-detail.license.needs-refresh', websiteI18n)}
-          </p>
         {:else if addon.licenseStatus === 'NOT_CONNECTED'}
           <p class="mb-3">
             {$_('pages.addon-detail.license.not-connected', websiteI18n)}

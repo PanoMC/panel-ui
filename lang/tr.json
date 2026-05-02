@@ -152,7 +152,7 @@
       "license": {
         "no-purchase": "Bu bir premium eklenti ve Pano hesabınızda satın alınmamış. Etkinleştirmek için {website} üzerinden lisans satın alın.",
         "not-connected": "Pano bir {website} hesabına bağlı değil. Premium eklenti lisanslarını doğrulamak için hesabınızı bağlayın.",
-        "needs-refresh": "Pano hesabınız bağlı ancak bu eklenti için lisans henüz çekilmedi. {website} ile doğrulamak için yukarıdan Yenile'yi kullanın.",
+        "needs-refresh": "Bu bir premium eklenti ve Pano hesabınızda bu eklenti için lisans yok. Etkinleştirmek için {website} üzerinden lisans satın alın.",
         "expired": "Önbellekteki lisansınız süresi dolmuş ve yenilenemedi.",
         "network-error": "Pano lisansı doğrulamak için {website} adresine ulaşamadı. Ağ bağlantınızı kontrol edin ve tekrar deneyin.",
         "tampered": "Eklenti JAR'ının hash'i {website} üzerinde yayınlanan resmi sürümle uyuşmuyor. Eklenti devre dışı bırakıldı.",
@@ -1064,8 +1064,8 @@
       "VERSION_MISMATCH-tooltip": "Satın alımını {website} üzerinden kontrol edin; Pano'da aynı hesabın bağlı olduğundan emin olun",
       "NOT_CONNECTED": "Bağlı Değil",
       "NOT_CONNECTED-tooltip": "Pano bir {website} hesabına bağlı değil",
-      "NEEDS_REFRESH": "Lisansı doğrula",
-      "NEEDS_REFRESH-tooltip": "Pano hesabı bağlı — {website} üzerinden lisansı almak için yenileyin",
+      "NEEDS_REFRESH": "Lisans Gerekli",
+      "NEEDS_REFRESH-tooltip": "Bu eklenti Pano hesabınızda satın alınmamış",
       "UNKNOWN": "Bilinmiyor",
       "UNKNOWN-tooltip": "Lisans durumu bilinmiyor"
     },

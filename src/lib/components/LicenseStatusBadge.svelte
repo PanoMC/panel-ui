@@ -23,19 +23,15 @@
   import tooltip from '$lib/tooltip.util';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
 
-  $: websiteI18n = { values: { website: websiteDisplayHost() } };
+  const websiteI18n = $derived({ values: { website: websiteDisplayHost() } });
 
   /**
    * @typedef {'NOT_PREMIUM' | 'LICENSED' | 'MISSING' | 'NO_PURCHASE' | 'EXPIRED' | 'NETWORK_ERROR' | 'JAR_TAMPERED' | 'SIGNATURE_INVALID' | 'VERSION_MISMATCH' | 'AUDIENCE_MISMATCH' | 'PLATFORM_MISMATCH' | 'NOT_CONNECTED' | 'NEEDS_REFRESH' | 'UNKNOWN'} LicenseStatus
    */
 
-  /** @type {LicenseStatus|undefined} */
-  export let status;
+  let { status, labeled = false } = $props();
 
-  /** Caption next to the icon on detail layout (no badge styling). */
-  export let labeled = false;
-
-  $: entry = mapStatus(status);
+  const entry = $derived(mapStatus(status));
 
   function mapStatus(s) {
     switch (s) {
@@ -48,6 +44,7 @@
         };
       case 'MISSING':
       case 'NO_PURCHASE':
+      case 'NEEDS_REFRESH':
         return {
           icon: 'fa-key',
           iconClass: 'text-danger',
@@ -74,13 +71,6 @@
           iconClass: 'text-danger',
           labelKey: 'components.license-status.NOT_CONNECTED',
           tooltipKey: 'components.license-status.NOT_CONNECTED-tooltip',
-        };
-      case 'NEEDS_REFRESH':
-        return {
-          icon: 'fa-key',
-          iconClass: 'text-warning',
-          labelKey: 'components.license-status.NEEDS_REFRESH',
-          tooltipKey: 'components.license-status.NEEDS_REFRESH-tooltip',
         };
       case 'JAR_TAMPERED':
       case 'SIGNATURE_INVALID':

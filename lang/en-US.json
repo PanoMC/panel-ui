@@ -152,7 +152,7 @@
       "license": {
         "no-purchase": "This is a premium addon and your Pano account hasn't purchased it yet. Buy a license on {website} to enable it.",
         "not-connected": "Pano isn't connected to a {website} account. Connect your account to verify premium addon licenses.",
-        "needs-refresh": "Your Pano account is connected, but this addon's license hasn't been fetched yet. Use Refresh above to verify with {website}.",
+        "needs-refresh": "This is a premium addon and your Pano account has no license for it. Buy a license on {website} to enable it.",
         "expired": "Your cached license expired and could not be renewed.",
         "network-error": "Pano couldn't reach {website} to verify the license. Check your network and retry.",
         "tampered": "The addon JAR's hash does not match the legitimate version published on {website}. The plugin has been disabled.",
@@ -1064,8 +1064,8 @@
       "VERSION_MISMATCH-tooltip": "Check your purchase on {website} and that Pano uses the same account",
       "NOT_CONNECTED": "Not Connected",
       "NOT_CONNECTED-tooltip": "Pano isn't connected to a {website} account",
-      "NEEDS_REFRESH": "Verify license",
-      "NEEDS_REFRESH-tooltip": "Pano account is connected — refresh to fetch the license from {website}",
+      "NEEDS_REFRESH": "License Required",
+      "NEEDS_REFRESH-tooltip": "This addon has not been purchased on your Pano account",
       "UNKNOWN": "Unknown",
       "UNKNOWN-tooltip": "License status is unknown"
     },
