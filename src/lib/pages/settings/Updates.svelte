@@ -223,7 +223,14 @@
       <NoContent
         icon="fas fa-sync fa-3x"
         text={$_('pages.settings.updates.connect-pano-account')}
-        dark={false} />
+        dark={false}>
+        <div class="text-center">
+          <a class="btn btn-primary" href="{base}/settings/platform">
+            <i class="fa-solid fa-link me-2" aria-hidden="true"></i>
+            {$_('buttons.connect-pano-account')}
+          </a>
+        </div>
+      </NoContent>
     {:else if data.resourceUpdates.length === 0}
       <NoContent
         icon="fas fa-sync fa-3x"
