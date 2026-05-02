@@ -1021,6 +1021,8 @@
       "please-wait": "Please wait.",
       "loading": "Loading...",
       "version-loading": "Loading version...",
+      "version-not-found-title": "Version not found",
+      "version-not-found-description": "This store version could not be found. It may have been removed, or the install link is no longer valid.",
       "account-not-connected": "Pano account is not connected!",
       "not-connected-description": "You must connect a Pano account to access the store.",
       "install-title": "Are you sure you want to install this resource?",

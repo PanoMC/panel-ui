@@ -1021,6 +1021,8 @@
       "please-wait": "Lütfen bekleyin.",
       "loading": "Yükleniyor...",
       "version-loading": "Sürüm yükleniyor...",
+      "version-not-found-title": "Sürüm bulunamadı",
+      "version-not-found-description": "Bu mağaza sürümü bulunamadı. Kaldırılmış olabilir veya kurulum bağlantısı artık geçerli değil.",
       "account-not-connected": "Pano hesabı bağlı değil!",
       "not-connected-description": "Mağazaya erişmek için bir Pano hesabı bağlamalısınız.",
       "install-title": "Bu kaynağı kurmak istediğinize emin misiniz?",

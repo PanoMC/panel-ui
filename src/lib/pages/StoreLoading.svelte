@@ -43,7 +43,18 @@
 </style>
 
 <div class="w-100 flex-grow-1 d-flex flex-column">
-  {#if !data.accountConnected}
+  {#if versionNotFound}
+    <div class="container mt-3">
+      <PageActions leftClasses="d-flex">
+        <button class="btn btn-link" on:click={onCancelClick} slot="left">
+          <i class="fas fa-arrow-left"></i>
+          <span class="d-lg-inline d-none ms-2">
+            {$_(data.pageType === PageTypes.ADDON ? 'buttons.addons' : 'buttons.themes')}
+          </span>
+        </button>
+      </PageActions>
+    </div>
+  {:else if !data.accountConnected}
     <div class="container mt-3">
       <PageActions leftClasses="d-flex">
         <button class="btn btn-link" on:click={onCancelClick} slot="left">
@@ -59,7 +70,9 @@
   <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
     <div class="container">
       <div class="col-lg-10 mx-auto vstack gap-3">
-        {#if !data.accountConnected}
+        {#if versionNotFound}
+          {@render versionNotFoundSnippet()}
+        {:else if !data.accountConnected}
           {@render accountNotConnectedSnippet()}
         {:else if !modalOpen}
           {@render loadingSnippet()}
@@ -70,6 +83,19 @@
 </div>
 
 <ConfirmInstallResourceModal />
+
+{#snippet versionNotFoundSnippet()}
+  <div class="alert alert-danger border mb-0" role="alert">
+    <h5 class="alert-heading mb-2">
+      <i class="fa-solid fa-circle-exclamation me-2"></i>
+      {$_('components.store-loading.version-not-found-title')}
+    </h5>
+    <p class="mb-0 text-body">
+      {$_('components.store-loading.version-not-found-description')}
+    </p>
+  </div>
+{/snippet}
+
 
 {#snippet accountNotConnectedSnippet()}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -207,6 +233,7 @@
   let connecting;
   let storeLoading;
   let modalOpen = false;
+  let versionNotFound = false;
 
   async function waitSplash() {
     while ($showSplash) {
@@ -263,7 +290,8 @@
       getStoreTokenResponse.error === 'NOT_FOUND' ||
       getStoreTokenResponse.error === 'BAD_REQUEST'
     ) {
-      await goto('/error-404');
+      data.installingView = false;
+      versionNotFound = true;
 
       return;
     }
