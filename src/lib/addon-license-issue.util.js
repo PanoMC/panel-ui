@@ -28,8 +28,13 @@ export function isAddonLicenseStartupBlocked(addon) {
   return ADDON_LICENSE_ISSUE_STATUSES.has(addon.licenseStatus);
 }
 
-/** Premium addons cannot be enabled until the host reports `LICENSED`. */
+/**
+ * Do not hard-block most premium enable attempts in UI.
+ *
+ * License state can be stale (e.g. purchase/account link happened after startup), and backend
+ * start flow should be the source of truth. We only block when host is clearly disconnected.
+ */
 export function isPremiumAddonEnableBlockedByLicense(addon) {
   if (!addon?.premium) return false;
-  return addon.licenseStatus !== 'LICENSED';
+  return addon.licenseStatus === 'NOT_CONNECTED';
 }

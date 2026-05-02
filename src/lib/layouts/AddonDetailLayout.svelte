@@ -28,57 +28,61 @@
       {#if slots.right}
         {@render slots.right()}
       {:else}
-        <div class="hstack gap-2">
-          {#if data.addon.verifyStatus !== 'UNKNOWN'}
-            <a
-              use:tooltip={[$_('buttons.show-in-store'), { placement: 'bottom' }]}
-              aria-label={$_('buttons.show-in-store')}
-              href={`${PANO_WEBSITE_URL}/addons/${data.addon.id}`}
-              target="_blank"
-              class="btn btn-link">
-              <i class="fas fa-store"></i>
-            </a>
-          {/if}
-          {#if data.addon.updateVersion}
+        <div class="hstack gap-2 align-items-center">
+          {#if enableDisableLoading}
+            <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+          {:else}
+            {#if data.addon.verifyStatus !== 'UNKNOWN'}
+              <a
+                use:tooltip={[$_('buttons.show-in-store'), { placement: 'bottom' }]}
+                aria-label={$_('buttons.show-in-store')}
+                href={`${PANO_WEBSITE_URL}/addons/${data.addon.id}`}
+                target="_blank"
+                class="btn btn-link">
+                <i class="fas fa-store"></i>
+              </a>
+            {/if}
+            {#if data.addon.updateVersion}
+              <button
+                type="button"
+                class="btn btn-link position-relative"
+                use:tooltip={[
+                  $_('pages.addons.update-available') + ' (v' + data.addon.updateVersion + ')',
+                  { placement: 'bottom' },
+                ]}
+                aria-label={$_('pages.addons.update-available')}
+                onclick={() => goto(`${base}/settings/updates`)}>
+                <i class="fas fa-sync"></i>
+                <span
+                  class="position-absolute top-0 start-100 translate-middle mt-2 badge rounded-pill bg-secondary p-1">
+                  <span class="visually-hidden">{$_('pages.addons.update-available')}</span>
+                </span>
+              </button>
+            {/if}
             <button
+              class="btn btn-link"
               type="button"
-              class="btn btn-link position-relative"
-              use:tooltip={[
-                $_('pages.addons.update-available') + ' (v' + data.addon.updateVersion + ')',
-                { placement: 'bottom' },
-              ]}
-              aria-label={$_('pages.addons.update-available')}
-              onclick={() => goto(`${base}/settings/updates`)}>
-              <i class="fas fa-sync"></i>
-              <span
-                class="position-absolute top-0 start-100 translate-middle mt-2 badge rounded-pill bg-secondary p-1">
-                <span class="visually-hidden">{$_('pages.addons.update-available')}</span>
-              </span>
+              onclick={onRemoveClick}
+              use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
+              aria-label={$_('buttons.remove')}
+              class:disabled={removing}>
+              <i class="fas fa-trash"></i>
             </button>
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                checked={data.addon.status === 'STARTED'}
+                disabled={enableDisableLoading ||
+                  (data.addon.status !== 'STARTED' &&
+                    isPremiumAddonEnableBlockedByLicense(data.addon))}
+                onclick={(e) => {
+                  e.preventDefault();
+                  onTogglePluginStateClick();
+                }} />
+            </div>
           {/if}
-          <button
-            class="btn btn-link"
-            type="button"
-            onclick={onRemoveClick}
-            use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
-            aria-label={$_('buttons.remove')}
-            class:disabled={removing}>
-            <i class="fas fa-trash"></i>
-          </button>
-          <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              role="switch"
-              checked={data.addon.status === 'STARTED'}
-              disabled={data.addon.loading ||
-                (data.addon.status !== 'STARTED' &&
-                  isPremiumAddonEnableBlockedByLicense(data.addon))}
-              onclick={(e) => {
-                e.preventDefault();
-                onTogglePluginStateClick();
-              }} />
-          </div>
         </div>
       {/if}
     </div>
@@ -252,6 +256,8 @@
 
   let removing = $state(false);
   let refreshRequired = $state(false);
+  /** Matches Addons card: spinner + block actions while enable/disable API runs */
+  let enableDisableLoading = $state(false);
 
   const pageTitle = getContext('pageTitle');
 
@@ -344,6 +350,7 @@
       return;
     }
 
+    enableDisableLoading = true;
     data.addon.loading = true;
 
     ApiUtilModule.put({
@@ -381,6 +388,7 @@
           }
           callback();
         } finally {
+          enableDisableLoading = false;
           data.addon.loading = false;
         }
       },
