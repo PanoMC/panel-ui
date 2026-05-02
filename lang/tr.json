@@ -1231,7 +1231,7 @@
           "jar-hash-mismatch": "Kurulum durdu: bu dosya {website} üzerinde yayınlanan resmi eklentiyle eşleşmiyor. Resmi kaynaktan yeniden indirin.",
           "version-mismatch": "Kurulum durdu: bu sürüm, {website} üzerindeki lisansınızla uyuşmuyor. Satın alımınızı doğrulayıp eşleşen sürümü kurun.",
           "network-error": "Kurulum durdu: Pano lisansı doğrulamak için {website} adresine ulaşamadı. Ağınızı kontrol edip tekrar deneyin.",
-          "signature-invalid": "Kurulum durdu: eklenti lisans kanıtı doğrulanamadı. Platform ayarlarından lisansı yenileyin veya {website} üzerinden yeniden kurun.",
+          "signature-invalid": "Kurulum durdu: {website} üzerinde bu eklentinin lisansının, panele bağlı Pano hesabınıza ait olduğu doğrulanamadı. Bu ürünü satın aldığınız hesabın Platform ayarlarında bağlı olduğundan emin olun, ardından yeniden deneyin.",
           "expired": "Kurulum durdu: önbellekteki lisans süresi doldu ve yenilenemedi. Bağlantıyı yenileyip tekrar deneyin.",
           "audience-mismatch": "Kurulum durdu: bu lisans bu platform kurulumu için geçerli değil.",
           "platform-mismatch": "Kurulum durdu: bu eklenti lisansı bu dağıtım ortamı için geçerli değil.",

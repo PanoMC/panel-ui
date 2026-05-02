@@ -15,9 +15,11 @@
         <button
           type="button"
           class="btn-close"
-          data-bs-dismiss="modal"
+          disabled={!$installError && !isFinished($installingStep)}
+          class:opacity-25={!$installError && !isFinished($installingStep)}
           aria-label={$_('buttons.close')}
-          on:click={hide}></button>
+          aria-disabled={!$installError && !isFinished($installingStep)}
+          on:click|preventDefault={() => hide()}></button>
       </div>
       <div class="modal-body">
         <div
@@ -105,6 +107,7 @@
   import { writable, get } from 'svelte/store';
 
   import { browser } from '$app/environment';
+  import { goto as gotoNavigate } from '$app/navigation';
   import { base } from '$app/paths';
 
   import ApiUtil from '$lib/api.util';
@@ -128,6 +131,38 @@
   let modal;
   let confetti;
   let installing;
+  /** When true, next `hide.bs.modal` is allowed (internal/forced close). */
+  let forceNextHide = false;
+  let blockDismissHandler = null;
+
+  function canCloseModal() {
+    if (get(installError)) {
+      return true;
+    }
+    const step = get(installingStep);
+    const procs = get(processes);
+    return step === procs.length + 1;
+  }
+
+  function attachDismissGuard() {
+    const el = get(modalElement);
+    if (!el) {
+      return;
+    }
+    if (blockDismissHandler) {
+      el.removeEventListener('hide.bs.modal', blockDismissHandler);
+    }
+    blockDismissHandler = (e) => {
+      if (forceNextHide) {
+        forceNextHide = false;
+        return;
+      }
+      if (!canCloseModal()) {
+        e.preventDefault();
+      }
+    };
+    el.addEventListener('hide.bs.modal', blockDismissHandler);
+  }
 
   if (browser) {
     (async () => {
@@ -135,10 +170,25 @@
     })();
   }
 
-  export function hide() {
+  /**
+   * @param {{ force?: boolean }} [options]
+   */
+  export function hide(options = {}) {
+    if (options.force) {
+      forceNextHide = true;
+      hideCallback();
+      modal?.hide();
+      return;
+    }
+    if (!canCloseModal()) {
+      return;
+    }
     hideCallback();
-
-    modal.hide();
+    const t = get(type);
+    gotoNavigate(`${base}/${t === 'PLUGIN' ? 'addons' : 'view'}?refreshRequired=true`, {
+      invalidateAll: true,
+    });
+    modal?.hide();
   }
 
   async function validateFile(file) {
@@ -149,7 +199,7 @@
       return true;
     }
 
-    hide();
+    hide({ force: true });
     showInstallResourceModal(get(type));
 
     await showToast('components.toasts.invalid-resource-file-type');
@@ -173,6 +223,7 @@
     if (uploadResponse.error) {
       installLicenseDeniedReason.set(null);
       installError.set(uploadResponse.error);
+      installing = false;
 
       return null;
     }
@@ -258,8 +309,9 @@
 
     modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: 'static',
-      keyboard: true,
+      keyboard: false,
     });
+    attachDismissGuard();
     modal.show();
 
     if (newFile) {

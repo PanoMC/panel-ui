@@ -1231,7 +1231,7 @@
           "jar-hash-mismatch": "Installation stopped: this file does not match the legitimate addon published on {website}. Download it again from the official source.",
           "version-mismatch": "Installation stopped: this build does not match what your license covers on {website}. Confirm your purchase and install the matching version.",
           "network-error": "Installation stopped: Pano could not reach {website} to verify the license. Check your network and try again.",
-          "signature-invalid": "Installation stopped: the license proof for this addon could not be validated. Refresh your license from Platform settings or reinstall from {website}.",
+          "signature-invalid": "Installation stopped: we could not confirm that your connected Pano account owns this addon on {website}. Make sure Platform settings use the account that purchased this product there, then try again.",
           "expired": "Installation stopped: the cached license expired and could not be renewed. Refresh your license connection and try again.",
           "audience-mismatch": "Installation stopped: this license is not valid for this platform instance.",
           "platform-mismatch": "Installation stopped: this addon license is not valid for this deployment environment.",
