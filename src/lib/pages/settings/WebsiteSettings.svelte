@@ -80,18 +80,30 @@
       </div>
     </div>
     <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="siteRegisterAgreement">
+      <label class="col-md-6 col-form-label" for="registerAgreementEditBtn">
         {$_('pages.settings.site-settings.inputs.register-agreement.label')}
       </label>
       <div class="col-md-6">
-        <textarea
-          bind:value={data.registerAgreement}
-          aria-describedby="siteRegisterAgreement"
-          class="form-control"
-          id="siteRegisterAgreement"
-          rows="2"></textarea>
-        <small for="siteRegisterAgreement"
-          >{$_('pages.settings.site-settings.inputs.register-agreement.small-note')}</small>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <button
+            type="button"
+            id="registerAgreementEditBtn"
+            class="btn btn-outline-secondary btn-sm"
+            on:click={openRegisterAgreementModal}>
+            <i class="fas fa-pen-to-square me-1"></i>
+            {$_('buttons.edit')}
+          </button>
+          {#if normalizeRegisterAgreement(data.registerAgreement)}
+            <span class="small text-success text-nowrap">
+              <i class="fas fa-check me-1"></i>{$_('pages.settings.site-settings.inputs.register-agreement.has-content')}
+            </span>
+          {:else}
+            <span class="small text-body-secondary">{$_('pages.settings.site-settings.inputs.register-agreement.empty')}</span>
+          {/if}
+        </div>
+        <small class="d-block mt-2 text-body-secondary" id="siteRegisterAgreement">
+          {$_('pages.settings.site-settings.inputs.register-agreement.small-note')}
+        </small>
       </div>
     </div>
 
@@ -406,6 +418,7 @@
 
 <ConfirmRestartPanoModal />
 <ConfirmSaveCriticalSettingsModal />
+<EditRegisterAgreementModal />
 
 <script context="module">
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
@@ -438,6 +451,11 @@
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
+
+  import EditRegisterAgreementModal, {
+    show as showEditRegisterAgreementModal,
+  } from '$lib/components/modals/EditRegisterAgreementModal.svelte';
+  import { normalizeRegisterAgreement } from '$lib/register-agreement.util.js';
 
   import { websiteLogoSrc } from '$lib/Store.js';
 
@@ -478,11 +496,19 @@
 
   let keyword;
   let saveButtonLoading = false;
+
+  function openRegisterAgreementModal() {
+    showEditRegisterAgreementModal(data.registerAgreement, (html) => {
+      data.registerAgreement = normalizeRegisterAgreement(html);
+    });
+  }
+
   $: isSaveButtonDisabled =
     (data.oldSettings.websiteName === data.websiteName &&
       data.oldSettings.websiteDescription === data.websiteDescription &&
       data.oldSettings.websiteUrl === data.websiteUrl &&
-      data.oldSettings.registerAgreement === data.registerAgreement &&
+      normalizeRegisterAgreement(data.oldSettings.registerAgreement) ===
+        normalizeRegisterAgreement(data.registerAgreement) &&
       data.oldSettings.supportEmail === data.supportEmail &&
       data.oldSettings.serverIpAddress === data.serverIpAddress &&
       data.oldSettings.serverGameVersion === data.serverGameVersion &&
@@ -591,7 +617,7 @@
     formData.append('websiteName', data.websiteName);
     formData.append('websiteDescription', data.websiteDescription);
     formData.append('websiteUrl', data.websiteUrl);
-    formData.append('registerAgreement', data.registerAgreement);
+    formData.append('registerAgreement', normalizeRegisterAgreement(data.registerAgreement));
     formData.append('supportEmail', data.supportEmail);
     formData.append('serverIpAddress', data.serverIpAddress);
     formData.append('serverGameVersion', data.serverGameVersion);

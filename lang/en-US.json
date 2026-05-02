@@ -364,7 +364,12 @@
           },
           "register-agreement": {
             "label": "Register Agreement",
-            "small-note": "Note: This field supports HTML. If left empty, the \"I accept the agreement\" checkbox will not appear on the signup form."
+            "small-note": "Use Edit to set the agreement text. If you turn it off in the editor or leave it empty, users will not be asked to accept an agreement when signing up.",
+            "apply": "Apply",
+            "has-content": "Defined",
+            "empty": "Not set",
+            "disable-label": "Do not ask for agreement on signup",
+            "disabled-hint": "Agreement is off. No acceptance step will appear on the signup form."
           },
           "game-server-ip-address": {
             "label": "Game Server IP Address"

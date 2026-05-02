@@ -364,7 +364,12 @@
           },
           "register-agreement": {
             "label": "Kayıt Sözleşmesi",
-            "small-note": "Not: Bu alan HTML destekler. Boş bırakılırsa kayıt formundaki \"Sözleşmeyi kabul ediyorum\" onay kutusu gösterilmez."
+            "small-note": "Metni Düzenle üzerinden ayarlayın. Editörde kapattığınızda veya boş bıraktığınızda kayıtta sözleşme onayı istenmez.",
+            "apply": "Uygula",
+            "has-content": "Tanımlı",
+            "empty": "Yok",
+            "disable-label": "Kayıtta sözleşme onayı isteme",
+            "disabled-hint": "Sözleşme kapalı; kayıt formunda onay adımı gösterilmez."
           },
           "game-server-ip-address": {
             "label": "Oyun Sunucu IP Adresi"
