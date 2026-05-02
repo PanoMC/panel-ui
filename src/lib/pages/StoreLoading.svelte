@@ -226,6 +226,19 @@
 
   export let data;
 
+  /** Backend version map uses PLUGIN | THEME (same as store catalog) */
+  function pageTypeFromVersionType(versionType) {
+    return versionType === 'THEME' ? 'THEME' : 'ADDON';
+  }
+
+  function installModalTypeFromVersionType(versionType) {
+    return versionType === 'THEME' ? 'THEME' : 'PLUGIN';
+  }
+
+  function confirmModalTypeFromVersionType(versionType) {
+    return versionType === 'THEME' ? 'THEME' : 'ADDON';
+  }
+
   const showSplash = getContext('showSplash');
   const panelTheme = getContext('panelTheme');
 
@@ -234,6 +247,14 @@
   let storeLoading;
   let modalOpen = false;
   let versionNotFound = false;
+
+  function effectivePageTypeForStore() {
+    const vt = versionInfo?.version?.type;
+    if (vt === 'THEME' || vt === 'PLUGIN') {
+      return pageTypeFromVersionType(vt);
+    }
+    return data.pageType;
+  }
 
   async function waitSplash() {
     while ($showSplash) {
@@ -310,7 +331,10 @@
 
     setConfirmInstallResourceCallback(startInstall);
     onConfirmInstallResourceHide(onCancelClick);
-    showConfirmInstallResourceModal(versionInfo, data.pageType === PageTypes.ADDON ? 'ADDON' : 'THEME');
+    showConfirmInstallResourceModal(
+      versionInfo,
+      confirmModalTypeFromVersionType(versionInfo.version.type),
+    );
   }
 
   async function goToStore(getStoreTokenResponse) {
@@ -322,7 +346,7 @@
     const encodedState = encodeURIComponent(state);
 
     // Redirect to the constructed URL
-    window.location = `${PANO_WEBSITE_URL}/auth?storeAuthorizeToken=${storeAuthToken}&panoCallback=${encodedRedirectUrl}&state=${encodedState}&type=${data.pageType}&hl=${$currentLanguage.code}&theme=${$panelTheme}`;
+    window.location = `${PANO_WEBSITE_URL}/auth?storeAuthorizeToken=${storeAuthToken}&panoCallback=${encodedRedirectUrl}&state=${encodedState}&type=${effectivePageTypeForStore()}&hl=${$currentLanguage.code}&theme=${$panelTheme}`;
   }
 
   function sleep(ms) {
@@ -330,12 +354,15 @@
   }
 
   function onCancelClick() {
-    goto(base + `/` + (data.pageType === PageTypes.ADDON ? 'addons' : 'view'));
+    const pt = versionInfo?.version?.type
+      ? pageTypeFromVersionType(versionInfo.version.type)
+      : data.pageType;
+    goto(base + `/` + (pt === 'ADDON' ? 'addons' : 'view'));
   }
 
   function startInstall() {
     showInstallingResourceModal(
-      data.pageType === PageTypes.ADDON ? 'PLUGIN' : 'THEME',
+      installModalTypeFromVersionType(versionInfo.version.type),
       null,
       data.install,
       async () => {
