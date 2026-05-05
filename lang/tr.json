@@ -368,8 +368,7 @@
             "apply": "Uygula",
             "has-content": "Tanımlı",
             "empty": "Yok",
-            "disable-label": "Kayıtta sözleşme onayı isteme",
-            "disabled-hint": "Sözleşme kapalı; kayıt formunda onay adımı gösterilmez."
+            "require-label": "Kayıt formunda sözleşme onayı istensin"
           },
           "game-server-ip-address": {
             "label": "Oyun Sunucu IP Adresi"
@@ -437,7 +436,7 @@
         "display-language": "Görüntüleme Dili",
         "check-auto-updates": "Güncellemeleri Denetle",
         "release-channel": "Sürüm Kanalı",
-        "release-channel-warning": "Bu kanal <strong>en güncel</strong> sürümleri içerebilir fakat <strong>stabil olmayabilir</strong>. Hatalar/buglar yaşanabilir. <strong>Kendi riskinizle kullanın.</strong>",
+        "release-channel-warning": "Bu kanal <strong>en güncel</strong> sürümleri içerebilir fakat <strong>stabil olmayabilir</strong>.",
         "release-channel-warning-beta": "<strong>Beta</strong>, genelde <strong>alpha</strong>'dan daha stabildir; yine de buglar içerebilir.",
         "connect-failed-alert": "Pano hesabınıza bağlanırken hata oluştu! Lütfen tekrar deneyin.",
         "user-locale-mismatch-warning": "Kişisel dil tercihiniz, platformun varsayılan dilinden farklı. Kişisel tercihi olmayan ziyaretçiler platformu farklı bir dilde görecektir.",
@@ -472,15 +471,15 @@
           "auth-methods": "Giriş Methodu",
           "description": "Pano, e-posta gönderebilmek için bir e-posta sağlayıcısına ihtiyaç duyar. Lütfen kullanmak istediğiniz e-posta servisi ile oturum açın.",
           "email-validation-error": "E-mail ayarları doğrulanamadı: {mailError}",
-          "smtp-disabled-alert": "E-Posta (SMTP) şu anda devre dışı. Pano; kayıt veya şifre kurtarma işlemleri için e-posta gönderemeyecektir."
+          "smtp-disabled-alert": "<strong class=\"me-2\">SMTP Devre Dışı</strong> Pano; kayıt veya şifre kurtarma işlemleri için e-posta gönderemeyecektir."
         },
-        "smtp-settings": "E-Mail (SMTP)",
+        "smtp-settings": "SMTP",
         "toggle-smtp": "SMTP'yi Değiştir",
         "auth": {
           "require-email-verification": "E-posta Doğrulaması Gereksin",
           "require-email-verification-sub": "Kullanıcıların giriş yapmadan önce e-posta adreslerini doğrulamalarını gerektir.",
           "require-email-verification-warning": "Bu özelliğin devre dışı bırakılması güvenlik riskleri oluşturabilir. E-posta doğrulaması, bot saldırılarına karşı korunmak için önemlidir.",
-          "email-disabled-warning": "SMTP ayarları devre dışı. Kullanıcılar varsayılan olarak e-posta doğrulaması olmadan giriş yapabilecekler.",
+          "email-disabled-warning": "<strong class=\"me-2\">SMTP Devre Dışı</strong> Kullanıcılar varsayılan olarak e-posta doğrulaması olmadan giriş yapabilecekler.",
           "password-hash-algorithm": "Şifre Hash Algoritması",
           "password-hash-algorithm-sub": "Yeni şifreleri hashlemek için kullanılan algoritma. Mevcut şifreler bir sonraki girişte otomatik olarak yükseltilecektir.",
           "password-hash-algorithm-warning": "MD5, üretim kullanımı için önerilmez. Sözlük ve gökkuşağı tablosu saldırılarına karşı savunmasızdır.",
@@ -1017,7 +1016,7 @@
     },
     "alerts": {
       "dev-mode-title": "Geliştirici Modu Aktif",
-      "dev-mode-description": "Bazı güvenlik özellikleri devre dışı kalmış olabilir ve sistem normalden farklı davranabilir.",
+      "dev-mode-description": "Güvenlik özellikleri devre dışı olabilir ve sistem normalden farklı davranabilir.",
       "demo-mode-title": "Demo Modu",
       "demo-mode-description": "Bu panel demo modunda çalışıyor. Bazı işlemler kısıtlanmıştır."
     },
@@ -1050,6 +1049,7 @@
       "description": "Platform yeniden başlatılıyor, lütfen bekleyin. Bu işlem birkaç saniye sürebilir."
     },
     "failed-login-pano-store": "Pano mağazasına giriş yapılamadı! Lütfen daha sonra tekrar deneyin veya Pano hesabınızı yeniden bağlayın.",
+    "refresh-required-alert-title": "Yenileme Gerekli",
     "refresh-required-alert": "Bir eklentinin durumunu değiştirdiniz. Değişiklikleri uygulamak için lütfen sayfayı yenileyin.",
     "verified-status": {
       "verified": "Pano tarafından doğrulandı",

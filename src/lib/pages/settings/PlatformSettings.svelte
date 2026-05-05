@@ -259,18 +259,18 @@
     </div>
 
     {#if smtpDisabled}
-      <div class="alert alert-warning mt-3">
-        <div class="hstack gap-3">
-          <i class="fa-solid fa-triangle-exclamation"></i>
+      <div class="alert alert-warning mt-3" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="fa-solid fa-triangle-exclamation me-3"></i>
           <div>
-            {$_('pages.settings.platform.auth.email-disabled-warning')}
+            {@html $_('pages.settings.platform.auth.email-disabled-warning')}
           </div>
         </div>
       </div>
     {:else if !data.requireEmailVerification}
-      <div class="alert alert-warning mt-3">
-        <div class="hstack gap-3">
-          <i class="fa-solid fa-triangle-exclamation"></i>
+      <div class="alert alert-warning mt-3" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="fa-solid fa-triangle-exclamation me-3"></i>
           <div>
             {$_('pages.settings.platform.auth.require-email-verification-warning')}
           </div>
@@ -349,10 +349,10 @@
   <div class="card-body" class:opacity-50={smtpDisabled}>
     {#if smtpDisabled}
       <div class="alert alert-warning border mb-3" role="alert">
-        <div class="hstack gap-3">
-          <i class="fa-solid fa-triangle-exclamation"></i>
+        <div class="d-flex align-items-center">
+          <i class="fa-solid fa-triangle-exclamation me-3"></i>
           <div>
-            {$_('pages.settings.platform.smtp.smtp-disabled-alert')}
+            {@html $_('pages.settings.platform.smtp.smtp-disabled-alert')}
           </div>
         </div>
       </div>

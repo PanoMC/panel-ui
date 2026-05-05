@@ -368,8 +368,7 @@
             "apply": "Apply",
             "has-content": "Defined",
             "empty": "Not set",
-            "disable-label": "Do not ask for agreement on signup",
-            "disabled-hint": "Agreement is off. No acceptance step will appear on the signup form."
+            "require-label": "Require agreement on signup form"
           },
           "game-server-ip-address": {
             "label": "Game Server IP Address"
@@ -437,7 +436,7 @@
         "display-language": "Display Language",
         "check-auto-updates": "Platform Updates",
         "release-channel": "Release Channel",
-        "release-channel-warning": "This channel may contain the <strong>newest</strong> releases, but it may <strong>not be stable</strong>. Bugs may occur. <strong>Use at your own risk.</strong>",
+        "release-channel-warning": "This channel may contain the <strong>newest</strong> releases, but it may <strong>not be stable</strong>.",
         "release-channel-warning-beta": "<strong>Beta</strong> is generally more stable than <strong>alpha</strong>, but it can still contain bugs.",
         "connect-failed-alert": "Connecting your Pano account has been failed! Try again.",
         "user-locale-mismatch-warning": "Your personal language preference differs from the platform's default language. Visitors without a personal preference will see the platform in a different language.",
@@ -472,15 +471,15 @@
           "auth-methods": "Auth Methods",
           "description": "Pano requires an email provider to be able to send emails. Please log in with the e-mail service you want to use.",
           "email-validation-error": "Couldn't validate e-mail settings: {mailError}",
-          "smtp-disabled-alert": "E-Mail (SMTP) is currently disabled. Pano will not be able to send emails for registration or password recovery."
+          "smtp-disabled-alert": "<strong class=\"me-2\">SMTP Disabled</strong> Pano will not be able to send emails for registration or password recovery."
         },
-        "smtp-settings": "E-Mail (SMTP)",
+        "smtp-settings": "SMTP",
         "toggle-smtp": "Toggle SMTP",
         "auth": {
           "require-email-verification": "Require Email Verification",
           "require-email-verification-sub": "Require users to verify their email address before logging in.",
           "require-email-verification-warning": "Disabling this feature may pose security risks. Email verification is important for protection against bot attacks.",
-          "email-disabled-warning": "SMTP settings are disabled. Users will be able to login without email verification by default.",
+          "email-disabled-warning": "<strong class=\"me-2\">SMTP Disabled</strong> Users will be able to login without email verification by default.",
           "password-hash-algorithm": "Password Hash Algorithm",
           "password-hash-algorithm-sub": "The algorithm used to hash new passwords. Existing passwords will be automatically upgraded upon next login.",
           "password-hash-algorithm-warning": "MD5 is not recommended for production use. It is vulnerable to dictionary and rainbow table attacks.",
@@ -1017,7 +1016,7 @@
     },
     "alerts": {
       "dev-mode-title": "Development Mode Active",
-      "dev-mode-description": "Some security features may be disabled and the system may behave differently than usual.",
+      "dev-mode-description": "Security features may be disabled and the system may behave differently than usual.",
       "demo-mode-title": "Demo Mode",
       "demo-mode-description": "This panel is running in demo mode. Some actions are restricted."
     },
@@ -1050,6 +1049,7 @@
       "description": "The platform is restarting, please wait. This process may take a few seconds."
     },
     "failed-login-pano-store": "Failed login to Pano store! Try again later or reconnect your Pano account.",
+    "refresh-required-alert-title": "Refresh Required",
     "refresh-required-alert": "You have changed the status of an addon. Please refresh the page to apply changes.",
     "verified-status": {
       "verified": "Verified by Pano",

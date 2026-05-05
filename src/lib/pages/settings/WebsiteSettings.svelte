@@ -83,27 +83,26 @@
       <label class="col-md-6 col-form-label" for="registerAgreementEditBtn">
         {$_('pages.settings.site-settings.inputs.register-agreement.label')}
       </label>
-      <div class="col-md-6">
-        <div class="d-flex flex-wrap align-items-center gap-2">
+      <div class="col-md-6 d-flex align-items-center">
+        {#if normalizeRegisterAgreement(data.registerAgreement)}
           <button
             type="button"
             id="registerAgreementEditBtn"
-            class="btn btn-outline-secondary btn-sm"
+            class="btn btn-link p-0 text-decoration-none"
             on:click={openRegisterAgreementModal}>
-            <i class="fas fa-pen-to-square me-1"></i>
+            <i class="fas fa-pencil me-1"></i>
             {$_('buttons.edit')}
           </button>
-          {#if normalizeRegisterAgreement(data.registerAgreement)}
-            <span class="small text-success text-nowrap">
-              <i class="fas fa-check me-1"></i>{$_('pages.settings.site-settings.inputs.register-agreement.has-content')}
-            </span>
-          {:else}
-            <span class="small text-body-secondary">{$_('pages.settings.site-settings.inputs.register-agreement.empty')}</span>
-          {/if}
-        </div>
-        <small class="d-block mt-2 text-body-secondary" id="siteRegisterAgreement">
-          {$_('pages.settings.site-settings.inputs.register-agreement.small-note')}
-        </small>
+        {:else}
+          <button
+            type="button"
+            id="registerAgreementEditBtn"
+            class="btn btn-link p-0 text-decoration-none text-body-secondary"
+            on:click={openRegisterAgreementModal}>
+            <i class="fas fa-pencil me-1"></i>
+            Belirlenmedi
+          </button>
+        {/if}
       </div>
     </div>
 
