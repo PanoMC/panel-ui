@@ -37,7 +37,7 @@
       </div>
       <button
         type="button"
-        use:tooltip={[$_('buttons.save'), { placement: 'bottom' }]}
+        title={$_('buttons.save')}
         aria-label={$_('buttons.save')}
         class="btn btn-secondary"
         disabled={saveDisabled}
@@ -270,7 +270,6 @@
 <script>
   import { _ } from 'svelte-i18n';
   import { getContext, onDestroy, onMount, tick } from 'svelte';
-  import tooltip from '$lib/tooltip.util';
 
   import { beforeNavigate, goto } from '$app/navigation';
   import { base } from '$app/paths';

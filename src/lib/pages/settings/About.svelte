@@ -42,7 +42,7 @@
                 aria-label={$_('pages.settings.about.website')}
                 href={PANO_WEBSITE_URL}
                 id="panoWebsite"
-                use:tooltip={[$_('pages.settings.about.website'), { placement: 'bottom' }]}
+                title={$_('pages.settings.about.website')}
                 target="_blank">
                 <i class="fa-solid fa-up-right-from-square"></i>
               </a>
@@ -59,7 +59,7 @@
                 aria-label="Discord"
                 href="{PANO_WEBSITE_URL}/discord"
                 id="panoWebsite"
-                use:tooltip={['Discord', { placement: 'bottom' }]}
+                title="Discord"
                 target="_blank">
                 <i class="fab fa-discord fa-lg"></i>
               </a>
@@ -215,7 +215,6 @@
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import tooltip from '$lib/tooltip.util';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
   import { show as showWhatsNewModal } from '$lib/components/modals/WhatsNewModal.svelte';
 

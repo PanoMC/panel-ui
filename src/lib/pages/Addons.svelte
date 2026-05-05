@@ -16,7 +16,7 @@
           type="button"
           class="btn btn-link"
           aria-label={$_('buttons.enable-all-addons')}
-          use:tooltip={[$_('buttons.enable-all-addons'), { placement: 'bottom' }]}
+          title={$_('buttons.enable-all-addons')}
           on:click={enableAllAddons}
           disabled={data.plugins.every((p) => p.status === 'STARTED')}>
           <i class="fa-solid fa-play"></i>
@@ -25,7 +25,7 @@
           type="button"
           class="btn btn-link link-danger"
           aria-label={$_('buttons.disable-all-addons')}
-          use:tooltip={[$_('buttons.disable-all-addons'), { placement: 'bottom' }]}
+          title={$_('buttons.disable-all-addons')}
           on:click={disableAllAddons}
           disabled={data.plugins.every((p) => p.status !== 'STARTED')}>
           <i class="fa-solid fa-stop"></i>
@@ -108,7 +108,7 @@
                     target="_blank"
                     rel="noopener"
                     class="btn btn-sm btn-warning"
-                    use:tooltip={[buyAddonOnMarketLabel, { placement: 'bottom' }]}
+                    title={buyAddonOnMarketLabel}
                     aria-label={buyAddonOnMarketLabel}>
                     <i class="fa-solid fa-store"></i>
                   </a>
@@ -121,10 +121,7 @@
                     <button
                       type="button"
                       class="btn btn-link"
-                      use:tooltip={[
-                        $_('pages.addons.update-available') + ' (v' + plugin.updateVersion + ')',
-                        { placement: 'bottom' },
-                      ]}
+                      title={$_('pages.addons.update-available') + ' (v' + plugin.updateVersion + ')'}
                       aria-label={$_('pages.addons.update-available')}
                       on:click={(e) => {
                         e.preventDefault();
@@ -248,7 +245,6 @@
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   import { base } from '$app/paths';
   import { browser } from '$app/environment';

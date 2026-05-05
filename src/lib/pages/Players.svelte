@@ -26,7 +26,7 @@
         <button
           type="button"
           class="btn btn-danger"
-          use:tooltip={[$_('pages.player-detail.ban'), { placement: 'bottom' }]}
+          title={$_('pages.player-detail.ban')}
           aria-label={$_('pages.player-detail.ban')}
           on:click={openBanWithPlayerSearch}>
           <i class="fas fa-gavel"></i>
@@ -36,7 +36,7 @@
         <button
           type="button"
           class="btn btn-danger"
-          use:tooltip={[$_('pages.ip-bans.add-ban'), { placement: 'bottom' }]}
+          title={$_('pages.ip-bans.add-ban')}
           aria-label={$_('pages.ip-bans.add-ban')}
           on:click={() => showConfirmBanIpModal()}>
           <i class="fas fa-network-wired"></i>
@@ -368,7 +368,6 @@
   import PageNavItem from '$lib/components/PageNavItem.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
-  import tooltip from '$lib/tooltip.util';
 
   export let data;
   let search = data.search || '';

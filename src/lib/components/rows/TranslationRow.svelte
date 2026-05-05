@@ -38,7 +38,7 @@
   {#if translation.notExists}
     <div class="col-auto">
       <button
-        use:tooltip={[$_('buttons.delete')]}
+        title={$_('buttons.delete')}
         aria-label={$_('buttons.delete')}
         id="deleteButton"
         type="button"
@@ -53,7 +53,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   export let translation;
   export let pluginId;

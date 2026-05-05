@@ -6,7 +6,7 @@
   </div>
   <button
     type="button"
-    use:tooltip={[$_('buttons.refresh')]}
+    title={$_('buttons.refresh')}
     aria-label={$_('buttons.refresh')}
     class="btn btn-warning btn-sm ms-3"
     onclick={() => location.reload()}>
@@ -16,5 +16,4 @@
 
 <script>
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 </script>

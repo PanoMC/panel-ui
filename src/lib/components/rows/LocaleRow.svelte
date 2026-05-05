@@ -4,7 +4,7 @@
       <button
         type="button"
         aria-label={$_('buttons.delete')}
-        use:tooltip={[$_('buttons.delete')]}
+        title={$_('buttons.delete')}
         class="btn btn-link"
         on:click={onDeleteClick}>
         <i class="fas fa-trash"></i>
@@ -51,7 +51,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   export let locale;
   export let index;

@@ -28,7 +28,7 @@
       <button
         class="btn-close position-absolute top-0 end-0 m-2"
         aria-label={$_('buttons.remove')}
-        use:tooltip={[$_('buttons.remove')]}
+        title={$_('buttons.remove')}
         on:click|stopPropagation={removeConfigFile}></button>
     </div>
   {:else}
@@ -59,7 +59,7 @@
           <button
             class="btn-close position-absolute top-0 end-0 m-2"
             aria-label={$_('buttons.remove')}
-            use:tooltip={[$_('buttons.remove')]}
+            title={$_('buttons.remove')}
             on:click|stopPropagation={removeDbFile}></button>
         </div>
       {:else}
@@ -298,7 +298,7 @@
                     <button
                       class="btn btn-link text-body p-0 border-0"
                       on:click={() => toggleGroupExpand(group.name)}
-                      use:tooltip={[expandedGroups.has(group.name) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')]}
+                      title={expandedGroups.has(group.name) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')}
                       aria-label={expandedGroups.has(group.name) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')}>
                       <i class="fas fa-chevron-{expandedGroups.has(group.name) ? 'up' : 'down'}"></i>
                     </button>
@@ -490,7 +490,7 @@
                       <button
                         class="btn btn-link text-body p-0 border-0"
                         on:click={() => togglePlayerExpand(player.uuid)}
-                        use:tooltip={[expandedPlayers.has(player.uuid) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')]}
+                        title={expandedPlayers.has(player.uuid) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')}
                         aria-label={expandedPlayers.has(player.uuid) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')}>
                         <i class="fas fa-chevron-{expandedPlayers.has(player.uuid) ? 'up' : 'down'} fs-7"></i>
                       </button>
@@ -624,7 +624,6 @@
 
 <script>
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   import ApiUtil from '$lib/api.util.js';
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';

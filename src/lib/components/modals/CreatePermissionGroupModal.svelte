@@ -69,7 +69,7 @@
                   <button
                     type="button"
                     class="btn-close"
-                    use:tooltip={[$_('buttons.remove')]}
+                    title={$_('buttons.remove')}
                     aria-label={$_('buttons.remove')}
                     on:click={() => removeParent(p)}>
                   </button>
@@ -91,7 +91,7 @@
               <button
                 type="button"
                 class="btn btn-link text-decoration-none"
-                use:tooltip={[$_('buttons.add')]}
+                title={$_('buttons.add')}
                 aria-label={$_('buttons.add')}
                 disabled={!String(parentToAdd || '').trim()}
                 aria-disabled={!String(parentToAdd || '').trim()}
@@ -187,7 +187,6 @@
 
 <script>
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
   import NoContent from '../NoContent.svelte';
 
   const isValidGroupName = (raw) => {

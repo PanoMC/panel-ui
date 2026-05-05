@@ -34,7 +34,7 @@
           {:else}
             {#if data.addon.verifyStatus !== 'UNKNOWN'}
               <a
-                use:tooltip={[$_('buttons.show-in-store'), { placement: 'bottom' }]}
+                title={$_('buttons.show-in-store')}
                 aria-label={$_('buttons.show-in-store')}
                 href={`${PANO_WEBSITE_URL}/addons/${data.addon.id}`}
                 target="_blank"
@@ -46,10 +46,7 @@
               <button
                 type="button"
                 class="btn btn-link position-relative"
-                use:tooltip={[
-                  $_('pages.addons.update-available') + ' (v' + data.addon.updateVersion + ')',
-                  { placement: 'bottom' },
-                ]}
+                title={$_('pages.addons.update-available') + ' (v' + data.addon.updateVersion + ')'}
                 aria-label={$_('pages.addons.update-available')}
                 onclick={() => goto(`${base}/settings/updates`)}>
                 <i class="fas fa-sync"></i>
@@ -63,7 +60,7 @@
               class="btn btn-link"
               type="button"
               onclick={onRemoveClick}
-              use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
+              title={$_('buttons.remove')}
               aria-label={$_('buttons.remove')}
               class:disabled={removing}>
               <i class="fas fa-trash"></i>

@@ -29,7 +29,7 @@
       <button
         class="btn-close position-absolute top-0 end-0 m-2"
         aria-label={$_('buttons.remove')}
-        use:tooltip={[$_('buttons.remove')]}
+        title={$_('buttons.remove')}
         on:click|stopPropagation={removeFile}></button>
     </div>
   {:else}
@@ -336,7 +336,6 @@
   import { _ } from 'svelte-i18n';
 
   import ApiUtil from '$lib/api.util.js';
-  import tooltip from '$lib/tooltip.util';
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';

@@ -26,7 +26,7 @@
       style="background-color: {color.id === 'system' ? 'transparent' : color.hex}; 
              border: {color.id === 'system' ? '2px solid var(--bs-border-color)' : '2px solid transparent'};"
       on:click={() => onThemeSelect(color.id)}
-      use:tooltip={[$_(`components.navbar.theme_names.${color.id}`), { placement: "bottom" }]}
+      title={$_(`components.navbar.theme_names.${color.id}`)}
       aria-label={$_(`components.navbar.theme_names.${color.id}`)}>
     </button>
   {/each}
@@ -34,7 +34,6 @@
 
 <script>
   import { _ } from "svelte-i18n";
-  import tooltip from "$lib/tooltip.util";
 
   export let currentTheme;
   export let onThemeSelect;

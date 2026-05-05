@@ -18,7 +18,6 @@
         href="{base}/tickets/detail/{ticket.id}"
         class="rounded focus-ring text-decoration-none d-block text-truncate"
         title={ticket.title}
-        use:tooltip={[$_('buttons.view')]}
         >
         {ticket.title}
       </a>
@@ -35,7 +34,7 @@
     <div class="text-truncate d-flex align-items-center">
       <a
         href="{base}/players/detail/{ticket.writer.username}"
-        use:tooltip={[$_('buttons.view')]}
+        title={$_('buttons.view')}
         class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center">
         <img
           src="/api/profile/picture/{ticket.writer.username}?{$avatarVersion}"

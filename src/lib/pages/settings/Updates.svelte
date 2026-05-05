@@ -100,7 +100,7 @@
                   <div class="d-flex align-items-center gap-1 flex-shrink-0 mobile-absolute-actions">
                     <button
                       class="btn btn-sm btn-link"
-                      use:tooltip={[$_('pages.settings.updates.changelog'), { placement: 'bottom' }]}
+                      title={$_('pages.settings.updates.changelog')}
                       aria-label={$_('pages.settings.updates.changelog')}
                       class:disabled={loading ||
                         $platformUpdating ||
@@ -113,7 +113,7 @@
                     <button
                       class="btn btn-sm btn-link"
                       aria-label={$_('pages.settings.updates.copy-hash')}
-                      use:tooltip={[$_('pages.settings.updates.copy-hash'), { placement: 'bottom' }]}
+                      title={$_('pages.settings.updates.copy-hash')}
                       class:disabled={loading ||
                         $platformUpdating ||
                         inProgressResource ||
@@ -325,7 +325,7 @@
                     class="d-flex align-items-center gap-1 flex-shrink-0 mobile-absolute-actions">
                     <button
                       class="btn btn-sm btn-link"
-                      use:tooltip={[$_('pages.settings.updates.changelog'), { placement: 'bottom' }]}
+                      title={$_('pages.settings.updates.changelog')}
                       aria-label={$_('pages.settings.updates.changelog')}
                       class:disabled={loading ||
                         $platformUpdating ||
@@ -338,7 +338,7 @@
                     <button
                       class="btn btn-sm btn-link"
                       aria-label={$_('pages.settings.updates.copy-hash')}
-                      use:tooltip={[$_('pages.settings.updates.copy-hash'), { placement: 'bottom' }]}
+                      title={$_('pages.settings.updates.copy-hash')}
                       class:disabled={loading ||
                         $platformUpdating ||
                         inProgressResource ||
@@ -348,7 +348,7 @@
                     </button>
 
                     <button
-                      use:tooltip={[$_('buttons.install'), { placement: 'bottom' }]}
+                      title={$_('buttons.install')}
                       aria-label={$_('buttons.install')}
                       class="btn btn-sm btn-secondary d-flex align-items-center gap-2"
                       class:disabled={loading ||

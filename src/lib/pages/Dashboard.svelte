@@ -212,7 +212,7 @@
                         <td class="align-middle text-nowrap d-flex align-items-center">
                           <a
                             class="focus-ring rounded-circle d-inline-block me-2"
-                            use:tooltip={[player.username, { placement: 'bottom' }]}
+                            title={player.username}
                             href="{base}/players/detail/{player.username}">
                             <img
                               alt={player.username}
@@ -223,7 +223,6 @@
                           </a>
                           <a
                             class="text-decoration-none w-100 rounded focus-ring d-block text-truncate p-1"
-                            use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}
                             aria-label={$_('buttons.view')}
                             title={player.username}
                             href="{base}/players/detail/{player.username}">
@@ -272,7 +271,7 @@
                         <td class="align-middle text-nowrap d-flex align-items-center">
                           <a
                             class="focus-ring rounded-circle d-inline-block me-2"
-                            use:tooltip={[ticket.writer.username, { placement: 'bottom' }]}
+                            title={ticket.writer.username}
                             href="{base}/players/detail/{ticket.writer.username}">
                             <img
                               src="/api/profile/picture/{ticket.writer.username}?{$avatarVersion}"
@@ -285,7 +284,6 @@
                             class="text-decoration-none w-100 rounded focus-ring d-block text-truncate p-1"
                             href="{base}/tickets/detail/{ticket.id}"
                             title={ticket.title}
-                            use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}
                             aria-label={$_('buttons.view')}>
                             {ticket.title}
                           </a>
@@ -368,7 +366,7 @@
                   aria-label={$_('pages.settings.about.website')}
                   href={PANO_WEBSITE_URL}
                   id="panoWebsite"
-                  use:tooltip={[$_('pages.settings.about.website'), { placement: 'bottom' }]}
+                  title={$_('pages.settings.about.website')}
                   target="_blank">
                   <i class="fa-solid fa-up-right-from-square"></i>
                 </a>
@@ -385,7 +383,7 @@
                   aria-label="Discord"
                   href="{PANO_WEBSITE_URL}/discord"
                   id="panoWebsite"
-                  use:tooltip={['Discord', { placement: 'bottom' }]}
+                  title="Discord"
                   target="_blank">
                   <i class="fab fa-discord fa-lg"></i>
                 </a>
@@ -447,7 +445,6 @@
   import { base } from '$app/paths';
 
   import { hasPermission, Permissions } from '$lib/auth.util';
-  import tooltip from '$lib/tooltip.util';
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 

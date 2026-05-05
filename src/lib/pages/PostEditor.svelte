@@ -25,7 +25,7 @@
 {#snippet right()}
   {#if data.mode === Modes.EDIT}
     <button
-      use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
+      title={$_('buttons.remove')}
       aria-label={$_('buttons.remove')}
       class="btn btn-link"
       type="button"
@@ -35,7 +35,7 @@
   {/if}
   {#if post.status !== StatusTypes.DRAFT && data.mode === Modes.EDIT}
     <button
-      use:tooltip={[$_('pages.post-editor.move-to-drafts'), { placement: 'bottom' }]}
+      title={$_('pages.post-editor.move-to-drafts')}
       aria-label={$_('pages.post-editor.move-to-drafts')}
       class="btn btn-link"
       type="button"
@@ -48,17 +48,14 @@
     class="btn btn-link"
     role="button"
     aria-label={$_('buttons.view')}
-    use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}
+    title={$_('buttons.view')}
     target="_blank"
     href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{post.id}">
     <i class="fas fa-eye"></i>
   </a>
   {#if post.status !== StatusTypes.PUBLISHED}
     <button
-      use:tooltip={[
-        $_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update'),
-        { placement: 'bottom' },
-      ]}
+      title={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
       aria-label={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
       class="btn btn-link"
       type="button"
@@ -175,7 +172,7 @@
                   type="button"
                   class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle shadow-sm"
                   on:click={onRemoveThumbnailClick}
-                  use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
+                  title={$_('buttons.remove')}
                   aria-label={$_('buttons.remove')}>
                   <i class="fas fa-minus"></i>
                 </button>
@@ -285,8 +282,6 @@
 
   import { base } from '$app/paths';
   import { goto } from '$app/navigation';
-
-  import tooltip from '$lib/tooltip.util';
 
   import { UI_URL } from '$lib/variables';
 

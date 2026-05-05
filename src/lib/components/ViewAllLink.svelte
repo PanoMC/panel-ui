@@ -4,7 +4,7 @@
   rel={targetBlank ? 'noopener noreferrer' : undefined}
   class="btn-link text-decoration-none focus-ring rounded {classes}"
   aria-label={$_('buttons.view-all')}
-  use:tooltip={[$_('buttons.view-all')]}
+  title={$_('buttons.view-all')}
   on:click={handleClick}>
   <slot>
     <i class="fa-solid fa-arrow-right"></i>
@@ -14,7 +14,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   const dispatch = createEventDispatcher();
 

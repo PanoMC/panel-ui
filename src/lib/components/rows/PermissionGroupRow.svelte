@@ -6,7 +6,7 @@
         aria-label={$_('buttons.delete')}
         class="btn btn-link"
         on:click={onDeleteClick}
-        use:tooltip={[$_('buttons.delete')]}>
+        title={$_('buttons.delete')}>
         <i class="fas fa-trash"></i>
       </button>
     {/if}
@@ -14,7 +14,7 @@
   <td class="align-middle" style="max-width: 200px;">
     <div class="text-truncate">
       <a
-        use:tooltip={[permissionGroup.name]}
+        title={permissionGroup.name}
         class="text-decoration-none d-block text-truncate"
         href="{base}/players/permissions/detail/{permissionGroup.id}">
         {permissionGroup.name}
@@ -31,7 +31,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   import { base } from '$app/paths';
 

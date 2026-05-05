@@ -7,7 +7,7 @@
         aria-expanded="false"
         aria-haspopup="true"
         data-bs-toggle="dropdown"
-        use:tooltip={[$_('components.player-row.actions')]}
+        title={$_('components.player-row.actions')}
         aria-label={$_('components.player-row.actions')}>
         <span class="fas fa-ellipsis-v"></span>
       </button>
@@ -54,7 +54,6 @@
         class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center"
         class:text-danger={player.isBanned}
         class:text-decoration-line-through={player.isBanned}
-        use:tooltip={[$_('buttons.view')]}
         title={player.username}
         href="{base}/players/detail/{player.username}">
         <img
@@ -109,7 +108,6 @@
 </tr>
 
 <script>
-  import tooltip from '$lib/tooltip.util';
   import { avatarVersion } from '$lib/Store';
   import { createEventDispatcher, getContext } from 'svelte';
   import { _ } from 'svelte-i18n';

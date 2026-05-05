@@ -4,7 +4,6 @@
       <div class="text-truncate d-flex align-items-center">
         <a
           class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center"
-          use:tooltip={[$_('buttons.view')]}
           title={banHistory.username}
           href="{base}/players/detail/{banHistory.username}">
           <img
@@ -57,7 +56,7 @@
       {#if banHistory.bannedBy}
         <a
           href="{base}/players/detail/{banHistory.bannedBy}"
-          use:tooltip={[$_('buttons.view')]}
+          title={$_('buttons.view')}
           class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center">
           <img
             src="/api/profile/picture/{banHistory.bannedBy}?{$avatarVersion}"

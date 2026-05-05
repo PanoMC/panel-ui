@@ -54,7 +54,7 @@
     <div slot="right" class="hstack gap-2">
       <button
         type="button"
-        use:tooltip={[$_('buttons.reset'), { placement: 'bottom' }]}
+        title={$_('buttons.reset')}
         aria-label={$_('buttons.reset')}
         class="btn btn-link"
         disabled={!hasChanges}
@@ -68,7 +68,7 @@
           class="btn btn-link"
           on:click={createGroup}
           aria-label={$_('pages.permissions.panel.actions.create-group')}
-          use:tooltip={[$_('pages.permissions.panel.actions.create-group'), { placement: 'bottom' }]}>
+          title={$_('pages.permissions.panel.actions.create-group')}>
           <i class="fa fa-plus"></i>
         </button>
       {:else if showTracks}
@@ -77,7 +77,7 @@
           class="btn btn-link"
           on:click={createTrack}
           aria-label={$_('pages.permissions.panel.actions.create-track')}
-          use:tooltip={[$_('pages.permissions.panel.actions.create-track'), { placement: 'bottom' }]}>
+          title={$_('pages.permissions.panel.actions.create-track')}>
           <i class="fa fa-plus"></i>
         </button>
       {:else if showUsers}
@@ -86,14 +86,14 @@
           class="btn btn-link"
           on:click={openUserSearch}
           aria-label={$_('pages.permissions.panel.actions.add-player')}
-          use:tooltip={[$_('pages.permissions.panel.actions.add-player'), { placement: 'bottom' }]}>
+          title={$_('pages.permissions.panel.actions.add-player')}>
           <i class="fa fa-plus"></i>
         </button>
       {/if}
 
       <button
         type="button"
-        use:tooltip={[$_('buttons.save'), { placement: 'bottom' }]}
+        title={$_('buttons.save')}
         aria-label={$_('buttons.save')}
         class="btn btn-secondary"
         disabled={!hasChanges}
@@ -186,7 +186,7 @@
                                     class="list-group-item list-group-item-action py-1"
                                     on:click|stopPropagation={() => selectGroupByName(gname)}
                                     aria-label={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}
-                                    use:tooltip={[$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })]}>
+                                    title={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}>
                                     {gname}
                                   </button>
                                 {/each}
@@ -372,7 +372,7 @@
                         style="cursor: pointer;"
                         on:click={() => selectGroupByName(pg.name)}
                         aria-label={$_('pages.permissions.panel.actions.go-to-parent-group', { values: { name: pg.name } })}
-                        use:tooltip={[$_('pages.permissions.panel.actions.go-to-parent-group', { values: { name: pg.name } })]}>
+                        title={$_('pages.permissions.panel.actions.go-to-parent-group', { values: { name: pg.name } })}>
                         {pg.name}
                       </button>
                     {/each}
@@ -392,7 +392,7 @@
                   on:click={() => selectedGroup?.name !== 'default' && showRemoveGroupModal()}
                   aria-disabled={selectedGroup?.name === 'default'}
                   aria-label={$_('buttons.delete')}
-                  use:tooltip={[$_('buttons.delete')]}>
+                  title={$_('buttons.delete')}>
                   <i class="fa fa-trash"></i>
                 </button>
                 <button
@@ -400,7 +400,7 @@
                   class="btn btn-link"
                   on:click={editSelectedGroup}
                   aria-label={$_('buttons.edit')}
-                  use:tooltip={[$_('buttons.edit')]}>
+                  title={$_('buttons.edit')}>
                   <i class="fa fa-pen"></i>
                 </button>
                 <button
@@ -408,7 +408,7 @@
                   class="btn btn-link"
                   on:click={() => addNode('GROUP')}
                   aria-label={$_('pages.permissions.panel.nodes.add-node')}
-                  use:tooltip={[$_('pages.permissions.panel.nodes.add-node')]}>
+                  title={$_('pages.permissions.panel.nodes.add-node')}>
                   <i class="fa fa-plus"></i>
                 </button>
               </div>
@@ -438,7 +438,7 @@
                         style="cursor: pointer;"
                         on:click={() => selectGroupByName(gname)}
                         aria-label={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}
-                        use:tooltip={[$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })]}>
+                        title={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}>
                         {gname}
                       </button>
                     {/each}
@@ -452,7 +452,7 @@
                     type="button"
                     class="btn btn-link link-danger"
                     aria-label={$_('pages.permissions.panel.user.delete')}
-                    use:tooltip={[$_('pages.permissions.panel.user.delete')]}
+                    title={$_('pages.permissions.panel.user.delete')}
                     on:click={() => showRemoveUserModal(selectedUser)}>
                     <i class="fa fa-trash me-1"></i>
                   </button>
@@ -462,7 +462,7 @@
                   class="btn btn-link"
                   on:click={() => addNode('USER')}
                   aria-label={$_('pages.permissions.panel.nodes.add-node')}
-                  use:tooltip={[$_('pages.permissions.panel.nodes.add-node')]}>
+                  title={$_('pages.permissions.panel.nodes.add-node')}>
                   <i class="fa fa-plus"></i>
                 </button>
               </div>
@@ -498,14 +498,14 @@
                           class="btn btn-link link-danger"
                           on:click={() => removeNode(node)}
                           aria-label={nodeActionLabels.delete}
-                          use:tooltip={[nodeActionLabels.delete]}>
+                          title={nodeActionLabels.delete}>
                           <i class="fa fa-eraser"></i>
                         </button>
                         <button
                           class="btn btn-link"
                           on:click={() => editNode(node)}
                           aria-label={nodeActionLabels.edit}
-                          use:tooltip={[nodeActionLabels.edit]}>
+                          title={nodeActionLabels.edit}>
                           <i class="fa fa-pen"></i>
                         </button>
                       </td>
@@ -550,7 +550,7 @@
             <div class="hstack gap-2">
               <button
                 class="btn btn-link link-danger"
-                use:tooltip={[$_('buttons.remove')]}
+                title={$_('buttons.remove')}
                 aria-label={$_('buttons.remove')}
                 on:click={() => {
                   selectedTrackForEdit = selectedTrack;
@@ -560,7 +560,7 @@
               </button>
               <button
                 class="btn btn-link"
-                use:tooltip={[$_('buttons.edit')]}
+                title={$_('buttons.edit')}
                 aria-label={$_('buttons.edit')}
                 on:click={() => {
                   selectedTrackForEdit = selectedTrack;
@@ -579,7 +579,7 @@
                     class="list-group-item list-group-item-action py-1"
                     on:click={() => selectGroupByName(gname)}
                     aria-label={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}
-                    use:tooltip={[$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })]}>
+                    title={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}>
                     {gname}
                   </button>
                 {/each}
@@ -630,7 +630,6 @@
   import { browser } from '$app/environment';
   import { beforeNavigate } from '$app/navigation';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   import ApiUtil from '$lib/api.util.js';
   import { show as showToast } from '$lib/components/ToastContainer.svelte';

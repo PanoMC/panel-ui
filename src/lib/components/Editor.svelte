@@ -30,7 +30,7 @@
           onclick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           class:border-primary={editor.isActive('heading', { level: 1 })}
           class:text-primary={editor.isActive('heading', { level: 1 })}
-          use:tooltip={[$_('components.editor.title', { values: { number: 1 } })]}
+          title={$_('components.editor.title', { values: { number: 1 } })}
           aria-label={$_('components.editor.title', { values: { number: 1 } })}>
           H1
         </button>
@@ -39,7 +39,7 @@
           onclick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           class:border-primary={editor.isActive('heading', { level: 2 })}
           class:text-primary={editor.isActive('heading', { level: 2 })}
-          use:tooltip={[$_('components.editor.title', { values: { number: 2 } })]}
+          title={$_('components.editor.title', { values: { number: 2 } })}
           aria-label={$_('components.editor.title', { values: { number: 2 } })}>
           H2
         </button>
@@ -48,7 +48,7 @@
           onclick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           class:border-primary={editor.isActive('heading', { level: 3 })}
           class:text-primary={editor.isActive('heading', { level: 3 })}
-          use:tooltip={[$_('components.editor.title', { values: { number: 3 } })]}
+          title={$_('components.editor.title', { values: { number: 3 } })}
           aria-label={$_('components.editor.title', { values: { number: 3 } })}>
           H3
         </button>
@@ -86,7 +86,7 @@
           onclick={() => editor.chain().focus().toggleBold().run()}
           class:border-primary={editor.isActive('bold')}
           class:text-primary={editor.isActive('bold')}
-          use:tooltip={[$_('components.editor.bold')]}
+          title={$_('components.editor.bold')}
           aria-label={$_('components.editor.bold')}>
           <b>B</b>
         </button>
@@ -95,7 +95,7 @@
           onclick={() => editor.chain().focus().toggleItalic().run()}
           class:border-primary={editor.isActive('italic')}
           class:text-primary={editor.isActive('italic')}
-          use:tooltip={[$_('components.editor.italic')]}
+          title={$_('components.editor.italic')}
           aria-label={$_('components.editor.italic')}>
           <i>I</i>
         </button>
@@ -104,7 +104,7 @@
           onclick={() => editor.chain().focus().toggleUnderline().run()}
           class:border-primary={editor.isActive('underline')}
           class:text-primary={editor.isActive('underline')}
-          use:tooltip={[$_('components.editor.underline')]}
+          title={$_('components.editor.underline')}
           aria-label={$_('components.editor.underline')}>
           <u>U</u>
         </button>
@@ -113,7 +113,7 @@
           onclick={() => editor.chain().focus().toggleStrike().run()}
           class:border-primary={editor.isActive('strike')}
           class:text-primary={editor.isActive('strike')}
-          use:tooltip={[$_('components.editor.strike')]}
+          title={$_('components.editor.strike')}
           aria-label={$_('components.editor.strike')}>
           <s>S</s>
         </button>
@@ -124,7 +124,7 @@
           onclick={() => editor.chain().focus().toggleBulletList().run()}
           class:border-primary={editor.isActive('bulletList')}
           class:text-primary={editor.isActive('bulletList')}
-          use:tooltip={[$_('components.editor.bullet-list')]}
+          title={$_('components.editor.bullet-list')}
           aria-label={$_('components.editor.bullet-list')}>
           <i class="fas fa-list"></i>
         </button>
@@ -133,7 +133,7 @@
           onclick={() => editor.chain().focus().toggleOrderedList().run()}
           class:border-primary={editor.isActive('orderedList')}
           class:text-primary={editor.isActive('orderedList')}
-          use:tooltip={[$_('components.editor.ordered-list')]}
+          title={$_('components.editor.ordered-list')}
           aria-label={$_('components.editor.ordered-list')}>
           <i class="fas fa-list-ol"></i>
         </button>
@@ -142,14 +142,14 @@
         <button
           class="btn btn-link btn-sm text-decoration-none"
           onclick={addImage}
-          use:tooltip={[$_('components.editor.image')]}
+          title={$_('components.editor.image')}
           aria-label={$_('components.editor.image')}>
           <i class="fas fa-image"></i>
         </button>
         <button
           class="btn btn-link btn-sm text-decoration-none"
           onclick={setLink}
-          use:tooltip={[$_('components.editor.link')]}
+          title={$_('components.editor.link')}
           aria-label={$_('components.editor.link')}
           class:border-primary={editor.isActive('link')}
           class:text-primary={editor.isActive('link')}>
@@ -158,7 +158,7 @@
         <button
           class="btn btn-link btn-sm text-decoration-none"
           onclick={openColorPicker}
-          use:tooltip={[$_('components.editor.text-color')]}
+          title={$_('components.editor.text-color')}
           aria-label={$_('components.editor.text-color')}>
           <i
             class="fas fa-tint"
@@ -176,7 +176,7 @@
         <button
           class="btn btn-link btn-sm text-decoration-none"
           onclick={() => editor.chain().focus().unsetColor().run()}
-          use:tooltip={[$_('components.editor.remove-text-color')]}
+          title={$_('components.editor.remove-text-color')}
           aria-label={$_('components.editor.remove-text-color')}>
           <i class="fas fa-tint-slash"></i>
         </button>
@@ -240,7 +240,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';

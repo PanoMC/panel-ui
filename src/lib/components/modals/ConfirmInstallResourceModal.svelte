@@ -159,20 +159,14 @@
                   <div class="d-flex align-items-center gap-1">
                     <button
                       class="btn btn-sm btn-link"
-                      use:tooltip={[
-                        $_('pages.settings.updates.changelog'),
-                        { placement: 'bottom' },
-                      ]}
+                      title={$_('pages.settings.updates.changelog')}
                       aria-label={$_('pages.settings.updates.changelog')}
                       on:click={() => showChangelogModal($versionInfoObj.version.changelog)}>
                       <i class="fa-regular fa-file-lines fa-lg"></i>
                     </button>
                     <button
                       class="btn btn-sm btn-link"
-                      use:tooltip={[
-                        $_('pages.settings.updates.copy-hash'),
-                        { placement: 'bottom' },
-                      ]}
+                      title={$_('pages.settings.updates.copy-hash')}
                       aria-label={$_('pages.settings.updates.copy-hash')}
                       on:click={() => copyHash($versionInfoObj.version.hash)}>
                       <i class="fa-solid fa-hashtag fa-lg"></i>

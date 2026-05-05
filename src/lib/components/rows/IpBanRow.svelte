@@ -8,7 +8,7 @@
           aria-expanded="false"
           aria-haspopup="true"
           data-bs-toggle="dropdown"
-          use:tooltip={[$_('components.player-row.actions')]}
+          title={$_('components.player-row.actions')}
           aria-label={$_('components.player-row.actions')}>
           <span class="fas fa-ellipsis-v"></span>
         </button>
@@ -66,7 +66,7 @@
       {#if bannedIp.bannedBy}
         <a
           href="{base}/players/detail/{bannedIp.bannedBy}"
-          use:tooltip={[$_('buttons.view')]}
+          title={$_('buttons.view')}
           class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center">
           <img
             src="/api/profile/picture/{bannedIp.bannedBy}?{$avatarVersion}"

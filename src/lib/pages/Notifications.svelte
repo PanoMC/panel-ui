@@ -6,7 +6,7 @@
       {#if $notifications.length !== 0}
         <button
           type="button"
-          use:tooltip={[ $_('pages.notifications.delete-all') ]}
+          title={$_('pages.notifications.delete-all')}
           aria-label={$_('pages.notifications.delete-all')}
           class="btn btn-link link-danger"
           on:click={() => onDeleteAllClick()}>
@@ -28,7 +28,7 @@
             class:notification-unread={isPanelNotificationUnread(notification)}>
             <button
               type="button"
-              use:tooltip={[$_('buttons.view')]}
+              title={$_('buttons.view')}
               on:click={() => onNotificationClick(notification)}
               class="btn btn-link text-decoration-none flex-grow-1 text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
               <span class="d-flex align-items-center">
@@ -70,7 +70,7 @@
               type="button"
               class="btn-close ms-2"
               aria-label={$_('pages.notifications.delete-notification')}
-              use:tooltip={[$_('pages.notifications.delete-notification'), { placement: 'bottom' }]}
+              title={$_('pages.notifications.delete-notification')}
               on:click={() => onDeleteNotificationClick(notification.id)}>
             </button>
           </div>
@@ -187,8 +187,6 @@
   import * as locales from 'date-fns/locale';
   import { sanitize } from '@jill64/universal-sanitizer';
   import { sanitizeImageSrc } from '$lib/security.util.js';
-
-  import tooltip from '$lib/tooltip.util';
 
   import ConfirmRemoveAllNotificationsModal, {
     show as showDeleteAllNotificationsModal,

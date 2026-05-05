@@ -26,7 +26,7 @@
                 type="button"
                 class="btn-close position-absolute top-50 end-0 translate-middle-y me-2"
                 aria-label={$_('buttons.clear')}
-                use:tooltip={[$_('buttons.clear')]}
+                title={$_('buttons.clear')}
                 on:click={() => query.set('')}>
               </button>
             {/if}
@@ -158,7 +158,6 @@
 
 <script>
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
   import ApiUtil from '$lib/api.util';
   import NoContent from '$lib/components/NoContent.svelte';
   import { avatarVersion } from '$lib/Store';

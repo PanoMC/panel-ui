@@ -43,7 +43,7 @@
                 type="button"
                 class="btn-close"
                 aria-label={$_('buttons.remove')}
-                use:tooltip={[$_('buttons.remove')]}
+                title={$_('buttons.remove')}
                 on:click={() => removePermissionNode(index)}>
               </button>
             </td>
@@ -101,7 +101,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
   import NoContent from '$lib/components/NoContent.svelte';
 
   export let permissions = [];

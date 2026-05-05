@@ -22,7 +22,7 @@
       <button
         class="btn-close position-absolute top-0 end-0 m-2"
         aria-label={$_('buttons.remove')}
-        use:tooltip={[$_('buttons.remove')]}
+        title={$_('buttons.remove')}
         on:click|stopPropagation={removeConfigFile}></button>
     </div>
   {:else}
@@ -54,7 +54,7 @@
           <button
             class="btn-close position-absolute top-0 end-0 m-2"
             aria-label={$_('buttons.remove')}
-            use:tooltip={[$_('buttons.remove')]}
+            title={$_('buttons.remove')}
             on:click|stopPropagation={removeDbFile}></button>
         </div>
       {:else}
@@ -504,7 +504,6 @@
 
 <script>
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   import ApiUtil from '$lib/api.util.js';
   import SearchInput from '$lib/components/SearchInput.svelte';

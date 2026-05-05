@@ -51,7 +51,7 @@
             >{$selectedServer.customName || $selectedServer.name}</span>
           <button
             type="button"
-            use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
+            title={$_('buttons.remove')}
             aria-label={$_('buttons.remove')}
             on:click={() => showRemoveServerModal($selectedServer)}
             class="btn-close">
@@ -111,7 +111,6 @@
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   import PageLoading from '$lib/components/PageLoading.svelte';
   import MakeMainServerModal, {

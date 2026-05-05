@@ -41,7 +41,7 @@
               <button
                 class="btn-close"
                 aria-label={$_('buttons.remove')}
-                use:tooltip={[$_('buttons.remove')]}></button>
+                title={$_('buttons.remove')}></button>
             </div>
             <!-- Add Button -->
             <button class="btn btn-primary btn-sm">{$_('buttons.add')} 1/1 </button>
@@ -147,7 +147,6 @@
 
 <script>
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
 

@@ -96,7 +96,7 @@
                       type="button"
                       class="btn btn-link p-0 d-inline-block mt-2 text-decoration-none"
                       aria-label={$_('buttons.remove')}
-                      use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
+                      title={$_('buttons.remove')}
                       on:click={() => removeKeyWord(index)}>
                       <span class="badge text-bg-primary">
                         {derivative}
@@ -181,7 +181,6 @@
   import { _ } from 'svelte-i18n';
 
   import ApiUtil from '$lib/api.util';
-  import tooltip from '$lib/tooltip.util';
 
   import { show as showToast, limitTitle } from '$lib/components/ToastContainer.svelte';
 

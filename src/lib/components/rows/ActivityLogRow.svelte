@@ -3,7 +3,7 @@
   class="list-group-item list-group-item-action focus-ring"
   class:bg-secondary-subtle={log.selected}
   on:click={onClick}
-  use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}>
+  title={$_('buttons.view')}>
   <span
     class="fw-normal d-block text-truncate markdown-renderer"
     title={stripHtmlTags(translation)}>
@@ -15,7 +15,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
   import { getActivityLogTranslation, stripHtmlTags } from '$lib/activity-log.util.js';
 
   import Date from '$lib/components/Date.svelte';

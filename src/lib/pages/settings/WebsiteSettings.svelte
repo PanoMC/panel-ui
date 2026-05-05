@@ -170,7 +170,7 @@
             <button
               type="button"
               class="btn btn-link btn-sm"
-              use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
+              title={$_('buttons.remove')}
               on:click={() => removeKeyWord(index)}>
               {keyword}
             </button>
@@ -209,7 +209,7 @@
             type="button"
             class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
             on:click={() => faviconZone.click()}
-            use:tooltip={[$_('buttons.change'), { placement: 'bottom' }]}
+            title={$_('buttons.change')}
             aria-label={$_('buttons.change')}>
             <i class="fas fa-pen"></i>
           </button>
@@ -245,7 +245,7 @@
             type="button"
             class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
             on:click={() => logoZone.click()}
-            use:tooltip={[$_('buttons.change'), { placement: 'bottom' }]}
+            title={$_('buttons.change')}
             aria-label={$_('buttons.change')}>
             <i class="fas fa-pencil"></i>
           </button>

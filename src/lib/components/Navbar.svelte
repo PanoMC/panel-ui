@@ -15,7 +15,6 @@
           type="button"
           aria-label={$_('components.navbar.show-menu')}
           title={windowWidth < 992 ? $_('components.navbar.show-menu') : null}
-          use:tooltip={windowWidth >= 992 ? [$_('components.navbar.show-menu'), { placement: 'bottom' }] : null}
           on:click={onSideBarCollapseClick}
           data-bs-toggle={windowWidth < 992 ? 'offcanvas' : undefined}
           data-bs-target={windowWidth < 992 ? '#sidebar' : undefined}
@@ -30,9 +29,9 @@
               href={UI_URL}
               target="_blank"
               class="nav-link d-flex align-items-center px-2"
-              use:tooltip={windowWidth > 0 && windowWidth < 992
-                ? [$_('components.sidebar.show-website'), { placement: 'bottom' }]
-                : null}>
+              title={windowWidth > 0 && windowWidth < 992
+                ? $_('components.sidebar.show-website')
+                : undefined}>
               <i class="fas fa-globe d-lg-none"></i>
               <span class="d-none d-lg-inline"
                 >{$_('components.sidebar.show-website')}</span>
@@ -47,14 +46,11 @@
                 type="button"
                 class="btn btn-sm btn-link nav-link d-flex align-items-center border-0 px-2"
                 on:click={showServersModal}
-                use:tooltip={[
-                  $selectedServer
-                    ? $_('components.navbar.selected-server')
-                    : windowWidth >= 992
-                      ? $_('components.server-navigation-menu.select-server')
-                      : $_('components.server-navigation-menu.no-selected-server'),
-                  { placement: 'bottom' },
-                ]}>
+                title={$selectedServer
+                  ? $_('components.navbar.selected-server')
+                  : windowWidth >= 992
+                    ? $_('components.server-navigation-menu.select-server')
+                    : $_('components.server-navigation-menu.no-selected-server')}>
                 {#if $selectedServer}
                   <i
                     class="fas fa-check-circle me-2 d-none"
@@ -88,10 +84,7 @@
                 data-bs-toggle="modal"
                 aria-label={$_('components.server-navigation-menu.connect-server')}
                 type="button"
-                use:tooltip={[
-                  $_('components.server-navigation-menu.connect-server'),
-                  { placement: 'bottom' },
-                ]}>
+                title={$_('components.server-navigation-menu.connect-server')}>
                 <i class="fa-solid fa-plus"></i>
               </button>
             </div>
@@ -116,7 +109,7 @@
             data-bs-toggle="dropdown"
             type="button"
             aria-label={$_('components.navbar.notifications')}
-            use:tooltip={[$_('components.navbar.notifications'), { placement: 'bottom' }]}>
+            title={$_('components.navbar.notifications')}>
             <i class="fa-regular fa-bolt"></i>
             {#if $notificationCount !== 0}
               <span
@@ -142,7 +135,7 @@
                     class:notification-unread={isPanelNotificationUnread(notification)}>
                     <button
                       type="button"
-                      use:tooltip={[$_('buttons.view'), { placement: 'bottom' }]}
+                      title={$_('buttons.view')}
                       on:click={() => onNotificationClick(notification)}
                       class="text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
                       <div class="d-flex align-items-center">
@@ -232,10 +225,7 @@
             class="nav-link h-100 d-flex align-items-center"
             data-bs-toggle="dropdown"
             aria-label={$_('components.navbar.account-dropdown.session')}
-            use:tooltip={[
-              $_('components.navbar.account-dropdown.session'),
-              { placement: 'bottom' },
-            ]}>
+            title={$_('components.navbar.account-dropdown.session')}>
             <img
               src="/api/profile/picture/{$user.username}?{$avatarVersion}"
               width="20"
@@ -264,7 +254,6 @@
 <script>
   import { onDestroy, onMount, getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   import { formatDistanceToNow } from 'date-fns';
   import * as locales from 'date-fns/locale';

@@ -21,7 +21,7 @@
     <a
       {href}
       {target}
-      use:tooltip={[tooltipText]}
+      title={tooltipText}
       class="focus-ring d-block {anchorClass}">
       <div class="ratio ratio-16x9 thumbnail-frame bg-primary-subtle">
         <img
@@ -41,7 +41,6 @@
 </div>
 
 <script>
-  import tooltip from '$lib/tooltip.util.js';
   import { _ } from 'svelte-i18n';
 
   export let src = null;

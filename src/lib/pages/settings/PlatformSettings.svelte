@@ -55,7 +55,7 @@
   <div class="hstack gap-2" slot="right">
     <button
       class="btn btn-link link-danger"
-      use:tooltip={[$_('buttons.stop'), { placement: 'bottom' }]}
+      title={$_('buttons.stop')}
       aria-label={$_('buttons.stop')}
       data-bs-target={$_('buttons.stop')}
       on:click={onStopPanoClick}>
@@ -98,7 +98,7 @@
             <button
               type="button"
               class="btn-close"
-              use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
+              title={$_('buttons.remove')}
               aria-label={$_('buttons.remove')}
               on:click={onDisconnectClick}
               disabled={disconnecting}></button>
@@ -545,7 +545,6 @@
 <script>
   import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   import { page } from '$app/stores';
   import { goto, invalidateAll } from '$app/navigation';

@@ -24,7 +24,7 @@
         {#if checkedItems.length > 0}
           <div class:d-none={firstLoad} class="hstack gap-2">
             <button
-              use:tooltip={[$_('buttons.delete'), { placement: 'bottom' }]}
+              title={$_('buttons.delete')}
               aria-label={$_('buttons.delete')}
               class="btn btn-link"
               class:disabled={getListOfChecked($checkedList).length === 0}

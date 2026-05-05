@@ -12,7 +12,7 @@
       class="btn btn-link"
       type="button"
       onclick={onRemoveClick}
-      use:tooltip={[$_('buttons.remove'), { placement: 'bottom' }]}
+      title={$_('buttons.remove')}
       class:disabled={removing}>
       <i class="fas fa-trash"></i>
     </button>
@@ -22,7 +22,7 @@
       href={`${PANO_WEBSITE_URL}/themes/${theme.id}`}
       target="_blank"
       class="btn btn-link"
-      use:tooltip={[$_('buttons.show-in-store'), { placement: 'bottom' }]}
+      title={$_('buttons.show-in-store')}
       aria-label={$_('buttons.show-in-store')}>
       <i class="fas fa-store"></i>
     </a>
@@ -31,10 +31,7 @@
     <button
       type="button"
       class="btn btn-link position-relative"
-      use:tooltip={[
-        $_('pages.themes.update-available') + ' (v' + theme.updateVersion + ')',
-        { placement: 'bottom' },
-      ]}
+      title={$_('pages.themes.update-available') + ' (v' + theme.updateVersion + ')'}
       aria-label={$_('pages.themes.update-available')}
       onclick={() => goto(`${base}/settings/updates`)}>
       <i class="fas fa-sync"></i>

@@ -184,7 +184,6 @@
           class="navbar-toggler d-block position-absolute start-0 ms-2"
           aria-label={$_('components.sidebar.hide-menu')}
           title={windowWidth < 992 ? $_('components.sidebar.hide-menu') : null}
-          use:tooltip={windowWidth >= 992 ? [$_('components.sidebar.hide-menu')] : null}
           on:click={onMobileSideBarCollapseClick}
           data-bs-dismiss={windowWidth < 992 ? 'offcanvas' : undefined}>
           <i class="fa-solid fa-bars"></i>
@@ -225,7 +224,7 @@
           <button
             class="nav-link p-1 text-center"
             aria-label={$_('components.sidebar.website')}
-            use:tooltip={[$_('components.sidebar.website'), { placement: 'bottom' }]}
+            title={$_('components.sidebar.website')}
             on:click={onWebsiteMenuClick}
             class:active={$sidebarTabsState === 'website'}>
             <i class="fas fa-globe"></i>
@@ -236,7 +235,7 @@
             <button
               class="nav-link p-1 text-center"
               aria-label={$_('components.sidebar.server')}
-              use:tooltip={[$_('components.sidebar.server'), { placement: 'bottom' }]}
+              title={$_('components.sidebar.server')}
               on:click={onGameMenuClick}
               class:active={$sidebarTabsState === 'game'}>
               <i class="fas fa-cube"></i>

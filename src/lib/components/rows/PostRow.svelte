@@ -7,7 +7,7 @@
         type="button"
         class="btn btn-link"
         data-bs-toggle="dropdown"
-        use:tooltip={[$_('components.post-row.actions')]}
+        title={$_('components.post-row.actions')}
         aria-label={$_('components.post-row.actions')}>
         <span class="fas fa-ellipsis-v"></span>
       </button>
@@ -16,7 +16,7 @@
           class="dropdown-item"
           target="_blank"
           href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{post.id}"
-          use:tooltip={[$_('buttons.view')]}>
+          title={$_('buttons.view')}>
           <i class="fas fa-eye me-2"></i>
           {$_('buttons.view')}
         </a>
@@ -72,7 +72,6 @@
   <td class="align-middle" style="max-width: 300px;">
     <a
       href={base + '/posts/detail/' + post.id}
-      use:tooltip={[$_('buttons.edit')]}
       title={post.title}
       class="rounded focus-ring text-decoration-none d-block text-truncate">
       {post.title}
@@ -97,7 +96,7 @@
     <a
       href="{base}/players/detail/{post.writer.username}"
       class="d-inline-block focus-ring rounded-circle"
-      use:tooltip={[post.writer.username, { placement: 'bottom' }]}>
+      title={post.writer.username}>
       <img
         alt={post.writer.username}
         class="rounded-circle"
@@ -128,7 +127,6 @@
   import CategoryBadge from '$lib/components/badges/CategoryBadge.svelte';
   import Hook from '$lib/components/Hook.svelte';
   import TableThumbnail from '$lib/components/rows/TableThumbnail.svelte';
-  import tooltip from '$lib/tooltip.util.js';
   import { UI_URL } from '$lib/variables.js';
 
   import { PageTypes } from '$lib/pages/Posts.svelte';

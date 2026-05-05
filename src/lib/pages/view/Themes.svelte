@@ -40,7 +40,7 @@
 {#snippet right()}
   <button
     type="button"
-    use:tooltip={[$_('buttons.reload')]}
+    title={$_('buttons.reload')}
     aria-label={$_('buttons.reload')}
     class="btn btn-link"
     class:active={reloading}
@@ -120,10 +120,7 @@
                 <button
                   type="button"
                   class="position-absolute top-0 end-0 m-3 btn btn-sm btn-primary rounded-circle shadow-sm"
-                  use:tooltip={[
-                    $_('pages.themes.update-available') + ' (v' + theme.updateVersion + ')',
-                    { placement: 'bottom' },
-                  ]}
+                  title={$_('pages.themes.update-available') + ' (v' + theme.updateVersion + ')'}
                   aria-label={$_('pages.themes.update-available')}
                   onclick={(e) => {
                     e.preventDefault();

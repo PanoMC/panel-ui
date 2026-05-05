@@ -43,7 +43,7 @@
               <td class="align-middle text-end">
                 <button
                   class="btn btn-link text-danger"
-                  use:tooltip={[$_('buttons.logout')]}
+                  title={$_('buttons.logout')}
                   aria-label={$_('buttons.logout')}
                   onclick={() => logoutSession(session.id, session.isCurrent)}
                   disabled={loadingSessionId === session.id}>

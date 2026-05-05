@@ -4,7 +4,7 @@
       <button
         type="button"
         class="page-link"
-        use:tooltip={[$_('components.pagination.previous-page')]}
+        title={$_('components.pagination.previous-page')}
         aria-label={$_('components.pagination.previous-page')}
         onclick={onFirstPageClick}
         aria-hidden={parseInt(page) === 1}>
@@ -37,7 +37,7 @@
       <button
         type="button"
         class="page-link"
-        use:tooltip={[$_('components.pagination.next-page')]}
+        title={$_('components.pagination.next-page')}
         aria-label={$_('components.pagination.next-page')}
         onclick={onLastPageClick}
         aria-hidden={parseInt(page) === totalPage}>
@@ -51,7 +51,6 @@
 
 <script>
   import { createEventDispatcher } from 'svelte';
-  import tooltip from '$lib/tooltip.util';
   import { _ } from 'svelte-i18n';
   import JumpToPageModal, { show as showJumpModal } from './modals/JumpToPageModal.svelte';
 
