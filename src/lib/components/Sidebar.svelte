@@ -130,6 +130,63 @@
   .navbar-toggler:hover i {
     transform: translateX(-2px);
   }
+
+  /* Desktop: collapse in-flow — keep .offcanvas-lg so base .offcanvas never applies fixed overlay */
+  @media (min-width: 992px) {
+    #sidebar {
+      transition:
+        flex 0.3s ease-in-out,
+        width 0.3s ease-in-out,
+        min-width 0.3s ease-in-out,
+        max-width 0.3s ease-in-out,
+        opacity 0.28s ease-in-out,
+        padding 0.3s ease-in-out,
+        margin 0.3s ease-in-out,
+        border-radius 0.3s ease-in-out,
+        visibility 0s linear;
+    }
+
+    /* Expanding: show immediately so width/opacity animate in */
+    #sidebar:not(.sidebar-desktop-collapsed) {
+      visibility: visible !important;
+      transition:
+        flex 0.3s ease-in-out,
+        width 0.3s ease-in-out,
+        min-width 0.3s ease-in-out,
+        max-width 0.3s ease-in-out,
+        opacity 0.28s ease-in-out,
+        padding 0.3s ease-in-out,
+        margin 0.3s ease-in-out,
+        border-radius 0.3s ease-in-out,
+        visibility 0s linear 0s;
+    }
+
+    /* Collapsing: defer visibility until shrink finishes (!important beats main.scss .offcanvas-lg) */
+    #sidebar.sidebar-desktop-collapsed {
+      flex: 0 0 0 !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      overflow: hidden !important;
+      opacity: 0;
+      pointer-events: none;
+      border: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      visibility: hidden !important;
+      border-radius: 0 !important;
+      transition:
+        flex 0.3s ease-in-out,
+        width 0.3s ease-in-out,
+        min-width 0.3s ease-in-out,
+        max-width 0.3s ease-in-out,
+        opacity 0.25s ease-in-out,
+        padding 0.3s ease-in-out,
+        margin 0.3s ease-in-out,
+        border-radius 0.3s ease-in-out,
+        visibility 0s linear 0.3s;
+    }
+  }
 </style>
 
 {#if hasPermission(Permissions.MANAGE_SERVERS)}
@@ -138,10 +195,13 @@
 {/if}
 
 <div
-  class="offcanvas offcanvas-start bg-primary h-100 overflow-hidden"
+  class="offcanvas offcanvas-start offcanvas-lg bg-primary h-100 overflow-hidden"
   tabindex="-1"
   id="sidebar"
-  aria-labelledby="sidebarLabel" data-bs-scroll="true" data-bs-backdrop="true" class:offcanvas-lg={$isSidebarOpen}>
+  aria-labelledby="sidebarLabel"
+  data-bs-scroll="true"
+  data-bs-backdrop="true"
+  class:sidebar-desktop-collapsed={!$isSidebarOpen}>
   <div class="offcanvas-body d-flex flex-column p-0 overflow-hidden h-100">
     <!-- Fixed Header Area -->
     <div class="sidebar-header-container p-2 flex-shrink-0">
@@ -159,7 +219,7 @@
           title={windowWidth < 992 ? $_('components.sidebar.hide-menu') : null}
           use:tooltip={windowWidth >= 992 ? [$_('components.sidebar.hide-menu')] : null}
           on:click={onMobileSideBarCollapseClick}
-          data-bs-dismiss="offcanvas">
+          data-bs-dismiss={windowWidth < 992 ? 'offcanvas' : undefined}>
           <i class="fa-solid fa-bars"></i>
         </button>
 

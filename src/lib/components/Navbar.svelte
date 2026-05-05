@@ -17,8 +17,8 @@
           title={windowWidth < 992 ? $_('components.navbar.show-menu') : null}
           use:tooltip={windowWidth >= 992 ? [$_('components.navbar.show-menu'), { placement: 'bottom' }] : null}
           on:click={onSideBarCollapseClick}
-          data-bs-toggle="offcanvas"
-          data-bs-target="#sidebar"
+          data-bs-toggle={windowWidth < 992 ? 'offcanvas' : undefined}
+          data-bs-target={windowWidth < 992 ? '#sidebar' : undefined}
           aria-controls="sidebar">
           <i class="fa-solid fa-bars"></i>
         </button>
