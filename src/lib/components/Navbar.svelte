@@ -198,7 +198,7 @@
               data-bs-toggle="dropdown"
               type="button"
               aria-label={$_('components.navbar.panel-theme')}
-              use:tooltip={[$_('components.navbar.panel-theme'), { placement: 'bottom' }]}>
+              title={$_('components.navbar.panel-theme')}>
               <i class="fa-solid fa-palette"></i>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
