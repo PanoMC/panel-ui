@@ -10,14 +10,14 @@
   tabindex="-1">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
-      <div class="modal-header">
-        <div class="row w-100 align-items-center g-0">
-          <div class="col-4 d-flex flex-wrap align-items-center gap-2">
-            <h5 class="modal-title mb-0">
+      <div class="modal-header flex-column align-items-stretch gap-3">
+        <div class="d-flex w-100 align-items-start justify-content-between gap-2">
+          <div class="d-flex flex-wrap align-items-center gap-2 min-w-0">
+            <h5 class="modal-title mb-0 text-break">
               {$_('components.modals.servers.servers')}
             </h5>
             <button
-              class="btn btn-sm btn-primary"
+              class="btn btn-sm btn-primary flex-shrink-0"
               on:click={openConnectServer}
               type="button"
               aria-label={$_('components.modals.servers.connect-server-button')}>
@@ -25,29 +25,27 @@
               {$_('components.modals.servers.connect-server-button')}
             </button>
           </div>
-          <div class="col-4">
-            {#if !$loading && $otherServers.length > 0}
-              <SearchInput
-                inputId={SERVERS_MODAL_SEARCH_INPUT_ID}
-                placeholderKey="components.modals.servers.search-placeholder"
-                initialValue={$searchTerm}
-                onchange={(v) => searchTerm.set(v)} />
-            {/if}
-          </div>
-          <div class="col-4 d-flex justify-content-end">
-            <button
-              aria-label={$_('buttons.close')}
-              class="btn-close"
-              on:click={hide}
-              type="button">
-            </button>
-          </div>
+          <button
+            aria-label={$_('buttons.close')}
+            class="btn-close flex-shrink-0 mt-1"
+            on:click={hide}
+            type="button">
+          </button>
         </div>
+        {#if !$loading && $otherServers.length > 0}
+          <div class="w-100">
+            <SearchInput
+              inputId={SERVERS_MODAL_SEARCH_INPUT_ID}
+              placeholderKey="components.modals.servers.search-placeholder"
+              initialValue={$searchTerm}
+              onchange={(v) => searchTerm.set(v)} />
+          </div>
+        {/if}
       </div>
 
       <div class="modal-body">
         {#if $loading}
-          <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
             {#each Array(4) as _, i}
               <div class="col">
                 <div class="card h-100">
@@ -71,7 +69,7 @@
         {:else}
           <div class="d-flex flex-column gap-3">
             {#if $pinnedServers.length > 0}
-              <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
                 {#each $pinnedServers as server (server.id)}
                   <ServersModalServerCard
                     {server}
@@ -98,7 +96,7 @@
               {/if}
 
               {#if filteredOtherServers.length > 0}
-                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
                   {#each filteredOtherServers as server (server.id)}
                     <ServersModalServerCard
                       {server}

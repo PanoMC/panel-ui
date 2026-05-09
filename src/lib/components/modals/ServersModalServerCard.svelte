@@ -42,7 +42,7 @@
       </div>
     {/if}
 
-    <div class="card-body d-flex flex-column align-items-center text-center p-3">
+    <div class="card-body d-flex flex-column flex-grow-1 align-items-center text-center p-3 min-w-0">
       <img
         src={sanitizeImageSrc(
           server.favicon ? server.favicon : base + '/assets/img/server-icon.png',
@@ -53,16 +53,16 @@
         width="32"
         alt={server.customName || server.name} />
 
-      <div class="fw-bold text-truncate w-100 mb-1 server-name">
+      <div class="fw-bold text-break w-100 mb-1 px-1 server-name">
         {server.customName || server.name}
       </div>
 
-      <div class="small text-truncate w-100 mb-1 server-ip">
+      <div class="small w-100 mb-1 px-1 server-ip text-break">
         <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
         <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <code
-          class="user-select-all cursor-pointer"
+          class="user-select-all cursor-pointer text-break d-inline-block"
           on:click|stopPropagation={onCodeClick}
           on:keydown|stopPropagation={(e) => e.key === 'Enter' && onCodeClick(e)}
           tabindex="0"
@@ -131,13 +131,8 @@
   .server-card {
     transition: all 0.2s ease-in-out;
     cursor: pointer;
-    overflow: hidden;
-  }
-
-  @media (min-width: 576px) {
-    .server-card {
-      aspect-ratio: 1 / 1;
-    }
+    overflow-x: clip;
+    overflow-y: visible;
   }
 
   :global(.server-card .card-body) {
@@ -145,7 +140,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    min-height: 0;
     padding: 1rem;
   }
 
@@ -159,11 +154,6 @@
     transform: translateY(-2px);
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     border-color: var(--bs-primary);
-  }
-
-  .server-card :global(.text-truncate) {
-    max-width: 100%;
-    white-space: nowrap;
   }
 
   .server-card .server-ip {

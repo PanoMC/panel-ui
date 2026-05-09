@@ -9,7 +9,9 @@
           ? 'col-lg-6'
           : 'col-12'} d-flex {$$slots.right && showRight && !$$slots.middle
         ? 'justify-content-lg-between'
-        : 'justify-content-lg-start'} justify-content-center text-center text-lg-start text-truncate text-nowrap {leftClasses}">
+        : 'justify-content-lg-start'} justify-content-center text-center text-lg-start min-w-0 {truncateLeftSlot
+        ? 'text-truncate text-nowrap'
+        : 'text-wrap'} {leftClasses}">
       <slot name="left" />
     </div>
     {#if $$slots.middle}
@@ -30,6 +32,8 @@
 </div>
 
 <script>
+  /** When false, the left slot can wrap (e.g. narrow cards / long titles). */
+  export let truncateLeftSlot = true;
   export let leftClasses = '';
   export let rightClasses = '';
   export let middleClasses = '';
