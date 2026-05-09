@@ -32,7 +32,7 @@ jobs:
       - name: Dry run to get next release version
         id: get-next-version
         run: |
-          export NEXT_TAG_VERSION=$(npx semantic-release --dry-run --force | grep 'next release version is ' | awk -F"next release version is " '{print $2}')
+          export NEXT_TAG_VERSION=$(npx semantic-release@25.0.3 --dry-run --force | grep 'next release version is ' | awk -F"next release version is " '{print $2}')
           echo "new_tag_version=${NEXT_TAG_VERSION}" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
@@ -97,4 +97,4 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-        run: npx semantic-release --force
+        run: npx semantic-release@25.0.3 --force
