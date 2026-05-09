@@ -324,76 +324,77 @@
     </div>
 
     <!-- Pano Platform Info Card -->
-    <div class="ratio ratio-1x1">
-      <div class="card mb-3">
-        <CardHeader>
-          <svelte:fragment slot="left">{$_('pages.settings.about.info')}</svelte:fragment>
-          <svelte:fragment slot="right">
-            <ViewAllLink href="{base}/settings/about" />
-          </svelte:fragment>
-        </CardHeader>
+    {#if hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS)}
+      <div class="ratio ratio-1x1">
+        <div class="card mb-3">
+          <CardHeader>
+            <svelte:fragment slot="left">{$_('pages.settings.about.info')}</svelte:fragment>
+            <svelte:fragment slot="right">
+              <ViewAllLink href="{base}/settings/about" />
+            </svelte:fragment>
+          </CardHeader>
 
-        <div class="card-body overflow-auto">
-          <form>
-            <div class="row">
-              <label class="col-6 col-form-label" for="panoVersion">
-                {$_('pages.settings.about.version')}
-              </label>
-              <div class="col-6 col-form-label">
-                <span
-                  class="user-select-all font-monospace"
-                  aria-describedby="panoVersion"
-                  id="panoVersion">{data.about?.platformVersion || '-'}</span>
+          <div class="card-body overflow-auto">
+            <form>
+              <div class="row">
+                <label class="col-6 col-form-label" for="panoVersion">
+                  {$_('pages.settings.about.version')}
+                </label>
+                <div class="col-6 col-form-label">
+                  <span
+                    class="user-select-all font-monospace"
+                    aria-describedby="panoVersion"
+                    id="panoVersion">{data.about?.platformVersion || '-'}</span>
+                </div>
               </div>
-            </div>
-            <div class="row">
-              <label class="col-6 col-form-label" for="panoRelease">
-                {$_('pages.settings.about.release')}
-              </label>
-              <div class="col-6 col-form-label">
-                <span aria-describedby="panoRelease" id="panoRelease"
-                  >{data.about?.platformStage || '-'}</span>
+              <div class="row">
+                <label class="col-6 col-form-label" for="panoRelease">
+                  {$_('pages.settings.about.release')}
+                </label>
+                <div class="col-6 col-form-label">
+                  <span aria-describedby="panoRelease" id="panoRelease"
+                    >{data.about?.platformStage || '-'}</span>
+                </div>
               </div>
-            </div>
-            <div class="row mb-0">
-              <label class="col-6 col-form-label" for="panoWebsite">
-                {$_('pages.settings.about.website')}
-              </label>
-              <div class="col-6 col-form-label">
-                <a
-                  class="btn btn-sm btn-link px-0"
-                  aria-describedby="panoWebsite"
-                  aria-label={$_('pages.settings.about.website')}
-                  href={PANO_WEBSITE_URL}
-                  id="panoWebsite"
-                  title={$_('pages.settings.about.website')}
-                  target="_blank">
-                  <i class="fa-solid fa-up-right-from-square"></i>
-                </a>
+              <div class="row mb-0">
+                <label class="col-6 col-form-label" for="panoWebsite">
+                  {$_('pages.settings.about.website')}
+                </label>
+                <div class="col-6 col-form-label">
+                  <a
+                    class="btn btn-sm btn-link px-0"
+                    aria-describedby="panoWebsite"
+                    aria-label={$_('pages.settings.about.website')}
+                    href={PANO_WEBSITE_URL}
+                    id="panoWebsite"
+                    title={$_('pages.settings.about.website')}
+                    target="_blank">
+                    <i class="fa-solid fa-up-right-from-square"></i>
+                  </a>
+                </div>
               </div>
-            </div>
-            <div class="row mb-0">
-              <label class="col-6 col-form-label" for="panoDiscord">
-                {$_('pages.settings.about.discord')}
-              </label>
-              <div class="col-6 col-form-label">
-                <a
-                  class="btn btn-sm btn-link px-0 text-decoration-none"
-                  aria-describedby="panoWebsite"
-                  aria-label="Discord"
-                  href="{PANO_WEBSITE_URL}/discord"
-                  id="panoWebsite"
-                  title="Discord"
-                  target="_blank">
-                  <i class="fab fa-discord fa-lg"></i>
-                </a>
+              <div class="row mb-0">
+                <label class="col-6 col-form-label" for="panoDiscord">
+                  {$_('pages.settings.about.discord')}
+                </label>
+                <div class="col-6 col-form-label">
+                  <a
+                    class="btn btn-sm btn-link px-0 text-decoration-none"
+                    aria-describedby="panoWebsite"
+                    aria-label="Discord"
+                    href="{PANO_WEBSITE_URL}/discord"
+                    id="panoWebsite"
+                    title="Discord"
+                    target="_blank">
+                    <i class="fab fa-discord fa-lg"></i>
+                  </a>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-
+    {/if}
 
   </masonry-layout>
 </div>
@@ -402,13 +403,17 @@
 
 <script context="module">
   import ApiUtil from '$lib/api.util.js';
+  import { hasPermission, Permissions } from '$lib/auth.util';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
     const { parent } = event;
-    await parent();
+    const layoutData = await parent();
+    const canFetchAbout =
+      layoutData?.user &&
+      hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS, layoutData.user);
 
     const [dashboardResult, activityLogsResult, aboutResult] = await Promise.all([
       ApiUtil.get({
@@ -419,10 +424,12 @@
         path: `/api/panel/logs/activity`,
         request: event,
       }).catch(() => null),
-      ApiUtil.get({
-        path: `/api/panel/settings?type=ABOUT`,
-        request: event,
-      }).catch(() => null),
+      canFetchAbout
+        ? ApiUtil.get({
+            path: `/api/panel/settings?type=ABOUT`,
+            request: event,
+          }).catch(() => null)
+        : Promise.resolve(null),
     ]);
 
     const dashboard = dashboardResult?.result === 'ok' ? dashboardResult : {};
@@ -443,8 +450,6 @@
   import { writable } from 'svelte/store';
 
   import { base } from '$app/paths';
-
-  import { hasPermission, Permissions } from '$lib/auth.util';
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 

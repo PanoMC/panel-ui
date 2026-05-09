@@ -40,6 +40,11 @@
   .connect-account-board.interactive {
     cursor: pointer;
   }
+
+  .connect-account-board:not(.interactive) .connect-prompt {
+    cursor: not-allowed;
+    user-select: none;
+  }
 </style>
 
 <div class="w-100 flex-grow-1 d-flex flex-column">
@@ -102,9 +107,12 @@
   <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
   <div
     class="alert alert-secondary connect-account-board border mb-0 focus-ring"
-    class:interactive={!connecting}
+    class:interactive={canConnectPanoAccount && !connecting}
+    class:opacity-75={!canConnectPanoAccount}
+    class:pe-none={!canConnectPanoAccount}
     role="alert"
-    on:click={!connecting ? onConnectClick : null}
+    aria-disabled={!canConnectPanoAccount}
+    on:click={canConnectPanoAccount && !connecting ? onConnectClick : null}
     style="background-image: var(--welcome-gradient), url('{base}/assets/img/connect-pano-bg.png');">
     <div class="row align-items-center">
       <div class="col-lg-9">
@@ -117,7 +125,9 @@
         </p>
       </div>
       <div class="col-lg-3 text-lg-end mt-3 mt-lg-0">
-        <div class="alert-link rounded border-0 bg-transparent p-0">
+        <div
+          class="connect-prompt alert-link rounded border-0 bg-transparent p-0"
+          class:text-body-secondary={!canConnectPanoAccount}>
           {connecting ? $_('buttons.connecting') : $_('buttons.connect')}
 
           {#if connecting}
@@ -209,6 +219,8 @@
 
   import PageActions from '$lib/components/PageActions.svelte';
 
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
+
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import { browser } from '$app/environment';
@@ -241,12 +253,15 @@
 
   const showSplash = getContext('showSplash');
   const panelTheme = getContext('panelTheme');
+  const user = getContext('user');
 
   let versionInfo;
   let connecting;
   let storeLoading;
   let modalOpen = false;
   let versionNotFound = false;
+
+  $: canConnectPanoAccount = hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS, $user);
 
   function effectivePageTypeForStore() {
     const vt = versionInfo?.version?.type;
@@ -408,6 +423,10 @@
   })();
 
   function onConnectClick() {
+    if (!canConnectPanoAccount) {
+      return;
+    }
+
     connecting = true;
 
     ApiUtil.post({

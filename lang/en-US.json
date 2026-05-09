@@ -1448,6 +1448,13 @@
         "states": {
           "no-node-selected": "No node selected."
         },
+        "node-already-on-holder": "This permission is already assigned for this holder.",
+        "user-already-has-direct-banner": "This user already has this permission directly from their permission rows.",
+        "user-already-has-indirect-banner": "This user already has this permission indirectly (inherited via groups).",
+        "user-already-has-both-banner": "This user already has this permission directly on their rows and indirectly via inherited groups.",
+        "user-already-has-direct-tooltip": "This user already has this permission directly",
+        "user-already-has-indirect-tooltip": "This user already has this permission indirectly (via inherited groups)",
+        "user-already-has-both-tooltip": "Direct and indirect: this user already has this permission via their rows and via inherited groups",
         "form": {
           "node": "Node",
           "node-placeholder": "e.g. group.admin or prefix.80.&d[MOD]",

@@ -235,11 +235,13 @@
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <h6 class="dropdown-header">{$user.username}</h6>
-            <li>
-              <a class="dropdown-item focus-ring" href="{base}/players/detail/{$user.username}">
-                {$_('components.navbar.account-dropdown.profile')}
-              </a>
-            </li>
+            {#if hasPermission(Permissions.MANAGE_PLAYERS, $user)}
+              <li>
+                <a class="dropdown-item focus-ring" href="{base}/players/detail/{$user.username}">
+                  {$_('components.navbar.account-dropdown.profile')}
+                </a>
+              </li>
+            {/if}
             <li class="dropdown-item bg-transparent">
               <button class="btn btn-sm btn-danger w-100" on:click={onLogout}>
                 {$_('components.navbar.account-dropdown.logout')}</button>

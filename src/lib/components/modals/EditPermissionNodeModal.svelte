@@ -48,6 +48,22 @@
             <label class="form-label" for="nodeValue"
               >{$_('components.modals.edit-permission-node.form.node')}</label>
 
+            {#if showDuplicateRowBanner && draftTrim}
+              <div
+                class="d-flex align-items-center gap-1 small text-success mb-2 user-select-none"
+                role="status">
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                <span>{$_('components.modals.edit-permission-node.node-already-on-holder')}</span>
+              </div>
+            {:else if $evaluationUserId != null && userEffectiveBannerInsight && draftTrim}
+              <div
+                class="d-flex align-items-center gap-1 small text-success mb-2 user-select-none"
+                role="status">
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                <span>{effectiveBannerLabel(userEffectiveBannerInsight)}</span>
+              </div>
+            {/if}
+
             <div class="position-relative">
                 <input
                   id="nodeValue"
@@ -112,6 +128,14 @@
                           <p class="fw-bold text-truncate mb-0">
                             <i class="fa {p.icon || 'fa-key'} me-2 opacity-75"></i>
                             {p.title}
+                            {#if showSuggestionTickForNode(p.node, permEvalCtx)}
+                              <span
+                                class="ms-2 text-success d-inline-flex align-items-center align-middle"
+                                aria-hidden="true"
+                                title={suggestionTickTitleForNode(p.node, permEvalCtx)}>
+                                <i class="fa-solid fa-check small"></i>
+                              </span>
+                            {/if}
                             {#if p.type === 'plugin'}
                               <span class="badge text-bg-secondary ms-2 small" style="font-size: 0.7em;">
                                 {p.pluginTitle !== `plugins.${p.pluginId}.title` ? p.pluginTitle : p.pluginId}
@@ -246,7 +270,7 @@
             type="button"
             class="btn btn-secondary w-100"
             on:click={handleSave}
-            disabled={!$node || !$draft.nodeValue.trim()}>
+            disabled={!$node || !$draft.nodeValue.trim() || duplicateBlocksSave}>
             {$_('buttons.add')}
           </button>
         {:else}
@@ -254,7 +278,7 @@
             type="button"
             class="btn btn-primary w-100"
             on:click={handleSave}
-            disabled={!$node || !$draft.nodeValue.trim()}>
+            disabled={!$node || !$draft.nodeValue.trim() || duplicateBlocksSave}>
             {$_('buttons.save')}
           </button>
         {/if}
@@ -269,6 +293,12 @@
   const modalElement = writable();
   const node = writable(null);
   const permissionGroups = writable([]);
+  /** Other permission rows for same holder (group/user), used to hint duplicates while searching. */
+  const siblingNodes = writable([]);
+  /** Full LuckPerms-style graph for transitive group checks when holder is USER. */
+  const evaluationNodes = writable([]);
+  /** Panel user id (holderId) — when set, ticks/banner reflect direct + inherited perms for this user. */
+  const evaluationUserId = writable(null);
   const registeredPermissions = writable({});
   const draft = writable({
     nodeValue: '',
@@ -290,6 +320,11 @@
     const n = payload?.node ?? payload ?? null;
     node.set(n);
     permissionGroups.set(payload?.permissionGroups ?? []);
+    siblingNodes.set(payload?.siblingNodes ?? []);
+    evaluationNodes.set(payload?.evaluationNodes ?? []);
+    evaluationUserId.set(
+      payload?.evaluationUserId != null ? payload.evaluationUserId : null,
+    );
     isAddMode.set(!!payload?.isAdd);
 
     const toLocalDatetime = (ms) => {
@@ -349,6 +384,134 @@
   import NoContent from '$lib/components/NoContent.svelte';
 
   import { PANO_WEBSITE_URL } from "$lib/variables.js";
+
+  /** LuckPerms graph edges stored as permission-looking nodes — not assignable grants in this UI. */
+  const LP_META_EDGE_PREFIXES = ['group.', 'weight.', 'displayname.'];
+
+  function evalSameHolderId(a, b) {
+    if (a == null || b == null) return false;
+    return String(a) === String(b);
+  }
+
+  function evalAssignableLuckNode(nodeStr) {
+    const s = String(nodeStr || '').trim();
+    if (!s) return false;
+    return !LP_META_EDGE_PREFIXES.some((pre) => s.startsWith(pre));
+  }
+
+  /** Lightweight LP-style implication: equality, trailing .*, or * */
+  function evalNodeImplies(candidateNodeStr, desiredPermTrim) {
+    const c = String(candidateNodeStr || '').trim();
+    const req = String(desiredPermTrim || '').trim();
+    if (!c || !req) return false;
+    if (c === req) return true;
+    if (c === '*') return true;
+    if (c.endsWith('.*')) {
+      const base = c.slice(0, -2);
+      return req === base || req.startsWith(`${base}.`);
+    }
+    return false;
+  }
+
+  function evalGroupIdByName(allGroups, name) {
+    const g = (allGroups || []).find((x) => x?.name === name);
+    return g?.id ?? null;
+  }
+
+  /** Transitive inheritance: USER-held group.<name> + GROUP-held group.<parent> edges */
+  function evalExpandedGroupNames(userId, allNodes, allGroups) {
+    const queue = [];
+    const seen = new Set();
+
+    for (const n of allNodes || []) {
+      if (n?.holderType !== 'USER' || !evalSameHolderId(n?.holderId, userId)) continue;
+      if (n.active === false) continue;
+      if (typeof n.node !== 'string' || !n.node.startsWith('group.')) continue;
+      queue.push(String(n.node.slice('group.'.length) || '').trim());
+    }
+
+    while (queue.length) {
+      const name = queue.pop();
+      if (!name || seen.has(name)) continue;
+      seen.add(name);
+
+      const gid = evalGroupIdByName(allGroups, name);
+      if (gid == null) continue;
+
+      for (const n of allNodes || []) {
+        if (n?.holderType !== 'GROUP' || !evalSameHolderId(n?.holderId, gid)) continue;
+        if (n.active === false) continue;
+        if (typeof n.node !== 'string' || !n.node.startsWith('group.')) continue;
+        const pname = String(n.node.slice('group.'.length) || '').trim();
+        if (pname && !seen.has(pname)) queue.push(pname);
+      }
+    }
+    return seen;
+  }
+
+  function evalIndirectGrantFromGroups(expandedGroupNames, permTrim, allNodes, allGroups) {
+    const trimmed = String(permTrim || '').trim();
+    if (!trimmed || !(expandedGroupNames instanceof Set) || expandedGroupNames.size === 0) return false;
+
+    for (const gName of expandedGroupNames) {
+      const gid = evalGroupIdByName(allGroups, gName);
+      if (gid == null) continue;
+
+      for (const n of allNodes || []) {
+        if (n?.holderType !== 'GROUP' || !evalSameHolderId(n?.holderId, gid)) continue;
+        if (n.active === false) continue;
+        if (!evalAssignableLuckNode(n.node)) continue;
+        if (evalNodeImplies(n.node, trimmed)) return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * @param excludeDirectRowId — skip this USER-held permission row id (currently edited modal row)
+   */
+  function analyzeUserEffective(userId, permTrim, allNodes, allGroups, excludeDirectRowId = null) {
+    const trimmed = String(permTrim || '').trim();
+    if (!trimmed || userId == null) return { hasDirect: false, hasIndirect: false };
+
+    let hasDirect = false;
+    for (const n of allNodes || []) {
+      if (n?.holderType !== 'USER' || !evalSameHolderId(n?.holderId, userId)) continue;
+      if (n.active === false) continue;
+      if (!evalAssignableLuckNode(n.node)) continue;
+      if (!evalNodeImplies(n.node, trimmed)) continue;
+      if (excludeDirectRowId != null && evalSameHolderId(n.id, excludeDirectRowId)) continue;
+      hasDirect = true;
+      break;
+    }
+
+    const expanded = evalExpandedGroupNames(userId, allNodes, allGroups);
+    const hasIndirect = evalIndirectGrantFromGroups(expanded, trimmed, allNodes, allGroups);
+
+    return { hasDirect, hasIndirect };
+  }
+
+  function effectiveBannerLabel(ins) {
+    if (!ins) return '';
+    if (ins.hasDirect && ins.hasIndirect)
+      return $_('components.modals.edit-permission-node.user-already-has-both-banner');
+    if (ins.hasDirect)
+      return $_('components.modals.edit-permission-node.user-already-has-direct-banner');
+    if (ins.hasIndirect)
+      return $_('components.modals.edit-permission-node.user-already-has-indirect-banner');
+    return '';
+  }
+
+  function effectiveTickTitle(ins) {
+    if (!ins) return '';
+    if (ins.hasDirect && ins.hasIndirect)
+      return $_('components.modals.edit-permission-node.user-already-has-both-tooltip');
+    if (ins.hasDirect)
+      return $_('components.modals.edit-permission-node.user-already-has-direct-tooltip');
+    if (ins.hasIndirect)
+      return $_('components.modals.edit-permission-node.user-already-has-indirect-tooltip');
+    return '';
+  }
 
   $: permsMap = $registeredPermissions || {};
 
@@ -433,6 +596,91 @@
     activeSuggestionIndex = 0;
   }
   $: nodeQuery = ($draft?.nodeValue || '').trim().toLowerCase();
+  /** Other rows on same holder excluding the row opened in this modal. */
+  $: draftTrim = String($draft?.nodeValue || '').trim();
+  $: holderNodeSelfId = $node?.id;
+  $: otherHolderNodes = ($siblingNodes || []).filter(
+    (sn) =>
+      !(holderNodeSelfId != null && String(sn?.id ?? '') === String(holderNodeSelfId)),
+  );
+
+  /** Whether `draftTrim` conflicts with another row on this holder (not the row being edited). */
+  $: duplicateNodeOnHolder =
+    !!draftTrim &&
+    otherHolderNodes.some(
+      (sn) =>
+        sn?.active !== false &&
+        typeof sn?.node === 'string' &&
+        String(sn.node).trim() === draftTrim,
+    );
+
+  $: showDuplicateRowBanner = duplicateNodeOnHolder;
+
+  $: permEvalCtx = {
+    uid: $evaluationUserId,
+    nodes: $evaluationNodes ?? [],
+    groups: $permissionGroups ?? [],
+  };
+
+  $: rawUserEffectiveBanner =
+    !$node ||
+    permEvalCtx.uid == null ||
+    !draftTrim ||
+    duplicateNodeOnHolder
+      ? null
+      : analyzeUserEffective(
+          permEvalCtx.uid,
+          draftTrim,
+          permEvalCtx.nodes,
+          permEvalCtx.groups,
+          holderNodeSelfId ?? null,
+        );
+
+  $: userEffectiveBannerInsight =
+    rawUserEffectiveBanner &&
+    (rawUserEffectiveBanner.hasDirect || rawUserEffectiveBanner.hasIndirect)
+      ? rawUserEffectiveBanner
+      : null;
+
+  /** Saving would overlap another permission row with the same node string on this holder. */
+  $: duplicateBlocksSave = duplicateNodeOnHolder;
+
+  /** Active assignable strings on sibling rows excluding self — for suggestion ticks. */
+  $: siblingAssignedNodeTrimmedSet = new Set(
+    otherHolderNodes
+      .filter((sn) => sn?.active !== false && typeof sn?.node === 'string')
+      .map((sn) => String(sn.node).trim())
+      .filter(Boolean),
+  );
+
+  function showSuggestionTickForNode(canonicalNodeStr, ctx) {
+    const t = String(canonicalNodeStr || '').trim();
+    if (!t) return false;
+
+    if (ctx?.uid != null) {
+      const full = analyzeUserEffective(ctx.uid, t, ctx.nodes || [], ctx.groups || [], null);
+      return full.hasDirect || full.hasIndirect;
+    }
+
+    return siblingAssignedNodeTrimmedSet.has(t);
+  }
+
+  function suggestionTickTitleForNode(canonicalNodeStr, ctx) {
+    const t = String(canonicalNodeStr || '').trim();
+    if (!t) return '';
+
+    if (ctx?.uid != null) {
+      const full = analyzeUserEffective(ctx.uid, t, ctx.nodes || [], ctx.groups || [], null);
+      if (!(full.hasDirect || full.hasIndirect)) return '';
+      return effectiveTickTitle(full);
+    }
+
+    if (siblingAssignedNodeTrimmedSet.has(t)) {
+      return $_('components.modals.edit-permission-node.node-already-on-holder');
+    }
+    return '';
+  }
+
   $: suggestions = showNodeSuggestions
     ? [...(panelNodes.length > 0 ? panelNodes : fallbackPanelNodes), ...pluginNodes, ...groupNodes]
     : [];
@@ -474,6 +722,10 @@
 
     const expiresAt =
       d.expiryType === 'date' && d.expiryDate ? new Date(d.expiryDate).getTime() : null;
+
+    if (duplicateBlocksSave) {
+      return;
+    }
 
     const updated = {
       ...n,

@@ -1235,6 +1235,23 @@
     currentNodes = [];
   }
 
+  function siblingNodesForHolderDraft(h) {
+    if (!h) return [];
+    return (nodes || []).filter((n) => {
+      if (n?.holderType !== h.holderType) return false;
+      if (h.holderType === 'USER') return sameId(n.holderId, h.holderId);
+      return String(n?.holderId) === String(h.holderId);
+    });
+  }
+
+  function modalGraphPayloadFor(holderDraft) {
+    return {
+      siblingNodes: siblingNodesForHolderDraft(holderDraft),
+      evaluationNodes: nodes,
+      evaluationUserId: holderDraft?.holderType === 'USER' ? holderDraft.holderId : null,
+    };
+  }
+
   function addNode(holderType) {
     const now = Date.now();
     if (holderType === 'GROUP' && selectedGroup) {
@@ -1255,6 +1272,7 @@
         node: selectedNodeForEdit,
         permissionGroups,
         isAdd: true,
+        ...modalGraphPayloadFor(selectedNodeForEdit),
       });
       return;
     }
@@ -1275,6 +1293,7 @@
         node: selectedNodeForEdit,
         permissionGroups,
         isAdd: true,
+        ...modalGraphPayloadFor(selectedNodeForEdit),
       });
     }
   }
@@ -1309,7 +1328,11 @@
 
   function editNode(node) {
     selectedNodeForEdit = node;
-    showEditPermissionNodeModal({ node, permissionGroups });
+    showEditPermissionNodeModal({
+      node,
+      permissionGroups,
+      ...modalGraphPayloadFor(node),
+    });
   }
 
   function parseGroupDisplayNameNodeValue(nodeStr) {

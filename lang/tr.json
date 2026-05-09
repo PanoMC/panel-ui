@@ -1448,6 +1448,13 @@
         "states": {
           "no-node-selected": "Node seçilmedi."
         },
+        "node-already-on-holder": "Bu yetki bu hedefte zaten atanmış.",
+        "user-already-has-direct-banner": "Bu kullanıcı bu yetkiyi kendi doğrudan yetki satırlarından zaten alıyor.",
+        "user-already-has-indirect-banner": "Bu kullanıcı bu yetkiyi dolaylı olarak (grup kalıtımıyla) zaten alıyor.",
+        "user-already-has-both-banner": "Bu kullanıcı bu yetkiyi hem kendi doğrudan satırlarından hem de gruplardan kalınan yolla zaten alıyor.",
+        "user-already-has-direct-tooltip": "Bu kullanıcıda bu yetki doğrudan tanımlı",
+        "user-already-has-indirect-tooltip": "Bu kullanıcıda bu yetki dolaylı (grup kalıtımıyla)",
+        "user-already-has-both-tooltip": "Doğrudan ve dolaylı: kullanıcı bu yetkiyi hem kendi hem grupla zaten taşıyor",
         "form": {
           "node": "Yetki",
           "node-placeholder": "örn. group.admin veya prefix.80.&d[MOD]",

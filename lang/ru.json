@@ -1448,6 +1448,13 @@
         "states": {
           "no-node-selected": "Узел не выбран."
         },
+        "node-already-on-holder": "Это разрешение уже назначено этому владельцу.",
+        "user-already-has-direct-banner": "Этот пользователь уже имеет это разрешение напрямую (своими строками в списке).",
+        "user-already-has-indirect-banner": "Этот пользователь уже имеет это разрешение косвенно (наследуется через группы).",
+        "user-already-has-both-banner": "Это разрешение у пользователя есть и напрямую по строкам пользователя, и через наследование групп.",
+        "user-already-has-direct-tooltip": "Разрешение уже есть напрямую у этого пользователя",
+        "user-already-has-indirect-tooltip": "Разрешение уже есть косвенно через группы",
+        "user-already-has-both-tooltip": "Напрямую и через группы: право уже у этого пользователя",
         "form": {
           "node": "Узел",
           "node-placeholder": "напр. group.admin или prefix.80.&d[MOD]",
