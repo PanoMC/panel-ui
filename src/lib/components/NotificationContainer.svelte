@@ -1,4 +1,4 @@
-<div class="toast-container position-fixed bottom-0 end-0 p-3 d-xl-block d-none">
+<div class="toast-container position-fixed bottom-0 end-0 p-3 d-none d-md-block">
   {#each $notifications as notification, index (notification)}
     <article
       id="notificationToast{notification.id}"
