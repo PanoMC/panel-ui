@@ -10,7 +10,8 @@
           previousValue={data.previousOnlinePlayerCount}
           data={data.websiteActivityDataList?.onlinePlayerData || {}}
           secondaryValue={periodLabel}
-          color="#198754" />
+          color="#ffffff"
+          colorClass="text-bg-success" />
       </div>
       <!-- New Registers -->
       <div class="col-lg-4">
@@ -20,7 +21,8 @@
           previousValue={data.previousNewRegisterCount}
           data={data.websiteActivityDataList?.newRegisterData || {}}
           secondaryValue={periodLabel}
-          color="#0dcaf0" />
+          color="#ffffff"
+          colorClass="text-bg-info" />
       </div>
       <!-- Total Players -->
       <div class="col-lg-4">
@@ -30,7 +32,8 @@
           previousValue={data.previousRegisteredPlayerCount}
           data={data.websiteActivityDataList?.totalPlayerData || {}}
           secondaryValue={periodLabel}
-          color="#0d6efd" />
+          color="#ffffff"
+          colorClass="text-bg-primary" />
       </div>
     </div>
   {/key}

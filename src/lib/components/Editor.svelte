@@ -52,6 +52,33 @@
           aria-label={$_('components.editor.title', { values: { number: 3 } })}>
           H3
         </button>
+        <button
+          class="btn btn-link btn-sm text-decoration-none"
+          onclick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
+          class:border-primary={editor.isActive('heading', { level: 4 })}
+          class:text-primary={editor.isActive('heading', { level: 4 })}
+          use:tooltip={[$_('components.editor.title', { values: { number: 4 } })]}
+          aria-label={$_('components.editor.title', { values: { number: 4 } })}>
+          H4
+        </button>
+        <button
+          class="btn btn-link btn-sm text-decoration-none"
+          onclick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
+          class:border-primary={editor.isActive('heading', { level: 5 })}
+          class:text-primary={editor.isActive('heading', { level: 5 })}
+          use:tooltip={[$_('components.editor.title', { values: { number: 5 } })]}
+          aria-label={$_('components.editor.title', { values: { number: 5 } })}>
+          H5
+        </button>
+        <button
+          class="btn btn-link btn-sm text-decoration-none"
+          onclick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
+          class:border-primary={editor.isActive('heading', { level: 6 })}
+          class:text-primary={editor.isActive('heading', { level: 6 })}
+          use:tooltip={[$_('components.editor.title', { values: { number: 6 } })]}
+          aria-label={$_('components.editor.title', { values: { number: 6 } })}>
+          H6
+        </button>
 
         <!-- Text Formatting -->
         <button

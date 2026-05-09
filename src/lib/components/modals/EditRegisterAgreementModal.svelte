@@ -36,24 +36,20 @@
           on:click={hide}></button>
       </div>
       <div class="modal-body">
-        <div class="form-check mb-3">
+        <div class="form-check">
           <input
             class="form-check-input"
             type="checkbox"
-            id="registerAgreementDisabled"
-            checked={$agreementOff}
-            on:change={onAgreementOffChange} />
-          <label class="form-check-label" for="registerAgreementDisabled">
-            {$_('pages.settings.site-settings.inputs.register-agreement.disable-label')}
+            id="requireRegisterAgreement"
+            checked={!$agreementOff}
+            on:change={onRequireAgreementChange} />
+          <label class="form-check-label" for="requireRegisterAgreement">
+            {$_('pages.settings.site-settings.inputs.register-agreement.require-label')}
           </label>
         </div>
 
-        {#if $agreementOff}
-          <p class="small text-body-secondary mb-0">
-            {$_('pages.settings.site-settings.inputs.register-agreement.disabled-hint')}
-          </p>
-        {:else}
-          <div class="register-agreement-editor-wrap">
+        {#if !$agreementOff}
+          <div class="register-agreement-editor-wrap mt-3">
             {#key $editorKey}
               <Editor
                 bind:content={$draft}
@@ -65,11 +61,8 @@
         {/if}
       </div>
       <div class="modal-footer">
-        <button class="btn btn-link" type="button" on:click={hide}>
-          {$_('buttons.cancel')}
-        </button>
-        <button class="btn btn-primary" type="button" on:click={apply}>
-          {$_('pages.settings.site-settings.inputs.register-agreement.apply')}
+        <button class="btn btn-secondary w-100" type="button" on:click={apply}>
+          {$_('buttons.save')}
         </button>
       </div>
     </div>
@@ -113,8 +106,8 @@
     modal?.hide();
   }
 
-  function onAgreementOffChange(event) {
-    agreementOff.set(event.currentTarget.checked);
+  function onRequireAgreementChange(event) {
+    agreementOff.set(!event.currentTarget.checked);
     draft.set('');
     editorKey.update((k) => k + 1);
   }

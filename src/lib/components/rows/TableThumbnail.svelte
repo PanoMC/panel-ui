@@ -23,17 +23,18 @@
       {target}
       use:tooltip={[tooltipText]}
       class="focus-ring d-block {anchorClass}">
-      <div class="ratio ratio-16x9 thumbnail-frame">
+      <div class="ratio ratio-16x9 thumbnail-frame bg-primary-subtle">
         <img
           src={preview ? getPreviewUrl(src) : src}
           {alt}
-          title={alt} />
+          title={alt}
+          class="w-100 h-100 object-fit-cover" />
       </div>
     </a>
   {:else}
-    <div class="ratio ratio-16x9 thumbnail-frame bg-black bg-opacity-10 border">
-      <div class="d-flex align-items-center justify-content-center">
-        <i class="fas {icon} opacity-75"></i>
+    <div class="ratio ratio-16x9 thumbnail-frame bg-primary-subtle border-0">
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <i class="fas {icon} opacity-50 fs-5 text-primary"></i>
       </div>
     </div>
   {/if}

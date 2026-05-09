@@ -14,48 +14,6 @@
     padding: 1rem 1rem 0.5rem;
   }
 
-  .summary-stat-card .card-title-text {
-    font-size: 0.875rem;
-    opacity: 0.9;
-    margin: 0 0 0.25rem 0;
-  }
-
-  .summary-stat-card .card-main-value {
-    font-size: 1.75rem;
-    font-weight: 600;
-    line-height: 1.2;
-  }
-
-  .summary-stat-card .card-secondary-value {
-    font-size: 0.8rem;
-    opacity: 0.85;
-  }
-
-  .summary-stat-card .trend-badge {
-    font-size: 0.75rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.125rem 0.5rem;
-    border-radius: 999px;
-    background-color: rgba(var(--bs-secondary-rgb, 108, 117, 125), 0.15);
-    color: var(--bs-secondary-color, inherit);
-  }
-
-  .summary-stat-card .trend-badge.trend-up {
-    background-color: rgba(25, 135, 84, 0.18);
-    color: #198754;
-  }
-
-  .summary-stat-card .trend-badge.trend-down {
-    background-color: rgba(220, 53, 69, 0.18);
-    color: #dc3545;
-  }
-
-  .summary-stat-card .trend-badge.trend-same {
-    opacity: 0.65;
-  }
-
   .summary-stat-card .sparkline-wrapper {
     height: 64px;
     min-height: 64px;
@@ -68,27 +26,27 @@
   <div class="card-body">
     <div class="card-top">
       <div class="d-flex justify-content-between align-items-start">
-        <p class="card-title-text text-truncate me-2">{title}</p>
+        <p class="text-truncate m-0 small">{title}</p>
         {#if hasComparison}
           <span
-            class="trend-badge"
-            class:trend-up={trend === 'up'}
-            class:trend-down={trend === 'down'}
-            class:trend-same={trend === 'neutral'}
+            class="badge rounded-pill"
+            class:text-bg-success={trend === 'up'}
+            class:text-bg-danger={trend === 'down'}
+            class:text-bg-secondary={trend === 'neutral'}
             use:tooltip={[tooltipText, { placement: 'top' }]}>
             {#if trend === 'up'}
-              <i class="fa-solid fa-arrow-up"></i>
+              <i class="fa-solid fa-arrow-up me-1"></i>
             {:else if trend === 'down'}
-              <i class="fa-solid fa-arrow-down"></i>
+              <i class="fa-solid fa-arrow-down me-1"></i>
             {/if}
             <span>{formattedDiff}</span>
           </span>
         {/if}
       </div>
-      <div class="d-flex align-items-baseline gap-2 mt-1">
-        <span class="card-main-value">{formattedValue}</span>
+      <div class="d-flex align-items-baseline gap-2">
+        <span class="fs-2 lh-1">{formattedValue}</span>
         {#if secondaryValue}
-          <span class="card-secondary-value text-truncate">{secondaryValue}</span>
+          <span class="text-truncate small">{secondaryValue}</span>
         {/if}
       </div>
     </div>

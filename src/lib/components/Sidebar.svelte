@@ -133,32 +133,9 @@
 
   /* Desktop: collapse in-flow — keep .offcanvas-lg so base .offcanvas never applies fixed overlay */
   @media (min-width: 992px) {
-    #sidebar {
-      transition:
-        flex 0.3s ease-in-out,
-        width 0.3s ease-in-out,
-        min-width 0.3s ease-in-out,
-        max-width 0.3s ease-in-out,
-        opacity 0.28s ease-in-out,
-        padding 0.3s ease-in-out,
-        margin 0.3s ease-in-out,
-        border-radius 0.3s ease-in-out,
-        visibility 0s linear;
-    }
-
     /* Expanding: show immediately so width/opacity animate in */
     #sidebar:not(.sidebar-desktop-collapsed) {
       visibility: visible !important;
-      transition:
-        flex 0.3s ease-in-out,
-        width 0.3s ease-in-out,
-        min-width 0.3s ease-in-out,
-        max-width 0.3s ease-in-out,
-        opacity 0.28s ease-in-out,
-        padding 0.3s ease-in-out,
-        margin 0.3s ease-in-out,
-        border-radius 0.3s ease-in-out,
-        visibility 0s linear 0s;
     }
 
     /* Collapsing: defer visibility until shrink finishes (!important beats main.scss .offcanvas-lg) */
@@ -175,16 +152,6 @@
       margin: 0 !important;
       visibility: hidden !important;
       border-radius: 0 !important;
-      transition:
-        flex 0.3s ease-in-out,
-        width 0.3s ease-in-out,
-        min-width 0.3s ease-in-out,
-        max-width 0.3s ease-in-out,
-        opacity 0.25s ease-in-out,
-        padding 0.3s ease-in-out,
-        margin 0.3s ease-in-out,
-        border-radius 0.3s ease-in-out,
-        visibility 0s linear 0.3s;
     }
   }
 </style>
@@ -195,7 +162,7 @@
 {/if}
 
 <div
-  class="offcanvas offcanvas-start offcanvas-lg bg-primary h-100 overflow-hidden"
+  class="offcanvas offcanvas-start offcanvas-lg bg-primary h-100 overflow-hidden border"
   tabindex="-1"
   id="sidebar"
   aria-labelledby="sidebarLabel"
@@ -207,14 +174,14 @@
     <div class="sidebar-header-container p-2 flex-shrink-0">
       <div class="sidebar-top-fade-overlay" class:show={isScrolledTop}></div>
       <!-- Sidebar Toggler & Logo -->
-      <div class="navbar navbar-expand navbar-dark">
+      <div class="navbar navbar-expand navbar-dark navbar-nav flex-row w-100 justify-content-center align-items-center position-relative">
         <button
           bind:this={closeButton}
           class:active={isFocused}
           on:focus={() => (isFocused = true)}
           on:blur={() => (isFocused = false)}
           type="button"
-          class="navbar-toggler d-block float-left position-absolute"
+          class="navbar-toggler d-block position-absolute start-0 ms-2"
           aria-label={$_('components.sidebar.hide-menu')}
           title={windowWidth < 992 ? $_('components.sidebar.hide-menu') : null}
           use:tooltip={windowWidth >= 992 ? [$_('components.sidebar.hide-menu')] : null}

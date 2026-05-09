@@ -193,6 +193,38 @@
           </div>
         </div>
 
+        <!-- Theme Dropdown -->
+        <div class="nav-item dropdown">
+          {#if selectingPanelTheme}
+            <div class="nav-link">
+              <i class="fa-solid fa-spinner fa-spin p-1"></i>
+            </div>
+          {:else}
+            <button
+              class="nav-link"
+              data-bs-toggle="dropdown"
+              type="button"
+              aria-label={$_('components.navbar.panel-theme')}
+              use:tooltip={[$_('components.navbar.panel-theme'), { placement: 'bottom' }]}>
+              <i class="fa-solid fa-palette"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <h6 class="dropdown-header">{$_('components.navbar.panel-theme')}</h6>
+              {#each panelThemes as theme}
+                <li>
+                  <button
+                    type="button"
+                    class="dropdown-item"
+                    class:active={($session.basicData.panelTheme || 'dark') === theme}
+                    on:click={() => changePanelTheme(theme)}>
+                    {$_('panel-themes.' + theme)}
+                  </button>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </div>
+
         <!-- Account Dropdown -->
         <div class="nav-item dropdown">
           <button
@@ -287,10 +319,44 @@
   let sidebarToggler;
   let isFocused = false;
 
+  const panelThemes = ['light', 'dark'];
+  let selectingPanelTheme = false;
+
+  function changePanelTheme(theme) {
+    if ($siteInfo?.isDemo) {
+      document.documentElement.setAttribute('data-bs-theme', theme);
+      $session.basicData.panelTheme = theme;
+      $panelTheme = theme;
+      return;
+    }
+
+    selectingPanelTheme = true;
+
+    ApiUtil.put({
+      path: '/api/panel/panelTheme/select',
+      body: { theme },
+      handler: (body) => {
+        if (body.error) {
+          location.reload();
+          return;
+        }
+
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        $session.basicData.panelTheme = theme;
+        $panelTheme = theme;
+        selectingPanelTheme = false;
+      },
+    });
+  }
+
   async function handleKeydown(event) {
     if ((event.ctrlKey || event.metaKey) && event.key === 's') {
       event.preventDefault();
-      onSideBarCollapseClick();
+      if (sidebarToggler) {
+        sidebarToggler.click();
+      } else {
+        onSideBarCollapseClick();
+      }
     }
   }
 

@@ -16,7 +16,7 @@
                 id="panoVersion">{data.platformVersion}</span>
               <button
                 type="button"
-                class="btn btn-sm btn-outline-primary ms-2"
+                class="btn btn-sm btn-link px-0 text-decoration-none ms-2"
                 onclick={() => showWhatsNewModal(false)}>
                 <i class="fa-solid fa-magic-wand-sparkles me-1"></i>
                 {$_('components.whats-new.title')}

@@ -5,14 +5,18 @@
 {/if}
 
 {#if error}
-  <div class="alert alert-danger mb-0" role="alert">
-    <i class="fas fa-exclamation-triangle me-2"></i>
-    {$_('pages.theme-settings.error')}
-  </div>
-  <div class="d-flex justify-content-center">
-    <button class="btn btn-secondary" on:click={load}>
-      <i class="fas fa-redo me-2"></i>
-      {$_('buttons.try-again')}
+  <div class="alert alert-danger d-flex align-items-center mb-0" role="alert">
+    <i class="fas fa-exclamation-triangle me-3"></i>
+    <div class="flex-grow-1">
+      {$_('pages.theme-settings.error')}
+    </div>
+    <button
+      type="button"
+      use:tooltip={[$_('buttons.try-again')]}
+      aria-label={$_('buttons.try-again')}
+      class="btn btn-danger btn-sm ms-3"
+      on:click={load}>
+      <i class="fas fa-redo"></i>
     </button>
   </div>
 {/if}
@@ -38,6 +42,7 @@
   import { fade } from 'svelte/transition';
   import { base } from '$app/paths';
   import { browser } from '$app/environment';
+  import tooltip from '$lib/tooltip.util';
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
   import { show as showConfirm } from '$lib/components/modals/ConfirmActionModal.svelte';
 
