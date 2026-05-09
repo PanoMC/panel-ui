@@ -12,7 +12,7 @@
     </div>
     <button
       type="button"
-      use:tooltip={[$_('buttons.try-again')]}
+      title={$_('buttons.try-again')}
       aria-label={$_('buttons.try-again')}
       class="btn btn-danger btn-sm ms-3"
       on:click={load}>
@@ -42,7 +42,6 @@
   import { fade } from 'svelte/transition';
   import { base } from '$app/paths';
   import { browser } from '$app/environment';
-  import tooltip from '$lib/tooltip.util';
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
   import { show as showConfirm } from '$lib/components/modals/ConfirmActionModal.svelte';
 

@@ -193,7 +193,7 @@
           class="navbar-brand m-auto position-relative focus-ring focus-ring-white rounded d-flex align-items-center justify-content-center"
           href="{base}/"
           style="width: 48px; height: 48px;">
-          <img alt="Pano" use:tooltip={['Pano']} src={base + '/assets/img/logo.svg'} width="20" />
+          <img alt="Pano" title={'Pano'} src={base + '/assets/img/logo.svg'} width="20" />
           {#if isAlpha}
             <span
               class="badge text-bg-info position-absolute top-100 start-50 translate-middle small d-none"
