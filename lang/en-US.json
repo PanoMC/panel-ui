@@ -1582,8 +1582,8 @@
             }
           },
           "clear-password": {
-            "label": "Remove website password and unlink Minecraft",
-            "help": "The account will have no website password, and the Minecraft link will be cleared. The player must use the in-game account link flow again to set a new password. Until they do, they cannot sign in to the site with a password; use this when you need a full in-game re-registration."
+            "label": "Remove website email/password and unlink Minecraft",
+            "help": "The account's website email, password, and Minecraft link will be cleared. The player must use the in-game account link flow again to add an email and set a new password. Until they do, they cannot sign in to the site with a password; use this when you need a full in-game re-registration."
           },
           "new-password-repeat": {
             "title": "New Password Repeat",

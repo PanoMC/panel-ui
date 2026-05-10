@@ -1582,8 +1582,8 @@
             }
           },
           "clear-password": {
-            "label": "Web sitesi şifresini kaldır ve Minecraft bağlantısını sil",
-            "help": "Hesabın web sitesi şifresi kaldırılır ve oyun içi (Minecraft) eşleştirme temizlenir. Oyuncu yeni bir şifre belirlemek ve hesabı yeniden bağlamak için sunucudaki hesap eşleştirme akışını tekrar kullanmalıdır. Bu yapılmadan siteye parola ile giriş olmaz; yalnızca tam oyun içi yeniden tanımlama gerekirse bu seçeneği kullanın."
+            "label": "Web sitesi e-postasını/şifresini kaldır ve Minecraft bağlantısını sil",
+            "help": "Hesabın web sitesi e-postası, şifresi ve oyun içi (Minecraft) eşleştirmesi temizlenir. Oyuncu e-posta eklemek, yeni şifre belirlemek ve hesabı yeniden bağlamak için sunucudaki hesap eşleştirme akışını tekrar kullanmalıdır. Bu yapılmadan siteye parola ile giriş olmaz; yalnızca tam oyun içi yeniden tanımlama gerekirse bu seçeneği kullanın."
           },
           "new-password-repeat": {
             "title": "Yeni Şifre Tekrarı",

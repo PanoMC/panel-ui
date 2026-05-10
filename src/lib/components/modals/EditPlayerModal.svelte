@@ -1,4 +1,66 @@
-<!-- Edit Player Modal -->
+<style>
+  .merged-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+
+  .merged-grid .form-control {
+    border-radius: 0;
+  }
+
+  .merged-grid > .form-floating {
+    position: relative;
+    z-index: 1;
+  }
+
+  .merged-grid > .form-floating:focus-within {
+    z-index: 3;
+  }
+
+  /* Mobile: stacked 1x2 */
+  @media (max-width: 768px) {
+    .merged-grid > :first-child .form-control {
+      border-top-left-radius: var(--bs-border-radius) !important;
+      border-top-right-radius: var(--bs-border-radius) !important;
+    }
+    .merged-grid > :last-child .form-control {
+      border-bottom-left-radius: var(--bs-border-radius) !important;
+      border-bottom-right-radius: var(--bs-border-radius) !important;
+    }
+    .merged-grid > :not(:last-child) {
+      margin-bottom: -1px;
+    }
+    .merged-grid > :not(:last-child) .form-control:not(:focus) {
+      border-bottom-color: transparent;
+    }
+  }
+
+  /* Desktop: 1x2 grid side by side */
+  @media (min-width: 769px) {
+    .merged-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .merged-grid > :nth-child(1) .form-control {
+      border-top-left-radius: var(--bs-border-radius) !important;
+      border-bottom-left-radius: var(--bs-border-radius) !important;
+    }
+    .merged-grid > :nth-child(2) .form-control {
+      border-top-right-radius: var(--bs-border-radius) !important;
+      border-bottom-right-radius: var(--bs-border-radius) !important;
+    }
+
+    .merged-grid > :nth-child(1) {
+      margin-right: -1px;
+    }
+
+    .merged-grid > :nth-child(1) .form-control:not(:focus) {
+      border-right-color: transparent;
+    }
+  }
+</style>
+
 <div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
@@ -32,7 +94,8 @@
                   bind:value={$player.username}
                   class:is-invalid={!!$errors.username}
                   aria-describedby="validationEditUsernameInModal" />
-                <label for="username">{$_('components.modals.edit-player.inputs.username.placeholder')}</label>
+                <label for="username"
+                  >{$_('components.modals.edit-player.inputs.username.placeholder')}</label>
               </div>
               <div id="validationEditUsernameInModal" class="invalid-feedback">
                 {#if !!$errors['username']}
@@ -53,6 +116,7 @@
                   type="text"
                   placeholder="email@example.com"
                   bind:value={$player.email}
+                  disabled={$player.clearPassword}
                   class:is-invalid={!!$errors.email}
                   aria-describedby="validationEditEmailInModal" />
                 <label for="email">{$_('components.modals.edit-player.inputs.email.title')}</label>
@@ -67,10 +131,11 @@
                   {/if}
                 {/if}
               </div>
-              {#if !String($player.email ?? '').trim()}
+              {#if !$player.clearPassword && !String($player.email ?? '').trim()}
                 <div class="alert alert-info mt-2 mb-0 py-2 px-3" role="status">
                   <i class="fa-solid fa-circle-info me-1"></i>
-                  <small>{$_('components.modals.edit-player.inputs.email.empty-login-notice')}</small>
+                  <small
+                    >{$_('components.modals.edit-player.inputs.email.empty-login-notice')}</small>
                 </div>
               {/if}
             </div>
@@ -129,7 +194,9 @@
                     {$_('components.modals.edit-player.inputs.new-password.errors.invalid')}
                   {/if}
                   {#if $errors['newPassword'] === 'CONFLICT'}
-                    {$_('components.modals.edit-player.inputs.new-password.errors.conflict-with-clear')}
+                    {$_(
+                      'components.modals.edit-player.inputs.new-password.errors.conflict-with-clear',
+                    )}
                   {/if}
                 {/if}
               </div>
@@ -145,7 +212,10 @@
             </div>
             <div class="col-12 mb-3">
               <div class="form-floating">
-                <select class="form-control form-select" id="userLocaleCode" bind:value={$player.localeCode}>
+                <select
+                  class="form-control form-select"
+                  id="userLocaleCode"
+                  bind:value={$player.localeCode}>
                   <option value={null}
                     >{$_('components.modals.edit-player.inputs.locale.default', {
                       values: { defaultLocaleName: $Languages[$siteInfo.platformLocale].name },
@@ -162,7 +232,8 @@
               {#if $player.localeCode && $player.localeCode !== $siteInfo.platformLocale}
                 <div class="alert alert-info mt-2 mb-0 py-2 px-3" role="alert">
                   <i class="fa-solid fa-circle-info me-1"></i>
-                  <small>{$_('components.modals.edit-player.inputs.locale.mismatch-warning')}</small>
+                  <small
+                    >{$_('components.modals.edit-player.inputs.locale.mismatch-warning')}</small>
                 </div>
               {/if}
             </div>
@@ -266,7 +337,7 @@
           }
         }
         return item;
-      })
+      }),
     );
     resolvedCardRowItems.set(resolved.filter(Boolean));
 
@@ -328,6 +399,7 @@
   }
 
   let loading = false;
+  let emailBeforeClearPassword = '';
 
   const user = getContext('user');
 
@@ -336,8 +408,13 @@
     player.update((p) => {
       p.clearPassword = checked;
       if (checked) {
+        emailBeforeClearPassword = p.email ?? '';
+        p.email = '';
         p.newPassword = '';
         p.newPasswordRepeat = '';
+      } else if (!p.email && emailBeforeClearPassword) {
+        p.email = emailBeforeClearPassword;
+        emailBeforeClearPassword = '';
       }
       return p;
     });
@@ -439,73 +516,3 @@
     });
   }
 </script>
-
-<style>
-  .merged-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    overflow: visible;
-  }
-  
-  .merged-grid .form-control,
-  .merged-grid .form-select {
-    border-radius: 0;
-  }
-  
-  .merged-grid > .form-floating {
-    position: relative;
-    z-index: 1;
-  }
-  
-  .merged-grid > .form-floating:focus-within {
-    z-index: 3;
-  }
-
-  /* Mobile: stacked 1x2 */
-  @media (max-width: 768px) {
-    .merged-grid > :first-child .form-control,
-    .merged-grid > :first-child .form-select {
-      border-top-left-radius: var(--bs-border-radius) !important;
-      border-top-right-radius: var(--bs-border-radius) !important;
-    }
-    .merged-grid > :last-child .form-control,
-    .merged-grid > :last-child .form-select {
-      border-bottom-left-radius: var(--bs-border-radius) !important;
-      border-bottom-right-radius: var(--bs-border-radius) !important;
-    }
-    .merged-grid > :not(:last-child) {
-      margin-bottom: -1px;
-    }
-    .merged-grid > :not(:last-child) .form-control:not(:focus),
-    .merged-grid > :not(:last-child) .form-select:not(:focus) {
-      border-bottom-color: transparent;
-    }
-  }
-
-  /* Desktop: 1x2 grid side by side */
-  @media (min-width: 769px) {
-    .merged-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .merged-grid > :nth-child(1) .form-control,
-    .merged-grid > :nth-child(1) .form-select {
-      border-top-left-radius: var(--bs-border-radius) !important;
-      border-bottom-left-radius: var(--bs-border-radius) !important;
-    }
-    .merged-grid > :nth-child(2) .form-control,
-    .merged-grid > :nth-child(2) .form-select {
-      border-top-right-radius: var(--bs-border-radius) !important;
-      border-bottom-right-radius: var(--bs-border-radius) !important;
-    }
-
-    .merged-grid > :nth-child(1) {
-      margin-right: -1px;
-    }
-
-    .merged-grid > :nth-child(1) .form-control:not(:focus),
-    .merged-grid > :nth-child(1) .form-select:not(:focus) {
-      border-right-color: transparent;
-    }
-  }
-</style>
