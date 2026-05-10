@@ -57,6 +57,23 @@
               </div>
             </div>
           </div>
+          <div class="text-start px-2 mt-3 w-100">
+            <label class="form-label small mb-1" for="acceptServerDisplayName">
+              {$_('components.modals.server-request.display-name-label')}
+            </label>
+            <input
+              id="acceptServerDisplayName"
+              type="text"
+              class="form-control form-control-sm"
+              maxlength="255"
+              bind:value={$acceptDisplayName}
+              disabled={$submitLoading}
+              autocomplete="off"
+              aria-describedby="acceptServerDisplayNameHint" />
+            <small id="acceptServerDisplayNameHint" class="text-muted d-block mt-1">
+              {$_('components.modals.server-request.display-name-hint')}
+            </small>
+          </div>
         </div>
         <div class="modal-footer flex-nowrap">
           <button
@@ -87,12 +104,15 @@
 
   const modalElement = writable();
 
+  export const acceptDisplayName = writable('');
+
   let callback = () => {};
   let hideCallback = () => {};
   let modal;
   const defaultServer = {
     id: -1,
     name: '',
+    customName: null,
     playerCount: 0,
     maxPlayerCount: 0,
     type: '',
@@ -112,6 +132,7 @@
     loading.set(true);
     submitLoading.set(false);
     server.set(defaultServer);
+    acceptDisplayName.set('');
 
     modal.show();
 
@@ -163,6 +184,11 @@
         }
 
         server.set(body.server);
+        acceptDisplayName.set(
+          body.server.customName != null && String(body.server.customName).trim() !== ''
+            ? String(body.server.customName).trim()
+            : body.server.name || ''
+        );
         loading.set(false);
       },
     });
@@ -171,8 +197,8 @@
 
 <script>
   import { getContext } from 'svelte';
+  import { get as getStore } from 'svelte/store';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
   import { sanitizeImageSrc } from '$lib/security.util.js';
 
   import { invalidateAll } from '$app/navigation';
@@ -188,19 +214,23 @@
   function acceptServer() {
     $submitLoading = true;
 
+    const rawName = getStore(acceptDisplayName).trim().slice(0, 255);
+    const customNamePayload = rawName.length === 0 ? null : rawName;
+
     ApiUtil.post({
       path: `/api/panel/servers/${$server.id}/accept`,
+      body: { customName: customNamePayload },
       handler: async (body, reject) => {
         if (body.result === 'ok') {
           callback($server);
 
-          $selectedServer = { ...$server, permissionGranted: true };
+          $selectedServer = { ...$server, permissionGranted: true, customName: customNamePayload };
 
           await hideBootstrapModalAndWait(getServerRequestModalEl());
           await invalidateAll();
 
           await showToast('components.toasts.server-selected', {
-            name: $server.customName || $server.name,
+            name: customNamePayload ?? $server.name,
           });
           await showToast('components.toasts.accepted-server-connect-request');
           $submitLoading = false;

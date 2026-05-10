@@ -1535,7 +1535,9 @@
       "server-request": {
         "title": "\"{serverName}\" sunucusunu platforma bağlamak istediğinizden emin misiniz?",
         "reject": "Reddet",
-        "connect": "Bağla"
+        "connect": "Bağla",
+        "display-name-label": "Panel görünen adı",
+        "display-name-hint": "Oyuncu sunucu adı yerine panelde böyle görünür. Boş bırakırsanız sunucunun bildirdiği ad kullanılır."
       },
       "servers": {
         "connect-server-button": "Sunucu Bağla",

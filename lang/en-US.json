@@ -1535,7 +1535,9 @@
       "server-request": {
         "title": "Are you sure you want to connect the server \"{serverName}\" to the platform?",
         "reject": "Reject",
-        "connect": "Connect"
+        "connect": "Connect",
+        "display-name-label": "Panel display name",
+        "display-name-hint": "Shown in the panel instead of the game server name. Leave empty to use the name reported by the server."
       },
       "servers": {
         "connect-server-button": "Connect Server",
