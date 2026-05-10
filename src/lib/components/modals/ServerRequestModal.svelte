@@ -48,10 +48,12 @@
                 </div>
                 <div class="col text-start">
                   <span class="badge text-bg-primary rounded-pill mb-2">{$server.type}</span>
-                  <div class="d-flex flex-row justify-content-between">
-                    <span class="font-monospace user-select-all"
-                      >{$server.host}:{$server.port}</span>
-                    <span>{$server.playerCount}/{$server.maxPlayerCount}</span>
+                  <div class="d-flex flex-row justify-content-between gap-2 mb-1">
+                    <span class="small text-body-secondary">{$_('buttons.remote')}:</span>
+                    <span class="flex-shrink-0">{$server.playerCount}/{$server.maxPlayerCount}</span>
+                  </div>
+                  <div class="font-monospace user-select-all text-break mb-1">
+                    {getPrimaryAddress($server)}
                   </div>
                 </div>
               </div>
@@ -118,6 +120,9 @@
     type: '',
     version: '',
     favicon: '',
+    host: '',
+    port: 0,
+    remoteAddress: null,
     permissionGranted: false,
     status: 'OFFLINE',
   };
@@ -209,6 +214,11 @@
 
   function getServerRequestModalEl() {
     return typeof document !== 'undefined' ? document.getElementById('serverRequestModal') : null;
+  }
+
+  function getPrimaryAddress(server) {
+    const remoteAddress = String(server?.remoteAddress || '').trim();
+    return remoteAddress || server?.host || '';
   }
 
   function acceptServer() {

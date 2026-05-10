@@ -13,6 +13,10 @@
     height: 100%;
     padding: 1rem;
   }
+
+  .server-card .server-local-ip {
+    font-size: 0.85rem;
+  }
 </style>
 
 <div class="container vstack gap-3">
@@ -55,9 +59,14 @@
               { placement: 'bottom', hideOnClick: false },
             ]}>
             <code class="user-select-all cursor-pointer text-break d-inline-block"
-              >{$selectedServer.host}:{$selectedServer.port}</code
+              >{getPrimaryAddress($selectedServer)}</code
             >
           </button>
+        </div>
+
+        <div class="w-100 mb-1 px-1 server-local-ip text-body-secondary text-break">
+          {$_('buttons.local')}: <span class="font-monospace user-select-all"
+            >{getLocalAddress($selectedServer)}</span>
         </div>
 
         <div class="mt-2 w-100">
@@ -106,8 +115,6 @@
   import ViewAllLink from '$lib/components/ViewAllLink.svelte';
   import { show as showServersModal } from '$lib/components/modals/ServersModal.svelte';
 
-  export let data;
-
   const selectedServer = getContext('selectedServer');
 
   const pageTitle = getContext('pageTitle');
@@ -119,8 +126,7 @@
 
   function onCopy(e, server) {
     e.stopPropagation();
-    const text = `${server.host}:${server.port}`;
-    copy(text);
+    copy(getPrimaryAddress(server));
 
     copiedId = server.id;
     if (copiedTimeout) clearTimeout(copiedTimeout);
@@ -129,4 +135,12 @@
     }, 2000);
   }
 
+  function getPrimaryAddress(server) {
+    const remoteAddress = String(server?.remoteAddress || '').trim();
+    return remoteAddress || server?.host || '';
+  }
+
+  function getLocalAddress(server) {
+    return `${server?.host || ''}:${server?.port ?? ''}`;
+  }
 </script>

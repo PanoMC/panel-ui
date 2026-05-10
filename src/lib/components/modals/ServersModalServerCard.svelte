@@ -60,7 +60,6 @@
       <div class="small w-100 mb-1 px-1 server-ip text-break">
         <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
         <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
         <code
           class="user-select-all cursor-pointer text-break d-inline-block"
           on:click|stopPropagation={onCodeClick}
@@ -71,7 +70,7 @@
               ? $_('components.modals.connect-server.copied')
               : $_('buttons.copy'),
             { placement: 'top', hideOnClick: false },
-          ]}>{server.host}:{server.port}</code>
+          ]}>{getPrimaryAddress(server)}</code>
       </div>
 
       <div class="mt-auto w-100">
@@ -124,6 +123,11 @@
   function onCodeClick(e) {
     e.stopPropagation();
     onCopy(e, server);
+  }
+
+  function getPrimaryAddress(server) {
+    const remoteAddress = String(server?.remoteAddress || '').trim();
+    return remoteAddress || server?.host || '';
   }
 </script>
 

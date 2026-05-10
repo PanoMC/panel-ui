@@ -46,7 +46,7 @@
       <div class="modal-body">
         {#if $loading}
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-            {#each Array(4) as _, i}
+            {#each Array(4) as _, i (i)}
               <div class="col">
                 <div class="card h-100">
                   <div class="card-body">
@@ -257,8 +257,7 @@
 
   function onCopy(e, server) {
     e.stopPropagation();
-    const text = `${server.host}:${server.port}`;
-    copy(text);
+    copy(getPrimaryAddress(server));
 
     copiedId = server.id;
     if (copiedTimeout) clearTimeout(copiedTimeout);
@@ -330,10 +329,24 @@
     }
   }
 
+  function getPrimaryAddress(server) {
+    const remoteAddress = String(server?.remoteAddress || '').trim();
+    return remoteAddress || server?.host || '';
+  }
+
+  function getLocalAddress(server) {
+    return `${server?.host || ''}:${server?.port ?? ''}`;
+  }
+
   $: filteredOtherServers = $otherServers.filter(
-    (s) =>
-      (s.customName || s.name || '').toLowerCase().includes($searchTerm.toLowerCase()) ||
-      (s.host || '').toLowerCase().includes($searchTerm.toLowerCase())
+    (s) => {
+      const term = $searchTerm.toLowerCase();
+      return (
+        (s.customName || s.name || '').toLowerCase().includes(term) ||
+        getPrimaryAddress(s).toLowerCase().includes(term) ||
+        getLocalAddress(s).toLowerCase().includes(term)
+      );
+    }
   );
 
   onMount(() => {
