@@ -1845,7 +1845,7 @@
     "CURRENT_PASSWORD_NOT_CORRECT": "Mevcut şifre doğru değil.",
     "EMAIL_ALREADY_VERIFIED": "E-posta zaten doğrulanmış.",
     "FAILED_TO_INSTALL_RESOURCE": "Kaynak yüklenemedi.",
-    "FAILED_TO_INSTALL_SYSTEM_RESOURCE": "Sistem kaynağı yüklenemedi.",
+    "FAILED_TO_INSTALL_SYSTEM_RESOURCE": "Sistem temaları ve eklentileri Pano ile birlikte gelir; panelden yüklenemez veya güncellenemez. Yalnızca Pano güncellendiğinde güncellenir.",
     "FAILED_TO_UPDATE_PLATFORM": "Platform güncellenemedi.",
     "FAILED_TO_UPDATE_RESOURCE": "Kaynak güncellenemedi.",
     "FAVICON_EXCEEDS_SIZE": "Favicon izin verilen maksimum boyutu aşıyor.",

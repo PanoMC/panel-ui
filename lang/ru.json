@@ -1845,7 +1845,7 @@
     "CURRENT_PASSWORD_NOT_CORRECT": "Текущий пароль неверен.",
     "EMAIL_ALREADY_VERIFIED": "Email уже подтвержден.",
     "FAILED_TO_INSTALL_RESOURCE": "Не удалось установить ресурс.",
-    "FAILED_TO_INSTALL_SYSTEM_RESOURCE": "Не удалось установить системный ресурс.",
+    "FAILED_TO_INSTALL_SYSTEM_RESOURCE": "Системные темы и плагины поставляются вместе с Pano; их нельзя установить или обновить через панель. Они обновляются только при обновлении Pano.",
     "FAILED_TO_UPDATE_PLATFORM": "Не удалось обновить платформу.",
     "FAILED_TO_UPDATE_RESOURCE": "Не удалось обновить ресурс.",
     "FAVICON_EXCEEDS_SIZE": "Favicon превышает максимально допустимый размер.",

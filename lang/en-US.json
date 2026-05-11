@@ -1845,7 +1845,7 @@
     "CURRENT_PASSWORD_NOT_CORRECT": "Current password is not correct.",
     "EMAIL_ALREADY_VERIFIED": "Email is already verified.",
     "FAILED_TO_INSTALL_RESOURCE": "Failed to install resource.",
-    "FAILED_TO_INSTALL_SYSTEM_RESOURCE": "Failed to install system resource.",
+    "FAILED_TO_INSTALL_SYSTEM_RESOURCE": "System themes and plugins ship with Pano and cannot be installed or updated from the panel. They are updated only when you update Pano.",
     "FAILED_TO_UPDATE_PLATFORM": "Failed to update platform.",
     "FAILED_TO_UPDATE_RESOURCE": "Failed to update resource.",
     "FAVICON_EXCEEDS_SIZE": "Favicon exceeds maximum allowed size.",
