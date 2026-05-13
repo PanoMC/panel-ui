@@ -1260,7 +1260,9 @@
         "title": "Are you sure to disable e-mail? E-mail functions such as register/forgot password won't work!"
       },
       "confirm-update-platform": {
-        "title": "Are you sure to update platform? During the update, Pano may not be accessible for few minutes. If you leave this page, the update will continue in the background."
+        "title": "Are you sure to update platform? During the update, Pano may not be accessible for few minutes. If you leave this page, the update will continue in the background.",
+        "terminal-mode-warning": "Pano is currently attached to a terminal. Switch to terminal-independent background mode?",
+        "restart-in-background": "Relaunch Pano in background mode after the update"
       },
       "confirm-update-resource": {
         "title": "Are you sure to update this resource? If you leave this page, update will continue in the background."
@@ -1278,7 +1280,9 @@
       },
       "confirm-restart-pano": {
         "title": "Are you sure to restart Pano? This will temporarily make the website unreachable!",
-        "account-password": "Account Password"
+        "account-password": "Account Password",
+        "terminal-mode-warning": "Pano is currently attached to a terminal. Switch to terminal-independent background mode?",
+        "restart-in-background": "Restart Pano in background mode"
       },
       "confirm-remove-theme": {
         "title": "Are you sure to remove this theme?",

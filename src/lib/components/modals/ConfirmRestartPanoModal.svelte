@@ -9,6 +9,24 @@
           </div>
           {$_('components.modals.confirm-restart-pano.title')}
 
+          {#if showBackgroundOption}
+            <div class="alert alert-warning small text-start mt-3 mb-0">
+              <i class="fas fa-triangle-exclamation me-2"></i>
+              {$_('components.modals.confirm-restart-pano.terminal-mode-warning')}
+            </div>
+            <div class="form-check form-switch text-start mt-2">
+              <input
+                id="restartInBackgroundSwitch"
+                class="form-check-input"
+                type="checkbox"
+                bind:checked={$background}
+                disabled={$loading} />
+              <label class="form-check-label" for="restartInBackgroundSwitch">
+                {$_('components.modals.confirm-restart-pano.restart-in-background')}
+              </label>
+            </div>
+          {/if}
+
           <input
             class="form-control mt-3"
             placeholder={$_('components.modals.confirm-restart-pano.account-password')}
@@ -51,6 +69,7 @@
   const passwordError = writable(false);
   const password = writable('');
   const passwordInput = writable();
+  const background = writable(false);
 
   export function show() {
     modal = new window.bootstrap.Modal(get(modalElement), {
@@ -90,9 +109,22 @@
 
   import ApiUtil from '$lib/api.util';
 
+  export let runMode = undefined;
+
   const platformRestarting = getContext('platformRestarting');
 
-  $: confirmButtonDisabled = $password.length === 0;
+  // Offer the "restart in background" toggle whenever the platform isn't already detached.
+  // -bg only controls terminal attachment, so even in GUI mode the launching terminal/SSH
+  // session can still kill the process when closed — the toggle stays useful.
+  $: showBackgroundOption = runMode != null && !runMode.background;
+  $: if (showBackgroundOption) $background = true;
+  else $background = false;
+
+  // When the toggle is visible we require the user to keep it on. Turning it off means
+  // staying terminal-attached, which is the risky path we just warned them about — block
+  // the confirm button so they have to opt in to background mode (or cancel).
+  $: confirmButtonDisabled =
+    $password.length === 0 || (showBackgroundOption && !$background);
 
   async function isPanoHealthy() {
     try {
@@ -115,7 +147,7 @@
 
     ApiUtil.post({
       path: '/api/panel/settings/restart-pano',
-      body: { password: $password },
+      body: { password: $password, background: $background },
       handler: (body) => {
         if (body.error === 'NO_PERMISSION') {
           $passwordError = true;

@@ -415,7 +415,7 @@
   </div>
 </div>
 
-<ConfirmUpdatePlatformModal />
+<ConfirmUpdatePlatformModal runMode={data.runMode} />
 <ConfirmUpdateResourceModal />
 <ConfirmUpdateResourcesModal />
 <ChangelogModal />
@@ -714,7 +714,7 @@
     return installingStep === resourceUpdateProcesses.length + 1;
   }
 
-  async function installPlatformUpdate() {
+  async function installPlatformUpdate(background) {
     platformUpdatingStep = 1;
     currentPlatformProgress = 0;
     $platformUpdating = true;
@@ -723,15 +723,15 @@
     await delay(500);
 
     const eventSource = new EventSource(
-      `/api/panel/updates/platform/stream?state=${data.platformUpdate.state}`,
+      `/api/panel/updates/platform/stream?state=${data.platformUpdate.state}&background=${background ? 'true' : 'false'}`,
     );
 
     handlePlatformUpdateEventSource(eventSource);
   }
 
   function onUpdatePlatformClick() {
-    showUpdatePlatformModal(() => {
-      installPlatformUpdate();
+    showUpdatePlatformModal((background) => {
+      installPlatformUpdate(background);
     });
   }
 

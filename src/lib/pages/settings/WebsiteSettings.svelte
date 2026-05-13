@@ -415,7 +415,7 @@
   </div>
 </div>
 
-<ConfirmRestartPanoModal />
+<ConfirmRestartPanoModal runMode={data.runMode} />
 <ConfirmSaveCriticalSettingsModal />
 <EditRegisterAgreementModal />
 

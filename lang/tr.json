@@ -1260,7 +1260,9 @@
         "title": "E-posta’yı devre dışı bırakmak istediğinize emin misiniz? Kayıt/şifre sıfırlama gibi e-posta işlevleri çalışmayacaktır!"
       },
       "confirm-update-platform": {
-        "title": "Platformu güncellemek istediğinize emin misiniz? Güncelleme sırasında Pano birkaç dakika erişilemez olabilir. Bu sayfadan ayrılsanız bile güncelleme arka planda devam edecektir."
+        "title": "Platformu güncellemek istediğinize emin misiniz? Güncelleme sırasında Pano birkaç dakika erişilemez olabilir. Bu sayfadan ayrılsanız bile güncelleme arka planda devam edecektir.",
+        "terminal-mode-warning": "Pano şu anda bir terminale bağlı çalışıyor. Terminal'den bağımsız arkaplanda çalışma moduna geçsin mi?",
+        "restart-in-background": "Güncellemeden sonra Pano'yu arka plan modunda yeniden başlat"
       },
       "confirm-update-resource": {
         "title": "Bu kaynağı güncellemek istediğinize emin misiniz? Bu sayfadan ayrılsanız bile güncelleme arka planda devam edecektir."
@@ -1278,7 +1280,9 @@
       },
       "confirm-restart-pano": {
         "title": "Pano'yu yeniden başlatmak istediğinize emin misiniz? Bu, sitenin geçici olarak erişilemez olmasına neden olacaktır!",
-        "account-password": "Hesap Şifresi"
+        "account-password": "Hesap Şifresi",
+        "terminal-mode-warning": "Pano şu anda bir terminale bağlı çalışıyor. Terminal'den bağımsız arkaplanda çalışma moduna geçsin mi?",
+        "restart-in-background": "Pano'yu arka plan modunda yeniden başlat"
       },
       "confirm-remove-theme": {
         "title": "Bu temayı silmek istediğinizden emin misiniz?",

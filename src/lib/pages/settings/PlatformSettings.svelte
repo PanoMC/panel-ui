@@ -496,7 +496,7 @@
 <ConfirmRemovePanoAccountModal />
 <ConfirmDisableEmailModal />
 <ConfirmStopPanoModal />
-<ConfirmRestartPanoModal />
+<ConfirmRestartPanoModal runMode={data.runMode} />
 
 <script context="module">
   import { base } from '$app/paths';
