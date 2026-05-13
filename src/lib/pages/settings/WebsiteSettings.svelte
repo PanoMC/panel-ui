@@ -77,6 +77,12 @@
           placeholder={$_('pages.settings.site-settings.inputs.website-url.placeholder')}
           id="websiteUrl"
           type="text" />
+        {#if isHostMismatch}
+          <div class="alert alert-warning d-flex align-items-start mt-2 mb-0">
+            <i class="fas fa-triangle-exclamation me-2 mt-1"></i>
+            <div>{$_('pages.settings.site-settings.inputs.website-url.host-mismatch')}</div>
+          </div>
+        {/if}
       </div>
     </div>
     <div class="row mb-3">
@@ -555,6 +561,12 @@
   $: isHttpsPortValidForLE = data.httpsPort === 443;
   $: isCurrentDomainMatched =
     typeof window !== 'undefined' && domainFromUrl === window.location.hostname;
+
+  $: isHostMismatch =
+    typeof window !== 'undefined' &&
+    !!data.websiteUrl &&
+    !!domainFromUrl &&
+    domainFromUrl.toLowerCase() !== window.location.hostname.toLowerCase();
 
   $: isLetsEncryptInvalid =
     data.sslMode === 'LETS_ENCRYPT' &&

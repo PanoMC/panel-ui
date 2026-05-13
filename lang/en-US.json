@@ -360,7 +360,8 @@
           },
           "website-url": {
             "label": "Website URL",
-            "placeholder": "https://my-minecraft-server-website.com"
+            "placeholder": "https://my-minecraft-server-website.com",
+            "host-mismatch": "The address you entered is different from the one you're currently using to access the panel. After saving and restarting, Pano will automatically redirect visitors arriving on other hosts (including IP addresses) to this address. If you can't reach the new address, set `website-url-redirect: false` in the config file to disable the redirect — but cross-host logins may not work because authentication cookies are bound to this host."
           },
           "register-agreement": {
             "label": "Register Agreement",
