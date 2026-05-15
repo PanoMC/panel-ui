@@ -3,10 +3,6 @@
 <AddonStartupErrorModal />
 
 <div class="container vstack gap-3">
-  {#if refreshRequired}
-    <RefreshRequiredAlert />
-  {/if}
-
   <PageActions>
     <div slot="left" class="hstack gap-3">
       <a href="{base}/addons" class="btn btn-link" role="button" aria-label={$_('buttons.addons')}>
@@ -242,7 +238,6 @@
   import PageActions from '$lib/components/PageActions.svelte';
   import PageNav from '$lib/components/PageNav.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';
-  import RefreshRequiredAlert from '$lib/components/RefreshRequiredAlert.svelte';
   import {
     isAddonLicenseStartupBlocked,
     isPremiumAddonEnableBlockedByLicense,
@@ -252,7 +247,6 @@
   const slots = initSlots();
 
   let removing = $state(false);
-  let refreshRequired = $state(false);
   /** Matches Addons card: spinner + block actions while enable/disable API runs */
   let enableDisableLoading = $state(false);
 
@@ -302,12 +296,13 @@
       path: `/api/panel/plugins/${data.addon.id}`,
       handler: async (body, reject) => {
         if (body.result !== 'ok') {
-          location.reload();
+          reject(body.error);
+          removing = false;
 
           return;
         }
 
-        await goto(base + '/addons?refreshRequired=true');
+        await goto(base + '/addons', { invalidateAll: true });
 
         await showToast('components.toasts.remove-addon-success');
 
@@ -380,9 +375,6 @@
 
           await invalidateAll();
 
-          if (body.status !== 'FAILED') {
-            refreshRequired = true;
-          }
           callback();
         } finally {
           enableDisableLoading = false;

@@ -5,9 +5,6 @@
   {#if data.failedLogin}
     <FailedLoginPanoStoreAlert />
   {/if}
-  {#if refreshRequired}
-    <RefreshRequiredAlert />
-  {/if}
   <!-- Action Menu -->
   <PageActions middleClasses="d-lg-flex d-none" leftClasses="d-lg-flex d-none">
     <div slot="right" class="hstack gap-2">
@@ -231,14 +228,12 @@
       throw error(500, body);
     }
 
-    const refreshRequired = searchParams.has('refreshRequired');
-
     let plugins = body.data;
     if (status === PageTypes.LICENSE_ISSUES) {
       plugins = plugins.filter((p) => p.premium && ADDON_LICENSE_ISSUE_STATUSES.has(p.licenseStatus));
     }
 
-    return { plugins, pageType: status, failedLogin, refreshRequired };
+    return { plugins, pageType: status, failedLogin };
   }
 </script>
 
@@ -247,7 +242,6 @@
   import { _ } from 'svelte-i18n';
 
   import { base } from '$app/paths';
-  import { browser } from '$app/environment';
 
   import { websiteDisplayHost } from '$lib/website-display.util.js';
 
@@ -279,16 +273,14 @@
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
   import LicenseStatusBadge from '$lib/components/LicenseStatusBadge.svelte';
   import FailedLoginPanoStoreAlert from '$lib/components/FailedLoginPanoStoreAlert.svelte';
-  import RefreshRequiredAlert from '$lib/components/RefreshRequiredAlert.svelte';
   import { isAddonLicenseStartupBlocked, isPremiumAddonEnableBlockedByLicense } from '$lib/addon-license-issue.util.js';
 
   import SearchInput from '$lib/components/SearchInput.svelte';
-  import { goto } from '$app/navigation';
+  import { goto, invalidateAll } from '$app/navigation';
   import { panoApiClient } from '$lib/PluginAPI.js';
   import AddonSettingsButton from '$lib/pages/addons/AddonSettingsButton.svelte';
 
   export let data;
-  let refreshRequired = false;
   let search = '';
   let isSearching = false;
 
@@ -340,18 +332,6 @@
 
     await goto(`${base}/addons${queryParams}`, { invalidateAll: true, keepFocus: true });
     isSearching = false;
-  }
-
-  $: {
-    if (data.refreshRequired) {
-      refreshRequired = true;
-
-      if (browser) {
-        const url = new URL(window.location.href);
-        url.searchParams.delete('refreshRequired');
-        history.replaceState(history.state, '', url);
-      }
-    }
   }
 
   const pageTitle = getContext('pageTitle');
@@ -415,34 +395,7 @@
             return;
           }
 
-          const queryParams = buildQueryParams({ status: data.pageType });
-          const newPluginsData = await ApiUtil.get({
-            path: `/api/panel/plugins` + queryParams,
-          });
-
-          data.plugins.forEach((plugin) => {
-            const newPluginData = newPluginsData.data.find(
-              (newPluginData) => newPluginData.id === plugin.id,
-            );
-
-            if (newPluginData == null) {
-              data.plugins = data.plugins.filter((filterPlugin) => filterPlugin.id !== plugin.id);
-            } else {
-              Object.keys(newPluginData).forEach((key) => {
-                plugin[key] = newPluginData[key];
-              });
-            }
-          });
-
-          newPluginsData.data.forEach((newPluginData) => {
-            const pluginData = data.plugins.find((plugin) => newPluginData.id === plugin.id);
-
-            if (pluginData == null) {
-              data.plugins.push(newPluginData);
-            }
-          });
-
-          data.plugins = data.plugins;
+          await invalidateAll();
 
           if (body.status === 'CREATED') {
             await showToast('components.toasts.settings-save-error', {
@@ -459,11 +412,6 @@
                 addon: plugin.id,
               },
             );
-          }
-
-          data.plugins = data.plugins;
-          if (body.status !== 'FAILED') {
-            refreshRequired = true;
           }
 
           callback();

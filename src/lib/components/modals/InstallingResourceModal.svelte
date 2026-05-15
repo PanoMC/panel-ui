@@ -91,7 +91,7 @@
             data-bs-dismiss="modal"
             type="button"
             on:click={() =>
-              goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}?refreshRequired=true`, {
+              goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}`, {
                 invalidateAll: true,
               })}>
             <i class="fas fa-arrow-left me-2"></i>
@@ -185,7 +185,7 @@
     }
     hideCallback();
     const t = get(type);
-    gotoNavigate(`${base}/${t === 'PLUGIN' ? 'addons' : 'view'}?refreshRequired=true`, {
+    gotoNavigate(`${base}/${t === 'PLUGIN' ? 'addons' : 'view'}`, {
       invalidateAll: true,
     });
     modal?.hide();
