@@ -93,6 +93,12 @@
                   use:tooltip={[theme.title]}>
                   <span class="text-truncate">{theme.title}</span>
                   <VerifiedStatus status={theme.verifyStatus} />
+                  {#if theme.premium}
+                    <span class="badge text-bg-warning"
+                      use:tooltip={[$_('pages.themes.premium-tooltip', { default: 'Premium theme — requires a license.' })]}>
+                      <i class="fas fa-crown"></i>
+                    </span>
+                  {/if}
                 </h5>
 
                 <small class="mb-2 text-truncate opacity-75">
@@ -108,6 +114,18 @@
                     </small>
                   </div>
                   <div class="hstack gap-2">
+                    {#if theme.premium && theme.licenseStatus && theme.licenseStatus !== 'ok' && theme.licenseStatus !== 'free'}
+                      <span class="badge text-bg-danger"
+                        use:tooltip={[
+                          theme.licenseFailureMessage ||
+                            $_('pages.themes.license-status.' + theme.licenseStatus, {
+                              default: theme.licenseStatus,
+                            }),
+                        ]}>
+                        <i class="fas fa-triangle-exclamation"></i>
+                        {$_('pages.themes.license-required', { default: 'License' })}
+                      </span>
+                    {/if}
                     {#if theme.active}
                       <span class="badge text-bg-success">{$_('pages.themes.active')}</span>
                     {/if}

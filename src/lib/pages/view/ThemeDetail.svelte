@@ -125,11 +125,31 @@
             <div class="d-flex justify-content-between align-items-start">
               <h5 class="card-title d-flex align-items-center gap-2">
                 {theme.title}<VerifiedStatus status={theme.verifyStatus} />
+                {#if theme.premium}
+                  <span class="badge text-bg-warning" use:tooltip={[$_('pages.theme-detail.premium-tooltip', { default: 'Premium theme — requires a license tied to your panomc.com account.' })]}>
+                    <i class="fas fa-crown"></i>
+                    {$_('pages.theme-detail.premium', { default: 'Premium' })}
+                  </span>
+                {/if}
               </h5>
               {#if theme.active}
                 <span class="badge text-bg-success">{$_('pages.theme-detail.in-use')}</span>
               {/if}
             </div>
+
+            {#if theme.premium && theme.licenseStatus && theme.licenseStatus !== 'ok' && theme.licenseStatus !== 'free'}
+              <div class="alert alert-warning d-flex align-items-start gap-2 mt-2 mb-2" role="alert">
+                <i class="fas fa-triangle-exclamation mt-1"></i>
+                <div class="flex-grow-1 small">
+                  <strong>{$_('pages.theme-detail.license-required', { default: 'License required' })}</strong>
+                  <div>
+                    {$_('pages.theme-detail.license-status.' + theme.licenseStatus, {
+                      default: theme.licenseFailureMessage || theme.licenseStatus,
+                    })}
+                  </div>
+                </div>
+              </div>
+            {/if}
 
             <div class="small mb-2 hstack gap-2">
               <span class="user-select-all font-monospace">{theme.id}</span>
@@ -356,6 +376,23 @@
     });
 
     if (activateResponse.result !== 'ok') {
+      // Premium themes whose license cannot be verified come back here with a stable
+      // licenseDeniedReason in the extras (set by ThemeLicenseRequired on the host).
+      // Surface the reason so the operator knows what to fix instead of an opaque reload.
+      const reason = activateResponse.extras?.licenseDeniedReason;
+      if (reason) {
+        await showToast(
+          'pages.theme-detail.license-status.' + reason,
+          {
+            default:
+              activateResponse.extras?.message ||
+              $_('pages.theme-detail.license-status.unknown', { default: 'License check failed.' }),
+          },
+        );
+        activating = false;
+        await invalidate((_) => true);
+        return;
+      }
       location.reload();
       return;
     }
