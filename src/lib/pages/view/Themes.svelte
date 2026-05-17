@@ -89,16 +89,10 @@
               <div
                 class="card-img-overlay d-flex flex-column justify-content-end p-3 overlay-gradient">
                 <h5
-                  class="card-title mb-1 text-truncate d-flex align-items-center gap-2"
-                  use:tooltip={[theme.title]}>
+                  class="card-title mb-1 text-truncate d-flex align-items-center gap-2">
                   <span class="text-truncate">{theme.title}</span>
                   <VerifiedStatus status={theme.verifyStatus} />
-                  {#if theme.premium}
-                    <span class="badge text-bg-warning"
-                      use:tooltip={[$_('pages.themes.premium-tooltip', { default: 'Premium theme — requires a license.' })]}>
-                      <i class="fas fa-crown"></i>
-                    </span>
-                  {/if}
+                  <LicenseStatusBadge status={theme.licenseStatus} />
                 </h5>
 
                 <small class="mb-2 text-truncate opacity-75">
@@ -114,18 +108,6 @@
                     </small>
                   </div>
                   <div class="hstack gap-2">
-                    {#if theme.premium && theme.licenseStatus && theme.licenseStatus !== 'ok' && theme.licenseStatus !== 'free'}
-                      <span class="badge text-bg-danger"
-                        use:tooltip={[
-                          theme.licenseFailureMessage ||
-                            $_('pages.themes.license-status.' + theme.licenseStatus, {
-                              default: theme.licenseStatus,
-                            }),
-                        ]}>
-                        <i class="fas fa-triangle-exclamation"></i>
-                        {$_('pages.themes.license-required', { default: 'License' })}
-                      </span>
-                    {/if}
                     {#if theme.active}
                       <span class="badge text-bg-success">{$_('pages.themes.active')}</span>
                     {/if}
@@ -229,6 +211,7 @@
 
   import NoContent from '$lib/components/NoContent.svelte';
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
+  import LicenseStatusBadge from '$lib/components/LicenseStatusBadge.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
   import InstallResourceModal, {
     show as showInstallResourceModal,

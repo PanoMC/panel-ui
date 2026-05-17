@@ -9,7 +9,10 @@
     class="d-inline-flex align-items-center gap-1"
     use:tooltip={[
       $_(entry.tooltipKey, { ...websiteI18n, default: entry.tooltipKey }),
-      { placement: 'bottom' },
+      // Append to body so the tooltip doesn't get clipped by `overflow: hidden` ancestors
+      // (e.g. the theme card on the Themes page would otherwise force the tooltip out to
+      // the right edge instead of dropping straight below the icon).
+      { placement: 'bottom', appendTo: () => document.body },
     ]}>
     <i class="fa-solid {entry.icon} {entry.iconClass}" aria-hidden="true"></i>
     {#if labeled}
