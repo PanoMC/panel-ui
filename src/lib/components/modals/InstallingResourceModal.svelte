@@ -90,10 +90,7 @@
             class="btn btn-primary col-6 m-0"
             data-bs-dismiss="modal"
             type="button"
-            on:click={() =>
-              goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}`, {
-                invalidateAll: true,
-              })}>
+            on:click={() => goto(buildPostInstallUrl(), { invalidateAll: true })}>
             <i class="fas fa-arrow-left me-2"></i>
             {$_('buttons.' + ($type === 'PLUGIN' ? 'addons' : 'themes'))}
           </button>
@@ -125,6 +122,15 @@
   const installError = writable();
   /** Set when install failed on license check ([LicenseDeniedReason.publicId]). */
   const installLicenseDeniedReason = writable(null);
+  /** ResourceId of the addon/theme being installed (when known up-front, e.g. store install). */
+  const installedResourceId = writable(null);
+
+  function buildPostInstallUrl() {
+    const segment = get(type) === 'PLUGIN' ? 'addons' : 'view';
+    const id = get(installedResourceId);
+    const query = id ? `?installed=${encodeURIComponent(id)}` : '';
+    return `${base}/${segment}${query}`;
+  }
 
   let callback = () => {};
   let hideCallback = () => {};
@@ -184,10 +190,7 @@
       return;
     }
     hideCallback();
-    const t = get(type);
-    gotoNavigate(`${base}/${t === 'PLUGIN' ? 'addons' : 'view'}`, {
-      invalidateAll: true,
-    });
+    gotoNavigate(buildPostInstallUrl(), { invalidateAll: true });
     modal?.hide();
   }
 
@@ -290,12 +293,20 @@
     handleEventSource(eventSource);
   }
 
-  export async function show(newType, newFile, newVersionId, storeCallback, action = 'INSTALL') {
+  export async function show(
+    newType,
+    newFile,
+    newVersionId,
+    storeCallback,
+    action = 'INSTALL',
+    resourceId = null,
+  ) {
     installingStep.set(1);
     currentProgress.set(0);
     versionId.set(newVersionId);
     installError.set(null);
     installLicenseDeniedReason.set(null);
+    installedResourceId.set(resourceId);
     type.set(newType);
     callback = storeCallback;
     installing = true;
@@ -352,7 +363,6 @@
 
 <script>
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
   import { fade } from 'svelte/transition';
 

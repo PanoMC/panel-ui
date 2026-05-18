@@ -85,9 +85,9 @@
         <NoContent />
       {/if}
       <div class="row row-cols-xl-2 row-cols-1 g-3">
-        {#each data.plugins as plugin}
+        {#each sortedPlugins as plugin (plugin.id)}
           <div class="col">
-            <div class="card h-100 position-relative {cardBorderClass(plugin)}">
+            <div class="card h-100 position-relative {cardBorderClass(plugin, installedId)}">
               <!-- STATUS ACTIONS -->
               <div class="position-absolute top-0 end-0 m-2 d-flex align-items-center gap-2">
                 {#if plugin.status === 'FAILED' && !isAddonLicenseStartupBlocked(plugin)}
@@ -238,7 +238,7 @@
 </script>
 
 <script>
-  import { getContext } from 'svelte';
+  import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
 
   import { base } from '$app/paths';
@@ -291,8 +291,13 @@
   /**
    * Strong borders only for real failures / integrity issues.
    * Missing or unverified commercial license is conveyed via the key badge + store link, not card chrome.
+   * `justInstalledId` wins so a fresh install reads as a green confirmation regardless of license state.
    */
-  function cardBorderClass(plugin) {
+  function cardBorderClass(plugin, justInstalledId) {
+    if (justInstalledId && plugin.id === justInstalledId) {
+      return 'border-success border-2';
+    }
+
     const failedNonLicense =
       plugin.status === 'FAILED' && !isAddonLicenseStartupBlocked(plugin);
     if (!plugin.premium) {
@@ -317,6 +322,25 @@
         return failedNonLicense ? 'border-danger border-2' : '';
     }
   }
+
+  let installedId = '';
+  onMount(() => {
+    const url = new URL(window.location.href);
+    const id = url.searchParams.get('installed');
+    if (id) {
+      installedId = id;
+      url.searchParams.delete('installed');
+      window.history.replaceState({}, '', url.toString());
+    }
+  });
+
+  $: sortedPlugins = installedId
+    ? [...data.plugins].sort((a, b) => {
+        if (a.id === installedId) return -1;
+        if (b.id === installedId) return 1;
+        return 0;
+      })
+    : data.plugins;
 
   function onSearchInput(event) {
     search = event.detail.value;

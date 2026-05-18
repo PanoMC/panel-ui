@@ -105,22 +105,12 @@
                   <!-- Title & Verified & Version -->
                   <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                     <div class="d-flex align-items-center gap-2">
-                      <h5
-                        class="mb-0 text-truncate"
-                        use:tooltip={[
-                          $versionInfoObj.version.resourceTitle,
-                          { placement: 'bottom' },
-                        ]}
-                        aria-label={$versionInfoObj.version.resourceTitle}>
+                      <h5 class="mb-0 text-truncate">
                         {$versionInfoObj.version.resourceTitle}
                       </h5>
                       {#if $versionInfoObj.version.verified}
                         <i
                           class="fa-solid fa-circle-check text-success small"
-                          use:tooltip={[
-                            $_('pages.settings.updates.verified'),
-                            { placement: 'bottom' },
-                          ]}
                           aria-label={$_('pages.settings.updates.verified')}></i>
                       {/if}
                     </div>
@@ -143,13 +133,9 @@
 
                   <!-- Meta Info -->
                   <div class="small d-flex gap-3 mt-3">
-                    <span
-                      use:tooltip={[$_('components.store-loading.author'), { placement: 'bottom' }]}
-                      aria-label={$_('components.store-loading.author')}
+                    <span aria-label={$_('components.store-loading.author')}
                       ><i class="fas fa-user me-1"></i> {$versionInfoObj.version.author}</span>
-                    <span
-                      use:tooltip={[$_('components.store-loading.size'), { placement: 'bottom' }]}
-                      aria-label={$_('components.store-loading.size')}
+                    <span aria-label={$_('components.store-loading.size')}
                       ><i class="fas fa-database me-1"></i>
                       {formatBytes($versionInfoObj.version.size)}</span>
                   </div>
@@ -261,7 +247,6 @@
 
   import ChangelogModal, { show as showChangelogModal } from './ChangelogModal.svelte';
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
-  import tooltip from '$lib/tooltip.util';
 
   import { PANO_WEBSITE_API_URL } from '$lib/variables.js';
   import { formatBytes } from '$lib/string.util';

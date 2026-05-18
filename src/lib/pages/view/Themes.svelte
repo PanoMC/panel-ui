@@ -73,10 +73,14 @@
       <NoContent />
     {/if}
     <div class="row row-cols-xl-2 row-cols-1 g-3">
-      {#each data.themes as theme}
+      {#each sortedThemes as theme (theme.id)}
         <div class="col">
           <a href="{base}/view/detail/{theme.id}" class="text-decoration-none">
-            <div class="card rounded-4 position-relative overflow-hidden theme-card">
+            <div
+              class="card rounded-4 position-relative overflow-hidden theme-card {installedId &&
+              theme.id === installedId
+                ? 'border-success border-2'
+                : ''}">
               <div class="ratio ratio-16x9">
                 <img
                   src="/api/panel/themes/{theme.id}/screenshots/{getFirstScreenshotUrl(theme) ||
@@ -199,9 +203,8 @@
 </script>
 
 <script>
-  import { getContext } from 'svelte';
+  import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
 
   import { base } from '$app/paths';
   import SearchInput from '$lib/components/SearchInput.svelte';
@@ -244,6 +247,25 @@
   let reloading;
 
   pageTitle.set('pages.themes.title');
+
+  let installedId = '';
+  onMount(() => {
+    const url = new URL(window.location.href);
+    const id = url.searchParams.get('installed');
+    if (id) {
+      installedId = id;
+      url.searchParams.delete('installed');
+      window.history.replaceState({}, '', url.toString());
+    }
+  });
+
+  $: sortedThemes = installedId
+    ? [...data.themes].sort((a, b) => {
+        if (a.id === installedId) return -1;
+        if (b.id === installedId) return 1;
+        return 0;
+      })
+    : data.themes;
 
   async function reloadThemes() {
     reloading = true;

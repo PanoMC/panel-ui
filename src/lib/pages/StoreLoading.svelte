@@ -389,7 +389,8 @@
 
         await goToStore(storeTokenResponse);
       },
-      versionInfo.action
+      versionInfo.action,
+      versionInfo.version.resourceId,
     );
   }
 
