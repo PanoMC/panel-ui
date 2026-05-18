@@ -58,7 +58,7 @@
       <span class="d-lg-inline d-none ms-2">{$_('buttons.start')}</span>
     </button>
   {/if}
-  {#if !theme.active}
+  {#if !theme.active && (!theme.premium || theme.licenseStatus === 'LICENSED')}
     <button class="btn btn-secondary" onclick={activate} disabled={activating}>
       {$_('buttons.activate')}{#if activating}<i class="fas fa-spinner fa-spin ms-2"></i>{/if}
     </button>
@@ -246,6 +246,7 @@
 
   import { formatBytes } from '$lib/string.util';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
+  import { websiteDisplayHost } from '$lib/website-display.util.js';
 
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
@@ -365,14 +366,25 @@
     });
 
     if (activateResponse.result !== 'ok') {
-      // Generic "license required" toast — we deliberately don't surface the underlying
-      // denial reason (no-purchase, expired, version-mismatch, etc.). The operator only
-      // needs to know the theme isn't licensed; the internals are intentionally opaque to
-      // discourage poking the boundary. No reload either; the page state is fine, the
-      // request just didn't go through.
-      await showToast('pages.theme-detail.license-required-toast', {
-        default: 'License required for this premium theme.',
-      });
+      // Surface the precise denial reason returned by the backend. The button only renders
+      // when licenseStatus === 'LICENSED', so reaching this branch on a license error means
+      // the backend re-checked at activate time and disagrees with the panel's cached view
+      // (e.g. file-tampered, jar-hash-mismatch, expired between page load and click).
+      if (activateResponse.error === 'THEME_LICENSE_REQUIRED') {
+        const reason = activateResponse.licenseDeniedReason || 'unknown';
+        console.error('Theme activate license-denied', {
+          themeId: theme.id,
+          reason,
+          message: activateResponse.message,
+          response: activateResponse,
+        });
+        await showToast('pages.theme-detail.license-denied-toast', {
+          reason,
+          website: websiteDisplayHost(),
+        });
+      } else {
+        await showToast('pages.theme-detail.activate-failed-toast');
+      }
       activating = false;
       return;
     }

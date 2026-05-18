@@ -125,7 +125,10 @@
         "USER": "User",
         "SYSTEM": "System"
       },
-      "unknown": "Unknown"
+      "unknown": "Unknown",
+      "license-required-toast": "License required for this premium theme.",
+      "activate-failed-toast": "Failed to activate the theme. Please try again.",
+      "license-denied-toast": "Premium theme license check failed (reason: {reason}). Verify your {website} account and purchase, then refresh the license."
     },
     "addons": {
       "title": "Addons",

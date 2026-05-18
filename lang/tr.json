@@ -125,7 +125,10 @@
         "USER": "Kullanıcı",
         "SYSTEM": "Sistem"
       },
-      "unknown": "Bilinmiyor"
+      "unknown": "Bilinmiyor",
+      "license-required-toast": "Bu premium tema için lisans gerekli.",
+      "activate-failed-toast": "Tema aktifleştirilemedi. Lütfen tekrar deneyin.",
+      "license-denied-toast": "Premium tema lisans kontrolü başarısız (sebep: {reason}). {website} hesabınızı ve satın alımınızı kontrol edip lisansı yenileyin."
     },
     "addons": {
       "title": "Eklentiler",
