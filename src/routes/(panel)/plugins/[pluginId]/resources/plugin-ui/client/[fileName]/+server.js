@@ -16,10 +16,11 @@ export async function GET({ params }) {
   const safeFileName = path.basename(fileName); // Same for fileName
 
   // Construct the absolute file path
-  const filePath = path.resolve(`plugins/${safePluginId}/client/${safeFileName}`);
+  const baseDir = path.resolve(`plugins/${safePluginId}/client`) + path.sep;
+  const filePath = path.resolve(baseDir, safeFileName);
 
-  // Ensure that the file exists and belongs to the intended plugin
-  if (!filePath.startsWith(path.resolve(`plugins/${safePluginId}/client/`))) {
+  // Ensure that the resolved path stays inside the plugin's client directory
+  if (!filePath.startsWith(baseDir)) {
     return new Response('Access to this file is forbidden.', { status: 403 });
   }
 
