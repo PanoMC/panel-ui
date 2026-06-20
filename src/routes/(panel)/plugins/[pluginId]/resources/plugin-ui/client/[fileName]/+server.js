@@ -30,9 +30,20 @@ export async function GET({ params }) {
     // Use mime-types to automatically determine the content type
     const contentType = mime.lookup(fileName) || 'application/octet-stream'; // Default to 'application/octet-stream' if mime type is unknown
 
-    return new Response(data, {
-      headers: { 'Content-Type': contentType },
-    });
+    /** @type {Record<string, string>} */
+    const headers = { 'Content-Type': contentType };
+
+    if (safeFileName === 'client.mjs') {
+      // Stable-named entry: must be revalidated on every load.
+      headers['Cache-Control'] = 'no-cache';
+      const stats = fs.statSync(filePath);
+      headers['ETag'] = `"${stats.size}-${stats.mtimeMs}"`;
+    } else if (/-[\da-f]+\.[a-z0-9]+$/i.test(safeFileName)) {
+      // Content-hashed chunk (e.g. foo-1a2b3c4d.js): safe to cache forever.
+      headers['Cache-Control'] = 'public, max-age=31536000, immutable';
+    }
+
+    return new Response(data, { headers });
   } catch (_) {
     return new Response('File not found or unable to read.', { status: 404 });
   }
