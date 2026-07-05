@@ -1,0 +1,419 @@
+{
+ "projectId": "4cb2fab7-accd-4380-b805-0151667714e1",
+ "shape": "package",
+ "pkg": "@panomc/panel-ui",
+ "globalName": "PanoPanelUI",
+ "entry": "./.design-sync/bridge-pkg/dist/index.js",
+ "buildCmd": "node .design-sync/bridge/build-bridge.mjs",
+ "cssEntry": "dist/panel-style.css",
+ "extraFonts": [
+  "dist/fonts/pano-fonts.css"
+ ],
+ "componentSrcMap": {
+  "ActivityLogRow": "../../src/lib/components/rows/ActivityLogRow.svelte",
+  "AddEditLanguageModal": "../../src/lib/components/modals/AddEditLanguageModal.svelte",
+  "AddEditPostCategoryModal": "../../src/lib/components/modals/AddEditPostCategoryModal.svelte",
+  "AddEditTicketCategoryModal": "../../src/lib/components/modals/AddEditTicketCategoryModal.svelte",
+  "AddonLicenseCard": "../../src/lib/components/AddonLicenseCard.svelte",
+  "AddonStartupErrorModal": "../../src/lib/components/modals/AddonStartupErrorModal.svelte",
+  "App": "../../src/lib/components/App.svelte",
+  "AuthorizePlayerModal": "../../src/lib/components/modals/AuthorizePlayerModal.svelte",
+  "BanHistoryRow": "../../src/lib/components/rows/BanHistoryRow.svelte",
+  "BanSourceBadge": "../../src/lib/components/badges/BanSourceBadge.svelte",
+  "Bottom": "../../src/lib/components/sidebar/Bottom.svelte",
+  "CardFilters": "../../src/lib/components/CardFilters.svelte",
+  "CardFiltersItem": "../../src/lib/components/CardFiltersItem.svelte",
+  "CardHeader": "../../src/lib/components/CardHeader.svelte",
+  "CategoryBadge": "../../src/lib/components/badges/CategoryBadge.svelte",
+  "ChangelogModal": "../../src/lib/components/modals/ChangelogModal.svelte",
+  "ConfirmActionModal": "../../src/lib/components/modals/ConfirmActionModal.svelte",
+  "ConfirmBanIpModal": "../../src/lib/components/modals/ConfirmBanIpModal.svelte",
+  "ConfirmBanPlayerModal": "../../src/lib/components/modals/ConfirmBanPlayerModal.svelte",
+  "ConfirmCloseTicketModal": "../../src/lib/components/modals/ConfirmCloseTicketModal.svelte",
+  "ConfirmDeleteLanguageModal": "../../src/lib/components/modals/ConfirmDeleteLanguageModal.svelte",
+  "ConfirmDeletePlayerModal": "../../src/lib/components/modals/ConfirmDeletePlayerModal.svelte",
+  "ConfirmDeletePostCategoryModal": "../../src/lib/components/modals/ConfirmDeletePostCategoryModal.svelte",
+  "ConfirmDeletePostModal": "../../src/lib/components/modals/ConfirmDeletePostModal.svelte",
+  "ConfirmDeleteTicketCategoryModal": "../../src/lib/components/modals/ConfirmDeleteTicketCategoryModal.svelte",
+  "ConfirmDeleteTicketModal": "../../src/lib/components/modals/ConfirmDeleteTicketModal.svelte",
+  "ConfirmDisableAddonWillCauseMoreDisableModal": "../../src/lib/components/modals/ConfirmDisableAddonWillCauseMoreDisableModal.svelte",
+  "ConfirmDisableEmailModal": "../../src/lib/components/modals/ConfirmDisableEmailModal.svelte",
+  "ConfirmDraftPostModal": "../../src/lib/components/modals/ConfirmDraftPostModal.svelte",
+  "ConfirmEnablingAddonWillCauseMoreEnableModal": "../../src/lib/components/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte",
+  "ConfirmInstallResourceModal": "../../src/lib/components/modals/ConfirmInstallResourceModal.svelte",
+  "ConfirmPublishPostModal": "../../src/lib/components/modals/ConfirmPublishPostModal.svelte",
+  "ConfirmRemoveAddonModal": "../../src/lib/components/modals/ConfirmRemoveAddonModal.svelte",
+  "ConfirmRemoveAddonWillCauseMoreUnloadModal": "../../src/lib/components/modals/ConfirmRemoveAddonWillCauseMoreUnloadModal.svelte",
+  "ConfirmRemoveAllNotificationsModal": "../../src/lib/components/modals/ConfirmRemoveAllNotificationsModal.svelte",
+  "ConfirmRemovePanoAccountModal": "../../src/lib/components/modals/ConfirmRemovePanoAccountModal.svelte",
+  "ConfirmRemovePermGroupModal": "../../src/lib/components/modals/ConfirmRemovePermGroupModal.svelte",
+  "ConfirmRemovePermTrackModal": "../../src/lib/components/modals/ConfirmRemovePermTrackModal.svelte",
+  "ConfirmRemovePermUserModal": "../../src/lib/components/modals/ConfirmRemovePermUserModal.svelte",
+  "ConfirmRemoveThemeModal": "../../src/lib/components/modals/ConfirmRemoveThemeModal.svelte",
+  "ConfirmResetPermissionsModal": "../../src/lib/components/modals/ConfirmResetPermissionsModal.svelte",
+  "ConfirmRestartPanoModal": "../../src/lib/components/modals/ConfirmRestartPanoModal.svelte",
+  "ConfirmSaveCriticalSettingsModal": "../../src/lib/components/modals/ConfirmSaveCriticalSettingsModal.svelte",
+  "ConfirmSendVerificationEmailModal": "../../src/lib/components/modals/ConfirmSendVerificationEmailModal.svelte",
+  "ConfirmStopPanoModal": "../../src/lib/components/modals/ConfirmStopPanoModal.svelte",
+  "ConfirmStopThemeModal": "../../src/lib/components/modals/ConfirmStopThemeModal.svelte",
+  "ConfirmUpdatePlatformModal": "../../src/lib/components/modals/ConfirmUpdatePlatformModal.svelte",
+  "ConfirmUpdateResourceModal": "../../src/lib/components/modals/ConfirmUpdateResourceModal.svelte",
+  "ConfirmUpdateResourcesModal": "../../src/lib/components/modals/ConfirmUpdateResourcesModal.svelte",
+  "ConnectServerModal": "../../src/lib/components/modals/ConnectServerModal.svelte",
+  "CreatePermissionGroupModal": "../../src/lib/components/modals/CreatePermissionGroupModal.svelte",
+  "Date": "../../src/lib/components/Date.svelte",
+  "DefaultToast": "../../src/lib/components/DefaultToast.svelte",
+  "DragAndDropZone": "../../src/lib/components/DragAndDropZone.svelte",
+  "Editor": "../../src/lib/components/Editor.svelte",
+  "EditPermissionNodeModal": "../../src/lib/components/modals/EditPermissionNodeModal.svelte",
+  "EditPermTrackModal": "../../src/lib/components/modals/EditPermTrackModal.svelte",
+  "EditPlayerModal": "../../src/lib/components/modals/EditPlayerModal.svelte",
+  "EditRegisterAgreementModal": "../../src/lib/components/modals/EditRegisterAgreementModal.svelte",
+  "FailedLoginPanoStoreAlert": "../../src/lib/components/FailedLoginPanoStoreAlert.svelte",
+  "Hook": "../../src/lib/components/Hook.svelte",
+  "InstallingResourceModal": "../../src/lib/components/modals/InstallingResourceModal.svelte",
+  "InstallResourceModal": "../../src/lib/components/modals/InstallResourceModal.svelte",
+  "IpBanRow": "../../src/lib/components/rows/IpBanRow.svelte",
+  "JumpToPageModal": "../../src/lib/components/modals/JumpToPageModal.svelte",
+  "LicenseStatusBadge": "../../src/lib/components/LicenseStatusBadge.svelte",
+  "LocaleRow": "../../src/lib/components/rows/LocaleRow.svelte",
+  "MakeMainServerModal": "../../src/lib/components/modals/MakeMainServerModal.svelte",
+  "MarkdownRenderer": "../../src/lib/components/MarkdownRenderer.svelte",
+  "Navbar": "../../src/lib/components/Navbar.svelte",
+  "NoContent": "../../src/lib/components/NoContent.svelte",
+  "NotificationContainer": "../../src/lib/components/NotificationContainer.svelte",
+  "PageActions": "../../src/lib/components/PageActions.svelte",
+  "PageLoader": "../../src/lib/components/PageLoader.svelte",
+  "PageLoading": "../../src/lib/components/PageLoading.svelte",
+  "PageNav": "../../src/lib/components/PageNav.svelte",
+  "PageNavItem": "../../src/lib/components/PageNavItem.svelte",
+  "Pagination": "../../src/lib/components/Pagination.svelte",
+  "PermissionEditor": "../../src/lib/components/PermissionEditor.svelte",
+  "PermissionGroupRow": "../../src/lib/components/rows/PermissionGroupRow.svelte",
+  "PlayerPermissionBadge": "../../src/lib/components/badges/PlayerPermissionBadge.svelte",
+  "PlayerRow": "../../src/lib/components/rows/PlayerRow.svelte",
+  "PlayerStatusBadge": "../../src/lib/components/badges/PlayerStatusBadge.svelte",
+  "PostCategoryRow": "../../src/lib/components/rows/PostCategoryRow.svelte",
+  "PostRow": "../../src/lib/components/rows/PostRow.svelte",
+  "RemoveServerModal": "../../src/lib/components/modals/RemoveServerModal.svelte",
+  "RestartingModal": "../../src/lib/components/modals/RestartingModal.svelte",
+  "SearchInput": "../../src/lib/components/SearchInput.svelte",
+  "SearchPlayerModal": "../../src/lib/components/modals/SearchPlayerModal.svelte",
+  "ServerActivityMiniChart": "../../src/lib/components/charts/Server/ServerActivityMiniChart.svelte",
+  "ServerNavigationMenu": "../../src/lib/components/sidebar/ServerNavigationMenu.svelte",
+  "ServerPlayerChart": "../../src/lib/components/charts/Server/ServerPlayerChart.svelte",
+  "ServerRequestModal": "../../src/lib/components/modals/ServerRequestModal.svelte",
+  "ServersModal": "../../src/lib/components/modals/ServersModal.svelte",
+  "ServersModalServerCard": "../../src/lib/components/modals/ServersModalServerCard.svelte",
+  "Sidebar": "../../src/lib/components/Sidebar.svelte",
+  "SiteNavigationMenu": "../../src/lib/components/sidebar/SiteNavigationMenu.svelte",
+  "Splash": "../../src/lib/components/Splash.svelte",
+  "SummaryStatCard": "../../src/lib/components/charts/SummaryStatCard.svelte",
+  "TableThumbnail": "../../src/lib/components/rows/TableThumbnail.svelte",
+  "ThemeColorMenu": "../../src/lib/components/ThemeColorMenu.svelte",
+  "ThemeLicenseCard": "../../src/lib/components/ThemeLicenseCard.svelte",
+  "TicketCategoryRow": "../../src/lib/components/rows/TicketCategoryRow.svelte",
+  "TicketRow": "../../src/lib/components/rows/TicketRow.svelte",
+  "TicketStatusBadge": "../../src/lib/components/badges/TicketStatusBadge.svelte",
+  "Toast": "../../src/lib/components/Toast.svelte",
+  "ToastContainer": "../../src/lib/components/ToastContainer.svelte",
+  "TranslationRow": "../../src/lib/components/rows/TranslationRow.svelte",
+  "TranslationSkeleton": "../../src/lib/components/rows/TranslationSkeleton.svelte",
+  "UnbanIpModal": "../../src/lib/components/modals/UnbanIpModal.svelte",
+  "UnbanPlayerModal": "../../src/lib/components/modals/UnbanPlayerModal.svelte",
+  "UnnecessaryTranslationsAlert": "../../src/lib/components/UnnecessaryTranslationsAlert.svelte",
+  "VerifiedStatus": "../../src/lib/components/VerifiedStatus.svelte",
+  "ViewActivityLogModal": "../../src/lib/components/modals/ViewActivityLogModal.svelte",
+  "ViewAllLink": "../../src/lib/components/ViewAllLink.svelte",
+  "ViewComponent": "../../src/lib/components/ViewComponent.svelte",
+  "WebsiteActivityChart": "../../src/lib/components/charts/Dashboard/WebsiteActivityChart.svelte",
+  "WhatsNewModal": "../../src/lib/components/modals/WhatsNewModal.svelte",
+  "PanoSurface": null
+ },
+ "guidelinesGlob": [],
+ "overrides": {
+  "ConfirmActionModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "AddEditLanguageModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "AddEditPostCategoryModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "AddEditTicketCategoryModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "AddonStartupErrorModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "AuthorizePlayerModal": {
+   "cardMode": "single",
+   "viewport": "560x700"
+  },
+  "ChangelogModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmBanIpModal": {
+   "cardMode": "single",
+   "viewport": "560x700"
+  },
+  "ConfirmBanPlayerModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmCloseTicketModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmDeleteLanguageModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmDeletePlayerModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmDeletePostCategoryModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmDeletePostModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmDeleteTicketCategoryModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmDeleteTicketModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmDisableAddonWillCauseMoreDisableModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmDisableEmailModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmDraftPostModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmEnablingAddonWillCauseMoreEnableModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmInstallResourceModal": {
+   "cardMode": "single",
+   "viewport": "560x700"
+  },
+  "ConfirmPublishPostModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmRemoveAddonModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmRemoveAddonWillCauseMoreUnloadModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmRemoveAllNotificationsModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmRemovePanoAccountModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmRemovePermGroupModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmRemovePermTrackModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmRemovePermUserModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmRemoveThemeModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmResetPermissionsModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmRestartPanoModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmSaveCriticalSettingsModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmSendVerificationEmailModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmStopPanoModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmStopThemeModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmUpdatePlatformModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmUpdateResourceModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConfirmUpdateResourcesModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ConnectServerModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "CreatePermissionGroupModal": {
+   "cardMode": "single",
+   "viewport": "560x740"
+  },
+  "EditPermissionNodeModal": {
+   "cardMode": "single",
+   "viewport": "560x780"
+  },
+  "EditPermTrackModal": {
+   "cardMode": "single",
+   "viewport": "560x780"
+  },
+  "EditPlayerModal": {
+   "cardMode": "single",
+   "viewport": "560x820"
+  },
+  "EditRegisterAgreementModal": {
+   "cardMode": "single",
+   "viewport": "900x720"
+  },
+  "InstallingResourceModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "InstallResourceModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "JumpToPageModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "MakeMainServerModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "RemoveServerModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "RestartingModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "SearchPlayerModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ServerRequestModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ServersModal": {
+   "cardMode": "single",
+   "viewport": "1050x700"
+  },
+  "UnbanIpModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "UnbanPlayerModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "ViewActivityLogModal": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "WhatsNewModal": {
+   "cardMode": "single",
+   "viewport": "900x700"
+  },
+  "Navbar": {
+   "cardMode": "column",
+   "viewport": "1100x420"
+  },
+  "PageNav": {
+   "cardMode": "column"
+  },
+  "Pagination": {
+   "cardMode": "column"
+  },
+  "CardFilters": {
+   "cardMode": "column"
+  },
+  "WebsiteActivityChart": {
+   "cardMode": "column"
+  },
+  "ServerPlayerChart": {
+   "cardMode": "column"
+  },
+  "PermissionEditor": {
+   "cardMode": "column"
+  },
+  "Editor": {
+   "cardMode": "column"
+  },
+  "DragAndDropZone": {
+   "cardMode": "column"
+  },
+  "PageActions": {
+   "cardMode": "column",
+   "viewport": "1100x400"
+  },
+  "Sidebar": {
+   "cardMode": "single",
+   "viewport": "420x820"
+  },
+  "Splash": {
+   "cardMode": "single",
+   "viewport": "560x460"
+  },
+  "App": {
+   "cardMode": "single",
+   "primaryStory": "Shell"
+  },
+  "Bottom": {
+   "cardMode": "column"
+  }
+ },
+ "provider": {
+  "component": "PanoSurface"
+ },
+ "readmeHeader": ".design-sync/conventions.md"
+}

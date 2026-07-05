@@ -1,0 +1,3444 @@
+{
+ "ActivityLogRow": {
+  "path": "src/lib/components/rows/ActivityLogRow.svelte",
+  "group": "Tables",
+  "role": "Clickable list-group item showing a markdown-rendered activity-log message with a relative date underneath",
+  "feasibility": "medium",
+  "note": "Needs i18n plus $lib/activity-log.util translation mapping and MarkdownRenderer/Date child components; realistic log object required",
+  "children": null,
+  "props": [
+   {
+    "name": "log",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "AddEditLanguageModal": {
+  "path": "src/lib/components/modals/AddEditLanguageModal.svelte",
+  "group": "Modals",
+  "role": "Bootstrap centered modal form to create/edit a site language: name, ISO code, date-fns locale select, derivative-keyword badge chips, submit footer button",
+  "feasibility": "medium",
+  "note": "Legacy Svelte 4 syntax; no props — state lives in module stores set by exported show(); renders from store defaults but hidden (.modal.fade) — needs i18n init, a window.bootstrap.Modal shim, and forcing .show/.d-block; API only on submit",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, mode, locale, error, derivative) — imperative API via exported show/hide/setCallback/onHide",
+    "$lib/api.util",
+    "$lib/components/ToastContainer.svelte (show, limitTitle)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "date-fns/locale"
+   ]
+  }
+ },
+ "AddEditPostCategoryModal": {
+  "path": "src/lib/components/modals/AddEditPostCategoryModal.svelte",
+  "group": "Modals",
+  "role": "Centered modal form to create/edit a post category: title input, description textarea, /category/ URL input-group with auto-slug, submit footer",
+  "feasibility": "medium",
+  "note": "No props; needs i18n, bootstrap Modal shim, forced-visible modal classes, and stores seeded via exported show(); network only on submit",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, mode, category, errors) — imperative show/hide/setCallback/onHide API",
+    "$lib/api.util",
+    "$lib/tooltip.util (imported, unused in markup)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)"
+   ]
+  }
+ },
+ "AddEditTicketCategoryModal": {
+  "path": "src/lib/components/modals/AddEditTicketCategoryModal.svelte",
+  "group": "Modals",
+  "role": "Centered modal form to create/edit a ticket category: title input, description textarea, submit footer button",
+  "feasibility": "medium",
+  "note": "No props; needs i18n, bootstrap Modal shim, forced-visible classes; state seeded via exported show(); network only on submit",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, mode, category, errors) — imperative show/hide/setCallback/onHide API",
+    "$lib/api.util",
+    "$lib/tooltip.util (imported, unused in markup)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)"
+   ]
+  }
+ },
+ "AddonLicenseCard": {
+  "path": "src/lib/components/AddonLicenseCard.svelte",
+  "group": "Cards",
+  "role": "Bootstrap card showing premium addon license state: status icon, refresh button, guidance text, and buy/connect CTA buttons per licenseStatus",
+  "feasibility": "medium",
+  "note": "Renders from an `addon` object prop; needs i18n, $app/paths base shim, and a websiteDisplayHost stub; refresh action only fires on click",
+  "children": null,
+  "props": [
+   {
+    "name": "addon",
+    "type": "Record<string, unknown>",
+    "optional": false,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths",
+    "$app/navigation"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/components/ToastContainer.svelte (show)",
+    "$lib/website-display.util.js (websiteDisplayHost)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "AddonStartupErrorModal": {
+  "path": "src/lib/components/modals/AddonStartupErrorModal.svelte",
+  "group": "Modals",
+  "role": "Large dark terminal-styled modal showing a plugin/theme startup error log in monospace with custom scrollbar, copy-to-clipboard and close buttons",
+  "feasibility": "medium",
+  "note": "Purely presentational content but fed via module store set by show(); needs i18n, bootstrap shim, forced-visible classes, and sample log text passed to show()",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, errorContent) — imperative show(content)/hide API"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "copy-to-clipboard"
+   ]
+  }
+ },
+ "App": {
+  "path": "src/lib/components/App.svelte",
+  "group": "Layout",
+  "role": "Invisible root shell: injects dev stylesheet link, renders PageLoader and page content slot, initializes Bootstrap popovers on navigation",
+  "feasibility": "low",
+  "note": "App shell, not presentational; depends on $app/stores page subscription, browser lib bootstrapping, and @theme-style alias — nothing worth showing in a DS",
+  "children": "default <slot>",
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/environment",
+    "$app/stores"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": true,
+   "thirdParty": [
+    "bootstrap JS (popovers)",
+    "@theme-style alias",
+    "$lib/init.libs.js dynamic import"
+   ]
+  }
+ },
+ "AuthorizePlayerModal": {
+  "path": "src/lib/components/modals/AuthorizePlayerModal.svelte",
+  "group": "Modals",
+  "role": "Centered modal to assign a permission group to a player: perm-group select populated from API, placeholder permission toggle list, save footer; spinner while loading",
+  "feasibility": "low",
+  "note": "loading store defaults true so it renders only a spinner; show() immediately GETs /api/panel/permissionGroups — needs API mock or manual store surgery to show real content",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, player, loading, permissionGroups, errors, submitLoading) — imperative show/hide/setCallback/onHide API",
+    "$lib/api.util",
+    "$lib/components/ToastContainer.svelte (show)"
+   ],
+   "i18n": true,
+   "networkOnMount": true,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)"
+   ]
+  }
+ },
+ "BanHistoryRow": {
+  "path": "src/lib/components/rows/BanHistoryRow.svelte",
+  "group": "Tables",
+  "role": "Table row: avatar+username link, ban duration text with tooltip, reason, email-notified badge, banned-by avatar, source badge, date",
+  "feasibility": "medium",
+  "note": "Needs base-path/avatarVersion/currentLanguage shims and tooltip action; avatar imgs 404 without backend but layout holds",
+  "children": null,
+  "props": [
+   {
+    "name": "banHistory",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "showBannedPlayer",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths"
+   ],
+   "sdkImports": [
+    "$lib/tooltip.util (re-export of src/pano-sdk core tooltip.util)"
+   ],
+   "stores": [
+    "$lib/Store (avatarVersion)",
+    "$lib/language.util.js (currentLanguage)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "date-fns",
+    "date-fns/locale",
+    "tippy.js (via tooltip action)"
+   ]
+  }
+ },
+ "BanSourceBadge": {
+  "path": "src/lib/components/badges/BanSourceBadge.svelte",
+  "group": "Badges",
+  "role": "Colored Bootstrap badge with icon + localized label indicating where a ban originated (panel/migration/server/other), with tooltip showing raw source.",
+  "feasibility": "high",
+  "note": "Pure presentational; needs svelte-i18n locale JSON and the tooltip action (tippy) available.",
+  "children": null,
+  "props": [
+   {
+    "name": "source",
+    "type": "string",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/tooltip.util (action)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "tippy.js (via $lib/tooltip.util)",
+    "Font Awesome icons"
+   ]
+  }
+ },
+ "Bottom": {
+  "path": "src/lib/components/sidebar/Bottom.svelte",
+  "group": "Navigation",
+  "role": "Sidebar footer row of four icon links: docs, Pano website, Discord, report-a-bug.",
+  "feasibility": "medium",
+  "note": "No props; calls getContext('session'/'panelTheme'/'siteInfo') but never uses the values, so contexts can be absent — needs i18n + $lib/variables. Dark sidebar background required for text-light links to be visible.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/variables.js (PANO_WEBSITE_URL constant)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "Font Awesome icons"
+   ]
+  }
+ },
+ "CardFilters": {
+  "path": "src/lib/components/CardFilters.svelte",
+  "group": "Navigation",
+  "role": "Horizontally scrollable btn-group wrapper that holds CardFiltersItem pills",
+  "feasibility": "high",
+  "note": "Trivial wrapper div; just needs slotted children",
+  "children": "default <slot> (legacy)",
+  "props": [
+   {
+    "name": "clazz",
+    "type": "string",
+    "optional": true,
+    "default": "'btn-group col-sm-auto col'"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "CardFiltersItem": {
+  "path": "src/lib/components/CardFiltersItem.svelte",
+  "group": "Navigation",
+  "role": "Small outline-primary pill button or link used as a filter toggle inside CardFilters, active-state highlighted",
+  "feasibility": "high",
+  "note": "Pure presentational; only needs a trivial base path shim; contains leftover console.log calls in click handlers",
+  "children": "children snippet ({@render children?.()})",
+  "props": [
+   {
+    "name": "href",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "active",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   },
+   {
+    "name": "button",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   },
+   {
+    "name": "onclick",
+    "type": "(...args: unknown[]) => void",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "children",
+    "type": "React.ReactNode",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "CardHeader": {
+  "path": "src/lib/components/CardHeader.svelte",
+  "group": "Cards",
+  "role": "Responsive card-header row with title on the left, optional centered middle content, and right-aligned filters/actions",
+  "feasibility": "high",
+  "note": "Pure layout; needs named slot content passed in (legacy slot API, so React bridge must supply slots)",
+  "children": "named slots: left, middle, right (legacy $$slots)",
+  "props": [
+   {
+    "name": "truncateLeftSlot",
+    "type": "boolean",
+    "optional": true,
+    "default": "true"
+   },
+   {
+    "name": "leftClasses",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "rightClasses",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "middleClasses",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "showRight",
+    "type": "boolean",
+    "optional": true,
+    "default": "true"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "CategoryBadge": {
+  "path": "src/lib/components/badges/CategoryBadge.svelte",
+  "group": "Badges",
+  "role": "Clickable Bootstrap badge linking to a category-filtered posts/tickets list; primary color for 'no category', secondary otherwise.",
+  "feasibility": "high",
+  "note": "Renders from props alone; only needs a `base` shim from $app/paths (imports `_` but never uses it in markup).",
+  "children": null,
+  "props": [
+   {
+    "name": "category",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "pageType",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "filterTitle",
+    "type": "string",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "noCategoryText",
+    "type": "string",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "ChangelogModal": {
+  "path": "src/lib/components/modals/ChangelogModal.svelte",
+  "group": "Modals",
+  "role": "Large centered modal rendering a release changelog as markdown via MarkdownRenderer, with header title and close button",
+  "feasibility": "medium",
+  "note": "Renders from changelogContent store set via show(markdown); needs i18n, bootstrap shim, forced-visible classes, and MarkdownRenderer compiles along with it",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, changelogContent) — imperative show(content)/hide API"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "MarkdownRenderer child component (markdown lib inside)"
+   ]
+  }
+ },
+ "ConfirmActionModal": {
+  "path": "src/lib/components/modals/ConfirmActionModal.svelte",
+  "group": "Modals",
+  "role": "Minimal generic confirm dialog: question-mark icon, i18n message ($_ of a passed key), Cancel / Yes (danger) footer buttons",
+  "feasibility": "medium",
+  "note": "Simplest of the set, no API at all; title is an i18n KEY resolved via $_ so needs i18n init plus bootstrap shim and forced-visible classes",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, titleValue) — imperative show(titleKey, callback)/hide API"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)"
+   ]
+  }
+ },
+ "ConfirmBanIpModal": {
+  "path": "src/lib/components/modals/ConfirmBanIpModal.svelte",
+  "group": "Modals",
+  "role": "Centered modal to ban an IP: IP input with find-player button, ban-message textarea with char counter, permanent/custom/datetime radio button-group with conditional duration select or datetime input, Cancel/Yes footer",
+  "feasibility": "medium",
+  "note": "Renders fully from store defaults (permanent selected); needs i18n, bootstrap shim, forced-visible classes; pulls in SearchPlayerModal + ToastContainer at compile time; API only on submit",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, ipAddress, banMessage, banDuration, customDuration, customDateTime) — imperative show({initialIp})/hide/setCallback/onHide API",
+    "$lib/api.util.js",
+    "$lib/components/ToastContainer.svelte (show)",
+    "$lib/components/modals/SearchPlayerModal.svelte (show, setCallback)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)"
+   ]
+  }
+ },
+ "ConfirmBanPlayerModal": {
+  "path": "src/lib/components/modals/ConfirmBanPlayerModal.svelte",
+  "group": "Modals",
+  "role": "Centered modal to ban a player: ban-message textarea with 255 char counter, permanent/custom/datetime radio button-group with conditional inputs, email-notify checkbox, Cancel/Yes (danger) footer",
+  "feasibility": "medium",
+  "note": "Renders from store defaults without a player object; needs i18n, bootstrap shim, forced-visible classes; API only on submit",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, player, sendNotification, banMessage, banDuration, customDuration, customDateTime) — imperative show(player)/hide/setCallback/onHide API",
+    "$lib/api.util.js",
+    "$lib/components/ToastContainer.svelte (show)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)"
+   ]
+  }
+ },
+ "ConfirmCloseTicketModal": {
+  "path": "src/lib/components/modals/ConfirmCloseTicketModal.svelte",
+  "group": "Modals",
+  "role": "Minimal confirm dialog for closing one or many tickets: icon, single/multi i18n message, Cancel/Yes footer",
+  "feasibility": "medium",
+  "note": "Needs i18n, a $app/paths base shim, bootstrap shim, forced-visible classes; selectedTickets defaults [] so multi-title shows; API only on confirm",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, selectedTickets) — imperative show(ticketIds)/hide/setCallback/onHide API",
+    "$lib/api.util",
+    "$lib/components/ToastContainer.svelte (show)",
+    "$lib/components/badges/TicketStatusBadge.svelte (TicketStatuses)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)"
+   ]
+  }
+ },
+ "ConfirmDeleteLanguageModal": {
+  "path": "src/lib/components/modals/ConfirmDeleteLanguageModal.svelte",
+  "group": "Modals",
+  "role": "Minimal confirm dialog for deleting a language: question icon, i18n message, Cancel/Yes (danger) footer",
+  "feasibility": "medium",
+  "note": "Static i18n message, no data needed to look right; needs i18n init, bootstrap shim, forced-visible classes; API only on confirm",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, locale) — imperative show(locale)/hide/setCallback/onHide API",
+    "$lib/api.util",
+    "$lib/components/ToastContainer.svelte (show, limitTitle)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)"
+   ]
+  }
+ },
+ "ConfirmDeletePlayerModal": {
+  "path": "src/lib/components/modals/ConfirmDeletePlayerModal.svelte",
+  "group": "Modals",
+  "role": "Confirm dialog for deleting a player account with a current-password input (danger border on error), Cancel/Yes (danger) footer",
+  "feasibility": "medium",
+  "note": "Needs i18n plus shims for $app/navigation goto and $app/paths base, bootstrap shim, forced-visible classes; API/goto only on confirm",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/navigation (goto)",
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, player, loading, passwordError, currentPassword, passwordInput) — imperative show(player)/hide/setCallback/onHide API",
+    "$lib/api.util",
+    "$lib/components/ToastContainer.svelte (show)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)"
+   ]
+  }
+ },
+ "ConfirmDeletePostCategoryModal": {
+  "path": "src/lib/components/modals/ConfirmDeletePostCategoryModal.svelte",
+  "group": "Modals",
+  "role": "Confirm dialog for deleting a post category; if the category has posts, shows a warning alert listing affected posts as badge-pill links plus an overflow count",
+  "feasibility": "medium",
+  "note": "Category store default has posts:[] but no postCount, so the warning branch renders (postCount !== 0 is true for undefined) — seed a realistic category via show(); needs i18n, base shim, bootstrap shim, forced-visible classes",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, category) — imperative show(category)/hide/setCallback/onHide API",
+    "$lib/api.util",
+    "$lib/components/ToastContainer.svelte (show, limitTitle)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)"
+   ]
+  }
+ },
+ "ConfirmDeletePostModal": {
+  "path": "src/lib/components/modals/ConfirmDeletePostModal.svelte",
+  "group": "Modals",
+  "role": "Minimal confirm dialog for deleting/trashing a post: icon, permanent-vs-trash i18n message keyed on post.status, Cancel/Yes (danger) footer",
+  "feasibility": "medium",
+  "note": "Renders fine from store default (empty post → trash-title branch); needs i18n, $app/paths base shim, bootstrap shim, forced-visible classes; API only on confirm",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "module-level writables (modalElement, post) — imperative show(post)/hide/setCallback/onHide API",
+    "$lib/api.util",
+    "$lib/components/ToastContainer.svelte (show, limitTitle)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)"
+   ]
+  }
+ },
+ "ConfirmDeleteTicketCategoryModal": {
+  "path": "src/lib/components/modals/ConfirmDeleteTicketCategoryModal.svelte",
+  "group": "Modals",
+  "role": "Bootstrap centered confirm dialog: question icon, warning text listing up to 5 affected tickets as links, cancel/yes (danger) footer",
+  "feasibility": "medium",
+  "note": "No props; opened via module show(category) which needs window.bootstrap.Modal — for static render must force .show/.d-block and seed the module store; deletes via API only on confirm",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/api.util (ApiUtil)",
+    "$lib/components/ToastContainer.svelte (showToast, limitTitle)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ],
+   "appModulesNote": null
+  }
+ },
+ "ConfirmDeleteTicketModal": {
+  "path": "src/lib/components/modals/ConfirmDeleteTicketModal.svelte",
+  "group": "Modals",
+  "role": "Bootstrap centered confirm dialog: question icon, single/multi delete-ticket message, cancel/yes (danger) footer",
+  "feasibility": "medium",
+  "note": "No props; module-level show(tickets) + window.bootstrap needed to open; markup itself is simple and renders from i18n alone once forced visible",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/api.util (ApiUtil)",
+    "$lib/components/ToastContainer.svelte (showToast)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmDisableAddonWillCauseMoreDisableModal": {
+  "path": "src/lib/components/modals/ConfirmDisableAddonWillCauseMoreDisableModal.svelte",
+  "group": "Modals",
+  "role": "Confirm dialog with question icon, alert-warning box listing dependent addons as warning badge links, cancel/yes (danger) footer",
+  "feasibility": "medium",
+  "note": "No props; needs show(plugin) via window.bootstrap and seeded plugin store (id, dependents[]) plus base path shim; no API call itself (delegates to callback)",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmDisableEmailModal": {
+  "path": "src/lib/components/modals/ConfirmDisableEmailModal.svelte",
+  "group": "Modals",
+  "role": "Minimal confirm dialog: question icon, single i18n title line, cancel/yes (danger) footer",
+  "feasibility": "medium",
+  "note": "Pure static markup from i18n; only blocker is Bootstrap-managed visibility (needs .show forced or window.bootstrap shim to call show())",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmDraftPostModal": {
+  "path": "src/lib/components/modals/ConfirmDraftPostModal.svelte",
+  "group": "Modals",
+  "role": "Minimal confirm dialog: question icon, draft-post title line, cancel/yes (secondary) footer",
+  "feasibility": "medium",
+  "note": "Static from i18n alone; needs forced visibility (Bootstrap modal classes) since it mounts hidden until show(continueProcess)",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmEnablingAddonWillCauseMoreEnableModal": {
+  "path": "src/lib/components/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte",
+  "group": "Modals",
+  "role": "Confirm dialog with alert-warning box listing not-started dependency addons as warning badge links, cancel/yes (danger) footer",
+  "feasibility": "medium",
+  "note": "No props; needs seeded plugin store (id, notStartedDependencies[]) via show(), base path shim, and forced modal visibility",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmInstallResourceModal": {
+  "path": "src/lib/components/modals/ConfirmInstallResourceModal.svelte",
+  "group": "Modals",
+  "role": "Rich install/update/downgrade/reinstall confirm dialog: action icon and title, unverified/downgrade warning alerts, resource card with remote icon or screenshot, version badge, author/size meta, changelog and copy-hash buttons",
+  "feasibility": "medium",
+  "note": "Needs show(versionInfo, type) with a realistic versionInfo object plus forced visibility; icon/screenshot img hits PANO_WEBSITE_API_URL (broken offline but has icon fallback); imports ChangelogModal too",
+  "children": "none (renders nested ChangelogModal component)",
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/variables.js (PANO_WEBSITE_API_URL)",
+    "$lib/string.util (formatBytes)",
+    "$lib/components/ToastContainer.svelte (showToast)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "copy-to-clipboard",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmPublishPostModal": {
+  "path": "src/lib/components/modals/ConfirmPublishPostModal.svelte",
+  "group": "Modals",
+  "role": "Minimal confirm dialog: question icon, publish-post title line, cancel/yes (secondary) footer",
+  "feasibility": "medium",
+  "note": "Static from i18n alone; needs forced Bootstrap-modal visibility since show(continueProcess) drives display via window.bootstrap",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmRemoveAddonModal": {
+  "path": "src/lib/components/modals/ConfirmRemoveAddonModal.svelte",
+  "group": "Modals",
+  "role": "Confirm dialog: question icon, remove-addon title interpolating pluginId, cancel/yes (danger) footer",
+  "feasibility": "medium",
+  "note": "Needs pluginId store seeded via show(pluginId, continueProcess) and forced visibility; otherwise pure i18n markup",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmRemoveAddonWillCauseMoreUnloadModal": {
+  "path": "src/lib/components/modals/ConfirmRemoveAddonWillCauseMoreUnloadModal.svelte",
+  "group": "Modals",
+  "role": "Confirm dialog with alert-warning box listing addons that would also unload, shown as warning badge links, cancel/yes (danger) footer",
+  "feasibility": "medium",
+  "note": "Needs seeded plugin store (id, removeDependents[]) via show(), base path shim, forced visibility; default store lacks removeDependents so unseeded render throws in the #each",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmRemoveAllNotificationsModal": {
+  "path": "src/lib/components/modals/ConfirmRemoveAllNotificationsModal.svelte",
+  "group": "Modals",
+  "role": "Minimal confirm dialog: question icon, remove-all-notifications title, cancel/yes (secondary) footer",
+  "feasibility": "medium",
+  "note": "Static from i18n; ApiUtil.delete only fires on confirm click; needs forced Bootstrap-modal visibility",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/api.util (ApiUtil)",
+    "$lib/components/ToastContainer.svelte (showToast)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmRemovePanoAccountModal": {
+  "path": "src/lib/components/modals/ConfirmRemovePanoAccountModal.svelte",
+  "group": "Modals",
+  "role": "Minimal confirm dialog: question icon, disconnect-Pano-account title, cancel/yes (danger) footer",
+  "feasibility": "medium",
+  "note": "Static from i18n alone; needs forced Bootstrap-modal visibility (mounts hidden until show(continueProcess))",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmRemovePermGroupModal": {
+  "path": "src/lib/components/modals/ConfirmRemovePermGroupModal.svelte",
+  "group": "Modals",
+  "role": "Confirm dialog whose icon and alert escalate for admin groups: warning triangle plus alert-warning/alert-danger last-admin-group notice, cancel/yes (danger) footer",
+  "feasibility": "medium",
+  "note": "Needs show(group, nodes) to seed stores (group name, permission nodes drive isAdminGroup/isOnlyAdminGroup states) and forced visibility; renders '-' fallbacks unseeded",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmRemovePermTrackModal": {
+  "path": "src/lib/components/modals/ConfirmRemovePermTrackModal.svelte",
+  "group": "Modals",
+  "role": "Confirm dialog: question icon, remove-track title interpolating track name, cancel/yes (danger) footer",
+  "feasibility": "medium",
+  "note": "Needs show(track) to seed track name (falls back to '-') and forced Bootstrap-modal visibility; otherwise pure i18n markup",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Modal)",
+    "fontawesome icons"
+   ]
+  }
+ },
+ "ConfirmRemovePermUserModal": {
+  "path": "src/lib/components/modals/ConfirmRemovePermUserModal.svelte",
+  "group": "Modals",
+  "role": "Centered Bootstrap confirm dialog: question-circle icon, 'remove user from permission group?' text with username, cancel + red yes buttons.",
+  "feasibility": "medium",
+  "note": "Legacy Svelte 4; state (user) set via module show() not props; hidden by 'modal fade' until forced visible; needs i18n + window.bootstrap stub.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "ConfirmRemoveThemeModal": {
+  "path": "src/lib/components/modals/ConfirmRemoveThemeModal.svelte",
+  "group": "Modals",
+  "role": "Centered confirm dialog: question icon, delete-theme message (variant if theme is active), cancel + red yes buttons.",
+  "feasibility": "medium",
+  "note": "Text driven by module-level 'active' store set in show(); force .show/.d-block and init i18n to render.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "ConfirmResetPermissionsModal": {
+  "path": "src/lib/components/modals/ConfirmResetPermissionsModal.svelte",
+  "group": "Modals",
+  "role": "Centered confirm dialog: history icon, 'reset permissions to defaults?' text, cancel + primary yes buttons.",
+  "feasibility": "high",
+  "note": "Fully static markup, no dynamic state in body; only needs i18n init and forced-visible modal classes.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "ConfirmRestartPanoModal": {
+  "path": "src/lib/components/modals/ConfirmRestartPanoModal.svelte",
+  "group": "Modals",
+  "role": "Centered confirm dialog: refresh icon, warning alert + 'restart in background' switch (when runMode not background), password input, cancel + warning yes buttons with spinner.",
+  "feasibility": "medium",
+  "note": "Renders from runMode prop ({background:boolean}); imports $lib/api.util and getContext('platformRestarting') but both only used on submit; shim i18n + bootstrap.",
+  "children": null,
+  "props": [
+   {
+    "name": "runMode",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": "undefined"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "ConfirmSaveCriticalSettingsModal": {
+  "path": "src/lib/components/modals/ConfirmSaveCriticalSettingsModal.svelte",
+  "group": "Modals",
+  "role": "Centered confirm dialog: warning-triangle icon, critical-settings warning text, password input, cancel + warning save buttons with spinner.",
+  "feasibility": "high",
+  "note": "Body is static form; callback passed via module show(); only i18n + forced-visible shim needed.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "ConfirmSendVerificationEmailModal": {
+  "path": "src/lib/components/modals/ConfirmSendVerificationEmailModal.svelte",
+  "group": "Modals",
+  "role": "Centered confirm dialog: question icon, 'send verification email?' description, cancel + primary yes buttons with spinner.",
+  "feasibility": "medium",
+  "note": "Static body; imports $lib/api.util and ToastContainer's show (submit-only); shim i18n + bootstrap, force visible.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "ConfirmStopPanoModal": {
+  "path": "src/lib/components/modals/ConfirmStopPanoModal.svelte",
+  "group": "Modals",
+  "role": "Centered confirm dialog: stop-circle icon, 'stop Pano?' text, password input, cancel + red yes buttons with spinner.",
+  "feasibility": "medium",
+  "note": "Static body; $lib/api.util used only on submit; needs i18n + bootstrap shim and forced-visible classes.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "ConfirmStopThemeModal": {
+  "path": "src/lib/components/modals/ConfirmStopThemeModal.svelte",
+  "group": "Modals",
+  "role": "Centered confirm dialog: question icon, 'stop theme?' text, password input, cancel + red yes buttons with spinner.",
+  "feasibility": "high",
+  "note": "Purely static body driven by module stores with sane defaults; i18n + forced-visible shim suffice.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "ConfirmUpdatePlatformModal": {
+  "path": "src/lib/components/modals/ConfirmUpdatePlatformModal.svelte",
+  "group": "Modals",
+  "role": "Centered confirm dialog: download icon, 'update platform?' text, optional terminal-mode warning alert + background switch, cancel + secondary yes buttons.",
+  "feasibility": "high",
+  "note": "Renders from runMode prop alone; no API imports; i18n + forced-visible shim only.",
+  "children": null,
+  "props": [
+   {
+    "name": "runMode",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": "undefined"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "ConfirmUpdateResourceModal": {
+  "path": "src/lib/components/modals/ConfirmUpdateResourceModal.svelte",
+  "group": "Modals",
+  "role": "Centered confirm dialog: download icon, 'update this resource?' text, cancel + secondary yes buttons.",
+  "feasibility": "high",
+  "note": "Fully static body; i18n + forced-visible modal classes only.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "ConfirmUpdateResourcesModal": {
+  "path": "src/lib/components/modals/ConfirmUpdateResourcesModal.svelte",
+  "group": "Modals",
+  "role": "Centered confirm dialog: download icon, 'update all resources?' text, cancel + secondary yes buttons; near-identical twin of ConfirmUpdateResourceModal.",
+  "feasibility": "high",
+  "note": "Fully static body; i18n + forced-visible modal classes only.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "ConnectServerModal": {
+  "path": "src/lib/components/modals/ConnectServerModal.svelte",
+  "group": "Modals",
+  "role": "Larger modal with header toggle-switch + title, numbered 3-step setup list, local/remote tabs, readonly '/pano connect ...' command input with copy/console-copy buttons and refresh countdown.",
+  "feasibility": "low",
+  "note": "Crashes at init without svelte contexts (session.basicData, platformServerMatchKey, platformKeyRefreshedTime, platformHostAddress); context subscriptions trigger API key-refresh; needs $lib/api.util, $lib/variables, tooltip action, browser shim.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/environment (browser)"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": true,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)",
+    "copy-to-clipboard",
+    "date-fns",
+    "tippy.js (via $lib/tooltip.util)"
+   ]
+  }
+ },
+ "CreatePermissionGroupModal": {
+  "path": "src/lib/components/modals/CreatePermissionGroupModal.svelte",
+  "group": "Modals",
+  "role": "Form modal: header with close, floating inputs for display name / group name / weight, parent-groups list with remove buttons, add-parent select, create/save footer button.",
+  "feasibility": "medium",
+  "note": "All form state lives in module-level stores populated by show(payload); renders empty-but-valid statically; imports local NoContent component; i18n + forced-visible shim.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "Date": {
+  "path": "src/lib/components/Date.svelte",
+  "group": "Badges",
+  "role": "Inline span showing a formatted or relative date with a full-timestamp tooltip on hover",
+  "feasibility": "medium",
+  "note": "Needs currentLanguage store default (dateFnsCode) and tooltip.util/tippy present; then renders from `time` prop alone; note it mutates String.prototype",
+  "children": "default <slot> (optional override of formatted text)",
+  "props": [
+   {
+    "name": "time",
+    "type": "string|number",
+    "optional": false,
+    "default": null
+   },
+   {
+    "name": "relativeFormat",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   },
+   {
+    "name": "fullFormat",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   },
+   {
+    "name": "tooltip",
+    "type": "boolean",
+    "optional": true,
+    "default": "true"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/language.util.js (currentLanguage)"
+   ],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": [
+    "date-fns (+ all locales)",
+    "tippy.js via $lib/tooltip.util"
+   ]
+  }
+ },
+ "DefaultToast": {
+  "path": "src/lib/components/DefaultToast.svelte",
+  "group": "Feedback",
+  "role": "Standard toast notification body rendering a localized HTML message inside the Toast shell",
+  "feasibility": "medium",
+  "note": "Needs svelte-i18n initialized and whatever Toast.svelte requires (likely bootstrap toast JS / dismissal store)",
+  "children": "none (passes {@html} text into Toast's slot)",
+  "props": [
+   {
+    "name": "id",
+    "type": "string|number",
+    "optional": false,
+    "default": null
+   },
+   {
+    "name": "text",
+    "type": "unknown",
+    "optional": false,
+    "default": null
+   },
+   {
+    "name": "values",
+    "type": "Record<string, unknown>",
+    "optional": false,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/components/Toast.svelte (wrapper component)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "DragAndDropZone": {
+  "path": "src/lib/components/DragAndDropZone.svelte",
+  "group": "Forms",
+  "role": "Dashed-border file drop zone with icon/title/subtitle, drag-over highlight, hidden file input; dispatches drop/error events",
+  "feasibility": "high",
+  "note": "Fully self-contained; renders from props alone (legacy createEventDispatcher events won't wire into React but visuals are fine)",
+  "children": "default <slot let:isDragOver> (fallback when no icon/title/subtitle)",
+  "props": [
+   {
+    "name": "accept",
+    "type": "array<string>",
+    "optional": true,
+    "default": "[]"
+   },
+   {
+    "name": "disabled",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   },
+   {
+    "name": "style",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "multiple",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   },
+   {
+    "name": "maxFileSize",
+    "type": "number|null",
+    "optional": true,
+    "default": "null"
+   },
+   {
+    "name": "icon",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "title",
+    "type": "unknown",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "subtitle",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "id",
+    "type": "string|null",
+    "optional": true,
+    "default": "null"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "Editor": {
+  "path": "src/lib/components/Editor.svelte",
+  "group": "Forms",
+  "role": "TipTap rich-text editor with heading/format/list/media toolbar and optional HTML-source and preview modes",
+  "feasibility": "medium",
+  "note": "No SvelteKit/API deps, but instantiates a TipTap Editor at init and mounts it in onMount — needs the tiptap bundle and a real DOM; i18n for toolbar labels",
+  "children": "children snippet appended inside the input-group",
+  "props": [
+   {
+    "name": "content",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "isEmpty",
+    "type": "unknown",
+    "optional": true,
+    "default": "true"
+   },
+   {
+    "name": "showHtml",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   },
+   {
+    "name": "showPreview",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   },
+   {
+    "name": "html",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   },
+   {
+    "name": "contentStyles",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "children",
+    "type": "React.ReactNode",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "@tiptap/core",
+    "@tiptap/starter-kit",
+    "@tiptap/extension-image",
+    "@tiptap/extension-text-style"
+   ]
+  }
+ },
+ "EditPermissionNodeModal": {
+  "path": "src/lib/components/modals/EditPermissionNodeModal.svelte",
+  "group": "Modals",
+  "role": "Rich form modal: node input with autocomplete suggestion dropdown (icons, badges, ticks), pano/game-only alert banners, active switch, never/date expiry radio group, key/value context rows, add/save footer.",
+  "feasibility": "medium",
+  "note": "State via module show(payload) which also lazy-fetches /api/panel/permission/registered; without show() renders 'no node selected' placeholder; needs realistic payload + i18n (also reads dictionary/locale stores) + $lib/variables and NoContent; forced-visible shim.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "EditPermTrackModal": {
+  "path": "src/lib/components/modals/EditPermTrackModal.svelte",
+  "group": "Modals",
+  "role": "Bootstrap modal with name/description inputs plus drag-and-drop pill buttons and an ordered list-group to compose a permission-track's group sequence",
+  "feasibility": "medium",
+  "note": "No props; state lives in module writables set by exported show(payload) which needs window.bootstrap.Modal shim; renders fine with i18n + a show() call passing permissionGroups/track",
+  "children": "none (renders NoContent child component)",
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal (window.bootstrap)"
+   ]
+  }
+ },
+ "EditPlayerModal": {
+  "path": "src/lib/components/modals/EditPlayerModal.svelte",
+  "group": "Modals",
+  "role": "Large edit-player form modal: username/email inputs, merged password grid, clear-password switch, locale select, ticket/email-verified switches, plugin card rows",
+  "feasibility": "low",
+  "note": "Depends on $page.data.user, getContext('user'/'siteInfo') stores, PluginAPI executeLifecycle and plugin ViewComponent resolution inside show(); heavy runtime context to render correctly",
+  "children": "none (renders ViewComponent plugin slots)",
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/stores (page)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/PluginAPI.js (panoApiClient)",
+    "getContext('siteInfo')",
+    "getContext('user')"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal",
+    "tippy.js (tooltip util, imported unused)"
+   ]
+  }
+ },
+ "EditRegisterAgreementModal": {
+  "path": "src/lib/components/modals/EditRegisterAgreementModal.svelte",
+  "group": "Modals",
+  "role": "Modal with a require-agreement checkbox and a TipTap rich-text Editor for the register agreement HTML",
+  "feasibility": "medium",
+  "note": "Needs show(html, cb) + bootstrap shim; embedded TipTap Editor is client-only and adds weight but renders without backend",
+  "children": "none (embeds Editor.svelte)",
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/register-agreement.util.js (normalizeRegisterAgreement)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal",
+    "tiptap (via Editor.svelte)"
+   ]
+  }
+ },
+ "FailedLoginPanoStoreAlert": {
+  "path": "src/lib/components/FailedLoginPanoStoreAlert.svelte",
+  "group": "Feedback",
+  "role": "Static danger alert with warning icon for failed Pano Store login",
+  "feasibility": "high",
+  "note": "Only needs svelte-i18n initialized with the panel locale JSON",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "Hook": {
+  "path": "src/lib/components/Hook.svelte",
+  "group": "Layout",
+  "role": "Invisible plugin extension point: mounts registered plugin UI components into a container element",
+  "feasibility": "low",
+  "note": "Depends on the runtime plugin registry (panoApiClient.ui.hook), $page.data, permission checks, and manual mount/unmount; renders nothing without live plugins",
+  "children": "none (dynamically mounts plugin components)",
+  "props": [
+   {
+    "name": "name",
+    "type": "string",
+    "optional": false,
+    "default": null
+   },
+   {
+    "name": "tag",
+    "type": "string",
+    "optional": true,
+    "default": "'div'"
+   },
+   {
+    "name": "...rest",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/environment",
+    "$app/stores"
+   ],
+   "sdkImports": [
+    "$lib/PluginAPI.js (panoApiClient — SDK-backed plugin API client)"
+   ],
+   "stores": [
+    "$lib/auth.util.js (hasPermission)",
+    "$app/stores page ($page.data.user, $page.data.hookProps)"
+   ],
+   "i18n": false,
+   "networkOnMount": true,
+   "thirdParty": []
+  }
+ },
+ "InstallingResourceModal": {
+  "path": "src/lib/components/modals/InstallingResourceModal.svelte",
+  "group": "Modals",
+  "role": "Install-progress modal: striped/animated progress bar, step/error text, success footer with go-to-store and back buttons",
+  "feasibility": "low",
+  "note": "show() immediately uploads/opens SSE streams; uses beforeNavigate and goto from SvelteKit runtime; progress state only comes from live install flow",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/environment (browser)",
+    "$app/navigation (goto, beforeNavigate)",
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/api.util",
+    "$lib/website-display.util.js"
+   ],
+   "i18n": true,
+   "networkOnMount": true,
+   "thirdParty": [
+    "bootstrap Modal",
+    "canvas-confetti",
+    "EventSource (SSE)"
+   ]
+  }
+ },
+ "InstallResourceModal": {
+  "path": "src/lib/components/modals/InstallResourceModal.svelte",
+  "group": "Modals",
+  "role": "Two-pane choice modal: drag-and-drop upload zone (.jar/.zip) beside a 'install from Pano store' link tile",
+  "feasibility": "medium",
+  "note": "Presentational once shown; needs show(type) + bootstrap shim and base-path stub; no data fetch",
+  "children": "none (embeds DragAndDropZone, chains to InstallingResourceModal)",
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal",
+    "tippy.js (tooltip util, imported unused)"
+   ]
+  }
+ },
+ "IpBanRow": {
+  "path": "src/lib/components/rows/IpBanRow.svelte",
+  "group": "Tables",
+  "role": "Table row: actions dropdown (unban), IP in code tag, remaining ban duration with tooltip, reason, source badge, banned-by, date",
+  "feasibility": "medium",
+  "note": "Needs auth-permission shim (dropdown hidden otherwise), store/i18n shims, Bootstrap JS for dropdown open state",
+  "children": null,
+  "props": [
+   {
+    "name": "bannedIp",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths"
+   ],
+   "sdkImports": [
+    "$lib/tooltip.util (pano-sdk)",
+    "$lib/auth.util.js (hasPermission, Permissions)"
+   ],
+   "stores": [
+    "$lib/Store (avatarVersion)",
+    "$lib/language.util.js (currentLanguage)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "date-fns",
+    "date-fns/locale",
+    "tippy.js (via tooltip action)",
+    "bootstrap dropdown (data-bs-toggle)"
+   ]
+  }
+ },
+ "JumpToPageModal": {
+  "path": "src/lib/components/modals/JumpToPageModal.svelte",
+  "group": "Modals",
+  "role": "Small centered modal with a number input and cancel/go footer for pagination jump",
+  "feasibility": "medium",
+  "note": "Fully self-contained; only needs i18n and a bootstrap Modal shim plus show(current, max, cb)",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal"
+   ]
+  }
+ },
+ "LicenseStatusBadge": {
+  "path": "src/lib/components/LicenseStatusBadge.svelte",
+  "group": "Badges",
+  "role": "Green/red key icon with tooltip (optional small text label) indicating DRM license status",
+  "feasibility": "high",
+  "note": "Pure prop-driven; needs i18n keys, tooltip.util (tippy) and a websiteDisplayHost stub",
+  "children": null,
+  "props": [
+   {
+    "name": "status",
+    "type": "unknown",
+    "optional": false,
+    "default": null
+   },
+   {
+    "name": "labeled",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/website-display.util.js (websiteDisplayHost)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "tippy.js via $lib/tooltip.util"
+   ]
+  }
+ },
+ "LocaleRow": {
+  "path": "src/lib/components/rows/LocaleRow.svelte",
+  "group": "Tables",
+  "role": "Table row: delete button, locale name (edit link), locale code, dateFns code, derivatives, defined-by label",
+  "feasibility": "high",
+  "note": "Pure presentational; only needs i18n initialized and a locale object prop",
+  "children": null,
+  "props": [
+   {
+    "name": "locale",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "index",
+    "type": "number",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "MakeMainServerModal": {
+  "path": "src/lib/components/modals/MakeMainServerModal.svelte",
+  "group": "Modals",
+  "role": "Yes/no confirmation modal with question-circle icon asking to make a server the main server",
+  "feasibility": "medium",
+  "note": "Renders from show(server) alone; API call only on confirm click, so static render just needs i18n + bootstrap shim",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/navigation (invalidateAll)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/api.util"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal"
+   ]
+  }
+ },
+ "MarkdownRenderer": {
+  "path": "src/lib/components/MarkdownRenderer.svelte",
+  "group": "Content",
+  "role": "Renders sanitized markdown as inline HTML with the leading <p> unwrapped and links opening in new tabs",
+  "feasibility": "high",
+  "note": "Renders from `content` prop; needs marked + sanitizer bundled and a browser=true shim for $app/environment",
+  "children": null,
+  "props": [
+   {
+    "name": "content",
+    "type": "unknown",
+    "optional": false,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/environment"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": [
+    "marked",
+    "@jill64/universal-sanitizer",
+    "cheerio (SSR only, dynamic import)"
+   ]
+  }
+ },
+ "Navbar": {
+  "path": "src/lib/components/Navbar.svelte",
+  "group": "Navigation",
+  "role": "Top navbar: sidebar toggler, website/server switcher, page title, notifications dropdown, theme picker, account dropdown with avatar",
+  "feasibility": "low",
+  "note": "Requires 9 Svelte contexts, $lib/Store stores, Bootstrap JS dropdown events wired in onMount (getElementById), avatar API endpoints, and notification API calls",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths",
+    "$app/stores",
+    "$app/environment"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/Store (logout, logoutLoading, options, quickNotifications, toggleSidebar, avatarVersion)",
+    "$lib/language.util (currentLanguage)",
+    "9 getContext stores (selectedServer, pageTitle, user, notificationCount, isSidebarOpen, session, panelTheme, sidebarTabsState, siteInfo)",
+    "$lib/NotificationManager.js",
+    "$lib/auth.util.js",
+    "$lib/panelNotification.util.js",
+    "modals/ServersModal.svelte"
+   ],
+   "i18n": true,
+   "networkOnMount": true,
+   "thirdParty": [
+    "date-fns (+ locales)",
+    "bootstrap dropdown/offcanvas JS",
+    "@jill64/universal-sanitizer"
+   ]
+  }
+ },
+ "NoContent": {
+  "path": "src/lib/components/NoContent.svelte",
+  "group": "Feedback",
+  "role": "Faded empty-state card with a large icon and a message",
+  "feasibility": "high",
+  "note": "Pure presentational; default text calls the i18n store at init so svelte-i18n must be initialized before mount",
+  "children": "default <slot> after the card",
+  "props": [
+   {
+    "name": "icon",
+    "type": "string",
+    "optional": true,
+    "default": "'fa-solid fa-square fa-3x'"
+   },
+   {
+    "name": "text",
+    "type": "string",
+    "optional": true,
+    "default": "$_('components.no-content.here-is-empty')"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "NotificationContainer": {
+  "path": "src/lib/components/NotificationContainer.svelte",
+  "group": "Feedback",
+  "role": "Fixed bottom-right stack of Bootstrap toast cards showing quick notifications with avatar/icon, relative time, and markdown-rendered i18n text",
+  "feasibility": "low",
+  "note": "Polls /api/panel/notifications/quick on mount, needs getContext('notificationCount'), window.bootstrap.Toast, and realtime hook; renders empty without live data",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/Store (quickNotifications, avatarVersion, module-local notifications store)",
+    "$lib/language.util.js (currentLanguage)"
+   ],
+   "i18n": true,
+   "networkOnMount": true,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Toast)",
+    "date-fns",
+    "@jill64/universal-sanitizer"
+   ]
+  }
+ },
+ "PageActions": {
+  "path": "src/lib/components/PageActions.svelte",
+  "group": "Navigation",
+  "role": "Responsive three-zone toolbar row (left/center/right) with horizontal-scroll centering for page action bars",
+  "feasibility": "high",
+  "note": "Pure layout from slots and class props; note slot render is gated on the corresponding *Classes prop being non-null",
+  "children": "legacy named slots: left, middle, right",
+  "props": [
+   {
+    "name": "leftClasses",
+    "type": "string",
+    "optional": true,
+    "default": "undefined"
+   },
+   {
+    "name": "middleClasses",
+    "type": "string",
+    "optional": true,
+    "default": "undefined"
+   },
+   {
+    "name": "rightClasses",
+    "type": "string",
+    "optional": true,
+    "default": "undefined"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "PageLoader": {
+  "path": "src/lib/components/PageLoader.svelte",
+  "group": "Feedback",
+  "role": "Fixed top-of-viewport blue tweened progress bar shown during SvelteKit navigation",
+  "feasibility": "medium",
+  "note": "Needs a $app/stores navigating shim (a readable(null) makes it complete/fade; readable(true) shows it mid-progress); otherwise self-contained",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/stores (navigating)"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "PageLoading": {
+  "path": "src/lib/components/PageLoading.svelte",
+  "group": "Feedback",
+  "role": "Centered Bootstrap spinner-border filling the page area, toggled by the show prop",
+  "feasibility": "high",
+  "note": "Pure presentational, single boolean prop",
+  "children": null,
+  "props": [
+   {
+    "name": "show",
+    "type": "boolean",
+    "optional": false,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "PageNav": {
+  "path": "src/lib/components/PageNav.svelte",
+  "group": "Navigation",
+  "role": "Horizontally scrollable centered Bootstrap nav-pills container for page tabs",
+  "feasibility": "high",
+  "note": "Pure wrapper; just needs PageNavItem (or any) children in the slot",
+  "children": "legacy default <slot />",
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "PageNavItem": {
+  "path": "src/lib/components/PageNavItem.svelte",
+  "group": "Navigation",
+  "role": "Single Bootstrap nav-pill item (link or button) with active/disabled states inside a PageNav",
+  "feasibility": "medium",
+  "note": "Pass active explicitly to bypass $page matching; still needs $page/$base stubs since they are read at init",
+  "children": "{@render children()}",
+  "props": [
+   {
+    "name": "href",
+    "type": "string",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "startsWith",
+    "type": "boolean",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "disabled",
+    "type": "boolean",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "active",
+    "type": "boolean",
+    "optional": true,
+    "default": "undefined (falls back to $page URL matching)"
+   },
+   {
+    "name": "button",
+    "type": "boolean",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "onclick",
+    "type": "(...args: unknown[]) => void",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "classes",
+    "type": "string",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "liClazz",
+    "type": "string",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "children",
+    "type": "React.ReactNode",
+    "optional": false,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/stores (page)",
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "Pagination": {
+  "path": "src/lib/components/Pagination.svelte",
+  "group": "Navigation",
+  "role": "Bootstrap small pagination bar with prev/next carets, windowed page numbers, and '...' jump-to-page trigger",
+  "feasibility": "medium",
+  "note": "Renders from props + i18n; imports JumpToPageModal (renders hidden, only needs Bootstrap JS if '...' is clicked); events via createEventDispatcher",
+  "children": null,
+  "props": [
+   {
+    "name": "page",
+    "type": "number",
+    "optional": true,
+    "default": "1"
+   },
+   {
+    "name": "totalPage",
+    "type": "number",
+    "optional": true,
+    "default": "1"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap modal via JumpToPageModal"
+   ]
+  }
+ },
+ "PermissionEditor": {
+  "path": "src/lib/components/PermissionEditor.svelte",
+  "group": "Forms",
+  "role": "Editable table of permission nodes (text input, true/false select, expiry select+datetime, context badge) with add-node/add-group header buttons",
+  "feasibility": "medium",
+  "note": "Renders from permissions array prop + i18n; references undefined openAddPermissionModal in header (pass showHeader=false or provide realistic props); NoContent shown when empty",
+  "children": null,
+  "props": [
+   {
+    "name": "permissions",
+    "type": "unknown[]",
+    "optional": true,
+    "default": "[]"
+   },
+   {
+    "name": "permissionGroupsCount",
+    "type": "number",
+    "optional": true,
+    "default": "0"
+   },
+   {
+    "name": "showHeader",
+    "type": "boolean",
+    "optional": true,
+    "default": "true"
+   },
+   {
+    "name": "isAdmin",
+    "type": "unknown",
+    "optional": true,
+    "default": "false"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "PermissionGroupRow": {
+  "path": "src/lib/components/rows/PermissionGroupRow.svelte",
+  "group": "Tables",
+  "role": "Table row: delete button (hidden for admin), group name link, permission count (infinity icon for admin), user count",
+  "feasibility": "high",
+  "note": "Only needs i18n and a $app/paths base shim",
+  "children": null,
+  "props": [
+   {
+    "name": "permissionGroup",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "PlayerPermissionBadge": {
+  "path": "src/lib/components/badges/PlayerPermissionBadge.svelte",
+  "group": "Badges",
+  "role": "Rounded-pill secondary badge linking to players filtered by permission group, showing capitalized group display name.",
+  "feasibility": "high",
+  "note": "Needs i18n locale JSON and $app/paths shim; note it monkey-patches String.prototype.capitalize.",
+  "children": null,
+  "props": [
+   {
+    "name": "permissionGroup",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "PlayerRow": {
+  "path": "src/lib/components/rows/PlayerRow.svelte",
+  "group": "Tables",
+  "role": "Table row: actions dropdown (authorize/edit/ban), avatar+username link, permission badge, status badge, last-login and register dates, plugin Hook slots",
+  "feasibility": "low",
+  "note": "Crashes without getContext('user') store; Hook needs plugin API client and $app/stores $page stub",
+  "children": null,
+  "props": [
+   {
+    "name": "player",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "checkTime",
+    "type": "number",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "hideStatus",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths"
+   ],
+   "sdkImports": [
+    "$lib/auth.util.js (hasPermission, Permissions)",
+    "$lib/PluginAPI via Hook (panoApiClient)"
+   ],
+   "stores": [
+    "$lib/Store (avatarVersion)",
+    "getContext('user') store"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap dropdown (data-bs-toggle)"
+   ]
+  }
+ },
+ "PlayerStatusBadge": {
+  "path": "src/lib/components/badges/PlayerStatusBadge.svelte",
+  "group": "Badges",
+  "role": "Rounded-pill status badge: red 'Banned', green 'Online' (gamepad/globe icon for in-game vs website), or blue 'Offline' with relative last-seen tooltip.",
+  "feasibility": "high",
+  "note": "Pure props + i18n; online state derives from lastActivityTime vs Date.now(), so pass a recent timestamp to show online.",
+  "children": null,
+  "props": [
+   {
+    "name": "banned",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   },
+   {
+    "name": "lastActivityTime",
+    "type": "unknown",
+    "optional": true,
+    "default": "0"
+   },
+   {
+    "name": "inGame",
+    "type": "number|boolean",
+    "optional": true,
+    "default": "0"
+   },
+   {
+    "name": "checkTime",
+    "type": "number",
+    "optional": true,
+    "default": "0"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/tooltip.util (action)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "date-fns (formatRelative)",
+    "tippy.js (via $lib/tooltip.util)",
+    "Font Awesome icons"
+   ]
+  }
+ },
+ "PostCategoryRow": {
+  "path": "src/lib/components/rows/PostCategoryRow.svelte",
+  "group": "Tables",
+  "role": "Table row: delete button, category title (edit), description, public category URL link, hidden color swatch input, plugin Hook slots",
+  "feasibility": "medium",
+  "note": "Needs UI_URL variable and Hook shim (panoApiClient + $page stub); otherwise prop-driven",
+  "children": null,
+  "props": [
+   {
+    "name": "category",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "index",
+    "type": "number",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/environment + $app/stores (indirect via Hook)"
+   ],
+   "sdkImports": [
+    "$lib/variables (UI_URL, re-export of pano-sdk)",
+    "$lib/PluginAPI via Hook"
+   ],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "PostRow": {
+  "path": "src/lib/components/rows/PostRow.svelte",
+  "group": "Tables",
+  "role": "Table row: actions dropdown (view/draft/publish/trash), 16:9 thumbnail, title link, category badge, views, writer avatar, date, plugin Hook slots",
+  "feasibility": "medium",
+  "note": "Imports PageTypes from the Posts page module (pulls page graph) and Hook/panoApiClient; needs UI_URL, base, avatarVersion shims and realistic post object (post.writer.username required)",
+  "children": null,
+  "props": [
+   {
+    "name": "post",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "pageType",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "buttonsLoading",
+    "type": "boolean",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths"
+   ],
+   "sdkImports": [
+    "$lib/variables.js (UI_URL)",
+    "$lib/PluginAPI via Hook"
+   ],
+   "stores": [
+    "$lib/Store (avatarVersion)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap dropdown (data-bs-toggle)"
+   ]
+  }
+ },
+ "RemoveServerModal": {
+  "path": "src/lib/components/modals/RemoveServerModal.svelte",
+  "group": "Modals",
+  "role": "Confirm-delete modal with icon, account-password input, and cancel/yes (danger) footer",
+  "feasibility": "medium",
+  "note": "Static content once shown; API/goto only fire on confirm; needs i18n + bootstrap shim + show(server)",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)",
+    "$app/navigation (goto)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/api.util"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal"
+   ]
+  }
+ },
+ "RestartingModal": {
+  "path": "src/lib/components/modals/RestartingModal.svelte",
+  "group": "Feedback",
+  "role": "Non-dismissable overlay modal with spinning rotate icon, title and description shown while the platform restarts",
+  "feasibility": "medium",
+  "note": "Pure presentational but gated on a getContext('platformRestarting') store — needs a context shim set to writable(true); no bootstrap JS needed (always-rendered .show markup)",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "getContext('platformRestarting') store"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "SearchInput": {
+  "path": "src/lib/components/SearchInput.svelte",
+  "group": "Forms",
+  "role": "Small debounced Bootstrap input-group search box with optional inline searching spinner",
+  "feasibility": "medium",
+  "note": "Only needs svelte-i18n initialized for placeholder/aria keys; otherwise self-contained",
+  "children": null,
+  "props": [
+   {
+    "name": "placeholderKey",
+    "type": "string",
+    "optional": true,
+    "default": "'buttons.find'"
+   },
+   {
+    "name": "ariaLabelKey",
+    "type": "string",
+    "optional": true,
+    "default": "'buttons.find'"
+   },
+   {
+    "name": "debounceMs",
+    "type": "number",
+    "optional": true,
+    "default": "250"
+   },
+   {
+    "name": "initialValue",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "searching",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   },
+   {
+    "name": "showSpinner",
+    "type": "boolean",
+    "optional": true,
+    "default": "true"
+   },
+   {
+    "name": "onchange",
+    "type": "(...args: unknown[]) => void",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "inputId",
+    "type": "string",
+    "optional": true,
+    "default": "undefined"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "SearchPlayerModal": {
+  "path": "src/lib/components/modals/SearchPlayerModal.svelte",
+  "group": "Modals",
+  "role": "Player search modal: large search input with clear button, status hint, avatar+group result list with Add/Select badges",
+  "feasibility": "medium",
+  "note": "Empty/start-typing state renders from show() alone; result list requires seeding module stores or a mocked search API; avatar imgs hit /api/profile/picture",
+  "children": "none (renders NoContent for empty results)",
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/Store (avatarVersion)",
+    "$lib/api.util"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal"
+   ]
+  }
+ },
+ "ServerActivityMiniChart": {
+  "path": "src/lib/components/charts/Server/ServerActivityMiniChart.svelte",
+  "group": "Charts",
+  "role": "60px absolutely-positioned white translucent sparkline (area line chart) pinned to the bottom of a parent card, tooltip on hover.",
+  "feasibility": "medium",
+  "note": "Renders from one prop, but is position:absolute (needs a relative colored parent card to look right); tooltip label references $_ without importing it — hovering would throw. i18n init still needed.",
+  "children": null,
+  "props": [
+   {
+    "name": "activityData",
+    "type": "unknown",
+    "optional": true,
+    "default": "{}"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "chart.js v4",
+    "chartjs-adapter-date-fns"
+   ]
+  }
+ },
+ "ServerNavigationMenu": {
+  "path": "src/lib/components/sidebar/ServerNavigationMenu.svelte",
+  "group": "Navigation",
+  "role": "Vertical dark sidebar nav for the selected Minecraft server (dashboard/statistics/settings) with active-route highlighting, or a NoContent placeholder when no server is selected/connected.",
+  "feasibility": "low",
+  "note": "Depends on getContext('selectedServer'/'connectedServerCount') stores, the PluginAPI serverNavigationItems store, and a $page stub; without all of these it renders the empty-state only or crashes.",
+  "children": "none (renders NoContent child component in empty states)",
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)",
+    "$app/stores (page)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/PluginAPI.js (serverNavigationItems store)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "Font Awesome icons"
+   ]
+  }
+ },
+ "ServerPlayerChart": {
+  "path": "src/lib/components/charts/Server/ServerPlayerChart.svelte",
+  "group": "Charts",
+  "role": "120px pie chart of online vs remaining player slots, theme-aware colors (reads --bs-border-color and data-bs-theme), no legend.",
+  "feasibility": "high",
+  "note": "Two numeric props; needs i18n JSON for tooltip labels and Bootstrap CSS vars for border color; chart drawn in onMount, no network.",
+  "children": null,
+  "props": [
+   {
+    "name": "playerCount",
+    "type": "number",
+    "optional": true,
+    "default": "0"
+   },
+   {
+    "name": "maxPlayerCount",
+    "type": "number",
+    "optional": true,
+    "default": "0"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "chart.js v4"
+   ]
+  }
+ },
+ "ServerRequestModal": {
+  "path": "src/lib/components/modals/ServerRequestModal.svelte",
+  "group": "Modals",
+  "role": "Server connect-request modal: server card (favicon, type badge, player count, address), display-name input, reject/connect footer",
+  "feasibility": "low",
+  "note": "show(serverId) fetches server data immediately and starts in a spinner state; without live API it stays on the loading spinner; also needs selectedServer context",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/navigation (invalidateAll)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/api.util",
+    "$lib/security.util.js",
+    "$lib/modal.util.js",
+    "getContext('selectedServer')"
+   ],
+   "i18n": true,
+   "networkOnMount": true,
+   "thirdParty": [
+    "bootstrap Modal"
+   ]
+  }
+ },
+ "ServersModal": {
+  "path": "src/lib/components/modals/ServersModal.svelte",
+  "group": "Modals",
+  "role": "XL modal listing pinned/other server cards in a responsive grid with search, placeholder-glow skeletons while loading, and a connect-server button",
+  "feasibility": "low",
+  "note": "show() fetches /api/panel/servers and subscribes to panelRealtime websocket events in onMount; without backend it stays in skeleton state; needs selectedServer context",
+  "children": "none (renders SearchInput, NoContent, ServersModalServerCard grid)",
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/environment (browser)",
+    "$app/navigation (invalidateAll)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/api.util",
+    "$lib/panelRealtime.js",
+    "getContext('selectedServer')"
+   ],
+   "i18n": true,
+   "networkOnMount": true,
+   "thirdParty": [
+    "bootstrap Modal",
+    "copy-to-clipboard"
+   ]
+  }
+ },
+ "ServersModalServerCard": {
+  "path": "src/lib/components/modals/ServersModalServerCard.svelte",
+  "group": "Cards",
+  "role": "Clickable server card: favicon, name, copyable address code, ONLINE/OFFLINE badge, player count, crown for main server, selecting spinner overlay, selected footer",
+  "feasibility": "medium",
+  "note": "Prop-driven and highly showable, but reads selectedServer/mainServer via getContext (store shims needed), uses tippy tooltip action and $app/paths base",
+  "children": null,
+  "props": [
+   {
+    "name": "server",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "selectingServerId",
+    "type": "number|null",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "copiedId",
+    "type": "number|null",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "onSelectCard",
+    "type": "(...args: unknown[]) => void",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "onCopy",
+    "type": "(...args: unknown[]) => void",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "getContext('selectedServer')",
+    "getContext('mainServer')",
+    "$lib/security.util.js"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "tippy.js (tooltip action)"
+   ]
+  }
+ },
+ "Sidebar": {
+  "path": "src/lib/components/Sidebar.svelte",
+  "group": "Navigation",
+  "role": "Primary-colored collapsible offcanvas sidebar: logo header, website/server tab pills, scrollable navigation menu, fixed bottom section",
+  "feasibility": "low",
+  "note": "Requires getContext for sidebarTabsState/isSidebarOpen/siteInfo, window.bootstrap.Offcanvas, auth permission state, and child menus that read session data",
+  "children": "none (composes SiteNavigationMenu/ServerNavigationMenu, Bottom, ServersModal, ConnectServerModal)",
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)",
+    "$app/environment (browser)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/Store (toggleSidebar, setSidebarTabsState)",
+    "$lib/storage.util (PanelSidebarStorageUtil)",
+    "$lib/auth.util (hasPermission, Permissions)",
+    "$lib/variables.js (UI_URL)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (Offcanvas)",
+    "tippy.js via $lib/tooltip.util"
+   ]
+  }
+ },
+ "SiteNavigationMenu": {
+  "path": "src/lib/components/sidebar/SiteNavigationMenu.svelte",
+  "group": "Navigation",
+  "role": "Main dark sidebar nav (dashboard, posts, tickets, players, settings, etc.) with permission-filtered items, active-route highlight, and an update-available dot on Settings.",
+  "feasibility": "low",
+  "note": "Requires getContext('session') store with basicData.hasUpdate, hasPermission() backed by session state, PluginAPI store, and a $page stub; renders empty/crashes without them.",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)",
+    "$app/stores (page)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/PluginAPI.js (siteNavigationItems store)",
+    "$lib/auth.util.js (hasPermission, Permissions)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "Font Awesome icons"
+   ]
+  }
+ },
+ "Splash": {
+  "path": "src/lib/components/Splash.svelte",
+  "group": "Feedback",
+  "role": "Full-viewport animated loading splash cycling Pano/Minecraft/Hytale logos, with error text + retry buttons and a delayed 'stuck?' refresh prompt",
+  "feasibility": "medium",
+  "note": "Needs getContext('session') stub with basicData, base path shim, and $lib/Store; happy path renders fine with an empty networkErrorCallbacks store",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/Store (networkErrorCallbacks, resumeAfterNetworkError, retryingNetworkErrors)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "SummaryStatCard": {
+  "path": "src/lib/components/charts/SummaryStatCard.svelte",
+  "group": "Cards",
+  "role": "KPI card: title, big formatted value, optional secondary value, up/down/neutral trend pill with tooltip, and a filled sparkline along the bottom.",
+  "feasibility": "high",
+  "note": "Fully prop-driven; needs i18n JSON (trend tooltip strings), Bootstrap card CSS, and tooltip action shim.",
+  "children": null,
+  "props": [
+   {
+    "name": "title",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "value",
+    "type": "number",
+    "optional": true,
+    "default": "0"
+   },
+   {
+    "name": "previousValue",
+    "type": "number|null",
+    "optional": true,
+    "default": "null"
+   },
+   {
+    "name": "data",
+    "type": "unknown",
+    "optional": true,
+    "default": "{}"
+   },
+   {
+    "name": "secondaryValue",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "color",
+    "type": "unknown",
+    "optional": true,
+    "default": "'#0d6efd'"
+   },
+   {
+    "name": "colorClass",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "valueFormatter",
+    "type": "function|null",
+    "optional": true,
+    "default": "null"
+   },
+   {
+    "name": "hasComparison",
+    "type": "boolean",
+    "optional": true,
+    "default": "true"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/tooltip.util (action)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "chart.js v4",
+    "tippy.js (via $lib/tooltip.util)"
+   ]
+  }
+ },
+ "TableThumbnail": {
+  "path": "src/lib/components/rows/TableThumbnail.svelte",
+  "group": "Tables",
+  "role": "40px-tall 16:9 rounded thumbnail linked to href, or an icon placeholder tile when src is absent",
+  "feasibility": "high",
+  "note": "Pure presentational; i18n only for the default tooltip text; use an http(s) or data src to avoid the -preview URL rewrite",
+  "children": null,
+  "props": [
+   {
+    "name": "src",
+    "type": "string|null",
+    "optional": true,
+    "default": "null"
+   },
+   {
+    "name": "alt",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "href",
+    "type": "string",
+    "optional": true,
+    "default": "'#'"
+   },
+   {
+    "name": "target",
+    "type": "string",
+    "optional": true,
+    "default": "'_blank'"
+   },
+   {
+    "name": "tooltipText",
+    "type": "string",
+    "optional": true,
+    "default": "$_('buttons.view')"
+   },
+   {
+    "name": "icon",
+    "type": "string",
+    "optional": true,
+    "default": "'fa-image'"
+   },
+   {
+    "name": "preview",
+    "type": "boolean",
+    "optional": true,
+    "default": "true"
+   },
+   {
+    "name": "anchorClass",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "ThemeColorMenu": {
+  "path": "src/lib/components/ThemeColorMenu.svelte",
+  "group": "Navigation",
+  "role": "Row of round color-dot buttons (light/dark/copper) for picking the panel color theme, active dot ringed",
+  "feasibility": "high",
+  "note": "Pure presentational; just needs i18n for tooltips/aria labels",
+  "children": null,
+  "props": [
+   {
+    "name": "currentTheme",
+    "type": "string",
+    "optional": false,
+    "default": null
+   },
+   {
+    "name": "onThemeSelect",
+    "type": "(...args: unknown[]) => void",
+    "optional": false,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "ThemeLicenseCard": {
+  "path": "src/lib/components/ThemeLicenseCard.svelte",
+  "group": "Cards",
+  "role": "Bootstrap card showing premium-theme license status with badge, status copy per state, refresh button, and buy/connect CTAs",
+  "feasibility": "medium",
+  "note": "Renders statically from a theme prop with premium:true and a licenseStatus; API/invalidateAll only fire on refresh click (needs $app/navigation + $app/paths shims)",
+  "children": "none (composes LicenseStatusBadge, ToastContainer.show)",
+  "props": [
+   {
+    "name": "theme",
+    "type": "object { premium, licenseStatus, id }",
+    "optional": false,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)",
+    "$app/navigation (invalidateAll)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/website-display.util (websiteDisplayHost)",
+    "$lib/variables.js (PANO_WEBSITE_URL)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "TicketCategoryRow": {
+  "path": "src/lib/components/rows/TicketCategoryRow.svelte",
+  "group": "Tables",
+  "role": "Table row: delete button, category title as edit button, truncated description",
+  "feasibility": "high",
+  "note": "Pure presentational; only i18n and a category object",
+  "children": null,
+  "props": [
+   {
+    "name": "category",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "index",
+    "type": "number",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "TicketRow": {
+  "path": "src/lib/components/rows/TicketRow.svelte",
+  "group": "Tables",
+  "role": "Table row: select checkbox, #id, title link, category badge, writer avatar+name, status badge, last-update date",
+  "feasibility": "medium",
+  "note": "checkedList must be passed as a writable store; needs base/avatarVersion/tooltip shims and ticket.writer.username",
+  "children": null,
+  "props": [
+   {
+    "name": "ticket",
+    "type": "Record<string, unknown>",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "checkedList",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths"
+   ],
+   "sdkImports": [
+    "$lib/tooltip.util (pano-sdk)"
+   ],
+   "stores": [
+    "$lib/Store (avatarVersion)",
+    "checkedList prop is itself a svelte store"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "tippy.js (via tooltip action)"
+   ]
+  }
+ },
+ "TicketStatusBadge": {
+  "path": "src/lib/components/badges/TicketStatusBadge.svelte",
+  "group": "Badges",
+  "role": "Rounded-pill link badge colored by ticket status: green New, yellow Replied, red Closed; links to filtered ticket list.",
+  "feasibility": "high",
+  "note": "Pure presentational; i18n + $app/paths shim. Module also exports TicketStatuses enum.",
+  "children": null,
+  "props": [
+   {
+    "name": "status",
+    "type": "unknown",
+    "optional": true,
+    "default": "'NEW'"
+   }
+  ],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "Toast": {
+  "path": "src/lib/components/Toast.svelte",
+  "group": "Feedback",
+  "role": "Single Bootstrap toast shell (tertiary background, shadow) whose body is the slot content",
+  "feasibility": "high",
+  "note": "Pure markup; add the Bootstrap 'show' class manually (base .toast is display:none until shown)",
+  "children": "legacy default <slot /> (toast body)",
+  "props": [
+   {
+    "name": "id",
+    "type": "string|number",
+    "optional": false,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap toast CSS (visibility needs .show or Bootstrap JS)"
+   ]
+  }
+ },
+ "ToastContainer": {
+  "path": "src/lib/components/ToastContainer.svelte",
+  "group": "Feedback",
+  "role": "Fixed bottom-center stack that renders queued toast components pushed via the exported show() module function",
+  "feasibility": "low",
+  "note": "Renders empty unless the module show() API is called; showing requires window.bootstrap.Toast at runtime",
+  "children": "none (renders dynamic toast components via svelte:component)",
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "module-local toasts writable"
+   ],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap (window.bootstrap.Toast)"
+   ]
+  }
+ },
+ "TranslationRow": {
+  "path": "src/lib/components/rows/TranslationRow.svelte",
+  "group": "Forms",
+  "role": "Three floating-label form fields per row (readonly key, readonly original, editable custom translation) plus optional delete button",
+  "feasibility": "high",
+  "note": "Pure form-row presentational; needs only i18n and a translation object",
+  "children": null,
+  "props": [
+   {
+    "name": "translation",
+    "type": "object {key, original, custom, notExists}",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "pluginId",
+    "type": "string|null",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "TranslationSkeleton": {
+  "path": "src/lib/components/rows/TranslationSkeleton.svelte",
+  "group": "Feedback",
+  "role": "Three animated shimmering skeleton placeholder blocks mimicking a TranslationRow while loading; theme-aware via data-bs-theme",
+  "feasibility": "high",
+  "note": "Zero props, zero imports; only needs Bootstrap CSS variables present",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "UnbanIpModal": {
+  "path": "src/lib/components/modals/UnbanIpModal.svelte",
+  "group": "Modals",
+  "role": "Confirmation modal (question icon, cancel/yes-danger footer) for removing an IP ban",
+  "feasibility": "medium",
+  "note": "Renders from show(bannedIp) alone; API only on confirm; needs i18n + bootstrap shim",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/api.util"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal"
+   ]
+  }
+ },
+ "UnbanPlayerModal": {
+  "path": "src/lib/components/modals/UnbanPlayerModal.svelte",
+  "group": "Modals",
+  "role": "Confirmation modal (question icon, cancel/yes-danger footer) for unbanning a player",
+  "feasibility": "medium",
+  "note": "Renders from show(player) alone; API only on confirm; needs i18n + bootstrap shim",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/api.util"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal"
+   ]
+  }
+ },
+ "UnnecessaryTranslationsAlert": {
+  "path": "src/lib/components/UnnecessaryTranslationsAlert.svelte",
+  "group": "Feedback",
+  "role": "Warning alert with a collapsible details list of obsolete translation rows (hardcoded English summary text)",
+  "feasibility": "medium",
+  "note": "Needs realistic translations array; depends on TranslationRow child (check its own coupling); events bubble via dispatcher",
+  "children": "none (renders TranslationRow child components)",
+  "props": [
+   {
+    "name": "translations",
+    "type": "unknown[]",
+    "optional": false,
+    "default": null
+   },
+   {
+    "name": "pluginId",
+    "type": "string",
+    "optional": false,
+    "default": null
+   },
+   {
+    "name": "open",
+    "type": "boolean",
+    "optional": false,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "VerifiedStatus": {
+  "path": "src/lib/components/VerifiedStatus.svelte",
+  "group": "Badges",
+  "role": "Small green check or yellow exclamation icon with tooltip indicating verified/not-verified state",
+  "feasibility": "high",
+  "note": "Renders from one string prop; needs i18n and the tippy tooltip action (harmless if tooltip is shimmed)",
+  "children": null,
+  "props": [
+   {
+    "name": "status",
+    "type": "unknown",
+    "optional": false,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "tippy.js via $lib/tooltip.util"
+   ]
+  }
+ },
+ "ViewActivityLogModal": {
+  "path": "src/lib/components/modals/ViewActivityLogModal.svelte",
+  "group": "Modals",
+  "role": "Read-only modal showing an activity log's details as pretty-printed JSON in a 10-row textarea",
+  "feasibility": "medium",
+  "note": "Fully self-contained; show(activityLog) + i18n + bootstrap shim is enough",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal",
+    "tippy.js (tooltip util, imported unused)"
+   ]
+  }
+ },
+ "ViewAllLink": {
+  "path": "src/lib/components/ViewAllLink.svelte",
+  "group": "Navigation",
+  "role": "Small 'view all' arrow link (or custom slot content) styled as a Bootstrap btn-link",
+  "feasibility": "high",
+  "note": "Pure presentational; only needs i18n for the aria-label/title",
+  "children": "legacy default <slot> with arrow-icon fallback",
+  "props": [
+   {
+    "name": "href",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "classes",
+    "type": "string",
+    "optional": true,
+    "default": "''"
+   },
+   {
+    "name": "targetBlank",
+    "type": "boolean",
+    "optional": true,
+    "default": "false"
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "ViewComponent": {
+  "path": "src/lib/components/ViewComponent.svelte",
+  "group": "Utilities",
+  "role": "Invisible dynamic-component mount point used for plugin view slots; renders whatever component it is given",
+  "feasibility": "low",
+  "note": "Renders nothing without a real compiled Svelte component prop (typically supplied by the plugin-UI loader); not meaningful as a standalone visual",
+  "children": "none (dynamically renders the passed component)",
+  "props": [
+   {
+    "name": "component",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "...rest",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [],
+   "i18n": false,
+   "networkOnMount": false,
+   "thirdParty": []
+  }
+ },
+ "WebsiteActivityChart": {
+  "path": "src/lib/components/charts/Dashboard/WebsiteActivityChart.svelte",
+  "group": "Charts",
+  "role": "300px-tall multi-series line chart (registrations, visitors, views) over a week/month time axis with legend, tooltips, and dark-mode-aware colors.",
+  "feasibility": "medium",
+  "note": "Renders from props with fake time-series data, but pulls DashboardPeriod from a page module and currentLanguage store; canvas render happens in onMount (client-only), no network.",
+  "children": null,
+  "props": [
+   {
+    "name": "newRegisterData",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "ticketsData",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "visitorData",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "viewData",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   },
+   {
+    "name": "period",
+    "type": "unknown",
+    "optional": true,
+    "default": null
+   }
+  ],
+  "coupling": {
+   "appModules": [],
+   "sdkImports": [],
+   "stores": [
+    "$lib/language.util.js (currentLanguage store)",
+    "$lib/pages/Statistics.svelte (DashboardPeriod module export)",
+    "$lib/auth.util.js (hasPermission, Permissions — imported, unused)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "chart.js v4",
+    "chartjs-adapter-date-fns",
+    "date-fns"
+   ]
+  }
+ },
+ "WhatsNewModal": {
+  "path": "src/lib/components/modals/WhatsNewModal.svelte",
+  "group": "Modals",
+  "role": "Marketing what's-new modal: branded hero header with Pano logo and decorative blocks, 2x2 feature grid with gradient icons, optional don't-show-again switch footer",
+  "feasibility": "medium",
+  "note": "Content is fully static i18n text; needs base-path stub for logo image (hardcoded /panel/assets svgs) and bootstrap shim to show; API only fires on dismissal",
+  "children": null,
+  "props": [],
+  "coupling": {
+   "appModules": [
+    "$app/paths (base)"
+   ],
+   "sdkImports": [],
+   "stores": [
+    "$lib/api.util (dismiss POST on hide)"
+   ],
+   "i18n": true,
+   "networkOnMount": false,
+   "thirdParty": [
+    "bootstrap Modal"
+   ]
+  }
+ }
+}
