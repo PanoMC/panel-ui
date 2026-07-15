@@ -3,6 +3,47 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      // Hydration watchdog. A failed ES-module fetch is cached in the browser's
+      // module map for the lifetime of the document (per HTML spec), so a single
+      // transient 404/network error on any script chunk leaves the SSR'd page
+      // permanently dead with no retry. Recover with ONE cache-busting reload;
+      // hooks.client.js clears the flag once the app boots successfully.
+      (function () {
+        var KEY = 'pano:hydration-reload';
+        var MODULE_ERROR =
+          /(failed to fetch dynamically imported module|error loading dynamically imported module|importing a module script failed|failed to resolve module specifier|import map|pano-runtime|failed to load module script)/i;
+        function recover(message) {
+          // Only rescue pages whose boot never completed (dead SSR page with a
+          // poisoned module map). After a successful boot (hooks.client init sets
+          // the flag) a failing module import is a plugin's own runtime problem —
+          // reloading would loop forever since init also re-arms the sessionStorage
+          // guard on every successful boot.
+          if (window.__PANO_APP_BOOTED__) return;
+          if (!MODULE_ERROR.test(String(message || ''))) return;
+          try {
+            if (sessionStorage.getItem(KEY) === '1') return;
+            sessionStorage.setItem(KEY, '1');
+          } catch (e) {
+            return;
+          }
+          var url = new URL(location.href);
+          url.searchParams.set('pano-rl', Date.now().toString(36));
+          location.replace(url.href);
+        }
+        addEventListener(
+          'error',
+          function (e) {
+            recover(e.message || (e.error && e.error.message));
+          },
+          true,
+        );
+        addEventListener('unhandledrejection', function (e) {
+          var r = e.reason;
+          recover(r && (r.message || r));
+        });
+      })();
+    </script>
     %pano_lib_import% %sveltekit.head%
     <script>
       (function () {
