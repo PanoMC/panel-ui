@@ -206,13 +206,17 @@
 
     await executeLifecycle('panel:posts:load', body, event);
 
+    // Hook names must match the <Hook name="..."> markup EXACTLY (colon-separated
+    // segments, as plugins register them). A mismatched name here means the modules
+    // never resolve during load, the SSR branch skips the unresolved component, and
+    // the hook only appears after client-side resolution — a visible pop-in.
     body.hookProps = {};
-    body.hookProps['panel:posts:table-header:after-views'] = await executeHookLoad(
-      'panel:posts:table-header:after-views',
+    body.hookProps['panel:posts:table:header:after-views'] = await executeHookLoad(
+      'panel:posts:table:header:after-views',
       event,
     );
-    body.hookProps['panel:posts:table-row:after-views'] = await executeHookLoad(
-      'panel:posts:table-row:after-views',
+    body.hookProps['panel:posts:table:row:after-views'] = await executeHookLoad(
+      'panel:posts:table:row:after-views',
       event,
     );
 

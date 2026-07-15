@@ -1,62 +1,59 @@
 {#each hookList as module, i}
   {@const props = hookProps[i] || {}}
-  {#if module && (module.default || !isFunction(module))}
-    {#key name + i + (rest.post?.id || rest.id || '')}
-      {@const Component = module.default || module}
+  {@const hasPerm =
+    !filteredHooks[i]?.permission || hasPermission(filteredHooks[i]?.permission, $page.data.user)}
+  {#if module && hasPerm && typeof module !== 'function'}
+    {@const Component = module.default || module}
+    {@const isInvisible = props.hookOptions?.invisible || filteredHooks[i]?.invisible}
 
-      {#if !browser}
-        <!-- Server Side SSR -->
-        <svelte:element this={tag} hookName={name} {...props} {...rest}>
-          {#if Component}
-            <Component hookName={name} {...props} {...rest} />
-          {/if}
-        </svelte:element>
-      {:else if !props.hookOptions?.invisible}
-        <!-- Client Side: Manual Mount -->
-        <svelte:element
-          this={tag}
-          use:mountPlugin={{ module, props, rest }}
-          class="hook-view-container {rest.class || ''}"
-          style="{tag === 'div' ? 'display: contents;' : ''} {rest.style || ''}">
-        </svelte:element>
-      {/if}
-    {/key}
+    {#if !isInvisible}
+      <!-- Svelte renders Component natively for both SSR and client, so the SSR
+           markup is truly hydrated instead of being discarded and re-mounted (which
+           made hook content pop in after page load). Unlike the theme's Hook, the
+           Component renders INSIDE the container element: panel hooks are used as
+           table cells (tag="th"/"td") whose components render bare content, so the
+           container must BE the cell — a sibling render would put invalid children
+           into <tr> and crash hydration. -->
+      <svelte:element
+        this={tag}
+        class="hook-view-container {rest.class || ''}"
+        style="{tag === 'div' ? 'display: contents;' : ''} {rest.style || ''}"
+        hookName={name}>
+        <Component hookName={name} {...props} {...rest} />
+      </svelte:element>
+    {/if}
   {/if}
 {/each}
 
 <script>
   import { panoApiClient } from '$lib/PluginAPI.js';
-  import { browser } from '$app/environment';
   import { page } from '$app/stores';
-  import { mount, unmount, getAllContexts, untrack } from 'svelte';
   import { hasPermission } from '$lib/auth.util.js';
 
   let { name, tag = 'div', ...rest } = $props();
 
   const hookStore = $derived(panoApiClient.ui.hook.get(name));
 
-  const filteredHooks = $derived(
-    ($hookStore || []).filter((h) => !h.permission || hasPermission(h.permission, $page.data.user)),
-  );
+  // Deliberately UNfiltered: hookProps[i] from the load function is indexed over the
+  // full registered list, so filtering here would misalign props with components.
+  // Permission is checked per item in the template instead.
+  const filteredHooks = $derived($hookStore || []);
 
   let resolvedHooks = $state([]);
   const hookList = $derived(
-    resolvedHooks.length > 0 ? resolvedHooks : filteredHooks.map((h) => h.component || h),
+    resolvedHooks.length > 0
+      ? resolvedHooks.map((h) => h.component || h)
+      : filteredHooks.map((h) => h.component || h),
   );
-
-  const contexts = getAllContexts();
 
   // Use passed hooks props if available
   const hookProps = $derived($page.data.hookProps?.[name] || []);
 
-  function isFunction(obj) {
-    return !!(obj && obj.constructor && obj.call && obj.apply);
-  }
-
   $effect(() => {
-    // Sync with store and resolve any functions if needed (Client only)
+    // Sync with store and resolve any functions if needed (client-only fallback for
+    // hooks that were not resolved during the page load).
     const current = filteredHooks.map((h) => h.component || h);
-    if (browser && current.some((h) => typeof h === 'function' && !h.prototype)) {
+    if (current.some((h) => typeof h === 'function' && !h.prototype)) {
       resolveHooks(current);
     } else {
       resolvedHooks = [];
@@ -73,67 +70,5 @@
       }),
     );
     resolvedHooks = resolved;
-  }
-
-  function mountPlugin(viewContainer, params) {
-    let { module, props: currentProps, rest: currentRest } = params;
-    const Component = module.default || module;
-    if (!browser || !viewContainer || !Component) return;
-
-    // Use a reactive $state object for props to maintain Svelte 5 reactivity
-    let componentProps = $state({
-      hookName: name,
-      ...currentProps,
-      ...currentRest,
-    });
-    let componentInstance;
-
-    try {
-      if (module.mount) {
-        componentInstance = module.mount({
-          target: viewContainer,
-          props: componentProps,
-          context: contexts,
-        });
-      } else {
-        componentInstance = mount(Component, {
-          target: viewContainer,
-          props: componentProps,
-          context: contexts,
-        });
-      }
-    } catch (err) {
-      console.warn('[Hook] Mount failed completely:', err);
-    }
-
-    return {
-      update(newParams) {
-        // Surgical update: Only update changed properties to avoid infinite loops
-        const nextCombined = {
-          ...newParams.props,
-          ...newParams.rest,
-          hookName: name,
-        };
-
-        untrack(() => {
-          for (const key in nextCombined) {
-            if (componentProps[key] !== nextCombined[key]) {
-              componentProps[key] = nextCombined[key];
-            }
-          }
-        });
-      },
-      destroy() {
-        if (componentInstance) {
-          try {
-            if (module.unmount) {
-              module.unmount(componentInstance);
-            } else {
-              unmount(componentInstance);
-            }
-          } catch (e) {}
-        }
-      },
-    };
   }
 </script>
