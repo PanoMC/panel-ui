@@ -13,14 +13,17 @@
       style={data.layout ? '' : 'display: none;'}>
     </div>
 
-    {#key data}
-      <div
-        bind:this={slotContentContainer}
-        class="plugin-content-wrapper"
-        style={data.layout ? 'display: none;' : ''}>
+    <!-- The wrapper itself stays OUTSIDE the {#key}: keying it would destroy and
+         recreate the live element on every load() re-run, tearing bridged content
+         out of a mounted plugin layout (upstream vanilla-theme fix). -->
+    <div
+      bind:this={slotContentContainer}
+      class="plugin-content-wrapper"
+      style={data.layout ? 'display: none;' : ''}>
+      {#key data}
         <slot />
-      </div>
-    {/key}
+      {/key}
+    </div>
   </svelte:component>
 {:else}
   <div
@@ -29,14 +32,14 @@
     style={data.layout ? '' : 'display: none;'}>
   </div>
 
-  {#key data}
-    <div
-      bind:this={slotContentContainer}
-      class="plugin-content-wrapper"
-      style={data.layout ? 'display: none;' : ''}>
+  <div
+    bind:this={slotContentContainer}
+    class="plugin-content-wrapper"
+    style={data.layout ? 'display: none;' : ''}>
+    {#key data}
       <slot />
-    </div>
-  {/key}
+    {/key}
+  </div>
 {/if}
 
 <script context="module">
@@ -118,7 +121,51 @@
   let layoutInstance = null;
   let activeLayoutComp = null;
 
+  // The slot wrapper's NATURAL DOM position (where Svelte rendered it, inside the
+  // panel shell / systemLayout). Captured on first bind — BEFORE any bridging move —
+  // so pages without a plugin layout can always be restored to normal document flow.
+  let slotHome = null;
+
+  $effect(() => {
+    if (!browser || !slotContentContainer || slotHome) return;
+    slotHome = {
+      parent: slotContentContainer.parentNode,
+      anchor: slotContentContainer.nextSibling,
+    };
+  });
+
+  // A stable parent the slot content survives layout TEARDOWN in: before destroying a
+  // mounted layout we park the slot content here so the live <slot> subtree is never
+  // torn out together with the layout.
+  function stableSlotParent() {
+    return browser ? document.body : null;
+  }
+
+  // Put the slot wrapper back where Svelte originally rendered it (its SSR position).
+  function restoreSlotHome() {
+    if (!browser || !slotContentContainer || !slotHome?.parent?.isConnected) return;
+    if (slotContentContainer.parentNode !== slotHome.parent) {
+      slotHome.parent.insertBefore(
+        slotContentContainer,
+        slotHome.anchor?.parentNode === slotHome.parent ? slotHome.anchor : null,
+      );
+    }
+  }
+
   function cleanupLayout() {
+    // Park the slot content outside the layout BEFORE unmounting it, otherwise unmounting
+    // rips the live <slot> subtree out of the DOM -> blank/torn content and a detached-DOM
+    // leak. ONLY when a layout is actually mounted: doing it unconditionally would strand
+    // every no-layout plugin page's content at the end of <body> on hydration (upstream
+    // vanilla-theme bug — page rendered in SSR, content vanished below the footer at CSR).
+    if (browser && slotContentContainer && layoutInstance) {
+      const parent = stableSlotParent();
+      if (parent && slotContentContainer.parentNode !== parent) {
+        slotContentContainer.style.display = 'none';
+        parent.appendChild(slotContentContainer);
+      }
+    }
+
     if (layoutInstance) {
       try {
         // Use the snapshot of what was mounted
@@ -178,8 +225,11 @@
         return;
       }
 
-      // No dynamic layout: Reset style and stop polling
+      // No dynamic layout: make sure the wrapper sits in its natural (SSR) position —
+      // a previous layout page's teardown may have parked it on <body> — then reset
+      // style and stop polling.
       if (!data.layout) {
+        restoreSlotHome();
         slotContentContainer.style.display = '';
         return;
       }
@@ -191,6 +241,13 @@
       if (anchor) {
         if (anchor.lastElementChild !== slotContentContainer) {
           anchor.appendChild(slotContentContainer);
+        }
+        slotContentContainer.style.display = '';
+      } else if (layoutContainer?.firstElementChild) {
+        // Layout mounted but exposes no recognizable content anchor: fall back to its
+        // root element instead of polling forever with the content stuck hidden.
+        if (layoutContainer.firstElementChild.lastElementChild !== slotContentContainer) {
+          layoutContainer.firstElementChild.appendChild(slotContentContainer);
         }
         slotContentContainer.style.display = '';
       } else {
