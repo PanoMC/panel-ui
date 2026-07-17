@@ -1,79 +1,21 @@
-import { sveltekit } from '@sveltejs/kit/vite';
-import { loadEnv, defineConfig } from 'vite';
+import { createViteConfig } from '@panomc/theme-core/kit/vite-config';
 import fs from 'fs';
 import path from 'path';
 import { collectLicenses } from './scripts/generate-licenses.js';
 
-const env = loadEnv('', process.cwd());
-
 // Global flag to ensure licenses are generated only once per build
 let licensesGenerated = false;
 
-function copyLangFolderPlugin() {
-  let outDir = '';
-
-  return {
-    name: 'copy-lang-folder',
-    apply: 'build', // Run only during build
-    configResolved(config) {
-      // Get the output directory from Vite config
-      outDir = 'build/';
-    },
-    async closeBundle() {
-      const srcDir = path.resolve(process.cwd(), 'lang');
-      const destDir = path.resolve(process.cwd(), outDir, 'lang');
-
-      if (!fs.existsSync(srcDir)) {
-        console.warn(`Source folder "lang" not found at: ${srcDir}`);
-        return;
-      }
-
-      try {
-        // Copy the "lang" folder recursively to the destination
-        await fs.promises.cp(srcDir, destDir, { recursive: true });
-        console.log(`Copied "lang" folder from ${srcDir} to ${destDir}`);
-      } catch (error) {
-        console.error('Error copying "lang" folder:', error);
-      }
-    },
-  };
-}
-
-function copyManifestPlugin(filename = 'manifest.json') {
-  let outDir = '';
-
-  return {
-    name: 'copy-manifest-json',
-    apply: 'build',
-    configResolved(config) {
-      outDir = 'build/';
-    },
-    async closeBundle() {
-      const srcPath = path.resolve(process.cwd(), filename);
-      const destPath = path.resolve(process.cwd(), outDir, filename);
-
-      if (!fs.existsSync(srcPath)) {
-        console.warn(`Manifest file not found at: ${srcPath}`);
-        return;
-      }
-
-      try {
-        await fs.promises.copyFile(srcPath, destPath);
-        console.log(`Copied manifest from ${srcPath} to ${destPath}`);
-      } catch (err) {
-        console.error('Failed to copy manifest.json:', err);
-      }
-    },
-  };
-}
-
+// Panel-only OSS license collection: emits build/licenses.json from the panel's
+// installed dependency tree. Ported verbatim from the pre-migration vite.config.js;
+// the collectLicenses helper still lives in scripts/generate-licenses.js.
 function generateLicensesPlugin() {
   let outDir = '';
 
   return {
     name: 'generate-licenses',
     apply: 'build',
-    configResolved(config) {
+    configResolved() {
       outDir = path.resolve(process.cwd(), 'build');
     },
     async closeBundle() {
@@ -103,64 +45,32 @@ function generateLicensesPlugin() {
   };
 }
 
-export default defineConfig(({ command }) => {
-  return {
-    clearScreen: false,
-    plugins: [sveltekit(), generateLicensesPlugin(), copyLangFolderPlugin(), copyManifestPlugin()],
-    ssr: {
-      noExternal:
-        command === 'build'
-          ? true
-          : [
-              'chart.js',
-              '@tiptap/**',
-              'prosemirror-**',
-              '@tiptap/pm',
-              '@jill64/universal-sanitizer',
-              '@panomc/sdk',
-              'svelte-i18n',
-            ],
-    },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          api: 'modern-compiler',
-          loadPaths: [process.cwd(), path.resolve(process.cwd(), 'node_modules')],
-          quietDeps: true,
-          silenceDeprecations: ['mixed-decls', 'color-functions', 'global-builtin', 'import'],
-        },
-      },
-    },
-    optimizeDeps: {
-      include: ['deepmerge', 'svelte-i18n'],
-      exclude: ['@panomc/sdk', 'svelte'],
-    },
-    server: {
-      proxy: {
-        '/api': env.VITE_API_URL.replace('/api', ''),
-        '/panel/api': env.VITE_API_URL.replace('/api', ''),
-      },
-      allowedHosts: true,
-      hmr: {
-        path: '/panel/',
-      },
-    },
-    resolve: {
-      alias: {
-        '@theme-style':
-          command === 'serve'
-            ? path.resolve(process.cwd(), 'src/styles/_empty.scss')
-            : path.resolve(process.cwd(), 'src/styles/style.scss'),
-      },
-      preserveSymlinks: true,
-      dedupe: ['svelte', '@panomc/sdk', 'svelte-i18n'],
-    },
-    build: {
-      manifest: true,
-      // svelte/@panomc/sdk are deliberately NOT externalized: the host bundles its
-      // own runtime (immutable-cached under /panel/_app/immutable), and plugins reach
-      // the very same module instances through the /panel/runtime shims + the registry
-      // in hooks.client.js. See scripts/generate-runtime-shims.js.
-    },
-  };
+export default createViteConfig({
+  // Panel is mounted under /panel — drives the extra dev proxy entry and hmr path.
+  base: '/panel',
+  // Panel copies only lang/ into build/ (no screenshots).
+  copyFolders: ['lang'],
+  // Dev-only ssr.noExternal entries beyond the core defaults (@panomc/sdk,
+  // @panomc/theme-core, svelte-i18n) that the panel's editor/chart stack needs.
+  extraNoExternalDev: [
+    'chart.js',
+    '@tiptap/**',
+    'prosemirror-**',
+    '@tiptap/pm',
+    '@jill64/universal-sanitizer',
+  ],
+  // Panel-only OSS license collection plugin.
+  extraPlugins: [generateLicensesPlugin()],
+  // The panel's vendored @panomc/sdk (a git submodule, older snapshot) does not
+  // declare a "./core/*" subpath in its package `exports`, so core kit's imports
+  // of @panomc/sdk/core/js/{variables,api.util,...} fail strict exports
+  // resolution at build time. Redirect that prefix to the submodule's on-disk
+  // core/ dir. This ALSO unifies the module instance with the panel's own
+  // $lib/{variables,api.util}.js (which import ../pano-sdk/core/js/* relatively),
+  // so the factory's runtime env updates (updateApiUrl, updatePanoWebsiteUrl) and
+  // the panel's app code share one API_URL binding — preserving pre-migration
+  // runtime behavior. (vanilla-theme instead ships an SDK that exports ./core/*.)
+  extraAliases: {
+    '@panomc/sdk/core': path.resolve(process.cwd(), 'src/pano-sdk/core'),
+  },
 });
