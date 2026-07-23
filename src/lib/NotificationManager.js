@@ -1,1 +1,1 @@
-export * from '../pano-sdk/core/js/NotificationManager.js';
+export * from '@panomc/sdk/core/js/NotificationManager.js';

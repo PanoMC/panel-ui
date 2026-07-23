@@ -1,4 +1,4 @@
-[submodule "src/pano-sdk"]
-	path = src/pano-sdk
+[submodule "theme-core"]
+	path = theme-core
 	url = https://github.com/PanoMC/sdk.git
 	branch = dev

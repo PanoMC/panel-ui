@@ -73,7 +73,7 @@ jobs:
           node-version: 'latest'
 
       - name: Install
-        run: bun install
+        run: bun install --backend=copyfile
 
       - name: Create .env.local if branch is dev
         run: |

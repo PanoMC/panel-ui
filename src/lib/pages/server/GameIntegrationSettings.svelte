@@ -171,7 +171,7 @@
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import { PANO_WEBSITE_URL } from "../../../pano-sdk/core/js/variables.js";
+  import { PANO_WEBSITE_URL } from "@panomc/sdk/core/js/variables.js";
 
   const pageTitle = getContext('pageTitle');
 
