@@ -1,1 +1,1 @@
-export * from '../pano-sdk/core/js/variables.js';
+export * from '@panomc/sdk/core/js/variables.js';

@@ -1,5 +1,5 @@
 $pano-asset-path: '/panel/assets/';
-@import '../pano-sdk/core/scss/main';
+@import 'node_modules/@panomc/sdk/core/scss/main';
 $fa-font-path: '#{$pano-asset-path}webfonts';
 
 @import 'node_modules/tippy.js/dist/tippy';

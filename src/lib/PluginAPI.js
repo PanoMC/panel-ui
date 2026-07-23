@@ -1,4 +1,4 @@
-import { baseAPI, pageAPI } from '../pano-sdk/core/js/PluginAPI';
+import { baseAPI, pageAPI } from '@panomc/sdk/core/js/PluginAPI';
 import { derived, get, writable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { plugins } from '$lib/PluginManager.js';

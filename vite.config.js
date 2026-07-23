@@ -71,6 +71,7 @@ export default createViteConfig({
   // the panel's app code share one API_URL binding — preserving pre-migration
   // runtime behavior. (vanilla-theme instead ships an SDK that exports ./core/*.)
   extraAliases: {
-    '@panomc/sdk/core': path.resolve(process.cwd(), 'src/pano-sdk/core'),
+    // sdk now comes from the theme-core submodule via node_modules (its
+    // package exports ./core/*); no vendored-path alias needed anymore.
   },
 });

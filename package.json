@@ -22,8 +22,8 @@
   },
   "devDependencies": {
     "@jill64/universal-sanitizer": "^1.4.6",
-    "@panomc/sdk": "file:./src/pano-sdk",
-    "@panomc/theme-core": "file:../theme-core/packages/theme-core",
+    "@panomc/sdk": "file:./theme-core/packages/sdk",
+    "@panomc/theme-core": "file:./theme-core/packages/theme-core",
     "@rollup/plugin-json": "^6.1.0",
     "@sveltejs/adapter-node": "^5.5.4",
     "@sveltejs/kit": "^2.57.1",

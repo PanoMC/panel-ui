@@ -1,5 +1,5 @@
 <style lang="scss">
-  @import '../../../pano-sdk/core/scss/custom-bootstrap.scss';
+  @import 'node_modules/@panomc/sdk/core/scss/custom-bootstrap.scss';
 
   .theme-card {
     transition:
