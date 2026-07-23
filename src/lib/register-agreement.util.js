@@ -1,5 +1,5 @@
 /**
- * TipTap boş belge `<p></p>` üretebilir; API ve `isNotBlank` ile uyum için metin yoksa boş string sayılır.
+ * TipTap may produce an empty document `<p></p>`; for consistency with the API and `isNotBlank`, it counts as an empty string when there is no text.
  * @param {unknown} html
  * @returns {string}
  */

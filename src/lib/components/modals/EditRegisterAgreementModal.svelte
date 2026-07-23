@@ -77,7 +77,7 @@
   const modalElement = writable();
   const draft = writable('');
   const editorKey = writable(0);
-  /** Kayıtta sözleşme istenmeyecekse true. */
+  /** True when no agreement should be required at registration. */
   const agreementOff = writable(false);
 
   let modal;

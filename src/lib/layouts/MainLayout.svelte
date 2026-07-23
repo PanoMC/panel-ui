@@ -5,7 +5,7 @@
   }
 
   /*
-   * Okunmamış vurgu: alan renk değişimi `::after` + opacity ile “solarak” gider (sınıf kalkınca 0.8s+).
+   * Unread highlight: the area color change "fades" out via `::after` + opacity (0.8s+ once the class is removed).
    */
   :global(.panel-notification-row.list-group-item) {
     position: relative;
