@@ -1,5 +1,5 @@
 /**
- * panel-ui quick + full list; API / tema farklı shape verebileceği için.
+ * panel-ui quick + full list; because the API / theme may return a different shape.
  * @param { { status?: string | { name?: string } } } n
  * @returns { boolean }
  */

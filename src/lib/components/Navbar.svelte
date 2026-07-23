@@ -466,7 +466,7 @@
     // interval cleaned up in onMount return
   });
 
-  // herhangi bir manuel abonelik yok
+  // no manual subscription of any kind
 
   function sanitizeObject(obj) {
     return Object.keys(obj).reduce((sanitizedObj, key) => {

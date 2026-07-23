@@ -274,7 +274,7 @@
           </div>
         </div>
 
-        <!-- Kullanıcılar -->
+        <!-- Users -->
         <div
           class="accordion-item"
           role="button"

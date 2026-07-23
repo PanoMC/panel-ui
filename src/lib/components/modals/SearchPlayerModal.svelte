@@ -173,7 +173,7 @@
       errorText.set('');
       loading.set(false);
     } else {
-      // Prevent "Sonuç yok." flashing during debounce: mark as loading immediately.
+      // Prevent the "no results" message from flashing during debounce: mark as loading immediately.
       loading.set(true);
       errorText.set('');
       const token = ++activeSearchToken;

@@ -1,22 +1,22 @@
 import { tick } from 'svelte';
 
 /**
- * Bir elementin DOM hiyerarşisinde başka bir yere (teleport) taşınmasını sağlar.
- * Svelte Snippet çakışmalarını önlemek için en güvenli yoldur.
+ * Moves an element to another place in the DOM hierarchy (teleport).
+ * This is the safest way to avoid Svelte Snippet conflicts.
  *
- * Kullanım: <div use:teleport={'right'}>...</div>
+ * Usage: <div use:teleport={'right'}>...</div>
  */
 export function teleport(node, targetName) {
   let initialized = false;
 
   async function move() {
-    // DOM'un hazır olduğundan emin olalım
+    // Make sure the DOM is ready
     await tick();
 
     const target = document.querySelector(`[data-layout-actions="${targetName}"]`);
 
     if (target) {
-      // Elementi görünür yap ve hedef alana ekle
+      // Make the element visible and append it to the target area
       node.style.display = 'flex';
       node.classList.add('hstack', 'gap-2');
       target.appendChild(node);
