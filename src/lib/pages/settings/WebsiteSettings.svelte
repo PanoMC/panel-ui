@@ -83,6 +83,26 @@
             <div>{$_('pages.settings.site-settings.inputs.website-url.host-mismatch')}</div>
           </div>
         {/if}
+        {#if isPortMismatch}
+          <div class="alert alert-warning d-flex align-items-start mt-2 mb-0">
+            <i class="fas fa-triangle-exclamation me-2 mt-1"></i>
+            <div>
+              {$_('pages.settings.site-settings.inputs.website-url.port-mismatch', {
+                values: { port: portFromUrl, current: window.location.port || '80/443' },
+              })}
+            </div>
+          </div>
+        {/if}
+        {#if hasExplicitPort}
+          <div class="alert alert-warning d-flex align-items-start mt-2 mb-0">
+            <i class="fas fa-triangle-exclamation me-2 mt-1"></i>
+            <div>
+              {$_('pages.settings.site-settings.inputs.website-url.explicit-port', {
+                values: { port: portFromUrl },
+              })}
+            </div>
+          </div>
+        {/if}
       </div>
     </div>
     <div class="row mb-3">
@@ -552,6 +572,22 @@
     }
   })();
 
+  $: portFromUrl = (() => {
+    try {
+      if (!data.websiteUrl) return '';
+      // https fallback matches the backend's normalization of scheme-less URLs, so the
+      // default-port detection agrees with what actually gets stored.
+      const url = data.websiteUrl.includes('://')
+        ? data.websiteUrl
+        : 'https://' + data.websiteUrl;
+      const parsed = new URL(url);
+      return parsed.port;
+    } catch (e) {
+      // Fallback for incomplete URLs
+      return '';
+    }
+  })();
+
   $: isDomainValidForLE =
     domainFromUrl &&
     domainFromUrl !== 'localhost' &&
@@ -567,6 +603,10 @@
     !!data.websiteUrl &&
     !!domainFromUrl &&
     domainFromUrl.toLowerCase() !== window.location.hostname.toLowerCase();
+
+  $: hasExplicitPort = portFromUrl !== '';
+  $: isPortMismatch =
+    typeof window !== 'undefined' && hasExplicitPort && portFromUrl !== window.location.port;
 
   $: isLetsEncryptInvalid =
     data.sslMode === 'LETS_ENCRYPT' &&

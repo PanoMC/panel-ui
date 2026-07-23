@@ -364,7 +364,9 @@
           "website-url": {
             "label": "Website URL",
             "placeholder": "https://my-minecraft-server-website.com",
-            "host-mismatch": "The address you entered is different from the one you're currently using to access the panel. After saving and restarting, Pano will automatically redirect visitors arriving on other hosts (including IP addresses) to this address. If you can't reach the new address, set `website-url-redirect: false` in the config file to disable the redirect — but cross-host logins may not work because authentication cookies are bound to this host."
+            "host-mismatch": "The address you entered is different from the one you're currently using to access the panel. After saving and restarting, Pano will automatically redirect visitors arriving on other hosts (including IP addresses) to this address. If you can't reach the new address, set `website-url-redirect: false` in the config file to disable the redirect — but cross-host logins may not work because authentication cookies are bound to this host.",
+            "port-mismatch": "The port in this address ({port}) is different from the port you're using to reach the panel right now ({current}). Make sure it's the port your visitors will actually use.",
+            "explicit-port": "This address includes a port ({port}). If visitors reach your site through a reverse proxy (Nginx, Apache, Cloudflare) on the standard port, remove the port so links and redirects don't point to an internal one."
           },
           "register-agreement": {
             "label": "Register Agreement",

@@ -364,7 +364,9 @@
           "website-url": {
             "label": "Web Site Adresi",
             "placeholder": "https://benim-minecraft-sunucu-websitem.com",
-            "host-mismatch": "Girdiğin adres, şu anda panele eriştiğin adresten farklı. Kaydedip yeniden başlatınca Pano, farklı host'lardan (IP adresi dahil) gelen ziyaretçileri otomatik olarak bu adrese yönlendirecek. Yeni adrese ulaşamazsan yönlendirmeyi kapatmak için config dosyasında `website-url-redirect: false` yapabilirsin — fakat kimlik doğrulama çerezleri bu host'a bağlandığı için farklı host'lardan girişler çalışmayabilir."
+            "host-mismatch": "Girdiğin adres, şu anda panele eriştiğin adresten farklı. Kaydedip yeniden başlatınca Pano, farklı host'lardan (IP adresi dahil) gelen ziyaretçileri otomatik olarak bu adrese yönlendirecek. Yeni adrese ulaşamazsan yönlendirmeyi kapatmak için config dosyasında `website-url-redirect: false` yapabilirsin — fakat kimlik doğrulama çerezleri bu host'a bağlandığı için farklı host'lardan girişler çalışmayabilir.",
+            "port-mismatch": "Bu adresteki port ({port}), şu anda panele eriştiğin porttan ({current}) farklı. Ziyaretçilerinin gerçekten kullanacağı port olduğundan emin ol.",
+            "explicit-port": "Bu adres bir port ({port}) içeriyor. Ziyaretçiler sitene bir ters proxy (Nginx, Apache, Cloudflare) üzerinden standart porttan ulaşıyorsa, bağlantılar ve yönlendirmeler dahili bir porta işaret etmesin diye portu kaldır."
           },
           "register-agreement": {
             "label": "Kayıt Sözleşmesi",
