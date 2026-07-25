@@ -1047,6 +1047,8 @@
       "downgrade-warning-description": "Downgrading to an older version may cause data loss or incompatibility issues. Proceed with caution.",
       "unverified-resource-warning-title": "Unverified Resource",
       "unverified-resource-warning-description": "This resource has not been verified by PanoMC. Install at your own risk.",
+      "freemium": "Freemium",
+      "freemium-notice-description": "This resource is free to install. Some of its features may be limited, and unlocking them can require in-addon purchases.",
       "author": "Author",
       "size": "Size"
     },

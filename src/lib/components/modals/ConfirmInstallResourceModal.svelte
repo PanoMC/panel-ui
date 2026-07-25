@@ -100,49 +100,9 @@
                       <i class="fa-solid fa-palette text-primary fs-4"></i>
                     {/if}
                   </div>
-                </div>
-                <div class="col text-start">
-                  <!-- Title & Verified & Version -->
-                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                    <div class="d-flex align-items-center gap-2">
-                      <h5 class="mb-0 text-truncate">
-                        {$versionInfoObj.version.resourceTitle}
-                      </h5>
-                      {#if $versionInfoObj.version.verified}
-                        <i
-                          class="fa-solid fa-circle-check text-success small"
-                          aria-label={$_('pages.settings.updates.verified')}></i>
-                      {/if}
-                    </div>
 
-                    <!-- Resource ID -->
-                    <div class="small font-monospace">
-                      {$versionInfoObj.version.resourceId}
-                    </div>
-
-                    {#if $versionInfoObj.action === 'UPDATE' || $versionInfoObj.action === 'DOWNGRADE'}
-                      <span class="badge text-bg-secondary mb-2">
-                        {$versionInfoObj.installed?.version || '?'}
-                        <i class="fas fa-arrow-right fa-xs mx-1"></i>
-                        {$versionInfoObj.version.tag}
-                      </span>
-                    {:else}
-                      <span class="badge text-bg-secondary">{$versionInfoObj.version.tag}</span>
-                    {/if}
-                  </div>
-
-                  <!-- Meta Info -->
-                  <div class="small d-flex gap-3 mt-3">
-                    <span aria-label={$_('components.store-loading.author')}
-                      ><i class="fas fa-user me-1"></i> {$versionInfoObj.version.author}</span>
-                    <span aria-label={$_('components.store-loading.size')}
-                      ><i class="fas fa-database me-1"></i>
-                      {formatBytes($versionInfoObj.version.size)}</span>
-                  </div>
-                </div>
-
-                <div class="col-auto">
-                  <div class="d-flex align-items-center gap-1">
+                  <!-- Actions, kept under the icon -->
+                  <div class="d-flex align-items-center justify-content-center gap-1 mt-1">
                     <button
                       class="btn btn-sm btn-link"
                       title={$_('pages.settings.updates.changelog')}
@@ -157,6 +117,57 @@
                       on:click={() => copyHash($versionInfoObj.version.hash)}>
                       <i class="fa-solid fa-hashtag fa-lg"></i>
                     </button>
+                  </div>
+                </div>
+                <div class="col text-start">
+                  <!-- Title & Verified & Version -->
+                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <div class="d-flex align-items-center gap-2">
+                      <h5 class="mb-0 text-truncate">
+                        {$versionInfoObj.version.resourceTitle}
+                      </h5>
+                      {#if $versionInfoObj.version.verified}
+                        <i
+                          class="fa-solid fa-circle-check text-success small"
+                          aria-label={$_('pages.settings.updates.verified')}></i>
+                      {/if}
+                      {#if $versionInfoObj.version.freemium}
+                        <span
+                          class="badge border border-success text-success bg-body rounded-pill"
+                          use:tooltip={[
+                            $_('components.store-loading.freemium-notice-description'),
+                          ]}>
+                          {$_('components.store-loading.freemium')}
+                        </span>
+                      {/if}
+                    </div>
+
+                    <!-- Resource ID -->
+                    <div class="small font-monospace">
+                      {$versionInfoObj.version.resourceId}
+                    </div>
+                  </div>
+
+                  <!-- Meta Info & Actions (same line, so they stay aligned) -->
+                  <div class="small d-flex align-items-center gap-3 mt-3">
+                    <span aria-label={$_('components.store-loading.author')}
+                      ><i class="fas fa-user me-1"></i> {$versionInfoObj.version.author}</span>
+                    {#if $versionInfoObj.version.size > 0}
+                      <span aria-label={$_('components.store-loading.size')}
+                        ><i class="fas fa-database me-1"></i>
+                        {formatBytes($versionInfoObj.version.size)}</span>
+                    {/if}
+
+                    {#if $versionInfoObj.action === 'UPDATE' || $versionInfoObj.action === 'DOWNGRADE'}
+                      <span class="badge text-bg-secondary ms-auto">
+                        {$versionInfoObj.installed?.version || '?'}
+                        <i class="fas fa-arrow-right fa-xs mx-1"></i>
+                        {$versionInfoObj.version.tag}
+                      </span>
+                    {:else}
+                      <span class="badge text-bg-secondary ms-auto"
+                        >{$versionInfoObj.version.tag}</span>
+                    {/if}
                   </div>
                 </div>
               </div>
@@ -250,6 +261,7 @@
 
   import { PANO_WEBSITE_API_URL } from '$lib/variables.js';
   import { formatBytes } from '$lib/string.util';
+  import tooltip from '$lib/tooltip.util';
 
   async function copyHash(hash) {
     try {

@@ -1047,6 +1047,8 @@
       "downgrade-warning-description": "Daha eski bir sürüme geçmek veri kaybına veya uyumsuzluk sorunlarına neden olabilir. Dikkatli ilerleyin.",
       "unverified-resource-warning-title": "Doğrulanmamış Kaynak",
       "unverified-resource-warning-description": "Bu kaynak PanoMC tarafından doğrulanmamıştır. Riski size ait olmak üzere yükleyin.",
+      "freemium": "Freemium",
+      "freemium-notice-description": "Bu kaynağın kurulumu ücretsizdir. İçindeki bazı özellikler sınırlı olabilir ve kilidini açmak için eklenti içi satın alma gerekebilir.",
       "author": "Yazar",
       "size": "Boyut"
     },
