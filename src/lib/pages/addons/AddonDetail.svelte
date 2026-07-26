@@ -1,5 +1,6 @@
 <div class="vstack gap-3">
   <AddonLicenseCard addon={data.addon} />
+  <AddonLicenseEmbed addon={data.addon} />
 
   <div class="card">
     <div class="card-header">
@@ -37,8 +38,7 @@
         </li>
         <li class="list-group-item">
           <strong>{$_('pages.addon-detail.requires')}:</strong>
-          <span class="text-break"
-            >{isBlank(data.addon.requires) ? '-' : data.addon.requires}</span>
+          <span class="text-break">{isBlank(data.addon.requires) ? '-' : data.addon.requires}</span>
         </li>
         <li class="list-group-item">
           <strong>Hash:</strong>
@@ -57,6 +57,7 @@
   import { _ } from 'svelte-i18n';
   import { formatBytes } from '$lib/string.util';
   import AddonLicenseCard from '$lib/components/AddonLicenseCard.svelte';
+  import AddonLicenseEmbed from '$lib/components/AddonLicenseEmbed.svelte';
 
   let { data } = $props();
 

@@ -118,7 +118,10 @@
                     <button
                       type="button"
                       class="btn btn-link"
-                      title={$_('pages.addons.update-available') + ' (v' + plugin.updateVersion + ')'}
+                      title={$_('pages.addons.update-available') +
+                        ' (v' +
+                        plugin.updateVersion +
+                        ')'}
                       aria-label={$_('pages.addons.update-available')}
                       on:click={(e) => {
                         e.preventDefault();
@@ -166,6 +169,9 @@
                   <VerifiedStatus status={plugin.verifyStatus} />
                   {#if plugin.premium}
                     <LicenseStatusBadge status={plugin.licenseStatus} />
+                  {/if}
+                  {#if plugin.freemium}
+                    <FreemiumBadge />
                   {/if}
                 </a>
 
@@ -230,7 +236,9 @@
 
     let plugins = body.data;
     if (status === PageTypes.LICENSE_ISSUES) {
-      plugins = plugins.filter((p) => p.premium && ADDON_LICENSE_ISSUE_STATUSES.has(p.licenseStatus));
+      plugins = plugins.filter(
+        (p) => p.premium && ADDON_LICENSE_ISSUE_STATUSES.has(p.licenseStatus),
+      );
     }
 
     return { plugins, pageType: status, failedLogin };
@@ -272,8 +280,12 @@
   import NoContent from '$lib/components/NoContent.svelte';
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
   import LicenseStatusBadge from '$lib/components/LicenseStatusBadge.svelte';
+  import FreemiumBadge from '$lib/components/FreemiumBadge.svelte';
   import FailedLoginPanoStoreAlert from '$lib/components/FailedLoginPanoStoreAlert.svelte';
-  import { isAddonLicenseStartupBlocked, isPremiumAddonEnableBlockedByLicense } from '$lib/addon-license-issue.util.js';
+  import {
+    isAddonLicenseStartupBlocked,
+    isPremiumAddonEnableBlockedByLicense,
+  } from '$lib/addon-license-issue.util.js';
 
   import SearchInput from '$lib/components/SearchInput.svelte';
   import { goto, invalidateAll } from '$app/navigation';
@@ -298,8 +310,7 @@
       return 'border-success border-2';
     }
 
-    const failedNonLicense =
-      plugin.status === 'FAILED' && !isAddonLicenseStartupBlocked(plugin);
+    const failedNonLicense = plugin.status === 'FAILED' && !isAddonLicenseStartupBlocked(plugin);
     if (!plugin.premium) {
       return failedNonLicense ? 'border-danger border-2' : '';
     }

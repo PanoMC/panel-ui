@@ -1047,8 +1047,6 @@
       "downgrade-warning-description": "Daha eski bir sürüme geçmek veri kaybına veya uyumsuzluk sorunlarına neden olabilir. Dikkatli ilerleyin.",
       "unverified-resource-warning-title": "Doğrulanmamış Kaynak",
       "unverified-resource-warning-description": "Bu kaynak PanoMC tarafından doğrulanmamıştır. Riski size ait olmak üzere yükleyin.",
-      "freemium": "Freemium",
-      "freemium-notice-description": "Bu kaynağın kurulumu ücretsizdir. İçindeki bazı özellikler sınırlı olabilir ve kilidini açmak için eklenti içi satın alma gerekebilir.",
       "author": "Yazar",
       "size": "Boyut"
     },
@@ -1060,6 +1058,18 @@
     "verified-status": {
       "verified": "Pano tarafından doğrulandı",
       "not-verified": "Pano tarafından doğrulanmadı, kendi sorumluluğunuzda kullanın!"
+    },
+    "freemium": {
+      "label": "Freemium",
+      "description": "Kurulumu ücretsiz. Bazı özellikler sınırlı olabilir ve eklenti içi satın alma gerekebilir."
+    },
+    "license-embed": {
+      "title": "Paketler",
+      "loading": "Paketler yükleniyor…",
+      "not-connected": "Bu eklentinin paketlerini {website} üzerinde görmek için bir Pano hesabı bağlayın.",
+      "connect": "Pano hesabı bağla",
+      "error": "Paketler yüklenemedi.",
+      "refresh-hint": "Satın alınan paketleri yeniden kontrol et. Aldığın paket henüz aktif değilse bunu kullan."
     },
     "license-status": {
       "LICENSED": "Lisanslı",
@@ -1646,6 +1656,8 @@
       "refresh": "Yenile"
     },
     "toasts": {
+      "tiers-refreshed": "Paketler yeniden kontrol edildi.",
+      "tiers-refresh-failed": "Paketler yeniden kontrol edilemedi.",
       "demo-mode-restricted": "Bu özellik demo modunda devre dışı bırakılmıştır.",
       "license-refreshed": "Lisans durumu yenilendi.",
       "accepted-server-connect-request": "Sunucu bağlantı isteği kabul edildi.",

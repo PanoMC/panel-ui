@@ -132,13 +132,7 @@
                           aria-label={$_('pages.settings.updates.verified')}></i>
                       {/if}
                       {#if $versionInfoObj.version.freemium}
-                        <span
-                          class="badge border border-success text-success bg-body rounded-pill"
-                          use:tooltip={[
-                            $_('components.store-loading.freemium-notice-description'),
-                          ]}>
-                          {$_('components.store-loading.freemium')}
-                        </span>
+                        <FreemiumBadge />
                       {/if}
                     </div>
 
@@ -257,6 +251,7 @@
   import copy from 'copy-to-clipboard';
 
   import ChangelogModal, { show as showChangelogModal } from './ChangelogModal.svelte';
+  import FreemiumBadge from '$lib/components/FreemiumBadge.svelte';
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
   import { PANO_WEBSITE_API_URL } from '$lib/variables.js';

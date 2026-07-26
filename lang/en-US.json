@@ -1047,8 +1047,6 @@
       "downgrade-warning-description": "Downgrading to an older version may cause data loss or incompatibility issues. Proceed with caution.",
       "unverified-resource-warning-title": "Unverified Resource",
       "unverified-resource-warning-description": "This resource has not been verified by PanoMC. Install at your own risk.",
-      "freemium": "Freemium",
-      "freemium-notice-description": "This resource is free to install. Some of its features may be limited, and unlocking them can require in-addon purchases.",
       "author": "Author",
       "size": "Size"
     },
@@ -1060,6 +1058,18 @@
     "verified-status": {
       "verified": "Verified by Pano",
       "not-verified": "Not verified by Pano, use at your own risk!"
+    },
+    "freemium": {
+      "label": "Freemium",
+      "description": "Free to install. Some features may be limited and can require in-addon purchases."
+    },
+    "license-embed": {
+      "title": "Packages",
+      "loading": "Loading packages…",
+      "not-connected": "Connect a Pano account to see the packages of this addon on {website}.",
+      "connect": "Connect Pano account",
+      "error": "Packages could not be loaded.",
+      "refresh-hint": "Re-check purchased packages. Use this if a package you bought is not active yet."
     },
     "license-status": {
       "LICENSED": "Licensed",
@@ -1646,6 +1656,8 @@
       "refresh": "Refresh"
     },
     "toasts": {
+      "tiers-refreshed": "Packages re-checked.",
+      "tiers-refresh-failed": "Packages could not be re-checked.",
       "demo-mode-restricted": "This action is disabled in demo mode.",
       "license-refreshed": "License status refreshed.",
       "accepted-server-connect-request": "Server connection request accepted.",

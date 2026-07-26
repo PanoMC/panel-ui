@@ -104,6 +104,9 @@
             {#if data.addon.premium && data.addon.licenseStatus !== 'LICENSED'}
               <LicenseStatusBadge status={data.addon.licenseStatus} />
             {/if}
+            {#if data.addon.freemium}
+              <FreemiumBadge />
+            {/if}
             {#if data.addon.status === 'FAILED' && !isAddonLicenseStartupBlocked(data.addon)}
               <button
                 type="button"
@@ -214,6 +217,7 @@
 
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
   import LicenseStatusBadge from '$lib/components/LicenseStatusBadge.svelte';
+  import FreemiumBadge from '$lib/components/FreemiumBadge.svelte';
 
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
