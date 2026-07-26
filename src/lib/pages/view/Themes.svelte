@@ -210,7 +210,7 @@
   import SearchInput from '$lib/components/SearchInput.svelte';
   import { goto, invalidate } from '$app/navigation';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
 
   import NoContent from '$lib/components/NoContent.svelte';
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
@@ -276,7 +276,7 @@
 
     await invalidate((_) => true);
 
-    await showToast('components.toasts.reload-themes-success');
+    await showSuccessToast('components.toasts.reload-themes-success');
 
     reloading = false;
   }

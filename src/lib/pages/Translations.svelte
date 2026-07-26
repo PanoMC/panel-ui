@@ -276,7 +276,7 @@
 
   import { loadLanguage } from '$lib/language.util.js';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
 
   import CardFilters from '$lib/components/CardFilters.svelte';
   import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
@@ -548,7 +548,7 @@
           ...t,
         }));
 
-        await showToast('components.toasts.translations-save-success');
+        await showSuccessToast('components.toasts.translations-save-success');
 
         saving = false;
       },

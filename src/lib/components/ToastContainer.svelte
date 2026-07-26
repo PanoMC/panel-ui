@@ -29,13 +29,17 @@
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
-  export async function show(text, params = {}, toastComponent = DefaultToast) {
+  // `options.variant` ('success' | 'danger') colours the toast text. Prefer the
+  // showSuccess/showError wrappers below at call sites — they read as the outcome they
+  // report. Plain `show` stays neutral for toasts that are neither, such as a theme's
+  // own message forwarded from the theme-settings iframe.
+  export async function show(text, params = {}, toastComponent = DefaultToast, options = {}) {
     if (text) {
       params.text = text;
     }
 
     if (toastComponent === DefaultToast) {
-      params = { text, values: params };
+      params = { text, values: params, variant: options.variant ?? null };
     }
 
     const toast = { component: toastComponent, params };
@@ -69,6 +73,17 @@
         });
       });
     }
+  }
+
+  // No toastComponent parameter on purpose: `variant` is only threaded into
+  // DefaultToast's props, so a custom component would silently drop it. Reach for
+  // `show` directly when you need one.
+  export function showSuccess(text, params = {}) {
+    return show(text, params, DefaultToast, { variant: 'success' });
+  }
+
+  export function showError(text, params = {}) {
+    return show(text, params, DefaultToast, { variant: 'danger' });
   }
 
   export function limitTitle(text) {

@@ -68,7 +68,7 @@
 
 <script>
   import ApiUtil from '$lib/api.util.js';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
 
   import { _ } from 'svelte-i18n';
 
@@ -98,7 +98,7 @@
 
         hide();
 
-        showToast('components.toasts.ip-unban.done', {
+        showSuccessToast('components.toasts.ip-unban.done', {
           values: { ip: row.ip },
         });
 

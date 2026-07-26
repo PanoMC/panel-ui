@@ -70,7 +70,10 @@
 
   import ApiUtil from '$lib/api.util';
 
-  import { show as showToast, limitTitle } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    limitTitle,
+  } from '$lib/components/ToastContainer.svelte';
   import { base } from '$app/paths';
 
   let loading = false;
@@ -92,12 +95,12 @@
       hide();
 
       if (get(post).status === 0) {
-        showToast('components.toasts.post-deleted-permanently', {
+        showSuccessToast('components.toasts.post-deleted-permanently', {
           title: limitTitle(get(post).title),
         });
       } else {
         const title = `<a href="${base}/posts?pageType=TRASH" target="_blank">${limitTitle(get(post).title)}</a>`;
-        showToast('components.toasts.post-moved-to-trash', { title });
+        showSuccessToast('components.toasts.post-moved-to-trash', { title });
       }
 
       callback(get(post));

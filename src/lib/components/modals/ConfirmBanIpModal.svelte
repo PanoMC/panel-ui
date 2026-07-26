@@ -184,7 +184,10 @@
 
 <script>
   import ApiUtil from '$lib/api.util.js';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
   import {
     show as showSearchPlayerModal,
     setCallback as setSearchPlayerModalCallback,
@@ -199,7 +202,7 @@
       if (!u) return;
       const rip = (u.registeredIp && String(u.registeredIp).trim()) || '';
       if (!rip) {
-        showToast('components.modals.confirm-ban-ip.toast-no-registered-ip');
+        showErrorToast('components.modals.confirm-ban-ip.toast-no-registered-ip');
         return;
       }
       ipAddress.set(rip);
@@ -270,7 +273,7 @@
   function onSubmit() {
     const trimmedIp = ($ipAddress || '').trim();
     if (!trimmedIp) {
-      showToast('components.modals.confirm-ban-ip.toast-ip-required');
+      showErrorToast('components.modals.confirm-ban-ip.toast-ip-required');
       return;
     }
 
@@ -301,7 +304,7 @@
 
         hide();
 
-        showToast('components.modals.confirm-ban-ip.toast-banned', {
+        showSuccessToast('components.modals.confirm-ban-ip.toast-banned', {
           values: { ip: trimmedIp },
         });
 

@@ -367,7 +367,7 @@
   import PageNav from '$lib/components/PageNav.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showError as showErrorToast } from '$lib/components/ToastContainer.svelte';
 
   export let data;
   let search = data.search || '';
@@ -383,7 +383,7 @@
   function onPlayerSelectedForBanFromHistory(u) {
     if (!u) return;
     if (get(currentUser)?.username === u.username) {
-      showToast('errors.CANT_BAN_YOURSELF');
+      showErrorToast('errors.CANT_BAN_YOURSELF');
       return;
     }
     showConfirmBanPlayerModal(u);

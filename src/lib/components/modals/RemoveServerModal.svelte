@@ -86,7 +86,10 @@
 
   import ApiUtil from '$lib/api.util';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
 
   $: confirmButtonDisabled = $currentPassword.length === 0;
 
@@ -105,13 +108,13 @@
           }
 
           $loading = false;
-          await showToast('components.toasts.settings-save-error', { errorCode: body.error });
+          await showErrorToast('components.toasts.settings-save-error', { errorCode: body.error });
           return;
         }
 
         callback($server);
         hide();
-        await showToast('components.toasts.server-deleted-success', { name: $server.name });
+        await showSuccessToast('components.toasts.server-deleted-success', { name: $server.name });
         await goto(base, { replaceState: true, invalidateAll: true });
         $loading = false;
       },

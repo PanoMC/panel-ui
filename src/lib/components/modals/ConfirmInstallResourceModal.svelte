@@ -252,7 +252,10 @@
 
   import ChangelogModal, { show as showChangelogModal } from './ChangelogModal.svelte';
   import FreemiumBadge from '$lib/components/FreemiumBadge.svelte';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
 
   import { PANO_WEBSITE_API_URL } from '$lib/variables.js';
   import { formatBytes } from '$lib/string.util';
@@ -261,10 +264,10 @@
   async function copyHash(hash) {
     try {
       copy('sha256:' + hash);
-      await showToast('components.toasts.hash-copied');
+      await showSuccessToast('components.toasts.hash-copied');
     } catch (err) {
       console.error('Failed to copy hash:', err);
-      await showToast('components.toasts.hash-copy-failed');
+      await showErrorToast('components.toasts.hash-copy-failed');
     }
   }
 

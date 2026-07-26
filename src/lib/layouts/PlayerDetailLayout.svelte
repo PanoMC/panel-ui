@@ -263,7 +263,6 @@
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import ApiUtil from '$lib/api.util';
   import { avatarVersion } from '$lib/Store';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
   import {
     show as showEditPlayerModal,

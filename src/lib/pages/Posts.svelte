@@ -251,7 +251,10 @@
   } from '$lib/components/modals/ConfirmPublishPostModal.svelte';
   import PostRow from '$lib/components/rows/PostRow.svelte';
 
-  import { show as showToast, limitTitle } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    limitTitle,
+  } from '$lib/components/ToastContainer.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
   import CardFilters from '$lib/components/CardFilters.svelte';
@@ -321,7 +324,7 @@
 
           await invalidate((_) => true);
 
-          await showToast('components.toasts.post-moved-to-draft', {
+          await showSuccessToast('components.toasts.post-moved-to-draft', {
             title,
           });
         },
@@ -355,7 +358,7 @@
           const foundTitle = data.posts.find((post) => post.id === id).title;
           const title = `<a href="${base}/posts/detail/${id}">${limitTitle(foundTitle)}</a>`;
 
-          await showToast('components.toasts.post-published', {
+          await showSuccessToast('components.toasts.post-published', {
             postId: id,
             title,
           });

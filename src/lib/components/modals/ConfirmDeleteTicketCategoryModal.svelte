@@ -90,7 +90,10 @@
 
   import ApiUtil from '$lib/api.util';
 
-  import { show as showToast, limitTitle } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    limitTitle,
+  } from '$lib/components/ToastContainer.svelte';
   import { _ } from 'svelte-i18n';
 
   let loading = false;
@@ -114,7 +117,7 @@
 
         hide();
 
-        showToast('components.toasts.ticket-category-deleted-permanently', {
+        showSuccessToast('components.toasts.ticket-category-deleted-permanently', {
           title: limitTitle(get(category).title),
         });
 

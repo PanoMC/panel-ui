@@ -102,7 +102,10 @@
   import ApiUtil from '$lib/api.util.js';
   import { get, writable } from 'svelte/store';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
 
   const modalElement = writable();
 
@@ -163,7 +166,7 @@
       hide();
     }, 500);
 
-    showToast('components.toasts.expired-server-connect-request');
+    showErrorToast('components.toasts.expired-server-connect-request');
   }
 
   function initData(serverId) {
@@ -239,16 +242,16 @@
           await hideBootstrapModalAndWait(getServerRequestModalEl());
           await invalidateAll();
 
-          await showToast('components.toasts.server-selected', {
+          await showSuccessToast('components.toasts.server-selected', {
             name: customNamePayload ?? $server.name,
           });
-          await showToast('components.toasts.accepted-server-connect-request');
+          await showSuccessToast('components.toasts.accepted-server-connect-request');
           $submitLoading = false;
 
           return;
         } else if (body.result === 'error') {
           await hideBootstrapModalAndWait(getServerRequestModalEl());
-          await showToast('components.toasts.expired-server-connect-request');
+          await showErrorToast('components.toasts.expired-server-connect-request');
           $submitLoading = false;
 
           return;
@@ -270,13 +273,13 @@
           callback($server);
           await hideBootstrapModalAndWait(getServerRequestModalEl());
           $submitLoading = false;
-          showToast('components.toasts.rejected-server-connect');
+          showSuccessToast('components.toasts.rejected-server-connect');
 
           return;
         } else if (body.result === 'error') {
           await hideBootstrapModalAndWait(getServerRequestModalEl());
           $submitLoading = false;
-          showToast('components.toasts.expired-server-connect-request');
+          showErrorToast('components.toasts.expired-server-connect-request');
 
           return;
         }

@@ -302,7 +302,10 @@
   import Editor from '$lib/components/Editor.svelte';
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
 
-  import { show as showToast, limitTitle } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    limitTitle,
+  } from '$lib/components/ToastContainer.svelte';
 
   import Date from '$lib/components/Date.svelte';
   import Hook from '$lib/components/Hook.svelte';
@@ -385,13 +388,13 @@
           if (publish) {
             const title = limitTitle(post.title);
 
-            showToast('components.toasts.post-published', {
+            showSuccessToast('components.toasts.post-published', {
               title,
             });
           } else {
             const title = limitTitle(post.title);
 
-            showToast('components.toasts.post-saved', {
+            showSuccessToast('components.toasts.post-saved', {
               title,
             });
           }
@@ -465,7 +468,7 @@
 
           const title = `<a href="${base}/posts?pageType=DRAFT" target="_blank">${limitTitle(post.title)}</a>`;
 
-          await showToast('components.toasts.post-moved-to-draft', { title });
+          await showSuccessToast('components.toasts.post-moved-to-draft', { title });
         },
       });
     });

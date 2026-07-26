@@ -71,7 +71,7 @@
 
   import ApiUtil from '$lib/api.util';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
   import { _ } from 'svelte-i18n';
 
   function acceptServer() {
@@ -84,7 +84,7 @@
           callback($server);
           await invalidateAll();
           hide();
-          await showToast('components.toasts.server-made-main', { name: $server.name });
+          await showSuccessToast('components.toasts.server-made-main', { name: $server.name });
 
           return;
         } else if (body.result === 'error') {

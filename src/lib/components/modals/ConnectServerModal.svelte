@@ -166,7 +166,7 @@
   import ApiUtil from '$lib/api.util';
   import tooltip from '$lib/tooltip.util';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showError as showErrorToast } from '$lib/components/ToastContainer.svelte';
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
@@ -242,7 +242,7 @@
       path: '/api/panel/platformAuth/toggle',
       handler: async (body) => {
         if (body?.error) {
-          await showToast('components.toasts.settings-save-error', { errorCode: body.error });
+          await showErrorToast('components.toasts.settings-save-error', { errorCode: body.error });
           toggleLoading = false;
           return;
         }

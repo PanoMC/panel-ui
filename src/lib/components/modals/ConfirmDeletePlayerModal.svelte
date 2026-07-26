@@ -90,7 +90,7 @@
 
   import ApiUtil from '$lib/api.util';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
   import { _ } from 'svelte-i18n';
 
   $: yesButtonDisabled = $loading || !$currentPassword;
@@ -106,7 +106,7 @@
           callback($player);
           await goto(base + '/players');
           hide();
-          await showToast('components.toasts.player-deleted-success', {
+          await showSuccessToast('components.toasts.player-deleted-success', {
             username: $player.username,
           });
           return;

@@ -484,7 +484,10 @@
 
   import { websiteLogoSrc } from '$lib/Store.js';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
 
   import ConfirmRestartPanoModal, {
     show as showConfirmRestartPanoModal,
@@ -617,13 +620,13 @@
   function handleFileError(event, type = 'favicon') {
     const { error } = event.detail;
     if (error === 'INVALID_SIZE') {
-      showToast(
+      showErrorToast(
         type === 'favicon'
           ? 'components.toasts.favicon-exceeds-size'
           : 'components.toasts.website-logo-exceeds-size',
       );
     } else if (error === 'INVALID_TYPE') {
-      showToast(
+      showErrorToast(
         type === 'favicon'
           ? 'components.toasts.favicon-wrong-content-type'
           : 'components.toasts.website-logo-wrong-content-type',
@@ -735,7 +738,7 @@
 
         data.oldSettings.keywords = [...data.keywords];
 
-        await showToast('components.toasts.settings-save-success');
+        await showSuccessToast('components.toasts.settings-save-success');
 
         if (needsRestart) {
           restartRequired = true;

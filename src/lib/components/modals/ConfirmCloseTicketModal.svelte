@@ -73,7 +73,7 @@
 
   import ApiUtil from '$lib/api.util';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
   import { TicketStatuses } from '$lib/components/badges/TicketStatusBadge.svelte';
   import { base } from '$app/paths';
 
@@ -105,7 +105,7 @@
 
         const count = get(selectedTickets).length;
 
-        await showToast(
+        await showSuccessToast(
           count > 1
             ? 'components.toasts.ticket-closed.multi'
             : 'components.toasts.ticket-closed.single',

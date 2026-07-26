@@ -219,7 +219,10 @@
   import LicenseStatusBadge from '$lib/components/LicenseStatusBadge.svelte';
   import FreemiumBadge from '$lib/components/FreemiumBadge.svelte';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
 
   import {
     show as showConfirmDisableAddonModal,
@@ -308,7 +311,7 @@
 
         await goto(base + '/addons', { invalidateAll: true });
 
-        await showToast('components.toasts.remove-addon-success');
+        await showSuccessToast('components.toasts.remove-addon-success');
 
         callback();
       },
@@ -318,7 +321,7 @@
   function onTogglePluginStateClick() {
     const turningOn = data.addon.status !== 'STARTED';
     if (turningOn && isPremiumAddonEnableBlockedByLicense(data.addon)) {
-      showToast('components.toasts.addon-license-startup-blocked', {
+      showErrorToast('components.toasts.addon-license-startup-blocked', {
         addon: data.addon.id,
       });
       return;
@@ -339,7 +342,7 @@
 
   function togglePluginState(status, callback = () => {}) {
     if (status && isPremiumAddonEnableBlockedByLicense(data.addon)) {
-      showToast('components.toasts.addon-license-startup-blocked', {
+      showErrorToast('components.toasts.addon-license-startup-blocked', {
         addon: data.addon.id,
       });
       callback();
@@ -361,13 +364,13 @@
           }
 
           if (body.status === 'CREATED') {
-            await showToast('components.toasts.settings-save-error', {
+            await showErrorToast('components.toasts.settings-save-error', {
               addon: data.addon.id,
             });
           }
 
           if (body.status === 'FAILED') {
-            await showToast(
+            await showErrorToast(
               body.startupBlockedByLicense
                 ? 'components.toasts.addon-license-startup-blocked'
                 : 'components.toasts.failed-to-enable-addon-error',

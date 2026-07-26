@@ -95,7 +95,10 @@
   import { logoutLoading } from '$lib/Store';
   import NoContent from '$lib/components/NoContent.svelte';
   import DateComponent from '$lib/components/Date.svelte';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
   import { show as showConfirmModal } from '$lib/components/modals/ConfirmActionModal.svelte';
   import { logout } from '$lib/Store';
 
@@ -119,11 +122,11 @@
         loadingSessionId = null;
 
         if (body.error) {
-          await showToast('errors.' + body.error);
+          await showErrorToast('errors.' + body.error);
           return;
         }
 
-        await showToast('components.toasts.session-logged-out-successful');
+        await showSuccessToast('components.toasts.session-logged-out-successful');
         await invalidateAll();
       },
     });

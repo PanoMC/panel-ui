@@ -182,7 +182,10 @@
 
   import ApiUtil from '$lib/api.util';
 
-  import { show as showToast, limitTitle } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    limitTitle,
+  } from '$lib/components/ToastContainer.svelte';
 
   let loading = false;
   $: buttonDisabled = !$locale.name || !$locale.code || !$locale.dateFnsCode;
@@ -198,7 +201,7 @@
 
         callback(true);
 
-        showToast(
+        showSuccessToast(
           'components.toasts.' +
             (get(mode) === 'edit'
               ? 'language-updated-successfully'

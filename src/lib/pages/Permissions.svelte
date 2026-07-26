@@ -632,7 +632,10 @@
   import { _ } from 'svelte-i18n';
 
   import ApiUtil from '$lib/api.util.js';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
   import CreatePermissionGroupModal, {
     show as showCreatePermissionGroupModal,
     setCallback as setCreatePermissionGroupModalCallback,
@@ -1454,13 +1457,13 @@
     });
     if (res?.error) {
       console.error('Failed to save snapshot:', res.error);
-      await showToast('components.toasts.settings-save-error', {
+      await showErrorToast('components.toasts.settings-save-error', {
         errorCode: $_('errors.' + res.error),
       });
       return;
     }
     await loadSnapshot();
-    await showToast('components.toasts.settings-save-success');
+    await showSuccessToast('components.toasts.settings-save-success');
   }
 
   function showResetModal() {
@@ -1599,7 +1602,7 @@
   async function showRemoveUserModal(u) {
     if (!u) return;
     if (isSelfUser(u)) {
-      await showToast('components.toasts.settings-save-error', {
+      await showErrorToast('components.toasts.settings-save-error', {
         errorCode: "You can't remove yourself.",
       });
       return;

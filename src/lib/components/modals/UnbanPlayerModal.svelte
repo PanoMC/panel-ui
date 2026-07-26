@@ -66,7 +66,7 @@
 
 <script>
   import ApiUtil from '$lib/api.util.js';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
 
   import { _ } from 'svelte-i18n';
 
@@ -91,7 +91,7 @@
 
         hide();
 
-        showToast('components.toasts.player-unban.the-player', {
+        showSuccessToast('components.toasts.player-unban.the-player', {
           username: $player.username,
           event: body.error
             ? $_('components.toasts.player-unban.could-not-remove-ban', {

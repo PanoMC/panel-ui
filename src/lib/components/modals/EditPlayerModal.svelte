@@ -370,7 +370,7 @@
 
   import ApiUtil from '$lib/api.util';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { page } from '$app/stores';
   import ViewComponent from '$lib/components/ViewComponent.svelte';
@@ -492,7 +492,7 @@
 
           await callback(get(player));
 
-          await showToast('components.toasts.player-info-saved-success');
+          await showSuccessToast('components.toasts.player-info-saved-success');
 
           return;
         } else if (body.result === 'NOT_EXISTS') {

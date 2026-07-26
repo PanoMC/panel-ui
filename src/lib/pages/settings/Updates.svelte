@@ -450,7 +450,10 @@
 
   import tooltip from '$lib/tooltip.util';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
 
   import PageActions from '$lib/components/PageActions.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
@@ -574,10 +577,10 @@
   async function copyHashToClipboard(hash) {
     try {
       copy(hash);
-      await showToast('components.toasts.hash-copied');
+      await showSuccessToast('components.toasts.hash-copied');
     } catch (err) {
       console.error('Failed to copy hash:', err);
-      await showToast('components.toasts.hash-copy-failed');
+      await showErrorToast('components.toasts.hash-copy-failed');
     }
   }
 
@@ -608,7 +611,7 @@
       platformUpdatingStep++;
 
       if (platformUpdatingStep === platformUpdateProcesses.length + 1) {
-        await showToast('components.toasts.platform-update-success');
+        await showSuccessToast('components.toasts.platform-update-success');
 
         confetti.default({
           particleCount: 100,
@@ -628,7 +631,7 @@
         location.reload();
       }
     } else {
-      await showToast('components.toasts.platform-update-failed');
+      await showErrorToast('components.toasts.platform-update-failed');
 
       platformUpdateError = message.error;
       console.error(message.error, message.message);
@@ -647,7 +650,7 @@
       resourceUpdateStep++;
 
       if (resourceUpdateStep === resourceUpdateProcesses.length + 1) {
-        await showToast('components.toasts.resource-update-success', {
+        await showSuccessToast('components.toasts.resource-update-success', {
           id: update.id,
         });
 
@@ -668,7 +671,7 @@
         inProgressResource = null;
       }
     } else {
-      await showToast('components.toasts.resource-update-failed', {
+      await showErrorToast('components.toasts.resource-update-failed', {
         id: update.id,
       });
 
@@ -788,22 +791,24 @@
           loading = false;
 
           if (body.error === 'PANO_CONNECT_FAILED') {
-            await showToast('components.toasts.check-resources-update-failed-pano-account');
+            await showErrorToast('components.toasts.check-resources-update-failed-pano-account');
             return;
           }
 
           if (body.error === 'PANO_NOT_CONNECTED') {
             await invalidateAll();
-            await showToast('components.toasts.check-resources-update-failed-pano-account-needed');
+            await showErrorToast(
+              'components.toasts.check-resources-update-failed-pano-account-needed',
+            );
             return;
           }
 
           if (body.result !== 'ok') {
-            await showToast('components.toasts.check-update-failed');
+            await showErrorToast('components.toasts.check-update-failed');
             return;
           }
 
-          await showToast('components.toasts.check-update-success');
+          await showSuccessToast('components.toasts.check-update-success');
         },
       }),
     ]);

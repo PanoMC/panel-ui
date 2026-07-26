@@ -253,7 +253,7 @@
 
   import { websiteDisplayHost } from '$lib/website-display.util.js';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showError as showErrorToast } from '$lib/components/ToastContainer.svelte';
 
   import PageActions from '$lib/components/PageActions.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
@@ -388,7 +388,7 @@
   function onTogglePluginStateClick(plugin) {
     const turningOn = plugin.status !== 'STARTED';
     if (turningOn && isPremiumAddonEnableBlockedByLicense(plugin)) {
-      showToast('components.toasts.addon-license-startup-blocked', {
+      showErrorToast('components.toasts.addon-license-startup-blocked', {
         addon: plugin.id,
       });
       return;
@@ -409,7 +409,7 @@
 
   function togglePluginState(plugin, status, callback = () => {}) {
     if (status && isPremiumAddonEnableBlockedByLicense(plugin)) {
-      showToast('components.toasts.addon-license-startup-blocked', {
+      showErrorToast('components.toasts.addon-license-startup-blocked', {
         addon: plugin.id,
       });
       callback();
@@ -433,13 +433,13 @@
           await invalidateAll();
 
           if (body.status === 'CREATED') {
-            await showToast('components.toasts.settings-save-error', {
+            await showErrorToast('components.toasts.settings-save-error', {
               addon: plugin.id,
             });
           }
 
           if (body.status === 'FAILED') {
-            await showToast(
+            await showErrorToast(
               body.startupBlockedByLicense
                 ? 'components.toasts.addon-license-startup-blocked'
                 : 'components.toasts.failed-to-enable-addon-error',

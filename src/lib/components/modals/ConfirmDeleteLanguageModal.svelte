@@ -67,7 +67,10 @@
 
   import ApiUtil from '$lib/api.util';
 
-  import { show as showToast, limitTitle } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    limitTitle,
+  } from '$lib/components/ToastContainer.svelte';
 
   let loading = false;
 
@@ -90,7 +93,7 @@
 
         hide();
 
-        showToast('components.toasts.language-deleted-permanently', {
+        showSuccessToast('components.toasts.language-deleted-permanently', {
           name: limitTitle(get(locale).name),
         });
 

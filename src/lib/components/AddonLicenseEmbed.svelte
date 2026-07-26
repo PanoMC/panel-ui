@@ -81,7 +81,10 @@
   import { base } from '$app/paths';
 
   import ApiUtil from '$lib/api.util.js';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
   import { currentLanguage } from '$lib/language.util.js';
@@ -153,12 +156,12 @@
         }
 
         if (body?.error) {
-          showToast('components.toasts.tiers-refresh-failed');
+          showErrorToast('components.toasts.tiers-refresh-failed');
 
           return;
         }
 
-        showToast('components.toasts.tiers-refreshed');
+        showSuccessToast('components.toasts.tiers-refreshed');
 
         // New token, new iframe: the embed re-reads the catalogue and ownership server-side.
         url = null;

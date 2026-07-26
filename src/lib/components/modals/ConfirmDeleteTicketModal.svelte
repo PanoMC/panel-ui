@@ -70,7 +70,7 @@
 <script>
   import ApiUtil from '$lib/api.util';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
   import { _ } from 'svelte-i18n';
 
   let loading;
@@ -97,7 +97,7 @@
 
         const count = get(selectedTickets).length;
 
-        showToast(
+        showSuccessToast(
           count > 1
             ? 'components.toasts.tickets-deleted-permanently.multi'
             : 'components.toasts.tickets-deleted-permanently.single',

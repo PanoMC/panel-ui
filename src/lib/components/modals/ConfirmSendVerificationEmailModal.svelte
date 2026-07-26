@@ -70,7 +70,10 @@
 
 <script>
   import ApiUtil from '$lib/api.util.js';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
   import { _ } from 'svelte-i18n';
 
   let loading = false;
@@ -85,14 +88,14 @@
 
         if (body.result === 'ok') {
           hide();
-          await showToast('components.toasts.verification-email-sent-successful', {
+          await showSuccessToast('components.toasts.verification-email-sent-successful', {
             username: $player.username,
           });
           callback($player);
           return;
         }
 
-        await showToast('components.toasts.verification-email-sent-error', {
+        await showErrorToast('components.toasts.verification-email-sent-error', {
           username: $player.username,
           errorCode: $_('errors.' + body.error),
         });

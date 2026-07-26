@@ -248,7 +248,10 @@
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
 
   import PageActions from '$lib/components/PageActions.svelte';
   import Date from '$lib/components/Date.svelte';
@@ -293,7 +296,7 @@
 
           await goto(base + '/view');
 
-          await showToast('components.toasts.removed-theme-success');
+          await showSuccessToast('components.toasts.removed-theme-success');
 
           removing = false;
         },
@@ -328,7 +331,7 @@
 
             await invalidate((_) => true);
 
-            await showToast('components.toasts.stop-theme-success');
+            await showSuccessToast('components.toasts.stop-theme-success');
 
             stoping = false;
             resolve(true);
@@ -351,7 +354,7 @@
 
         await invalidate((_) => true);
 
-        await showToast('components.toasts.start-theme-success');
+        await showSuccessToast('components.toasts.start-theme-success');
 
         starting = false;
       },
@@ -378,12 +381,12 @@
           message: activateResponse.message,
           response: activateResponse,
         });
-        await showToast('pages.theme-detail.license-denied-toast', {
+        await showErrorToast('pages.theme-detail.license-denied-toast', {
           reason,
           website: websiteDisplayHost(),
         });
       } else {
-        await showToast('pages.theme-detail.activate-failed-toast');
+        await showErrorToast('pages.theme-detail.activate-failed-toast');
       }
       activating = false;
       return;
@@ -391,7 +394,7 @@
 
     await invalidate((_) => true);
 
-    await showToast('components.toasts.activate-theme-success');
+    await showSuccessToast('components.toasts.activate-theme-success');
 
     activating = false;
   }

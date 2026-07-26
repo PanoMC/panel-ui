@@ -80,7 +80,7 @@
   import { base } from '$app/paths';
   import { invalidateAll } from '$app/navigation';
   import ApiUtil from '$lib/api.util.js';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
   import LicenseStatusBadge from '$lib/components/LicenseStatusBadge.svelte';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
 
@@ -100,7 +100,7 @@
         });
       });
       await invalidateAll();
-      showToast('components.toasts.license-refreshed');
+      showSuccessToast('components.toasts.license-refreshed');
     } finally {
       refreshing = false;
     }

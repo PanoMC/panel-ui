@@ -205,7 +205,10 @@
   import { browser } from '$app/environment';
   import { invalidateAll } from '$app/navigation';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import copy from 'copy-to-clipboard';
@@ -396,14 +399,14 @@
           await invalidateAll();
           selectingServer.set(null);
           hide();
-          await showToast('components.toasts.server-selected', {
+          await showSuccessToast('components.toasts.server-selected', {
             name: server.customName || server.name,
           });
 
           return;
         } else if (body.error && body.error === 'NOT_EXISTS') {
           selectingServer.set(null);
-          await showToast('components.toasts.server-not-exists');
+          await showErrorToast('components.toasts.server-not-exists');
           initData();
 
           return;

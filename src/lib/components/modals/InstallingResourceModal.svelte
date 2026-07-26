@@ -109,7 +109,7 @@
 
   import ApiUtil from '$lib/api.util';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showError as showErrorToast } from '$lib/components/ToastContainer.svelte';
   import { show as showInstallResourceModal } from '$lib/components/modals/InstallResourceModal.svelte';
 
   const modalElement = writable();
@@ -205,7 +205,7 @@
     hide({ force: true });
     showInstallResourceModal(get(type));
 
-    await showToast('components.toasts.invalid-resource-file-type');
+    await showErrorToast('components.toasts.invalid-resource-file-type');
 
     return false;
   }

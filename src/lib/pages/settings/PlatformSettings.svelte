@@ -553,7 +553,10 @@
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
   import { currentLanguage } from '$lib/language.util.js';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    showSuccess as showSuccessToast,
+    showError as showErrorToast,
+  } from '$lib/components/ToastContainer.svelte';
   import { changeLanguage, getLanguageByLocale, Languages } from '$lib/language.util';
 
   import ConfirmRemovePanoAccountModal, {
@@ -651,7 +654,7 @@
           }
 
           await goto($page.url.pathname, { invalidateAll: true });
-          await showToast('components.toasts.pano-account-connect-success');
+          await showSuccessToast('components.toasts.pano-account-connect-success');
 
           connecting = false;
         },
@@ -692,16 +695,16 @@
         handler: async (body, reject) => {
           if (body.error) {
             if (body.error === 'PANO_CONNECT_FAILED') {
-              await showToast('components.toasts.pano-account-disconnect-fail-cant-connect');
+              await showErrorToast('components.toasts.pano-account-disconnect-fail-cant-connect');
             } else {
-              await showToast('components.toasts.pano-account-disconnect-fail');
+              await showErrorToast('components.toasts.pano-account-disconnect-fail');
             }
 
             disconnecting = false;
             return;
           }
 
-          await showToast('components.toasts.pano-account-disconnect-success');
+          await showSuccessToast('components.toasts.pano-account-disconnect-success');
 
           data.panoAccount = null;
 
@@ -733,7 +736,7 @@
         allowUserLocaleSelection: data.allowUserLocaleSelection,
       }));
 
-      await showToast('components.toasts.settings-save-success');
+      await showSuccessToast('components.toasts.settings-save-success');
       return;
     }
 
@@ -779,7 +782,7 @@
           allowUserLocaleSelection: data.allowUserLocaleSelection,
         }));
 
-        await showToast('components.toasts.settings-save-success');
+        await showSuccessToast('components.toasts.settings-save-success');
       },
     });
   }
@@ -807,7 +810,7 @@
 
         await invalidateAll();
 
-        await showToast('components.toasts.settings-save-success');
+        await showSuccessToast('components.toasts.settings-save-success');
       },
     });
   }
@@ -830,7 +833,7 @@
 
         mailValidated = true;
 
-        await showToast('components.toasts.email-config-validate-success');
+        await showSuccessToast('components.toasts.email-config-validate-success');
       },
     });
   }
@@ -880,9 +883,9 @@
         await invalidateAll();
 
         if (enabled) {
-          await showToast('components.toasts.settings-save-success');
+          await showSuccessToast('components.toasts.settings-save-success');
         } else {
-          await showToast('components.toasts.smtp-enabled-success');
+          await showSuccessToast('components.toasts.smtp-enabled-success');
         }
       },
     });
@@ -942,9 +945,9 @@
             await invalidateAll();
 
             if (smtpDisabled) {
-              await showToast('components.toasts.smtp-disabled-success');
+              await showSuccessToast('components.toasts.smtp-disabled-success');
             } else {
-              await showToast('components.toasts.smtp-enabled-success');
+              await showSuccessToast('components.toasts.smtp-enabled-success');
             }
 
             toggleSmtpLoading = false;

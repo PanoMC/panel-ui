@@ -184,7 +184,7 @@
 
 <script>
   import ApiUtil from '$lib/api.util.js';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
 
   import { _ } from 'svelte-i18n';
 
@@ -280,7 +280,7 @@
 
         hide();
 
-        showToast('components.toasts.player-ban.the-player', {
+        showSuccessToast('components.toasts.player-ban.the-player', {
           username: $player.username,
           event: body.error
             ? $_('components.toasts.player-ban.could-not-ban', {

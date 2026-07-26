@@ -148,7 +148,7 @@
 <script>
   import { _ } from 'svelte-i18n';
 
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
 
   function onSubmit() {
     submitLoading.set(true);
@@ -166,7 +166,7 @@
 
           await callback(get(player));
 
-          await showToast('components.toasts.player-authorized-success');
+          await showSuccessToast('components.toasts.player-authorized-success');
 
           return;
         } else if (body.result === 'NOT_EXISTS') {
