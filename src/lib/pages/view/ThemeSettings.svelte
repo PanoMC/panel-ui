@@ -79,7 +79,10 @@
     }
 
     if (data.type === 'show-toast') {
-      showToast(data.text, data.params, data.toastComponent);
+      // The theme settings UI runs in an iframe, so the panel cannot tell an outcome from
+      // a failure on its own — the theme tells us via `variant`. Themes on an engine that
+      // predates the field send nothing, and the toast stays neutral as before.
+      showToast(data.text, data.params, data.toastComponent, { variant: data.variant ?? null });
     }
 
     if (data.type === 'theme-settings-loaded') {
