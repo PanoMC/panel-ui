@@ -498,7 +498,7 @@
           "show-login-button": "Show Login Button",
           "show-login-button-sub": "Add a login button to the maintenance page, pointing to /login.",
           "custom-login-url": "Custom Login URL",
-          "custom-login-url-sub": "Serve the maintenance login form at this secret address. Only used while the login button is off; leave empty to use /panel.",
+          "custom-login-url-sub": "Serve the maintenance login form at this secret address. Only used while the login button is off; leave empty to keep it on /login.",
           "custom-login-url-invalid": "Enter an address that starts with / and contains no spaces. /api and /panel/api are reserved.",
           "permission-node": "Who Can Bypass",
           "permission-node-sub": "The exact permission node a user must hold, for example admins.test. Leave empty for the panel access permission.",

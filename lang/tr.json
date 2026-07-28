@@ -498,7 +498,7 @@
           "show-login-button": "Giriş Butonunu Göster",
           "show-login-button-sub": "Bakım sayfasına /login adresine giden bir giriş butonu ekler.",
           "custom-login-url": "Özel Giriş Adresi",
-          "custom-login-url-sub": "Bakım modu giriş formu bu gizli adreste sunulur. Yalnızca giriş butonu kapalıyken kullanılır; boş bırakırsanız /panel kullanılır.",
+          "custom-login-url-sub": "Bakım modu giriş formu bu gizli adreste sunulur. Yalnızca giriş butonu kapalıyken kullanılır; boş bırakırsanız form /login adresinde kalır.",
           "custom-login-url-invalid": "Adres / ile başlamalı ve boşluk içermemeli. /api ve /panel/api kullanılamaz.",
           "permission-node": "Bakım Modunu Kimler Atlayabilir",
           "permission-node-sub": "Kullanıcının sahip olması gereken tam izin node'u, örneğin admins.test. Boş bırakırsanız panel erişim izni kullanılır.",
