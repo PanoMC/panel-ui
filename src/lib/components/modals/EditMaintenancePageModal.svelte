@@ -240,15 +240,15 @@
   }
 
   /**
-   * Rendered server-side with every block filled in, so the pane shows the whole interface — page,
-   * notice, login form, login button and skip button — whichever tab is being edited.
+   * Rendered server-side in the page state the open tab's block actually appears in — the login
+   * form tab shows the login page, the skip tab shows what a bypasser sees.
    */
   function refreshPreview(drafts) {
     previewLoading.set(true);
 
     ApiUtil.post({
       path: '/api/panel/maintenance/preview',
-      body: { templates: drafts ?? get(templates), showSiteLogo },
+      body: { templates: drafts ?? get(templates), showSiteLogo, focus: get(activeTab) },
       handler: async (body, reject) => {
         previewLoading.set(false);
 
@@ -319,9 +319,13 @@
 
   const activeTabMeta = $derived(TABS.find((tab) => tab.key === $activeTab) ?? TABS[0]);
 
-  // Keeps the pane on the current drafts. Debounced because every render is a request.
+  // Keeps the pane on the current drafts and the open tab. Debounced because every render is a
+  // request; switching tabs re-renders too, since the tab decides which page state is simulated.
   $effect(() => {
     const drafts = $templates;
+
+    // Read so a tab switch re-runs this.
+    void $activeTab;
 
     if (!opened || Object.keys(drafts).length === 0) {
       return;
