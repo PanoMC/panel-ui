@@ -228,7 +228,11 @@
 
   {#if isPreview}
     <div class="form-control editor-height overflow-auto" style={contentStyles}>
-      {@html content}
+      {#if previewContent}
+        {@render previewContent()}
+      {:else}
+        {@html content}
+      {/if}
     </div>
   {/if}
 
@@ -250,21 +254,27 @@
   let colorPickerElement = $state();
   let editorContent = $state('');
   let isHtmlView = $state(false);
-  let isPreview = $state(false);
 
   let {
     content = $bindable(),
     isEmpty = $bindable(true),
     showHtml = false,
     showPreview = false,
+    /** Bindable so a caller can open straight into the preview and react to the toggle. */
+    isPreview = $bindable(false),
     html = false,
     contentStyles = '',
+    /** Rendered instead of the content HTML while previewing, for a richer preview. */
+    previewContent,
     children,
   } = $props();
 
   let editor = new Editor({
     element: undefined,
-    content: { type: 'doc', content: [{ type: 'paragraph', content: [] }] },
+    // Seeded from the incoming value, not from an empty document: `onCreate` writes `getHTML()`
+    // straight back into `content`, so starting empty overwrote whatever the caller passed in
+    // before the effect below ever had a chance to restore it.
+    content: content || { type: 'doc', content: [{ type: 'paragraph', content: [] }] },
     extensions: [
       StarterKit,
       Image,

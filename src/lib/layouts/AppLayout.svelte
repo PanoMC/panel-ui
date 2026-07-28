@@ -11,14 +11,34 @@
     <Splash />
   {/if}
 
-  <div class="vh-100 overflow-hidden" class:d-flex={!$showSplash} hidden={$showSplash}>
-    {#if $resetLayout}
-      <slot />
-    {:else}
-      <MainLayout>
-        <slot />
-      </MainLayout>
+  <div class="vh-100 overflow-hidden flex-column" class:d-flex={!$showSplash} hidden={$showSplash}>
+    <!-- Kept outside <main> (which is overflow-auto) so it can't be scrolled away. -->
+    {#if $maintenanceMode}
+      <div class="alert alert-danger fade show mb-0 rounded-0 flex-shrink-0" role="alert">
+        <div class="container-fluid d-flex align-items-center">
+          <i class="fa-solid fa-screwdriver-wrench me-3"></i>
+          <div>
+            {$_('components.maintenance-banner.text')}
+            {#if hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS)}
+              <a class="alert-link ms-2" href="{base}/settings/platform">
+                {$_('components.maintenance-banner.go-to-settings')}
+                <i class="fa-solid fa-arrow-right ms-1"></i>
+              </a>
+            {/if}
+          </div>
+        </div>
+      </div>
     {/if}
+
+    <div class="d-flex flex-grow-1 overflow-hidden" style="min-height: 0;">
+      {#if $resetLayout}
+        <slot />
+      {:else}
+        <MainLayout>
+          <slot />
+        </MainLayout>
+      {/if}
+    </div>
   </div>
 
   <NotificationContainer />
@@ -172,7 +192,7 @@
 
     await preparePlugins(siteInfo);
 
-    const avatarVersionDate = `&v=${Date.now()}`
+    const avatarVersionDate = `&v=${Date.now()}`;
 
     return {
       basicData,
@@ -181,7 +201,7 @@
       apiUrlEnv,
       panoWebsiteUrlEnv,
       panoWebsiteApiUrlEnv,
-      avatarVersionDate
+      avatarVersionDate,
     };
   }
 
@@ -194,7 +214,15 @@
    */
   export async function load(event) {
     const {
-      data: { basicData, csrfToken, siteInfo, apiUrlEnv, panoWebsiteUrlEnv, panoWebsiteApiUrlEnv, avatarVersionDate },
+      data: {
+        basicData,
+        csrfToken,
+        siteInfo,
+        apiUrlEnv,
+        panoWebsiteUrlEnv,
+        panoWebsiteApiUrlEnv,
+        avatarVersionDate,
+      },
       parent,
     } = event;
     await parent();
@@ -311,7 +339,10 @@
 <script>
   import { onDestroy, onMount, setContext } from 'svelte';
   import { get } from 'svelte/store';
-  import { invalidateAll as runInvalidateAll, invalidate as runInvalidateByKey } from '$app/navigation';
+  import {
+    invalidateAll as runInvalidateAll,
+    invalidate as runInvalidateByKey,
+  } from '$app/navigation';
 
   import { options, logoutLoading, initialized } from '$lib/Store';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
@@ -335,7 +366,9 @@
   import ToastContainer from '$lib/components/ToastContainer.svelte';
   import RestartingModal from '$lib/components/modals/RestartingModal.svelte';
   import ConfirmActionModal from '$lib/components/modals/ConfirmActionModal.svelte';
-  import WhatsNewModal, { show as showWhatsNewModal } from '$lib/components/modals/WhatsNewModal.svelte';
+  import WhatsNewModal, {
+    show as showWhatsNewModal,
+  } from '$lib/components/modals/WhatsNewModal.svelte';
 
   export let data;
 
@@ -355,6 +388,7 @@
   const platformRestarting = writable(false);
   const panelTheme = writable(data.session.basicData.panelTheme || 'dark');
   const showDevModeAlert = writable(data.session.basicData.showDevModeAlert);
+  const maintenanceMode = writable(!!data.session.basicData.maintenanceMode);
   let { resetLayout, pageTitle } = data;
   $: ({ resetLayout, pageTitle } = data);
 
@@ -417,6 +451,12 @@
 
   $: if (data?.session?.basicData) {
     showDevModeAlert.set(data.session.basicData.showDevModeAlert);
+
+    // Only follow the backend when it actually reports the flag, so an optimistic
+    // set() from the platform settings page isn't wiped by an unrelated navigation.
+    if (data.session.basicData.maintenanceMode !== undefined) {
+      maintenanceMode.set(!!data.session.basicData.maintenanceMode);
+    }
   }
 
   setContext('pageTitle', pageTitle);
@@ -439,6 +479,7 @@
   setContext('platformRestarting', platformRestarting);
   setContext('panelTheme', panelTheme);
   setContext('showDevModeAlert', showDevModeAlert);
+  setContext('maintenanceMode', maintenanceMode);
 
   $: title = $pageTitle
     ? `${$_($pageTitle)} \u2014 ${options.DEFAULT_PAGE_TITLE}`
@@ -470,9 +511,7 @@
   $: if (browser) {
     if (hasPermission(Permissions.MANAGE_SERVERS)) {
       const id = $selectedServer?.id;
-      setPanelSelectedServerSubscription(
-        id == null || id === '' ? null : id
-      );
+      setPanelSelectedServerSubscription(id == null || id === '' ? null : id);
     } else {
       setPanelSelectedServerSubscription(null);
     }

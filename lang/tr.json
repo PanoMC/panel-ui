@@ -201,7 +201,7 @@
         "description": "Bir veya daha fazla premium eklenti doğrulanamadı. Durum ve çözüm seçenekleri için Görüntüle'ye tıklayın."
       },
       "welcome-card": {
-        "description": "Pano başarıyla kuruldu ve kullanıma hazır. \uD83D\uDE80 <br /> İşte başlarken yapabileceklerin:",
+        "description": "Pano başarıyla kuruldu ve kullanıma hazır. 🚀 <br /> İşte başlarken yapabileceklerin:",
         "connect-server": "Sunucu Bağla",
         "connect-server-description": "Oyun sunucunu bağla ve daha fazla yönetim özelliklerine eriş.",
         "import-data": "Verileri İçe Aktar",
@@ -490,6 +490,55 @@
           "password-hash-algorithm-sub": "Yeni şifreleri hashlemek için kullanılan algoritma. Mevcut şifreler bir sonraki girişte otomatik olarak yükseltilecektir.",
           "password-hash-algorithm-warning": "MD5, üretim kullanımı için önerilmez. Sözlük ve gökkuşağı tablosu saldırılarına karşı savunmasızdır.",
           "recommended": "Önerilen"
+        },
+        "maintenance": {
+          "title": "Bakım Modu",
+          "enabled": "Bakım Modunu Aç",
+          "enabled-sub": "Ziyaretçilere web siteniz yerine bakım sayfası gösterilir. Panel erişilebilir kalır.",
+          "show-login-button": "Giriş Butonunu Göster",
+          "show-login-button-sub": "Bakım sayfasına /login adresine giden bir giriş butonu ekler.",
+          "custom-login-url": "Özel Giriş Adresi",
+          "custom-login-url-sub": "Bakım modu giriş formu bu gizli adreste sunulur. Yalnızca giriş butonu kapalıyken kullanılır; boş bırakırsanız /panel kullanılır.",
+          "custom-login-url-invalid": "Adres / ile başlamalı ve boşluk içermemeli. /api ve /panel/api kullanılamaz.",
+          "permission-node": "Bakım Modunu Kimler Atlayabilir",
+          "permission-node-sub": "Kullanıcının sahip olması gereken tam izin node'u, örneğin admins.test. Boş bırakırsanız panel erişim izni kullanılır.",
+          "permission-node-invalid": "En fazla 128 karakterlik, boşluk ve joker karakter (*) içermeyen bir node girin. Node birebir eşleştirilir.",
+          "permission-node-required": "Bir izin node'u girin ya da yukarıdan panel erişim iznini seçin.",
+          "show-site-logo": "Site Logosunu Göster",
+          "show-site-logo-sub": "Bakım sayfasının üstünde web sitesi logonuzu gösterir.",
+          "edit-page": "Bakım Sayfasını Düzenle",
+          "preview-page": "Bakım Sayfasını Önizle",
+          "active-warning": "Bakım modu açık. Ziyaretçiler web siteniz yerine bakım sayfasını görüyor.",
+          "banned-ips": {
+            "title": "Yasaklı IP Adresleri",
+            "empty": "Yasaklı IP adresi yok.",
+            "ip": "IP",
+            "socket-peer": "Bağlantı Adresi",
+            "attempts": "Hatalı Deneme",
+            "username-tried": "Son Denenen Kullanıcı Adı",
+            "banned-at": "Yasaklanma Tarihi",
+            "remove": "Yasağı kaldır",
+            "remove-confirm": "{ip} adresinin yasağı kaldırılsın mı?",
+            "clear-all": "Tümünü Temizle",
+            "clear-all-confirm": "Tüm bakım modu IP yasakları kaldırılsın mı?",
+            "sub": "Çok fazla hatalı bakım modu girişinden sonra yasaklanan adresler. Yasak, buradan kaldırılana kadar sürer."
+          },
+          "modal": {
+            "title": "Bakım Sayfası",
+            "preview": "Önizleme",
+            "reset-page": "Varsayılana sıfırla",
+            "source": "Markup",
+            "tab-page": "Sayfa",
+            "tab-login-form": "Giriş formu",
+            "tab-login-button": "Giriş butonu",
+            "tab-skip": "Atlama butonu",
+            "tab-notice": "Bildirim",
+            "hint-page": "maintenance/page.hbs — belgenin tamamı. Aşağıdaki bloklar bunun yuvalarına yerleştirilir.",
+            "hint-login-form": "maintenance/login.hbs — giriş adresinde sunulan kullanıcı adı ve şifre formu.",
+            "hint-login-button": "maintenance/login-button.hbs — ziyaretçiyi giriş sayfasına gönderen buton.",
+            "hint-skip": "maintenance/skip.hbs — yetkili ziyaretçilerin gördüğü Bakım modunu atla butonu.",
+            "hint-notice": "maintenance/notice.hbs — hata ve durum mesajlarını taşıyan bant."
+          }
         }
       },
       "updates": {
@@ -1025,6 +1074,10 @@
       "dev-mode-description": "Güvenlik özellikleri devre dışı olabilir ve sistem normalden farklı davranabilir.",
       "demo-mode-title": "Demo Modu",
       "demo-mode-description": "Bu panel demo modunda çalışıyor. Bazı işlemler kısıtlanmıştır."
+    },
+    "maintenance-banner": {
+      "text": "Bakım modu açık. Ziyaretçiler web siteniz yerine bakım sayfasını görüyor.",
+      "go-to-settings": "Ayarlara git"
     },
     "store-loading": {
       "store-loading": "Mağaza yükleniyor…",
@@ -1742,7 +1795,10 @@
       "favicon-exceeds-size": "Favicon izin verilen maksimum boyutu (1 MB) aşıyor.",
       "favicon-wrong-content-type": "Favicon dosya türü geçersiz. Sadece PNG, JPG, JPEG, GIF ve ICO dosyalarına izin verilir.",
       "website-logo-exceeds-size": "Web sitesi logosu izin verilen maksimum boyutu (2 MB) aşıyor.",
-      "website-logo-wrong-content-type": "Web sitesi logosu dosya türü geçersiz. Sadece PNG, JPG, JPEG ve GIF dosyalarına izin verilir."
+      "website-logo-wrong-content-type": "Web sitesi logosu dosya türü geçersiz. Sadece PNG, JPG, JPEG ve GIF dosyalarına izin verilir.",
+      "maintenance-save-success": "Bakım modu ayarları kaydedildi.",
+      "maintenance-ban-removed": "IP yasağı kaldırıldı.",
+      "maintenance-page-reset": "Bakım sayfası varsayılan tasarıma sıfırlandı."
     },
     "search-input": {
       "searching": "Aranıyor..."
@@ -1841,7 +1897,10 @@
     "STARTED_CURRENT_THEME": "**{username}** mevcut {themeId} temasını başlattı.",
     "STOPPED_CURRENT_THEME": "**{username}** mevcut {themeId} temasını durdurdu.",
     "STOPPED_PANO": "**{username}** Pano'yu durdurdu.",
-    "RESTARTED_PANO": "**{username}** Pano'yu yeniden başlattı."
+    "RESTARTED_PANO": "**{username}** Pano'yu yeniden başlattı.",
+    "MAINTENANCE_MODE_BANNED_IP": "{ip} adresi çok fazla hatalı bakım modu girişinden sonra yasaklandı.",
+    "MAINTENANCE_MODE_UNBANNED_IP": "**{username}** {ipList} adresinin bakım modu yasağını kaldırdı.",
+    "MAINTENANCE_MODE_TOGGLED": "**{username}** bakım modunu {enabled, select, true {açtı} other {kapattı}}."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> destek talebinde mesaj gönderdi (<b>#{id}</b>).",

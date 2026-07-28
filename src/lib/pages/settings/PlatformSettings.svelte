@@ -85,7 +85,10 @@
             ? data.panoAccount.username
             : $_('pages.settings.platform.online-account')}
         </h5>
-        <p class="mb-0" class:text-success-emphasis={data.panoAccount} class:text-body={!data.panoAccount}>
+        <p
+          class="mb-0"
+          class:text-success-emphasis={data.panoAccount}
+          class:text-body={!data.panoAccount}>
           {data.panoAccount
             ? $_('pages.settings.platform.connected-account-description')
             : $_('pages.settings.platform.connect-online-account-alert')}
@@ -323,6 +326,205 @@
   </div>
 </div>
 
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between gap-3">
+    <!-- form-switch without form-check, laid out as a centred flex row: Bootstrap's default
+         floats the switch onto the label's first line, which reads as misaligned once the label
+         carries a description under it. ps-0/ms-0/mt-0 undo the offsets that layout relies on. -->
+    <div class="form-switch ps-0 d-flex align-items-center gap-2">
+      <input
+        class="form-check-input mt-0 ms-0 flex-shrink-0"
+        type="checkbox"
+        role="switch"
+        id="maintenanceToggle"
+        autocomplete="off"
+        title={$_('pages.settings.platform.maintenance.enabled')}
+        bind:checked={data.maintenance.enabled}
+        on:change={onToggleMaintenance}
+        disabled={toggleMaintenanceLoading} />
+      <label class="form-check-label mb-0" for="maintenanceToggle">
+        {$_('pages.settings.platform.maintenance.title')}
+        <small class="d-block text-muted">
+          {$_('pages.settings.platform.maintenance.enabled-sub')}
+        </small>
+      </label>
+    </div>
+
+    {#if toggleMaintenanceLoading}
+      <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+    {/if}
+  </div>
+  <div class="card-body" class:opacity-50={maintenanceDisabled}>
+    {#if !maintenanceDisabled}
+      <div class="alert alert-danger border mb-3" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="fa-solid fa-triangle-exclamation me-3"></i>
+          <div>
+            {$_('pages.settings.platform.maintenance.active-warning')}
+          </div>
+        </div>
+      </div>
+    {/if}
+
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="maintenanceShowLoginButton">
+        {$_('pages.settings.platform.maintenance.show-login-button')}
+        <small class="d-block text-muted">
+          {$_('pages.settings.platform.maintenance.show-login-button-sub')}
+        </small>
+      </label>
+      <div class="col col-form-label">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="maintenanceShowLoginButton"
+            autocomplete="off"
+            bind:checked={data.maintenance.showLoginButton}
+            disabled={maintenanceDisabled} />
+        </div>
+      </div>
+    </div>
+
+    <!-- A secret address only makes sense as the alternative to a visible button, so the field
+         belongs to the button being off. With the button on, the login is simply at /login. -->
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label position-relative" for="maintenanceCustomLoginUrl">
+        <span
+          class="position-absolute start-0 top-0 bottom-0 border-start border-2"
+          class:border-secondary={!customLoginUrlDisabled}
+          class:border-gray={customLoginUrlDisabled}
+          style="width: 2px;"></span>
+        <span class="ps-3 d-block">
+          {$_('pages.settings.platform.maintenance.custom-login-url')}
+          <small class="d-block text-muted">
+            {$_('pages.settings.platform.maintenance.custom-login-url-sub')}
+          </small>
+        </span>
+      </label>
+      <div class="col-md-6">
+        <input
+          class="form-control font-monospace"
+          class:border-danger={!!customLoginUrlError}
+          id="maintenanceCustomLoginUrl"
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="/login"
+          bind:value={data.maintenance.customLoginUrl}
+          disabled={customLoginUrlDisabled} />
+
+        {#if customLoginUrlError}
+          <div class="small text-danger mt-1">{$_(customLoginUrlError)}</div>
+        {/if}
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="maintenancePermissionNode">
+        {$_('pages.settings.platform.maintenance.permission-node')}
+        <small class="d-block text-muted">
+          {$_('pages.settings.platform.maintenance.permission-node-sub')}
+        </small>
+      </label>
+      <div class="col-md-6">
+        <!-- Empty means the default panel-access node, which the placeholder spells out; a
+             separate mode selector would only say the same thing twice. -->
+        <PermissionNodeInput
+          id="maintenancePermissionNode"
+          bind:value={data.maintenance.bypassPermissionNode}
+          disabled={maintenanceDisabled}
+          invalid={!!bypassPermissionNodeError}
+          maxlength={128}
+          placeholder={data.defaultBypassPermissionNode || ''} />
+
+        {#if bypassPermissionNodeError}
+          <div class="small text-danger mt-1">{$_(bypassPermissionNodeError)}</div>
+        {/if}
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="maintenanceShowSiteLogo">
+        {$_('pages.settings.platform.maintenance.show-site-logo')}
+        <small class="d-block text-muted">
+          {$_('pages.settings.platform.maintenance.show-site-logo-sub')}
+        </small>
+      </label>
+      <div class="col col-form-label">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="maintenanceShowSiteLogo"
+            autocomplete="off"
+            bind:checked={data.maintenance.showSiteLogo}
+            disabled={maintenanceDisabled} />
+        </div>
+      </div>
+    </div>
+
+    <div class="hstack gap-3 flex-wrap mb-3">
+      <!-- Deliberately live while maintenance is off: writing the page you will show is exactly
+           the thing you want to do before you take the site down, and the modal previews it. -->
+      <button
+        type="button"
+        class="btn btn-link p-0 text-decoration-none"
+        on:click={onEditMaintenancePageClick}>
+        <i class="fas fa-pencil me-1"></i>
+        {$_('pages.settings.platform.maintenance.edit-page')}
+      </button>
+      <!-- Exiting first drops the bypass cookie, so the maintenance page is what actually renders. -->
+      <a
+        class="btn btn-link p-0 text-decoration-none"
+        href="/api/maintenance/exit"
+        target="_blank"
+        rel="noopener noreferrer"
+        class:disabled={maintenanceDisabled}
+        aria-disabled={maintenanceDisabled}>
+        <i class="fas fa-external-link me-1"></i>
+        {$_('pages.settings.platform.maintenance.preview-page')}
+      </a>
+    </div>
+
+    <button
+      class="btn btn-secondary"
+      disabled={saveMaintenanceLoading || maintenanceSaveDisabled}
+      on:click={onSaveMaintenanceClick}
+      >{$_('buttons.save')}
+      {#if saveMaintenanceLoading}
+        <span class="spinner-border spinner-border-sm text-primary ms-2" role="status"></span>
+      {/if}
+    </button>
+  </div>
+
+  <!-- Bans outlive maintenance mode, so this stays usable while the card body is greyed out. -->
+  <div class="card-footer">
+    <button
+      type="button"
+      class="btn btn-link text-decoration-none p-0 text-start w-100 d-flex align-items-center justify-content-between gap-2"
+      on:click={onOpenBannedIpsClick}>
+      <span>
+        <i class="fa-solid fa-ban me-2 opacity-75"></i>
+        {$_('pages.settings.platform.maintenance.banned-ips.title')}
+        {#if bannedIpCount > 0}
+          <span class="badge text-bg-danger ms-2">{bannedIpCount}</span>
+        {/if}
+        <small class="d-block text-muted">
+          {$_('pages.settings.platform.maintenance.banned-ips.sub')}
+        </small>
+      </span>
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+</div>
+
 {#if mailError}
   <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -493,6 +695,9 @@
   </div>
 </div>
 
+<EditMaintenancePageModal />
+<MaintenanceBannedIpsModal />
+<ConfirmSaveCriticalSettingsModal />
 <ConfirmRemovePanoAccountModal />
 <ConfirmDisableEmailModal />
 <ConfirmStopPanoModal />
@@ -519,7 +724,7 @@
     } = event;
     await parent();
 
-    const [generalSettings, authSettings] = await Promise.all([
+    const [generalSettings, authSettings, maintenanceSettings] = await Promise.all([
       ApiUtil.get({
         path: '/api/panel/settings' + buildQueryParams({ type: 'GENERAL' }),
         request: event,
@@ -528,9 +733,13 @@
         path: '/api/panel/settings' + buildQueryParams({ type: 'AUTH' }),
         request: event,
       }),
+      ApiUtil.get({
+        path: '/api/panel/settings' + buildQueryParams({ type: 'MAINTENANCE' }),
+        request: event,
+      }),
     ]);
 
-    const body = { ...generalSettings, ...authSettings };
+    const body = { ...generalSettings, ...authSettings, ...maintenanceSettings };
 
     body.oldSettings = structuredClone(body);
 
@@ -572,7 +781,29 @@
   import ConfirmRestartPanoModal, {
     show as showConfirmRestartPanoModal,
   } from '$lib/components/modals/ConfirmRestartPanoModal.svelte';
+  import EditMaintenancePageModal, {
+    show as showEditMaintenancePageModal,
+  } from '$lib/components/modals/EditMaintenancePageModal.svelte';
+  import MaintenanceBannedIpsModal, {
+    show as showMaintenanceBannedIpsModal,
+  } from '$lib/components/modals/MaintenanceBannedIpsModal.svelte';
+  import ConfirmSaveCriticalSettingsModal, {
+    show as showConfirmSaveCriticalSettingsModal,
+    setError as setSaveCriticalSettingsError,
+    setLoading as setSaveCriticalSettingsLoading,
+    hide as hideSaveCriticalSettingsModal,
+  } from '$lib/components/modals/ConfirmSaveCriticalSettingsModal.svelte';
+  // Mounted once globally in AppLayout, so only the opener is imported here.
+  import { show as showConfirmActionModal } from '$lib/components/modals/ConfirmActionModal.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
+  import PermissionNodeInput from '$lib/components/PermissionNodeInput.svelte';
+
+  import {
+    normalizeLoginUrl,
+    normalizeMaintenanceHtml,
+    validateBypassPermissionNode,
+    validateCustomLoginUrl,
+  } from '$lib/maintenance.util.js';
 
   const pageTitle = getContext('pageTitle');
   const siteInfo = getContext('siteInfo');
@@ -605,6 +836,26 @@
     data.oldSettings.releaseChannel = data.oldSettings.releaseChannel || data.releaseChannel;
   }
 
+  // The wire contract is frozen; older servers that don't send it still get a complete object.
+  const DEFAULT_MAINTENANCE = Object.freeze({
+    enabled: false,
+    bypassPermissionNode: '',
+    showLoginButton: true,
+    customLoginUrl: '',
+    showSiteLogo: true,
+    title: '',
+    messageHtml: '',
+    customCss: '',
+  });
+
+  data.maintenance = { ...DEFAULT_MAINTENANCE, ...(data.maintenance || {}) };
+  if (data?.oldSettings) {
+    data.oldSettings.maintenance = {
+      ...DEFAULT_MAINTENANCE,
+      ...(data.oldSettings.maintenance || {}),
+    };
+  }
+
   let savePreferencesLoading;
   let saveAuthLoading;
   let saveEmailLoading;
@@ -613,6 +864,11 @@
   let mailValidated;
   let mailError;
   let toggleSmtpLoading;
+  let saveMaintenanceLoading;
+  let toggleMaintenanceLoading;
+
+  // Null until the modal reports a fresher figure; the loaded settings own the badge until then.
+  let bannedIpsCount = null;
 
   $: preferencesSaveDisabled =
     data.oldSettings.updatePeriod === data.updatePeriod &&
@@ -627,6 +883,36 @@
 
   $: emailSaveDisabled =
     JSON.stringify(data.oldSettings.email) === JSON.stringify(data.email) || !data.email.password;
+
+  // invalidateAll() swaps `data` for a fresh payload, so re-apply the defaults on every load.
+  $: if (!data.maintenance) {
+    data.maintenance = { ...DEFAULT_MAINTENANCE };
+  }
+
+  $: if (data.oldSettings && !data.oldSettings.maintenance) {
+    data.oldSettings.maintenance = { ...DEFAULT_MAINTENANCE };
+  }
+
+  $: maintenanceDisabled = !data.maintenance.enabled;
+
+  $: customLoginUrlDisabled = maintenanceDisabled || data.maintenance.showLoginButton;
+
+  $: customLoginUrlError = data.maintenance.showLoginButton
+    ? null
+    : validateCustomLoginUrl(data.maintenance.customLoginUrl);
+
+  // Blank is the documented way to ask for the default panel-access node, so it is never an error.
+  $: bypassPermissionNodeError = validateBypassPermissionNode(
+    data.maintenance.bypassPermissionNode,
+    false,
+  );
+
+  $: maintenanceSaveDisabled =
+    JSON.stringify(data.oldSettings.maintenance) === JSON.stringify(data.maintenance) ||
+    !!customLoginUrlError ||
+    !!bypassPermissionNodeError;
+
+  $: bannedIpCount = bannedIpsCount ?? data.maintenanceBannedIpCount ?? 0;
 
   if (browser) {
     if (!data.panoAccount && data.state && data.encodedData) {
@@ -960,6 +1246,200 @@
     }
 
     toggleSmtpLoading = false;
+  }
+
+  // The page editor writes the template files itself; nothing of it comes back through the card.
+  function onEditMaintenancePageClick() {
+    showEditMaintenancePageModal({ showSiteLogo: data.maintenance.showSiteLogo });
+  }
+
+  function onOpenBannedIpsClick() {
+    showMaintenanceBannedIpsModal(bannedIpCount, (count) => {
+      bannedIpsCount = count;
+      data.maintenanceBannedIpCount = count;
+    });
+  }
+
+  /** Serialises an already resolved settings object; the caller decides where it comes from. */
+  function buildMaintenanceFormData(maintenance, password) {
+    const formData = new FormData();
+
+    if (password != null) {
+      formData.append('password', password);
+    }
+
+    formData.append(
+      'maintenance',
+      JSON.stringify({
+        enabled: !!maintenance.enabled,
+        bypassPermissionNode: String(maintenance.bypassPermissionNode || '').trim(),
+        showLoginButton: !!maintenance.showLoginButton,
+        customLoginUrl: normalizeLoginUrl(maintenance.customLoginUrl),
+        showSiteLogo: !!maintenance.showSiteLogo,
+        title: String(maintenance.title || '').trim(),
+        messageHtml: normalizeMaintenanceHtml(maintenance.messageHtml),
+        customCss: String(maintenance.customCss || ''),
+      }),
+    );
+
+    return formData;
+  }
+
+  /** What the card currently shows. */
+  function currentMaintenanceSettings() {
+    return { ...data.maintenance };
+  }
+
+  /** The last settings the server confirmed, detached from the live card. */
+  function maintenanceSnapshot() {
+    // structuredClone because onSavePreferencesClick() rebuilds `oldSettings` with a shallow
+    // copy, which can leave `oldSettings.maintenance` pointing at the very object the card edits.
+    return structuredClone({
+      ...DEFAULT_MAINTENANCE,
+      ...(data.oldSettings?.maintenance || {}),
+    });
+  }
+
+  /** i18n key of the first saved maintenance value the platform would refuse, if any. */
+  function maintenanceSnapshotError() {
+    const snapshot = maintenanceSnapshot();
+
+    return (
+      validateCustomLoginUrl(snapshot.customLoginUrl) ||
+      validateBypassPermissionNode(snapshot.bypassPermissionNode)
+    );
+  }
+
+  // The master switch is a one-field write: everything else comes from the last saved state, so
+  // unsaved edits in the card are never committed (and never rejected) behind the operator's back.
+  function maintenanceToggleSettings(enabled) {
+    const snapshot = maintenanceSnapshot();
+
+    // Only a hand-edited config.conf can leave a value here that the platform refuses on save.
+    // Sending it would fail the whole request, and this is the switch that brings the website
+    // back up, so it is dropped instead — both fields are inert while maintenance is off, and
+    // turning maintenance on is stopped earlier (onToggleMaintenance).
+    if (validateCustomLoginUrl(snapshot.customLoginUrl)) {
+      snapshot.customLoginUrl = '';
+    }
+
+    if (validateBypassPermissionNode(snapshot.bypassPermissionNode)) {
+      snapshot.bypassPermissionNode = '';
+    }
+
+    return { ...snapshot, enabled };
+  }
+
+  function onSaveMaintenanceClick() {
+    if (maintenanceSaveDisabled) {
+      return;
+    }
+
+    saveMaintenanceLoading = true;
+
+    ApiUtil.put({
+      path: '/api/panel/settings',
+      body: buildMaintenanceFormData(currentMaintenanceSettings()),
+      handler: async (body, reject) => {
+        if (body.error) {
+          saveMaintenanceLoading = false;
+
+          // A value this card sent was refused: that is not a connection problem, and the
+          // network splash would hide the very form the operator has to correct.
+          if (body.error === 'BAD_REQUEST') {
+            await showErrorToast('errors.BAD_REQUEST');
+
+            return;
+          }
+
+          reject();
+
+          return;
+        }
+
+        saveMaintenanceLoading = false;
+
+        data.oldSettings.maintenance = structuredClone(data.maintenance);
+
+        await invalidateAll();
+
+        await showSuccessToast('components.toasts.maintenance-save-success');
+      },
+    });
+  }
+
+  function onToggleMaintenance(event) {
+    const enabled = event.target.checked;
+
+    // Both directions are re-authenticated, so the switch goes back to the saved state until the
+    // password is accepted — a cancelled modal must not leave it showing something the server
+    // never stored.
+    data.maintenance.enabled = !enabled;
+
+    if (enabled) {
+      // The switch writes the saved settings, so a saved value the platform refuses has to be
+      // repaired on the card first. Turning maintenance off is never blocked this way.
+      const savedError = maintenanceSnapshotError();
+
+      if (savedError) {
+        showErrorToast(savedError);
+
+        return;
+      }
+    }
+
+    showConfirmSaveCriticalSettingsModal((password) => commitMaintenanceToggle(enabled, password));
+  }
+
+  function commitMaintenanceToggle(enabled, password) {
+    toggleMaintenanceLoading = true;
+    setSaveCriticalSettingsLoading(true);
+
+    ApiUtil.put({
+      path: '/api/panel/settings',
+      body: buildMaintenanceFormData(maintenanceToggleSettings(enabled), password),
+      handler: async (body, reject) => {
+        if (body.error) {
+          data.maintenance.enabled = !enabled;
+          toggleMaintenanceLoading = false;
+
+          // Wrong password: keep the modal open with the field marked so it can be retyped.
+          if (body.error === 'NO_PERMISSION') {
+            setSaveCriticalSettingsError(true);
+
+            return;
+          }
+
+          hideSaveCriticalSettingsModal();
+
+          // See onSaveMaintenanceClick: a refused value is reported as such, not as a lost
+          // connection with a Retry button that can only be refused again.
+          if (body.error === 'BAD_REQUEST') {
+            await showErrorToast('errors.BAD_REQUEST');
+
+            return;
+          }
+
+          reject();
+
+          return;
+        }
+
+        hideSaveCriticalSettingsModal();
+
+        data.maintenance.enabled = enabled;
+
+        // Only `enabled` was written: restamping the whole snapshot here would mark unsaved
+        // edits as saved and disable the Save button. invalidateAll() resyncs the rest.
+        data.oldSettings.maintenance = { ...maintenanceSnapshot(), enabled };
+
+        await invalidateAll();
+
+        await showSuccessToast('components.toasts.maintenance-save-success');
+
+        toggleMaintenanceLoading = false;
+      },
+    });
   }
 
   function onStopPanoClick() {

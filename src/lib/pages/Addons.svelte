@@ -1,6 +1,5 @@
 <InstallResourceModal />
 <AddonStartupErrorModal />
-<ConfirmActionModal />
 <div class="container vstack gap-3">
   {#if data.failedLogin}
     <FailedLoginPanoStoreAlert />
@@ -273,9 +272,8 @@
     show as showConfirmEnablingAddonModal,
     setCallback as setCallbackConfirmEnablingAddonModal,
   } from '$lib/components/modals/ConfirmEnablingAddonWillCauseMoreEnableModal.svelte';
-  import ConfirmActionModal, {
-    show as showConfirmActionModal,
-  } from '$lib/components/modals/ConfirmActionModal.svelte';
+  // Mounted once globally in AppLayout; a second mount would steal the shared element binding.
+  import { show as showConfirmActionModal } from '$lib/components/modals/ConfirmActionModal.svelte';
 
   import NoContent from '$lib/components/NoContent.svelte';
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
