@@ -15,7 +15,8 @@
     </ul>
   </div>
 
-  <label class="form-label" for="lpUploadConfig">{$_('pages.migration.authme.upload-config')}</label>
+  <label class="form-label" for="lpUploadConfig"
+    >{$_('pages.migration.authme.upload-config')}</label>
   {#if configFile}
     <div class="position-relative">
       <DragAndDropZone
@@ -42,7 +43,8 @@
 
   {#if showDatabaseUpload}
     <div class="mt-3">
-      <label class="form-label" for="lpUploadDb">{$_('pages.migration.luckperms.h2-database-label')}</label>
+      <label class="form-label" for="lpUploadDb"
+        >{$_('pages.migration.luckperms.h2-database-label')}</label>
       <div class="alert alert-warning">
         <i class="fas fa-info-circle me-1"></i>
         {$_('pages.migration.luckperms.h2-detected-note')}
@@ -81,7 +83,8 @@
       <div class="card-body py-3">
         <div class="row g-2 mb-2">
           <div class="col-12 col-sm-8">
-            <label class="form-label small mb-1" for="dbHost">{$_('pages.migration.authme.host')}</label>
+            <label class="form-label small mb-1" for="dbHost"
+              >{$_('pages.migration.authme.host')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
@@ -89,7 +92,8 @@
               bind:value={dbConnectionInfo.host} />
           </div>
           <div class="col-12 col-sm-4">
-            <label class="form-label small mb-1" for="dbPort">{$_('pages.migration.authme.port')}</label>
+            <label class="form-label small mb-1" for="dbPort"
+              >{$_('pages.migration.authme.port')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
@@ -99,7 +103,8 @@
         </div>
         <div class="row g-2 mb-2">
           <div class="col-12 col-sm-6">
-            <label class="form-label small mb-1" for="dbName">{$_('pages.migration.authme.database')}</label>
+            <label class="form-label small mb-1" for="dbName"
+              >{$_('pages.migration.authme.database')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
@@ -107,7 +112,8 @@
               bind:value={dbConnectionInfo.database} />
           </div>
           <div class="col-12 col-sm-6">
-            <label class="form-label small mb-1" for="dbPrefix">{$_('pages.migration.luckperms.table-prefix')}</label>
+            <label class="form-label small mb-1" for="dbPrefix"
+              >{$_('pages.migration.luckperms.table-prefix')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
@@ -117,7 +123,8 @@
         </div>
         <div class="row g-2">
           <div class="col-12 col-sm-6">
-            <label class="form-label small mb-1" for="dbUser">{$_('pages.migration.authme.username')}</label>
+            <label class="form-label small mb-1" for="dbUser"
+              >{$_('pages.migration.authme.username')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
@@ -125,7 +132,8 @@
               bind:value={dbConnectionInfo.username} />
           </div>
           <div class="col-12 col-sm-6">
-            <label class="form-label small mb-1" for="dbPass">{$_('pages.migration.authme.password')}</label>
+            <label class="form-label small mb-1" for="dbPass"
+              >{$_('pages.migration.authme.password')}</label>
             <input
               type="password"
               class="form-control form-control-sm"
@@ -184,7 +192,8 @@
         <label class="fw-bold mb-0" for="strategyMerge">
           {$_('pages.migration.luckperms.strategy-merge')}
         </label>
-        <small class="d-block opacity-75">{$_('pages.migration.luckperms.strategy-merge-desc')}</small>
+        <small class="d-block opacity-75"
+          >{$_('pages.migration.luckperms.strategy-merge-desc')}</small>
       </div>
       <div class="col-3 text-end">
         <div class="form-check form-check-inline me-0">
@@ -204,7 +213,8 @@
         <label class="fw-bold mb-0" for="strategyReplace">
           {$_('pages.migration.luckperms.strategy-replace')}
         </label>
-        <small class="d-block opacity-75">{$_('pages.migration.luckperms.strategy-replace-desc')}</small>
+        <small class="d-block opacity-75"
+          >{$_('pages.migration.luckperms.strategy-replace-desc')}</small>
       </div>
       <div class="col-3 text-end">
         <div class="form-check form-check-inline me-0">
@@ -232,6 +242,25 @@
     </div>
   {/if}
 
+  <div class="alert alert-secondary d-flex flex-wrap gap-3 mb-3">
+    <span
+      ><span class="badge text-bg-success me-1">&nbsp;</span>{$_(
+        'pages.migration.luckperms.legend-new',
+      )}</span>
+    <span
+      ><span class="badge text-bg-warning me-1">&nbsp;</span>{$_(
+        'pages.migration.luckperms.legend-overwrite',
+      )}</span>
+    <span
+      ><span class="badge text-bg-info me-1">&nbsp;</span>{$_(
+        'pages.migration.luckperms.legend-edited',
+      )}</span>
+    <span
+      ><span class="badge text-bg-secondary me-1">&nbsp;</span>{$_(
+        'pages.migration.luckperms.legend-unchanged',
+      )}</span>
+  </div>
+
   <hr />
 
   <!-- Groups Table -->
@@ -239,8 +268,10 @@
     <CardHeader>
       <div slot="left">
         <span class="me-3"><strong>{$_('pages.migration.luckperms.groups-title')}</strong></span>
-        <span class="badge text-bg-success me-2">{previewData.newGroupCount} {$_('pages.migration.authme.status-new')}</span>
-        <span class="badge text-bg-warning">{previewData.existingGroupCount} {$_('pages.migration.authme.status-existing')}</span>
+        <span class="badge text-bg-success me-2"
+          >{previewData.newGroupCount} {$_('pages.migration.authme.status-new')}</span>
+        <span class="badge text-bg-warning"
+          >{previewData.existingGroupCount} {$_('pages.migration.authme.status-existing')}</span>
       </div>
       <div slot="middle" style="width: 250px;">
         <SearchInput
@@ -266,9 +297,12 @@
                   checked={selectedGroups.size === previewData.groups.length}
                   on:change={toggleAllGroups} />
               </th>
-              <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.luckperms.header-group')}</th>
-              <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.luckperms.header-status')}</th>
-              <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.luckperms.header-permissions')}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_('pages.migration.luckperms.header-group')}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_('pages.migration.luckperms.header-status')}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_('pages.migration.luckperms.header-permissions')}</th>
               <th class="align-middle text-nowrap" scope="col" style="width: 40px;"></th>
             </tr>
           </thead>
@@ -285,56 +319,43 @@
                 <td class="fw-semibold">{group.name}</td>
                 <td>
                   {#if group.status === 'new'}
-                    <span class="badge text-bg-success">{$_('pages.migration.authme.status-new')}</span>
+                    <span class="badge text-bg-success"
+                      >{$_('pages.migration.authme.status-new')}</span>
                   {:else}
-                    <span class="badge text-bg-warning">{$_('pages.migration.authme.status-existing')}</span>
+                    <span class="badge text-bg-warning"
+                      >{$_('pages.migration.authme.status-existing')}</span>
                   {/if}
                 </td>
                 <td>
-                  <span class="badge text-bg-primary">{$_('pages.migration.luckperms.nodes-count', { values: { count: group.nodeCount } })}</span>
+                  <span class="badge text-bg-primary"
+                    >{$_('pages.migration.luckperms.nodes-count', {
+                      values: { count: (groupNodes[group.name] ?? []).length },
+                    })}</span>
                 </td>
                 <td class="text-end">
-                  {#if group.nodeCount > 0}
-                    <button
-                      class="btn btn-link text-body p-0 border-0"
-                      on:click={() => toggleGroupExpand(group.name)}
-                      title={expandedGroups.has(group.name) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')}
-                      aria-label={expandedGroups.has(group.name) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')}>
-                      <i class="fas fa-chevron-{expandedGroups.has(group.name) ? 'up' : 'down'}"></i>
-                    </button>
-                  {/if}
+                  <button
+                    class="btn btn-link text-body p-0 border-0"
+                    on:click={() => toggleGroupExpand(group.name)}
+                    title={expandedGroups.has(group.name)
+                      ? $_('buttons.show-less-details')
+                      : $_('buttons.show-more-details')}
+                    aria-label={expandedGroups.has(group.name)
+                      ? $_('buttons.show-less-details')
+                      : $_('buttons.show-more-details')}>
+                    <i class="fas fa-chevron-{expandedGroups.has(group.name) ? 'up' : 'down'}"></i>
+                  </button>
                 </td>
               </tr>
               {#if expandedGroups.has(group.name)}
                 <tr>
                   <td colspan="5" class="p-0">
                     <div class="bg-body-tertiary p-3 border-top">
-                      <table class="table table-sm mb-0 small">
-                        <thead>
-                          <tr class="opacity-75">
-                            <th>{$_('pages.migration.luckperms.header-permission')}</th>
-                            <th style="width: 60px;">{$_('pages.migration.luckperms.header-value')}</th>
-                            <th style="width: 80px;">{$_('pages.migration.luckperms.header-server')}</th>
-                            <th style="width: 80px;">{$_('pages.migration.luckperms.header-world')}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {#each getGroupNodes(group.name) as node}
-                            <tr>
-                              <td><code class="user-select-all">{node.permission}</code></td>
-                              <td>
-                                {#if node.value}
-                                  <i class="fas fa-check text-success"></i>
-                                {:else}
-                                  <i class="fas fa-times text-danger"></i>
-                                {/if}
-                              </td>
-                              <td class="opacity-75">{node.server === 'global' ? '—' : node.server}</td>
-                              <td class="opacity-75">{node.world === 'global' ? '—' : node.world}</td>
-                            </tr>
-                          {/each}
-                        </tbody>
-                      </table>
+                      <LuckPermsNodeTable
+                        nodes={groupNodes[group.name] ?? []}
+                        on:change={(e) =>
+                          patchNode('GROUP', group.name, e.detail.node, e.detail.changes)}
+                        on:add={() => addNode('GROUP', group.name)}
+                        on:remove={(e) => removeNode('GROUP', group.name, e.detail.node)} />
                     </div>
                   </td>
                 </tr>
@@ -380,9 +401,12 @@
                     checked={selectedTracks.size === previewData.tracks.length}
                     on:change={toggleAllTracks} />
                 </th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.luckperms.header-track')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.luckperms.header-status')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.luckperms.header-groups')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.migration.luckperms.header-track')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.migration.luckperms.header-status')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.migration.luckperms.header-groups')}</th>
               </tr>
             </thead>
             <tbody>
@@ -398,9 +422,11 @@
                   <td class="fw-semibold">{track.name}</td>
                   <td>
                     {#if track.status === 'new'}
-                      <span class="badge text-bg-success">{$_('pages.migration.authme.status-new')}</span>
+                      <span class="badge text-bg-success"
+                        >{$_('pages.migration.authme.status-new')}</span>
                     {:else}
-                      <span class="badge text-bg-warning">{$_('pages.migration.authme.status-existing')}</span>
+                      <span class="badge text-bg-warning"
+                        >{$_('pages.migration.authme.status-existing')}</span>
                     {/if}
                   </td>
                   <td>
@@ -419,17 +445,23 @@
 
   <!-- User Permissions Section -->
   {#if previewData.players && previewData.players.length > 0}
-    {@const panoPlayers = previewData.players.filter((p) => p.existsInPano)}
-    {@const missingPlayers = previewData.players.filter((p) => !p.existsInPano)}
-    
     <div class="card mb-3">
       <CardHeader>
         <div slot="left">
-          <span class="me-3"><strong>{$_('pages.migration.luckperms.user-perms-title')}</strong></span>
-          <span class="badge text-bg-success me-2">{panoPlayers.length} {$_('pages.migration.luckperms.in-pano')}</span>
+          <span class="me-3"
+            ><strong>{$_('pages.migration.luckperms.user-perms-title')}</strong></span>
+          <span class="badge text-bg-success me-2"
+            >{previewData.panoPlayerCount} {$_('pages.migration.luckperms.in-pano')}</span>
           {#if missingPlayers.length > 0}
-            <span class="badge text-bg-danger">{missingPlayers.length} {$_('pages.migration.luckperms.not-in-pano')}</span>
+            <span class="badge text-bg-danger"
+              >{missingPlayers.length} {$_('pages.migration.luckperms.not-in-pano')}</span>
           {/if}
+        </div>
+        <div slot="middle" style="width: 250px;">
+          <SearchInput
+            placeholderKey="buttons.find"
+            showSpinner={false}
+            on:change={(e) => (playerSearchQuery = e.detail.value)} />
         </div>
       </CardHeader>
       <div class="card-body pb-3">
@@ -438,7 +470,8 @@
             <label class="fw-bold mb-0" for="importUserPerms">
               {$_('pages.migration.luckperms.import-user-perms')}
             </label>
-            <small class="d-block opacity-75">{$_('pages.migration.luckperms.import-user-perms-desc')}</small>
+            <small class="d-block opacity-75"
+              >{$_('pages.migration.luckperms.import-user-perms-desc')}</small>
           </div>
           <div class="col-3 text-end">
             <div class="form-check form-switch d-inline-block">
@@ -452,29 +485,52 @@
           </div>
         </div>
 
-        {#if previewData.panoPlayerCount === 0}
-          <div class="alert alert-warning mb-0 mt-3">
-            <i class="fas fa-exclamation-triangle me-1"></i>
-            {$_('pages.migration.luckperms.no-pano-players-warning')}
+        {#if importUserPermissions}
+          <div class="row align-items-center mt-3">
+            <div class="col-9">
+              <label class="fw-bold mb-0" for="createMissingPlayers">
+                {$_('pages.migration.luckperms.create-missing-players')}
+              </label>
+              <small class="d-block opacity-75">
+                {$_('pages.migration.luckperms.create-missing-players-desc')}
+              </small>
+            </div>
+            <div class="col-3 text-end">
+              <div class="form-check form-switch d-inline-block">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="createMissingPlayers"
+                  bind:checked={createMissingPlayers} />
+              </div>
+            </div>
           </div>
-        {:else if missingPlayers.length > 0}
-          <div class="alert alert-info mb-0 mt-3">
-            <i class="fas fa-info-circle me-1"></i>
-            {$_('pages.migration.luckperms.missing-players-info', {
-              values: {
-                count: missingPlayers.length,
-                total: previewData.players.length,
-              },
-            })}
+        {/if}
+
+        {#if importUserPermissions && creatablePlayers.length > 0}
+          <div class="alert {createMissingPlayers ? 'alert-success' : 'alert-warning'} mb-0 mt-3">
+            <i class="fas {createMissingPlayers ? 'fa-user-plus' : 'fa-exclamation-triangle'} me-1"
+            ></i>
+            {#if createMissingPlayers}
+              {$_('pages.migration.luckperms.players-will-be-created', {
+                values: { count: creatablePlayers.length, total: previewData.players.length },
+              })}
+            {:else}
+              {$_('pages.migration.luckperms.players-will-be-skipped', {
+                values: { count: creatablePlayers.length, total: previewData.players.length },
+              })}
+            {/if}
           </div>
         {/if}
       </div>
 
       {#if importUserPermissions}
-        <div class="table-responsive border-top" style="max-height: 400px;">
+        <div class="table-responsive border-top">
           <table class="table table-hover mb-0">
-            <thead class="sticky-top bg-body" style="z-index: 1;">
+            <thead>
               <tr>
+                <th style="width: 40px;"></th>
                 <th style="width: 40px;"></th>
                 <th>{$_('pages.migration.luckperms.header-player')}</th>
                 <th>{$_('pages.migration.luckperms.header-primary-group')}</th>
@@ -483,63 +539,69 @@
               </tr>
             </thead>
             <tbody>
-              {#each previewData.players as player}
-                <tr class={!player.existsInPano ? 'opacity-50' : ''}>
+              {#each paginatedPlayers as player (player.uuid)}
+                {@const status = playerStatus(player)}
+                <tr class={skippedPlayers.has(player.uuid) ? 'opacity-50' : playerRowClass(status)}>
                   <td>
-                    {#if player.permissionCount > 0}
-                      <button
-                        class="btn btn-link text-body p-0 border-0"
-                        on:click={() => togglePlayerExpand(player.uuid)}
-                        title={expandedPlayers.has(player.uuid) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')}
-                        aria-label={expandedPlayers.has(player.uuid) ? $_('buttons.show-less-details') : $_('buttons.show-more-details')}>
-                        <i class="fas fa-chevron-{expandedPlayers.has(player.uuid) ? 'up' : 'down'} fs-7"></i>
-                      </button>
-                    {/if}
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      title={$_('pages.migration.luckperms.include-player')}
+                      aria-label={$_('pages.migration.luckperms.include-player')}
+                      checked={!skippedPlayers.has(player.uuid)}
+                      on:change={() => togglePlayer(player.uuid)} />
                   </td>
-                  <td class="fw-semibold">
-                    {player.username}
-                    <div class="small opacity-75 fw-normal">{player.uuid}</div>
+                  <td>
+                    <button
+                      class="btn btn-link text-body p-0 border-0"
+                      on:click={() => togglePlayerExpand(player.uuid)}
+                      title={expandedPlayers.has(player.uuid)
+                        ? $_('buttons.show-less-details')
+                        : $_('buttons.show-more-details')}
+                      aria-label={expandedPlayers.has(player.uuid)
+                        ? $_('buttons.show-less-details')
+                        : $_('buttons.show-more-details')}>
+                      <i
+                        class="fas fa-chevron-{expandedPlayers.has(player.uuid)
+                          ? 'up'
+                          : 'down'} fs-7"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <input
+                      class="form-control form-control-sm"
+                      class:is-invalid={!playerUsername(player).trim()}
+                      aria-label={$_('pages.migration.luckperms.header-username')}
+                      value={playerUsername(player)}
+                      on:input={(e) => setPlayerUsername(player, e.currentTarget.value)} />
+                    <div class="small opacity-75 fw-normal mt-1">{player.uuid}</div>
+                    {#if player.panoUsername && player.panoUsername !== playerUsername(player)}
+                      <div class="small opacity-75 fw-normal">
+                        <i class="fas fa-link me-1"></i>{player.panoUsername}
+                      </div>
+                    {/if}
                   </td>
                   <td><span class="badge text-bg-secondary">{player.primaryGroup}</span></td>
-                  <td class="text-center"><span class="badge text-bg-primary">{player.permissionCount}</span></td>
                   <td class="text-center">
-                    {#if player.existsInPano}
-                      <span class="text-success small fw-bold"><i class="fas fa-check me-2"></i>{$_('pages.migration.luckperms.will-import')}</span>
-                    {:else}
-                      <span class="text-muted small"><i class="fas fa-ban me-2"></i>{$_('pages.migration.luckperms.will-skip')}</span>
-                    {/if}
+                    <span class="badge text-bg-primary"
+                      >{(userNodes[player.uuid] ?? []).length}</span>
+                  </td>
+                  <td class="text-center">
+                    <span class={`badge ${playerBadgeClass(status)}`}>
+                      {$_(`pages.migration.luckperms.player-${status}`)}
+                    </span>
                   </td>
                 </tr>
                 {#if expandedPlayers.has(player.uuid)}
                   <tr>
-                    <td colspan="5" class="p-0">
+                    <td colspan="6" class="p-0">
                       <div class="bg-body-tertiary p-3 border-top">
-                        <table class="table table-sm mb-0 small">
-                          <thead>
-                            <tr class="opacity-75">
-                              <th>{$_('pages.migration.luckperms.header-permission')}</th>
-                              <th style="width: 60px;">{$_('pages.migration.luckperms.header-value')}</th>
-                              <th style="width: 80px;">{$_('pages.migration.luckperms.header-server')}</th>
-                              <th style="width: 80px;">{$_('pages.migration.luckperms.header-world')}</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {#each getPlayerNodes(player.uuid) as node}
-                              <tr>
-                                <td><code class="user-select-all">{node.permission}</code></td>
-                                <td>
-                                  {#if node.value}
-                                    <i class="fas fa-check text-success"></i>
-                                  {:else}
-                                    <i class="fas fa-times text-danger"></i>
-                                  {/if}
-                                </td>
-                                <td class="opacity-75">{node.server === 'global' ? '—' : node.server}</td>
-                                <td class="opacity-75">{node.world === 'global' ? '—' : node.world}</td>
-                              </tr>
-                            {/each}
-                          </tbody>
-                        </table>
+                        <LuckPermsNodeTable
+                          nodes={userNodes[player.uuid] ?? []}
+                          on:change={(e) =>
+                            patchNode('USER', player.uuid, e.detail.node, e.detail.changes)}
+                          on:add={() => addNode('USER', player.uuid)}
+                          on:remove={(e) => removeNode('USER', player.uuid, e.detail.node)} />
                       </div>
                     </td>
                   </tr>
@@ -548,7 +610,33 @@
             </tbody>
           </table>
         </div>
+        <div class="card-footer">
+          <Pagination
+            page={playerPage}
+            totalPage={totalPlayerPages}
+            on:firstPageClick={() => (playerPage = 1)}
+            on:lastPageClick={() => (playerPage = totalPlayerPages)}
+            on:pageLinkClick={(e) => (playerPage = e.detail.page)} />
+        </div>
       {/if}
+    </div>
+  {/if}
+
+  {#if incompleteNodeCount > 0}
+    <div class="alert alert-danger">
+      <i class="fas fa-exclamation-triangle me-1"></i>
+      {$_('pages.migration.luckperms.incomplete-nodes-warning', {
+        values: { count: incompleteNodeCount },
+      })}
+    </div>
+  {/if}
+
+  {#if invalidUsernameCount > 0}
+    <div class="alert alert-danger">
+      <i class="fas fa-exclamation-triangle me-1"></i>
+      {$_('pages.migration.luckperms.invalid-usernames-warning', {
+        values: { count: invalidUsernameCount },
+      })}
     </div>
   {/if}
 
@@ -571,11 +659,21 @@
     </div>
   {/if}
 
+  {#if uploadError}
+    <div class="alert alert-danger mt-3" role="alert">
+      <i class="fas fa-exclamation-triangle me-2"></i>
+      {uploadError}
+    </div>
+  {/if}
+
   <div class="mt-4 d-flex gap-2">
     <button
       class="btn btn-secondary"
       on:click={importData}
-      disabled={(selectedGroups.size === 0 && selectedTracks.size === 0) || isImporting}>
+      disabled={(selectedGroups.size === 0 && selectedTracks.size === 0) ||
+        isImporting ||
+        incompleteNodeCount > 0 ||
+        invalidUsernameCount > 0}>
       {#if isImporting}
         <span class="spinner-border spinner-border-sm me-2" role="status"></span>
       {/if}
@@ -591,14 +689,29 @@
     <div>
       <h6 class="alert-heading mb-1">{$_('pages.migration.luckperms.result-title')}</h6>
       <p class="mb-0 small">
-        <strong>{importResult.importedGroups}</strong> {$_('pages.migration.luckperms.import-summary-groups')}{#if importResult.updatedGroups > 0},
-          <strong>{importResult.updatedGroups}</strong> {$_('pages.migration.luckperms.import-summary-updated')}{/if},
-        <strong>{importResult.importedGroupNodes}</strong> {$_('pages.migration.luckperms.import-summary-group-nodes')},
-        <strong>{importResult.importedUserNodes}</strong> {$_('pages.migration.luckperms.import-summary-user-nodes')}
+        <strong>{importResult.importedGroups}</strong>
+        {$_('pages.migration.luckperms.import-summary-groups')}{#if importResult.updatedGroups > 0},
+          <strong>{importResult.updatedGroups}</strong>
+          {$_('pages.migration.luckperms.import-summary-updated')}{/if},
+        <strong>{importResult.importedGroupNodes}</strong>
+        {$_('pages.migration.luckperms.import-summary-group-nodes')},
+        <strong>{importResult.importedUserNodes}</strong>
+        {$_('pages.migration.luckperms.import-summary-user-nodes')}
         {#if importResult.importedTracks > 0},
-          <strong>{importResult.importedTracks}</strong> {$_('pages.migration.luckperms.import-summary-tracks')}{/if}
+          <strong>{importResult.importedTracks}</strong>
+          {$_('pages.migration.luckperms.import-summary-tracks')}{/if}
+        {#if importResult.createdUsers > 0},
+          <strong>{importResult.createdUsers}</strong>
+          {$_('pages.migration.luckperms.import-summary-created-users')}{/if}
+        {#if importResult.overwrittenNodes > 0},
+          <strong>{importResult.overwrittenNodes}</strong>
+          {$_('pages.migration.luckperms.import-summary-overwritten')}{/if}
         {#if importResult.skippedNodes > 0},
-          <strong>{importResult.skippedNodes}</strong> {$_('pages.migration.luckperms.import-summary-skipped')}{/if}.
+          <strong>{importResult.skippedNodes}</strong>
+          {$_('pages.migration.luckperms.import-summary-skipped')}{/if}
+        {#if importResult.skippedUsers > 0},
+          <strong>{importResult.skippedUsers}</strong>
+          {$_('pages.migration.luckperms.import-summary-skipped-users')}{/if}.
       </p>
     </div>
   </div>
@@ -606,7 +719,8 @@
   {#if importResult?.errors && importResult.errors.length > 0}
     <div class="alert alert-warning mt-3">
       <h6 class="alert-heading mb-2">
-        <i class="fas fa-exclamation-triangle me-1"></i> {$_('pages.migration.authme.some-issues-occurred')}
+        <i class="fas fa-exclamation-triangle me-1"></i>
+        {$_('pages.migration.authme.some-issues-occurred')}
       </h6>
       <ul class="mb-0 small">
         {#each importResult.errors as err}
@@ -630,131 +744,27 @@
   import CardHeader from '$lib/components/CardHeader.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
+  import LuckPermsNodeTable from './LuckPermsNodeTable.svelte';
 
   export { resetForm, importData, uploadAndPreview };
 
-  // ── Mock Data ──
-  const MOCK_ENABLED = false;
-
-  const mockConfigFile = new File(['storage-method: H2\n'], 'config.yml', {
-    type: 'application/x-yaml',
-  });
-  Object.defineProperty(mockConfigFile, 'size', { value: 3456 });
-
-  const mockDbFile = new File([''], 'luckperms-h2-v2.mv.db', {
-    type: 'application/x-sqlite3',
-  });
-  Object.defineProperty(mockDbFile, 'size', { value: 1048576 });
-
-  const mockPreviewData = {
-    newGroupCount: 3,
-    existingGroupCount: 1,
-    totalTrackCount: 2,
-    panoPlayerCount: 2,
-    existingPanoNodeCount: 5,
-    existingPanoGroupCount: 2,
-    groups: [
-      { name: 'admin', status: 'new', nodeCount: 12 },
-      { name: 'mod', status: 'new', nodeCount: 8 },
-      { name: 'default', status: 'existing', nodeCount: 4 },
-      { name: 'vip', status: 'new', nodeCount: 6 },
-    ],
-    groupPermissions: [
-      {
-        groupName: 'admin',
-        permission: 'pano.admin',
-        value: true,
-        server: 'global',
-        world: 'global',
-      },
-      {
-        groupName: 'admin',
-        permission: 'minecraft.command.op',
-        value: true,
-        server: 'global',
-        world: 'global',
-      },
-      { groupName: 'mod', permission: 'pano.mod', value: true, server: 'lobby', world: 'global' },
-      {
-        groupName: 'default',
-        permission: 'pano.user',
-        value: true,
-        server: 'global',
-        world: 'global',
-      },
-    ],
-    tracks: [
-      { name: 'staff', status: 'new', groups: ['helper', 'mod', 'admin'] },
-      { name: 'donator', status: 'existing', groups: ['vip', 'vip+', 'mvp'] },
-    ],
-    players: [
-      {
-        username: 'selim',
-        uuid: 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6',
-        primaryGroup: 'admin',
-        permissionCount: 2,
-        existsInPano: true,
-      },
-      {
-        username: 'testuser',
-        uuid: '12345678-1234-1234-1234-123456789012',
-        primaryGroup: 'default',
-        permissionCount: 0,
-        existsInPano: true,
-      },
-      {
-        username: 'external_hero',
-        uuid: '87654321-4321-4321-4321-210987654321',
-        primaryGroup: 'default',
-        permissionCount: 1,
-        existsInPano: false,
-      },
-    ],
-    userPermissions: [
-      {
-        uuid: 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6',
-        permission: 'special.access',
-        value: true,
-        server: 'global',
-        world: 'global',
-      },
-      {
-        uuid: 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6',
-        permission: 'debug.mode',
-        value: false,
-        server: 'dev',
-        world: 'test',
-      },
-      {
-        uuid: '87654321-4321-4321-4321-210987654321',
-        permission: 'temporary.permit',
-        value: true,
-        server: 'global',
-        world: 'global',
-      },
-    ],
-  };
-
   // File upload states
-  export let configFile = MOCK_ENABLED ? mockConfigFile : null;
-  export let dbFile = MOCK_ENABLED ? mockDbFile : null;
-  export let showDatabaseUpload = MOCK_ENABLED ? true : false;
-  export let detectedBackend = MOCK_ENABLED ? 'H2' : '';
+  export let configFile = null;
+  export let dbFile = null;
+  export let showDatabaseUpload = false;
+  export let detectedBackend = '';
   export let dbConnectionInfo = null;
   export let isProcessing = false;
   export let uploadProgress = 0;
 
   // Migration flow states
-  export let currentStep = MOCK_ENABLED ? 'review' : 'upload'; // 'upload' | 'review' | 'result'
-  export let previewData = MOCK_ENABLED ? mockPreviewData : null;
-  export let selectedGroups = MOCK_ENABLED
-    ? new Set(mockPreviewData.groups.map((g) => g.name))
-    : new Set();
-  export let selectedTracks = MOCK_ENABLED
-    ? new Set(mockPreviewData.tracks.map((t) => t.name))
-    : new Set();
+  export let currentStep = 'upload'; // 'upload' | 'review' | 'result'
+  export let previewData = null;
+  export let selectedGroups = new Set();
+  export let selectedTracks = new Set();
   export let mergeStrategy = 'merge'; // 'merge' or 'replace'
   export let importUserPermissions = true;
+  export let createMissingPlayers = true;
   export let isImporting = false;
   export let importProgress = 0;
   export let importResult = null;
@@ -762,12 +772,33 @@
   export let expandedGroups = new Set();
   export let expandedPlayers = new Set();
 
+  // Merged working copy of the permission nodes, keyed by holder. Each list holds what Pano already
+  // has plus what the import brings, so the review screen can show both side by side.
+  // groupNodes: { [groupName]: node[] }, userNodes: { [playerUuid]: node[] }
+  let groupNodes = {};
+  let userNodes = {};
+  // Nodes that came from LuckPerms and were deleted by the admin.
+  let removedEdits = [];
+  // Pano node ids the admin deleted from the existing data.
+  let existingNodeDeletions = [];
+  // Usernames the admin retargeted, keyed by LuckPerms uuid.
+  let playerUsernames = {};
+  // Players the admin excluded from the import, by LuckPerms uuid.
+  let skippedPlayers = new Set();
+  let nodeSeq = 0;
+
   // Search & Pagination for groups (AuthMe style consistency)
   export let groupSearchQuery = '';
   let groupPage = 1;
   let itemsPerPage = 10;
 
+  // Search & pagination for players. Both are required rather than cosmetic: a busy server can
+  // export tens of thousands of players and rendering them all at once locks up the browser.
+  export let playerSearchQuery = '';
+  let playerPage = 1;
+
   $: if (groupSearchQuery) groupPage = 1;
+  $: if (playerSearchQuery) playerPage = 1;
 
   $: filteredGroups =
     previewData?.groups?.filter((g) => {
@@ -780,6 +811,37 @@
     groupPage * itemsPerPage,
   );
   $: totalGroupPages = Math.ceil(filteredGroups.length / itemsPerPage);
+
+  $: filteredPlayers =
+    previewData?.players?.filter((p) => {
+      if (!playerSearchQuery.trim()) return true;
+      const query = playerSearchQuery.toLowerCase();
+      return (
+        p.username.toLowerCase().includes(query) || (p.uuid ?? '').toLowerCase().includes(query)
+      );
+    }) ?? [];
+
+  $: totalPlayerPages = Math.max(1, Math.ceil(filteredPlayers.length / itemsPerPage));
+  $: if (playerPage > totalPlayerPages) playerPage = totalPlayerPages;
+  $: paginatedPlayers = filteredPlayers.slice(
+    (playerPage - 1) * itemsPerPage,
+    playerPage * itemsPerPage,
+  );
+
+  $: missingPlayers = previewData?.players?.filter((p) => !p.existsInPano) ?? [];
+  $: creatablePlayers = missingPlayers.filter((p) => p.hasImportableData);
+
+  // A node the admin added but never named cannot be imported, so block the import until it is
+  // either filled in or removed rather than dropping it silently.
+  $: incompleteNodeCount = [
+    ...Object.values(groupNodes).flat(),
+    ...Object.values(userNodes).flat(),
+  ].filter((node) => !node.permission?.trim()).length;
+
+  $: invalidUsernameCount =
+    previewData?.players?.filter(
+      (player) => !skippedPlayers.has(player.uuid) && !playerUsername(player).trim(),
+    ).length ?? 0;
 
   // Config file handlers
   async function handleConfigFile(file) {
@@ -890,6 +952,7 @@
         formData.append('dbName', dbConnectionInfo.database);
         formData.append('dbUser', dbConnectionInfo.username);
         formData.append('dbPassword', dbConnectionInfo.password);
+        formData.append('dbTablePrefix', dbConnectionInfo.tablePrefix);
       }
 
       const result = await ApiUtil.post({
@@ -908,6 +971,7 @@
 
       if (result) {
         previewData = result;
+        buildEditableNodes(result);
         selectedGroups = new Set(result.groups.map((g) => g.name));
         if (result.tracks) {
           selectedTracks = new Set(result.tracks.map((t) => t.name));
@@ -919,6 +983,321 @@
     } finally {
       isProcessing = false;
     }
+  }
+
+  // ── Permission node merging & editing ──
+
+  function snapshotOf(node) {
+    return {
+      permission: node.permission,
+      value: node.value,
+      server: node.server,
+      world: node.world,
+      contexts: node.contexts,
+    };
+  }
+
+  function normalise(perm) {
+    return {
+      permission: perm.permission,
+      value: perm.value !== false,
+      server: perm.server ?? 'global',
+      world: perm.world ?? 'global',
+      expiry: perm.expiry ?? 0,
+      contexts: perm.contexts ?? '{}',
+    };
+  }
+
+  // A node Pano already holds. `_before` is what the admin sees as "was there".
+  function toPanoRow(node) {
+    const row = {
+      _id: ++nodeSeq,
+      _origin: 'pano',
+      _panoNodeId: node.id,
+      _match: null,
+      _incoming: false,
+      ...normalise(node),
+    };
+    row._before = snapshotOf(row);
+    row._incomingSnapshot = null;
+    return row;
+  }
+
+  // A node arriving from LuckPerms with no Pano counterpart.
+  function toIncomingRow(perm) {
+    const row = {
+      _id: ++nodeSeq,
+      _origin: 'luckperms',
+      _panoNodeId: null,
+      _incoming: true,
+      ...normalise(perm),
+    };
+    row._match = {
+      permission: row.permission,
+      server: row.server,
+      world: row.world,
+      expiry: row.expiry,
+      contexts: row.contexts,
+    };
+    row._before = null;
+    row._incomingSnapshot = snapshotOf(row);
+    return row;
+  }
+
+  // Fold an incoming node onto the existing Pano row for the same permission, if there is one, so
+  // the pair renders as a single "will be overwritten" row instead of two unrelated ones.
+  function mergeIncoming(rows, perm) {
+    const target = rows.find(
+      (row) => row._origin === 'pano' && !row._incoming && row.permission === perm.permission,
+    );
+
+    if (!target) {
+      rows.push(toIncomingRow(perm));
+      return;
+    }
+
+    Object.assign(target, normalise(perm), { _incoming: true });
+    target._match = {
+      permission: target.permission,
+      server: target.server,
+      world: target.world,
+      expiry: target.expiry,
+      contexts: target.contexts,
+    };
+    target._incomingSnapshot = snapshotOf(target);
+  }
+
+  function buildEditableNodes(result) {
+    const groups = {};
+    const users = {};
+
+    // Seed with what Pano already holds.
+    Object.entries(result.existingGroupNodes ?? {}).forEach(([name, nodes]) => {
+      groups[name] = nodes.map(toPanoRow);
+    });
+
+    (result.groups ?? []).forEach((group) => {
+      groups[group.name] ??= [];
+    });
+
+    (result.players ?? []).forEach((player) => {
+      const existing = result.existingUserNodes?.[player.username.toLowerCase()] ?? [];
+      users[player.uuid] = existing.map(toPanoRow);
+    });
+
+    // Then fold in what LuckPerms is bringing.
+    (result.groupPermissions ?? []).forEach((perm) => {
+      if (!perm.groupName) return;
+      groups[perm.groupName] ??= [];
+      mergeIncoming(groups[perm.groupName], perm);
+    });
+
+    (result.userPermissions ?? []).forEach((perm) => {
+      if (!perm.uuid) return;
+      users[perm.uuid] ??= [];
+      mergeIncoming(users[perm.uuid], perm);
+    });
+
+    groupNodes = groups;
+    userNodes = users;
+    removedEdits = [];
+    existingNodeDeletions = [];
+    playerUsernames = {};
+    skippedPlayers = new Set();
+  }
+
+  function bumpNodes(holderType) {
+    if (holderType === 'GROUP') {
+      groupNodes = { ...groupNodes };
+    } else {
+      userNodes = { ...userNodes };
+    }
+  }
+
+  function patchNode(holderType, holderKey, node, changes) {
+    Object.assign(node, changes);
+    bumpNodes(holderType);
+  }
+
+  function addNode(holderType, holderKey) {
+    const node = {
+      _id: ++nodeSeq,
+      _origin: 'added',
+      _panoNodeId: null,
+      _match: null,
+      _incoming: true,
+      _before: null,
+      _incomingSnapshot: null,
+      permission: '',
+      value: true,
+      server: 'global',
+      world: 'global',
+      expiry: 0,
+      contexts: '{}',
+    };
+
+    const bucket = holderType === 'GROUP' ? groupNodes : userNodes;
+    const next = { ...bucket, [holderKey]: [...(bucket[holderKey] ?? []), node] };
+
+    if (holderType === 'GROUP') {
+      groupNodes = next;
+    } else {
+      userNodes = next;
+    }
+  }
+
+  function removeNode(holderType, holderKey, node) {
+    // A node that came from LuckPerms is dropped from the import; one that already lives in Pano
+    // has to be deleted from the database instead.
+    if (node._incoming && node._match) {
+      removedEdits = [...removedEdits, { holderType, holderKey, match: node._match }];
+    }
+
+    if (node._panoNodeId != null) {
+      existingNodeDeletions = [...existingNodeDeletions, node._panoNodeId];
+    }
+
+    const bucket = holderType === 'GROUP' ? groupNodes : userNodes;
+    const next = {
+      ...bucket,
+      [holderKey]: (bucket[holderKey] ?? []).filter((n) => n._id !== node._id),
+    };
+
+    if (holderType === 'GROUP') {
+      groupNodes = next;
+    } else {
+      userNodes = next;
+    }
+  }
+
+  function isNodeEdited(node) {
+    const before = node._incomingSnapshot ?? node._before;
+    if (!before) return false;
+
+    return (
+      before.permission !== node.permission ||
+      before.value !== node.value ||
+      before.server !== node.server ||
+      before.world !== node.world ||
+      String(before.contexts) !== String(node.contexts)
+    );
+  }
+
+  // Collapse the working copy back into the add/update/remove instructions the backend applies.
+  function collectNodeEdits() {
+    const edits = removedEdits.map((removed) => ({ ...removed, action: 'remove' }));
+
+    const collect = (holderType, bucket) => {
+      Object.entries(bucket).forEach(([holderKey, nodes]) => {
+        if (holderType === 'USER' && skippedPlayers.has(holderKey)) return;
+
+        nodes.forEach((node) => {
+          const permission = node.permission?.trim();
+          if (!permission) return;
+
+          const payload = {
+            permission,
+            value: node.value,
+            server: node.server?.trim() || 'global',
+            world: node.world?.trim() || 'global',
+            expiry: Number(node.expiry) || 0,
+            contexts: node.contexts?.trim() || '{}',
+          };
+
+          if (node._origin === 'added') {
+            edits.push({ holderType, holderKey, action: 'add', node: payload });
+            return;
+          }
+
+          if (!isNodeEdited(node)) return;
+
+          if (node._match) {
+            edits.push({
+              holderType,
+              holderKey,
+              action: 'update',
+              match: node._match,
+              node: payload,
+            });
+          } else {
+            // An existing Pano node the admin changed. Re-adding it overwrites the old row.
+            edits.push({ holderType, holderKey, action: 'add', node: payload });
+
+            if (node._panoNodeId != null && !existingNodeDeletions.includes(node._panoNodeId)) {
+              existingNodeDeletions = [...existingNodeDeletions, node._panoNodeId];
+            }
+          }
+        });
+      });
+    };
+
+    collect('GROUP', groupNodes);
+    collect('USER', userNodes);
+
+    return edits;
+  }
+
+  // ── Players ──
+
+  function playerUsername(player) {
+    return playerUsernames[player.uuid] ?? player.username;
+  }
+
+  function setPlayerUsername(player, username) {
+    playerUsernames = { ...playerUsernames, [player.uuid]: username };
+  }
+
+  function togglePlayer(uuid) {
+    const next = new Set(skippedPlayers);
+
+    if (next.has(uuid)) {
+      next.delete(uuid);
+    } else {
+      next.add(uuid);
+    }
+
+    skippedPlayers = next;
+  }
+
+  function playerStatus(player) {
+    if (!player.existsInPano) return 'new';
+
+    const renamed = playerUsername(player) !== player.username;
+    const nodes = userNodes[player.uuid] ?? [];
+    const changed = nodes.some(
+      (node) => node._origin === 'added' || (node._incoming && node._before) || isNodeEdited(node),
+    );
+
+    return renamed || changed ? 'changed' : 'existing';
+  }
+
+  function playerRowClass(status) {
+    switch (status) {
+      case 'new':
+        return 'table-success';
+      case 'changed':
+        return 'table-warning';
+      default:
+        return '';
+    }
+  }
+
+  function playerBadgeClass(status) {
+    switch (status) {
+      case 'new':
+        return 'text-bg-success';
+      case 'changed':
+        return 'text-bg-warning';
+      default:
+        return 'text-bg-secondary';
+    }
+  }
+
+  function collectPlayerEdits() {
+    return (previewData?.players ?? [])
+      .filter((player) => !skippedPlayers.has(player.uuid))
+      .filter((player) => playerUsername(player).trim() !== player.username)
+      .map((player) => ({ uuid: player.uuid, username: playerUsername(player).trim() }));
   }
 
   // Group selection
@@ -943,10 +1322,6 @@
     selectedGroups = new Set(previewData.groups.map((g) => g.name));
   }
 
-  function deselectAllGroups() {
-    selectedGroups = new Set();
-  }
-
   // Group expand/collapse
   function toggleGroupExpand(name) {
     if (expandedGroups.has(name)) {
@@ -957,11 +1332,6 @@
     expandedGroups = new Set(expandedGroups);
   }
 
-  function getGroupNodes(groupName) {
-    if (!previewData || !previewData.groupPermissions) return [];
-    return previewData.groupPermissions.filter((p) => p.groupName === groupName);
-  }
-
   // Player expand/collapse
   function togglePlayerExpand(uuid) {
     if (expandedPlayers.has(uuid)) {
@@ -970,11 +1340,6 @@
       expandedPlayers.add(uuid);
     }
     expandedPlayers = new Set(expandedPlayers);
-  }
-
-  function getPlayerNodes(uuid) {
-    if (!previewData || !previewData.userPermissions) return [];
-    return previewData.userPermissions.filter((p) => p.uuid === uuid);
   }
 
   // Track selection
@@ -999,14 +1364,11 @@
     selectedTracks = new Set(previewData.tracks.map((t) => t.name));
   }
 
-  function deselectAllTracks() {
-    selectedTracks = new Set();
-  }
-
   // Step 3: Import
   async function importData() {
     isImporting = true;
     importProgress = 0;
+    uploadError = null;
 
     const totalActions = selectedGroups.size + selectedTracks.size;
     const progressInterval = setInterval(
@@ -1019,13 +1381,20 @@
     );
 
     try {
+      const nodeEdits = collectNodeEdits();
+
       const result = await ApiUtil.post({
         path: '/api/panel/migration/luckperms/import',
         body: {
           selectedGroups: Array.from(selectedGroups),
           selectedTracks: Array.from(selectedTracks),
           importUserPermissions: importUserPermissions,
+          createMissingPlayers: createMissingPlayers,
           mergeStrategy: mergeStrategy,
+          nodeEdits,
+          playerEdits: collectPlayerEdits(),
+          skippedPlayers: Array.from(skippedPlayers),
+          deletedExistingNodes: existingNodeDeletions,
         },
       });
 
@@ -1064,12 +1433,22 @@
     selectedTracks = new Set();
     mergeStrategy = 'merge';
     importUserPermissions = true;
+    createMissingPlayers = true;
     isImporting = false;
     importProgress = 0;
     importResult = null;
     uploadError = null;
     expandedGroups = new Set();
     expandedPlayers = new Set();
+    groupNodes = {};
+    userNodes = {};
+    removedEdits = [];
+    existingNodeDeletions = [];
+    playerUsernames = {};
+    skippedPlayers = new Set();
+    groupSearchQuery = '';
+    playerSearchQuery = '';
+    groupPage = 1;
+    playerPage = 1;
   }
 </script>
-
