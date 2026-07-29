@@ -383,6 +383,12 @@
           <span class="me-3"><strong>{$_('pages.migration.luckperms.tracks-title')}</strong></span>
           <span class="badge text-bg-primary">{previewData.totalTrackCount}</span>
         </div>
+        <div slot="middle" style="width: 250px;">
+          <SearchInput
+            placeholderKey="buttons.find"
+            showSpinner={false}
+            on:change={(e) => (trackSearchQuery = e.detail.value)} />
+        </div>
         <div slot="right" class="d-flex flex-wrap gap-2">
           <button class="btn btn-link text-decoration-none px-0 px-md-2" on:click={selectAllTracks}>
             {$_('buttons.select-all')}
@@ -407,11 +413,13 @@
                   >{$_('pages.migration.luckperms.header-status')}</th>
                 <th class="align-middle text-nowrap" scope="col"
                   >{$_('pages.migration.luckperms.header-groups')}</th>
+                <th class="align-middle text-nowrap" scope="col" style="width: 40px;"></th>
               </tr>
             </thead>
             <tbody>
-              {#each previewData.tracks as track}
-                <tr>
+              {#each paginatedTracks as track (track.name)}
+                {@const chain = trackChain(track)}
+                <tr class={track.status === 'new' ? 'table-success' : 'table-warning'}>
                   <td>
                     <input
                       type="checkbox"
@@ -426,19 +434,146 @@
                         >{$_('pages.migration.authme.status-new')}</span>
                     {:else}
                       <span class="badge text-bg-warning"
-                        >{$_('pages.migration.authme.status-existing')}</span>
+                        >{$_('pages.migration.luckperms.track-will-update')}</span>
                     {/if}
                   </td>
                   <td>
-                    {#each track.groups as g}
-                      <span class="badge text-bg-secondary me-1">{g}</span>
+                    {#each chain as g, i}
+                      <span
+                        class="badge me-1 {isGroupImportable(g)
+                          ? 'text-bg-secondary'
+                          : 'text-bg-danger'}"
+                        title={isGroupImportable(g)
+                          ? ''
+                          : $_('pages.migration.luckperms.track-group-dropped')}>
+                        {i + 1}. {g}
+                      </span>
                     {/each}
+                    {#if chain.length === 0}
+                      <span class="opacity-75">—</span>
+                    {/if}
+                  </td>
+                  <td class="text-end">
+                    <button
+                      class="btn btn-link text-body p-0 border-0"
+                      on:click={() => toggleTrackExpand(track.name)}
+                      title={expandedTracks.has(track.name)
+                        ? $_('buttons.show-less-details')
+                        : $_('buttons.show-more-details')}
+                      aria-label={expandedTracks.has(track.name)
+                        ? $_('buttons.show-less-details')
+                        : $_('buttons.show-more-details')}>
+                      <i class="fas fa-chevron-{expandedTracks.has(track.name) ? 'up' : 'down'}"
+                      ></i>
+                    </button>
                   </td>
                 </tr>
+                {#if expandedTracks.has(track.name)}
+                  <tr>
+                    <td colspan="5" class="p-0">
+                      <div class="bg-body-tertiary p-3 border-top">
+                        {#if track.status !== 'new' && track.existingGroups?.length}
+                          <div class="mb-3 small">
+                            <span class="opacity-75 me-2"
+                              >{$_('pages.migration.luckperms.track-current-chain')}</span>
+                            {#each track.existingGroups as g, i}
+                              <span class="badge text-bg-secondary me-1">{i + 1}. {g}</span>
+                            {/each}
+                          </div>
+                        {/if}
+
+                        {#if chain.some((g) => !isGroupImportable(g))}
+                          <div class="alert alert-danger py-2 small">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            {$_('pages.migration.luckperms.track-unknown-groups', {
+                              values: {
+                                groups: chain.filter((g) => !isGroupImportable(g)).join(', '),
+                              },
+                            })}
+                          </div>
+                        {/if}
+
+                        <label class="form-label small mb-1" for="trackDesc-{track.name}">
+                          {$_('pages.migration.luckperms.track-description')}
+                        </label>
+                        <input
+                          id="trackDesc-{track.name}"
+                          class="form-control form-control-sm mb-3"
+                          value={trackDescription(track)}
+                          on:input={(e) => setTrackDescription(track, e.currentTarget.value)} />
+
+                        <div class="small opacity-75 mb-2">
+                          {$_('pages.migration.luckperms.track-order-hint')}
+                        </div>
+                        <ol class="list-group list-group-numbered mb-2">
+                          {#each chain as g, i (g)}
+                            <li
+                              class="list-group-item d-flex align-items-center justify-content-between py-1">
+                              <span class={isGroupImportable(g) ? '' : 'text-danger'}>{g}</span>
+                              <span class="d-flex gap-1">
+                                <button
+                                  class="btn btn-sm btn-outline-secondary py-0"
+                                  disabled={i === 0}
+                                  on:click={() => moveTrackGroup(track, i, -1)}
+                                  aria-label={$_('buttons.move-up')}
+                                  title={$_('buttons.move-up')}>
+                                  <i class="fas fa-arrow-up"></i>
+                                </button>
+                                <button
+                                  class="btn btn-sm btn-outline-secondary py-0"
+                                  disabled={i === chain.length - 1}
+                                  on:click={() => moveTrackGroup(track, i, 1)}
+                                  aria-label={$_('buttons.move-down')}
+                                  title={$_('buttons.move-down')}>
+                                  <i class="fas fa-arrow-down"></i>
+                                </button>
+                                <button
+                                  class="btn btn-sm btn-outline-danger py-0"
+                                  on:click={() => removeTrackGroup(track, i)}
+                                  aria-label={$_('buttons.remove')}
+                                  title={$_('buttons.remove')}>
+                                  <i class="fas fa-trash"></i>
+                                </button>
+                              </span>
+                            </li>
+                          {/each}
+                        </ol>
+
+                        <div class="d-flex gap-2">
+                          <select
+                            class="form-select form-select-sm"
+                            style="max-width: 260px;"
+                            bind:value={trackGroupToAdd}
+                            aria-label={$_('pages.migration.luckperms.track-add-group')}>
+                            <option value=""
+                              >{$_('pages.migration.luckperms.track-add-group')}</option>
+                            {#each previewData.groups.filter((g) => !chain.includes(g.name)) as g}
+                              <option value={g.name}>{g.name}</option>
+                            {/each}
+                          </select>
+                          <button
+                            class="btn btn-sm btn-outline-secondary"
+                            disabled={!trackGroupToAdd}
+                            on:click={() => addTrackGroup(track)}>
+                            <i class="fas fa-plus me-1"></i>{$_('buttons.add')}
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                {/if}
               {/each}
             </tbody>
           </table>
         </div>
+      </div>
+      <div class="card-footer">
+        <Pagination
+          page={trackPage}
+          totalPage={totalTrackPages}
+          on:firstPageClick={() => (trackPage = 1)}
+          on:lastPageClick={() => (trackPage = totalTrackPages)}
+          on:pageLinkClick={(e) => (trackPage = e.detail.page)} />
       </div>
     </div>
   {/if}
@@ -700,6 +835,9 @@
         {#if importResult.importedTracks > 0},
           <strong>{importResult.importedTracks}</strong>
           {$_('pages.migration.luckperms.import-summary-tracks')}{/if}
+        {#if importResult.updatedTracks > 0},
+          <strong>{importResult.updatedTracks}</strong>
+          {$_('pages.migration.luckperms.import-summary-updated-tracks')}{/if}
         {#if importResult.createdUsers > 0},
           <strong>{importResult.createdUsers}</strong>
           {$_('pages.migration.luckperms.import-summary-created-users')}{/if}
@@ -771,6 +909,12 @@
   export let uploadError = null;
   export let expandedGroups = new Set();
   export let expandedPlayers = new Set();
+  export let expandedTracks = new Set();
+
+  // Editable track chains and descriptions, keyed by track name.
+  let trackChains = {};
+  let trackDescriptions = {};
+  let trackGroupToAdd = '';
 
   // Merged working copy of the permission nodes, keyed by holder. Each list holds what Pano already
   // has plus what the import brings, so the review screen can show both side by side.
@@ -797,8 +941,12 @@
   export let playerSearchQuery = '';
   let playerPage = 1;
 
+  export let trackSearchQuery = '';
+  let trackPage = 1;
+
   $: if (groupSearchQuery) groupPage = 1;
   $: if (playerSearchQuery) playerPage = 1;
+  $: if (trackSearchQuery) trackPage = 1;
 
   $: filteredGroups =
     previewData?.groups?.filter((g) => {
@@ -826,6 +974,19 @@
   $: paginatedPlayers = filteredPlayers.slice(
     (playerPage - 1) * itemsPerPage,
     playerPage * itemsPerPage,
+  );
+
+  $: filteredTracks =
+    previewData?.tracks?.filter((t) => {
+      if (!trackSearchQuery.trim()) return true;
+      return t.name.toLowerCase().includes(trackSearchQuery.toLowerCase());
+    }) ?? [];
+
+  $: totalTrackPages = Math.max(1, Math.ceil(filteredTracks.length / itemsPerPage));
+  $: if (trackPage > totalTrackPages) trackPage = totalTrackPages;
+  $: paginatedTracks = filteredTracks.slice(
+    (trackPage - 1) * itemsPerPage,
+    trackPage * itemsPerPage,
   );
 
   $: missingPlayers = previewData?.players?.filter((p) => !p.existsInPano) ?? [];
@@ -1104,6 +1265,8 @@
     existingNodeDeletions = [];
     playerUsernames = {};
     skippedPlayers = new Set();
+    trackChains = {};
+    trackDescriptions = {};
   }
 
   function bumpNodes(holderType) {
@@ -1364,6 +1527,73 @@
     selectedTracks = new Set(previewData.tracks.map((t) => t.name));
   }
 
+  // ── Tracks ──
+
+  function toggleTrackExpand(name) {
+    if (expandedTracks.has(name)) {
+      expandedTracks.delete(name);
+    } else {
+      expandedTracks.add(name);
+    }
+    expandedTracks = new Set(expandedTracks);
+  }
+
+  // The ordered group chain, as edited if the admin touched it.
+  function trackChain(track) {
+    return trackChains[track.name] ?? track.groups ?? [];
+  }
+
+  function setTrackChain(track, chain) {
+    trackChains = { ...trackChains, [track.name]: chain };
+  }
+
+  function trackDescription(track) {
+    return trackDescriptions[track.name] ?? track.existingDescription ?? '';
+  }
+
+  function setTrackDescription(track, description) {
+    trackDescriptions = { ...trackDescriptions, [track.name]: description };
+  }
+
+  // A group only survives into the track if it exists in Pano or is part of this import — anything
+  // else has no id to point at and would silently vanish from the promotion order.
+  function isGroupImportable(name) {
+    return (previewData?.groups ?? []).some((g) => g.name === name);
+  }
+
+  function moveTrackGroup(track, index, delta) {
+    const chain = [...trackChain(track)];
+    const target = index + delta;
+
+    if (target < 0 || target >= chain.length) return;
+
+    [chain[index], chain[target]] = [chain[target], chain[index]];
+    setTrackChain(track, chain);
+  }
+
+  function removeTrackGroup(track, index) {
+    const chain = [...trackChain(track)];
+    chain.splice(index, 1);
+    setTrackChain(track, chain);
+  }
+
+  function addTrackGroup(track) {
+    if (!trackGroupToAdd) return;
+
+    setTrackChain(track, [...trackChain(track), trackGroupToAdd]);
+    trackGroupToAdd = '';
+  }
+
+  function collectTrackEdits() {
+    return (previewData?.tracks ?? [])
+      .filter((track) => selectedTracks.has(track.name))
+      .map((track) => ({
+        name: track.name,
+        groups: trackChain(track),
+        description: trackDescription(track),
+      }));
+  }
+
   // Step 3: Import
   async function importData() {
     isImporting = true;
@@ -1395,6 +1625,7 @@
           playerEdits: collectPlayerEdits(),
           skippedPlayers: Array.from(skippedPlayers),
           deletedExistingNodes: existingNodeDeletions,
+          trackEdits: collectTrackEdits(),
         },
       });
 
@@ -1440,6 +1671,12 @@
     uploadError = null;
     expandedGroups = new Set();
     expandedPlayers = new Set();
+    expandedTracks = new Set();
+    trackChains = {};
+    trackDescriptions = {};
+    trackGroupToAdd = '';
+    trackSearchQuery = '';
+    trackPage = 1;
     groupNodes = {};
     userNodes = {};
     removedEdits = [];

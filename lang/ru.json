@@ -91,7 +91,9 @@
     "view-all": "Просмотреть все",
     "settings": "Настройки",
     "selected": "Выбрано",
-    "enable-all-addons": "Включить все аддоны"
+    "enable-all-addons": "Включить все аддоны",
+    "move-up": "Вверх",
+    "move-down": "Вниз"
   },
   "pages": {
     "login": {
@@ -1071,7 +1073,15 @@
         "legend-unchanged": "Уже есть в Pano",
         "import-summary-created-users": "игроков создано",
         "import-summary-overwritten": "узлов перезаписано",
-        "import-summary-skipped-users": "игроков пропущено"
+        "import-summary-skipped-users": "игроков пропущено",
+        "track-will-update": "Будет обновлён",
+        "track-current-chain": "Сейчас в Pano:",
+        "track-description": "Описание",
+        "track-order-hint": "Порядок ниже — это порядок повышения. При необходимости переставьте или удалите группы.",
+        "track-add-group": "Добавить группу в трек…",
+        "track-group-dropped": "Эта группа не входит в импорт и будет исключена из порядка трека.",
+        "track-unknown-groups": "Эти группы не входят в импорт и будут исключены из порядка трека: {groups}",
+        "import-summary-updated-tracks": "треков обновлено"
       },
       "server-title": "Сервер",
       "other-addons": "Другие аддоны"

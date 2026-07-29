@@ -91,7 +91,9 @@
     "buy-license": "Buy License",
     "buy-addon-on-market": "Buy this addon on {website}",
     "license-issues": "License Issues",
-    "connect-pano-account": "Connect Pano Account"
+    "connect-pano-account": "Connect Pano Account",
+    "move-up": "Move up",
+    "move-down": "Move down"
   },
   "pages": {
     "login": {
@@ -1073,7 +1075,15 @@
         "legend-unchanged": "Already in Pano",
         "import-summary-created-users": "players created",
         "import-summary-overwritten": "nodes overwritten",
-        "import-summary-skipped-users": "players skipped"
+        "import-summary-skipped-users": "players skipped",
+        "track-will-update": "Will be updated",
+        "track-current-chain": "Currently in Pano:",
+        "track-description": "Description",
+        "track-order-hint": "The order below is the promotion order. Reorder or remove groups as needed.",
+        "track-add-group": "Add a group to the track…",
+        "track-group-dropped": "This group is not part of the import and will be left out of the track order.",
+        "track-unknown-groups": "These groups are not part of the import and will be left out of the track order: {groups}",
+        "import-summary-updated-tracks": "tracks updated"
       }
     }
   },

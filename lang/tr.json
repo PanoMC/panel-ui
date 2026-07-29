@@ -91,7 +91,9 @@
     "buy-license": "Lisans Satın Al",
     "buy-addon-on-market": "Bu eklentiyi {website} üzerinden satın alın",
     "license-issues": "Lisans Sorunları",
-    "connect-pano-account": "Pano Hesabını Bağla"
+    "connect-pano-account": "Pano Hesabını Bağla",
+    "move-up": "Yukarı taşı",
+    "move-down": "Aşağı taşı"
   },
   "pages": {
     "login": {
@@ -1073,7 +1075,15 @@
         "legend-unchanged": "Pano'da zaten var",
         "import-summary-created-users": "oyuncu oluşturuldu",
         "import-summary-overwritten": "düğümün üzerine yazıldı",
-        "import-summary-skipped-users": "oyuncu atlandı"
+        "import-summary-skipped-users": "oyuncu atlandı",
+        "track-will-update": "Güncellenecek",
+        "track-current-chain": "Pano'da şu an:",
+        "track-description": "Açıklama",
+        "track-order-hint": "Aşağıdaki sıra terfi sırasıdır. Grupları gerektiği gibi sıralayın veya kaldırın.",
+        "track-add-group": "Track'e grup ekle…",
+        "track-group-dropped": "Bu grup içe aktarmaya dahil değil, track sırasından çıkarılacak.",
+        "track-unknown-groups": "Şu gruplar içe aktarmaya dahil değil ve track sırasından çıkarılacak: {groups}",
+        "import-summary-updated-tracks": "track güncellendi"
       }
     }
   },
