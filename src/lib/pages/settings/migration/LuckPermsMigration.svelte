@@ -2,6 +2,114 @@
   .fs-7 {
     font-size: 0.85rem;
   }
+
+  /*
+    Bootstrap's .table-success / .table-warning hardcode a light tint and black text and have no
+    dark override, so they break under the dark and copper themes. Drive Bootstrap's own table
+    variables from the theme-aware subtle/emphasis colours instead.
+  */
+  tr.lp-row-new {
+    --bs-table-bg: var(--bs-success-bg-subtle);
+    --bs-table-color: var(--bs-success-text-emphasis);
+    --bs-table-border-color: var(--bs-success-border-subtle);
+  }
+
+  tr.lp-row-overwrite {
+    --bs-table-bg: var(--bs-warning-bg-subtle);
+    --bs-table-color: var(--bs-warning-text-emphasis);
+    --bs-table-border-color: var(--bs-warning-border-subtle);
+  }
+
+  tr.lp-row-deleted {
+    --bs-table-bg: var(--bs-danger-bg-subtle);
+    --bs-table-color: var(--bs-danger-text-emphasis);
+    --bs-table-border-color: var(--bs-danger-border-subtle);
+  }
+
+  .lp-legend-swatch {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid;
+    vertical-align: -0.15rem;
+  }
+
+  .lp-legend-new {
+    background-color: var(--bs-success-bg-subtle);
+    border-color: var(--bs-success-border-subtle);
+  }
+
+  .lp-legend-overwrite {
+    background-color: var(--bs-warning-bg-subtle);
+    border-color: var(--bs-warning-border-subtle);
+  }
+
+  .lp-legend-edited {
+    background-color: rgba(253, 126, 20, 0.18);
+    border-color: rgba(253, 126, 20, 0.4);
+  }
+
+  .lp-legend-deleted {
+    background-color: var(--bs-danger-bg-subtle);
+    border-color: var(--bs-danger-border-subtle);
+  }
+
+  .lp-legend-unchanged {
+    background-color: var(--bs-secondary-bg);
+    border-color: var(--bs-border-color);
+  }
+
+  /* Merge-strategy picker: the whole card is the radio's hit area. */
+  .lp-strategy {
+    cursor: pointer;
+    border: 2px solid var(--bs-border-color);
+    transition:
+      border-color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out;
+  }
+
+  .lp-strategy:hover {
+    border-color: var(--bs-primary);
+  }
+
+  .lp-strategy-icon,
+  .lp-strategy-check {
+    color: var(--bs-secondary-color);
+  }
+
+  .lp-strategy-danger:hover {
+    border-color: var(--bs-danger);
+  }
+
+  .btn-check:checked + .lp-strategy {
+    border-color: var(--bs-primary);
+    background-color: var(--bs-primary-bg-subtle);
+  }
+
+  .btn-check:checked + .lp-strategy .lp-strategy-icon,
+  .btn-check:checked + .lp-strategy .lp-strategy-check {
+    color: var(--bs-primary);
+  }
+
+  /* Replacing wipes every existing group, track and node, so make that option read as destructive. */
+  .btn-check:checked + .lp-strategy-danger {
+    border-color: var(--bs-danger);
+    background-color: var(--bs-danger-bg-subtle);
+  }
+
+  .btn-check:checked + .lp-strategy-danger .lp-strategy-icon,
+  .btn-check:checked + .lp-strategy-danger .lp-strategy-check {
+    color: var(--bs-danger);
+  }
+
+  .btn-check:focus-visible + .lp-strategy {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+  }
+
+  .btn-check:focus-visible + .lp-strategy-danger {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb), 0.25);
+  }
 </style>
 
 {#if currentStep === 'upload'}
@@ -186,79 +294,118 @@
     </div>
   {/if}
 {:else if currentStep === 'review' && previewData}
-  <div class="mb-4">
-    <div class="row align-items-center mb-3">
-      <div class="col-9">
-        <label class="fw-bold mb-0" for="strategyMerge">
-          {$_('pages.migration.luckperms.strategy-merge')}
-        </label>
-        <small class="d-block opacity-75"
-          >{$_('pages.migration.luckperms.strategy-merge-desc')}</small>
-      </div>
-      <div class="col-3 text-end">
-        <div class="form-check form-check-inline me-0">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="mergeStrategy"
-            id="strategyMerge"
-            value="merge"
-            bind:group={mergeStrategy} />
-        </div>
-      </div>
-    </div>
+  <!--
+    Two picker cards rather than a pair of far-right radios: the choice reads as a choice, and the
+    destructive option is visibly destructive rather than looking like the harmless one.
+  -->
+  <fieldset class="mb-4">
+    <legend class="fs-6 fw-bold mb-2">
+      {$_('pages.migration.luckperms.merge-strategy-title')}
+    </legend>
+    <small class="d-block opacity-75 mb-3">
+      {$_('pages.migration.luckperms.merge-strategy-desc')}
+    </small>
 
-    <div class="row align-items-center">
-      <div class="col-9">
-        <label class="fw-bold mb-0" for="strategyReplace">
-          {$_('pages.migration.luckperms.strategy-replace')}
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <input
+          class="btn-check"
+          type="radio"
+          name="mergeStrategy"
+          id="strategyMerge"
+          value="merge"
+          bind:group={mergeStrategy} />
+        <label class="lp-strategy card h-100 mb-0" for="strategyMerge">
+          <div class="card-body d-flex gap-3">
+            <i class="fas fa-code-merge fs-4 lp-strategy-icon"></i>
+            <span>
+              <span class="d-block fw-bold">
+                {$_('pages.migration.luckperms.strategy-merge')}
+                {#if mergeStrategy === 'merge'}
+                  <i class="fas fa-circle-check ms-1 lp-strategy-check"></i>
+                {/if}
+              </span>
+              <small class="d-block opacity-75">
+                {$_('pages.migration.luckperms.strategy-merge-desc')}
+              </small>
+            </span>
+          </div>
         </label>
-        <small class="d-block opacity-75"
-          >{$_('pages.migration.luckperms.strategy-replace-desc')}</small>
       </div>
-      <div class="col-3 text-end">
-        <div class="form-check form-check-inline me-0">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="mergeStrategy"
-            id="strategyReplace"
-            value="replace"
-            bind:group={mergeStrategy} />
-        </div>
+
+      <div class="col-12 col-md-6">
+        <input
+          class="btn-check"
+          type="radio"
+          name="mergeStrategy"
+          id="strategyReplace"
+          value="replace"
+          bind:group={mergeStrategy} />
+        <label class="lp-strategy lp-strategy-danger card h-100 mb-0" for="strategyReplace">
+          <div class="card-body d-flex gap-3">
+            <i class="fas fa-triangle-exclamation fs-4 lp-strategy-icon"></i>
+            <span>
+              <span class="d-block fw-bold">
+                {$_('pages.migration.luckperms.strategy-replace')}
+                {#if mergeStrategy === 'replace'}
+                  <i class="fas fa-circle-check ms-1 lp-strategy-check"></i>
+                {/if}
+              </span>
+              <small class="d-block opacity-75">
+                {$_('pages.migration.luckperms.strategy-replace-desc')}
+              </small>
+            </span>
+          </div>
+        </label>
       </div>
     </div>
-  </div>
+  </fieldset>
 
   {#if previewData.existingPanoNodeCount > 0}
-    <div class="alert alert-warning mb-3">
+    <div class="alert {mergeStrategy === 'replace' ? 'alert-danger' : 'alert-warning'} mb-3">
       <i class="fas fa-exclamation-triangle me-1"></i>
-      {$_('pages.migration.luckperms.existing-data-warning', {
-        values: {
-          groupCount: previewData.existingPanoGroupCount,
-          nodeCount: previewData.existingPanoNodeCount,
-        },
-      })}
+      {#if mergeStrategy === 'replace'}
+        {$_('pages.migration.luckperms.existing-data-replace-warning', {
+          values: {
+            groupCount: previewData.existingPanoGroupCount,
+            nodeCount: previewData.existingPanoNodeCount,
+          },
+        })}
+      {:else}
+        {$_('pages.migration.luckperms.existing-data-warning', {
+          values: {
+            groupCount: previewData.existingPanoGroupCount,
+            nodeCount: previewData.existingPanoNodeCount,
+          },
+        })}
+      {/if}
     </div>
   {/if}
 
   <div class="alert alert-secondary d-flex flex-wrap gap-3 mb-3">
-    <span
-      ><span class="badge text-bg-success me-1">&nbsp;</span>{$_(
-        'pages.migration.luckperms.legend-new',
-      )}</span>
-    <span
-      ><span class="badge text-bg-warning me-1">&nbsp;</span>{$_(
-        'pages.migration.luckperms.legend-overwrite',
-      )}</span>
-    <span
-      ><span class="badge text-bg-info me-1">&nbsp;</span>{$_(
-        'pages.migration.luckperms.legend-edited',
-      )}</span>
-    <span
-      ><span class="badge text-bg-secondary me-1">&nbsp;</span>{$_(
-        'pages.migration.luckperms.legend-unchanged',
-      )}</span>
+    <span>
+      <span class="lp-legend-swatch lp-legend-new me-1"></span>
+      {$_('pages.migration.luckperms.legend-new')}
+    </span>
+    <span>
+      <span class="lp-legend-swatch lp-legend-overwrite me-1"></span>
+      {$_('pages.migration.luckperms.legend-overwrite')}
+    </span>
+    <span>
+      <span class="lp-legend-swatch lp-legend-edited me-1"></span>
+      {$_('pages.migration.luckperms.legend-edited')}
+    </span>
+    {#if mergeStrategy === 'replace'}
+      <span>
+        <span class="lp-legend-swatch lp-legend-deleted me-1"></span>
+        {$_('pages.migration.luckperms.legend-deleted')}
+      </span>
+    {:else}
+      <span>
+        <span class="lp-legend-swatch lp-legend-unchanged me-1"></span>
+        {$_('pages.migration.luckperms.legend-unchanged')}
+      </span>
+    {/if}
   </div>
 
   <hr />
@@ -272,6 +419,10 @@
           >{previewData.newGroupCount} {$_('pages.migration.authme.status-new')}</span>
         <span class="badge text-bg-warning"
           >{previewData.existingGroupCount} {$_('pages.migration.authme.status-existing')}</span>
+        {#if previewData.panoOnlyGroupCount > 0}
+          <span class="badge text-bg-secondary ms-2"
+            >{previewData.panoOnlyGroupCount} {$_('pages.migration.luckperms.pano-only')}</span>
+        {/if}
       </div>
       <div slot="middle" style="width: 250px;">
         <SearchInput
@@ -294,7 +445,8 @@
                 <input
                   type="checkbox"
                   class="form-check-input"
-                  checked={selectedGroups.size === previewData.groups.length}
+                  checked={selectedGroups.size === importableGroups().length &&
+                    selectedGroups.size > 0}
                   on:change={toggleAllGroups} />
               </th>
               <th class="align-middle text-nowrap" scope="col"
@@ -307,24 +459,35 @@
             </tr>
           </thead>
           <tbody>
-            {#each paginatedGroups as group}
-              <tr>
+            {#each paginatedGroups as group (group.name)}
+              {@const groupState = groupStatus(group)}
+              <tr
+                class:lp-row-new={groupState === 'new'}
+                class:lp-row-overwrite={groupState === 'update'}
+                class:lp-row-deleted={groupState === 'deleted'}>
                 <td>
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    checked={selectedGroups.has(group.name)}
-                    on:change={() => toggleGroup(group.name)} />
-                </td>
-                <td class="fw-semibold">{group.name}</td>
-                <td>
-                  {#if group.status === 'new'}
-                    <span class="badge text-bg-success"
-                      >{$_('pages.migration.authme.status-new')}</span>
-                  {:else}
-                    <span class="badge text-bg-warning"
-                      >{$_('pages.migration.authme.status-existing')}</span>
+                  {#if group.inLuckPerms !== false}
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      checked={selectedGroups.has(group.name)}
+                      on:change={() => toggleGroup(group.name)} />
                   {/if}
+                </td>
+                <td class="fw-semibold">
+                  {group.name}
+                  {#if group.inLuckPerms === false}
+                    <div class="small opacity-75 fw-normal mt-1">
+                      <i class="fas fa-database me-1"></i>{$_(
+                        'pages.migration.luckperms.player-pano-only',
+                      )}
+                    </div>
+                  {/if}
+                </td>
+                <td>
+                  <span class={`badge ${trackBadgeClass(groupState)}`}>
+                    {$_(`pages.migration.luckperms.track-${groupState}`)}
+                  </span>
                 </td>
                 <td>
                   <span class="badge text-bg-primary"
@@ -351,6 +514,7 @@
                   <td colspan="5" class="p-0">
                     <div class="bg-body-tertiary p-3 border-top">
                       <LuckPermsNodeTable
+                        {mergeStrategy}
                         nodes={groupNodes[group.name] ?? []}
                         on:change={(e) =>
                           patchNode('GROUP', group.name, e.detail.node, e.detail.changes)}
@@ -361,27 +525,57 @@
                 </tr>
               {/if}
             {/each}
+
+            {#if filteredGroups.length === 0}
+              <tr>
+                <td colspan="5" class="text-center opacity-75 py-4">
+                  {$_('pages.migration.luckperms.no-groups')}
+                </td>
+              </tr>
+            {/if}
           </tbody>
         </table>
       </div>
     </div>
-    <div class="card-footer">
-      <Pagination
-        page={groupPage}
-        totalPage={totalGroupPages}
-        on:firstPageClick={() => (groupPage = 1)}
-        on:lastPageClick={() => (groupPage = totalGroupPages)}
-        on:pageLinkClick={(e) => (groupPage = e.detail.page)} />
+    <div class="card-footer d-flex flex-wrap align-items-center gap-2">
+      <select
+        class="form-select form-select-sm w-auto"
+        bind:value={groupsPerPage}
+        on:change={() => (groupPage = 1)}
+        aria-label={$_('pages.migration.luckperms.per-page')}>
+        {#each pageSizeOptions as size}
+          <option value={size}
+            >{$_('pages.migration.luckperms.per-page-option', { values: { count: size } })}</option>
+        {/each}
+      </select>
+      <small class="opacity-75">
+        {$_('pages.migration.luckperms.total-count', {
+          values: { count: filteredGroups.length },
+        })}
+      </small>
+      <div class="ms-auto">
+        <Pagination
+          page={groupPage}
+          totalPage={totalGroupPages}
+          on:firstPageClick={() => (groupPage = 1)}
+          on:lastPageClick={() => (groupPage = totalGroupPages)}
+          on:pageLinkClick={(e) => (groupPage = e.detail.page)} />
+      </div>
     </div>
   </div>
 
-  <!-- Tracks Table -->
-  {#if previewData.tracks && previewData.tracks.length > 0}
+  <!-- Tracks Table. Shown even when empty: "there are no tracks" is information too, and hiding the
+       card entirely made it look like the feature was missing. -->
+  {#if previewData.tracks}
     <div class="card mb-3">
       <CardHeader>
         <div slot="left">
           <span class="me-3"><strong>{$_('pages.migration.luckperms.tracks-title')}</strong></span>
-          <span class="badge text-bg-primary">{previewData.totalTrackCount}</span>
+          <span class="badge text-bg-primary">{previewData.tracks.length}</span>
+          {#if previewData.panoOnlyTrackCount > 0}
+            <span class="badge text-bg-secondary ms-2"
+              >{previewData.panoOnlyTrackCount} {$_('pages.migration.luckperms.pano-only')}</span>
+          {/if}
         </div>
         <div slot="middle" style="width: 250px;">
           <SearchInput
@@ -404,7 +598,8 @@
                   <input
                     type="checkbox"
                     class="form-check-input"
-                    checked={selectedTracks.size === previewData.tracks.length}
+                    checked={selectedTracks.size === importableTracks().length &&
+                      selectedTracks.size > 0}
                     on:change={toggleAllTracks} />
                 </th>
                 <th class="align-middle text-nowrap" scope="col"
@@ -419,23 +614,34 @@
             <tbody>
               {#each paginatedTracks as track (track.name)}
                 {@const chain = trackChain(track)}
-                <tr class={track.status === 'new' ? 'table-success' : 'table-warning'}>
+                {@const trackState = trackStatus(track)}
+                <tr
+                  class:lp-row-new={trackState === 'new'}
+                  class:lp-row-overwrite={trackState === 'update'}
+                  class:lp-row-deleted={trackState === 'deleted'}>
                   <td>
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      checked={selectedTracks.has(track.name)}
-                      on:change={() => toggleTrack(track.name)} />
-                  </td>
-                  <td class="fw-semibold">{track.name}</td>
-                  <td>
-                    {#if track.status === 'new'}
-                      <span class="badge text-bg-success"
-                        >{$_('pages.migration.authme.status-new')}</span>
-                    {:else}
-                      <span class="badge text-bg-warning"
-                        >{$_('pages.migration.luckperms.track-will-update')}</span>
+                    {#if track.inLuckPerms !== false}
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        checked={selectedTracks.has(track.name)}
+                        on:change={() => toggleTrack(track.name)} />
                     {/if}
+                  </td>
+                  <td class="fw-semibold">
+                    {track.name}
+                    {#if track.inLuckPerms === false}
+                      <div class="small opacity-75 fw-normal mt-1">
+                        <i class="fas fa-database me-1"></i>{$_(
+                          'pages.migration.luckperms.player-pano-only',
+                        )}
+                      </div>
+                    {/if}
+                  </td>
+                  <td>
+                    <span class={`badge ${trackBadgeClass(trackState)}`}>
+                      {$_(`pages.migration.luckperms.track-${trackState}`)}
+                    </span>
                   </td>
                   <td>
                     {#each chain as g, i}
@@ -563,23 +769,50 @@
                   </tr>
                 {/if}
               {/each}
+
+              {#if filteredTracks.length === 0}
+                <tr>
+                  <td colspan="5" class="text-center opacity-75 py-4">
+                    {$_('pages.migration.luckperms.no-tracks')}
+                  </td>
+                </tr>
+              {/if}
             </tbody>
           </table>
         </div>
       </div>
-      <div class="card-footer">
-        <Pagination
-          page={trackPage}
-          totalPage={totalTrackPages}
-          on:firstPageClick={() => (trackPage = 1)}
-          on:lastPageClick={() => (trackPage = totalTrackPages)}
-          on:pageLinkClick={(e) => (trackPage = e.detail.page)} />
+      <div class="card-footer d-flex flex-wrap align-items-center gap-2">
+        <select
+          class="form-select form-select-sm w-auto"
+          bind:value={tracksPerPage}
+          on:change={() => (trackPage = 1)}
+          aria-label={$_('pages.migration.luckperms.per-page')}>
+          {#each pageSizeOptions as size}
+            <option value={size}
+              >{$_('pages.migration.luckperms.per-page-option', {
+                values: { count: size },
+              })}</option>
+          {/each}
+        </select>
+        <small class="opacity-75">
+          {$_('pages.migration.luckperms.total-count', {
+            values: { count: filteredTracks.length },
+          })}
+        </small>
+        <div class="ms-auto">
+          <Pagination
+            page={trackPage}
+            totalPage={totalTrackPages}
+            on:firstPageClick={() => (trackPage = 1)}
+            on:lastPageClick={() => (trackPage = totalTrackPages)}
+            on:pageLinkClick={(e) => (trackPage = e.detail.page)} />
+        </div>
       </div>
     </div>
   {/if}
 
   <!-- User Permissions Section -->
-  {#if previewData.players && previewData.players.length > 0}
+  {#if previewData.players}
     <div class="card mb-3">
       <CardHeader>
         <div slot="left">
@@ -590,6 +823,10 @@
           {#if missingPlayers.length > 0}
             <span class="badge text-bg-danger"
               >{missingPlayers.length} {$_('pages.migration.luckperms.not-in-pano')}</span>
+          {/if}
+          {#if previewData.panoOnlyPlayerCount > 0}
+            <span class="badge text-bg-secondary ms-2"
+              >{previewData.panoOnlyPlayerCount} {$_('pages.migration.luckperms.pano-only')}</span>
           {/if}
         </div>
         <div slot="middle" style="width: 250px;">
@@ -676,15 +913,22 @@
             <tbody>
               {#each paginatedPlayers as player (player.uuid)}
                 {@const status = playerStatus(player)}
-                <tr class={skippedPlayers.has(player.uuid) ? 'opacity-50' : playerRowClass(status)}>
+                {@const resulting = resultingGroup(player)}
+                <tr
+                  class:opacity-50={skippedPlayers.has(player.uuid)}
+                  class:lp-row-new={!skippedPlayers.has(player.uuid) && status === 'new'}
+                  class:lp-row-overwrite={!skippedPlayers.has(player.uuid) && status === 'changed'}
+                  class:lp-row-deleted={!skippedPlayers.has(player.uuid) && status === 'deleted'}>
                   <td>
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      title={$_('pages.migration.luckperms.include-player')}
-                      aria-label={$_('pages.migration.luckperms.include-player')}
-                      checked={!skippedPlayers.has(player.uuid)}
-                      on:change={() => togglePlayer(player.uuid)} />
+                    {#if !isPanoOnly(player)}
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        title={$_('pages.migration.luckperms.include-player')}
+                        aria-label={$_('pages.migration.luckperms.include-player')}
+                        checked={!skippedPlayers.has(player.uuid)}
+                        on:change={() => togglePlayer(player.uuid)} />
+                    {/if}
                   </td>
                   <td>
                     <button
@@ -708,15 +952,38 @@
                       class:is-invalid={!playerUsername(player).trim()}
                       aria-label={$_('pages.migration.luckperms.header-username')}
                       value={playerUsername(player)}
+                      readonly={isPanoOnly(player)}
                       on:input={(e) => setPlayerUsername(player, e.currentTarget.value)} />
-                    <div class="small opacity-75 fw-normal mt-1">{player.uuid}</div>
-                    {#if player.panoUsername && player.panoUsername !== playerUsername(player)}
-                      <div class="small opacity-75 fw-normal">
-                        <i class="fas fa-link me-1"></i>{player.panoUsername}
+                    {#if isPanoOnly(player)}
+                      <div class="small opacity-75 fw-normal mt-1">
+                        <i class="fas fa-database me-1"></i>{$_(
+                          'pages.migration.luckperms.player-pano-only',
+                        )}
                       </div>
+                    {:else}
+                      <div class="small opacity-75 fw-normal mt-1">{player.uuid}</div>
+                      {#if player.panoUsername && player.panoUsername !== playerUsername(player)}
+                        <div class="small opacity-75 fw-normal">
+                          <i class="fas fa-link me-1"></i>{player.panoUsername}
+                        </div>
+                      {/if}
                     {/if}
                   </td>
-                  <td><span class="badge text-bg-secondary">{player.primaryGroup}</span></td>
+                  <td>
+                    <span class="badge text-bg-secondary">{player.primaryGroup}</span>
+                    {#if resulting !== player.primaryGroup}
+                      <i class="fas fa-arrow-right mx-1 opacity-75 fs-7"></i>
+                      <span
+                        class="badge {resulting === 'default'
+                          ? 'text-bg-danger'
+                          : 'text-bg-success'}"
+                        title={resulting === 'default'
+                          ? $_('pages.migration.luckperms.group-falls-back-to-default')
+                          : ''}>
+                        {resulting}
+                      </span>
+                    {/if}
+                  </td>
                   <td class="text-center">
                     <span class="badge text-bg-primary"
                       >{(userNodes[player.uuid] ?? []).length}</span>
@@ -732,6 +999,7 @@
                     <td colspan="6" class="p-0">
                       <div class="bg-body-tertiary p-3 border-top">
                         <LuckPermsNodeTable
+                          {mergeStrategy}
                           nodes={userNodes[player.uuid] ?? []}
                           on:change={(e) =>
                             patchNode('USER', player.uuid, e.detail.node, e.detail.changes)}
@@ -742,16 +1010,43 @@
                   </tr>
                 {/if}
               {/each}
+
+              {#if filteredPlayers.length === 0}
+                <tr>
+                  <td colspan="6" class="text-center opacity-75 py-4">
+                    {$_('pages.migration.luckperms.no-players')}
+                  </td>
+                </tr>
+              {/if}
             </tbody>
           </table>
         </div>
-        <div class="card-footer">
-          <Pagination
-            page={playerPage}
-            totalPage={totalPlayerPages}
-            on:firstPageClick={() => (playerPage = 1)}
-            on:lastPageClick={() => (playerPage = totalPlayerPages)}
-            on:pageLinkClick={(e) => (playerPage = e.detail.page)} />
+        <div class="card-footer d-flex flex-wrap align-items-center gap-2">
+          <select
+            class="form-select form-select-sm w-auto"
+            bind:value={playersPerPage}
+            on:change={() => (playerPage = 1)}
+            aria-label={$_('pages.migration.luckperms.per-page')}>
+            {#each pageSizeOptions as size}
+              <option value={size}
+                >{$_('pages.migration.luckperms.per-page-option', {
+                  values: { count: size },
+                })}</option>
+            {/each}
+          </select>
+          <small class="opacity-75">
+            {$_('pages.migration.luckperms.total-count', {
+              values: { count: filteredPlayers.length },
+            })}
+          </small>
+          <div class="ms-auto">
+            <Pagination
+              page={playerPage}
+              totalPage={totalPlayerPages}
+              on:firstPageClick={() => (playerPage = 1)}
+              on:lastPageClick={() => (playerPage = totalPlayerPages)}
+              on:pageLinkClick={(e) => (playerPage = e.detail.page)} />
+          </div>
         </div>
       {/if}
     </div>
@@ -934,7 +1229,12 @@
   // Search & Pagination for groups (AuthMe style consistency)
   export let groupSearchQuery = '';
   let groupPage = 1;
-  let itemsPerPage = 10;
+  // Page sizes are per table: a server can have a handful of groups but tens of thousands of
+  // players, so one shared setting would be wrong for at least one of them.
+  const pageSizeOptions = [10, 20, 50, 100, 1000];
+  let groupsPerPage = 10;
+  let tracksPerPage = 10;
+  let playersPerPage = 10;
 
   // Search & pagination for players. Both are required rather than cosmetic: a busy server can
   // export tens of thousands of players and rendering them all at once locks up the browser.
@@ -954,11 +1254,12 @@
       return g.name.toLowerCase().includes(groupSearchQuery.toLowerCase());
     }) ?? [];
 
+  $: totalGroupPages = Math.max(1, Math.ceil(filteredGroups.length / groupsPerPage));
+  $: if (groupPage > totalGroupPages) groupPage = totalGroupPages;
   $: paginatedGroups = filteredGroups.slice(
-    (groupPage - 1) * itemsPerPage,
-    groupPage * itemsPerPage,
+    (groupPage - 1) * groupsPerPage,
+    groupPage * groupsPerPage,
   );
-  $: totalGroupPages = Math.ceil(filteredGroups.length / itemsPerPage);
 
   $: filteredPlayers =
     previewData?.players?.filter((p) => {
@@ -969,11 +1270,11 @@
       );
     }) ?? [];
 
-  $: totalPlayerPages = Math.max(1, Math.ceil(filteredPlayers.length / itemsPerPage));
+  $: totalPlayerPages = Math.max(1, Math.ceil(filteredPlayers.length / playersPerPage));
   $: if (playerPage > totalPlayerPages) playerPage = totalPlayerPages;
   $: paginatedPlayers = filteredPlayers.slice(
-    (playerPage - 1) * itemsPerPage,
-    playerPage * itemsPerPage,
+    (playerPage - 1) * playersPerPage,
+    playerPage * playersPerPage,
   );
 
   $: filteredTracks =
@@ -982,11 +1283,11 @@
       return t.name.toLowerCase().includes(trackSearchQuery.toLowerCase());
     }) ?? [];
 
-  $: totalTrackPages = Math.max(1, Math.ceil(filteredTracks.length / itemsPerPage));
+  $: totalTrackPages = Math.max(1, Math.ceil(filteredTracks.length / tracksPerPage));
   $: if (trackPage > totalTrackPages) trackPage = totalTrackPages;
   $: paginatedTracks = filteredTracks.slice(
-    (trackPage - 1) * itemsPerPage,
-    trackPage * itemsPerPage,
+    (trackPage - 1) * tracksPerPage,
+    trackPage * tracksPerPage,
   );
 
   $: missingPlayers = previewData?.players?.filter((p) => !p.existsInPano) ?? [];
@@ -1177,6 +1478,8 @@
       _panoNodeId: node.id,
       _match: null,
       _incoming: false,
+      _implied: false,
+      _fromPrimaryGroup: false,
       ...normalise(node),
     };
     row._before = snapshotOf(row);
@@ -1191,6 +1494,8 @@
       _origin: 'luckperms',
       _panoNodeId: null,
       _incoming: true,
+      _implied: perm.implied === true,
+      _fromPrimaryGroup: perm.fromPrimaryGroup === true,
       ...normalise(perm),
     };
     row._match = {
@@ -1217,7 +1522,11 @@
       return;
     }
 
-    Object.assign(target, normalise(perm), { _incoming: true });
+    Object.assign(target, normalise(perm), {
+      _incoming: true,
+      _implied: perm.implied === true,
+      _fromPrimaryGroup: perm.fromPrimaryGroup === true,
+    });
     target._match = {
       permission: target.permission,
       server: target.server,
@@ -1374,7 +1683,11 @@
 
           if (!isNodeEdited(node)) return;
 
-          if (node._match) {
+          if (node._fromPrimaryGroup) {
+            // This row was derived from the players table, not from a real user_permissions row, so
+            // there is nothing for the backend to match on — send it as an addition instead.
+            edits.push({ holderType, holderKey, action: 'add', node: payload });
+          } else if (node._match) {
             edits.push({
               holderType,
               holderKey,
@@ -1422,27 +1735,62 @@
     skippedPlayers = next;
   }
 
+  // A row that exists only in Pano cannot be renamed or excluded: there is no LuckPerms player
+  // behind it, just an account the import may or may not touch.
+  function isPanoOnly(player) {
+    return player.inLuckPerms === false;
+  }
+
+  // Replacing empties the permission tables before importing, so any node Pano holds that the
+  // import is not bringing back is gone.
+  function nodeSurvivesImport(node) {
+    if (mergeStrategy === 'replace' && node._panoNodeId != null && !node._incoming) return false;
+
+    return true;
+  }
+
+  // The group the player ends up in once the import has run. Pano falls back to the default group
+  // for anyone left without a group node, which is what makes replace mode so easy to misread.
+  function resultingGroup(player) {
+    if (skippedPlayers.has(player.uuid)) return player.primaryGroup;
+
+    const node = (userNodes[player.uuid] ?? []).find(
+      (n) =>
+        n.value &&
+        n.permission?.startsWith('group.') &&
+        n.permission.length > 'group.'.length &&
+        nodeSurvivesImport(n),
+    );
+
+    return node ? node.permission.slice('group.'.length) : 'default';
+  }
+
+  function playerLosesNodes(player) {
+    if (mergeStrategy !== 'replace') return false;
+
+    const nodes = userNodes[player.uuid] ?? [];
+
+    return nodes.some((n) => !nodeSurvivesImport(n));
+  }
+
   function playerStatus(player) {
     if (!player.existsInPano) return 'new';
 
-    const renamed = playerUsername(player) !== player.username;
     const nodes = userNodes[player.uuid] ?? [];
     const changed = nodes.some(
       (node) => node._origin === 'added' || (node._incoming && node._before) || isNodeEdited(node),
     );
 
-    return renamed || changed ? 'changed' : 'existing';
-  }
+    // Losing existing nodes outranks any other status: it is the destructive one.
+    if (playerLosesNodes(player) && !nodes.some((n) => n._incoming)) return 'deleted';
 
-  function playerRowClass(status) {
-    switch (status) {
-      case 'new':
-        return 'table-success';
-      case 'changed':
-        return 'table-warning';
-      default:
-        return '';
+    if (isPanoOnly(player)) {
+      return changed ? 'changed' : 'existing';
     }
+
+    const renamed = playerUsername(player) !== player.username;
+
+    return renamed || changed || playerLosesNodes(player) ? 'changed' : 'existing';
   }
 
   function playerBadgeClass(status) {
@@ -1451,6 +1799,8 @@
         return 'text-bg-success';
       case 'changed':
         return 'text-bg-warning';
+      case 'deleted':
+        return 'text-bg-danger';
       default:
         return 'text-bg-secondary';
     }
@@ -1473,16 +1823,32 @@
     selectedGroups = new Set(selectedGroups);
   }
 
+  function importableGroups() {
+    return (previewData?.groups ?? []).filter((g) => g.inLuckPerms !== false);
+  }
+
+  // A group Pano has that the export does not mention survives a merge untouched, but replace
+  // empties the group table first.
+  function groupStatus(group) {
+    if (group.inLuckPerms === false) {
+      return mergeStrategy === 'replace' ? 'deleted' : 'kept';
+    }
+
+    if (!selectedGroups.has(group.name)) return 'skipped';
+
+    return group.status === 'new' ? 'new' : 'update';
+  }
+
   function toggleAllGroups() {
-    if (selectedGroups.size === previewData.groups.length) {
+    if (selectedGroups.size === importableGroups().length) {
       selectedGroups = new Set();
     } else {
-      selectedGroups = new Set(previewData.groups.map((g) => g.name));
+      selectedGroups = new Set(importableGroups().map((g) => g.name));
     }
   }
 
   function selectAllGroups() {
-    selectedGroups = new Set(previewData.groups.map((g) => g.name));
+    selectedGroups = new Set(importableGroups().map((g) => g.name));
   }
 
   // Group expand/collapse
@@ -1515,19 +1881,48 @@
     selectedTracks = new Set(selectedTracks);
   }
 
+  function importableTracks() {
+    return (previewData?.tracks ?? []).filter((t) => t.inLuckPerms !== false);
+  }
+
   function toggleAllTracks() {
-    if (selectedTracks.size === previewData.tracks.length) {
+    if (selectedTracks.size === importableTracks().length) {
       selectedTracks = new Set();
     } else {
-      selectedTracks = new Set(previewData.tracks.map((t) => t.name));
+      selectedTracks = new Set(importableTracks().map((t) => t.name));
     }
   }
 
   function selectAllTracks() {
-    selectedTracks = new Set(previewData.tracks.map((t) => t.name));
+    selectedTracks = new Set(importableTracks().map((t) => t.name));
   }
 
   // ── Tracks ──
+
+  function trackStatus(track) {
+    // A track Pano has that the export does not mention survives a merge untouched, but replace
+    // empties the track table first.
+    if (track.inLuckPerms === false) {
+      return mergeStrategy === 'replace' ? 'deleted' : 'kept';
+    }
+
+    if (!selectedTracks.has(track.name)) return 'skipped';
+
+    return track.status === 'new' ? 'new' : 'update';
+  }
+
+  function trackBadgeClass(status) {
+    switch (status) {
+      case 'new':
+        return 'text-bg-success';
+      case 'update':
+        return 'text-bg-warning';
+      case 'deleted':
+        return 'text-bg-danger';
+      default:
+        return 'text-bg-secondary';
+    }
+  }
 
   function toggleTrackExpand(name) {
     if (expandedTracks.has(name)) {

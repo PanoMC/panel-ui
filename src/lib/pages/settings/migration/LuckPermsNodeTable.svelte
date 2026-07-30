@@ -1,3 +1,44 @@
+<style>
+  /*
+    Bootstrap's .table-success / .table-warning / .table-info hardcode a light tint and black text
+    and have no dark override, so they break under the dark and copper themes. Drive Bootstrap's own
+    table variables from the theme-aware subtle/emphasis colours instead.
+  */
+  tr.lp-row-new {
+    --bs-table-bg: var(--bs-success-bg-subtle);
+    --bs-table-color: var(--bs-success-text-emphasis);
+    --bs-table-border-color: var(--bs-success-border-subtle);
+  }
+
+  tr.lp-row-overwrite {
+    --bs-table-bg: var(--bs-warning-bg-subtle);
+    --bs-table-color: var(--bs-warning-text-emphasis);
+    --bs-table-border-color: var(--bs-warning-border-subtle);
+  }
+
+  /*
+    Bootstrap has no orange theme colour with subtle/emphasis variants, so this is a translucent
+    tint of --bs-orange. Being translucent it composites over whatever the body background is, which
+    keeps it correct in light, dark and copper without hardcoding two palettes. The text colour is
+    left alone so it stays the theme's own.
+  */
+  tr.lp-row-edited {
+    --bs-table-bg: rgba(253, 126, 20, 0.18);
+    --bs-table-border-color: rgba(253, 126, 20, 0.4);
+  }
+
+  tr.lp-row-deleted {
+    --bs-table-bg: var(--bs-danger-bg-subtle);
+    --bs-table-color: var(--bs-danger-text-emphasis);
+    --bs-table-border-color: var(--bs-danger-border-subtle);
+  }
+
+  .lp-badge-edited {
+    background-color: var(--bs-orange);
+    color: #000;
+  }
+</style>
+
 <!--
   Merged permission-node table used by the LuckPerms migration review step.
 
@@ -21,7 +62,11 @@
   <tbody>
     {#each pagedNodes as node (node._id)}
       {@const effect = nodeEffect(node)}
-      <tr class={effectRowClass(effect)}>
+      <tr
+        class:lp-row-new={effect === 'new'}
+        class:lp-row-overwrite={effect === 'overwrite'}
+        class:lp-row-edited={effect === 'added' || effect === 'edited'}
+        class:lp-row-deleted={effect === 'deleted'}>
         <td>
           <input
             class="form-control form-control-sm font-monospace"
@@ -77,9 +122,16 @@
             on:input={(e) => patch(node, { contexts: e.currentTarget.value })} />
         </td>
         <td>
-          <span class={`badge ${effectBadgeClass(effect)}`}>
+          <span
+            class={`badge ${effectBadgeClass(effect)}`}
+            title={effect === 'implied' ? $_('pages.migration.luckperms.node-implied-hint') : ''}>
             {$_(`pages.migration.luckperms.node-${effect}`)}
           </span>
+          {#if node._fromPrimaryGroup}
+            <span class="d-block small opacity-75 mt-1">
+              {$_('pages.migration.luckperms.node-from-primary-group')}
+            </span>
+          {/if}
         </td>
         <td class="text-end">
           <button
@@ -108,8 +160,21 @@
     <i class="fas fa-plus me-1"></i>{$_('pages.migration.luckperms.add-node')}
   </button>
 
-  {#if totalPages > 1}
-    <div class="d-flex align-items-center gap-2">
+  <div class="d-flex align-items-center gap-2">
+    {#if nodes.length > pageSizeOptions[0]}
+      <select
+        class="form-select form-select-sm w-auto"
+        bind:value={nodesPerPage}
+        on:change={() => (page = 1)}
+        aria-label={$_('pages.migration.luckperms.per-page')}>
+        {#each pageSizeOptions as size}
+          <option value={size}
+            >{$_('pages.migration.luckperms.per-page-option', { values: { count: size } })}</option>
+        {/each}
+      </select>
+    {/if}
+
+    {#if totalPages > 1}
       <button
         class="btn btn-sm btn-outline-secondary"
         disabled={page <= 1}
@@ -125,8 +190,8 @@
         aria-label={$_('buttons.next')}>
         <i class="fas fa-chevron-right"></i>
       </button>
-    </div>
-  {/if}
+    {/if}
+  </div>
 </div>
 
 <script>
@@ -135,11 +200,12 @@
 
   /** @type {any[]} */
   export let nodes = [];
+  /** @type {'merge' | 'replace'} */
+  export let mergeStrategy = 'merge';
 
   const dispatch = createEventDispatcher();
 
-  const nodesPerPage = 10;
-
+  let nodesPerPage = 10;
   let page = 1;
 
   $: totalPages = Math.max(1, Math.ceil(nodes.length / nodesPerPage));
@@ -185,24 +251,20 @@
     if (node._origin === 'added') return 'added';
     if (isEdited(node)) return 'edited';
 
+    // Replacing wipes the permission tables first, so anything Pano holds that the import is not
+    // bringing back is about to be deleted. Say so rather than calling it "unchanged".
+    if (mergeStrategy === 'replace' && node._panoNodeId != null && !node._incoming) {
+      return 'deleted';
+    }
+
+    // Pano gives everyone the default group already, so an active group.default is shown for
+    // context but is not written — saying "new" here would be a lie.
+    if (node._implied && node.value) return 'implied';
+
     // Present in Pano and not part of the import — it simply stays as it is.
     if (!node._incoming) return 'unchanged';
 
     return node._before ? 'overwrite' : 'new';
-  }
-
-  function effectRowClass(effect) {
-    switch (effect) {
-      case 'new':
-        return 'table-success';
-      case 'overwrite':
-        return 'table-warning';
-      case 'added':
-      case 'edited':
-        return 'table-info';
-      default:
-        return '';
-    }
   }
 
   function effectBadgeClass(effect) {
@@ -211,11 +273,15 @@
         return 'text-bg-success';
       case 'overwrite':
         return 'text-bg-warning';
+      case 'deleted':
+        return 'text-bg-danger';
       case 'added':
       case 'edited':
-        return 'text-bg-info';
+        return 'lp-badge-edited';
       default:
         return 'text-bg-secondary';
     }
   }
+
+  const pageSizeOptions = [10, 20, 50, 100, 1000];
 </script>
