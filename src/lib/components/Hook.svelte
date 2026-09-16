@@ -64,7 +64,14 @@
     const resolved = await Promise.all(
       list.map(async (h) => {
         if (typeof h === 'function' && !h.prototype) {
-          return await h();
+          try {
+            return await h();
+          } catch (e) {
+            // Keep the unresolved thunk so the markup's `typeof module !== 'function'` guard
+            // skips this hook instead of the whole effect rejecting.
+            console.error(`[Hook:${name}] Failed to load plugin module`, e);
+            return h;
+          }
         }
         return h;
       }),
