@@ -29,7 +29,7 @@
     "@sveltejs/kit": "^2.57.1",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@tiptap/pm": "^3.22.4",
-    "adm-zip": "^0.5.17",
+    "adm-zip": "^0.6.1",
     "bootstrap": "^5.3.8",
     "chart.js": "^4.5.1",
     "chartjs-adapter-date-fns": "^3.0.0",
@@ -49,7 +49,7 @@
     "prettier": "^3.8.3",
     "prettier-plugin-svelte": "^3.5.1",
     "sass": "^1.99.0",
-    "svelte": "5.55.4",
+    "svelte": "5.55.9",
     "svelte-i18n": "^4.0.1",
     "svelte-preprocess": "^6.0.3",
     "tippy.js": "^6.3.7",
@@ -85,5 +85,10 @@
     "es5-ext",
     "esbuild",
     "svelte-preprocess"
-  ]
+  ],
+  "overrides": {
+    "dompurify": "^3.2.7",
+    "sanitize-html": "^2.17.5",
+    "esbuild": ">=0.25.0"
+  }
 }
