@@ -45,6 +45,35 @@ function generateLicensesPlugin() {
   };
 }
 
+// Every module the editor stack imports, so the dev dep-optimizer bundles
+// them in one pass instead of discovering them lazily per @tiptap/* entry.
+// (@tiptap/pm has no root export, only subpaths.)
+const EDITOR_OPTIMIZE_INCLUDE = [
+  '@tiptap/core',
+  '@tiptap/pm/state',
+  '@tiptap/pm/model',
+  '@tiptap/pm/view',
+  '@tiptap/pm/transform',
+  '@tiptap/starter-kit',
+  '@tiptap/extension-image',
+  '@tiptap/extension-text-style',
+  'prosemirror-state',
+  'prosemirror-model',
+  'prosemirror-view',
+  'prosemirror-transform',
+];
+
+// Package names (dedupe works per package) that must resolve to the panel's
+// single copy.
+const EDITOR_DEDUPE = [
+  '@tiptap/core',
+  '@tiptap/pm',
+  'prosemirror-state',
+  'prosemirror-model',
+  'prosemirror-view',
+  'prosemirror-transform',
+];
+
 export default createViteConfig({
   // Panel is mounted under /panel — drives the extra dev proxy entry and hmr path.
   base: '/panel',
@@ -73,5 +102,17 @@ export default createViteConfig({
   extraAliases: {
     // sdk now comes from the theme-core submodule via node_modules (its
     // package exports ./core/*); no vendored-path alias needed anymore.
+  },
+  // The TipTap editor stack must resolve to ONE ProseMirror instance. Left to
+  // lazy discovery, the dev dep-optimizer bundles a private prosemirror-state /
+  // -model / -transform copy into each @tiptap/* entry it finds, and the editor
+  // then dies on mount with "Adding different instances of a keyed plugin
+  // (plugin$)". Pre-bundling the whole stack up front (and deduping the
+  // prosemirror packages to the panel's root) keeps a single shared copy.
+  finalize: (config) => {
+    config.optimizeDeps.include.push(...EDITOR_OPTIMIZE_INCLUDE);
+    config.resolve.dedupe.push(...EDITOR_DEDUPE);
+
+    return config;
   },
 });
