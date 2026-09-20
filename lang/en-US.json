@@ -541,6 +541,11 @@
             "hint-skip": "maintenance/skip.hbs — the Skip maintenance mode button authorized visitors see.",
             "hint-notice": "maintenance/notice.hbs — the banner that carries errors and status messages."
           }
+        },
+        "telemetry": {
+          "label": "Send {link}",
+          "label-link": "usage data",
+          "description": "This data is used to make Pano better."
         }
       },
       "updates": {
@@ -1729,6 +1734,23 @@
           "can-open-ticket": "Can create ticket",
           "email-verified": "E-Mail is verified"
         }
+      },
+      "usage-data": {
+        "title": "Usage Data",
+        "sent-platform": "Pano version, stage and channel",
+        "sent-system": "Java version, OS, CPU and memory",
+        "sent-website": "Website URL and domain",
+        "sent-ip": "Server IP address and country",
+        "sent-resources": "Active theme and installed plugins",
+        "sent-counts": "User, post, ticket, server and online player counts",
+        "sent-account": "panomc.com account connection status",
+        "sent-install": "Install date and a random install ID",
+        "turn-off": "You can turn this off anytime in Panel → Settings → Platform, or with {option} in config.conf.",
+        "turn-off-option": "telemetry.enabled = false",
+        "preview": "Preview",
+        "preview-error": "The preview could not be loaded.",
+        "privacy-policy": "Privacy Policy",
+        "learn-more": "Learn more"
       }
     },
     "editor": {

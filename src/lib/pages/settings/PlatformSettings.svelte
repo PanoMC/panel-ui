@@ -226,6 +226,31 @@
       </div>
     </div>
 
+    <div class="row mb-3">
+      <label class="col-md-6" for="telemetryEnabled">
+        {telemetryLabelParts[0]}<button
+          class="btn btn-link align-baseline p-0"
+          type="button"
+          on:click|preventDefault|stopPropagation={onUsageDataClick}
+          >{$_('pages.settings.platform.telemetry.label-link')}</button
+        >{telemetryLabelParts[1] ?? ''}
+        <small class="d-block text-muted">
+          {$_('pages.settings.platform.telemetry.description')}
+        </small>
+      </label>
+      <div class="col d-flex align-items-center">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="telemetryEnabled"
+            autocomplete="off"
+            bind:checked={data.telemetryEnabled} />
+        </div>
+      </div>
+    </div>
+
     <button
       class="btn btn-secondary"
       disabled={savePreferencesLoading || preferencesSaveDisabled}
@@ -702,6 +727,7 @@
 <ConfirmDisableEmailModal />
 <ConfirmStopPanoModal />
 <ConfirmRestartPanoModal runMode={data.runMode} />
+<UsageDataModal />
 
 <script context="module">
   import { base } from '$app/paths';
@@ -787,6 +813,9 @@
   import MaintenanceBannedIpsModal, {
     show as showMaintenanceBannedIpsModal,
   } from '$lib/components/modals/MaintenanceBannedIpsModal.svelte';
+  import UsageDataModal, {
+    show as showUsageDataModal,
+  } from '$lib/components/modals/UsageDataModal.svelte';
   import ConfirmSaveCriticalSettingsModal, {
     show as showConfirmSaveCriticalSettingsModal,
     setError as setSaveCriticalSettingsError,
@@ -870,11 +899,32 @@
   // Null until the modal reports a fresher figure; the loaded settings own the badge until then.
   let bannedIpsCount = null;
 
+  // Usage data is opt-out, so a server that does not report the field yet is sending it.
+  // invalidateAll() swaps `data` for a fresh payload, so the default is re-applied per load,
+  // on the saved snapshot too — otherwise the switch would read as a pending change.
+  $: if (data.telemetryEnabled == null) {
+    data.telemetryEnabled = true;
+  }
+
+  $: if (data.oldSettings && data.oldSettings.telemetryEnabled == null) {
+    data.oldSettings.telemetryEnabled = true;
+  }
+
+  // "usage data" is a link, and it sits at a different point in the sentence in each
+  // language, so the label is translated with a {link} placeholder and split around it
+  // instead of being glued together from fragments.
+  const TELEMETRY_LINK_TOKEN = '\u0000';
+
+  $: telemetryLabelParts = $_('pages.settings.platform.telemetry.label', {
+    values: { link: TELEMETRY_LINK_TOKEN },
+  }).split(TELEMETRY_LINK_TOKEN);
+
   $: preferencesSaveDisabled =
     data.oldSettings.updatePeriod === data.updatePeriod &&
     data.oldSettings.releaseChannel === data.releaseChannel &&
     data.oldSettings.locale === data.locale &&
     data.oldSettings.allowUserLocaleSelection === data.allowUserLocaleSelection &&
+    data.oldSettings.telemetryEnabled === data.telemetryEnabled &&
     data.oldSettings.developmentMode === data.developmentMode;
 
   $: authSaveDisabled =
@@ -1034,6 +1084,7 @@
     formData.append('releaseChannel', data.releaseChannel);
     formData.append('locale', data.locale);
     formData.append('allowUserLocaleSelection', data.allowUserLocaleSelection);
+    formData.append('telemetryEnabled', data.telemetryEnabled);
     formData.append('developmentMode', data.developmentMode);
 
     ApiUtil.put({
@@ -1440,6 +1491,10 @@
         toggleMaintenanceLoading = false;
       },
     });
+  }
+
+  function onUsageDataClick() {
+    showUsageDataModal();
   }
 
   function onStopPanoClick() {

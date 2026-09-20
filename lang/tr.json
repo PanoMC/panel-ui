@@ -541,6 +541,11 @@
             "hint-skip": "maintenance/skip.hbs — yetkili ziyaretçilerin gördüğü Bakım modunu atla butonu.",
             "hint-notice": "maintenance/notice.hbs — hata ve durum mesajlarını taşıyan bant."
           }
+        },
+        "telemetry": {
+          "label": "{link} gönder",
+          "label-link": "Kullanım verileri",
+          "description": "Bu veriler Pano'yu daha iyi hale getirmemiz için kullanılacaktır."
         }
       },
       "updates": {
@@ -1729,6 +1734,23 @@
           "can-open-ticket": "Talep oluşturabilir",
           "email-verified": "E-Postası doğrulandı"
         }
+      },
+      "usage-data": {
+        "title": "Kullanım Verileri",
+        "sent-platform": "Pano sürümü, aşaması ve kanalı",
+        "sent-system": "Java sürümü, işletim sistemi, CPU ve bellek",
+        "sent-website": "Web sitesi adresi ve alan adı",
+        "sent-ip": "Sunucu IP adresi ve ülke",
+        "sent-resources": "Etkin tema ve kurulu eklentiler",
+        "sent-counts": "Kullanıcı, gönderi, destek talebi, sunucu ve çevrim içi oyuncu sayıları",
+        "sent-account": "panomc.com hesabı bağlantı durumu",
+        "sent-install": "Kurulum tarihi ve rastgele kurulum kimliği",
+        "turn-off": "Bunu istediğiniz zaman Panel → Ayarlar → Platform üzerinden ya da config.conf dosyasındaki {option} ayarıyla kapatabilirsiniz.",
+        "turn-off-option": "telemetry.enabled = false",
+        "preview": "Önizleme",
+        "preview-error": "Önizleme yüklenemedi.",
+        "privacy-policy": "Gizlilik Politikası",
+        "learn-more": "Daha fazla bilgi"
       }
     },
     "editor": {
