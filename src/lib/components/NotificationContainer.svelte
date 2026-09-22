@@ -42,7 +42,7 @@
                   src={sanitizeImageSrc(
                     notification.details.image ||
                       `/api/profile/picture/${notification.details.username}?${$avatarVersion}`,
-                    '/api/server/icon/default'
+                    '/api/server/icon/default',
                   )}
                   alt={$_('buttons.view')}
                   width="48"
@@ -269,7 +269,11 @@
 
   function sanitizeObject(obj) {
     return Object.keys(obj).reduce((sanitizedObj, key) => {
-      sanitizedObj[key] = sanitize(obj[key]);
+      // A detail can be a list — SM-48 sends the names of the plugins that have an update —
+      // and the sanitizer only takes text.
+      const value = obj[key];
+
+      sanitizedObj[key] = sanitize(Array.isArray(value) ? value.join(', ') : value);
       return sanitizedObj;
     }, {});
   }

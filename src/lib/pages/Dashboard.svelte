@@ -91,14 +91,25 @@
         <div class="col-lg-4">
           <ul class="list-unstyled">
             <li>
-              <button
-                type="button"
-                class="alert-link focus-ring rounded border-0 bg-transparent p-0"
-                data-bs-target="#connectServer"
-                data-bs-toggle="modal">
-                <i class="fa-solid fa-gamepad me-2"></i>
-                {$_('pages.dashboard.welcome-card.connect-server')}
-              </button>
+              {#if $usageMode === UsageModes.WEBSITE}
+                <!-- Server management is off, so linking a server is not the next step: turning
+                     it on is. -->
+                <a class="alert-link focus-ring rounded" href="{base}/settings/platform">
+                  <i class="fa-solid fa-server me-2"></i>
+                  {$_('pages.dashboard.welcome-card.enable-server-management')}
+                </a>
+                <small class="d-block text-body-secondary">
+                  {$_('pages.dashboard.welcome-card.enable-server-management-description')}
+                </small>
+              {:else}
+                <button
+                  type="button"
+                  class="alert-link focus-ring rounded border-0 bg-transparent p-0"
+                  on:click={() => showAddServerModal($usageMode)}>
+                  <i class="fa-solid fa-gamepad me-2"></i>
+                  {$_('pages.dashboard.welcome-card.connect-server')}
+                </button>
+              {/if}
             </li>
             <li>
               <a class="alert-link focus-ring rounded" href="{base}/migration">
@@ -395,7 +406,6 @@
         </div>
       </div>
     {/if}
-
   </masonry-layout>
 </div>
 
@@ -412,8 +422,7 @@
     const { parent } = event;
     const layoutData = await parent();
     const canFetchAbout =
-      layoutData?.user &&
-      hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS, layoutData.user);
+      layoutData?.user && hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS, layoutData.user);
 
     const [dashboardResult, activityLogsResult, aboutResult] = await Promise.all([
       ApiUtil.get({
@@ -455,6 +464,7 @@
 
   import NoContent from '$lib/components/NoContent.svelte';
   import { avatarVersion } from '$lib/Store';
+  import { UsageModes } from '$lib/navigation.util.js';
   import TicketStatusBadge from '$lib/components/badges/TicketStatusBadge.svelte';
   import Date from '$lib/components/Date.svelte';
 
@@ -463,6 +473,7 @@
     show as showViewActivityLogModal,
     onHide as onViewActivityLogModalHide,
   } from '$lib/components/modals/ViewActivityLogModal.svelte';
+  import { show as showAddServerModal } from '$lib/components/modals/AddServerModal.svelte';
   import { show as showWhatsNewModal } from '$lib/components/modals/WhatsNewModal.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
   import PlayerStatusBadge from '$lib/components/badges/PlayerStatusBadge.svelte';
@@ -471,9 +482,8 @@
 
   export let data;
 
-
-
   const pageTitle = getContext('pageTitle');
+  const usageMode = getContext('usageMode');
 
   pageTitle.set('pages.dashboard.title');
 
@@ -493,8 +503,6 @@
 
     showViewActivityLogModal(log);
   }
-
-
 
   onViewActivityLogModalHide((log) => {
     const _log = data.activityLogs.data.find((_log) => _log.id === log.id);

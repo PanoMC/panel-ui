@@ -113,7 +113,7 @@
                   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 },
                 label: (context) => {
-                  return `${$_('pages.server.dashboard.online')}: ${context.parsed.y}`;
+                  return `${$_('pages.servers.card.online')}: ${context.parsed.y}`;
                 },
               },
             },

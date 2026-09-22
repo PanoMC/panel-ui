@@ -1,8 +1,19 @@
+<style>
+  .navbar-toggler i {
+    transition: transform 0.2s ease;
+  }
+
+  .navbar-toggler:hover i {
+    transform: translateX(2px);
+  }
+</style>
+
 <svelte:window on:keydown={handleKeydown} />
 <!-- Navbar -->
 <nav class="navbar navbar-expand navbar-light py-3">
   <div class="container">
-    <div class="col-4 d-flex justify-content-start">
+    <!-- On a phone the left column only holds the menu button, so the title gets its room. -->
+    <div class="col-2 col-lg-4 d-flex justify-content-start">
       <!-- Navbar Toggler -->
       <div class="navbar-nav">
         <button
@@ -22,77 +33,10 @@
           <i class="fa-solid fa-bars"></i>
         </button>
 
-        {#if $sidebarTabsState === 'website'}
-          <!-- Show Website Link -->
-          <div class="nav-item">
-            <a
-              href={UI_URL}
-              target="_blank"
-              class="nav-link d-flex align-items-center px-2"
-              title={windowWidth > 0 && windowWidth < 992
-                ? $_('components.sidebar.show-website')
-                : undefined}>
-              <i class="fas fa-globe d-lg-none"></i>
-              <span class="d-none d-lg-inline"
-                >{$_('components.sidebar.show-website')}</span>
-              <i class="fa-solid fa-arrow-up-right-from-square ms-2 d-none d-lg-inline-block"></i>
-            </a>
-          </div>
-        {:else if $sidebarTabsState === 'game'}
-          <!-- Selected Server & Connect button -->
-          <div class="nav-item d-flex align-items-center">
-            <div class="btn-group">
-              <button
-                type="button"
-                class="btn btn-sm btn-link nav-link d-flex align-items-center border-0 px-2"
-                on:click={showServersModal}
-                title={$selectedServer
-                  ? $_('components.navbar.selected-server')
-                  : windowWidth >= 992
-                    ? $_('components.server-navigation-menu.select-server')
-                    : $_('components.server-navigation-menu.no-selected-server')}>
-                {#if $selectedServer}
-                  <i
-                    class="fas fa-check-circle me-2 d-none"
-                    class:text-success={$selectedServer.status === 'ONLINE'}
-                    class:text-danger={$selectedServer.status !== 'ONLINE'}></i>
-                  <span
-                    class="text-truncate d-none d-lg-inline"
-                    class:text-success={$selectedServer.status === 'ONLINE'}
-                    class:text-danger={$selectedServer.status !== 'ONLINE'}
-                    style="max-width: 150px;">
-                    {$selectedServer.customName || $selectedServer.name}
-                  </span>
-                  <!-- Mobile view icon -->
-                  <i
-                    class="fas fa-server d-lg-none"
-                    class:text-success={$selectedServer.status === 'ONLINE'}
-                    class:text-danger={$selectedServer.status !== 'ONLINE'}></i>
-                {:else}
-                  <i class="fa-solid fa-ghost me-lg-2" aria-hidden="true"></i>
-                  <span class="d-none d-lg-inline">
-                    {$_('components.server-navigation-menu.no-selected-server')}
-                  </span>
-                  <span class="visually-hidden d-lg-none">
-                    {$_('components.server-navigation-menu.no-selected-server')}
-                  </span>
-                {/if}
-              </button>
-              <button
-                class="btn btn-sm btn-link nav-link border-0 px-2"
-                data-bs-target="#connectServer"
-                data-bs-toggle="modal"
-                aria-label={$_('components.server-navigation-menu.connect-server')}
-                type="button"
-                title={$_('components.server-navigation-menu.connect-server')}>
-                <i class="fa-solid fa-plus"></i>
-              </button>
-            </div>
-          </div>
-        {/if}
+        <!-- The website link and the server switcher live in the sidebar, above its tabs. -->
       </div>
     </div>
-    <div class="col-4 d-flex justify-content-center">
+    <div class="col-6 col-lg-4 d-flex justify-content-center">
       <!-- Page Title -->
       <h5 class="text-truncate mb-0">
         {$pageTitle ? $_($pageTitle) : options.DEFAULT_PAGE_TITLE}
@@ -100,8 +44,6 @@
     </div>
     <div class="col-4 d-flex justify-content-end">
       <div class="navbar-nav">
-
-
         <!-- Notifications Dropdown -->
         <div class="nav-item dropdown" id="quickNotificationsDropdown">
           <button
@@ -284,20 +226,14 @@
   import SiteNavigationMenu from '$lib/components/sidebar/SiteNavigationMenu.svelte';
   import ServerNavigationMenu from '$lib/components/sidebar/ServerNavigationMenu.svelte';
   import { isPanelNotificationUnread } from '$lib/panelNotification.util.js';
-  import { show as showServersModal } from './modals/ServersModal.svelte';
-  import { UI_URL } from '$lib/variables.js';
 
-
-  const selectedServer = getContext('selectedServer');
   const pageTitle = getContext('pageTitle');
   const user = getContext('user');
   const notificationCount = getContext('notificationCount');
   const isSidebarOpen = getContext('isSidebarOpen');
   const session = getContext('session');
   const panelTheme = getContext('panelTheme');
-  const sidebarTabsState = getContext('sidebarTabsState');
   const siteInfo = getContext('siteInfo');
-
 
   let quickNotificationProcessID = 0;
   let windowWidth = browser ? window.innerWidth : 1200;
@@ -355,12 +291,9 @@
     sidebarToggler.focus();
   }
 
-  $: isServerPath = $page.url.pathname.startsWith((base || '') + '/server');
-
   function onSideBarCollapseClick() {
     toggleSidebar(isSidebarOpen);
   }
-
 
   function onLogout() {
     logout();
@@ -470,19 +403,12 @@
 
   function sanitizeObject(obj) {
     return Object.keys(obj).reduce((sanitizedObj, key) => {
-      sanitizedObj[key] = sanitize(obj[key]);
+      // A detail can be a list — SM-48 sends the names of the plugins that have an update —
+      // and the sanitizer only takes text.
+      const value = obj[key];
+
+      sanitizedObj[key] = sanitize(Array.isArray(value) ? value.join(', ') : value);
       return sanitizedObj;
     }, {});
   }
-
 </script>
-
-<style>
-  .navbar-toggler i {
-    transition: transform 0.2s ease;
-  }
-
-  .navbar-toggler:hover i {
-    transform: translateX(2px);
-  }
-</style>

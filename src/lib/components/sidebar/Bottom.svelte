@@ -17,7 +17,6 @@
     <i class="fas fa-globe"></i>
   </a>
 
-
   <a
     class="nav-link text-light p-2"
     href="{PANO_WEBSITE_URL}/discord"
@@ -46,5 +45,4 @@
   const session = getContext('session');
   const panelTheme = getContext('panelTheme');
   const siteInfo = getContext('siteInfo');
-
 </script>

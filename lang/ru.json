@@ -96,6 +96,63 @@
     "move-down": "Вниз"
   },
   "pages": {
+    "auth": {
+      "panel-name": "Панель управления",
+      "login": {
+        "title": "Вход",
+        "subtitle": "Войдите с аккаунтом Pano, чтобы открыть панель управления.",
+        "username-label": "Имя пользователя или e-mail",
+        "username-placeholder": "admin",
+        "password-label": "Пароль",
+        "show-password": "Показать пароль",
+        "hide-password": "Скрыть пароль",
+        "remember-label": "Запомнить меня",
+        "submit": "Войти",
+        "signed-in": "Вход выполнен. Открываем панель...",
+        "forgot": "Забыли пароль?",
+        "forgot-support": "Не получается войти? Напишите на {email}",
+        "forgot-no-support": "Попросите другого администратора сбросить ваш пароль.",
+        "back-to-sign-in": "Назад ко входу",
+        "two-factor-title": "Двухэтапная проверка",
+        "two-factor-description": "Введите 6-значный код из приложения-аутентификатора.",
+        "two-factor-label": "Код подтверждения",
+        "two-factor-submit": "Подтвердить",
+        "email-required-label": "Адрес e-mail",
+        "email-required-hint": "У этого аккаунта ещё нет e-mail. Добавьте его, чтобы завершить вход.",
+        "username-required-label": "Выберите имя пользователя",
+        "username-required-hint": "У аккаунта всё ещё временное имя. Выберите то, которое останется навсегда.",
+        "link-code-title": "Этот аккаунт входит из игры",
+        "link-code-description": "У него нет пароля. Зайдите на сервер, выполните команду привязки и один раз войдите на сайте — после этого заработает и панель.",
+        "link-code-open-site": "Открыть вход на сайте",
+        "errors": {
+          "invalid": "Неверное имя пользователя или пароль.",
+          "two-factor-invalid": "Код неверный. Проверьте приложение-аутентификатор и попробуйте снова.",
+          "email-not-verified": "Подтвердите {email} перед входом. Новое письмо с подтверждением уже отправлено.",
+          "banned": "Ваш аккаунт заблокирован.",
+          "banned-permanent": "Ваш аккаунт заблокирован навсегда.",
+          "banned-permanent-reason": "Ваш аккаунт заблокирован навсегда. Причина: {reason}",
+          "banned-until": "Ваш аккаунт заблокирован до {until}.",
+          "banned-until-reason": "Ваш аккаунт заблокирован до {until}. Причина: {reason}",
+          "ip-banned": "Этот IP-адрес заблокирован.",
+          "captcha": "Для этого входа нужна капча, а панель её показать не может. Войдите через сайт.",
+          "denied": "Плагин отклонил этот вход.",
+          "invalid-email": "Этот адрес e-mail недействителен.",
+          "email-taken": "Этот адрес e-mail уже используется.",
+          "username-taken": "Это имя пользователя уже занято.",
+          "invalid-username": "Это имя пользователя недопустимо.",
+          "username-too-short": "Имя пользователя должно быть не короче 3 символов.",
+          "username-too-long": "Имя пользователя должно быть не длиннее 16 символов.",
+          "installation-required": "Pano ещё не установлен. Сначала завершите установку.",
+          "maintenance": "Pano сейчас в режиме обслуживания.",
+          "network": "Не удалось связаться с Pano. Проверьте соединение и попробуйте снова.",
+          "generic": "Не удалось войти ({code})."
+        }
+      },
+      "logout": {
+        "title": "Выходим...",
+        "description": "Секунду, ваша сессия закрывается."
+      }
+    },
     "login": {
       "demo-mode-alert": "Это действие отключено в демо-режиме."
     },
@@ -206,6 +263,8 @@
         "description": "Pano успешно установлен и готов к использованию. 🚀 <br /> Вот с чего вы можете начать:",
         "connect-server": "Подключить сервер",
         "connect-server-description": "Подключите игровой сервер и получите доступ к дополнительным функциям управления.",
+        "enable-server-management": "Включить управление серверами",
+        "enable-server-management-description": "Включается в разделе Настройки → Платформа → Предпочтения.",
         "menu-title": "Меню",
         "links-title": "Ссылки",
         "publish-your-first-post": "Опубликовать первый пост",
@@ -267,8 +326,8 @@
       }
     },
     "players": {
-      "title": "{pageType} Игроки",
-      "by-perm-group-title": "\"{permissionGroupName}\" Authorized Players",
+      "title": "{pageType} Пользователи",
+      "by-perm-group-title": "Пользователи с правами «{permissionGroupName}»",
       "bans-history-title": "История блокировок",
       "ip-bans-title": "IP-блокировки",
       "authorized": "Авторизованные",
@@ -437,6 +496,22 @@
       "platform": {
         "title": "Настройки платформы",
         "preferences": "Предпочтения",
+        "usage-mode": {
+          "label": "Режим использования",
+          "hint": "Смена режима меняет набор разделов, доступных в панели.",
+          "website": {
+            "title": "Веб-сайт",
+            "description": "Только сайт: новости, форум, регистрация, магазин."
+          },
+          "servers": {
+            "title": "Управление серверами",
+            "description": "Консоль, игроки, резервные копии, файлы — без публичного сайта."
+          },
+          "both": {
+            "title": "Оба",
+            "description": "Веб-сайт и управление серверами."
+          }
+        },
         "authentication": "Аутентификация",
         "developer-mode": "Режим разработчика",
         "allow-user-locale-selection": "Выбор языка пользователем",
@@ -546,6 +621,33 @@
           "label": "Отправлять {link}",
           "label-link": "данные об использовании",
           "description": "Эти данные используются, чтобы сделать Pano лучше."
+        },
+        "alerts": {
+          "title": "Оповещения о серверах",
+          "description": "О чём Pano предупреждает администраторов. Каждое оповещение становится уведомлением в панели; письмо на почту — по желанию для каждого вида.",
+          "unavailable": "В этой сборке Pano оповещений о серверах пока нет.",
+          "email-unavailable": "Для оповещений по почте нужны рабочие настройки почты и шаблон письма об оповещении, поэтому переключатели почты пока выключены.",
+          "column-kind": "Оповещение",
+          "column-enabled": "Уведомлять",
+          "column-email": "Почта",
+          "kinds": {
+            "server_crashed": "Сервер упал",
+            "node_offline": "Узел недоступен",
+            "backup_failed": "Ошибка резервного копирования",
+            "disk_low": "Мало места на диске",
+            "tps_low": "Низкий TPS",
+            "schedule_failed": "Ошибка расписания",
+            "plugin_updates": "Обновления плагинов"
+          },
+          "hints": {
+            "server_crashed": "Процесс сервера завершился, хотя его об этом не просили.",
+            "node_offline": "Узел не отвечает больше минуты.",
+            "backup_failed": "Резервная копия не была создана.",
+            "disk_low": "Диск узла заполнен более чем на 90%; не чаще одного раза в шесть часов.",
+            "tps_low": "Сервер держался ниже 15 TPS пять замеров подряд; не чаще одного раза в 30 минут.",
+            "schedule_failed": "Запуск по расписанию завершился ошибкой.",
+            "plugin_updates": "У плагинов или модов управляемого сервера вышли новые версии; проверяется раз в сутки."
+          }
         }
       },
       "updates": {
@@ -577,7 +679,36 @@
           "preparing": "Подготовка...",
           "installing-new-update": "Установка нового обновления..."
         },
-        "updating-leave-alert": "Выполняется обновление, уход с этой страницы может привести к поломке функций!"
+        "updating-leave-alert": "Выполняется обновление, уход с этой страницы может привести к поломке функций!",
+        "servers": {
+          "title": "Узлы, агенты и плагин Pano",
+          "update-all-plugins": "Обновить все плагины Pano",
+          "auto-update": "Обновлять узлы и агенты автоматически",
+          "auto-update-hint": "Когда у Pano есть более новый узел, каждый узел и агент обновляется сразу после подключения. Работающие серверы продолжают работать; плагин Pano без вас никогда не обновляется.",
+          "unavailable": "Эта сборка Pano пока не умеет показывать обновления узлов и плагина.",
+          "empty": "Пока нет узлов, агентов или серверов с плагином Pano.",
+          "column-name": "Имя",
+          "column-kind": "Тип",
+          "column-version": "Версия",
+          "kind-node": "Узел",
+          "kind-agent": "Pano Agent",
+          "kind-pano-plugin": "Плагин Pano",
+          "offline": "Не в сети — обновится, когда вернётся.",
+          "up-to-date": "Актуально",
+          "update-by-hand": "Обновить вручную",
+          "unknown": "Версия пока неизвестна",
+          "restart-note": "Обновление плагина Pano загрузится при следующем перезапуске сервера. Узлы и агенты обновляются, не останавливая серверы.",
+          "plugin-update-started": "Обновление плагина Pano для {name} запущено. Перезапустите сервер, чтобы загрузить его.",
+          "node-update-started": "{name} обновляется.",
+          "update-all-started": "Плагин Pano обновляется на {count} сервер(ах). Перезапустите их, чтобы загрузить.",
+          "reason": {
+            "NO_PLUGIN_MODULE": "Нет плагина Pano для этой программы",
+            "PLUGIN_TOO_OLD": "Плагин слишком старый для самообновления — обновите его вручную один раз",
+            "NODE_OFFLINE": "Узел не в сети",
+            "SERVER_OFFLINE": "Сервер не в сети",
+            "JAR_UNAVAILABLE": "Нет сборки плагина"
+          }
+        }
       }
     },
     "ticket-detail": {
@@ -662,6 +793,31 @@
           "never": "Никогда",
           "date": "Дата"
         }
+      },
+      "server-scope": {
+        "title": "Какие серверы",
+        "description": "Ограничьте это право отдельными серверами. Если ничего не отмечено, оно действует на все.",
+        "all-servers": "Все серверы",
+        "badge-all": "все серверы",
+        "badge-count": "серверов: {count}",
+        "badge-one": "1 сервер",
+        "loading": "Загружаем серверы...",
+        "empty": "Подключённых серверов пока нет, поэтому право охватит все серверы, которые вы добавите позже.",
+        "unavailable": "Список серверов не загрузился, область действия осталась прежней.",
+        "select-all": "Выбрать все",
+        "clear": "Очистить",
+        "save-hint": "Не удалось сохранить область по серверам. Эта сборка Pano, возможно, ещё не принимает контекст прав — обновите Pano и попробуйте снова."
+      },
+      "deny-commands": {
+        "title": "Запрещённые команды",
+        "description": "Команды, которые это право никогда не сможет отправить в консоль сервера.",
+        "placeholder": "op, gamemode, worldedit:*",
+        "helper": "Сравнивается только первое слово команды, регистр не учитывается. Звёздочка в конце охватывает всё, что начинается так же: \"world*\" запрещает и worldedit, и worldborder. Нажмите Enter или поставьте запятую, чтобы добавить. На администраторов запрет не действует.",
+        "empty": "Пока ничего не запрещено — это право может отправить любую команду.",
+        "invalid": "«{token}» — не шаблон команды. Допустимы буквы, цифры, _ : - и не более одной * в конце.",
+        "remove": "Удалить {pattern}",
+        "badge-count": "запрещено: {count}",
+        "save-hint": "Не удалось сохранить список запрещённых команд. Эта сборка Pano, возможно, ещё не принимает контекст прав — обновите Pano и попробуйте снова."
       },
       "create-permission-group-button": "Создать группу разрешений",
       "card-title": "{count} Групп разрешений",
@@ -764,39 +920,548 @@
       "created-at": "Создано:",
       "updated-at": "Обновлено:"
     },
-    "server": {
-      "dashboard": {
-        "title": "Статистика сервера",
-        "server-status": "Сервер {status}",
+    "servers": {
+      "card": {
         "online": "В сети",
         "offline": "Не в сети",
-        "player": "{playerCount}/{maxPlayerCount} Игроков",
-        "working-time": "Время работы: {upTime}",
-        "last-online": "Последний раз в сети: ",
+        "linked": "Подключён",
+        "players": "{playerCount}/{maxPlayerCount} игроков",
+        "legacy-plugin": "Нужно обновить плагин"
+      },
+      "header": {
+        "copy-address": "Скопировать адрес",
+        "protocol": "Протокол {version}",
+        "plugin-version": "Плагин {version}",
+        "start": "Запустить",
+        "stop": "Остановить",
+        "restart": "Перезапустить",
+        "kill": "Завершить",
+        "power-requires-managed": "Только для серверов, запущенных Pano",
+        "power-requires-capability": "Обновите плагин Pano",
+        "power-no-permission": "Нет прав",
+        "power-offline": "Сервер не в сети",
+        "confirm-stop-title": "Остановить сервер?",
+        "confirm-stop-body": "Всех, кто играет на {name}, отключит. Подключённый сервер сам не вернётся — его придётся запустить вручную.",
+        "confirm-restart-title": "Перезапустить сервер?",
+        "confirm-restart-body": "Всех, кто играет на {name}, отключит на время перезапуска. Нужен скрипт перезапуска на сервере; без него сервер просто остановится.",
+        "power-sent-stop": "Команда остановки отправлена на {name}.",
+        "power-sent-restart": "Команда перезапуска отправлена на {name}.",
+        "managed": "Управляется Pano",
+        "managed-on": "Управляется на узле {node}",
+        "agent": "Pano Agent",
+        "agent-on": "Запущен Pano Agent на {host}",
+        "power-state": "Уже: {state}",
+        "power-node-offline": "Узел не в сети",
+        "power-cooldown": "Слишком много действий, подождите",
+        "confirm-start-title": "Запустить сервер?",
+        "confirm-start-body": "{name} будет запущен на своём узле. Игроки смогут зайти через некоторое время.",
+        "confirm-kill-title": "Принудительно завершить сервер?",
+        "confirm-kill-body": "{name} будет завершён сразу, без сохранения. Делайте так, только если обычная остановка не срабатывает — мир может потерять последние изменения.",
+        "power-sent-start": "Команда запуска отправлена на {name}.",
+        "power-sent-kill": "Команда завершения отправлена на {name}.",
+        "task-install": "Установка",
+        "task-reinstall": "Переустановка",
+        "task-delete": "Удаление",
+        "task-backup": "Резервное копирование",
+        "task-restore": "Восстановление",
+        "task-import": "Импорт",
+        "task-working": "Выполняется",
+        "task-pano-plugin-update": "Обновляем плагин Pano",
+        "state-reason": "Причина: {reason}",
+        "icon-change": "Сменить значок сервера — нажмите или перетащите изображение",
+        "icon-unavailable": "Сейчас файлы этого сервера некому записать.",
+        "icon-too-large": "Значок должен быть меньше 1 МБ.",
+        "icon-wrong-type": "Значок должен быть изображением PNG, JPEG, GIF или WebP.",
+        "icon-updated": "Значок сервера обновлён.",
+        "icon-updated-restart": "Значок сервера обновлён. Перезапустите сервер, чтобы он применился.",
+        "adopted-alert": "Этот сервер уже работал, когда его узел перезапустился, и Pano подхватил его как есть: ввод в консоль и автоматическое восстановление после сбоя ограничены, пока вы один раз не перезапустите его из панели.",
+        "task-java-install": "Загрузка Java",
+        "task-java-remove": "Удаление Java",
+        "task-buildtools-note": "BuildTools собирает сервер; обычно это 5–10 минут.",
+        "update-plugin": "Плагин Pano устарел — доступна версия {version}",
+        "update-plugin-outdated": "Плагин Pano устарел",
+        "update-agent": "Есть обновление Pano Agent",
+        "update-daemon-started": "Обновляется — сервер продолжает работать."
+      },
+      "overview": {
+        "capabilities-title": "Возможности",
+        "capabilities-description": "Что умеет плагин Pano на этом сервере. Разделы, которых он не предоставляет, всё равно открываются: их элементы отключены, а уведомление подсказывает, что обновить.",
+        "legacy-plugin-alert": "Обновите pano-mc-plugin, чтобы открыть консоль, игроков и метрики.",
+        "console-title": "Консоль",
         "statistics": "Статистика",
-        "server-name": "Имя сервера:",
-        "server-type": "Тип сервера:",
-        "local-ip-address": "Локальный IP-адрес:",
-        "server-version": "Версия сервера:",
-        "total-connected-servers": "Количество подключенных серверов:",
-        "date-added": "Дата добавления:"
+        "date-added": "Дата добавления",
+        "metrics-title": "Производительность",
+        "metrics-live": "В реальном времени",
+        "metrics-waiting": "Ожидание первого замера...",
+        "metrics-offline": "Сервер выключен",
+        "metrics-unavailable": "Недоступно",
+        "metrics-empty": "Замеров пока нет. График заполнится, когда сервер побудет в сети несколько минут.",
+        "metric-unavailable": "Нет данных",
+        "mspt": "MSPT",
+        "mspt-value": "{value} мс",
+        "memory": "Память JVM",
+        "memory-value": "{used} / {max}",
+        "cpu": "ЦП",
+        "cpu-value": "{value}%",
+        "chart-tps": "TPS",
+        "chart-players": "Игроки",
+        "chart-peak-players": "Пик игроков",
+        "chart-average-players": "Среднее число игроков",
+        "console-open": "Открыть консоль",
+        "activity-title": "Последние действия",
+        "activity-open": "Все действия",
+        "last-backup": "Последняя копия",
+        "last-backup-open": "Открыть копии",
+        "activity-chart-title": "Активность сервера",
+        "activity-chart-hour": "Час",
+        "activity-chart-day": "День",
+        "activity-chart-week": "Неделя",
+        "activity-chart-month": "Месяц",
+        "activity-chart-year": "Год",
+        "vital-ram": "Память",
+        "vital-cpu": "ЦП",
+        "vital-disk": "Диск",
+        "vital-network": "Сеть",
+        "network-node-total": "весь узел",
+        "refresh-interval": "Интервал обновления",
+        "refresh-now": "Обновить сейчас",
+        "refresh-paused": "Пауза",
+        "refresh-interval-seconds": "{count} с",
+        "refresh-interval-minutes": "{count} мин",
+        "players-online": "Игроки",
+        "uptime": "Время работы",
+        "mspt-info": "Миллисекунды на тик: сколько сервер тратит на один игровой тик. Minecraft выполняет 20 тиков в секунду, поэтому на тик отводится 50 мс. Ниже 50 мс сервер успевает и TPS держится на 20; выше — TPS падает и игроки чувствуют лаги. До 20 мс — комфортно, 40–50 мс — близко к пределу.",
+        "vitals-range": "Период",
+        "range-1m": "1 мин",
+        "range-1h": "1 ч",
+        "range-12h": "12 ч",
+        "range-24h": "24 ч",
+        "range-7d": "1 неделя",
+        "range-30d": "30 дней",
+        "server-time": "Время сервера",
+        "server-time-zone": "Показывать время в часовом поясе сервера ({zone})",
+        "server-time-unavailable": "Сервер ещё не сообщил свой часовой пояс.",
+        "performance-range-hour": "Час",
+        "performance-range-day": "День",
+        "performance-range-week": "Неделя",
+        "tps-triple": "TPS (1м/5м/15м)",
+        "info": {
+          "section-general": "Общее",
+          "section-network": "Сеть",
+          "section-runtime": "Процесс",
+          "section-agent": "Pano Agent",
+          "agent-status": "Статус",
+          "agent-version": "Версия",
+          "agent-version-update": "{version} (есть обновление)",
+          "agent-host": "Хост",
+          "agent-platform": "Платформа",
+          "section-plugin": "Плагин Pano",
+          "section-backups": "Резервные копии",
+          "motd": "MOTD",
+          "id": "ID сервера",
+          "uuid": "UUID",
+          "time-zone": "Часовой пояс",
+          "local-address": "Локальный адрес",
+          "game-port": "Игровой порт",
+          "adopted": "Подхвачен после перезапуска узла",
+          "console-input": "Ввод в консоль",
+          "console-input-available": "Доступен",
+          "console-input-unavailable": "Недоступен",
+          "java": "Java",
+          "java-automatic": "Автоматически",
+          "jvm-args": "Аргументы JVM",
+          "jvm-args-none": "Нет",
+          "auto-start": "Запускать вместе с узлом",
+          "crash-restart": "Перезапуск при сбое",
+          "last-exit-code": "Последний код выхода",
+          "directory": "Папка",
+          "capabilities": "Возможности",
+          "last-connected": "Последнее подключение",
+          "last-disconnected": "Последнее отключение",
+          "yes": "Да",
+          "no": "Нет",
+          "on": "Вкл.",
+          "off": "Выкл.",
+          "installed-plugins": "Установлено плагинов",
+          "plugin-version": "Версия плагина",
+          "protocol": "Протокол",
+          "plugin-update-available": "Доступно обновление: {version}",
+          "plugin-up-to-date": "Актуальная версия",
+          "plugin-update-started": "Обновление плагина Pano до {version} запущено. Перезапустите сервер, чтобы загрузить его."
+        },
+        "java-missing": "Последний запуск не удался: на этом узле нет Java {major}, которая нужна серверу.",
+        "java-missing-action": "Скачать Java {major} и запустить",
+        "java-missing-no-permission": "Попросите того, кто управляет узлами, установить Java {major}."
+      },
+      "capability": {
+        "node-offline": "Узел, на котором работает этот сервер, не в сети. Раздел «{section}» заработает, когда узел снова подключится.",
+        "server-stopped": "Запустите сервер, чтобы пользоваться разделом «{section}».",
+        "server-running": "Раздел «{section}» может сделать это только на остановленном сервере. Сначала остановите его.",
+        "plugin-not-connected": "Плагин Pano на этом сервере не подключён. Запустите сервер или проверьте подключение плагина.",
+        "plugin-outdated": "Плагин Pano на этом сервере слишком стар для раздела «{section}». Обновите pano-mc-plugin.",
+        "plugin-lacks": "Этот сервер не поддерживает раздел «{section}». Обновите pano-mc-plugin (или включите это в настройках плагина) либо запустите сервер на узле Pano.",
+        "node-only": "Для раздела «{section}» нужен узел Pano. Запустите этот сервер на узле, чтобы им пользоваться.",
+        "not-supported": "В этом серверном ПО нет раздела «{section}»."
+      },
+      "capabilities": {
+        "console": "Консоль",
+        "commands": "Команды",
+        "power": "Питание",
+        "metrics": "Метрики",
+        "players": "Игроки",
+        "plugins": "Плагины"
+      },
+      "placeholder": {
+        "title": "В разработке"
+      },
+      "console": {
+        "title": "Консоль",
+        "description": "Живой поток логов этого сервера и ввод команд.",
+        "state-connecting": "Подключение",
+        "state-streaming": "Идёт поток",
+        "state-idle": "Пауза",
+        "state-idle-hint": "Сервер сейчас не передаёт логи. Новые строки появятся, как только он начнёт снова.",
+        "state-offline": "Не в сети",
+        "state-offline-hint": "Сервер не подключён. Показаны последние строки из буфера Pano.",
+        "state-unsupported": "Плагин устарел",
+        "state-unsupported-hint": "Плагин Pano на этом сервере не передаёт консоль. Обновите pano-mc-plugin, чтобы пользоваться этой страницей.",
+        "search-placeholder": "Фильтр строк...",
+        "timestamps": "Отметки времени",
+        "wrap-lines": "Перенос строк",
+        "copy-visible": "Копировать видимое",
+        "copied": "Показанные строки скопированы.",
+        "clear-hint": "Очистить вид (Ctrl+L). Отправленные строки остаются на сервере.",
+        "autoscroll-paused": "Пауза — {count} новых строк",
+        "load-older": "Загрузить более ранние строки",
+        "load-older-loading": "Загрузка ранних строк...",
+        "dropped": "... {count} строк пропущено",
+        "empty": "Вывода пока нет.",
+        "no-matches": "Ни одна строка не подходит под фильтр.",
+        "command-placeholder": "Введите команду и нажмите Enter",
+        "command-send": "Отправить",
+        "command-disabled-permission": "У вас нет прав отправлять команды на этот сервер.",
+        "command-disabled-capability": "Плагин Pano на этом сервере не умеет выполнять команды.",
+        "command-disabled-offline": "Сервер не в сети, поэтому команды не принимаются.",
+        "command-disabled-cooldown": "Слишком много команд подряд. Строка ввода вернётся через мгновение.",
+        "history-hint": "Стрелки вверх и вниз листают команды, отправленные на этот сервер.",
+        "load-failed": "Не удалось загрузить историю консоли.",
+        "source-node": "Управляемая консоль",
+        "source-plugin": "Связанная консоль",
+        "source-hint": "Откуда читаются строки: узел передаёт вывод самого процесса сервера, плагин подключается к логгеру игры.",
+        "reached-start": "Вы дошли до начала",
+        "live": "В реальном времени",
+        "reload": "Перезагрузить консоль",
+        "download-latest": "Скачать latest.log",
+        "deep-search-running": "Поиск по всем логам… {scanned}/{total} файлов · найдено {found}",
+        "deep-search-stop": "Остановить",
+        "deep-search-done": "Просмотрены все {total} файлов логов · найдено {found}",
+        "deep-search-stopped": "Остановлено после {scanned}/{total} файлов · найдено {found}",
+        "deep-search-limited": "Показаны {found} самых новых совпадений — уточните поиск, чтобы увидеть более старые",
+        "deep-search-capped": "некоторые очень большие файлы просмотрены частично"
+      },
+      "players": {
+        "title": "Игроки",
+        "description": "Кто сейчас на сервере и что с ними можно сделать.",
+        "online-count": "{online} / {max} в сети",
+        "empty": "Сейчас никого нет в сети.",
+        "empty-offline": "Сервер не в сети, поэтому игроков нет.",
+        "no-matches": "Ни один игрок не подходит под запрос.",
+        "column-actions": "Действия",
+        "column-player": "Игрок",
+        "column-ping": "Пинг",
+        "column-session": "Сессия",
+        "column-ip": "IP",
+        "ping-value": "{ping} мс",
+        "ping-unknown": "Неизвестно",
+        "uuid-copied": "UUID скопирован.",
+        "session-days": "{days}д {hours}ч",
+        "session-hours": "{hours}ч {minutes}м",
+        "session-minutes": "{minutes}м",
+        "session-seconds": "{seconds}с",
+        "action-kick": "Кикнуть",
+        "action-message": "Сообщение",
+        "action-op": "Выдать OP",
+        "action-deop": "Забрать OP",
+        "action-gamemode": "Режим игры",
+        "action-whitelist-add": "Добавить в вайтлист",
+        "action-whitelist-remove": "Убрать из вайтлиста",
+        "gamemode-survival": "Выживание",
+        "gamemode-creative": "Творческий",
+        "gamemode-adventure": "Приключение",
+        "gamemode-spectator": "Наблюдатель",
+        "action-done": "Отправлено игроку {username}.",
+        "actions-disabled-offline": "Сервер не в сети, поэтому действия над игроками недоступны.",
+        "sample-hint": "Эти имена взяты из пинга списка серверов, который передаёт не более 12 имён. Число игроков при этом точное.",
+        "action-ban": "Забанить",
+        "badge-op": "OP",
+        "badge-whitelisted": "В вайтлисте",
+        "column-gamemode": "Режим игры",
+        "gamemode-unknown": "Неизвестно",
+        "ban-needs-players-permission": "Чтобы забанить аккаунт Pano, нужно право на управление игроками.",
+        "ban-no-command-on-proxy": "У прокси нет своего бан-листа, а у {username} нет аккаунта Pano.",
+        "current": "Текущий",
+        "ban-needs-commands": "У игрока {username} нет аккаунта Pano, поэтому бан выполняется командой самого сервера, а этот сервер сейчас не принимает команды.",
+        "column-account": "Аккаунт Pano",
+        "account-yes": "Есть",
+        "account-no": "Нет",
+        "account-yes-hint": "Бан отсюда — это бан Pano: сайт и все серверы с интеграцией банов.",
+        "account-no-hint": "Аккаунта Pano с таким именем нет, поэтому бан отсюда попадёт только в собственный бан-лист этого сервера."
+      },
+      "plugins": {
+        "title": "Плагины",
+        "description": "Плагины и моды, установленные на этом сервере.",
+        "count": "установлено: {count}",
+        "search-placeholder": "Поиск плагинов...",
+        "column-name": "Название",
+        "column-version": "Версия",
+        "column-authors": "Авторы",
+        "column-description": "Описание",
+        "column-enabled": "Включён",
+        "authors-unknown": "Неизвестно",
+        "no-description": "Без описания",
+        "empty": "Сервер не сообщил ни об одном плагине.",
+        "empty-offline": "Сервер не в сети, поэтому у Pano нет списка его плагинов.",
+        "no-matches": "Ни один плагин не подходит под запрос.",
+        "state-unsupported": "Плагин Pano на этом сервере не сообщает список установленных плагинов. Обновите pano-mc-plugin, чтобы пользоваться этой страницей.",
+        "restart-hint": "Не каждый плагин переживает включение или выключение на ходу. Если что-то пойдёт не так, перезапустите сервер.",
+        "toggle-disabled-offline": "Сервер не в сети, поэтому плагины нельзя включать и выключать.",
+        "enabled-badge": "Включён",
+        "disabled-badge": "Выключен",
+        "toggled-on": "{name} включён.",
+        "toggled-off": "{name} выключен.",
+        "tab-installed": "Установленные",
+        "tab-browse": "Каталог",
+        "list-failed": "Не удалось загрузить список плагинов.",
+        "linked-hint": "Pano читает этот список только из плагина Pano на сервере. Чтобы устанавливать и удалять файлы, запустите сервер на узле Pano.",
+        "jar-list-hint": "Этот список прочитан из jar-файлов на диске, а не из работающего сервера.",
+        "restart-required-title": "Нужен перезапуск",
+        "restart-required-description": "Файлы в этой папке изменились после того, как сервер в последний раз сообщил о плагинах. Перезапустите сервер, чтобы они загрузились.",
+        "installed": {
+          "column-file": "Файл",
+          "column-actions": "Действия",
+          "not-loaded": "Не загружен",
+          "not-loaded-hint": "Этот jar лежит в папке, но сервер его не загрузил. Перезапустите сервер, чтобы загрузить его.",
+          "status-on-disk": "На диске",
+          "no-file": "Нет файла",
+          "game-list-unavailable": "Сервер сейчас не сообщает о загруженных плагинах, поэтому показаны только файлы на диске.",
+          "remove": "Удалить",
+          "remove-confirm": "Удалить {filename} с сервера? Файл будет удалён навсегда, а плагин останется загруженным до перезапуска сервера.",
+          "removed": "{filename} удалён."
+        },
+        "updates": {
+          "count": "{count} с обновлениями",
+          "source-hint": "Установлено из {source}.",
+          "source-identified-hint": "Сопоставлено с {source} по хешу файла.",
+          "update-available": "Есть обновление · {version}",
+          "update-available-hint": "Открыть страницу проекта для версии {version}.",
+          "update": "Обновить",
+          "update-started": "Обновление началось. Оно выполняется на узле.",
+          "update-done": "{filename} обновлён. Перезапустите сервер, чтобы загрузить его.",
+          "update-failed": "Обновление не удалось. ({error})",
+          "up-to-date": "{filename} уже обновлён.",
+          "update-all": "Обновить все ({count})",
+          "update-all-started": "Запущено обновлений: {started}, пропущено: {skipped}.",
+          "update-all-none": "Обновлять было нечего.",
+          "identify": "Определить источники",
+          "identify-hint": "Ищет jar-файлы, которые Pano не устанавливал, на Modrinth и CurseForge по хешу файла. Плагины с Hangar так определить нельзя, а для CurseForge нужен API-ключ в настройках платформы.",
+          "identify-done": "Определено: {identified}, всё ещё неизвестно: {unknown}."
+        },
+        "browse": {
+          "description": "Ищите в доступных Pano источниках и устанавливайте плагины и моды прямо на этот сервер.",
+          "search-placeholder": "Поиск плагина или мода...",
+          "search-hint": "Начните вводить запрос, чтобы искать в выбранном источнике.",
+          "search-failed": "Поиск не удался. Попробуйте ещё раз через минуту.",
+          "sources-failed": "Не удалось загрузить источники.",
+          "source-off": "Этот источник выключен.",
+          "no-sources": "Нет доступных источников. Для CurseForge нужен ключ API в настройках платформы.",
+          "no-results": "Ничего не найдено.",
+          "load-more": "Показать ещё",
+          "downloads": "{count} загрузок",
+          "by-author": "автор: {author}",
+          "compatible": "Совместим",
+          "incompatible": "Может не подойти",
+          "versions": "Версии",
+          "versions-title": "Версии {name}",
+          "versions-failed": "Не удалось загрузить версии.",
+          "no-versions": "У этого проекта нет версии для ПО вашего сервера.",
+          "game-versions": "Minecraft: {versions}",
+          "loaders": "Загрузчики: {loaders}",
+          "file-label": "Файл для установки",
+          "install": "Установить",
+          "install-no-permission": "У вас нет прав на установку плагинов.",
+          "install-started": "Установка началась. Она выполняется на узле.",
+          "install-done": "{filename} установлен. Перезапустите сервер, чтобы он загрузился.",
+          "install-failed": "Установка не удалась. ({error})",
+          "task-install": "Устанавливается {filename}",
+          "open-page": "Страница проекта"
+        }
+      },
+      "files": {
+        "title": "Файлы",
+        "count": "Объектов: {count}",
+        "root": "Корень сервера",
+        "path-label": "Путь",
+        "path-placeholder": "plugins/Pano",
+        "path-go": "Перейти",
+        "path-edit": "Изменить путь",
+        "go-up": "На уровень выше",
+        "new-file": "Новый файл",
+        "new-file-hint": "Файл создаётся пустым.",
+        "new-folder": "Новая папка",
+        "upload": "Загрузить",
+        "uploads-title": "Загрузки",
+        "uploads-clear": "Очистить завершённые",
+        "upload-done": "Загружено",
+        "upload-failed": "Ошибка",
+        "upload-failed-toast": "Не удалось загрузить {name}.",
+        "selected": "Выбрано: {count}",
+        "column-name": "Имя",
+        "column-size": "Размер",
+        "column-modified": "Изменён",
+        "column-actions": "Действия",
+        "select-all": "Выбрать все объекты",
+        "no-matches": "Ничего не найдено.",
+        "empty-directory": "Эта папка пуста.",
+        "drop-hint": "Перетащите файлы сюда, чтобы загрузить их в эту папку.",
+        "list-failed": "Не удалось прочитать папку.",
+        "action-open": "Открыть",
+        "action-edit": "Редактировать",
+        "action-download": "Скачать",
+        "action-unarchive": "Распаковать",
+        "action-rename": "Переименовать",
+        "action-chmod": "Права",
+        "unarchive-hint": "Архив будет распакован в эту папку.",
+        "chmod-hint": "Восьмеричные права POSIX, например 0644.",
+        "prompt-name": "Имя",
+        "prompt-new-name": "Новое имя",
+        "prompt-extract-into": "Распаковать в",
+        "prompt-mode": "Права",
+        "prompt-confirm": "Применить",
+        "delete-title": "Удалить навсегда?",
+        "delete-description": "Объектов будет удалено с сервера: {count}. Удаление папки удаляет всё её содержимое.",
+        "created": "{name} создан.",
+        "renamed": "Переименовано в {name}.",
+        "unarchived": "Распаковано в {name}.",
+        "chmod-done": "Права {name} теперь {mode}.",
+        "deleted": "Удалено объектов: {count}.",
+        "saved": "{name} сохранён.",
+        "download-as-zip": "Скачать zip-архивом",
+        "download-zip-hint": "Папки и несколько элементов упаковываются в один zip прямо во время скачивания; на сервере ничего не создаётся.",
+        "action-preview": "Просмотр",
+        "drop-into": "Отпустите, чтобы загрузить в {path}"
+      },
+      "backups": {
+        "title": "Резервные копии",
+        "count": "Копий: {count}",
+        "description": "Сделайте полный zip или инкрементальный снимок — всего, только миров или выбранных путей. Мир сначала сбрасывается на диск, поэтому работающий сервер можно бэкапить безопасно.",
+        "name-label": "Название",
+        "name-placeholder": "Перед обновлением 1.21",
+        "name-hint": "Необязательно — без названия копия называется по моменту создания.",
+        "create": "Создать копию",
+        "create-started": "Создание копии запущено. Она появится здесь, когда узел закончит.",
+        "create-done": "Резервная копия готова.",
+        "task-backup": "Создание копии",
+        "task-restore": "Восстановление копии",
+        "task-failed": "Задача не выполнена. ({error})",
+        "retention-hint": "Сначала удаляются самые старые. Закреплённые не удаляются никогда.",
+        "retention-saved": "Настройка хранения сохранена.",
+        "retention-unavailable": "Эта сборка Pano пока не умеет хранить эту настройку.",
+        "list-failed": "Не удалось прочитать список копий.",
+        "empty": "Резервных копий пока нет.",
+        "column-name": "Название",
+        "column-size": "Размер",
+        "column-created": "Создана",
+        "column-creator": "Создал",
+        "column-status": "Статус",
+        "column-checksum": "SHA-256",
+        "column-actions": "Действия",
+        "creator-unknown": "Неизвестно",
+        "copy-checksum": "Скопировать контрольную сумму",
+        "restore": "Восстановить",
+        "restore-title": "Восстановить эту копию?",
+        "restore-description": "Всё содержимое папки сервера будет заменено содержимым копии {name}. Отменить это нельзя.",
+        "restore-needs-stop": "Чтобы восстановить копию, сервер должен быть остановлен.",
+        "restore-started": "Восстановление запущено.",
+        "restore-done": "Копия восстановлена.",
+        "restore-next-start": "Сервер применит эту копию при следующем запуске.",
+        "delete-title": "Удалить эту копию?",
+        "delete-description": "{name} будет удалена с узла навсегда.",
+        "deleted": "{name} удалена.",
+        "password-placeholder": "Пароль вашей учётной записи",
+        "status-pending": "В очереди",
+        "status-running": "Выполняется",
+        "status-ready": "Готова",
+        "status-failed": "Ошибка",
+        "status-restoring": "Восстановление",
+        "status-pending_restart": "Ожидает перезапуска",
+        "status-deleting": "Удаление",
+        "retention-full-label": "Хранить полных бэкапов",
+        "retention-snapshot-label": "Хранить снимков",
+        "retention-cap-label": "и не больше",
+        "retention-cap-none": "Без лимита",
+        "pinned": "Закреплён",
+        "pinned-hint": "Закреплён: правило хранения его не удалит.",
+        "pin": "Закрепить (хранить всегда)",
+        "unpin": "Открепить",
+        "stored-hint": "Новые данные, которые этот снимок добавил на диск; остальное общее с другими снимками.",
+        "restore-worlds-replaced": "Папки миров из бэкапа полностью заменяют текущие; остальные файлы записываются поверх."
+      },
+      "activity": {
+        "title": "Действия",
+        "filter-label": "Фильтр по типу",
+        "filter-all": "Все типы",
+        "empty": "На этом сервере пока ничего не происходило.",
+        "empty-filtered": "Нет записей, подходящих под фильтры.",
+        "unavailable": "Эта сборка Pano ещё не ведёт журнал действий по серверам. Обновите Pano, чтобы он появился здесь.",
+        "load-failed": "Не удалось загрузить журнал действий. Попробуйте чуть позже.",
+        "unknown-user": "Неизвестный пользователь",
+        "types": {
+          "sent_server_command": "Команда",
+          "server_power_action": "Питание",
+          "server_player_action": "Игрок",
+          "server_plugin_updated": "Плагин обновлён",
+          "server_plugin_toggled": "Плагин включён/выключен",
+          "server_file_changed": "Файл изменён",
+          "server_backup_action": "Резервная копия",
+          "server_schedule_run": "Расписание выполнено",
+          "server_crashed": "Сбой",
+          "server_pano_plugin_updated": "Плагин Pano обновлён",
+          "linked_agent_server": "Подключён через Pano Agent",
+          "server_plugin_file_action": "Файлы плагинов",
+          "server_schedule_action": "Расписание",
+          "created_server": "Создан",
+          "reinstalled_server": "Переустановлен",
+          "updated_server_startup": "Параметры запуска"
+        },
+        "search-placeholder": "Поиск по действиям...",
+        "filter-user-label": "Фильтр по пользователю",
+        "filter-user-all": "Все пользователи",
+        "end-of-history": "Это самое начало истории сервера."
       },
       "settings": {
-        "title": "Настройки сервера",
         "preferences": "Предпочтения",
         "server-name": "Имя сервера",
         "main-server": "Главный сервер",
         "already-main-server": "{serverName} — главный сервер",
         "make-main-server": "Сделать главным сервером",
         "main-server-info": "Главный сервер определяет информацию о сервере, которая будет отображаться на сайте.",
-        "remove-server": "Удалить сервер",
-        "disconnect": "Отключить"
-      },
-      "monitoring": {
-        "title": "Мониторинг сервера"
+        "auto-update-check": "Автоматическая проверка обновлений",
+        "auto-update-check-info": "Ежедневно проверяет плагины на обновления и уведомляет вас.",
+        "disconnect": "Отключить",
+        "danger-zone": "Опасная зона",
+        "reinstall": "Переустановить сервер",
+        "reinstall-info": "Заново установить текущее ПО. Сначала создаётся резервная копия.",
+        "reinstall-unavailable": "Эта сборка Pano пока не умеет переустанавливать серверы.",
+        "delete-server": "Удалить сервер",
+        "delete-server-info": "Удаляет сервер, его файлы и резервные копии с узла.",
+        "remove-server": "Убрать сервер",
+        "remove-server-info": "Убирает его из Pano. Файлы на сервере Minecraft останутся.",
+        "remove-in-place-info": "Pano перестаёт его запускать и удаляет его резервные копии. Файлы остаются в своей папке.",
+        "change-software": "Сменить серверное ПО",
+        "change-software-info": "Перейти на другое ПО или версию.",
+        "change-software-button": "Сменить ПО"
       },
       "game-integration": {
-        "title": "Настройки интеграции с игрой",
         "minecraft": "Minecraft",
         "auth-integration": "Интеграция авторизации",
         "auth-integration-description": "Позволить Pano подключаться к плагинам авторизации в Fabric.",
@@ -809,6 +1474,611 @@
         "ban-integration-description": "Позволить Pano подключаться к плагинам банов в Fabric.",
         "permission-integration": "Интеграция разрешений",
         "permission-integration-description": "Позволить Pano подключаться к плагинам разрешений в Fabric."
+      },
+      "errors": {
+        "capability-missing": "Плагин Pano на этом сервере так не умеет. Обновите pano-mc-plugin или включите функцию в его настройках.",
+        "feature-unavailable": "Этот сервер сейчас не может этого сделать.",
+        "command-denied": "Эта команда закрыта для вас правилом прав (шаблон «{pattern}»).",
+        "offline": "Сервер сейчас не в сети. Повторите, когда он подключится.",
+        "rate-limited": "Помедленнее — слишком много запросов подряд. Подождите около {seconds} с и попробуйте снова.",
+        "generic": "Действие не выполнено. ({error})",
+        "node-offline": "Узел, на котором работает этот сервер, не в сети. Повторите, когда он подключится.",
+        "node-not-exists": "Этого узла больше нет — обновите страницу.",
+        "not-managed": "Это работает только для сервера, которым управляет сам Pano.",
+        "wrong-password": "Неверный пароль.",
+        "unavailable": "В этой сборке Pano такой возможности пока нет.",
+        "path-denied": "Этот путь запрещён.",
+        "file-too-large": "Файл слишком большой.",
+        "transfer-expired": "Срок передачи истёк. Начните заново.",
+        "no-stdin": "При перезапуске узел потерял ввод консоли этого сервера, а плагин Pano не подключён, чтобы передать команду. Перезапустите сервер из панели."
+      },
+      "process-state": {
+        "stopped": "Остановлен",
+        "starting": "Запускается",
+        "running": "Работает",
+        "stopping": "Останавливается",
+        "crashed": "Аварийно завершён",
+        "installing": "Устанавливается"
+      },
+      "nodes": {
+        "status-online": "В сети",
+        "status-offline": "Не в сети",
+        "status-pending": "Ожидает одобрения",
+        "local-setup-started": "Локальный узел настраивается. Он появится здесь, как только подключится.",
+        "local-setup-unavailable": "Эта сборка Pano пока не умеет настраивать локальный узел.",
+        "add-unavailable": "Окно добавления узла здесь недоступно.",
+        "add-node": "Добавить узел",
+        "add-title": "Добавление узла",
+        "count": "Узлов: {count}",
+        "empty-description": "Узлов пока нет. Узел — это машина, на которой работают ваши серверы; локальный настраивается в один клик.",
+        "unavailable": "Эта сборка Pano пока не умеет управлять узлами. Обновите Pano, чтобы пользоваться управляемыми серверами.",
+        "pending-title": "Ожидают одобрения",
+        "pending-description": "Эти машины связались с Pano, но их ещё никто не одобрил. Одобряйте только те, что настраивали сами.",
+        "accept": "Одобрить",
+        "accepted": "Узел {name} одобрен.",
+        "column-name": "Название",
+        "column-kind": "Тип",
+        "column-runtime": "Режим",
+        "column-status": "Статус",
+        "column-version": "Версия",
+        "column-system": "Система",
+        "column-servers": "Серверы",
+        "servers-empty": "На этом узле пока нет серверов.",
+        "column-cpu": "ЦП",
+        "column-memory": "ОЗУ",
+        "column-disk": "Диск",
+        "column-last-seen": "Последняя связь",
+        "column-actions": "Действия",
+        "kind-local": "Локальный",
+        "kind-remote": "Удалённый",
+        "never-seen": "Никогда",
+        "rename-title": "Переименовать узел",
+        "rename-label": "Название узла",
+        "renamed": "Узел переименован в {name}.",
+        "delete-title": "Удалить этот узел?",
+        "delete-password": "Пароль от аккаунта",
+        "deleted": "Узел {name} удалён.",
+        "tab-local": "Локально",
+        "tab-manual": "Вручную",
+        "tab-ssh": "SSH",
+        "tab-coolify": "Coolify",
+        "local-description": "Запустить узел на той же машине, где работает Pano. Pano сам скачает демон, запустит его и будет следить за ним — связывать ничего не нужно.",
+        "manual-description": "Установите узел на другой машине и выполните там эту команду. Код действует 30 секунд и обновляется сам.",
+        "pairing-code": "Код связывания",
+        "pairing-refresh": "Новый код через {seconds} с",
+        "pairing-command": "Выполните это на другой машине",
+        "pairing-hint": "Машине достаточно доступа к этому Pano по сети. Открывать порты на её стороне не нужно.",
+        "pairing-unavailable": "Эта сборка Pano пока не умеет связывать узлы.",
+        "title": "Узлы",
+        "column-bootstrap": "Способ добавления",
+        "bootstrap-local": "Локально",
+        "bootstrap-manual": "Вручную",
+        "bootstrap-ssh": "SSH",
+        "bootstrap-coolify": "Coolify",
+        "platform-linux": "Linux / macOS",
+        "platform-windows": "Windows",
+        "update-available": "Есть обновление",
+        "update-hint": "Pano раздаёт версию {version}",
+        "update-title": "Обновить узел",
+        "update-sent": "Обновление отправлено: узел перезапустится, как только скачает jar-файл.",
+        "update-up-to-date": "На этом узле уже установлена текущая версия демона.",
+        "update-no-jar": "У этого Pano нет файла демона, поэтому обновить узлы отсюда нельзя.",
+        "update-unavailable": "Эта сборка Pano ещё не умеет обновлять узлы.",
+        "java": {
+          "title": "Среды Java",
+          "install": "Установить Java",
+          "install-title": "Установка Java",
+          "install-description": "Pano скачивает среду выполнения Eclipse Temurin (или Azul Zulu, если у Temurin нет сборки), проверяет контрольную сумму и распаковывает её в папку данных узла. В систему ничего не устанавливается.",
+          "install-empty": "Для этого узла нет доступных загрузок.",
+          "empty": "На этом узле пока не найдено ни одной среды Java.",
+          "column-major": "Java",
+          "column-version": "Версия",
+          "column-vendor": "Поставщик",
+          "column-source": "Источник",
+          "column-path": "Путь",
+          "column-used-by": "Используется",
+          "source-pano": "Pano",
+          "source-system": "Система",
+          "source-pano-hint": "Скачана Pano в папку данных узла. Её можно обновить и удалить отсюда.",
+          "source-system-hint": "Найдена на хосте (JAVA_HOME, PATH или системная папка JDK). Pano использует её, но никогда не изменяет и не удаляет.",
+          "update": "Обновить",
+          "update-hint": "Доступна {version}",
+          "update-available": "Есть обновление",
+          "installed": "Установлена",
+          "remove": "Удалить",
+          "remove-title": "Удалить эту среду Java?",
+          "remove-description": "{name} будет удалена с этого узла. Серверы, закреплённые за этой Java, скачают её снова при следующем запуске, если автоматическая загрузка включена.",
+          "remove-in-use": "Используется: {servers}. Сначала остановите эти серверы или закрепите за ними другую Java.",
+          "removing": "Удаление",
+          "installing": "Загрузка",
+          "removed": "Java {major} удалена.",
+          "installed-toast": "Java {major} установлена.",
+          "not-available": "Недоступно для {platform}",
+          "node-offline": "Узел не в сети.",
+          "outdated-node": "Обновите узел, чтобы скачивать Java.",
+          "downloads-unsupported": "Для загрузки нужен более новый узел",
+          "catalog-error": "Не удалось связаться с серверами загрузки Java: {error}",
+          "auto-download-on": "Недостающие версии Java скачиваются автоматически, когда они нужны серверу.",
+          "auto-download-off": "Автоматическая загрузка Java отключена в конфигурации узла.",
+          "unavailable": "Эта сборка Pano пока не умеет управлять средами Java.",
+          "error-in-use": "Эта среда Java всё ещё используется сервером.",
+          "error-not-managed": "Удалять можно только среды, установленные Pano.",
+          "error-not-found": "На узле больше нет этой среды Java.",
+          "hint-8": "Для Minecraft 1.16.4 и старше",
+          "hint-11": "Нужна редко; для старых инструментов и прокси",
+          "hint-16": "Для Minecraft 1.16.5",
+          "hint-17": "Для Minecraft 1.17 – 1.20.4",
+          "hint-21": "Рекомендуется для Minecraft 1.20.5 – 1.21.x",
+          "hint-25": "Рекомендуется для Minecraft 26.1+",
+          "catalog-timeout": "Узел не ответил вовремя; показаны среды, о которых он сообщил последними.",
+          "unknown-server": "неизвестный сервер",
+          "error-installing": "Эта Java сейчас устанавливается; попробуйте снова, когда установка закончится."
+        },
+        "remove": {
+          "preview-loading": "Проверяем, что есть на этом узле…",
+          "lead": "Узел {name} удалит себя сам, и всё на нём будет удалено навсегда:",
+          "lead-forget": "Узел {name} и его серверы будут удалены из Pano:",
+          "servers": "{count, plural, one {# сервер будет удалён} few {# сервера будут удалены} many {# серверов будут удалены} other {# сервера будут удалены}} вместе со всеми файлами и резервными копиями.",
+          "no-servers": "На этом узле нет серверов.",
+          "backups": "{count, plural, one {# резервная копия} few {# резервные копии} many {# резервных копий} other {# резервной копии}}",
+          "backups-size": "{count, plural, one {# резервная копия} few {# резервные копии} many {# резервных копий} other {# резервной копии}} ({size})",
+          "no-backups": "Резервных копий нет.",
+          "java": "{count, plural, =0 {Нет сред Java, скачанных Pano.} one {# среда Java, скачанная Pano.} few {# среды Java, скачанные Pano.} many {# сред Java, скачанных Pano.} other {# среды Java, скачанной Pano.}}",
+          "data": "Папка данных узла, кэш и журналы, а также служба pano-node, если её можно удалить.",
+          "offline": "Узел не в сети — Pano может только забыть его; файлы останутся на машине.",
+          "offline-local": "Локальный узел не запущен. Pano удалит его и сам очистит его папку данных.",
+          "unsupported": "Демон этого узла слишком старый и не умеет удалять себя — Pano может только забыть его; файлы останутся на машине. Чтобы удалить узел чисто, сначала обновите его.",
+          "uninstall-failed": "Узлу не удалось удалить себя:",
+          "force": "Всё равно удалить из Pano",
+          "type-name": "Введите {name} для подтверждения",
+          "running-title": "Удаляем {name}…",
+          "running-description": "Останавливаем серверы и удаляем их файлы. Это может занять до двух минут — не закрывайте это окно.",
+          "running-forget": "Удаляем узел и его серверы из Pano.",
+          "done-files-removed": "{count, plural, =0 {Его файлы удалены с машины.} one {# сервер и все файлы удалены с машины.} few {# сервера и все файлы удалены с машины.} many {# серверов и все файлы удалены с машины.} other {# сервера и все файлы удалены с машины.}}",
+          "done-files-kept": "{count, plural, =0 {Его файлы остались на машине.} one {# сервер удалён из Pano. Его файлы остались на машине.} few {# сервера удалены из Pano. Их файлы остались на машине.} many {# серверов удалены из Pano. Их файлы остались на машине.} other {# сервера удалены из Pano. Их файлы остались на машине.}}",
+          "manual-title": "Завершите удаление на машине",
+          "manual-description": "Pano не смог выполнить эти шаги сам. Выполните их на машине узла:",
+          "copied": "Скопировано"
+        },
+        "column-network": "Сеть",
+        "network-rate": "↓ {rx} · ↑ {tx}"
+      },
+      "create": {
+        "memory-label": "Память",
+        "port-label": "Игровой порт",
+        "port-hint": "Порт, к которому подключаются игроки. Узел проверит, что он свободен.",
+        "java-label": "Версия Java",
+        "java-auto": "Автоматически",
+        "java-hint": "В автоматическом режиме из сред выполнения на узле выбирается самая младшая версия Java, которую поддерживает эта версия Minecraft; если на узле её нет, она скачивается.",
+        "jvm-args-label": "Аргументы JVM",
+        "jvm-args-hint": "Оставьте пустым, если не уверены, что они нужны.",
+        "aikar-preset": "Подставить флаги Aikar",
+        "auto-start-label": "Запускать вместе с Pano",
+        "auto-start-hint": "Запускать этот сервер, когда узел поднимается.",
+        "crash-restart-label": "Перезапуск после сбоя",
+        "crash-restart-hint": "Автоматически поднимать сервер, если он упал.",
+        "auto-update-check-label": "Автоматическая проверка обновлений",
+        "auto-update-check-hint": "Ежедневно проверяет плагины на обновления и уведомляет вас.",
+        "setup-local-node": "Настроить локальный узел",
+        "java-auto-resolved": "Автоматически (Java {major})",
+        "java-will-download": "Java {major} — будет скачана ({size})",
+        "java-will-download-unsized": "Java {major} — будет скачана",
+        "java-download-note": "Java {major} на этом узле пока нет; она будет скачана ({size}) перед установкой сервера.",
+        "java-size-unknown": "размер неизвестен"
+      },
+      "startup": {
+        "restart-hint": "Изменения вступят в силу при следующем запуске сервера. Перезапустите его, когда закончите.",
+        "process-title": "Процесс",
+        "properties-title": "server.properties",
+        "properties-description": "У всех настроек файла теперь своя вкладка.",
+        "saved": "Параметры запуска сохранены.",
+        "unavailable": "Эта сборка Pano пока не умеет менять параметры запуска.",
+        "java-download-note": "Java {major} на этом узле пока нет; она будет скачана ({size}) при следующем запуске.",
+        "properties-open": "Открыть server.properties"
+      },
+      "schedules": {
+        "title": "Расписания",
+        "description-managed": "Задания cron, которые узел выполняет для этого сервера: перезапуски, команды и резервные копии — в заданном вами порядке.",
+        "description-linked": "Задания cron, которые Pano выполняет для этого сервера. У привязанного сервера нет узла, поэтому доступны только управление питанием и команды.",
+        "count": "Расписаний: {count}",
+        "create": "Новое расписание",
+        "empty": "У этого сервера пока нет расписаний.",
+        "list-failed": "Не удалось загрузить расписания.",
+        "column-name": "Название",
+        "column-cron": "Когда",
+        "column-next-run": "Следующий запуск",
+        "column-last-run": "Последний запуск",
+        "column-enabled": "Включено",
+        "column-actions": "Действия",
+        "never-run": "Ещё не запускалось",
+        "no-tasks": "Нет задач",
+        "run-now": "Запустить сейчас",
+        "run-started": "{name} запущено.",
+        "run-finished": "{name} выполнено.",
+        "run-failed": "{name} завершилось с ошибкой. ({error})",
+        "created": "{name} создано.",
+        "updated": "{name} сохранено.",
+        "deleted": "{name} удалено.",
+        "delete-confirm": "Удалить расписание {name}? Оно сразу перестанет выполняться.",
+        "enabled-toast": "{name} включено.",
+        "disabled-toast": "{name} выключено.",
+        "status-ok": "Успешно",
+        "status-success": "Успешно",
+        "status-failed": "Ошибка",
+        "status-running": "Выполняется",
+        "status-skipped": "Пропущено",
+        "cron-daily": "Каждый день в {time}",
+        "cron-every-hours": "Каждые {hours} ч.",
+        "cron-weekly": "Каждое {day} в {time}",
+        "cron-monthly": "Каждый месяц {day}-го числа в {time}",
+        "presets": {
+          "daily": "Ежедневно 04:00",
+          "six-hours": "Каждые 6 часов",
+          "weekly": "Воскресенье 05:00",
+          "custom": "Своё"
+        },
+        "task-kind": {
+          "power": "Питание",
+          "command": "Команда",
+          "backup": "Резервная копия"
+        },
+        "power-action": {
+          "stop": "Остановить",
+          "restart": "Перезапустить"
+        }
+      },
+      "properties": {
+        "title": "server.properties",
+        "description": "Все настройки файла, по группам. Изменённое записывается в файл на узле; остальное в нём не трогается.",
+        "applies-next-start": "Изменения вступают в силу при следующем запуске сервера.",
+        "source-file": "Прочитано из файла на узле",
+        "source-stored": "Узел недоступен — показаны значения, сохранённые в Pano",
+        "changed": "Изменено, ещё не сохранено",
+        "changed-count": "{count} не сохранено",
+        "reset": "Сбросить к значению по умолчанию",
+        "reset-to": "Сбросить к значению по умолчанию: {value}",
+        "reveal": "Показать или скрыть",
+        "other-title": "Другие ключи",
+        "other-description": "Ключи из файла, неизвестные Pano — собственные настройки форка или добавленные новой версией. Сохраняются как есть.",
+        "add-key": "Добавить ключ",
+        "add-key-placeholder": "имя-ключа",
+        "add-value-placeholder": "значение",
+        "port-managed": "Вкладка Startup",
+        "no-matches": "Ни одна настройка не подходит под запрос.",
+        "saved": "server.properties сохранён. Перезапустите сервер, чтобы применить.",
+        "discard": "Отменить изменения",
+        "groups": {
+          "general": "Общие",
+          "world": "Мир",
+          "performance": "Производительность",
+          "players": "Игроки",
+          "resource-pack": "Ресурспак",
+          "network": "Сеть"
+        },
+        "options": {
+          "difficulty": {
+            "peaceful": "Мирная",
+            "easy": "Лёгкая",
+            "normal": "Нормальная",
+            "hard": "Тяжёлая"
+          },
+          "gamemode": {
+            "survival": "Выживание",
+            "creative": "Творческий",
+            "adventure": "Приключение",
+            "spectator": "Наблюдатель"
+          },
+          "level-type": {
+            "minecraft:normal": "Обычный",
+            "minecraft:flat": "Суперплоский",
+            "minecraft:large_biomes": "Большие биомы",
+            "minecraft:amplified": "Расширенный",
+            "minecraft:single_biome_surface": "Один биом"
+          },
+          "region-file-compression": {
+            "deflate": "Deflate (по умолчанию)",
+            "lz4": "LZ4 (быстрее, больше)",
+            "none": "Нет"
+          }
+        },
+        "keys": {
+          "motd": {
+            "label": "MOTD",
+            "help": "Описание сервера в списке серверов."
+          },
+          "max-players": {
+            "label": "Макс. игроков",
+            "help": "Сколько игроков могут быть онлайн одновременно."
+          },
+          "online-mode": {
+            "label": "Онлайн-режим",
+            "help": "Проверять игроков через Mojang. Отключайте только за прокси."
+          },
+          "white-list": {
+            "label": "Белый список",
+            "help": "Заходить могут только игроки из белого списка."
+          },
+          "enforce-whitelist": {
+            "label": "Принудительный белый список",
+            "help": "Кикать игроков онлайн, когда их убирают из белого списка."
+          },
+          "difficulty": {
+            "label": "Сложность",
+            "help": "Урон мобов, голод и прочее."
+          },
+          "gamemode": {
+            "label": "Режим по умолчанию",
+            "help": "Режим, в котором начинают новые игроки."
+          },
+          "force-gamemode": {
+            "label": "Принудительный режим",
+            "help": "При каждом входе переводить всех в режим по умолчанию."
+          },
+          "hardcore": {
+            "label": "Хардкор",
+            "help": "Смерть окончательна; мир зафиксирован на сложности «Тяжело»."
+          },
+          "pvp": {
+            "label": "PvP",
+            "help": "Разрешить игрокам наносить урон друг другу."
+          },
+          "enable-command-block": {
+            "label": "Командные блоки",
+            "help": "Разрешить работу командных блоков."
+          },
+          "pause-when-empty-seconds": {
+            "label": "Пауза без игроков",
+            "help": "Через сколько секунд без игроков сервер приостанавливает тики; -1 — никогда."
+          },
+          "player-idle-timeout": {
+            "label": "Тайм-аут бездействия",
+            "help": "Через сколько минут бездействия кикать игрока; 0 — отключено."
+          },
+          "level-name": {
+            "label": "Папка мира",
+            "help": "Имя папки мира; другое имя — другой мир."
+          },
+          "level-seed": {
+            "label": "Сид",
+            "help": "Сид нового мира; пусто — случайный."
+          },
+          "level-type": {
+            "label": "Тип мира",
+            "help": "Генератор, используемый при создании мира."
+          },
+          "generator-settings": {
+            "label": "Настройки генератора",
+            "help": "JSON для плоского и однобиомного генераторов."
+          },
+          "generate-structures": {
+            "label": "Генерировать структуры",
+            "help": "Деревни, крепости и другие структуры в новых чанках."
+          },
+          "allow-nether": {
+            "label": "Разрешить Незер",
+            "help": "Порталы в Незер работают; выкл. — игроки остаются в верхнем мире."
+          },
+          "spawn-monsters": {
+            "label": "Спавн монстров",
+            "help": "Враждебные мобы появляются ночью и в темноте."
+          },
+          "spawn-protection": {
+            "label": "Защита спавна",
+            "help": "Радиус вокруг спавна, где строят только операторы; 0 — отключено."
+          },
+          "max-world-size": {
+            "label": "Макс. размер мира",
+            "help": "Радиус границы мира в блоках."
+          },
+          "initial-enabled-packs": {
+            "label": "Включённые датапаки",
+            "help": "Датапаки, включаемые при создании мира, через запятую."
+          },
+          "initial-disabled-packs": {
+            "label": "Отключённые датапаки",
+            "help": "Датапаки, отключаемые при создании мира, через запятую."
+          },
+          "view-distance": {
+            "label": "Дальность прорисовки",
+            "help": "Чанки, отправляемые каждому игроку. Уменьшайте, если сервер не справляется."
+          },
+          "simulation-distance": {
+            "label": "Дальность симуляции",
+            "help": "Чанки вокруг игрока, которые продолжают тикать."
+          },
+          "entity-broadcast-range-percentage": {
+            "label": "Дальность передачи сущностей",
+            "help": "Как далеко сущности отправляются игрокам, в процентах от стандарта."
+          },
+          "max-tick-time": {
+            "label": "Макс. время тика",
+            "help": "Миллисекунды на тик, после которых сторож останавливает сервер; -1 — отключено."
+          },
+          "max-chained-neighbor-updates": {
+            "label": "Макс. цепных обновлений",
+            "help": "Лимит цепных обновлений блоков за тик; -1 снимает."
+          },
+          "network-compression-threshold": {
+            "label": "Порог сжатия",
+            "help": "Пакеты больше этого числа байт сжимаются; -1 — отключено."
+          },
+          "rate-limit": {
+            "label": "Лимит пакетов",
+            "help": "Пакетов в секунду от клиента до кика; 0 — отключено."
+          },
+          "sync-chunk-writes": {
+            "label": "Синхронная запись чанков",
+            "help": "Записывать чанки синхронно; надёжнее, чуть медленнее."
+          },
+          "use-native-transport": {
+            "label": "Нативный транспорт",
+            "help": "Оптимизации пакетов на Linux; оставьте включённым."
+          },
+          "region-file-compression": {
+            "label": "Сжатие регионов",
+            "help": "Сжатие файлов регионов."
+          },
+          "allow-flight": {
+            "label": "Разрешить полёт",
+            "help": "Не кикать игроков, летающих в выживании (моды, плагины)."
+          },
+          "op-permission-level": {
+            "label": "Уровень оператора",
+            "help": "Уровень прав от /op, от 1 до 4."
+          },
+          "function-permission-level": {
+            "label": "Уровень функций",
+            "help": "Уровень прав, с которым выполняются функции, 1–4."
+          },
+          "hide-online-players": {
+            "label": "Скрывать игроков онлайн",
+            "help": "Не показывать список игроков в статусе сервера."
+          },
+          "enforce-secure-profile": {
+            "label": "Безопасные профили чата",
+            "help": "Требовать чат с подписью Mojang; без неё зайти нельзя."
+          },
+          "broadcast-console-to-ops": {
+            "label": "Вывод консоли операторам",
+            "help": "Отправлять вывод консольных команд операторам онлайн."
+          },
+          "broadcast-rcon-to-ops": {
+            "label": "Вывод RCON операторам",
+            "help": "Отправлять вывод команд RCON операторам онлайн."
+          },
+          "accepts-transfers": {
+            "label": "Принимать переводы",
+            "help": "Принимать игроков, переведённых с другого сервера."
+          },
+          "log-ips": {
+            "label": "Логировать IP",
+            "help": "Писать IP-адреса игроков в лог."
+          },
+          "bug-report-link": {
+            "label": "Ссылка на баг-репорт",
+            "help": "URL, показываемый игрокам для сообщений об ошибках."
+          },
+          "text-filtering-config": {
+            "label": "Конфиг фильтра текста",
+            "help": "Конфигурация сервиса фильтрации чата."
+          },
+          "text-filtering-version": {
+            "label": "Версия фильтра текста",
+            "help": "Версия формата конфигурации фильтра."
+          },
+          "require-resource-pack": {
+            "label": "Обязательный ресурспак",
+            "help": "Отключать игроков, отказавшихся от ресурспака."
+          },
+          "resource-pack": {
+            "label": "URL ресурспака",
+            "help": "Прямая ссылка на пак, который предлагается скачать."
+          },
+          "resource-pack-sha1": {
+            "label": "SHA-1 ресурспака",
+            "help": "Контрольная сумма пака; при изменении клиенты скачивают заново."
+          },
+          "resource-pack-id": {
+            "label": "ID ресурспака",
+            "help": "UUID, по которому клиенты узнают пак."
+          },
+          "resource-pack-prompt": {
+            "label": "Сообщение о ресурспаке",
+            "help": "Сообщение при запросе загрузки (JSON-текст)."
+          },
+          "server-ip": {
+            "label": "Адрес прослушивания",
+            "help": "IP, на котором слушает сервер; пусто — все интерфейсы."
+          },
+          "prevent-proxy-connections": {
+            "label": "Блокировать прокси",
+            "help": "Кикать игроков, чей IP отличается от увиденного Mojang."
+          },
+          "enable-status": {
+            "label": "Статус сервера",
+            "help": "Отвечать на пинг списка серверов; выкл. — сервер выглядит офлайн."
+          },
+          "enable-query": {
+            "label": "GameSpy-запрос",
+            "help": "Отдавать сведения о сервере на порту запросов."
+          },
+          "query.port": {
+            "label": "Порт запросов",
+            "help": "UDP-порт протокола запросов."
+          },
+          "enable-rcon": {
+            "label": "RCON",
+            "help": "Удалённая консоль по TCP. Держите выключенной, если не нужна."
+          },
+          "rcon.port": {
+            "label": "Порт RCON",
+            "help": "TCP-порт RCON."
+          },
+          "rcon.password": {
+            "label": "Пароль RCON",
+            "help": "Пароль, который должны прислать клиенты RCON."
+          },
+          "enable-jmx-monitoring": {
+            "label": "Мониторинг JMX",
+            "help": "Отдавать тайминги тиков по JMX."
+          },
+          "management-server-enabled": {
+            "label": "Сервер управления",
+            "help": "Включить API управления сервером."
+          },
+          "management-server-host": {
+            "label": "Хост управления",
+            "help": "Адрес, на котором слушает API управления."
+          },
+          "management-server-port": {
+            "label": "Порт управления",
+            "help": "Порт API управления; 0 — выбрать автоматически."
+          },
+          "management-server-tls-enabled": {
+            "label": "TLS управления",
+            "help": "Требовать TLS для API управления."
+          },
+          "management-server-secret": {
+            "label": "Секрет управления",
+            "help": "Токен для аутентификации клиентов управления."
+          },
+          "status-heartbeat-interval": {
+            "label": "Интервал статуса",
+            "help": "Секунды между сигналами статуса; 0 — отключено."
+          },
+          "debug": {
+            "label": "Отладочный лог",
+            "help": "Подробный отладочный вывод в лог."
+          },
+          "server-port": {
+            "label": "Игровой порт",
+            "help": "Задаётся на вкладке Startup; узел выделяет и публикует его."
+          },
+          "enable-code-of-conduct": {
+            "label": "Кодекс поведения",
+            "help": "Показывать игрокам правила, которые нужно принять перед входом."
+          },
+          "chat-spam-threshold-seconds": {
+            "label": "Порог спама в чате",
+            "help": "Секунды кика за слишком частый чат; 0 — отключено."
+          },
+          "command-spam-threshold-seconds": {
+            "label": "Порог спама команд",
+            "help": "Секунды кика за слишком частые команды; 0 — отключено."
+          },
+          "management-server-allowed-origins": {
+            "label": "Разрешённые origin управления",
+            "help": "Origin'ы, которым разрешён доступ к API управления, через запятую."
+          },
+          "management-server-tls-keystore": {
+            "label": "Хранилище ключей TLS",
+            "help": "Путь к keystore с сертификатом API управления."
+          },
+          "management-server-tls-keystore-password": {
+            "label": "Пароль хранилища ключей",
+            "help": "Пароль этого keystore."
+          }
+        }
       }
     },
     "permission-group-detail": {
@@ -1229,7 +2499,7 @@
       "posts": "Посты",
       "post-categories": "Категории постов",
       "tickets": "Тикеты",
-      "players": "Игроки",
+      "players": "Пользователи",
       "permissions": "Разрешения",
       "view": "Просмотр",
       "addons": "Аддоны",
@@ -1260,18 +2530,26 @@
       "hide-menu": "Скрыть меню",
       "website": "Веб-сайт",
       "server": "Сервер",
+      "server-management-disabled": "Управление серверами отключено. Включается в разделе Настройки → Платформа → Предпочтения.",
       "show-website": "Сайт",
-      "show-servers": "Показать серверы",
+      "show-servers": "Серверы",
       "version-alpha-tooltip": "Экспериментальная версия. Может содержать ошибки, используйте с осторожностью.",
       "version-beta-tooltip": "Предварительная версия. Стабильна, но все еще находится на стадии тестирования."
     },
     "server-navigation-menu": {
-      "statistics": "Статистика",
+      "overview": "Обзор",
+      "console": "Консоль",
+      "players": "Игроки",
+      "files": "Файлы",
+      "plugins": "Плагины",
+      "backups": "Резервные копии",
+      "schedules": "Расписания",
       "settings": "Настройки",
+      "add-server": "Добавить сервер",
       "no-selected-server": "Сервер не выбран.",
-      "no-server-text": "Подключите сервер для просмотра меню сервера.",
+      "select-server": "Выберите сервер",
       "connect-server": "Подключить сервер",
-      "select-server": "Выберите сервер"
+      "nodes": "Узлы"
     },
     "post-row": {
       "actions": "Действия",
@@ -1326,7 +2604,10 @@
     },
     "server-settings-layout": {
       "server": "Сервер",
-      "game-integration": "Интеграция с игрой"
+      "game-integration": "Интеграция с игрой",
+      "startup": "Запуск",
+      "activity": "Действия",
+      "properties": "Server properties"
     },
     "modals": {
       "login": {
@@ -1513,7 +2794,9 @@
         "1-week": "1 неделя",
         "1-month": "1 месяц",
         "6-months": "6 месяцев",
-        "1-year": "1 год"
+        "1-year": "1 год",
+        "scope-pano": "Будет заблокирован аккаунт Pano игрока {username}: он выйдет с сайта, а каждый сервер с интеграцией банов кикнет его и не пустит до окончания бана.",
+        "scope-server": "У игрока {username} нет аккаунта Pano, поэтому он будет добавлен только в собственный бан-лист этого сервера. Другие серверы не затрагиваются, срок не ограничен."
       },
       "confirm-ban-ip": {
         "title": "Добавить бан по IP",
@@ -1626,6 +2909,75 @@
       "confirm-delete-language": {
         "title": "Вы уверены, что хотите навсегда удалить этот язык?"
       },
+      "add-node": {
+        "no-permission": "Для этого нужно право «управление узлами».",
+        "busy": "Дождитесь окончания настройки текущей машины.",
+        "unavailable": "Эта сборка Pano пока не умеет настраивать удалённые узлы.",
+        "current-password-label": "Пароль вашего аккаунта",
+        "current-password-hint": "Развёртывание машины — важное действие, поэтому Pano сначала спрашивает пароль.",
+        "name-label": "Название узла",
+        "name-placeholder": "eu-west-1",
+        "host-label": "Хост",
+        "port-label": "Порт SSH",
+        "username-label": "Пользователь SSH",
+        "auth-label": "Аутентификация",
+        "auth-password": "Пароль",
+        "auth-key": "Приватный ключ",
+        "ssh-password-label": "Пароль SSH",
+        "private-key-label": "Приватный ключ",
+        "private-key-hint": "Вставьте ключ целиком, вместе со строками BEGIN и END. Он используется один раз и нигде не сохраняется.",
+        "passphrase-label": "Пароль ключа (необязательно)",
+        "sudo-label": "Использовать sudo",
+        "sudo-hint": "Оставьте включённым, если пользователь SSH не root.",
+        "ssh-description": "Pano подключится по SSH, запустит установочный скрипт, и машина сама выполнит сопряжение. Учётные данные используются один раз и не сохраняются.",
+        "ssh-submit": "Подключиться и установить",
+        "fingerprint-label": "Отпечаток ключа хоста",
+        "fingerprint-description": "Pano впервые видит {host}. Убедитесь, что отпечаток совпадает с тем, что показывает сервер, и подтвердите.",
+        "fingerprint-confirm": "Это мой сервер, продолжить",
+        "coolify-description": "Pano развернёт узел как Docker-приложение на вашем сервере Coolify. Токен API используется один раз и не сохраняется.",
+        "coolify-url-label": "Адрес Coolify",
+        "coolify-token-label": "Токен API",
+        "coolify-token-hint": "Токен с правом создавать и разворачивать приложения.",
+        "coolify-server-label": "UUID сервера",
+        "coolify-project-label": "UUID проекта",
+        "coolify-project-hint": "Необязательно — оставьте пустым, чтобы использовать проект Coolify по умолчанию.",
+        "coolify-environment-label": "Окружение",
+        "coolify-volume-label": "Том данных",
+        "coolify-ports-label": "Диапазон портов",
+        "coolify-ports-invalid": "Укажите диапазон вида 25565-25600.",
+        "coolify-image-label": "Образ",
+        "coolify-image-invalid": "Укажите ссылку на образ строчными буквами и без тега.",
+        "coolify-image-tag-label": "Тег",
+        "coolify-image-tag-invalid": "Допустимы только буквы, цифры, точки, дефисы и подчёркивания.",
+        "coolify-image-hint": "Нужно, только если Coolify не может скачать опубликованный образ: приватный реестр или зеркало. Здесь — ссылка на образ без тега, сам тег указывается в соседнем поле.",
+        "coolify-submit": "Развернуть узел",
+        "progress-description": "Идёт установка. Это займёт несколько минут; ниже видно, что делает машина.",
+        "progress-label": "Ход настройки узла",
+        "log-label": "Вывод установки",
+        "waiting": "Ожидание первого вывода...",
+        "status-running": "Выполняется",
+        "status-done": "Готово",
+        "status-failed": "Ошибка",
+        "failed": "Настройка не удалась: {error}",
+        "back": "Назад к форме",
+        "node-ready": "{name} подключён и готов к работе.",
+        "coolify-refused": "Coolify отклонил развёртывание:",
+        "local-failed": "Локальный узел не удалось запустить:",
+        "local-failed-generic": "Демон завершился, не успев подключиться. Проверьте logs/pano-node.log рядом с Pano.",
+        "local-starting": "Запуск локального узла…",
+        "local-java": "Java {major} из {path}",
+        "local-daemon-started": "Демон запущен (pid {pid}).",
+        "local-waiting": "Ожидание подключения узла к Pano…",
+        "local-connected": "Локальный узел подключён.",
+        "local-timeout": "Узел не подключился за {seconds} секунд. Проверьте logs/pano-node.log рядом с Pano.",
+        "pano-url": {
+          "advanced": "Дополнительно",
+          "label": "Адрес Pano, доступный с узла",
+          "hint": "Оставьте пустым, чтобы использовать адрес сайта. Укажите его, если машина не достучится до Pano по нему — за NAT, через SSH-туннель или в тестовой сети со своим DNS. По этому адресу узел подключается и скачивает файлы.",
+          "invalid": "Укажите полный адрес, начинающийся с http:// или https://.",
+          "unsupported": "Эта сборка Pano не отдаёт готовую команду установки, поэтому команда выше собрана здесь, и адрес может быть недоступен с узла. Проверьте его перед запуском команды."
+        }
+      },
       "add-permission-node": {
         "title": "Добавить узлы разрешений",
         "input-placeholder": "Введите разрешение и нажмите Enter",
@@ -1645,6 +2997,17 @@
           "custom": "Свой"
         }
       },
+      "add-server": {
+        "title": "Добавить сервер",
+        "description": "Создайте новый сервер или подключите уже работающий.",
+        "create-title": "Создать новый сервер",
+        "create-description": "Новый сервер: Pano установит и запустит его на узле.",
+        "link-title": "Подключить через плагин Pano",
+        "link-description": "Ваш сервер через плагин. Запуск и остановка — не из Pano.",
+        "create-unavailable": "Мастера создания сервера нет в этой сборке Pano.",
+        "link-agent-title": "Подключить через Pano Agent",
+        "link-agent-description": "Ваш сервер с полным управлением. Нужен лишь один jar в его папке."
+      },
       "connect-server": {
         "title": "Подключить сервер",
         "toggle-connect-server": "Переключить подключение сервера",
@@ -1660,12 +3023,169 @@
         "code-refresh": "Код обновится через {timeToRefreshKey} секунд.",
         "notification-will-come": "Запрос на подключение придет в виде уведомления."
       },
+      "create-server": {
+        "title": "Создать сервер",
+        "step-of": "Шаг {current} из {total} · {name}",
+        "step-source": "Источник",
+        "step-node": "Узел",
+        "step-software": "Ядро",
+        "step-folder": "Папка",
+        "step-settings": "Настройки",
+        "step-review": "Проверка",
+        "source-description": "Откуда взять этот сервер?",
+        "source-fresh-title": "Установка с нуля",
+        "source-fresh-description": "Выберите ядро и версию — Pano установит сервер с нуля.",
+        "source-folder-title": "Существующая папка на узле",
+        "source-folder-description": "Взять под управление папку сервера, которая уже лежит на узле. Ничего не переустанавливается.",
+        "source-upload-title": "Загрузить существующий сервер",
+        "source-upload-description": "Загрузите zip-архив сервера, который у вас уже работает.",
+        "source-modpack-title": "Модпак",
+        "source-modpack-description": "Установить серверную часть модпака из файла сборки.",
+        "coming-later": "Появится в одной из следующих версий Pano.",
+        "node-description": "Выберите узел, на котором будет работать сервер.",
+        "node-empty-description": "Пока нет ни одного узла в сети. Узел — это машина, на которой работают ваши серверы: настройте локальный или подключите другой.",
+        "nodes-unavailable": "Эта сборка Pano пока не умеет управлять узлами.",
+        "add-node": "Добавить узел",
+        "software-description": "Выберите ядро. Большинство плагинов пишут под Paper.",
+        "software-recommended": "Рекомендуем",
+        "software-deprecated": "Устарело",
+        "software-build": "Собирается на узле",
+        "software-build-hint": "BuildTools собирает Spigot на узле: нужны git и подходящая версия Java, первая сборка версии занимает около 10 минут, а последующие установки используют её повторно.",
+        "software-jenkins": "Последняя сборка CI",
+        "software-jenkins-hint": "Загружается из Jenkins проекта; версия — это номер сборки.",
+        "software-versions": "Версий: {count}",
+        "software-empty": "Каталог ядер пуст. Проверьте, есть ли у Pano доступ в интернет.",
+        "software-unavailable": "В этой сборке Pano ещё нет каталога ядер.",
+        "version-label": "Версия Minecraft",
+        "version-latest-build": "Последняя сборка",
+        "spigot-hint": "У Spigot нет официальной сборки, поэтому узел собирает его через BuildTools — это занимает несколько минут. Paper полностью заменяет его и рекомендуется.",
+        "folder-description": "Укажите путь к папке сервера на узле. Pano прочитает jar, загрузчик и порт и возьмёт сервер как есть.",
+        "folder-label": "Путь к папке на узле",
+        "folder-hint": "Абсолютный путь, доступный узлу, например /home/minecraft/survival.",
+        "name-label": "Название сервера",
+        "name-placeholder": "survival",
+        "eula-label": "Я принимаю",
+        "eula-link": "Minecraft EULA",
+        "review-description": "Проверьте всё перед установкой сервера.",
+        "review-source": "Источник",
+        "review-node": "Узел",
+        "review-folder": "Папка",
+        "review-software": "Ядро",
+        "review-name": "Название",
+        "review-memory": "Память",
+        "review-port": "Порт",
+        "review-java": "Java",
+        "review-jvm-args": "Аргументы JVM",
+        "review-auto-start": "Запускать вместе с Pano",
+        "review-crash-restart": "Перезапуск после сбоя",
+        "review-auto-update-check": "Автоматическая проверка обновлений",
+        "review-none": "Нет",
+        "create-button": "Создать сервер",
+        "created": "Сервер {name} устанавливается.",
+        "create-unavailable": "Эта сборка Pano пока не умеет создавать серверы.",
+        "import": {
+          "step-upload": "Архив",
+          "step-modpack": "Модпак",
+          "folder-invalid": "Укажите абсолютный путь, например /home/minecraft/survival.",
+          "folder-copy-note": "Папка копируется, а не переносится — оригинал остаётся на месте.",
+          "upload-description": "Загрузите zip с папкой сервера. Pano передаст его узлу, тот распакует архив и прочитает содержимое.",
+          "upload-drop": "Перетащите сюда .zip или нажмите, чтобы выбрать",
+          "upload-limit": "До 1 ГБ. Загрузка действительна 30 минут.",
+          "upload-progress": "Загрузка архива",
+          "upload-expires": "доступно для импорта ещё 30 минут",
+          "upload-too-large": "Этот архив больше 1 ГБ.",
+          "upload-wrong-type": "Импортировать можно только архивы .zip.",
+          "upload-unavailable": "Эта сборка Pano пока не принимает загрузку серверов.",
+          "modpack-description": "Найдите модпак на Modrinth. Pano скачает его серверные файлы и установит нужный загрузчик.",
+          "modpack-search-placeholder": "Поиск модпаков",
+          "modpack-search-hint": "Введите название модпака, чтобы искать на Modrinth.",
+          "modpack-no-results": "По этому запросу модпаков нет.",
+          "modpack-search-failed": "Поиск модпаков не удался. Попробуйте ещё раз.",
+          "modpack-unavailable": "Эта сборка Pano пока не умеет просматривать модпаки.",
+          "modpack-version-label": "Версия сборки",
+          "modpack-no-versions": "У этого модпака нет версии, которую Pano может установить на сервер.",
+          "detected-note": "Pano сам определит серверное ПО, версию Minecraft и порт из того, что импортируется.",
+          "will-be-detected": "определится автоматически",
+          "review-archive": "Архив",
+          "review-modpack": "Модпак"
+        },
+        "source-in-place-title": "Существующая папка, на месте",
+        "source-in-place-description": "Узел запускает папку сервера, которая уже есть на его машине, прямо оттуда. Ничего не копируется и не перемещается.",
+        "in-place-description": "Укажите путь к папке сервера на машине узла. Pano прочитает jar, загрузчик и порт и будет запускать сервер из этой папки; миры, плагины и настройки остаются на месте.",
+        "in-place-stop-note": "Сначала остановите сервер и отключите то, что его запускало (служба systemd, сессия screen, другая панель). Два процесса в одной папке портят мир, поэтому Pano откажется от папки, в которой сервер ещё работает."
+      },
+      "file-editor": {
+        "unsaved": "Не сохранено",
+        "binary": "Это двоичный файл. Скачайте его, чтобы с ним работать.",
+        "truncated": "Прочитано только начало файла, поэтому он доступен только для чтения. Скачайте его, чтобы увидеть целиком.",
+        "save-hint": "Ctrl+S — сохранить.",
+        "read-failed": "Не удалось прочитать файл.",
+        "load-failed": "Не удалось загрузить редактор.",
+        "discard-question": "Есть несохранённые изменения.",
+        "keep-editing": "Продолжить редактирование",
+        "discard": "Отменить изменения",
+        "size-changed": "{size} ({delta} не сохранено)"
+      },
       "make-main-server": {
         "title": "Вы уверены, что хотите сделать \"{serverName}\" главным сервером?"
       },
       "remove-server": {
-        "title": "Вы уверены, что хотите удалить этот сервер?",
-        "account-password": "Пароль аккаунта"
+        "delete-title": "Удалить этот сервер?",
+        "remove-title": "Убрать этот сервер из Pano?",
+        "remove-info": "Файлы на сервере Minecraft останутся.",
+        "in-place-info": "Его файлы остаются в своей папке; убираются только файлы самого Pano.",
+        "agent-info": "Pano Agent удалит свою папку .pano-agent и остановится. pano-agent.jar останется: удалите его и снова запускайте сервер напрямую через его jar.",
+        "in-place-backups": "Резервные копии, сделанные Pano, будут удалены.",
+        "account-password": "Пароль аккаунта",
+        "backups-loading": "Проверяем резервные копии…",
+        "backups-all": "Его файлы и все резервные копии тоже будут удалены с узла.",
+        "no-backups": "Его файлы будут удалены с узла. Резервных копий у него нет.",
+        "backups": "Его файлы и {count, plural, one {# резервная копия} few {# резервные копии} many {# резервных копий} other {# резервной копии}} тоже будут удалены с узла.",
+        "backups-size": "Его файлы и {count, plural, one {# резервная копия} few {# резервные копии} many {# резервных копий} other {# резервной копии}} ({size}) тоже будут удалены с узла."
+      },
+      "schedule-editor": {
+        "create-title": "Новое расписание",
+        "edit-title": "Изменить расписание",
+        "name-label": "Название",
+        "name-placeholder": "Ночной перезапуск",
+        "cron-label": "Когда выполнять",
+        "cron-hint": "Cron из пяти полей: минута, час, день месяца, месяц, день недели.",
+        "timezone-label": "Часовой пояс",
+        "warn-label": "Предупредить игроков (минут)",
+        "warn-hint": "Перед остановкой или перезапуском игроки получают предупреждение за столько минут, затем за 5 и за 1. Ноль отключает предупреждение.",
+        "preview-title": "Здесь появятся ближайшие запуски.",
+        "preview-loading": "Проверяем выражение...",
+        "preview-invalid": "Pano не может разобрать это выражение cron.",
+        "preview-failed": "Не удалось загрузить предпросмотр.",
+        "tasks-label": "Задачи",
+        "tasks-hint": "Они выполняются одна за другой, сверху вниз.",
+        "tasks-empty": "Добавьте хотя бы одну задачу.",
+        "task-kind": "Тип задачи",
+        "task-action": "Действие питания",
+        "task-command": "Команда",
+        "task-command-placeholder": "say Скоро перезапуск",
+        "task-backup-name": "Название копии",
+        "task-backup-placeholder": "Название копии (необязательно)",
+        "task-keep": "Сколько копий хранить",
+        "move-up": "Вверх",
+        "move-down": "Вниз",
+        "backup-unavailable": "Для задач резервного копирования нужен узел или плагин Pano, который умеет делать копии этого сервера.",
+        "enabled-label": "Выполнять это расписание",
+        "error-name": "Укажите название расписания.",
+        "error-cron": "Введите выражение cron.",
+        "error-cron-invalid": "Pano не может разобрать это выражение cron.",
+        "error-tasks": "Добавьте хотя бы одну задачу.",
+        "error-command": "Для задачи-команды нужна команда.",
+        "save-failed": "Не удалось сохранить расписание.",
+        "error-backup-include": "Для выборочного бэкапа нужен хотя бы один путь."
+      },
+      "server-player-action": {
+        "kick-title": "Кикнуть {username}",
+        "kick-label": "Причина (необязательно)",
+        "kick-placeholder": "За что его кикают?",
+        "message-title": "Сообщение игроку {username}",
+        "message-label": "Сообщение",
+        "message-placeholder": "Что он увидит в чате?"
       },
       "server-request": {
         "title": "Вы уверены, что хотите подключить сервер \"{serverName}\" к платформе?",
@@ -1675,15 +3195,22 @@
         "display-name-hint": "Так сервер будет называться в панели вместо имени игрового сервера. Оставьте пустым, чтобы использовать имя с сервера."
       },
       "servers": {
-        "connect-server-button": "Подключить сервер",
-        "servers": "Выбрать",
+        "connect-server-button": "Добавить сервер",
+        "servers": "Серверы",
         "main-server": "Главный сервер",
         "online": "В сети",
+        "offline": "Не в сети",
         "other-servers-heading": "Остальные серверы",
         "search-no-matches": "По запросу не найдено других серверов",
         "search-placeholder": "Поиск среди остальных...",
         "select-server-tooltip": "Выбрать этот сервер",
-        "selecting-server": "Выбор…"
+        "selecting-server": "Выбор…",
+        "cpu": "ЦП",
+        "ram": "Память",
+        "ram-of-host": "{used} из {total} памяти узла",
+        "disk": "Диск",
+        "vitals-unknown": "Данных пока нет",
+        "task-failed": "{task}: ошибка"
       },
       "unban-player": {
         "title": "Вы уверены, что хотите разбанить этого игрока?"
@@ -1751,6 +3278,97 @@
         "preview-error": "Не удалось загрузить предпросмотр.",
         "privacy-policy": "Политика конфиденциальности",
         "learn-more": "Подробнее"
+      },
+      "server-file-upload": {
+        "title": "Загрузить файлы",
+        "destination": "Загрузка в папку",
+        "drag-here": "Перетащите файлы сюда или нажмите, чтобы выбрать",
+        "hint": "Можно сразу несколько файлов — у каждого будет своя полоса прогресса."
+      },
+      "file-preview": {
+        "failed": "Этот файл не удалось показать здесь."
+      },
+      "change-software": {
+        "title": "Смена ПО сервера {name}",
+        "title-reinstall": "Переустановка сервера {name}",
+        "section-software": "ПО",
+        "current": "Текущее",
+        "java-pinned-outside": "Java {major} не запустит эту версию; будет выбрана автоматически.",
+        "section-keep": "Что сохранить",
+        "preview-loading": "Проверяем, что можно перенести…",
+        "keep-worlds": "Миры",
+        "keep-worlds-hint": "Все папки миров.",
+        "keep-worlds-denied": "У прокси нет миров.",
+        "keep-plugins": "Плагины",
+        "keep-plugins-hint": "Плагины и их данные.",
+        "keep-plugins-denied": "Только в пределах одного семейства ПО.",
+        "keep-mods": "Моды",
+        "keep-mods-hint": "Папки mods и config.",
+        "keep-configs": "Конфигурация",
+        "keep-configs-hint": "server.properties, конфиги, белый список, операторы, баны.",
+        "keep-configs-vanilla-hint": "Только server.properties, белый список, операторы и баны.",
+        "keep-configs-denied": "Не переносится между прокси и сервером.",
+        "warning-plugins": "Плагины {from} не работают на {to}.",
+        "warning-mods": "Моды {from} не работают на {to}.",
+        "warning-to-proxy": "У прокси нет миров; они останутся в резервной копии.",
+        "warning-to-backend": "Сервер начнёт с новым миром.",
+        "warning-worlds-dropped": "Сервер начнёт с новым миром.",
+        "section-confirm": "Подтверждение",
+        "backup-first": "Сначала сделать резервную копию",
+        "backup-first-hint": "Если копия не удастся, ничего не изменится.",
+        "backup-first-hint-size": "Около {size}. При ошибке ничего не изменится.",
+        "no-backup-warning": "Всё, что не сохраняется, будет потеряно.",
+        "start-after": "Запустить сервер после этого",
+        "start-after-running": "Сейчас запущен; сначала будет остановлен.",
+        "start-after-stopped": "Сейчас остановлен.",
+        "password-label": "Пароль от аккаунта",
+        "summary-running": "{from} → {to}. При ошибке установки всё вернётся.",
+        "summary-stopped": "{from} → {to}. При ошибке установки всё вернётся.",
+        "submit": "Сменить ПО",
+        "progress-running": "Выполняется…",
+        "progress-waiting": "Ожидание узла…",
+        "progress-done": "Готово",
+        "progress-failed": "Смена не удалась",
+        "progress-rolled-back": "Сервер восстановлен.",
+        "progress-background": "Это окно можно закрыть.",
+        "done-toast": "Сервер {name} теперь работает на {software}.",
+        "done-toast-reinstall": "Сервер {name} переустановлен."
+      },
+      "agent-link": {
+        "title": "Подключить через Pano Agent",
+        "toggle": "Переключить подключение через Pano Agent",
+        "steps": {
+          "1": "Скачайте Pano Agent в папку сервера",
+          "2": "Запустите его в папке сервера",
+          "3": "Дождитесь появления сервера"
+        },
+        "code-loading": "Получаем код…",
+        "code-refresh": "Код обновится через {seconds} с.",
+        "run-hint": "Он спросит, как запускать сервер; Enter оставляет значения по умолчанию.",
+        "java": "Нужна Java {version} или новее.",
+        "linked": "{name} подключён",
+        "open-server": "Открыть сервер",
+        "unavailable": "Эта сборка Pano пока не умеет подключать серверы через агент."
+      },
+      "confirm-update": {
+        "pano-plugin-title": "Обновить плагин Pano на {server}?",
+        "pano-plugin-body": "Он загрузится при следующем перезапуске сервера; сейчас сервер продолжает работать.",
+        "all-plugins-title": "Обновить плагин Pano на {count, plural, one {# сервере} few {# серверах} many {# серверах} other {# серверах}}?",
+        "all-plugins-body": "Каждый загрузится при следующем перезапуске своего сервера; сейчас серверы продолжают работать.",
+        "agent-title": "Обновить Pano Agent на {server}?",
+        "agent-body": "Он обновится сам и переподключится; сервер продолжает работать.",
+        "node-title": "Обновить {node}?",
+        "node-body": "Он обновится сам и переподключится; его серверы продолжают работать."
+      },
+      "pano-plugin-update": {
+        "title": "Обновить плагин Pano вручную",
+        "why-too-old": "Плагин Pano на {name} слишком старый, чтобы обновиться сам. Обновите его вручную один раз — дальше обновления в Pano в один клик.",
+        "why-offline": "{name} не подключён к Pano, поэтому Pano не может связаться с его плагином. Его можно обновить вручную.",
+        "step-download": "Скачайте плагин Pano, собранный для этого сервера.",
+        "download": "Скачать плагин Pano",
+        "download-version": "Скачать плагин Pano {version}",
+        "step-replace": "Остановите сервер. В папке {folder} удалите старый jar Pano (pano.jar или pano-…jar) и положите туда скачанный.",
+        "step-start": "Запустите сервер. Он подключится с новым плагином, а следующее обновление — в один клик."
       }
     },
     "editor": {
@@ -1881,6 +3499,42 @@
     },
     "search-input": {
       "searching": "Поиск..."
+    },
+    "backup-options": {
+      "mode-label": "Тип",
+      "mode-full": "Полный",
+      "mode-full-hint": "Один самодостаточный zip. Его легко скачать и перенести; каждый занимает полный размер заново.",
+      "mode-snapshot": "Снимок",
+      "mode-snapshot-hint": "Инкрементальный: хранит только изменения с прошлых снимков, но каждый восстанавливается сам по себе. Идеально для частых бэкапов мира.",
+      "scope-label": "Что сохранять",
+      "scope-all": "Всё",
+      "scope-worlds": "Только миры",
+      "scope-custom": "Выборочно",
+      "scope-all-hint": "Вся папка сервера.",
+      "scope-worlds-hint": "Мир из level-name в server.properties, его незер и энд и любые другие папки с level.dat.",
+      "scope-custom-hint": "Только файлы и папки, перечисленные ниже.",
+      "worlds-found": "Найдено:",
+      "worlds-none": "Папки мира пока нет — бэкап не удастся.",
+      "include-label": "Включить",
+      "include-hint": "По одному пути в строке, относительно папки сервера. Папка заканчивается на /.",
+      "exclude-label": "Исключить",
+      "exclude-hint": "По одному в строке: папка с / на конце (plugins/dynmap/), шаблон имени файла (*.log) или точный путь.",
+      "exclude-defaults": "Также исключить обычный мусор:"
+    },
+    "pano-plugin-update-button": {
+      "label": "Обновить плагин Pano"
+    },
+    "daemon-update": {
+      "running-agent": "Обновляем Pano Agent до {version}…",
+      "running-agent-plain": "Обновляем Pano Agent…",
+      "restarting-agent": "Перезапускаем Pano Agent…",
+      "running": "Обновляем до {version}…",
+      "running-plain": "Обновляем…",
+      "restarting": "Перезапускаем…",
+      "done": "Обновлено до {version}",
+      "done-plain": "Обновлено",
+      "failed": "Не удалось обновить: {message}",
+      "failed-plain": "Не удалось обновить"
     }
   },
   "page-error": {
@@ -1894,6 +3548,46 @@
     "MANAGE_SERVERS": {
       "title": "Управление серверами",
       "description": "Может подключать, отключать и управлять чем угодно на сервере."
+    },
+    "CREATE_SERVERS": {
+      "title": "Создание серверов",
+      "description": "Может создавать новые серверы на узле."
+    },
+    "MANAGE_SERVER_CONSOLE": {
+      "title": "Управление консолью сервера",
+      "description": "Может просматривать консоль сервера и отправлять в неё команды."
+    },
+    "MANAGE_SERVER_POWER": {
+      "title": "Управление питанием сервера",
+      "description": "Может запускать, останавливать, перезапускать и принудительно завершать сервер."
+    },
+    "MANAGE_SERVER_PLAYERS": {
+      "title": "Управление игроками сервера",
+      "description": "Может управлять игроками сервера: кикать, банить и добавлять в белый список."
+    },
+    "MANAGE_SERVER_FILES": {
+      "title": "Управление файлами сервера",
+      "description": "Может просматривать, редактировать, загружать и удалять файлы сервера. Внимание: Файлы сервера могут содержать конфиденциальные данные."
+    },
+    "MANAGE_SERVER_BACKUPS": {
+      "title": "Управление резервными копиями сервера",
+      "description": "Может создавать, скачивать, восстанавливать и удалять резервные копии сервера."
+    },
+    "MANAGE_SERVER_PLUGINS": {
+      "title": "Управление плагинами сервера",
+      "description": "Может устанавливать, обновлять и удалять плагины и моды сервера."
+    },
+    "MANAGE_SERVER_SCHEDULES": {
+      "title": "Управление расписаниями сервера",
+      "description": "Может создавать, редактировать и запускать запланированные задачи сервера."
+    },
+    "MANAGE_SERVER_STARTUP": {
+      "title": "Управление запуском сервера",
+      "description": "Может редактировать конфигурацию запуска сервера: версию, флаги и переменные."
+    },
+    "MANAGE_NODES": {
+      "title": "Управление узлами",
+      "description": "Может добавлять, настраивать и удалять узлы, на которых работают управляемые серверы."
     },
     "MANAGE_POSTS": {
       "title": "Управление постами",
@@ -1979,14 +3673,45 @@
     "RESTARTED_PANO": "**{username}** перезапустил Pano.",
     "MAINTENANCE_MODE_BANNED_IP": "IP {ip} заблокирован из-за нескольких неудачных попыток входа в режиме обслуживания.",
     "MAINTENANCE_MODE_UNBANNED_IP": "**{username}** снял блокировку IP {ipList} в режиме обслуживания.",
-    "MAINTENANCE_MODE_TOGGLED": "**{username}** {enabled, select, true {включил режим обслуживания} other {отключил режим обслуживания}}."
+    "MAINTENANCE_MODE_TOGGLED": "**{username}** {enabled, select, true {включил режим обслуживания} other {отключил режим обслуживания}}.",
+    "INSTALLED_NODE_JAVA": "**{username}** установил Java {major} на узел {name}.",
+    "REMOVED_NODE_JAVA": "**{username}** удалил Java {major} с узла {name}.",
+    "AUTO_UPDATED_NODE": "{name} автоматически обновился до {toVersion}.",
+    "LINKED_AGENT_SERVER": "**{username}** подключил {name} через Pano Agent ({directory}).",
+    "SERVER_PANO_PLUGIN_UPDATED": "**{username}** обновил плагин Pano на {serverName} до {toVersion}.",
+    "ACCEPTED_NODE": "**{username}** принял узел {name}.",
+    "CREATED_SERVER": "**{username}** создал сервер {name} ({software} {version}).",
+    "DELETED_NODE": "**{username}** удалил узел {name}.",
+    "DELETED_SERVER": "**{username}** {force, select, true {принудительно удалил} other {удалил}} сервер {name}.",
+    "REINSTALLED_SERVER": "**{username}** переустановил {serverName} на {software} {version}.",
+    "RENAMED_NODE": "**{username}** переименовал узел в {name}.",
+    "SENT_SERVER_COMMAND": "**{username}** выполнил «{command}» на {serverName}.",
+    "SERVER_BACKUP_ACTION": "**{username}** {action, select, CREATE {создал резервную копию} RESTORE {восстановил резервную копию} DELETE {удалил резервную копию} DOWNLOAD {скачал резервную копию} RETENTION {изменил хранение резервных копий} PIN {закрепил резервную копию} UNPIN {открепил резервную копию} other {изменил резервную копию}} на {serverName}.",
+    "SERVER_CRASHED": "Сервер {name} упал.",
+    "SERVER_FILE_CHANGED": "**{username}** {action, select, WRITE {изменил {path}} MKDIR {создал папку {path}} DELETE {удалил {path}} RENAME {переименовал {path} в {target}} ARCHIVE {заархивировал {path}} UNARCHIVE {распаковал {path}} CHMOD {изменил права {path}} UPLOAD {загрузил {path}} DOWNLOAD {скачал {path}} other {изменил {path}}} на {serverName}.",
+    "SERVER_PLAYER_ACTION": "**{username}** {action, select, KICK {выгнал {player}} MESSAGE {написал {player}} OP {выдал оператора {player}} DEOP {снял оператора с {player}} GAMEMODE {сменил режим игры {player}} WHITELIST_ADD {добавил {player} в белый список} WHITELIST_REMOVE {убрал {player} из белого списка} BAN {забанил {player}} other {выполнил действие с {player}}} на {serverName}.",
+    "SERVER_PLUGIN_FILE_ACTION": "**{username}** {action, select, INSTALL {установил} REMOVE {удалил} other {изменил}} {filename} на {serverName}.",
+    "SERVER_PLUGIN_TOGGLED": "**{username}** {enabled, select, true {включил} other {отключил}} {plugin} на {serverName}.",
+    "SERVER_PLUGIN_UPDATED": "**{username}** обновил {pluginName} на {serverName}.",
+    "SERVER_POWER_ACTION": "**{username}** {action, select, START {запустил} STOP {остановил} RESTART {перезапустил} KILL {принудительно завершил} other {управлял}} {serverName}.",
+    "SERVER_SCHEDULE_ACTION": "**{username}** {action, select, CREATE {создал расписание} UPDATE {изменил расписание} DELETE {удалил расписание} TOGGLE {включил или выключил расписание} RUN {запустил расписание} other {изменил расписание}} {name} на {serverName}.",
+    "SERVER_SCHEDULE_RUN": "Расписание {name} на {serverName} {ok, select, true {выполнено} other {не выполнено}}.",
+    "UPDATED_SERVER_STARTUP": "**{username}** изменил параметры запуска {serverName}."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> отправил сообщение в тикете (<b>#{id}</b>).",
     "NEW_TICKET": "<b>{username}</b> создал новый тикет (<b>#{id}</b>).",
     "TICKET_CLOSED_BY_USER": "<b>{username}</b> закрыл тикет (<b>#{id}</b>).",
     "PANO_UPDATE_FOUND": "Хорошие новости! Найдено обновление Pano!",
-    "SERVER_CONNECT_REQUEST": "Сервер запросил подключение к Pano."
+    "SERVER_CONNECT_REQUEST": "Сервер запросил подключение к Pano.",
+    "NODE_CONNECT_REQUEST": "Узел запросил подключение к Pano.",
+    "SERVER_CRASHED": "<b>{serverName}</b> упал.",
+    "NODE_OFFLINE": "Узел стал недоступен.",
+    "BACKUP_FAILED": "Резервное копирование завершилось ошибкой.",
+    "DISK_LOW": "На узле заканчивается место на диске.",
+    "TPS_LOW": "Сервер работает ниже 15 TPS.",
+    "SCHEDULE_FAILED": "Запуск по расписанию завершился ошибкой.",
+    "PLUGIN_UPDATES": "Для <b>{serverName}</b> доступно обновлений плагинов: <b>{count}</b> — {names}"
   },
   "errors": {
     "NETWORK_ERROR": "Сетевая ошибка! Пожалуйста, проверьте подключение.",
@@ -2072,7 +3797,9 @@
     "TITLE_CANT_BE_EMPTY": "Заголовок не может быть пустым.",
     "UNAUTHORIZED": "Вы не авторизованы для доступа к этому ресурсу.",
     "WEBSITE_LOGO_EXCEEDS_SIZE": "Логотип сайта превышает максимально допустимый размер.",
-    "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Логотип сайта имеет недопустимый тип контента."
+    "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Логотип сайта имеет недопустимый тип контента.",
+    "KEEP_INCOMPATIBLE": "Это нельзя сохранить при переходе на выбранное ПО. Проверьте раздел «Что сохранить».",
+    "NETWORK_ROLE_CONFLICT": "Сервер входит в сеть. Уберите его из сети, прежде чем переключаться между прокси и игровым сервером."
   },
   "panel-themes": {
     "light": "Светлая",

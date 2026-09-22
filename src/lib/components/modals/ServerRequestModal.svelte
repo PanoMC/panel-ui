@@ -209,7 +209,8 @@
   import { _ } from 'svelte-i18n';
   import { sanitizeImageSrc } from '$lib/security.util.js';
 
-  import { invalidateAll } from '$app/navigation';
+  import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
 
   import { hideBootstrapModalAndWait } from '$lib/modal.util.js';
 
@@ -240,7 +241,9 @@
           $selectedServer = { ...$server, permissionGranted: true, customName: customNamePayload };
 
           await hideBootstrapModalAndWait(getServerRequestModalEl());
-          await invalidateAll();
+          // Accepting a request is the one moment the admin certainly wants that server: open
+          // its page instead of only refreshing whatever they were looking at.
+          await goto(`${base}/servers/${$server.id}`, { invalidateAll: true });
 
           await showSuccessToast('components.toasts.server-selected', {
             name: customNamePayload ?? $server.name,

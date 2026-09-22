@@ -71,7 +71,7 @@
     chart = new Chart(element, {
       type: 'pie',
       data: {
-        labels: [$_('pages.server.dashboard.online'), $_('pages.server.dashboard.offline')],
+        labels: [$_('pages.servers.card.online'), $_('pages.servers.card.offline')],
         datasets: [{
           data: maxPlayerCount === 0 && playerCount === 0 ? [0, 1] : [displayPlayerCount, emptyCount],
           backgroundColor: [colors.online, colors.empty],

@@ -96,6 +96,63 @@
     "move-down": "Aşağı taşı"
   },
   "pages": {
+    "auth": {
+      "panel-name": "Yönetim paneli",
+      "login": {
+        "title": "Giriş yap",
+        "subtitle": "Yönetim panelini açmak için Pano hesabını kullan.",
+        "username-label": "Kullanıcı adı veya e-posta",
+        "username-placeholder": "admin",
+        "password-label": "Şifre",
+        "show-password": "Şifreyi göster",
+        "hide-password": "Şifreyi gizle",
+        "remember-label": "Beni hatırla",
+        "submit": "Giriş yap",
+        "signed-in": "Giriş yapıldı. Panel açılıyor...",
+        "forgot": "Şifreni mi unuttun?",
+        "forgot-support": "Giriş yapamıyor musun? {email} adresine yaz",
+        "forgot-no-support": "Şifreni sıfırlaması için başka bir yöneticiye ulaş.",
+        "back-to-sign-in": "Girişe dön",
+        "two-factor-title": "İki adımlı doğrulama",
+        "two-factor-description": "Doğrulama uygulamandaki 6 haneli kodu gir.",
+        "two-factor-label": "Doğrulama kodu",
+        "two-factor-submit": "Doğrula",
+        "email-required-label": "E-posta adresi",
+        "email-required-hint": "Bu hesabın henüz e-posta adresi yok. Girişi tamamlamak için bir tane ekle.",
+        "username-required-label": "Kullanıcı adı seç",
+        "username-required-hint": "Bu hesabın adı hâlâ geçici. Kalıcı olarak kullanmak istediğin adı seç.",
+        "link-code-title": "Bu hesap oyun içinden giriş yapıyor",
+        "link-code-description": "Hesabın şifresi yok. Sunucuya gir, bağlama komutunu çalıştır ve bir kez siteden giriş yap; sonrasında panel de çalışır.",
+        "link-code-open-site": "Site girişini aç",
+        "errors": {
+          "invalid": "Kullanıcı adı veya şifre hatalı.",
+          "two-factor-invalid": "Bu kod geçerli değil. Doğrulama uygulamanı kontrol edip tekrar dene.",
+          "email-not-verified": "Giriş yapmadan önce {email} adresini doğrula. Yeni bir doğrulama e-postası gönderildi.",
+          "banned": "Hesabın yasaklı.",
+          "banned-permanent": "Hesabın kalıcı olarak yasaklandı.",
+          "banned-permanent-reason": "Hesabın kalıcı olarak yasaklandı. Sebep: {reason}",
+          "banned-until": "Hesabın {until} tarihine kadar yasaklı.",
+          "banned-until-reason": "Hesabın {until} tarihine kadar yasaklı. Sebep: {reason}",
+          "ip-banned": "Bu IP adresi yasaklı.",
+          "captcha": "Bu giriş captcha istiyor, panel ise captcha gösteremiyor. Bunun yerine siteden giriş yap.",
+          "denied": "Bir eklenti bu girişi reddetti.",
+          "invalid-email": "Bu e-posta adresi geçerli değil.",
+          "email-taken": "Bu e-posta adresi zaten kullanılıyor.",
+          "username-taken": "Bu kullanıcı adı zaten alınmış.",
+          "invalid-username": "Bu kullanıcı adı geçerli değil.",
+          "username-too-short": "Kullanıcı adı en az 3 karakter olmalı.",
+          "username-too-long": "Kullanıcı adı en fazla 16 karakter olabilir.",
+          "installation-required": "Pano henüz kurulmadı. Önce kurulumu tamamla.",
+          "maintenance": "Pano şu anda bakım modunda.",
+          "network": "Pano'ya ulaşılamadı. Bağlantını kontrol edip tekrar dene.",
+          "generic": "Giriş başarısız ({code})."
+        }
+      },
+      "logout": {
+        "title": "Çıkış yapılıyor...",
+        "description": "Bir saniye, oturumun kapatılıyor."
+      }
+    },
     "login": {
       "demo-mode-alert": "Bu işlem demo modunda devre dışıdır."
     },
@@ -206,6 +263,8 @@
         "description": "Pano başarıyla kuruldu ve kullanıma hazır. 🚀 <br /> İşte başlarken yapabileceklerin:",
         "connect-server": "Sunucu Bağla",
         "connect-server-description": "Oyun sunucunu bağla ve daha fazla yönetim özelliklerine eriş.",
+        "enable-server-management": "Sunucu Yönetimini Aç",
+        "enable-server-management-description": "Ayarlar → Platform → Tercihler bölümünden açabilirsin.",
         "import-data": "Verileri İçe Aktar",
         "menu-title": "Menü",
         "links-title": "Bağlantılar",
@@ -267,8 +326,8 @@
       }
     },
     "players": {
-      "title": "{pageType}Oyuncular",
-      "by-perm-group-title": "\"{permissionGroupName}\" Yetkili Oyuncular",
+      "title": "{pageType}Kullanıcılar",
+      "by-perm-group-title": "\"{permissionGroupName}\" Yetkili Kullanıcılar",
       "bans-history-title": "Yasaklama Geçmişi",
       "ip-bans-title": "IP Yasakları",
       "authorized": "Yetkili",
@@ -437,6 +496,22 @@
       "platform": {
         "title": "Platform Ayarları",
         "preferences": "Tercihler",
+        "usage-mode": {
+          "label": "Kullanım Modu",
+          "hint": "Mod değiştirmek panelde hangi bölümlerin görüneceğini değiştirir.",
+          "website": {
+            "title": "Web Site",
+            "description": "Sadece web site: haberler, forum, kayıt, mağaza."
+          },
+          "servers": {
+            "title": "Sunucu Yönetimi",
+            "description": "Konsol, oyuncular, yedekler, dosyalar — herkese açık web site yok."
+          },
+          "both": {
+            "title": "İkisi de",
+            "description": "Web site ve sunucu yönetimi."
+          }
+        },
         "authentication": "Kimlik Doğrulama",
         "developer-mode": "Geliştirici Modu",
         "allow-user-locale-selection": "Kullanıcı Dil Seçimi",
@@ -546,6 +621,33 @@
           "label": "{link} gönder",
           "label-link": "Kullanım verileri",
           "description": "Bu veriler Pano'yu daha iyi hale getirmemiz için kullanılacaktır."
+        },
+        "alerts": {
+          "title": "Sunucu uyarıları",
+          "description": "Pano'nun yöneticileri neler için uyaracağı. Her uyarı bir panel bildirimi olur; e-posta gönderimi türe göre isteğe bağlıdır.",
+          "unavailable": "Pano'nun bu sürümünde sunucu uyarıları henüz yok.",
+          "email-unavailable": "E-posta uyarıları için çalışan bir e-posta yapılandırması ve sunucu uyarısı şablonu gerekir; bu yüzden e-posta anahtarları şimdilik kapalı.",
+          "column-kind": "Uyarı",
+          "column-enabled": "Bildir",
+          "column-email": "E-posta",
+          "kinds": {
+            "server_crashed": "Sunucu çöktü",
+            "node_offline": "Düğüm çevrimdışı",
+            "backup_failed": "Yedekleme başarısız",
+            "disk_low": "Disk doluyor",
+            "tps_low": "TPS düşük",
+            "schedule_failed": "Zamanlanmış görev başarısız",
+            "plugin_updates": "Eklenti güncellemeleri"
+          },
+          "hints": {
+            "server_crashed": "Sunucunun süreci kimse istemeden sonlandı.",
+            "node_offline": "Bir düğüm bir dakikadan uzun süredir sinyal göndermiyor.",
+            "backup_failed": "Bir yedekleme tamamlanamadı.",
+            "disk_low": "Bir düğümün diski %90'dan fazla dolu; en fazla altı saatte bir bildirilir.",
+            "tps_low": "Bir sunucu üst üste beş ölçümde 15 TPS'nin altında kaldı; en fazla 30 dakikada bir bildirilir.",
+            "schedule_failed": "Zamanlanmış bir çalışma hatayla bitti.",
+            "plugin_updates": "Yönetilen bir sunucudaki eklenti veya modların yeni bir sürümü var; günde bir kez denetlenir."
+          }
         }
       },
       "updates": {
@@ -577,7 +679,36 @@
           "preparing": "Hazırlanıyor...",
           "installing-new-update": "Yeni güncelleme yükleniyor..."
         },
-        "updating-leave-alert": "Bir güncelleme çalışıyor, bu sayfadan ayrılmak bazı özelliklerin bozulmasına yol açabilir!"
+        "updating-leave-alert": "Bir güncelleme çalışıyor, bu sayfadan ayrılmak bazı özelliklerin bozulmasına yol açabilir!",
+        "servers": {
+          "title": "Node'lar, agent'lar ve Pano eklentisi",
+          "update-all-plugins": "Tüm Pano eklentilerini güncelle",
+          "auto-update": "Node ve agent'ları otomatik güncelle",
+          "auto-update-hint": "Pano'da daha yeni bir node sürümü varsa her node ve agent bağlanır bağlanmaz kendini günceller. Çalışan sunucular çalışmaya devam eder; Pano eklentisi senden habersiz asla güncellenmez.",
+          "unavailable": "Bu Pano sürümü node ve eklenti güncellemelerini henüz listeleyemiyor.",
+          "empty": "Henüz node, agent ya da Pano eklentili sunucu yok.",
+          "column-name": "Ad",
+          "column-kind": "Tür",
+          "column-version": "Sürüm",
+          "kind-node": "Node",
+          "kind-agent": "Pano Agent",
+          "kind-pano-plugin": "Pano eklentisi",
+          "offline": "Çevrimdışı — geri gelince güncellenir.",
+          "up-to-date": "Güncel",
+          "update-by-hand": "Elle güncelle",
+          "unknown": "Sürüm henüz bilinmiyor",
+          "restart-note": "Pano eklentisi güncellemesi o sunucu bir sonraki yeniden başlatılışında yüklenir. Node ve agent'lar hiçbir sunucuyu durdurmadan güncellenir.",
+          "plugin-update-started": "{name} için Pano eklentisi güncellemesi başladı. Yüklemek için sunucuyu yeniden başlat.",
+          "node-update-started": "{name} kendini güncelliyor.",
+          "update-all-started": "{count} sunucuda Pano eklentisi güncelleniyor. Yüklemek için onları yeniden başlat.",
+          "reason": {
+            "NO_PLUGIN_MODULE": "Bu yazılım için Pano eklentisi yok",
+            "PLUGIN_TOO_OLD": "Eklenti kendini güncelleyemeyecek kadar eski — bir kez elle güncelle",
+            "NODE_OFFLINE": "Node çevrimdışı",
+            "SERVER_OFFLINE": "Sunucu çevrimdışı",
+            "JAR_UNAVAILABLE": "Eklenti derlemesi yok"
+          }
+        }
       }
     },
     "ticket-detail": {
@@ -662,6 +793,31 @@
           "never": "Asla",
           "date": "Tarih"
         }
+      },
+      "server-scope": {
+        "title": "Hangi sunucular",
+        "description": "Bu yetkiyi belirli sunucularla sınırla. Hiçbirini işaretlemezsen bütün sunucular için geçerli olur.",
+        "all-servers": "Bütün sunucular",
+        "badge-all": "bütün sunucular",
+        "badge-count": "{count} sunucu",
+        "badge-one": "1 sunucu",
+        "loading": "Sunucular yükleniyor...",
+        "empty": "Henüz bağlı sunucu yok, bu yüzden bu yetki sonradan ekleyeceğin bütün sunucuları kapsar.",
+        "unavailable": "Sunucu listesi yüklenemedi, kapsam olduğu gibi bırakıldı.",
+        "select-all": "Hepsini seç",
+        "clear": "Temizle",
+        "save-hint": "Sunucu bazlı kapsam kaydedilemedi. Pano'nun bu sürümü yetki bağlamını henüz kabul etmiyor olabilir — Pano'yu güncelleyip tekrar dene."
+      },
+      "deny-commands": {
+        "title": "Engellenen komutlar",
+        "description": "Bu yetkinin sunucu konsoluna asla gönderemeyeceği komutlar.",
+        "placeholder": "op, gamemode, worldedit:*",
+        "helper": "Yalnızca komutun ilk kelimesi eşleştirilir ve büyük/küçük harf farkı gözetilmez. Sonuna * koyarsan onunla başlayan her şeyi kapsar: \"world*\" hem worldedit'i hem worldborder'ı engeller. Eklemek için Enter'a bas ya da virgül yaz. Yöneticiler bu listeden etkilenmez.",
+        "empty": "Henüz hiçbir komut engellenmedi — bu yetki her komutu gönderebilir.",
+        "invalid": "\"{token}\" geçerli bir komut kalıbı değil. Harf, rakam, _ : - ve en sonda tek bir * kullanabilirsin.",
+        "remove": "{pattern} kalıbını kaldır",
+        "badge-count": "{count} komut engelli",
+        "save-hint": "Engellenen komut listesi kaydedilemedi. Pano'nun bu sürümü yetki bağlamını henüz kabul etmiyor olabilir — Pano'yu güncelleyip tekrar dene."
       },
       "create-permission-group-button": "Yetki Grubu Oluştur",
       "card-title": "{count} Yetki Grubu",
@@ -764,51 +920,1165 @@
       "created-at": "Yayımlandı:",
       "updated-at": "Güncellendi:"
     },
-    "server": {
-      "dashboard": {
-        "title": "Sunucu İstatistikleri",
-        "server-status": "Sunucu {status}",
+    "servers": {
+      "card": {
         "online": "Çevrimiçi",
         "offline": "Çevrimdışı",
-        "player": "{playerCount}/{maxPlayerCount} Oyuncu",
-        "working-time": "Çalışma Süresi: {upTime}",
-        "last-online": "Son Aktif Zamanı: ",
+        "linked": "Bağlı",
+        "players": "{playerCount}/{maxPlayerCount} oyuncu",
+        "legacy-plugin": "Eklenti güncellemesi gerekli"
+      },
+      "header": {
+        "copy-address": "Adresi kopyala",
+        "protocol": "Protokol {version}",
+        "plugin-version": "Eklenti {version}",
+        "start": "Başlat",
+        "stop": "Durdur",
+        "restart": "Yeniden Başlat",
+        "kill": "Sonlandır",
+        "power-requires-managed": "Yalnızca Pano'nun çalıştırdığı sunucular için",
+        "power-requires-capability": "Bunun için Pano eklentisini güncelle",
+        "power-no-permission": "Yetkin yok",
+        "power-offline": "Sunucu çevrimdışı",
+        "confirm-stop-title": "Sunucu durdurulsun mu?",
+        "confirm-stop-body": "{name} sunucusunda oynayan herkesin bağlantısı kesilecek. Bağlı bir sunucu kendi kendine geri gelmez, birinin yeniden başlatması gerekir.",
+        "confirm-restart-title": "Sunucu yeniden başlatılsın mı?",
+        "confirm-restart-body": "{name} yeniden başlarken oynayan herkesin bağlantısı kesilecek. Bunun için sunucuda bir yeniden başlatma betiği olmalı; yoksa sunucu sadece durur.",
+        "power-sent-stop": "{name} sunucusuna durdurma gönderildi.",
+        "power-sent-restart": "{name} sunucusuna yeniden başlatma gönderildi.",
+        "managed": "Pano yönetiyor",
+        "managed-on": "{node} düğümünde yönetiliyor",
+        "agent": "Pano Agent",
+        "agent-on": "{host} üzerindeki Pano Agent çalıştırıyor",
+        "power-state": "Zaten {state}",
+        "power-node-offline": "Düğüm çevrimdışı",
+        "power-cooldown": "Çok fazla işlem, biraz bekle",
+        "confirm-start-title": "Sunucu başlatılsın mı?",
+        "confirm-start-body": "{name} kendi düğümünde başlatılacak. Oyuncuların girebilmesi biraz sürer.",
+        "confirm-kill-title": "Sunucu sonlandırılsın mı?",
+        "confirm-kill-body": "{name} kaydetmeden, anında sonlandırılır. Bunu yalnızca normal durdurma işe yaramadığında yap — dünya son değişikliklerini kaybedebilir.",
+        "power-sent-start": "{name} sunucusuna başlatma gönderildi.",
+        "power-sent-kill": "{name} sunucusuna sonlandırma gönderildi.",
+        "task-install": "Kuruluyor",
+        "task-reinstall": "Yeniden kuruluyor",
+        "task-delete": "Siliniyor",
+        "task-backup": "Yedekleniyor",
+        "task-restore": "Geri yükleniyor",
+        "task-import": "İçe aktarılıyor",
+        "task-working": "Çalışıyor",
+        "task-pano-plugin-update": "Pano eklentisi güncelleniyor",
+        "state-reason": "Sebep: {reason}",
+        "icon-change": "Sunucu simgesini değiştir — tıklayın ya da bir görsel bırakın",
+        "icon-unavailable": "Şu anda bu sunucunun dosyalarına yazabilecek bir kaynak yok.",
+        "icon-too-large": "Simge 1 MB'tan küçük olmalı.",
+        "icon-wrong-type": "Simge PNG, JPEG, GIF ya da WebP biçiminde olmalı.",
+        "icon-updated": "Sunucu simgesi güncellendi.",
+        "icon-updated-restart": "Sunucu simgesi güncellendi. Uygulanması için sunucuyu yeniden başlatın.",
+        "adopted-alert": "Bu sunucu, düğümü yeniden başladığında zaten çalışıyordu; Pano onu olduğu gibi devraldı. Panelden bir kez yeniden başlatana kadar konsol girişi ve çökünce otomatik yeniden başlatma sınırlıdır.",
+        "task-java-install": "Java indiriliyor",
+        "task-java-remove": "Java kaldırılıyor",
+        "task-buildtools-note": "BuildTools sunucuyu derliyor; bu genelde 5–10 dakika sürer.",
+        "update-plugin": "Pano eklentisi eski — {version} sürümü çıktı",
+        "update-plugin-outdated": "Pano eklentisi eski",
+        "update-agent": "Pano Agent güncellemesi var",
+        "update-daemon-started": "Güncelleniyor — sunucu çalışmaya devam ediyor."
+      },
+      "overview": {
+        "capabilities-title": "Yetenekler",
+        "capabilities-description": "Bu sunucudaki Pano eklentisinin yapabildikleri. Sunmadığı bölümler yine açılır; kontrolleri kapalı olur ve neyi güncellemen gerektiğini söyleyen bir uyarı görünür.",
+        "legacy-plugin-alert": "Konsol, oyuncular ve metrikleri açmak için pano-mc-plugin'i güncelle.",
+        "console-title": "Konsol",
         "statistics": "İstatistik",
-        "server-name": "Sunucu İsmi:",
-        "server-type": "Sunucu Türü:",
-        "local-ip-address": "Yerel IP Adresi:",
-        "server-version": "Sunucu Sürümü:",
-        "total-connected-servers": "Toplam Bağlı Sunucular:",
-        "date-added": "Eklenme Zamanı:"
+        "date-added": "Eklenme zamanı",
+        "metrics-title": "Performans",
+        "metrics-live": "Canlı",
+        "metrics-waiting": "İlk ölçüm bekleniyor...",
+        "metrics-offline": "Sunucu kapalı",
+        "metrics-unavailable": "Kullanılamıyor",
+        "metrics-empty": "Henüz kayıtlı ölçüm yok. Sunucu birkaç dakika çevrimiçi kaldığında grafik dolacak.",
+        "metric-unavailable": "Yok",
+        "mspt": "MSPT",
+        "mspt-value": "{value} ms",
+        "memory": "JVM belleği",
+        "memory-value": "{used} / {max}",
+        "cpu": "İşlemci",
+        "cpu-value": "%{value}",
+        "chart-tps": "TPS",
+        "chart-players": "Oyuncular",
+        "chart-peak-players": "En yüksek oyuncu",
+        "chart-average-players": "Ortalama oyuncu",
+        "console-open": "Konsolu aç",
+        "activity-title": "Son hareketler",
+        "activity-open": "Tüm hareketler",
+        "last-backup": "Son yedek",
+        "last-backup-open": "Yedekleri aç",
+        "activity-chart-title": "Sunucu Aktivitesi",
+        "activity-chart-hour": "Saat",
+        "activity-chart-day": "Gün",
+        "activity-chart-week": "Hafta",
+        "activity-chart-month": "Ay",
+        "activity-chart-year": "Yıl",
+        "vital-ram": "Bellek",
+        "vital-cpu": "İşlemci",
+        "vital-disk": "Disk",
+        "vital-network": "Ağ",
+        "network-node-total": "düğüm geneli",
+        "refresh-interval": "Yenileme aralığı",
+        "refresh-now": "Şimdi yenile",
+        "refresh-paused": "Duraklatıldı",
+        "refresh-interval-seconds": "{count} sn",
+        "refresh-interval-minutes": "{count} dk",
+        "players-online": "Oyuncular",
+        "uptime": "Çalışma süresi",
+        "mspt-info": "Tick başına milisaniye: sunucunun bir oyun döngüsünü (tick) ne kadar sürede tamamladığı. Minecraft saniyede 20 tick çalışır, yani her tick için 50 ms vardır. 50 ms'nin altında sunucu yetişir ve TPS 20'de kalır; üstünde TPS düşer ve oyuncular gecikme hisseder. 20 ms altı rahat, 40–50 ms sınıra yakın.",
+        "vitals-range": "Aralık",
+        "range-1m": "1 dk",
+        "range-1h": "1 sa",
+        "range-12h": "12 sa",
+        "range-24h": "24 sa",
+        "range-7d": "1 hafta",
+        "range-30d": "30 gün",
+        "server-time": "Sunucu saati",
+        "server-time-zone": "Saatleri sunucunun saat diliminde göster ({zone})",
+        "server-time-unavailable": "Bu sunucu saat dilimini henüz bildirmedi.",
+        "performance-range-hour": "Saat",
+        "performance-range-day": "Gün",
+        "performance-range-week": "Hafta",
+        "tps-triple": "TPS (1dk/5dk/15dk)",
+        "info": {
+          "section-general": "Genel",
+          "section-network": "Ağ",
+          "section-runtime": "Çalışma",
+          "section-agent": "Pano Agent",
+          "agent-status": "Durum",
+          "agent-version": "Sürüm",
+          "agent-version-update": "{version} (güncelleme var)",
+          "agent-host": "Makine",
+          "agent-platform": "Platform",
+          "section-plugin": "Pano eklentisi",
+          "section-backups": "Yedekler",
+          "motd": "MOTD",
+          "id": "Sunucu ID",
+          "uuid": "UUID",
+          "time-zone": "Saat dilimi",
+          "local-address": "Yerel adres",
+          "game-port": "Oyun portu",
+          "adopted": "Düğüm yeniden başladıktan sonra devralındı",
+          "console-input": "Konsol girişi",
+          "console-input-available": "Kullanılabilir",
+          "console-input-unavailable": "Kullanılamıyor",
+          "java": "Java",
+          "java-automatic": "Otomatik",
+          "jvm-args": "JVM parametreleri",
+          "jvm-args-none": "Yok",
+          "auto-start": "Düğümle birlikte başlat",
+          "crash-restart": "Çökünce yeniden başlat",
+          "last-exit-code": "Son çıkış kodu",
+          "directory": "Klasör",
+          "capabilities": "Yetenekler",
+          "last-connected": "Son bağlanma",
+          "last-disconnected": "Son kopma",
+          "yes": "Evet",
+          "no": "Hayır",
+          "on": "Açık",
+          "off": "Kapalı",
+          "installed-plugins": "Kurulu eklentiler",
+          "plugin-version": "Eklenti sürümü",
+          "protocol": "Protokol",
+          "plugin-update-available": "Güncelleme var: {version}",
+          "plugin-up-to-date": "Güncel",
+          "plugin-update-started": "Pano eklentisini {version} sürümüne güncelleme başladı. Yüklemek için sunucuyu yeniden başlat."
+        },
+        "java-missing": "Son başlatma başarısız oldu: bu sunucunun ihtiyaç duyduğu Java {major} bu düğümde yok.",
+        "java-missing-action": "Java {major} indir ve başlat",
+        "java-missing-no-permission": "Java {major} sürümünü yüklemesi için düğümleri yöneten birine başvurun."
+      },
+      "capability": {
+        "node-offline": "Bu sunucuyu çalıştıran düğüm çevrimdışı. {section}, düğüm yeniden bağlanınca geri gelir.",
+        "server-stopped": "{section} bölümünü kullanmak için sunucuyu başlat.",
+        "server-running": "{section} bunu yalnızca sunucu dururken yapabilir. Önce sunucuyu durdur.",
+        "plugin-not-connected": "Bu sunucudaki Pano eklentisi bağlı değil. Sunucuyu başlat ya da eklentinin bağlantısını kontrol et.",
+        "plugin-outdated": "Bu sunucudaki Pano eklentisi {section} için çok eski. pano-mc-plugin'i güncelle.",
+        "plugin-lacks": "Bu sunucu {section} bölümünü desteklemiyor. pano-mc-plugin'i güncelle (ya da eklentinin ayarından aç) veya sunucuyu bir Pano düğümünde çalıştır.",
+        "node-only": "{section} için bir Pano düğümü gerekir. Kullanmak için bu sunucuyu bir düğümde çalıştır.",
+        "not-supported": "Bu sunucu yazılımında {section} yok."
+      },
+      "capabilities": {
+        "console": "Konsol",
+        "commands": "Komutlar",
+        "power": "Güç",
+        "metrics": "Metrikler",
+        "players": "Oyuncular",
+        "plugins": "Eklentiler"
+      },
+      "placeholder": {
+        "title": "Yapım aşamasında"
+      },
+      "console": {
+        "title": "Konsol",
+        "description": "Bu sunucunun canlı log akışı ve komut girişi.",
+        "state-connecting": "Bağlanıyor",
+        "state-streaming": "Akıyor",
+        "state-idle": "Duraklatıldı",
+        "state-idle-hint": "Sunucu şu anda akış göndermiyor. Yeniden başladığında yeni satırlar görünecek.",
+        "state-offline": "Çevrimdışı",
+        "state-offline-hint": "Sunucu bağlı değil. Pano'nun tamponladığı son satırları görüyorsun.",
+        "state-unsupported": "Eklenti eski",
+        "state-unsupported-hint": "Bu sunucunun Pano eklentisi konsolunu göndermiyor. Bu sayfayı kullanmak için pano-mc-plugin'i güncelle.",
+        "search-placeholder": "Satırlarda ara...",
+        "timestamps": "Zaman damgası",
+        "wrap-lines": "Satırları kaydır",
+        "copy-visible": "Görüneni kopyala",
+        "copied": "Görünen satırlar kopyalandı.",
+        "clear-hint": "Görünümü temizle (Ctrl+L). Sunucuya gönderilmiş satırlar silinmez.",
+        "autoscroll-paused": "Duraklatıldı — {count} yeni satır",
+        "load-older": "Daha eski satırları yükle",
+        "load-older-loading": "Eski satırlar yükleniyor...",
+        "dropped": "... {count} satır atlandı",
+        "empty": "Henüz çıktı yok.",
+        "no-matches": "Aramayla eşleşen satır yok.",
+        "command-placeholder": "Bir komut yaz ve Enter'a bas",
+        "command-send": "Gönder",
+        "command-disabled-permission": "Bu sunucuya komut göndermek için yetkin yok.",
+        "command-disabled-capability": "Bu sunucunun Pano eklentisi komut çalıştıramıyor.",
+        "command-disabled-offline": "Sunucu çevrimdışı olduğu için komut alamıyor.",
+        "command-disabled-cooldown": "Arka arkaya çok fazla komut gönderildi. Komut satırı birazdan geri gelecek.",
+        "history-hint": "Yukarı ve aşağı ok tuşları bu sunucuya gönderdiğin komutlar arasında gezinir.",
+        "load-failed": "Konsol geçmişi yüklenemedi.",
+        "source-node": "Yönetilen konsol",
+        "source-plugin": "Bağlı konsol",
+        "source-hint": "Satırların nereden okunduğu: düğüm sunucu sürecinin kendi çıktısını aktarır, eklenti ise oyunun günlükçüsüne bağlanır.",
+        "reached-start": "En başa ulaştın",
+        "live": "Canlı",
+        "reload": "Konsolu yeniden yükle",
+        "download-latest": "latest.log dosyasını indir",
+        "deep-search-running": "Tüm loglar aranıyor… {scanned}/{total} dosya · {found} sonuç",
+        "deep-search-stop": "Durdur",
+        "deep-search-done": "{total} log dosyasının tamamı arandı · {found} sonuç",
+        "deep-search-stopped": "{scanned}/{total} dosyadan sonra durduruldu · {found} sonuç",
+        "deep-search-limited": "En yeni {found} sonuç gösteriliyor — daha eskileri için aramayı daraltın",
+        "deep-search-capped": "çok büyük bazı dosyalar kısmen arandı"
+      },
+      "players": {
+        "title": "Oyuncular",
+        "description": "Şu anda bu sunucuda kimler var ve onlarla neler yapabilirsin.",
+        "online-count": "{online} / {max} çevrimiçi",
+        "empty": "Şu anda çevrimiçi kimse yok.",
+        "empty-offline": "Sunucu çevrimdışı olduğu için kimse çevrimiçi değil.",
+        "no-matches": "Aramayla eşleşen oyuncu yok.",
+        "column-actions": "İşlemler",
+        "column-player": "Oyuncu",
+        "column-ping": "Ping",
+        "column-session": "Oturum",
+        "column-ip": "IP",
+        "ping-value": "{ping} ms",
+        "ping-unknown": "Bilinmiyor",
+        "uuid-copied": "UUID kopyalandı.",
+        "session-days": "{days}g {hours}sa",
+        "session-hours": "{hours}sa {minutes}dk",
+        "session-minutes": "{minutes}dk",
+        "session-seconds": "{seconds}sn",
+        "action-kick": "At",
+        "action-message": "Mesaj gönder",
+        "action-op": "OP ver",
+        "action-deop": "OP al",
+        "action-gamemode": "Oyun modu",
+        "action-whitelist-add": "Beyaz listeye ekle",
+        "action-whitelist-remove": "Beyaz listeden çıkar",
+        "gamemode-survival": "Hayatta kalma",
+        "gamemode-creative": "Yaratıcı",
+        "gamemode-adventure": "Macera",
+        "gamemode-spectator": "İzleyici",
+        "action-done": "{username} oyuncusuna gönderildi.",
+        "actions-disabled-offline": "Sunucu çevrimdışı olduğu için oyuncu işlemleri yapılamıyor.",
+        "sample-hint": "Bu isimler sunucu liste sorgusundan geliyor ve en fazla 12 isim taşıyor. Oyuncu sayısı ise kesin.",
+        "action-ban": "Yasakla",
+        "badge-op": "OP",
+        "badge-whitelisted": "Beyaz listede",
+        "column-gamemode": "Oyun modu",
+        "gamemode-unknown": "Bilinmiyor",
+        "ban-needs-players-permission": "Bir Pano hesabını yasaklamak için oyuncu yönetimi yetkisi gerekir.",
+        "ban-no-command-on-proxy": "Proxy sunucusunun kendi ban listesi yok ve {username} adlı oyuncunun yasaklanacak bir Pano hesabı da yok.",
+        "current": "Şu anki",
+        "ban-needs-commands": "{username} adlı oyuncunun Pano hesabı yok; bu yüzden ban, sunucunun kendi ban komutuyla yapılır ve bu sunucu şu an komut alamıyor.",
+        "column-account": "Pano hesabı",
+        "account-yes": "Kayıtlı",
+        "account-no": "Yok",
+        "account-yes-hint": "Buradan verilen ban Pano yasağıdır: site ve ban entegrasyonu açık her sunucu.",
+        "account-no-hint": "Bu isimde bir Pano hesabı yok; buradan verilen ban yalnızca bu sunucunun kendi ban listesine eklenir."
+      },
+      "plugins": {
+        "title": "Eklentiler",
+        "description": "Bu sunucuda kurulu eklentiler ve modlar.",
+        "count": "{count} kurulu",
+        "search-placeholder": "Eklenti ara...",
+        "column-name": "İsim",
+        "column-version": "Sürüm",
+        "column-authors": "Geliştiriciler",
+        "column-description": "Açıklama",
+        "column-enabled": "Açık",
+        "authors-unknown": "Bilinmiyor",
+        "no-description": "Açıklama yok",
+        "empty": "Bu sunucu hiç eklenti bildirmedi.",
+        "empty-offline": "Sunucu çevrimdışı olduğu için Pano'da eklenti listesi yok.",
+        "no-matches": "Aramayla eşleşen eklenti yok.",
+        "state-unsupported": "Bu sunucunun Pano eklentisi kurulu eklentileri bildirmiyor. Bu sayfayı kullanmak için pano-mc-plugin'i güncelle.",
+        "restart-hint": "Her eklenti sunucu çalışırken açılıp kapanmaya uygun değildir. Bir şeyler ters giderse sunucuyu yeniden başlat.",
+        "toggle-disabled-offline": "Sunucu çevrimdışı olduğu için eklentiler açılıp kapatılamıyor.",
+        "enabled-badge": "Açık",
+        "disabled-badge": "Kapalı",
+        "toggled-on": "{name} açıldı.",
+        "toggled-off": "{name} kapatıldı.",
+        "tab-installed": "Yüklü",
+        "tab-browse": "Keşfet",
+        "list-failed": "Eklenti listesi yüklenemedi.",
+        "linked-hint": "Pano bu listeyi yalnızca sunucudaki Pano eklentisinden okur. Dosya kurmak veya silmek için sunucuyu bir Pano düğümünde çalıştır.",
+        "jar-list-hint": "Bu liste, çalışan sunucudan değil diskteki jar dosyalarından okunuyor.",
+        "restart-required-title": "Yeniden başlatma gerekiyor",
+        "restart-required-description": "Sunucu eklentilerini son bildirdiğinden beri bu klasördeki dosyalar değişti. Yüklenmeleri için sunucuyu yeniden başlat.",
+        "installed": {
+          "column-file": "Dosya",
+          "column-actions": "İşlemler",
+          "not-loaded": "Yüklenmedi",
+          "not-loaded-hint": "Bu jar dosyası klasörde duruyor ama sunucu onu yüklemedi. Yüklenmesi için sunucuyu yeniden başlat.",
+          "status-on-disk": "Diskte",
+          "no-file": "Dosya yok",
+          "game-list-unavailable": "Sunucu şu anda yüklü eklentilerini bildirmiyor, bu yüzden yalnızca diskteki dosyalar listeleniyor.",
+          "remove": "Sil",
+          "remove-confirm": "{filename} dosyası sunucudan silinsin mi? Dosya kalıcı olarak silinir ve eklenti, sunucu yeniden başlayana kadar yüklü kalır.",
+          "removed": "{filename} silindi."
+        },
+        "updates": {
+          "count": "{count} güncellenebilir",
+          "source-hint": "{source} üzerinden kuruldu.",
+          "source-identified-hint": "Dosya özetiyle {source} üzerinde eşleştirildi.",
+          "update-available": "Güncelleme var · {version}",
+          "update-available-hint": "{version} için proje sayfasını aç.",
+          "update": "Güncelle",
+          "update-started": "Güncelleme başladı. Düğüm üzerinde çalışıyor.",
+          "update-done": "{filename} güncellendi. Yüklenmesi için sunucuyu yeniden başlat.",
+          "update-failed": "Güncelleme başarısız oldu. ({error})",
+          "up-to-date": "{filename} zaten güncel.",
+          "update-all": "Tümünü güncelle ({count})",
+          "update-all-started": "{started} güncelleme başlatıldı, {skipped} tanesi atlandı.",
+          "update-all-none": "Güncellenecek bir şey yoktu.",
+          "identify": "Kaynakları bul",
+          "identify-hint": "Pano'nun kurmadığı jar dosyalarını dosya özetiyle Modrinth ve CurseForge üzerinde arar. Hangar eklentileri bu yolla tanınamaz, CurseForge içinse platform ayarlarında bir API anahtarı gerekir.",
+          "identify-done": "{identified} tanesi bulundu, {unknown} tanesi hâlâ bilinmiyor."
+        },
+        "browse": {
+          "description": "Pano'nun erişebildiği kaynaklarda ara ve bir eklentiyi ya da modu doğrudan bu sunucuya kur.",
+          "search-placeholder": "Eklenti veya mod ara...",
+          "search-hint": "Seçili kaynakta aramak için yazmaya başla.",
+          "search-failed": "Arama başarısız oldu. Birazdan tekrar dene.",
+          "sources-failed": "Kaynaklar yüklenemedi.",
+          "source-off": "Bu kaynak kapalı.",
+          "no-sources": "Kullanılabilir kaynak yok. CurseForge için platform ayarlarında bir API anahtarı gerekir.",
+          "no-results": "Aramanızla eşleşen bir sonuç yok.",
+          "load-more": "Daha fazla yükle",
+          "downloads": "{count} indirme",
+          "by-author": "{author} tarafından",
+          "compatible": "Uyumlu",
+          "incompatible": "Uymayabilir",
+          "versions": "Sürümler",
+          "versions-title": "{name} sürümleri",
+          "versions-failed": "Sürümler yüklenemedi.",
+          "no-versions": "Bu projenin sunucunuzun yazılımına uygun bir sürümü yok.",
+          "game-versions": "Minecraft: {versions}",
+          "loaders": "Yükleyiciler: {loaders}",
+          "file-label": "Kurulacak dosya",
+          "install": "Kur",
+          "install-no-permission": "Eklenti kurma iznin yok.",
+          "install-started": "Kurulum başladı. İşlem düğümde yürütülüyor.",
+          "install-done": "{filename} kuruldu. Yüklenmesi için sunucuyu yeniden başlat.",
+          "install-failed": "Kurulum başarısız oldu. ({error})",
+          "task-install": "{filename} kuruluyor",
+          "open-page": "Proje sayfası"
+        }
+      },
+      "files": {
+        "title": "Dosyalar",
+        "count": "{count} öğe",
+        "root": "Sunucu kökü",
+        "path-label": "Yol",
+        "path-placeholder": "plugins/Pano",
+        "path-go": "Git",
+        "path-edit": "Yolu düzenle",
+        "go-up": "Bir üst klasör",
+        "new-file": "Yeni dosya",
+        "new-file-hint": "Dosya boş olarak oluşturulur.",
+        "new-folder": "Yeni klasör",
+        "upload": "Yükle",
+        "uploads-title": "Yüklemeler",
+        "uploads-clear": "Bitenleri temizle",
+        "upload-done": "Yüklendi",
+        "upload-failed": "Başarısız",
+        "upload-failed-toast": "{name} yüklenemedi.",
+        "selected": "{count} seçili",
+        "column-name": "Ad",
+        "column-size": "Boyut",
+        "column-modified": "Değiştirilme",
+        "column-actions": "İşlemler",
+        "select-all": "Tüm öğeleri seç",
+        "no-matches": "Bu aramaya uyan bir şey yok.",
+        "empty-directory": "Bu klasör boş.",
+        "drop-hint": "Dosyaları bu klasöre yüklemek için buraya bırak.",
+        "list-failed": "Klasör okunamadı.",
+        "action-open": "Aç",
+        "action-edit": "Düzenle",
+        "action-download": "İndir",
+        "action-unarchive": "Çıkart",
+        "action-rename": "Yeniden adlandır",
+        "action-chmod": "İzinler",
+        "unarchive-hint": "Arşiv bu klasöre çıkartılır.",
+        "chmod-hint": "Sekizlik POSIX izni, örneğin 0644.",
+        "prompt-name": "Ad",
+        "prompt-new-name": "Yeni ad",
+        "prompt-extract-into": "Çıkartılacak klasör",
+        "prompt-mode": "İzin",
+        "prompt-confirm": "Uygula",
+        "delete-title": "Kalıcı olarak silinsin mi?",
+        "delete-description": "{count} öğe sunucudan silinecek. Bir klasörü silmek içindeki her şeyi de siler.",
+        "created": "{name} oluşturuldu.",
+        "renamed": "{name} olarak yeniden adlandırıldı.",
+        "unarchived": "{name} klasörüne çıkartıldı.",
+        "chmod-done": "{name} artık {mode}.",
+        "deleted": "{count} öğe silindi.",
+        "saved": "{name} kaydedildi.",
+        "download-as-zip": "Zip olarak indir",
+        "download-zip-hint": "Klasörler ve birden fazla öğe indirilirken tek bir zip içine paketlenir; sunucuda hiçbir şey oluşturulmaz.",
+        "action-preview": "Önizle",
+        "drop-into": "{path} klasörüne yüklemek için bırakın"
+      },
+      "backups": {
+        "title": "Yedekler",
+        "count": "{count} yedek",
+        "description": "Her şeyin, sadece dünyaların ya da seçtiğiniz yolların tam bir zip'ini veya artımlı bir snapshot'ını alın. Dünya önce diske yazılır, böylece çalışan bir sunucu da güvenle yedeklenebilir.",
+        "name-label": "Ad",
+        "name-placeholder": "1.21 güncellemesinden önce",
+        "name-hint": "İsteğe bağlı — boş bırakılırsa yedek alındığı ana göre adlandırılır.",
+        "create": "Yedek al",
+        "create-started": "Yedekleme başladı. Düğüm bitirdiğinde burada görünecek.",
+        "create-done": "Yedek hazır.",
+        "task-backup": "Yedek alınıyor",
+        "task-restore": "Yedek geri yükleniyor",
+        "task-failed": "İşlem başarısız oldu. ({error})",
+        "retention-hint": "Önce en eskiler silinir. Sabitlenmiş yedekler hiç silinmez.",
+        "retention-saved": "Saklama ayarı kaydedildi.",
+        "retention-unavailable": "Pano'nun bu sürümü saklama ayarını henüz tutamıyor.",
+        "list-failed": "Yedekler okunamadı.",
+        "empty": "Henüz yedek yok.",
+        "column-name": "Ad",
+        "column-size": "Boyut",
+        "column-created": "Alınma",
+        "column-creator": "Alan",
+        "column-status": "Durum",
+        "column-checksum": "SHA-256",
+        "column-actions": "İşlemler",
+        "creator-unknown": "Bilinmiyor",
+        "copy-checksum": "Sağlama toplamını kopyala",
+        "restore": "Geri yükle",
+        "restore-title": "Bu yedek geri yüklensin mi?",
+        "restore-description": "Sunucu klasöründeki her şey {name} yedeğinin içeriğiyle değiştirilecek. Bu işlem geri alınamaz.",
+        "restore-needs-stop": "Bir yedeğin geri yüklenebilmesi için sunucunun durdurulmuş olması gerekir.",
+        "restore-started": "Geri yükleme başladı.",
+        "restore-done": "Yedek geri yüklendi.",
+        "restore-next-start": "Sunucu bu yedeği bir sonraki açılışında uygulayacak.",
+        "delete-title": "Bu yedek silinsin mi?",
+        "delete-description": "{name} düğümden kalıcı olarak silinecek.",
+        "deleted": "{name} silindi.",
+        "password-placeholder": "Hesap şifreniz",
+        "status-pending": "Sırada",
+        "status-running": "Çalışıyor",
+        "status-ready": "Hazır",
+        "status-failed": "Başarısız",
+        "status-restoring": "Geri yükleniyor",
+        "status-pending_restart": "Yeniden başlatma bekleniyor",
+        "status-deleting": "Siliniyor",
+        "retention-full-label": "Saklanacak tam yedek",
+        "retention-snapshot-label": "Saklanacak snapshot",
+        "retention-cap-label": "ve en fazla",
+        "retention-cap-none": "Sınır yok",
+        "pinned": "Sabitlendi",
+        "pinned-hint": "Sabitlendi: saklama kuralı bunu hiç silmez.",
+        "pin": "Sabitle (hep sakla)",
+        "unpin": "Sabitlemeyi kaldır",
+        "stored-hint": "Bu snapshot'ın diske eklediği yeni veri; geri kalanı diğer snapshot'larla paylaşılıyor.",
+        "restore-worlds-replaced": "Yedekteki dünya klasörleri mevcutların yerini tamamen alır; diğer dosyalar olanların üzerine yazılır."
+      },
+      "activity": {
+        "title": "Hareketler",
+        "filter-label": "Türe göre filtrele",
+        "filter-all": "Bütün türler",
+        "empty": "Bu sunucuda henüz bir şey olmadı.",
+        "empty-filtered": "Bu filtrelere uyan kayıt yok.",
+        "unavailable": "Pano'nun bu sürümü sunucu bazlı hareket kaydı tutmuyor. Burada görebilmek için Pano'yu güncelle.",
+        "load-failed": "Hareket kaydı yüklenemedi. Birazdan tekrar dene.",
+        "unknown-user": "Bilinmeyen kullanıcı",
+        "types": {
+          "sent_server_command": "Komut",
+          "server_power_action": "Güç",
+          "server_player_action": "Oyuncu",
+          "server_plugin_updated": "Eklenti güncellendi",
+          "server_plugin_toggled": "Eklenti açıldı/kapatıldı",
+          "server_file_changed": "Dosya değişti",
+          "server_backup_action": "Yedek",
+          "server_schedule_run": "Zamanlama çalıştı",
+          "server_crashed": "Çökme",
+          "server_pano_plugin_updated": "Pano eklentisi güncellendi",
+          "linked_agent_server": "Pano Agent ile bağlandı",
+          "server_plugin_file_action": "Eklenti dosyası",
+          "server_schedule_action": "Zamanlama",
+          "created_server": "Oluşturuldu",
+          "reinstalled_server": "Yeniden kuruldu",
+          "updated_server_startup": "Başlangıç ayarları"
+        },
+        "search-placeholder": "Etkinlikte ara...",
+        "filter-user-label": "Kullanıcıya göre filtrele",
+        "filter-user-all": "Tüm kullanıcılar",
+        "end-of-history": "Bu sunucunun geçmişinin başına geldiniz."
       },
       "settings": {
-        "title": "Sunucu Ayarları",
         "preferences": "Tercihler",
         "server-name": "Sunucu İsmi",
         "main-server": "Ana Sunucu",
         "already-main-server": "{serverName} ana sunucu",
         "make-main-server": "Ana Sunucu Yap",
         "main-server-info": "Websitede görüntülenecek sunucu bilgilerini ana sunucu belirler.",
-        "remove-server": "Sunucuyu Kaldır",
-        "disconnect": "Bağlantıyı Kes"
-      },
-      "monitoring": {
-        "title": "Sunucu İzleme"
+        "auto-update-check": "Otomatik güncelleme denetimi",
+        "auto-update-check-info": "Eklentileri her gün güncellemeler için denetler ve size bildirir.",
+        "disconnect": "Bağlantıyı Kes",
+        "danger-zone": "Tehlikeli bölge",
+        "reinstall": "Sunucuyu yeniden kur",
+        "reinstall-info": "Mevcut yazılımı yeniden kurar. Önce yedek alınır.",
+        "reinstall-unavailable": "Pano’nun bu sürümü henüz sunucu yeniden kuramıyor.",
+        "delete-server": "Sunucuyu sil",
+        "delete-server-info": "Sunucuyu, dosyalarını ve yedeklerini düğümden siler.",
+        "remove-server": "Sunucuyu kaldır",
+        "remove-server-info": "Pano’dan kaldırır. Minecraft sunucusundaki dosyalar kalır.",
+        "remove-in-place-info": "Pano sunucuyu çalıştırmayı bırakır ve yedeklerini siler. Dosyalar klasöründe kalır.",
+        "change-software": "Sunucu yazılımını değiştir",
+        "change-software-info": "Başka bir yazılıma ya da sürüme geç.",
+        "change-software-button": "Yazılımı değiştir"
       },
       "game-integration": {
-        "title": "Oyun Entegrasyon Ayarları",
         "minecraft": "Minecraft",
         "auth-integration": "Kimlik Doğrulama Entegrasyonu",
-        "auth-integration-description": "Pano'nun Fabric'daki kimlik doğrulama eklentilerine bağlanmasına izin verin.",
+        "auth-integration-description": "Pano'nun Fabric'daki kimlik doğrulama eklentilerine bağlanmasına izin ver.",
         "auth-require-verified": "E-Mail Doğrulama Gerekli",
         "auth-require-verified-description": "Giriş yapmadan önce oyuncunun email doğrulamasını kontrol eder.",
-        "auth-require-verified-disabled-warning": "Bu seçenek, global 'E-posta Doğrulaması' kapalı olduğu için devre dışıdır. Bunu Panel -> Ayarlar -> Platform -> Kimlik Doğrulama kısmından değiştirebilirsiniz.",
+        "auth-require-verified-disabled-warning": "Bu seçenek, global 'E-posta Doğrulaması' kapalı olduğu için devre dışıdır. Bunu Panel -> Ayarlar -> Platform -> Kimlik Doğrulama kısmından değiştirebilirsin.",
         "auth-kick-after-register": "Kayıt Sonrası At",
         "auth-kick-after-register-description": "Kayıt gerçekleştiği gibi oyuncu email doğrulaması için atılacaktır.",
         "ban-integration": "Yasaklama Entegrasyonu",
-        "ban-integration-description": "Pano'nun Fabric'daki yasaklama eklentilerine bağlanmasına izin verin.",
+        "ban-integration-description": "Pano'nun Fabric'daki yasaklama eklentilerine bağlanmasına izin ver.",
         "permission-integration": "Yetki Entegrasyonu",
-        "permission-integration-description": "Pano'nun Fabric'daki yetki eklentilerine bağlanmasına izin verin."
+        "permission-integration-description": "Pano'nun Fabric'daki yetki eklentilerine bağlanmasına izin ver."
+      },
+      "errors": {
+        "capability-missing": "Bu sunucunun Pano eklentisi bunu yapamıyor. pano-mc-plugin'i güncelle ya da özelliği eklenti ayarlarından aç.",
+        "feature-unavailable": "Bu sunucu şu anda bunu yapamıyor.",
+        "command-denied": "Bu komut bir yetki kuralıyla sana kapatılmış (kalıp: \"{pattern}\").",
+        "offline": "Sunucu şu anda çevrimdışı. Yeniden bağlandığında tekrar dene.",
+        "rate-limited": "Yavaşla — arka arkaya çok fazla istek gönderdin. Yaklaşık {seconds} saniye bekleyip tekrar dene.",
+        "generic": "İşlem başarısız oldu. ({error})",
+        "node-offline": "Bu sunucunun çalıştığı düğüm çevrimdışı. Yeniden bağlandığında tekrar dene.",
+        "node-not-exists": "O düğüm artık yok — sayfayı yenile.",
+        "not-managed": "Bu yalnızca Pano’nun kendi çalıştırdığı sunucularda çalışır.",
+        "wrong-password": "Parola doğru değil.",
+        "unavailable": "Pano’nun bu sürümünde bu özellik henüz yok.",
+        "path-denied": "Bu yola izin verilmiyor.",
+        "file-too-large": "Bu dosya çok büyük.",
+        "transfer-expired": "Aktarımın süresi doldu. Yeniden başlat.",
+        "no-stdin": "Düğüm yeniden başlarken bu sunucunun konsol girişini kaybetti; komutu iletebilecek Pano eklentisi de bağlı değil. Sunucuyu panelden yeniden başlat."
+      },
+      "process-state": {
+        "stopped": "Durduruldu",
+        "starting": "Başlatılıyor",
+        "running": "Çalışıyor",
+        "stopping": "Durduruluyor",
+        "crashed": "Çöktü",
+        "installing": "Kuruluyor"
+      },
+      "nodes": {
+        "status-online": "Çevrimiçi",
+        "status-offline": "Çevrimdışı",
+        "status-pending": "Onay bekliyor",
+        "local-setup-started": "Yerel düğüm kuruluyor. Bağlanır bağlanmaz burada görünecek.",
+        "local-setup-unavailable": "Pano’nun bu sürümü henüz yerel düğüm kuramıyor.",
+        "add-unavailable": "Düğüm ekleme penceresi burada kullanılamıyor.",
+        "add-node": "Düğüm ekle",
+        "add-title": "Düğüm ekle",
+        "count": "{count} düğüm",
+        "empty-description": "Henüz düğüm yok. Düğüm, sunucularını çalıştıran makinedir — yereldeki tek tıkla kurulur.",
+        "unavailable": "Pano’nun bu sürümü henüz düğüm yönetemiyor. Yönetilen sunucular için Pano’yu güncelle.",
+        "pending-title": "Onay bekleyenler",
+        "pending-description": "Bu makineler Pano ile eşleşti ama henüz kimse onaylamadı. Yalnızca kendi kurduklarını onayla.",
+        "accept": "Onayla",
+        "accepted": "{name} onaylandı.",
+        "column-name": "Ad",
+        "column-kind": "Tür",
+        "column-runtime": "Çalışma biçimi",
+        "column-status": "Durum",
+        "column-version": "Sürüm",
+        "column-system": "Sistem",
+        "column-servers": "Sunucu",
+        "servers-empty": "Bu düğümde henüz sunucu yok.",
+        "column-cpu": "İşlemci",
+        "column-memory": "Bellek",
+        "column-disk": "Disk",
+        "column-last-seen": "Son görülme",
+        "column-actions": "İşlemler",
+        "kind-local": "Yerel",
+        "kind-remote": "Uzak",
+        "never-seen": "Hiç",
+        "rename-title": "Düğümü yeniden adlandır",
+        "rename-label": "Düğüm adı",
+        "renamed": "Düğümün adı {name} olarak değiştirildi.",
+        "delete-title": "Bu düğüm silinsin mi?",
+        "delete-password": "Hesap parolası",
+        "deleted": "{name} silindi.",
+        "tab-local": "Yerel",
+        "tab-manual": "Elle",
+        "tab-ssh": "SSH",
+        "tab-coolify": "Coolify",
+        "local-description": "Düğümü Pano ile aynı makinede çalıştır. Pano arka plan servisini indirir, başlatır ve ayakta tutar — eşleştirmeye gerek yok.",
+        "manual-description": "Düğümü başka bir makineye kur, sonra bu komutu orada çalıştır. Kod 30 saniye geçerlidir ve kendiliğinden yenilenir.",
+        "pairing-code": "Eşleştirme kodu",
+        "pairing-refresh": "Yeni kod: {seconds} sn",
+        "pairing-command": "Bunu diğer makinede çalıştır",
+        "pairing-hint": "O makinenin ağ üzerinden bu Pano’ya erişebilmesi yeterli. Kendi tarafında hiçbir port açmana gerek yok.",
+        "pairing-unavailable": "Pano’nun bu sürümü henüz düğüm eşleştiremiyor.",
+        "title": "Düğümler",
+        "column-bootstrap": "Ekleme yöntemi",
+        "bootstrap-local": "Yerel",
+        "bootstrap-manual": "Elle",
+        "bootstrap-ssh": "SSH",
+        "bootstrap-coolify": "Coolify",
+        "platform-linux": "Linux / macOS",
+        "platform-windows": "Windows",
+        "update-available": "Güncelleme var",
+        "update-hint": "Pano {version} sürümünü dağıtıyor",
+        "update-title": "Düğümü güncelle",
+        "update-sent": "Güncelleme gönderildi; düğüm jar dosyasını indirince yeniden başlayacak.",
+        "update-up-to-date": "Bu düğüm zaten güncel daemon sürümünü çalıştırıyor.",
+        "update-no-jar": "Bu Pano dağıtacak bir düğüm daemon dosyası bulamadı, buradan güncelleme yapılamaz.",
+        "update-unavailable": "Pano'nun bu sürümü düğümleri güncelleyemiyor.",
+        "java": {
+          "title": "Java sürümleri",
+          "install": "Java yükle",
+          "install-title": "Java yükle",
+          "install-description": "Pano çalışma zamanını Eclipse Temurin'den (Temurin'in derlemesi yoksa Azul Zulu'dan) indirir, sağlama toplamını doğrular ve düğümün veri klasörüne açar. Sisteme genel bir kurulum yapılmaz.",
+          "install-empty": "Bu düğüm için indirilebilecek bir sürüm yok.",
+          "empty": "Bu düğümde henüz bir Java sürümü bulunamadı.",
+          "column-major": "Java",
+          "column-version": "Sürüm",
+          "column-vendor": "Dağıtıcı",
+          "column-source": "Kaynak",
+          "column-path": "Konum",
+          "column-used-by": "Kullanan",
+          "source-pano": "Pano",
+          "source-system": "Sistem",
+          "source-pano-hint": "Pano tarafından düğümün veri klasörüne indirildi. Buradan güncellenebilir ve kaldırılabilir.",
+          "source-system-hint": "Sunucuda bulundu (JAVA_HOME, PATH veya sistemin JDK klasörü). Pano bunu kullanır ama asla değiştirmez ya da silmez.",
+          "update": "Güncelle",
+          "update-hint": "{version} mevcut",
+          "update-available": "Güncelleme var",
+          "installed": "Yüklü",
+          "remove": "Kaldır",
+          "remove-title": "Bu Java sürümü kaldırılsın mı?",
+          "remove-description": "{name} bu düğümden silinir. Bu Java'ya sabitlenmiş sunucular, otomatik indirme açıksa bir sonraki başlatmada onu yeniden indirir.",
+          "remove-in-use": "{servers} tarafından kullanılıyor. Önce bu sunucuları durdurun ya da başka bir Java'ya sabitleyin.",
+          "removing": "Kaldırılıyor",
+          "installing": "İndiriliyor",
+          "removed": "Java {major} kaldırıldı.",
+          "installed-toast": "Java {major} yüklendi.",
+          "not-available": "{platform} için mevcut değil",
+          "node-offline": "Düğüm çevrimdışı.",
+          "outdated-node": "Java indirebilmek için düğümü güncelleyin.",
+          "downloads-unsupported": "İndirme için daha yeni bir düğüm gerekiyor",
+          "catalog-error": "Java indirme sunucularına ulaşılamadı: {error}",
+          "auto-download-on": "Eksik Java sürümleri, bir sunucu ihtiyaç duyduğunda otomatik olarak indirilir.",
+          "auto-download-off": "Otomatik Java indirme, düğümün yapılandırmasında kapalı.",
+          "unavailable": "Pano'nun bu sürümü henüz Java sürümlerini yönetemiyor.",
+          "error-in-use": "Bu Java sürümü hâlâ bir sunucu tarafından kullanılıyor.",
+          "error-not-managed": "Yalnızca Pano'nun yüklediği sürümler kaldırılabilir.",
+          "error-not-found": "Düğümde artık bu Java sürümü yok.",
+          "hint-8": "Minecraft 1.16.4 ve öncesi için",
+          "hint-11": "Nadiren gerekir; eski araçlar ve proxy'ler için",
+          "hint-16": "Minecraft 1.16.5 için",
+          "hint-17": "Minecraft 1.17 – 1.20.4 için",
+          "hint-21": "Minecraft 1.20.5 – 1.21.x için önerilir",
+          "hint-25": "Minecraft 26.1+ için önerilir",
+          "catalog-timeout": "Düğüm zamanında yanıt vermedi; en son bildirdiği sürümler gösteriliyor.",
+          "unknown-server": "bilinmeyen sunucu",
+          "error-installing": "Bu Java şu anda yükleniyor; bittiğinde yeniden deneyin."
+        },
+        "remove": {
+          "preview-loading": "Bu düğümde ne olduğu kontrol ediliyor…",
+          "lead": "{name} kendini kaldıracak ve üzerindeki her şey kalıcı olarak silinecek:",
+          "lead-forget": "{name} ve sunucuları Pano’dan kaldırılacak:",
+          "servers": "{count} sunucu tüm dosyaları ve yedekleriyle birlikte silinecek.",
+          "no-servers": "Bu düğümde çalışan sunucu yok.",
+          "backups": "{count} yedek",
+          "backups-size": "{count} yedek ({size})",
+          "no-backups": "Yedek yok.",
+          "java": "{count, plural, =0 {Pano’nun indirdiği Java çalışma ortamı yok.} other {Pano’nun indirdiği # Java çalışma ortamı.}}",
+          "data": "Düğümün veri klasörü, önbelleği ve günlükleri; kaldırabildiği durumda pano-node servisi de.",
+          "offline": "Düğüm çevrimdışı — Pano onu yalnızca unutabilir; dosyalar makinede kalır.",
+          "offline-local": "Yerel düğüm çalışmıyor. Pano onu kaldırıp veri klasörünü kendisi silecek.",
+          "unsupported": "Bu düğümün servisi kendini kaldıramayacak kadar eski — Pano onu yalnızca unutabilir; dosyalar makinede kalır. Temiz bir kaldırma için önce düğümü güncelle.",
+          "uninstall-failed": "Düğüm kendini kaldıramadı:",
+          "force": "Yine de Pano’dan kaldır",
+          "type-name": "Onaylamak için {name} yaz",
+          "running-title": "{name} kaldırılıyor…",
+          "running-description": "Sunucuları durduruluyor ve dosyaları siliniyor. Bu iki dakikayı bulabilir — bu pencereyi açık tut.",
+          "running-forget": "Düğüm ve sunucuları Pano’dan kaldırılıyor.",
+          "done-files-removed": "{count, plural, =0 {Dosyaları makineden silindi.} other {# sunucu ve tüm dosyalar makineden silindi.}}",
+          "done-files-kept": "{count, plural, =0 {Dosyaları hâlâ makinede.} other {# sunucu Pano’dan kaldırıldı. Dosyaları hâlâ makinede.}}",
+          "manual-title": "Makineden kaldırmayı tamamla",
+          "manual-description": "Pano bu adımları kendisi yapamadı. Düğümün makinesinde çalıştır:",
+          "copied": "Kopyalandı"
+        },
+        "column-network": "Ağ",
+        "network-rate": "↓ {rx} · ↑ {tx}"
+      },
+      "create": {
+        "memory-label": "Bellek",
+        "port-label": "Oyun portu",
+        "port-hint": "Oyuncuların bağlandığı port. Düğüm portun boş olduğunu kontrol eder.",
+        "java-label": "Java sürümü",
+        "java-auto": "Otomatik",
+        "java-hint": "Otomatik seçenek, düğümdeki Java sürümleri arasından Minecraft sürümünün desteklediği en düşük sürümü seçer; düğümde hiçbiri yoksa onu indirir.",
+        "jvm-args-label": "JVM argümanları",
+        "jvm-args-hint": "Gerektiğinden emin değilsen boş bırak.",
+        "aikar-preset": "Aikar bayraklarını kullan",
+        "auto-start-label": "Pano ile başlat",
+        "auto-start-hint": "Düğüm açıldığında bu sunucuyu da başlat.",
+        "crash-restart-label": "Çökünce yeniden başlat",
+        "crash-restart-hint": "Sunucu beklenmedik şekilde kapanırsa otomatik olarak geri getir.",
+        "auto-update-check-label": "Otomatik güncelleme denetimi",
+        "auto-update-check-hint": "Eklentileri her gün güncellemeler için denetler ve size bildirir.",
+        "setup-local-node": "Yerel düğümü kur",
+        "java-auto-resolved": "Otomatik (Java {major})",
+        "java-will-download": "Java {major} — indirilecek ({size})",
+        "java-will-download-unsized": "Java {major} — indirilecek",
+        "java-download-note": "Java {major} bu düğümde henüz yok; sunucu kurulmadan önce indirilir ({size}).",
+        "java-size-unknown": "boyut bilinmiyor"
+      },
+      "startup": {
+        "restart-hint": "Değişiklikler sunucu bir sonraki açılışında geçerli olur. İşin bitince sunucuyu yeniden başlat.",
+        "process-title": "Süreç",
+        "properties-title": "server.properties",
+        "properties-description": "Dosyanın tüm ayarları artık kendi sekmesinde.",
+        "saved": "Başlangıç ayarları kaydedildi.",
+        "unavailable": "Pano’nun bu sürümü henüz başlangıç ayarlarını değiştiremiyor.",
+        "java-download-note": "Java {major} bu düğümde henüz yok; bir sonraki başlatmada indirilir ({size}).",
+        "properties-open": "server.properties'i aç"
+      },
+      "schedules": {
+        "title": "Zamanlanmış görevler",
+        "description-managed": "Düğümün bu sunucu için çalıştırdığı cron görevleri: yeniden başlatma, komut ve yedekleme; sıraladığın düzende işletilir.",
+        "description-linked": "Pano'nun bu sunucu için çalıştırdığı cron görevleri. Bağlı sunucunun düğümü olmadığından yalnızca güç işlemleri ve komutlar kullanılabilir.",
+        "count": "{count} görev",
+        "create": "Yeni görev",
+        "empty": "Bu sunucuda henüz zamanlanmış görev yok.",
+        "list-failed": "Zamanlanmış görevler yüklenemedi.",
+        "column-name": "Ad",
+        "column-cron": "Çalışma zamanı",
+        "column-next-run": "Sonraki çalışma",
+        "column-last-run": "Son çalışma",
+        "column-enabled": "Etkin",
+        "column-actions": "İşlemler",
+        "never-run": "Hiç çalışmadı",
+        "no-tasks": "Görev yok",
+        "run-now": "Şimdi çalıştır",
+        "run-started": "{name} başlatıldı.",
+        "run-finished": "{name} tamamlandı.",
+        "run-failed": "{name} başarısız oldu. ({error})",
+        "created": "{name} oluşturuldu.",
+        "updated": "{name} kaydedildi.",
+        "deleted": "{name} silindi.",
+        "delete-confirm": "{name} görevi silinsin mi? Çalışması hemen durur.",
+        "enabled-toast": "{name} açıldı.",
+        "disabled-toast": "{name} kapatıldı.",
+        "status-ok": "Başarılı",
+        "status-success": "Başarılı",
+        "status-failed": "Başarısız",
+        "status-running": "Çalışıyor",
+        "status-skipped": "Atlandı",
+        "cron-daily": "Her gün {time}",
+        "cron-every-hours": "Her {hours} saatte bir",
+        "cron-weekly": "Her {day} {time}",
+        "cron-monthly": "Her ayın {day}. günü {time}",
+        "presets": {
+          "daily": "Her gün 04:00",
+          "six-hours": "6 saatte bir",
+          "weekly": "Pazar 05:00",
+          "custom": "Özel"
+        },
+        "task-kind": {
+          "power": "Güç",
+          "command": "Komut",
+          "backup": "Yedek"
+        },
+        "power-action": {
+          "stop": "Durdur",
+          "restart": "Yeniden başlat"
+        }
+      },
+      "properties": {
+        "title": "server.properties",
+        "description": "Dosyanın tüm ayarları, gruplanmış. Değiştirdikleriniz node'daki dosyaya yazılır; dosyadaki başka hiçbir şeye dokunulmaz.",
+        "applies-next-start": "Değişiklikler sunucunun bir sonraki başlatılışında geçerli olur.",
+        "source-file": "Node'daki dosyadan okundu",
+        "source-stored": "Node'a ulaşılamıyor — Pano'nun kaydettiği değerler gösteriliyor",
+        "changed": "Değişti, henüz kaydedilmedi",
+        "changed-count": "{count} kaydedilmemiş",
+        "reset": "Varsayılana döndür",
+        "reset-to": "Varsayılana döndür: {value}",
+        "reveal": "Göster veya gizle",
+        "other-title": "Diğer anahtarlar",
+        "other-description": "Dosyada bulunan ama Pano'nun bilmediği anahtarlar — bir fork'un kendi ayarları ya da yeni bir sürümün eklediği. Olduğu gibi korunur.",
+        "add-key": "Anahtar ekle",
+        "add-key-placeholder": "anahtar-adi",
+        "add-value-placeholder": "değer",
+        "port-managed": "Startup sekmesi",
+        "no-matches": "Aramanızla eşleşen ayar yok.",
+        "saved": "server.properties kaydedildi. Uygulamak için sunucuyu yeniden başlatın.",
+        "discard": "Değişiklikleri at",
+        "groups": {
+          "general": "Genel",
+          "world": "Dünya",
+          "performance": "Performans",
+          "players": "Oyuncular",
+          "resource-pack": "Kaynak paketi",
+          "network": "Ağ"
+        },
+        "options": {
+          "difficulty": {
+            "peaceful": "Barışçıl",
+            "easy": "Kolay",
+            "normal": "Normal",
+            "hard": "Zor"
+          },
+          "gamemode": {
+            "survival": "Hayatta kalma",
+            "creative": "Yaratıcı",
+            "adventure": "Macera",
+            "spectator": "İzleyici"
+          },
+          "level-type": {
+            "minecraft:normal": "Normal",
+            "minecraft:flat": "Süper düz",
+            "minecraft:large_biomes": "Büyük biyomlar",
+            "minecraft:amplified": "Yükseltilmiş",
+            "minecraft:single_biome_surface": "Tek biyom"
+          },
+          "region-file-compression": {
+            "deflate": "Deflate (varsayılan)",
+            "lz4": "LZ4 (daha hızlı, daha büyük)",
+            "none": "Yok"
+          }
+        },
+        "keys": {
+          "motd": {
+            "label": "MOTD",
+            "help": "Çok oyunculu listesinde görünen sunucu açıklaması."
+          },
+          "max-players": {
+            "label": "En fazla oyuncu",
+            "help": "Aynı anda çevrimiçi olabilecek oyuncu sayısı."
+          },
+          "online-mode": {
+            "label": "Online mode",
+            "help": "Oyuncuları Mojang üzerinden doğrula. Sadece proxy arkasındayken kapatın."
+          },
+          "white-list": {
+            "label": "Beyaz liste",
+            "help": "Sadece beyaz listedekiler girebilir."
+          },
+          "enforce-whitelist": {
+            "label": "Beyaz listeyi zorla",
+            "help": "Beyaz listeden çıkarılan oyuncu çevrimiçiyse atılır."
+          },
+          "difficulty": {
+            "label": "Zorluk",
+            "help": "Yaratık hasarı, açlık ve benzeri."
+          },
+          "gamemode": {
+            "label": "Varsayılan oyun modu",
+            "help": "Yeni oyuncuların başladığı mod."
+          },
+          "force-gamemode": {
+            "label": "Oyun modunu zorla",
+            "help": "Her girişte herkesi varsayılan moda al."
+          },
+          "hardcore": {
+            "label": "Hardcore",
+            "help": "Ölüm kalıcıdır; dünya Zor zorlukta kilitlenir."
+          },
+          "pvp": {
+            "label": "PvP",
+            "help": "Oyuncular birbirine hasar verebilsin."
+          },
+          "enable-command-block": {
+            "label": "Komut blokları",
+            "help": "Komut blokları çalışabilsin."
+          },
+          "pause-when-empty-seconds": {
+            "label": "Boşken duraklat",
+            "help": "Oyuncu yokken kaç saniye sonra sunucu tik atmayı duraklatsın; -1 hiç duraklatmaz."
+          },
+          "player-idle-timeout": {
+            "label": "Boşta kalma süresi",
+            "help": "Hareketsiz oyuncu kaç dakika sonra atılsın; 0 kapatır."
+          },
+          "level-name": {
+            "label": "Dünya klasörü",
+            "help": "Dünya klasörünün adı; değiştirmek başka bir dünya başlatır."
+          },
+          "level-seed": {
+            "label": "Seed",
+            "help": "Yeni dünya için seed; boşsa rastgele."
+          },
+          "level-type": {
+            "label": "Dünya türü",
+            "help": "Dünya oluşturulurken kullanılan üretici."
+          },
+          "generator-settings": {
+            "label": "Üretici ayarları",
+            "help": "Düz ve tek biyom üreticileri için JSON."
+          },
+          "generate-structures": {
+            "label": "Yapıları oluştur",
+            "help": "Yeni chunk'larda köyler, kaleler ve diğer yapılar."
+          },
+          "allow-nether": {
+            "label": "Nether'a izin ver",
+            "help": "Nether portalları çalışır; kapalıysa oyuncular Overworld'de kalır."
+          },
+          "spawn-monsters": {
+            "label": "Canavarlar doğsun",
+            "help": "Düşman yaratıklar gece ve karanlıkta doğar."
+          },
+          "spawn-protection": {
+            "label": "Spawn koruması",
+            "help": "Spawn çevresinde sadece operatörlerin inşa edebildiği yarıçap; 0 kapatır."
+          },
+          "max-world-size": {
+            "label": "En büyük dünya boyutu",
+            "help": "Blok cinsinden dünya sınırı yarıçapı."
+          },
+          "initial-enabled-packs": {
+            "label": "Etkin veri paketleri",
+            "help": "Dünya oluşturulurken etkin veri paketleri, virgülle ayrılmış."
+          },
+          "initial-disabled-packs": {
+            "label": "Devre dışı veri paketleri",
+            "help": "Dünya oluşturulurken devre dışı veri paketleri, virgülle ayrılmış."
+          },
+          "view-distance": {
+            "label": "Görüş mesafesi",
+            "help": "Her oyuncuya gönderilen chunk sayısı. Sunucu zorlanıyorsa düşürün."
+          },
+          "simulation-distance": {
+            "label": "Simülasyon mesafesi",
+            "help": "Her oyuncunun çevresinde tik atmaya devam eden chunk'lar."
+          },
+          "entity-broadcast-range-percentage": {
+            "label": "Varlık yayın mesafesi",
+            "help": "Varlıkların oyunculara ne kadar uzaktan gönderileceği, varsayılanın yüzdesi."
+          },
+          "max-tick-time": {
+            "label": "En uzun tik süresi",
+            "help": "Bekçi sunucuyu durdurmadan bir tik kaç milisaniye sürebilir; -1 kapatır."
+          },
+          "max-chained-neighbor-updates": {
+            "label": "En fazla zincirleme güncelleme",
+            "help": "Tik başına zincirleme blok güncellemesi sınırı; -1 kaldırır."
+          },
+          "network-compression-threshold": {
+            "label": "Sıkıştırma eşiği",
+            "help": "Bu byte'tan büyük paketler sıkıştırılır; -1 kapatır."
+          },
+          "rate-limit": {
+            "label": "Paket hız sınırı",
+            "help": "İstemcinin atılmadan saniyede gönderebileceği paket sayısı; 0 kapatır."
+          },
+          "sync-chunk-writes": {
+            "label": "Eşzamanlı chunk yazımı",
+            "help": "Chunk'ları eşzamanlı yaz; daha güvenli, biraz daha yavaş."
+          },
+          "use-native-transport": {
+            "label": "Yerel aktarım",
+            "help": "Linux paket iyileştirmeleri; açık bırakın."
+          },
+          "region-file-compression": {
+            "label": "Region sıkıştırması",
+            "help": "Region dosyaları için sıkıştırma."
+          },
+          "allow-flight": {
+            "label": "Uçuşa izin ver",
+            "help": "Survival'da uçan oyuncuları atma (mod, eklenti)."
+          },
+          "op-permission-level": {
+            "label": "Operatör seviyesi",
+            "help": "/op ile verilen yetki seviyesi, 1–4."
+          },
+          "function-permission-level": {
+            "label": "Fonksiyon seviyesi",
+            "help": "Fonksiyonların çalıştığı yetki seviyesi, 1–4."
+          },
+          "hide-online-players": {
+            "label": "Çevrimiçileri gizle",
+            "help": "Sunucu durumunda kimin çevrimiçi olduğunu gösterme."
+          },
+          "enforce-secure-profile": {
+            "label": "Güvenli sohbet profili",
+            "help": "Mojang imzalı sohbet zorunlu; olmayan giremez."
+          },
+          "broadcast-console-to-ops": {
+            "label": "Konsol çıktısı operatörlere",
+            "help": "Konsol komut çıktısını çevrimiçi operatörlere gönder."
+          },
+          "broadcast-rcon-to-ops": {
+            "label": "RCON çıktısı operatörlere",
+            "help": "RCON komut çıktısını çevrimiçi operatörlere gönder."
+          },
+          "accepts-transfers": {
+            "label": "Aktarımları kabul et",
+            "help": "Başka sunucudan aktarılan oyuncuları kabul et."
+          },
+          "log-ips": {
+            "label": "IP'leri logla",
+            "help": "Oyuncu IP adreslerini loga yaz."
+          },
+          "bug-report-link": {
+            "label": "Hata bildirim bağlantısı",
+            "help": "Oyunculara hata bildirmek için gösterilen URL."
+          },
+          "text-filtering-config": {
+            "label": "Metin filtre ayarı",
+            "help": "Sohbet filtreleme servisi ayarı."
+          },
+          "text-filtering-version": {
+            "label": "Metin filtre sürümü",
+            "help": "Metin filtre ayar biçiminin sürümü."
+          },
+          "require-resource-pack": {
+            "label": "Kaynak paketi zorunlu",
+            "help": "Kaynak paketini reddeden oyuncuların bağlantısını kes."
+          },
+          "resource-pack": {
+            "label": "Kaynak paketi URL'si",
+            "help": "Oyunculardan indirmesi istenen paketin doğrudan bağlantısı."
+          },
+          "resource-pack-sha1": {
+            "label": "Kaynak paketi SHA-1",
+            "help": "Paketin sağlama toplamı; değişince istemciler yeniden indirir."
+          },
+          "resource-pack-id": {
+            "label": "Kaynak paketi kimliği",
+            "help": "Paketi istemcilere tanıtan UUID."
+          },
+          "resource-pack-prompt": {
+            "label": "Kaynak paketi mesajı",
+            "help": "İndirme isteğiyle gösterilen mesaj (JSON metin)."
+          },
+          "server-ip": {
+            "label": "Dinleme adresi",
+            "help": "Sunucunun dinlediği IP; boşsa tüm arayüzler."
+          },
+          "prevent-proxy-connections": {
+            "label": "Proxy bağlantılarını engelle",
+            "help": "IP'si Mojang'ın gördüğünden farklı oyuncuları at."
+          },
+          "enable-status": {
+            "label": "Sunucu durumu",
+            "help": "Çok oyunculu liste ping'ine cevap ver; kapalıysa sunucu çevrimdışı görünür."
+          },
+          "enable-query": {
+            "label": "GameSpy sorgusu",
+            "help": "Sunucu bilgilerini sorgu portunda sun."
+          },
+          "query.port": {
+            "label": "Sorgu portu",
+            "help": "Sorgu protokolü için UDP portu."
+          },
+          "enable-rcon": {
+            "label": "RCON",
+            "help": "TCP üzerinden uzak konsol. Gerekmiyorsa kapalı tutun."
+          },
+          "rcon.port": {
+            "label": "RCON portu",
+            "help": "RCON'un dinlediği TCP portu."
+          },
+          "rcon.password": {
+            "label": "RCON şifresi",
+            "help": "RCON istemcilerinin göndermesi gereken şifre."
+          },
+          "enable-jmx-monitoring": {
+            "label": "JMX izleme",
+            "help": "Tik sürelerini JMX üzerinden sun."
+          },
+          "management-server-enabled": {
+            "label": "Yönetim sunucusu",
+            "help": "Sunucu yönetim API'sini etkinleştir."
+          },
+          "management-server-host": {
+            "label": "Yönetim adresi",
+            "help": "Yönetim API'sinin dinlediği adres."
+          },
+          "management-server-port": {
+            "label": "Yönetim portu",
+            "help": "Yönetim API'sinin portu; 0 otomatik seçer."
+          },
+          "management-server-tls-enabled": {
+            "label": "Yönetim TLS",
+            "help": "Yönetim API'sinde TLS zorunlu olsun."
+          },
+          "management-server-secret": {
+            "label": "Yönetim gizli anahtarı",
+            "help": "Yönetim istemcilerinin kimlik doğrulama anahtarı."
+          },
+          "status-heartbeat-interval": {
+            "label": "Durum kalp atışı",
+            "help": "Durum kalp atışları arası saniye; 0 kapatır."
+          },
+          "debug": {
+            "label": "Hata ayıklama logu",
+            "help": "Logda ayrıntılı hata ayıklama çıktısı."
+          },
+          "server-port": {
+            "label": "Oyun portu",
+            "help": "Startup sekmesinden ayarlanır; node ayırır ve yayınlar."
+          },
+          "enable-code-of-conduct": {
+            "label": "Davranış kuralları",
+            "help": "Oyunculara girmeden önce kabul etmeleri gereken davranış kurallarını göster."
+          },
+          "chat-spam-threshold-seconds": {
+            "label": "Sohbet spam eşiği",
+            "help": "Çok hızlı sohbet gönderen oyuncunun atıldığı saniye; 0 kapatır."
+          },
+          "command-spam-threshold-seconds": {
+            "label": "Komut spam eşiği",
+            "help": "Çok hızlı komut gönderen oyuncunun atıldığı saniye; 0 kapatır."
+          },
+          "management-server-allowed-origins": {
+            "label": "Yönetim izinli kaynaklar",
+            "help": "Yönetim API'sini çağırabilecek origin'ler, virgülle ayrılmış."
+          },
+          "management-server-tls-keystore": {
+            "label": "Yönetim TLS keystore",
+            "help": "Yönetim API'si sertifikasını tutan keystore yolu."
+          },
+          "management-server-tls-keystore-password": {
+            "label": "Yönetim keystore şifresi",
+            "help": "O keystore'un şifresi."
+          }
+        }
       }
     },
     "permission-group-detail": {
@@ -1229,7 +2499,7 @@
       "posts": "Yazılar",
       "post-categories": "Yazı Kategorileri",
       "tickets": "Talepler",
-      "players": "Oyuncular",
+      "players": "Kullanıcılar",
       "permissions": "Yetkiler",
       "view": "Görünüm",
       "addons": "Eklentiler",
@@ -1260,18 +2530,26 @@
       "hide-menu": "Menüyü Gizle",
       "website": "Web Site",
       "server": "Sunucu",
+      "server-management-disabled": "Sunucu yönetimi kapalı. Ayarlar → Platform → Tercihler bölümünden açabilirsin.",
       "show-website": "Web Site",
-      "show-servers": "Sunucuları Göster",
+      "show-servers": "Sunucular",
       "version-alpha-tooltip": "Deneysel sürüm. Hatalar içerebilir, dikkatli kullanın.",
       "version-beta-tooltip": "Önizleme sürümü. Stabildir ancak hala test aşamasındadır."
     },
     "server-navigation-menu": {
-      "statistics": "İstatistikler",
+      "overview": "Genel Bakış",
+      "console": "Konsol",
+      "players": "Oyuncular",
+      "files": "Dosyalar",
+      "plugins": "Eklentiler",
+      "backups": "Yedekler",
+      "schedules": "Zamanlanmış görevler",
       "settings": "Ayarlar",
+      "add-server": "Sunucu ekle",
       "no-selected-server": "Seçili Sunucu Yok",
       "select-server": "Sunucu Seç",
-      "no-server-text": "Sunucu menüsünü görüntülemek için bir sunucu bağla.",
-      "connect-server": "Sunucu Bağla"
+      "connect-server": "Sunucu Bağla",
+      "nodes": "Düğümler"
     },
     "post-row": {
       "actions": "İşlemler",
@@ -1326,7 +2604,10 @@
     },
     "server-settings-layout": {
       "server": "Sunucu",
-      "game-integration": "Oyun Entegrasyonu"
+      "game-integration": "Oyun Entegrasyonu",
+      "startup": "Başlangıç",
+      "activity": "Hareketler",
+      "properties": "Server properties"
     },
     "modals": {
       "login": {
@@ -1513,7 +2794,9 @@
         "1-week": "1 Hafta",
         "1-month": "1 Ay",
         "6-months": "6 Ay",
-        "1-year": "1 Yıl"
+        "1-year": "1 Yıl",
+        "scope-pano": "Bu işlem {username} adlı Pano hesabını yasaklar: siteden çıkış yaptırılır, ban entegrasyonu açık her sunucu onu atar ve ban bitene kadar girişine izin vermez.",
+        "scope-server": "{username} adlı oyuncunun Pano hesabı yok, bu yüzden sadece bu sunucunun kendi ban listesine eklenir. Diğer sunucular etkilenmez ve bitiş tarihi yoktur."
       },
       "confirm-ban-ip": {
         "title": "IP yasağı ekle",
@@ -1626,6 +2909,75 @@
       "confirm-delete-language": {
         "title": "Bu dili silmek istediğinizden emin misiniz?"
       },
+      "add-node": {
+        "no-permission": "Bunun için \"düğümleri yönet\" iznine ihtiyacın var.",
+        "busy": "Kurulmakta olan makinenin bitmesini bekle.",
+        "unavailable": "Pano'nun bu sürümü henüz uzak düğüm kuramıyor.",
+        "current-password-label": "Hesap şifren",
+        "current-password-hint": "Makine kurmak hassas bir işlem, bu yüzden Pano önce şifreni ister.",
+        "name-label": "Düğüm adı",
+        "name-placeholder": "eu-west-1",
+        "host-label": "Adres",
+        "port-label": "SSH portu",
+        "username-label": "SSH kullanıcısı",
+        "auth-label": "Kimlik doğrulama",
+        "auth-password": "Şifre",
+        "auth-key": "Özel anahtar",
+        "ssh-password-label": "SSH şifresi",
+        "private-key-label": "Özel anahtar",
+        "private-key-hint": "BEGIN ve END satırları dahil anahtarın tamamını yapıştır. Bir kez kullanılır, hiçbir yere kaydedilmez.",
+        "passphrase-label": "Anahtar parolası (isteğe bağlı)",
+        "sudo-label": "sudo kullan",
+        "sudo-hint": "SSH kullanıcısı zaten root değilse açık bırak.",
+        "ssh-description": "Pano SSH ile bağlanır, kurulum betiğini çalıştırır ve makine kendini eşler. Bilgiler bir kez kullanılır, hiçbir yere yazılmaz.",
+        "ssh-submit": "Bağlan ve kur",
+        "fingerprint-label": "Sunucu anahtarı parmak izi",
+        "fingerprint-description": "Pano {host} adresini ilk kez görüyor. Bu parmak izinin sunucunun gösterdiğiyle aynı olduğunu doğrula ve onayla.",
+        "fingerprint-confirm": "Bu benim sunucum, devam et",
+        "coolify-description": "Pano düğümü Coolify sunucunda bir Docker uygulaması olarak dağıtır. API anahtarı bir kez kullanılır, saklanmaz.",
+        "coolify-url-label": "Coolify adresi",
+        "coolify-token-label": "API anahtarı",
+        "coolify-token-hint": "Uygulama oluşturma ve dağıtma izni olan bir anahtar.",
+        "coolify-server-label": "Sunucu UUID",
+        "coolify-project-label": "Proje UUID",
+        "coolify-project-hint": "İsteğe bağlı — boş bırakırsan Coolify'ın varsayılan projesi kullanılır.",
+        "coolify-environment-label": "Ortam",
+        "coolify-volume-label": "Veri birimi",
+        "coolify-ports-label": "Port aralığı",
+        "coolify-ports-invalid": "25565-25600 gibi bir aralık gir.",
+        "coolify-image-label": "İmaj",
+        "coolify-image-invalid": "Küçük harflerden oluşan, etiketsiz bir registry adresi yaz.",
+        "coolify-image-tag-label": "Etiket",
+        "coolify-image-tag-invalid": "Yalnızca harf, rakam, nokta, tire ve alt çizgi kullanılabilir.",
+        "coolify-image-hint": "Yalnızca Coolify yayımlanan imajı çekemiyorsa gerekir: özel bir registry ya da ayna. Buraya etiketsiz registry adresini yaz, etiketi yandaki alana gir.",
+        "coolify-submit": "Düğümü dağıt",
+        "progress-description": "Kurulum sürüyor. Birkaç dakika alır; makinenin ne yaptığını aşağıdan izleyebilirsin.",
+        "progress-label": "Düğüm kurulum ilerlemesi",
+        "log-label": "Kurulum çıktısı",
+        "waiting": "İlk çıktı bekleniyor...",
+        "status-running": "Çalışıyor",
+        "status-done": "Tamamlandı",
+        "status-failed": "Başarısız",
+        "failed": "Kurulum başarısız oldu: {error}",
+        "back": "Forma dön",
+        "node-ready": "{name} bağlandı ve hazır.",
+        "coolify-refused": "Coolify dağıtımı reddetti:",
+        "local-failed": "Yerel node başlatılamadı:",
+        "local-failed-generic": "Daemon bağlanamadan kapandı. Pano'nun yanındaki logs/pano-node.log dosyasına bak.",
+        "local-starting": "Yerel node başlatılıyor…",
+        "local-java": "Java {major} ({path})",
+        "local-daemon-started": "Daemon başlatıldı (pid {pid}).",
+        "local-waiting": "Node'un Pano'ya bağlanması bekleniyor…",
+        "local-connected": "Yerel node bağlandı.",
+        "local-timeout": "Node {seconds} saniye içinde bağlanmadı. Pano'nun yanındaki logs/pano-node.log dosyasına bak.",
+        "pano-url": {
+          "advanced": "Gelişmiş",
+          "label": "Düğümün ulaşabileceği Pano adresi",
+          "hint": "Boş bırakırsan site adresin kullanılır. Makine Pano'ya oradan ulaşamıyorsa doldur — NAT arkasında, SSH tüneliyle ya da kendi DNS'i olan bir test ağında. Düğüm bu adrese bağlanır ve dosyaları buradan indirir.",
+          "invalid": "http:// veya https:// ile başlayan tam bir adres gir.",
+          "unsupported": "Pano'nun bu sürümü hazır bir kurulum komutu vermiyor, yukarıdaki komut burada oluşturuldu ve adres düğümden erişilebilir olmayabilir. Komutu çalıştırmadan önce kontrol et."
+        }
+      },
       "add-permission-node": {
         "title": "İzin Düğümleri Ekle",
         "input-placeholder": "İzin yazın ve Enter'a basın",
@@ -1645,6 +2997,17 @@
           "custom": "Özel"
         }
       },
+      "add-server": {
+        "title": "Sunucu ekle",
+        "description": "Yeni bir sunucu oluştur ya da çalışan sunucunu bağla.",
+        "create-title": "Yeni sunucu oluştur",
+        "create-description": "Pano bir düğümde yeni sunucu kurar ve yönetir.",
+        "link-title": "Pano eklentisiyle bağla",
+        "link-description": "Mevcut sunucun, eklentiyle. Başlat/durdur Pano'dan yapılamaz.",
+        "create-unavailable": "Sunucu oluşturma sihirbazı Pano’nun bu sürümünde yok.",
+        "link-agent-title": "Pano Agent ile bağla",
+        "link-agent-description": "Mevcut sunucun, tam yönetim. Klasörüne tek bir jar yeter."
+      },
       "connect-server": {
         "title": "Sunucu Bağla",
         "toggle-connect-server": "Sunucu Bağlama Aç/Kapa",
@@ -1660,12 +3023,169 @@
         "code-refresh": "Kod {timeToRefreshKey} saniye sonra yenilenecek.",
         "notification-will-come": "Bağlantı isteği bildirim olarak gelecek."
       },
+      "create-server": {
+        "title": "Sunucu oluştur",
+        "step-of": "Adım {current}/{total} · {name}",
+        "step-source": "Kaynak",
+        "step-node": "Düğüm",
+        "step-software": "Yazılım",
+        "step-folder": "Klasör",
+        "step-settings": "Ayarlar",
+        "step-review": "Özet",
+        "source-description": "Bu sunucu nereden gelsin?",
+        "source-fresh-title": "Sıfırdan kurulum",
+        "source-fresh-description": "Sunucu yazılımını ve sürümünü seç, Pano sıfırdan kursun.",
+        "source-folder-title": "Düğümdeki mevcut klasör",
+        "source-folder-description": "Düğümde zaten duran bir sunucu klasörünü devral. Hiçbir şey yeniden kurulmaz.",
+        "source-upload-title": "Mevcut sunucuyu yükle",
+        "source-upload-description": "Başka bir yerde çalıştırdığın sunucunun zip dosyasını yükle.",
+        "source-modpack-title": "Modpack",
+        "source-modpack-description": "Bir paket dosyasından sunucu tarafı modpack kur.",
+        "coming-later": "Pano’nun ileriki bir sürümünde gelecek.",
+        "node-description": "Bu sunucuyu çalıştıracak düğümü seç.",
+        "node-empty-description": "Henüz çevrimiçi düğüm yok. Düğüm, sunucularını çalıştıran makinedir — bu makinedekini kur ya da başka bir düğüm eşleştir.",
+        "nodes-unavailable": "Pano’nun bu sürümü henüz düğüm yönetemiyor.",
+        "add-node": "Düğüm ekle",
+        "software-description": "Sunucu yazılımını seç. Eklentilerin çoğu Paper için yazılır.",
+        "software-recommended": "Önerilen",
+        "software-deprecated": "Artık desteklenmiyor",
+        "software-build": "Düğümde derlenir",
+        "software-build-hint": "BuildTools, Spigot’u düğümün üzerinde derler: git ve uygun bir Java sürümü gerekir, bir sürümün ilk derlemesi yaklaşık 10 dakika sürer, sonraki kurulumlar bunu yeniden kullanır.",
+        "software-jenkins": "Son CI derlemesi",
+        "software-jenkins-hint": "Projenin Jenkins sunucusundan indirilir; sürüm numarası derleme numarasıdır.",
+        "software-versions": "{count} sürüm",
+        "software-empty": "Yazılım kataloğu boş. Pano’nun internete erişebildiğinden emin ol.",
+        "software-unavailable": "Pano’nun bu sürümünde yazılım kataloğu yok.",
+        "version-label": "Minecraft sürümü",
+        "version-latest-build": "Son derleme",
+        "spigot-hint": "Spigot’un resmi indirmesi yok, bu yüzden düğüm onu BuildTools ile derler — bu birkaç dakika sürer. Paper birebir yerine geçer ve önerilir.",
+        "folder-description": "Düğümdeki sunucu klasörünün yolunu ver. Pano jar dosyasını, yükleyicisini ve portunu okuyup olduğu gibi devralır.",
+        "folder-label": "Düğümdeki klasör yolu",
+        "folder-hint": "Düğümün okuyabileceği mutlak bir yol, örneğin /home/minecraft/survival.",
+        "name-label": "Sunucu adı",
+        "name-placeholder": "survival",
+        "eula-label": "Şunu kabul ediyorum:",
+        "eula-link": "Minecraft EULA",
+        "review-description": "Pano sunucuyu kurmadan önce her şeyi kontrol et.",
+        "review-source": "Kaynak",
+        "review-node": "Düğüm",
+        "review-folder": "Klasör",
+        "review-software": "Yazılım",
+        "review-name": "Ad",
+        "review-memory": "Bellek",
+        "review-port": "Port",
+        "review-java": "Java",
+        "review-jvm-args": "JVM argümanları",
+        "review-auto-start": "Pano ile başlat",
+        "review-crash-restart": "Çökünce yeniden başlat",
+        "review-auto-update-check": "Otomatik güncelleme denetimi",
+        "review-none": "Yok",
+        "create-button": "Sunucuyu oluştur",
+        "created": "{name} kuruluyor.",
+        "create-unavailable": "Pano’nun bu sürümü henüz sunucu oluşturamıyor.",
+        "import": {
+          "step-upload": "Arşiv",
+          "step-modpack": "Modpack",
+          "folder-invalid": "Mutlak bir yol gir, örneğin /home/minecraft/survival.",
+          "folder-copy-note": "Klasör kopyalanır, taşınmaz — orijinali olduğu yerde kalır.",
+          "upload-description": "Sunucu klasörünün zip dosyasını yükle. Pano dosyayı düğüme verir, düğüm de açıp içindekileri okur.",
+          "upload-drop": "Bir .zip dosyasını buraya bırak veya tıklayıp seç",
+          "upload-limit": "En fazla 1 GB. Yükleme 30 dakika boyunca kullanılabilir.",
+          "upload-progress": "Arşiv yükleniyor",
+          "upload-expires": "önümüzdeki 30 dakika boyunca içe aktarılabilir",
+          "upload-too-large": "Bu arşiv 1 GB'tan büyük.",
+          "upload-wrong-type": "Yalnızca .zip arşivleri içe aktarılabilir.",
+          "upload-unavailable": "Pano'nun bu sürümü henüz sunucu yüklemesi kabul edemiyor.",
+          "modpack-description": "Modrinth'te modpack ara. Pano paketin sunucu dosyalarını indirir ve paketin istediği loader'ı kurar.",
+          "modpack-search-placeholder": "Modpack ara",
+          "modpack-search-hint": "Modrinth'te aramak için bir modpack adı yaz.",
+          "modpack-no-results": "Bu aramayla eşleşen modpack yok.",
+          "modpack-search-failed": "Modpack araması başarısız oldu. Birazdan tekrar dene.",
+          "modpack-unavailable": "Pano'nun bu sürümü henüz modpack listeleyemiyor.",
+          "modpack-version-label": "Paket sürümü",
+          "modpack-no-versions": "Bu modpack'in Pano'nun sunucuya kurabileceği bir sürümü yok.",
+          "detected-note": "Pano sunucu yazılımını, Minecraft sürümünü ve portu içe aktardığı dosyalardan kendisi okur.",
+          "will-be-detected": "otomatik algılanacak",
+          "review-archive": "Arşiv",
+          "review-modpack": "Modpack"
+        },
+        "source-in-place-title": "Var olan klasör, yerinde çalıştır",
+        "source-in-place-description": "Düğüm, makinesinde zaten bulunan bir sunucu klasörünü olduğu yerden çalıştırır. Hiçbir şey kopyalanmaz ya da taşınmaz.",
+        "in-place-description": "Düğümün makinesindeki sunucu klasörünün yolunu yaz. Pano jar'ını, loader'ını ve portunu okur ve onu o klasörden çalıştırır; dünyalar, eklentiler ve ayarlar oldukları yerde kalır.",
+        "in-place-stop-note": "Önce sunucuyu durdur ve onu başlatan şeyi kapat (systemd servisi, screen oturumu, başka bir panel). Aynı klasörde iki süreç dünyayı bozar; bu yüzden Pano hâlâ çalışan bir klasörü reddeder."
+      },
+      "file-editor": {
+        "unsaved": "Kaydedilmedi",
+        "binary": "Bu ikili bir dosya. Üzerinde çalışmak için indir.",
+        "truncated": "Bu dosyanın yalnızca başı okundu, bu yüzden salt okunur. Tamamını görmek için indir.",
+        "save-hint": "Ctrl+S kaydeder.",
+        "read-failed": "Dosya okunamadı.",
+        "load-failed": "Düzenleyici yüklenemedi.",
+        "discard-question": "Kaydedilmemiş değişiklikler var.",
+        "keep-editing": "Düzenlemeye devam et",
+        "discard": "Vazgeç",
+        "size-changed": "{size} ({delta} kaydedilmedi)"
+      },
       "make-main-server": {
         "title": "\"{serverName}\" sunucusunu ana sunucu yapmak istediğinizden emin misiniz?"
       },
       "remove-server": {
-        "title": "Bu sunucuyu kaldırmak istediğinizden emin misiniz?",
-        "account-password": "Hesap Şifresi"
+        "delete-title": "Bu sunucu silinsin mi?",
+        "remove-title": "Bu sunucu Pano’dan kaldırılsın mı?",
+        "remove-info": "Minecraft sunucusundaki dosyalar kalır.",
+        "in-place-info": "Dosyaları klasöründe kalır; yalnızca Pano’nun kendi dosyaları çıkarılır.",
+        "agent-info": "Pano Agent kendi .pano-agent klasörünü siler ve durur. pano-agent.jar kalır: onu sil ve sunucuyu yine doğrudan kendi jar’ıyla başlat.",
+        "in-place-backups": "Pano’nun aldığı yedekleri silinir.",
+        "account-password": "Hesap Şifresi",
+        "backups-loading": "Yedekleri kontrol ediliyor…",
+        "backups-all": "Dosyaları ve tüm yedekleri de düğümden silinecek.",
+        "no-backups": "Dosyaları düğümden silinecek. Hiç yedeği yok.",
+        "backups": "Dosyaları ve {count} yedeği de düğümden silinecek.",
+        "backups-size": "Dosyaları ve {count} yedeği ({size}) de düğümden silinecek."
+      },
+      "schedule-editor": {
+        "create-title": "Yeni zamanlanmış görev",
+        "edit-title": "Görevi düzenle",
+        "name-label": "Ad",
+        "name-placeholder": "Gece yeniden başlatma",
+        "cron-label": "Ne zaman çalışsın",
+        "cron-hint": "Beş alanlı cron: dakika, saat, ayın günü, ay, haftanın günü.",
+        "timezone-label": "Saat dilimi",
+        "warn-label": "Oyuncuları uyar (dakika)",
+        "warn-hint": "Durdurma ve yeniden başlatmadan önce oyunculara bu kadar dakika kala, sonra 5 ve 1 dakika kala haber verilir. Sıfır uyarıyı kapatır.",
+        "preview-title": "Sonraki çalışmalar burada görünür.",
+        "preview-loading": "İfade denetleniyor...",
+        "preview-invalid": "Pano bu cron ifadesini okuyamıyor.",
+        "preview-failed": "Önizleme yüklenemedi.",
+        "tasks-label": "Görevler",
+        "tasks-hint": "Yukarıdan aşağıya, sırayla çalışırlar.",
+        "tasks-empty": "En az bir görev ekle.",
+        "task-kind": "Görev türü",
+        "task-action": "Güç işlemi",
+        "task-command": "Komut",
+        "task-command-placeholder": "say Sunucu birazdan yeniden başlıyor",
+        "task-backup-name": "Yedek adı",
+        "task-backup-placeholder": "Yedek adı (isteğe bağlı)",
+        "task-keep": "Kaç yedek saklanacak",
+        "move-up": "Yukarı taşı",
+        "move-down": "Aşağı taşı",
+        "backup-unavailable": "Yedekleme görevleri için bu sunucuyu yedekleyebilen bir düğüm ya da Pano eklentisi gerekir.",
+        "enabled-label": "Bu görev çalışsın",
+        "error-name": "Göreve bir ad ver.",
+        "error-cron": "Bir cron ifadesi gir.",
+        "error-cron-invalid": "Pano bu cron ifadesini okuyamıyor.",
+        "error-tasks": "En az bir görev ekle.",
+        "error-command": "Komut görevi için bir komut gerekir.",
+        "save-failed": "Görev kaydedilemedi.",
+        "error-backup-include": "Özel bir yedek için dahil edilecek en az bir yol gerekir."
+      },
+      "server-player-action": {
+        "kick-title": "{username} oyuncusunu at",
+        "kick-label": "Sebep (isteğe bağlı)",
+        "kick-placeholder": "Neden atılıyor?",
+        "message-title": "{username} oyuncusuna mesaj",
+        "message-label": "Mesaj",
+        "message-placeholder": "Sohbette ne görsün?"
       },
       "server-request": {
         "title": "\"{serverName}\" sunucusunu platforma bağlamak istediğinizden emin misiniz?",
@@ -1675,15 +3195,22 @@
         "display-name-hint": "Oyuncu sunucu adı yerine panelde böyle görünür. Boş bırakırsanız sunucunun bildirdiği ad kullanılır."
       },
       "servers": {
-        "connect-server-button": "Sunucu Bağla",
-        "servers": "Seç",
+        "connect-server-button": "Sunucu Ekle",
+        "servers": "Sunucular",
         "main-server": "Ana Sunucu",
         "online": "Çevrimiçi",
+        "offline": "Çevrimdışı",
         "other-servers-heading": "Diğer sunucular",
         "search-no-matches": "Aramanıza uyan başka sunucu yok",
         "search-placeholder": "Diğer sunucularda ara...",
         "select-server-tooltip": "Seçili Sunucu Yap",
-        "selecting-server": "Seçiliyor…"
+        "selecting-server": "Seçiliyor…",
+        "cpu": "İşlemci",
+        "ram": "Bellek",
+        "ram-of-host": "Düğümün {total} belleğinden {used}",
+        "disk": "Disk",
+        "vitals-unknown": "Henüz bildirilmedi",
+        "task-failed": "{task} başarısız oldu"
       },
       "unban-player": {
         "title": "Bu oyuncunun yasağını kaldırmak istediğinizden emin misiniz?"
@@ -1751,6 +3278,97 @@
         "preview-error": "Önizleme yüklenemedi.",
         "privacy-policy": "Gizlilik Politikası",
         "learn-more": "Daha fazla bilgi"
+      },
+      "server-file-upload": {
+        "title": "Dosya yükle",
+        "destination": "Yüklenecek klasör",
+        "drag-here": "Dosyaları buraya sürükleyin ya da seçmek için tıklayın",
+        "hint": "Aynı anda birden fazla dosya yükleyebilirsiniz; her birinin kendi ilerleme çubuğu olur."
+      },
+      "file-preview": {
+        "failed": "Bu dosya burada gösterilemedi."
+      },
+      "change-software": {
+        "title": "{name} sunucusunun yazılımını değiştir",
+        "title-reinstall": "{name} sunucusunu yeniden kur",
+        "section-software": "Yazılım",
+        "current": "Mevcut",
+        "java-pinned-outside": "Java {major} bu sürümü çalıştıramaz; Otomatik kullanılacak.",
+        "section-keep": "Neler korunsun",
+        "preview-loading": "Nelerin taşınabileceği kontrol ediliyor…",
+        "keep-worlds": "Dünyalar",
+        "keep-worlds-hint": "Tüm dünya klasörleri.",
+        "keep-worlds-denied": "Proxy’nin dünyası yoktur.",
+        "keep-plugins": "Eklentiler",
+        "keep-plugins-hint": "Eklentiler ve verileri.",
+        "keep-plugins-denied": "Yalnızca aynı yazılım ailesinde.",
+        "keep-mods": "Modlar",
+        "keep-mods-hint": "Mod ve config klasörleri.",
+        "keep-configs": "Yapılandırma",
+        "keep-configs-hint": "server.properties, config dosyaları, beyaz liste, operatörler, yasaklar.",
+        "keep-configs-vanilla-hint": "Yalnızca server.properties, beyaz liste, operatörler ve yasaklar.",
+        "keep-configs-denied": "Proxy ile sunucu arasında taşınmaz.",
+        "warning-plugins": "{from} eklentileri {to} üzerinde çalışmaz.",
+        "warning-mods": "{from} modları {to} üzerinde çalışmaz.",
+        "warning-to-proxy": "Proxy’nin dünyası yoktur; dünyalar yedekte kalır.",
+        "warning-to-backend": "Yeni bir dünyayla başlar.",
+        "warning-worlds-dropped": "Yeni bir dünyayla başlar.",
+        "section-confirm": "Onay",
+        "backup-first": "Önce yedek al",
+        "backup-first-hint": "Yedek başarısız olursa hiçbir şey değişmez.",
+        "backup-first-hint-size": "Yaklaşık {size}. Başarısız olursa hiçbir şey değişmez.",
+        "no-backup-warning": "Korunmayan her şey silinir.",
+        "start-after": "Ardından sunucuyu başlat",
+        "start-after-running": "Şu an açık; önce durdurulacak.",
+        "start-after-stopped": "Şu an kapalı.",
+        "password-label": "Hesap parolası",
+        "summary-running": "{from} → {to}. Kurulum başarısız olursa geri alınır.",
+        "summary-stopped": "{from} → {to}. Kurulum başarısız olursa geri alınır.",
+        "submit": "Yazılımı değiştir",
+        "progress-running": "Çalışılıyor…",
+        "progress-waiting": "Node bekleniyor…",
+        "progress-done": "Tamamlandı",
+        "progress-failed": "Değişiklik başarısız oldu",
+        "progress-rolled-back": "Sunucu eski hâline döndürüldü.",
+        "progress-background": "Bu pencereyi kapatabilirsin.",
+        "done-toast": "{name} artık {software} çalıştırıyor.",
+        "done-toast-reinstall": "{name} yeniden kuruldu."
+      },
+      "agent-link": {
+        "title": "Pano Agent ile bağla",
+        "toggle": "Pano Agent ile bağlamayı aç/kapat",
+        "steps": {
+          "1": "Pano Agent'ı sunucu klasörüne indir",
+          "2": "Sunucu klasöründe çalıştır",
+          "3": "Sunucunun görünmesini bekle"
+        },
+        "code-loading": "Kod alınıyor…",
+        "code-refresh": "Kod {seconds} sn sonra yenilenecek.",
+        "run-hint": "Sunucunun nasıl başlatılacağını sorar; Enter varsayılanları korur.",
+        "java": "Java {version} veya daha yenisi gerekir.",
+        "linked": "{name} bağlandı",
+        "open-server": "Sunucuyu aç",
+        "unavailable": "Bu Pano sürümü sunucuları henüz agent ile bağlayamıyor."
+      },
+      "confirm-update": {
+        "pano-plugin-title": "{server} üzerindeki Pano eklentisi güncellensin mi?",
+        "pano-plugin-body": "Eklenti, sunucu bir sonraki yeniden başlatıldığında yüklenir; sunucu şimdilik çalışmaya devam eder.",
+        "all-plugins-title": "Pano eklentisi {count} sunucuda güncellensin mi?",
+        "all-plugins-body": "Her sunucu yeni eklentiyi bir sonraki yeniden başlatılışında yükler; sunucular şimdilik çalışmaya devam eder.",
+        "agent-title": "{server} üzerindeki Pano Agent güncellensin mi?",
+        "agent-body": "Kendini günceller ve yeniden bağlanır; sunucu çalışmaya devam eder.",
+        "node-title": "{node} güncellensin mi?",
+        "node-body": "Kendini günceller ve yeniden bağlanır; sunucuları çalışmaya devam eder."
+      },
+      "pano-plugin-update": {
+        "title": "Pano eklentisini elle güncelle",
+        "why-too-old": "{name} üzerindeki Pano eklentisi kendini güncelleyemeyecek kadar eski. Bu seferlik elle güncelle; sonraki güncellemeler Pano’dan tek tık.",
+        "why-offline": "{name} Pano’ya bağlı değil, bu yüzden Pano eklentisine ulaşamıyor. Elle güncelleyebilirsin.",
+        "step-download": "Bu sunucu için derlenmiş Pano eklentisini indir.",
+        "download": "Pano eklentisini indir",
+        "download-version": "Pano eklentisi {version} indir",
+        "step-replace": "Sunucuyu durdur. {folder} klasöründeki eski Pano jar’ını (pano.jar ya da pano-…jar) sil ve indirdiğini oraya koy.",
+        "step-start": "Sunucuyu başlat. Yeni eklentiyle bağlanır; sonraki güncelleme tek tık."
       }
     },
     "editor": {
@@ -1881,6 +3499,42 @@
     },
     "search-input": {
       "searching": "Aranıyor..."
+    },
+    "backup-options": {
+      "mode-label": "Tür",
+      "mode-full": "Tam",
+      "mode-full-hint": "Kendi başına yeten tek bir zip. İndirmesi ve başka yere taşıması kolay; her biri yine tam boyut kadar yer kaplar.",
+      "mode-snapshot": "Snapshot",
+      "mode-snapshot-hint": "Artımlı: önceki snapshot'lardan bu yana yalnızca değişeni saklar, yine de her biri tek başına geri yüklenebilir. Sık dünya yedekleri için ideal.",
+      "scope-label": "Neler yedeklensin",
+      "scope-all": "Her şey",
+      "scope-worlds": "Sadece dünyalar",
+      "scope-custom": "Özel",
+      "scope-all-hint": "Sunucu klasörünün tamamı.",
+      "scope-worlds-hint": "server.properties'teki level-name dünyası, onun nether ve end'i ve level.dat içeren diğer klasörler.",
+      "scope-custom-hint": "Yalnızca aşağıda listelediğiniz dosya ve klasörler.",
+      "worlds-found": "Bulunanlar:",
+      "worlds-none": "Henüz bir dünya klasörü yok — yedek başarısız olur.",
+      "include-label": "Dahil et",
+      "include-hint": "Her satıra bir yol, sunucu klasörüne göre. Klasörler / ile biter.",
+      "exclude-label": "Hariç tut",
+      "exclude-hint": "Her satıra bir tane: / ile biten bir klasör (plugins/dynmap/), bir dosya adı deseni (*.log) ya da tam bir yol.",
+      "exclude-defaults": "Alışıldık gereksizleri de hariç tut:"
+    },
+    "pano-plugin-update-button": {
+      "label": "Pano eklentisini güncelle"
+    },
+    "daemon-update": {
+      "running-agent": "Pano Agent {version} sürümüne güncelleniyor…",
+      "running-agent-plain": "Pano Agent güncelleniyor…",
+      "restarting-agent": "Pano Agent yeniden başlatılıyor…",
+      "running": "{version} sürümüne güncelleniyor…",
+      "running-plain": "Güncelleniyor…",
+      "restarting": "Yeniden başlatılıyor…",
+      "done": "{version} sürümüne güncellendi",
+      "done-plain": "Güncellendi",
+      "failed": "Güncelleme başarısız: {message}",
+      "failed-plain": "Güncelleme başarısız"
     }
   },
   "page-error": {
@@ -1894,6 +3548,46 @@
     "MANAGE_SERVERS": {
       "title": "Sunucuları Yönet",
       "description": "Bir sunucuya bağlanabilir, bağlantısını kesebilir ve sunucuyla ilgili her şeyi yönetebilir."
+    },
+    "CREATE_SERVERS": {
+      "title": "Sunucu Oluştur",
+      "description": "Bir düğüm üzerinde yeni sunucular oluşturabilir."
+    },
+    "MANAGE_SERVER_CONSOLE": {
+      "title": "Sunucu Konsolunu Yönet",
+      "description": "Sunucu konsolunu görüntüleyebilir ve konsola komut gönderebilir."
+    },
+    "MANAGE_SERVER_POWER": {
+      "title": "Sunucu Gücünü Yönet",
+      "description": "Bir sunucuyu başlatabilir, durdurabilir, yeniden başlatabilir ve zorla kapatabilir."
+    },
+    "MANAGE_SERVER_PLAYERS": {
+      "title": "Sunucu Oyuncularını Yönet",
+      "description": "Bir sunucunun oyuncularını yönetebilir; oyuncuları atabilir, yasaklayabilir ve beyaz listeye ekleyebilir."
+    },
+    "MANAGE_SERVER_FILES": {
+      "title": "Sunucu Dosyalarını Yönet",
+      "description": "Bir sunucunun dosyalarını görüntüleyebilir, düzenleyebilir, yükleyebilir ve silebilir. Dikkat: Sunucu dosyaları hassas veriler içerebilir."
+    },
+    "MANAGE_SERVER_BACKUPS": {
+      "title": "Sunucu Yedeklerini Yönet",
+      "description": "Bir sunucunun yedeklerini oluşturabilir, indirebilir, geri yükleyebilir ve silebilir."
+    },
+    "MANAGE_SERVER_PLUGINS": {
+      "title": "Sunucu Eklentilerini Yönet",
+      "description": "Bir sunucunun eklentilerini ve modlarını yükleyebilir, güncelleyebilir ve kaldırabilir."
+    },
+    "MANAGE_SERVER_SCHEDULES": {
+      "title": "Sunucu Zamanlamalarını Yönet",
+      "description": "Bir sunucunun zamanlanmış görevlerini oluşturabilir, düzenleyebilir ve çalıştırabilir."
+    },
+    "MANAGE_SERVER_STARTUP": {
+      "title": "Sunucu Başlatma Ayarlarını Yönet",
+      "description": "Bir sunucunun başlatma yapılandırmasını; sürümünü, başlatma parametrelerini ve değişkenlerini düzenleyebilir."
+    },
+    "MANAGE_NODES": {
+      "title": "Düğümleri Yönet",
+      "description": "Yönetilen sunucuları çalıştıran düğümleri ekleyebilir, yapılandırabilir ve kaldırabilir."
     },
     "MANAGE_POSTS": {
       "title": "Yazıları Yönet",
@@ -1979,14 +3673,45 @@
     "RESTARTED_PANO": "**{username}** Pano'yu yeniden başlattı.",
     "MAINTENANCE_MODE_BANNED_IP": "{ip} adresi çok fazla hatalı bakım modu girişinden sonra yasaklandı.",
     "MAINTENANCE_MODE_UNBANNED_IP": "**{username}** {ipList} adresinin bakım modu yasağını kaldırdı.",
-    "MAINTENANCE_MODE_TOGGLED": "**{username}** bakım modunu {enabled, select, true {açtı} other {kapattı}}."
+    "MAINTENANCE_MODE_TOGGLED": "**{username}** bakım modunu {enabled, select, true {açtı} other {kapattı}}.",
+    "INSTALLED_NODE_JAVA": "**{username}**, {name} düğümüne Java {major} yükledi.",
+    "REMOVED_NODE_JAVA": "**{username}**, {name} düğümünden Java {major} sürümünü kaldırdı.",
+    "AUTO_UPDATED_NODE": "{name} kendini otomatik olarak {toVersion} sürümüne güncelledi.",
+    "LINKED_AGENT_SERVER": "**{username}**, {name} sunucusunu Pano Agent ile bağladı ({directory}).",
+    "SERVER_PANO_PLUGIN_UPDATED": "**{username}**, {serverName} üzerindeki Pano eklentisini {toVersion} sürümüne güncelledi.",
+    "ACCEPTED_NODE": "**{username}**, {name} düğümünü kabul etti.",
+    "CREATED_SERVER": "**{username}**, {name} sunucusunu oluşturdu ({software} {version}).",
+    "DELETED_NODE": "**{username}**, {name} düğümünü sildi.",
+    "DELETED_SERVER": "**{username}**, {name} sunucusunu {force, select, true {zorla sildi} other {sildi}}.",
+    "REINSTALLED_SERVER": "**{username}**, {serverName} sunucusunu {software} {version} ile yeniden kurdu.",
+    "RENAMED_NODE": "**{username}**, bir düğümün adını {name} olarak değiştirdi.",
+    "SENT_SERVER_COMMAND": "**{username}**, {serverName} sunucusunda \"{command}\" komutunu çalıştırdı.",
+    "SERVER_BACKUP_ACTION": "**{username}**, {serverName} sunucusunda {action, select, CREATE {yedek aldı} RESTORE {bir yedeği geri yükledi} DELETE {bir yedeği sildi} DOWNLOAD {bir yedeği indirdi} RETENTION {yedek saklama ayarını değiştirdi} PIN {bir yedeği sabitledi} UNPIN {bir yedeğin sabitlemesini kaldırdı} other {bir yedeği değiştirdi}}.",
+    "SERVER_CRASHED": "{name} sunucusu çöktü.",
+    "SERVER_FILE_CHANGED": "**{username}**, {serverName} sunucusunda {action, select, WRITE {{path} dosyasını düzenledi} MKDIR {{path} klasörünü oluşturdu} DELETE {{path} öğesini sildi} RENAME {{path} öğesinin adını {target} olarak değiştirdi} ARCHIVE {{path} öğesini arşivledi} UNARCHIVE {{path} arşivini açtı} CHMOD {{path} izinlerini değiştirdi} UPLOAD {{path} dosyasını yükledi} DOWNLOAD {{path} öğesini indirdi} other {{path} öğesini değiştirdi}}.",
+    "SERVER_PLAYER_ACTION": "**{username}**, {serverName} sunucusunda {action, select, KICK {{player} oyuncusunu attı} MESSAGE {{player} oyuncusuna mesaj gönderdi} OP {{player} oyuncusunu operatör yaptı} DEOP {{player} oyuncusunun operatörlüğünü aldı} GAMEMODE {{player} oyuncusunun oyun modunu değiştirdi} WHITELIST_ADD {{player} oyuncusunu beyaz listeye ekledi} WHITELIST_REMOVE {{player} oyuncusunu beyaz listeden çıkardı} BAN {{player} oyuncusunu banladı} other {{player} oyuncusu üzerinde işlem yaptı}}.",
+    "SERVER_PLUGIN_FILE_ACTION": "**{username}**, {serverName} sunucusunda {filename} dosyasını {action, select, INSTALL {kurdu} REMOVE {kaldırdı} other {değiştirdi}}.",
+    "SERVER_PLUGIN_TOGGLED": "**{username}**, {serverName} sunucusunda {plugin} eklentisini {enabled, select, true {etkinleştirdi} other {devre dışı bıraktı}}.",
+    "SERVER_PLUGIN_UPDATED": "**{username}**, {serverName} sunucusunda {pluginName} eklentisini güncelledi.",
+    "SERVER_POWER_ACTION": "**{username}**, {serverName} sunucusunu {action, select, START {başlattı} STOP {durdurdu} RESTART {yeniden başlattı} KILL {zorla kapattı} other {yönetti}}.",
+    "SERVER_SCHEDULE_ACTION": "**{username}**, {serverName} sunucusunda {name} zamanlamasını {action, select, CREATE {oluşturdu} UPDATE {düzenledi} DELETE {sildi} TOGGLE {açıp kapattı} RUN {çalıştırdı} other {değiştirdi}}.",
+    "SERVER_SCHEDULE_RUN": "{serverName} sunucusundaki {name} zamanlaması {ok, select, true {çalıştı} other {başarısız oldu}}.",
+    "UPDATED_SERVER_STARTUP": "**{username}**, {serverName} sunucusunun başlangıç ayarlarını değiştirdi."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> destek talebinde mesaj gönderdi (<b>#{id}</b>).",
     "NEW_TICKET": "<b>{username}</b> yeni bir destek talebi oluşturdu (<b>#{id}</b>).",
     "TICKET_CLOSED_BY_USER": "<b>{username}</b> destek talebini kapattı (<b>#{id}</b>).",
     "PANO_UPDATE_FOUND": "İyi haber! Yeni bir Pano güncellemesi bulundu!",
-    "SERVER_CONNECT_REQUEST": "Bir sunucu, Pano'ya bağlanma isteği gönderdi."
+    "SERVER_CONNECT_REQUEST": "Bir sunucu, Pano'ya bağlanma isteği gönderdi.",
+    "NODE_CONNECT_REQUEST": "Bir düğüm, Pano'ya bağlanma isteği gönderdi.",
+    "SERVER_CRASHED": "<b>{serverName}</b> çöktü.",
+    "NODE_OFFLINE": "Bir düğüm çevrimdışı oldu.",
+    "BACKUP_FAILED": "Bir yedekleme başarısız oldu.",
+    "DISK_LOW": "Bir düğümün disk alanı tükeniyor.",
+    "TPS_LOW": "Bir sunucu 15 TPS'nin altında çalışıyor.",
+    "SCHEDULE_FAILED": "Zamanlanmış bir çalışma başarısız oldu.",
+    "PLUGIN_UPDATES": "<b>{serverName}</b> için <b>{count}</b> eklenti güncellemesi var: {names}"
   },
   "errors": {
     "NETWORK_ERROR": "Bağlantı hatası! Lütfen bağlantınızı kontrol edin.",
@@ -2072,7 +3797,9 @@
     "TITLE_CANT_BE_EMPTY": "Başlık boş olamaz.",
     "UNAUTHORIZED": "Bu kaynağa erişim yetkiniz yok.",
     "WEBSITE_LOGO_EXCEEDS_SIZE": "Web sitesi logosu izin verilen maksimum boyutu aşıyor.",
-    "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Web sitesi logosu geçersiz içerik türüne sahip."
+    "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Web sitesi logosu geçersiz içerik türüne sahip.",
+    "KEEP_INCOMPATIBLE": "Bu yazılıma geçerken bu seçenek korunamaz. “Neler korunsun” seçimlerini kontrol et.",
+    "NETWORK_ROLE_CONFLICT": "Bu sunucu bir ağın parçası. Proxy ile oyun sunucusu arasında geçiş yapmadan önce onu ağdan çıkar."
   },
   "panel-themes": {
     "light": "Açık",

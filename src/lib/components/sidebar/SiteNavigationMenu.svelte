@@ -15,7 +15,7 @@
 
 <ul class="nav flex-column" data-bs-theme="dark">
   {#each $siteNavigationItems as item}
-    {#if !item.permission || hasPermission(item.permission)}
+    {#if (!item.permission || hasPermission(item.permission)) && isNavItemVisible(item, $usageMode)}
       <li class="nav-item">
         <a
           class="nav-link text-truncate"
@@ -23,14 +23,14 @@
           class:active={matching($page.url.pathname, base + item.href, item.startsWith)}>
           {#if item.hasUpdate}
             <span class="position-relative" class:pe-2={$session.basicData.hasUpdate}>
-              <i class="{item.icon} me-2"></i>
+              <i class="{item.icon} fa-fw me-2"></i>
               {$_(item.text)}
               {#if $session.basicData.hasUpdate}
                 <span class="position-absolute bg-warning rounded-circle p-1 top-0 end-0"> </span>
               {/if}
             </span>
           {:else}
-            <i class="{item.icon} me-2"></i>
+            <i class="{item.icon} fa-fw me-2"></i>
             {$_(item.text)}
           {/if}
         </a>
@@ -41,6 +41,7 @@
 
 <script context="module">
   import { Permissions } from '$lib/auth.util.js';
+  import { UsageModes } from '$lib/navigation.util.js';
 
   export const originalSiteNavItems = [
     {
@@ -61,6 +62,8 @@
       text: 'components.site-navigation-menu.posts',
       startsWith: true,
       permission: Permissions.MANAGE_POSTS,
+      // Site-only section: a SERVERS install has no public website to manage.
+      modes: [UsageModes.WEBSITE, UsageModes.BOTH],
     },
     {
       href: '/tickets',
@@ -68,6 +71,8 @@
       text: 'components.site-navigation-menu.tickets',
       startsWith: true,
       permission: Permissions.MANAGE_TICKETS,
+      // Site-only section: a SERVERS install has no public website to manage.
+      modes: [UsageModes.WEBSITE, UsageModes.BOTH],
     },
     {
       href: '/players',
@@ -89,6 +94,8 @@
       text: 'components.site-navigation-menu.view',
       startsWith: true,
       permission: Permissions.MANAGE_VIEW,
+      // Site-only section: a SERVERS install has no public website to manage.
+      modes: [UsageModes.WEBSITE, UsageModes.BOTH],
     },
     {
       href: '/translations',
@@ -136,9 +143,11 @@
   import { page } from '$app/stores';
 
   import { hasPermission } from '$lib/auth.util.js';
+  import { isNavItemVisible } from '$lib/navigation.util.js';
   import { siteNavigationItems } from '$lib/PluginAPI.js';
 
   const session = getContext('session');
+  const usageMode = getContext('usageMode');
 
   function matching(path, pathName, startsWith = false) {
     return (

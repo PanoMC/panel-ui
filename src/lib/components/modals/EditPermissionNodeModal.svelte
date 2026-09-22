@@ -1,3 +1,14 @@
+<style>
+  .scope-list {
+    max-height: 12rem;
+    overflow-y: auto;
+  }
+
+  .deny-chip-close {
+    font-size: 0.55em;
+  }
+</style>
+
 <!-- Edit Permission Node Modal -->
 <div class="modal fade" bind:this={$modalElement} tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
@@ -161,6 +172,134 @@
             </div>
           </div>
 
+          {#if serverScopeVisible}
+            <!-- SM-44/§2.4.11 — a `pano.panel.manage.server*` grant can be narrowed to single
+                 servers through `context.server`. No selection means every server, which is
+                 exactly what the node meant before per-server scoping existed. -->
+            <div class="mb-3">
+              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <label class="form-label mb-0" for="nodeServerScope">
+                  {$_('pages.permissions.server-scope.title')}
+                </label>
+                {#if $scopeServers.length > 0}
+                  <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-link p-0 px-2" on:click={selectAllServers}>
+                      {$_('pages.permissions.server-scope.select-all')}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-link p-0 px-2"
+                      on:click={clearServerScope}>
+                      {$_('pages.permissions.server-scope.clear')}
+                    </button>
+                  </div>
+                {/if}
+              </div>
+              <div class="form-text mb-2">
+                {$_('pages.permissions.server-scope.description')}
+              </div>
+
+              <div id="nodeServerScope" class="border rounded p-2 scope-list">
+                {#if $scopeLoading}
+                  <div class="small text-body-secondary">
+                    {$_('pages.permissions.server-scope.loading')}
+                  </div>
+                {:else if $scopeUnavailable}
+                  <div class="small text-body-secondary">
+                    {$_('pages.permissions.server-scope.unavailable')}
+                  </div>
+                {:else if $scopeServers.length === 0}
+                  <div class="small text-body-secondary">
+                    {$_('pages.permissions.server-scope.empty')}
+                  </div>
+                {:else}
+                  {#each $scopeServers as scopeServer (scopeServer.id)}
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="nodeServerScope-{scopeServer.id}"
+                        checked={$draft.serverScope.includes(scopeServer.id)}
+                        on:change={() => toggleServerScope(scopeServer.id)} />
+                      <label class="form-check-label" for="nodeServerScope-{scopeServer.id}">
+                        {scopeServer.name}
+                      </label>
+                    </div>
+                  {/each}
+                {/if}
+              </div>
+
+              <div class="mt-2">
+                <span class="badge text-bg-light border fw-normal">
+                  <i class="fa fa-server me-1" aria-hidden="true"></i>
+                  {serverScopeSummary}
+                </span>
+              </div>
+            </div>
+          {/if}
+
+          {#if commandPolicyVisible}
+            <!-- SM-46/§2.4.12 — the console grant can carry a list of commands it may never
+                 send. The backend matches the first token of the command, case-insensitively,
+                 and an admin bypasses the policy entirely. -->
+            <div class="mb-3">
+              <label class="form-label" for="nodeDenyCommands">
+                {$_('pages.permissions.deny-commands.title')}
+              </label>
+              <div class="form-text mb-2">
+                {$_('pages.permissions.deny-commands.description')}
+              </div>
+
+              {#if $draft.denyCommands.length === 0}
+                <div class="small text-body-secondary mb-2">
+                  {$_('pages.permissions.deny-commands.empty')}
+                </div>
+              {:else}
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                  {#each $draft.denyCommands as pattern (pattern)}
+                    <span
+                      class="badge text-bg-secondary d-inline-flex align-items-center gap-2 fw-normal font-monospace">
+                      {pattern}
+                      <button
+                        type="button"
+                        class="btn-close btn-close-white deny-chip-close"
+                        aria-label={$_('pages.permissions.deny-commands.remove', {
+                          values: { pattern },
+                        })}
+                        title={$_('buttons.remove')}
+                        on:click={() => removeDenyCommand(pattern)}></button>
+                    </span>
+                  {/each}
+                </div>
+              {/if}
+
+              <input
+                id="nodeDenyCommands"
+                class="form-control font-monospace"
+                class:is-invalid={!!denyCommandError}
+                type="text"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder={$_('pages.permissions.deny-commands.placeholder')}
+                bind:value={denyCommandInput}
+                on:keydown={onDenyCommandKeydown}
+                on:input={() => (denyCommandError = '')}
+                on:blur={() => commitDenyCommands()} />
+
+              {#if denyCommandError}
+                <div class="small text-danger mt-1">
+                  {$_('pages.permissions.deny-commands.invalid', {
+                    values: { token: denyCommandError },
+                  })}
+                </div>
+              {/if}
+
+              <div class="form-text">
+                {$_('pages.permissions.deny-commands.helper')}
+              </div>
+            </div>
+          {/if}
+
           <div class="mb-3">
             <div class="form-check form-switch">
               <input
@@ -300,12 +439,19 @@
   /** Panel user id (holderId) — when set, ticks/banner reflect direct + inherited perms for this user. */
   const evaluationUserId = writable(null);
   const registeredPermissions = writable({});
+  /** `[{ id, name }]` for the per-server scope picker (§2.4.11). */
+  const scopeServers = writable([]);
+  const scopeLoading = writable(false);
+  const scopeUnavailable = writable(false);
+  let scopeServersLoaded = false;
   const draft = writable({
     nodeValue: '',
     active: true,
     expiryType: 'never',
     expiryDate: '',
     contexts: [],
+    serverScope: [],
+    denyCommands: [],
   });
   const isAddMode = writable(false);
 
@@ -340,7 +486,14 @@
       active: !!n?.active,
       expiryType: n?.expiresAt ? 'date' : 'never',
       expiryDate: n?.expiresAt ? toLocalDatetime(n.expiresAt) : '',
-      contexts: Object.keys(obj).map((k) => ({ key: k, value: String(obj[k]) })),
+      // `server` and `denyCommands` are edited by the pickers below, never as raw key/value
+      // rows — otherwise the list would stringify the array and the two editors would fight
+      // over the same key.
+      contexts: Object.keys(obj)
+        .filter((k) => k !== 'server' && k !== 'denyCommands')
+        .map((k) => ({ key: k, value: String(obj[k]) })),
+      serverScope: getServerScope(obj),
+      denyCommands: getDenyCommands(obj),
     });
 
     modal = new window.bootstrap.Modal(get(modalElement), {
@@ -350,6 +503,55 @@
     modal.show();
 
     fetchRegisteredPermissions();
+    fetchScopeServers();
+  }
+
+  /**
+   * The servers the picker offers. Read once per page load: `/api/panel/servers` needs
+   * `MANAGE_SERVERS`, and an admin who may edit permissions but not see servers keeps whatever
+   * scope the node already carries instead of silently widening it.
+   */
+  function fetchScopeServers() {
+    if (scopeServersLoaded) {
+      return;
+    }
+
+    if (!hasPermission(Permissions.MANAGE_SERVERS)) {
+      scopeUnavailable.set(true);
+
+      return;
+    }
+
+    scopeServersLoaded = true;
+    scopeLoading.set(true);
+
+    import('$lib/api.util').then(({ default: ApiUtil }) => {
+      ApiUtil.get({
+        path: '/api/panel/servers',
+        handler: (body) => {
+          scopeLoading.set(false);
+
+          if (!body || typeof body !== 'object' || body.error) {
+            scopeUnavailable.set(true);
+
+            return;
+          }
+
+          const pinned = Array.isArray(body.pinned) ? body.pinned : [];
+          const otherServers = Array.isArray(body.otherServers) ? body.otherServers : [];
+          const list = Array.isArray(body.servers) ? body.servers : [...pinned, ...otherServers];
+
+          scopeServers.set(
+            list
+              .map((server) => ({
+                id: String(server?.id ?? ''),
+                name: getServerDisplayName(server) || String(server?.id ?? ''),
+              }))
+              .filter((server) => server.id !== ''),
+          );
+        },
+      });
+    });
   }
 
   function fetchRegisteredPermissions() {
@@ -384,6 +586,19 @@
   import NoContent from '$lib/components/NoContent.svelte';
 
   import { PANO_WEBSITE_URL } from "$lib/variables.js";
+  import {
+    getDenyCommands,
+    getServerScope,
+    hasPermission,
+    isCommandPolicyNode,
+    isServerScopedNode,
+    isValidDenyCommand,
+    normalizeDenyCommands,
+    Permissions,
+    withDenyCommands,
+    withServerScope,
+  } from '$lib/auth.util.js';
+  import { getServerDisplayName } from '$lib/servers.util.js';
 
   /** LuckPerms graph edges stored as permission-looking nodes — not assignable grants in this UI. */
   const LP_META_EDGE_PREFIXES = ['group.', 'weight.', 'displayname.'];
@@ -590,6 +805,12 @@
 
   let showNodeSuggestions = false;
   let activeSuggestionIndex = 0;
+  /** The pattern being typed into the denied-command chip input (§2.4.12). */
+  let denyCommandInput = '';
+  /** The rejected token, shown under the field; empty while the input is fine. */
+  let denyCommandError = '';
+  /** The node the chip input belongs to, so a reopened dialog starts with an empty field. */
+  let denyCommandNode = null;
 
   $: {
     nodeQuery;
@@ -694,6 +915,115 @@
     })
     .slice(0, 50);
 
+  $: serverScopeVisible = isServerScopedNode(draftTrim);
+
+  $: serverScopeSummary = !$draft?.serverScope?.length
+    ? $_('pages.permissions.server-scope.badge-all')
+    : $draft.serverScope.length === 1
+      ? $_('pages.permissions.server-scope.badge-one')
+      : $_('pages.permissions.server-scope.badge-count', {
+          values: { count: $draft.serverScope.length },
+        });
+
+  function toggleServerScope(serverId) {
+    const d = get(draft);
+    const current = Array.isArray(d.serverScope) ? d.serverScope : [];
+    const next = current.includes(serverId)
+      ? current.filter((id) => id !== serverId)
+      : [...current, serverId];
+
+    draft.set({ ...d, serverScope: next });
+  }
+
+  function selectAllServers() {
+    const d = get(draft);
+
+    draft.set({ ...d, serverScope: get(scopeServers).map((server) => server.id) });
+  }
+
+  function clearServerScope() {
+    const d = get(draft);
+
+    draft.set({ ...d, serverScope: [] });
+  }
+
+  $: commandPolicyVisible = isCommandPolicyNode(draftTrim);
+
+  // A fresh `show()` swaps the node out; a half-typed chip belonged to the previous one.
+  $: if ($node !== denyCommandNode) {
+    denyCommandNode = $node;
+    denyCommandInput = '';
+    denyCommandError = '';
+  }
+
+  /**
+   * Turns whatever sits in the chip input into patterns. Commas separate, so pasting
+   * `op, deop, stop` in one go lands three chips.
+   *
+   * @param {string} [raw]
+   * @returns {boolean} false when something in the input is not a valid pattern — the caller
+   *   then leaves the text where it is so it can be corrected.
+   */
+  function commitDenyCommands(raw = denyCommandInput) {
+    const tokens = String(raw || '')
+      .split(',')
+      .map((token) => token.trim())
+      .filter(Boolean);
+
+    if (tokens.length === 0) {
+      denyCommandInput = '';
+      denyCommandError = '';
+
+      return true;
+    }
+
+    const invalid = tokens.find((token) => !isValidDenyCommand(token));
+
+    if (invalid) {
+      denyCommandError = invalid;
+
+      return false;
+    }
+
+    const d = get(draft);
+    const current = Array.isArray(d.denyCommands) ? d.denyCommands : [];
+
+    draft.set({ ...d, denyCommands: normalizeDenyCommands([...current, ...tokens]) });
+
+    denyCommandInput = '';
+    denyCommandError = '';
+
+    return true;
+  }
+
+  function onDenyCommandKeydown(event) {
+    if (event.key === 'Enter' || event.key === ',') {
+      // Enter would otherwise reach the node autocomplete's handler, and a comma would only
+      // ever end up inside a pattern, where it is invalid anyway.
+      event.preventDefault();
+      commitDenyCommands();
+
+      return;
+    }
+
+    // Backspace on an empty input takes the last chip back, the way every tag field behaves.
+    if (event.key === 'Backspace' && !denyCommandInput) {
+      const d = get(draft);
+      const current = Array.isArray(d.denyCommands) ? d.denyCommands : [];
+
+      if (current.length > 0) {
+        draft.set({ ...d, denyCommands: current.slice(0, -1) });
+      }
+    }
+  }
+
+  function removeDenyCommand(pattern) {
+    const d = get(draft);
+    const current = Array.isArray(d.denyCommands) ? d.denyCommands : [];
+
+    draft.set({ ...d, denyCommands: current.filter((entry) => entry !== pattern) });
+  }
+
   function addContext() {
     const d = get(draft);
     draft.set({ ...d, contexts: [...(d.contexts || []), { key: '', value: '' }] });
@@ -708,9 +1038,14 @@
     const n = get(node);
     if (!n) return;
 
-    const d = get(draft);
-    if (!d.nodeValue?.trim()) return;
+    if (!get(draft).nodeValue?.trim()) return;
 
+    // Whatever is still in the chip input counts as typed: saving must not quietly drop it, and
+    // an invalid leftover keeps the dialog open with the hint under the field. The draft is read
+    // only afterwards, because committing writes the new chip into it.
+    if (!commitDenyCommands()) return;
+
+    const d = get(draft);
     const contextObj = {};
     (d.contexts || []).forEach((c) => {
       const key = (c.key || '').trim();
@@ -727,11 +1062,14 @@
       return;
     }
 
+    // `withServerScope` and `withDenyCommands` also round-trip what a node that is no longer
+    // server- or console-shaped carries, so renaming a node never silently throws its
+    // `context.server` or `context.denyCommands` away.
     const updated = {
       ...n,
       node: d.nodeValue.trim(),
       active: !!d.active,
-      context: contextObj,
+      context: withDenyCommands(withServerScope(contextObj, d.serverScope), d.denyCommands),
       expiresAt,
       updatedAt: Date.now(),
     };

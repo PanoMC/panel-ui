@@ -21,9 +21,19 @@
               on:click={openConnectServer}
               type="button"
               aria-label={$_('components.modals.servers.connect-server-button')}>
-              <i class="fa-solid fa-plug me-1" aria-hidden="true"></i>
+              <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
               {$_('components.modals.servers.connect-server-button')}
             </button>
+            <!-- How often the gauges refresh while the modal is open — the Overview's intervals. -->
+            <select
+              class="form-select form-select-sm w-auto"
+              aria-label={$_('pages.servers.overview.refresh-interval')}
+              bind:value={modalInterval}
+              on:change={onModalIntervalChange}>
+              {#each METRIC_REFRESH_INTERVALS as interval (interval)}
+                <option value={interval}>{metricRefreshIntervalLabel(interval, $_)}</option>
+              {/each}
+            </select>
           </div>
           <button
             aria-label={$_('buttons.close')}
@@ -69,14 +79,16 @@
         {:else}
           <div class="d-flex flex-column gap-3">
             {#if $pinnedServers.length > 0}
-              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+              <div
+                class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
                 {#each $pinnedServers as server (server.id)}
                   <ServersModalServerCard
                     {server}
                     selectingServerId={$selectingServer}
                     {copiedId}
                     onSelectCard={onSelect}
-                    onCopy={onCopy} />
+                    {onCopy}
+                    latest={serverMetrics[server.id]?.latest ?? null} />
                 {/each}
               </div>
             {/if}
@@ -96,14 +108,16 @@
               {/if}
 
               {#if filteredOtherServers.length > 0}
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+                <div
+                  class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
                   {#each filteredOtherServers as server (server.id)}
                     <ServersModalServerCard
                       {server}
                       selectingServerId={$selectingServer}
                       {copiedId}
                       onSelectCard={onSelect}
-                      onCopy={onCopy} />
+                      {onCopy}
+                      latest={serverMetrics[server.id]?.latest ?? null} />
                   {/each}
                 </div>
               {:else if $searchTerm}
@@ -203,7 +217,8 @@
   import { _ } from 'svelte-i18n';
 
   import { browser } from '$app/environment';
-  import { invalidateAll } from '$app/navigation';
+  import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
 
   import {
     showSuccess as showSuccessToast,
@@ -215,29 +230,211 @@
   import {
     onPanelServerRemoved,
     onPanelServerUpdate,
-    setPanelServersListSubscription,
+    onServerMetrics,
+    onTaskProgress,
+    subscribePanelServersList,
+    subscribeServersMetrics,
   } from '$lib/panelRealtime.js';
+  import {
+    loadMetricRefreshInterval,
+    METRIC_REFRESH_INTERVAL_DEFAULT,
+    METRIC_REFRESH_INTERVALS,
+    metricRefreshIntervalLabel,
+    metricRequestInterval,
+    storeMetricRefreshInterval,
+    createKeyedLatestThrottle,
+  } from '$lib/metricsSeries.util.js';
 
-  import { show as showConnectServerModal } from './ConnectServerModal.svelte';
+  import { applyTaskFrame } from '$lib/servers.util.js';
+
+  import { show as showAddServerModal } from './AddServerModal.svelte';
   import ServersModalServerCard from './ServersModalServerCard.svelte';
 
   const selectedServer = getContext('selectedServer');
+  const usageMode = getContext('usageMode');
 
   const SERVERS_MODAL_SEARCH_INPUT_ID = 'servers-modal-search-input';
 
   let modalEl;
   $: modalElement.set(modalEl);
 
+  /**
+   * The old way the gauges refreshed (SM-53), kept as the fallback: a backend without the
+   * multi-server metrics subscription sends no frames, and then the modal polls the bulk
+   * endpoint at this pace instead.
+   */
+  const SERVER_METRICS_POLL_MS = 15000;
+  const MODAL_INTERVAL_KEY = 'pano.panel.servers-modal.refresh-interval';
+
   let serversModalOpen = false;
+  /** @type {(() => void) | null} */
+  let releaseServersList = null;
+
+  /**
+   * Per server id, the `latest` sample the cards' gauges are drawn from, as
+   * `GET /api/panel/servers-metrics` returns it. It stays empty on a backend that does not
+   * serve that endpoint yet, and the gauges then simply read "—".
+   *
+   * @type {Record<string, { latest?: object|null }>}
+   */
+  let serverMetrics = {};
+  /** @type {ReturnType<typeof setInterval> | null} */
+  let metricsTimer = null;
+  let metricsInFlight = false;
+  /** Refresh interval of the gauges, in ms; 0 is Paused. Remembered per browser. */
+  let modalInterval = browser
+    ? loadMetricRefreshInterval(MODAL_INTERVAL_KEY)
+    : METRIC_REFRESH_INTERVAL_DEFAULT;
+  /** @type {{ release: () => void, update: (ids: Array<number|string>, intervalMs: number|null) => void } | null} */
+  let metricsSubscription = null;
+  /** @type {(() => void) | null} */
+  let offMetricsFrames = null;
+  /** When the last hub `metrics` frame for a listed server arrived; the polling fallback's cue. */
+  let lastMetricsFrameAt = 0;
+
+  // Every server the modal lists — pinned and the rest, search or not — so a card that the
+  // search reveals already has live numbers.
+  $: listedServerIds = [...$pinnedServers, ...$otherServers].map((server) => server.id);
+
+  // The list and the interval travel with the subscription; changing either re-sends it.
+  $: if (serversModalOpen && metricsSubscription) {
+    metricsSubscription.update(listedServerIds, metricRequestInterval(modalInterval));
+  }
 
   function onModalShown() {
     serversModalOpen = true;
-    setPanelServersListSubscription(true);
+
+    if (!releaseServersList) {
+      releaseServersList = subscribePanelServersList();
+    }
+
+    startServerMetrics();
   }
 
   function onModalHidden() {
     serversModalOpen = false;
-    setPanelServersListSubscription(false);
+    releaseServersList?.();
+    releaseServersList = null;
+    stopServerMetrics();
+  }
+
+  function onModalIntervalChange() {
+    storeMetricRefreshInterval(MODAL_INTERVAL_KEY, modalInterval);
+  }
+
+  /**
+   * One live sample of one listed server: it becomes that card's `latest`. Paused keeps the
+   * gauges on the picture they had.
+   *
+   * @param {{ serverId: number, sample: object | null }} frame
+   */
+  function onMetricsFrame(frame) {
+    if (
+      !serversModalOpen ||
+      !frame?.sample ||
+      !listedServerIds.some((id) => Number(id) === Number(frame.serverId))
+    ) {
+      return;
+    }
+
+    lastMetricsFrameAt = Date.now();
+
+    if (modalInterval === 0) {
+      return;
+    }
+
+    // At most one update per server per chosen interval, always the newest sample: a server with
+    // both a node and a plugin gets a merged sample on each side's frame, and the hub sends the
+    // fastest rate any watcher asked for.
+    gaugeThrottle.setInterval(modalInterval);
+    gaugeThrottle.push(frame.serverId, frame.sample);
+  }
+
+  const gaugeThrottle = createKeyedLatestThrottle((serverId, sample) => {
+    if (!serversModalOpen || modalInterval === 0) {
+      return;
+    }
+
+    const previous = serverMetrics[serverId] ?? {};
+
+    serverMetrics = {
+      ...serverMetrics,
+      [serverId]: { ...previous, latest: { ...(previous.latest ?? {}), ...sample } },
+    };
+  });
+
+  /**
+   * One bulk call for every card in the grid — the per-server endpoint would mean one request
+   * per card on every tick. A backend without it answers 404, which lands here as an error body
+   * (or as plain text) and is ignored on purpose: the cards are still perfectly usable without
+   * vitals, so nothing is toasted.
+   */
+  async function loadServerMetrics() {
+    if (!browser || metricsInFlight) {
+      return;
+    }
+
+    metricsInFlight = true;
+
+    try {
+      const body = await ApiUtil.get({
+        path: `/api/panel/servers-metrics?range=1h`,
+        handler: (response) => response,
+      });
+
+      if (!serversModalOpen) {
+        return;
+      }
+
+      if (body && typeof body === 'object' && !body.error && body.servers) {
+        serverMetrics = body.servers;
+      }
+    } finally {
+      metricsInFlight = false;
+    }
+  }
+
+  /**
+   * One fetch for the initial numbers (and disk, which only changes every few minutes), then the
+   * hub's per-server frames at the chosen interval. The 15-second poll only runs while no frame
+   * has arrived for that long — a backend without the multi-server subscription.
+   */
+  function startServerMetrics() {
+    void loadServerMetrics();
+
+    lastMetricsFrameAt = Date.now();
+
+    if (!offMetricsFrames) {
+      offMetricsFrames = onServerMetrics(onMetricsFrame);
+    }
+
+    if (!metricsSubscription) {
+      metricsSubscription = subscribeServersMetrics(
+        listedServerIds,
+        metricRequestInterval(modalInterval),
+      );
+    }
+
+    if (metricsTimer == null) {
+      metricsTimer = setInterval(() => {
+        if (modalInterval !== 0 && Date.now() - lastMetricsFrameAt > SERVER_METRICS_POLL_MS) {
+          void loadServerMetrics();
+        }
+      }, SERVER_METRICS_POLL_MS);
+    }
+  }
+
+  function stopServerMetrics() {
+    if (metricsTimer != null) {
+      clearInterval(metricsTimer);
+      metricsTimer = null;
+    }
+
+    metricsSubscription?.release();
+    metricsSubscription = null;
+    gaugeThrottle.cancel();
+    offMetricsFrames?.();
+    offMetricsFrames = null;
   }
 
   let copiedId = null;
@@ -245,13 +442,14 @@
 
   function openConnectServer() {
     if (!browser) return;
+    const openChooser = () => showAddServerModal(getStore(usageMode));
     if (!modalEl) {
-      showConnectServerModal();
+      openChooser();
       return;
     }
     const onHidden = () => {
       modalEl.removeEventListener('hidden.bs.modal', onHidden);
-      showConnectServerModal();
+      openChooser();
     };
     modalEl.addEventListener('hidden.bs.modal', onHidden);
     const inst = window.bootstrap?.Modal?.getOrCreateInstance(modalEl);
@@ -341,16 +539,14 @@
     return `${server?.host || ''}:${server?.port ?? ''}`;
   }
 
-  $: filteredOtherServers = $otherServers.filter(
-    (s) => {
-      const term = $searchTerm.toLowerCase();
-      return (
-        (s.customName || s.name || '').toLowerCase().includes(term) ||
-        getPrimaryAddress(s).toLowerCase().includes(term) ||
-        getLocalAddress(s).toLowerCase().includes(term)
-      );
-    }
-  );
+  $: filteredOtherServers = $otherServers.filter((s) => {
+    const term = $searchTerm.toLowerCase();
+    return (
+      (s.customName || s.name || '').toLowerCase().includes(term) ||
+      getPrimaryAddress(s).toLowerCase().includes(term) ||
+      getLocalAddress(s).toLowerCase().includes(term)
+    );
+  });
 
   onMount(() => {
     const u1 = onPanelServerUpdate((server) => {
@@ -376,27 +572,54 @@
       pinnedServers.update((l) => l.filter((s) => s.id !== id));
       otherServers.update((l) => l.filter((s) => s.id !== id));
     });
+    // SM-68 — a server's install/backup/... progress, so a card shows the build instead of a
+    // plain "Offline" for ten minutes. Closed or not, the list stays current: the frames only
+    // reach this session while the list is subscribed anyway.
+    const u3 = onTaskProgress((frame) => {
+      if (frame?.serverId == null) {
+        return;
+      }
+      const apply = (list) => {
+        const i = list.findIndex((s) => Number(s.id) === Number(frame.serverId));
+        if (i < 0) {
+          return list;
+        }
+        const updated = applyTaskFrame(list[i], frame);
+        if (updated === list[i]) {
+          return list;
+        }
+        const next = [...list];
+        next[i] = updated;
+        return next;
+      };
+      pinnedServers.update(apply);
+      otherServers.update(apply);
+    });
     return () => {
       u1();
       u2();
+      u3();
     };
   });
 
   onDestroy(() => {
-    if (browser) {
-      setPanelServersListSubscription(false);
-    }
+    releaseServersList?.();
+    releaseServersList = null;
+    stopServerMetrics();
   });
 
   function onSelect(server) {
     selectingServer.set(server.id);
 
+    // The select call still runs so `basicData.selectedServer` remembers the last server the
+    // admin opened, but the modal is a navigation now: every server page names its server in
+    // the URL.
     ApiUtil.post({
       path: `/api/panel/servers/${server.id}/select`,
       handler: async (body, reject) => {
         if (body.result === 'ok') {
           $selectedServer = server;
-          await invalidateAll();
+          await goto(`${base}/servers/${server.id}`, { invalidateAll: true });
           selectingServer.set(null);
           hide();
           await showSuccessToast('components.toasts.server-selected', {

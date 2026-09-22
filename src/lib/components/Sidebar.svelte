@@ -18,6 +18,12 @@
     color: var(--bs-primary) !important;
   }
 
+  /* WEBSITE usage mode: the servers pill stays visible, but inert and visibly muted. */
+  .nav-pills .nav-link:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
   .sidebar-header-container {
     position: relative;
     background-color: var(--bs-primary);
@@ -74,45 +80,45 @@
   }
 
   /* --- Copper Theme Specific Adjustments --- */
-  :global([data-bs-theme="copper"]) #sidebar {
+  :global([data-bs-theme='copper']) #sidebar {
     background-color: #1a1512 !important;
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
   }
 
-  :global([data-bs-theme="copper"]) .sidebar-header-container,
-  :global([data-bs-theme="copper"]) .sidebar-scroll-area,
-  :global([data-bs-theme="copper"]) .sidebar-bottom-container {
+  :global([data-bs-theme='copper']) .sidebar-header-container,
+  :global([data-bs-theme='copper']) .sidebar-scroll-area,
+  :global([data-bs-theme='copper']) .sidebar-bottom-container {
     background-color: #1a1512 !important;
   }
 
-  :global([data-bs-theme="copper"]) .sidebar-header-container {
+  :global([data-bs-theme='copper']) .sidebar-header-container {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  :global([data-bs-theme="copper"]) .sidebar-bottom-container {
+  :global([data-bs-theme='copper']) .sidebar-bottom-container {
     border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  :global([data-bs-theme="copper"]) .sidebar-top-fade-overlay {
+  :global([data-bs-theme='copper']) .sidebar-top-fade-overlay {
     background: linear-gradient(to bottom, #1a1512, transparent);
   }
 
-  :global([data-bs-theme="copper"]) .sidebar-bottom-fade-overlay {
+  :global([data-bs-theme='copper']) .sidebar-bottom-fade-overlay {
     background: linear-gradient(to top, #1a1512, transparent);
   }
 
-  :global([data-bs-theme="copper"]) .nav-pills .nav-link {
+  :global([data-bs-theme='copper']) .nav-pills .nav-link {
     color: rgba(255, 255, 255, 0.6) !important;
     border-radius: 0.5rem;
     transition: all 0.2s ease;
   }
 
-  :global([data-bs-theme="copper"]) .nav-pills .nav-link:hover {
+  :global([data-bs-theme='copper']) .nav-pills .nav-link:hover {
     color: #fff !important;
     background-color: rgba(255, 255, 255, 0.05);
   }
 
-  :global([data-bs-theme="copper"]) .nav-pills .nav-link.active {
+  :global([data-bs-theme='copper']) .nav-pills .nav-link.active {
     background-color: var(--bs-primary) !important;
     color: #fff !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -121,7 +127,6 @@
   .sidebar-header-container .navbar-brand {
     transition: none;
   }
-
 
   .navbar-toggler i {
     transition: transform 0.2s ease;
@@ -159,7 +164,23 @@
 {#if hasPermission(Permissions.MANAGE_SERVERS)}
   <ServersModal />
   <ConnectServerModal />
+  <AddServerModal />
+  {#if hasPermission(Permissions.CREATE_SERVERS)}
+    <CreateServerModal />
+    <AgentLinkModal />
+  {/if}
 {/if}
+
+{#if hasPermission(Permissions.MANAGE_NODES)}
+  <AddNodeModal />
+{/if}
+
+{#if hasPermission(Permissions.MANAGE_SERVER_PLUGINS)}
+  <PanoPluginUpdateModal />
+{/if}
+
+<!-- The "are you sure?" of every one-click update: plugin, agent, node (SM-77). -->
+<ConfirmUpdateModal />
 
 <div
   class="offcanvas offcanvas-start offcanvas-lg bg-primary h-100 overflow-hidden border"
@@ -174,7 +195,8 @@
     <div class="sidebar-header-container p-2 flex-shrink-0">
       <div class="sidebar-top-fade-overlay" class:show={isScrolledTop}></div>
       <!-- Sidebar Toggler & Logo -->
-      <div class="navbar navbar-expand navbar-dark navbar-nav flex-row w-100 justify-content-center align-items-center position-relative">
+      <div
+        class="navbar navbar-expand navbar-dark navbar-nav flex-row w-100 justify-content-center align-items-center position-relative">
         <button
           bind:this={closeButton}
           class:active={isFocused}
@@ -216,9 +238,46 @@
         </a>
       </div>
 
-      <!-- Buttons removed as per user request -->
+      <!-- The workspace's own shortcut, one row above the tabs (Selim's original layout, back from
+           the navbar where it did not fit a phone): the site opens the public website, the
+           servers workspace opens the servers list (adding one is there) and reaches the nodes. -->
+      <div class="sidebar-context-actions mt-1 mb-2">
+        {#if $sidebarTabsState === 'website' && $usageMode !== UsageModes.SERVERS}
+          <a
+            href={UI_URL}
+            target="_blank"
+            rel="noopener"
+            class="btn btn-sm btn-secondary w-100 d-flex align-items-center justify-content-center">
+            {$_('components.sidebar.show-website')}
+            <i class="fa-solid fa-arrow-up-right-from-square ms-2" aria-hidden="true"></i>
+          </a>
+        {:else if $sidebarTabsState === 'game' && canManageServers}
+          <div class="hstack gap-1">
+            {#if canManageNodes}
+              <a
+                class="btn btn-sm btn-secondary flex-shrink-0"
+                class:active={onNodesPage}
+                href="{base}/servers/nodes"
+                aria-current={onNodesPage ? 'page' : undefined}
+                aria-label={$_('components.server-navigation-menu.nodes')}
+                title={$_('components.server-navigation-menu.nodes')}>
+                <i class="fas fa-server" aria-hidden="true"></i>
+              </a>
+            {/if}
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary flex-grow-1 d-flex align-items-center justify-content-center gap-2 min-w-0"
+              on:click={showServersModal}
+              title={switcherServer
+                ? `${$_('components.navbar.selected-server')}: ${getServerDisplayName(switcherServer)}`
+                : $_('components.server-navigation-menu.select-server')}>
+              {$_('components.sidebar.show-servers')}
+            </button>
+          </div>
+        {/if}
+      </div>
 
-      <!-- Sidebar Tabs -->
+      <!-- Sidebar Tabs — rendered in every usage mode; WEBSITE only disables the servers one. -->
       <ul class="nav nav-pills nav-fill gap-1" data-bs-theme="dark">
         <li class="nav-item">
           <button
@@ -230,12 +289,20 @@
             <i class="fas fa-globe"></i>
           </button>
         </li>
-        {#if hasPermission(Permissions.MANAGE_SERVERS)}
-          <li class="nav-item">
+        {#if canManageServers}
+          <!-- Tooltip sits on the <li>: a disabled button takes no pointer events of its own. -->
+          <li
+            class="nav-item"
+            use:tooltip={[
+              isGameTabDisabled ? $_('components.sidebar.server-management-disabled') : null,
+              { placement: 'bottom' },
+            ]}>
             <button
               class="nav-link p-1 text-center"
               aria-label={$_('components.sidebar.server')}
-              title={$_('components.sidebar.server')}
+              title={isGameTabDisabled ? null : $_('components.sidebar.server')}
+              disabled={isGameTabDisabled}
+              aria-disabled={isGameTabDisabled ? 'true' : undefined}
               on:click={onGameMenuClick}
               class:active={$sidebarTabsState === 'game'}>
               <i class="fas fa-cube"></i>
@@ -257,7 +324,6 @@
       <Bottom />
     </div>
   </div>
-
 </div>
 
 <script>
@@ -272,16 +338,23 @@
 
   import Bottom from './sidebar/Bottom.svelte';
 
-
-
   import SiteNavigationMenu from './sidebar/SiteNavigationMenu.svelte';
   import ServerNavigationMenu from './sidebar/ServerNavigationMenu.svelte';
 
   import ServersModal, { show as showServersModal } from './modals/ServersModal.svelte';
+  import { page } from '$app/stores';
+  import { activeServer, getServerDisplayName } from '$lib/servers.util.js';
+  import AddNodeModal from './modals/AddNodeModal.svelte';
+  import AddServerModal from './modals/AddServerModal.svelte';
+  import AgentLinkModal from './modals/AgentLinkModal.svelte';
+  import ConfirmUpdateModal from './modals/ConfirmUpdateModal.svelte';
   import ConnectServerModal from './modals/ConnectServerModal.svelte';
+  import CreateServerModal from './modals/CreateServerModal.svelte';
+  import PanoPluginUpdateModal from './modals/PanoPluginUpdateModal.svelte';
   import { UI_URL } from '$lib/variables.js';
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { UsageModes } from '$lib/navigation.util.js';
   import { browser } from '$app/environment';
 
   let menuComponent = SiteNavigationMenu;
@@ -289,6 +362,26 @@
   const sidebarTabsState = getContext('sidebarTabsState');
   const isSidebarOpen = getContext('isSidebarOpen');
   const siteInfo = getContext('siteInfo');
+  const usageMode = getContext('usageMode');
+
+  const canManageServers = hasPermission(Permissions.MANAGE_SERVERS);
+  const canManageNodes = hasPermission(Permissions.MANAGE_NODES);
+  const selectedServer = getContext('selectedServer');
+
+  /**
+   * The switcher names the server in the URL: `page.data.server` is what the `/servers/[id]`
+   * layout loaded (so SSR is right), `activeServer` that row kept live. Elsewhere it falls back
+   * to the per-user selected server.
+   */
+  $: onNodesPage = $page.url.pathname.startsWith(`${base}/servers/nodes`);
+  $: routeServer = $page.data?.server ?? null;
+  $: switcherServer =
+    ($activeServer && routeServer && Number($activeServer.id) === Number(routeServer.id)
+      ? $activeServer
+      : routeServer) ?? $selectedServer;
+
+  /** WEBSITE turns server management off entirely, so its pill is shown but not usable. */
+  $: isGameTabDisabled = $usageMode === UsageModes.WEBSITE;
 
   let windowWidth = browser ? window.innerWidth : 1200;
   let closeButton;
@@ -331,6 +424,10 @@
   }
 
   function onGameMenuClick() {
+    if (isGameTabDisabled) {
+      return;
+    }
+
     setSidebarTabsState('game', sidebarTabsState);
   }
 

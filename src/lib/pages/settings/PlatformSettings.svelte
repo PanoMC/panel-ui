@@ -1,4 +1,31 @@
 <style>
+  /* Usage mode radio cards. Bootstrap has no radio-card component, so the selected state is a
+     border + tint on a plain button that carries the radio role. */
+  .usage-mode-box {
+    background-color: transparent;
+    border-color: var(--bs-border-color) !important;
+    color: inherit;
+    transition:
+      border-color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out;
+  }
+
+  .usage-mode-box:hover {
+    border-color: var(--bs-secondary-border-subtle) !important;
+    background-color: rgba(var(--bs-secondary-rgb), 0.08);
+  }
+
+  .usage-mode-box.selected {
+    border-color: var(--bs-primary) !important;
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    box-shadow: inset 0 0 0 1px var(--bs-primary);
+  }
+
+  .usage-mode-box-icon {
+    color: var(--bs-primary);
+    font-size: 1.25rem;
+  }
+
   .connect-account-board {
     background-size: cover;
     background-position: center;
@@ -127,6 +154,32 @@
     {$_('pages.settings.platform.preferences')}
   </div>
   <div class="card-body">
+    <div class="mb-3">
+      <span class="form-label d-block" id="usageModeLabel">
+        {$_('pages.settings.platform.usage-mode.label')}
+      </span>
+      <div class="row g-2" role="radiogroup" aria-labelledby="usageModeLabel">
+        {#each usageModeOptions as option (option.value)}
+          <div class="col-12 col-md-4">
+            <button
+              type="button"
+              role="radio"
+              aria-checked={data.usageMode === option.value}
+              class="usage-mode-box h-100 w-100 rounded border p-3 text-start"
+              class:selected={data.usageMode === option.value}
+              on:click={() => (data.usageMode = option.value)}>
+              <i class="{option.icon} usage-mode-box-icon mb-2 d-block"></i>
+              <span class="d-block fw-semibold">{$_(option.titleKey)}</span>
+              <small class="text-body-secondary d-block">{$_(option.descriptionKey)}</small>
+            </button>
+          </div>
+        {/each}
+      </div>
+      <small class="text-muted d-block mt-2">
+        {$_('pages.settings.platform.usage-mode.hint')}
+      </small>
+    </div>
+
     <div class="row mb-3">
       <label class="col-md-6" for="platformDevMode"
         >{$_('pages.settings.platform.developer-mode')}</label>
@@ -550,6 +603,101 @@
   </div>
 </div>
 
+<!-- SM-35 — which alerts Pano raises, and whether each one is also sent by e-mail (§2.4.7).
+     The kinds are fixed by the backend's `AlertManager`, so the card renders the list it knows
+     and simply keeps whatever the settings endpoint answered for the rest. -->
+{#if canManageAlerts}
+  <div class="card">
+    <div class="card-header">
+      {$_('pages.settings.platform.alerts.title')}
+    </div>
+    <div class="card-body">
+      <div class="text-muted mb-3">{$_('pages.settings.platform.alerts.description')}</div>
+
+      {#if !alertsSupported}
+        <div class="alert alert-secondary mb-0" role="alert">
+          {$_('pages.settings.platform.alerts.unavailable')}
+        </div>
+      {:else}
+        {#if !alertsEmailAvailable}
+          <div class="alert alert-warning border" role="alert">
+            <i class="fa-solid fa-envelope-circle-check me-2" aria-hidden="true"></i>
+            {$_('pages.settings.platform.alerts.email-unavailable')}
+          </div>
+        {/if}
+
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead>
+              <tr>
+                <th scope="col">{$_('pages.settings.platform.alerts.column-kind')}</th>
+                <th scope="col" class="text-end">
+                  {$_('pages.settings.platform.alerts.column-enabled')}
+                </th>
+                <th scope="col" class="text-end">
+                  {$_('pages.settings.platform.alerts.column-email')}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each ALERT_KINDS as kind (kind)}
+                <tr>
+                  <td>
+                    <span class="fw-semibold">
+                      {$_(`pages.settings.platform.alerts.kinds.${kind.toLowerCase()}`)}
+                    </span>
+                    <small class="d-block text-muted">
+                      {$_(`pages.settings.platform.alerts.hints.${kind.toLowerCase()}`)}
+                    </small>
+                  </td>
+                  <td class="text-end">
+                    <div class="form-check form-switch d-inline-block m-0">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="alertEnabled-{kind}"
+                        autocomplete="off"
+                        aria-label={$_('pages.settings.platform.alerts.column-enabled')}
+                        bind:checked={alertSettings[kind].enabled} />
+                    </div>
+                  </td>
+                  <td class="text-end">
+                    <div class="form-check form-switch d-inline-block m-0">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="alertEmail-{kind}"
+                        autocomplete="off"
+                        aria-label={$_('pages.settings.platform.alerts.column-email')}
+                        title={alertsEmailAvailable
+                          ? ''
+                          : $_('pages.settings.platform.alerts.email-unavailable')}
+                        disabled={!alertsEmailAvailable}
+                        bind:checked={alertSettings[kind].email} />
+                    </div>
+                  </td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+
+        <button
+          class="btn btn-secondary mt-3"
+          on:click={onSaveAlertsClick}
+          disabled={saveAlertsLoading}>
+          {$_('buttons.save')}
+          {#if saveAlertsLoading}
+            <span class="spinner-border spinner-border-sm text-primary ms-2" role="status"></span>
+          {/if}
+        </button>
+      {/if}
+    </div>
+  </div>
+{/if}
+
 {#if mailError}
   <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -732,6 +880,42 @@
 <script context="module">
   import { base } from '$app/paths';
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
+  import { isEndpointUnavailable } from '$lib/servers.util.js';
+
+  /**
+   * The alert kinds of §2.4.7, in the order the card lists them. They mirror the backend's
+   * `AlertManager`; a build that knows more kinds keeps them (they are merged back on save),
+   * they simply have no row here until the panel learns about them too.
+   */
+  export const ALERT_KINDS = Object.freeze([
+    'SERVER_CRASHED',
+    'NODE_OFFLINE',
+    'BACKUP_FAILED',
+    'DISK_LOW',
+    'TPS_LOW',
+    'SCHEDULE_FAILED',
+    'PLUGIN_UPDATES',
+  ]);
+
+  /**
+   * @param {unknown} response the body of `GET /api/panel/settings/alerts`.
+   * @returns {Record<string, { enabled: boolean, email: boolean }>} every kind the panel knows,
+   *   defaulted to the contract's `{ enabled: true, email: false }`.
+   */
+  export function readAlertSettings(response) {
+    const body = response && typeof response === 'object' ? response : {};
+    const raw = body.alerts && typeof body.alerts === 'object' ? body.alerts : body;
+    /** @type {Record<string, { enabled: boolean, email: boolean }>} */
+    const settings = {};
+
+    for (const kind of ALERT_KINDS) {
+      const entry = raw[kind] && typeof raw[kind] === 'object' ? raw[kind] : {};
+
+      settings[kind] = { enabled: entry.enabled !== false, email: entry.email === true };
+    }
+
+    return settings;
+  }
 
   export const UpdatePeriod = Object.freeze({
     NEVER: 'NEVER',
@@ -750,7 +934,7 @@
     } = event;
     await parent();
 
-    const [generalSettings, authSettings, maintenanceSettings] = await Promise.all([
+    const [generalSettings, authSettings, maintenanceSettings, alertSettings] = await Promise.all([
       ApiUtil.get({
         path: '/api/panel/settings' + buildQueryParams({ type: 'GENERAL' }),
         request: event,
@@ -763,7 +947,13 @@
         path: '/api/panel/settings' + buildQueryParams({ type: 'MAINTENANCE' }),
         request: event,
       }),
+      // Alerts are a separate endpoint (§2.4.7) and an older backend does not have it, so the
+      // card is hidden instead of failing the whole page.
+      ApiUtil.get({ path: '/api/panel/settings/alerts', request: event }),
     ]);
+
+    const alertsSupported =
+      !!alertSettings && !isEndpointUnavailable(alertSettings) && !alertSettings.error;
 
     const body = { ...generalSettings, ...authSettings, ...maintenanceSettings };
 
@@ -773,7 +963,15 @@
     const encodedData = searchParams.get('encodedData');
     const state = searchParams.get('state');
 
-    return { ...body, platformConnectFailed: failed, encodedData, state };
+    return {
+      ...body,
+      alerts: readAlertSettings(alertsSupported ? alertSettings : null),
+      alertsEmailAvailable: alertsSupported && alertSettings.emailAvailable === true,
+      alertsSupported,
+      platformConnectFailed: failed,
+      encodedData,
+      state,
+    };
   }
 </script>
 
@@ -787,6 +985,8 @@
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
   import { currentLanguage } from '$lib/language.util.js';
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { normalizeUsageMode, UsageModes } from '$lib/navigation.util.js';
 
   import {
     showSuccess as showSuccessToast,
@@ -841,6 +1041,8 @@
 
   export let data;
 
+  const canManageAlerts = hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS);
+
   let smtpDisabled;
 
   $: {
@@ -865,6 +1067,41 @@
     data.oldSettings.releaseChannel = data.oldSettings.releaseChannel || data.releaseChannel;
   }
 
+  // Same for the usage mode: an install that predates the setting behaves like BOTH. Written
+  // reactively (like the telemetry switch) so invalidateAll(), which swaps `data` for a fresh
+  // payload, re-applies the fallback to the saved snapshot too.
+  $: if (data.usageMode !== normalizeUsageMode(data.usageMode)) {
+    data.usageMode = normalizeUsageMode(data.usageMode);
+  }
+
+  $: if (
+    data.oldSettings &&
+    data.oldSettings.usageMode !== normalizeUsageMode(data.oldSettings.usageMode)
+  ) {
+    data.oldSettings.usageMode = normalizeUsageMode(data.oldSettings.usageMode);
+  }
+
+  const usageModeOptions = [
+    {
+      value: UsageModes.WEBSITE,
+      icon: 'fa-solid fa-globe',
+      titleKey: 'pages.settings.platform.usage-mode.website.title',
+      descriptionKey: 'pages.settings.platform.usage-mode.website.description',
+    },
+    {
+      value: UsageModes.SERVERS,
+      icon: 'fa-solid fa-cube',
+      titleKey: 'pages.settings.platform.usage-mode.servers.title',
+      descriptionKey: 'pages.settings.platform.usage-mode.servers.description',
+    },
+    {
+      value: UsageModes.BOTH,
+      icon: 'fa-solid fa-layer-group',
+      titleKey: 'pages.settings.platform.usage-mode.both.title',
+      descriptionKey: 'pages.settings.platform.usage-mode.both.description',
+    },
+  ];
+
   // The wire contract is frozen; older servers that don't send it still get a complete object.
   const DEFAULT_MAINTENANCE = Object.freeze({
     enabled: false,
@@ -887,6 +1124,12 @@
 
   let savePreferencesLoading;
   let saveAuthLoading;
+  let saveAlertsLoading;
+  // The switch grid is edited locally and written as a whole map, so it is snapshotted once
+  // instead of following `data` — nothing else on the page touches it.
+  let alertSettings = readAlertSettings(data.alerts);
+  let alertsEmailAvailable = data.alertsEmailAvailable === true;
+  let alertsSupported = data.alertsSupported !== false;
   let saveEmailLoading;
   let connecting = !data.panoAccount && data.state && data.encodedData;
   let disconnecting;
@@ -920,6 +1163,7 @@
   }).split(TELEMETRY_LINK_TOKEN);
 
   $: preferencesSaveDisabled =
+    data.oldSettings.usageMode === data.usageMode &&
     data.oldSettings.updatePeriod === data.updatePeriod &&
     data.oldSettings.releaseChannel === data.releaseChannel &&
     data.oldSettings.locale === data.locale &&
@@ -1080,6 +1324,7 @@
 
     const formData = new FormData();
 
+    formData.append('usageMode', data.usageMode);
     formData.append('updatePeriod', data.updatePeriod);
     formData.append('releaseChannel', data.releaseChannel);
     formData.append('locale', data.locale);
@@ -1118,6 +1363,30 @@
           locale: data.locale,
           allowUserLocaleSelection: data.allowUserLocaleSelection,
         }));
+
+        await showSuccessToast('components.toasts.settings-save-success');
+      },
+    });
+  }
+
+  /**
+   * §2.4.7 — the whole `{ KIND: { enabled, email } }` map is written at once, like the other
+   * cards on this page write their own block.
+   */
+  function onSaveAlertsClick() {
+    saveAlertsLoading = true;
+
+    ApiUtil.put({
+      path: '/api/panel/settings/alerts',
+      body: { alerts: alertSettings },
+      handler: async (body, reject) => {
+        saveAlertsLoading = false;
+
+        if (body.error) {
+          reject();
+
+          return;
+        }
 
         await showSuccessToast('components.toasts.settings-save-success');
       },

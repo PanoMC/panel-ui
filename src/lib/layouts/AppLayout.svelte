@@ -41,7 +41,11 @@
     </div>
   </div>
 
-  <NotificationContainer />
+  <!-- Only with a session: it polls /notifications/quick, and a 401 from that on the login page
+       would raise the "Session error" splash over the very form that fixes it. -->
+  {#if signedIn}
+    <NotificationContainer />
+  {/if}
   <ToastContainer />
   {#if hasPermission(Permissions.MANAGE_SERVERS)}
     <ServerRequestModal />
@@ -66,7 +70,7 @@
   import { page } from '$app/stores';
   import { base } from '$app/paths';
   import { browser } from '$app/environment';
-  import { error } from '@sveltejs/kit';
+  import { error, redirect } from '@sveltejs/kit';
 
   import { navigating } from '$app/stores';
 
@@ -95,6 +99,8 @@
   import * as variableStuff from '$lib/variables';
 
   import { networkErrorCallbacks, showNetworkError, avatarVersion } from '$lib/Store.js';
+  import { isNotLoggedIn } from '$lib/auth.api.js';
+  import { normalizeUsageMode, UsageModes } from '$lib/navigation.util.js';
 
   import { addListener } from '$lib/NotificationManager.js';
 
@@ -108,6 +114,42 @@
   } from '$lib/variables.js';
 
   const initLanguage = languageStuff.init;
+
+  /**
+   * The `(auth)` route group — the panel's own login and logout pages. They are the two routes
+   * a signed-out visitor is allowed to reach, and the two that render without the sidebar and
+   * the navbar.
+   *
+   * @param {string | null | undefined} routeId
+   * @returns {boolean}
+   */
+  export function isAuthRoute(routeId) {
+    return String(routeId || '').startsWith('/(auth)');
+  }
+
+  /**
+   * Where a signed-out visitor signs in. With the website on, that is the theme's own login page
+   * — the one players already use, with its captcha and social-login plugins — and the session it
+   * creates opens the panel too. Only a SERVERS install, which runs no theme at all, uses the
+   * panel's own form, and only that one can bring the visitor back to `next` afterwards.
+   *
+   * @param {{ usageMode?: string } | null | undefined} siteInfo
+   * @param {string} next the panel path the visitor asked for.
+   * @returns {string}
+   */
+  export function signInPath(siteInfo, next) {
+    if (normalizeUsageMode(siteInfo?.usageMode) !== UsageModes.SERVERS) {
+      return '/login';
+    }
+
+    return `${base}/login?next=${encodeURIComponent(next)}`;
+  }
+
+  /** Alert kinds that belong to one server (§2.4.7). */
+  const SERVER_ALERT_TYPES = ['SERVER_CRASHED', 'BACKUP_FAILED', 'TPS_LOW', 'SCHEDULE_FAILED'];
+
+  /** Alert kinds that belong to a node, which has no per-server page to open. */
+  const NODE_ALERT_TYPES = ['NODE_OFFLINE', 'DISK_LOW'];
 
   function hideAllModals() {
     if (typeof document === 'undefined') return;
@@ -174,6 +216,35 @@
     addListener('PANO_UPDATE_FOUND', () => {
       goto(base + '/settings/updates', { invalidateAll: true });
     });
+
+    // SM-35 (§2.4.7) — an alert is about one server or about a node, so clicking it lands on
+    // the page that can do something about it. The server id may be carried as `serverId` or,
+    // like the older notifications, as plain `id`.
+    SERVER_ALERT_TYPES.forEach((type) => {
+      addListener(type, (notification) => {
+        const serverId = notification?.details?.serverId ?? notification?.details?.id ?? null;
+
+        goto(base + (serverId == null ? '/servers' : `/servers/${serverId}`), {
+          invalidateAll: true,
+        });
+      });
+    });
+
+    NODE_ALERT_TYPES.forEach((type) => {
+      addListener(type, () => {
+        goto(base + '/servers/nodes', { invalidateAll: true });
+      });
+    });
+
+    // SM-48 (§2.4.13) — the plugin page is the only one that can act on a plugin-updates
+    // alert, so this one lands a level deeper than the other server alerts.
+    addListener('PLUGIN_UPDATES', (notification) => {
+      const serverId = notification?.details?.serverId ?? notification?.details?.id ?? null;
+
+      goto(base + (serverId == null ? '/servers' : `/servers/${serverId}/plugins`), {
+        invalidateAll: true,
+      });
+    });
   }
 
   /**
@@ -189,6 +260,13 @@
       request: event,
       csrfToken,
     });
+
+    // U-06: a signed-out visitor is sent to sign in rather than shown the offline splash. Only
+    // `NOT_LOGGED_IN` redirects — a user who *is* signed in but lacks ACCESS_PANEL answers
+    // NO_PERMISSION, and bouncing them to a login page they are already past would loop.
+    if (isNotLoggedIn(basicData) && !isAuthRoute(event.route?.id)) {
+      throw redirect(302, signInPath(siteInfo, `${event.url.pathname}${event.url.search}`));
+    }
 
     await preparePlugins(siteInfo);
 
@@ -322,6 +400,9 @@
       selectedServer: basicData.selectedServer,
       connectedServerCount: basicData.connectedServerCount,
       siteInfo,
+      // Which parts of the panel exist at all. An install that predates the setting sends
+      // nothing, which resolves to BOTH — today's behaviour.
+      usageMode: normalizeUsageMode(siteInfo?.usageMode),
       resetLayout: browser
         ? clientResetLayout || (clientResetLayout = writable(false))
         : writable(false),
@@ -345,6 +426,7 @@
   } from '$app/navigation';
 
   import { options, logoutLoading, initialized } from '$lib/Store';
+  import { isSignedIn } from '$lib/auth.api.js';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import {
     onPanelServerRemoved,
@@ -353,7 +435,9 @@
     setPanelNotificationsSubscription,
     setPanelSelectedServerSubscription,
   } from '$lib/panelRealtime.js';
+  import { activeServer } from '$lib/servers.util.js';
   import { PanelSidebarStorageUtil } from '$lib/storage.util.js';
+  import { resolveSidebarTab, sidebarTabForPath } from '$lib/navigation.util.js';
   import { cleanupOrphanOverlays } from '$lib/modal.util.js';
   import { WHATS_NEW_VERSION } from '$lib/components/modals/WhatsNewModal.svelte';
 
@@ -383,6 +467,7 @@
   const selectedServer = writable(data.selectedServer);
   const connectedServerCount = writable(data.connectedServerCount);
   const siteInfo = writable(data.siteInfo);
+  const usageMode = writable(data.usageMode);
   const showSplash = writable(true);
   const platformUpdating = writable(false);
   const platformRestarting = writable(false);
@@ -425,12 +510,20 @@
     // selectedServer: keep in sync via $: if (data) below (merge with live WebSocket state)
     connectedServerCount.set(data.connectedServerCount);
     siteInfo.set(data.siteInfo);
+    usageMode.set(data.usageMode);
     panelTheme.set(data.session.basicData.panelTheme || 'dark');
 
     sidebarTabsState.set(getCurrentSidebarState());
 
-    // Auto-Reset Layout State: If we navigate to a non-plugin route, force resetLayout to false
-    if (browser && p.route && p.route.id && !p.route.id.includes('(plugin-ui)')) {
+    // Auto-Reset Layout State: If we navigate to a non-plugin route, force resetLayout to false.
+    // The auth pages are chrome-free too, so they keep the flag their layout load set.
+    if (
+      browser &&
+      p.route &&
+      p.route.id &&
+      !p.route.id.includes('(plugin-ui)') &&
+      !isAuthRoute(p.route.id)
+    ) {
       resetLayout.set(false);
     }
   });
@@ -475,14 +568,24 @@
   setContext('sidebarTabsState', sidebarTabsState);
   setContext('isSidebarOpen', isSidebarOpen);
   setContext('siteInfo', siteInfo);
+  setContext('usageMode', usageMode);
   setContext('platformUpdating', platformUpdating);
   setContext('platformRestarting', platformRestarting);
   setContext('panelTheme', panelTheme);
   setContext('showDevModeAlert', showDevModeAlert);
   setContext('maintenanceMode', maintenanceMode);
 
+  /**
+   * What the page is about when its title alone does not say — the server a server page belongs to.
+   * Only the browser tab shows it ("Files · Survival — Pano"); the navbar keeps the page's name.
+   * The layout that sets it clears it when it goes away.
+   */
+  const pageSubtitle = writable(/** @type {string | null} */ (null));
+
+  setContext('pageSubtitle', pageSubtitle);
+
   $: title = $pageTitle
-    ? `${$_($pageTitle)} \u2014 ${options.DEFAULT_PAGE_TITLE}`
+    ? `${$_($pageTitle)}${$pageSubtitle ? ` \u00b7 ${$pageSubtitle}` : ''} \u2014 ${options.DEFAULT_PAGE_TITLE}`
     : options.DEFAULT_PAGE_TITLE;
 
   let showSplashAlways = false;
@@ -509,7 +612,10 @@
   }
 
   $: if (browser) {
-    if (hasPermission(Permissions.MANAGE_SERVERS)) {
+    if ($activeServer) {
+      // A `/servers/[id]` route is open: its layout owns the per-server subscription, so the
+      // navbar's "selected server" must not pull the feed back to a different server.
+    } else if (hasPermission(Permissions.MANAGE_SERVERS)) {
       const id = $selectedServer?.id;
       setPanelSelectedServerSubscription(id == null || id === '' ? null : id);
     } else {
@@ -517,16 +623,18 @@
     }
   }
 
+  /**
+   * The tab `Sidebar` and `Navbar` both render from. Every usage mode has the pills, so the
+   * persisted choice is honoured wherever the mode leaves both workspaces reachable.
+   */
   function getCurrentSidebarState() {
-    if (!hasPermission(Permissions.MANAGE_SERVERS)) {
-      return 'website';
-    }
-
-    if (PanelSidebarStorageUtil.isThereSideBarTabsState()) {
-      return PanelSidebarStorageUtil.getSidebarTabsState();
-    }
-
-    return 'website';
+    return resolveSidebarTab({
+      usageMode: data.usageMode,
+      canManageServers: hasPermission(Permissions.MANAGE_SERVERS),
+      // The page decides, not a remembered pill: a site page must not be shown with the servers
+      // menu beside it, and the answer has to be the same on the server and in the browser.
+      getStoredTab: () => sidebarTabForPath(get(page).url.pathname, base),
+    });
   }
 
   setTimeout(function () {
@@ -547,7 +655,9 @@
 
     initialized.set(true);
 
-    if (browser) {
+    // The hub rejects an unauthenticated socket and the client would reconnect forever, so the
+    // login page never opens one.
+    if (browser && signedIn) {
       setPanelNotificationsSubscription(true);
     }
 
@@ -587,7 +697,9 @@
     }
   });
 
-  $: if (!$showSplash && !whatsNewShown) {
+  $: signedIn = isSignedIn(data?.session?.basicData);
+
+  $: if (signedIn && !$showSplash && !whatsNewShown) {
     const backendDismissedVersion = data.session.basicData.dismissedWhatsNewVersion;
 
     if (backendDismissedVersion === WHATS_NEW_VERSION) {

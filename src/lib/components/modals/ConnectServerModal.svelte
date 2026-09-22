@@ -277,13 +277,10 @@
     if (!isRemoteConnection) {
       hostAddress = cleanHostAddress(get(platformHostAddress));
     } else {
-      // remote: use browser hostname and port from platformHostAddress if exists
-      const platformAddress = cleanHostAddress(get(platformHostAddress));
-      const portMatch = platformAddress.match(/:(\d+)$/);
-      const port = portMatch ? portMatch[1] : null;
-      const hostname = window.location.hostname;
-
-      hostAddress = port ? `${hostname}:${port}` : hostname;
+      // Remote: the address this browser reached Pano on — its host name, plus the port only when
+      // the URL carries one. Behind a reverse proxy or a tunnel (Cloudflare, ngrok) that is the
+      // proxy's 443, not the port Pano listens on, which a server elsewhere cannot reach.
+      hostAddress = window.location.host;
     }
 
     commandText = '/pano connect ' + hostAddress + ' ' + get(platformServerMatchKey);

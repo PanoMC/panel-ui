@@ -96,6 +96,63 @@
     "move-down": "Move down"
   },
   "pages": {
+    "auth": {
+      "panel-name": "Management panel",
+      "login": {
+        "title": "Sign in",
+        "subtitle": "Use your Pano account to open the management panel.",
+        "username-label": "Username or e-mail",
+        "username-placeholder": "admin",
+        "password-label": "Password",
+        "show-password": "Show password",
+        "hide-password": "Hide password",
+        "remember-label": "Remember me",
+        "submit": "Sign in",
+        "signed-in": "Signed in. Opening the panel...",
+        "forgot": "Forgot your password?",
+        "forgot-support": "Trouble signing in? Write to {email}",
+        "forgot-no-support": "Ask another administrator to reset your password.",
+        "back-to-sign-in": "Back to sign in",
+        "two-factor-title": "Two-step verification",
+        "two-factor-description": "Enter the 6-digit code from your authenticator app.",
+        "two-factor-label": "Verification code",
+        "two-factor-submit": "Verify",
+        "email-required-label": "E-mail address",
+        "email-required-hint": "This account has no e-mail address yet. Add one to finish signing in.",
+        "username-required-label": "Choose a username",
+        "username-required-hint": "This account still has a temporary name. Pick the one you want to keep.",
+        "link-code-title": "This account signs in from in-game",
+        "link-code-description": "It has no password. Join the server, run the link command and sign in on the website once; after that the panel works too.",
+        "link-code-open-site": "Open the website login",
+        "errors": {
+          "invalid": "Wrong username or password.",
+          "two-factor-invalid": "That code is not valid. Check your authenticator app and try again.",
+          "email-not-verified": "Verify {email} before signing in. A new verification mail is on its way.",
+          "banned": "Your account is banned.",
+          "banned-permanent": "Your account is permanently banned.",
+          "banned-permanent-reason": "Your account is permanently banned. Reason: {reason}",
+          "banned-until": "Your account is banned until {until}.",
+          "banned-until-reason": "Your account is banned until {until}. Reason: {reason}",
+          "ip-banned": "This IP address is banned.",
+          "captcha": "This login needs a captcha, which the panel cannot show. Sign in on the website instead.",
+          "denied": "A plugin refused this login.",
+          "invalid-email": "That e-mail address is not valid.",
+          "email-taken": "That e-mail address is already in use.",
+          "username-taken": "That username is already taken.",
+          "invalid-username": "That username is not valid.",
+          "username-too-short": "The username must be at least 3 characters.",
+          "username-too-long": "The username can be at most 16 characters.",
+          "installation-required": "Pano is not installed yet. Finish the setup first.",
+          "maintenance": "Pano is in maintenance mode right now.",
+          "network": "Could not reach Pano. Check your connection and try again.",
+          "generic": "Sign-in failed ({code})."
+        }
+      },
+      "logout": {
+        "title": "Signing you out...",
+        "description": "One moment, your session is being closed."
+      }
+    },
     "login": {
       "demo-mode-alert": "This action is disabled in demo mode."
     },
@@ -206,6 +263,8 @@
         "description": "Pano is successfully installed and ready for use. 🚀 <br /> Here's what you can do to get started:",
         "connect-server": "Connect Server",
         "connect-server-description": "Connect your game server and access more management features.",
+        "enable-server-management": "Enable Server Management",
+        "enable-server-management-description": "Turn it on under Settings → Platform → Preferences.",
         "import-data": "Import Data",
         "menu-title": "The Menu",
         "links-title": "Links",
@@ -267,8 +326,8 @@
       }
     },
     "players": {
-      "title": "{pageType}Players",
-      "by-perm-group-title": "\"{permissionGroupName}\" Authorized Players",
+      "title": "{pageType}Users",
+      "by-perm-group-title": "\"{permissionGroupName}\" Authorized Users",
       "bans-history-title": "Ban History",
       "ip-bans-title": "IP Bans",
       "authorized": "Authorized",
@@ -437,6 +496,22 @@
       "platform": {
         "title": "Platform Settings",
         "preferences": "Preferences",
+        "usage-mode": {
+          "label": "Usage mode",
+          "hint": "Switching modes changes which sections appear in the panel.",
+          "website": {
+            "title": "Website",
+            "description": "Website only: news, forum, registration, store."
+          },
+          "servers": {
+            "title": "Server management",
+            "description": "Console, players, backups, files — no public website."
+          },
+          "both": {
+            "title": "Both",
+            "description": "Website and server management."
+          }
+        },
         "authentication": "Authentication",
         "developer-mode": "Developer Mode",
         "allow-user-locale-selection": "User Language Selection",
@@ -546,6 +621,33 @@
           "label": "Send {link}",
           "label-link": "usage data",
           "description": "This data is used to make Pano better."
+        },
+        "alerts": {
+          "title": "Server alerts",
+          "description": "What Pano warns the administrators about. Every alert becomes a panel notification; e-mail is optional per kind.",
+          "unavailable": "This build of Pano does not have server alerts yet.",
+          "email-unavailable": "E-mail alerts need a working mail configuration and the server-alert mail template, so the e-mail switches are off for now.",
+          "column-kind": "Alert",
+          "column-enabled": "Notify",
+          "column-email": "E-mail",
+          "kinds": {
+            "server_crashed": "Server crashed",
+            "node_offline": "Node offline",
+            "backup_failed": "Backup failed",
+            "disk_low": "Disk almost full",
+            "tps_low": "Low TPS",
+            "schedule_failed": "Schedule failed",
+            "plugin_updates": "Plugin updates"
+          },
+          "hints": {
+            "server_crashed": "A server's process exited without anybody asking it to.",
+            "node_offline": "A node missed its heartbeat for more than a minute.",
+            "backup_failed": "A backup did not finish.",
+            "disk_low": "A node's disk is more than 90% full, at most once every six hours.",
+            "tps_low": "A server stayed under 15 TPS for five samples in a row, at most once every 30 minutes.",
+            "schedule_failed": "A scheduled run ended with an error.",
+            "plugin_updates": "A managed server has plugins or mods with a newer version, checked once a day."
+          }
         }
       },
       "updates": {
@@ -577,7 +679,36 @@
           "preparing": "Preparing...",
           "installing-new-update": "Installing new update..."
         },
-        "updating-leave-alert": "There is an update working, leaving this page may result in broken features!"
+        "updating-leave-alert": "There is an update working, leaving this page may result in broken features!",
+        "servers": {
+          "title": "Nodes, agents and the Pano plugin",
+          "update-all-plugins": "Update all Pano plugins",
+          "auto-update": "Update nodes and agents automatically",
+          "auto-update-hint": "When Pano has a newer node, every node and agent updates itself as soon as it connects. Running servers keep running; the Pano plugin is never updated without you.",
+          "unavailable": "This build of Pano cannot list node and plugin updates yet.",
+          "empty": "No nodes, agents or servers with the Pano plugin yet.",
+          "column-name": "Name",
+          "column-kind": "Type",
+          "column-version": "Version",
+          "kind-node": "Node",
+          "kind-agent": "Pano Agent",
+          "kind-pano-plugin": "Pano plugin",
+          "offline": "Offline — it updates once it is back.",
+          "up-to-date": "Up to date",
+          "update-by-hand": "Update by hand",
+          "unknown": "Version not known yet",
+          "restart-note": "A Pano plugin update is loaded the next time that server restarts. Nodes and agents update without stopping any server.",
+          "plugin-update-started": "The Pano plugin update for {name} started. Restart the server to load it.",
+          "node-update-started": "{name} is updating itself.",
+          "update-all-started": "Updating the Pano plugin on {count} server(s). Restart them to load it.",
+          "reason": {
+            "NO_PLUGIN_MODULE": "No Pano plugin for this software",
+            "PLUGIN_TOO_OLD": "Plugin too old to update itself — update it by hand once",
+            "NODE_OFFLINE": "Node offline",
+            "SERVER_OFFLINE": "Server offline",
+            "JAR_UNAVAILABLE": "No plugin build available"
+          }
+        }
       }
     },
     "ticket-detail": {
@@ -662,6 +793,31 @@
           "never": "Never",
           "date": "Date"
         }
+      },
+      "server-scope": {
+        "title": "Which servers",
+        "description": "Limit this permission to certain servers. Leave everything unchecked and it applies to all of them.",
+        "all-servers": "All servers",
+        "badge-all": "all servers",
+        "badge-count": "{count} servers",
+        "badge-one": "1 server",
+        "loading": "Loading servers...",
+        "empty": "No server is connected yet, so this permission covers every server you add later.",
+        "unavailable": "The server list could not be loaded, so the scope is left as it is.",
+        "select-all": "Select all",
+        "clear": "Clear",
+        "save-hint": "The per-server scope could not be saved. This build of Pano may not accept the permission context yet — update Pano and try again."
+      },
+      "deny-commands": {
+        "title": "Denied commands",
+        "description": "Commands this grant may never send to a server console.",
+        "placeholder": "op, gamemode, worldedit:*",
+        "helper": "Only the first word of a command is matched, and matching ignores case. End a pattern with * to cover everything that starts with it: \"world*\" blocks both worldedit and worldborder. Press Enter or type a comma to add one. An administrator is never blocked.",
+        "empty": "Nothing is denied yet — this grant may send any command.",
+        "invalid": "\"{token}\" is not a command pattern. Use letters, digits, _ : - and at most one * at the end.",
+        "remove": "Remove {pattern}",
+        "badge-count": "{count} denied",
+        "save-hint": "The denied-command list could not be saved. This build of Pano may not accept the permission context yet — update Pano and try again."
       },
       "create-permission-group-button": "Create Permission Group",
       "card-title": "{count} Permission Group",
@@ -764,39 +920,548 @@
       "created-at": "Created At:",
       "updated-at": "Updated At:"
     },
-    "server": {
-      "dashboard": {
-        "title": "Server Statistics",
-        "server-status": "Server {status}",
+    "servers": {
+      "card": {
         "online": "Online",
         "offline": "Offline",
-        "player": "{playerCount}/{maxPlayerCount} Player",
-        "working-time": "Uptime: {upTime}",
-        "last-online": "Last Online: ",
+        "linked": "Linked",
+        "players": "{playerCount}/{maxPlayerCount} players",
+        "legacy-plugin": "Plugin update needed"
+      },
+      "header": {
+        "copy-address": "Copy address",
+        "protocol": "Protocol {version}",
+        "plugin-version": "Plugin {version}",
+        "start": "Start",
+        "stop": "Stop",
+        "restart": "Restart",
+        "kill": "Kill",
+        "power-requires-managed": "Only for servers Pano runs",
+        "power-requires-capability": "Update the Pano plugin to use this",
+        "power-no-permission": "No permission",
+        "power-offline": "Server is offline",
+        "confirm-stop-title": "Stop this server?",
+        "confirm-stop-body": "Everyone playing on {name} will be disconnected. A linked server does not come back on its own — someone has to start it again.",
+        "confirm-restart-title": "Restart this server?",
+        "confirm-restart-body": "Everyone playing on {name} will be disconnected while it restarts. This needs a restart script on the server; without one it only stops.",
+        "power-sent-stop": "Stop sent to {name}.",
+        "power-sent-restart": "Restart sent to {name}.",
+        "managed": "Managed",
+        "managed-on": "Managed on {node}",
+        "agent": "Pano Agent",
+        "agent-on": "Run by the Pano Agent on {host}",
+        "power-state": "Already {state}",
+        "power-node-offline": "Node is offline",
+        "power-cooldown": "Too many actions, wait a moment",
+        "confirm-start-title": "Start this server?",
+        "confirm-start-body": "{name} will be started on its node. It takes a moment before players can join.",
+        "confirm-kill-title": "Kill this server?",
+        "confirm-kill-body": "{name} is killed straight away, without saving. Only do this when a normal stop does not work — the world can lose its most recent changes.",
+        "power-sent-start": "Start sent to {name}.",
+        "power-sent-kill": "Kill sent to {name}.",
+        "task-install": "Installing",
+        "task-reinstall": "Reinstalling",
+        "task-delete": "Deleting",
+        "task-backup": "Backing up",
+        "task-restore": "Restoring",
+        "task-import": "Importing",
+        "task-working": "Working",
+        "task-pano-plugin-update": "Updating the Pano plugin",
+        "state-reason": "Reason: {reason}",
+        "icon-change": "Change the server icon — click or drop an image",
+        "icon-unavailable": "Nothing can write this server's files right now.",
+        "icon-too-large": "The icon must be smaller than 1 MB.",
+        "icon-wrong-type": "The icon must be a PNG, JPEG, GIF or WebP image.",
+        "icon-updated": "Server icon updated.",
+        "icon-updated-restart": "Server icon updated. Restart the server to apply it.",
+        "adopted-alert": "This server was already running when its node restarted, so Pano took it over as it was: console input and automatic crash recovery are limited until you restart it once from the panel.",
+        "task-java-install": "Downloading Java",
+        "task-java-remove": "Removing Java",
+        "task-buildtools-note": "BuildTools compiles the server; this usually takes 5–10 minutes.",
+        "update-plugin": "The Pano plugin is outdated — {version} is available",
+        "update-plugin-outdated": "The Pano plugin is outdated",
+        "update-agent": "Pano Agent update available",
+        "update-daemon-started": "Updating — the server keeps running."
+      },
+      "overview": {
+        "capabilities-title": "Capabilities",
+        "capabilities-description": "What the Pano plugin on this server can do. Sections it does not provide still open, with their controls disabled and a notice that says what to update.",
+        "legacy-plugin-alert": "Update pano-mc-plugin to unlock console, players and metrics.",
+        "console-title": "Console",
         "statistics": "Statistics",
-        "server-name": "Server Name:",
-        "server-type": "Server Type:",
-        "local-ip-address": "Local IP Address:",
-        "server-version": "Server Version:",
-        "total-connected-servers": "Amount Of Connected Servers:",
-        "date-added": "Date Added:"
+        "date-added": "Date added",
+        "metrics-title": "Performance",
+        "metrics-live": "Live",
+        "metrics-waiting": "Waiting for the first sample...",
+        "metrics-offline": "Server is off",
+        "metrics-unavailable": "Unavailable",
+        "metrics-empty": "No samples recorded yet. The chart fills in once the server has been online for a few minutes.",
+        "metric-unavailable": "N/A",
+        "mspt": "MSPT",
+        "mspt-value": "{value} ms",
+        "memory": "JVM memory",
+        "memory-value": "{used} / {max}",
+        "cpu": "CPU",
+        "cpu-value": "{value}%",
+        "chart-tps": "TPS",
+        "chart-players": "Players",
+        "chart-peak-players": "Peak players",
+        "chart-average-players": "Average players",
+        "console-open": "Open console",
+        "activity-title": "Recent activity",
+        "activity-open": "All activity",
+        "last-backup": "Last backup",
+        "last-backup-open": "Open backups",
+        "activity-chart-title": "Server Activity",
+        "activity-chart-hour": "Hour",
+        "activity-chart-day": "Day",
+        "activity-chart-week": "Week",
+        "activity-chart-month": "Month",
+        "activity-chart-year": "Year",
+        "vital-ram": "RAM",
+        "vital-cpu": "CPU",
+        "vital-disk": "Disk",
+        "vital-network": "Network",
+        "network-node-total": "node total",
+        "refresh-interval": "Refresh interval",
+        "refresh-now": "Refresh now",
+        "refresh-paused": "Paused",
+        "refresh-interval-seconds": "{count} s",
+        "refresh-interval-minutes": "{count} min",
+        "players-online": "Players",
+        "uptime": "Uptime",
+        "mspt-info": "Milliseconds per tick: how long the server takes to run one game tick. Minecraft runs 20 ticks a second, so each tick has 50 ms. Below 50 ms the server keeps up and TPS stays at 20; above it, TPS drops and players feel lag. Under 20 ms is comfortable, 40–50 ms is close to the limit.",
+        "vitals-range": "Range",
+        "range-1m": "1 min",
+        "range-1h": "1 h",
+        "range-12h": "12 h",
+        "range-24h": "24 h",
+        "range-7d": "1 week",
+        "range-30d": "30 days",
+        "server-time": "Server time",
+        "server-time-zone": "Show times in the server's time zone ({zone})",
+        "server-time-unavailable": "This server has not reported its time zone yet.",
+        "performance-range-hour": "Hour",
+        "performance-range-day": "Day",
+        "performance-range-week": "Week",
+        "tps-triple": "TPS (1m/5m/15m)",
+        "info": {
+          "section-general": "General",
+          "section-network": "Network",
+          "section-runtime": "Runtime",
+          "section-agent": "Pano Agent",
+          "agent-status": "Status",
+          "agent-version": "Version",
+          "agent-version-update": "{version} (update available)",
+          "agent-host": "Host",
+          "agent-platform": "Platform",
+          "section-plugin": "Pano plugin",
+          "section-backups": "Backups",
+          "motd": "MOTD",
+          "id": "Server ID",
+          "uuid": "UUID",
+          "time-zone": "Time zone",
+          "local-address": "Local address",
+          "game-port": "Game port",
+          "adopted": "Adopted after a node restart",
+          "console-input": "Console input",
+          "console-input-available": "Available",
+          "console-input-unavailable": "Not available",
+          "java": "Java",
+          "java-automatic": "Automatic",
+          "jvm-args": "JVM arguments",
+          "jvm-args-none": "None",
+          "auto-start": "Start with the node",
+          "crash-restart": "Restart on crash",
+          "last-exit-code": "Last exit code",
+          "directory": "Folder",
+          "capabilities": "Capabilities",
+          "last-connected": "Last connected",
+          "last-disconnected": "Last disconnected",
+          "yes": "Yes",
+          "no": "No",
+          "on": "On",
+          "off": "Off",
+          "installed-plugins": "Installed plugins",
+          "plugin-version": "Plugin version",
+          "protocol": "Protocol",
+          "plugin-update-available": "Update available: {version}",
+          "plugin-up-to-date": "Up to date",
+          "plugin-update-started": "The Pano plugin update to {version} started. Restart the server to load it."
+        },
+        "java-missing": "The last start failed: this node has no Java {major}, which this server needs.",
+        "java-missing-action": "Download Java {major} and start",
+        "java-missing-no-permission": "Ask someone who manages nodes to install Java {major}."
+      },
+      "capability": {
+        "node-offline": "The node running this server is offline. {section} comes back when it reconnects.",
+        "server-stopped": "Start the server to use {section}.",
+        "server-running": "{section} can only do this while the server is stopped. Stop it first.",
+        "plugin-not-connected": "The Pano plugin on this server isn't connected. Start the server or check the plugin's connection.",
+        "plugin-outdated": "The Pano plugin on this server is too old for {section}. Update pano-mc-plugin.",
+        "plugin-lacks": "This server doesn't support {section}. Update pano-mc-plugin (or enable it in the plugin's config), or run the server on a Pano node.",
+        "node-only": "{section} needs a Pano node. Run this server on a node to use it.",
+        "not-supported": "This server software has no {section}."
+      },
+      "capabilities": {
+        "console": "Console",
+        "commands": "Commands",
+        "power": "Power",
+        "metrics": "Metrics",
+        "players": "Players",
+        "plugins": "Plugins"
+      },
+      "placeholder": {
+        "title": "Being built"
+      },
+      "console": {
+        "title": "Console",
+        "description": "The live log stream of this server, with a command input.",
+        "state-connecting": "Connecting",
+        "state-streaming": "Streaming",
+        "state-idle": "Paused",
+        "state-idle-hint": "The server is not streaming right now. New lines appear as soon as it starts again.",
+        "state-offline": "Offline",
+        "state-offline-hint": "The server is not connected. You are looking at the last lines Pano buffered.",
+        "state-unsupported": "Plugin too old",
+        "state-unsupported-hint": "This server's Pano plugin does not stream its console. Update pano-mc-plugin to use this page.",
+        "search-placeholder": "Filter lines...",
+        "timestamps": "Timestamps",
+        "wrap-lines": "Wrap lines",
+        "copy-visible": "Copy visible",
+        "copied": "Copied the lines currently shown.",
+        "clear-hint": "Clear the view (Ctrl+L). Lines already sent stay on the server.",
+        "autoscroll-paused": "Paused — {count} new lines",
+        "load-older": "Load older",
+        "load-older-loading": "Loading older lines...",
+        "dropped": "... {count} lines dropped",
+        "empty": "No output yet.",
+        "no-matches": "No line matches the filter.",
+        "command-placeholder": "Type a command and press Enter",
+        "command-send": "Send",
+        "command-disabled-permission": "You do not have permission to send commands to this server.",
+        "command-disabled-capability": "This server's Pano plugin cannot run commands.",
+        "command-disabled-offline": "The server is offline, so it cannot receive commands.",
+        "command-disabled-cooldown": "Too many commands in a row. The prompt comes back in a moment.",
+        "history-hint": "Up and down arrows browse the commands you sent to this server.",
+        "load-failed": "The console history could not be loaded.",
+        "source-node": "Managed console",
+        "source-plugin": "Linked console",
+        "source-hint": "Where these lines are read from: the node pipes the server process' own output, the plugin taps the game's logger.",
+        "reached-start": "You have reached the beginning",
+        "live": "Live",
+        "reload": "Reload console",
+        "download-latest": "Download latest.log",
+        "deep-search-running": "Searching every log… {scanned}/{total} files · {found} found",
+        "deep-search-stop": "Stop",
+        "deep-search-done": "Searched all {total} log files · {found} found",
+        "deep-search-stopped": "Stopped after {scanned}/{total} files · {found} found",
+        "deep-search-limited": "Showing the newest {found} matches — refine the search to see older ones",
+        "deep-search-capped": "some very large files were only partly searched"
+      },
+      "players": {
+        "title": "Players",
+        "description": "Who is on this server right now, and what you can do with them.",
+        "online-count": "{online} / {max} online",
+        "empty": "Nobody is online right now.",
+        "empty-offline": "The server is offline, so nobody is online.",
+        "no-matches": "No player matches your search.",
+        "column-actions": "Actions",
+        "column-player": "Player",
+        "column-ping": "Ping",
+        "column-session": "Session",
+        "column-ip": "IP",
+        "ping-value": "{ping} ms",
+        "ping-unknown": "Unknown",
+        "uuid-copied": "UUID copied.",
+        "session-days": "{days}d {hours}h",
+        "session-hours": "{hours}h {minutes}m",
+        "session-minutes": "{minutes}m",
+        "session-seconds": "{seconds}s",
+        "action-kick": "Kick",
+        "action-message": "Message",
+        "action-op": "Give OP",
+        "action-deop": "Take OP",
+        "action-gamemode": "Gamemode",
+        "action-whitelist-add": "Add to whitelist",
+        "action-whitelist-remove": "Remove from whitelist",
+        "gamemode-survival": "Survival",
+        "gamemode-creative": "Creative",
+        "gamemode-adventure": "Adventure",
+        "gamemode-spectator": "Spectator",
+        "action-done": "Sent to {username}.",
+        "actions-disabled-offline": "The server is offline, so it cannot carry out player actions.",
+        "sample-hint": "These names come from the server list ping, which carries at most 12 of them. The player count is exact.",
+        "action-ban": "Ban",
+        "badge-op": "OP",
+        "badge-whitelisted": "Whitelisted",
+        "column-gamemode": "Game mode",
+        "gamemode-unknown": "Unknown",
+        "ban-needs-players-permission": "Banning a Pano account needs the players permission.",
+        "ban-no-command-on-proxy": "A proxy has no ban list of its own, and {username} has no Pano account to ban.",
+        "current": "Current",
+        "ban-needs-commands": "{username} has no Pano account, so a ban is this server's own ban command, and this server cannot take commands right now.",
+        "column-account": "Pano account",
+        "account-yes": "Registered",
+        "account-no": "None",
+        "account-yes-hint": "A ban from here is a Pano ban: the website and every server with ban integration.",
+        "account-no-hint": "No Pano account with this name, so a ban from here only goes to this server's own ban list."
+      },
+      "plugins": {
+        "title": "Plugins",
+        "description": "The plugins and mods installed on this server.",
+        "count": "{count} installed",
+        "search-placeholder": "Search plugins...",
+        "column-name": "Name",
+        "column-version": "Version",
+        "column-authors": "Authors",
+        "column-description": "Description",
+        "column-enabled": "Enabled",
+        "authors-unknown": "Unknown",
+        "no-description": "No description",
+        "empty": "This server reported no plugins.",
+        "empty-offline": "The server is offline, so Pano has no plugin list for it.",
+        "no-matches": "No plugin matches your search.",
+        "state-unsupported": "This server's Pano plugin does not report the installed plugins. Update pano-mc-plugin to use this page.",
+        "restart-hint": "Not every plugin survives being enabled or disabled while the server runs. Restart the server afterwards if something misbehaves.",
+        "toggle-disabled-offline": "The server is offline, so plugins cannot be switched on or off.",
+        "enabled-badge": "Enabled",
+        "disabled-badge": "Disabled",
+        "toggled-on": "{name} enabled.",
+        "toggled-off": "{name} disabled.",
+        "tab-installed": "Installed",
+        "tab-browse": "Browse",
+        "list-failed": "The plugin list could not be loaded.",
+        "linked-hint": "Pano only reads this list from the server's Pano plugin. To install or delete files, run the server on a Pano node.",
+        "jar-list-hint": "This list is read from the jar files on disk, not from the running server.",
+        "restart-required-title": "Restart required",
+        "restart-required-description": "The files in this folder changed after the server last reported its plugins. Restart the server to load them.",
+        "installed": {
+          "column-file": "File",
+          "column-actions": "Actions",
+          "not-loaded": "Not loaded",
+          "not-loaded-hint": "This jar sits in the folder but the server has not loaded it. Restart the server to load it.",
+          "status-on-disk": "On disk",
+          "no-file": "No file",
+          "game-list-unavailable": "The server is not reporting its loaded plugins right now, so only the files on disk are listed.",
+          "remove": "Remove",
+          "remove-confirm": "Delete {filename} from the server? The file is gone for good, and the plugin stays loaded until the server restarts.",
+          "removed": "{filename} was deleted."
+        },
+        "updates": {
+          "count": "{count} with updates",
+          "source-hint": "Installed from {source}.",
+          "source-identified-hint": "Matched to {source} by file hash.",
+          "update-available": "Update available · {version}",
+          "update-available-hint": "Open the project page for {version}.",
+          "update": "Update",
+          "update-started": "The update started. It runs on the node.",
+          "update-done": "{filename} was updated. Restart the server to load it.",
+          "update-failed": "The update failed. ({error})",
+          "up-to-date": "{filename} is already up to date.",
+          "update-all": "Update all ({count})",
+          "update-all-started": "{started} updates started, {skipped} skipped.",
+          "update-all-none": "There was nothing to update.",
+          "identify": "Identify sources",
+          "identify-hint": "Looks the jars Pano did not install up on Modrinth and CurseForge by file hash. Hangar plugins cannot be identified this way, and CurseForge needs an API key in the platform settings.",
+          "identify-done": "Identified {identified}, {unknown} still unknown."
+        },
+        "browse": {
+          "description": "Search the sources Pano can reach and install a plugin or mod straight onto this server.",
+          "search-placeholder": "Search for a plugin or mod...",
+          "search-hint": "Start typing to search the selected source.",
+          "search-failed": "The search failed. Try again in a moment.",
+          "sources-failed": "The sources could not be loaded.",
+          "source-off": "This source is off.",
+          "no-sources": "No source is available. CurseForge needs an API key in the platform settings.",
+          "no-results": "Nothing matched your search.",
+          "load-more": "Load more",
+          "downloads": "{count} downloads",
+          "by-author": "by {author}",
+          "compatible": "Compatible",
+          "incompatible": "May not fit",
+          "versions": "Versions",
+          "versions-title": "Versions of {name}",
+          "versions-failed": "The versions could not be loaded.",
+          "no-versions": "This project has no version for your server's software.",
+          "game-versions": "Minecraft: {versions}",
+          "loaders": "Loaders: {loaders}",
+          "file-label": "File to install",
+          "install": "Install",
+          "install-no-permission": "You do not have permission to install plugins.",
+          "install-started": "The install started. It runs on the node.",
+          "install-done": "{filename} was installed. Restart the server to load it.",
+          "install-failed": "The install failed. ({error})",
+          "task-install": "Installing {filename}",
+          "open-page": "Project page"
+        }
+      },
+      "files": {
+        "title": "Files",
+        "count": "{count} items",
+        "root": "Server root",
+        "path-label": "Path",
+        "path-placeholder": "plugins/Pano",
+        "path-go": "Go",
+        "path-edit": "Edit the path",
+        "go-up": "Up one level",
+        "new-file": "New file",
+        "new-file-hint": "The file is created empty.",
+        "new-folder": "New folder",
+        "upload": "Upload",
+        "uploads-title": "Uploads",
+        "uploads-clear": "Clear finished",
+        "upload-done": "Uploaded",
+        "upload-failed": "Failed",
+        "upload-failed-toast": "{name} could not be uploaded.",
+        "selected": "{count} selected",
+        "column-name": "Name",
+        "column-size": "Size",
+        "column-modified": "Modified",
+        "column-actions": "Actions",
+        "select-all": "Select every entry",
+        "no-matches": "Nothing matches that filter.",
+        "empty-directory": "This folder is empty.",
+        "drop-hint": "Drop files here to upload them into this folder.",
+        "list-failed": "The folder could not be read.",
+        "action-open": "Open",
+        "action-edit": "Edit",
+        "action-download": "Download",
+        "action-unarchive": "Extract",
+        "action-rename": "Rename",
+        "action-chmod": "Permissions",
+        "unarchive-hint": "The archive is extracted into this folder.",
+        "chmod-hint": "Octal POSIX mode, for example 0644.",
+        "prompt-name": "Name",
+        "prompt-new-name": "New name",
+        "prompt-extract-into": "Extract into",
+        "prompt-mode": "Mode",
+        "prompt-confirm": "Apply",
+        "delete-title": "Delete for good?",
+        "delete-description": "{count} entries are deleted from the server. Deleting a folder deletes everything in it.",
+        "created": "{name} was created.",
+        "renamed": "Renamed to {name}.",
+        "unarchived": "Extracted into {name}.",
+        "chmod-done": "{name} is now {mode}.",
+        "deleted": "{count} entries were deleted.",
+        "saved": "{name} was saved.",
+        "download-as-zip": "Download as zip",
+        "download-zip-hint": "Folders and multiple items are packed into one zip while downloading; nothing is created on the server.",
+        "action-preview": "Preview",
+        "drop-into": "Drop to upload into {path}"
+      },
+      "backups": {
+        "title": "Backups",
+        "count": "{count} backups",
+        "description": "Take a full zip or an incremental snapshot, of everything, the worlds only or the paths you pick. The world is flushed to disk first, so a running server can be backed up safely.",
+        "name-label": "Name",
+        "name-placeholder": "Before the 1.21 update",
+        "name-hint": "Optional — without one the backup is named after the moment it was taken.",
+        "create": "Create backup",
+        "create-started": "The backup was started. It appears here when the node is done.",
+        "create-done": "The backup is ready.",
+        "task-backup": "Creating a backup",
+        "task-restore": "Restoring a backup",
+        "task-failed": "The task failed. ({error})",
+        "retention-hint": "Oldest are deleted first. Pinned backups are never deleted.",
+        "retention-saved": "The retention setting was saved.",
+        "retention-unavailable": "This build of Pano cannot keep a retention setting yet.",
+        "list-failed": "The backups could not be read.",
+        "empty": "No backup yet.",
+        "column-name": "Name",
+        "column-size": "Size",
+        "column-created": "Created",
+        "column-creator": "Created by",
+        "column-status": "Status",
+        "column-checksum": "SHA-256",
+        "column-actions": "Actions",
+        "creator-unknown": "Unknown",
+        "copy-checksum": "Copy the checksum",
+        "restore": "Restore",
+        "restore-title": "Restore this backup?",
+        "restore-description": "Everything in the server directory is replaced with the contents of {name}. This cannot be undone.",
+        "restore-needs-stop": "The server has to be stopped before a backup can be restored.",
+        "restore-started": "The restore was started.",
+        "restore-done": "The backup was restored.",
+        "restore-next-start": "The server applies this backup the next time it starts.",
+        "delete-title": "Delete this backup?",
+        "delete-description": "{name} is deleted from the node for good.",
+        "deleted": "{name} was deleted.",
+        "password-placeholder": "Your account password",
+        "status-pending": "Queued",
+        "status-running": "Running",
+        "status-ready": "Ready",
+        "status-failed": "Failed",
+        "status-restoring": "Restoring",
+        "status-pending_restart": "Waiting for restart",
+        "status-deleting": "Deleting",
+        "retention-full-label": "Full backups to keep",
+        "retention-snapshot-label": "Snapshots to keep",
+        "retention-cap-label": "and at most",
+        "retention-cap-none": "No cap",
+        "pinned": "Pinned",
+        "pinned-hint": "Pinned: never deleted by retention.",
+        "pin": "Pin (keep forever)",
+        "unpin": "Unpin",
+        "stored-hint": "New data this snapshot added to disk; everything else is shared with other snapshots.",
+        "restore-worlds-replaced": "World folders in the backup replace the current ones completely; other files are written over what is there."
+      },
+      "activity": {
+        "title": "Activity",
+        "filter-label": "Filter by type",
+        "filter-all": "All types",
+        "empty": "Nothing has happened on this server yet.",
+        "empty-filtered": "No entry matches these filters.",
+        "unavailable": "This build of Pano does not keep a per-server activity log yet. Update Pano to see one here.",
+        "load-failed": "The activity log could not be loaded. Try again in a moment.",
+        "unknown-user": "Unknown user",
+        "types": {
+          "sent_server_command": "Command",
+          "server_power_action": "Power",
+          "server_player_action": "Player",
+          "server_plugin_updated": "Plugin updated",
+          "server_plugin_toggled": "Plugin toggled",
+          "server_file_changed": "File changed",
+          "server_backup_action": "Backup",
+          "server_schedule_run": "Schedule ran",
+          "server_crashed": "Crash",
+          "server_pano_plugin_updated": "Pano plugin updated",
+          "linked_agent_server": "Linked with the Pano Agent",
+          "server_plugin_file_action": "Plugin files",
+          "server_schedule_action": "Schedule",
+          "created_server": "Created",
+          "reinstalled_server": "Reinstalled",
+          "updated_server_startup": "Startup settings"
+        },
+        "search-placeholder": "Search activity...",
+        "filter-user-label": "Filter by user",
+        "filter-user-all": "All users",
+        "end-of-history": "That's the beginning of this server's history."
       },
       "settings": {
-        "title": "Server Settings",
         "preferences": "Preferences",
         "server-name": "Server Name",
         "main-server": "Main Server",
         "already-main-server": "{serverName} is main server",
         "make-main-server": "Set as Main Server",
         "main-server-info": "The host server determines the server information to be displayed on the website.",
-        "remove-server": "Remove Server",
-        "disconnect": "Disconnect"
-      },
-      "monitoring": {
-        "title": "Server Monitoring"
+        "auto-update-check": "Automatic update check",
+        "auto-update-check-info": "Checks plugins for updates daily and notifies you.",
+        "disconnect": "Disconnect",
+        "danger-zone": "Danger zone",
+        "reinstall": "Reinstall server",
+        "reinstall-info": "Install the current software again. A backup is taken first.",
+        "reinstall-unavailable": "This build of Pano cannot reinstall a server yet.",
+        "delete-server": "Delete server",
+        "delete-server-info": "Deletes the server, its files and backups from the node.",
+        "remove-server": "Remove server",
+        "remove-server-info": "Removes it from Pano. Files on the Minecraft server stay.",
+        "remove-in-place-info": "Pano stops running it and deletes its backups. The files stay in their folder.",
+        "change-software": "Change server software",
+        "change-software-info": "Switch to another software or version.",
+        "change-software-button": "Change software"
       },
       "game-integration": {
-        "title": "Game Integration Settings",
         "minecraft": "Minecraft",
         "auth-integration": "Auth Integration",
         "auth-integration-description": "Let Pano hook into auth plugins in Fabric.",
@@ -809,6 +1474,611 @@
         "ban-integration-description": "Let Pano hook into ban plugins in Fabric.",
         "permission-integration": "Permission Integration",
         "permission-integration-description": "Let Pano hook into permission plugins in Fabric."
+      },
+      "errors": {
+        "capability-missing": "This server's Pano plugin cannot do that. Update pano-mc-plugin or enable the feature in its config.",
+        "feature-unavailable": "This server can't do that right now.",
+        "command-denied": "That command is blocked for you by a permission policy (pattern \"{pattern}\").",
+        "offline": "The server is offline right now. Try again once it reconnects.",
+        "rate-limited": "Slow down — too many requests in a row. Wait about {seconds} seconds and try again.",
+        "generic": "The action failed. ({error})",
+        "node-offline": "The node this server runs on is offline. Try again once it reconnects.",
+        "node-not-exists": "That node is gone — refresh the page.",
+        "not-managed": "That only works for a server Pano runs itself.",
+        "wrong-password": "That password is not correct.",
+        "unavailable": "This build of Pano does not have that yet.",
+        "path-denied": "That path is not allowed.",
+        "file-too-large": "That file is too large.",
+        "transfer-expired": "The transfer expired. Start it again.",
+        "no-stdin": "The node lost this server's console input when it restarted; the Pano plugin is not connected to relay the command. Restart the server from the panel."
+      },
+      "process-state": {
+        "stopped": "Stopped",
+        "starting": "Starting",
+        "running": "Running",
+        "stopping": "Stopping",
+        "crashed": "Crashed",
+        "installing": "Installing"
+      },
+      "nodes": {
+        "status-online": "Online",
+        "status-offline": "Offline",
+        "status-pending": "Waiting for approval",
+        "local-setup-started": "Setting up the local node. It appears here as soon as it connects.",
+        "local-setup-unavailable": "This build of Pano cannot set up a local node yet.",
+        "add-unavailable": "The add-node dialog is not available here.",
+        "add-node": "Add node",
+        "add-title": "Add a node",
+        "count": "{count} nodes",
+        "empty-description": "No node yet. A node is the machine that runs your servers — the local one takes a single click.",
+        "unavailable": "This build of Pano cannot manage nodes yet. Update Pano to use managed servers.",
+        "pending-title": "Waiting for approval",
+        "pending-description": "These machines paired with Pano but nobody accepted them yet. Accept only the ones you set up yourself.",
+        "accept": "Accept",
+        "accepted": "{name} accepted.",
+        "column-name": "Name",
+        "column-kind": "Kind",
+        "column-runtime": "Runtime",
+        "column-status": "Status",
+        "column-version": "Version",
+        "column-system": "System",
+        "column-servers": "Servers",
+        "servers-empty": "No servers run on this node yet.",
+        "column-cpu": "CPU",
+        "column-memory": "RAM",
+        "column-disk": "Disk",
+        "column-last-seen": "Last seen",
+        "column-actions": "Actions",
+        "kind-local": "Local",
+        "kind-remote": "Remote",
+        "never-seen": "Never",
+        "rename-title": "Rename node",
+        "rename-label": "Node name",
+        "renamed": "Node renamed to {name}.",
+        "delete-title": "Delete this node?",
+        "delete-password": "Account password",
+        "deleted": "{name} deleted.",
+        "tab-local": "Local",
+        "tab-manual": "Manual",
+        "tab-ssh": "SSH",
+        "tab-coolify": "Coolify",
+        "local-description": "Run the node on the same machine as Pano. Pano downloads the daemon, starts it and keeps it running — no pairing needed.",
+        "manual-description": "Install the node on another machine, then run this command there. The code is valid for 30 seconds and rotates on its own.",
+        "pairing-code": "Pairing code",
+        "pairing-refresh": "New code in {seconds} s",
+        "pairing-command": "Run this on the other machine",
+        "pairing-hint": "The machine needs to reach this Pano over the network. Nothing has to be opened on its side.",
+        "pairing-unavailable": "This build of Pano cannot pair nodes yet.",
+        "title": "Nodes",
+        "column-bootstrap": "Added by",
+        "bootstrap-local": "Local",
+        "bootstrap-manual": "Manual",
+        "bootstrap-ssh": "SSH",
+        "bootstrap-coolify": "Coolify",
+        "platform-linux": "Linux / macOS",
+        "platform-windows": "Windows",
+        "update-available": "Update available",
+        "update-hint": "Pano ships {version}",
+        "update-title": "Update node",
+        "update-sent": "Update sent; the node restarts once it has downloaded the jar.",
+        "update-up-to-date": "This node already runs the current daemon.",
+        "update-no-jar": "This Pano has no node daemon to hand out, so nodes cannot be updated from here.",
+        "update-unavailable": "This build of Pano cannot update nodes yet.",
+        "java": {
+          "title": "Java runtimes",
+          "install": "Install Java",
+          "install-title": "Install Java",
+          "install-description": "Pano downloads the runtime from Eclipse Temurin (Azul Zulu where Temurin has no build), checks its checksum and unpacks it into the node's data folder. Nothing is installed system-wide.",
+          "install-empty": "No downloads are offered for this node.",
+          "empty": "No Java runtime found on this node yet.",
+          "column-major": "Java",
+          "column-version": "Version",
+          "column-vendor": "Vendor",
+          "column-source": "Source",
+          "column-path": "Path",
+          "column-used-by": "Used by",
+          "source-pano": "Pano",
+          "source-system": "System",
+          "source-pano-hint": "Downloaded by Pano into the node's data folder. It can be updated and removed from here.",
+          "source-system-hint": "Found on the host (JAVA_HOME, PATH or a system JDK folder). Pano uses it but never changes or removes it.",
+          "update": "Update",
+          "update-hint": "{version} is available",
+          "update-available": "Update available",
+          "installed": "Installed",
+          "remove": "Remove",
+          "remove-title": "Remove this Java runtime?",
+          "remove-description": "{name} is deleted from this node. Servers pinned to this Java download it again on their next start, if automatic downloads are on.",
+          "remove-in-use": "In use by {servers}. Stop those servers or pin them to another Java first.",
+          "removing": "Removing",
+          "installing": "Downloading",
+          "removed": "Java {major} removed.",
+          "installed-toast": "Java {major} is installed.",
+          "not-available": "Not available for {platform}",
+          "node-offline": "The node is offline.",
+          "outdated-node": "Update the node to download Java.",
+          "downloads-unsupported": "Downloads need a newer node",
+          "catalog-error": "Could not reach the Java download servers: {error}",
+          "auto-download-on": "Missing Java versions are downloaded automatically when a server needs them.",
+          "auto-download-off": "Automatic Java downloads are disabled in the node's config.",
+          "unavailable": "This build of Pano cannot manage Java runtimes yet.",
+          "error-in-use": "This Java runtime is still in use by a server.",
+          "error-not-managed": "Only runtimes Pano installed can be removed.",
+          "error-not-found": "The node no longer has that Java runtime.",
+          "hint-8": "For Minecraft 1.16.4 and older",
+          "hint-11": "Rarely needed; for older tools and proxies",
+          "hint-16": "For Minecraft 1.16.5",
+          "hint-17": "For Minecraft 1.17 – 1.20.4",
+          "hint-21": "Recommended for Minecraft 1.20.5 – 1.21.x",
+          "hint-25": "Recommended for Minecraft 26.1+",
+          "catalog-timeout": "The node did not answer in time; showing the runtimes it reported last.",
+          "unknown-server": "unknown server",
+          "error-installing": "That Java is being installed right now; try again when it has finished."
+        },
+        "remove": {
+          "preview-loading": "Checking what is on this node…",
+          "lead": "{name} uninstalls itself and everything on it is deleted for good:",
+          "lead-forget": "{name} and its servers are removed from Pano:",
+          "servers": "{count, plural, one {# server is deleted with all its files and backups.} other {# servers are deleted with all their files and backups.}}",
+          "no-servers": "No servers run on this node.",
+          "backups": "{count, plural, one {# backup} other {# backups}}",
+          "backups-size": "{count, plural, one {# backup} other {# backups}} ({size})",
+          "no-backups": "No backups.",
+          "java": "{count, plural, =0 {No Java runtimes downloaded by Pano.} one {# Java runtime downloaded by Pano.} other {# Java runtimes downloaded by Pano.}}",
+          "data": "The node's data folder, cache and logs, and the pano-node service where it can remove it.",
+          "offline": "The node is offline — Pano can only forget it; files stay on the machine.",
+          "offline-local": "The local node is not running. Pano removes it and deletes its data folder itself.",
+          "unsupported": "This node's daemon is too old to uninstall itself — Pano can only forget it; files stay on the machine. Update the node first to remove it cleanly.",
+          "uninstall-failed": "The node could not uninstall itself:",
+          "force": "Remove from Pano anyway",
+          "type-name": "Type {name} to confirm",
+          "running-title": "Removing {name}…",
+          "running-description": "Stopping its servers and deleting their files. This can take up to two minutes — keep this window open.",
+          "running-forget": "Removing the node and its servers from Pano.",
+          "done-files-removed": "{count, plural, =0 {Its files were deleted from the machine.} one {# server and all files were deleted from the machine.} other {# servers and all files were deleted from the machine.}}",
+          "done-files-kept": "{count, plural, =0 {Its files are still on the machine.} one {# server was removed from Pano. Its files are still on the machine.} other {# servers were removed from Pano. Their files are still on the machine.}}",
+          "manual-title": "Finish removing it from the machine",
+          "manual-description": "Pano could not do these steps itself. Run them on the node's machine:",
+          "copied": "Copied"
+        },
+        "column-network": "Network",
+        "network-rate": "↓ {rx} · ↑ {tx}"
+      },
+      "create": {
+        "memory-label": "Memory",
+        "port-label": "Game port",
+        "port-hint": "The port players connect to. The node checks that it is free.",
+        "java-label": "Java version",
+        "java-auto": "Automatic",
+        "java-hint": "Automatic picks the lowest Java the Minecraft version supports from the runtimes on the node, and downloads it when the node has none.",
+        "jvm-args-label": "JVM arguments",
+        "jvm-args-hint": "Leave empty unless you know you need them.",
+        "aikar-preset": "Use Aikar's flags",
+        "auto-start-label": "Start with Pano",
+        "auto-start-hint": "Start this server when the node comes up.",
+        "crash-restart-label": "Restart after a crash",
+        "crash-restart-hint": "Bring the server back automatically when it dies unexpectedly.",
+        "auto-update-check-label": "Automatic update check",
+        "auto-update-check-hint": "Checks plugins for updates daily and notifies you.",
+        "setup-local-node": "Set up the local node",
+        "java-auto-resolved": "Automatic (Java {major})",
+        "java-will-download": "Java {major} — will be downloaded ({size})",
+        "java-will-download-unsized": "Java {major} — will be downloaded",
+        "java-download-note": "Java {major} is not on this node yet; it is downloaded ({size}) before the server is installed.",
+        "java-size-unknown": "size unknown"
+      },
+      "startup": {
+        "restart-hint": "Changes take effect the next time the server starts. Restart it when you are done.",
+        "process-title": "Process",
+        "properties-title": "server.properties",
+        "properties-description": "Every setting of the file has its own tab now.",
+        "saved": "Startup settings saved.",
+        "unavailable": "This build of Pano cannot change startup settings yet.",
+        "java-download-note": "Java {major} is not on this node yet; it is downloaded ({size}) on the next start.",
+        "properties-open": "Open server.properties"
+      },
+      "schedules": {
+        "title": "Schedules",
+        "description-managed": "Cron jobs the node runs for this server: restarts, commands and backups, in the order you put them.",
+        "description-linked": "Cron jobs Pano runs for this server. A linked server has no node, so only power actions and commands are available.",
+        "count": "{count} schedules",
+        "create": "New schedule",
+        "empty": "This server has no schedule yet.",
+        "list-failed": "The schedules could not be loaded.",
+        "column-name": "Name",
+        "column-cron": "Runs",
+        "column-next-run": "Next run",
+        "column-last-run": "Last run",
+        "column-enabled": "Enabled",
+        "column-actions": "Actions",
+        "never-run": "Never run",
+        "no-tasks": "No task",
+        "run-now": "Run now",
+        "run-started": "{name} was started.",
+        "run-finished": "{name} finished.",
+        "run-failed": "{name} failed. ({error})",
+        "created": "{name} was created.",
+        "updated": "{name} was saved.",
+        "deleted": "{name} was deleted.",
+        "delete-confirm": "Delete the schedule {name}? It stops running right away.",
+        "enabled-toast": "{name} is on.",
+        "disabled-toast": "{name} is off.",
+        "status-ok": "Succeeded",
+        "status-success": "Succeeded",
+        "status-failed": "Failed",
+        "status-running": "Running",
+        "status-skipped": "Skipped",
+        "cron-daily": "Every day at {time}",
+        "cron-every-hours": "Every {hours} hours",
+        "cron-weekly": "Every {day} at {time}",
+        "cron-monthly": "Every month on day {day} at {time}",
+        "presets": {
+          "daily": "Daily 04:00",
+          "six-hours": "Every 6 hours",
+          "weekly": "Sunday 05:00",
+          "custom": "Custom"
+        },
+        "task-kind": {
+          "power": "Power",
+          "command": "Command",
+          "backup": "Backup"
+        },
+        "power-action": {
+          "stop": "Stop",
+          "restart": "Restart"
+        }
+      },
+      "properties": {
+        "title": "server.properties",
+        "description": "Every setting of the file, grouped. What you change is written into the file on the node; nothing else in it is touched.",
+        "applies-next-start": "Changes take effect the next time the server starts.",
+        "source-file": "Read from the file on the node",
+        "source-stored": "Node unreachable — showing the values Pano stored",
+        "changed": "Changed, not saved yet",
+        "changed-count": "{count} unsaved",
+        "reset": "Reset to default",
+        "reset-to": "Reset to default: {value}",
+        "reveal": "Show or hide",
+        "other-title": "Other keys",
+        "other-description": "Keys the file holds that Pano does not know — a fork's own, or ones a newer server added. Kept as they are.",
+        "add-key": "Add key",
+        "add-key-placeholder": "key-name",
+        "add-value-placeholder": "value",
+        "port-managed": "Startup tab",
+        "no-matches": "No setting matches your search.",
+        "saved": "server.properties saved. Restart the server to apply it.",
+        "discard": "Discard changes",
+        "groups": {
+          "general": "General",
+          "world": "World",
+          "performance": "Performance",
+          "players": "Players",
+          "resource-pack": "Resource pack",
+          "network": "Network"
+        },
+        "options": {
+          "difficulty": {
+            "peaceful": "Peaceful",
+            "easy": "Easy",
+            "normal": "Normal",
+            "hard": "Hard"
+          },
+          "gamemode": {
+            "survival": "Survival",
+            "creative": "Creative",
+            "adventure": "Adventure",
+            "spectator": "Spectator"
+          },
+          "level-type": {
+            "minecraft:normal": "Normal",
+            "minecraft:flat": "Superflat",
+            "minecraft:large_biomes": "Large biomes",
+            "minecraft:amplified": "Amplified",
+            "minecraft:single_biome_surface": "Single biome"
+          },
+          "region-file-compression": {
+            "deflate": "Deflate (default)",
+            "lz4": "LZ4 (faster, larger)",
+            "none": "None"
+          }
+        },
+        "keys": {
+          "motd": {
+            "label": "MOTD",
+            "help": "Server description shown in the multiplayer list."
+          },
+          "max-players": {
+            "label": "Max players",
+            "help": "How many players may be online at once."
+          },
+          "online-mode": {
+            "label": "Online mode",
+            "help": "Verify players against Mojang. Turn it off only behind a proxy."
+          },
+          "white-list": {
+            "label": "Whitelist",
+            "help": "Only players on the whitelist may join."
+          },
+          "enforce-whitelist": {
+            "label": "Enforce whitelist",
+            "help": "Kick players already online when they are removed from the whitelist."
+          },
+          "difficulty": {
+            "label": "Difficulty",
+            "help": "Mob damage, hunger and more."
+          },
+          "gamemode": {
+            "label": "Default game mode",
+            "help": "The mode new players start in."
+          },
+          "force-gamemode": {
+            "label": "Force game mode",
+            "help": "Put every player into the default mode on each join."
+          },
+          "hardcore": {
+            "label": "Hardcore",
+            "help": "Death is permanent; the world locks at Hard difficulty."
+          },
+          "pvp": {
+            "label": "PvP",
+            "help": "Let players damage each other."
+          },
+          "enable-command-block": {
+            "label": "Command blocks",
+            "help": "Let command blocks run."
+          },
+          "pause-when-empty-seconds": {
+            "label": "Pause when empty",
+            "help": "Seconds without players before the server pauses ticking; -1 never pauses."
+          },
+          "player-idle-timeout": {
+            "label": "Idle timeout",
+            "help": "Minutes an idle player may stay before being kicked; 0 disables."
+          },
+          "level-name": {
+            "label": "World folder",
+            "help": "Name of the world folder; changing it starts a different world."
+          },
+          "level-seed": {
+            "label": "Seed",
+            "help": "Seed for a new world; empty means random."
+          },
+          "level-type": {
+            "label": "World type",
+            "help": "Generator preset used when the world is created."
+          },
+          "generator-settings": {
+            "label": "Generator settings",
+            "help": "JSON for the flat and single-biome generators."
+          },
+          "generate-structures": {
+            "label": "Generate structures",
+            "help": "Villages, strongholds and other structures in new chunks."
+          },
+          "allow-nether": {
+            "label": "Allow the Nether",
+            "help": "Nether portals work; off keeps players in the Overworld."
+          },
+          "spawn-monsters": {
+            "label": "Spawn monsters",
+            "help": "Hostile mobs spawn at night and in the dark."
+          },
+          "spawn-protection": {
+            "label": "Spawn protection",
+            "help": "Radius around spawn only operators may build in; 0 disables."
+          },
+          "max-world-size": {
+            "label": "Max world size",
+            "help": "World border radius in blocks."
+          },
+          "initial-enabled-packs": {
+            "label": "Enabled data packs",
+            "help": "Data packs enabled when the world is created, comma-separated."
+          },
+          "initial-disabled-packs": {
+            "label": "Disabled data packs",
+            "help": "Data packs disabled when the world is created, comma-separated."
+          },
+          "view-distance": {
+            "label": "View distance",
+            "help": "Chunks sent to each player. Lower it when the server struggles."
+          },
+          "simulation-distance": {
+            "label": "Simulation distance",
+            "help": "Chunks around each player that keep ticking."
+          },
+          "entity-broadcast-range-percentage": {
+            "label": "Entity broadcast range",
+            "help": "How far entities are sent to players, as a percentage of the default."
+          },
+          "max-tick-time": {
+            "label": "Max tick time",
+            "help": "Milliseconds a tick may take before the watchdog stops the server; -1 disables."
+          },
+          "max-chained-neighbor-updates": {
+            "label": "Max chained updates",
+            "help": "Cap on chained block updates per tick; -1 removes it."
+          },
+          "network-compression-threshold": {
+            "label": "Compression threshold",
+            "help": "Packets larger than this many bytes are compressed; -1 disables."
+          },
+          "rate-limit": {
+            "label": "Packet rate limit",
+            "help": "Packets per second a client may send before being kicked; 0 disables."
+          },
+          "sync-chunk-writes": {
+            "label": "Sync chunk writes",
+            "help": "Write chunks synchronously; safer, a little slower."
+          },
+          "use-native-transport": {
+            "label": "Native transport",
+            "help": "Linux packet optimisations; leave on."
+          },
+          "region-file-compression": {
+            "label": "Region compression",
+            "help": "Compression used for region files."
+          },
+          "allow-flight": {
+            "label": "Allow flight",
+            "help": "Do not kick players who fly in survival (mods, plugins)."
+          },
+          "op-permission-level": {
+            "label": "Operator level",
+            "help": "Permission level given by /op, 1 to 4."
+          },
+          "function-permission-level": {
+            "label": "Function level",
+            "help": "Permission level functions run with, 1 to 4."
+          },
+          "hide-online-players": {
+            "label": "Hide online players",
+            "help": "Do not list who is online in the server status."
+          },
+          "enforce-secure-profile": {
+            "label": "Secure chat profiles",
+            "help": "Require Mojang-signed chat; players without it cannot join."
+          },
+          "broadcast-console-to-ops": {
+            "label": "Console output to ops",
+            "help": "Send console command output to online operators."
+          },
+          "broadcast-rcon-to-ops": {
+            "label": "RCON output to ops",
+            "help": "Send RCON command output to online operators."
+          },
+          "accepts-transfers": {
+            "label": "Accept transfers",
+            "help": "Accept players transferred from another server."
+          },
+          "log-ips": {
+            "label": "Log IPs",
+            "help": "Write player IP addresses to the log."
+          },
+          "bug-report-link": {
+            "label": "Bug report link",
+            "help": "URL shown to players for reporting bugs."
+          },
+          "text-filtering-config": {
+            "label": "Text filtering config",
+            "help": "Chat filtering service configuration."
+          },
+          "text-filtering-version": {
+            "label": "Text filtering version",
+            "help": "Version of the text filtering config format."
+          },
+          "require-resource-pack": {
+            "label": "Require resource pack",
+            "help": "Disconnect players who decline the resource pack."
+          },
+          "resource-pack": {
+            "label": "Resource pack URL",
+            "help": "Direct link to the pack players are asked to download."
+          },
+          "resource-pack-sha1": {
+            "label": "Resource pack SHA-1",
+            "help": "Checksum of the pack, so clients re-download when it changes."
+          },
+          "resource-pack-id": {
+            "label": "Resource pack ID",
+            "help": "UUID that identifies the pack to clients."
+          },
+          "resource-pack-prompt": {
+            "label": "Resource pack prompt",
+            "help": "Message shown with the download prompt (JSON text)."
+          },
+          "server-ip": {
+            "label": "Bind address",
+            "help": "IP the server listens on; empty binds every interface."
+          },
+          "prevent-proxy-connections": {
+            "label": "Block proxy connections",
+            "help": "Kick players whose IP differs from what Mojang saw."
+          },
+          "enable-status": {
+            "label": "Server status",
+            "help": "Answer the multiplayer list ping; off shows the server as offline."
+          },
+          "enable-query": {
+            "label": "GameSpy query",
+            "help": "Expose server details on the query port."
+          },
+          "query.port": {
+            "label": "Query port",
+            "help": "UDP port for the query protocol."
+          },
+          "enable-rcon": {
+            "label": "RCON",
+            "help": "Remote console over TCP. Keep it off unless you need it."
+          },
+          "rcon.port": {
+            "label": "RCON port",
+            "help": "TCP port RCON listens on."
+          },
+          "rcon.password": {
+            "label": "RCON password",
+            "help": "Password RCON clients must send."
+          },
+          "enable-jmx-monitoring": {
+            "label": "JMX monitoring",
+            "help": "Expose tick timings over JMX."
+          },
+          "management-server-enabled": {
+            "label": "Management server",
+            "help": "Enable the server management API."
+          },
+          "management-server-host": {
+            "label": "Management host",
+            "help": "Address the management API listens on."
+          },
+          "management-server-port": {
+            "label": "Management port",
+            "help": "Port of the management API; 0 picks one."
+          },
+          "management-server-tls-enabled": {
+            "label": "Management TLS",
+            "help": "Require TLS on the management API."
+          },
+          "management-server-secret": {
+            "label": "Management secret",
+            "help": "Token management clients authenticate with."
+          },
+          "status-heartbeat-interval": {
+            "label": "Status heartbeat",
+            "help": "Seconds between status heartbeats; 0 disables."
+          },
+          "debug": {
+            "label": "Debug logging",
+            "help": "Verbose debug output in the log."
+          },
+          "server-port": {
+            "label": "Game port",
+            "help": "Set on the Startup tab; the node allocates and publishes it."
+          },
+          "enable-code-of-conduct": {
+            "label": "Code of conduct",
+            "help": "Show players a code of conduct they must accept before joining."
+          },
+          "chat-spam-threshold-seconds": {
+            "label": "Chat spam threshold",
+            "help": "Seconds a player is kicked for after sending chat too fast; 0 disables."
+          },
+          "command-spam-threshold-seconds": {
+            "label": "Command spam threshold",
+            "help": "Seconds a player is kicked for after sending commands too fast; 0 disables."
+          },
+          "management-server-allowed-origins": {
+            "label": "Management allowed origins",
+            "help": "Origins allowed to call the management API, comma-separated."
+          },
+          "management-server-tls-keystore": {
+            "label": "Management TLS keystore",
+            "help": "Path to the keystore holding the management API certificate."
+          },
+          "management-server-tls-keystore-password": {
+            "label": "Management keystore password",
+            "help": "Password of that keystore."
+          }
+        }
       }
     },
     "permission-group-detail": {
@@ -1229,7 +2499,7 @@
       "posts": "Posts",
       "post-categories": "Post Categories",
       "tickets": "Tickets",
-      "players": "Players",
+      "players": "Users",
       "permissions": "Permissions",
       "view": "View",
       "addons": "Addons",
@@ -1260,18 +2530,26 @@
       "hide-menu": "Hide Menu",
       "website": "Website",
       "server": "Server",
+      "server-management-disabled": "Server management is off. Turn it on under Settings → Platform → Preferences.",
       "show-website": "Website",
-      "show-servers": "Show Servers",
+      "show-servers": "Servers",
       "version-alpha-tooltip": "Experimental version. May contain bugs, use with caution.",
       "version-beta-tooltip": "Preview version. Stable but still in testing phase."
     },
     "server-navigation-menu": {
-      "statistics": "Statistics",
+      "overview": "Overview",
+      "console": "Console",
+      "players": "Players",
+      "files": "Files",
+      "plugins": "Plugins",
+      "backups": "Backups",
+      "schedules": "Schedules",
       "settings": "Settings",
+      "add-server": "Add server",
       "no-selected-server": "No selected server.",
       "select-server": "Select Server",
-      "no-server-text": "Connect a server to view the server menu.",
-      "connect-server": "Connect Server"
+      "connect-server": "Connect Server",
+      "nodes": "Nodes"
     },
     "post-row": {
       "actions": "Actions",
@@ -1326,7 +2604,10 @@
     },
     "server-settings-layout": {
       "server": "Server",
-      "game-integration": "Game Integration"
+      "game-integration": "Game Integration",
+      "startup": "Startup",
+      "activity": "Activity",
+      "properties": "Server properties"
     },
     "modals": {
       "login": {
@@ -1513,7 +2794,9 @@
         "1-week": "1 Week",
         "1-month": "1 Month",
         "6-months": "6 Months",
-        "1-year": "1 Year"
+        "1-year": "1 Year",
+        "scope-pano": "This bans {username}'s Pano account: they are signed out of the website, and every server with ban integration kicks them and refuses them until the ban ends.",
+        "scope-server": "{username} has no Pano account, so this adds them to this server's own ban list only. Other servers are not affected, and there is no end date."
       },
       "confirm-ban-ip": {
         "title": "Add IP ban",
@@ -1626,6 +2909,75 @@
       "confirm-delete-language": {
         "title": "Are you sure you want to permanently delete this language?"
       },
+      "add-node": {
+        "no-permission": "You need the \"manage nodes\" permission for this.",
+        "busy": "Wait for the machine that is being set up.",
+        "unavailable": "This build of Pano cannot set up remote nodes yet.",
+        "current-password-label": "Your account password",
+        "current-password-hint": "Provisioning a machine is a sensitive action, so Pano asks for your password first.",
+        "name-label": "Node name",
+        "name-placeholder": "eu-west-1",
+        "host-label": "Host",
+        "port-label": "SSH port",
+        "username-label": "SSH user",
+        "auth-label": "Authentication",
+        "auth-password": "Password",
+        "auth-key": "Private key",
+        "ssh-password-label": "SSH password",
+        "private-key-label": "Private key",
+        "private-key-hint": "Paste the whole key, including the BEGIN and END lines. It is used once and never stored.",
+        "passphrase-label": "Key passphrase (optional)",
+        "sudo-label": "Use sudo",
+        "sudo-hint": "Leave on unless the SSH user is already root.",
+        "ssh-description": "Pano connects over SSH, runs the install script and the machine pairs itself. The credentials are used once and are never written down.",
+        "ssh-submit": "Connect and install",
+        "fingerprint-label": "Host key fingerprint",
+        "fingerprint-description": "Pano has never seen {host} before. Check that this fingerprint is the one your server shows, then confirm.",
+        "fingerprint-confirm": "This is my server, continue",
+        "coolify-description": "Pano deploys the node as a Docker application on your Coolify server. The API token is used once and is never stored.",
+        "coolify-url-label": "Coolify URL",
+        "coolify-token-label": "API token",
+        "coolify-token-hint": "A token with permission to create and deploy applications.",
+        "coolify-server-label": "Server UUID",
+        "coolify-project-label": "Project UUID",
+        "coolify-project-hint": "Optional — leave empty to use Coolify's default project.",
+        "coolify-environment-label": "Environment",
+        "coolify-volume-label": "Data volume",
+        "coolify-ports-label": "Port range",
+        "coolify-ports-invalid": "Use a range like 25565-25600.",
+        "coolify-image-label": "Image",
+        "coolify-image-invalid": "Use a registry reference in lower case, without a tag.",
+        "coolify-image-tag-label": "Tag",
+        "coolify-image-tag-invalid": "Use letters, digits, dots, dashes or underscores.",
+        "coolify-image-hint": "Only when Coolify cannot pull the published image: a private registry or mirror. Registry reference without a tag; the tag goes in its own field.",
+        "coolify-submit": "Deploy the node",
+        "progress-description": "Installing. This takes a few minutes; you can watch what the machine is doing below.",
+        "progress-label": "Node setup progress",
+        "log-label": "Setup output",
+        "waiting": "Waiting for the first output...",
+        "status-running": "Working",
+        "status-done": "Done",
+        "status-failed": "Failed",
+        "failed": "The setup failed: {error}",
+        "back": "Back to the form",
+        "node-ready": "{name} is connected and ready.",
+        "coolify-refused": "Coolify refused the deployment:",
+        "local-failed": "The local node could not be started:",
+        "local-failed-generic": "The daemon exited before it could connect. Check logs/pano-node.log next to Pano.",
+        "local-starting": "Starting the local node…",
+        "local-java": "Java {major} from {path}",
+        "local-daemon-started": "Daemon started (pid {pid}).",
+        "local-waiting": "Waiting for the node to connect to Pano…",
+        "local-connected": "The local node is connected.",
+        "local-timeout": "The node did not connect within {seconds} seconds. Check logs/pano-node.log next to Pano.",
+        "pano-url": {
+          "advanced": "Advanced",
+          "label": "Pano address reachable from the node",
+          "hint": "Leave empty to use your website URL. Set it when the machine cannot reach Pano there — behind NAT, through an SSH tunnel, or on a lab network with its own DNS. It becomes the address the node connects back to and downloads from.",
+          "invalid": "Enter a full http:// or https:// address.",
+          "unsupported": "This build of Pano does not hand out a ready-made install command, so the one above is built here and the address may not be reachable from the node. Check it before running the command."
+        }
+      },
       "add-permission-node": {
         "title": "Add Permission Nodes",
         "input-placeholder": "Type permission and press Enter",
@@ -1645,6 +2997,17 @@
           "custom": "Custom"
         }
       },
+      "add-server": {
+        "title": "Add a server",
+        "description": "Create a new server or link one you already run.",
+        "create-title": "Create a new server",
+        "create-description": "A new server, installed and run by Pano on a node.",
+        "link-title": "Link with the Pano plugin",
+        "link-description": "Your existing server, via the plugin. No start/stop from Pano.",
+        "create-unavailable": "The create-server wizard is not available in this build of Pano.",
+        "link-agent-title": "Link with the Pano Agent",
+        "link-agent-description": "Your existing server, fully managed. One jar in its folder."
+      },
       "connect-server": {
         "title": "Connect Server",
         "toggle-connect-server": "Toggle Connect Server",
@@ -1660,12 +3023,169 @@
         "code-refresh": "Code will refresh after {timeToRefreshKey} seconds.",
         "notification-will-come": "The connection request will come as a notification."
       },
+      "create-server": {
+        "title": "Create a server",
+        "step-of": "Step {current} of {total} · {name}",
+        "step-source": "Source",
+        "step-node": "Node",
+        "step-software": "Software",
+        "step-folder": "Folder",
+        "step-settings": "Settings",
+        "step-review": "Review",
+        "source-description": "Where should this server come from?",
+        "source-fresh-title": "Fresh install",
+        "source-fresh-description": "Pick the server software and version, and Pano installs it from scratch.",
+        "source-folder-title": "Existing folder on the node",
+        "source-folder-description": "Adopt a server directory that is already on the node. Nothing is reinstalled.",
+        "source-upload-title": "Upload an existing server",
+        "source-upload-description": "Upload a zip of a server you already run somewhere else.",
+        "source-modpack-title": "Modpack",
+        "source-modpack-description": "Install a modpack server-side from a pack file.",
+        "coming-later": "Coming in a later Pano release.",
+        "node-description": "Choose the node that will run this server.",
+        "node-empty-description": "No node is online yet. A node is the machine that runs your servers — set up the one on this machine, or pair another.",
+        "nodes-unavailable": "This build of Pano cannot manage nodes yet.",
+        "add-node": "Add a node",
+        "software-description": "Pick the server software. Paper is the one most plugins are built for.",
+        "software-recommended": "Recommended",
+        "software-deprecated": "Deprecated",
+        "software-build": "Compiled on the node",
+        "software-build-hint": "BuildTools compiles Spigot on the node: it needs git and a matching Java, the first build of a version takes about 10 minutes, and later installs reuse it.",
+        "software-jenkins": "Latest CI build",
+        "software-jenkins-hint": "Downloaded from the project's Jenkins; the version is the build number.",
+        "software-versions": "{count} versions",
+        "software-empty": "The software catalog is empty. Check that Pano can reach the internet.",
+        "software-unavailable": "This build of Pano has no software catalog yet.",
+        "version-label": "Minecraft version",
+        "version-latest-build": "Latest build",
+        "spigot-hint": "Spigot has no official download, so the node compiles it with BuildTools — that takes several minutes. Paper is a drop-in replacement and is recommended instead.",
+        "folder-description": "Give the path of the server folder on the node. Pano reads its jar, loader and port and takes it over as it is.",
+        "folder-label": "Folder path on the node",
+        "folder-hint": "An absolute path the node can read, for example /home/minecraft/survival.",
+        "name-label": "Server name",
+        "name-placeholder": "survival",
+        "eula-label": "I accept the",
+        "eula-link": "Minecraft EULA",
+        "review-description": "Check everything before Pano installs the server.",
+        "review-source": "Source",
+        "review-node": "Node",
+        "review-folder": "Folder",
+        "review-software": "Software",
+        "review-name": "Name",
+        "review-memory": "Memory",
+        "review-port": "Port",
+        "review-java": "Java",
+        "review-jvm-args": "JVM arguments",
+        "review-auto-start": "Start with Pano",
+        "review-crash-restart": "Restart after a crash",
+        "review-auto-update-check": "Automatic update check",
+        "review-none": "None",
+        "create-button": "Create server",
+        "created": "{name} is being installed.",
+        "create-unavailable": "This build of Pano cannot create servers yet.",
+        "import": {
+          "step-upload": "Archive",
+          "step-modpack": "Modpack",
+          "folder-invalid": "Give an absolute path, for example /home/minecraft/survival.",
+          "folder-copy-note": "The folder is copied, never moved — the original stays exactly where it is.",
+          "upload-description": "Upload a zip of the server folder. Pano hands it to the node, which unpacks it and reads what is inside.",
+          "upload-drop": "Drop a .zip here, or click to choose one",
+          "upload-limit": "Up to 1 GB. The upload stays usable for 30 minutes.",
+          "upload-progress": "Uploading the archive",
+          "upload-expires": "ready to import for the next 30 minutes",
+          "upload-too-large": "That archive is larger than 1 GB.",
+          "upload-wrong-type": "Only .zip archives can be imported.",
+          "upload-unavailable": "This build of Pano cannot accept server uploads yet.",
+          "modpack-description": "Search Modrinth for a modpack. Pano downloads its server files and installs the loader the pack asks for.",
+          "modpack-search-placeholder": "Search modpacks",
+          "modpack-search-hint": "Type a modpack name to search Modrinth.",
+          "modpack-no-results": "No modpack matches that search.",
+          "modpack-search-failed": "The modpack search failed. Try again in a moment.",
+          "modpack-unavailable": "This build of Pano cannot browse modpacks yet.",
+          "modpack-version-label": "Pack version",
+          "modpack-no-versions": "This modpack has no version Pano can install on a server.",
+          "detected-note": "Pano reads the server software, the Minecraft version and the port out of the import itself.",
+          "will-be-detected": "detected automatically",
+          "review-archive": "Archive",
+          "review-modpack": "Modpack"
+        },
+        "source-in-place-title": "Existing folder, run in place",
+        "source-in-place-description": "The node runs a server folder that is already on its machine, from where it is. Nothing is copied or moved.",
+        "in-place-description": "Give the path of the server folder on the node's machine. Pano reads its jar, loader and port and runs it from that folder; worlds, plugins and configs stay exactly where they are.",
+        "in-place-stop-note": "Stop the server first and turn off whatever used to start it (a systemd service, a screen session, another panel). Two processes in one folder corrupt the world, so Pano refuses a folder that is still running."
+      },
+      "file-editor": {
+        "unsaved": "Unsaved",
+        "binary": "This is a binary file. Download it to work with it.",
+        "truncated": "Only the beginning of this file was read, so it is read-only. Download it to see all of it.",
+        "save-hint": "Ctrl+S saves.",
+        "read-failed": "The file could not be read.",
+        "load-failed": "The editor could not be loaded.",
+        "discard-question": "There are unsaved changes.",
+        "keep-editing": "Keep editing",
+        "discard": "Discard",
+        "size-changed": "{size} ({delta} unsaved)"
+      },
       "make-main-server": {
         "title": "Are you sure you want to make \"{serverName}\" the main server?"
       },
       "remove-server": {
-        "title": "Are you sure you want to remove this server?",
-        "account-password": "Account Password"
+        "delete-title": "Delete this server?",
+        "remove-title": "Remove this server from Pano?",
+        "remove-info": "Files on the Minecraft server stay.",
+        "in-place-info": "Its files stay in their folder; only Pano’s own files are taken out.",
+        "agent-info": "The Pano Agent removes its .pano-agent folder and stops. pano-agent.jar stays: delete it and start the server jar directly again.",
+        "in-place-backups": "The backups Pano took of it are deleted.",
+        "account-password": "Account Password",
+        "backups-loading": "Checking its backups…",
+        "backups-all": "Its files and all its backups are deleted from the node too.",
+        "no-backups": "Its files are deleted from the node. It has no backups.",
+        "backups": "Its files and {count, plural, one {its backup} other {all # backups}} are deleted from the node too.",
+        "backups-size": "Its files and {count, plural, one {its backup} other {all # backups}} ({size}) are deleted from the node too."
+      },
+      "schedule-editor": {
+        "create-title": "New schedule",
+        "edit-title": "Edit schedule",
+        "name-label": "Name",
+        "name-placeholder": "Nightly restart",
+        "cron-label": "When it runs",
+        "cron-hint": "Five-field cron: minute, hour, day of month, month, day of week.",
+        "timezone-label": "Time zone",
+        "warn-label": "Warn players (minutes)",
+        "warn-hint": "Before a stop or a restart, players are told at this many minutes, then at 5 and at 1. Zero switches the warning off.",
+        "preview-title": "The next runs appear here.",
+        "preview-loading": "Checking the expression...",
+        "preview-invalid": "Pano cannot read that cron expression.",
+        "preview-failed": "The preview could not be loaded.",
+        "tasks-label": "Tasks",
+        "tasks-hint": "They run one after another, from top to bottom.",
+        "tasks-empty": "Add at least one task.",
+        "task-kind": "Task type",
+        "task-action": "Power action",
+        "task-command": "Command",
+        "task-command-placeholder": "say Restarting soon",
+        "task-backup-name": "Backup name",
+        "task-backup-placeholder": "Backup name (optional)",
+        "task-keep": "How many backups to keep",
+        "move-up": "Move up",
+        "move-down": "Move down",
+        "backup-unavailable": "Backup tasks need a node or a Pano plugin that can back this server up.",
+        "enabled-label": "Run this schedule",
+        "error-name": "Give the schedule a name.",
+        "error-cron": "Enter a cron expression.",
+        "error-cron-invalid": "Pano cannot read that cron expression.",
+        "error-tasks": "Add at least one task.",
+        "error-command": "A command task needs a command.",
+        "save-failed": "The schedule could not be saved.",
+        "error-backup-include": "A custom backup needs at least one path to include."
+      },
+      "server-player-action": {
+        "kick-title": "Kick {username}",
+        "kick-label": "Reason (optional)",
+        "kick-placeholder": "Why are they being kicked?",
+        "message-title": "Message {username}",
+        "message-label": "Message",
+        "message-placeholder": "What should they see in chat?"
       },
       "server-request": {
         "title": "Are you sure you want to connect the server \"{serverName}\" to the platform?",
@@ -1675,15 +3195,22 @@
         "display-name-hint": "Shown in the panel instead of the game server name. Leave empty to use the name reported by the server."
       },
       "servers": {
-        "connect-server-button": "Connect Server",
-        "servers": "Select",
+        "connect-server-button": "Add Server",
+        "servers": "Servers",
         "main-server": "Main Server",
         "online": "Online",
+        "offline": "Offline",
         "other-servers-heading": "More servers",
         "search-no-matches": "No other servers match your search",
         "search-placeholder": "Search more servers...",
         "select-server-tooltip": "Set as selected server",
-        "selecting-server": "Selecting…"
+        "selecting-server": "Selecting…",
+        "cpu": "CPU",
+        "ram": "RAM",
+        "ram-of-host": "{used} of the node's {total}",
+        "disk": "Disk",
+        "vitals-unknown": "Not reported yet",
+        "task-failed": "{task} failed"
       },
       "unban-player": {
         "title": "Are you sure you want to unban this player?"
@@ -1751,6 +3278,97 @@
         "preview-error": "The preview could not be loaded.",
         "privacy-policy": "Privacy Policy",
         "learn-more": "Learn more"
+      },
+      "server-file-upload": {
+        "title": "Upload files",
+        "destination": "Uploading into",
+        "drag-here": "Drag files here or click to choose",
+        "hint": "Several files at once are fine; each gets its own progress bar."
+      },
+      "file-preview": {
+        "failed": "This file could not be shown here."
+      },
+      "change-software": {
+        "title": "Change the software of {name}",
+        "title-reinstall": "Reinstall {name}",
+        "section-software": "Software",
+        "current": "Current",
+        "java-pinned-outside": "Java {major} can’t run this version; Automatic will be used.",
+        "section-keep": "What to keep",
+        "preview-loading": "Checking what can be carried over…",
+        "keep-worlds": "Worlds",
+        "keep-worlds-hint": "All world folders.",
+        "keep-worlds-denied": "A proxy has no worlds.",
+        "keep-plugins": "Plugins",
+        "keep-plugins-hint": "Plugins and their data.",
+        "keep-plugins-denied": "Only within the same software family.",
+        "keep-mods": "Mods",
+        "keep-mods-hint": "Mods and config folders.",
+        "keep-configs": "Configuration",
+        "keep-configs-hint": "server.properties, config files, whitelist, ops, bans.",
+        "keep-configs-vanilla-hint": "Only server.properties, whitelist, ops and bans.",
+        "keep-configs-denied": "Not shared between proxy and server.",
+        "warning-plugins": "{from} plugins won’t run on {to}.",
+        "warning-mods": "{from} mods won’t run on {to}.",
+        "warning-to-proxy": "Proxies have no worlds; they stay in the backup.",
+        "warning-to-backend": "Starts with a fresh world.",
+        "warning-worlds-dropped": "Starts with a fresh world.",
+        "section-confirm": "Confirm",
+        "backup-first": "Take a backup first",
+        "backup-first-hint": "Nothing changes if the backup fails.",
+        "backup-first-hint-size": "About {size}. Nothing changes if it fails.",
+        "no-backup-warning": "Anything not kept is lost.",
+        "start-after": "Start the server afterwards",
+        "start-after-running": "Running now; it will be stopped first.",
+        "start-after-stopped": "Stopped now.",
+        "password-label": "Account password",
+        "summary-running": "{from} → {to}. Rolled back if the install fails.",
+        "summary-stopped": "{from} → {to}. Rolled back if the install fails.",
+        "submit": "Change software",
+        "progress-running": "Working on it…",
+        "progress-waiting": "Waiting for the node…",
+        "progress-done": "Done",
+        "progress-failed": "The change failed",
+        "progress-rolled-back": "The server was restored.",
+        "progress-background": "You can close this window.",
+        "done-toast": "{name} now runs {software}.",
+        "done-toast-reinstall": "{name} was reinstalled."
+      },
+      "agent-link": {
+        "title": "Link with the Pano Agent",
+        "toggle": "Toggle linking with the Pano Agent",
+        "steps": {
+          "1": "Download the Pano Agent into the server folder",
+          "2": "Run it in the server folder",
+          "3": "Wait for the server to appear"
+        },
+        "code-loading": "Getting a code…",
+        "code-refresh": "Code refreshes in {seconds} s.",
+        "run-hint": "It asks how to start the server — Enter keeps the defaults.",
+        "java": "Needs Java {version} or newer.",
+        "linked": "{name} is linked",
+        "open-server": "Open server",
+        "unavailable": "This build of Pano cannot link servers with the agent yet."
+      },
+      "confirm-update": {
+        "pano-plugin-title": "Update the Pano plugin on {server}?",
+        "pano-plugin-body": "It loads the next time the server restarts; the server keeps running now.",
+        "all-plugins-title": "Update the Pano plugin on {count, plural, one {# server} other {# servers}}?",
+        "all-plugins-body": "Each loads the next time its server restarts; the servers keep running now.",
+        "agent-title": "Update the Pano Agent on {server}?",
+        "agent-body": "It updates itself and reconnects; the server keeps running.",
+        "node-title": "Update {node}?",
+        "node-body": "It updates itself and reconnects; its servers keep running."
+      },
+      "pano-plugin-update": {
+        "title": "Update the Pano plugin by hand",
+        "why-too-old": "The Pano plugin on {name} is too old to update itself. Update it by hand this once; after that, updates are one click from Pano.",
+        "why-offline": "{name} is not connected to Pano, so Pano cannot reach its plugin. You can update it by hand.",
+        "step-download": "Download the Pano plugin built for this server.",
+        "download": "Download the Pano plugin",
+        "download-version": "Download Pano plugin {version}",
+        "step-replace": "Stop the server. In its {folder} folder, delete the old Pano jar (pano.jar or pano-…jar) and put the downloaded one there.",
+        "step-start": "Start the server. It connects with the new plugin, and the next update is one click."
       }
     },
     "editor": {
@@ -1881,6 +3499,42 @@
     },
     "search-input": {
       "searching": "Searching..."
+    },
+    "backup-options": {
+      "mode-label": "Type",
+      "mode-full": "Full",
+      "mode-full-hint": "One self-contained zip. Easy to download and move elsewhere; each one takes the full size again.",
+      "mode-snapshot": "Snapshot",
+      "mode-snapshot-hint": "Incremental: stores only what changed since earlier snapshots, yet each one restores on its own. Ideal for frequent world backups.",
+      "scope-label": "What to back up",
+      "scope-all": "Everything",
+      "scope-worlds": "Worlds only",
+      "scope-custom": "Custom",
+      "scope-all-hint": "The whole server folder.",
+      "scope-worlds-hint": "The world from level-name in server.properties, its nether and end, and any other folder holding a level.dat.",
+      "scope-custom-hint": "Only the files and folders you list below.",
+      "worlds-found": "Found:",
+      "worlds-none": "No world folder found yet — the backup would fail.",
+      "include-label": "Include",
+      "include-hint": "One path per line, relative to the server folder. A folder ends with /.",
+      "exclude-label": "Leave out",
+      "exclude-hint": "One per line: a folder ending with / (plugins/dynmap/), a file name pattern (*.log) or an exact path.",
+      "exclude-defaults": "Also leave out the usual clutter:"
+    },
+    "pano-plugin-update-button": {
+      "label": "Update the Pano plugin"
+    },
+    "daemon-update": {
+      "running-agent": "Updating the Pano Agent to {version}…",
+      "running-agent-plain": "Updating the Pano Agent…",
+      "restarting-agent": "Restarting the Pano Agent…",
+      "running": "Updating to {version}…",
+      "running-plain": "Updating…",
+      "restarting": "Restarting…",
+      "done": "Updated to {version}",
+      "done-plain": "Updated",
+      "failed": "Update failed: {message}",
+      "failed-plain": "Update failed"
     }
   },
   "page-error": {
@@ -1894,6 +3548,46 @@
     "MANAGE_SERVERS": {
       "title": "Manage Servers",
       "description": "Can connect, disconnect, manage anything about a server."
+    },
+    "CREATE_SERVERS": {
+      "title": "Create Servers",
+      "description": "Can create new servers on a node."
+    },
+    "MANAGE_SERVER_CONSOLE": {
+      "title": "Manage Server Console",
+      "description": "Can view the server console and send commands to it."
+    },
+    "MANAGE_SERVER_POWER": {
+      "title": "Manage Server Power",
+      "description": "Can start, stop, restart and kill a server."
+    },
+    "MANAGE_SERVER_PLAYERS": {
+      "title": "Manage Server Players",
+      "description": "Can manage the players of a server, such as kicking, banning and whitelisting them."
+    },
+    "MANAGE_SERVER_FILES": {
+      "title": "Manage Server Files",
+      "description": "Can browse, edit, upload and delete the files of a server. Caution: Server files may contain sensitive data."
+    },
+    "MANAGE_SERVER_BACKUPS": {
+      "title": "Manage Server Backups",
+      "description": "Can create, download, restore and delete the backups of a server."
+    },
+    "MANAGE_SERVER_PLUGINS": {
+      "title": "Manage Server Plugins",
+      "description": "Can install, update and remove the plugins and mods of a server."
+    },
+    "MANAGE_SERVER_SCHEDULES": {
+      "title": "Manage Server Schedules",
+      "description": "Can create, edit and run the scheduled tasks of a server."
+    },
+    "MANAGE_SERVER_STARTUP": {
+      "title": "Manage Server Startup",
+      "description": "Can edit the startup configuration of a server, such as its version, flags and variables."
+    },
+    "MANAGE_NODES": {
+      "title": "Manage Nodes",
+      "description": "Can add, configure and remove the nodes that run managed servers."
     },
     "MANAGE_POSTS": {
       "title": "Manage Posts",
@@ -1979,14 +3673,45 @@
     "RESTARTED_PANO": "**{username}** restarted Pano.",
     "MAINTENANCE_MODE_BANNED_IP": "IP {ip} was banned after too many failed maintenance mode logins.",
     "MAINTENANCE_MODE_UNBANNED_IP": "**{username}** removed the maintenance mode IP ban for {ipList}.",
-    "MAINTENANCE_MODE_TOGGLED": "**{username}** {enabled, select, true {turned maintenance mode on} other {turned maintenance mode off}}."
+    "MAINTENANCE_MODE_TOGGLED": "**{username}** {enabled, select, true {turned maintenance mode on} other {turned maintenance mode off}}.",
+    "INSTALLED_NODE_JAVA": "**{username}** installed Java {major} on node {name}.",
+    "REMOVED_NODE_JAVA": "**{username}** removed Java {major} from node {name}.",
+    "AUTO_UPDATED_NODE": "{name} updated itself automatically to {toVersion}.",
+    "LINKED_AGENT_SERVER": "**{username}** linked {name} with the Pano Agent ({directory}).",
+    "SERVER_PANO_PLUGIN_UPDATED": "**{username}** updated the Pano plugin on {serverName} to {toVersion}.",
+    "ACCEPTED_NODE": "**{username}** accepted node {name}.",
+    "CREATED_SERVER": "**{username}** created server {name} ({software} {version}).",
+    "DELETED_NODE": "**{username}** deleted node {name}.",
+    "DELETED_SERVER": "**{username}** {force, select, true {force-deleted} other {deleted}} server {name}.",
+    "REINSTALLED_SERVER": "**{username}** reinstalled {serverName} with {software} {version}.",
+    "RENAMED_NODE": "**{username}** renamed a node to {name}.",
+    "SENT_SERVER_COMMAND": "**{username}** ran \"{command}\" on {serverName}.",
+    "SERVER_BACKUP_ACTION": "**{username}** {action, select, CREATE {created a backup} RESTORE {restored a backup} DELETE {deleted a backup} DOWNLOAD {downloaded a backup} RETENTION {changed backup retention} PIN {pinned a backup} UNPIN {unpinned a backup} other {changed a backup}} on {serverName}.",
+    "SERVER_CRASHED": "Server {name} crashed.",
+    "SERVER_FILE_CHANGED": "**{username}** {action, select, WRITE {edited {path}} MKDIR {created folder {path}} DELETE {deleted {path}} RENAME {renamed {path} to {target}} ARCHIVE {archived {path}} UNARCHIVE {extracted {path}} CHMOD {changed permissions of {path}} UPLOAD {uploaded {path}} DOWNLOAD {downloaded {path}} other {changed {path}}} on {serverName}.",
+    "SERVER_PLAYER_ACTION": "**{username}** {action, select, KICK {kicked {player}} MESSAGE {messaged {player}} OP {made {player} an operator} DEOP {took operator from {player}} GAMEMODE {changed the game mode of {player}} WHITELIST_ADD {added {player} to the whitelist} WHITELIST_REMOVE {removed {player} from the whitelist} BAN {banned {player}} other {acted on {player}}} on {serverName}.",
+    "SERVER_PLUGIN_FILE_ACTION": "**{username}** {action, select, INSTALL {installed} REMOVE {removed} other {changed}} {filename} on {serverName}.",
+    "SERVER_PLUGIN_TOGGLED": "**{username}** {enabled, select, true {enabled} other {disabled}} {plugin} on {serverName}.",
+    "SERVER_PLUGIN_UPDATED": "**{username}** updated {pluginName} on {serverName}.",
+    "SERVER_POWER_ACTION": "**{username}** {action, select, START {started} STOP {stopped} RESTART {restarted} KILL {killed} other {changed the power of}} {serverName}.",
+    "SERVER_SCHEDULE_ACTION": "**{username}** {action, select, CREATE {created schedule {name}} UPDATE {edited schedule {name}} DELETE {deleted schedule {name}} TOGGLE {switched schedule {name} on or off} RUN {ran schedule {name}} other {changed schedule {name}}} on {serverName}.",
+    "SERVER_SCHEDULE_RUN": "Schedule {name} on {serverName} {ok, select, true {ran} other {failed}}.",
+    "UPDATED_SERVER_STARTUP": "**{username}** changed the startup settings of {serverName}."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> sent a message in ticket (<b>#{id}</b>).",
     "NEW_TICKET": "<b>{username}</b> created a new ticket (<b>#{id}</b>).",
     "TICKET_CLOSED_BY_USER": "<b>{username}</b> closed ticket (<b>#{id}</b>).",
     "PANO_UPDATE_FOUND": "Happy news! A Pano update found!",
-    "SERVER_CONNECT_REQUEST": "A server requested to connect Pano."
+    "SERVER_CONNECT_REQUEST": "A server requested to connect Pano.",
+    "NODE_CONNECT_REQUEST": "A node requested to connect to Pano.",
+    "SERVER_CRASHED": "<b>{serverName}</b> crashed.",
+    "NODE_OFFLINE": "A node went offline.",
+    "BACKUP_FAILED": "A backup failed.",
+    "DISK_LOW": "A node is running out of disk space.",
+    "TPS_LOW": "A server is running below 15 TPS.",
+    "SCHEDULE_FAILED": "A scheduled run failed.",
+    "PLUGIN_UPDATES": "<b>{count}</b> plugin updates are available for <b>{serverName}</b>: {names}"
   },
   "errors": {
     "NETWORK_ERROR": "Network error! Please check your connection.",
@@ -2072,7 +3797,9 @@
     "TITLE_CANT_BE_EMPTY": "Title can't be empty.",
     "UNAUTHORIZED": "You are not authorized to access this resource.",
     "WEBSITE_LOGO_EXCEEDS_SIZE": "Website logo exceeds maximum allowed size.",
-    "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Website logo has an invalid content type."
+    "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Website logo has an invalid content type.",
+    "KEEP_INCOMPATIBLE": "That can’t be kept when switching to this software. Check the “What to keep” choices.",
+    "NETWORK_ROLE_CONFLICT": "This server is part of a network. Remove it from the network before switching between a proxy and a game server."
   },
   "panel-themes": {
     "light": "Light",

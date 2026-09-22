@@ -513,7 +513,26 @@
                         <div class="text-truncate font-monospace">
                           {node.node}
                         </div>
-                        {#each formatNodeContext(node.context) as c (c)}
+                        {#if isServerScopedNode(node.node)}
+                          <!-- §2.4.11 — how far this grant reaches; `context.server` empty (or
+                               absent) has always meant every server. -->
+                          <span class="badge text-bg-light border fw-normal me-2">
+                            <i class="fa fa-server me-1" aria-hidden="true"></i>
+                            {serverScopeBadge(node.context)}
+                          </span>
+                        {/if}
+                        {#if denyCommandCount(node) > 0}
+                          <!-- §2.4.12 — a console grant that refuses some commands. -->
+                          <span
+                            class="badge text-bg-warning fw-normal me-2"
+                            title={getDenyCommands(node.context).join(', ')}>
+                            <i class="fa fa-ban me-1" aria-hidden="true"></i>
+                            {$_('pages.permissions.deny-commands.badge-count', {
+                              values: { count: denyCommandCount(node) },
+                            })}
+                          </span>
+                        {/if}
+                        {#each formatNodeContext(node.context, node.node) as c (c)}
                           <span class="badge text-bg-primary me-2">{c}</span>
                         {/each}
                       </td>
@@ -673,6 +692,12 @@
   import NoContent from '$lib/components/NoContent.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import { currentLanguage } from '$lib/language.util.js';
+  import {
+    getDenyCommands,
+    getServerScope,
+    isCommandPolicyNode,
+    isServerScopedNode,
+  } from '$lib/auth.util.js';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
   export let data;
@@ -991,11 +1016,17 @@
 
 
 
-  function formatNodeContext(ctx) {
+  function formatNodeContext(ctx, nodeStr) {
     if (!ctx || typeof ctx !== 'object') return [];
     const entries = [];
+    const skipServerKey = isServerScopedNode(nodeStr);
+    const skipDenyCommands = isCommandPolicyNode(nodeStr);
     for (const [k, v] of Object.entries(ctx)) {
       if (!k) continue;
+      // The per-server scope has its own badge; listing it again as `server: 12` is noise.
+      if (skipServerKey && k === 'server') continue;
+      // Same for the command policy — the "N denied" badge already says it.
+      if (skipDenyCommands && k === 'denyCommands') continue;
       if (Array.isArray(v)) {
         for (const vv of v) entries.push(`${k}: ${vv}`);
         continue;
@@ -1005,6 +1036,33 @@
     }
     const uniq = Array.from(new Set(entries.map((x) => String(x))));
     return uniq.length ? uniq.sort((a, b) => a.localeCompare(b)) : [];
+  }
+
+  /**
+   * Read-only summary of `context.server` for the node list (§2.4.11).
+   *
+   * @param {object | null | undefined} ctx
+   * @returns {string}
+   */
+  function serverScopeBadge(ctx) {
+    const ids = getServerScope(ctx);
+
+    if (ids.length === 0) return $_('pages.permissions.server-scope.badge-all');
+    if (ids.length === 1) return $_('pages.permissions.server-scope.badge-one');
+
+    return $_('pages.permissions.server-scope.badge-count', { values: { count: ids.length } });
+  }
+
+  /**
+   * How many commands a console grant refuses (§2.4.12). Only the two nodes the backend reads
+   * the policy from get a badge — a stray `denyCommands` key elsewhere stays an ordinary
+   * context row so it is visible rather than silently reinterpreted.
+   *
+   * @param {{ node?: string, context?: object }} row
+   * @returns {number}
+   */
+  function denyCommandCount(row) {
+    return isCommandPolicyNode(row?.node) ? getDenyCommands(row?.context).length : 0;
   }
 
   // Variables for tracks functionality
@@ -1460,6 +1518,23 @@
       await showErrorToast('components.toasts.settings-save-error', {
         errorCode: $_('errors.' + res.error),
       });
+
+      // §2.4.11 — the per-server scope rides along in `permission_node.context`. A build whose
+      // save API does not accept it yet rejects the whole snapshot, and the raw error code says
+      // nothing about why, so the hint names the one new thing in the payload.
+      const hasServerScope = (nodes || []).some(
+        (n) => isServerScopedNode(n?.node) && getServerScope(n?.context).length > 0,
+      );
+
+      if (hasServerScope) {
+        await showErrorToast('pages.permissions.server-scope.save-hint');
+      }
+
+      // §2.4.12 — the command policy rides along the same way, and for the same reason.
+      if ((nodes || []).some((n) => denyCommandCount(n) > 0)) {
+        await showErrorToast('pages.permissions.deny-commands.save-hint');
+      }
+
       return;
     }
     await loadSnapshot();

@@ -62,121 +62,121 @@
             </div>
             <div class="flex-grow-1 min-w-0 mobile-info-padding">
               <div class="d-flex justify-content-between align-items-start gap-3">
-                  <!-- Left: Info -->
-                  <div class="vstack gap-2">
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                      <h5 class="mb-0">Pano</h5>
-                      <i
-                        class="fa-regular fa-circle-check text-success"
-                        use:tooltip={[$_('pages.settings.updates.verified')]}></i>
+                <!-- Left: Info -->
+                <div class="vstack gap-2">
+                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <h5 class="mb-0">Pano</h5>
+                    <i
+                      class="fa-regular fa-circle-check text-success"
+                      use:tooltip={[$_('pages.settings.updates.verified')]}></i>
 
-                      <span class="badge text-bg-secondary">
-                        {data.platformUpdate.channel.capitalize()}
-                      </span>
-                      <span class="badge text-bg-primary"
-                        >{data.platformUpdate.oldVersion}
-                        <i class="fas fa-arrow-right fa-xs"></i>
-                        {data.platformUpdate.version}</span>
+                    <span class="badge text-bg-secondary">
+                      {data.platformUpdate.channel.capitalize()}
+                    </span>
+                    <span class="badge text-bg-primary"
+                      >{data.platformUpdate.oldVersion}
+                      <i class="fas fa-arrow-right fa-xs"></i>
+                      {data.platformUpdate.version}</span>
+                  </div>
+
+                  <div class="d-flex flex-wrap gap-2 small mb-0">
+                    <div>
+                      <i class="fas fa-database me-1"></i>
+                      {formatBytes(data.platformUpdate.size)}
                     </div>
-
-                    <div class="d-flex flex-wrap gap-2 small mb-0">
-                      <div>
-                        <i class="fas fa-database me-1"></i>
-                        {formatBytes(data.platformUpdate.size)}
-                      </div>
-                      <div>
-                        <i class="fas fa-calendar me-1"></i>
-                        <DateTime time={data.platformUpdate.releaseDate} />
-                      </div>
+                    <div>
+                      <i class="fas fa-calendar me-1"></i>
+                      <DateTime time={data.platformUpdate.releaseDate} />
                     </div>
                   </div>
-                  <!-- Right: Actions -->
-                  <div class="d-flex align-items-center gap-1 flex-shrink-0 mobile-absolute-actions">
-                    <button
-                      class="btn btn-sm btn-link"
-                      title={$_('pages.settings.updates.changelog')}
-                      aria-label={$_('pages.settings.updates.changelog')}
-                      class:disabled={loading ||
-                        $platformUpdating ||
-                        inProgressResource ||
-                        updatingAll}
-                      on:click={() => showChangelogModal(data.platformUpdate.changelog)}>
-                      <i class="fa-regular fa-file-lines fa-lg"></i>
-                    </button>
+                </div>
+                <!-- Right: Actions -->
+                <div class="d-flex align-items-center gap-1 flex-shrink-0 mobile-absolute-actions">
+                  <button
+                    class="btn btn-sm btn-link"
+                    title={$_('pages.settings.updates.changelog')}
+                    aria-label={$_('pages.settings.updates.changelog')}
+                    class:disabled={loading ||
+                      $platformUpdating ||
+                      inProgressResource ||
+                      updatingAll}
+                    on:click={() => showChangelogModal(data.platformUpdate.changelog)}>
+                    <i class="fa-regular fa-file-lines fa-lg"></i>
+                  </button>
 
-                    <button
-                      class="btn btn-sm btn-link"
-                      aria-label={$_('pages.settings.updates.copy-hash')}
-                      title={$_('pages.settings.updates.copy-hash')}
-                      class:disabled={loading ||
-                        $platformUpdating ||
-                        inProgressResource ||
-                        updatingAll}
-                      on:click={() => copyHashToClipboard(data.platformUpdate.hash)}>
-                      <i class="fa-solid fa-hashtag fa-lg"></i>
-                    </button>
-                    <button
-                      class="btn btn-sm btn-secondary d-flex align-items-center gap-2"
-                      on:click={onUpdatePlatformClick}
-                      class:disabled={loading ||
-                        $platformUpdating ||
-                        inProgressResource ||
-                        updatingAll}>
-                      {#if $platformUpdating}
-                        <i class="fas fa-circle-notch fa-spin"></i>
-                      {:else}
-                        <i class="fas fa-download"></i>
-                      {/if}
-                    </button>
-                    <!-- Dropped btn-group since only one button remains in the main action area -->
+                  <button
+                    class="btn btn-sm btn-link"
+                    aria-label={$_('pages.settings.updates.copy-hash')}
+                    title={$_('pages.settings.updates.copy-hash')}
+                    class:disabled={loading ||
+                      $platformUpdating ||
+                      inProgressResource ||
+                      updatingAll}
+                    on:click={() => copyHashToClipboard(data.platformUpdate.hash)}>
+                    <i class="fa-solid fa-hashtag fa-lg"></i>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-secondary d-flex align-items-center gap-2"
+                    on:click={onUpdatePlatformClick}
+                    class:disabled={loading ||
+                      $platformUpdating ||
+                      inProgressResource ||
+                      updatingAll}>
+                    {#if $platformUpdating}
+                      <i class="fas fa-circle-notch fa-spin"></i>
+                    {:else}
+                      <i class="fas fa-download"></i>
+                    {/if}
+                  </button>
+                  <!-- Dropped btn-group since only one button remains in the main action area -->
+                </div>
+              </div>
+
+              <!-- Progress -->
+              {#if $platformUpdating || platformUpdateError}
+                <div
+                  class="progress my-3"
+                  role="progressbar"
+                  aria-valuenow={platformUpdatingStep}
+                  aria-valuemin="0"
+                  aria-valuemax={platformUpdateProcesses.length + 1}
+                  style="height: 5px;">
+                  <div
+                    class="progress-bar bg-secondary progress-bar-striped {platformUpdateError
+                      ? 'bg-danger'
+                      : !isPlatformUpdateFinished(platformUpdatingStep)
+                        ? 'progress-bar-animated bg-primary'
+                        : 'bg-success'}"
+                    style="width: {(Math.min(
+                      platformUpdatingStep >= 2
+                        ? platformUpdatingStep - 2 + currentPlatformProgress
+                        : 0,
+                      platformUpdateProcesses.length - 1,
+                    ) /
+                      (platformUpdateProcesses.length - 1)) *
+                      100}%">
                   </div>
                 </div>
 
-                <!-- Progress -->
-                {#if $platformUpdating || platformUpdateError}
-                  <div
-                    class="progress my-3"
-                    role="progressbar"
-                    aria-valuenow={platformUpdatingStep}
-                    aria-valuemin="0"
-                    aria-valuemax={platformUpdateProcesses.length + 1}
-                    style="height: 5px;">
-                    <div
-                      class="progress-bar bg-secondary progress-bar-striped {platformUpdateError
-                        ? 'bg-danger'
-                        : !isPlatformUpdateFinished(platformUpdatingStep)
-                          ? 'progress-bar-animated bg-primary'
-                          : 'bg-success'}"
-                      style="width: {(Math.min(
-                        platformUpdatingStep >= 2
-                          ? platformUpdatingStep - 2 + currentPlatformProgress
-                          : 0,
-                        platformUpdateProcesses.length - 1,
-                      ) /
-                        (platformUpdateProcesses.length - 1)) *
-                        100}%">
-                    </div>
-                  </div>
-
-                  <p class="small mb-0" in:fade out:fade>
-                    {#if platformUpdateError}
-                      <span class="text-danger"
-                        >{$_('components.modals.installing-resource.error-text', {
-                          values: {
-                            error: $_('errors.' + platformUpdateError),
-                          },
-                        })}</span>
-                    {:else if !isPlatformUpdateFinished(platformUpdatingStep)}
-                      {$_(
-                        'pages.settings.updates.platform-update-steps.' +
-                          platformUpdateProcesses[platformUpdatingStep - 1],
-                      )}
-                    {:else}
-                      {$_('pages.settings.updates.install-complete-restarting')}
-                      <i class="me-2 fas fa-arrows-rotate fa-spin"></i>
-                    {/if}
-                  </p>
-                {/if}
+                <p class="small mb-0" in:fade out:fade>
+                  {#if platformUpdateError}
+                    <span class="text-danger"
+                      >{$_('components.modals.installing-resource.error-text', {
+                        values: {
+                          error: $_('errors.' + platformUpdateError),
+                        },
+                      })}</span>
+                  {:else if !isPlatformUpdateFinished(platformUpdatingStep)}
+                    {$_(
+                      'pages.settings.updates.platform-update-steps.' +
+                        platformUpdateProcesses[platformUpdatingStep - 1],
+                    )}
+                  {:else}
+                    {$_('pages.settings.updates.install-complete-restarting')}
+                    <i class="me-2 fas fa-arrows-rotate fa-spin"></i>
+                  {/if}
+                </p>
+              {/if}
             </div>
           </div>
         </li>
@@ -412,6 +412,12 @@
 <ConfirmUpdatePlatformModal runMode={data.runMode} />
 <ConfirmUpdateResourceModal />
 <ConfirmUpdateResourcesModal />
+{#if hasPermission(Permissions.MANAGE_SERVERS) || hasPermission(Permissions.MANAGE_NODES)}
+  <div class="mt-3">
+    <ServerUpdatesCard />
+  </div>
+{/if}
+
 <ChangelogModal />
 
 <script context="module">
@@ -461,6 +467,8 @@
   import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
+  import ServerUpdatesCard from '$lib/components/settings/ServerUpdatesCard.svelte';
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
 
   import ConfirmUpdatePlatformModal, {
     show as showUpdatePlatformModal,

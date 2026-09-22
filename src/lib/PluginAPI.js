@@ -58,6 +58,16 @@ export const panoApi = {
         },
       },
       server: {
+        /**
+         * Edits the sections shown under the server named by `/servers/[id]`.
+         *
+         * An item is `{ href, icon, text, startsWith?, permission?, capability?, modes? }`.
+         * `href` is relative to the server (`/console` renders as `/servers/<id>/console`,
+         * `''` is the server overview) and the optional `capability` is a capability id — or a
+         * list of which any one is enough — the server must have announced, so a section a
+         * server cannot serve is never shown. See `originalServerNavItems` in
+         * `components/sidebar/ServerNavigationMenu.svelte`.
+         */
         async editNavLinks(handler = async (navigationItems) => navigationItems) {
           serverNavigationItems.set(await handler(get(serverNavigationItems)));
         },
