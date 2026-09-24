@@ -412,7 +412,8 @@
 <ConfirmUpdatePlatformModal runMode={data.runMode} />
 <ConfirmUpdateResourceModal />
 <ConfirmUpdateResourcesModal />
-{#if hasPermission(Permissions.MANAGE_SERVERS) || hasPermission(Permissions.MANAGE_NODES)}
+<!-- Server management is off in a WEBSITE install, and so are the endpoints this card reads. -->
+{#if $usageMode !== UsageModes.WEBSITE && (hasPermission(Permissions.MANAGE_SERVERS) || hasPermission(Permissions.MANAGE_NODES))}
   <div class="mt-3">
     <ServerUpdatesCard />
   </div>
@@ -469,6 +470,7 @@
   import CardHeader from '$lib/components/CardHeader.svelte';
   import ServerUpdatesCard from '$lib/components/settings/ServerUpdatesCard.svelte';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { UsageModes } from '$lib/navigation.util.js';
 
   import ConfirmUpdatePlatformModal, {
     show as showUpdatePlatformModal,
@@ -489,6 +491,7 @@
   export let data;
 
   const pageTitle = getContext('pageTitle');
+  const usageMode = getContext('usageMode');
 
   pageTitle.set('pages.settings.updates.title');
 

@@ -606,7 +606,7 @@
 <!-- SM-35 — which alerts Pano raises, and whether each one is also sent by e-mail (§2.4.7).
      The kinds are fixed by the backend's `AlertManager`, so the card renders the list it knows
      and simply keeps whatever the settings endpoint answered for the rest. -->
-{#if canManageAlerts}
+{#if canManageAlerts && $usageMode !== UsageModes.WEBSITE}
   <div class="card">
     <div class="card-header">
       {$_('pages.settings.platform.alerts.title')}
@@ -1036,6 +1036,8 @@
 
   const pageTitle = getContext('pageTitle');
   const siteInfo = getContext('siteInfo');
+  // The saved mode, not the one being edited in the form: alerts are a server-management feature.
+  const usageMode = getContext('usageMode');
 
   pageTitle.set('pages.settings.platform.title');
 

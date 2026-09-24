@@ -131,3 +131,16 @@ export function requireWebsiteSection(usageMode) {
     throw error(404);
   }
 }
+
+/**
+ * Stops a load for the servers workspace (`/servers` and everything under it, nodes included) on
+ * a WEBSITE install: server management is off, the backend answers 404 for its endpoints, and the
+ * page answers the same.
+ *
+ * @param {unknown} usageMode the root layout's `usageMode`.
+ */
+export function requireServerSection(usageMode) {
+  if (normalizeUsageMode(usageMode) === UsageModes.WEBSITE) {
+    throw error(404);
+  }
+}

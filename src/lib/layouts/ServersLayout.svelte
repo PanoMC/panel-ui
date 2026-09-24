@@ -6,7 +6,7 @@
   import { base } from '$app/paths';
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
-  import { UsageModes } from '$lib/navigation.util.js';
+  import { requireServerSection } from '$lib/navigation.util.js';
 
   /**
    * Gate for the whole servers workspace (`/servers` and everything under it). Ported from the
@@ -19,10 +19,8 @@
     const parentData = await parent();
     const { user, usageMode } = parentData;
 
-    // Server management is switched off entirely in a WEBSITE install.
-    if (usageMode === UsageModes.WEBSITE) {
-      throw redirect(302, base);
-    }
+    // Server management is switched off entirely in a WEBSITE install: 404, like its endpoints.
+    requireServerSection(usageMode);
 
     if (!hasPermission(Permissions.MANAGE_SERVERS, user)) {
       throw redirect(302, base);
