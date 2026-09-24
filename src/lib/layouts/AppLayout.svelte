@@ -128,21 +128,16 @@
   }
 
   /**
-   * Where a signed-out visitor signs in. With the website on, that is the theme's own login page
-   * — the one players already use, with its captcha and social-login plugins — and the session it
-   * creates opens the panel too. Only a SERVERS install, which runs no theme at all, uses the
-   * panel's own form, and only that one can bring the visitor back to `next` afterwards.
+   * Whether a signed-out visitor is sent to the theme's own login page — the one players already
+   * use, with its captcha and social-login plugins; the session it creates opens the panel too.
+   * Only a SERVERS install, which runs no theme at all, keeps the visitor here: the panel's own
+   * form then renders in place of the page they asked for (`requireSignedIn`).
    *
    * @param {{ usageMode?: string } | null | undefined} siteInfo
-   * @param {string} next the panel path the visitor asked for.
-   * @returns {string}
+   * @returns {boolean}
    */
-  export function signInPath(siteInfo, next) {
-    if (normalizeUsageMode(siteInfo?.usageMode) !== UsageModes.SERVERS) {
-      return '/login';
-    }
-
-    return `${base}/login?next=${encodeURIComponent(next)}`;
+  export function signsInOnTheme(siteInfo) {
+    return normalizeUsageMode(siteInfo?.usageMode) !== UsageModes.SERVERS;
   }
 
   /** Alert kinds that belong to one server (§2.4.7). */
@@ -261,11 +256,13 @@
       csrfToken,
     });
 
-    // U-06: a signed-out visitor is sent to sign in rather than shown the offline splash. Only
-    // `NOT_LOGGED_IN` redirects — a user who *is* signed in but lacks ACCESS_PANEL answers
-    // NO_PERMISSION, and bouncing them to a login page they are already past would loop.
-    if (isNotLoggedIn(basicData) && !isAuthRoute(event.route?.id)) {
-      throw redirect(302, signInPath(siteInfo, `${event.url.pathname}${event.url.search}`));
+    // U-06: with the website on, a signed-out visitor is sent to the theme's login rather than
+    // shown the offline splash. Only `NOT_LOGGED_IN` redirects — a user who *is* signed in but
+    // lacks ACCESS_PANEL answers NO_PERMISSION, and bouncing them to a login page they are
+    // already past would loop. A SERVERS install redirects nowhere: the page's own layout stops
+    // the load and the login form renders in place (`requireSignedIn`).
+    if (isNotLoggedIn(basicData) && !isAuthRoute(event.route?.id) && signsInOnTheme(siteInfo)) {
+      throw redirect(302, '/login');
     }
 
     await preparePlugins(siteInfo);
@@ -516,13 +513,15 @@
     sidebarTabsState.set(getCurrentSidebarState());
 
     // Auto-Reset Layout State: If we navigate to a non-plugin route, force resetLayout to false.
-    // The auth pages are chrome-free too, so they keep the flag their layout load set.
+    // The auth pages are chrome-free too, so they keep the flag their layout load set — and so
+    // does the login form the root error page shows in place of a page (`requireSignedIn`).
     if (
       browser &&
       p.route &&
       p.route.id &&
       !p.route.id.includes('(plugin-ui)') &&
-      !isAuthRoute(p.route.id)
+      !isAuthRoute(p.route.id) &&
+      !(p.status === 401 && p.error?.inlineLogin)
     ) {
       resetLayout.set(false);
     }

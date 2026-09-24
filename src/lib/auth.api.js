@@ -1,3 +1,5 @@
+import { error } from '@sveltejs/kit';
+
 /**
  * The core authentication endpoints, called exactly the way the theme calls them
  * (`@panomc/theme-core` → `src/lib/services/auth.js`). The panel-native login (U-06) is a
@@ -98,4 +100,41 @@ export function safeNextPath(next, base) {
   }
 
   return value;
+}
+
+/**
+ * Whether [routeId] is one of the panel's own auth pages (`/panel/login`, `/panel/logout`), which
+ * a signed-out visitor is allowed to see.
+ *
+ * @param {string | null | undefined} routeId
+ */
+export function isAuthRoute(routeId) {
+  return String(routeId || '').startsWith('/(auth)');
+}
+
+/**
+ * Stops a page load when nobody is signed in, on a SERVERS install (U-06, inline form).
+ *
+ * Outside SERVERS mode the root layout has already sent a signed-out visitor to the theme's
+ * login page, so this only ever fires where the panel is the whole product. It fails the route
+ * with a 401 that the root `+error.svelte` renders as the login form — at the address the
+ * visitor asked for, with no round trip through `/panel/login` — and it is thrown from a child
+ * layout on purpose: a load below it never runs against a session that does not exist, and an
+ * error in the *root* layout would fall through to SvelteKit's bare error.html instead.
+ *
+ * Only `NOT_LOGGED_IN` counts. A user who is signed in but lacks ACCESS_PANEL answers
+ * NO_PERMISSION, and a login form would loop them.
+ *
+ * @param {{ session?: { basicData?: any }, resetLayout?: { set: (value: boolean) => void } } | null | undefined} data
+ *   the root layout's data (`await parent()`).
+ */
+export function requireSignedIn(data) {
+  if (!isNotLoggedIn(data?.session?.basicData)) {
+    return;
+  }
+
+  // The form renders without the panel chrome, like the auth pages do.
+  data?.resetLayout?.set(true);
+
+  throw error(401, { message: 'Sign in required', inlineLogin: true });
 }

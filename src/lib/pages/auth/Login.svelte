@@ -224,7 +224,7 @@
       throw redirect(302, safeNextPath(url.searchParams.get('next'), base) || base || '/');
     }
 
-    // With the website on, the theme's login page is the one to use (see `signInPath`).
+    // With the website on, the theme's login page is the one to use (see `signsInOnTheme`).
     if (data?.usageMode !== UsageModes.SERVERS) {
       throw redirect(302, '/login');
     }
@@ -472,7 +472,13 @@
 
     await showSuccess('pages.auth.login.signed-in');
 
-    const target = safeNextPath($page.url.searchParams.get('next'), base) || base || '/';
+    // Rendered in place of a page (the root error page, `requireSignedIn`), the address to go
+    // back to is the one in the bar; on /panel/login itself it is `next`, else the dashboard.
+    const onLoginPage = String($page.route?.id || '').startsWith('/(auth)');
+    const here = `${$page.url.pathname}${$page.url.search}`;
+
+    const target =
+      safeNextPath($page.url.searchParams.get('next'), base) || (onLoginPage ? base : here) || '/';
 
     // A full navigation, not `goto`: the panel wires its realtime hub, its plugin bundles and
     // its permission-gated modals once per document, and the root layout's server load has no
