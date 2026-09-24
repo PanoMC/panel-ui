@@ -81,12 +81,19 @@ export async function logout() {
   await ApiUtil.post({
     path: '/api/auth/logout',
     handler: () => {
-      // A `SERVERS` install never starts a theme, so "/" has nothing to render — the panel's
-      // own login page (U-06) is where a signed-out admin belongs. Every other mode keeps
-      // landing on the website, which is what an admin expects after leaving the panel.
+      // A `SERVERS` install never starts a theme, so "/" has nothing to render. Reloading the
+      // page the admin is on shows the panel's sign-in form right there (U-06), and signing in
+      // again brings them back to it. Every other mode keeps landing on the website, which is
+      // what an admin expects after leaving the panel.
       const usageMode = get(page)?.data?.usageMode;
 
-      window.location.href = usageMode === 'SERVERS' ? `${base}/login` : '/';
+      if (usageMode === 'SERVERS') {
+        window.location.reload();
+
+        return;
+      }
+
+      window.location.href = '/';
     },
   });
 }

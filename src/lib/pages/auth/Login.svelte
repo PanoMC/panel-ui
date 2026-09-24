@@ -255,7 +255,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
 
-  import { getCredentials, sendLogin } from '$lib/auth.api.js';
+  import { getCredentials, sendLogin, sendLogout } from '$lib/auth.api.js';
   import { currentLanguage } from '$lib/language.util.js';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   // `UsageModes` comes from the module script above, whose scope this shares.
@@ -296,6 +296,7 @@
     IP_IS_BANNED: 'pages.auth.login.errors.ip-banned',
     CAPTCHA_VERIFICATION_FAILED: 'pages.auth.login.errors.captcha',
     PLUGIN_DENIED_LOGIN: 'pages.auth.login.errors.denied',
+    NO_PANEL_ACCESS: 'pages.auth.login.errors.no-panel-access',
     REGISTER_INVALID_EMAIL: 'pages.auth.login.errors.invalid-email',
     REGISTER_EMAIL_NOT_AVAILABLE: 'pages.auth.login.errors.email-taken',
     REGISTER_USERNAME_NOT_AVAILABLE: 'pages.auth.login.errors.username-taken',
@@ -421,6 +422,9 @@
         // Core has no notion of a shorter session yet (the cookies are always 90 days), but the
         // flag is part of the contract and ignored by a backend that does not read it.
         rememberMe,
+        // Only an account that can use the panel gets a session from this form; anyone else is
+        // answered NO_PANEL_ACCESS before a cookie is set.
+        panel: true,
       };
 
       if (step === Steps.EMAIL_REQUIRED) {
@@ -467,9 +471,19 @@
   async function onSignedIn(csrfToken) {
     rememberIdentifier();
 
-    // Confirms the cookies really took before the page reloads into the dashboard. A failure
-    // here is not fatal — the next document load re-reads `basicData` anyway.
-    await getCredentials(csrfToken).catch(() => null);
+    // Confirms the cookies really took before the panel opens. A failure here is not fatal —
+    // the loads below re-read `basicData` anyway.
+    const credentials = await getCredentials(csrfToken).catch(() => null);
+
+    // A backend older than the `panel` flag signs anybody in. Such a session is of no use here
+    // and would only strand the visitor on the permission splash, so it is closed again at once.
+    if (credentials?.result === 'ok' && credentials.panelAccess === false) {
+      await sendLogout().catch(() => null);
+
+      fail(ERROR_KEYS.NO_PANEL_ACCESS);
+
+      return;
+    }
 
     await showSuccess('pages.auth.login.signed-in');
 

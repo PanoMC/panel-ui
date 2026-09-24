@@ -136,6 +136,7 @@
           "ip-banned": "This IP address is banned.",
           "captcha": "This login needs a captcha, which the panel cannot show. Sign in on the website instead.",
           "denied": "A plugin refused this login.",
+          "no-panel-access": "This account has no access to the panel.",
           "invalid-email": "That e-mail address is not valid.",
           "email-taken": "That e-mail address is already in use.",
           "username-taken": "That username is already taken.",

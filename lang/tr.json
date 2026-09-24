@@ -136,6 +136,7 @@
           "ip-banned": "Bu IP adresi yasaklı.",
           "captcha": "Bu giriş captcha istiyor, panel ise captcha gösteremiyor. Bunun yerine siteden giriş yap.",
           "denied": "Bir eklenti bu girişi reddetti.",
+          "no-panel-access": "Bu hesabın panele erişim yetkisi yok.",
           "invalid-email": "Bu e-posta adresi geçerli değil.",
           "email-taken": "Bu e-posta adresi zaten kullanılıyor.",
           "username-taken": "Bu kullanıcı adı zaten alınmış.",
