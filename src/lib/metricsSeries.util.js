@@ -94,21 +94,33 @@ export function storeMetricRefreshInterval(key, interval) {
   }
 }
 
-/** A stretch with no sample longer than this many buckets is "nothing measured". */
+/** A stretch with no sample longer than this many usual spacings is "nothing measured". */
 export const METRIC_GAP_BUCKETS = 2.5;
 
 /**
- * "No data" drawn as zero rather than as a hole (§2.4.25): a missing value becomes 0, and a
- * stretch with no sample for more than [METRIC_GAP_BUCKETS] buckets (server stopped, node
- * offline) gets a zero one bucket after its start and one bucket before its end, so the line
- * drops to the floor and comes back up instead of bridging the outage in a straight line.
+ * "Nothing measured" drawn as zero rather than as a straight line across it (§2.4.25): a stretch
+ * with no sample for more than [METRIC_GAP_BUCKETS] times the usual spacing (server stopped, node
+ * offline) gets a zero one spacing after its start and one before its end, so the line drops to
+ * the floor and comes back up.
+ *
+ * Two things are deliberately *not* a drop to zero, because both made the line hit the floor
+ * every few seconds on a perfectly healthy server:
+ * - a point without this value: a live sample often carries only one side's numbers (the node
+ *   sends CPU and disk, the plugin heap and TPS), so a missing value is "not in this sample",
+ *   not "zero" -- the point is left out and the line runs on to the next one;
+ * - a gap that is only as long as the samples really are apart: the spacing is the median of
+ *   the points' own intervals, never less than [bucketMs]. On the live window [bucketMs] is the
+ *   refresh interval somebody picked, while the samples arrive at whatever pace the server
+ *   reports (every 10 s for the plugin), and comparing against the pick called every pause an
+ *   outage.
  *
  * Input: points sorted by `x` (epoch ms), `y` a number or null; the bucket size of the data in
  * ms. Output: a new array; the input is left alone.
  *
- * - `[{x:0,y:5},{x:60e3,y:null}]`, bucket 60 s → `[{x:0,y:5},{x:60e3,y:0}]`
- * - `[{x:0,y:5},{x:600e3,y:5}]`, bucket 60 s → a zero at 60 s and at 540 s between them
- * - the same two points with a 10-minute bucket → no zeros (600 s is under 2.5 buckets)
+ * - `[{x:0,y:5},{x:60e3,y:null},{x:120e3,y:6}]`, bucket 60 s → the null point is left out
+ * - one point a minute and a 10-minute hole, bucket 60 s → a zero a minute into the hole and a
+ *   minute before its end
+ * - live samples 10 s apart, bucket 1 s → no zeros (the spacing is 10 s, not 1 s)
  *
  * @param {Array<{ x: number, y: number | null }>} points
  * @param {number} bucketMs
@@ -116,21 +128,53 @@ export const METRIC_GAP_BUCKETS = 2.5;
  */
 export function fillMetricGaps(points, bucketMs) {
   const bucket = Number(bucketMs) > 0 ? Number(bucketMs) : 60_000;
-  const threshold = bucket * METRIC_GAP_BUCKETS;
+  const measured = (Array.isArray(points) ? points : [])
+    .filter((point) => point && Number.isFinite(Number(point.x)) && point.y != null)
+    .map((point) => ({ x: Number(point.x), y: Number(point.y) }))
+    .filter((point) => Number.isFinite(point.y));
+
+  const step = Math.max(bucket, typicalSpacing(measured));
+  const threshold = step * METRIC_GAP_BUCKETS;
   const out = [];
 
-  (Array.isArray(points) ? points : []).forEach((point, index, list) => {
-    const previous = list[index - 1];
+  measured.forEach((point, index) => {
+    const previous = measured[index - 1];
 
     if (previous && point.x - previous.x > threshold) {
-      out.push({ x: previous.x + bucket, y: 0 });
-      out.push({ x: point.x - bucket, y: 0 });
+      out.push({ x: previous.x + step, y: 0 });
+      out.push({ x: point.x - step, y: 0 });
     }
 
-    out.push({ x: point.x, y: point.y ?? 0 });
+    out.push(point);
   });
 
   return out;
+}
+
+/**
+ * @param {Array<{ x: number }>} points sorted by `x`.
+ * @returns {number} the median interval between neighbouring points, 0 with fewer than two.
+ */
+function typicalSpacing(points) {
+  const deltas = [];
+
+  for (let index = 1; index < points.length; index++) {
+    const delta = points[index].x - points[index - 1].x;
+
+    if (delta > 0) {
+      deltas.push(delta);
+    }
+  }
+
+  if (deltas.length === 0) {
+    return 0;
+  }
+
+  deltas.sort((a, b) => a - b);
+
+  const middle = Math.floor(deltas.length / 2);
+
+  return deltas.length % 2 ? deltas[middle] : (deltas[middle - 1] + deltas[middle]) / 2;
 }
 
 /**
