@@ -1339,8 +1339,8 @@ export function normalizeServerPlugins(list) {
 }
 
 /**
- * The jar files of the target directory (`plugins/` or `mods/`), which only a managed server
- * reports — a linked one has no node to ask.
+ * The jar files of the target directory (`plugins/` or `mods/`), switched-off ones included, which
+ * only a managed server reports — a linked one has no node to ask.
  *
  * @param {unknown} list
  */
@@ -1351,6 +1351,11 @@ function normalizePluginFiles(list) {
       size: Number(file?.size) || 0,
       modified: file?.modified ?? null,
       matchedPlugin: file?.matchedPlugin == null ? '' : String(file.matchedPlugin),
+      // A switched-off jar is `<name>.jar.disabled`; a backend that does not say reads by the name.
+      enabled:
+        typeof file?.enabled === 'boolean'
+          ? file.enabled
+          : !/\.disabled$/i.test(String(file?.filename ?? '')),
     }))
     .filter((file) => !!file.filename);
 }

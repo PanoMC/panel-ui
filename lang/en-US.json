@@ -1226,6 +1226,7 @@
         "no-matches": "No plugin matches your search.",
         "state-unsupported": "This server's Pano plugin does not report the installed plugins. Update pano-mc-plugin to use this page.",
         "restart-hint": "Not every plugin survives being enabled or disabled while the server runs. Restart the server afterwards if something misbehaves.",
+        "file-toggle-hint": "Switching a plugin off renames its jar to .jar.disabled, which the server does not load; switching it on renames it back. Either takes effect the next time the server starts.",
         "toggle-disabled-offline": "The server is offline, so plugins cannot be switched on or off.",
         "enabled-badge": "Enabled",
         "disabled-badge": "Disabled",
@@ -1237,7 +1238,7 @@
         "linked-hint": "Pano only reads this list from the server's Pano plugin. To install or delete files, run the server on a Pano node.",
         "jar-list-hint": "This list is read from the jar files on disk, not from the running server.",
         "restart-required-title": "Restart required",
-        "restart-required-description": "The files in this folder changed after the server last reported its plugins. Restart the server to load them.",
+        "restart-required-description": "The files in this folder changed after the server last reported its plugins. Restart the server to apply the changes.",
         "installed": {
           "column-file": "File",
           "column-actions": "Actions",

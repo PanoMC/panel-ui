@@ -189,7 +189,7 @@
                 <tr>
                   <td class="fw-semibold text-break">
                     {row.name}
-                    {#if !row.loaded}
+                    {#if !row.loaded && row.fileEnabled}
                       <span
                         class="badge rounded-pill text-bg-warning ms-1 align-middle"
                         use:tooltip={[
@@ -275,41 +275,18 @@
                     </td>
                   {/if}
                   <td class="text-end">
-                    {#if !row.loaded}
+                    {#if fileToggle && row.filename && !row.protected}
+                      <!-- The node switches the jar itself (`x.jar` ⇄ `x.jar.disabled`), so the
+                           switch is what the next start will load, for every jar on disk. -->
+                      {@render toggleSwitch(row, row.fileEnabled)}
+                    {:else if !row.loaded}
                       <span class="badge rounded-pill text-bg-secondary">
-                        {$_('pages.servers.plugins.installed.status-on-disk')}
+                        {row.fileEnabled
+                          ? $_('pages.servers.plugins.installed.status-on-disk')
+                          : $_('pages.servers.plugins.disabled-badge')}
                       </span>
-                    {:else if canToggle}
-                      <!-- A disabled switch drops pointer events, so the tooltip sits on the wrapper. -->
-                      <span
-                        class="d-inline-block"
-                        use:tooltip={[
-                          toggleDisabledReason
-                            ? $_(toggleDisabledReason, {
-                                values: {
-                                  section: $_('components.server-navigation-menu.plugins'),
-                                },
-                              })
-                            : '',
-                          { placement: 'left' },
-                        ]}>
-                        <div class="form-check form-switch d-inline-block m-0">
-                          {#if busyName === row.name}
-                            <span class="spinner-border spinner-border-sm" aria-hidden="true"
-                            ></span>
-                          {:else}
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="pluginSwitch-{row.key}"
-                              aria-label={row.name}
-                              checked={row.enabled}
-                              disabled={!!toggleDisabledReason || !!busyName}
-                              onchange={(event) => void onToggle(row, event)} />
-                          {/if}
-                        </div>
-                      </span>
+                    {:else if canToggle && !row.protected}
+                      {@render toggleSwitch(row, row.enabled)}
                     {:else}
                       <span
                         class="badge rounded-pill"
@@ -399,7 +376,11 @@
           {#if canToggle}
             <span>
               <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-              {$_('pages.servers.plugins.restart-hint')}
+              {$_(
+                fileToggle
+                  ? 'pages.servers.plugins.file-toggle-hint'
+                  : 'pages.servers.plugins.restart-hint',
+              )}
             </span>
           {/if}
         </div>
@@ -409,6 +390,38 @@
 </div>
 
 <ServerPluginUploadModal />
+
+{#snippet toggleSwitch(/** @type {any} */ row, /** @type {boolean} */ checked)}
+  <!-- A disabled switch drops pointer events, so the tooltip sits on the wrapper. -->
+  <span
+    class="d-inline-block"
+    use:tooltip={[
+      toggleDisabledReason
+        ? $_(toggleDisabledReason, {
+            values: {
+              section: $_('components.server-navigation-menu.plugins'),
+            },
+          })
+        : '',
+      { placement: 'left' },
+    ]}>
+    <div class="form-check form-switch d-inline-block m-0">
+      {#if busyKey === row.key}
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      {:else}
+        <input
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+          id="pluginSwitch-{row.key}"
+          aria-label={row.name}
+          {checked}
+          disabled={!!toggleDisabledReason || !!busyKey}
+          onchange={(event) => void onToggle(row, event)} />
+      {/if}
+    </div>
+  </span>
+{/snippet}
 
 <script module>
   import { redirect } from '@sveltejs/kit';
@@ -510,7 +523,8 @@
   let loading = $state(false);
   let listError = $state('');
   let query = $state('');
-  let busyName = $state(null);
+  /** The row whose switch is waiting for an answer. */
+  let busyKey = $state(null);
   let busyFile = $state(null);
   let capable = $state(true);
   /** Whether this platform can enable/disable at all, as the backend reported it. */
@@ -570,6 +584,11 @@
   const canToggle = $derived(
     canManage && (toggleSource === undefined ? toggleable : toggleSource !== null),
   );
+  /**
+   * The node is the one switching: it renames the jar, so the switch belongs to the file rather
+   * than to what the running server loaded, and a jar the game never loaded can be switched too.
+   */
+  const fileToggle = $derived(canToggle && toggleSource === FeatureSources.NODE);
   const toggleDisabledReason = $derived(
     toggleSource === undefined
       ? online
@@ -624,8 +643,17 @@
     const byPluginName = new Map();
 
     for (const file of files) {
-      if (file.matchedPlugin) {
-        byPluginName.set(file.matchedPlugin.toLowerCase(), file);
+      if (!file.matchedPlugin) {
+        continue;
+      }
+
+      const key = file.matchedPlugin.toLowerCase();
+      const current = byPluginName.get(key);
+
+      // The switched-on jar is the one a loaded plugin came from; an old copy switched off beside
+      // it gets a row of its own.
+      if (!current || (!current.enabled && file.enabled)) {
+        byPluginName.set(key, file);
       }
     }
 
@@ -646,7 +674,9 @@
         authors: plugin.authors,
         description: plugin.description,
         enabled: plugin.enabled,
+        fileEnabled: file ? file.enabled !== false : plugin.enabled,
         loaded: true,
+        protected: isPanoPluginFile(file?.filename || '') || plugin.name.toLowerCase() === 'pano',
         filename: file?.filename || '',
         size: file?.size ?? 0,
         ...trackedFields(file?.filename || ''),
@@ -662,7 +692,9 @@
         authors: [],
         description: '',
         enabled: false,
+        fileEnabled: file.enabled !== false,
         loaded: false,
+        protected: isPanoPluginFile(file.filename),
         filename: file.filename,
         size: file.size,
         ...trackedFields(file.filename),
@@ -728,6 +760,23 @@
       wasListable = now;
     });
   });
+
+  /**
+   * Whether this is the Pano plugin's own jar (PluginFileNaming.isPanoPluginJar), which carries the
+   * panel's connection and so is never switched off from here.
+   *
+   * @param {string} filename
+   */
+  function isPanoPluginFile(filename) {
+    const name = String(filename || '')
+      .toLowerCase()
+      .replace(/\.disabled$/, '');
+
+    return (
+      name.endsWith('.jar') &&
+      (name === 'pano.jar' || name.startsWith('pano-') || name.startsWith('pano_'))
+    );
+  }
 
   /**
    * The tracked columns of one row (§2.4.13): where the jar came from and whether a newer
@@ -832,8 +881,13 @@
     }
   }
 
-  /** Re-reads the list after an action or a `plugins` nudge; the spinner is for these only. */
-  async function loadPlugins() {
+  /**
+   * Re-reads the list after an action or a `plugins` nudge; the spinner is for these only.
+   *
+   * @param {{ quiet?: boolean }} [options] `quiet` keeps the table on screen while it is re-read,
+   *   for a list that is only confirming what the page already shows.
+   */
+  async function loadPlugins(options = {}) {
     const id = serverId;
 
     if (id == null) {
@@ -842,8 +896,10 @@
 
     const sequence = ++listSeq;
 
-    loading = true;
-    listError = '';
+    if (!options.quiet) {
+      loading = true;
+      listError = '';
+    }
 
     const result = await fetchServerPlugins(id);
 
@@ -860,24 +916,27 @@
   }
 
   /**
-   * @param {{ name: string, enabled: boolean, loaded: boolean }} row
+   * @param {{ key: string, name: string, enabled: boolean, fileEnabled: boolean, filename: string }} row
    * @param {Event} event
    */
   async function onToggle(row, event) {
     const input = /** @type {HTMLInputElement} */ (event.currentTarget);
     const enabled = input.checked;
+    // The node renames the jar, so it is asked about the file; the game about its plugin.
+    const byFile = fileToggle && !!row.filename;
+    const current = byFile ? row.fileEnabled : row.enabled;
 
-    if (serverId == null || busyName) {
-      input.checked = row.enabled;
+    if (serverId == null || busyKey) {
+      input.checked = current;
 
       return;
     }
 
-    busyName = row.name;
+    busyKey = row.key;
 
     try {
       const body = await ApiUtil.put({
-        path: `/api/panel/servers/${serverId}/plugins/${encodeURIComponent(row.name)}/enabled`,
+        path: `/api/panel/servers/${serverId}/plugins/${encodeURIComponent(byFile ? row.filename : row.name)}/enabled`,
         body: { enabled },
         handler: (/** @type {object} */ response) => response,
       });
@@ -892,21 +951,32 @@
           });
         }
 
-        plugins = plugins.map((entry) =>
-          entry.name === row.name ? { ...entry, enabled: row.enabled } : entry,
-        );
+        if (!byFile) {
+          plugins = plugins.map((entry) =>
+            entry.name === row.name ? { ...entry, enabled: row.enabled } : entry,
+          );
+        }
 
         return;
       }
 
-      // The authoritative list arrives as a `plugins` push right after; this only keeps the
-      // switch from snapping back while that is in flight.
-      plugins = plugins.map((entry) => (entry.name === row.name ? { ...entry, enabled } : entry));
+      if (byFile) {
+        // §2.4.17 — the jar has its new name now, and the running server only notices on its next
+        // start. The list read right after says whether it has to (it may be back to what is
+        // running), and the banner is the same one an install raises.
+        const renamed = enabled
+          ? row.filename.replace(/\.disabled$/i, '')
+          : `${row.filename}.disabled`;
 
-      // §2.4.17 — the node toggles a plugin by renaming its jar, which the running server only
-      // notices on its next start. The banner is the same one an install raises.
-      if (toggleSource === FeatureSources.NODE) {
-        restartRequired = true;
+        files = files.map((file) =>
+          file.filename === row.filename ? { ...file, filename: renamed, enabled } : file,
+        );
+
+        await loadPlugins({ quiet: true });
+      } else {
+        // The authoritative list arrives as a `plugins` push right after; this only keeps the
+        // switch from snapping back while that is in flight.
+        plugins = plugins.map((entry) => (entry.name === row.name ? { ...entry, enabled } : entry));
       }
 
       void showSuccess(
@@ -914,7 +984,7 @@
         { name: row.name },
       );
     } finally {
-      busyName = null;
+      busyKey = null;
     }
   }
 
@@ -1151,7 +1221,8 @@
       // A frame without rows is the install/remove nudge (§2.4.5): the jar list and the
       // restart flag only exist on the REST side, so the page re-reads them.
       if (frame.plugins == null) {
-        void loadPlugins();
+        // The table stays up: the re-read only brings it in line with what just changed.
+        void loadPlugins({ quiet: true });
 
         return;
       }
