@@ -1038,6 +1038,8 @@
   let vitalsGeneration = 0;
   let performanceGeneration = 0;
   let wiredId = null;
+  /** Whether [wire] last ran with the metrics feed, so their arrival later wires it again. */
+  let wiredWithMetrics = false;
   /** @type {object[]} the newest few activity-log entries (§2.4.12). */
   let recentActivity = [];
   let activityLoading = true;
@@ -1170,8 +1172,13 @@
     ? $_('pages.servers.overview.server-time-zone', { values: { zone: view.timeZone } })
     : $_('pages.servers.overview.server-time-unavailable');
 
-  $: if (browser && viewId != null && wiredId !== viewId) {
+  // Wired again when the metrics turn up after the page opened: a server that was stopped then
+  // has nothing that measures it, and once it starts the vitals and Performance must subscribe
+  // instead of staying empty until a reload. Not unwired when they go away again: the feed
+  // simply goes quiet, and picks up again on the next start.
+  $: if (browser && viewId != null && (wiredId !== viewId || (wantsMetrics && !wiredWithMetrics))) {
     wiredId = viewId;
+    wiredWithMetrics = wantsMetrics;
     void wire(viewId, wantsMetrics);
   }
 
