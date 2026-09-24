@@ -252,6 +252,7 @@
   import * as dateFnsLocales from 'date-fns/locale';
 
   import { browser } from '$app/environment';
+  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
 
   import { getCredentials, sendLogin } from '$lib/auth.api.js';
@@ -480,12 +481,11 @@
     const target =
       safeNextPath($page.url.searchParams.get('next'), base) || (onLoginPage ? base : here) || '/';
 
-    // A full navigation, not `goto`: the panel wires its realtime hub, its plugin bundles and
-    // its permission-gated modals once per document, and the root layout's server load has no
-    // URL dependency to invalidate. Reloading is what makes the freshly minted session real.
-    if (browser) {
-      window.location.assign(target);
-    }
+    // No document reload: every load runs again with the new cookies (the root server load
+    // re-reads `basicData` through hooks), the layout that answered 401 now lets the page
+    // through, and the root layout wires the realtime hub the moment `signedIn` turns true.
+    // `replaceState` keeps the signed-out view out of the history.
+    await goto(target, { invalidateAll: true, replaceState: true });
   }
 
   /**

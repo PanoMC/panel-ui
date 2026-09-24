@@ -122,19 +122,31 @@ export function isAuthRoute(routeId) {
  * layout on purpose: a load below it never runs against a session that does not exist, and an
  * error in the *root* layout would fall through to SvelteKit's bare error.html instead.
  *
+ * Nothing else is set here on purpose. When the browser hydrates the error page it loads the
+ * root layout alone (`load_root_error_page`), so this function never runs there and anything it
+ * wrote to a store would exist on the server only; the root layout reads `$page.status` and
+ * `$page.error.inlineLogin` instead, which are serialised with the page.
+ *
  * Only `NOT_LOGGED_IN` counts. A user who is signed in but lacks ACCESS_PANEL answers
  * NO_PERMISSION, and a login form would loop them.
  *
- * @param {{ session?: { basicData?: any }, resetLayout?: { set: (value: boolean) => void } } | null | undefined} data
- *   the root layout's data (`await parent()`).
+ * @param {{ session?: { basicData?: any } } | null | undefined} data the root layout's data
+ *   (`await parent()`).
  */
 export function requireSignedIn(data) {
   if (!isNotLoggedIn(data?.session?.basicData)) {
     return;
   }
 
-  // The form renders without the panel chrome, like the auth pages do.
-  data?.resetLayout?.set(true);
-
   throw error(401, { message: 'Sign in required', inlineLogin: true });
+}
+
+/**
+ * Whether the page currently shown is the login form `requireSignedIn` put in place of a page.
+ *
+ * @param {{ status?: number, error?: { inlineLogin?: boolean } | null } | null | undefined} page
+ *   the `$page` store's value.
+ */
+export function isInlineLogin(page) {
+  return page?.status === 401 && !!page?.error?.inlineLogin;
 }

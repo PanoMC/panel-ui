@@ -31,7 +31,10 @@
     {/if}
 
     <div class="d-flex flex-grow-1 overflow-hidden" style="min-height: 0;">
-      {#if $resetLayout}
+      <!-- The login form shown in place of a page (`requireSignedIn`) is chrome-free like the
+           auth pages, decided from `$page` rather than `resetLayout`: the store is set by a load
+           the browser never runs when it hydrates an error page. -->
+      {#if $resetLayout || inlineLogin}
         <slot />
       {:else}
         <MainLayout>
@@ -47,11 +50,12 @@
     <NotificationContainer />
   {/if}
   <ToastContainer />
-  {#if hasPermission(Permissions.MANAGE_SERVERS)}
+  <!-- `signedIn &&` makes these re-evaluate when a sign-in happens in place (no reload). -->
+  {#if signedIn && hasPermission(Permissions.MANAGE_SERVERS)}
     <ServerRequestModal />
   {/if}
 
-  {#if hasPermission(Permissions.MANAGE_VIEW) || hasPermission(Permissions.MANAGE_ADDONS)}
+  {#if signedIn && (hasPermission(Permissions.MANAGE_VIEW) || hasPermission(Permissions.MANAGE_ADDONS))}
     <InstallingResourceModal />
   {/if}
 
@@ -99,7 +103,7 @@
   import * as variableStuff from '$lib/variables';
 
   import { networkErrorCallbacks, showNetworkError, avatarVersion } from '$lib/Store.js';
-  import { isNotLoggedIn } from '$lib/auth.api.js';
+  import { isInlineLogin, isNotLoggedIn } from '$lib/auth.api.js';
   import { normalizeUsageMode, UsageModes } from '$lib/navigation.util.js';
 
   import { addListener } from '$lib/NotificationManager.js';
@@ -521,7 +525,7 @@
       p.route.id &&
       !p.route.id.includes('(plugin-ui)') &&
       !isAuthRoute(p.route.id) &&
-      !(p.status === 401 && p.error?.inlineLogin)
+      !isInlineLogin(p)
     ) {
       resetLayout.set(false);
     }
@@ -649,16 +653,25 @@
     }
   }, 1500);
 
-  onMount(() => {
-    mounted = true;
+  /** Whether [wireSignedInSession] has run for the session this document is showing. */
+  let sessionWired = false;
 
-    initialized.set(true);
+  /**
+   * What a signed-in session needs wired once: the realtime hub and the server listeners. Done
+   * on mount for a document that loads signed in, and again from the reactive statement below
+   * when a visitor signs in *in place* (the login form `requireSignedIn` shows, then
+   * `invalidateAll`) — that sign-in reloads the data, not the document.
+   */
+  function wireSignedInSession() {
+    if (sessionWired || !browser || !signedIn) {
+      return;
+    }
+
+    sessionWired = true;
 
     // The hub rejects an unauthenticated socket and the client would reconnect forever, so the
-    // login page never opens one.
-    if (browser && signedIn) {
-      setPanelNotificationsSubscription(true);
-    }
+    // login form never opens one.
+    setPanelNotificationsSubscription(true);
 
     if (hasPermission(Permissions.MANAGE_SERVERS)) {
       offPanelRealtimeServer = onPanelServerUpdate((server) => {
@@ -685,6 +698,14 @@
         }
       });
     }
+  }
+
+  onMount(() => {
+    mounted = true;
+
+    initialized.set(true);
+
+    wireSignedInSession();
 
     if (
       !showSplashAlways &&
@@ -697,6 +718,13 @@
   });
 
   $: signedIn = isSignedIn(data?.session?.basicData);
+
+  // A sign-in that happened in place: the same document, new data.
+  $: if (mounted && signedIn) {
+    wireSignedInSession();
+  }
+
+  $: inlineLogin = isInlineLogin($page);
 
   $: if (signedIn && !$showSplash && !whatsNewShown) {
     const backendDismissedVersion = data.session.basicData.dismissedWhatsNewVersion;
