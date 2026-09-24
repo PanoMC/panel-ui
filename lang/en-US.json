@@ -1076,6 +1076,8 @@
           "auto-start": "Start with the node",
           "crash-restart": "Restart on crash",
           "last-exit-code": "Last exit code",
+          "code-show": "Show ({count})",
+          "code-hide": "Hide",
           "directory": "Folder",
           "capabilities": "Capabilities",
           "last-connected": "Last connected",

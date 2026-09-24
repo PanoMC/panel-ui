@@ -1076,6 +1076,8 @@
           "auto-start": "Запускать вместе с узлом",
           "crash-restart": "Перезапуск при сбое",
           "last-exit-code": "Последний код выхода",
+          "code-show": "Показать ({count})",
+          "code-hide": "Скрыть",
           "directory": "Папка",
           "capabilities": "Возможности",
           "last-connected": "Последнее подключение",

@@ -81,6 +81,28 @@
     text-align: right;
     min-width: 0;
   }
+
+  .stats-row.expanded {
+    border-bottom: 0;
+  }
+
+  .stats-code:last-child {
+    border-bottom: 0;
+  }
+
+  .stats-code {
+    padding: 0.25rem 0 0.5rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--bs-border-color-translucent);
+  }
+
+  .stats-code-chevron {
+    transition: transform 0.2s ease;
+  }
+
+  .stats-code-chevron.open {
+    transform: rotate(180deg);
+  }
 </style>
 
 {#if !view}
@@ -589,7 +611,9 @@
               {$_(group.title)}
             </h6>
             {#each group.rows as row (row.key)}
-              <div class="stats-row">
+              <div
+                class="stats-row"
+                class:expanded={row.collapsible && shownCodeRows.includes(row.key)}>
                 <span class="stats-label text-body-secondary">{$_(row.label)}</span>
                 <span class="stats-value text-break" class:font-monospace={row.mono}>
                   {#if row.kind === 'date'}
@@ -615,6 +639,23 @@
                         <i class="fa-regular fa-copy" aria-hidden="true"></i>
                       </button>
                     </span>
+                  {:else if row.kind === 'code' && row.collapsible}
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-link p-0 text-decoration-none"
+                      aria-expanded={shownCodeRows.includes(row.key)}
+                      aria-controls="stats-code-{group.key}-{row.key}"
+                      on:click={() => toggleCodeRow(row.key)}>
+                      {shownCodeRows.includes(row.key)
+                        ? $_('pages.servers.overview.info.code-hide')
+                        : $_('pages.servers.overview.info.code-show', {
+                            values: { count: row.count },
+                          })}
+                      <i
+                        class="fa-solid fa-chevron-down ms-1 stats-code-chevron"
+                        class:open={shownCodeRows.includes(row.key)}
+                        aria-hidden="true"></i>
+                    </button>
                   {:else if row.kind === 'code'}
                     <code class="text-break">{row.text}</code>
                   {:else if row.kind === 'plugin-version'}
@@ -674,6 +715,13 @@
                   {/if}
                 </span>
               </div>
+              {#if row.collapsible && shownCodeRows.includes(row.key)}
+                <!-- Below the row, full width: a long argument list reads badly squeezed into
+                     the value column. -->
+                <div class="stats-code" id="stats-code-{group.key}-{row.key}">
+                  <code class="text-break">{row.text}</code>
+                </div>
+              {/if}
             {/each}
           </section>
         {/each}
@@ -919,6 +967,17 @@
   let metricsSeries = [];
   let metricsLoading = true;
   let uuidCopied = false;
+
+  /** The statistics rows whose long value (the JVM arguments) is opened below them. */
+  /** @type {string[]} */
+  let shownCodeRows = [];
+
+  /** @param {string} key */
+  function toggleCodeRow(key) {
+    shownCodeRows = shownCodeRows.includes(key)
+      ? shownCodeRows.filter((shown) => shown !== key)
+      : [...shownCodeRows, key];
+  }
   /** @type {ReturnType<typeof setTimeout> | undefined} */
   let uuidCopiedTimer;
 
@@ -1627,7 +1686,15 @@
             text: server.javaVersion ? `Java ${server.javaVersion}` : t(`${info}java-automatic`),
           },
           Array.isArray(server.jvmArgs) && server.jvmArgs.length
-            ? { key: 'jvm', label: `${info}jvm-args`, kind: 'code', text: server.jvmArgs.join(' ') }
+            ? {
+                key: 'jvm',
+                label: `${info}jvm-args`,
+                kind: 'code',
+                // A dozen tuning flags drown out the rest of the card, so they open on request.
+                collapsible: true,
+                count: server.jvmArgs.length,
+                text: server.jvmArgs.join(' '),
+              }
             : { key: 'jvm', label: `${info}jvm-args`, text: t(`${info}jvm-args-none`) },
           { key: 'autostart', label: `${info}auto-start`, text: yesNo(server.autoStart, t) },
           { key: 'crash', label: `${info}crash-restart`, text: yesNo(server.crashRestart, t) },

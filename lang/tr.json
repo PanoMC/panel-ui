@@ -1076,6 +1076,8 @@
           "auto-start": "Düğümle birlikte başlat",
           "crash-restart": "Çökünce yeniden başlat",
           "last-exit-code": "Son çıkış kodu",
+          "code-show": "Göster ({count})",
+          "code-hide": "Gizle",
           "directory": "Klasör",
           "capabilities": "Yetenekler",
           "last-connected": "Son bağlanma",
