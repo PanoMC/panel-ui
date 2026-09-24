@@ -277,6 +277,15 @@
       return;
     }
 
+    // Only a reader who went up to the top has reached the start. A console that was just opened
+    // sits at scrollTop 0 for a moment before it is taken to the newest line, and a log shorter
+    // than the box never scrolls at all: neither is "reaching" anything. Reading `following`
+    // here also makes the effect below run again when the reader leaves the tail, which is what
+    // catches a jump to the top in a single scroll (Home, the scrollbar).
+    if (following || !container || container.scrollHeight - container.clientHeight <= rowHeight) {
+      return;
+    }
+
     reachedStartShown = true;
     reachedStart = true;
     clearTimeout(reachedStartTimer);
