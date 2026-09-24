@@ -98,6 +98,37 @@
   .server-address code {
     font-size: 0.85rem;
   }
+
+  /*
+   * Both are as wide as the column and never wider: a long Maven line must not count toward the
+   * column's own width, or it would push the whole header block below the server icon.
+   */
+  .task-last-line,
+  .task-log-panel {
+    width: 0;
+    min-width: 100%;
+  }
+
+  .task-log {
+    max-height: 16rem;
+    overflow: auto;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-all;
+    background-color: var(--bs-tertiary-bg);
+    border: 1px solid var(--bs-border-color-translucent);
+    border-radius: var(--bs-border-radius);
+  }
+
+  .task-log-chevron {
+    transition: transform 0.2s ease;
+  }
+
+  .task-log-chevron.open {
+    transform: rotate(180deg);
+  }
 </style>
 
 <div class="container">
@@ -228,11 +259,41 @@
               class:text-danger={taskFailed}>
               <span>
                 {taskLabel}
-                {#if taskDetailText}
+                {#if taskDetailText && !taskHasLog}
                   <span class="text-break">&middot; {taskDetailText}</span>
                 {/if}
               </span>
-              <span class="font-monospace">{taskPercent}%</span>
+              <span class="d-inline-flex align-items-center gap-2">
+                <span class="font-monospace">{taskPercent}%</span>
+                {#if taskHasLog}
+                  <!-- BuildTools prints minutes of Maven output: the line below is the latest,
+                       and this opens the lines that came in while the page was open. -->
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-link p-0 lh-1 text-reset"
+                    aria-expanded={taskLogOpen}
+                    aria-controls="serverTaskLog"
+                    aria-label={$_(
+                      taskLogOpen
+                        ? 'pages.servers.header.task-log-hide'
+                        : 'pages.servers.header.task-log-show',
+                    )}
+                    use:tooltip={[
+                      $_(
+                        taskLogOpen
+                          ? 'pages.servers.header.task-log-hide'
+                          : 'pages.servers.header.task-log-show',
+                      ),
+                      { placement: 'left' },
+                    ]}
+                    on:click={() => (taskLogOpen = !taskLogOpen)}>
+                    <i
+                      class="fa-solid fa-chevron-down task-log-chevron"
+                      class:open={taskLogOpen}
+                      aria-hidden="true"></i>
+                  </button>
+                {/if}
+              </span>
             </div>
             <div
               class="progress mt-1"
@@ -249,6 +310,24 @@
                 style="width: {taskPercent}%;">
               </div>
             </div>
+            {#if taskHasLog && taskDetailText}
+              <div
+                class="task-last-line small font-monospace text-body-secondary text-truncate mt-1"
+                title={taskDetailText}>
+                <i class="fa-solid fa-angle-right me-1" aria-hidden="true"></i>{taskDetailText}
+              </div>
+            {/if}
+            {#if taskHasLog && taskLogOpen}
+              <div class="task-log-panel mt-2" id="serverTaskLog">
+                <pre
+                  class="task-log small mb-1"
+                  bind:this={taskLogElement}
+                  on:scroll={onTaskLogScroll}>{taskLines.join('\n')}</pre>
+                <div class="small text-body-secondary">
+                  {$_('pages.servers.header.task-log-hint')}
+                </div>
+              </div>
+            {/if}
             {#if buildToolsNote}
               <div class="small text-body-secondary mt-1">
                 <i class="fa-solid fa-hammer me-1" aria-hidden="true"></i>
@@ -452,7 +531,7 @@
 </script>
 
 <script>
-  import { getContext, onDestroy, onMount, setContext } from 'svelte';
+  import { getContext, onDestroy, onMount, setContext, tick } from 'svelte';
   import { get, writable } from 'svelte/store';
   import { _ } from 'svelte-i18n';
   import copy from 'copy-to-clipboard';
@@ -848,6 +927,88 @@
   $: taskLabel = $_(taskLabelKey(barTask));
   $: taskDetailText = taskDetail(barTask);
   $: buildToolsNote = !taskFailed && isBuildToolsTask(barTask, $server);
+  // A failed build keeps its lines for as long as the bar still shows it.
+  $: taskHasLog = isBuildToolsTask(barTask, $server);
+  $: collectTaskLine($server?.id ?? null, headerTask);
+  $: if (taskLogOpen && taskLogElement && taskLines) {
+    void followTaskLog();
+  }
+
+  /** How many of the task's lines the open log keeps; the node's own log file has them all. */
+  const MAX_TASK_LINES = 300;
+
+  /**
+   * The lines the running task reported while this page was open, oldest first: the node
+   * forwards at most one BuildTools line a second (and every phase change), as the task's
+   * message. Collected here, because the task itself only ever holds the latest one.
+   *
+   * @type {string[]}
+   */
+  let taskLines = [];
+  /** Which server and task [taskLines] belong to. */
+  let taskLinesOwner = null;
+  let taskLogOpen = false;
+  /** @type {HTMLPreElement | undefined} */
+  let taskLogElement;
+  /** Whether the log is scrolled to its end, so a new line keeps it there. */
+  let taskLogAtEnd = true;
+
+  /**
+   * @param {number | string | null} serverId
+   * @param {{ uuid?: string, id?: number, kind?: string, startedAt?: number } | null} task
+   */
+  function collectTaskLine(serverId, task) {
+    // Kept once the task ends, so a build that just failed still shows how far it got; a new
+    // task, or another server, starts over.
+    if (!task) {
+      if (taskLinesOwner && !String(taskLinesOwner).startsWith(`${serverId}:`)) {
+        taskLines = [];
+        taskLinesOwner = null;
+      }
+
+      return;
+    }
+
+    const owner = `${serverId}:${task.uuid ?? task.id ?? ''}:${task.kind ?? ''}:${task.startedAt ?? ''}`;
+
+    if (owner !== taskLinesOwner) {
+      taskLinesOwner = owner;
+      taskLines = [];
+      taskLogAtEnd = true;
+    }
+
+    const line = taskDetail(task);
+
+    // A heartbeat repeats the phase line; one copy of it is enough.
+    if (!line || taskLines[taskLines.length - 1] === line) {
+      return;
+    }
+
+    taskLines = [...taskLines, line].slice(-MAX_TASK_LINES);
+  }
+
+  function onTaskLogScroll() {
+    if (!taskLogElement) {
+      return;
+    }
+
+    const { scrollTop, scrollHeight, clientHeight } = taskLogElement;
+
+    taskLogAtEnd = scrollHeight - scrollTop - clientHeight < 8;
+  }
+
+  /** Keeps the newest line in view unless the reader scrolled up to read an older one. */
+  async function followTaskLog() {
+    if (!taskLogAtEnd) {
+      return;
+    }
+
+    await tick();
+
+    if (taskLogElement) {
+      taskLogElement.scrollTop = taskLogElement.scrollHeight;
+    }
+  }
 
   /** Bumped when a failure's few seconds are up, so [visibleFailure] is worked out again. */
   let taskFailureTick = 0;
