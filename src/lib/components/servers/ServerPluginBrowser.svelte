@@ -142,6 +142,14 @@
             ? $_('pages.servers.plugins.browse.no-results')
             : $_('pages.servers.plugins.browse.search-hint')} />
       {:else}
+        {#if !query.trim()}
+          <div class="small fw-semibold text-body-secondary">
+            <i class="fa-solid fa-fire me-1" aria-hidden="true"></i>
+            {$_('pages.servers.plugins.browse.popular-title', {
+              values: { source: activeSourceName },
+            })}
+          </div>
+        {/if}
         <div class="row row-cols-1 row-cols-lg-2 g-3">
           {#each results as result (result.key)}
             <div class="col">
@@ -411,6 +419,10 @@
   let sourcesLoading = $state(true);
   let sourcesError = $state('');
   let activeSource = $state('');
+  /** The shown name of [activeSource], for the "Popular on …" heading. */
+  const activeSourceName = $derived(
+    sources.find((source) => source.id === activeSource)?.name || activeSource,
+  );
   let query = $state('');
   /** @type {Array<object>} */
   let results = $state([]);
@@ -523,6 +535,11 @@
     const firstEnabled = sources.find((source) => source.enabled);
 
     activeSource = firstEnabled ? firstEnabled.id : '';
+
+    // The tab opens on the source's most popular plugins instead of an empty page.
+    if (activeSource) {
+      void search(0);
+    }
   }
 
   /**
@@ -538,9 +555,8 @@
     page = 0;
     hasMore = false;
 
-    if (query.trim()) {
-      void search(0);
-    }
+    // With nothing typed this is that source's popular list.
+    void search(0);
   }
 
   /**
@@ -562,16 +578,9 @@
       return;
     }
 
+    // An empty term is not "nothing to show": the backend answers it with the source's most
+    // downloaded plugins, which is what the tab opens on.
     const term = query.trim();
-
-    if (!term) {
-      searching = false;
-      searchError = '';
-      results = [];
-      hasMore = false;
-
-      return;
-    }
 
     const sequence = ++searchSeq;
 

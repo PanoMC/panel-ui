@@ -35,7 +35,11 @@
 
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="siteTitle"
-        >{$_('pages.settings.site-settings.inputs.website-name.label')}</label>
+        >{$_(
+          serversOnly
+            ? 'pages.settings.site-settings.inputs.website-name.label-servers'
+            : 'pages.settings.site-settings.inputs.website-name.label',
+        )}</label>
       <div class="col-md-6">
         <input
           bind:value={data.websiteName}
@@ -46,19 +50,23 @@
           type="text" />
       </div>
     </div>
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="siteDesc">
-        {$_('pages.settings.site-settings.inputs.website-description.label')}
-      </label>
-      <div class="col-md-6">
-        <textarea
-          bind:value={data.websiteDescription}
-          aria-describedby="siteDesc"
-          class="form-control"
-          id="siteDesc"
-          rows="2"></textarea>
+    <!-- A servers-only install has no public website: what only the theme shows is hidden here,
+         and still sent back unchanged with the rest (the backend requires every field). -->
+    {#if !serversOnly}
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="siteDesc">
+          {$_('pages.settings.site-settings.inputs.website-description.label')}
+        </label>
+        <div class="col-md-6">
+          <textarea
+            bind:value={data.websiteDescription}
+            aria-describedby="siteDesc"
+            class="form-control"
+            id="siteDesc"
+            rows="2"></textarea>
+        </div>
       </div>
-    </div>
+    {/if}
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="websiteUrl">
         <span class="d-inline-block position-relative">
@@ -105,62 +113,64 @@
         {/if}
       </div>
     </div>
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="registerAgreementEditBtn">
-        {$_('pages.settings.site-settings.inputs.register-agreement.label')}
-      </label>
-      <div class="col-md-6 d-flex align-items-center">
-        {#if normalizeRegisterAgreement(data.registerAgreement)}
-          <button
-            type="button"
-            id="registerAgreementEditBtn"
-            class="btn btn-link p-0 text-decoration-none"
-            on:click={openRegisterAgreementModal}>
-            <i class="fas fa-pencil me-1"></i>
-            {$_('buttons.edit')}
-          </button>
-        {:else}
-          <button
-            type="button"
-            id="registerAgreementEditBtn"
-            class="btn btn-link p-0 text-decoration-none text-body-secondary"
-            on:click={openRegisterAgreementModal}>
-            <i class="fas fa-pencil me-1"></i>
-            Belirlenmedi
-          </button>
-        {/if}
+    {#if !serversOnly}
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="registerAgreementEditBtn">
+          {$_('pages.settings.site-settings.inputs.register-agreement.label')}
+        </label>
+        <div class="col-md-6 d-flex align-items-center">
+          {#if normalizeRegisterAgreement(data.registerAgreement)}
+            <button
+              type="button"
+              id="registerAgreementEditBtn"
+              class="btn btn-link p-0 text-decoration-none"
+              on:click={openRegisterAgreementModal}>
+              <i class="fas fa-pencil me-1"></i>
+              {$_('buttons.edit')}
+            </button>
+          {:else}
+            <button
+              type="button"
+              id="registerAgreementEditBtn"
+              class="btn btn-link p-0 text-decoration-none text-body-secondary"
+              on:click={openRegisterAgreementModal}>
+              <i class="fas fa-pencil me-1"></i>
+              Belirlenmedi
+            </button>
+          {/if}
+        </div>
       </div>
-    </div>
 
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="ipAddress">
-        {$_('pages.settings.site-settings.inputs.game-server-ip-address.label')}
-      </label>
-      <div class="col-md-6">
-        <input
-          id="ipAddress"
-          class="form-control"
-          placeholder="play.server.com"
-          type="text"
-          name="ipAddress"
-          bind:value={data.serverIpAddress} />
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="ipAddress">
+          {$_('pages.settings.site-settings.inputs.game-server-ip-address.label')}
+        </label>
+        <div class="col-md-6">
+          <input
+            id="ipAddress"
+            class="form-control"
+            placeholder="play.server.com"
+            type="text"
+            name="ipAddress"
+            bind:value={data.serverIpAddress} />
+        </div>
       </div>
-    </div>
 
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="serverGameVersion">
-        {$_('pages.settings.site-settings.inputs.game-server-version.label')}
-      </label>
-      <div class="col-md-6">
-        <input
-          id="serverGameVersion"
-          class="form-control"
-          placeholder="1.8.x"
-          type="text"
-          name="serverGameVersion"
-          bind:value={data.serverGameVersion} />
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="serverGameVersion">
+          {$_('pages.settings.site-settings.inputs.game-server-version.label')}
+        </label>
+        <div class="col-md-6">
+          <input
+            id="serverGameVersion"
+            class="form-control"
+            placeholder="1.8.x"
+            type="text"
+            name="serverGameVersion"
+            bind:value={data.serverGameVersion} />
+        </div>
       </div>
-    </div>
+    {/if}
 
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="supportEmailAddress">
@@ -176,34 +186,36 @@
           bind:value={data.supportEmail} />
       </div>
     </div>
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="siteKeywords">
-        {$_('pages.settings.site-settings.inputs.keywords.label')}
-      </label>
-      <div class="col-md-6">
-        <form on:submit|preventDefault={addKeyWord}>
-          <input
-            id="siteKeywords"
-            class="form-control mb-2"
-            class:border-danger={keywordInputError}
-            placeholder={$_('pages.settings.site-settings.inputs.keywords.placeholder')}
-            type="text"
-            name="keyword"
-            bind:value={keyword} />
-        </form>
-        <div class="mb-3">
-          {#each data.keywords as keyword, index (keyword)}
-            <button
-              type="button"
-              class="btn btn-link btn-sm"
-              title={$_('buttons.remove')}
-              on:click={() => removeKeyWord(index)}>
-              {keyword}
-            </button>
-          {/each}
+    {#if !serversOnly}
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="siteKeywords">
+          {$_('pages.settings.site-settings.inputs.keywords.label')}
+        </label>
+        <div class="col-md-6">
+          <form on:submit|preventDefault={addKeyWord}>
+            <input
+              id="siteKeywords"
+              class="form-control mb-2"
+              class:border-danger={keywordInputError}
+              placeholder={$_('pages.settings.site-settings.inputs.keywords.placeholder')}
+              type="text"
+              name="keyword"
+              bind:value={keyword} />
+          </form>
+          <div class="mb-3">
+            {#each data.keywords as keyword, index (keyword)}
+              <button
+                type="button"
+                class="btn btn-link btn-sm"
+                title={$_('buttons.remove')}
+                on:click={() => removeKeyWord(index)}>
+                {keyword}
+              </button>
+            {/each}
+          </div>
         </div>
       </div>
-    </div>
+    {/if}
 
     <!-- Favicon section -->
     <div class="row mb-3">
@@ -246,41 +258,43 @@
       </div>
     </div>
 
-    <!-- Website logo section -->
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="siteLogo">
-        {$_('pages.settings.site-settings.inputs.website-logo.label')}
-      </label>
-      <div class="col-md-6">
-        <div class="position-relative w-100" style="max-width: 300px;">
-          <div class="ratio ratio-16x9">
-            <DragAndDropZone
-              bind:this={logoZone}
-              class="p-0 position-absolute start-0 top-0"
-              accept={['image/png', 'image/jpeg', 'image/gif']}
-              maxFileSize={2 * 1024 * 1024}
-              on:drop={(e) => onWebsiteLogoDrop(e.detail)}
-              on:error={(e) => handleFileError(e, 'logo')}>
-              <img
-                src={websiteLogo}
-                class="object-fit-contain w-100 h-100"
-                alt={$_('pages.settings.site-settings.inputs.website-logo.server-icon')} />
-            </DragAndDropZone>
+    {#if !serversOnly}
+      <!-- Website logo section -->
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="siteLogo">
+          {$_('pages.settings.site-settings.inputs.website-logo.label')}
+        </label>
+        <div class="col-md-6">
+          <div class="position-relative w-100" style="max-width: 300px;">
+            <div class="ratio ratio-16x9">
+              <DragAndDropZone
+                bind:this={logoZone}
+                class="p-0 position-absolute start-0 top-0"
+                accept={['image/png', 'image/jpeg', 'image/gif']}
+                maxFileSize={2 * 1024 * 1024}
+                on:drop={(e) => onWebsiteLogoDrop(e.detail)}
+                on:error={(e) => handleFileError(e, 'logo')}>
+                <img
+                  src={websiteLogo}
+                  class="object-fit-contain w-100 h-100"
+                  alt={$_('pages.settings.site-settings.inputs.website-logo.server-icon')} />
+              </DragAndDropZone>
+            </div>
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
+              on:click={() => logoZone.click()}
+              title={$_('buttons.change')}
+              aria-label={$_('buttons.change')}>
+              <i class="fas fa-pencil"></i>
+            </button>
           </div>
-          <button
-            type="button"
-            class="btn btn-sm btn-secondary position-absolute top-0 start-100 translate-middle"
-            on:click={() => logoZone.click()}
-            title={$_('buttons.change')}
-            aria-label={$_('buttons.change')}>
-            <i class="fas fa-pencil"></i>
-          </button>
+          <small class=" d-block mt-2">
+            {$_('pages.settings.site-settings.inputs.website-logo.helper')}
+          </small>
         </div>
-        <small class=" d-block mt-2">
-          {$_('pages.settings.site-settings.inputs.website-logo.helper')}
-        </small>
       </div>
-    </div>
+    {/if}
 
     <!-- SSL and Port Settings -->
     <hr />
@@ -483,6 +497,7 @@
   import { normalizeRegisterAgreement } from '$lib/register-agreement.util.js';
 
   import { websiteLogoSrc } from '$lib/Store.js';
+  import { UsageModes } from '$lib/navigation.util.js';
 
   import {
     showSuccess as showSuccessToast,
@@ -504,6 +519,10 @@
 
   const pageTitle = getContext('pageTitle');
   const website = getContext('website');
+  const usageMode = getContext('usageMode');
+
+  // The saved mode, not a guess: in SERVERS mode the theme-only fields are hidden (and kept).
+  $: serversOnly = $usageMode === UsageModes.SERVERS;
 
   pageTitle.set('pages.settings.site-settings.title');
 

@@ -88,6 +88,18 @@
             </button>
           {/if}
 
+          {#if canInstall}
+            <!-- A jar from the admin's own computer, into plugins/ or mods/. -->
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary text-nowrap"
+              disabled={loading}
+              onclick={openUpload}>
+              <i class="fa-solid fa-upload me-1" aria-hidden="true"></i>
+              {$_('pages.servers.plugins.upload.button')}
+            </button>
+          {/if}
+
           {#if canIdentify}
             <button
               type="button"
@@ -396,6 +408,8 @@
   {/if}
 </div>
 
+<ServerPluginUploadModal />
+
 <script module>
   import { redirect } from '@sveltejs/kit';
 
@@ -477,6 +491,9 @@
   import ServerPluginBrowser from '$lib/components/servers/ServerPluginBrowser.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   import { show as showConfirmActionModal } from '$lib/components/modals/ConfirmActionModal.svelte';
+  import ServerPluginUploadModal, {
+    show as showServerPluginUploadModal,
+  } from '$lib/components/modals/ServerPluginUploadModal.svelte';
 
   let { data } = $props();
 
@@ -565,6 +582,22 @@
   /** Putting a jar there, replacing it and deleting it are all the same source. */
   const installSupported = $derived(hasFeature($server, 'plugins.install'));
   const canInstall = $derived(installSupported && canManage);
+
+  /** Mod loaders read `mods/`, everything else `plugins/` (PluginLoaderMapping.targetDir). */
+  const MOD_LOADERS = ['FABRIC', 'QUILT', 'FORGE', 'NEOFORGE'];
+
+  function openUpload() {
+    if (serverId == null) {
+      return;
+    }
+
+    showServerPluginUploadModal(serverId, {
+      directory: MOD_LOADERS.includes(String($server?.type || '').toUpperCase())
+        ? 'mods'
+        : 'plugins',
+      onUploaded: () => void loadPlugins(),
+    });
+  }
   const canBrowse = $derived(installSupported);
   const canRemove = $derived(canInstall);
   const canUpdate = $derived(canInstall);

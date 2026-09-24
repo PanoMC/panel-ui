@@ -418,7 +418,8 @@
         "inputs": {
           "website-name": {
             "label": "Site İsmi",
-            "placeholder": "İsim"
+            "placeholder": "İsim",
+            "label-servers": "Panel adı"
           },
           "website-description": {
             "label": "Site Açıklaması"
@@ -1294,7 +1295,21 @@
           "install-done": "{filename} kuruldu. Yüklenmesi için sunucuyu yeniden başlat.",
           "install-failed": "Kurulum başarısız oldu. ({error})",
           "task-install": "{filename} kuruluyor",
-          "open-page": "Proje sayfası"
+          "open-page": "Proje sayfası",
+          "popular-title": "{source} üzerinde popüler"
+        },
+        "upload": {
+          "button": "Yükle",
+          "title": "Eklenti yükle",
+          "drop": ".jar dosyalarını buraya bırak ya da seçmek için tıkla",
+          "hint": "Dosyalar sunucunun {directory} klasörüne gider. Yüklenmeleri için sunucuyu yeniden başlat.",
+          "invalid-type": "Buraya sadece .jar dosyaları yüklenebilir.",
+          "too-large": "{name} 256 MB'tan büyük.",
+          "done": "{name} yüklendi.",
+          "failed": "{name} yüklenemedi.",
+          "status-uploading": "Yükleniyor",
+          "status-done": "Yüklendi",
+          "status-failed": "Başarısız"
         }
       },
       "files": {
@@ -1462,7 +1477,17 @@
         "remove-in-place-info": "Pano sunucuyu çalıştırmayı bırakır ve yedeklerini siler. Dosyalar klasöründe kalır.",
         "change-software": "Sunucu yazılımını değiştir",
         "change-software-info": "Başka bir yazılıma ya da sürüme geç.",
-        "change-software-button": "Yazılımı değiştir"
+        "change-software-button": "Yazılımı değiştir",
+        "alerts": {
+          "title": "Uyarılar",
+          "description": "Bu sunucunun uyarılarını aç ya da kapat. \"Platform ayarı\" Ayarlar → Platform → Sunucu uyarıları'ndaki seçimi izler; e-posta her zaman orada belirlenir.",
+          "option-default": "Platform ayarı",
+          "option-default-on": "Platform ayarı (açık)",
+          "option-default-off": "Platform ayarı (kapalı)",
+          "option-on": "Bu sunucu için açık",
+          "option-off": "Bu sunucu için kapalı",
+          "saved": "Uyarı ayarları kaydedildi."
+        }
       },
       "game-integration": {
         "minecraft": "Minecraft",

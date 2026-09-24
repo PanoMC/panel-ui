@@ -76,6 +76,13 @@
   <PageLoading show={true} />
 {/if}
 
+{#if $server}
+  <!-- Keyed by server: switching servers must not carry one server's unsaved switches over. -->
+  {#key $server.id}
+    <ServerAlertSettingsCard />
+  {/key}
+{/if}
+
 {#if $server && (canReinstall || canRemove)}
   <div class="card border-danger">
     <div class="card-header">{$_('pages.servers.settings.danger-zone')}</div>
@@ -189,6 +196,7 @@
   import { getServerDisplayName, isInPlace, isManaged } from '$lib/servers.util.js';
 
   import PageLoading from '$lib/components/PageLoading.svelte';
+  import ServerAlertSettingsCard from '$lib/components/servers/ServerAlertSettingsCard.svelte';
   import MakeMainServerModal, {
     show as showMakeMainServerModal,
   } from '$lib/components/modals/MakeMainServerModal.svelte';

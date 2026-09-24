@@ -418,7 +418,8 @@
         "inputs": {
           "website-name": {
             "label": "Website Name",
-            "placeholder": "Name"
+            "placeholder": "Name",
+            "label-servers": "Panel name"
           },
           "website-description": {
             "label": "Website Description"
@@ -1294,7 +1295,21 @@
           "install-done": "{filename} was installed. Restart the server to load it.",
           "install-failed": "The install failed. ({error})",
           "task-install": "Installing {filename}",
-          "open-page": "Project page"
+          "open-page": "Project page",
+          "popular-title": "Popular on {source}"
+        },
+        "upload": {
+          "button": "Upload",
+          "title": "Upload plugins",
+          "drop": "Drop .jar files here or click to choose",
+          "hint": "Files go into the server's {directory} folder. Restart the server to load them.",
+          "invalid-type": "Only .jar files can be uploaded here.",
+          "too-large": "{name} is larger than 256 MB.",
+          "done": "Uploaded {name}.",
+          "failed": "{name} could not be uploaded.",
+          "status-uploading": "Uploading",
+          "status-done": "Uploaded",
+          "status-failed": "Failed"
         }
       },
       "files": {
@@ -1462,7 +1477,17 @@
         "remove-in-place-info": "Pano stops running it and deletes its backups. The files stay in their folder.",
         "change-software": "Change server software",
         "change-software-info": "Switch to another software or version.",
-        "change-software-button": "Change software"
+        "change-software-button": "Change software",
+        "alerts": {
+          "title": "Alerts",
+          "description": "Turn this server's alerts on or off. \"Platform setting\" follows Settings → Platform → Server alerts; e-mail is always decided there.",
+          "option-default": "Platform setting",
+          "option-default-on": "Platform setting (on)",
+          "option-default-off": "Platform setting (off)",
+          "option-on": "On for this server",
+          "option-off": "Off for this server",
+          "saved": "Alert settings saved."
+        }
       },
       "game-integration": {
         "minecraft": "Minecraft",
