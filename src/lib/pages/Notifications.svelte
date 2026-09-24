@@ -104,6 +104,22 @@
 
   const notifications = writable([]);
   const count = writable(0);
+  /**
+   * The unread count the backend reported after its last answer here, which marks what it sends as
+   * read: the navbar's badge takes it, or it would keep counting what was just read.
+   *
+   * @type {import('svelte/store').Writable<number | null>}
+   */
+  const notReadCount = writable(null);
+
+  /** @param {any} body */
+  function takeNotReadCount(body) {
+    const value = Number(body?.notReadCount);
+
+    if (body && body.notReadCount != null && Number.isFinite(value)) {
+      notReadCount.set(Math.max(0, value));
+    }
+  }
 
   Array.prototype.insert = function (index, item) {
     this.splice(index, 0, item);
@@ -154,6 +170,7 @@
     notifications.set(body.notifications || []);
 
     count.set(parseInt(body.notificationCount));
+    takeNotReadCount(body);
 
     return body;
   }
@@ -181,6 +198,11 @@
   import { onPanelNotificationRefresh } from '$lib/panelRealtime.js';
 
   const pageTitle = getContext('pageTitle');
+  const notificationCount = getContext('notificationCount');
+
+  $: if ($notReadCount != null) {
+    notificationCount?.set($notReadCount);
+  }
 
   pageTitle.set('pages.notifications.title');
 
@@ -272,6 +294,7 @@
           setNotifications(body.notifications);
 
           count.set(parseInt(body.notificationCount));
+          takeNotReadCount(body);
         }
 
         runNextListIfPending();
@@ -303,6 +326,8 @@
 
         const older = body.notifications || [];
 
+        takeNotReadCount(body);
+
         notifications.update((rows) => {
           const shown = new Set(rows.map((row) => row.id));
 
@@ -326,6 +351,8 @@
 
           return;
         }
+
+        takeNotReadCount(body);
 
         if (!get(notifications).some((notification) => notification.id === id)) {
           return;

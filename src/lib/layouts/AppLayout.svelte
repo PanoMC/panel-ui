@@ -464,6 +464,23 @@
   const platformKeyRefreshedTime = writable(data.platformKeyRefreshedTime);
   const platformHostAddress = writable(data.platformHostAddress);
   const notificationCount = writable(data.notificationCount);
+  /** The layout data whose count the badge last took. */
+  let notificationCountSource = data;
+
+  // Only a count the layout load just fetched, never on a plain navigation: `data` keeps its
+  // identity until that load runs again, and re-applying its first count on every page change put
+  // back the unread number of notifications that had been read since.
+  $: takeNotificationCount(data);
+
+  /** @param {any} next */
+  function takeNotificationCount(next) {
+    if (next === notificationCountSource) {
+      return;
+    }
+
+    notificationCountSource = next;
+    notificationCount.set(next.notificationCount);
+  }
   const mainServer = writable(data.mainServer);
   const selectedServer = writable(data.selectedServer);
   const connectedServerCount = writable(data.connectedServerCount);
@@ -506,7 +523,6 @@
     platformServerMatchKey.set(data.platformServerMatchKey);
     platformKeyRefreshedTime.set(data.platformKeyRefreshedTime);
     platformHostAddress.set(data.platformHostAddress);
-    notificationCount.set(data.notificationCount);
     mainServer.set(data.mainServer);
     // selectedServer: keep in sync via $: if (data) below (merge with live WebSocket state)
     connectedServerCount.set(data.connectedServerCount);
