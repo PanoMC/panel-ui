@@ -501,7 +501,7 @@
           "hint": "Mod değiştirmek panelde hangi bölümlerin görüneceğini değiştirir.",
           "website": {
             "title": "Web Site",
-            "description": "Sadece web site: haberler, forum, kayıt, mağaza."
+            "description": "Sadece web site: yazılar, talepler, temalar, oyuncu kaydı."
           },
           "servers": {
             "title": "Sunucu Yönetimi",

@@ -501,7 +501,7 @@
           "hint": "Switching modes changes which sections appear in the panel.",
           "website": {
             "title": "Website",
-            "description": "Website only: news, forum, registration, store."
+            "description": "Website only: posts, tickets, themes, player registration."
           },
           "servers": {
             "title": "Server management",
