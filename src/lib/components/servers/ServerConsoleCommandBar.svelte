@@ -101,6 +101,7 @@
     featureSource,
     featureUnavailableReason,
     hasCapability,
+    isManaged,
     isServerOnline,
     ServerCapabilities,
   } from '$lib/servers.util.js';
@@ -122,6 +123,12 @@
   export function consoleCommandDisabledReason(server) {
     if (!hasPermission(Permissions.MANAGE_SERVER_CONSOLE)) {
       return 'pages.servers.console.command-disabled-permission';
+    }
+
+    // A managed server whose process is not up has nothing to read a command, and Pano refuses
+    // one anyway; the node's stdin being "available" says nothing about whether a game runs.
+    if (isManaged(server) && !isServerOnline(server)) {
+      return 'pages.servers.console.command-disabled-offline';
     }
 
     const inputSource = featureSource(server, 'console.input');
