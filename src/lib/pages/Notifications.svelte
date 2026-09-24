@@ -22,7 +22,7 @@
     <div class="card-header">{$_('pages.notifications.title')}</div>
     <div class="card-body vstack gap-3" class:d-none={$notifications.length === 0}>
       <div class="list-group">
-        {#each $notifications as notification (notification)}
+        {#each $notifications as notification (notification.id)}
           <div
             class="panel-notification-row list-group-item list-group-item-action d-flex align-items-center gap-3 text-wrap"
             class:notification-unread={isPanelNotificationUnread(notification)}>
@@ -81,23 +81,15 @@
     {#if $notifications.length === 0}
       <NoContent />
     {/if}
-    {#if $notifications.length < $count && $count > 10 + 10 * page}
-      {@const remaining = $count - $notifications.length}
-      {@const nextBatch = Math.min(10, remaining)}
-      <div class="card-footer d-flex justify-content-center">
-        <button
-          class="btn btn-sm btn-outline-primary"
-          class:disabled={loadMoreLoading}
-          on:click={loadMore}
-          >{$_(
-            remaining <= 10
-              ? 'pages.notifications.show-more-simple'
-              : 'pages.notifications.show-more',
-            {
-              values: { nextBatch, remaining },
-            },
-          )}
-        </button>
+    <!-- Scrolling near the end loads the next ten; the spinner is only there while it does. -->
+    {#if hasMore}
+      <div class="card-footer d-flex justify-content-center py-3" bind:this={sentinel}>
+        {#if loadMoreLoading}
+          <span
+            class="spinner-border spinner-border-sm text-primary"
+            role="status"
+            aria-hidden="true"></span>
+        {/if}
       </div>
     {/if}
   </div>
@@ -107,8 +99,6 @@
 
 <script context="module">
   import { writable, get } from 'svelte/store';
-
-  import { browser } from '$app/environment';
 
   import ApiUtil from '$lib/api.util.js';
 
@@ -159,25 +149,9 @@
       request: event,
     });
 
-    setNotifications(body.notifications);
-
-    if (browser) {
-      body.notifications.slice(0, 5).forEach((notification) => {
-        if (notification.status === 'NOT_READ') {
-          setTimeout(() => {
-            notifications.update((notifications) => {
-              notifications.forEach((subNotification) => {
-                if (subNotification.id === notification.id) {
-                  notification.status = 'READ';
-                }
-              });
-
-              return notifications;
-            });
-          }, 3000);
-        }
-      });
-    }
+    // A fresh first page on every visit: the store outlives the page, and merging into what an
+    // earlier visit left behind kept rows (and their unread look) from a list that is gone.
+    notifications.set(body.notifications || []);
 
     count.set(parseInt(body.notificationCount));
 
@@ -214,8 +188,58 @@
   let listFetchPending = false;
   let listFetchGeneration = 0;
 
-  let page = 0;
   let loadMoreLoading = false;
+
+  /** @type {HTMLDivElement | undefined} */
+  let sentinel;
+  /** @type {IntersectionObserver | undefined} */
+  let observer;
+
+  $: hasMore = $notifications.length < $count;
+
+  // (Re)watch the footer whenever it is (re)rendered; it only exists while there is more.
+  $: if (observer) {
+    observer.disconnect();
+
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+  }
+
+  /**
+   * How long a notification that arrived unread keeps its unread look. The backend marked it read
+   * the moment it was fetched; this is only so the reader sees which ones are new.
+   */
+  const UNREAD_VISIBLE_MS = 3000;
+
+  /** id → the timer that turns that row read, so every row gets exactly one. */
+  const readTimers = new Map();
+
+  // Every row that shows up unread -- the first page, a live refresh, the next page while
+  // scrolling -- fades to read on its own clock.
+  $: scheduleRead($notifications);
+
+  /**
+   * @param {Array<{ id: number, status: string }>} list
+   */
+  function scheduleRead(list) {
+    for (const notification of list) {
+      if (!isPanelNotificationUnread(notification) || readTimers.has(notification.id)) {
+        continue;
+      }
+
+      const id = notification.id;
+
+      readTimers.set(
+        id,
+        setTimeout(() => {
+          notifications.update((rows) =>
+            rows.map((row) => (row.id === id ? { ...row, status: 'READ' } : row)),
+          );
+        }, UNREAD_VISIBLE_MS),
+      );
+    }
+  }
 
   let checkTime = 0;
   let interval;
@@ -248,23 +272,6 @@
           setNotifications(body.notifications);
 
           count.set(parseInt(body.notificationCount));
-
-          body.notifications.forEach((notification) => {
-            if (notification.status === 'NOT_READ') {
-              const notificationId = notification.id;
-              setTimeout(() => {
-                notifications.update((list) => {
-                  list.forEach((sub) => {
-                    if (sub.id === notificationId) {
-                      sub.status = 'READ';
-                    }
-                  });
-
-                  return list;
-                });
-              }, 3000);
-            }
-          });
         }
 
         runNextListIfPending();
@@ -272,23 +279,40 @@
     });
   }
 
+  /** The ten older than the last row, appended; ones already shown are not shown twice. */
   function loadMore() {
+    const list = get(notifications);
+    const last = list[list.length - 1];
+
+    if (loadMoreLoading || !last || list.length >= get(count)) {
+      return;
+    }
+
     loadMoreLoading = true;
 
     ApiUtil.get({
-      path: `/api/panel/notifications/${get(notifications)[get(notifications).length - 1].id}/more`,
+      path: `/api/panel/notifications/${last.id}/more`,
       handler: (body, reject) => {
+        loadMoreLoading = false;
+
         if (body.error) {
           reject();
 
           return;
         }
 
-        body.notifications.forEach((notification) => {
-          notifications.update((value) => value.insert(value.length, notification));
+        const older = body.notifications || [];
+
+        notifications.update((rows) => {
+          const shown = new Set(rows.map((row) => row.id));
+
+          return [...rows, ...older.filter((row) => !shown.has(row.id))];
         });
 
-        loadMoreLoading = false;
+        // Nothing older came back although the count says there is more: the count was stale.
+        if (older.length === 0) {
+          count.set(get(notifications).length);
+        }
       },
     });
   }
@@ -303,19 +327,18 @@
           return;
         }
 
-        $notifications.forEach((notification) => {
-          if (notification.id === id) {
-            notifications.update((value) => {
-              return value.remove(value.indexOf(notification));
-            });
+        if (!get(notifications).some((notification) => notification.id === id)) {
+          return;
+        }
 
-            count.update((value) => {
-              value--;
+        notifications.update((rows) => rows.filter((notification) => notification.id !== id));
+        count.update((value) => Math.max(0, value - 1));
 
-              return value;
-            });
-          }
-        });
+        // The row that was removed makes room for the next older one: fetch it rather than let
+        // the list shrink while there are more behind it.
+        if (get(notifications).length < get(count)) {
+          loadMore();
+        }
       },
     });
   }
@@ -324,6 +347,11 @@
     listFetchGeneration++;
     listFetchPending = false;
     clearInterval(interval);
+  }
+
+  function clearReadTimers() {
+    readTimers.forEach((timer) => clearTimeout(timer));
+    readTimers.clear();
   }
 
   function getTime(check, time, locale) {
@@ -339,6 +367,20 @@
   let offPanelNotificationRefresh;
 
   onMount(() => {
+    // A margin, so the next page is asked for before the reader actually hits the end.
+    observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          loadMore();
+        }
+      },
+      { rootMargin: '200px 0px' },
+    );
+
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+
     offPanelNotificationRefresh = onPanelNotificationRefresh(() => fetchNotificationsListOnce());
     interval = setInterval(() => {
       checkTime += 1;
@@ -348,6 +390,9 @@
   onDestroy(() => {
     offPanelNotificationRefresh?.();
     stopnotificationCountdown();
+    observer?.disconnect();
+    // A row whose timer never fired stays unread in the store; the next visit starts over anyway.
+    clearReadTimers();
   });
 
   setDeleteAllNotificationsModalCallback(() => {

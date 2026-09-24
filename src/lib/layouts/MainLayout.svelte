@@ -5,64 +5,55 @@
   }
 
   /*
-   * Unread highlight: the area color change "fades" out via `::after` + opacity (0.8s+ once the class is removed).
+   * Unread notifications: a soft tint and a small dot at the start of the row, both fading out
+   * once the row counts as read. Nothing about the row's size changes (no border that grows, no
+   * text that turns bold), so a row turning read never makes the list jump.
    */
   :global(.panel-notification-row.list-group-item) {
     position: relative;
-    z-index: 0;
-    border-left: 1px solid transparent;
-    transition:
-      border-left-color 0.75s ease,
-      border-left-width 0.75s ease,
-      box-shadow 0.75s ease;
+    /* Room for the dot on every row, read or not, so nothing moves when one turns read. */
+    padding-left: 1.75rem;
+    transition: background-color 0.6s ease;
   }
 
-  :global(.panel-notification-row.list-group-item::after) {
+  :global(.panel-notification-row.list-group-item::before) {
     content: '';
     position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background: linear-gradient(
-      90deg,
-      var(--bs-primary-bg-subtle, rgba(13, 110, 253, 0.3)) 0%,
-      rgba(13, 110, 253, 0.08) 78%,
-      transparent 100%
-    );
-    box-shadow: inset 0 0 0 1px rgba(13, 110, 253, 0.2);
+    top: 50%;
+    left: 0.7rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    /* The theme's readable shade of primary: plain primary is nearly invisible on the dark theme. */
+    background-color: var(--bs-primary-text-emphasis, var(--bs-primary));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--bs-primary-text-emphasis, var(--bs-primary)) 22%, transparent);
     opacity: 0;
-    transition: opacity 0.85s ease, filter 0.25s ease;
+    transform: translateY(-50%) scale(0.2);
+    transition:
+      opacity 0.45s ease,
+      transform 0.45s ease;
+    pointer-events: none;
   }
 
-  :global(
-    .panel-notification-row.list-group-item.notification-unread:not(.active)::after
-  ) {
+  :global(.panel-notification-row.list-group-item.notification-unread:not(.active)) {
+    background-color: color-mix(in srgb, var(--bs-primary-text-emphasis, var(--bs-primary)) 9%, transparent);
+  }
+
+  :global(.panel-notification-row.list-group-item.notification-unread:not(.active):hover) {
+    background-color: color-mix(in srgb, var(--bs-primary-text-emphasis, var(--bs-primary)) 14%, transparent);
+  }
+
+  :global(.panel-notification-row.list-group-item.notification-unread:not(.active)::before) {
     opacity: 1;
+    transform: translateY(-50%) scale(1);
   }
 
-  :global(
-    .panel-notification-row.list-group-item.notification-unread:not(.active)
-  ) {
-    border-left: 4px solid var(--bs-primary, #0d6efd);
-    box-shadow: 0 0 0 1px rgba(13, 110, 253, 0.1);
+  :global(.panel-notification-row.list-group-item.notification-unread .markdown-renderer) {
+    color: var(--bs-emphasis-color);
   }
 
-  :global(
-    .panel-notification-row.list-group-item.notification-unread:not(.active):hover::after
-  ) {
-    filter: brightness(1.04);
-  }
-
-  :global(.panel-notification-row > *) {
-    position: relative;
-    z-index: 1;
-  }
-
-  :global(
-    .panel-notification-row.list-group-item.notification-unread .markdown-renderer
-  ) {
-    font-weight: 700;
-    transition: font-weight 0.5s ease;
+  :global(.panel-notification-row .markdown-renderer) {
+    transition: color 0.6s ease;
   }
 </style>
 
