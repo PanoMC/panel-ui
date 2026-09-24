@@ -8,6 +8,12 @@
     background-color: var(--bs-warning-bg-subtle);
     transition: none;
   }
+
+  .system-avatar {
+    width: 24px;
+    height: 24px;
+    padding: 3px;
+  }
 </style>
 
 <!-- One activity-log entry (§2.4.12), shared by the Overview's Recent activity and the server
@@ -19,7 +25,14 @@
       {activityTypeLabel(entry.type, $_)}
     </span>
     <span class="fw-semibold d-inline-flex align-items-center gap-2 min-w-0">
-      {#if entry.username}
+      {#if system}
+        <!-- Pano itself: a crash, a schedule run, a restart the node did on its own. -->
+        <span
+          class="system-avatar bg-primary rounded-circle d-inline-flex flex-shrink-0"
+          use:tooltip={[$_('pages.servers.activity.system-hint')]}>
+          <img src="{base}/assets/img/logo.svg" alt="" class="w-100 h-100 object-fit-contain" />
+        </span>
+      {:else if entry.username}
         <!-- The same avatar the users pages show, at their secondary 24 px. -->
         <img
           src="/api/profile/picture/{entry.username}?{$avatarVersion}"
@@ -29,7 +42,9 @@
           class="rounded-circle flex-shrink-0" />
       {/if}
       <span class="text-truncate">
-        {entry.username || $_('pages.servers.activity.unknown-user')}
+        {system
+          ? $_('pages.servers.activity.system')
+          : entry.username || $_('pages.servers.activity.unknown-user')}
       </span>
     </span>
     <span class="small text-body-secondary ms-auto">
@@ -50,17 +65,25 @@
 <script>
   import { _ } from 'svelte-i18n';
 
+  import { base } from '$app/paths';
+
   import DateComponent from '$lib/components/Date.svelte';
   import { avatarVersion } from '$lib/Store';
-  import { activityTypeLabel, activityTypeMeta } from '$lib/serverActivity.util.js';
+  import {
+    activityTypeLabel,
+    activityTypeMeta,
+    isSystemActivity,
+  } from '$lib/serverActivity.util.js';
+  import tooltip from '$lib/tooltip.util';
 
   /**
    * @type {{
-   *   entry: { id: string, type: string, username?: string, createdAt?: number | string | null, details?: string },
+   *   entry: { id: string, type: string, userId?: string, username?: string, createdAt?: number | string | null, details?: string },
    *   fresh?: boolean,
    * }}
    */
   let { entry, fresh = false } = $props();
 
   const meta = $derived(activityTypeMeta(entry.type));
+  const system = $derived(isSystemActivity(entry));
 </script>

@@ -1860,3 +1860,54 @@ export function applyTaskFrame(server, frame) {
         : null,
   };
 }
+
+/**
+ * What is wrong with [server] that the servers modal marks with a red exclamation mark, as the
+ * sentences its tooltip reads: a crash (with the exit code and the reason the node gave, when it
+ * gave them), a Pano plugin that speaks an older protocol than this Pano, and a node or Pano Agent
+ * that does. Empty when nothing is.
+ *
+ * Each entry is an i18n key and its values; the crash reason is the node's own text and travels
+ * as a value, never as markup.
+ *
+ * @param {Record<string, any> | null | undefined} server
+ * @returns {Array<{ key: string, values?: Record<string, unknown> }>}
+ */
+export function serverProblems(server) {
+  /** @type {Array<{ key: string, values?: Record<string, unknown> }>} */
+  const problems = [];
+
+  if (!server) {
+    return problems;
+  }
+
+  if (String(server.processState || '').toUpperCase() === ProcessStates.CRASHED) {
+    const code = server.lastExitCode;
+
+    problems.push(
+      code == null || code === ''
+        ? { key: 'components.modals.servers.problems.crashed' }
+        : { key: 'components.modals.servers.problems.crashed-exit', values: { code } },
+    );
+
+    const reason = String(server.lastStopReason?.reason || server.lastStateReason || '').trim();
+
+    if (reason) {
+      problems.push({ key: 'components.modals.servers.problems.crash-reason', values: { reason } });
+    }
+  }
+
+  if (server.panoPluginUpdate?.outdatedProtocol === true) {
+    problems.push({ key: 'components.modals.servers.problems.plugin-outdated' });
+  }
+
+  if (server.nodeOutdated === true) {
+    problems.push({
+      key: server.agent
+        ? 'components.modals.servers.problems.agent-outdated'
+        : 'components.modals.servers.problems.node-outdated',
+    });
+  }
+
+  return problems;
+}

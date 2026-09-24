@@ -593,6 +593,23 @@
               </div>
             </div>
 
+            {#if whitelistApplies}
+              <div class="col-md-6">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="createServerWhitelist"
+                    bind:checked={whitelist} />
+                  <label class="form-check-label" for="createServerWhitelist">
+                    {$_('pages.servers.create.whitelist-label')}
+                  </label>
+                  <div class="form-text">{$_('pages.servers.create.whitelist-hint')}</div>
+                </div>
+              </div>
+            {/if}
+
             <div class="col-md-6">
               <div class="form-check form-switch">
                 <input
@@ -716,6 +733,9 @@
 
     return path.startsWith('/') || /^[A-Za-z]:[\\/]/.test(path) || path.startsWith('\\\\');
   }
+
+  /** Proxies: no `server.properties`, so no whitelist switch to offer. */
+  const PROXY_SOFTWARE = ['VELOCITY', 'BUNGEECORD', 'WATERFALL'];
 
   /** Software ids Pano can only build through BuildTools, so Paper is promoted instead (§2.3). */
   const BUILD_TOOLS_SOFTWARE = ['SPIGOT', 'CRAFTBUKKIT', 'BUKKIT'];
@@ -906,6 +926,9 @@
   let crashRestart = $state(true);
   /** SM-69 (§2.4.34): the daily plugin update sweep, on by default like on the settings page. */
   let autoUpdateCheck = $state(true);
+  // Off by default: Minecraft 26 turns the whitelist on in a fresh server.properties, and a new
+  // server nobody can join is not what anybody means by "create".
+  let whitelist = $state(false);
   let acceptEula = $state(false);
 
   /** @type {(() => void) | null} */
@@ -1002,6 +1025,17 @@
   });
   const selectedSoftware = $derived(softwareList.find((item) => item.id === softwareId) ?? null);
 
+  /**
+   * Whether the whitelist switch means anything: only for a server Pano builds (from scratch or
+   * from a modpack) -- an imported one keeps its own server.properties -- and never for a proxy,
+   * which has no whitelist of this kind.
+   */
+  const whitelistApplies = $derived(
+    source === Sources.MODPACK ||
+      (source === Sources.FRESH &&
+        !PROXY_SOFTWARE.includes(String(softwareId || '').toUpperCase())),
+  );
+
   /** Everything that is not a fresh install takes an existing server over (§2.4.8). */
   const isImport = $derived(source !== Sources.FRESH);
   const folderPathValid = $derived(isAbsoluteNodePath(folderPath));
@@ -1056,6 +1090,14 @@
       label: 'components.modals.create-server.review-auto-update-check',
       value: $_(autoUpdateCheck ? 'buttons.yes' : 'buttons.no'),
     },
+    ...(whitelistApplies
+      ? [
+          {
+            label: 'components.modals.create-server.review-whitelist',
+            value: $_(whitelist ? 'buttons.yes' : 'buttons.no'),
+          },
+        ]
+      : []),
   ]);
 
   /**
@@ -1525,6 +1567,7 @@
     autoStart = true;
     crashRestart = true;
     autoUpdateCheck = true;
+    whitelist = false;
     acceptEula = false;
     submitting = false;
   }
@@ -1670,6 +1713,8 @@
       crashRestart: !!crashRestart,
       autoUpdateCheck: !!autoUpdateCheck,
       acceptEula: !!acceptEula,
+      // Only for a server Pano builds; an imported one keeps its own server.properties.
+      ...(whitelistApplies ? { whitelist: !!whitelist } : {}),
       source,
     };
 

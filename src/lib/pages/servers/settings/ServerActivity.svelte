@@ -31,6 +31,9 @@
         class="form-select form-select-sm w-auto"
         bind:value={userFilter}>
         <option value="">{$_('pages.servers.activity.filter-user-all')}</option>
+        {#if hasSystemEntries}
+          <option value={SYSTEM_ACTIVITY_USER}>{$_('pages.servers.activity.system')}</option>
+        {/if}
         {#each userOptions as option (option)}
           <option value={option}>{option}</option>
         {/each}
@@ -171,7 +174,11 @@
   import NoContent from '$lib/components/NoContent.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import ServerActivityEntry from '$lib/components/servers/ServerActivityEntry.svelte';
-  import { activityTypeLabel } from '$lib/serverActivity.util.js';
+  import {
+    activityTypeLabel,
+    isSystemActivity,
+    SYSTEM_ACTIVITY_USER,
+  } from '$lib/serverActivity.util.js';
 
   export let data;
 
@@ -208,6 +215,7 @@
   // The type filter narrows what is already loaded: the endpoint pages by time, not by type, so
   // offering a type that is not in the list would look broken the moment a page came back empty.
   $: typeOptions = [...new Set(entries.map((entry) => entry.type).filter(Boolean))].sort();
+  $: hasSystemEntries = entries.some((entry) => isSystemActivity(entry));
   $: userOptions = [...new Set(entries.map((entry) => entry.username).filter(Boolean))].sort(
     (a, b) => a.localeCompare(b),
   );
@@ -290,7 +298,11 @@
       return false;
     }
 
-    if (user && entry.username !== user) {
+    if (user === SYSTEM_ACTIVITY_USER) {
+      if (!isSystemActivity(entry)) {
+        return false;
+      }
+    } else if (user && entry.username !== user) {
       return false;
     }
 
@@ -302,7 +314,9 @@
       return true;
     }
 
-    return [activityTypeLabel(entry.type, t), entry.username, entry.details]
+    const actor = isSystemActivity(entry) ? t('pages.servers.activity.system') : entry.username;
+
+    return [activityTypeLabel(entry.type, t), actor, entry.details]
       .filter(Boolean)
       .some((value) => String(value).toLowerCase().includes(needle));
   }

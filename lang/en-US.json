@@ -1416,6 +1416,8 @@
         "unavailable": "This build of Pano does not keep a per-server activity log yet. Update Pano to see one here.",
         "load-failed": "The activity log could not be loaded. Try again in a moment.",
         "unknown-user": "Unknown user",
+        "system": "System",
+        "system-hint": "Done by Pano itself, not by a person",
         "types": {
           "sent_server_command": "Command",
           "server_power_action": "Power",
@@ -1658,6 +1660,8 @@
         "auto-start-hint": "Start this server when the node comes up.",
         "crash-restart-label": "Restart after a crash",
         "crash-restart-hint": "Bring the server back automatically when it dies unexpectedly.",
+        "whitelist-label": "Whitelist",
+        "whitelist-hint": "Only players on the whitelist can join. Off by default; you can change it later in the server's properties.",
         "auto-update-check-label": "Automatic update check",
         "auto-update-check-hint": "Checks plugins for updates daily and notifies you.",
         "setup-local-node": "Set up the local node",
@@ -3079,6 +3083,7 @@
         "review-jvm-args": "JVM arguments",
         "review-auto-start": "Start with Pano",
         "review-crash-restart": "Restart after a crash",
+        "review-whitelist": "Whitelist",
         "review-auto-update-check": "Automatic update check",
         "review-none": "None",
         "create-button": "Create server",
@@ -3211,7 +3216,15 @@
         "ram-of-host": "{used} of the node's {total}",
         "disk": "Disk",
         "vitals-unknown": "Not reported yet",
-        "task-failed": "{task} failed"
+        "task-failed": "{task} failed",
+        "problems": {
+          "crashed": "This server crashed.",
+          "crashed-exit": "This server crashed (exit code {code}).",
+          "crash-reason": "Reason: {reason}",
+          "plugin-outdated": "The Pano plugin on this server is outdated and not fully compatible with this Pano. Update it from the server's page.",
+          "node-outdated": "The node running this server is outdated and not fully compatible with this Pano. Update it from the Nodes page.",
+          "agent-outdated": "The Pano Agent running this server is outdated and not fully compatible with this Pano. Update it from the server's page."
+        }
       },
       "unban-player": {
         "title": "Are you sure you want to unban this player?"

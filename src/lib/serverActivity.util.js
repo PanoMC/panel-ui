@@ -187,3 +187,20 @@ export async function fetchServerActivity({
     hasMore: typeof body.hasMore === 'boolean' ? body.hasMore : entries.length >= Number(limit),
   };
 }
+
+/**
+ * The user-filter value that stands for "Pano itself" -- a crash, a schedule run, a restart the
+ * node did on its own. Not a username anybody can have.
+ */
+export const SYSTEM_ACTIVITY_USER = '\u0000system';
+
+/**
+ * Whether Pano itself wrote [entry] rather than a person: it has no user at all. An entry whose
+ * user was deleted still has the id, and stays "Unknown user".
+ *
+ * @param {{ userId?: string | null, username?: string | null } | null | undefined} entry
+ * @returns {boolean}
+ */
+export function isSystemActivity(entry) {
+  return !entry?.userId && !entry?.username;
+}

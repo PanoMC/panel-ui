@@ -1416,6 +1416,8 @@
         "unavailable": "Pano'nun bu sürümü sunucu bazlı hareket kaydı tutmuyor. Burada görebilmek için Pano'yu güncelle.",
         "load-failed": "Hareket kaydı yüklenemedi. Birazdan tekrar dene.",
         "unknown-user": "Bilinmeyen kullanıcı",
+        "system": "Sistem",
+        "system-hint": "Bir kişi değil, Pano'nun kendisi yaptı",
         "types": {
           "sent_server_command": "Komut",
           "server_power_action": "Güç",
@@ -1658,6 +1660,8 @@
         "auto-start-hint": "Düğüm açıldığında bu sunucuyu da başlat.",
         "crash-restart-label": "Çökünce yeniden başlat",
         "crash-restart-hint": "Sunucu beklenmedik şekilde kapanırsa otomatik olarak geri getir.",
+        "whitelist-label": "Beyaz liste",
+        "whitelist-hint": "Sadece beyaz listedeki oyuncular girebilir. Varsayılan olarak kapalı; sonradan sunucu özelliklerinden değiştirebilirsin.",
         "auto-update-check-label": "Otomatik güncelleme denetimi",
         "auto-update-check-hint": "Eklentileri her gün güncellemeler için denetler ve size bildirir.",
         "setup-local-node": "Yerel düğümü kur",
@@ -3079,6 +3083,7 @@
         "review-jvm-args": "JVM argümanları",
         "review-auto-start": "Pano ile başlat",
         "review-crash-restart": "Çökünce yeniden başlat",
+        "review-whitelist": "Beyaz liste",
         "review-auto-update-check": "Otomatik güncelleme denetimi",
         "review-none": "Yok",
         "create-button": "Sunucuyu oluştur",
@@ -3211,7 +3216,15 @@
         "ram-of-host": "Düğümün {total} belleğinden {used}",
         "disk": "Disk",
         "vitals-unknown": "Henüz bildirilmedi",
-        "task-failed": "{task} başarısız oldu"
+        "task-failed": "{task} başarısız oldu",
+        "problems": {
+          "crashed": "Bu sunucu çöktü.",
+          "crashed-exit": "Bu sunucu çöktü (çıkış kodu {code}).",
+          "crash-reason": "Sebep: {reason}",
+          "plugin-outdated": "Bu sunucudaki Pano eklentisi eski ve bu Pano ile tam uyumlu değil. Sunucunun sayfasından güncelle.",
+          "node-outdated": "Bu sunucuyu çalıştıran node eski ve bu Pano ile tam uyumlu değil. Node'lar sayfasından güncelle.",
+          "agent-outdated": "Bu sunucuyu çalıştıran Pano Agent eski ve bu Pano ile tam uyumlu değil. Sunucunun sayfasından güncelle."
+        }
       },
       "unban-player": {
         "title": "Bu oyuncunun yasağını kaldırmak istediğinizden emin misiniz?"

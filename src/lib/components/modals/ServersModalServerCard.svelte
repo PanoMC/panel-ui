@@ -127,11 +127,25 @@
       use:tooltip={[kindLabel, { appendTo: TOOLTIP_HOST }]}>
       <i class="fa-solid {managed ? 'fa-server' : 'fa-link'}" aria-hidden="true"></i>
     </div>
-    {#if $mainServer && server.id === $mainServer.id}
-      <div
-        class="position-absolute top-0 end-0 p-2 text-warning"
-        use:tooltip={[$_('components.modals.servers.main-server'), { appendTo: TOOLTIP_HOST }]}>
-        <i class="fa-solid fa-crown"></i>
+    {#if problemsText || ($mainServer && server.id === $mainServer.id)}
+      <div class="position-absolute top-0 end-0 p-2 d-flex align-items-center gap-2">
+        {#if problemsText}
+          <!-- A crash, or a plugin / node too old for this Pano: say what, on hover. -->
+          <span
+            class="text-danger"
+            role="img"
+            aria-label={problemsText}
+            use:tooltip={[problemsText, { appendTo: TOOLTIP_HOST }]}>
+            <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+          </span>
+        {/if}
+        {#if $mainServer && server.id === $mainServer.id}
+          <span
+            class="text-warning"
+            use:tooltip={[$_('components.modals.servers.main-server'), { appendTo: TOOLTIP_HOST }]}>
+            <i class="fa-solid fa-crown"></i>
+          </span>
+        {/if}
       </div>
     {/if}
 
@@ -259,6 +273,7 @@
     getActiveTask,
     isManaged,
     isServerOnline,
+    serverProblems,
     TASK_FAILURE_VISIBLE_MS,
     taskDetail,
     taskLabelKey,
@@ -299,6 +314,9 @@
 
   $: online = isServerOnline(server);
   $: managed = isManaged(server);
+  $: problemsText = serverProblems(server)
+    .map((problem) => $_(problem.key, { values: problem.values }))
+    .join(' · ');
   // The server row carries a node id but no node name, so the card says "Managed" plainly and
   // leaves "Managed on <node>" to the server header, which has the node loaded.
   $: kindLabel = managed ? $_('pages.servers.header.managed') : $_('pages.servers.card.linked');
