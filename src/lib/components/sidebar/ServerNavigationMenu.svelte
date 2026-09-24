@@ -38,6 +38,17 @@
         {/if}
       {/each}
     </ul>
+  {:else}
+    <!-- No server selected (a fresh install, or the selected one was deleted): say so and offer
+         the way out, instead of an empty menu. The servers modal also adds servers. -->
+    <div class="text-center px-3 py-4 opacity-75">
+      <i class="fa-solid fa-ghost fa-3x mb-3" aria-hidden="true"></i>
+      <p class="fw-semibold mb-1">{$_('components.server-navigation-menu.no-selected-server')}</p>
+      <p class="small mb-3">{$_('components.server-navigation-menu.no-selected-server-hint')}</p>
+      <button type="button" class="btn btn-sm btn-primary" on:click={showServersModal}>
+        {$_('components.server-navigation-menu.select-server')}
+      </button>
+    </div>
   {/if}
 </div>
 
@@ -191,6 +202,7 @@
 
   import { activeServer } from '$lib/servers.util.js';
   import { serverNavigationItems } from '$lib/PluginAPI.js';
+  import { show as showServersModal } from '$lib/components/modals/ServersModal.svelte';
 
   const usageMode = getContext('usageMode');
 

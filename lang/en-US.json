@@ -2579,7 +2579,8 @@
       "no-selected-server": "No selected server.",
       "select-server": "Select Server",
       "connect-server": "Connect Server",
-      "nodes": "Nodes"
+      "nodes": "Nodes",
+      "no-selected-server-hint": "Pick a server to see its console, players, files and more."
     },
     "post-row": {
       "actions": "Actions",

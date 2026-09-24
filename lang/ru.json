@@ -2579,7 +2579,8 @@
       "no-selected-server": "Сервер не выбран.",
       "select-server": "Выберите сервер",
       "connect-server": "Подключить сервер",
-      "nodes": "Узлы"
+      "nodes": "Узлы",
+      "no-selected-server-hint": "Выберите сервер, чтобы видеть его консоль, игроков, файлы и остальное."
     },
     "post-row": {
       "actions": "Действия",

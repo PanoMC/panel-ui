@@ -2579,7 +2579,8 @@
       "no-selected-server": "Seçili Sunucu Yok",
       "select-server": "Sunucu Seç",
       "connect-server": "Sunucu Bağla",
-      "nodes": "Düğümler"
+      "nodes": "Düğümler",
+      "no-selected-server-hint": "Konsolunu, oyuncularını, dosyalarını ve fazlasını görmek için bir sunucu seç."
     },
     "post-row": {
       "actions": "İşlemler",
