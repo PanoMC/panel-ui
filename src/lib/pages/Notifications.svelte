@@ -45,6 +45,15 @@
                     width="30"
                     height="30"
                     class="rounded" />
+                {:else if panelNotificationServerIcon(notification)}
+                  <!-- The server the notification is about, by id; one without an icon gets the default. -->
+                  <img
+                    src={panelNotificationServerIcon(notification)}
+                    use:imageFallback={base + '/assets/img/server-icon.png'}
+                    alt={notification.details?.serverName || $_('buttons.view')}
+                    width="30"
+                    height="30"
+                    class="rounded" />
                 {:else}
                   <i class="fa fa-bolt fa-xl fa-fw text-primary"></i>
                 {/if}
@@ -189,7 +198,12 @@
     setCallback as setDeleteAllNotificationsModalCallback,
   } from '$lib/components/modals/ConfirmRemoveAllNotificationsModal.svelte';
   import { onNotificationClick } from '$lib/NotificationManager.js';
-  import { isPanelNotificationUnread } from '$lib/panelNotification.util.js';
+  import { base } from '$app/paths';
+  import {
+    imageFallback,
+    isPanelNotificationUnread,
+    panelNotificationServerIcon,
+  } from '$lib/panelNotification.util.js';
 
   import NoContent from '$lib/components/NoContent.svelte';
   import { currentLanguage } from '$lib/language.util.js';

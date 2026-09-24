@@ -48,6 +48,15 @@
                   width="48"
                   height="48"
                   class="rounded" />
+              {:else if panelNotificationServerIcon(notification)}
+                <!-- The server the notification is about, by id; one without an icon gets the default. -->
+                <img
+                  src={panelNotificationServerIcon(notification)}
+                  use:imageFallback={base + '/assets/img/server-icon.png'}
+                  alt={notification.details?.serverName || $_('buttons.view')}
+                  width="48"
+                  height="48"
+                  class="rounded" />
               {:else}
                 <i class="fa fa-fw fa-bolt"></i>
               {/if}
@@ -146,6 +155,8 @@
   import { onNotificationClick } from '$lib/NotificationManager.js';
   import { currentLanguage } from '$lib/language.util.js';
   import { onPanelNotificationRefresh } from '$lib/panelRealtime.js';
+  import { base } from '$app/paths';
+  import { imageFallback, panelNotificationServerIcon } from '$lib/panelNotification.util.js';
 
   let checkTime = 0;
   let interval;

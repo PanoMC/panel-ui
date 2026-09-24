@@ -94,6 +94,15 @@
                             width="18"
                             height="18"
                             class="rounded-circle" />
+                        {:else if panelNotificationServerIcon(notification)}
+                          <!-- The server the notification is about, by id; one without an icon gets the default. -->
+                          <img
+                            src={panelNotificationServerIcon(notification)}
+                            use:imageFallback={base + '/assets/img/server-icon.png'}
+                            alt={notification.details?.serverName || $_('buttons.view')}
+                            width="18"
+                            height="18"
+                            class="rounded-circle" />
                         {:else}
                           <i class="fa fa-bolt fa-lg fa-fw text-primary"></i>
                         {/if}
@@ -225,7 +234,11 @@
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import SiteNavigationMenu from '$lib/components/sidebar/SiteNavigationMenu.svelte';
   import ServerNavigationMenu from '$lib/components/sidebar/ServerNavigationMenu.svelte';
-  import { isPanelNotificationUnread } from '$lib/panelNotification.util.js';
+  import {
+    imageFallback,
+    isPanelNotificationUnread,
+    panelNotificationServerIcon,
+  } from '$lib/panelNotification.util.js';
 
   const pageTitle = getContext('pageTitle');
   const user = getContext('user');
