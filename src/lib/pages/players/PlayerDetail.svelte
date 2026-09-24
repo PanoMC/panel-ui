@@ -1,5 +1,5 @@
-{#if hasPermission(Permissions.MANAGE_TICKETS)}
-  <!-- Tickets -->
+{#if $usageMode !== UsageModes.SERVERS && hasPermission(Permissions.MANAGE_TICKETS)}
+  <!-- Tickets (a website feature: none in SERVERS mode) -->
   <div class="card">
     <div class="card-header">
       {$_('pages.player-detail.last-tickets')}
@@ -94,6 +94,7 @@
 <Hook name="panel:player-detail:bottom" playerData={data} />
 
 <script>
+  import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
 
   import { goto } from '$app/navigation';
@@ -101,6 +102,7 @@
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { buildQueryParams } from '$lib/api.util';
+  import { UsageModes } from '$lib/navigation.util.js';
 
   import TicketStatusBadge from '$lib/components/badges/TicketStatusBadge.svelte';
   import DateComponent from '$lib/components/Date.svelte';
@@ -111,6 +113,8 @@
   import Hook from '$lib/components/Hook.svelte';
 
   let { data = $bindable() } = $props();
+
+  const usageMode = getContext('usageMode');
 
   async function refreshData() {
     const queryParams = buildQueryParams({

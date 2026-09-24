@@ -9,12 +9,15 @@
   import { base } from '$app/paths';
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { requireWebsiteSection } from '$lib/navigation.util.js';
 
   /**
    * @type {import('@sveltejs/kit').LayoutLoad}
    */
   export async function load({ parent }) {
     const parentData = await parent();
+
+    requireWebsiteSection(parentData.usageMode);
     const { user } = parentData;
 
     if (!hasPermission(Permissions.MANAGE_TICKETS, user)) {

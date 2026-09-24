@@ -1,3 +1,5 @@
+import { error } from '@sveltejs/kit';
+
 /**
  * Usage-mode aware navigation helpers.
  *
@@ -115,4 +117,17 @@ export function sidebarTabForPath(pathname, basePath = '') {
   const path = String(pathname || '');
 
   return path === serversRoot || path.startsWith(`${serversRoot}/`) ? 'game' : 'website';
+}
+
+/**
+ * Stops a load for a website-only section (posts, tickets, the theme pages) on a SERVERS install:
+ * there is no public website, the backend answers 404 for these endpoints, and the page answers the
+ * same instead of rendering around failed requests.
+ *
+ * @param {unknown} usageMode the root layout's `usageMode`.
+ */
+export function requireWebsiteSection(usageMode) {
+  if (normalizeUsageMode(usageMode) === UsageModes.SERVERS) {
+    throw error(404);
+  }
 }

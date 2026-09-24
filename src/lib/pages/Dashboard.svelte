@@ -258,8 +258,8 @@
       </div>
     {/if}
 
-    <!-- Latest Tickets Card -->
-    {#if hasPermission(Permissions.MANAGE_TICKETS)}
+    <!-- Latest Tickets Card (a website feature: none in SERVERS mode) -->
+    {#if $usageMode !== UsageModes.SERVERS && hasPermission(Permissions.MANAGE_TICKETS)}
       <div class="ratio ratio-1x1">
         <div class="card mb-3">
           <CardHeader>
