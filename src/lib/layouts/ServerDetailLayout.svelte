@@ -138,7 +138,7 @@
            the server's files — the place to drop a new one. -->
       <div
         class="server-icon position-relative flex-shrink-0"
-        use:tooltip={[iconTooltip, { placement: 'bottom' }]}>
+        use:tooltip={[iconTooltip, { ...HEADER_TOOLTIP, placement: 'bottom' }]}>
         {#if canChangeIcon}
           <DragAndDropZone
             class="p-0"
@@ -198,7 +198,7 @@
             class="text-body-secondary"
             role="img"
             aria-label={kindLabel}
-            use:tooltip={[kindLabel, { placement: 'bottom' }]}>
+            use:tooltip={[kindLabel, { ...HEADER_TOOLTIP, placement: 'bottom' }]}>
             <i
               class="fa-solid {agent ? 'fa-microchip' : managed ? 'fa-server' : 'fa-link'}"
               aria-hidden="true"></i>
@@ -211,7 +211,7 @@
               class="small text-body-secondary"
               use:tooltip={[
                 versionRaw && versionRaw !== versionShort ? versionRaw : '',
-                { placement: 'bottom' },
+                { ...HEADER_TOOLTIP, placement: 'bottom' },
               ]}>
               {versionShort}
             </span>
@@ -223,7 +223,7 @@
                the header's width, and the tooltip carries the whole sentence. -->
           <div
             class="small text-danger-emphasis mt-1 text-truncate"
-            use:tooltip={[stateReason, { placement: 'bottom' }]}>
+            use:tooltip={[stateReason, { ...HEADER_TOOLTIP, placement: 'bottom' }]}>
             {$_('pages.servers.header.state-reason', { values: { reason: stateReason } })}
           </div>
         {/if}
@@ -237,7 +237,7 @@
               copied
                 ? $_('components.modals.connect-server.copied')
                 : $_('pages.servers.header.copy-address'),
-              { placement: 'bottom', hideOnClick: false },
+              { ...HEADER_TOOLTIP, placement: 'bottom', hideOnClick: false },
             ]}>
             <code class="user-select-all cursor-pointer text-break d-inline-block"
               >{serverAddress}</code>
@@ -284,7 +284,7 @@
                           ? 'pages.servers.header.task-log-hide'
                           : 'pages.servers.header.task-log-show',
                       ),
-                      { placement: 'left' },
+                      { ...HEADER_TOOLTIP, placement: 'left' },
                     ]}
                     on:click={() => (taskLogOpen = !taskLogOpen)}>
                     <i
@@ -390,7 +390,9 @@
       <div class="btn-group power-group flex-shrink-0" role="group" data-layout-actions="right">
         {#each powerActions as action (action.id)}
           <!-- Disabled buttons swallow pointer events, so the tooltip sits on the wrapper. -->
-          <span class="d-inline-block" use:tooltip={[action.tooltip, { placement: 'bottom' }]}>
+          <span
+            class="d-inline-block"
+            use:tooltip={[action.tooltip, { ...HEADER_TOOLTIP, placement: 'bottom' }]}>
             <button
               type="button"
               class="btn {action.buttonClass}"
@@ -424,7 +426,7 @@
         <!-- The header's own Restart, with its tooltip and disabled rules. -->
         <span
           class="d-inline-block ms-1"
-          use:tooltip={[restartAction?.tooltip || '', { placement: 'bottom' }]}>
+          use:tooltip={[restartAction?.tooltip || '', { ...HEADER_TOOLTIP, placement: 'bottom' }]}>
           <button
             type="button"
             class="btn btn-sm btn-outline-secondary"
@@ -622,6 +624,13 @@
    * banner and in the browser tab (`pageSubtitle`). The pages under this layout do not set a title
    * of their own.
    */
+  /**
+   * The header card clips whatever leaves it (`overflow: hidden`, for its background art), and
+   * tippy puts an interactive tooltip right after its element, inside the card: the header's
+   * tooltips go on the page body instead, so they can reach past the card's edge.
+   */
+  const HEADER_TOOLTIP = { appendTo: () => document.body };
+
   const pageTitle = getContext('pageTitle');
   const pageSubtitle = getContext('pageSubtitle');
 
