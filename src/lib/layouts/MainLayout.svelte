@@ -26,7 +26,8 @@
     border-radius: 50%;
     /* The theme's readable shade of primary: plain primary is nearly invisible on the dark theme. */
     background-color: var(--bs-primary-text-emphasis, var(--bs-primary));
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--bs-primary-text-emphasis, var(--bs-primary)) 22%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--bs-primary-text-emphasis, var(--bs-primary)) 22%, transparent);
     opacity: 0;
     transform: translateY(-50%) scale(0.2);
     transition:
@@ -36,11 +37,19 @@
   }
 
   :global(.panel-notification-row.list-group-item.notification-unread:not(.active)) {
-    background-color: color-mix(in srgb, var(--bs-primary-text-emphasis, var(--bs-primary)) 9%, transparent);
+    background-color: color-mix(
+      in srgb,
+      var(--bs-primary-text-emphasis, var(--bs-primary)) 9%,
+      transparent
+    );
   }
 
   :global(.panel-notification-row.list-group-item.notification-unread:not(.active):hover) {
-    background-color: color-mix(in srgb, var(--bs-primary-text-emphasis, var(--bs-primary)) 14%, transparent);
+    background-color: color-mix(
+      in srgb,
+      var(--bs-primary-text-emphasis, var(--bs-primary)) 14%,
+      transparent
+    );
   }
 
   :global(.panel-notification-row.list-group-item.notification-unread:not(.active)::before) {
