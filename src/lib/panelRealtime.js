@@ -695,6 +695,11 @@ function connect() {
         // SM-77 — a Pano plugin update, which the server header names as such. Pano may flag the
         // frame itself or only the row riding along under `task`.
         panoPluginUpdate: msg.panoPluginUpdate === true || msg.task?.panoPluginUpdate === true,
+        // A download's bytes, size and rate (`taskTransferText`), on the frames of a step that is
+        // downloading; null on every other frame.
+        transfer: msg.transfer && typeof msg.transfer === 'object' ? msg.transfer : null,
+        // The message is a line of BuildTools' own output rather than a step of the task.
+        output: msg.output === true,
       });
       return;
     }

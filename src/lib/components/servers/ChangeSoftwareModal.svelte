@@ -78,7 +78,7 @@
           </div>
 
           <div
-            class="progress mb-2"
+            class="progress mb-1"
             role="progressbar"
             aria-label={$_('components.modals.change-software.progress-running')}
             aria-valuenow={taskPercent}
@@ -92,6 +92,15 @@
               class:bg-success={taskStatus === 'DONE'}
               style="width: {taskPercent}%">
             </div>
+          </div>
+          <!-- How far, and while a step downloads how much of how much at what rate, the way the
+               server header says it. -->
+          <div
+            class="d-flex flex-wrap justify-content-end column-gap-2 small font-monospace text-body-secondary mb-2">
+            {#if taskTransfer}
+              <span class="text-nowrap">{taskTransfer}</span>
+            {/if}
+            <span>{taskPercent}%</span>
           </div>
 
           {#if taskSteps.length > 0}
@@ -111,7 +120,7 @@
                 </li>
               {/each}
             </ol>
-            {#if taskBuilds}
+            {#if taskBuilds && taskHasOutput}
               <!-- BuildTools' output, as on the server header: the latest line opens the rest. -->
               <TaskOutputLine
                 class="mt-2"
@@ -591,6 +600,7 @@
     showServerActionError,
     softwareNoteBadge,
     softwareVersionLabelKey,
+    taskTransferText,
   } from '$lib/servers.util.js';
   import { onTaskProgress } from '$lib/panelRealtime.js';
   import { formatBytes } from '$lib/string.util.js';
@@ -655,8 +665,10 @@
    * @type {string[]}
    */
   let taskLines = $state([]);
-  /** The percentage the newest step arrived at: a BuildTools line that moves it is a new phase. */
-  let stepPercent = -1;
+  /** Whether any of those lines was BuildTools' own output rather than one of the steps. */
+  let taskHasOutput = $state(false);
+  /** What the step under way is downloading ("120.4 MB / 1 GB · 12.4 MB/s"), or "". */
+  let taskTransfer = $state('');
 
   const serverName = $derived(server ? getServerDisplayName(server) : '');
   const fromSoftware = $derived(softwareKey(preview?.from?.software ?? server?.software));
@@ -1074,7 +1086,8 @@
     taskSteps = [];
     taskBuilds = BUILD_TOOLS_SOFTWARE.includes(String(softwareId).toUpperCase());
     taskLines = [];
-    stepPercent = -1;
+    taskHasOutput = false;
+    taskTransfer = '';
     phase = 'progress';
   }
 
@@ -1103,7 +1116,8 @@
     taskSteps = [];
     taskBuilds = false;
     taskLines = [];
-    stepPercent = -1;
+    taskHasOutput = false;
+    taskTransfer = '';
   }
 
   onMount(() => {
@@ -1143,20 +1157,18 @@
       taskStatus = frame.status;
       taskPercent = Math.max(0, Math.min(100, Math.round(frame.percent)));
 
-      if (taskBuilds) {
-        // Thousands of Maven lines arrive as messages: all of them go to the output log, and only
-        // a line that moves the percentage (BuildTools reached its next phase) becomes a step.
-        if (frame.message && frame.message !== taskLines[taskLines.length - 1]) {
-          taskLines = [...taskLines, frame.message].slice(-MAX_TASK_LINES);
-        }
+      // Only on the frames of a step that is downloading; any other frame clears it.
+      taskTransfer = frame.status === 'RUNNING' ? taskTransferText(frame) : '';
 
-        if (frame.message && (taskSteps.length === 0 || taskPercent !== stepPercent)) {
-          if (frame.message !== taskSteps[taskSteps.length - 1]) {
-            taskSteps = [...taskSteps, frame.message];
-          }
+      // A BuildTools build keeps every line in its output log. The node marks the lines that are
+      // Maven's own output (`output`), which stay out of the steps; one too old to mark them sends
+      // them as steps like any other message.
+      if (taskBuilds && frame.message && frame.message !== taskLines[taskLines.length - 1]) {
+        taskLines = [...taskLines, frame.message].slice(-MAX_TASK_LINES);
+      }
 
-          stepPercent = taskPercent;
-        }
+      if (frame.output) {
+        taskHasOutput = true;
       } else if (frame.message && frame.message !== taskSteps[taskSteps.length - 1]) {
         taskSteps = [...taskSteps, frame.message];
       }

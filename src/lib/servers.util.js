@@ -1846,7 +1846,7 @@ export const TASK_FAILURE_VISIBLE_MS = 10000;
  *
  * @template {{ id?: number|string, activeTask?: object|null }} T
  * @param {T} server
- * @param {{ taskId?: string, taskUuid?: string|null, serverId?: number|null, kind?: string, status?: string, percent?: number, message?: string, error?: string|null, startedAt?: number|null, panoPluginUpdate?: boolean }} frame
+ * @param {{ taskId?: string, taskUuid?: string|null, serverId?: number|null, kind?: string, status?: string, percent?: number, message?: string, error?: string|null, startedAt?: number|null, panoPluginUpdate?: boolean, transfer?: object|null }} frame
  * @returns {T}
  */
 /**
