@@ -99,49 +99,18 @@
     font-size: 0.85rem;
   }
 
-  /*
-   * Both are as wide as the column and never wider: a long Maven line must not count toward the
-   * column's own width, or it would push the whole header block below the server icon.
-   */
-  .task-last-line,
-  .task-log-panel {
-    width: 0;
-    min-width: 100%;
-  }
-
-  .task-log {
-    max-height: 16rem;
+  .install-error {
+    max-height: 10rem;
     overflow: auto;
     padding: 0.5rem 0.75rem;
     font-size: 0.75rem;
     line-height: 1.45;
     white-space: pre-wrap;
     word-break: break-all;
+    color: var(--bs-body-color);
     background-color: var(--bs-tertiary-bg);
     border: 1px solid var(--bs-border-color-translucent);
     border-radius: var(--bs-border-radius);
-  }
-
-  .install-error {
-    max-height: 10rem;
-    color: var(--bs-body-color);
-  }
-
-  .task-log-chevron {
-    transition: transform 0.2s ease;
-  }
-
-  .task-log-chevron.open {
-    transform: rotate(90deg);
-  }
-
-  .task-last-line {
-    font-size: 0.875em;
-  }
-
-  .task-last-line:hover,
-  .task-last-line:focus-visible {
-    color: var(--bs-body-color) !important;
   }
 </style>
 
@@ -300,41 +269,10 @@
                 style="width: {taskPercent}%;">
               </div>
             </div>
-            {#if taskHasLog && taskDetailText}
-              <!-- BuildTools prints minutes of Maven output: this is the latest line, and the
-                   whole line is the switch that opens the ones that came in while the page was
-                   open. -->
-              <button
-                type="button"
-                class="task-last-line btn btn-link p-0 mt-1 border-0 small font-monospace text-body-secondary text-start text-decoration-none d-flex align-items-center gap-1"
-                aria-expanded={taskLogOpen}
-                aria-controls="serverTaskLog"
-                use:tooltip={[
-                  $_(
-                    taskLogOpen
-                      ? 'pages.servers.header.task-log-hide'
-                      : 'pages.servers.header.task-log-show',
-                  ),
-                  { ...HEADER_TOOLTIP, placement: 'bottom' },
-                ]}
-                on:click={() => (taskLogOpen = !taskLogOpen)}>
-                <i
-                  class="fa-solid fa-chevron-right fa-fw task-log-chevron"
-                  class:open={taskLogOpen}
-                  aria-hidden="true"></i>
-                <span class="text-truncate">{taskDetailText}</span>
-              </button>
-            {/if}
-            {#if taskHasLog && taskLogOpen}
-              <div class="task-log-panel mt-2" id="serverTaskLog">
-                <pre
-                  class="task-log small mb-1"
-                  bind:this={taskLogElement}
-                  on:scroll={onTaskLogScroll}>{taskLines.join('\n')}</pre>
-                <div class="small text-body-secondary">
-                  {$_('pages.servers.header.task-log-hint')}
-                </div>
-              </div>
+            {#if taskHasLog}
+              <!-- BuildTools prints minutes of Maven output: the latest line, which opens the ones
+                   that came in while the page was open. -->
+              <TaskOutputLine class="mt-1" line={taskDetailText} lines={taskLines} />
             {/if}
             {#if buildToolsNote}
               <div class="small text-body-secondary mt-1">
@@ -432,7 +370,7 @@
       <div class="flex-grow-1 min-w-0">
         <div class="fw-semibold">{$_('pages.servers.header.install-failed-title')}</div>
         <div class="small">{$_('pages.servers.header.install-failed-body')}</div>
-        <pre class="task-log install-error small mt-2 mb-0">{installError}</pre>
+        <pre class="install-error small mt-2 mb-0">{installError}</pre>
         {#if canReinstall}
           <div class="d-flex flex-wrap gap-2 mt-2">
             <button
@@ -579,7 +517,7 @@
 </script>
 
 <script>
-  import { getContext, onDestroy, onMount, setContext, tick } from 'svelte';
+  import { getContext, onDestroy, onMount, setContext } from 'svelte';
   import { get, writable } from 'svelte/store';
   import { _ } from 'svelte-i18n';
   import copy from 'copy-to-clipboard';
@@ -653,6 +591,7 @@
   import SoftwareLogo from '$lib/components/servers/SoftwareLogo.svelte';
   import PanoPluginUpdateButton from '$lib/components/servers/PanoPluginUpdateButton.svelte';
   import DaemonUpdateProgress from '$lib/components/servers/DaemonUpdateProgress.svelte';
+  import TaskOutputLine from '$lib/components/servers/TaskOutputLine.svelte';
   import ChangeSoftwareModal, {
     show as showChangeSoftwareModal,
   } from '$lib/components/servers/ChangeSoftwareModal.svelte';
@@ -995,9 +934,6 @@
   // A failed build keeps its lines for as long as the bar still shows it.
   $: taskHasLog = isBuildToolsTask(barTask, $server);
   $: collectTaskLine($server?.id ?? null, headerTask);
-  $: if (taskLogOpen && taskLogElement && taskLines) {
-    void followTaskLog();
-  }
 
   /** How many of the task's lines the open log keeps; the node's own log file has them all. */
   const MAX_TASK_LINES = 300;
@@ -1012,11 +948,6 @@
   let taskLines = [];
   /** Which server and task [taskLines] belong to. */
   let taskLinesOwner = null;
-  let taskLogOpen = false;
-  /** @type {HTMLPreElement | undefined} */
-  let taskLogElement;
-  /** Whether the log is scrolled to its end, so a new line keeps it there. */
-  let taskLogAtEnd = true;
 
   /**
    * @param {number | string | null} serverId
@@ -1039,7 +970,6 @@
     if (owner !== taskLinesOwner) {
       taskLinesOwner = owner;
       taskLines = [];
-      taskLogAtEnd = true;
     }
 
     const line = taskDetail(task);
@@ -1050,35 +980,6 @@
     }
 
     taskLines = [...taskLines, line].slice(-MAX_TASK_LINES);
-  }
-
-  function onTaskLogScroll() {
-    if (!taskLogElement) {
-      return;
-    }
-
-    const { scrollTop, scrollHeight, clientHeight } = taskLogElement;
-
-    taskLogAtEnd = scrollHeight - scrollTop - clientHeight < 8;
-  }
-
-  /** Keeps the newest line in view unless the reader scrolled up to read an older one. */
-  async function followTaskLog() {
-    if (!taskLogAtEnd) {
-      return;
-    }
-
-    await tick();
-
-    // Through a plain local, never `taskLogElement.scrollTop = …`: in a legacy component that
-    // assignment counts as a change of `taskLogElement` itself, which re-runs the statement that
-    // called this, which assigns again -- an endless loop of microtasks that froze the browser the
-    // moment the log was opened.
-    const element = taskLogElement;
-
-    if (element) {
-      element.scrollTop = element.scrollHeight;
-    }
   }
 
   /** Bumped when a failure's few seconds are up, so [visibleFailure] is worked out again. */

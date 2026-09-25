@@ -98,17 +98,26 @@
             <ol class="list-unstyled small mb-0 vstack gap-1">
               {#each taskSteps as entry, index (index)}
                 <li class:text-body-secondary={index < taskSteps.length - 1}>
+                  <!-- The step under way spins: an arrow here read as a switch that opens something. -->
                   <i
-                    class="fa-solid me-1 {index < taskSteps.length - 1 || taskStatus === 'DONE'
+                    class="fa-solid fa-fw me-1 {index < taskSteps.length - 1 ||
+                    taskStatus === 'DONE'
                       ? 'fa-check text-success'
                       : taskStatus === 'FAILED'
                         ? 'fa-xmark text-danger'
-                        : 'fa-angle-right'}"
+                        : 'fa-circle-notch fa-spin text-primary'}"
                     aria-hidden="true"></i>
                   {entry}
                 </li>
               {/each}
             </ol>
+            {#if taskBuilds}
+              <!-- BuildTools' output, as on the server header: the latest line opens the rest. -->
+              <TaskOutputLine
+                class="mt-2"
+                line={taskLines[taskLines.length - 1] ?? ''}
+                lines={taskLines} />
+            {/if}
           {:else}
             <div class="small text-body-secondary">
               {$_('components.modals.change-software.progress-waiting')}
@@ -501,6 +510,10 @@
   const KEEP_OPTIONS = /** @type {const} */ (['worlds', 'plugins', 'configs']);
 
   const BUILD_TOOLS_SOFTWARE = ['SPIGOT', 'CRAFTBUKKIT'];
+
+  /** How many BuildTools lines the output log keeps; the node's own log file has them all. */
+  const MAX_TASK_LINES = 300;
+
   const EULA_URL = 'https://aka.ms/MinecraftEULA';
 
   /**
@@ -583,6 +596,7 @@
   import { formatBytes } from '$lib/string.util.js';
 
   import SoftwareLogo from '$lib/components/servers/SoftwareLogo.svelte';
+  import TaskOutputLine from '$lib/components/servers/TaskOutputLine.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
 
   let modalElement = $state();
@@ -633,6 +647,16 @@
   let taskError = $state('');
   /** @type {string[]} */
   let taskSteps = $state([]);
+  /** Whether the task compiles its jar with BuildTools, whose Maven output comes as its messages. */
+  let taskBuilds = $state(false);
+  /**
+   * Every message of a BuildTools task, for its output log; the steps keep only the phases.
+   *
+   * @type {string[]}
+   */
+  let taskLines = $state([]);
+  /** The percentage the newest step arrived at: a BuildTools line that moves it is a new phase. */
+  let stepPercent = -1;
 
   const serverName = $derived(server ? getServerDisplayName(server) : '');
   const fromSoftware = $derived(softwareKey(preview?.from?.software ?? server?.software));
@@ -1048,6 +1072,9 @@
     taskPercent = 0;
     taskError = '';
     taskSteps = [];
+    taskBuilds = BUILD_TOOLS_SOFTWARE.includes(String(softwareId).toUpperCase());
+    taskLines = [];
+    stepPercent = -1;
     phase = 'progress';
   }
 
@@ -1074,6 +1101,9 @@
     taskPercent = 0;
     taskError = '';
     taskSteps = [];
+    taskBuilds = false;
+    taskLines = [];
+    stepPercent = -1;
   }
 
   onMount(() => {
@@ -1113,7 +1143,21 @@
       taskStatus = frame.status;
       taskPercent = Math.max(0, Math.min(100, Math.round(frame.percent)));
 
-      if (frame.message && frame.message !== taskSteps[taskSteps.length - 1]) {
+      if (taskBuilds) {
+        // Thousands of Maven lines arrive as messages: all of them go to the output log, and only
+        // a line that moves the percentage (BuildTools reached its next phase) becomes a step.
+        if (frame.message && frame.message !== taskLines[taskLines.length - 1]) {
+          taskLines = [...taskLines, frame.message].slice(-MAX_TASK_LINES);
+        }
+
+        if (frame.message && (taskSteps.length === 0 || taskPercent !== stepPercent)) {
+          if (frame.message !== taskSteps[taskSteps.length - 1]) {
+            taskSteps = [...taskSteps, frame.message];
+          }
+
+          stepPercent = taskPercent;
+        }
+      } else if (frame.message && frame.message !== taskSteps[taskSteps.length - 1]) {
         taskSteps = [...taskSteps, frame.message];
       }
 
