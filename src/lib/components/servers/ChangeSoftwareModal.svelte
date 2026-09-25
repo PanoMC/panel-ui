@@ -332,6 +332,14 @@
                   {$_('components.modals.change-software.warning-worlds-dropped')}
                 </div>
               {/if}
+              {#if worldsDowngrade}
+                <div class="alert alert-danger small mt-3 mb-0" role="alert">
+                  <i class="fa-solid fa-clock-rotate-left me-1" aria-hidden="true"></i>
+                  {$_('components.modals.change-software.warning-worlds-downgrade', {
+                    values: { from: fromVersion, to: version },
+                  })}
+                </div>
+              {/if}
             </section>
 
             <!-- 3. How -->
@@ -601,6 +609,7 @@
     softwareNoteBadge,
     softwareVersionLabelKey,
     taskTransferText,
+    compareMinecraftVersions,
   } from '$lib/servers.util.js';
   import { onTaskProgress } from '$lib/panelRealtime.js';
   import { formatBytes } from '$lib/string.util.js';
@@ -688,6 +697,18 @@
   const toKind = $derived(String(preview?.to?.kind || kindOfFamily(toFamily)).toLowerCase());
   const familyChanges = $derived(!!fromFamily && !!toFamily && fromFamily !== toFamily);
   const kindChanges = $derived(!!fromKind && !!toKind && fromKind !== toKind);
+  /**
+   * Worlds kept on the way to an older Minecraft: a world saved by a newer version is one the older
+   * server refuses ("Failed to load datapacks"), and a server that stops at every start looks like
+   * a crash loop rather than a choice made in this dialog.
+   */
+  const worldsDowngrade = $derived(
+    !!keep.worlds &&
+      allowedKeep.worlds &&
+      !kindChanges &&
+      toKind === 'backend' &&
+      (compareMinecraftVersions(version, fromVersion) ?? 0) < 0,
+  );
   const fromHasAddons = $derived(FAMILY_ADDONS.includes(fromFamily));
   const softwareChanges = $derived(!!softwareId && !sameSoftware(softwareId, fromSoftware));
 

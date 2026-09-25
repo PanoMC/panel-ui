@@ -1850,6 +1850,38 @@ export const TASK_FAILURE_VISIBLE_MS = 10000;
  * @returns {T}
  */
 /**
+ * Orders two Minecraft versions by their numbers: `1.21` < `1.21.8` < `26.3`. A suffix
+ * (`-pre1`, `-rc2`) is left out, so a pre-release counts as its release.
+ *
+ * @param {string | null | undefined} a
+ * @param {string | null | undefined} b
+ * @returns {number | null} below zero when [a] is older, above when newer, 0 when the same, and
+ *   null when either is not a version number at all (a snapshot id, a proxy's build).
+ */
+export function compareMinecraftVersions(a, b) {
+  const parse = (value) => {
+    const match = /^(\d+)(?:\.(\d+))?(?:\.(\d+))?/.exec(String(value ?? '').trim());
+
+    return match ? match.slice(1).map((part) => Number(part ?? 0)) : null;
+  };
+
+  const left = parse(a);
+  const right = parse(b);
+
+  if (!left || !right) {
+    return null;
+  }
+
+  for (let index = 0; index < 3; index++) {
+    if (left[index] !== right[index]) {
+      return left[index] - right[index];
+    }
+  }
+
+  return 0;
+}
+
+/**
  * What a task is downloading, for the line beside its percentage: "120.4 MB / 1 GB · 12.4 MB/s",
  * just the bytes when the upstream sent no size, and "" for a task that is not downloading.
  *

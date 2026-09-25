@@ -3364,6 +3364,7 @@
         "warning-to-proxy": "Proxy’nin dünyası yoktur; dünyalar yedekte kalır.",
         "warning-to-backend": "Yeni bir dünyayla başlar.",
         "warning-worlds-dropped": "Yeni bir dünyayla başlar.",
+        "warning-worlds-downgrade": "Minecraft {to}, {from} ile kaydedilmiş bir dünyayı açamaz; sunucu açılırken durur. Dünyaları sadece aynı ya da daha yeni bir sürüme geçerken koruyun; eski sürüme dönmek için bunun yerine değişiklikten önce alınan yedeği geri yükleyin.",
         "section-confirm": "Onay",
         "backup-first": "Önce yedek al",
         "backup-first-hint": "Yedek başarısız olursa hiçbir şey değişmez.",

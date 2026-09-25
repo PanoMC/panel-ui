@@ -3364,6 +3364,7 @@
         "warning-to-proxy": "Proxies have no worlds; they stay in the backup.",
         "warning-to-backend": "Starts with a fresh world.",
         "warning-worlds-dropped": "Starts with a fresh world.",
+        "warning-worlds-downgrade": "Minecraft {to} cannot open a world saved by {from}, so the server would stop while starting. Keep the worlds only when moving to the same or a newer version; to go back, restore the backup taken before the change instead.",
         "section-confirm": "Confirm",
         "backup-first": "Take a backup first",
         "backup-first-hint": "Nothing changes if the backup fails.",
