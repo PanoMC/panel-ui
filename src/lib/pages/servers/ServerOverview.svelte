@@ -209,6 +209,7 @@
           liveWindowMs={vitalsLiveWindowMs}
           value={vitals.cpu.value}
           points={vitalSeries.cpu}
+          scaleMax={100}
           format={formatPercent}
           colorClass="text-bg-warning" />
       </div>
@@ -223,6 +224,7 @@
           value={vitals.ram.value}
           secondary={vitals.ram.secondary}
           points={vitalSeries.ram}
+          scaleMax={vitals.ram.max}
           format={formatByteSize}
           colorClass="text-bg-primary" />
       </div>
@@ -1921,6 +1923,8 @@
           ? {
               value: formatPercent((used / total) * 100),
               secondary: `${formatByteSize(used, 1)} / ${formatByteSize(total, 1)}`,
+              // The sparkline's top, so the line sits where the percentage says it does.
+              max: total,
             }
           : { value: formatByteSize(used, 1), secondary: '' };
       }
@@ -1933,6 +1937,7 @@
           ? {
               value: formatPercent((used / max) * 100),
               secondary: `${formatByteSize(used, 1)} / ${formatByteSize(max, 1)}`,
+              max,
             }
           : { value: formatByteSize(used, 1), secondary: '' };
       }

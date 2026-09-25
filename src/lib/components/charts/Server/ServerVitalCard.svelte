@@ -99,6 +99,7 @@
    *   showDate?: boolean,
    *   loading?: boolean,
    *   liveWindowMs?: number | null,
+   *   scaleMax?: number | null,
    * }}
    * @property value the big figure, already formatted; empty reads as "—".
    * @property format how a hovered point's value is written.
@@ -114,6 +115,10 @@
    *   so a fresh chart starts at the right edge and grows leftwards, then scrolls; the stretch
    *   before the first sample is simply empty. Null spans the first point to the last instead,
    *   which is right for a fetched history that should fill the card.
+   * @property scaleMax where the top of the sparkline is at least, in the points' own unit: 100 for
+   *   a percentage, the total for an amount of something limited. Without it the line fills the
+   *   card from 0 to its own highest point, so an idle CPU wobbling between 0.1 and 0.4 % is drawn
+   *   as high as a busy one while the figure above it says 0 %.
    */
   let {
     title = '',
@@ -130,6 +135,7 @@
     showDate = false,
     loading = false,
     liveWindowMs = null,
+    scaleMax = null,
   } = $props();
 
   /** @type {HTMLCanvasElement | undefined} */
@@ -150,6 +156,7 @@
   $effect(() => {
     const datasets = buildDatasets(series, points, color, bucketMs);
     const windowMs = liveWindowMs;
+    const top = suggestedTop(scaleMax);
 
     if (!chart) {
       return;
@@ -157,8 +164,19 @@
 
     chart.data.datasets = datasets;
     applyBounds(chart, datasets, windowMs);
+    /** @type {any} */ (chart.options.scales).y.suggestedMax = top;
     chart.update('none');
   });
+
+  /**
+   * @param {number | null | undefined} max
+   * @returns {number | undefined} [max] when it is a usable ceiling.
+   */
+  function suggestedTop(max) {
+    const value = Number(max);
+
+    return max != null && Number.isFinite(value) && value > 0 ? value : undefined;
+  }
 
   /**
    * §2.4.23 — the x axis runs from the first point to the last, so the line touches both edges
@@ -304,7 +322,7 @@
         },
         scales: {
           x: { type: 'linear', display: false, offset: false, min: bounds.min, max: bounds.max },
-          y: { display: false, beginAtZero: true },
+          y: { display: false, beginAtZero: true, suggestedMax: suggestedTop(scaleMax) },
         },
       },
     });
