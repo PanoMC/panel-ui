@@ -52,6 +52,9 @@
     Colors,
   );
 
+  const HOUR_MS = 3_600_000;
+  const DAY_MS = 86_400_000;
+
   /** @type {Array<{ ts: number, tps: number|null, players: number|null }>} */
   export let series = [];
   /** The spacing of the rows in ms (1-min, 10-min or day buckets), for the gap rule. */
@@ -135,6 +138,30 @@
     return value === '7d' ? 'day' : value === '24h' ? 'hour' : undefined;
   }
 
+  /**
+   * The whole range the card is named after, whatever the data covers: the last hour, the last
+   * 24 hours, and today with the six days before it. Drawn over the data's own span instead, a
+   * server with two hours of history showed a "day" of two hours and a "week" of three days.
+   *
+   * @param {string} value the range key (`1h`, `24h`, `7d`).
+   * @returns {{ min: number, max: number }}
+   */
+  function windowOf(value) {
+    const now = Date.now();
+
+    if (value === '7d') {
+      // Calendar days, so a day's bucket sits on its own tick; `setDate` keeps a DST change out.
+      const start = new Date(now);
+
+      start.setHours(0, 0, 0, 0);
+      start.setDate(start.getDate() - 6);
+
+      return { min: start.getTime(), max: now };
+    }
+
+    return { min: now - (value === '24h' ? DAY_MS : HOUR_MS), max: now };
+  }
+
   function updateData() {
     if (!chart) {
       return;
@@ -143,6 +170,7 @@
     chart.data.datasets[0].data = toPoints('tps');
     chart.data.datasets[1].data = toPoints('players');
     chart.options.scales.x.time.unit = timeUnitOf(range);
+    Object.assign(chart.options.scales.x, windowOf(range));
     chart.update('none');
   }
 
@@ -220,6 +248,7 @@
         scales: {
           x: {
             type: 'time',
+            ...windowOf(range),
             time: {
               unit: timeUnitOf(range),
               displayFormats: { minute: 'HH:mm', hour: 'HH:mm' },
