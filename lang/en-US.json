@@ -1028,6 +1028,7 @@
         "vital-disk": "Disk",
         "vital-network": "Network",
         "network-node-total": "node total",
+        "ram-allotted": "Allotted: {total}",
         "refresh-interval": "Refresh interval",
         "refresh-now": "Refresh now",
         "refresh-paused": "Paused",

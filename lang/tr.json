@@ -1028,6 +1028,7 @@
         "vital-disk": "Disk",
         "vital-network": "Ağ",
         "network-node-total": "düğüm geneli",
+        "ram-allotted": "Ayrılan: {total}",
         "refresh-interval": "Yenileme aralığı",
         "refresh-now": "Şimdi yenile",
         "refresh-paused": "Duraklatıldı",

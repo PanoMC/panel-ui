@@ -1028,6 +1028,7 @@
         "vital-disk": "Диск",
         "vital-network": "Сеть",
         "network-node-total": "весь узел",
+        "ram-allotted": "Выделено: {total}",
         "refresh-interval": "Интервал обновления",
         "refresh-now": "Обновить сейчас",
         "refresh-paused": "Пауза",
