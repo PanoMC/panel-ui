@@ -1959,10 +1959,12 @@
     if (sample?.source === 'node') {
       const used = positiveOrNull(sample.memRss) ?? positiveOrNull(sample.memUsed);
       const total = positiveOrNull(sample.hostMemTotal);
-      // What the server was given (its `-Xmx`), which a node sample carries as `memMax`. While the
-      // node is the one measuring -- a server still starting, one without the plugin -- that is
-      // the reference an admin looks for, not the host's 30 GB. Written next to the size rather
-      // than divided into it: the process always takes more than its heap limit.
+      // What the server was given (its `-Xmx`, the memory setting), which a node sample carries
+      // as `memMax`. While the node is the one measuring -- a server still starting, one without
+      // the plugin -- that is the reference an admin looks for, not the host's 30 GB. Written
+      // next to the size and called the *heap* limit rather than divided into it: the process
+      // always takes more than its heap (metaspace, threads, code cache, GC), so 2.1 GB against a
+      // 1.5 GB setting is a healthy server, not one over its limit.
       const allotted =
         positiveOrNull(sample.memMax) ??
         (positiveOrNull(current?.memoryMb) ? Number(current.memoryMb) * 1024 * 1024 : null);
@@ -1970,7 +1972,7 @@
       if (used != null && allotted) {
         ram = {
           value: formatByteSize(used, 1),
-          secondary: t('pages.servers.overview.ram-allotted', {
+          secondary: t('pages.servers.overview.ram-heap-limit', {
             values: { total: formatByteSize(allotted, 1) },
           }),
           max: allotted,
