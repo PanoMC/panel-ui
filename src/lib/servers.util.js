@@ -19,6 +19,7 @@ import { _, json } from 'svelte-i18n';
 import { browser } from '$app/environment';
 
 import ApiUtil from '$lib/api.util.js';
+import { formatBytes } from '$lib/string.util.js';
 import { showError } from '$lib/components/ToastContainer.svelte';
 
 /**
@@ -1841,6 +1842,29 @@ export const TASK_FAILURE_VISIBLE_MS = 10000;
  * @param {{ taskId?: string, taskUuid?: string|null, serverId?: number|null, kind?: string, status?: string, percent?: number, message?: string, error?: string|null, startedAt?: number|null, panoPluginUpdate?: boolean }} frame
  * @returns {T}
  */
+/**
+ * What a task is downloading, for the line beside its percentage: "120.4 MB / 1 GB · 12.4 MB/s",
+ * just the bytes when the upstream sent no size, and "" for a task that is not downloading.
+ *
+ * @param {{ transfer?: { done?: number, total?: number | null, bytesPerSecond?: number | null } | null } | null | undefined} task
+ * @returns {string}
+ */
+export function taskTransferText(task) {
+  const transfer = task?.transfer;
+  const done = Number(transfer?.done);
+
+  if (!transfer || !Number.isFinite(done) || done < 0) {
+    return '';
+  }
+
+  const total = Number(transfer.total);
+  const rate = transfer.bytesPerSecond == null ? NaN : Number(transfer.bytesPerSecond);
+  const size =
+    total > 0 ? `${formatBytes(done, 1)} / ${formatBytes(total, 1)}` : formatBytes(done, 1);
+
+  return Number.isFinite(rate) && rate >= 0 ? `${size} · ${formatBytes(rate, 1)}/s` : size;
+}
+
 export function applyTaskFrame(server, frame) {
   if (!server || frame?.serverId == null || Number(frame.serverId) !== Number(server.id)) {
     return server;
@@ -1877,6 +1901,8 @@ export function applyTaskFrame(server, frame) {
         message: frame.message ?? '',
         startedAt,
         panoPluginUpdate,
+        // Only on the frames of a step that is downloading; a later step's frame drops it.
+        transfer: frame.transfer ?? null,
       },
       taskFailure: null,
     };

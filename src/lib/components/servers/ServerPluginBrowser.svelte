@@ -109,7 +109,12 @@
                 <span class="text-break">&middot; {activeTask.message}</span>
               {/if}
             </span>
-            <span class="font-monospace">{taskPercent}%</span>
+            <span class="d-inline-flex flex-wrap justify-content-end column-gap-2 text-end">
+              {#if activeTask.status !== 'FAILED' && taskTransferText(activeTask)}
+                <span class="font-monospace text-nowrap">{taskTransferText(activeTask)}</span>
+              {/if}
+              <span class="font-monospace">{taskPercent}%</span>
+            </span>
           </div>
           <div
             class="progress mt-1"
@@ -396,6 +401,7 @@
     isEndpointUnavailable,
     showServerActionError,
     showServerLoadError,
+    taskTransferText,
   } from '$lib/servers.util.js';
   import { onTaskProgress } from '$lib/panelRealtime.js';
 

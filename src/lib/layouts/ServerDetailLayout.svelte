@@ -272,7 +272,13 @@
                   <span class="text-break">&middot; {taskDetailText}</span>
                 {/if}
               </span>
-              <span class="font-monospace">{taskPercent}%</span>
+              <!-- A download says how much of how much and how fast, beside the percentage. -->
+              <span class="d-inline-flex flex-wrap justify-content-end column-gap-2 text-end">
+                {#if taskTransfer}
+                  <span class="font-monospace text-nowrap">{taskTransfer}</span>
+                {/if}
+                <span class="font-monospace">{taskPercent}%</span>
+              </span>
             </div>
             <div
               class="progress mt-1"
@@ -583,6 +589,7 @@
     showServerActionError,
     TASK_FAILURE_VISIBLE_MS,
     taskDetail,
+    taskTransferText,
     taskLabelKey,
     taskPercent as percentOf,
   } from '$lib/servers.util.js';
@@ -932,6 +939,7 @@
   $: taskPercent = percentOf(barTask);
   $: taskLabel = $_(taskLabelKey(barTask));
   $: taskDetailText = taskDetail(barTask);
+  $: taskTransfer = taskFailed ? '' : taskTransferText(barTask);
   $: buildToolsNote = !taskFailed && isBuildToolsTask(barTask, $server);
   // A failed build keeps its lines for as long as the bar still shows it.
   $: taskHasLog = isBuildToolsTask(barTask, $server);
