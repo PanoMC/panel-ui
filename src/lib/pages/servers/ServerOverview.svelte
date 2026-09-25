@@ -1551,6 +1551,7 @@
         disk: numberOrNull(row.diskUsed),
         netRx: numberOrNull(row.netRx),
         netTx: numberOrNull(row.netTx),
+        memRss: positiveOrNull(row.memRss),
         // Who measured the minute: a node row's memory is the process's resident set, a
         // plugin row's is the JVM heap, and the two must not share one RAM line.
         memSource: row.source === 'node' ? 'node' : 'plugin',
@@ -1579,6 +1580,7 @@
       disk: numberOrNull(sample.diskUsed),
       netRx: numberOrNull(sample.netRx),
       netTx: numberOrNull(sample.netTx),
+      memRss: positiveOrNull(sample.memRss),
       memSource:
         positiveOrNull(sample.memUsed) != null && sample.source !== 'node' ? 'plugin' : 'node',
     };
@@ -1952,40 +1954,34 @@
   function describeVitals(t, sample, current) {
     const unknown = { value: '', secondary: '' };
 
-    // RAM — the plugin's heap against its maximum; a node sample's resident set against the
-    // node's total memory (an RSS is always above `-Xmx`, so the allotment is no denominator).
+    // RAM — the server process against its memory setting wherever a node measures the process
+    // (every managed server, with or without the plugin): the setting is the whole process, the
+    // heap only gets part of it (the node's JvmHeap). A server only its plugin measures (a linked
+    // one) shows the heap against `-Xmx`, which is all it reports; a node sample of a server with
+    // no setting shows its share of the host.
     let ram = unknown;
 
-    if (sample?.source === 'node') {
-      const used = positiveOrNull(sample.memRss) ?? positiveOrNull(sample.memUsed);
-      const total = positiveOrNull(sample.hostMemTotal);
-      // What the server was given (its `-Xmx`, the memory setting), which a node sample carries
-      // as `memMax`. While the node is the one measuring -- a server still starting, one without
-      // the plugin -- that is the reference an admin looks for, not the host's 30 GB. Written
-      // next to the size and called the *heap* limit rather than divided into it: the process
-      // always takes more than its heap (metaspace, threads, code cache, GC), so 2.1 GB against a
-      // 1.5 GB setting is a healthy server, not one over its limit.
-      const allotted =
-        positiveOrNull(sample.memMax) ??
-        (positiveOrNull(current?.memoryMb) ? Number(current.memoryMb) * 1024 * 1024 : null);
+    const processUsed = processMemoryOf(sample);
+    const setting = memorySettingOf(current);
 
-      if (used != null && allotted) {
-        ram = {
-          value: formatByteSize(used, 1),
-          secondary: t('pages.servers.overview.ram-heap-limit', {
-            values: { total: formatByteSize(allotted, 1) },
-          }),
-          max: allotted,
-        };
-      } else if (used != null) {
+    if (processUsed != null && setting != null) {
+      ram = {
+        value: formatPercent((processUsed / setting) * 100),
+        secondary: `${formatByteSize(processUsed, 1)} / ${formatByteSize(setting, 1)}`,
+        // The sparkline's top, so the line sits where the percentage says it does.
+        max: setting,
+      };
+    } else if (sample?.source === 'node') {
+      const total = positiveOrNull(sample.hostMemTotal);
+
+      if (processUsed != null) {
         ram = total
           ? {
-              value: formatPercent((used / total) * 100),
-              secondary: `${formatByteSize(used, 1)} / ${formatByteSize(total, 1)}`,
-              // The sparkline's top, so the line sits where the percentage says it does.
+              value: formatPercent((processUsed / total) * 100),
+              secondary: `${formatByteSize(processUsed, 1)} / ${formatByteSize(total, 1)}`,
               max: total,
             }
-          : { value: formatByteSize(used, 1), secondary: '' };
+          : { value: formatByteSize(processUsed, 1), secondary: '' };
       }
     } else if (sample) {
       const used = positiveOrNull(sample.memUsed);
@@ -2135,18 +2131,51 @@
     return `${minutes}m ${pad(seconds)}s`;
   }
 
+  /**
+   * The whole server process' memory in a sample, when a node measured it: `memRss`, which a node
+   * adds to the plugin's sample too, or a node-only sample's own `memUsed`.
+   *
+   * @param {object | null} sample
+   * @returns {number | null}
+   */
+  function processMemoryOf(sample) {
+    if (!sample) {
+      return null;
+    }
+
+    return (
+      positiveOrNull(sample.memRss) ??
+      (sample.source === 'node' ? positiveOrNull(sample.memUsed) : null)
+    );
+  }
+
+  /**
+   * @param {object | null} current the server row.
+   * @returns {number | null} its memory setting in bytes.
+   */
+  function memorySettingOf(current) {
+    const megabytes = positiveOrNull(current?.memoryMb);
+
+    return megabytes == null ? null : megabytes * 1024 * 1024;
+  }
+
   function buildVitalSeries(_t, series, sample) {
     const rows = Array.isArray(series) ? series : [];
     const of = (/** @type {string} */ key) => rows.map((row) => ({ ts: row.ts, value: row[key] }));
-    // The RAM line follows the figure the card shows: the heap while a plugin reports one,
-    // the resident set otherwise. Minutes measured the other way become gaps, not spikes.
-    const ramSource =
-      sample && sample.source !== 'node' && positiveOrNull(sample.memUsed) != null
-        ? 'plugin'
-        : 'node';
+    // The RAM line follows the figure the card shows: the whole process while a node measures it
+    // (its `memRss`, or a node row's own figure), the heap only for a server nothing else measures.
+    // Minutes measured the other way become gaps, not spikes.
+    const processLine = processMemoryOf(sample) != null;
 
     return {
-      ram: rows.map((row) => ({ ts: row.ts, value: row.memSource === ramSource ? row.mem : null })),
+      ram: rows.map((row) => ({
+        ts: row.ts,
+        value: processLine
+          ? (row.memRss ?? (row.memSource === 'node' ? row.mem : null))
+          : row.memSource === 'plugin'
+            ? row.mem
+            : null,
+      })),
       cpu: of('cpu'),
       disk: of('disk'),
       network: [

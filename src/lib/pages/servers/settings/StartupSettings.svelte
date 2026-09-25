@@ -12,6 +12,7 @@
       <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="startupMemory">
           {$_('pages.servers.create.memory-label')}
+          <small class="d-block">{$_('pages.servers.create.memory-hint')}</small>
         </label>
         <div class="col">
           <div class="input-group">

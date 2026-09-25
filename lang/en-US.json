@@ -1028,7 +1028,6 @@
         "vital-disk": "Disk",
         "vital-network": "Network",
         "network-node-total": "node total",
-        "ram-heap-limit": "Heap limit: {total}",
         "refresh-interval": "Refresh interval",
         "refresh-now": "Refresh now",
         "refresh-paused": "Paused",
@@ -1680,6 +1679,7 @@
       },
       "create": {
         "memory-label": "Memory",
+        "memory-hint": "The server's whole memory. Java's heap gets about a quarter less; the rest is what the JVM needs besides it.",
         "port-label": "Game port",
         "port-hint": "The port players connect to. The node checks that it is free.",
         "java-label": "Java version",

@@ -1028,7 +1028,6 @@
         "vital-disk": "Disk",
         "vital-network": "Ağ",
         "network-node-total": "düğüm geneli",
-        "ram-heap-limit": "Heap sınırı: {total}",
         "refresh-interval": "Yenileme aralığı",
         "refresh-now": "Şimdi yenile",
         "refresh-paused": "Duraklatıldı",
@@ -1680,6 +1679,7 @@
       },
       "create": {
         "memory-label": "Bellek",
+        "memory-hint": "Sunucunun toplam belleği. Java heap'ine bunun yaklaşık dörtte biri eksiği verilir; kalanı JVM'in kendi ihtiyacı.",
         "port-label": "Oyun portu",
         "port-hint": "Oyuncuların bağlandığı port. Düğüm portun boş olduğunu kontrol eder.",
         "java-label": "Java sürümü",

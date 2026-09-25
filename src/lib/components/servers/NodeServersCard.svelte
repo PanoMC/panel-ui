@@ -72,7 +72,7 @@
                 {@const online = isServerOnline(server)}
                 {@const sample = online ? latest[server.id] : null}
                 {@const cpu = resolveCpu(sample)}
-                {@const ram = resolveMemory(sample)}
+                {@const ram = resolveMemory(sample, server)}
                 {@const software = server.software || server.type}
                 {@const task = getActiveTask(server)}
                 <tr>
@@ -371,10 +371,29 @@
    * A node reports the process' resident set, which is measured against the host's memory; the
    * plugin reports the JVM heap against `-Xmx`. Same reading as the servers modal.
    *
+   * The node measures the whole process (`memRss`, also on a plugin's sample) and a server's
+   * memory setting is the whole process too (the node's JvmHeap), so that pair comes first;
+   * the heap and the host are what is left when one half of it is missing.
+   *
    * @param {Record<string, any> | null | undefined} sample
+   * @param {Record<string, any> | null | undefined} [server]
    * @returns {{ percent: number | null, text: string } | null}
    */
-  function resolveMemory(sample) {
+  function resolveMemory(sample, server) {
+    const process =
+      positiveOrNull(sample?.memRss) ??
+      (sample?.source === 'node' ? positiveOrNull(sample?.memUsed) : null);
+    const setting = positiveOrNull(server?.memoryMb);
+
+    if (process != null && setting != null) {
+      const total = setting * 1024 * 1024;
+
+      return {
+        percent: Math.min(100, (process / total) * 100),
+        text: `${formatBytes(process, 1)} / ${formatBytes(total, 1)}`,
+      };
+    }
+
     const fromNode = sample?.source === 'node';
     const used = fromNode
       ? (positiveOrNull(sample?.memRss) ?? positiveOrNull(sample?.memUsed))

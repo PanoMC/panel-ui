@@ -375,7 +375,7 @@
   // A sample from before the server went down would be a lie about what it is doing now, so an
   // offline server keeps only its disk figure — the directory is still there.
   $: cpu = online ? resolveCpu(latest) : null;
-  $: memory = online ? resolveMemory($_, latest) : null;
+  $: memory = online ? resolveMemory($_, latest, server) : null;
   $: disk = resolveDisk(latest, server);
   $: vitals = buildVitals($_, cpu, memory, disk);
 
@@ -448,10 +448,31 @@
    * painted every healthy node-only server a red 100 %. Against the node's total memory it is
    * the share of the host the server actually takes, which is the question an admin has.
    *
+   * The node measures the whole process (`memRss`, also on a plugin's sample) and a server's
+   * memory setting is the whole process too (the node's JvmHeap), so that pair comes first and
+   * is a real "in use over what it may use"; the host and the heap are what is left when one
+   * half of it is missing.
+   *
    * @param {(key: string, options?: object) => string} t
    * @param {object|null} sample
+   * @param {object|null} [row] the server, for its memory setting.
    */
-  function resolveMemory(t, sample) {
+  function resolveMemory(t, sample, row) {
+    const process =
+      positiveOrNull(sample?.memRss) ??
+      (sample?.source === 'node' ? positiveOrNull(sample?.memUsed) : null);
+    const setting = positiveOrNull(row?.memoryMb);
+
+    if (process != null && setting != null) {
+      const total = setting * 1024 * 1024;
+
+      return {
+        percent: Math.min(100, (process / total) * 100),
+        text: compactBytes(process),
+        detail: `${formatBytes(process, 1)} / ${formatBytes(total, 1)}`,
+      };
+    }
+
     if (sample?.source === 'node') {
       const rss = positiveOrNull(sample?.memRss) ?? positiveOrNull(sample?.memUsed);
       const hostTotal = positiveOrNull(sample?.hostMemTotal);

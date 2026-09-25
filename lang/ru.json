@@ -1028,7 +1028,6 @@
         "vital-disk": "Диск",
         "vital-network": "Сеть",
         "network-node-total": "весь узел",
-        "ram-heap-limit": "Лимит heap: {total}",
         "refresh-interval": "Интервал обновления",
         "refresh-now": "Обновить сейчас",
         "refresh-paused": "Пауза",
@@ -1680,6 +1679,7 @@
       },
       "create": {
         "memory-label": "Память",
+        "memory-hint": "Вся память сервера. Куча Java получает примерно на четверть меньше; остальное нужно самой JVM.",
         "port-label": "Игровой порт",
         "port-hint": "Порт, к которому подключаются игроки. Узел проверит, что он свободен.",
         "java-label": "Версия Java",
