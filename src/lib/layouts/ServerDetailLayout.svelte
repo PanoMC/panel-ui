@@ -127,7 +127,16 @@
   }
 
   .task-log-chevron.open {
-    transform: rotate(180deg);
+    transform: rotate(90deg);
+  }
+
+  .task-last-line {
+    font-size: 0.875em;
+  }
+
+  .task-last-line:hover,
+  .task-last-line:focus-visible {
+    color: var(--bs-body-color) !important;
   }
 </style>
 
@@ -263,37 +272,7 @@
                   <span class="text-break">&middot; {taskDetailText}</span>
                 {/if}
               </span>
-              <span class="d-inline-flex align-items-center gap-2">
-                <span class="font-monospace">{taskPercent}%</span>
-                {#if taskHasLog}
-                  <!-- BuildTools prints minutes of Maven output: the line below is the latest,
-                       and this opens the lines that came in while the page was open. -->
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-link p-0 lh-1 text-reset"
-                    aria-expanded={taskLogOpen}
-                    aria-controls="serverTaskLog"
-                    aria-label={$_(
-                      taskLogOpen
-                        ? 'pages.servers.header.task-log-hide'
-                        : 'pages.servers.header.task-log-show',
-                    )}
-                    use:tooltip={[
-                      $_(
-                        taskLogOpen
-                          ? 'pages.servers.header.task-log-hide'
-                          : 'pages.servers.header.task-log-show',
-                      ),
-                      { ...HEADER_TOOLTIP, placement: 'left' },
-                    ]}
-                    on:click={() => (taskLogOpen = !taskLogOpen)}>
-                    <i
-                      class="fa-solid fa-chevron-down task-log-chevron"
-                      class:open={taskLogOpen}
-                      aria-hidden="true"></i>
-                  </button>
-                {/if}
-              </span>
+              <span class="font-monospace">{taskPercent}%</span>
             </div>
             <div
               class="progress mt-1"
@@ -311,11 +290,29 @@
               </div>
             </div>
             {#if taskHasLog && taskDetailText}
-              <div
-                class="task-last-line small font-monospace text-body-secondary text-truncate mt-1"
-                title={taskDetailText}>
-                <i class="fa-solid fa-angle-right me-1" aria-hidden="true"></i>{taskDetailText}
-              </div>
+              <!-- BuildTools prints minutes of Maven output: this is the latest line, and the
+                   whole line is the switch that opens the ones that came in while the page was
+                   open. -->
+              <button
+                type="button"
+                class="task-last-line btn btn-link p-0 mt-1 border-0 small font-monospace text-body-secondary text-start text-decoration-none d-flex align-items-center gap-1"
+                aria-expanded={taskLogOpen}
+                aria-controls="serverTaskLog"
+                use:tooltip={[
+                  $_(
+                    taskLogOpen
+                      ? 'pages.servers.header.task-log-hide'
+                      : 'pages.servers.header.task-log-show',
+                  ),
+                  { ...HEADER_TOOLTIP, placement: 'bottom' },
+                ]}
+                on:click={() => (taskLogOpen = !taskLogOpen)}>
+                <i
+                  class="fa-solid fa-chevron-right fa-fw task-log-chevron"
+                  class:open={taskLogOpen}
+                  aria-hidden="true"></i>
+                <span class="text-truncate">{taskDetailText}</span>
+              </button>
             {/if}
             {#if taskHasLog && taskLogOpen}
               <div class="task-log-panel mt-2" id="serverTaskLog">
@@ -1014,8 +1011,14 @@
 
     await tick();
 
-    if (taskLogElement) {
-      taskLogElement.scrollTop = taskLogElement.scrollHeight;
+    // Through a plain local, never `taskLogElement.scrollTop = …`: in a legacy component that
+    // assignment counts as a change of `taskLogElement` itself, which re-runs the statement that
+    // called this, which assigns again -- an endless loop of microtasks that froze the browser the
+    // moment the log was opened.
+    const element = taskLogElement;
+
+    if (element) {
+      element.scrollTop = element.scrollHeight;
     }
   }
 
