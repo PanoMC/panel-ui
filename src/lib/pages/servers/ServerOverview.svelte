@@ -1276,11 +1276,21 @@
           }
 
           metricsSample = frame.sample;
-          vitalsData = appendSample(vitalsData, frame.sample, METRIC_RANGE_WINDOW_MS[vitalsRange]);
+          vitalsData = appendSample(
+            vitalsData,
+            frame.sample,
+            METRIC_RANGE_WINDOW_MS[vitalsRange],
+            vitalsRange === '1m' ? 0 : METRIC_RANGE_BUCKET_MS[vitalsRange],
+          );
 
           // Live samples only bridge the Hour view; the Day and Week buckets are what they are.
           if (performanceRange === 'hour') {
-            metricsSeries = appendSample(metricsSeries, frame.sample, METRIC_RANGE_WINDOW_MS['1h']);
+            metricsSeries = appendSample(
+              metricsSeries,
+              frame.sample,
+              METRIC_RANGE_WINDOW_MS['1h'],
+              PERFORMANCE_RANGES.hour.bucketMs,
+            );
           }
 
           // On the 1-minute window the vital cards are live every second, paused or not; on the
@@ -1555,8 +1565,10 @@
    * @param {Array<{ ts: number, tps: number|null, players: number|null }>} series
    * @param {object} sample
    * @param {number} windowMs how far back the series reaches; older rows fall off.
+   * @param {number} [bucketMs] one point per this many ms (the range's bucket); 0 keeps every
+   *   sample, which is what the live one-minute window draws.
    */
-  function appendSample(series, sample, windowMs) {
+  function appendSample(series, sample, windowMs, bucketMs = 0) {
     const ts = Number(sample.t) || Date.now();
     const point = {
       ts,
@@ -1571,13 +1583,44 @@
         positiveOrNull(sample.memUsed) != null && sample.source !== 'node' ? 'plugin' : 'node',
     };
 
-    // §2.4.23 — every live sample of the last hour stays, so a 1-second refresh really draws
-    // one point a second; only a sample for the very same moment is replaced.
+    // Only a sample for the very same moment is replaced; anything outside the window drops.
     const next = series.filter((row) => row.ts < ts && ts - row.ts <= windowMs);
 
-    next.push(point);
+    // On every range but the live minute the chart is one point per bucket (a minute on the
+    // hour), like the stored rows it continues: a sample in the bucket of the last point joins
+    // that point instead of adding one, however fast the samples come.
+    const bucket = Number(bucketMs) > 0 ? Number(bucketMs) : 0;
+    const last = next[next.length - 1];
+
+    if (bucket && last && Math.floor(last.ts / bucket) === Math.floor(ts / bucket)) {
+      next[next.length - 1] = mergeBucketPoint(last, point);
+    } else {
+      next.push(point);
+    }
 
     return next.length > VITALS_MAX_POINTS ? next.slice(next.length - VITALS_MAX_POINTS) : next;
+  }
+
+  /**
+   * One bucket's point with another sample of the same bucket folded in: CPU and traffic keep
+   * the bucket's peak, the way the stored minute does (MetricPeaks), everything else and the
+   * time are the newer sample's.
+   *
+   * @param {object} current
+   * @param {object} point
+   */
+  function mergeBucketPoint(current, point) {
+    /** @param {number | null} a @param {number | null} b */
+    const peak = (a, b) => (a == null ? b : b == null ? a : Math.max(a, b));
+
+    return {
+      ...current,
+      ...Object.fromEntries(Object.entries(point).filter(([, value]) => value != null)),
+      ts: point.ts,
+      cpu: peak(current.cpu, point.cpu),
+      netRx: peak(current.netRx, point.netRx),
+      netTx: peak(current.netTx, point.netTx),
+    };
   }
 
   /**
