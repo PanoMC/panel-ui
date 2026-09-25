@@ -116,7 +116,7 @@
 
 <div class="container">
   <div class="server-detail-header card mb-3">
-    <div class="card-body d-flex flex-wrap align-items-center gap-3">
+    <div class="card-body d-flex flex-wrap align-items-start gap-3">
       <!-- The server icon, and — for an admin who may manage servers, where something can write
            the server's files — the place to drop a new one. -->
       <div
