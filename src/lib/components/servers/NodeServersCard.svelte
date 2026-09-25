@@ -213,6 +213,7 @@
     taskDetail,
     taskLabelKey,
     taskPercent,
+    formatMemoryPair,
   } from '$lib/servers.util.js';
   import { softwareLabel } from '$lib/software.util.js';
   import { formatBytes } from '$lib/string.util.js';
@@ -390,7 +391,7 @@
 
       return {
         percent: Math.min(100, (process / total) * 100),
-        text: `${formatBytes(process, 1)} / ${formatBytes(total, 1)}`,
+        text: formatMemoryPair(process, total),
       };
     }
 

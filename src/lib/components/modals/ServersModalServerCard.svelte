@@ -278,6 +278,7 @@
     taskDetail,
     taskLabelKey,
     taskPercent,
+    formatMemoryPair,
   } from '$lib/servers.util.js';
   import { formatBytes } from '$lib/string.util.js';
   import tooltip from '$lib/tooltip.util';
@@ -469,7 +470,7 @@
       return {
         percent: Math.min(100, (process / total) * 100),
         text: compactBytes(process),
-        detail: `${formatBytes(process, 1)} / ${formatBytes(total, 1)}`,
+        detail: formatMemoryPair(process, total),
       };
     }
 

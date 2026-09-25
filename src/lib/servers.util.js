@@ -273,6 +273,46 @@ export function canKill(server) {
  * @param {number|string} memoryMb
  * @returns {string}
  */
+/**
+ * The Java heap a managed server gets out of its memory setting, in MB: the node's rule
+ * (`JvmHeap.heapMb` -- the setting minus 512 MB plus 15 % of it, at most 2 GB, never below half).
+ * Mirrored here so the settings say what the heap will be; change both together.
+ *
+ * @param {unknown} memoryMb
+ * @returns {number | null}
+ */
+export function heapMbOf(memoryMb) {
+  const setting = Math.trunc(Number(memoryMb));
+
+  if (!Number.isFinite(setting) || setting <= 0) {
+    return null;
+  }
+
+  const overhead = Math.min(2048, 512 + Math.round(setting * 0.15));
+
+  return Math.max(setting - overhead, Math.trunc(setting / 2));
+}
+
+/**
+ * "1092 MB / 1536 MB", or in GB with a decimal from 10 GB up: in the unit the memory setting is
+ * typed in, and exact enough that a process just over its setting does not read "1.5 GB / 1.5 GB"
+ * next to a 102 %.
+ *
+ * @param {number} used bytes
+ * @param {number} total bytes
+ * @returns {string}
+ */
+export function formatMemoryPair(used, total) {
+  const MiB = 1024 * 1024;
+  const GiB = 1024 * MiB;
+
+  if (total < 10 * GiB) {
+    return `${Math.round(used / MiB)} MB / ${Math.round(total / MiB)} MB`;
+  }
+
+  return `${(used / GiB).toFixed(1)} GB / ${(total / GiB).toFixed(1)} GB`;
+}
+
 export function aikarFlags(memoryMb) {
   const large = Number(memoryMb) >= 12288;
 

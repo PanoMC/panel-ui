@@ -850,6 +850,7 @@
     FeatureReasons,
     featureSectionKey,
     featureSource,
+    formatMemoryPair,
     featureUnavailableReason,
     getLocalAddress,
     hasCapability,
@@ -1988,7 +1989,7 @@
     if (processUsed != null && setting != null) {
       ram = {
         value: formatMemoryPercent((processUsed / setting) * 100),
-        secondary: `${formatByteSize(processUsed, 1)} / ${formatByteSize(setting, 1)}`,
+        secondary: formatMemoryPair(processUsed, setting),
         // The sparkline's top, so the line sits where the percentage says it does.
         max: setting,
       };
@@ -1999,7 +2000,7 @@
         ram = total
           ? {
               value: formatMemoryPercent((processUsed / total) * 100),
-              secondary: `${formatByteSize(processUsed, 1)} / ${formatByteSize(total, 1)}`,
+              secondary: formatMemoryPair(processUsed, total),
               max: total,
             }
           : { value: formatByteSize(processUsed, 1), secondary: '' };
@@ -2012,7 +2013,7 @@
         ram = max
           ? {
               value: formatMemoryPercent((used / max) * 100),
-              secondary: `${formatByteSize(used, 1)} / ${formatByteSize(max, 1)}`,
+              secondary: formatMemoryPair(used, max),
               max,
             }
           : { value: formatByteSize(used, 1), secondary: '' };

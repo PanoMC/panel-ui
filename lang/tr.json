@@ -1679,7 +1679,7 @@
       },
       "create": {
         "memory-label": "Bellek",
-        "memory-hint": "Sunucunun toplam belleği. Java heap'ine bunun yaklaşık dörtte biri eksiği verilir; kalanı JVM'in kendi ihtiyacı.",
+        "memory-hint": "Sunucunun toplam belleği. Java heap'ine bunun {heap} MB'ı verilir; kalanı JVM'in heap dışındaki ihtiyacı.",
         "port-label": "Oyun portu",
         "port-hint": "Oyuncuların bağlandığı port. Düğüm portun boş olduğunu kontrol eder.",
         "java-label": "Java sürümü",

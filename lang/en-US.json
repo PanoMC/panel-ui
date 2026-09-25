@@ -1679,7 +1679,7 @@
       },
       "create": {
         "memory-label": "Memory",
-        "memory-hint": "The server's whole memory. Java's heap gets about a quarter less; the rest is what the JVM needs besides it.",
+        "memory-hint": "The server's whole memory. Java's heap gets {heap} MB of it; the rest is what the JVM needs besides the heap.",
         "port-label": "Game port",
         "port-hint": "The port players connect to. The node checks that it is free.",
         "java-label": "Java version",

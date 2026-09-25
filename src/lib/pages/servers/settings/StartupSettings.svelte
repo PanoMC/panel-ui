@@ -12,7 +12,11 @@
       <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="startupMemory">
           {$_('pages.servers.create.memory-label')}
-          <small class="d-block">{$_('pages.servers.create.memory-hint')}</small>
+          <small class="d-block">
+            {$_('pages.servers.create.memory-hint', {
+              values: { heap: heapMbOf(form.memoryMb) ?? '—' },
+            })}
+          </small>
         </label>
         <div class="col">
           <div class="input-group">
@@ -184,7 +188,7 @@
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { fetchNode, getCachedNode } from '$lib/nodes.util.js';
-  import { isManaged, jvmArgsToText } from '$lib/servers.util.js';
+  import { heapMbOf, isManaged, jvmArgsToText } from '$lib/servers.util.js';
 
   /**
    * The editable copy of everything this page owns, built from the `server` row the detail

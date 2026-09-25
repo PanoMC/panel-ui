@@ -492,7 +492,11 @@
                   bind:value={memoryMb} />
                 <span class="input-group-text">MB</span>
               </div>
-              <div class="form-text">{$_('pages.servers.create.memory-hint')}</div>
+              <div class="form-text">
+                {$_('pages.servers.create.memory-hint', {
+                  values: { heap: heapMbOf(memoryMb) ?? '—' },
+                })}
+              </div>
               <div class="btn-group btn-group-sm mt-2" role="group">
                 {#each MEMORY_PRESETS as preset (preset)}
                   <button
@@ -795,6 +799,7 @@
     showServerActionError,
     softwareNoteBadge,
     softwareVersionLabelKey,
+    heapMbOf,
   } from '$lib/servers.util.js';
   import { onNode, onNodeRemoved, subscribeNodes } from '$lib/panelRealtime.js';
   import { sanitizeImageSrc } from '$lib/security.util.js';
