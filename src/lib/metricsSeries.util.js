@@ -157,7 +157,8 @@ export function fillMetricGaps(points, bucketMs) {
  * and days nothing was measured instead of leaving them blank.
  *
  * - Before the first point: zero from [window.min] up to one spacing before it, when the first
- *   point is more than a spacing into the window.
+ *   point is more than a spacing into the window -- unless [window.leading] is false, for a live
+ *   window whose earlier stretch was simply not watched rather than not measured.
  * - After the last point: the same up to [window.max], but only when [window.open] is false. An
  *   open window is a server that is still running, whose newest point simply has not been
  *   fetched yet; drawing that as zero would show a running server as down.
@@ -165,7 +166,7 @@ export function fillMetricGaps(points, bucketMs) {
  *
  * @param {Array<{ x: number, y: number | null }>} points sorted by `x`.
  * @param {number} bucketMs
- * @param {{ min: number, max: number, open?: boolean }} window
+ * @param {{ min: number, max: number, open?: boolean, leading?: boolean }} window
  * @returns {Array<{ x: number, y: number }>}
  */
 export function fillMetricWindow(points, bucketMs, window) {
@@ -190,7 +191,7 @@ export function fillMetricWindow(points, bucketMs, window) {
   const first = out[0];
   const last = out[out.length - 1];
 
-  if (first.x - min > step) {
+  if (window.leading !== false && first.x - min > step) {
     out.unshift({ x: min, y: 0 }, { x: first.x - step, y: 0 });
   }
 

@@ -75,6 +75,8 @@
   let chart;
   let themeObserver;
   let mediaQuery;
+  /** @type {ReturnType<typeof setInterval>[]} */
+  const offlineTimers = [];
 
   $: if (chart && series) {
     updateData(bucketMs, timeZone, range, online, tpsSupported);
@@ -290,6 +292,17 @@
   onMount(() => {
     renderChart();
 
+    // A server that is off sends nothing, so nothing else would move the window: the zero after
+    // its last point has to keep reaching "now" on its own. Every few seconds is enough on an
+    // hour or more.
+    const offlineTimer = setInterval(() => {
+      if (!online) {
+        updateData();
+      }
+    }, 5000);
+
+    offlineTimers.push(offlineTimer);
+
     if (typeof document !== 'undefined') {
       themeObserver = new MutationObserver(applyColors);
       themeObserver.observe(document.documentElement, {
@@ -305,6 +318,8 @@
   });
 
   onDestroy(() => {
+    offlineTimers.splice(0).forEach((timer) => clearInterval(timer));
+
     if (chart) {
       chart.destroy();
       chart = undefined;

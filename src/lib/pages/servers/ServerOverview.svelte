@@ -192,7 +192,7 @@
         class="btn btn-sm btn-outline-secondary"
         aria-label={$_('pages.servers.overview.refresh-now')}
         use:tooltip={[$_('pages.servers.overview.refresh-now'), { placement: 'bottom' }]}
-        disabled={vitalsRefreshing || !wantsMetrics}
+        disabled={vitalsRefreshing}
         on:click={refreshVitals}>
         <i class="fa-solid fa-rotate-right" class:fa-spin={vitalsRefreshing} aria-hidden="true"></i>
       </button>
@@ -206,7 +206,9 @@
           bucketMs={vitalsBucketMs}
           timeZone={displayTimeZone}
           showDate={vitalsShowDate}
-          liveWindowMs={vitalsLiveWindowMs}
+          windowMs={vitalsWindowMs}
+          online={vitalsOnline}
+          padStart={vitalsRange !== '1m'}
           value={vitals.cpu.value}
           points={vitalSeries.cpu}
           scaleMax={100}
@@ -220,7 +222,9 @@
           bucketMs={vitalsBucketMs}
           timeZone={displayTimeZone}
           showDate={vitalsShowDate}
-          liveWindowMs={vitalsLiveWindowMs}
+          windowMs={vitalsWindowMs}
+          online={vitalsOnline}
+          padStart={vitalsRange !== '1m'}
           value={vitals.ram.value}
           secondary={vitals.ram.secondary}
           points={vitalSeries.ram}
@@ -235,7 +239,9 @@
           bucketMs={vitalsBucketMs}
           timeZone={displayTimeZone}
           showDate={vitalsShowDate}
-          liveWindowMs={vitalsLiveWindowMs}
+          windowMs={vitalsWindowMs}
+          online={vitalsOnline}
+          padStart={vitalsRange !== '1m'}
           value={vitals.disk.value}
           secondary={vitals.disk.secondary}
           points={vitalSeries.disk}
@@ -249,7 +255,9 @@
           bucketMs={vitalsBucketMs}
           timeZone={displayTimeZone}
           showDate={vitalsShowDate}
-          liveWindowMs={vitalsLiveWindowMs}
+          windowMs={vitalsWindowMs}
+          online={vitalsOnline}
+          padStart={vitalsRange !== '1m'}
           value={vitals.network.value}
           secondary={vitals.network.secondary}
           series={vitalSeries.network}
@@ -1149,7 +1157,7 @@
   $: mspt = describeMspt(isServerOnline(view) ? perfSample : null);
   $: vitals = describeVitals($_, isServerOnline(view) ? vitalsSample : null, view);
   // Players from the live sample (it moves every tick), the server row otherwise.
-  $: playersText = describePlayers(perfSample, view);
+  $: playersText = describePlayers(isServerOnline(view) ? perfSample : null, view);
   // The process start on the node for a managed server, the plugin's reported boot time for a
   // linked one; counted up every second while the server is up.
   $: uptimeStart = Number(view?.processStartedAt) || Number(view?.startTime) || 0;
@@ -1164,9 +1172,11 @@
       ? requestedMetricsInterval(vitalsInterval)
       : (METRIC_RANGE_BUCKET_MS[vitalsRange] ?? 60_000);
   $: vitalsShowDate = VITALS_DATED_RANGES.includes(vitalsRange);
-  // `1m` scrolls like a live chart over a fixed last minute; the other ranges span their
-  // fetched history from the first point to the last.
-  $: vitalsLiveWindowMs = vitalsRange === '1m' ? METRIC_RANGE_WINDOW_MS['1m'] : null;
+  // Every range is drawn over its whole span, `1m` scrolling like a live chart: a day is a day
+  // whatever the data covers, and what nothing measured in it reads as zero.
+  $: vitalsWindowMs = METRIC_RANGE_WINDOW_MS[vitalsRange] ?? null;
+  // Off, the cards draw zero from the last sample to now; on, that stretch is only not here yet.
+  $: vitalsOnline = isServerOnline(view);
   $: serverTimeZoneAvailable = isValidTimeZone(view?.timeZone);
   $: displayTimeZone = useServerTime && serverTimeZoneAvailable ? view.timeZone : undefined;
   $: serverTimeTooltip = serverTimeZoneAvailable
@@ -1180,7 +1190,7 @@
   $: if (browser && viewId != null && (wiredId !== viewId || (wantsMetrics && !wiredWithMetrics))) {
     wiredId = viewId;
     wiredWithMetrics = wantsMetrics;
-    void wire(viewId, wantsMetrics);
+    void wire(viewId);
   }
 
   // The card hides itself on a build without the endpoint, so it only appears once the log has
@@ -1252,10 +1262,13 @@
   /**
    * Attach the overview to the same metrics feed the dedicated pages use.
    *
+   * The history is fetched and the feed joined whatever the server's state: a stopped server
+   * still has its last hour to show (ending in the drop to zero), and a feed joined now is what
+   * carries the first sample the moment it starts.
+   *
    * @param {number} id
-   * @param {boolean} withMetrics
    */
-  async function wire(id, withMetrics) {
+  async function wire(id) {
     unwire();
 
     metricsSample = null;
@@ -1265,59 +1278,55 @@
     vitalsSeries = [];
     perfSample = null;
     perfSeries = [];
-    metricsLoading = withMetrics;
-    vitalsLoading = withMetrics;
+    metricsLoading = true;
+    vitalsLoading = true;
 
-    if (withMetrics) {
-      releases.push(
-        onServerMetrics((frame) => {
-          if (Number(frame.serverId) !== Number(id) || !frame.sample) {
-            return;
-          }
+    releases.push(
+      onServerMetrics((frame) => {
+        if (Number(frame.serverId) !== Number(id) || !frame.sample) {
+          return;
+        }
 
-          metricsSample = frame.sample;
-          vitalsData = appendSample(
-            vitalsData,
+        metricsSample = frame.sample;
+        vitalsData = appendSample(
+          vitalsData,
+          frame.sample,
+          METRIC_RANGE_WINDOW_MS[vitalsRange],
+          vitalsRange === '1m' ? 0 : METRIC_RANGE_BUCKET_MS[vitalsRange],
+        );
+
+        // Live samples only bridge the Hour view; the Day and Week buckets are what they are.
+        if (performanceRange === 'hour') {
+          metricsSeries = appendSample(
+            metricsSeries,
             frame.sample,
-            METRIC_RANGE_WINDOW_MS[vitalsRange],
-            vitalsRange === '1m' ? 0 : METRIC_RANGE_BUCKET_MS[vitalsRange],
+            METRIC_RANGE_WINDOW_MS['1h'],
+            PERFORMANCE_RANGES.hour.bucketMs,
           );
+        }
 
-          // Live samples only bridge the Hour view; the Day and Week buckets are what they are.
-          if (performanceRange === 'hour') {
-            metricsSeries = appendSample(
-              metricsSeries,
-              frame.sample,
-              METRIC_RANGE_WINDOW_MS['1h'],
-              PERFORMANCE_RANGES.hour.bucketMs,
-            );
-          }
+        // On the 1-minute window the vital cards are live every second, paused or not; on the
+        // other ranges they follow the chosen interval like Performance. The sparklines keep
+        // every sample (they are history); only the figure on the card is throttled — the feed
+        // can be faster than the pick (a node + plugin server gets a merged sample on each
+        // side's frame, and the hub sends the fastest rate any watcher asked for).
+        if (vitalsRange === '1m' || vitalsInterval !== 0) {
+          vitalsSeries = vitalsData;
+          vitalsThrottle.setInterval(vitalsRange === '1m' ? LIVE_RANGE_INTERVAL : vitalsInterval);
+          vitalsThrottle.push(metricsSample);
+        }
 
-          // On the 1-minute window the vital cards are live every second, paused or not; on the
-          // other ranges they follow the chosen interval like Performance. The sparklines keep
-          // every sample (they are history); only the figure on the card is throttled — the feed
-          // can be faster than the pick (a node + plugin server gets a merged sample on each
-          // side's frame, and the hub sends the fastest rate any watcher asked for).
-          if (vitalsRange === '1m' || vitalsInterval !== 0) {
-            vitalsSeries = vitalsData;
-            vitalsThrottle.setInterval(vitalsRange === '1m' ? LIVE_RANGE_INTERVAL : vitalsInterval);
-            vitalsThrottle.push(metricsSample);
-          }
+        // Performance moves at the chosen interval, showing the newest sample of each interval.
+        // Paused keeps its picture.
+        if (vitalsInterval !== 0) {
+          perfThrottle.setInterval(vitalsInterval);
+          perfThrottle.push(metricsSample);
+        }
+      }),
+    );
+    releases.push(subscribeServerMetrics(id, requestedMetricsInterval(vitalsInterval)));
 
-          // Performance moves at the chosen interval, showing the newest sample of each interval.
-          // Paused keeps its picture.
-          if (vitalsInterval !== 0) {
-            perfThrottle.setInterval(vitalsInterval);
-            perfThrottle.push(metricsSample);
-          }
-        }),
-      );
-      releases.push(subscribeServerMetrics(id, requestedMetricsInterval(vitalsInterval)));
-    }
-
-    if (withMetrics) {
-      await hydrateMetrics(id);
-    }
+    await hydrateMetrics(id);
   }
 
   function unwire() {
