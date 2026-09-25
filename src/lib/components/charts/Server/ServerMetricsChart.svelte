@@ -38,7 +38,7 @@
   import { _ } from 'svelte-i18n';
 
   import { currentLanguage } from '$lib/language.util.js';
-  import { fillMetricGaps, formatMetricTime } from '$lib/metricsSeries.util.js';
+  import { fillMetricWindow, formatMetricTime } from '$lib/metricsSeries.util.js';
 
   Chart.register(
     LineController,
@@ -63,6 +63,13 @@
   export let timeZone = undefined;
   /** `1h`, `24h` or `7d` — decides how a time on the axis and in the tooltip is written. */
   export let range = '1h';
+  /**
+   * Whether the server runs right now: its newest stretch is then only not fetched yet, and is not
+   * drawn as zero the way the time after a server stopped is.
+   */
+  export let online = false;
+  /** False where nothing counts ticks (a proxy): no TPS line at all rather than a flat zero. */
+  export let tpsSupported = true;
 
   let element;
   let chart;
@@ -70,7 +77,7 @@
   let mediaQuery;
 
   $: if (chart && series) {
-    updateData(bucketMs, timeZone, range);
+    updateData(bucketMs, timeZone, range, online, tpsSupported);
   }
 
   const unsubscribeCurrentLanguage = currentLanguage.subscribe(() => {
@@ -103,6 +110,10 @@
   }
 
   function toPoints(key) {
+    if (key === 'tps' && !tpsSupported) {
+      return [];
+    }
+
     const points = (Array.isArray(series) ? series : [])
       .map((row) => ({
         x: Number(row.ts) || 0,
@@ -111,7 +122,8 @@
       .filter((point) => point.x > 0)
       .sort((a, b) => a.x - b.x);
 
-    return points.some((point) => point.y != null) ? fillMetricGaps(points, bucketMs) : [];
+    // Hours and days nothing was measured read as zero, across the whole window.
+    return fillMetricWindow(points, bucketMs, { ...windowOf(range), open: online });
   }
 
   /**

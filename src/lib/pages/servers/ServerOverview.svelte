@@ -372,16 +372,15 @@
             <div class="placeholder-glow" style="height: 220px;" aria-busy="true">
               <span class="placeholder col-4"></span>
             </div>
-          {:else if perfSeries.length}
+          {:else}
+            <!-- Drawn with no data too: a range nothing was measured in reads as zero. -->
             <ServerMetricsChart
               series={perfSeries}
               bucketMs={PERFORMANCE_RANGES[performanceRange].bucketMs}
               range={PERFORMANCE_RANGES[performanceRange].range}
+              online={isServerOnline(view)}
+              tpsSupported={showTps}
               timeZone={displayTimeZone} />
-          {:else}
-            <NoContent
-              icon="fa-solid fa-chart-line fa-3x"
-              text={$_('pages.servers.overview.metrics-empty')} />
           {/if}
         </div>
       </div>

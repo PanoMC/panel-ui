@@ -152,6 +152,56 @@ export function fillMetricGaps(points, bucketMs) {
 }
 
 /**
+ * [fillMetricGaps] over a whole window, with the stretches at its edges that have no data drawn
+ * as zero too (§2.4.25): a chart that shows "the last day" or "this week" says 0 for the hours
+ * and days nothing was measured instead of leaving them blank.
+ *
+ * - Before the first point: zero from [window.min] up to one spacing before it, when the first
+ *   point is more than a spacing into the window.
+ * - After the last point: the same up to [window.max], but only when [window.open] is false. An
+ *   open window is a server that is still running, whose newest point simply has not been
+ *   fetched yet; drawing that as zero would show a running server as down.
+ * - Nothing measured at all: a flat zero across the window.
+ *
+ * @param {Array<{ x: number, y: number | null }>} points sorted by `x`.
+ * @param {number} bucketMs
+ * @param {{ min: number, max: number, open?: boolean }} window
+ * @returns {Array<{ x: number, y: number }>}
+ */
+export function fillMetricWindow(points, bucketMs, window) {
+  const min = Number(window?.min);
+  const max = Number(window?.max);
+  const filled = fillMetricGaps(points, bucketMs);
+
+  if (!Number.isFinite(min) || !Number.isFinite(max) || max <= min) {
+    return filled;
+  }
+
+  if (filled.length === 0) {
+    return [
+      { x: min, y: 0 },
+      { x: max, y: 0 },
+    ];
+  }
+
+  const bucket = Number(bucketMs) > 0 ? Number(bucketMs) : 60_000;
+  const step = Math.max(bucket, typicalSpacing(filled.filter((point) => point.y !== 0)));
+  const out = [...filled];
+  const first = out[0];
+  const last = out[out.length - 1];
+
+  if (first.x - min > step) {
+    out.unshift({ x: min, y: 0 }, { x: first.x - step, y: 0 });
+  }
+
+  if (!window.open && max - last.x > step) {
+    out.push({ x: last.x + step, y: 0 }, { x: max, y: 0 });
+  }
+
+  return out;
+}
+
+/**
  * @param {Array<{ x: number }>} points sorted by `x`.
  * @returns {number} the median interval between neighbouring points, 0 with fewer than two.
  */
