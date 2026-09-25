@@ -1125,6 +1125,11 @@ export function showServerActionError(error, body = null, context = {}) {
 
   const key = serverActionErrorKey(error);
 
+  // The page may predate the failure: reloading the row brings its install-failure alert up.
+  if (code === 'SERVER_INSTALL_FAILED') {
+    requestServerRefresh(context.server?.id ?? context.serverId);
+  }
+
   if (SERVER_ERROR_KEYS[code]) {
     return showError(key, isRateLimitError(code) ? { seconds: getRetryAfterSeconds(body) } : {});
   }
@@ -1213,6 +1218,8 @@ const SERVER_ERROR_KEYS = Object.freeze({
   FEATURE_UNAVAILABLE: 'pages.servers.errors.feature-unavailable',
   SERVER_CAPABILITY_MISSING: 'pages.servers.errors.capability-missing',
   SERVER_OFFLINE: 'pages.servers.errors.offline',
+  // A start of a managed server whose install failed: its node never set it up.
+  SERVER_INSTALL_FAILED: 'pages.servers.errors.install-failed',
   RATE_LIMITED: 'pages.servers.errors.rate-limited',
   RATE_LIMIT_EXCEEDED: 'pages.servers.errors.rate-limited',
   NODE_OFFLINE: 'pages.servers.errors.node-offline',

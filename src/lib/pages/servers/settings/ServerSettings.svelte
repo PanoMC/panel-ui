@@ -159,9 +159,8 @@
   </div>
 {/if}
 
-<!-- Changing the software (or reinstalling it) lays the server down again, so the dialog takes
-     the account password (§2.7) and says what is carried over (SM-66, §2.4.31). -->
-<ChangeSoftwareModal />
+<!-- The software dialog is mounted once by the server layout, whose install-failure alert opens
+     it too. -->
 <MakeMainServerModal />
 <RemoveServerModal />
 
@@ -203,9 +202,7 @@
   import RemoveServerModal, {
     show as showRemoveServerModal,
   } from '$lib/components/modals/RemoveServerModal.svelte';
-  import ChangeSoftwareModal, {
-    show as showChangeSoftwareModal,
-  } from '$lib/components/servers/ChangeSoftwareModal.svelte';
+  import { show as showChangeSoftwareModal } from '$lib/components/servers/ChangeSoftwareModal.svelte';
 
   export let data;
 

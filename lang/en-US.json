@@ -954,6 +954,7 @@
         "agent-on": "Run by the Pano Agent on {host}",
         "power-state": "Already {state}",
         "power-node-offline": "Node is offline",
+        "power-install-failed": "Its install failed; reinstall it first",
         "power-cooldown": "Too many actions, wait a moment",
         "confirm-start-title": "Start this server?",
         "confirm-start-body": "{name} will be started on its node. It takes a moment before players can join.",
@@ -986,7 +987,9 @@
         "update-plugin": "The Pano plugin is outdated — {version} is available",
         "update-plugin-outdated": "The Pano plugin is outdated",
         "update-agent": "Pano Agent update available",
-        "update-daemon-started": "Updating — the server keeps running."
+        "update-daemon-started": "Updating — the server keeps running.",
+        "install-failed-title": "The install failed",
+        "install-failed-body": "The node could not set this server up, so there is nothing to start yet. Fix the cause below if it is on the node's side, then reinstall."
       },
       "overview": {
         "capabilities-title": "Capabilities",
@@ -1514,6 +1517,7 @@
         "feature-unavailable": "This server can't do that right now.",
         "command-denied": "That command is blocked for you by a permission policy (pattern \"{pattern}\").",
         "offline": "The server is offline right now. Try again once it reconnects.",
+        "install-failed": "The install of this server failed; reinstall it first.",
         "rate-limited": "Slow down — too many requests in a row. Wait about {seconds} seconds and try again.",
         "generic": "The action failed. ({error})",
         "node-offline": "The node this server runs on is offline. Try again once it reconnects.",

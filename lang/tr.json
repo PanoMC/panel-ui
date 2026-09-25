@@ -954,6 +954,7 @@
         "agent-on": "{host} üzerindeki Pano Agent çalıştırıyor",
         "power-state": "Zaten {state}",
         "power-node-offline": "Düğüm çevrimdışı",
+        "power-install-failed": "Kurulumu başarısız oldu; önce yeniden yükleyin",
         "power-cooldown": "Çok fazla işlem, biraz bekle",
         "confirm-start-title": "Sunucu başlatılsın mı?",
         "confirm-start-body": "{name} kendi düğümünde başlatılacak. Oyuncuların girebilmesi biraz sürer.",
@@ -986,7 +987,9 @@
         "update-plugin": "Pano eklentisi eski — {version} sürümü çıktı",
         "update-plugin-outdated": "Pano eklentisi eski",
         "update-agent": "Pano Agent güncellemesi var",
-        "update-daemon-started": "Güncelleniyor — sunucu çalışmaya devam ediyor."
+        "update-daemon-started": "Güncelleniyor — sunucu çalışmaya devam ediyor.",
+        "install-failed-title": "Kurulum başarısız oldu",
+        "install-failed-body": "Düğüm bu sunucuyu kuramadı, bu yüzden henüz başlatılacak bir şey yok. Sebep düğüm tarafındaysa aşağıdakini düzeltin, sonra yeniden yükleyin."
       },
       "overview": {
         "capabilities-title": "Yetenekler",
@@ -1514,6 +1517,7 @@
         "feature-unavailable": "Bu sunucu şu anda bunu yapamıyor.",
         "command-denied": "Bu komut bir yetki kuralıyla sana kapatılmış (kalıp: \"{pattern}\").",
         "offline": "Sunucu şu anda çevrimdışı. Yeniden bağlandığında tekrar dene.",
+        "install-failed": "Bu sunucunun kurulumu başarısız oldu; önce yeniden yükleyin.",
         "rate-limited": "Yavaşla — arka arkaya çok fazla istek gönderdin. Yaklaşık {seconds} saniye bekleyip tekrar dene.",
         "generic": "İşlem başarısız oldu. ({error})",
         "node-offline": "Bu sunucunun çalıştığı düğüm çevrimdışı. Yeniden bağlandığında tekrar dene.",

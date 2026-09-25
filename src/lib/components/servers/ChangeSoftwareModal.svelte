@@ -323,29 +323,32 @@
               </h6>
 
               <div class="vstack gap-2">
-                <div class="form-check form-switch mb-0">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    id="changeSoftwareBackup"
-                    bind:checked={backupFirst} />
-                  <label class="form-check-label" for="changeSoftwareBackup">
-                    {$_('components.modals.change-software.backup-first')}
-                    <small class="d-block text-body-secondary">
-                      {backupEstimate
-                        ? $_('components.modals.change-software.backup-first-hint-size', {
-                            values: { size: backupEstimate },
-                          })
-                        : $_('components.modals.change-software.backup-first-hint')}
-                    </small>
-                  </label>
-                </div>
-                {#if !backupFirst}
-                  <div class="alert alert-danger small mb-0" role="alert">
-                    <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
-                    {$_('components.modals.change-software.no-backup-warning')}
+                <!-- A server whose install failed has nothing to back up (Pano skips it too). -->
+                {#if !installFailed}
+                  <div class="form-check form-switch mb-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="changeSoftwareBackup"
+                      bind:checked={backupFirst} />
+                    <label class="form-check-label" for="changeSoftwareBackup">
+                      {$_('components.modals.change-software.backup-first')}
+                      <small class="d-block text-body-secondary">
+                        {backupEstimate
+                          ? $_('components.modals.change-software.backup-first-hint-size', {
+                              values: { size: backupEstimate },
+                            })
+                          : $_('components.modals.change-software.backup-first-hint')}
+                      </small>
+                    </label>
                   </div>
+                  {#if !backupFirst}
+                    <div class="alert alert-danger small mb-0" role="alert">
+                      <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
+                      {$_('components.modals.change-software.no-backup-warning')}
+                    </div>
+                  {/if}
                 {/if}
 
                 <div class="form-check form-switch mb-0">
@@ -658,6 +661,9 @@
     plugins: preview?.allowed ? preview.allowed.plugins === true : localRules.allowed.plugins,
     configs: preview?.allowed ? preview.allowed.configs === true : localRules.allowed.configs,
   });
+
+  /** The server's install failed (`installError`): the reinstall is its first real install. */
+  const installFailed = $derived(!!server?.installError);
 
   const running = $derived(
     typeof preview?.running === 'boolean'
@@ -985,7 +991,7 @@
         plugins: !!keep.plugins && allowedKeep.plugins,
         configs: !!keep.configs && allowedKeep.configs,
       },
-      backupFirst: !!backupFirst,
+      backupFirst: !!backupFirst && !installFailed,
       startAfter: !!startAfter,
     };
 

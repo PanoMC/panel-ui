@@ -122,6 +122,11 @@
     border-radius: var(--bs-border-radius);
   }
 
+  .install-error {
+    max-height: 10rem;
+    color: var(--bs-body-color);
+  }
+
   .task-log-chevron {
     transition: transform 0.2s ease;
   }
@@ -417,6 +422,39 @@
     </div>
   </div>
 
+  <!-- An install or import that failed leaves a server its node never set up: nothing to start
+       until it is reinstalled. The reason stays on the server (`installError`), so it is still
+       here after the task's red bar is gone, with the way out beside it. Hidden while a task is
+       running, which is the reinstall itself. -->
+  {#if installError && !headerTask && processState !== ProcessStates.INSTALLING}
+    <div class="alert alert-danger d-flex align-items-start gap-2" role="alert">
+      <i class="fa-solid fa-circle-exclamation mt-1" aria-hidden="true"></i>
+      <div class="flex-grow-1 min-w-0">
+        <div class="fw-semibold">{$_('pages.servers.header.install-failed-title')}</div>
+        <div class="small">{$_('pages.servers.header.install-failed-body')}</div>
+        <pre class="task-log install-error small mt-2 mb-0">{installError}</pre>
+        {#if canReinstall}
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            <button
+              type="button"
+              class="btn btn-sm btn-danger"
+              on:click={() => showChangeSoftwareModal({ server: $server, lockSoftware: true })}>
+              <i class="fa-solid fa-rotate me-1" aria-hidden="true"></i>
+              {$_('buttons.reinstall')}
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger"
+              on:click={() => showChangeSoftwareModal({ server: $server })}>
+              <i class="fa-solid fa-shuffle me-1" aria-hidden="true"></i>
+              {$_('pages.servers.settings.change-software-button')}
+            </button>
+          </div>
+        {/if}
+      </div>
+    </div>
+  {/if}
+
   <!-- SM-51/§2.4.16, SM-62/§2.4.27 — a process the node found still running after its own restart
        and took over. Until it is restarted from the panel once, it has no console input and no
        automatic crash recovery; the alert says so and offers that restart. Dismissed per server
@@ -452,6 +490,11 @@
     </div>
   {/if}
 </div>
+
+<!-- Changing the software (or reinstalling it) lays the server down again, so the dialog takes
+     the account password (§2.7) and says what is carried over (SM-66, §2.4.31). Mounted here, once,
+     for the settings page's danger zone and the install-failure alert alike. -->
+<ChangeSoftwareModal />
 
 <!-- Stopping a server drops everyone on it, so both actions confirm first. -->
 <div class="modal fade" tabindex="-1" aria-hidden="true" bind:this={powerModalElement}>
@@ -574,6 +617,7 @@
     hasCapability,
     isAgentServer,
     isBuildToolsTask,
+    isInPlace,
     isManaged,
     isPanoPluginUpdateTask,
     isRateLimitError,
@@ -609,6 +653,9 @@
   import SoftwareLogo from '$lib/components/servers/SoftwareLogo.svelte';
   import PanoPluginUpdateButton from '$lib/components/servers/PanoPluginUpdateButton.svelte';
   import DaemonUpdateProgress from '$lib/components/servers/DaemonUpdateProgress.svelte';
+  import ChangeSoftwareModal, {
+    show as showChangeSoftwareModal,
+  } from '$lib/components/servers/ChangeSoftwareModal.svelte';
   import { confirmAgentUpdate } from '$lib/components/modals/ConfirmUpdateModal.svelte';
 
   export let data;
@@ -784,6 +831,10 @@
   $: protocolVersion = Number($server?.protocolVersion ?? LEGACY_PROTOCOL_VERSION);
   $: managed = isManaged($server);
   $: processState = getProcessState($server) ?? ProcessStates.STOPPED;
+  // Why the node could not install this server, until a reinstall succeeds (`installError`).
+  $: installError = managed ? $server?.installError || '' : '';
+  // What the settings page's danger zone offers; an in-place server cannot be rebuilt.
+  $: canReinstall = managed && !isInPlace($server) && hasPermission(Permissions.CREATE_SERVERS);
   $: processColour = processStateColour(processState);
   /**
    * Why the process stopped, as the node worded it. It only ever lives in the store — nothing
@@ -1157,6 +1208,16 @@
   function powerTooltip(button, current, nodeRow) {
     if (!hasPermission(Permissions.MANAGE_SERVER_POWER)) {
       return 'pages.servers.header.power-no-permission';
+    }
+
+    // Its node never set up a server whose install failed, so there is nothing to start (Pano
+    // refuses with SERVER_INSTALL_FAILED); Stop and Kill follow the state as usual.
+    if (
+      isManaged(current) &&
+      current?.installError &&
+      (button.power === 'START' || button.power === 'RESTART')
+    ) {
+      return 'pages.servers.header.power-install-failed';
     }
 
     const source = featureSource(current, button.feature);
