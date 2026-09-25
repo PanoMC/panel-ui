@@ -2185,17 +2185,14 @@
     const of = (/** @type {string} */ key) => rows.map((row) => ({ ts: row.ts, value: row[key] }));
     // The RAM line follows the figure the card shows: the whole process while a node measures it
     // (its `memRss`, or a node row's own figure), the heap only for a server nothing else measures.
-    // Minutes measured the other way become gaps, not spikes.
+    // A minute from before the process was recorded at all (rows older than that column) falls
+    // back to its heap rather than reading as an empty server: lower than the process, never zero.
     const processLine = processMemoryOf(sample) != null;
 
     return {
       ram: rows.map((row) => ({
         ts: row.ts,
-        value: processLine
-          ? (row.memRss ?? (row.memSource === 'node' ? row.mem : null))
-          : row.memSource === 'plugin'
-            ? row.mem
-            : null,
+        value: processLine ? (row.memRss ?? row.mem) : row.memSource === 'plugin' ? row.mem : null,
       })),
       cpu: of('cpu'),
       disk: of('disk'),
