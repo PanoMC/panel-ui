@@ -1921,6 +1921,12 @@ export function applyTaskFrame(server, frame) {
     return server;
   }
 
+  // An install a newer one replaced (a node died in the middle of it and the retry is done): it
+  // ends quietly, without the red bar of a failure right after the success.
+  if (String(frame.error || '') === 'SUPERSEDED') {
+    return sameTask ? { ...server, activeTask: null } : server;
+  }
+
   return {
     ...server,
     activeTask: null,
