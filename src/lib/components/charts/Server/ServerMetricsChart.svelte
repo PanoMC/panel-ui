@@ -123,6 +123,18 @@
     return formatMetricTime(value, { timeZone, withDate: forTooltip && range !== '1h' });
   }
 
+  /**
+   * The x axis' tick spacing per range: a tick an hour across a day and one a day across a week,
+   * where Chart.js on its own picks something far finer (a label every few minutes on a day).
+   * The hour lets it choose, which lands on round minutes.
+   *
+   * @param {string} value the range key (`1h`, `24h`, `7d`).
+   * @returns {'hour' | 'day' | undefined}
+   */
+  function timeUnitOf(value) {
+    return value === '7d' ? 'day' : value === '24h' ? 'hour' : undefined;
+  }
+
   function updateData() {
     if (!chart) {
       return;
@@ -130,7 +142,7 @@
 
     chart.data.datasets[0].data = toPoints('tps');
     chart.data.datasets[1].data = toPoints('players');
-    chart.options.scales.x.time.unit = range === '7d' ? 'day' : undefined;
+    chart.options.scales.x.time.unit = timeUnitOf(range);
     chart.update('none');
   }
 
@@ -209,7 +221,7 @@
           x: {
             type: 'time',
             time: {
-              unit: range === '7d' ? 'day' : undefined,
+              unit: timeUnitOf(range),
               displayFormats: { minute: 'HH:mm', hour: 'HH:mm' },
             },
             grid: { display: false, color: colors.grid },
