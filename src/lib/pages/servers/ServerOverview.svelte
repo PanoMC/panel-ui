@@ -1929,6 +1929,18 @@
   }
 
   /**
+   * Memory as a share of what the server may use, uncapped: a process above its setting (one
+   * still running with the heap of an older rule, or a JVM with large native buffers) reads
+   * 140 %, which is what "2.1 GB / 1.5 GB" beside it says. CPU stays capped, where a figure above
+   * 100 only means several cores.
+   *
+   * @param {number} value
+   */
+  function formatMemoryPercent(value) {
+    return `${Math.round(Math.max(0, value))}%`;
+  }
+
+  /**
    * Bytes per second; below one byte `formatBytes` has no unit to pick, so it reads as 0 B/s.
    * The number and its unit are held together, so a narrow card only ever breaks between the
    * ↓ and ↑ halves.
@@ -1966,7 +1978,7 @@
 
     if (processUsed != null && setting != null) {
       ram = {
-        value: formatPercent((processUsed / setting) * 100),
+        value: formatMemoryPercent((processUsed / setting) * 100),
         secondary: `${formatByteSize(processUsed, 1)} / ${formatByteSize(setting, 1)}`,
         // The sparkline's top, so the line sits where the percentage says it does.
         max: setting,
@@ -1977,7 +1989,7 @@
       if (processUsed != null) {
         ram = total
           ? {
-              value: formatPercent((processUsed / total) * 100),
+              value: formatMemoryPercent((processUsed / total) * 100),
               secondary: `${formatByteSize(processUsed, 1)} / ${formatByteSize(total, 1)}`,
               max: total,
             }
@@ -1990,7 +2002,7 @@
       if (used != null) {
         ram = max
           ? {
-              value: formatPercent((used / max) * 100),
+              value: formatMemoryPercent((used / max) * 100),
               secondary: `${formatByteSize(used, 1)} / ${formatByteSize(max, 1)}`,
               max,
             }
