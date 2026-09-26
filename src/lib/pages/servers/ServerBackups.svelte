@@ -308,6 +308,16 @@
                           {$_('buttons.download')}
                         </button>
 
+                        {#if canUploadToPanoBackup && backup.mode !== 'SNAPSHOT' && String(backup.status || '').toUpperCase() === 'READY'}
+                          <button
+                            type="button"
+                            class="dropdown-item"
+                            onclick={() => void uploadToPanoBackup(backup)}>
+                            <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
+                            {$_('pages.servers.backups.pano-backup-upload')}
+                          </button>
+                        {/if}
+
                         {#if canManage}
                           <button
                             type="button"
@@ -613,6 +623,7 @@
     showServerLoadError,
   } from '$lib/servers.util.js';
   import { onServerBackupsChanged, onTaskProgress } from '$lib/panelRealtime.js';
+  import { describeError } from '$lib/pano-backup.util.js';
 
   import BackupOptions, {
     backupOptionsPayload,
@@ -633,6 +644,9 @@
   const SECTION_KEY = 'components.server-navigation-menu.backups';
 
   const hasPermissionToManage = hasPermission(Permissions.MANAGE_SERVER_BACKUPS);
+  /** A FULL backup can also be sent to Pano Backup (panomc.com), E2E-encrypted. */
+  const canUploadToPanoBackup =
+    hasPermissionToManage && hasPermission(Permissions.MANAGE_PANO_BACKUPS);
 
   /** @type {Array<object>} */
   let backups = $state([]);
@@ -977,6 +991,39 @@
     downloadAnchor.href = `/api/panel/servers/${serverId}/backups/${encodeURIComponent(backup.id)}/download`;
     downloadAnchor.download = `${backup.name || backup.id}.zip`;
     downloadAnchor.click();
+  }
+
+  /**
+   * Sends one FULL backup to Pano Backup; the platform runs it as a Pano backup job (progress on
+   * the Backups settings page).
+   *
+   * @param {object} backup
+   */
+  async function uploadToPanoBackup(backup) {
+    if (!canUploadToPanoBackup || serverId == null || busyId) {
+      return;
+    }
+
+    busyId = backup.id;
+
+    try {
+      const body = await ApiUtil.post({
+        path: `/api/panel/servers/${serverId}/backups/${encodeURIComponent(backup.id)}/pano-backup`,
+        handler: (response) => response,
+      });
+
+      if (!body || body.error) {
+        const error = describeError(body || { error: 'NETWORK_ERROR' });
+
+        void showError(error.key, error.values);
+
+        return;
+      }
+
+      void showSuccess('pages.servers.backups.pano-backup-started');
+    } finally {
+      busyId = null;
+    }
   }
 
   /**

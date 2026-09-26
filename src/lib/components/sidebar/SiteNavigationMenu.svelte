@@ -125,6 +125,13 @@
       permission: Permissions.MANAGE_PLATFORM_SETTINGS,
     },
     {
+      href: '/settings/backups',
+      icon: 'fa-solid fa-cloud-arrow-up',
+      text: 'components.site-navigation-menu.backups',
+      startsWith: true,
+      permission: Permissions.MANAGE_PANO_BACKUPS,
+    },
+    {
       href: '/settings',
       icon: 'fas fa-cog',
       text: 'components.site-navigation-menu.settings',
