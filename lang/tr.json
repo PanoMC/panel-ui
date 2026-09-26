@@ -2655,6 +2655,42 @@
       "text": "Bakım modu açık. Ziyaretçiler web siteniz yerine bakım sayfasını görüyor.",
       "go-to-settings": "Ayarlara git"
     },
+    "hosted-banner": {
+      "managed": "Bu Pano, Pano Host tarafından yönetiliyor.",
+      "manage": "panomc.com'da yönet",
+      "details": "Ayrıntılar",
+      "dismiss": "Kapat",
+      "notices": {
+        "HOST_DISK_QUOTA": {
+          "title": "Depolama dolmak üzere",
+          "message": "Bu sunucu {quotaMb} MB depolama alanının %{percent} kadarını kullanıyor."
+        },
+        "HOST_TRAFFIC_QUOTA": {
+          "title": "Aylık trafik bitmek üzere",
+          "message": "Bu sunucu bu ayki trafiğinin %{percent} kadarını kullandı."
+        },
+        "HOST_TRIAL_ENDING": {
+          "title": "Deneme süresi bitiyor",
+          "message": "Ücretsiz deneme {days} gün içinde bitiyor. Bu sunucuyu korumak için panomc.com'da bir paket seçin."
+        },
+        "HOST_DELETION_SCHEDULED": {
+          "title": "Silme planlandı",
+          "message": "Bu sunucu {days} gün içinde silinecek."
+        },
+        "HOST_PACKAGE_CHANGE": {
+          "title": "Paket değişikliği planlandı",
+          "message": "Bu sunucu fatura döneminin sonunda {packageId} paketine geçecek."
+        },
+        "HOST_WORKLOAD_CRASHLOOP": {
+          "title": "Sunucu sürekli yeniden başlıyor",
+          "message": "Bu sunucu art arda çöktü. panomc.com'daki konsolu kontrol edin."
+        },
+        "HOST_SUPPORT_ACCESS": {
+          "title": "Destek erişimi",
+          "message": "Pano desteği bu panele giriş yaptı."
+        }
+      }
+    },
     "store-loading": {
       "store-loading": "Mağaza yükleniyor…",
       "please-wait": "Lütfen bekleyin.",

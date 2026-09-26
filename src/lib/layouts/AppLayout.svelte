@@ -30,6 +30,11 @@
       </div>
     {/if}
 
+    <!-- Pano Host: "managed by" link + control-plane notices; nothing on a self-hosted Pano. -->
+    {#if signedIn && !$resetLayout && !inlineLogin}
+      <HostedBanner />
+    {/if}
+
     <div class="d-flex flex-grow-1 overflow-hidden" style="min-height: 0;">
       <!-- The login form shown in place of a page (`requireSignedIn`) is chrome-free like the
            auth pages, decided from `$page` rather than `resetLayout`: the store is set by a load
@@ -79,6 +84,7 @@
   import { navigating } from '$app/stores';
 
   import PageActions from '$lib/components/PageActions.svelte';
+  import HostedBanner from '$lib/components/HostedBanner.svelte';
   import PageLoader from '$lib/components/PageLoader.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';
   import PageNav from '$lib/components/PageNav.svelte';
