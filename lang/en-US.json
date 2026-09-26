@@ -2452,6 +2452,42 @@
       "text": "Maintenance mode is on. Visitors see the maintenance page instead of your website.",
       "go-to-settings": "Go to settings"
     },
+    "hosted-banner": {
+      "managed": "This Pano is managed by Pano Host.",
+      "manage": "Manage on panomc.com",
+      "details": "Details",
+      "dismiss": "Dismiss",
+      "notices": {
+        "HOST_DISK_QUOTA": {
+          "title": "Storage almost full",
+          "message": "This instance uses {percent}% of its {quotaMb} MB storage."
+        },
+        "HOST_TRAFFIC_QUOTA": {
+          "title": "Monthly traffic almost used",
+          "message": "This instance used {percent}% of this month's traffic."
+        },
+        "HOST_TRIAL_ENDING": {
+          "title": "Trial ending",
+          "message": "The free trial ends in {days} day(s). Choose a plan on panomc.com to keep this instance."
+        },
+        "HOST_DELETION_SCHEDULED": {
+          "title": "Deletion scheduled",
+          "message": "This instance is scheduled for deletion in {days} day(s)."
+        },
+        "HOST_PACKAGE_CHANGE": {
+          "title": "Plan change scheduled",
+          "message": "This instance moves to the {packageId} plan at the end of the billing period."
+        },
+        "HOST_WORKLOAD_CRASHLOOP": {
+          "title": "Instance keeps restarting",
+          "message": "This instance crashed repeatedly. Check the console on panomc.com."
+        },
+        "HOST_SUPPORT_ACCESS": {
+          "title": "Support access",
+          "message": "Pano support signed in to this panel."
+        }
+      }
+    },
     "store-loading": {
       "store-loading": "Store loading…",
       "please-wait": "Please wait.",
