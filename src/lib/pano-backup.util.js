@@ -8,8 +8,14 @@ import { formatBytes } from './string.util.js';
 /** Local schedule (`PUT /api/panel/pano-backups/settings`). */
 export const LOCAL_SCHEDULES = Object.freeze(['OFF', 'DAILY', 'WEEKLY']);
 
-/** Pano Backup schedule (`PUT …/remote/settings`); `TIER` = as often as the tier allows. */
-export const REMOTE_SCHEDULES = Object.freeze(['OFF', 'TIER', 'DAILY', 'WEEKLY']);
+/** Pano Backup schedule (`PUT …/remote/settings`); plans have no frequency limit. */
+export const REMOTE_SCHEDULES = Object.freeze(['OFF', 'DAILY', 'WEEKLY']);
+
+/** Where the account's Pano Backup plan and every Pano's backups are managed on the website. */
+export const MANAGE_BACKUPS_URL = 'https://panomc.com/host/manage/backups';
+
+/** The panel page that runs the panomc.com platform connection flow. */
+export const CONNECT_PATH = '/settings/platform';
 
 /** Must match the platform's `PassphraseFile.MIN_LENGTH`. */
 export const MIN_PASSPHRASE_LENGTH = 8;
@@ -52,7 +58,8 @@ export const KNOWN_ERRORS = Object.freeze([
   'DATABASE_CONNECTION_FAILED',
   'INTERNAL_ERROR',
   'PANO_HOST_UNAVAILABLE',
-  'PANO_HOST_NOT_LINKED',
+  'CONNECT_REQUIRED',
+  'STOPPED_REMOTELY',
   'PASSPHRASE_NOT_SET',
   'NOT_AVAILABLE',
   'INVALID_TOKEN',
@@ -60,9 +67,10 @@ export const KNOWN_ERRORS = Object.freeze([
   'DOWNLOAD_FAILED',
   'INTEGRITY_FAILED',
   'PAYMENT_REQUIRED',
+  'PAYMENT_REQUIRED_NO_SUBSCRIPTION',
+  'PAYMENT_REQUIRED_LAPSED',
   'QUOTA_EXCEEDED',
   'QUOTA_EXCEEDED_QUOTA',
-  'QUOTA_EXCEEDED_FREQUENCY',
   'QUOTA_EXCEEDED_OPEN_UPLOADS',
   'NO_PERMISSION',
   'WORKLOAD_NOT_FOUND',
@@ -150,17 +158,139 @@ export function jobPercent(job) {
 }
 
 /**
- * @param {{ usedBytes?: number, quotaBytes?: number } | null | undefined} usage
- * @returns {number | null}
+ * Account-wide Pano Backup usage, from the panel's `usage {used, reserved, quota, free}` or the
+ * control plane's `usage {usedBytes, reservedBytes, quotaBytes, freeBytes}`.
+ *
+ * @param {Record<string, any> | null | undefined} usage
+ * @returns {{ used: number, reserved: number, quota: number | null, free: number | null, percent: number | null } | null}
+ *   `percent` counts running uploads too (they already hold their space); null without a quota.
  */
-export function usagePercent(usage) {
-  const quota = Number(usage?.quotaBytes) || 0;
-
-  if (quota <= 0) {
+export function accountUsage(usage) {
+  if (!usage) {
     return null;
   }
 
-  return Math.max(0, Math.min(100, Math.round(((Number(usage?.usedBytes) || 0) / quota) * 100)));
+  const used = Math.max(0, Number(usage.used ?? usage.usedBytes) || 0);
+  const reserved = Math.max(0, Number(usage.reserved ?? usage.reservedBytes) || 0);
+  const rawQuota = usage.quota ?? usage.quotaBytes;
+  const quota = rawQuota == null || !(Number(rawQuota) > 0) ? null : Number(rawQuota);
+  const rawFree = usage.free ?? usage.freeBytes;
+  const free =
+    quota == null
+      ? null
+      : rawFree != null && Number.isFinite(Number(rawFree))
+        ? Math.max(0, Number(rawFree))
+        : Math.max(0, quota - used - reserved);
+  const percent =
+    quota == null
+      ? null
+      : Math.max(0, Math.min(100, Math.round(((used + reserved) / quota) * 100)));
+
+  return { used, reserved, quota, free, percent };
+}
+
+/**
+ * @param {Record<string, any> | null | undefined} usage
+ * @returns {number | null}
+ */
+export function usagePercent(usage) {
+  return accountUsage(usage)?.percent ?? null;
+}
+
+/**
+ * @param {number | null | undefined} percent
+ * @returns {'danger' | 'warning' | 'primary'} the usage bar colour.
+ */
+export function usageColour(percent) {
+  if (percent != null && percent >= 90) {
+    return 'danger';
+  }
+
+  return percent != null && percent >= 75 ? 'warning' : 'primary';
+}
+
+/**
+ * The connection state of `GET /api/panel/pano-backups/remote`.
+ *
+ * @param {Record<string, any> | null | undefined} remote
+ * @returns {'connected' | 'not-connected' | 'unavailable'} `not-connected` = show the connect prompt
+ *   (never connected, or the platform connection was revoked); `unavailable` = connected, but
+ *   panomc.com could not be asked (plan and usage unknown).
+ */
+export function connectionState(remote) {
+  if (!remote || remote.error || !remote.connected) {
+    return 'not-connected';
+  }
+
+  const code = remote.hostError?.code;
+
+  if (code === 'CONNECT_REQUIRED') {
+    return 'not-connected';
+  }
+
+  return code ? 'unavailable' : 'connected';
+}
+
+/**
+ * A website manage page, derived from the Pano Host API the Pano talks to
+ * (`https://api.example.com/…` → `https://example.com/host/manage/backups`); anything else (a local
+ * or IP API) falls back to panomc.com.
+ *
+ * @param {string | null | undefined} apiUrl
+ * @param {'backups' | 'instances'} [section]
+ */
+export function manageBackupsUrl(apiUrl, section = 'backups') {
+  let origin = 'https://panomc.com';
+
+  try {
+    const url = new URL(String(apiUrl || ''));
+
+    if (url.protocol === 'https:' && url.hostname.startsWith('api.')) {
+      origin = `https://${url.hostname.slice(4)}`;
+    }
+  } catch {
+    // not a URL
+  }
+
+  return `${origin}/host/manage/${section}`;
+}
+
+/**
+ * @param {Record<string, any> | null | undefined} backup a control-plane backup row.
+ * @returns {boolean} whether this Pano can restore it (any finished Pano backup of the account).
+ */
+export function canRestoreRemote(backup) {
+  return backup?.status === 'DONE' && backup?.kind !== 'mc-server';
+}
+
+/**
+ * Groups `GET …/remote/backups` for the page: this Pano first, then the account's other Panos
+ * (newest activity first, as sent); lapsed/failed rows are left to the website.
+ *
+ * @param {Record<string, any> | null | undefined} list
+ * @returns {{ instanceId: string, instanceName: string, current: boolean, connected: boolean | null,
+ *   usedBytes: number, lastBackupAt: number | null, backups: any[] }[]}
+ */
+export function groupRemoteBackups(list) {
+  const panos = Array.isArray(list?.panos) ? list.panos : [];
+
+  return panos
+    .map((pano, index) => ({
+      index,
+      instanceId: String(pano?.instanceId ?? ''),
+      instanceName: String(pano?.instanceName || pano?.instanceId || ''),
+      current:
+        pano?.current === true || (!!list?.instanceId && pano?.instanceId === list.instanceId),
+      connected: typeof pano?.connected === 'boolean' ? pano.connected : null,
+      usedBytes: Number(pano?.usedBytes) || 0,
+      lastBackupAt: pano?.lastBackupAt ?? null,
+      backups: (Array.isArray(pano?.backups) ? pano.backups : []).filter(
+        (backup) => backup && (backup.status === 'DONE' || backup.status === 'UPLOADING'),
+      ),
+    }))
+    .filter((pano) => pano.current || pano.backups.length > 0)
+    .sort((a, b) => Number(b.current) - Number(a.current) || a.index - b.index)
+    .map(({ index: _index, ...pano }) => pano);
 }
 
 /**
@@ -228,8 +358,8 @@ export function describeError(source, options = {}) {
     code = String(source.hostError || 'PANO_HOST_UNAVAILABLE');
   }
 
-  if (code === 'QUOTA_EXCEEDED' && details.reason) {
-    const specific = `QUOTA_EXCEEDED_${String(details.reason).toUpperCase()}`;
+  if ((code === 'QUOTA_EXCEEDED' || code === 'PAYMENT_REQUIRED') && details.reason) {
+    const specific = `${code}_${String(details.reason).toUpperCase()}`;
 
     if (KNOWN_ERRORS.includes(specific)) {
       code = specific;
@@ -238,7 +368,7 @@ export function describeError(source, options = {}) {
 
   const values = {
     code,
-    nextAllowedAt: formatTime(details.nextAllowedAt, options.locale),
+    graceUntil: formatTime(details.graceUntil, options.locale),
     quota: details.quotaBytes != null ? formatBytes(Number(details.quotaBytes)) : '',
     used: details.usedBytes != null ? formatBytes(Number(details.usedBytes)) : '',
     max: details.maxBytes != null ? formatBytes(Number(details.maxBytes)) : '',
@@ -296,15 +426,4 @@ export function transferColour(status) {
       EXPIRED: 'secondary',
     }[status || ''] || 'secondary'
   );
-}
-
-/**
- * The device-code poll interval in ms, never faster than 2 s nor slower than 30 s.
- *
- * @param {number | null | undefined} seconds
- */
-export function pollDelay(seconds) {
-  const value = Number(seconds);
-
-  return Math.min(30, Math.max(2, Number.isFinite(value) && value > 0 ? value : 5)) * 1000;
 }

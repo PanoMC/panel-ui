@@ -1,4 +1,4 @@
-<!-- Transfer this Pano to a Pano Host instance: TRANSFER link, push a plain archive, owner confirms. -->
+<!-- Transfer this Pano to a Pano Host instance of the connected account: pick it, push a plain archive, owner confirms. -->
 <div class="vstack gap-3">
   <PanoBackupJobCard
     job={job?.type === 'TRANSFER' ? job : null}
@@ -7,13 +7,28 @@
 
   <div class="row g-3">
     <div class="col-lg-7 vstack gap-3">
-      <HostLinkCard
-        purpose="TRANSFER"
-        link={remote.links?.TRANSFER ?? null}
-        pending={remote.pending?.TRANSFER ?? null}
-        onchange={() => void refresh()} />
-
-      {#if transferLinked}
+      {#if !connected}
+        <div class="card">
+          <div class="card-body d-flex align-items-start gap-3">
+            <div
+              class="d-inline-flex rounded justify-content-center align-items-center bg-primary-subtle text-primary flex-shrink-0"
+              style="width: 48px; height: 48px;">
+              <i class="fa-solid fa-right-left fa-lg" aria-hidden="true"></i>
+            </div>
+            <div class="vstack gap-2 min-w-0">
+              <div class="small text-body-secondary">
+                {$_('pages.settings.backups.transfer.not-connected')}
+              </div>
+              <div>
+                <a class="btn btn-primary btn-sm" href="{base}{CONNECT_PATH}">
+                  <i class="fa-solid fa-link me-1" aria-hidden="true"></i>
+                  {$_('buttons.connect-pano-account')}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {:else}
         <div class="card">
           <div class="card-header d-flex align-items-center">
             <span>{$_('pages.settings.backups.transfer.history')}</span>
@@ -49,7 +64,14 @@
                 <tbody>
                   {#each transfers as transfer (transfer.id)}
                     <tr>
-                      <td><DateComponent time={transfer.createdAt} relativeFormat /></td>
+                      <td>
+                        <DateComponent time={transfer.createdAt} relativeFormat />
+                        {#if workloadName(transfer.workloadId)}
+                          <div class="small text-body-secondary">
+                            {workloadName(transfer.workloadId)}
+                          </div>
+                        {/if}
+                      </td>
                       <td>
                         <span class="badge text-bg-{transferColour(transfer.status)}">
                           {$_(
@@ -90,22 +112,42 @@
         <div class="card-header">{$_('pages.settings.backups.transfer.title')}</div>
         <div class="card-body vstack gap-3">
           <ol class="small mb-0 vstack gap-1">
-            <li>{$_('pages.settings.backups.transfer.step-link')}</li>
+            <li>{$_('pages.settings.backups.transfer.step-pick')}</li>
             <li>{$_('pages.settings.backups.transfer.step-push')}</li>
             <li>{$_('pages.settings.backups.transfer.step-confirm')}</li>
           </ol>
 
-          {#if workload}
-            <div class="border rounded p-2 small">
-              <div class="fw-semibold">{workload.label || workload.name || workload.id}</div>
-              {#if workload.maxBytes}
-                <div class="text-body-secondary">
-                  {$_('pages.settings.backups.transfer.max-size', {
-                    values: { size: formatBytes(workload.maxBytes) },
-                  })}
-                </div>
-              {/if}
-            </div>
+          {#if connected}
+            {#if workloadsError}
+              <div class="alert alert-danger small mb-0">
+                {$_(workloadsError.key, { values: workloadsError.values })}
+              </div>
+            {:else if workloads.length === 0}
+              <div class="small text-body-secondary">
+                {$_('pages.settings.backups.transfer.no-workloads')}
+                <a href={manageUrl} target="_blank" rel="noopener noreferrer">
+                  {$_('pages.settings.backups.transfer.get-instance')}
+                </a>
+              </div>
+            {:else}
+              <div>
+                <label class="form-label small" for="pano-transfer-workload">
+                  {$_('pages.settings.backups.transfer.target')}
+                </label>
+                <select id="pano-transfer-workload" class="form-select" bind:value={workloadId}>
+                  {#each workloads as option (option.id)}
+                    <option value={option.id}>{workloadLabel(option)}</option>
+                  {/each}
+                </select>
+                {#if selectedWorkload?.maxBytes}
+                  <div class="form-text">
+                    {$_('pages.settings.backups.transfer.max-size', {
+                      values: { size: formatBytes(selectedWorkload.maxBytes) },
+                    })}
+                  </div>
+                {/if}
+              </div>
+            {/if}
           {/if}
 
           <div class="alert alert-info small mb-0">
@@ -128,7 +170,7 @@
             <button
               type="button"
               class="btn btn-primary"
-              disabled={!transferLinked || running || starting}
+              disabled={!connected || !selectedWorkload || running || starting}
               onclick={() => void startTransfer()}>
               {#if starting}
                 <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
@@ -146,6 +188,7 @@
 
 <script module>
   import ApiUtil from '$lib/api.util.js';
+  import { connectionState } from '$lib/pano-backup.util.js';
 
   /**
    * @param {string} path
@@ -162,20 +205,30 @@
     await event.parent();
 
     const remote = await read('/api/panel/pano-backups/remote', event);
-    const transferList = remote?.links?.TRANSFER
-      ? await read('/api/panel/pano-backups/remote/transfers', event)
-      : null;
 
-    return { remote, transferList };
+    if (connectionState(remote) === 'not-connected') {
+      return { remote, transferList: null, workloadList: null };
+    }
+
+    const [transferList, workloadList] = await Promise.all([
+      read('/api/panel/pano-backups/remote/transfers', event),
+      read('/api/panel/pano-backups/remote/workloads', event),
+    ]);
+
+    return { remote, transferList, workloadList };
   }
 </script>
 
 <script>
   import { _ } from 'svelte-i18n';
 
+  import { base } from '$app/paths';
+
   import { formatBytes } from '$lib/string.util.js';
   import {
+    CONNECT_PATH,
     describeError,
+    manageBackupsUrl,
     isJobRunning,
     isTransferOpen,
     transferColour,
@@ -183,7 +236,6 @@
 
   import DateComponent from '$lib/components/Date.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
-  import HostLinkCard from '$lib/components/settings/pano-backup/HostLinkCard.svelte';
   import PanoBackupJobCard from '$lib/components/settings/pano-backup/PanoBackupJobCard.svelte';
 
   let { data } = $props();
@@ -192,9 +244,12 @@
   const OPEN_POLL_MS = 10_000;
 
   let remote = $derived(
-    /** @type {any} */ (data?.remote && !data.remote.error ? data.remote : { links: {} }),
+    /** @type {any} */ (data?.remote && !data.remote.error ? data.remote : { connected: false }),
   );
   let transferList = $derived(/** @type {any} */ (data?.transferList ?? null));
+  let workloadList = $derived(/** @type {any} */ (data?.workloadList ?? null));
+  /** @type {string} */
+  let workloadId = $state('');
   let job = $derived(/** @type {any} */ (data?.remote?.job ?? null));
 
   let refreshing = $state(false);
@@ -204,7 +259,19 @@
   /** @type {ReturnType<typeof describeError>} */
   let startError = $state(null);
 
-  const transferLinked = $derived(!!remote?.links?.TRANSFER);
+  const connected = $derived(connectionState(remote) !== 'not-connected');
+  const manageUrl = $derived(manageBackupsUrl(remote?.apiUrl, 'instances'));
+  const workloadsError = $derived(workloadList?.error ? describeError(workloadList) : null);
+  const workloads = $derived(
+    /** @type {any[]} */ (
+      workloadList && !workloadList.error && Array.isArray(workloadList.workloads)
+        ? workloadList.workloads
+        : []
+    ),
+  );
+  const selectedWorkload = $derived(
+    workloads.find((option) => option.id === workloadId) ?? workloads[0] ?? null,
+  );
   const running = $derived(isJobRunning(job));
   const listError = $derived(transferList?.error ? describeError(transferList) : null);
   const transfers = $derived(
@@ -214,7 +281,29 @@
         : []
     ),
   );
-  const workload = $derived(transferList && !transferList.error ? transferList.workload : null);
+
+  // Picks the first workload until the owner chooses one (or when the chosen one is gone).
+  $effect(() => {
+    if (workloads.length > 0 && !workloads.some((option) => option.id === workloadId)) {
+      workloadId = String(workloads[0].id);
+    }
+  });
+
+  /** @param {any} option */
+  function workloadLabel(option) {
+    const name = option.label || option.name || option.id;
+
+    return option.label && option.name && option.label !== option.name
+      ? `${option.label} (${option.name})`
+      : name;
+  }
+
+  /** @param {string | null | undefined} id */
+  function workloadName(id) {
+    const found = id ? workloads.find((option) => option.id === id) : null;
+
+    return found ? workloadLabel(found) : '';
+  }
   const openTransfer = $derived(transfers.find((transfer) => isTransferOpen(transfer.status)));
 
   $effect(() => {
@@ -236,9 +325,16 @@
       if (next && !next.error) {
         remote = next;
         job = next.job ?? job;
-        transferList = next.links?.TRANSFER
-          ? await read('/api/panel/pano-backups/remote/transfers')
-          : null;
+
+        if (connectionState(next) === 'not-connected') {
+          transferList = null;
+          workloadList = null;
+        } else {
+          [transferList, workloadList] = await Promise.all([
+            read('/api/panel/pano-backups/remote/transfers'),
+            read('/api/panel/pano-backups/remote/workloads'),
+          ]);
+        }
       }
     } finally {
       refreshing = false;
@@ -250,9 +346,16 @@
     startError = null;
 
     try {
-      const body = await ApiUtil.post({ path: '/api/panel/pano-backups/remote/transfers' }).catch(
-        () => ({ error: 'NETWORK_ERROR' }),
-      );
+      const target = selectedWorkload;
+
+      if (!target) {
+        return;
+      }
+
+      const body = await ApiUtil.post({
+        path: '/api/panel/pano-backups/remote/transfers',
+        body: { workloadId: String(target.id) },
+      }).catch(() => ({ error: 'NETWORK_ERROR' }));
 
       if (body?.error) {
         startError = describeError(body);

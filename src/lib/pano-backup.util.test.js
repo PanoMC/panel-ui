@@ -2,13 +2,20 @@ import { describe, expect, test } from 'bun:test';
 
 import {
   ENVELOPE_MAGIC,
+  MANAGE_BACKUPS_URL,
+  REMOTE_SCHEDULES,
+  accountUsage,
+  canRestoreRemote,
+  connectionState,
   describeError,
+  groupRemoteBackups,
+  manageBackupsUrl,
+  usageColour,
   inspectArchiveFile,
   inspectArchiveHeader,
   isTransferOpen,
   jobPercent,
   passphraseProblem,
-  pollDelay,
   toggleId,
   usagePercent,
 } from './pano-backup.util.js';
@@ -68,21 +75,32 @@ describe('inspectArchiveHeader', () => {
 });
 
 describe('describeError', () => {
-  test('unwraps PANO_HOST_ERROR and picks the quota reason', () => {
+  test('unwraps PANO_HOST_ERROR and picks the payment reason with its grace end', () => {
     const at = Date.UTC(2026, 8, 26, 12, 0, 0);
     const result = describeError(
-      {
-        error: 'PANO_HOST_ERROR',
-        hostError: 'QUOTA_EXCEEDED',
-        reason: 'FREQUENCY',
-        nextAllowedAt: at,
-      },
+      { error: 'PANO_HOST_ERROR', hostError: 'PAYMENT_REQUIRED', reason: 'LAPSED', graceUntil: at },
       { locale: 'en-US' },
     );
 
-    expect(result?.code).toBe('QUOTA_EXCEEDED_FREQUENCY');
-    expect(result?.key).toBe('pages.settings.backups.errors.QUOTA_EXCEEDED_FREQUENCY');
-    expect(result?.values.nextAllowedAt).toBe(new Date(at).toLocaleString('en-US'));
+    expect(result?.code).toBe('PAYMENT_REQUIRED_LAPSED');
+    expect(result?.key).toBe('pages.settings.backups.errors.PAYMENT_REQUIRED_LAPSED');
+    expect(result?.values.graceUntil).toBe(new Date(at).toLocaleString('en-US'));
+    expect(
+      describeError({ error: 'PAYMENT_REQUIRED', details: { reason: 'NO_SUBSCRIPTION' } })?.code,
+    ).toBe('PAYMENT_REQUIRED_NO_SUBSCRIPTION');
+  });
+
+  test('connection and remote-stop errors have their own sentence', () => {
+    expect(
+      describeError({
+        error: 'PANO_HOST_ERROR',
+        hostError: 'CONNECT_REQUIRED',
+        reason: 'INVALID_TOKEN',
+      })?.key,
+    ).toBe('pages.settings.backups.errors.CONNECT_REQUIRED');
+    expect(describeError({ error: 'STOPPED_REMOTELY', details: { backupId: 'b1' } })?.key).toBe(
+      'pages.settings.backups.errors.STOPPED_REMOTELY',
+    );
   });
 
   test('reads job errors with their details', () => {
@@ -124,6 +142,14 @@ describe('small rules', () => {
   test('usagePercent', () => {
     expect(usagePercent({ usedBytes: 1, quotaBytes: 0 })).toBeNull();
     expect(usagePercent({ usedBytes: 1, quotaBytes: 3 })).toBe(33);
+    expect(usagePercent({ used: 1, reserved: 1, quota: 4 })).toBe(50);
+    expect(usagePercent(null)).toBeNull();
+  });
+
+  test('usageColour', () => {
+    expect(usageColour(null)).toBe('primary');
+    expect(usageColour(80)).toBe('warning');
+    expect(usageColour(95)).toBe('danger');
   });
 
   test('passphraseProblem', () => {
@@ -138,11 +164,86 @@ describe('small rules', () => {
     expect(toggleId([], 'x')).toEqual([]);
   });
 
-  test('pollDelay and isTransferOpen', () => {
-    expect(pollDelay(undefined)).toBe(5000);
-    expect(pollDelay(1)).toBe(2000);
-    expect(pollDelay(120)).toBe(30000);
+  test('schedules have no plan-paced option and isTransferOpen', () => {
+    expect([...REMOTE_SCHEDULES]).toEqual(['OFF', 'DAILY', 'WEEKLY']);
     expect(isTransferOpen('AWAITING_CONFIRMATION')).toBe(true);
     expect(isTransferOpen('DONE')).toBe(false);
+  });
+});
+
+describe('connected account', () => {
+  test('accountUsage reads both the panel and the control-plane shape', () => {
+    expect(accountUsage(null)).toBeNull();
+    expect(accountUsage({ used: 30, reserved: 10, quota: 100, free: 60 })).toEqual({
+      used: 30,
+      reserved: 10,
+      quota: 100,
+      free: 60,
+      percent: 40,
+    });
+    expect(accountUsage({ usedBytes: 50, reservedBytes: 0, quotaBytes: 100 })?.free).toBe(50);
+    expect(accountUsage({ used: 5, quota: null })).toEqual({
+      used: 5,
+      reserved: 0,
+      quota: null,
+      free: null,
+      percent: null,
+    });
+    expect(accountUsage({ used: 500, quota: 100 })?.percent).toBe(100);
+  });
+
+  test('connectionState', () => {
+    expect(connectionState(null)).toBe('not-connected');
+    expect(connectionState({ connected: false })).toBe('not-connected');
+    expect(connectionState({ connected: true })).toBe('connected');
+    expect(
+      connectionState({ connected: true, hostError: { code: 'CONNECT_REQUIRED', reason: 'X' } }),
+    ).toBe('not-connected');
+    expect(connectionState({ connected: true, hostError: { code: 'UNAVAILABLE' } })).toBe(
+      'unavailable',
+    );
+  });
+
+  test('manageBackupsUrl follows the API host, else panomc.com', () => {
+    expect(manageBackupsUrl('https://api.panomc.com')).toBe(MANAGE_BACKUPS_URL);
+    expect(manageBackupsUrl('https://api.example.org/api')).toBe(
+      'https://example.org/host/manage/backups',
+    );
+    expect(manageBackupsUrl('http://127.0.0.1:18102/api')).toBe(MANAGE_BACKUPS_URL);
+    expect(manageBackupsUrl(null)).toBe(MANAGE_BACKUPS_URL);
+    expect(manageBackupsUrl('https://api.panomc.com', 'instances')).toBe(
+      'https://panomc.com/host/manage/instances',
+    );
+  });
+
+  test('groupRemoteBackups puts this Pano first and hides failed or stopped rows', () => {
+    const groups = groupRemoteBackups({
+      instanceId: 'me',
+      panos: [
+        {
+          instanceId: 'other',
+          instanceName: 'Other',
+          connected: false,
+          backups: [
+            { id: 'o1', status: 'DONE', kind: 'pano-instance' },
+            { id: 'o2', status: 'CANCELED' },
+          ],
+        },
+        { instanceId: 'empty', backups: [{ id: 'e1', status: 'FAILED' }] },
+        { instanceId: 'me', instanceName: 'Mine', current: true, backups: [] },
+      ],
+    });
+
+    expect(groups.map((group) => group.instanceId)).toEqual(['me', 'other']);
+    expect(groups[0].current).toBe(true);
+    expect(groups[1].connected).toBe(false);
+    expect(groups[1].backups.map((backup) => backup.id)).toEqual(['o1']);
+    expect(groupRemoteBackups(null)).toEqual([]);
+  });
+
+  test('canRestoreRemote: finished Pano backups of any Pano, never MC server backups', () => {
+    expect(canRestoreRemote({ status: 'DONE', kind: 'pano-instance', own: false })).toBe(true);
+    expect(canRestoreRemote({ status: 'UPLOADING', kind: 'pano-instance' })).toBe(false);
+    expect(canRestoreRemote({ status: 'DONE', kind: 'mc-server' })).toBe(false);
   });
 });

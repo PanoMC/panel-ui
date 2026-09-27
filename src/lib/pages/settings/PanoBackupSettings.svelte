@@ -1,11 +1,7 @@
-<!-- Pano Backup settings: panomc.com link, passphrase, schedules, tier/usage, MC server backups. -->
+<!-- Pano Backup settings: panomc.com account (platform connection), plan/usage, passphrase, schedules, MC server backups. -->
 <div class="row g-3">
   <div class="col-lg-7 vstack gap-3">
-    <HostLinkCard
-      purpose="BACKUP"
-      link={remote.links?.BACKUP ?? null}
-      pending={remote.pending?.BACKUP ?? null}
-      onchange={() => void refresh()} />
+    <PanoBackupAccountCard {remote} />
 
     <!-- Passphrase -->
     <div class="card">
@@ -94,19 +90,15 @@
               id="pano-remote-hour"
               class="form-select"
               bind:value={remoteHour}
-              disabled={remoteSchedule === 'OFF' || remoteSchedule === 'TIER'}>
+              disabled={remoteSchedule === 'OFF'}>
               {#each HOURS as hour (hour)}
                 <option value={hour}>{String(hour).padStart(2, '0')}:00</option>
               {/each}
             </select>
           </div>
         </div>
-        {#if tier?.minIntervalMinutes}
-          <div class="form-text mt-0">
-            {$_('pages.settings.backups.tier-interval-hint', {
-              values: { minutes: tier.minIntervalMinutes },
-            })}
-          </div>
+        {#if connected && !remote.plan && !remote.hostError}
+          <div class="form-text mt-0">{$_('pages.settings.backups.schedule-needs-plan')}</div>
         {/if}
         {#if remote.lastUploadAt}
           <div class="small text-body-secondary">
@@ -160,89 +152,6 @@
   </div>
 
   <div class="col-lg-5 vstack gap-3">
-    <!-- Tier / usage -->
-    <div class="card">
-      <div class="card-header">{$_('pages.settings.backups.tier-title')}</div>
-      <div class="card-body vstack gap-2">
-        {#if !backupLinked}
-          <div class="small text-body-secondary">
-            {$_('pages.settings.backups.tier-not-linked')}
-          </div>
-        {:else if listError}
-          <div class="alert alert-danger small mb-0">
-            {$_(listError.key, { values: listError.values })}
-          </div>
-        {:else if tier}
-          <div class="d-flex align-items-center gap-2">
-            <h5 class="mb-0">{tier.name}</h5>
-          </div>
-          <ul class="list-unstyled small mb-0 vstack gap-1">
-            {#if tier.storageGb}
-              <li>
-                <i class="fa-solid fa-hard-drive me-2 text-body-secondary" aria-hidden="true"></i>
-                {$_('pages.settings.backups.tier-storage', { values: { gb: tier.storageGb } })}
-              </li>
-            {/if}
-            {#if tier.retentionDays}
-              <li>
-                <i class="fa-solid fa-calendar-days me-2 text-body-secondary" aria-hidden="true"
-                ></i>
-                {$_('pages.settings.backups.tier-retention', {
-                  values: { days: tier.retentionDays },
-                })}
-              </li>
-            {/if}
-            {#if tier.minIntervalMinutes}
-              <li>
-                <i class="fa-solid fa-clock me-2 text-body-secondary" aria-hidden="true"></i>
-                {$_('pages.settings.backups.tier-interval', {
-                  values: { minutes: tier.minIntervalMinutes },
-                })}
-              </li>
-            {/if}
-          </ul>
-        {:else}
-          <div class="small">{$_('pages.settings.backups.tier-none')}</div>
-          <div>
-            <a
-              class="btn btn-primary btn-sm"
-              href="https://panomc.com"
-              target="_blank"
-              rel="noopener noreferrer">
-              {$_('pages.settings.backups.tier-subscribe')}
-            </a>
-          </div>
-        {/if}
-
-        {#if usage}
-          <div class="mt-2">
-            <div class="d-flex small mb-1">
-              <span>{$_('pages.settings.backups.usage')}</span>
-              <span class="ms-auto">
-                {formatBytes(usage.usedBytes || 0)}
-                {#if usage.quotaBytes}/ {formatBytes(usage.quotaBytes)}{/if}
-              </span>
-            </div>
-            {#if usedPercent !== null}
-              <div
-                class="progress"
-                role="progressbar"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                aria-valuenow={usedPercent}>
-                <div
-                  class="progress-bar"
-                  class:bg-danger={usedPercent >= 90}
-                  class:bg-warning={usedPercent >= 75 && usedPercent < 90}
-                  style="width: {usedPercent}%">
-                </div>
-              </div>
-            {/if}
-          </div>
-        {/if}
-      </div>
-    </div>
-
     <!-- Local schedule -->
     <div class="card">
       <div class="card-header">{$_('pages.settings.backups.local-schedule-title')}</div>
@@ -361,29 +270,24 @@
       read('/api/panel/servers', event),
     ]);
 
-    const remoteList = remote?.links?.BACKUP
-      ? await read('/api/panel/pano-backups/remote/backups', event)
-      : null;
-
-    return { local, remote, remoteList, servers: managedServers(servers) };
+    return { local, remote, servers: managedServers(servers) };
   }
 </script>
 
 <script>
   import { _ } from 'svelte-i18n';
 
-  import { formatBytes } from '$lib/string.util.js';
   import {
     LOCAL_SCHEDULES,
     REMOTE_SCHEDULES,
+    connectionState,
     describeError,
     toggleId,
-    usagePercent,
   } from '$lib/pano-backup.util.js';
 
   import DateComponent from '$lib/components/Date.svelte';
   import { showSuccess } from '$lib/components/ToastContainer.svelte';
-  import HostLinkCard from '$lib/components/settings/pano-backup/HostLinkCard.svelte';
+  import PanoBackupAccountCard from '$lib/components/settings/pano-backup/PanoBackupAccountCard.svelte';
   import PassphraseFields from '$lib/components/settings/pano-backup/PassphraseFields.svelte';
 
   let { data } = $props();
@@ -392,17 +296,20 @@
 
   let remote = $derived(
     /** @type {any} */ (
-      data?.remote && !data.remote.error ? data.remote : { links: {}, passphraseSet: false }
+      data?.remote && !data.remote.error ? data.remote : { connected: false, passphraseSet: false }
     ),
   );
-  let remoteList = $derived(/** @type {any} */ (data?.remoteList ?? null));
   const servers = $derived(/** @type {{ id: number, name: string }[]} */ (data?.servers || []));
 
   // Form fields start from the loaded settings.
   let localSchedule = $derived(String(data?.local?.settings?.schedule || 'OFF'));
   let localHour = $derived(Number(data?.local?.settings?.hour ?? 3));
   let localKeep = $derived(Number(data?.local?.settings?.keep ?? 7));
-  let remoteSchedule = $derived(String(data?.remote?.settings?.schedule || 'OFF'));
+  let remoteSchedule = $derived(
+    REMOTE_SCHEDULES.includes(data?.remote?.settings?.schedule)
+      ? String(data?.remote?.settings?.schedule)
+      : 'OFF',
+  );
   let remoteHour = $derived(Number(data?.remote?.settings?.hour ?? 3));
   let mcServerIds = $derived(
     /** @type {number[]} */ ((data?.remote?.settings?.mcServerIds || []).map(Number)),
@@ -422,20 +329,7 @@
   /** @type {ReturnType<typeof describeError>} */
   let localError = $state(null);
 
-  const backupLinked = $derived(!!remote?.links?.BACKUP);
-  const tier = $derived(remoteList && !remoteList.error ? remoteList.tier || null : null);
-  const usage = $derived(remoteList && !remoteList.error ? remoteList.usage || null : null);
-  const usedPercent = $derived(usagePercent(usage));
-  const listError = $derived(remoteList?.error ? describeError(remoteList) : null);
-
-  async function refresh() {
-    const next = await read('/api/panel/pano-backups/remote');
-
-    if (next && !next.error) {
-      remote = next;
-      remoteList = next.links?.BACKUP ? await read('/api/panel/pano-backups/remote/backups') : null;
-    }
-  }
+  const connected = $derived(connectionState(remote) !== 'not-connected');
 
   /**
    * @param {string} path
