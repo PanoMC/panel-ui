@@ -19,23 +19,36 @@ import { onNavigate } from '$app/navigation';
 export function fadeChange(node, options = {}) {
   const state = { classes: options.classes ?? DEFAULT_CLASSES, key: options.key ?? null };
 
-  const replay = () => {
-    const classes = state.classes.split(' ').filter(Boolean);
+  const clear = () => node.classList.remove(...state.classes.split(' ').filter(Boolean));
 
-    node.classList.remove(...classes);
+  const replay = () => {
+    clear();
     // The reflow is the point: without it the browser sees no change and skips the animation.
     void node.offsetWidth;
-    node.classList.add(...classes);
+    node.classList.add(...state.classes.split(' ').filter(Boolean));
   };
 
-  node.classList.add(...state.classes.split(' ').filter(Boolean));
+  // The classes come off as soon as the animation ends. Left on, `animate__animated` keeps the
+  // opacity animation filled, which makes the element a stacking context: the page's modals
+  // render inside it and end up under Bootstrap's body-level backdrop, so nothing is clickable.
+  /** @param {AnimationEvent} event */
+  const onAnimationEnd = (event) => {
+    if (event.target === node) {
+      clear();
+    }
+  };
+
+  node.addEventListener('animationend', onAnimationEnd);
+  node.addEventListener('animationcancel', onAnimationEnd);
+
+  replay();
 
   const stopWatchingNavigation = onNavigate(() => replay());
 
   return {
     update(next = {}) {
       if (next.classes && next.classes !== state.classes) {
-        node.classList.remove(...state.classes.split(' ').filter(Boolean));
+        clear();
         state.classes = next.classes;
       }
 
@@ -52,7 +65,9 @@ export function fadeChange(node, options = {}) {
     },
     destroy() {
       stopWatchingNavigation();
-      node.classList.remove(...state.classes.split(' ').filter(Boolean));
+      node.removeEventListener('animationend', onAnimationEnd);
+      node.removeEventListener('animationcancel', onAnimationEnd);
+      clear();
     },
   };
 }
