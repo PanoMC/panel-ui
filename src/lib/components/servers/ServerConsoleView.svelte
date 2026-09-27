@@ -7,7 +7,6 @@
     --console-fg: #d4d8de;
     --bs-danger-rgb: 255, 107, 107;
     --bs-warning-text-emphasis: #f5c56b;
-    --bs-secondary-color: rgba(212, 216, 222, 0.55);
     --bs-warning-bg-subtle: rgba(245, 197, 107, 0.25);
   }
 
@@ -19,7 +18,6 @@
     border: 1px solid #262c36;
     border-radius: var(--bs-border-radius);
     font-family: var(--bs-font-monospace);
-    font-size: 0.8125rem;
   }
 
   /* Flush: the view is the whole card body, so the card's own edge is its frame. */
@@ -98,7 +96,6 @@
     background-color: rgba(17, 21, 28, 0.92);
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.35);
     color: var(--console-fg);
-    font-size: 0.75rem;
     pointer-events: none;
   }
 
@@ -119,22 +116,22 @@
 <div class="console-shell">
   <!-- Older lines load on their own when the view nears the top; this is what says so. -->
   {#if loadingOlder}
-    <div class="console-older" role="status" transition:fly={{ y: -12, duration: 180 }}>
+    <small class="console-older" role="status" transition:fly={{ y: -12, duration: 180 }}>
       <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
       {$_('pages.servers.console.load-older-loading')}
-    </div>
+    </small>
   {:else if reachedStart && showReachedStart}
-    <div
+    <small
       class="console-older console-older-end"
       role="status"
       transition:fly={{ y: -12, duration: 180 }}>
       <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
       {$_('pages.servers.console.reached-start')}
-    </div>
+    </small>
   {/if}
   <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
   <div
-    class="console-view"
+    class="console-view small"
     class:flush
     class:wrap
     style="height: {height};"
@@ -177,7 +174,7 @@
   </div>
 
   {#if !entries.length && emptyText}
-    <div class="console-empty text-body-secondary small">{emptyText}</div>
+    <small class="console-empty opacity-75">{emptyText}</small>
   {/if}
 
   {#if showPill && !following && newLineCount > 0}
@@ -446,7 +443,7 @@
         entry,
         top: top * rowHeight,
         height: (rowOf(index + 1) - top) * rowHeight,
-        levelClass: entry.kind === 'dropped' ? 'text-body-secondary' : consoleLevelClass(entry.l),
+        levelClass: entry.kind === 'dropped' ? 'opacity-75' : consoleLevelClass(entry.l),
         segments: buildSegments(entry),
       });
     }

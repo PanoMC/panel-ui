@@ -90,7 +90,7 @@ export function consoleLevelClass(level) {
       return 'text-warning-emphasis';
     case 'DEBUG':
     case 'TRACE':
-      return 'text-body-secondary';
+      return 'opacity-75';
     default:
       return '';
   }

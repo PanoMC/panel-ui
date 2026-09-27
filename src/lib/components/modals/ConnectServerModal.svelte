@@ -1,3 +1,11 @@
+<style>
+  /* The tab that is open is the dialog's subject, so it wears the primary colour rather than the
+     emphasis colour Bootstrap's tabs default to. */
+  .nav-tabs {
+    --bs-nav-tabs-link-active-color: var(--bs-primary);
+  }
+</style>
+
 <!-- Connect Server Modal -->
 <div aria-hidden="true" class="modal modal fade" id="connectServer" role="document" tabindex="-1">
   <div class="modal-dialog" role="document">

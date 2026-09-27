@@ -30,7 +30,7 @@
 <div class="card h-100 vital-card {colorClass}">
   <div class="card-body">
     <div class="card-top">
-      <p class="text-truncate m-0 small">{title}</p>
+      <small class="text-truncate m-0 d-block">{title}</small>
       {#if loading}
         <!-- The figure's own height, so nothing moves when the first sample lands. -->
         <!-- A normal-size line (`fs-6`) inside the figure's line box: the panel's placeholder size,
@@ -42,7 +42,7 @@
         <div class="d-flex align-items-baseline flex-wrap column-gap-2 min-w-0">
           <span class="{valueClass} lh-1">{value || '—'}</span>
           {#if secondary}
-            <span class="text-truncate small">{secondary}</span>
+            <small class="text-truncate">{secondary}</small>
           {/if}
         </div>
       {/if}

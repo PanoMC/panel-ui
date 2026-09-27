@@ -15,13 +15,18 @@
         values: { count: data.categoryCount },
       })}
     </div>
-    <div slot="right" style="width: 250px;">
+    <!-- The search is the card's own subject, so it sits centred in the header rather than
+         pushed to the far edge. `CardHeader` only deals the row into even thirds when all three
+         slots are filled, hence the empty right one. -->
+    <div slot="middle" style="width: 250px;">
       <SearchInput
+        autofocus
         initialValue={search}
         searching={isSearching}
         debounceMs={500}
         on:change={onSearchInput} />
     </div>
+    <div slot="right" aria-hidden="true"></div>
   </CardHeader>
   <!-- No Content -->
   {#if data.categoryCount === 0}
@@ -79,17 +84,17 @@
           {/each}
         </tbody>
       </table>
-      </div>
-      <div class="card-footer">
-        <!-- Pagination -->
-        <Pagination
-          page={data.page}
-          totalPage={data.totalPage}
-          on:firstPageClick={() => onPageClick(1)}
-          on:lastPageClick={() => onPageClick(data.totalPage)}
-          on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
-      </div>
-    {/if}
+    </div>
+    <div class="card-footer">
+      <!-- Pagination -->
+      <Pagination
+        page={data.page}
+        totalPage={data.totalPage}
+        on:firstPageClick={() => onPageClick(1)}
+        on:lastPageClick={() => onPageClick(data.totalPage)}
+        on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
+    </div>
+  {/if}
 </div>
 
 <!-- Post Category Delete Confirmation Modal -->

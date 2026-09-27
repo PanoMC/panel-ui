@@ -9,7 +9,6 @@
     border-bottom-left-radius: var(--bs-card-inner-border-radius);
     border-bottom-right-radius: var(--bs-card-inner-border-radius);
     font-family: var(--bs-font-monospace);
-    font-size: 0.8125rem;
     color: #d4d8de;
   }
 
@@ -67,7 +66,7 @@
       : '',
     { placement: 'top' },
   ]}>
-  <form class="console-command" onsubmit={onSubmit}>
+  <form class="console-command small" onsubmit={onSubmit}>
     <span class="console-command-caret" aria-hidden="true">&gt;</span>
     <input
       type="text"

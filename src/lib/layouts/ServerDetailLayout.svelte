@@ -1,6 +1,7 @@
 <style>
   /* The same art and fade the dashboard's welcome board uses, so the header reads as part of
-     the panel rather than a one-off; the fade keeps the text on the left legible. */
+     the panel rather than a one-off. The lighter middle reveals the art, while the stronger wash
+     behind the power controls keeps their outline colours readable against it. */
   .server-detail-header {
     background-image:
       var(--server-header-gradient),
@@ -11,25 +12,19 @@
     overflow: hidden;
     --server-header-gradient: linear-gradient(
       90deg,
-      rgba(20, 22, 25, 0.95) 25%,
-      rgba(20, 22, 25, 0.55) 100%
-    );
-  }
-
-  :global([data-bs-theme='light']) .server-detail-header {
-    --server-header-gradient: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.95) 25%,
-      rgba(255, 255, 255, 0.55) 100%
+      rgba(var(--bs-body-bg-rgb), 0.94) 0%,
+      rgba(var(--bs-body-bg-rgb), 0.62) 50%,
+      rgba(var(--bs-body-bg-rgb), 0.9) 100%
     );
   }
 
   @media (max-width: 991.98px) {
     .server-detail-header {
+      /* The controls wrap toward the bottom on narrow screens, where the wash is strongest. */
       --server-header-gradient: linear-gradient(
         180deg,
-        rgba(var(--bs-body-bg-rgb), 0.95) 40%,
-        rgba(var(--bs-body-bg-rgb), 0.8) 100%
+        rgba(var(--bs-body-bg-rgb), 0.88) 0%,
+        rgba(var(--bs-body-bg-rgb), 0.98) 100%
       ) !important;
     }
   }
@@ -38,6 +33,9 @@
     position: sticky;
     top: 0;
     z-index: 3;
+    /* The server icon is sized from the card, not baked into the component: it stands as tall as
+       the card's own type is deep and as wide as the picture needs, so nothing is cropped. */
+    --server-icon-height: 4rem;
   }
 
   .server-favicon {
@@ -46,12 +44,13 @@
 
   /* The icon doubles as a drop target (§ header redesign): the zone keeps the icon's own solid
      frame, and a pencil fades in over it on hover — a spinner while an upload is out. */
-  /* The icon's original 48 px frame, filled edge to edge: the drop zone's own padding and border
-     would otherwise shrink the picture inside it. The 64 px icon is scaled without smoothing, so
-     it stays crisp. */
+  /* The icon at the card's own height, filled edge to edge: the drop zone's own padding and
+     border would otherwise shrink the picture inside it. It is scaled without smoothing, so a
+     smaller source still stays crisp. The width is the picture's own — a square icon comes out
+     square, and one that is not keeps its shape instead of being cropped to fill a square. */
   .server-icon {
-    width: 48px;
-    height: 48px;
+    width: auto;
+    height: var(--server-icon-height, 4rem);
   }
 
   .server-icon :global(.drop-zone) {
@@ -60,7 +59,10 @@
   }
 
   .server-icon img {
-    object-fit: cover;
+    height: 100%;
+    width: auto;
+    max-width: none;
+    object-fit: contain;
   }
 
   .server-icon-overlay {
@@ -82,28 +84,10 @@
     opacity: 1;
   }
 
-  /* The power buttons each sit in a tooltip wrapper (a disabled button swallows the pointer), so
-     the group's joined corners are restored across the wrappers. */
-  .power-group > span:not(:first-child) > .btn {
-    margin-left: -1px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-
-  .power-group > span:not(:last-child) > .btn {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  .server-address code {
-    font-size: 0.85rem;
-  }
-
   .install-error {
     max-height: 10rem;
     overflow: auto;
     padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
     line-height: 1.45;
     white-space: pre-wrap;
     word-break: break-all;
@@ -114,8 +98,41 @@
   }
 </style>
 
-<div class="container">
-  <div class="server-detail-header card mb-3">
+<div class="container vstack gap-3">
+  <!-- The power controls as the page's own action row, the way every other section's layout puts
+       them (Posts, Players, Addons, View): the actions on the right, nothing on the left — this
+       workspace's sections are navigated from the sidebar, so there is no page nav to show. -->
+  <PageActions leftClasses="d-none" middleClasses="d-none" rightClasses="ms-lg-auto">
+    <div slot="right" class="hstack gap-2" data-layout-actions="right">
+      {#each powerActions as action (action.id)}
+        <!-- Disabled buttons swallow pointer events, so the tooltip sits on the wrapper. -->
+        <span
+          class="d-inline-block"
+          use:tooltip={[action.tooltip, { ...HEADER_TOOLTIP, placement: 'bottom' }]}>
+          <button
+            type="button"
+            class="btn {action.buttonClass}"
+            aria-label={$_(action.text)}
+            disabled={action.disabled}
+            aria-disabled={action.disabled}
+            on:click={() => askPower(action)}>
+            {#if powerBusy === action.power}
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            {:else}
+              <i class={action.icon} aria-hidden="true"></i>
+            {/if}
+            <!-- A label from lg up, the way the panel's page-header actions read — unless the
+                 action is icon-only and its tooltip is what names it. -->
+            {#if !action.iconOnly}
+              <span class="d-lg-inline d-none ms-2">{$_(action.text)}</span>
+            {/if}
+          </button>
+        </span>
+      {/each}
+    </div>
+  </PageActions>
+
+  <div class="server-detail-header card">
     <div class="card-body d-flex flex-wrap align-items-start gap-3">
       <!-- The server icon, and — for an admin who may manage servers, where something can write
            the server's files — the place to drop a new one. -->
@@ -130,33 +147,26 @@
             disabled={iconUploading}
             on:drop={(event) => uploadIcon(event.detail)}
             on:error={onIconFileError}>
-            <img
-              src={faviconSrc}
-              class="server-favicon w-100 h-100"
-              height="64"
-              width="64"
-              alt={getServerDisplayName($server)} />
+            <img src={faviconSrc} class="server-favicon" alt={getServerDisplayName($server)} />
             <span class="server-icon-overlay" class:is-busy={iconUploading} aria-hidden="true">
               {#if iconUploading}
                 <span class="spinner-border spinner-border-sm"></span>
               {:else}
-                <i class="fa-solid fa-pen"></i>
+                <i class="fa-solid fa-pen" title={$_('edit')} aria-label={$_('edit')}></i>
               {/if}
             </span>
           </DragAndDropZone>
         {:else}
           <img
             src={faviconSrc}
-            class="server-favicon rounded w-100 h-100"
-            height="64"
-            width="64"
+            class="server-favicon rounded"
             alt={getServerDisplayName($server)} />
         {/if}
       </div>
 
       <div class="min-w-0 flex-grow-1">
         <div class="d-flex flex-wrap align-items-center gap-2">
-          <SoftwareLogo id={$server.type} size="1.5rem" />
+          <SoftwareLogo id={$server.type} size="var(--sw-logo-height)" square={false} />
           <h5 class="mb-0 text-break">{getServerDisplayName($server)}</h5>
 
           {#if managed}
@@ -177,41 +187,41 @@
           {/if}
 
           <!-- How Pano reaches this server, as the icon the rest of the panel uses for it. -->
-          <span
-            class="text-body-secondary"
+          <small
+            class="opacity-75"
             role="img"
             aria-label={kindLabel}
             use:tooltip={[kindLabel, { ...HEADER_TOOLTIP, placement: 'bottom' }]}>
             <i
               class="fa-solid {agent ? 'fa-microchip' : managed ? 'fa-server' : 'fa-link'}"
               aria-hidden="true"></i>
-          </span>
+          </small>
 
           <!-- The software logo already names the type; the version reads short, the raw
                string the server reported sits in the tooltip. -->
           {#if versionShort}
-            <span
-              class="small text-body-secondary"
+            <small
+              class="opacity-75"
               use:tooltip={[
                 versionRaw && versionRaw !== versionShort ? versionRaw : '',
                 { ...HEADER_TOOLTIP, placement: 'bottom' },
               ]}>
               {versionShort}
-            </span>
+            </small>
           {/if}
         </div>
 
         {#if showStateReason}
           <!-- The node's last console line before the process died (§2.4.3). It is cut off at
                the header's width, and the tooltip carries the whole sentence. -->
-          <div
-            class="small text-danger-emphasis mt-1 text-truncate"
+          <small
+            class="text-danger-emphasis mt-1 text-truncate d-block"
             use:tooltip={[stateReason, { ...HEADER_TOOLTIP, placement: 'bottom' }]}>
             {$_('pages.servers.header.state-reason', { values: { reason: stateReason } })}
-          </div>
+          </small>
         {/if}
 
-        <div class="server-address mt-1">
+        <div class="mt-1">
           <button
             type="button"
             class="bg-transparent border-0 p-0 focus-ring text-break"
@@ -222,9 +232,10 @@
                 : $_('pages.servers.header.copy-address'),
               { ...HEADER_TOOLTIP, placement: 'bottom', hideOnClick: false },
             ]}>
-            <code class="user-select-all cursor-pointer text-break d-inline-block"
-              >{serverAddress}</code>
-            <i class="fa-regular fa-copy ms-1 small" aria-hidden="true"></i>
+            <small>
+              <code class="user-select-all cursor-pointer text-break d-inline-block"
+                >{serverAddress}</code>
+            </small>
           </button>
         </div>
 
@@ -236,9 +247,9 @@
 
         {#if showTaskProgress}
           <div class="mt-2">
-            <div
-              class="d-flex justify-content-between small"
-              class:text-body-secondary={!taskFailed}
+            <small
+              class="d-flex justify-content-between"
+              class:opacity-75={!taskFailed}
               class:text-danger={taskFailed}>
               <span>
                 {taskLabel}
@@ -253,7 +264,7 @@
                 {/if}
                 <span class="font-monospace">{taskPercent}%</span>
               </span>
-            </div>
+            </small>
             <div
               class="progress mt-1"
               style="height: 6px;"
@@ -275,22 +286,22 @@
               <TaskOutputLine class="mt-1" line={taskDetailText} lines={taskLines} />
             {/if}
             {#if buildToolsNote}
-              <div class="small text-body-secondary mt-1">
+              <small class="opacity-75 mt-1 d-block">
                 <i class="fa-solid fa-hammer me-1" aria-hidden="true"></i>
                 {$_('pages.servers.header.task-buildtools-note')}
-              </div>
+              </small>
             {/if}
           </div>
         {/if}
 
-        <div class="small text-body-secondary mt-1">
+        <small class="opacity-75 mt-1 d-block">
           {$_('pages.servers.header.protocol', { values: { version: protocolVersion } })}
           {#if $server.pluginVersion}
             &middot; {$_('pages.servers.header.plugin-version', {
               values: { version: $server.pluginVersion },
             })}
           {/if}
-        </div>
+        </small>
 
         <!-- SM-77 §D — at most one update on the card. A Pano Agent server offers its agent first
              and the Pano plugin only once the agent is current and idle; a linked server offers
@@ -332,31 +343,6 @@
           </div>
         {/if}
       </div>
-
-      <div class="btn-group power-group flex-shrink-0" role="group" data-layout-actions="right">
-        {#each powerActions as action (action.id)}
-          <!-- Disabled buttons swallow pointer events, so the tooltip sits on the wrapper. -->
-          <span
-            class="d-inline-block"
-            use:tooltip={[action.tooltip, { ...HEADER_TOOLTIP, placement: 'bottom' }]}>
-            <button
-              type="button"
-              class="btn {action.buttonClass}"
-              aria-label={$_(action.text)}
-              disabled={action.disabled}
-              aria-disabled={action.disabled}
-              on:click={() => askPower(action)}>
-              {#if powerBusy === action.power}
-                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-              {:else}
-                <i class={action.icon} aria-hidden="true"></i>
-              {/if}
-              <!-- Icon plus a label from lg up, the way the panel's page-header actions read. -->
-              <span class="d-lg-inline d-none ms-2">{$_(action.text)}</span>
-            </button>
-          </span>
-        {/each}
-      </div>
     </div>
   </div>
 
@@ -365,31 +351,33 @@
        here after the task's red bar is gone, with the way out beside it. Hidden while a task is
        running, which is the reinstall itself. -->
   {#if installError && !headerTask && processState !== ProcessStates.INSTALLING}
-    <div class="alert alert-danger d-flex align-items-start gap-2" role="alert">
-      <i class="fa-solid fa-circle-exclamation mt-1" aria-hidden="true"></i>
-      <div class="flex-grow-1 min-w-0">
-        <div class="fw-semibold">{$_('pages.servers.header.install-failed-title')}</div>
-        <div class="small">{$_('pages.servers.header.install-failed-body')}</div>
-        <pre class="install-error small mt-2 mb-0">{installError}</pre>
-        {#if canReinstall}
-          <div class="d-flex flex-wrap gap-2 mt-2">
-            <button
-              type="button"
-              class="btn btn-sm btn-danger"
-              on:click={() => showChangeSoftwareModal({ server: $server, lockSoftware: true })}>
-              <i class="fa-solid fa-rotate me-1" aria-hidden="true"></i>
-              {$_('buttons.reinstall')}
-            </button>
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-danger"
-              on:click={() => showChangeSoftwareModal({ server: $server })}>
-              <i class="fa-solid fa-shuffle me-1" aria-hidden="true"></i>
-              {$_('pages.servers.settings.change-software-button')}
-            </button>
-          </div>
-        {/if}
-      </div>
+    <!-- The settings area's titled alert (PlatformSettings, the migration results): the icon
+         inside the heading, the sentence under it, the error and the way out below that. -->
+    <div class="alert alert-danger" role="alert">
+      <h6 class="alert-heading mb-2">
+        <i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>
+        {$_('pages.servers.header.install-failed-title')}
+      </h6>
+      <p class="mb-0">{$_('pages.servers.header.install-failed-body')}</p>
+      <pre class="install-error mt-2 mb-0">{installError}</pre>
+      {#if canReinstall}
+        <div class="d-flex flex-wrap gap-2 mt-2">
+          <button
+            type="button"
+            class="btn btn-sm btn-danger"
+            on:click={() => showChangeSoftwareModal({ server: $server, lockSoftware: true })}>
+            <i class="fa-solid fa-rotate me-1" aria-hidden="true"></i>
+            {$_('buttons.reinstall')}
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-link link-danger text-decoration-none"
+            on:click={() => showChangeSoftwareModal({ server: $server })}>
+            <i class="fa-solid fa-shuffle me-1" aria-hidden="true"></i>
+            {$_('pages.servers.settings.change-software-button')}
+          </button>
+        </div>
+      {/if}
     </div>
   {/if}
 
@@ -408,7 +396,7 @@
           use:tooltip={[restartAction?.tooltip || '', { ...HEADER_TOOLTIP, placement: 'bottom' }]}>
           <button
             type="button"
-            class="btn btn-sm btn-outline-secondary"
+            class="btn btn-sm btn-info"
             disabled={!restartAction || restartAction.disabled}
             on:click={() => restartAction && askPower(restartAction)}>
             {#if powerBusy === 'RESTART'}
@@ -427,6 +415,11 @@
         on:click={dismissAdoptedAlert}></button>
     </div>
   {/if}
+
+  <!-- The page itself, inside this container like every other section's layout: the `vstack gap-3`
+       above is what spaces these blocks from the header, so a page brings its own cards and never
+       its own container. -->
+  <slot />
 </div>
 
 <!-- Changing the software (or reinstalling it) lays the server down again, so the dialog takes
@@ -473,8 +466,6 @@
     </div>
   </div>
 </div>
-
-<slot />
 
 <script context="module">
   import { redirect } from '@sveltejs/kit';
@@ -588,6 +579,7 @@
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
+  import PageActions from '$lib/components/PageActions.svelte';
   import SoftwareLogo from '$lib/components/servers/SoftwareLogo.svelte';
   import PanoPluginUpdateButton from '$lib/components/servers/PanoPluginUpdateButton.svelte';
   import DaemonUpdateProgress from '$lib/components/servers/DaemonUpdateProgress.svelte';
@@ -670,9 +662,7 @@
       icon: 'fa-solid fa-play',
       text: 'pages.servers.header.start',
       power: 'START',
-      // Outlined like the rest of the header chrome, so the group sits on the background art
-      // instead of covering it; red marks the two that end the process.
-      buttonClass: 'btn-outline-secondary',
+      buttonClass: 'btn-success',
       feature: 'power.start',
       managedOnly: true,
       can: canStart,
@@ -682,25 +672,11 @@
       done: 'pages.servers.header.power-sent-start',
     },
     {
-      id: 'stop',
-      icon: 'fa-solid fa-stop',
-      text: 'pages.servers.header.stop',
-      power: 'STOP',
-      buttonClass: 'btn-outline-danger',
-      feature: 'power.stop',
-      managedOnly: false,
-      can: canStop,
-      variant: 'danger',
-      confirmTitle: 'pages.servers.header.confirm-stop-title',
-      confirmBody: 'pages.servers.header.confirm-stop-body',
-      done: 'pages.servers.header.power-sent-stop',
-    },
-    {
       id: 'restart',
       icon: 'fa-solid fa-rotate-right',
       text: 'pages.servers.header.restart',
       power: 'RESTART',
-      buttonClass: 'btn-outline-secondary',
+      buttonClass: 'btn-secondary',
       feature: 'power.restart',
       managedOnly: false,
       can: canRestart,
@@ -710,11 +686,30 @@
       done: 'pages.servers.header.power-sent-restart',
     },
     {
+      id: 'stop',
+      icon: 'fa-solid fa-stop',
+      text: 'pages.servers.header.stop',
+      power: 'STOP',
+      // Stop and Kill read alike, so they are icons alone and say what they are in the tooltip:
+      // two spelled-out danger labels side by side are noise. `text-decoration-none` because the
+      // theme underlines links on hover, which underlines the icon too.
+      buttonClass: 'btn-link link-danger text-decoration-none',
+      iconOnly: true,
+      feature: 'power.stop',
+      managedOnly: false,
+      can: canStop,
+      variant: 'danger',
+      confirmTitle: 'pages.servers.header.confirm-stop-title',
+      confirmBody: 'pages.servers.header.confirm-stop-body',
+      done: 'pages.servers.header.power-sent-stop',
+    },
+    {
       id: 'kill',
       icon: 'fa-solid fa-plug-circle-xmark',
       text: 'pages.servers.header.kill',
       power: 'KILL',
-      buttonClass: 'btn-outline-danger',
+      buttonClass: 'btn-link link-danger text-decoration-none',
+      iconOnly: true,
       feature: 'power.kill',
       managedOnly: true,
       can: canKill,
@@ -1031,7 +1026,11 @@
               section: $_('pages.servers.capabilities.power'),
             },
           })
-        : '',
+        : // An icon-only button carries no visible label, so its own name is the tooltip — the
+          // reason below still takes over whenever it cannot be pressed.
+          button.iconOnly
+          ? $_(button.text)
+          : '',
       disabled: !!powerBusy || !!reason,
     };
   });

@@ -1,0 +1,70 @@
+// Server workspace surface
+//
+// Raw black separates the workspace too harshly from Bootstrap's dark cards. Build the surface
+// from Bootstrap's own dark tokens instead: a mostly-black mix for the page, its dark body text
+// and border colours for readable content, and only a slight primary glow to avoid a flat void.
+
+$workspace-game-background: mix($black, $body-bg-dark, 72%);
+$workspace-card-background: mix($black, $body-secondary-bg-dark, 72%);
+$workspace-card-cap-background: mix($workspace-card-background, $white, 96%);
+$workspace-secondary-background: mix($black, $body-secondary-bg-dark, 82%);
+$workspace-tertiary-background: mix($black, $body-tertiary-bg-dark, 76%);
+$workspace-game-foreground: $body-color-dark;
+$workspace-game-border: rgba($body-color-dark, 0.12);
+$workspace-game-glow: rgba($primary, 0.08);
+
+.main-container.workspace-game {
+  --#{$prefix}body-bg: #{$workspace-card-background};
+  --#{$prefix}body-bg-rgb: #{to-rgb($workspace-card-background)};
+  --#{$prefix}body-color: #{$workspace-game-foreground};
+  --#{$prefix}body-color-rgb: #{to-rgb($workspace-game-foreground)};
+  --#{$prefix}body-secondary-color: #{rgba($body-color-dark, 0.75)};
+  --#{$prefix}body-tertiary-color: #{rgba($body-color-dark, 0.5)};
+  --#{$prefix}secondary-bg: #{$workspace-secondary-background};
+  --#{$prefix}secondary-bg-rgb: #{to-rgb($workspace-secondary-background)};
+  --#{$prefix}tertiary-bg: #{$workspace-tertiary-background};
+  --#{$prefix}tertiary-bg-rgb: #{to-rgb($workspace-tertiary-background)};
+  --#{$prefix}emphasis-color: #{$white};
+  --#{$prefix}emphasis-color-rgb: #{to-rgb($white)};
+  --#{$prefix}border-color: #{rgba($body-color-dark, 0.1)};
+  --#{$prefix}border-color-translucent: #{$workspace-game-border};
+  --#{$prefix}card-bg: var(--#{$prefix}body-bg);
+  --#{$prefix}card-border-color: var(--#{$prefix}border-color-translucent);
+  --#{$prefix}card-cap-bg: #{$workspace-card-cap-background};
+  --#{$prefix}card-box-shadow: 0 0.25rem 0.75rem #{rgba($black, 0.18)};
+
+  color: $workspace-game-foreground !important;
+  background-color: $workspace-game-background !important;
+  background-image:
+    radial-gradient(circle at 50% 0, $workspace-game-glow, transparent 36rem),
+    linear-gradient(180deg, rgba($white, 0.025), transparent 18rem) !important;
+  background-attachment: fixed;
+}
+
+[data-bs-theme] #sidebar.workspace-game {
+  color: $workspace-game-foreground !important;
+  background-color: $workspace-game-background !important;
+  background-image: none !important;
+}
+
+[data-bs-theme] #sidebar.workspace-game .sidebar-header-container,
+[data-bs-theme] #sidebar.workspace-game .sidebar-scroll-area,
+[data-bs-theme] #sidebar.workspace-game .sidebar-bottom-container {
+  background-color: transparent !important;
+}
+
+[data-bs-theme] #sidebar.workspace-game .sidebar-header-container {
+  border-bottom: 0 !important;
+}
+
+[data-bs-theme] #sidebar.workspace-game .sidebar-bottom-container {
+  border-top: $border-width solid $workspace-game-border !important;
+}
+
+[data-bs-theme] #sidebar.workspace-game .sidebar-top-fade-overlay {
+  background: linear-gradient(to bottom, $workspace-game-background, transparent) !important;
+}
+
+[data-bs-theme] #sidebar.workspace-game .sidebar-bottom-fade-overlay {
+  background: linear-gradient(to top, $workspace-game-background, transparent) !important;
+}

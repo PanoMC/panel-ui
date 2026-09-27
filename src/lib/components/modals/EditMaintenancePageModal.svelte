@@ -33,6 +33,12 @@
     justify-content: center;
     background: rgba(var(--bs-body-bg-rgb), 0.65);
   }
+
+  /* The tab that is open is the dialog's subject, so it wears the primary colour rather than the
+     emphasis colour Bootstrap's tabs default to. */
+  .nav-tabs {
+    --bs-nav-tabs-link-active-color: var(--bs-primary);
+  }
 </style>
 
 <div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">

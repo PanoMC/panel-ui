@@ -1,17 +1,6 @@
 <style>
-  /* Ensure the pulsate animation is available if animate.css is not globally loaded */
-  @keyframes pulse {
-    from {
-      transform: scale3d(1, 1, 1);
-    }
-    50% {
-      transform: scale3d(1.05, 1.05, 1.05);
-    }
-    to {
-      transform: scale3d(1, 1, 1);
-    }
-  }
-
+  /* animate.css is loaded globally (src/styles/style.scss) but it ships no `spin` keyframes, so
+     this one is still local; its `pulse` twin was only ever a stand-in and is gone. */
   @keyframes spin {
     from {
       transform: rotate(0deg);

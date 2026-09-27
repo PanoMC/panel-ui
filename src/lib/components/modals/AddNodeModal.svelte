@@ -11,6 +11,12 @@
   .fingerprint {
     word-break: break-all;
   }
+
+  /* The tab that is open is the dialog's subject, so it wears the primary colour rather than the
+     emphasis colour Bootstrap's tabs default to. */
+  .nav-tabs {
+    --bs-nav-tabs-link-active-color: var(--bs-primary);
+  }
 </style>
 
 <!--
@@ -27,7 +33,7 @@
   role="dialog"
   tabindex="-1"
   bind:this={modalElement}>
-  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addNodeTitle">{$_('pages.servers.nodes.add-title')}</h5>
@@ -66,23 +72,8 @@
         </ul>
 
         {#if tab === 'local'}
-          <p class="text-body-secondary">{$_('pages.servers.nodes.local-description')}</p>
-
-          <button
-            type="button"
-            class="btn btn-primary"
-            disabled={localSetupBusy}
-            onclick={setupLocalNode}>
-            {#if localSetupBusy}
-              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-            {:else}
-              <i class="fa-solid fa-bolt me-1" aria-hidden="true"></i>
-            {/if}
-            {$_('pages.servers.create.setup-local-node')}
-          </button>
+          <!-- The local setup button in the footer is the whole screen. -->
         {:else if tab === 'manual'}
-          <p class="text-body-secondary">{$_('pages.servers.nodes.manual-description')}</p>
-
           {#if pairingUnavailable}
             <div class="alert alert-warning mb-0" role="alert">
               {$_('pages.servers.nodes.pairing-unavailable')}
@@ -151,10 +142,6 @@
             {@render advancedPanoUrl('addNodeManualPanoUrl', 'mt-3')}
           {/if}
         {:else if phase === Phases.PROGRESS}
-          <p class="text-body-secondary small">
-            {$_('components.modals.add-node.progress-description')}
-          </p>
-
           <NodeBootstrapLog
             lines={bootstrapLines}
             status={bootstrapStatus}
@@ -179,12 +166,6 @@
             </button>
           {/if}
         {:else if phase === Phases.FINGERPRINT}
-          <p class="text-body-secondary small">
-            {$_('components.modals.add-node.fingerprint-description', {
-              values: { host: sshHost },
-            })}
-          </p>
-
           <div class="alert alert-warning" role="alert">
             <div class="small text-uppercase fw-semibold mb-1">
               {$_('components.modals.add-node.fingerprint-label')}
@@ -212,11 +193,7 @@
             </button>
           </div>
         {:else if tab === 'ssh'}
-          <p class="text-body-secondary small">
-            {$_('components.modals.add-node.ssh-description')}
-          </p>
-
-          <form class="row g-3" onsubmit={onSubmitSsh}>
+          <form id="addNodeSshForm" class="row g-3" onsubmit={onSubmitSsh}>
             <div class="col-md-8">
               <label class="form-label" for="addNodeSshHost">
                 {$_('components.modals.add-node.host-label')}
@@ -349,22 +326,9 @@
             {@render advancedPanoUrl('addNodeSshPanoUrl', 'col-12')}
 
             {@render currentPasswordField('addNodeSshCurrentPassword')}
-
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary" disabled={submitting || !sshValid}>
-                {#if submitting}
-                  <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-                {/if}
-                {$_('components.modals.add-node.ssh-submit')}
-              </button>
-            </div>
           </form>
         {:else if tab === 'coolify'}
-          <p class="text-body-secondary small">
-            {$_('components.modals.add-node.coolify-description')}
-          </p>
-
-          <form class="row g-3" onsubmit={onSubmitCoolify}>
+          <form id="addNodeCoolifyForm" class="row g-3" onsubmit={onSubmitCoolify}>
             <div class="col-md-7">
               <label class="form-label" for="addNodeCoolifyUrl">
                 {$_('components.modals.add-node.coolify-url-label')}
@@ -481,18 +445,38 @@
             {@render advancedPanoUrl('addNodeCoolifyPanoUrl', 'col-12', true)}
 
             {@render currentPasswordField('addNodeCoolifyCurrentPassword')}
-
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary" disabled={submitting || !coolifyValid}>
-                {#if submitting}
-                  <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-                {/if}
-                {$_('components.modals.add-node.coolify-submit')}
-              </button>
-            </div>
           </form>
         {/if}
       </div>
+      {#if phase === Phases.FORM && (tab === 'local' || tab === 'ssh' || tab === 'coolify')}
+        <div class="modal-footer">
+          {#if tab === 'local'}
+            <button
+              type="button"
+              class="btn btn-primary w-100"
+              disabled={localSetupBusy}
+              onclick={setupLocalNode}>
+              {#if localSetupBusy}
+                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+              {:else}
+                <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
+              {/if}
+              {$_('pages.servers.create.setup-local-node')}
+            </button>
+          {:else}
+            <button
+              type="submit"
+              class="btn btn-primary w-100"
+              form={tab === 'ssh' ? 'addNodeSshForm' : 'addNodeCoolifyForm'}
+              disabled={submitting || (tab === 'ssh' ? !sshValid : !coolifyValid)}>
+              {#if submitting}
+                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+              {/if}
+              {$_('buttons.save')}
+            </button>
+          {/if}
+        </div>
+      {/if}
     </div>
   </div>
 </div>

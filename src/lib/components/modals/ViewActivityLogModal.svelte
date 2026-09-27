@@ -1,18 +1,18 @@
+<!-- The JSON is the only thing in here and it is meant to be copied, so the caret waits in it as
+     soon as the dialog is up: `shown` rather than `show`, because a hidden field cannot take focus. -->
 <div
   aria-hidden="true"
   class="modal fade"
   bind:this={$modalElement}
   role="dialog"
-  tabindex="-1">
+  tabindex="-1"
+  on:shown.bs.modal={focusLog}>
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{$_('components.modals.view-activity-log.title')}</h5>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label={$_('buttons.close')}
-          on:click={hide}></button>
+        <button type="button" class="btn-close" aria-label={$_('buttons.close')} on:click={hide}
+        ></button>
       </div>
       <div class="modal-body">
         <label for="activityLogJson" class="form-label"
@@ -70,4 +70,9 @@
 <script>
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
+
+  /** Puts the caret in the read-only JSON box once Bootstrap reports the dialog as shown. */
+  function focusLog() {
+    get(modalElement)?.querySelector('#activityLogJson')?.focus();
+  }
 </script>

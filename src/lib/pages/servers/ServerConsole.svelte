@@ -1,190 +1,215 @@
 <style>
-  .console-toolbar {
-    min-width: 0;
+  /* The Find field, in the middle of the header's three parts (title · Find · switches+actions).
+     On lg the two sides take one equal share each — `flex: 1 1 0`, not `1 1 auto` — so the field
+     between them sits at the card's centre however many switches sit beside it: they wrap inside
+     their own share instead of pushing it sideways. `CardHeader`'s own `col-lg-*` split cannot
+     promise that, because it centres the field between the *columns*, and the right one is as
+     wide as its contents. The sides' widths are reset here because `col-lg-3` is `flex: 0 0 auto`
+     with a fixed `width`.
+
+     `:global`, because the class reaches `CardHeader`'s own row through `rowClasses`: that row
+     is in another component's template, so this component's scoping never lands on it and a
+     scoped rule would silently match nothing. */
+  @media (min-width: 992px) {
+    :global(.console-toolbar > :not(.console-search)) {
+      flex: 1 1 0;
+      width: auto;
+    }
   }
 
   .console-search {
+    width: 100%;
+    min-width: 0;
     max-width: 260px;
   }
 </style>
 
 <svelte:window on:keydown={onWindowKeydown} />
 
-<div class="container vstack gap-3">
-  <!-- The log always streams from somebody (Pano keeps its own ring buffer), so what can be
+<!-- The log always streams from somebody (Pano keeps its own ring buffer), so what can be
        missing here is the prompt — and that is what the notice explains (§2.4.35). -->
-  <ServerCapabilityNotice
-    server={$server}
-    feature="console.input"
-    section="pages.servers.capabilities.commands" />
+<ServerCapabilityNotice
+  server={$server}
+  feature="console.input"
+  section="pages.servers.capabilities.commands" />
 
-  <div class="card">
-    <CardHeader rightClasses="console-toolbar">
-      <span slot="left" class="d-flex align-items-center gap-2">
-        {$_('pages.servers.console.title')}
-        {#if sourceLabel}
-          <!-- Where the lines come from, as an icon: the node's own pipe (managed) or the
+<div class="card">
+  <!-- The Find field in the header's middle slot, with the sides taking one equal share each on
+       lg (see `.console-toolbar`) — that is what holds it at the card's centre. -->
+  <CardHeader rowClasses="console-toolbar" middleClasses="console-search">
+    <span slot="left" class="d-flex align-items-center gap-2">
+      {$_('pages.servers.console.title')}
+      {#if sourceLabel}
+        <!-- Where the lines come from, as an icon: the node's own pipe (managed) or the
                plugin's logger tap (linked). -->
-          <i
-            class="{sourceIcon} text-body-secondary small"
-            role="img"
-            aria-label={$_(sourceLabel)}
-            use:tooltip={[$_(sourceLabel), { placement: 'bottom' }]}></i>
-        {/if}
-      </span>
-
-      <span slot="right" class="d-flex flex-wrap align-items-center justify-content-end gap-2">
-        <div class="console-search flex-grow-1">
-          <SearchInput onchange={(value) => (query = value)} />
-        </div>
-
-        <div class="form-check form-switch m-0">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            role="switch"
-            id="consoleLive"
-            bind:checked={following} />
-          <label class="form-check-label small" for="consoleLive">
-            {$_('pages.servers.console.live')}
-          </label>
-        </div>
-
-        <div class="form-check form-switch m-0">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            role="switch"
-            id="consoleTimestamps"
-            bind:checked={showTimestamps} />
-          <label class="form-check-label small" for="consoleTimestamps">
-            {$_('pages.servers.console.timestamps')}
-          </label>
-        </div>
-
-        <div class="form-check form-switch m-0">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            role="switch"
-            id="consoleWrapLines"
-            bind:checked={wrapLines} />
-          <label class="form-check-label small" for="consoleWrapLines">
-            {$_('pages.servers.console.wrap-lines')}
-          </label>
-        </div>
-
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-secondary"
-          on:click={reloadConsole}
-          aria-label={$_('pages.servers.console.reload')}
-          use:tooltip={[$_('pages.servers.console.reload'), { placement: 'bottom' }]}
-          disabled={loading}>
-          <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-secondary"
-          on:click={onCopyVisible}
-          aria-label={$_('pages.servers.console.copy-visible')}
-          use:tooltip={[$_('pages.servers.console.copy-visible'), { placement: 'bottom' }]}
-          disabled={!visibleEntries.length}>
-          <i class="fa-regular fa-copy" aria-hidden="true"></i>
-        </button>
-
-        {#if canDownloadLog}
-          <!-- The whole of today's log as the server wrote it, not just what the panel holds:
-               a plain download through the file manager's streaming endpoint. -->
-          <a
-            class="btn btn-sm btn-outline-secondary"
-            href={fileDownloadUrl(serverId, [LATEST_LOG_PATH])}
-            download="latest.log"
-            aria-label={$_('pages.servers.console.download-latest')}
-            use:tooltip={[$_('pages.servers.console.download-latest'), { placement: 'bottom' }]}>
-            <i class="fa-solid fa-download" aria-hidden="true"></i>
-          </a>
-        {/if}
-      </span>
-    </CardHeader>
-
-    <!-- The log fills the body edge to edge; only the extras around it keep the card padding. -->
-    <div class="card-body p-0">
-      {#if deepSearch}
-        <!-- Deep search: every log file, newest first, matches appearing as they are found. -->
-        <div
-          class="d-flex flex-wrap align-items-center gap-2 px-3 py-2 small border-bottom"
-          role="status">
-          {#if deepSearch.running}
-            <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
-            <span>
-              {$_('pages.servers.console.deep-search-running', {
-                values: {
-                  scanned: deepSearch.scannedFiles,
-                  total: deepSearch.totalFiles || '…',
-                  found: deepSearch.found,
-                },
-              })}
-            </span>
-            <button type="button" class="btn btn-sm btn-link p-0 ms-auto" on:click={stopDeepSearch}>
-              <i class="fa-solid fa-stop me-1" aria-hidden="true"></i>
-              {$_('pages.servers.console.deep-search-stop')}
-            </button>
-          {:else}
-            <i class="fa-solid fa-magnifying-glass text-body-secondary" aria-hidden="true"></i>
-            <span class="text-body-secondary">
-              {$_(
-                deepSearch.stopped
-                  ? 'pages.servers.console.deep-search-stopped'
-                  : deepSearch.limited
-                    ? 'pages.servers.console.deep-search-limited'
-                    : 'pages.servers.console.deep-search-done',
-                {
-                  values: {
-                    scanned: deepSearch.scannedFiles,
-                    total: deepSearch.totalFiles,
-                    found: deepSearch.found,
-                  },
-                },
-              )}
-              {#if deepSearch.capped}
-                &middot; {$_('pages.servers.console.deep-search-capped')}
-              {/if}
-            </span>
-          {/if}
-        </div>
+        <i
+          class="{sourceIcon} text-body-secondary small"
+          role="img"
+          aria-label={$_(sourceLabel)}
+          use:tooltip={[$_(sourceLabel), { placement: 'bottom' }]}></i>
       {/if}
-      {#if loading}
-        <div class="d-flex align-items-center justify-content-center py-5">
-          <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
-        </div>
-      {:else}
-        <ServerConsoleView
-          bind:this={consoleView}
-          entries={visibleEntries}
-          {query}
-          {showTimestamps}
-          wrap={wrapLines}
-          bind:following
-          {canLoadOlder}
-          {loadingOlder}
-          onLoadOlder={loadOlder}
-          ariaLabel={$_('pages.servers.console.title')}
-          flush
-          {emptyText} />
-      {/if}
+    </span>
 
-      {#if connection.hint}
-        <div class="small text-body-secondary px-3 py-2">
-          <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-          {$_(connection.hint)}
-        </div>
-      {/if}
+    <div slot="middle" class="console-search">
+      <SearchInput autofocus onchange={(value) => (query = value)} />
     </div>
 
-    <ServerConsoleCommandBar server={$server} {serverId} autofocus />
+    <span slot="right" class="d-flex flex-wrap align-items-center justify-content-end gap-2">
+      <div class="form-check m-0">
+        <input class="form-check-input" type="checkbox" id="consoleLive" bind:checked={following} />
+        <label class="form-check-label small text-body-secondary" for="consoleLive">
+          {$_('pages.servers.console.live')}
+        </label>
+      </div>
+
+      <div class="form-check m-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="consoleTimestamps"
+          bind:checked={showTimestamps} />
+        <label class="form-check-label small text-body-secondary" for="consoleTimestamps">
+          {$_('pages.servers.console.timestamps')}
+        </label>
+      </div>
+
+      <div class="form-check m-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="consoleWrapLines"
+          bind:checked={wrapLines} />
+        <label class="form-check-label small text-body-secondary" for="consoleWrapLines">
+          {$_('pages.servers.console.wrap-lines')}
+        </label>
+      </div>
+
+      <!-- The log actions behind one menu, the way every other list's rows do it: three
+           icon-only buttons in a header means three tooltips to read, and the header is narrow
+           enough that they wrap. `title` rather than a tippy tooltip, as the other action menus
+           do. The items carry their own labels, so the trigger is the only thing here that needs
+           one. -->
+      <div class="dropdown">
+        <button
+          type="button"
+          class="btn btn-sm btn-link"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          title={$_('pages.servers.console.column-actions')}
+          aria-label={$_('pages.servers.console.column-actions')}>
+          <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-end">
+          <button
+            type="button"
+            class="dropdown-item text-capitalize"
+            on:click={reloadConsole}
+            disabled={loading}>
+            <i class="fa-solid fa-rotate-right me-2" aria-hidden="true"></i>
+            {$_('buttons.reload')}
+          </button>
+
+          <button
+            type="button"
+            class="dropdown-item text-capitalize"
+            on:click={onCopyVisible}
+            disabled={!visibleEntries.length}>
+            <i class="fa-regular fa-copy me-2" aria-hidden="true"></i>
+            {$_('buttons.copy')}
+          </button>
+
+          {#if canDownloadLog}
+            <!-- The whole of today's log as the server wrote it, not just what the panel holds:
+                 a plain download through the file manager's streaming endpoint. -->
+            <a
+              class="dropdown-item text-capitalize"
+              href={fileDownloadUrl(serverId, [LATEST_LOG_PATH])}
+              download="latest.log">
+              <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
+              {$_('pages.servers.console.download-latest')}
+            </a>
+          {/if}
+        </div>
+      </div>
+    </span>
+  </CardHeader>
+
+  <!-- The log fills the body edge to edge; only the extras around it keep the card padding. -->
+  <div class="card-body p-0">
+    {#if deepSearch}
+      <!-- Deep search: every log file, newest first, matches appearing as they are found. -->
+      <div
+        class="d-flex flex-wrap align-items-center gap-2 px-3 py-2 small border-bottom"
+        role="status">
+        {#if deepSearch.running}
+          <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
+          <span>
+            {$_('pages.servers.console.deep-search-running', {
+              values: {
+                scanned: deepSearch.scannedFiles,
+                total: deepSearch.totalFiles || '…',
+                found: deepSearch.found,
+              },
+            })}
+          </span>
+          <button type="button" class="btn btn-sm btn-link p-0 ms-auto" on:click={stopDeepSearch}>
+            <i class="fa-solid fa-stop me-1" aria-hidden="true"></i>
+            {$_('pages.servers.console.deep-search-stop')}
+          </button>
+        {:else}
+          <i class="fa-solid fa-magnifying-glass text-body-secondary" aria-hidden="true"></i>
+          <span class="text-body-secondary">
+            {$_(
+              deepSearch.stopped
+                ? 'pages.servers.console.deep-search-stopped'
+                : deepSearch.limited
+                  ? 'pages.servers.console.deep-search-limited'
+                  : 'pages.servers.console.deep-search-done',
+              {
+                values: {
+                  scanned: deepSearch.scannedFiles,
+                  total: deepSearch.totalFiles,
+                  found: deepSearch.found,
+                },
+              },
+            )}
+            {#if deepSearch.capped}
+              &middot; {$_('pages.servers.console.deep-search-capped')}
+            {/if}
+          </span>
+        {/if}
+      </div>
+    {/if}
+    {#if loading}
+      <div class="d-flex align-items-center justify-content-center py-5">
+        <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+      </div>
+    {:else}
+      <ServerConsoleView
+        bind:this={consoleView}
+        entries={visibleEntries}
+        {query}
+        {showTimestamps}
+        wrap={wrapLines}
+        bind:following
+        {canLoadOlder}
+        {loadingOlder}
+        onLoadOlder={loadOlder}
+        ariaLabel={$_('pages.servers.console.title')}
+        flush
+        {emptyText} />
+    {/if}
+
+    {#if connection.hint}
+      <div class="small text-body-secondary px-3 py-2">
+        <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
+        {$_(connection.hint)}
+      </div>
+    {/if}
   </div>
+
+  <ServerConsoleCommandBar server={$server} {serverId} autofocus />
 </div>
 
 <script context="module">

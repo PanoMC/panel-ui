@@ -1,5 +1,9 @@
 $pano-asset-path: '/panel/assets/';
 @import 'node_modules/@panomc/sdk/core/scss/main';
+// No extension: Dart Sass inlines a bare path, while `@import '….css'` would be left in the output
+// as a plain CSS `@import` the browser cannot resolve from /panel.
+@import 'node_modules/animate.css/animate.min';
+@import 'workspace';
 $fa-font-path: '#{$pano-asset-path}webfonts';
 
 @import 'node_modules/tippy.js/dist/tippy';
@@ -34,4 +38,14 @@ details[open] summary .fa-chevron-right {
 /* Container expansion */
 .container {
   max-width: 1550px;
+}
+
+/* Panel transitions
+   animate.css fades over a second by default, which is a beat too long for moving between pages:
+   a change should be felt, not waited for. `fadeChange` (src/lib/fadeChange.util.js) replays the
+   animation on the two places whose content swaps under the admin — the page area and the sidebar
+   menu — so both are quick here. */
+.main-container.animate__fadeIn,
+.sidebar-scroll-area.animate__fadeIn {
+  animation-duration: 0.2s;
 }

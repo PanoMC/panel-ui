@@ -1,14 +1,4 @@
 <style>
-  .activity-entry {
-    transition: background-color 1.5s ease-out;
-  }
-
-  /* An entry that arrived live fades in from a highlight (the Overview's Recent activity). */
-  .activity-entry.is-fresh {
-    background-color: var(--bs-warning-bg-subtle);
-    transition: none;
-  }
-
   .system-avatar {
     width: 24px;
     height: 24px;
@@ -18,8 +8,8 @@
 
 <!-- One activity-log entry (§2.4.12), shared by the Overview's Recent activity and the server
      settings' Activity page so the two always read the same. -->
-<div class="list-group-item activity-entry" class:is-fresh={fresh}>
-  <div class="d-flex flex-wrap align-items-center gap-2">
+{#snippet entryContent()}
+  <span class="d-flex flex-wrap align-items-center gap-2">
     <span class="badge text-bg-{meta.colour} fw-normal">
       <i class="{meta.icon} me-1" aria-hidden="true"></i>
       {activityTypeLabel(entry.type, $_)}
@@ -47,20 +37,38 @@
           : entry.username || $_('pages.servers.activity.unknown-user')}
       </span>
     </span>
-    <span class="small text-body-secondary ms-auto">
+    <small class="opacity-75 ms-auto">
       {#if entry.createdAt != null}
         <DateComponent time={entry.createdAt} relativeFormat />
       {/if}
-    </span>
-  </div>
+    </small>
+  </span>
   {#if entry.details}
     <!-- Untrusted text (a command someone typed, a path they opened): rendered as text, never
          as HTML (§2.7). -->
-    <div class="small text-body-secondary text-break font-monospace mt-1">
+    <small class="opacity-75 text-break font-monospace mt-1 d-block">
       {entry.details}
-    </div>
+    </small>
   {/if}
-</div>
+{/snippet}
+
+{#if onSelect}
+  <button
+    type="button"
+    class="list-group-item list-group-item-action focus-ring"
+    class:bg-warning-subtle={fresh && !selected}
+    class:bg-secondary-subtle={selected}
+    title={$_('buttons.view')}
+    aria-label={$_('buttons.view')}
+    aria-haspopup="dialog"
+    onclick={() => onSelect(entry)}>
+    {@render entryContent()}
+  </button>
+{:else}
+  <div class="list-group-item" class:bg-warning-subtle={fresh} class:bg-secondary-subtle={selected}>
+    {@render entryContent()}
+  </div>
+{/if}
 
 <script>
   import { _ } from 'svelte-i18n';
@@ -80,9 +88,11 @@
    * @type {{
    *   entry: { id: string, type: string, userId?: string, username?: string, createdAt?: number | string | null, details?: string },
    *   fresh?: boolean,
+   *   selected?: boolean,
+   *   onSelect?: (entry: { id: string, type: string, userId: string, username: string, createdAt: number|string|null, details: string }) => void
    * }}
    */
-  let { entry, fresh = false } = $props();
+  let { entry, fresh = false, selected = false, onSelect = null } = $props();
 
   const meta = $derived(activityTypeMeta(entry.type));
   const system = $derived(isSystemActivity(entry));

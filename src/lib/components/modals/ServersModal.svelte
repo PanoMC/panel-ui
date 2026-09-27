@@ -1,3 +1,10 @@
+<style>
+  /* The header search centres itself in the space left between the title block and the close. */
+  .search-row {
+    max-width: 32rem;
+  }
+</style>
+
 <!-- Servers Modal -->
 <div
   class="modal fade"
@@ -10,47 +17,41 @@
   tabindex="-1">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
-      <div class="modal-header flex-column align-items-stretch gap-3">
-        <div class="d-flex w-100 align-items-start justify-content-between gap-2">
-          <div class="d-flex flex-wrap align-items-center gap-2 min-w-0">
-            <h5 class="modal-title mb-0 text-break">
-              {$_('components.modals.servers.servers')}
-            </h5>
-            <button
-              class="btn btn-sm btn-primary flex-shrink-0"
-              on:click={openConnectServer}
-              type="button"
-              aria-label={$_('components.modals.servers.connect-server-button')}>
-              <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
-              {$_('components.modals.servers.connect-server-button')}
-            </button>
-            <!-- How often the gauges refresh while the modal is open — the Overview's intervals. -->
-            <select
-              class="form-select form-select-sm w-auto"
-              aria-label={$_('pages.servers.overview.refresh-interval')}
-              bind:value={modalInterval}
-              on:change={onModalIntervalChange}>
-              {#each METRIC_REFRESH_INTERVALS as interval (interval)}
-                <option value={interval}>{metricRefreshIntervalLabel(interval, $_)}</option>
-              {/each}
-            </select>
-          </div>
+      <div class="modal-header gap-2">
+        <div class="d-flex flex-wrap align-items-center gap-2 min-w-0">
+          <h5 class="modal-title mb-0 text-break">
+            {$_('components.modals.servers.servers')}
+          </h5>
           <button
-            aria-label={$_('buttons.close')}
-            class="btn-close flex-shrink-0 mt-1"
-            on:click={hide}
-            type="button">
+            class="btn btn-sm btn-success flex-shrink-0"
+            on:click={openConnectServer}
+            type="button"
+            title={$_('components.modals.servers.connect-server-button')}
+            aria-label={$_('components.modals.servers.connect-server-button')}>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
           </button>
         </div>
         {#if !$loading && $otherServers.length > 0}
-          <div class="w-100">
-            <SearchInput
-              inputId={SERVERS_MODAL_SEARCH_INPUT_ID}
-              placeholderKey="components.modals.servers.search-placeholder"
-              initialValue={$searchTerm}
-              onchange={(v) => searchTerm.set(v)} />
+          <!-- The search shares the header line and centres itself in whatever room the title
+               block and the close button leave over. -->
+          <div class="d-flex flex-grow-1 justify-content-center min-w-0">
+            <div class="w-100 search-row">
+              <SearchInput
+                bind:this={searchInput}
+                inputId={SERVERS_MODAL_SEARCH_INPUT_ID}
+                placeholderKey="components.modals.servers.search-placeholder"
+                initialValue={$searchTerm}
+                small={false}
+                onchange={(v) => searchTerm.set(v)} />
+            </div>
           </div>
         {/if}
+        <button
+          aria-label={$_('buttons.close')}
+          class="btn-close flex-shrink-0"
+          on:click={hide}
+          type="button">
+        </button>
       </div>
 
       <div class="modal-body">
@@ -236,12 +237,7 @@
     subscribeServersMetrics,
   } from '$lib/panelRealtime.js';
   import {
-    loadMetricRefreshInterval,
     METRIC_REFRESH_INTERVAL_DEFAULT,
-    METRIC_REFRESH_INTERVALS,
-    metricRefreshIntervalLabel,
-    metricRequestInterval,
-    storeMetricRefreshInterval,
     createKeyedLatestThrottle,
   } from '$lib/metricsSeries.util.js';
 
@@ -264,9 +260,9 @@
    * endpoint at this pace instead.
    */
   const SERVER_METRICS_POLL_MS = 15000;
-  const MODAL_INTERVAL_KEY = 'pano.panel.servers-modal.refresh-interval';
 
   let serversModalOpen = false;
+  let searchInput;
   /** @type {(() => void) | null} */
   let releaseServersList = null;
 
@@ -281,10 +277,6 @@
   /** @type {ReturnType<typeof setInterval> | null} */
   let metricsTimer = null;
   let metricsInFlight = false;
-  /** Refresh interval of the gauges, in ms; 0 is Paused. Remembered per browser. */
-  let modalInterval = browser
-    ? loadMetricRefreshInterval(MODAL_INTERVAL_KEY)
-    : METRIC_REFRESH_INTERVAL_DEFAULT;
   /** @type {{ release: () => void, update: (ids: Array<number|string>, intervalMs: number|null) => void } | null} */
   let metricsSubscription = null;
   /** @type {(() => void) | null} */
@@ -296,9 +288,10 @@
   // search reveals already has live numbers.
   $: listedServerIds = [...$pinnedServers, ...$otherServers].map((server) => server.id);
 
-  // The list and the interval travel with the subscription; changing either re-sends it.
+  // The list travels with the subscription; a change re-sends it. The gauges run at the panel's
+  // usual pace: the modal is open only while an admin is looking at it.
   $: if (serversModalOpen && metricsSubscription) {
-    metricsSubscription.update(listedServerIds, metricRequestInterval(modalInterval));
+    metricsSubscription.update(listedServerIds, METRIC_REFRESH_INTERVAL_DEFAULT);
   }
 
   function onModalShown() {
@@ -309,6 +302,10 @@
     }
 
     startServerMetrics();
+
+    // The dialog is open to be searched or picked from, so the caret waits in the field once the
+    // modal is actually on screen — a hidden one cannot take focus, hence `shown` over `show`.
+    searchInput?.focus();
   }
 
   function onModalHidden() {
@@ -318,13 +315,8 @@
     stopServerMetrics();
   }
 
-  function onModalIntervalChange() {
-    storeMetricRefreshInterval(MODAL_INTERVAL_KEY, modalInterval);
-  }
-
   /**
-   * One live sample of one listed server: it becomes that card's `latest`. Paused keeps the
-   * gauges on the picture they had.
+   * One live sample of one listed server: it becomes that card's `latest`.
    *
    * @param {{ serverId: number, sample: object | null }} frame
    */
@@ -339,19 +331,15 @@
 
     lastMetricsFrameAt = Date.now();
 
-    if (modalInterval === 0) {
-      return;
-    }
-
-    // At most one update per server per chosen interval, always the newest sample: a server with
-    // both a node and a plugin gets a merged sample on each side's frame, and the hub sends the
-    // fastest rate any watcher asked for.
-    gaugeThrottle.setInterval(modalInterval);
+    // At most one update per server per interval, always the newest sample: a server with both a
+    // node and a plugin gets a merged sample on each side's frame, and the hub sends the fastest
+    // rate any watcher asked for.
+    gaugeThrottle.setInterval(METRIC_REFRESH_INTERVAL_DEFAULT);
     gaugeThrottle.push(frame.serverId, frame.sample);
   }
 
   const gaugeThrottle = createKeyedLatestThrottle((serverId, sample) => {
-    if (!serversModalOpen || modalInterval === 0) {
+    if (!serversModalOpen) {
       return;
     }
 
@@ -396,8 +384,8 @@
 
   /**
    * One fetch for the initial numbers (and disk, which only changes every few minutes), then the
-   * hub's per-server frames at the chosen interval. The 15-second poll only runs while no frame
-   * has arrived for that long — a backend without the multi-server subscription.
+   * hub's per-server frames. The 15-second poll only runs while no frame has arrived for that
+   * long — a backend without the multi-server subscription.
    */
   function startServerMetrics() {
     void loadServerMetrics();
@@ -411,13 +399,13 @@
     if (!metricsSubscription) {
       metricsSubscription = subscribeServersMetrics(
         listedServerIds,
-        metricRequestInterval(modalInterval),
+        METRIC_REFRESH_INTERVAL_DEFAULT,
       );
     }
 
     if (metricsTimer == null) {
       metricsTimer = setInterval(() => {
-        if (modalInterval !== 0 && Date.now() - lastMetricsFrameAt > SERVER_METRICS_POLL_MS) {
+        if (Date.now() - lastMetricsFrameAt > SERVER_METRICS_POLL_MS) {
           void loadServerMetrics();
         }
       }, SERVER_METRICS_POLL_MS);

@@ -32,18 +32,16 @@
   aria-hidden="true"
   aria-labelledby="filePreviewTitle"
   bind:this={modalElement}>
-  <div class="modal-dialog modal-xl modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title text-break d-flex align-items-center gap-2" id="filePreviewTitle">
           <i class={KIND_ICONS[kind] ?? 'fa-solid fa-file'} aria-hidden="true"></i>
           <span class="font-monospace">{path}</span>
           {#if sizeText}
-            <span class="badge text-bg-secondary fw-normal">{sizeText}</span>
+            <span class="badge text-bg-primary fw-normal">{sizeText}</span>
           {/if}
         </h5>
-        <button type="button" class="btn-close" aria-label={$_('buttons.close')} onclick={close}
-        ></button>
       </div>
 
       <div class="modal-body">
@@ -79,10 +77,7 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-link m-0" onclick={close}>
-          {$_('buttons.close')}
-        </button>
-        <button type="button" class="btn btn-primary m-0" onclick={() => ondownload?.(path)}>
+        <button type="button" class="btn btn-primary w-100" onclick={() => ondownload?.(path)}>
           <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
           {$_('pages.servers.files.action-download')}
         </button>

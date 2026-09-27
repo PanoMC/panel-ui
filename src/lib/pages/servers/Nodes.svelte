@@ -1,26 +1,7 @@
-<style>
-  .status-dot {
-    width: 0.6rem;
-    height: 0.6rem;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-  }
-
-  .usage-bar {
-    height: 4px;
-    min-width: 72px;
-  }
-
-  .usage-cell {
-    min-width: 96px;
-  }
-</style>
-
 <!-- Nodes (SM-24c): the machines that run managed servers. -->
 <div class="container vstack gap-3">
-  <PageActions leftClasses="d-none" middleClasses="d-none">
-    <div slot="right" class="d-flex flex-wrap align-items-center justify-content-end gap-2">
+  <PageActions leftClasses="d-none" middleClasses="d-none" rightClasses="ms-lg-auto">
+    <div slot="right" class="hstack gap-2" data-layout-actions="right">
       <!-- §2.4.30: how often the CPU/RAM/disk cells move — the Overview's intervals. -->
       <label class="small text-body-secondary mb-0" for="nodesRefreshInterval">
         {$_('pages.servers.overview.refresh-interval')}
@@ -36,16 +17,16 @@
       </select>
       <button
         type="button"
-        class="btn btn-sm btn-outline-secondary"
+        class="btn btn-link"
         aria-label={$_('pages.servers.overview.refresh-now')}
         use:tooltip={[$_('pages.servers.overview.refresh-now'), { placement: 'bottom' }]}
         disabled={refreshing}
         onclick={refreshNow}>
         <i class="fa-solid fa-rotate-right" class:fa-spin={refreshing} aria-hidden="true"></i>
       </button>
-      <button class="btn btn-sm btn-primary" type="button" onclick={openAddNode}>
-        <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
-        {$_('pages.servers.nodes.add-node')}
+      <button class="btn btn-secondary" type="button" onclick={openAddNode}>
+        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        <span class="d-lg-inline d-none ms-2">{$_('pages.servers.nodes.add-node')}</span>
       </button>
     </div>
   </PageActions>
@@ -94,200 +75,85 @@
 
   <div class="card">
     <CardHeader>
-      <span slot="left">{$_('pages.servers.nodes.title')}</span>
-      <span slot="right" class="small text-body-secondary">
-        {$_('pages.servers.nodes.count', { values: { count: approvedNodes.length } })}
-      </span>
+      <div slot="left">
+        {$_('pages.servers.nodes.table-title', { values: { count: approvedNodes.length } })}
+      </div>
     </CardHeader>
 
-    <div class="card-body">
-      {#if unavailable}
-        <NoContent
-          icon="fa-solid fa-plug-circle-xmark fa-3x"
-          text={$_('pages.servers.nodes.unavailable')} />
-      {:else if approvedNodes.length === 0}
-        <NoContent
-          icon="fa-solid fa-server fa-3x"
-          text={$_('pages.servers.nodes.empty-description')}>
-          <div class="d-flex flex-wrap justify-content-center gap-2 pb-3">
-            <button
-              type="button"
-              class="btn btn-primary btn-sm"
-              disabled={localSetupBusy}
-              onclick={setupLocalNode}>
-              {#if localSetupBusy}
-                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-              {:else}
-                <i class="fa-solid fa-bolt me-1" aria-hidden="true"></i>
-              {/if}
-              {$_('pages.servers.create.setup-local-node')}
-            </button>
-            <button type="button" class="btn btn-outline-secondary btn-sm" onclick={openAddNode}>
-              <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
-              {$_('pages.servers.nodes.add-node')}
-            </button>
-          </div>
-        </NoContent>
-      {:else}
-        <div class="table-responsive">
-          <table class="table table-sm table-hover align-middle mb-0">
-            <thead>
-              <tr>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-name')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-kind')}</th>
-                <th scope="col" class="text-nowrap"
-                  >{$_('pages.servers.nodes.column-bootstrap')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-runtime')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-status')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-version')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-system')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-servers')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-cpu')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-memory')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-disk')}</th>
-                <th scope="col" class="text-nowrap"
-                  >{$_('pages.servers.nodes.column-last-seen')}</th>
-                <th scope="col" class="text-end text-nowrap"
-                  >{$_('pages.servers.nodes.column-actions')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each approvedNodes as node (node.id)}
-                <tr>
-                  <th scope="row" class="fw-semibold text-break">
-                    <a class="text-reset" href="{base}/servers/nodes/{node.id}"
-                      >{getNodeDisplayName(node)}</a>
-                  </th>
-                  <td>{kindLabel(node)}</td>
-                  <td>
-                    {#if nodeBootstrapBadge(node)}
-                      <span class="badge text-bg-{nodeBootstrapBadge(node).colour}">
-                        {$_(nodeBootstrapBadge(node).label)}
-                      </span>
-                    {:else}
-                      <span class="text-body-secondary">—</span>
-                    {/if}
-                  </td>
-                  <td>{node.runtime || NodeRuntimes.PROCESS}</td>
-                  <td>
-                    <span class="d-inline-flex align-items-center gap-2">
-                      <span class="status-dot bg-{nodeStatusColour(node)}"></span>
-                      {$_(nodeStatusLabel(node))}
-                    </span>
-                  </td>
-                  <td class="text-break">
-                    {node.version || '—'}
-                    {#if node.updateAvailable && !updateUnderway(node)}
-                      <span
-                        class="badge text-bg-warning ms-1"
-                        use:tooltip={[
-                          node.platformVersion
-                            ? $_('pages.servers.nodes.update-hint', {
-                                values: { version: node.platformVersion },
-                              })
-                            : '',
-                          { placement: 'top' },
-                        ]}>
-                        {$_('pages.servers.nodes.update-available')}
-                      </span>
-                    {/if}
-                    <!-- SM-77 — the node replacing its daemon, as Pano reports it to everyone. -->
-                    {#if updateProgressOf(node)}
-                      <DaemonUpdateProgress
-                        progress={updateProgressOf(node)}
-                        compact
-                        class="mt-1" />
-                    {/if}
-                  </td>
-                  <td class="text-break">{systemOf(node)}</td>
-                  <td>{serverCountOf(node)}</td>
-                  <td class="usage-cell">{@render usage(cpuOf(node), cpuText(node))}</td>
-                  <td class="usage-cell">
-                    {@render usage(
-                      ratio(metricsOf(node).memUsed, metricsOf(node).memTotal),
-                      bytesText(metricsOf(node).memUsed, metricsOf(node).memTotal),
-                    )}
-                  </td>
-                  <td class="usage-cell">
-                    {@render usage(
-                      ratio(metricsOf(node).diskUsed, metricsOf(node).diskTotal),
-                      bytesText(metricsOf(node).diskUsed, metricsOf(node).diskTotal),
-                    )}
-                  </td>
-                  <td>
-                    {#if node.lastSeen}
-                      <DateComponent time={node.lastSeen} relativeFormat />
-                    {:else}
-                      <span class="text-body-secondary"
-                        >{$_('pages.servers.nodes.never-seen')}</span>
-                    {/if}
-                  </td>
-                  <td class="text-end text-nowrap">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-secondary"
-                      aria-label={$_('pages.servers.nodes.rename-title')}
-                      use:tooltip={[$_('pages.servers.nodes.rename-title'), { placement: 'top' }]}
-                      onclick={() => askRename(node)}>
-                      <i class="fa-solid fa-pen" aria-hidden="true"></i>
-                    </button>
-                    {#if canUpdate(node)}
-                      <!-- `SELF_UPDATE` is a push down the daemon's own socket, so it only
-                           makes sense while the node is connected. -->
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-outline-primary ms-1"
-                        disabled={isUpdating(node)}
-                        aria-label={$_('pages.servers.nodes.update-title')}
-                        use:tooltip={[$_('pages.servers.nodes.update-title'), { placement: 'top' }]}
-                        onclick={() => updateNode(node)}>
-                        {#if isUpdating(node)}
-                          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                        {:else}
-                          <i class="fa-solid fa-arrow-up-from-bracket" aria-hidden="true"></i>
-                        {/if}
-                      </button>
-                    {/if}
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-danger ms-1"
-                      aria-label={$_('pages.servers.nodes.delete-title')}
-                      use:tooltip={[$_('pages.servers.nodes.delete-title'), { placement: 'top' }]}
-                      onclick={() => askDelete(node)}>
-                      <i class="fa-solid fa-trash" aria-hidden="true"></i>
-                    </button>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
+    {#if unavailable}
+      <NoContent
+        icon="fa-solid fa-plug-circle-xmark fa-3x"
+        text={$_('pages.servers.nodes.unavailable')} />
+    {:else if approvedNodes.length === 0}
+      <NoContent icon="fa-solid fa-server fa-3x" text={$_('pages.servers.nodes.empty-description')}>
+        <div class="d-flex flex-wrap justify-content-center gap-2 pb-3">
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            disabled={localSetupBusy}
+            onclick={setupLocalNode}>
+            {#if localSetupBusy}
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {:else}
+              <i class="fa-solid fa-bolt me-1" aria-hidden="true"></i>
+            {/if}
+            {$_('pages.servers.create.setup-local-node')}
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm" onclick={openAddNode}>
+            <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
+            {$_('pages.servers.nodes.add-node')}
+          </button>
         </div>
-      {/if}
-    </div>
+      </NoContent>
+    {:else}
+      <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-name')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-kind')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-bootstrap')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-runtime')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-status')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-version')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-system')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-servers')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-cpu')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-memory')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-disk')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-last-seen')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each pagedApprovedNodes as node (node.id)}
+              <NodeRow
+                {node}
+                metrics={metricsOf(node)}
+                canUpdate={canUpdate(node)}
+                updating={isUpdating(node)}
+                updateProgress={updateProgressOf(node)}
+                updateUnderway={updateUnderway(node)}
+                on:rename={(event) => askRename(event.detail.node)}
+                on:update={(event) => updateNode(event.detail.node)}
+                on:delete={(event) => askDelete(event.detail.node)} />
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/if}
+    {#if !unavailable && approvedNodes.length > 0}
+      <div class="card-footer">
+        <Pagination
+          page={currentPage}
+          totalPage={totalPages}
+          on:firstPageClick={() => (currentPage = 1)}
+          on:lastPageClick={() => (currentPage = totalPages)}
+          on:pageLinkClick={(event) => (currentPage = event.detail.page)} />
+      </div>
+    {/if}
   </div>
 </div>
-
-{#snippet usage(percent, label)}
-  {#if percent == null}
-    <span class="text-body-secondary">—</span>
-  {:else}
-    <div class="small">{label}</div>
-    <div
-      class="progress usage-bar"
-      role="progressbar"
-      aria-label={label}
-      aria-valuenow={percent}
-      aria-valuemin="0"
-      aria-valuemax="100">
-      <div
-        class="progress-bar"
-        class:bg-danger={percent >= 90}
-        class:bg-warning={percent >= 75 && percent < 90}
-        style="width: {percent}%;">
-      </div>
-    </div>
-  {/if}
-{/snippet}
 
 <!-- Rename -->
 <div class="modal fade" tabindex="-1" aria-hidden="true" bind:this={renameModalElement}>
@@ -369,7 +235,6 @@
 
   import ApiUtil from '$lib/api.util.js';
   import tooltip from '$lib/tooltip.util';
-  import { formatBytes } from '$lib/string.util.js';
   import {
     createKeyedLatestThrottle,
     loadMetricRefreshInterval,
@@ -387,11 +252,7 @@
     isNodeOnline,
     newerNodeMetrics,
     NODE_METRICS_INTERVAL_KEY,
-    nodeBootstrapBadge,
     NodeKinds,
-    NodeRuntimes,
-    nodeStatusColour,
-    nodeStatusLabel,
     openAddNodeModal,
     requestLocalNodeSetup,
     requestNodeUpdate,
@@ -408,11 +269,11 @@
   } from '$lib/panelRealtime.js';
 
   import CardHeader from '$lib/components/CardHeader.svelte';
-  import DateComponent from '$lib/components/Date.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
+  import NodeRow from '$lib/components/rows/NodeRow.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
   import DeleteNodeModal from '$lib/components/servers/DeleteNodeModal.svelte';
-  import DaemonUpdateProgress from '$lib/components/servers/DaemonUpdateProgress.svelte';
   import { confirmNodeUpdate } from '$lib/components/modals/ConfirmUpdateModal.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
 
@@ -489,6 +350,19 @@
   const approvedNodes = $derived(nodes.filter((node) => isNodeApproved(node)));
   const pendingNodes = $derived(nodes.filter((node) => !isNodeApproved(node)));
 
+  const NODES_PAGE_SIZE = 10;
+  let currentPage = $state(1);
+  const totalPages = $derived(Math.max(1, Math.ceil(approvedNodes.length / NODES_PAGE_SIZE)));
+  const pagedApprovedNodes = $derived(
+    approvedNodes.slice((currentPage - 1) * NODES_PAGE_SIZE, currentPage * NODES_PAGE_SIZE),
+  );
+
+  $effect(() => {
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+  });
+
   // A fresh load (navigating back to the page) replaces whatever the feed merged in.
   $effect(() => {
     void data.nodes;
@@ -518,18 +392,6 @@
     return (
       [node?.os ?? resources.os, node?.arch ?? resources.arch].filter(Boolean).join('/') || '—'
     );
-  }
-
-  /**
-   * @param {object} node
-   * @returns {number}
-   */
-  function serverCountOf(node) {
-    if (Number.isFinite(Number(node?.serverCount))) {
-      return Number(node.serverCount);
-    }
-
-    return Array.isArray(node?.servers) ? node.servers.length : 0;
   }
 
   /**
@@ -616,52 +478,6 @@
     const parsed = Number(value);
 
     return Number.isFinite(parsed) ? parsed : null;
-  }
-
-  /**
-   * @param {number|null} used
-   * @param {number|null} total
-   * @returns {number|null} 0-100, or null when the node reported nothing.
-   */
-  function ratio(used, total) {
-    if (used == null || !total) {
-      return null;
-    }
-
-    return Math.max(0, Math.min(100, Math.round((used / total) * 100)));
-  }
-
-  /**
-   * @param {object} node
-   * @returns {number|null}
-   */
-  function cpuOf(node) {
-    const cpu = metricsOf(node).cpu;
-
-    return cpu == null ? null : Math.max(0, Math.min(100, Math.round(cpu)));
-  }
-
-  /**
-   * @param {object} node
-   * @returns {string}
-   */
-  function cpuText(node) {
-    const cpu = cpuOf(node);
-
-    return cpu == null ? '—' : `${cpu}%`;
-  }
-
-  /**
-   * @param {number|null} used
-   * @param {number|null} total
-   * @returns {string}
-   */
-  function bytesText(used, total) {
-    if (used == null || !total) {
-      return '—';
-    }
-
-    return `${formatBytes(used, 1)} / ${formatBytes(total, 1)}`;
   }
 
   function openAddNode() {

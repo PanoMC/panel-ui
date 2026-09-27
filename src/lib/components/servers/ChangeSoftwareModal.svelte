@@ -1,22 +1,6 @@
 <style>
-  .choice-card {
-    border: 1px solid var(--bs-border-color);
-    border-radius: var(--bs-border-radius-lg);
-    text-align: start;
-    width: 100%;
-    transition: border-color 0.15s ease-in-out;
-  }
-
-  .choice-card:hover:not(:disabled),
-  .choice-card:focus-visible {
-    border-color: var(--bs-primary);
-  }
-
-  .choice-card.selected {
-    border-color: var(--bs-primary);
-    box-shadow: 0 0 0 1px var(--bs-primary);
-  }
-
+  /* The software picker is a list group now, so Bootstrap's own `active` and hover styling says
+     which one is picked; only the scroll box is ours. */
   .software-grid {
     max-height: 16rem;
     overflow-y: auto;
@@ -37,7 +21,7 @@
   role="dialog"
   tabindex="-1"
   bind:this={modalElement}>
-  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="changeSoftwareTitle">
@@ -134,7 +118,7 @@
           {/if}
 
           {#if taskStatus === 'FAILED'}
-            <div class="alert alert-danger small mt-3 mb-0" role="alert">
+            <div class="alert alert-danger mt-3 mb-0" role="alert">
               {$_(serverActionErrorKey(taskError || 'TASK_FAILED'), {
                 values: { error: taskError || 'TASK_FAILED' },
               })}
@@ -156,16 +140,12 @@
           <div class="modal-body vstack gap-4">
             <!-- 1. What to install -->
             <section>
-              <h6 class="text-uppercase small text-body-secondary mb-2">
-                {$_('components.modals.change-software.section-software')}
-              </h6>
-
               {#if softwareLoading}
                 <div class="text-center py-3">
-                  <span class="spinner-border" role="status" aria-hidden="true"></span>
+                  <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
                 </div>
               {:else if pickable.length === 0}
-                <div class="alert alert-warning small mb-0" role="alert">
+                <div class="alert alert-warning mb-0" role="alert">
                   {$_(
                     softwareUnavailable
                       ? 'components.modals.create-server.software-unavailable'
@@ -173,39 +153,35 @@
                   )}
                 </div>
               {:else}
-                <div class="row g-2" class:software-grid={!locked}>
+                <div class="list-group" class:software-grid={!locked}>
                   {#each pickable as item (item.id)}
                     {@const noteBadge = softwareNoteBadge(item)}
                     {@const current = sameSoftware(item.id, fromSoftware)}
-                    <div class={locked ? 'col-12' : 'col-md-6'}>
-                      <button
-                        type="button"
-                        class="choice-card card h-100 p-2 bg-body"
-                        class:selected={softwareId === item.id}
-                        aria-pressed={softwareId === item.id}
-                        disabled={locked}
-                        onclick={() => selectSoftware(item)}>
-                        <div class="d-flex flex-wrap align-items-center gap-2">
-                          <SoftwareLogo id={item.id} />
-                          <span class="fw-semibold">{item.name || item.id}</span>
-                          {#if current}
-                            <span class="badge text-bg-secondary">
-                              {$_('components.modals.change-software.current')}
-                            </span>
-                          {/if}
-                          {#if noteBadge}
-                            <span
-                              class="badge {noteBadge.className}"
-                              use:tooltip={[
-                                noteBadge.hint ? $_(noteBadge.hint) : '',
-                                { placement: 'top' },
-                              ]}>
-                              {$_(noteBadge.label)}
-                            </span>
-                          {/if}
-                        </div>
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      class="list-group-item list-group-item-action d-flex flex-wrap align-items-center gap-2"
+                      class:active={softwareId === item.id}
+                      aria-pressed={softwareId === item.id}
+                      disabled={locked}
+                      onclick={() => selectSoftware(item)}>
+                      <SoftwareLogo id={item.id} />
+                      <span class="fw-semibold">{item.name || item.id}</span>
+                      {#if current}
+                        <span class="badge text-bg-primary">
+                          {$_('components.modals.change-software.current')}
+                        </span>
+                      {/if}
+                      {#if noteBadge}
+                        <span
+                          class="badge {noteBadge.className}"
+                          use:tooltip={[
+                            noteBadge.hint ? $_(noteBadge.hint) : '',
+                            { placement: 'top' },
+                          ]}>
+                          {$_(noteBadge.label)}
+                        </span>
+                      {/if}
+                    </button>
                   {/each}
                 </div>
 
@@ -256,7 +232,7 @@
                   </div>
 
                   {#if BUILD_TOOLS_SOFTWARE.includes(String(selectedSoftware.id).toUpperCase())}
-                    <div class="alert alert-warning mt-3 mb-0 small" role="alert">
+                    <div class="alert alert-warning mt-3 mb-0" role="alert">
                       <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
                       {$_('components.modals.create-server.spigot-hint')}
                     </div>
@@ -267,13 +243,11 @@
 
             <!-- 2. What to keep -->
             <section>
-              <h6 class="text-uppercase small text-body-secondary mb-2">
-                {$_('components.modals.change-software.section-keep')}
-              </h6>
-
               {#if previewLoading}
                 <div class="small text-body-secondary mb-2">
-                  <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                  <span
+                    class="spinner-border spinner-border-sm text-primary me-1"
+                    aria-hidden="true"></span>
                   {$_('components.modals.change-software.preview-loading')}
                 </div>
               {/if}
@@ -306,7 +280,7 @@
               </div>
 
               {#if kindChanges}
-                <div class="alert alert-warning small mt-3 mb-0" role="alert">
+                <div class="alert alert-warning mt-3 mb-0" role="alert">
                   <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
                   {$_(
                     toKind === 'proxy'
@@ -316,7 +290,7 @@
                 </div>
               {/if}
               {#if familyChanges && fromHasAddons}
-                <div class="alert alert-warning small mt-3 mb-0" role="alert">
+                <div class="alert alert-warning mt-3 mb-0" role="alert">
                   <i class="fa-solid fa-puzzle-piece me-1" aria-hidden="true"></i>
                   {$_(
                     FAMILY_MODS.includes(fromFamily)
@@ -327,13 +301,13 @@
                 </div>
               {/if}
               {#if !keep.worlds && !kindChanges && toKind === 'backend'}
-                <div class="alert alert-danger small mt-3 mb-0" role="alert">
+                <div class="alert alert-danger mt-3 mb-0" role="alert">
                   <i class="fa-solid fa-earth-europe me-1" aria-hidden="true"></i>
                   {$_('components.modals.change-software.warning-worlds-dropped')}
                 </div>
               {/if}
               {#if worldsDowngrade}
-                <div class="alert alert-danger small mt-3 mb-0" role="alert">
+                <div class="alert alert-danger mt-3 mb-0" role="alert">
                   <i class="fa-solid fa-clock-rotate-left me-1" aria-hidden="true"></i>
                   {$_('components.modals.change-software.warning-worlds-downgrade', {
                     values: { from: fromVersion, to: version },
@@ -344,10 +318,6 @@
 
             <!-- 3. How -->
             <section>
-              <h6 class="text-uppercase small text-body-secondary mb-2">
-                {$_('components.modals.change-software.section-confirm')}
-              </h6>
-
               <div class="vstack gap-2">
                 <!-- A server whose install failed has nothing to back up (Pano skips it too). -->
                 {#if !installFailed}
@@ -370,7 +340,7 @@
                     </label>
                   </div>
                   {#if !backupFirst}
-                    <div class="alert alert-danger small mb-0" role="alert">
+                    <div class="alert alert-danger mb-0" role="alert">
                       <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
                       {$_('components.modals.change-software.no-backup-warning')}
                     </div>
@@ -385,7 +355,10 @@
                     id="changeSoftwareStartAfter"
                     bind:checked={startAfter} />
                   <label class="form-check-label" for="changeSoftwareStartAfter">
-                    {$_('components.modals.change-software.start-after')}
+                    <!-- The switch's own line is a title; the state under it stays a sentence. -->
+                    <span class="text-capitalize">
+                      {$_('components.modals.change-software.start-after')}
+                    </span>
                     <small class="d-block text-body-secondary">
                       {$_(
                         running
@@ -436,7 +409,7 @@
                 </div>
 
                 {#if submitError}
-                  <div class="alert alert-danger small mb-0" role="alert">{submitError}</div>
+                  <div class="alert alert-danger mb-0" role="alert">{submitError}</div>
                 {/if}
 
                 <div class="small text-body-secondary">
@@ -453,14 +426,9 @@
           </div>
 
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-link"
-              disabled={submitting}
-              onclick={() => modalInstance?.hide()}>
-              {$_('buttons.cancel')}
-            </button>
-            <button type="submit" class="btn btn-danger" disabled={!canSubmit}>
+            <!-- No cancel next to it: the header's X and Esc both still close the dialog, and a
+                 lone action reads better as the full-width commitment it is. -->
+            <button type="submit" class="btn btn-danger w-100" disabled={!canSubmit}>
               {#if submitting}
                 <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
               {/if}

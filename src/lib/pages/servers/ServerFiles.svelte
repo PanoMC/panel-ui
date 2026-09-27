@@ -1,8 +1,4 @@
 <style>
-  .path-bar {
-    min-height: 2rem;
-  }
-
   .file-table td,
   .file-table th {
     vertical-align: middle;
@@ -76,486 +72,494 @@
 <!-- SM-31 — the file manager (§2.4.4, §2.4.17). Every path is relative to the server directory;
      the backend is the authority on what is allowed, the checks here only keep an obviously bad
      path from leaving the browser. -->
-<div class="container vstack gap-3">
-  <ServerCapabilityNotice
-    server={$server}
-    feature="files.source"
-    section="components.server-navigation-menu.files" />
+<ServerCapabilityNotice
+  server={$server}
+  feature="files.source"
+  section="components.server-navigation-menu.files" />
 
-  <!-- §2.4.35 — while nothing can read the directory the notice above is the whole page: no
+<!-- §2.4.35 — while nothing can read the directory the notice above is the whole page: no
        toolbar that cannot act, no "could not be read" state with a Refresh that cannot help. -->
-  {#if available}
+{#if available}
+  {#if uploads.length}
     <div class="card">
-      <div class="card-body vstack gap-3">
-        <div class="path-bar d-flex flex-wrap align-items-center gap-2">
-          {#if editingPath}
-            <form class="input-group input-group-sm flex-grow-1" onsubmit={submitPathInput}>
-              <span class="input-group-text">
-                <i class="fa-solid fa-folder-tree" aria-hidden="true"></i>
-              </span>
-              <!-- svelte-ignore a11y_autofocus -->
-              <input
-                type="text"
-                class="form-control font-monospace"
-                autocomplete="off"
-                spellcheck="false"
-                autofocus
-                aria-label={$_('pages.servers.files.path-label')}
-                placeholder={$_('pages.servers.files.path-placeholder')}
-                bind:value={pathInput} />
-              <button class="btn btn-outline-secondary" type="submit">
-                {$_('pages.servers.files.path-go')}
-              </button>
-              <button
-                class="btn btn-outline-secondary"
-                type="button"
-                onclick={() => (editingPath = false)}>
-                {$_('buttons.cancel')}
-              </button>
-            </form>
-          {:else}
-            <nav aria-label={$_('pages.servers.files.path-label')}>
-              <ol class="breadcrumb mb-0 small">
-                <li class="breadcrumb-item">
-                  <button
-                    type="button"
-                    class="btn btn-link btn-sm p-0"
-                    onclick={() => navigate('')}>
-                    <i class="fa-solid fa-hard-drive me-1" aria-hidden="true"></i>
-                    {$_('pages.servers.files.root')}
-                  </button>
-                </li>
-                {#each segments as segment (segment.path)}
-                  <li class="breadcrumb-item">
-                    <button
-                      type="button"
-                      class="btn btn-link btn-sm p-0 text-break"
-                      onclick={() => navigate(segment.path)}>
-                      {segment.name}
-                    </button>
-                  </li>
-                {/each}
-              </ol>
-            </nav>
-
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary ms-auto"
-              onclick={startEditingPath}
-              use:tooltip={[$_('pages.servers.files.path-edit'), { placement: 'left' }]}
-              aria-label={$_('pages.servers.files.path-edit')}>
-              <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-            </button>
-          {/if}
-        </div>
-
-        <div class="d-flex flex-wrap align-items-center gap-2">
-          <div class="btn-group btn-group-sm" role="group">
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              disabled={!canManage || busy}
-              onclick={() => startPrompt('new-file')}>
-              <i class="fa-solid fa-file-circle-plus me-1" aria-hidden="true"></i>
-              {$_('pages.servers.files.new-file')}
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              disabled={!canManage || busy}
-              onclick={() => startPrompt('new-folder')}>
-              <i class="fa-solid fa-folder-plus me-1" aria-hidden="true"></i>
-              {$_('pages.servers.files.new-folder')}
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              disabled={!canManage || busy}
-              onclick={() => showUploadModal(path, (files) => void uploadFiles(files))}>
-              <i class="fa-solid fa-upload me-1" aria-hidden="true"></i>
-              {$_('pages.servers.files.upload')}
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              disabled={loading}
-              onclick={() => void refresh()}>
-              <i class="fa-solid fa-rotate-right me-1" aria-hidden="true"></i>
-              {$_('buttons.refresh')}
-            </button>
-          </div>
-
-          {#if path}
-            <button type="button" class="btn btn-sm btn-outline-secondary" onclick={goUp}>
-              <i class="fa-solid fa-arrow-turn-up me-1" aria-hidden="true"></i>
-              {$_('pages.servers.files.go-up')}
-            </button>
-          {/if}
-
-          <span class="file-search w-100 ms-auto">
-            <SearchInput onchange={(value) => (query = value)} />
-          </span>
-        </div>
-      </div>
-    </div>
-
-    {#if uploads.length}
-      <div class="card">
-        <CardHeader>
-          <span slot="left">
-            <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
-            {$_('pages.servers.files.uploads-title')}
-          </span>
-          <span slot="right">
-            <button type="button" class="btn btn-sm btn-link" onclick={clearFinishedUploads}>
-              {$_('pages.servers.files.uploads-clear')}
-            </button>
-          </span>
-        </CardHeader>
-        <ul class="list-group list-group-flush">
-          {#each uploads as upload (upload.id)}
-            <li class="list-group-item">
-              <div class="d-flex align-items-center gap-2 small">
-                <span class="text-break flex-grow-1 font-monospace">{upload.name}</span>
-                {#if upload.status === 'done'}
-                  <span class="badge text-bg-success">{$_('pages.servers.files.upload-done')}</span>
-                {:else if upload.status === 'failed'}
-                  <span class="badge text-bg-danger"
-                    >{$_('pages.servers.files.upload-failed')}</span>
-                {:else}
-                  <span class="font-monospace">{upload.percent}%</span>
-                {/if}
-              </div>
-              {#if upload.status === 'uploading'}
-                <div
-                  class="progress upload-progress mt-1"
-                  role="progressbar"
-                  aria-label={upload.name}
-                  aria-valuenow={upload.percent}
-                  aria-valuemin="0"
-                  aria-valuemax="100">
-                  <div class="progress-bar" style="width: {upload.percent}%;"></div>
-                </div>
+      <CardHeader>
+        <span slot="left">
+          <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
+          {$_('pages.servers.files.uploads-title')}
+        </span>
+        <span slot="right">
+          <button type="button" class="btn btn-sm btn-link" onclick={clearFinishedUploads}>
+            {$_('pages.servers.files.uploads-clear')}
+          </button>
+        </span>
+      </CardHeader>
+      <ul class="list-group list-group-flush">
+        {#each uploads as upload (upload.id)}
+          <li class="list-group-item">
+            <div class="d-flex align-items-center gap-2 small">
+              <span class="text-break flex-grow-1 font-monospace">{upload.name}</span>
+              {#if upload.status === 'done'}
+                <span class="badge text-bg-success">{$_('pages.servers.files.upload-done')}</span>
+              {:else if upload.status === 'failed'}
+                <span class="badge text-bg-danger">{$_('pages.servers.files.upload-failed')}</span>
+              {:else}
+                <span class="font-monospace">{upload.percent}%</span>
               {/if}
-            </li>
-          {/each}
-        </ul>
+            </div>
+            {#if upload.status === 'uploading'}
+              <div
+                class="progress upload-progress mt-1"
+                role="progressbar"
+                aria-label={upload.name}
+                aria-valuenow={upload.percent}
+                aria-valuemin="0"
+                aria-valuemax="100">
+                <div class="progress-bar" style="width: {upload.percent}%;"></div>
+              </div>
+            {/if}
+          </li>
+        {/each}
+      </ul>
+    </div>
+  {/if}
+
+  <!-- The listing doubles as the drop target for uploads, so it carries a role of its own. -->
+  <div
+    class="card file-drop-zone"
+    class:dragging
+    role="region"
+    aria-label={$_('pages.servers.files.drop-hint')}
+    bind:this={dropZone}
+    ondragenter={onDragOver}
+    ondragover={onDragOver}
+    ondragleave={onDragLeave}
+    ondrop={onDrop}>
+    {#if dragging}
+      <div class="drop-banner">
+        <span class="badge text-bg-primary fs-6 fw-normal px-3 py-2">
+          <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
+          {$_('pages.servers.files.drop-into', { values: { path: '/' + dropTargetPath } })}
+        </span>
+      </div>
+    {/if}
+    <!-- The path edit is a text field and two buttons: it does not fit a header column, so it
+         takes the card's own width above the header for as long as it is open. -->
+    {#if editingPath}
+      <div class="card-body border-bottom">
+        <form class="input-group input-group-sm" onsubmit={submitPathInput}>
+          <span class="input-group-text">
+            <i class="fa-solid fa-folder-tree" aria-hidden="true"></i>
+          </span>
+          <!-- svelte-ignore a11y_autofocus -->
+          <input
+            type="text"
+            class="form-control font-monospace"
+            autocomplete="off"
+            spellcheck="false"
+            autofocus
+            aria-label={$_('pages.servers.files.path-label')}
+            placeholder={$_('pages.servers.files.path-placeholder')}
+            bind:value={pathInput} />
+          <button class="btn btn-outline-secondary" type="submit">
+            {$_('pages.servers.files.path-go')}
+          </button>
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            onclick={() => (editingPath = false)}>
+            {$_('buttons.cancel')}
+          </button>
+        </form>
       </div>
     {/if}
 
-    <!-- The listing doubles as the drop target for uploads, so it carries a role of its own. -->
-    <div
-      class="card file-drop-zone"
-      class:dragging
-      role="region"
-      aria-label={$_('pages.servers.files.drop-hint')}
-      bind:this={dropZone}
-      ondragenter={onDragOver}
-      ondragover={onDragOver}
-      ondragleave={onDragLeave}
-      ondrop={onDrop}>
-      {#if dragging}
-        <div class="drop-banner">
-          <span class="badge text-bg-primary fs-6 fw-normal px-3 py-2">
-            <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
-            {$_('pages.servers.files.drop-into', { values: { path: '/' + dropTargetPath } })}
-          </span>
-        </div>
-      {/if}
-      <CardHeader>
-        <span slot="left" class="d-flex align-items-center gap-2">
-          {$_('pages.servers.files.title')}
-          <span class="badge rounded-pill text-bg-secondary">
-            {$_('pages.servers.files.count', { values: { count: visibleEntries.length } })}
-          </span>
+    <!-- `truncateLeftSlot` off: a truncated breadcrumb would hide the folder actually open,
+         which is the one crumb that matters. -->
+    <CardHeader truncateLeftSlot={false}>
+      <div slot="left" class="d-flex align-items-center gap-2">
+        <!-- Plain text, the way the players page shows its count: a pill would say "status", and
+             this is only how much the listing below holds. -->
+        <span class="text-nowrap">
+          {$_('pages.servers.files.count', { values: { count: visibleEntries.length } })}
         </span>
 
-        <span slot="right" class="d-flex flex-wrap align-items-center gap-2">
-          {#if selectedNames.length}
-            <span class="small text-body-secondary">
-              {$_('pages.servers.files.selected', { values: { count: selectedNames.length } })}
-            </span>
-            <!-- One file downloads as itself; anything more, or a folder, arrives as one zip that is
+        {#if !editingPath}
+          <nav class="min-w-0" aria-label={$_('pages.servers.files.path-label')}>
+            <ol class="breadcrumb mb-0 small">
+              <li class="breadcrumb-item">
+                <button type="button" class="btn btn-link btn-sm p-0" onclick={() => navigate('')}>
+                  <i class="fa-solid fa-hard-drive me-1" aria-hidden="true"></i>
+                  {$_('pages.servers.files.root')}
+                </button>
+              </li>
+              {#each segments as segment (segment.path)}
+                <li class="breadcrumb-item">
+                  <button
+                    type="button"
+                    class="btn btn-link btn-sm p-0 text-break"
+                    onclick={() => navigate(segment.path)}>
+                    {segment.name}
+                  </button>
+                </li>
+              {/each}
+            </ol>
+          </nav>
+
+          <button
+            type="button"
+            class="btn btn-sm btn-link text-decoration-none flex-shrink-0"
+            onclick={startEditingPath}
+            use:tooltip={[$_('pages.servers.files.path-edit'), { placement: 'bottom' }]}
+            aria-label={$_('pages.servers.files.path-edit')}>
+            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+          </button>
+        {/if}
+      </div>
+
+      <!-- Find sits in the middle so it is at the card's centre, the way the console's is. -->
+      <div slot="middle" class="file-search w-100">
+        <SearchInput autofocus onchange={(value) => (query = value)} />
+      </div>
+
+      <span slot="right" class="d-flex flex-wrap align-items-center gap-2">
+        {#if selectedNames.length}
+          <span class="small text-body-secondary">
+            {$_('pages.servers.files.selected', { values: { count: selectedNames.length } })}
+          </span>
+          <!-- One file downloads as itself; anything more, or a folder, arrives as one zip that is
                built while it downloads — nothing is left behind on the server. -->
-            <span
-              class="d-inline-block"
-              use:tooltip={[
-                selectionIsZip ? $_('pages.servers.files.download-zip-hint') : '',
-                { placement: 'bottom' },
-              ]}>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-secondary"
-                disabled={busy}
-                onclick={() => downloadNames(selectedNames)}>
-                <i
-                  class="fa-solid {selectionIsZip ? 'fa-file-zipper' : 'fa-download'} me-1"
-                  aria-hidden="true"></i>
-                {selectionIsZip
-                  ? $_('pages.servers.files.download-as-zip')
-                  : $_('pages.servers.files.action-download')}
-              </button>
-            </span>
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-danger"
-              disabled={!canManage || busy}
-              onclick={() => askDelete(selectedNames)}>
-              <i class="fa-solid fa-trash me-1" aria-hidden="true"></i>
-              {$_('buttons.delete')}
-            </button>
-          {/if}
-        </span>
-      </CardHeader>
-
-      {#if loading}
-        <div class="card-body d-flex justify-content-center py-5">
-          <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
-        </div>
-      {:else if listError}
-        <div class="card-body text-center vstack gap-3 py-5">
-          <div>
-            <i class="fa-solid fa-folder-open fa-3x text-body-secondary" aria-hidden="true"></i>
-          </div>
-          <div class="text-body-secondary">{$_(listError)}</div>
-          <div>
+          <span
+            class="d-inline-block"
+            use:tooltip={[
+              selectionIsZip ? $_('pages.servers.files.download-zip-hint') : '',
+              { placement: 'bottom' },
+            ]}>
             <button
               type="button"
               class="btn btn-sm btn-outline-secondary"
+              disabled={busy}
+              onclick={() => downloadNames(selectedNames)}>
+              <i
+                class="fa-solid {selectionIsZip ? 'fa-file-zipper' : 'fa-download'} me-1"
+                aria-hidden="true"></i>
+              {selectionIsZip
+                ? $_('pages.servers.files.download-as-zip')
+                : $_('pages.servers.files.action-download')}
+            </button>
+          </span>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            disabled={!canManage || busy}
+            onclick={() => askDelete(selectedNames)}>
+            <i class="fa-solid fa-trash me-1" aria-hidden="true"></i>
+            {$_('buttons.delete')}
+          </button>
+        {/if}
+
+        <!-- The directory's own actions behind one menu, the way the console header does it:
+             `title` rather than a tippy tooltip, as the other action menus do, and named items
+             so nothing here needs a label of its own. -->
+        <div class="dropdown">
+          <button
+            type="button"
+            class="btn btn-sm btn-link"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            title={$_('pages.servers.files.column-actions')}
+            aria-label={$_('pages.servers.files.column-actions')}>
+            <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
+          </button>
+
+          <div class="dropdown-menu dropdown-menu-end">
+            <button
+              type="button"
+              class="dropdown-item text-capitalize"
+              disabled={!canManage || busy}
+              onclick={() => startPrompt('new-file')}>
+              <i class="fa-solid fa-file-circle-plus me-2" aria-hidden="true"></i>
+              {$_('pages.servers.files.new-file')}
+            </button>
+
+            <button
+              type="button"
+              class="dropdown-item text-capitalize"
+              disabled={!canManage || busy}
+              onclick={() => startPrompt('new-folder')}>
+              <i class="fa-solid fa-folder-plus me-2" aria-hidden="true"></i>
+              {$_('pages.servers.files.new-folder')}
+            </button>
+
+            <button
+              type="button"
+              class="dropdown-item text-capitalize"
+              disabled={!canManage || busy}
+              onclick={() => showUploadModal(path, (files) => void uploadFiles(files))}>
+              <i class="fa-solid fa-upload me-2" aria-hidden="true"></i>
+              {$_('pages.servers.files.upload')}
+            </button>
+
+            <button
+              type="button"
+              class="dropdown-item text-capitalize"
+              disabled={loading}
               onclick={() => void refresh()}>
+              <i class="fa-solid fa-rotate-right me-2" aria-hidden="true"></i>
               {$_('buttons.refresh')}
             </button>
+
+            {#if path}
+              <button type="button" class="dropdown-item text-capitalize" onclick={goUp}>
+                <i class="fa-solid fa-arrow-turn-up me-2" aria-hidden="true"></i>
+                {$_('pages.servers.files.go-up')}
+              </button>
+            {/if}
           </div>
         </div>
-      {:else if !visibleEntries.length}
-        <div class="card-body">
-          <NoContent
-            icon="fa-solid fa-folder-open fa-3x"
-            text={query.trim()
-              ? $_('pages.servers.files.no-matches')
-              : $_('pages.servers.files.empty-directory')}>
-            <div class="text-center small text-body-secondary pb-3">
-              {$_('pages.servers.files.drop-hint')}
-            </div>
-          </NoContent>
+      </span>
+    </CardHeader>
+
+    {#if loading}
+      <div class="card-body d-flex justify-content-center py-5">
+        <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+      </div>
+    {:else if listError}
+      <div class="card-body text-center vstack gap-3 py-5">
+        <div>
+          <i class="fa-solid fa-folder-open fa-3x text-body-secondary" aria-hidden="true"></i>
         </div>
-      {:else}
-        <div class="table-responsive">
-          <table class="table table-hover file-table mb-0">
-            <thead>
+        <div class="text-body-secondary">{$_(listError)}</div>
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            onclick={() => void refresh()}>
+            {$_('buttons.refresh')}
+          </button>
+        </div>
+      </div>
+    {:else if !visibleEntries.length}
+      <div class="card-body">
+        <NoContent
+          icon="fa-solid fa-folder-open fa-3x"
+          text={query.trim()
+            ? $_('pages.servers.files.no-matches')
+            : $_('pages.servers.files.empty-directory')}>
+          <div class="text-center small text-body-secondary pb-3">
+            {$_('pages.servers.files.drop-hint')}
+          </div>
+        </NoContent>
+      </div>
+    {:else}
+      <div class="table-responsive">
+        <table class="table table-hover file-table mb-0">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 2.5rem;">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  checked={allSelected}
+                  indeterminate={selectedNames.length > 0 && !allSelected}
+                  aria-label={$_('pages.servers.files.select-all')}
+                  onchange={toggleSelectAll} />
+              </th>
+              <th scope="col">
+                <button type="button" class="sort-button" onclick={() => sortBy(FileSortKeys.NAME)}>
+                  {$_('pages.servers.files.column-name')}
+                  <i class="{sortIcon(FileSortKeys.NAME)} ms-1 small" aria-hidden="true"></i>
+                </button>
+              </th>
+              <th scope="col" class="text-nowrap">
+                <button type="button" class="sort-button" onclick={() => sortBy(FileSortKeys.SIZE)}>
+                  {$_('pages.servers.files.column-size')}
+                  <i class="{sortIcon(FileSortKeys.SIZE)} ms-1 small" aria-hidden="true"></i>
+                </button>
+              </th>
+              <th scope="col" class="text-nowrap">
+                <button
+                  type="button"
+                  class="sort-button"
+                  onclick={() => sortBy(FileSortKeys.MODIFIED)}>
+                  {$_('pages.servers.files.column-modified')}
+                  <i class="{sortIcon(FileSortKeys.MODIFIED)} ms-1 small" aria-hidden="true"></i>
+                </button>
+              </th>
+              <th scope="col" class="text-end">{$_('pages.servers.files.column-actions')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#if path}
               <tr>
-                <th scope="col" style="width: 2.5rem;">
+                <td></td>
+                <td colspan="4">
+                  <button type="button" class="file-name-button" onclick={goUp}>
+                    <i class="fa-solid fa-turn-up file-icon me-2" aria-hidden="true"></i>
+                    <span class="font-monospace">..</span>
+                  </button>
+                </td>
+              </tr>
+            {/if}
+
+            {#each visibleEntries as entry (entry.name)}
+              <tr
+                class:table-active={selectedNames.includes(entry.name)}
+                class:drop-row={dragging && dropFolder === entry.name}
+                data-drop-folder={isDirectory(entry) ? entry.name : undefined}>
+                <td>
                   <input
                     class="form-check-input"
                     type="checkbox"
-                    checked={allSelected}
-                    indeterminate={selectedNames.length > 0 && !allSelected}
-                    aria-label={$_('pages.servers.files.select-all')}
-                    onchange={toggleSelectAll} />
-                </th>
-                <th scope="col">
+                    checked={selectedNames.includes(entry.name)}
+                    aria-label={entry.name}
+                    onchange={() => toggleSelect(entry.name)} />
+                </td>
+                <th scope="row" class="fw-normal">
                   <button
                     type="button"
-                    class="sort-button"
-                    onclick={() => sortBy(FileSortKeys.NAME)}>
-                    {$_('pages.servers.files.column-name')}
-                    <i class="{sortIcon(FileSortKeys.NAME)} ms-1 small" aria-hidden="true"></i>
+                    class="file-name-button text-break rounded focus-ring"
+                    onclick={() => openEntry(entry)}>
+                    <i class="{fileIconClass(entry)} file-icon me-2" aria-hidden="true"></i>
+                    <span class:fw-semibold={isDirectory(entry)}>{entry.name}</span>
                   </button>
                 </th>
-                <th scope="col" class="text-nowrap">
-                  <button
-                    type="button"
-                    class="sort-button"
-                    onclick={() => sortBy(FileSortKeys.SIZE)}>
-                    {$_('pages.servers.files.column-size')}
-                    <i class="{sortIcon(FileSortKeys.SIZE)} ms-1 small" aria-hidden="true"></i>
-                  </button>
-                </th>
-                <th scope="col" class="text-nowrap">
-                  <button
-                    type="button"
-                    class="sort-button"
-                    onclick={() => sortBy(FileSortKeys.MODIFIED)}>
-                    {$_('pages.servers.files.column-modified')}
-                    <i class="{sortIcon(FileSortKeys.MODIFIED)} ms-1 small" aria-hidden="true"></i>
-                  </button>
-                </th>
-                <th scope="col" class="text-end">{$_('pages.servers.files.column-actions')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#if path}
-                <tr>
-                  <td></td>
-                  <td colspan="4">
-                    <button type="button" class="file-name-button" onclick={goUp}>
-                      <i class="fa-solid fa-turn-up file-icon me-2" aria-hidden="true"></i>
-                      <span class="font-monospace">..</span>
-                    </button>
-                  </td>
-                </tr>
-              {/if}
-
-              {#each visibleEntries as entry (entry.name)}
-                <tr
-                  class:table-active={selectedNames.includes(entry.name)}
-                  class:drop-row={dragging && dropFolder === entry.name}
-                  data-drop-folder={isDirectory(entry) ? entry.name : undefined}>
-                  <td>
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      checked={selectedNames.includes(entry.name)}
-                      aria-label={entry.name}
-                      onchange={() => toggleSelect(entry.name)} />
-                  </td>
-                  <th scope="row" class="fw-normal">
+                <td class="text-nowrap font-monospace small">{formatEntrySize(entry)}</td>
+                <td class="text-nowrap small text-body-secondary">
+                  {#if entry.modified}
+                    <DateComponent time={entry.modified} relativeFormat />
+                  {:else}
+                    —
+                  {/if}
+                </td>
+                <td class="text-end">
+                  <span class="dropdown position-static">
                     <button
                       type="button"
-                      class="file-name-button text-break"
-                      onclick={() => openEntry(entry)}>
-                      <i class="{fileIconClass(entry)} file-icon me-2" aria-hidden="true"></i>
-                      <span class:fw-semibold={isDirectory(entry)}>{entry.name}</span>
+                      class="btn btn-link btn-sm"
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                      data-bs-toggle="dropdown"
+                      disabled={busy}
+                      aria-label={$_('pages.servers.files.column-actions')}>
+                      <span class="fas fa-ellipsis-v"></span>
                     </button>
-                  </th>
-                  <td class="text-nowrap font-monospace small">{formatEntrySize(entry)}</td>
-                  <td class="text-nowrap small text-body-secondary">
-                    {#if entry.modified}
-                      <DateComponent time={entry.modified} relativeFormat />
-                    {:else}
-                      —
-                    {/if}
-                  </td>
-                  <td class="text-end">
-                    <span class="dropdown position-static">
+                    <div class="dropdown-menu dropdown-menu-end">
+                      <button type="button" class="dropdown-item" onclick={() => openEntry(entry)}>
+                        <i
+                          class="fa-solid {isDirectory(entry)
+                            ? 'fa-folder-open'
+                            : previewKind(entry)
+                              ? 'fa-eye'
+                              : 'fa-pen'} me-2"
+                          aria-hidden="true"></i>
+                        {isDirectory(entry)
+                          ? $_('pages.servers.files.action-open')
+                          : previewKind(entry)
+                            ? $_('pages.servers.files.action-preview')
+                            : $_('pages.servers.files.action-edit')}
+                      </button>
+
                       <button
                         type="button"
-                        class="btn btn-link btn-sm"
-                        aria-expanded="false"
-                        aria-haspopup="true"
-                        data-bs-toggle="dropdown"
-                        disabled={busy}
-                        aria-label={$_('pages.servers.files.column-actions')}>
-                        <span class="fas fa-ellipsis-v"></span>
+                        class="dropdown-item"
+                        onclick={() => downloadNames([entry.name])}>
+                        <i
+                          class="fa-solid {isDirectory(entry)
+                            ? 'fa-file-zipper'
+                            : 'fa-download'} me-2"
+                          aria-hidden="true"></i>
+                        {isDirectory(entry)
+                          ? $_('pages.servers.files.download-as-zip')
+                          : $_('pages.servers.files.action-download')}
                       </button>
-                      <div class="dropdown-menu dropdown-menu-end">
-                        <button
-                          type="button"
-                          class="dropdown-item"
-                          onclick={() => openEntry(entry)}>
-                          <i
-                            class="fa-solid {isDirectory(entry)
-                              ? 'fa-folder-open'
-                              : previewKind(entry)
-                                ? 'fa-eye'
-                                : 'fa-pen'} me-2"
-                            aria-hidden="true"></i>
-                          {isDirectory(entry)
-                            ? $_('pages.servers.files.action-open')
-                            : previewKind(entry)
-                              ? $_('pages.servers.files.action-preview')
-                              : $_('pages.servers.files.action-edit')}
-                        </button>
 
-                        <button
-                          type="button"
-                          class="dropdown-item"
-                          onclick={() => downloadNames([entry.name])}>
-                          <i
-                            class="fa-solid {isDirectory(entry)
-                              ? 'fa-file-zipper'
-                              : 'fa-download'} me-2"
-                            aria-hidden="true"></i>
-                          {isDirectory(entry)
-                            ? $_('pages.servers.files.download-as-zip')
-                            : $_('pages.servers.files.action-download')}
-                        </button>
-
-                        {#if canManage}
-                          {#if isArchive(entry)}
-                            <button
-                              type="button"
-                              class="dropdown-item"
-                              onclick={() => startPrompt('unarchive', entry)}>
-                              <i class="fa-solid fa-box-open me-2" aria-hidden="true"></i>
-                              {$_('pages.servers.files.action-unarchive')}
-                            </button>
-                          {/if}
-
+                      {#if canManage}
+                        {#if isArchive(entry)}
                           <button
                             type="button"
                             class="dropdown-item"
-                            onclick={() => startPrompt('rename', entry)}>
-                            <i class="fa-solid fa-i-cursor me-2" aria-hidden="true"></i>
-                            {$_('pages.servers.files.action-rename')}
-                          </button>
-
-                          {#if entry.mode}
-                            <button
-                              type="button"
-                              class="dropdown-item"
-                              onclick={() => startPrompt('chmod', entry)}>
-                              <i class="fa-solid fa-user-lock me-2" aria-hidden="true"></i>
-                              {$_('pages.servers.files.action-chmod')}
-                            </button>
-                          {/if}
-
-                          <div class="dropdown-divider"></div>
-                          <button
-                            type="button"
-                            class="dropdown-item text-danger"
-                            onclick={() => askDelete([entry.name])}>
-                            <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
-                            {$_('buttons.delete')}
+                            onclick={() => startPrompt('unarchive', entry)}>
+                            <i class="fa-solid fa-box-open me-2" aria-hidden="true"></i>
+                            {$_('pages.servers.files.action-unarchive')}
                           </button>
                         {/if}
-                      </div>
-                    </span>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
 
-        <div class="card-footer small text-body-secondary">
-          <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-          {$_('pages.servers.files.drop-hint')}
-        </div>
-      {/if}
-    </div>
-  {/if}
-</div>
+                        <button
+                          type="button"
+                          class="dropdown-item"
+                          onclick={() => startPrompt('rename', entry)}>
+                          <i class="fa-solid fa-i-cursor me-2" aria-hidden="true"></i>
+                          {$_('pages.servers.files.action-rename')}
+                        </button>
+
+                        {#if entry.mode}
+                          <button
+                            type="button"
+                            class="dropdown-item"
+                            onclick={() => startPrompt('chmod', entry)}>
+                            <i class="fa-solid fa-user-lock me-2" aria-hidden="true"></i>
+                            {$_('pages.servers.files.action-chmod')}
+                          </button>
+                        {/if}
+
+                        <div class="dropdown-divider"></div>
+                        <button
+                          type="button"
+                          class="dropdown-item text-danger"
+                          onclick={() => askDelete([entry.name])}>
+                          <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
+                          {$_('buttons.delete')}
+                        </button>
+                      {/if}
+                    </div>
+                  </span>
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-footer small text-body-secondary">
+        <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
+        {$_('pages.servers.files.drop-hint')}
+      </div>
+    {/if}
+  </div>
+{/if}
 
 <!-- One dialog for every "type a name" action: new file, new folder, rename, archive,
      extract, chmod. They differ only in their label and what the value is checked against. -->
 <div class="modal fade" tabindex="-1" aria-hidden="true" bind:this={promptModalElement}>
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{promptTitle ? $_(promptTitle) : ''}</h5>
+      </div>
       <div class="modal-body">
-        <h5 class="mb-3">{promptTitle ? $_(promptTitle) : ''}</h5>
-        <label class="form-label" for="filePromptInput">
-          {promptLabel ? $_(promptLabel) : ''}
-        </label>
-        <input
-          id="filePromptInput"
-          type="text"
-          class="form-control font-monospace"
-          autocomplete="off"
-          spellcheck="false"
-          bind:value={promptValue}
-          onkeydown={onPromptKeydown} />
+        <!-- Bootstrap's floating label: the caption sits inside the empty field and lifts out of
+             the way once there is a value. The blank placeholder is what tells the browser the
+             field is empty, so the label does not start floated. -->
+        <div class="form-floating">
+          <input
+            id="filePromptInput"
+            type="text"
+            class="form-control font-monospace"
+            placeholder=" "
+            autocomplete="off"
+            spellcheck="false"
+            bind:value={promptValue}
+            onkeydown={onPromptKeydown} />
+          <label for="filePromptInput">{promptLabel ? $_(promptLabel) : ''}</label>
+        </div>
         {#if promptHint}
           <div class="form-text">{$_(promptHint)}</div>
         {/if}
       </div>
-      <div class="modal-footer flex-nowrap">
-        <button type="button" class="btn btn-link col-6 m-0" data-bs-dismiss="modal">
-          {$_('buttons.cancel')}
-        </button>
+      <div class="modal-footer">
         <button
           type="button"
-          class="btn btn-primary col-6 m-0"
+          class="btn btn-primary w-100"
           disabled={!promptValid || busy}
           onclick={() => void confirmPrompt()}>
           {#if busy}
@@ -1202,6 +1206,13 @@
     if (event.key === 'Enter') {
       event.preventDefault();
       void confirmPrompt();
+      return;
+    }
+
+    // With the header's close button gone, Escape is the way out of this dialog.
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      promptModal?.hide();
     }
   }
 

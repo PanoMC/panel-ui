@@ -1,10 +1,8 @@
 <style>
-  .backup-option-card {
-    cursor: pointer;
-  }
-
-  .backup-patterns {
-    font-size: 0.85rem;
+  /* Bootstrap's floating label pins a field to a single row's height, so a pattern list has to be
+     told that it may grow with its rows. */
+  .form-floating > textarea.form-control {
+    height: auto;
   }
 </style>
 
@@ -12,40 +10,27 @@
      schedule's backup step, so a scheduled backup can be anything a manual one can. -->
 <div class="vstack gap-3">
   <div>
-    <div class="form-label mb-2">{$_('components.backup-options.mode-label')}</div>
-    <div class="row g-2">
+    <div class="list-group">
       {#each MODES as option (option.value)}
-        <div class="col-sm-6">
-          <label
-            class="card h-100 backup-option-card"
-            class:border-primary={value.mode === option.value}>
-            <span class="card-body d-flex gap-2 p-2">
-              <input
-                class="form-check-input flex-shrink-0 mt-1"
-                type="radio"
-                name="{idPrefix}-mode"
-                value={option.value}
-                checked={value.mode === option.value}
-                {disabled}
-                onchange={() => set({ mode: option.value })} />
-              <span>
-                <span class="fw-semibold d-block">
-                  <i class="{option.icon} me-1" aria-hidden="true"></i>
-                  {$_(`components.backup-options.mode-${option.key}`)}
-                </span>
-                <span class="small text-body-secondary">
-                  {$_(`components.backup-options.mode-${option.key}-hint`)}
-                </span>
-              </span>
-            </span>
-          </label>
-        </div>
+        <button
+          type="button"
+          class="list-group-item list-group-item-action text-start"
+          class:active={value.mode === option.value}
+          aria-pressed={value.mode === option.value}
+          {disabled}
+          onclick={() => set({ mode: option.value })}>
+          <span class="fw-semibold d-block">
+            {$_(`components.backup-options.mode-${option.key}`)}
+          </span>
+          <span class="small text-body-secondary">
+            {$_(`components.backup-options.mode-${option.key}-hint`)}
+          </span>
+        </button>
       {/each}
     </div>
   </div>
 
   <div>
-    <div class="form-label mb-2">{$_('components.backup-options.scope-label')}</div>
     <div class="btn-group btn-group-sm w-100" role="group">
       {#each SCOPES as scope (scope)}
         <input
@@ -57,7 +42,7 @@
           checked={value.scope === scope}
           {disabled}
           onchange={() => set({ scope })} />
-        <label class="btn btn-outline-secondary" for="{idPrefix}-scope-{scope}">
+        <label class="btn btn-outline-primary" for="{idPrefix}-scope-{scope}">
           {$_(`components.backup-options.scope-${scope.toLowerCase()}`)}
         </label>
       {/each}
@@ -82,34 +67,37 @@
 
   {#if value.scope === 'CUSTOM'}
     <div>
-      <label class="form-label" for="{idPrefix}-include">
-        {$_('components.backup-options.include-label')}
-      </label>
-      <textarea
-        id="{idPrefix}-include"
-        class="form-control font-monospace backup-patterns"
-        class:is-invalid={includeMissing}
-        rows="3"
-        placeholder={'world/\nplugins/\nserver.properties'}
-        {disabled}
-        bind:value={includeText}
-        oninput={() => set({ include: lines(includeText) })}></textarea>
-      <div class="form-text">{$_('components.backup-options.include-hint')}</div>
+      <div class="form-floating">
+        <textarea
+          id="{idPrefix}-include"
+          class="form-control font-monospace small"
+          class:is-invalid={includeMissing}
+          rows="3"
+          placeholder=" "
+          {disabled}
+          bind:value={includeText}
+          oninput={() => set({ include: lines(includeText) })}></textarea>
+        <label for="{idPrefix}-include">{$_('components.backup-options.include-label')}</label>
+      </div>
+      <div class="form-text">
+        {$_('components.backup-options.include-hint')}
+        <span class="opacity-75">world/ · plugins/ · server.properties</span>
+      </div>
     </div>
   {/if}
 
   <div>
-    <label class="form-label" for="{idPrefix}-exclude">
-      {$_('components.backup-options.exclude-label')}
-    </label>
-    <textarea
-      id="{idPrefix}-exclude"
-      class="form-control font-monospace backup-patterns"
-      rows="2"
-      placeholder={'plugins/dynmap/\n*.log'}
-      {disabled}
-      bind:value={excludeText}
-      oninput={() => set({ exclude: lines(excludeText) })}></textarea>
+    <div class="form-floating">
+      <textarea
+        id="{idPrefix}-exclude"
+        class="form-control font-monospace small"
+        rows="2"
+        placeholder=" "
+        {disabled}
+        bind:value={excludeText}
+        oninput={() => set({ exclude: lines(excludeText) })}></textarea>
+      <label for="{idPrefix}-exclude">{$_('components.backup-options.exclude-label')}</label>
+    </div>
     <div class="form-check mt-1">
       <input
         class="form-check-input"
@@ -118,12 +106,15 @@
         checked={value.excludeDefaults}
         {disabled}
         onchange={(event) => set({ excludeDefaults: event.currentTarget.checked })} />
-      <label class="form-check-label small" for="{idPrefix}-exclude-defaults">
+      <label class="form-check-label" for="{idPrefix}-exclude-defaults">
         {$_('components.backup-options.exclude-defaults')}
         <code>logs/</code>, <code>cache/</code>, <code>*.jar.tmp</code>
       </label>
     </div>
-    <div class="form-text">{$_('components.backup-options.exclude-hint')}</div>
+    <div class="form-text">
+      {$_('components.backup-options.exclude-hint')}
+      <span class="opacity-75">plugins/dynmap/ · *.log</span>
+    </div>
   </div>
 </div>
 
@@ -231,8 +222,8 @@
   } = $props();
 
   const MODES = [
-    { value: 'FULL', key: 'full', icon: 'fa-solid fa-file-zipper' },
-    { value: 'SNAPSHOT', key: 'snapshot', icon: 'fa-solid fa-layer-group' },
+    { value: 'FULL', key: 'full' },
+    { value: 'SNAPSHOT', key: 'snapshot' },
   ];
   const SCOPES = ['ALL', 'WORLDS', 'CUSTOM'];
 

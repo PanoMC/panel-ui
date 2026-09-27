@@ -61,7 +61,15 @@
   }
 </style>
 
-<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
+<!-- The name is the first thing anyone edits here, so the caret waits in it as soon as the dialog
+     is up: `shown` rather than `show`, because a hidden field cannot take focus. -->
+<div
+  aria-hidden="true"
+  class="modal fade"
+  bind:this={$modalElement}
+  role="dialog"
+  tabindex="-1"
+  on:shown.bs.modal={focusUsername}>
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -374,6 +382,11 @@
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { page } from '$app/stores';
   import ViewComponent from '$lib/components/ViewComponent.svelte';
+
+  /** Puts the caret in the username field once Bootstrap reports the dialog as shown. */
+  function focusUsername() {
+    get(modalElement)?.querySelector('#username')?.focus();
+  }
 
   function registerPluginHandler(id, handler) {
     if (handler) {

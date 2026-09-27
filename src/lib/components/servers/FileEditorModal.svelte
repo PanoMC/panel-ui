@@ -19,8 +19,9 @@
   tabindex="-1"
   aria-hidden="true"
   aria-labelledby="fileEditorTitle"
+  onkeydown={onModalKeydown}
   bind:this={modalElement}>
-  <div class="modal-dialog modal-xl modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title text-break" id="fileEditorTitle">
@@ -29,7 +30,7 @@
           {#if !loading && !loadError}
             <!-- What the file weighs now, following the edits; the size on disk beside it once
                  the two differ. -->
-            <span class="badge text-bg-secondary fw-normal ms-2">
+            <span class="badge text-bg-primary fw-normal ms-2">
               {liveSize !== size && !binary
                 ? $_('components.modals.file-editor.size-changed', {
                     values: { size: liveSizeText, delta: deltaText },
@@ -43,11 +44,6 @@
             </span>
           {/if}
         </h5>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label={$_('buttons.close')}
-          onclick={requestClose}></button>
       </div>
 
       <div class="modal-body vstack gap-2">
@@ -103,28 +99,23 @@
           <button type="button" class="btn btn-danger m-0" onclick={close}>
             {$_('components.modals.file-editor.discard')}
           </button>
-        {:else}
-          <button type="button" class="btn btn-link m-0" onclick={requestClose}>
-            {$_('buttons.close')}
+        {:else if cannotEdit && ondownload}
+          <!-- What the editor cannot show in full can still be taken away whole. -->
+          <button type="button" class="btn btn-primary w-100" onclick={() => ondownload(path)}>
+            <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
+            {$_('pages.servers.files.action-download')}
           </button>
-          {#if cannotEdit && ondownload}
-            <!-- What the editor cannot show in full can still be taken away whole. -->
-            <button type="button" class="btn btn-primary m-0" onclick={() => ondownload(path)}>
-              <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
-              {$_('pages.servers.files.action-download')}
-            </button>
-          {:else}
-            <button
-              type="button"
-              class="btn btn-primary m-0"
-              disabled={!canSave}
-              onclick={() => void save()}>
-              {#if saving}
-                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-              {/if}
-              {$_('buttons.save')}
-            </button>
-          {/if}
+        {:else}
+          <button
+            type="button"
+            class="btn btn-primary w-100"
+            disabled={!canSave}
+            onclick={() => void save()}>
+            {#if saving}
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {/if}
+            {$_('buttons.save')}
+          </button>
         {/if}
       </div>
     </div>
@@ -237,6 +228,17 @@
     }
 
     close();
+  }
+
+  /**
+   * With the header's close button gone, Escape is the way out — and it goes through the same
+   * unsaved-changes guard. CodeMirror marks the events it handled itself (Escape closes its own
+   * popups), so an already-prevented event is left to it.
+   */
+  function onModalKeydown(event) {
+    if (event.key === 'Escape' && !event.defaultPrevented) {
+      requestClose();
+    }
   }
 
   /**

@@ -7,171 +7,168 @@
 <!-- SM-34 — the cron schedules of one server (§2.4.6). Whoever Pano picked runs them: the node,
      the plugin inside the game, or Pano's own runner (§2.4.17). A BACKUP task needs whoever can
      zip the server directory, which is not the same question. -->
-<div class="container vstack gap-3">
-  <ServerCapabilityNotice
-    server={$server}
-    feature="schedules.runner"
-    section="components.server-navigation-menu.schedules" />
+<ServerCapabilityNotice
+  server={$server}
+  feature="schedules.runner"
+  section="components.server-navigation-menu.schedules" />
 
-  <div class="card">
-    <CardHeader>
-      <span slot="left" class="d-flex align-items-center gap-2">
-        {$_('pages.servers.schedules.title')}
-        <span class="badge rounded-pill text-bg-secondary">
-          {$_('pages.servers.schedules.count', { values: { count: schedules.length } })}
-        </span>
+<div class="card">
+  <CardHeader>
+    <span slot="left" class="d-flex align-items-center gap-2">
+      {$_('pages.servers.schedules.title')}
+      <span class="badge rounded-pill text-bg-secondary">
+        {$_('pages.servers.schedules.count', { values: { count: schedules.length } })}
       </span>
+    </span>
 
-      <span slot="right">
-        <button type="button" class="btn btn-sm btn-primary" onclick={() => editor?.open(null)}>
-          <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
-          {$_('pages.servers.schedules.create')}
+    <span slot="right">
+      <button type="button" class="btn btn-sm btn-primary" onclick={() => editor?.open(null)}>
+        <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
+        {$_('pages.servers.schedules.create')}
+      </button>
+    </span>
+  </CardHeader>
+
+  <div class="card-body pb-0">
+    <div class="small text-body-secondary">
+      {$_(
+        managed
+          ? 'pages.servers.schedules.description-managed'
+          : 'pages.servers.schedules.description-linked',
+      )}
+    </div>
+  </div>
+
+  {#if loading}
+    <div class="card-body d-flex justify-content-center py-5">
+      <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+    </div>
+  {:else if listError}
+    <div class="card-body text-center vstack gap-3 py-5">
+      <div>
+        <i class="fa-solid fa-clock fa-3x text-body-secondary" aria-hidden="true"></i>
+      </div>
+      <div class="text-body-secondary">{$_(listError)}</div>
+      <div>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          onclick={() => void loadSchedules()}>
+          {$_('buttons.refresh')}
         </button>
-      </span>
-    </CardHeader>
-
-    <div class="card-body pb-0">
-      <div class="small text-body-secondary">
-        {$_(
-          managed
-            ? 'pages.servers.schedules.description-managed'
-            : 'pages.servers.schedules.description-linked',
-        )}
       </div>
     </div>
-
-    {#if loading}
-      <div class="card-body d-flex justify-content-center py-5">
-        <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
-      </div>
-    {:else if listError}
-      <div class="card-body text-center vstack gap-3 py-5">
-        <div>
-          <i class="fa-solid fa-clock fa-3x text-body-secondary" aria-hidden="true"></i>
-        </div>
-        <div class="text-body-secondary">{$_(listError)}</div>
-        <div>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-secondary"
-            onclick={() => void loadSchedules()}>
-            {$_('buttons.refresh')}
-          </button>
-        </div>
-      </div>
-    {:else if !schedules.length}
-      <div class="card-body">
-        <NoContent icon="fa-solid fa-clock fa-3x" text={$_('pages.servers.schedules.empty')} />
-      </div>
-    {:else}
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead>
+  {:else if !schedules.length}
+    <div class="card-body">
+      <NoContent icon="fa-solid fa-clock fa-3x" text={$_('pages.servers.schedules.empty')} />
+    </div>
+  {:else}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th scope="col" class="text-nowrap">{$_('pages.servers.schedules.column-name')}</th>
+            <th scope="col" class="text-nowrap">{$_('pages.servers.schedules.column-cron')}</th>
+            <th scope="col" class="text-nowrap">
+              {$_('pages.servers.schedules.column-next-run')}
+            </th>
+            <th scope="col" class="text-nowrap">
+              {$_('pages.servers.schedules.column-last-run')}
+            </th>
+            <th scope="col" class="text-end text-nowrap"
+              >{$_('pages.servers.schedules.column-enabled')}</th>
+            <th scope="col" class="text-end text-nowrap"
+              >{$_('pages.servers.schedules.column-actions')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each schedules as schedule (schedule.id)}
             <tr>
-              <th scope="col" class="text-nowrap">{$_('pages.servers.schedules.column-name')}</th>
-              <th scope="col" class="text-nowrap">{$_('pages.servers.schedules.column-cron')}</th>
-              <th scope="col" class="text-nowrap">
-                {$_('pages.servers.schedules.column-next-run')}
+              <th scope="row" class="fw-semibold text-break">
+                {schedule.name}
+                <span class="d-block fw-normal small text-body-secondary">
+                  {taskSummary(schedule.tasks)}
+                </span>
               </th>
-              <th scope="col" class="text-nowrap">
-                {$_('pages.servers.schedules.column-last-run')}
-              </th>
-              <th scope="col" class="text-end text-nowrap"
-                >{$_('pages.servers.schedules.column-enabled')}</th>
-              <th scope="col" class="text-end text-nowrap"
-                >{$_('pages.servers.schedules.column-actions')}</th>
+              <td>
+                <code class="cron-value d-inline-block text-truncate">{schedule.cron}</code>
+                <span class="d-block small text-body-secondary">
+                  {describeCron(schedule.cron)}
+                  {#if schedule.timezone}
+                    <span class="opacity-75">&middot; {schedule.timezone}</span>
+                  {/if}
+                </span>
+              </td>
+              <td class="small text-nowrap">
+                {#if schedule.enabled && schedule.nextRunAt}
+                  <DateComponent time={schedule.nextRunAt} relativeFormat />
+                {:else}
+                  <span class="text-body-secondary">—</span>
+                {/if}
+              </td>
+              <td class="small text-nowrap">
+                {#if schedule.lastRunAt}
+                  <DateComponent time={schedule.lastRunAt} relativeFormat />
+                  <span class="badge rounded-pill ms-1 text-bg-{statusColour(schedule.lastStatus)}">
+                    {statusLabel(schedule.lastStatus)}
+                  </span>
+                {:else}
+                  <span class="text-body-secondary">
+                    {$_('pages.servers.schedules.never-run')}
+                  </span>
+                {/if}
+              </td>
+              <td class="text-end">
+                <div class="form-check form-switch d-inline-block m-0">
+                  {#if busyId === schedule.id}
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  {:else}
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="scheduleSwitch-{schedule.id}"
+                      aria-label={schedule.name}
+                      checked={schedule.enabled}
+                      disabled={!!busyId}
+                      onchange={(event) => void onToggle(schedule, event)} />
+                  {/if}
+                </div>
+              </td>
+              <td class="text-end text-nowrap">
+                <button
+                  type="button"
+                  class="btn btn-link btn-sm"
+                  disabled={!!busyId}
+                  aria-label={$_('pages.servers.schedules.run-now')}
+                  use:tooltip={[$_('pages.servers.schedules.run-now'), { placement: 'top' }]}
+                  onclick={() => void runNow(schedule)}>
+                  <i class="fa-solid fa-play" aria-hidden="true"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-link btn-sm"
+                  aria-label={$_('buttons.edit')}
+                  use:tooltip={[$_('buttons.edit'), { placement: 'top' }]}
+                  onclick={() => editor?.open(schedule)}>
+                  <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-link btn-sm link-danger"
+                  disabled={!!busyId}
+                  aria-label={$_('buttons.delete')}
+                  use:tooltip={[$_('buttons.delete'), { placement: 'top' }]}
+                  onclick={() => askDelete(schedule)}>
+                  <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                </button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {#each schedules as schedule (schedule.id)}
-              <tr>
-                <th scope="row" class="fw-semibold text-break">
-                  {schedule.name}
-                  <span class="d-block fw-normal small text-body-secondary">
-                    {taskSummary(schedule.tasks)}
-                  </span>
-                </th>
-                <td>
-                  <code class="cron-value d-inline-block text-truncate">{schedule.cron}</code>
-                  <span class="d-block small text-body-secondary">
-                    {describeCron(schedule.cron)}
-                    {#if schedule.timezone}
-                      <span class="opacity-75">&middot; {schedule.timezone}</span>
-                    {/if}
-                  </span>
-                </td>
-                <td class="small text-nowrap">
-                  {#if schedule.enabled && schedule.nextRunAt}
-                    <DateComponent time={schedule.nextRunAt} relativeFormat />
-                  {:else}
-                    <span class="text-body-secondary">—</span>
-                  {/if}
-                </td>
-                <td class="small text-nowrap">
-                  {#if schedule.lastRunAt}
-                    <DateComponent time={schedule.lastRunAt} relativeFormat />
-                    <span
-                      class="badge rounded-pill ms-1 text-bg-{statusColour(schedule.lastStatus)}">
-                      {statusLabel(schedule.lastStatus)}
-                    </span>
-                  {:else}
-                    <span class="text-body-secondary">
-                      {$_('pages.servers.schedules.never-run')}
-                    </span>
-                  {/if}
-                </td>
-                <td class="text-end">
-                  <div class="form-check form-switch d-inline-block m-0">
-                    {#if busyId === schedule.id}
-                      <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                    {:else}
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="scheduleSwitch-{schedule.id}"
-                        aria-label={schedule.name}
-                        checked={schedule.enabled}
-                        disabled={!!busyId}
-                        onchange={(event) => void onToggle(schedule, event)} />
-                    {/if}
-                  </div>
-                </td>
-                <td class="text-end text-nowrap">
-                  <button
-                    type="button"
-                    class="btn btn-link btn-sm"
-                    disabled={!!busyId}
-                    aria-label={$_('pages.servers.schedules.run-now')}
-                    use:tooltip={[$_('pages.servers.schedules.run-now'), { placement: 'top' }]}
-                    onclick={() => void runNow(schedule)}>
-                    <i class="fa-solid fa-play" aria-hidden="true"></i>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-link btn-sm"
-                    aria-label={$_('buttons.edit')}
-                    use:tooltip={[$_('buttons.edit'), { placement: 'top' }]}
-                    onclick={() => editor?.open(schedule)}>
-                    <i class="fa-solid fa-pen" aria-hidden="true"></i>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-link btn-sm link-danger"
-                    disabled={!!busyId}
-                    aria-label={$_('buttons.delete')}
-                    use:tooltip={[$_('buttons.delete'), { placement: 'top' }]}
-                    onclick={() => askDelete(schedule)}>
-                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
-                  </button>
-                </td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
-    {/if}
-  </div>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  {/if}
 </div>
 
 <ScheduleEditorModal

@@ -25,19 +25,16 @@
 <div class="card summary-stat-card {colorClass}">
   <div class="card-body">
     <div class="card-top">
-      <div class="d-flex justify-content-between align-items-start">
+      <div class="d-flex justify-content-between align-items-start gap-2">
         <p class="text-truncate m-0 small">{title}</p>
+        <!-- The change is a caption beside the figure, not a pill of its own: small text in the
+             body's own colour, with the arrow keeping the sign the absolute count drops. -->
         {#if hasComparison}
-          <span
-            class="badge rounded-pill"
-            class:text-bg-success={trend === 'up'}
-            class:text-bg-danger={trend === 'down'}
-            class:text-bg-secondary={trend === 'neutral'}
-            use:tooltip={[tooltipText, { placement: 'top' }]}>
+          <span class="small text-nowrap" use:tooltip={[tooltipText, { placement: 'top' }]}>
             {#if trend === 'up'}
-              <i class="fa-solid fa-arrow-up me-1"></i>
+              <i class="fa-solid fa-arrow-up me-1" aria-hidden="true"></i>
             {:else if trend === 'down'}
-              <i class="fa-solid fa-arrow-down me-1"></i>
+              <i class="fa-solid fa-arrow-down me-1" aria-hidden="true"></i>
             {/if}
             <span>{formattedDiff}</span>
           </span>

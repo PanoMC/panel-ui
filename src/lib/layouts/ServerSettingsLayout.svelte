@@ -1,34 +1,33 @@
-<!-- Server Settings Contents -->
-<div class="container vstack gap-3">
-  <PageActions>
-    <div slot="left">
-      <PageNav>
-        <PageNavItem href="/servers/{$server.id}/settings">
-          {$_('components.server-settings-layout.server')}
+<!-- Server Settings Contents — no container of its own: `ServerDetailLayout` owns the one this
+     sits in, so the settings nav and the page below it are spaced by the same `vstack gap-3`. -->
+<PageActions>
+  <div slot="left">
+    <PageNav>
+      <PageNavItem href="/servers/{$server.id}/settings">
+        {$_('components.server-settings-layout.server')}
+      </PageNavItem>
+      {#if isManaged($server) && hasPermission(Permissions.MANAGE_SERVER_STARTUP)}
+        <PageNavItem href="/servers/{$server.id}/settings/startup" startsWith>
+          {$_('components.server-settings-layout.startup')}
         </PageNavItem>
-        {#if isManaged($server) && hasPermission(Permissions.MANAGE_SERVER_STARTUP)}
-          <PageNavItem href="/servers/{$server.id}/settings/startup" startsWith>
-            {$_('components.server-settings-layout.startup')}
-          </PageNavItem>
-          <PageNavItem href="/servers/{$server.id}/settings/properties" startsWith>
-            {$_('components.server-settings-layout.properties')}
-          </PageNavItem>
-        {/if}
-        <PageNavItem href="/servers/{$server.id}/settings/game-integration" startsWith>
-          {$_('components.server-settings-layout.game-integration')}
+        <PageNavItem href="/servers/{$server.id}/settings/properties" startsWith>
+          {$_('components.server-settings-layout.properties')}
         </PageNavItem>
-        {#if hasPermission(Permissions.MANAGE_SERVERS)}
-          <!-- §2.4.12 — the log is read with the same grant that opened this workspace. -->
-          <PageNavItem href="/servers/{$server.id}/settings/activity" startsWith>
-            {$_('components.server-settings-layout.activity')}
-          </PageNavItem>
-        {/if}
-      </PageNav>
-    </div>
-  </PageActions>
+      {/if}
+      <PageNavItem href="/servers/{$server.id}/settings/game-integration" startsWith>
+        {$_('components.server-settings-layout.game-integration')}
+      </PageNavItem>
+      {#if hasPermission(Permissions.MANAGE_SERVERS)}
+        <!-- §2.4.12 — the log is read with the same grant that opened this workspace. -->
+        <PageNavItem href="/servers/{$server.id}/settings/activity" startsWith>
+          {$_('components.server-settings-layout.activity')}
+        </PageNavItem>
+      {/if}
+    </PageNav>
+  </div>
+</PageActions>
 
-  <slot />
-</div>
+<slot />
 
 <script>
   import { getContext } from 'svelte';

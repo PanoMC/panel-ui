@@ -2,17 +2,11 @@
 <div class="container vstack gap-3">
   <PageActions>
     <PageNav slot="left">
-      <PageNavItem
-        href="/players?view={Views.PLAYERS}"
-        active={data.view === Views.PLAYERS}>
+      <PageNavItem href="/players?view={Views.PLAYERS}" active={data.view === Views.PLAYERS}>
         {$_('buttons.players')}</PageNavItem>
-      <PageNavItem
-        href="/players?view={Views.BANS}"
-        active={data.view === Views.BANS}>
+      <PageNavItem href="/players?view={Views.BANS}" active={data.view === Views.BANS}>
         {$_('pages.players.bans-history-title')}</PageNavItem>
-      <PageNavItem
-        href="/players?view={Views.IP_BANS}"
-        active={data.view === Views.IP_BANS}>
+      <PageNavItem href="/players?view={Views.IP_BANS}" active={data.view === Views.IP_BANS}>
         {$_('pages.players.ip-bans-title')}</PageNavItem>
     </PageNav>
     <div slot="right" class="hstack gap-2">
@@ -71,6 +65,8 @@
       <!-- Filters -->
       <div slot="middle" style="width: 250px;">
         <SearchInput
+          bind:this={searchInput}
+          autofocus
           initialValue={search}
           searching={isSearching}
           debounceMs={500}
@@ -116,19 +112,24 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.name')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-duration')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-reason')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.players.table.name')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.player-detail.ban-duration')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.player-detail.ban-reason')}</th>
                 <th class="align-middle text-nowrap text-center" scope="col"
                   >{$_('pages.player-detail.email-notification')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.banned-by')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-source')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.banned-at')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.player-detail.banned-by')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.player-detail.ban-source')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.player-detail.banned-at')}</th>
               </tr>
             </thead>
             <tbody>
-              {#each data.players as banHistory, index (banHistory.banHistoryId ??
-                `${banHistory.username}-${banHistory.bannedAt}-${index}`)}
+              {#each data.players as banHistory, index (banHistory.banHistoryId ?? `${banHistory.username}-${banHistory.bannedAt}-${index}`)}
                 <BanHistoryRow {banHistory} showBannedPlayer={true} />
               {/each}
             </tbody>
@@ -141,11 +142,16 @@
               <tr>
                 <th class="align-middle text-nowrap" scope="col"></th>
                 <th class="align-middle text-nowrap" scope="col">{$_('pages.ip-bans.ip')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-duration')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-reason')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.ban-source')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.banned-by')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.player-detail.banned-at')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.player-detail.ban-duration')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.player-detail.ban-reason')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.player-detail.ban-source')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.player-detail.banned-by')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.player-detail.banned-at')}</th>
               </tr>
             </thead>
             <tbody>
@@ -167,7 +173,8 @@
                   tag="th"
                   class="align-middle text-nowrap"
                   scope="col" />
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.name')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.players.table.name')}</th>
                 <Hook
                   name="panel:players:table:header:after-name"
                   tag="th"
@@ -183,13 +190,15 @@
                   tag="th"
                   class="align-middle text-nowrap"
                   scope="col" />
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.status')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.players.table.status')}</th>
                 <Hook
                   name="panel:players:table:header:after-status"
                   tag="th"
                   class="align-middle text-nowrap"
                   scope="col" />
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.last-login')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.players.table.last-login')}</th>
                 <Hook
                   name="panel:players:table:header:after-last-login"
                   tag="th"
@@ -211,7 +220,8 @@
                   {checkTime}
                   on:showEditPlayerModalClick={(event) =>
                     onShowEditPlayerModalClick(event.detail.player)}
-                  on:showBanPlayerModalClick={(event) => showBanPlayerModalClick(event.detail.player)}
+                  on:showBanPlayerModalClick={(event) =>
+                    showBanPlayerModalClick(event.detail.player)}
                   on:showUnbanPlayerModalClick={(event) =>
                     showUnbanPlayerModalClick(event.detail.player)} />
               {/each}
@@ -271,7 +281,8 @@
     const page = parseInt(searchParams.get('page')) || 1;
     const permissionGroup = searchParams.get('permissionGroup');
     const view = searchParams.get('view') || Views.PLAYERS;
-    const pageType = view === Views.BANS ? PageTypes.BANNED : (searchParams.get('pageType') || DefaultPageType);
+    const pageType =
+      view === Views.BANS ? PageTypes.BANNED : searchParams.get('pageType') || DefaultPageType;
     const search = searchParams.get('search');
     const ipBanParam = searchParams.get('ipBanStatus')?.toUpperCase();
     const ipBanStatus =
@@ -373,6 +384,16 @@
   let search = data.search || '';
   let searchTimeout;
   let isSearching = false;
+  let searchInput;
+  /** The view whose search has already taken the caret, so a data refresh does not steal it back. */
+  let searchedView = null;
+
+  // The view tabs are plain links, so switching between Players / Bans / IP bans updates the data
+  // without remounting the page: the search has to be handed the caret again by hand.
+  $: if (data.view !== searchedView) {
+    searchedView = data.view;
+    searchInput?.focus();
+  }
 
   let checkTime = 0;
   let interval;
@@ -451,8 +472,7 @@
       pageType: data.pageType,
       view: data.view,
       search: search || undefined,
-      ipBanStatus:
-        data.view === 'IP_BANS' ? data.ipBanStatus || DefaultIpBanStatus : undefined,
+      ipBanStatus: data.view === 'IP_BANS' ? data.ipBanStatus || DefaultIpBanStatus : undefined,
     });
 
     await goto(queryParams, { invalidateAll: true, keepFocus: true });

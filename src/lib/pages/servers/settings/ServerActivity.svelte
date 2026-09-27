@@ -18,6 +18,7 @@
     <span slot="right" class="d-flex flex-wrap align-items-center justify-content-end gap-2">
       <div style="min-width: 12rem;">
         <SearchInput
+          autofocus
           inputId="serverActivitySearch"
           placeholderKey="pages.servers.activity.search-placeholder"
           initialValue={searchText}

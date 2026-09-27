@@ -1,18 +1,39 @@
+<style>
+  /* Bootstrap's floating label pins the field to a single row's height, so a textarea has to be
+     told that it may grow with its rows. */
+  .form-floating > textarea.form-control {
+    height: auto;
+  }
+</style>
+
 <!-- Confirm Ban Player Modal -->
-<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
+<!-- The reason field takes the caret as soon as the dialog is up: the reason is the whole point of
+     opening it. `shown` rather than `show`, because a hidden field cannot take focus. -->
+<div
+  aria-hidden="true"
+  class="modal fade"
+  bind:this={$modalElement}
+  role="dialog"
+  tabindex="-1"
+  on:shown.bs.modal={focusBanMessage}>
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
-      <div class="modal-body text-center">
-        <div class="pb-3">
-          <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
-        </div>
-        <div class="pb-3">
-          {$_('components.modals.confirm-ban-player.title')}
-        </div>
-
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {$_('components.modals.confirm-ban-player.title', {
+            values: { username: $player.username },
+          })}
+        </h5>
+        <!-- Bootstrap's own close control. It goes through `hide()` rather than
+             `data-bs-dismiss`, so the players page still gets its onHide callback and drops the
+             row it had marked. -->
+        <button class="btn-close" type="button" aria-label={$_('buttons.close')} on:click={hide}
+        ></button>
+      </div>
+      <div class="modal-body">
         {#if $server}
           <!-- From a server's roster: say how far this ban reaches before it is issued. -->
-          <div class="alert small text-start {$server.panoUser ? 'alert-info' : 'alert-warning'}">
+          <p class="alert small text-start {$server.panoUser ? 'alert-info' : 'alert-warning'}">
             {$server.panoUser
               ? $_('components.modals.confirm-ban-player.scope-pano', {
                   values: { username: $player.username },
@@ -20,27 +41,26 @@
               : $_('components.modals.confirm-ban-player.scope-server', {
                   values: { username: $player.username },
                 })}
-          </div>
+          </p>
         {/if}
 
         <!-- Ban Message -->
-        <div class="form-group text-start mb-3">
-          <label for="banMessage" class="form-label"
-            >{$_('components.modals.confirm-ban-player.ban-message')}</label>
+        <div class="form-floating">
           <textarea
             class="form-control"
             id="banMessage"
             rows="3"
             maxlength="255"
-            placeholder={$_('components.modals.confirm-ban-player.ban-message-placeholder')}
+            placeholder=" "
             bind:value={$banMessage}>
           </textarea>
-          <small class="float-end">{$banMessage.length}/255</small>
+          <label for="banMessage">{$_('components.modals.confirm-ban-player.ban-message')}</label>
         </div>
+        <small class="float-end mt-1">{$banMessage.length}/255</small>
 
         <!-- Ban Duration: a server's own ban list has no end date, so only a Pano ban has one. -->
         {#if !$server || $server.panoUser}
-          <div class="form-group text-start mb-3">
+          <div class="text-start mt-3">
             <h6 class="mb-2">{$_('components.modals.confirm-ban-player.ban-duration')}</h6>
 
             <!-- Button Group for Ban Duration -->
@@ -84,8 +104,8 @@
 
             <!-- Custom Duration Selector -->
             {#if $banDuration === 'custom'}
-              <div class="mt-2">
-                <select class="form-select" bind:value={$customDuration}>
+              <div class="form-floating mt-2">
+                <select class="form-select" id="banCustomDuration" bind:value={$customDuration}>
                   <option value=""
                     >{$_('components.modals.confirm-ban-player.select-duration')}</option>
                   <option value="15m"
@@ -104,25 +124,31 @@
                     >{$_('components.modals.confirm-ban-player.6-months')}</option>
                   <option value="365d">{$_('components.modals.confirm-ban-player.1-year')}</option>
                 </select>
+                <label for="banCustomDuration"
+                  >{$_('components.modals.confirm-ban-player.custom-duration')}</label>
               </div>
             {/if}
 
             <!-- Custom Date/Time Input -->
             {#if $banDuration === 'datetime'}
-              <div class="mt-2">
+              <div class="form-floating mt-2">
                 <input
+                  id="banCustomDateTime"
                   type="datetime-local"
                   class="form-control"
+                  placeholder=" "
                   bind:value={$customDateTime}
                   min={new Date().toISOString().slice(0, 16)}
                   step="60" />
+                <label for="banCustomDateTime"
+                  >{$_('components.modals.confirm-ban-player.custom-datetime')}</label>
               </div>
             {/if}
           </div>
         {/if}
 
         {#if !$server || $server.panoUser}
-          <div class="form-check d-inline-block text-center">
+          <div class="form-check d-inline-block text-center mt-3">
             <input
               class="form-check-input"
               type="checkbox"
@@ -135,20 +161,13 @@
           </div>
         {/if}
       </div>
-      <div class="modal-footer flex-nowrap">
+      <div class="modal-footer">
         <button
-          class="btn btn-link col-6 m-0"
-          type="button"
-          class:disabled={loading}
-          on:click={hide}>
-          {$_('buttons.cancel')}
-        </button>
-        <button
-          class="btn btn-danger col-6 m-0"
+          class="btn btn-danger w-100"
           type="button"
           class:disabled={loading}
           on:click={onSubmit}>
-          {$_('buttons.yes')}
+          {$_('pages.player-detail.ban')}
         </button>
       </div>
     </div>
@@ -225,6 +244,11 @@
   import { _ } from 'svelte-i18n';
 
   let loading;
+
+  /** Puts the caret in the reason field once Bootstrap reports the dialog as shown. */
+  function focusBanMessage() {
+    get(modalElement)?.querySelector('#banMessage')?.focus();
+  }
 
   function calculateDuration() {
     if ($banDuration === 'permanent') {

@@ -47,7 +47,6 @@
     pointer-events: none;
     z-index: 2;
     opacity: 0;
-    transition: opacity 0.2s ease;
   }
 
   .sidebar-top-fade-overlay.show {
@@ -77,6 +76,7 @@
     border-top-right-radius: 1rem !important;
     border-bottom-right-radius: 1rem !important;
     border: none !important;
+    transition: none !important;
   }
 
   /* --- Copper Theme Specific Adjustments --- */
@@ -110,7 +110,6 @@
   :global([data-bs-theme='copper']) .nav-pills .nav-link {
     color: rgba(255, 255, 255, 0.6) !important;
     border-radius: 0.5rem;
-    transition: all 0.2s ease;
   }
 
   :global([data-bs-theme='copper']) .nav-pills .nav-link:hover {
@@ -124,26 +123,19 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
-  .sidebar-header-container .navbar-brand {
-    transition: none;
-  }
-
+  .sidebar-header-container .navbar-brand,
   .navbar-toggler i {
-    transition: transform 0.2s ease;
-  }
-
-  .navbar-toggler:hover i {
-    transform: translateX(-2px);
+    transition: none;
   }
 
   /* Desktop: collapse in-flow — keep .offcanvas-lg so base .offcanvas never applies fixed overlay */
   @media (min-width: 992px) {
-    /* Expanding: show immediately so width/opacity animate in */
+    /* Expanding: shown immediately — nothing in the sidebar animates. */
     #sidebar:not(.sidebar-desktop-collapsed) {
       visibility: visible !important;
     }
 
-    /* Collapsing: defer visibility until shrink finishes (!important beats main.scss .offcanvas-lg) */
+    /* Collapsing: hidden outright (!important beats main.scss .offcanvas-lg) */
     #sidebar.sidebar-desktop-collapsed {
       flex: 0 0 0 !important;
       width: 0 !important;
@@ -183,12 +175,15 @@
 <ConfirmUpdateModal />
 
 <div
-  class="offcanvas offcanvas-start offcanvas-lg bg-primary h-100 overflow-hidden border"
+  class="offcanvas offcanvas-start offcanvas-lg h-100 overflow-hidden border"
   tabindex="-1"
   id="sidebar"
   aria-labelledby="sidebarLabel"
   data-bs-scroll="true"
   data-bs-backdrop="true"
+  data-bs-theme={$sidebarTabsState === 'game' ? 'dark' : undefined}
+  class:bg-primary={$sidebarTabsState !== 'game'}
+  class:workspace-game={$sidebarTabsState === 'game'}
   class:sidebar-desktop-collapsed={!$isSidebarOpen}>
   <div class="offcanvas-body d-flex flex-column p-0 overflow-hidden h-100">
     <!-- Fixed Header Area -->
@@ -255,7 +250,7 @@
           <div class="hstack gap-1">
             {#if canManageNodes}
               <a
-                class="btn btn-sm btn-secondary flex-shrink-0"
+                class="btn btn-sm btn-outline-success flex-shrink-0"
                 class:active={onNodesPage}
                 href="{base}/servers/nodes"
                 aria-current={onNodesPage ? 'page' : undefined}
@@ -266,7 +261,7 @@
             {/if}
             <button
               type="button"
-              class="btn btn-sm btn-secondary flex-grow-1 d-flex align-items-center justify-content-center gap-2 min-w-0"
+              class="btn btn-sm btn-success flex-grow-1 d-flex align-items-center justify-content-center gap-2 min-w-0"
               on:click={showServersModal}
               title={switcherServer
                 ? `${$_('components.navbar.selected-server')}: ${getServerDisplayName(switcherServer)}`
@@ -331,9 +326,10 @@
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
 
+  import { goto } from '$app/navigation';
   import { base } from '$app/paths';
 
-  import { toggleSidebar, setSidebarTabsState } from '$lib/Store';
+  import { toggleSidebar } from '$lib/Store';
   import { PanelSidebarStorageUtil } from '$lib/storage.util';
 
   import Bottom from './sidebar/Bottom.svelte';
@@ -354,7 +350,7 @@
   import { UI_URL } from '$lib/variables.js';
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
-  import { UsageModes } from '$lib/navigation.util.js';
+  import { sidebarTabForPath, UsageModes } from '$lib/navigation.util.js';
   import { browser } from '$app/environment';
 
   let menuComponent = SiteNavigationMenu;
@@ -379,6 +375,28 @@
     ($activeServer && routeServer && Number($activeServer.id) === Number(routeServer.id)
       ? $activeServer
       : routeServer) ?? $selectedServer;
+
+  let lastWebsitePath = '';
+  let lastGamePath = '';
+  let lastRememberedPath = '';
+  $: rememberCurrentWorkspacePage($page.url);
+
+  /** Keep one destination per workspace so a tab click returns to that tab's last page. */
+  function rememberCurrentWorkspacePage(url) {
+    const path = `${url.pathname}${url.search}${url.hash}`;
+
+    if (path === lastRememberedPath) {
+      return;
+    }
+
+    lastRememberedPath = path;
+
+    if (sidebarTabForPath(url.pathname, base) === 'game') {
+      lastGamePath = path;
+    } else {
+      lastWebsitePath = path;
+    }
+  }
 
   /** WEBSITE turns server management off entirely, so its pill is shown but not usable. */
   $: isGameTabDisabled = $usageMode === UsageModes.WEBSITE;
@@ -419,8 +437,35 @@
     toggleSidebar(isSidebarOpen);
   }
 
+  /**
+   * Switch workspaces and return to the last page visited in the target one. A workspace with
+   * no remembered page gets its natural landing page; without a selected server, the servers
+   * workspace lands on Nodes instead of a stale or missing server page.
+   *
+   * @param {'website' | 'game'} target
+   */
+  async function switchWorkspace(target) {
+    const destination =
+      target === 'website'
+        ? lastWebsitePath || `${base}/`
+        : switcherServer?.id == null
+          ? `${base}/servers/nodes`
+          : lastGamePath || `${base}/servers/${switcherServer.id}`;
+
+    const current = `${$page.url.pathname}${$page.url.search}${$page.url.hash}`;
+
+    if (destination === current) {
+      return;
+    }
+
+    // A click only navigates. The workspace the sidebar shows is read back off the page it lands
+    // on, so writing the tab here — before or after the move — made the sidebar settle twice on
+    // every switch: once for the write, once for the page it was then on.
+    await goto(destination);
+  }
+
   function onWebsiteMenuClick() {
-    setSidebarTabsState('website', sidebarTabsState);
+    void switchWorkspace('website');
   }
 
   function onGameMenuClick() {
@@ -428,7 +473,7 @@
       return;
     }
 
-    setSidebarTabsState('game', sidebarTabsState);
+    void switchWorkspace('game');
   }
 
   onDestroy(unsubscribeSidebarTabsState);

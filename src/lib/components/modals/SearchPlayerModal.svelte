@@ -4,23 +4,27 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{$_('components.modals.search-player.title')}</h5>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label={$_('buttons.close')}
-          on:click={hide}></button>
+        <button type="button" class="btn-close" aria-label={$_('buttons.close')} on:click={hide}
+        ></button>
       </div>
       <div class="modal-body">
         <div class="vstack gap-2">
-          <div class="position-relative">
-            <input
-              class="form-control form-control-lg"
-              type="text"
-              bind:value={$query}
-              placeholder={$_('buttons.find')}
-              on:keydown={(e) => {
-                if (e.key === 'Escape') hide();
-              }} />
+          <!-- The field itself is the shared search input, so it looks and behaves like every
+               other search on the panel; this dialog's own debounce still decides when to query,
+               hence `debounceMs: 0`. Escape closes from the wrapper, as the key event bubbles. -->
+          <div
+            class="position-relative"
+            on:keydown={(e) => {
+              if (e.key === 'Escape') hide();
+            }}>
+            <SearchInput
+              inputId="searchPlayerQuery"
+              placeholderKey="buttons.find"
+              ariaLabelKey="buttons.find"
+              debounceMs={0}
+              showSpinner={false}
+              initialValue={$query}
+              onchange={(value) => query.set(value)} />
             {#if $query.trim().length > 0}
               <button
                 type="button"
@@ -135,6 +139,10 @@
       if (lastBackdrop) {
         lastBackdrop.style.zIndex = String(1050 + (depth - 1) * step);
       }
+
+      // Searching is the whole dialog, so the caret waits in the field once it is on screen: a
+      // hidden field cannot take focus, hence `shown` rather than `show`.
+      el.querySelector('#searchPlayerQuery')?.focus();
     };
     el.addEventListener('shown.bs.modal', onShown);
     modal.show();
@@ -160,6 +168,7 @@
   import { _ } from 'svelte-i18n';
   import ApiUtil from '$lib/api.util';
   import NoContent from '$lib/components/NoContent.svelte';
+  import SearchInput from '$lib/components/SearchInput.svelte';
   import { avatarVersion } from '$lib/Store';
 
   let debounceTimer;
@@ -218,8 +227,6 @@
     if (id == null) return false;
     return ($existingUserIds || []).some((x) => String(x) === String(id));
   }
-
-
 
   async function search(q, token) {
     // If a newer search started, ignore this one
