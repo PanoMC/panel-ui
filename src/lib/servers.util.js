@@ -92,7 +92,7 @@ export const ProcessStates = Object.freeze({
 
 /** Bootstrap contextual colour per process state, used by the pill in the server header. */
 const PROCESS_STATE_COLOURS = Object.freeze({
-  [ProcessStates.STOPPED]: 'secondary',
+  [ProcessStates.STOPPED]: 'danger',
   [ProcessStates.STARTING]: 'info',
   [ProcessStates.RUNNING]: 'success',
   [ProcessStates.STOPPING]: 'warning',
@@ -1272,7 +1272,7 @@ export function softwareNoteBadge(item) {
 
   if (note === SoftwareNotes.BUILD) {
     return {
-      className: 'text-bg-warning',
+      className: 'text-bg-primary',
       label: 'components.modals.create-server.software-build',
       hint: 'components.modals.create-server.software-build-hint',
     };

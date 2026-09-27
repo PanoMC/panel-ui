@@ -27,45 +27,12 @@
     border-color: var(--bs-primary);
   }
 
-  .server-card .server-ip {
-    font-size: 0.75rem;
-  }
-
-  .server-card .player-count {
-    font-size: 0.7rem;
-  }
-
   .server-card.is-selecting {
     pointer-events: none;
   }
 
-  .status-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .status-dot.is-busy {
-    animation: status-dot-pulse 1.2s ease-in-out infinite;
-  }
-
-  @keyframes status-dot-pulse {
-    0%,
-    100% {
-      box-shadow: 0 0 0 0 color-mix(in srgb, var(--bs-info) 60%, transparent);
-    }
-    50% {
-      box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--bs-info) 0%, transparent);
-    }
-  }
-
   .task-progress {
     height: 4px;
-  }
-
-  .task-line {
-    font-size: 0.7rem;
   }
 
   .selecting-overlay {
@@ -161,10 +128,14 @@
             server.favicon ? server.favicon : base + '/assets/img/server-icon.png',
             base + '/assets/img/server-icon.png',
           )}
-          class="rounded border mb-2"
-          height="32"
-          width="32"
-          alt={server.customName || server.name} />
+          class="rounded border border-3 p-1 mb-2 {statusBorderClass}"
+          height="44"
+          width="44"
+          alt={server.customName || server.name}
+          use:tooltip={[statusLabel, { appendTo: TOOLTIP_HOST }]} />
+        <!-- A border colour reaches nobody but a sighted reader, so the state it now carries also
+             reaches a screen reader as text. -->
+        <span class="visually-hidden">{statusLabel}</span>
 
         <div class="d-flex align-items-center justify-content-center gap-1 w-100 mb-1 px-1 min-w-0">
           <SoftwareLogo id={server.type} size="1.25rem" />
@@ -191,16 +162,7 @@
       </div>
 
       <div class="mt-auto w-100">
-        <div class="player-count d-flex align-items-center justify-content-center gap-1">
-          <span
-            class="status-dot"
-            class:is-busy={!!task}
-            class:bg-info={!!task}
-            class:bg-success={!task && online}
-            class:bg-danger={!task && !online}
-            role="img"
-            aria-label={statusLabel}
-            use:tooltip={[statusLabel, { appendTo: TOOLTIP_HOST }]}></span>
+        <div class="player-count small d-flex align-items-center justify-content-center gap-1">
           {#if task}
             <span class="badge text-bg-info">{taskLabel}</span>
           {:else}
@@ -223,7 +185,7 @@
                 style="width: {percent}%;">
               </div>
             </div>
-            <div class="d-flex gap-1 mt-1 task-line text-body-secondary min-w-0">
+            <div class="small d-flex gap-1 mt-1 task-line text-body-secondary min-w-0">
               <span class="text-truncate flex-grow-1" title={message || taskLabel}
                 >{message || taskLabel}</span>
               <span class="font-monospace flex-shrink-0">{percent}%</span>
@@ -232,7 +194,7 @@
         {:else}
           {#if failureShown && failure}
             <div
-              class="task-line text-danger text-truncate w-100 mt-1 px-1"
+              class="small task-line text-danger text-truncate w-100 mt-1 px-1"
               title={failure.error || failureLabel}>
               <i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>{failureLabel}
             </div>
@@ -241,7 +203,6 @@
             {#each vitals as vital (vital.key)}
               <VitalsGauge
                 value={vital.value}
-                text={vital.text}
                 label={vital.label}
                 detail={vital.detail}
                 dangerAbove={vital.dangerAbove}
@@ -329,6 +290,10 @@
   $: taskLabel = task ? $_(taskLabelKey(task)) : '';
   $: percent = taskPercent(task);
   $: message = taskDetail(task);
+  // The dot that used to sit beside the player count is gone, so the icon's 2 px border carries
+  // the state: the task's colour while a task runs, green online, red offline. Nothing but a
+  // sighted reader sees a colour, hence the label in the tooltip and the hidden text beside it.
+  $: statusBorderClass = task ? 'border-info' : online ? 'border-success' : 'border-danger';
   $: statusLabel = task
     ? taskLabel
     : online
@@ -436,7 +401,8 @@
 
     const percent = Math.max(0, Math.min(100, value));
 
-    return { percent, text: `${Math.round(percent)}%`, detail: null };
+    // The pie carries no figure of its own here, so the percentage lives in the tippy instead.
+    return { percent, text: `${Math.round(percent)}%`, detail: `${Math.round(percent)}%` };
   }
 
   /**

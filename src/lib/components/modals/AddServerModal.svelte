@@ -1,29 +1,3 @@
-<style>
-  .choice-card {
-    border: 1px solid var(--bs-border-color);
-    border-radius: var(--bs-border-radius-lg);
-    text-align: start;
-    transition:
-      border-color 0.15s ease-in-out,
-      box-shadow 0.15s ease-in-out;
-  }
-
-  .choice-card:hover:not(:disabled),
-  .choice-card:focus-visible {
-    border-color: var(--bs-primary);
-    box-shadow: var(--bs-box-shadow-sm);
-  }
-
-  .choice-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--bs-border-radius);
-  }
-</style>
-
 <!-- Add Server chooser (§3): create a server Pano runs, or link one that already exists. -->
 <div
   aria-hidden="true"
@@ -32,7 +6,7 @@
   id="addServer"
   role="dialog"
   tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addServerTitle">{$_('components.modals.add-server.title')}</h5>
@@ -45,66 +19,55 @@
       </div>
 
       <div class="modal-body">
-        <p class="text-body-secondary">{$_('components.modals.add-server.description')}</p>
-
-        <div class="row g-3">
+        <!-- One row per way in, the shape the backup options use: the title leads, the sentence
+             below says what it does, and the whole row is the click target. -->
+        <div class="list-group">
           {#if canCreate}
-            <div class={choiceColumnClass}>
-              <button
-                type="button"
-                class="choice-card card h-100 w-100 p-3 bg-body"
-                onclick={openCreate}>
-                <div class="d-flex align-items-center gap-2 mb-2">
-                  <span class="choice-icon bg-primary-subtle text-primary-emphasis">
-                    <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
-                  </span>
-                  <span class="fw-semibold">{$_('components.modals.add-server.create-title')}</span>
-                </div>
-                <span class="small text-body-secondary">
-                  {$_('components.modals.add-server.create-description')}
-                </span>
-              </button>
-            </div>
-          {/if}
-
-          {#if canCreate}
-            <!-- Link, run by Pano: pano-agent.jar goes into the server's own folder and the server
-                 is started with it from then on. -->
-            <div class={choiceColumnClass}>
-              <button
-                type="button"
-                class="choice-card card h-100 w-100 p-3 bg-body"
-                onclick={openLinkWithAgent}>
-                <div class="d-flex align-items-center gap-2 mb-2">
-                  <span class="choice-icon bg-success-subtle text-success-emphasis">
-                    <i class="fa-solid fa-microchip" aria-hidden="true"></i>
-                  </span>
-                  <span class="fw-semibold"
-                    >{$_('components.modals.add-server.link-agent-title')}</span>
-                </div>
-                <span class="small text-body-secondary">
-                  {$_('components.modals.add-server.link-agent-description')}
-                </span>
-              </button>
-            </div>
-          {/if}
-
-          <div class={choiceColumnClass}>
             <button
               type="button"
-              class="choice-card card h-100 w-100 p-3 bg-body"
-              onclick={openLink}>
-              <div class="d-flex align-items-center gap-2 mb-2">
-                <span class="choice-icon bg-secondary-subtle text-secondary-emphasis">
-                  <i class="fa-solid fa-plug" aria-hidden="true"></i>
-                </span>
-                <span class="fw-semibold">{$_('components.modals.add-server.link-title')}</span>
-              </div>
-              <span class="small text-body-secondary">
-                {$_('components.modals.add-server.link-description')}
+              class="list-group-item list-group-item-action text-start"
+              onclick={openCreate}>
+              <span class="d-flex align-items-center gap-2 mb-1">
+                <i class="fa-solid fa-plus text-success" aria-hidden="true"></i>
+                <span class="fw-semibold">{$_('components.modals.add-server.create-title')}</span>
+              </span>
+              <span class="text-body-secondary">
+                {$_('components.modals.add-server.create-description')}
               </span>
             </button>
-          </div>
+          {/if}
+
+          <!-- Link, run by Pano: pano-agent.jar goes into the server's own folder and the server
+               is started with it from then on. -->
+          {#if canCreate}
+            <button
+              type="button"
+              class="list-group-item list-group-item-action text-start"
+              onclick={openLinkWithAgent}>
+              <span class="d-flex align-items-center gap-2 mb-1">
+                <i class="fa-solid fa-microchip text-secondary" aria-hidden="true"></i>
+                <span class="fw-semibold">
+                  {$_('components.modals.add-server.link-agent-title')}
+                </span>
+              </span>
+              <span class="text-body-secondary">
+                {$_('components.modals.add-server.link-agent-description')}
+              </span>
+            </button>
+          {/if}
+
+          <button
+            type="button"
+            class="list-group-item list-group-item-action text-start"
+            onclick={openLink}>
+            <span class="d-flex align-items-center gap-2 mb-1">
+              <i class="fa-solid fa-plug text-info" aria-hidden="true"></i>
+              <span class="fw-semibold">{$_('components.modals.add-server.link-title')}</span>
+            </span>
+            <span class="text-body-secondary">
+              {$_('components.modals.add-server.link-description')}
+            </span>
+          </button>
         </div>
       </div>
     </div>
@@ -195,9 +158,6 @@
   import { showError } from '$lib/components/ToastContainer.svelte';
 
   const canCreate = hasPermission(Permissions.CREATE_SERVERS);
-
-  /** Three side by side when Pano can create servers; otherwise linking is the only choice. */
-  const choiceColumnClass = canCreate ? 'col-md-4' : 'col-12';
 
   function openLink() {
     hideThen(showConnectServerModal);

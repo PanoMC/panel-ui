@@ -1,133 +1,163 @@
+<style>
+  /* Bootstrap's floating label pins the field to a single row's height, so a textarea has to be
+     told that it may grow with its rows. */
+  .form-floating > textarea.form-control {
+    height: auto;
+  }
+</style>
+
 <!-- Confirm Ban IP (panel) -->
-<div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
+<!-- The address is the only thing one has to type, so the caret waits in it as soon as the dialog
+     is up: `shown` rather than `show`, because a hidden field cannot take focus. -->
+<div
+  aria-hidden="true"
+  class="modal fade"
+  bind:this={$modalElement}
+  role="dialog"
+  tabindex="-1"
+  on:shown.bs.modal={focusIpField}>
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
-      <div class="modal-body text-center">
-        <div class="pb-3">
-          <i class="fas fa-network-wired fa-3x d-block m-auto text-gray"></i>
-        </div>
-        <div class="pb-3">{$_('components.modals.confirm-ban-ip.title')}</div>
-
-        <div class="form-group text-start mb-3">
-          <div class="d-flex flex-wrap gap-2 align-items-end justify-content-between">
-            <div class="flex-grow-1" style="min-width: 12rem">
-              <label for="ipBanField" class="form-label">{$_('pages.ip-bans.ip')}</label>
+      <div class="modal-header">
+        <h5 class="modal-title">{$_('components.modals.confirm-ban-ip.title')}</h5>
+        <!-- Bootstrap's own close control. It goes through `hide()` rather than
+             `data-bs-dismiss`, so the players page still gets its onHide callback. -->
+        <button class="btn-close" type="button" aria-label={$_('buttons.close')} on:click={hide}
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- One column, one rhythm: the address and its lookup link read as a single group, the
+             reason and the duration sit a gap below them. -->
+        <div class="vstack gap-3">
+          <div>
+            <div class="form-floating">
               <input
                 type="text"
-                class="form-control"
+                class="form-control font-monospace"
                 id="ipBanField"
                 name="ipBanField"
+                placeholder=" "
                 autocomplete="off"
+                spellcheck="false"
                 bind:value={$ipAddress} />
+              <label for="ipBanField">{$_('pages.ip-bans.ip')}</label>
             </div>
-            <div>
-              <button type="button" class="btn btn-outline-secondary" on:click={openPlayerSearchForIp}>
+            <div class="d-flex mt-1">
+              <button
+                type="button"
+                class="btn btn-link p-0 text-decoration-none focus-ring rounded"
+                on:click={openPlayerSearchForIp}>
+                <i class="fa-solid fa-user-search me-1" aria-hidden="true"></i>
                 {$_('components.modals.confirm-ban-ip.find-player')}
               </button>
             </div>
           </div>
-        </div>
 
-        <div class="form-group text-start mb-3">
-          <label for="ipBanMessage" class="form-label"
-            >{$_('components.modals.confirm-ban-player.ban-message')}</label>
-          <textarea
-            class="form-control"
-            id="ipBanMessage"
-            name="ipBanMessage"
-            rows="3"
-            maxlength="255"
-            placeholder={$_('components.modals.confirm-ban-ip.ban-message-placeholder')}
-            bind:value={$banMessage}>
-          </textarea>
-          <small class="float-end">{$banMessage.length}/255</small>
-        </div>
-
-        <div class="form-group text-start mb-3">
-          <h6 class="mb-2">{$_('components.modals.confirm-ban-player.ban-duration')}</h6>
-          <div class="btn-group w-100" role="group" aria-label="IP ban duration options">
-            <input
-              type="radio"
-              class="btn-check"
-              value="permanent"
-              bind:group={$banDuration}
-              id="ipBanPermanent"
-              name="ipBanDuration"
-              autocomplete="off" />
-            <label class="btn btn-outline-primary" for="ipBanPermanent">
-              {$_('components.modals.confirm-ban-player.permanent-ban')}
-            </label>
-            <input
-              type="radio"
-              class="btn-check"
-              value="custom"
-              bind:group={$banDuration}
-              id="ipBanCustom"
-              name="ipBanDuration"
-              autocomplete="off" />
-            <label class="btn btn-outline-primary" for="ipBanCustom">
-              {$_('components.modals.confirm-ban-player.custom-duration')}
-            </label>
-            <input
-              type="radio"
-              class="btn-check"
-              value="datetime"
-              bind:group={$banDuration}
-              id="ipBanDateTime"
-              name="ipBanDuration"
-              autocomplete="off" />
-            <label class="btn btn-outline-primary" for="ipBanDateTime">
-              {$_('components.modals.confirm-ban-player.custom-datetime')}
-            </label>
+          <div>
+            <div class="form-floating">
+              <textarea
+                class="form-control"
+                id="ipBanMessage"
+                name="ipBanMessage"
+                rows="3"
+                maxlength="255"
+                placeholder=" "
+                bind:value={$banMessage}>
+              </textarea>
+              <label for="ipBanMessage"
+                >{$_('components.modals.confirm-ban-player.ban-message')}</label>
+            </div>
+            <small class="float-end mt-1">{$banMessage.length}/255</small>
           </div>
 
-          {#if $banDuration === 'custom'}
-            <div class="mt-2">
-              <select class="form-select" bind:value={$customDuration}>
-                <option value=""
-                  >{$_('components.modals.confirm-ban-player.select-duration')}</option>
-                <option value="15m">{$_('components.modals.confirm-ban-player.15-minutes')}</option>
-                <option value="30m">{$_('components.modals.confirm-ban-player.30-minutes')}</option>
-                <option value="1h">{$_('components.modals.confirm-ban-player.1-hour')}</option>
-                <option value="3h">{$_('components.modals.confirm-ban-player.3-hours')}</option>
-                <option value="6h">{$_('components.modals.confirm-ban-player.6-hours')}</option>
-                <option value="12h">{$_('components.modals.confirm-ban-player.12-hours')}</option>
-                <option value="1d">{$_('components.modals.confirm-ban-player.1-day')}</option>
-                <option value="3d">{$_('components.modals.confirm-ban-player.3-days')}</option>
-                <option value="7d">{$_('components.modals.confirm-ban-player.1-week')}</option>
-                <option value="30d">{$_('components.modals.confirm-ban-player.1-month')}</option>
-                <option value="180d">{$_('components.modals.confirm-ban-player.6-months')}</option>
-                <option value="365d">{$_('components.modals.confirm-ban-player.1-year')}</option>
-              </select>
-            </div>
-          {/if}
-
-          {#if $banDuration === 'datetime'}
-            <div class="mt-2">
+          <div class="text-start">
+            <h6 class="mb-2">{$_('components.modals.confirm-ban-player.ban-duration')}</h6>
+            <div class="btn-group w-100" role="group" aria-label="IP ban duration options">
               <input
-                type="datetime-local"
-                class="form-control"
-                bind:value={$customDateTime}
-                min={new Date().toISOString().slice(0, 16)}
-                step="60" />
+                type="radio"
+                class="btn-check"
+                value="permanent"
+                bind:group={$banDuration}
+                id="ipBanPermanent"
+                name="ipBanDuration"
+                autocomplete="off" />
+              <label class="btn btn-outline-primary" for="ipBanPermanent">
+                {$_('components.modals.confirm-ban-player.permanent-ban')}
+              </label>
+              <input
+                type="radio"
+                class="btn-check"
+                value="custom"
+                bind:group={$banDuration}
+                id="ipBanCustom"
+                name="ipBanDuration"
+                autocomplete="off" />
+              <label class="btn btn-outline-primary" for="ipBanCustom">
+                {$_('components.modals.confirm-ban-player.custom-duration')}
+              </label>
+              <input
+                type="radio"
+                class="btn-check"
+                value="datetime"
+                bind:group={$banDuration}
+                id="ipBanDateTime"
+                name="ipBanDuration"
+                autocomplete="off" />
+              <label class="btn btn-outline-primary" for="ipBanDateTime">
+                {$_('components.modals.confirm-ban-player.custom-datetime')}
+              </label>
             </div>
-          {/if}
+
+            {#if $banDuration === 'custom'}
+              <div class="form-floating mt-2">
+                <select class="form-select" id="ipBanCustomDuration" bind:value={$customDuration}>
+                  <option value=""
+                    >{$_('components.modals.confirm-ban-player.select-duration')}</option>
+                  <option value="15m"
+                    >{$_('components.modals.confirm-ban-player.15-minutes')}</option>
+                  <option value="30m"
+                    >{$_('components.modals.confirm-ban-player.30-minutes')}</option>
+                  <option value="1h">{$_('components.modals.confirm-ban-player.1-hour')}</option>
+                  <option value="3h">{$_('components.modals.confirm-ban-player.3-hours')}</option>
+                  <option value="6h">{$_('components.modals.confirm-ban-player.6-hours')}</option>
+                  <option value="12h">{$_('components.modals.confirm-ban-player.12-hours')}</option>
+                  <option value="1d">{$_('components.modals.confirm-ban-player.1-day')}</option>
+                  <option value="3d">{$_('components.modals.confirm-ban-player.3-days')}</option>
+                  <option value="7d">{$_('components.modals.confirm-ban-player.1-week')}</option>
+                  <option value="30d">{$_('components.modals.confirm-ban-player.1-month')}</option>
+                  <option value="180d"
+                    >{$_('components.modals.confirm-ban-player.6-months')}</option>
+                  <option value="365d">{$_('components.modals.confirm-ban-player.1-year')}</option>
+                </select>
+                <label for="ipBanCustomDuration"
+                  >{$_('components.modals.confirm-ban-player.custom-duration')}</label>
+              </div>
+            {/if}
+
+            {#if $banDuration === 'datetime'}
+              <div class="form-floating mt-2">
+                <input
+                  id="ipBanCustomDateTime"
+                  type="datetime-local"
+                  class="form-control"
+                  placeholder=" "
+                  bind:value={$customDateTime}
+                  min={new Date().toISOString().slice(0, 16)}
+                  step="60" />
+                <label for="ipBanCustomDateTime"
+                  >{$_('components.modals.confirm-ban-player.custom-datetime')}</label>
+              </div>
+            {/if}
+          </div>
         </div>
       </div>
-      <div class="modal-footer flex-nowrap">
+      <div class="modal-footer">
         <button
-          class="btn btn-link col-6 m-0"
-          type="button"
-          class:disabled={loading}
-          on:click={hide}>
-          {$_('buttons.cancel')}
-        </button>
-        <button
-          class="btn btn-danger col-6 m-0"
+          class="btn btn-danger w-100"
           type="button"
           class:disabled={loading}
           on:click={onSubmit}>
-          {$_('buttons.yes')}
+          {$_('pages.ip-bans.add-ban')}
         </button>
       </div>
     </div>
@@ -196,6 +226,11 @@
   import { _ } from 'svelte-i18n';
 
   let loading;
+
+  /** Puts the caret in the address field once Bootstrap reports the dialog as shown. */
+  function focusIpField() {
+    get(modalElement)?.querySelector('#ipBanField')?.focus();
+  }
 
   function openPlayerSearchForIp() {
     setSearchPlayerModalCallback((u) => {

@@ -1,4 +1,11 @@
-<div class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
+<!-- The name is the first thing one types here, so the caret waits in it as soon as the dialog is
+     up: `shown` rather than `show`, because a hidden field cannot take focus. -->
+<div
+  class="modal fade"
+  bind:this={$modalElement}
+  role="dialog"
+  tabindex="-1"
+  on:shown.bs.modal={focusName}>
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -189,6 +196,11 @@
 
   let loading = false;
   $: buttonDisabled = !$locale.name || !$locale.code || !$locale.dateFnsCode;
+
+  /** Puts the caret in the name field once Bootstrap reports the dialog as shown. */
+  function focusName() {
+    get(modalElement)?.querySelector('#name')?.focus();
+  }
 
   function onSubmit() {
     loading = true;

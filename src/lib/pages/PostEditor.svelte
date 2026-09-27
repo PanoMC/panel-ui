@@ -75,7 +75,7 @@
         ? $_('buttons.update')
         : $_('pages.post-editor.publish')}</span>
   </button>
-  <Hook name="panel:post-editor:actions:right" post={post} />
+  <Hook name="panel:post-editor:actions:right" {post} />
 {/snippet}
 
 <!-- Post & Post Options -->
@@ -85,9 +85,11 @@
     <div class="card h-100 w-100">
       <div class="card-body d-flex flex-column gap-3">
         <input
+          id="postTitle"
           class="form-control form-control-lg"
           type="text"
           placeholder={$_('pages.post-editor.inputs.title.placeholder')}
+          bind:this={titleInput}
           bind:value={post.title} />
 
         <div class="w-100 flex-grow-1 d-flex flex-column">
@@ -101,7 +103,7 @@
 
   <!-- Post Option Cards -->
   <div class="col-lg-3">
-    <Hook name="panel:post-editor:sidebar:before" post={post} />
+    <Hook name="panel:post-editor:sidebar:before" {post} />
     <div class="card">
       <div class="card-body">
         <ul class="list-group p-0 m-0">
@@ -189,11 +191,11 @@
         </ul>
       </div>
     </div>
-    <Hook name="panel:post-editor:sidebar:after" post={post} />
+    <Hook name="panel:post-editor:sidebar:after" {post} />
   </div>
 </section>
 
-<Hook name="panel:post-editor:content:bottom" post={post} />
+<Hook name="panel:post-editor:content:bottom" {post} />
 
 <AddEditPostCategoryModal />
 
@@ -277,7 +279,7 @@
 </script>
 
 <script>
-  import { getContext } from 'svelte';
+  import { getContext, onMount, tick } from 'svelte';
   import { _ } from 'svelte-i18n';
 
   import { base } from '$app/paths';
@@ -322,6 +324,16 @@
 
   let isEditorEmpty = $state(true);
   let loading = $state(false);
+
+  let titleInput = $state();
+
+  onMount(async () => {
+    // The title is where writing a post starts, so the caret waits there. The editor mounts its
+    // own editable surface in the same pass, so this waits for the DOM to settle first.
+    await tick();
+
+    titleInput?.focus();
+  });
 
   let thumbnail = $state();
 

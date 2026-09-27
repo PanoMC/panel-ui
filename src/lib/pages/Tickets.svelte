@@ -70,6 +70,7 @@
       <!-- Filters -->
       <div slot="middle" style="width: 250px;">
         <SearchInput
+          autofocus
           initialValue={search}
           searching={isSearching}
           debounceMs={500}

@@ -1,11 +1,15 @@
 <div class="container vstack gap-3">
   <div class="card">
-    <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
-      <span>
+    <CardHeader>
+      <div slot="left">
         {$_('pages.activity-logs.card-title', { values: { count: visibleLogCount } })}
-      </span>
-      <div style="width: min(100%, 280px);">
+      </div>
+      <!-- The search is the card's own subject, so it sits centred in the header rather than
+           pushed to the far edge. `CardHeader` only deals the row into even thirds when all three
+           slots are filled, hence the empty right one. -->
+      <div slot="middle" style="width: 250px;">
         <SearchInput
+          autofocus
           initialValue={search}
           searching={isSearching}
           debounceMs={300}
@@ -13,7 +17,8 @@
           placeholderKey="buttons.find"
           on:change={onSearchInput} />
       </div>
-    </div>
+      <div slot="right" aria-hidden="true"></div>
+    </CardHeader>
     {#if data.logs.length === 0}
       <NoContent />
     {:else}
@@ -90,6 +95,7 @@
   import { currentLanguage } from '$lib/language.util.js';
 
   import Pagination from '$lib/components/Pagination.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import ActivityLogRow from '$lib/components/rows/ActivityLogRow.svelte';

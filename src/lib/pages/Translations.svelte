@@ -58,7 +58,7 @@
       </div>
       <!-- Search -->
       <div slot="middle">
-        <SearchInput {searching} on:change={(e) => (searchQuery = e.detail.value)} />
+        <SearchInput autofocus {searching} on:change={(e) => (searchQuery = e.detail.value)} />
       </div>
       <!-- Filters -->
       <CardFilters slot="right">

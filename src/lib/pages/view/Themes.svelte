@@ -60,13 +60,18 @@
         values: { amount: data.themes.length },
       })}
     </div>
-    <div slot="right" style="width: 250px;">
+    <!-- The search is the card's own subject, so it sits centred in the header rather than
+         pushed to the far edge. `CardHeader` only deals the row into even thirds when all three
+         slots are filled, hence the empty right one. -->
+    <div slot="middle" style="width: 250px;">
       <SearchInput
+        autofocus
         initialValue={search}
         searching={isSearching}
         debounceMs={500}
         onchange={onSearchInput} />
     </div>
+    <div slot="right" aria-hidden="true"></div>
   </CardHeader>
   <div class="card-body">
     {#if data.themes.length === 0}
@@ -92,8 +97,7 @@
 
               <div
                 class="card-img-overlay d-flex flex-column justify-content-end p-3 overlay-gradient">
-                <h5
-                  class="card-title mb-1 text-truncate d-flex align-items-center gap-2">
+                <h5 class="card-title mb-1 text-truncate d-flex align-items-center gap-2">
                   <span class="text-truncate">{theme.title}</span>
                   <VerifiedStatus status={theme.verifyStatus} />
                   <LicenseStatusBadge status={theme.licenseStatus} />

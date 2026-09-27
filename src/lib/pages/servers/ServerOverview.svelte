@@ -10,17 +10,9 @@
 
   /* The mini console's dark ground runs to the card's bottom edge, so when the Recent activity
      card next to it is taller the extra room reads as more console, not as a gap. */
-  /* Out of the flow, so the row's height comes from the console card and the list scrolls. */
   .activity-scroll {
-    position: relative;
     flex: 1 1 auto;
     min-height: 364px;
-  }
-
-  .activity-scroll-inner {
-    position: absolute;
-    inset: 0;
-    overflow-y: auto;
   }
 
   .mini-console {
@@ -65,7 +57,6 @@
     align-items: baseline;
     gap: 1rem;
     padding: 0.3rem 0;
-    font-size: 0.9rem;
     border-bottom: 1px solid var(--bs-border-color-translucent);
   }
 
@@ -92,7 +83,6 @@
 
   .stats-code {
     padding: 0.25rem 0 0.5rem;
-    font-size: 0.85rem;
     border-bottom: 1px solid var(--bs-border-color-translucent);
   }
 
@@ -107,8 +97,9 @@
 
 {#if !view}
   <!-- The page's own layout, loading the way the servers modal's cards load: plain `placeholder
-       col-N` lines in `placeholder-glow`, the chart areas empty at their real height. -->
-  <div class="container vstack gap-3" aria-busy="true">
+       col-N` lines in `placeholder-glow`, the chart areas empty at their real height. One wrapper
+       here, without a `container` of its own: it is what carries `aria-busy` over the skeleton. -->
+  <div class="vstack gap-3" aria-busy="true">
     <div style="height: 31px;"></div>
     <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-xl-4">
       {#each Array(4) as _, index (index)}
@@ -140,295 +131,290 @@
     {/each}
   </div>
 {:else}
-  <div class="container vstack gap-3">
-    <ServerJavaMissingAlert />
+  <ServerJavaMissingAlert />
 
-    <!-- §2.4.22 — the server's vitals in the Statistics page's stat-card look: the big value is
+  <!-- §2.4.22 — the server's vitals in the Statistics page's stat-card look: the big value is
          the live sample, the sparkline the last hour (hover for a point). §2.4.23 — the toolbar
          picks how often the sources report while this page is open. -->
-    <div class="d-flex flex-wrap justify-content-end align-items-center gap-2">
-      <label class="small text-body-secondary mb-0" for="vitalsRange">
-        {$_('pages.servers.overview.vitals-range')}
+  <div class="d-flex flex-wrap justify-content-end align-items-center gap-2">
+    <label class="small text-body-secondary mb-0" for="vitalsRange">
+      {$_('pages.servers.overview.vitals-range')}
+    </label>
+    <select
+      id="vitalsRange"
+      class="form-select form-select-sm w-auto"
+      bind:value={vitalsRange}
+      on:change={onVitalsRangeChange}>
+      {#each VITALS_RANGES as range (range)}
+        <option value={range}>{$_(`pages.servers.overview.range-${range}`)}</option>
+      {/each}
+    </select>
+    <label class="small text-body-secondary mb-0" for="vitalsInterval">
+      {$_('pages.servers.overview.refresh-interval')}
+    </label>
+    <select
+      id="vitalsInterval"
+      class="form-select form-select-sm w-auto"
+      bind:value={vitalsInterval}
+      on:change={onVitalsIntervalChange}>
+      {#each METRIC_REFRESH_INTERVALS as interval (interval)}
+        <option value={interval}>{metricRefreshIntervalLabel(interval, $_)}</option>
+      {/each}
+    </select>
+    <!-- A disabled switch swallows pointer events, so the tooltip lives on the wrapper. -->
+    <div
+      class="form-check form-switch m-0"
+      use:tooltip={[serverTimeTooltip, { placement: 'bottom' }]}>
+      <input
+        class="form-check-input"
+        type="checkbox"
+        role="switch"
+        id="overviewServerTime"
+        bind:checked={useServerTime}
+        on:change={onServerTimeChange}
+        disabled={!serverTimeZoneAvailable} />
+      <label class="form-check-label small text-body-secondary" for="overviewServerTime">
+        {$_('pages.servers.overview.server-time')}
       </label>
-      <select
-        id="vitalsRange"
-        class="form-select form-select-sm w-auto"
-        bind:value={vitalsRange}
-        on:change={onVitalsRangeChange}>
-        {#each VITALS_RANGES as range (range)}
-          <option value={range}>{$_(`pages.servers.overview.range-${range}`)}</option>
-        {/each}
-      </select>
-      <label class="small text-body-secondary mb-0" for="vitalsInterval">
-        {$_('pages.servers.overview.refresh-interval')}
-      </label>
-      <select
-        id="vitalsInterval"
-        class="form-select form-select-sm w-auto"
-        bind:value={vitalsInterval}
-        on:change={onVitalsIntervalChange}>
-        {#each METRIC_REFRESH_INTERVALS as interval (interval)}
-          <option value={interval}>{metricRefreshIntervalLabel(interval, $_)}</option>
-        {/each}
-      </select>
-      <!-- A disabled switch swallows pointer events, so the tooltip lives on the wrapper. -->
-      <div
-        class="form-check form-switch m-0"
-        use:tooltip={[serverTimeTooltip, { placement: 'bottom' }]}>
-        <input
-          class="form-check-input"
-          type="checkbox"
-          role="switch"
-          id="overviewServerTime"
-          bind:checked={useServerTime}
-          on:change={onServerTimeChange}
-          disabled={!serverTimeZoneAvailable} />
-        <label class="form-check-label small" for="overviewServerTime">
-          {$_('pages.servers.overview.server-time')}
-        </label>
-      </div>
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-secondary"
-        aria-label={$_('pages.servers.overview.refresh-now')}
-        use:tooltip={[$_('pages.servers.overview.refresh-now'), { placement: 'bottom' }]}
-        disabled={vitalsRefreshing}
-        on:click={refreshVitals}>
-        <i class="fa-solid fa-rotate-right" class:fa-spin={vitalsRefreshing} aria-hidden="true"></i>
-      </button>
     </div>
+    <!-- A link, not a solid button: this only re-reads what the cards below already show, so it
+         should not weigh as much as a change to the server would. Icon-only, hence the tooltip;
+         `text-decoration-none` because the theme underlines links on hover. -->
+    <button
+      type="button"
+      class="btn btn-sm btn-link text-decoration-none"
+      aria-label={$_('pages.servers.overview.refresh-now')}
+      use:tooltip={[$_('pages.servers.overview.refresh-now'), { placement: 'bottom' }]}
+      disabled={vitalsRefreshing}
+      on:click={refreshVitals}>
+      <i class="fa-solid fa-rotate-right" class:fa-spin={vitalsRefreshing} aria-hidden="true"></i>
+    </button>
+  </div>
 
-    <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-xl-4">
-      <div class="col">
-        <ServerVitalCard
-          title={$_('pages.servers.overview.vital-cpu')}
-          loading={vitalsLoading}
-          bucketMs={vitalsBucketMs}
-          timeZone={displayTimeZone}
-          showDate={vitalsShowDate}
-          windowMs={vitalsWindowMs}
-          online={vitalsOnline}
-          padStart={vitalsRange !== '1m'}
-          value={vitals.cpu.value}
-          points={vitalSeries.cpu}
-          scaleMax={100}
-          format={formatPercent}
-          colorClass="text-bg-warning" />
-      </div>
-      <div class="col">
-        <ServerVitalCard
-          title={$_('pages.servers.overview.vital-ram')}
-          loading={vitalsLoading}
-          bucketMs={vitalsBucketMs}
-          timeZone={displayTimeZone}
-          showDate={vitalsShowDate}
-          windowMs={vitalsWindowMs}
-          online={vitalsOnline}
-          padStart={vitalsRange !== '1m'}
-          value={vitals.ram.value}
-          secondary={vitals.ram.secondary}
-          points={vitalSeries.ram}
-          scaleMax={vitals.ram.max}
-          format={formatByteSize}
-          colorClass="text-bg-primary" />
-      </div>
-      <div class="col">
-        <ServerVitalCard
-          title={$_('pages.servers.overview.vital-disk')}
-          loading={vitalsLoading}
-          bucketMs={vitalsBucketMs}
-          timeZone={displayTimeZone}
-          showDate={vitalsShowDate}
-          windowMs={vitalsWindowMs}
-          online={vitalsOnline}
-          padStart={vitalsRange !== '1m'}
-          value={vitals.disk.value}
-          secondary={vitals.disk.secondary}
-          points={vitalSeries.disk}
-          format={formatByteSize}
-          colorClass="text-bg-secondary" />
-      </div>
-      <div class="col">
-        <ServerVitalCard
-          title={$_('pages.servers.overview.vital-network')}
-          loading={vitalsLoading}
-          bucketMs={vitalsBucketMs}
-          timeZone={displayTimeZone}
-          showDate={vitalsShowDate}
-          windowMs={vitalsWindowMs}
-          online={vitalsOnline}
-          padStart={vitalsRange !== '1m'}
-          value={vitals.network.value}
-          secondary={vitals.network.secondary}
-          series={vitalSeries.network}
-          format={formatRate}
-          valueClass="fs-5"
-          colorClass="text-bg-info" />
-      </div>
+  <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-xl-4">
+    <div class="col">
+      <ServerVitalCard
+        title={$_('pages.servers.overview.vital-cpu')}
+        loading={vitalsLoading}
+        bucketMs={vitalsBucketMs}
+        timeZone={displayTimeZone}
+        showDate={vitalsShowDate}
+        windowMs={vitalsWindowMs}
+        online={vitalsOnline}
+        padStart={vitalsRange !== '1m'}
+        value={vitals.cpu.value}
+        points={vitalSeries.cpu}
+        scaleMax={100}
+        format={formatPercent}
+        colorClass="text-bg-warning" />
     </div>
+    <div class="col">
+      <ServerVitalCard
+        title={$_('pages.servers.overview.vital-ram')}
+        loading={vitalsLoading}
+        bucketMs={vitalsBucketMs}
+        timeZone={displayTimeZone}
+        showDate={vitalsShowDate}
+        windowMs={vitalsWindowMs}
+        online={vitalsOnline}
+        padStart={vitalsRange !== '1m'}
+        value={vitals.ram.value}
+        secondary={vitals.ram.secondary}
+        points={vitalSeries.ram}
+        scaleMax={vitals.ram.max}
+        format={formatByteSize}
+        colorClass="text-bg-primary" />
+    </div>
+    <div class="col">
+      <ServerVitalCard
+        title={$_('pages.servers.overview.vital-disk')}
+        loading={vitalsLoading}
+        bucketMs={vitalsBucketMs}
+        timeZone={displayTimeZone}
+        showDate={vitalsShowDate}
+        windowMs={vitalsWindowMs}
+        online={vitalsOnline}
+        padStart={vitalsRange !== '1m'}
+        value={vitals.disk.value}
+        secondary={vitals.disk.secondary}
+        points={vitalSeries.disk}
+        format={formatByteSize}
+        colorClass="text-bg-secondary" />
+    </div>
+    <div class="col">
+      <ServerVitalCard
+        title={$_('pages.servers.overview.vital-network')}
+        loading={vitalsLoading}
+        bucketMs={vitalsBucketMs}
+        timeZone={displayTimeZone}
+        showDate={vitalsShowDate}
+        windowMs={vitalsWindowMs}
+        online={vitalsOnline}
+        padStart={vitalsRange !== '1m'}
+        value={vitals.network.value}
+        secondary={vitals.network.secondary}
+        series={vitalSeries.network}
+        format={formatRate}
+        valueClass="fs-5"
+        colorClass="text-bg-info" />
+    </div>
+  </div>
 
-    <!-- Live metrics. The strip follows the 10-second sample the plugin pushes; the chart is
+  <!-- Live metrics. The strip follows the 10-second sample the plugin pushes; the chart is
          the 1-minute rollup Pano stores, so it survives a page reload. -->
-    {#if showPerformance}
-      <div class="card">
-        <CardHeader>
-          <span slot="left" class="d-flex flex-wrap align-items-center column-gap-2">
-            {$_('pages.servers.overview.metrics-title')}
-            <span class="small text-body-secondary fw-normal">
-              {metricsSample
-                ? $_('pages.servers.overview.metrics-live')
-                : isServerOnline(view)
-                  ? $_('pages.servers.overview.metrics-waiting')
-                  : $_('pages.servers.overview.metrics-offline')}
-            </span>
-          </span>
-          <!-- §2.4.25 — an hour of minutes, a day of ten-minute buckets, a week day by day. -->
-          <CardFilters slot="right">
-            {#each PERFORMANCE_RANGE_KEYS as key (key)}
-              <CardFiltersItem
-                button
-                active={performanceRange === key}
-                onclick={() => setPerformanceRange(key)}>
-                {$_(`pages.servers.overview.performance-range-${key}`)}
-              </CardFiltersItem>
-            {/each}
-          </CardFilters>
-        </CardHeader>
-        <div class="card-body vstack gap-3">
-          <div class="row g-3">
-            <!-- §6 — a tick counter the software can never have (a proxy counts no ticks) is not
-                 shown at all; a "—" that is only empty for now (§2.4.35) says why. -->
-            {#if showTps}
-              <div class={metricTileColumn}>
-                <div
-                  class="metric-tile p-3 h-100"
-                  use:tooltip={[
-                    tpsUnavailableReason
-                      ? $_(tpsUnavailableReason, {
-                          values: { section: $_(featureSectionKey('metrics.tps')) },
-                        })
-                      : '',
-                    { placement: 'top' },
-                  ]}>
-                  <div class="small text-body-secondary">
-                    {$_('pages.servers.overview.tps-triple')}
-                  </div>
-                  {#if performanceWaiting}
-                    <div class="fs-5 placeholder-glow">
-                      <span class="placeholder col-8 fs-6 align-middle"></span>
-                    </div>
-                  {:else}
-                    <div class="fs-5 fw-bold font-monospace text-nowrap {tps.class}">
-                      {tps.text}
-                    </div>
-                  {/if}
-                </div>
-              </div>
-            {/if}
-
-            <div class={metricTileColumn}>
-              <div class="metric-tile p-3 h-100">
-                <div class="small text-body-secondary d-flex align-items-center gap-1">
-                  {$_('pages.servers.overview.mspt')}
-                  <i
-                    class="fa-solid fa-circle-info opacity-75"
-                    role="img"
-                    aria-label={$_('pages.servers.overview.mspt-info')}
-                    use:tooltip={[$_('pages.servers.overview.mspt-info'), { placement: 'top' }]}
-                  ></i>
-                </div>
-                {#if performanceWaiting}
-                  <div class="fs-4 placeholder-glow">
-                    <span class="placeholder col-6 fs-6 align-middle"></span>
-                  </div>
-                {:else}
-                  <div class="fs-4 fw-bold font-monospace {mspt.class}">{mspt.text}</div>
-                {/if}
-              </div>
-            </div>
-
-            <div class={metricTileColumn}>
-              <div class="metric-tile p-3 h-100">
-                <div class="small text-body-secondary">
-                  {$_('pages.servers.overview.players-online')}
-                </div>
-                {#if performanceWaiting}
-                  <div class="fs-4 placeholder-glow">
-                    <span class="placeholder col-5 fs-6 align-middle"></span>
-                  </div>
-                {:else}
-                  <div class="fs-4 fw-bold font-monospace">{playersText}</div>
-                {/if}
-              </div>
-            </div>
-            <div class={metricTileColumn}>
-              <div class="metric-tile p-3 h-100">
-                <div class="small text-body-secondary">{$_('pages.servers.overview.uptime')}</div>
-                {#if performanceWaiting}
-                  <div class="fs-4 placeholder-glow">
-                    <span class="placeholder col-7 fs-6 align-middle"></span>
-                  </div>
-                {:else}
-                  <div class="fs-4 fw-bold font-monospace">{uptimeText}</div>
-                {/if}
-              </div>
-            </div>
-          </div>
-
-          {#if metricsLoading}
-            <!-- The chart's own height (ServerMetricsChart is 220 px tall). -->
-            <div class="placeholder-glow" style="height: 220px;" aria-busy="true">
-              <span class="placeholder col-4"></span>
-            </div>
-          {:else}
-            <!-- Drawn with no data too: a range nothing was measured in reads as zero. -->
-            <ServerMetricsChart
-              series={perfSeries}
-              bucketMs={PERFORMANCE_RANGES[performanceRange].bucketMs}
-              range={PERFORMANCE_RANGES[performanceRange].range}
-              online={isServerOnline(view)}
-              tpsSupported={showTps}
-              timeZone={displayTimeZone} />
-          {/if}
-        </div>
-      </div>
-    {:else}
-      <!-- Nothing can report performance for this server right now. The card stays, disabled,
-           and says why — the same reason the other pages give (§2.4.35), with the update button
-           when a newer Pano plugin is what it takes. -->
-      <div class="card" aria-disabled="true">
-        <CardHeader>
-          <span slot="left" class="d-flex flex-wrap align-items-center column-gap-2">
-            {$_('pages.servers.overview.metrics-title')}
-            <span class="small text-body-secondary fw-normal">
-              {$_('pages.servers.overview.metrics-unavailable')}
-            </span>
-          </span>
-        </CardHeader>
-        <div class="card-body vstack gap-3">
-          <ServerCapabilityNotice
-            server={view}
-            feature={performanceFeature}
-            section="pages.servers.overview.metrics-title" />
-          <div class="row g-3 opacity-50" aria-hidden="true">
-            {#each performanceTileLabels as label (label)}
-              <div class={performanceTileLabels.length === 4 ? 'col-6 col-lg-3' : 'col-6 col-lg-4'}>
-                <div class="metric-tile p-3 h-100">
-                  <div class="small text-body-secondary">{$_(label)}</div>
-                  <div class="fs-4 fw-bold font-monospace text-body-secondary">—</div>
-                </div>
-              </div>
-            {/each}
-          </div>
-        </div>
-      </div>
-    {/if}
-
-    <!-- Server Activity: peak and average players per day, the Overview's counterpart to the
-         Statistics page's Website Activity card (§2.4.19). -->
+  {#if showPerformance}
     <div class="card">
       <CardHeader>
-        <span slot="left">{$_('pages.servers.overview.activity-chart-title')}</span>
+        <span slot="left" class="d-flex flex-wrap align-items-center column-gap-2">
+          {$_('pages.servers.overview.metrics-title')}
+          {#if !metricsSample}
+            <small class="opacity-75 fw-normal">
+              {isServerOnline(view)
+                ? $_('pages.servers.overview.metrics-waiting')
+                : $_('pages.servers.overview.metrics-offline')}
+            </small>
+          {/if}
+        </span>
+        <!-- §2.4.25 — an hour of minutes, a day of ten-minute buckets, a week day by day. -->
+        <CardFilters slot="right">
+          {#each PERFORMANCE_RANGE_KEYS as key (key)}
+            <CardFiltersItem
+              button
+              active={performanceRange === key}
+              onclick={() => setPerformanceRange(key)}>
+              {$_(`pages.servers.overview.performance-range-${key}`)}
+            </CardFiltersItem>
+          {/each}
+        </CardFilters>
+      </CardHeader>
+      <div class="card-body vstack gap-3">
+        <div class="row g-3">
+          <!-- §6 — a tick counter the software can never have (a proxy counts no ticks) is not
+                 shown at all; a "—" that is only empty for now (§2.4.35) says why. -->
+          {#if showTps}
+            <div class={metricTileColumn}>
+              <div
+                class="metric-tile p-3 h-100"
+                use:tooltip={[
+                  tpsUnavailableReason
+                    ? $_(tpsUnavailableReason, {
+                        values: { section: $_(featureSectionKey('metrics.tps')) },
+                      })
+                    : '',
+                  { placement: 'top' },
+                ]}>
+                <small class="opacity-75 d-block">
+                  {$_('pages.servers.overview.tps-triple')}
+                </small>
+                {#if performanceWaiting}
+                  <div class="fs-4 placeholder-glow">
+                    <span class="placeholder col-8 fs-6 align-middle"></span>
+                  </div>
+                {:else}
+                  <div class="fs-4 fw-bold font-monospace text-nowrap {tps.class}">
+                    {tps.text}
+                  </div>
+                {/if}
+              </div>
+            </div>
+          {/if}
+
+          <div class={metricTileColumn}>
+            <div class="metric-tile p-3 h-100">
+              <small class="opacity-75 d-flex align-items-center gap-1">
+                {$_('pages.servers.overview.mspt')}
+                <i
+                  class="fa-solid fa-circle-info"
+                  role="img"
+                  aria-label={$_('pages.servers.overview.mspt-info')}
+                  use:tooltip={[$_('pages.servers.overview.mspt-info'), { placement: 'top' }]}></i>
+              </small>
+              {#if performanceWaiting}
+                <div class="fs-4 placeholder-glow">
+                  <span class="placeholder col-6 fs-6 align-middle"></span>
+                </div>
+              {:else}
+                <div class="fs-4 fw-bold font-monospace {mspt.class}">{mspt.text}</div>
+              {/if}
+            </div>
+          </div>
+
+          <div class={metricTileColumn}>
+            <div class="metric-tile p-3 h-100">
+              <small class="opacity-75 d-block">
+                {$_('pages.servers.overview.players-online')}
+              </small>
+              {#if performanceWaiting}
+                <div class="fs-4 placeholder-glow">
+                  <span class="placeholder col-5 fs-6 align-middle"></span>
+                </div>
+              {:else}
+                <div class="fs-4 fw-bold font-monospace">{playersText}</div>
+              {/if}
+            </div>
+          </div>
+          <div class={metricTileColumn}>
+            <div class="metric-tile p-3 h-100">
+              <small class="opacity-75 d-block">{$_('pages.servers.overview.uptime')}</small>
+              {#if performanceWaiting}
+                <div class="fs-4 placeholder-glow">
+                  <span class="placeholder col-7 fs-6 align-middle"></span>
+                </div>
+              {:else}
+                <div class="fs-4 fw-bold font-monospace">{uptimeText}</div>
+              {/if}
+            </div>
+          </div>
+        </div>
+
+        {#if metricsLoading}
+          <!-- The chart's own height (ServerMetricsChart is 220 px tall). -->
+          <div class="placeholder-glow" style="height: 220px;" aria-busy="true">
+            <span class="placeholder col-4"></span>
+          </div>
+        {:else}
+          <!-- Drawn with no data too: a range nothing was measured in reads as zero. -->
+          <ServerMetricsChart
+            series={perfSeries}
+            bucketMs={PERFORMANCE_RANGES[performanceRange].bucketMs}
+            range={PERFORMANCE_RANGES[performanceRange].range}
+            online={isServerOnline(view)}
+            tpsSupported={showTps}
+            timeZone={displayTimeZone} />
+        {/if}
+      </div>
+    </div>
+  {:else}
+    <!-- Nothing can report performance for this server right now. The card keeps its title so
+           the section is still findable, but its body is the plain empty state instead of an
+           alert: what is missing, the update button when a newer Pano plugin is what it takes, and
+           none of the tiles that could only ever read "—". -->
+    <div class="card">
+      <CardHeader>
+        <span slot="left">{$_('pages.servers.overview.metrics-title')}</span>
+      </CardHeader>
+      <div class="card-body">
+        <NoContent
+          icon="fa-solid fa-ghost fa-3x"
+          text={$_('pages.servers.overview.metrics-not-available')}>
+          {#if performanceNeedsPluginUpdate}
+            <div class="text-center">
+              <PanoPluginUpdateButton server={view} />
+            </div>
+          {/if}
+        </NoContent>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Server Activity: peak and average players per day, the Overview's counterpart to the
+         Statistics page's Website Activity card (§2.4.19). With nothing recorded the period
+         filters go too — there is no period to switch to — and the body is the plain empty
+         state, the same answer the Performance card above gives. -->
+  <div class="card">
+    <CardHeader>
+      <span slot="left">{$_('pages.servers.overview.activity-chart-title')}</span>
+      {#if hasActivityChart}
         <CardFilters slot="right">
           <CardFiltersItem
             href="/servers/{view.id}?period={ServerActivityPeriod.HOUR}"
@@ -456,288 +442,299 @@
             {$_('pages.servers.overview.activity-chart-year')}
           </CardFiltersItem>
         </CardFilters>
-      </CardHeader>
+      {/if}
+    </CardHeader>
 
-      <!-- Inside the padded body, like the Performance chart below it. -->
-      <div class="card-body">
-        {#if activityChartLoading}
-          <!-- Another Week / Month / Year is on its way; the chart's own height meanwhile. -->
-          <div class="placeholder-glow" style="height: 220px;" aria-busy="true">
-            <span class="placeholder col-4"></span>
-          </div>
-        {:else}
-          {#key data.period}
-            <ServerActivityChart
-              peakPlayerData={data.peakPlayerData}
-              averagePlayerData={data.averagePlayerData}
-              period={data.period}
-              timeZone={displayTimeZone} />
-          {/key}
-        {/if}
-      </div>
+    <!-- Inside the padded body, like the Performance chart below it. -->
+    <div class="card-body">
+      {#if activityChartLoading}
+        <!-- Another Week / Month / Year is on its way; the chart's own height meanwhile. -->
+        <div class="placeholder-glow" style="height: 220px;" aria-busy="true">
+          <span class="placeholder col-4"></span>
+        </div>
+      {:else if !hasActivityChart}
+        <NoContent
+          icon="fa-solid fa-ghost fa-3x"
+          text={$_('pages.servers.overview.activity-chart-not-available')} />
+      {:else}
+        {#key data.period}
+          <ServerActivityChart
+            peakPlayerData={data.peakPlayerData}
+            averagePlayerData={data.averagePlayerData}
+            period={data.period}
+            timeZone={displayTimeZone} />
+        {/key}
+      {/if}
     </div>
+  </div>
 
-    <!-- Recent activity and the mini console share a row on wide screens and stack below `lg`;
+  <!-- Recent activity and the mini console share a row on wide screens and stack below `lg`;
          whichever is alone takes the whole row.
 
          Recent activity: the newest few entries of the same log the settings tab pages through
          (§2.4.12). Details are untrusted text and are rendered as text, never as HTML. -->
-    {#if showRecentActivity || showConsole}
-      <div class="row g-3">
-        {#if showConsole}
-          <div class="col-12" class:col-lg-6={showRecentActivity}>
-            <!-- Mini console: the tail of the live stream plus the command line. History, search,
+  {#if showRecentActivity || showConsole}
+    <div class="row g-3">
+      {#if showConsole}
+        <div class="col-12" class:col-lg-6={showRecentActivity}>
+          <!-- Mini console: the tail of the live stream plus the command line. History, search,
                older lines, copy and the view switches live on the console page. -->
-            <div class="card h-100">
-              <CardHeader>
-                <span slot="left" class="d-flex align-items-center gap-2">
-                  {$_('pages.servers.overview.console-title')}
-                  {#if consoleSourceLabel}
-                    <i
-                      class="{consoleSourceIcon(consoleSource)} text-body-secondary small"
-                      role="img"
-                      aria-label={$_(consoleSourceLabel)}
-                      use:tooltip={[$_(consoleSourceLabel), { placement: 'bottom' }]}></i>
-                  {/if}
-                </span>
-                <span slot="right">
-                  <a
-                    class="btn btn-sm btn-outline-secondary"
-                    href="{base}/servers/{view.id}/console">
-                    <i class="fa-solid fa-terminal me-1" aria-hidden="true"></i>
-                    {$_('pages.servers.overview.console-open')}
-                  </a>
-                </span>
-              </CardHeader>
+          <div class="card h-100">
+            <CardHeader>
+              <span slot="left" class="d-flex align-items-center gap-2">
+                {$_('pages.servers.overview.console-title')}
+                {#if consoleSourceLabel}
+                  <small
+                    class="opacity-75"
+                    role="img"
+                    aria-label={$_(consoleSourceLabel)}
+                    use:tooltip={[$_(consoleSourceLabel), { placement: 'bottom' }]}>
+                    <i class={consoleSourceIcon(consoleSource)} aria-hidden="true"></i>
+                  </small>
+                {/if}
+              </span>
+              <span slot="right">
+                <a
+                  class="btn-link text-decoration-none focus-ring rounded"
+                  href="{base}/servers/{view.id}/console"
+                  title={$_('pages.servers.overview.console-open')}
+                  aria-label={$_('pages.servers.overview.console-open')}>
+                  <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
+              </span>
+            </CardHeader>
 
-              {#if consoleAvailable}
-                <div class="mini-console flex-grow-1 d-flex flex-column">
-                  {#if consoleHydratedId !== viewId}
-                    <!-- A few lines' worth of placeholder in the dark box, as tall as the view. -->
-                    <!-- `text-light` only so the placeholders show on the dark ground. -->
-                    <div class="text-light px-3 py-2" style="height: 320px;" aria-busy="true">
-                      {#each [7, 5, 9, 6, 4, 8, 5] as width, index (index)}
-                        <div class="placeholder-glow">
-                          <span class="placeholder col-{width}"></span>
-                        </div>
-                      {/each}
-                    </div>
-                  {:else}
-                    <ServerConsoleView
-                      entries={consoleEntries}
-                      showTimestamps={false}
-                      wrap
-                      flush
-                      height="320px"
-                      showReachedStart={false}
-                      bind:following={consoleFollowing}
-                      ariaLabel={$_('pages.servers.overview.console-title')}
-                      emptyText={$_('pages.servers.console.empty')} />
-                  {/if}
-                  <div class="mt-auto">
-                    <ServerConsoleCommandBar server={view} serverId={viewId} />
+            {#if consoleAvailable}
+              <div class="mini-console flex-grow-1 d-flex flex-column">
+                {#if consoleHydratedId !== viewId}
+                  <!-- A few lines' worth of placeholder in the dark box, as tall as the view. -->
+                  <!-- `text-light` only so the placeholders show on the dark ground. -->
+                  <div class="text-light px-3 py-2" style="height: 320px;" aria-busy="true">
+                    {#each [7, 5, 9, 6, 4, 8, 5] as width, index (index)}
+                      <div class="placeholder-glow">
+                        <span class="placeholder col-{width}"></span>
+                      </div>
+                    {/each}
                   </div>
+                {:else}
+                  <ServerConsoleView
+                    entries={consoleEntries}
+                    showTimestamps={false}
+                    wrap
+                    flush
+                    height="320px"
+                    showReachedStart={false}
+                    bind:following={consoleFollowing}
+                    ariaLabel={$_('pages.servers.overview.console-title')}
+                    emptyText={$_('pages.servers.console.empty')} />
+                {/if}
+                <div class="mt-auto">
+                  <ServerConsoleCommandBar server={view} serverId={viewId} />
                 </div>
+              </div>
+            {:else}
+              <div class="card-body">
+                <ServerCapabilityNotice
+                  server={view}
+                  feature="console.stream"
+                  section="components.server-navigation-menu.console" />
+              </div>
+            {/if}
+          </div>
+        </div>
+      {/if}
+
+      {#if showRecentActivity}
+        <div class="col-12" class:col-lg-6={showConsole}>
+          <div class="card h-100">
+            <CardHeader>
+              <span slot="left">{$_('pages.servers.overview.activity-title')}</span>
+              <span slot="right">
+                <a
+                  class="btn-link text-decoration-none focus-ring rounded"
+                  href="{base}/servers/{view.id}/settings/activity"
+                  title={$_('pages.servers.overview.activity-open')}
+                  aria-label={$_('pages.servers.overview.activity-open')}>
+                  <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
+              </span>
+            </CardHeader>
+
+            <!-- The Dashboard activity card's layout: a flush list inside the scrolling body.
+                   It stays as tall as the console card beside it, whatever the log holds. -->
+            <div class="card-body activity-scroll p-0 overflow-auto">
+              {#if activityLoading}
+                <!-- Rows shaped like an entry: badge, name, time, then the detail line. -->
+                <div class="list-group list-group-flush" aria-busy="true">
+                  {#each Array(RECENT_ACTIVITY_ENTRIES) as _, index (index)}
+                    <div class="list-group-item">
+                      <div class="d-flex gap-2 placeholder-glow">
+                        <span class="placeholder col-2"></span>
+                        <span class="placeholder col-3"></span>
+                        <span class="placeholder col-2 ms-auto"></span>
+                      </div>
+                      <small class="mt-1 placeholder-glow d-block">
+                        <span class="placeholder col-7"></span>
+                      </small>
+                    </div>
+                  {/each}
+                </div>
+              {:else if recentActivity.length === 0}
+                <NoContent
+                  icon="fa-solid fa-clock-rotate-left fa-3x"
+                  text={$_('pages.servers.activity.empty')} />
               {:else}
-                <div class="card-body">
-                  <ServerCapabilityNotice
-                    server={view}
-                    feature="console.stream"
-                    section="components.server-navigation-menu.console" />
+                <div class="list-group list-group-flush">
+                  {#each recentActivity as entry (entry.id)}
+                    <ServerActivityEntry
+                      {entry}
+                      fresh={freshActivityIds.has(entry.id)}
+                      selected={selectedActivityId === entry.id}
+                      onSelect={showServerActivityDetails} />
+                  {/each}
                 </div>
               {/if}
             </div>
           </div>
-        {/if}
+        </div>
+      {/if}
+    </div>
+  {/if}
 
-        {#if showRecentActivity}
-          <div class="col-12" class:col-lg-6={showConsole}>
-            <div class="card h-100">
-              <CardHeader>
-                <span slot="left">{$_('pages.servers.overview.activity-title')}</span>
-                <span slot="right">
-                  <a
-                    class="btn btn-sm btn-outline-secondary"
-                    href="{base}/servers/{view.id}/settings/activity">
-                    <i class="fa-solid fa-clock-rotate-left me-1" aria-hidden="true"></i>
-                    {$_('pages.servers.overview.activity-open')}
-                  </a>
-                </span>
-              </CardHeader>
-
-              <!-- As tall as the console card next to it (its 320 px log plus the command line):
-                   the list scrolls inside instead of growing the card, whatever it holds. -->
-              <div class="activity-scroll">
-                <div class="activity-scroll-inner">
-                  {#if activityLoading}
-                    <!-- Rows shaped like an entry: badge, name, time, then the detail line. -->
-                    <div class="list-group list-group-flush" aria-busy="true">
-                      {#each Array(RECENT_ACTIVITY_ENTRIES) as _, index (index)}
-                        <div class="list-group-item">
-                          <div class="d-flex gap-2 placeholder-glow">
-                            <span class="placeholder col-2"></span>
-                            <span class="placeholder col-3"></span>
-                            <span class="placeholder col-2 ms-auto"></span>
-                          </div>
-                          <div class="small mt-1 placeholder-glow">
-                            <span class="placeholder col-7"></span>
-                          </div>
-                        </div>
-                      {/each}
-                    </div>
-                  {:else if recentActivity.length === 0}
-                    <div class="card-body">
-                      <NoContent
-                        icon="fa-solid fa-clock-rotate-left fa-3x"
-                        text={$_('pages.servers.activity.empty')} />
-                    </div>
-                  {:else}
-                    <div class="list-group list-group-flush">
-                      {#each recentActivity as entry (entry.id)}
-                        <ServerActivityEntry {entry} fresh={freshActivityIds.has(entry.id)} />
-                      {/each}
-                    </div>
-                  {/if}
-                </div>
-              </div>
-            </div>
-          </div>
-        {/if}
-      </div>
-    {/if}
-
-    <!-- Everything Pano knows about this server, grouped and packed into columns: a group
+  <!-- Everything Pano knows about this server, grouped and packed into columns: a group
          appears only where it applies — the runtime of a process Pano owns, the plugin of a
          server that has one — and a value nobody reported reads "—". -->
-    <div class="card">
-      <CardHeader>
-        <span slot="left">{$_('pages.servers.overview.statistics')}</span>
-      </CardHeader>
-      <div class="card-body stats-columns">
-        {#each statGroups as group (group.key)}
-          <section class="stats-group">
-            <h6 class="stats-group-title text-body-secondary text-uppercase small fw-semibold">
-              {$_(group.title)}
-            </h6>
-            {#each group.rows as row (row.key)}
-              <div
-                class="stats-row"
-                class:expanded={row.collapsible && shownCodeRows.includes(row.key)}>
-                <span class="stats-label text-body-secondary">{$_(row.label)}</span>
-                <span class="stats-value text-break" class:font-monospace={row.mono}>
-                  {#if row.kind === 'date'}
-                    {#if Number(row.time) > 0}
-                      <DateComponent time={row.time} />
-                    {:else}
-                      —
-                    {/if}
-                  {:else if row.kind === 'uuid'}
-                    <span class="d-inline-flex align-items-center gap-2">
-                      <code>{row.text}</code>
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-link p-0"
-                        aria-label={$_('buttons.copy')}
-                        use:tooltip={[
-                          uuidCopied
-                            ? $_('components.modals.connect-server.copied')
-                            : $_('buttons.copy'),
-                          { placement: 'top', hideOnClick: false },
-                        ]}
-                        on:click={() => copyUuid(row.text)}>
-                        <i class="fa-regular fa-copy" aria-hidden="true"></i>
-                      </button>
-                    </span>
-                  {:else if row.kind === 'code' && row.collapsible}
+  <div class="card">
+    <CardHeader>
+      <span slot="left">{$_('pages.servers.overview.statistics')}</span>
+    </CardHeader>
+    <div class="card-body stats-columns">
+      {#each statGroups as group (group.key)}
+        <section class="stats-group">
+          <h6 class="stats-group-title text-uppercase fw-semibold">
+            <small class="opacity-75">{$_(group.title)}</small>
+          </h6>
+          {#each group.rows as row (row.key)}
+            <div
+              class="stats-row small"
+              class:expanded={row.collapsible && shownCodeRows.includes(row.key)}>
+              <span class="stats-label opacity-75">{$_(row.label)}</span>
+              <span class="stats-value text-break" class:font-monospace={row.mono}>
+                {#if row.kind === 'date'}
+                  {#if Number(row.time) > 0}
+                    <DateComponent time={row.time} />
+                  {:else}
+                    —
+                  {/if}
+                {:else if row.kind === 'uuid'}
+                  <span class="d-inline-flex align-items-center gap-2">
+                    <code>{row.text}</code>
                     <button
                       type="button"
-                      class="btn btn-sm btn-link p-0 text-decoration-none"
-                      aria-expanded={shownCodeRows.includes(row.key)}
-                      aria-controls="stats-code-{group.key}-{row.key}"
-                      on:click={() => toggleCodeRow(row.key)}>
-                      {shownCodeRows.includes(row.key)
-                        ? $_('pages.servers.overview.info.code-hide')
-                        : $_('pages.servers.overview.info.code-show', {
-                            values: { count: row.count },
-                          })}
-                      <i
-                        class="fa-solid fa-chevron-down ms-1 stats-code-chevron"
-                        class:open={shownCodeRows.includes(row.key)}
-                        aria-hidden="true"></i>
+                      class="btn btn-sm btn-link p-0"
+                      aria-label={$_('buttons.copy')}
+                      use:tooltip={[
+                        uuidCopied
+                          ? $_('components.modals.connect-server.copied')
+                          : $_('buttons.copy'),
+                        { placement: 'top', hideOnClick: false },
+                      ]}
+                      on:click={() => copyUuid(row.text)}>
+                      <i class="fa-regular fa-copy" aria-hidden="true"></i>
                     </button>
-                  {:else if row.kind === 'code'}
-                    <code class="text-break">{row.text}</code>
-                  {:else if row.kind === 'plugin-version'}
-                    <span
-                      class="d-inline-flex flex-wrap align-items-center justify-content-end gap-2">
-                      {row.text}
-                      <!-- §2.4.26 — only when Pano knows what it would install; a dev or local
+                  </span>
+                {:else if row.kind === 'code' && row.collapsible}
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-link p-0 text-decoration-none"
+                    aria-expanded={shownCodeRows.includes(row.key)}
+                    aria-controls="stats-code-{group.key}-{row.key}"
+                    on:click={() => toggleCodeRow(row.key)}>
+                    {shownCodeRows.includes(row.key)
+                      ? $_('pages.servers.overview.info.code-hide')
+                      : $_('pages.servers.overview.info.code-show', {
+                          values: { count: row.count },
+                        })}
+                    <i
+                      class="fa-solid fa-chevron-down ms-1 stats-code-chevron"
+                      class:open={shownCodeRows.includes(row.key)}
+                      aria-hidden="true"></i>
+                  </button>
+                {:else if row.kind === 'code'}
+                  <code class="text-break">{row.text}</code>
+                {:else if row.kind === 'plugin-version'}
+                  <span
+                    class="d-inline-flex flex-wrap align-items-center justify-content-end gap-2">
+                    {row.text}
+                    <!-- §2.4.26 — only when Pano knows what it would install; a dev or local
                            build has no comparable version, so it gets no badge at all. -->
-                      {#if data.panoPlugin?.updateAvailable === true}
-                        <span class="badge text-bg-warning">
-                          {$_('pages.servers.overview.info.plugin-update-available', {
-                            values: { version: data.panoPlugin.latestVersion ?? '' },
-                          })}
-                        </span>
-                        {#if data.panoPlugin?.updateMode || data.panoPlugin?.updateManual}
-                          <!-- One click: the node swaps the jar, or the plugin stages its own
+                    {#if data.panoPlugin?.updateAvailable === true}
+                      <span class="badge text-bg-warning">
+                        {$_('pages.servers.overview.info.plugin-update-available', {
+                          values: { version: data.panoPlugin.latestVersion ?? '' },
+                        })}
+                      </span>
+                      {#if data.panoPlugin?.updateMode || data.panoPlugin?.updateManual}
+                        <!-- One click: the node swaps the jar, or the plugin stages its own
                                update; either way it loads on the next restart. A plugin too old
                                for either gets the hand-update steps instead. -->
-                          <PanoPluginUpdateButton
-                            server={view}
-                            latestVersion={data.panoPlugin.latestVersion ?? null}
-                            label="buttons.update"
-                            class="py-0" />
-                        {/if}
-                      {:else if data.panoPlugin?.updateAvailable === false}
-                        <span class="badge text-bg-success">
-                          {$_('pages.servers.overview.info.plugin-up-to-date')}
-                        </span>
+                        <PanoPluginUpdateButton
+                          server={view}
+                          latestVersion={data.panoPlugin.latestVersion ?? null}
+                          label="buttons.update"
+                          class="py-0" />
                       {/if}
-                    </span>
-                  {:else if row.kind === 'capabilities'}
-                    {#if Array.isArray(view.capabilities) && view.capabilities.length}
-                      <span class="d-inline-flex justify-content-end">
-                        <ServerCapabilityChips server={view} />
+                    {:else if data.panoPlugin?.updateAvailable === false}
+                      <span class="badge text-bg-success">
+                        {$_('pages.servers.overview.info.plugin-up-to-date')}
                       </span>
-                    {:else}
-                      —
                     {/if}
-                  {:else if row.kind === 'last-backup'}
-                    {#if lastBackup}
-                      <span
-                        class="d-inline-flex flex-wrap align-items-center justify-content-end gap-2">
-                        <DateComponent time={lastBackup.time} />
-                        {#if lastBackup.name}
-                          <span class="small text-body-secondary text-break"
-                            >{lastBackup.name}</span>
-                        {/if}
-                        <a class="small" href="{base}/servers/{view.id}/backups">
+                  </span>
+                {:else if row.kind === 'capabilities'}
+                  {#if Array.isArray(view.capabilities) && view.capabilities.length}
+                    <span class="d-inline-flex justify-content-end">
+                      <ServerCapabilityChips server={view} />
+                    </span>
+                  {:else}
+                    —
+                  {/if}
+                {:else if row.kind === 'last-backup'}
+                  {#if lastBackup}
+                    <span
+                      class="d-inline-flex flex-wrap align-items-center justify-content-end gap-2">
+                      <DateComponent time={lastBackup.time} />
+                      {#if lastBackup.name}
+                        <small class="opacity-75 text-break">{lastBackup.name}</small>
+                      {/if}
+                      <small>
+                        <a href="{base}/servers/{view.id}/backups">
                           {$_('pages.servers.overview.last-backup-open')}
                         </a>
-                      </span>
-                    {:else}
-                      —
-                    {/if}
+                      </small>
+                    </span>
                   {:else}
-                    {row.text}
+                    —
                   {/if}
-                </span>
-              </div>
-              {#if row.collapsible && shownCodeRows.includes(row.key)}
-                <!-- Below the row, full width: a long argument list reads badly squeezed into
+                {:else}
+                  {row.text}
+                {/if}
+              </span>
+            </div>
+            {#if row.collapsible && shownCodeRows.includes(row.key)}
+              <!-- Below the row, full width: a long argument list reads badly squeezed into
                      the value column. -->
-                <div class="stats-code" id="stats-code-{group.key}-{row.key}">
-                  <code class="text-break">{row.text}</code>
-                </div>
-              {/if}
-            {/each}
-          </section>
-        {/each}
-      </div>
+              <div class="stats-code" id="stats-code-{group.key}-{row.key}">
+                <small><code class="text-break">{row.text}</code></small>
+              </div>
+            {/if}
+          {/each}
+        </section>
+      {/each}
     </div>
   </div>
 {/if}
+
+<ViewActivityLogModal />
 
 <script context="module">
   import { browser } from '$app/environment';
@@ -886,6 +883,10 @@
   import CardHeader from '$lib/components/CardHeader.svelte';
   import DateComponent from '$lib/components/Date.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
+  import ViewActivityLogModal, {
+    show as showViewActivityLogModal,
+    onHide as onViewActivityLogModalHide,
+  } from '$lib/components/modals/ViewActivityLogModal.svelte';
   import ServerActivityChart from '$lib/components/charts/Server/ServerActivityChart.svelte';
   import ServerActivityEntry from '$lib/components/servers/ServerActivityEntry.svelte';
   import ServerMetricsChart from '$lib/components/charts/Server/ServerMetricsChart.svelte';
@@ -988,6 +989,33 @@
       ? shownCodeRows.filter((shown) => shown !== key)
       : [...shownCodeRows, key];
   }
+
+  /**
+   * Open one server activity entry in the same read-only JSON modal as the Dashboard log card.
+   *
+   * @param {{ id?: string, type?: string, userId?: string, username?: string,
+   *   createdAt?: number|string|null, details?: string }} entry
+   */
+  function showServerActivityDetails(entry) {
+    selectedActivityId = entry.id ?? null;
+    recentActivity = [...recentActivity];
+    showViewActivityLogModal({
+      id: entry.id,
+      details: {
+        type: entry.type || null,
+        userId: entry.userId || null,
+        username: entry.username || null,
+        createdAt: entry.createdAt ?? null,
+        details: entry.details || null,
+      },
+    });
+  }
+
+  onViewActivityLogModalHide(() => {
+    selectedActivityId = null;
+    recentActivity = [...recentActivity];
+  });
+
   /** @type {ReturnType<typeof setTimeout> | undefined} */
   let uuidCopiedTimer;
 
@@ -1052,6 +1080,7 @@
   let wiredWithMetrics = false;
   /** @type {object[]} the newest few activity-log entries (§2.4.12). */
   let recentActivity = [];
+  let selectedActivityId = null;
   let activityLoading = true;
   let activityStatus = 'ok';
   let activityWiredId = null;
@@ -1125,6 +1154,12 @@
     $navigating.to?.url?.pathname === $page.url.pathname &&
     ($navigating.to?.url?.searchParams.get('period') ?? '') !==
       ($page.url.searchParams.get('period') ?? '');
+  // A backend without the endpoint answers 404 and the `load` hands over two empty maps, which
+  // reads the same as a server Pano has never recorded: there is nothing to draw, so the card
+  // says so instead of drawing a flat line through empty buckets.
+  $: hasActivityChart =
+    Object.keys(data?.peakPlayerData || {}).length > 0 ||
+    Object.keys(data?.averagePlayerData || {}).length > 0;
 
   $: tps = describeTps(isServerOnline(view) ? perfSample : null);
   // §6 — never on a proxy or a software without a Pano plugin: hidden, and the other three tiles
@@ -1144,12 +1179,10 @@
     ? ''
     : featureUnavailableReason(view, performanceFeature);
   $: showPerformance = !performanceReason || STATE_REASON_KEYS.includes(performanceReason);
-  $: performanceTileLabels = [
-    ...(showTps ? ['pages.servers.overview.tps-triple'] : []),
-    'pages.servers.overview.mspt',
-    'pages.servers.overview.players-online',
-    'pages.servers.overview.uptime',
-  ];
+  // The two reasons a newer Pano plugin would answer; the empty state offers that update.
+  $: performanceNeedsPluginUpdate =
+    performanceReason === FEATURE_REASON_KEYS[FeatureReasons.PLUGIN_OUTDATED] ||
+    performanceReason === FEATURE_REASON_KEYS[FeatureReasons.PLUGIN_LACKS];
   $: metricTileColumn = showTps ? 'col-6 col-lg-3' : 'col-6 col-lg-4';
   $: tpsUnavailableReason =
     featureSource(view, 'metrics.tps') === null
@@ -1645,7 +1678,7 @@
     if (parts.every((part) => part == null)) {
       return {
         text: $_('pages.servers.overview.metric-unavailable'),
-        class: 'text-body-secondary',
+        class: 'opacity-75',
       };
     }
 
@@ -1656,7 +1689,7 @@
     const value = parts[0];
 
     if (value == null) {
-      return { text, class: 'text-body-secondary' };
+      return { text, class: 'opacity-75' };
     }
 
     if (value >= 19.5) {
@@ -1885,7 +1918,7 @@
     if (value == null || !Number.isFinite(value)) {
       return {
         text: $_('pages.servers.overview.metric-unavailable'),
-        class: 'text-body-secondary',
+        class: 'opacity-75',
       };
     }
 

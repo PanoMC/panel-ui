@@ -15,379 +15,374 @@
 <!-- SM-16 + SM-32 — what a server has installed, and (for a managed one) the catalogue it can
      install from (§2.4.2, §2.4.5). The Installed tab merges the list the game reported with the
      jar files the node found, so a jar that is on disk but not loaded is visible too. -->
-<div class="container vstack gap-3">
-  {#if canBrowse}
-    <PageActions>
-      <div slot="left">
-        <PageNav>
-          <PageNavItem href="/servers/{serverId}/plugins" active={tab === 'installed'}>
-            <i class="fa-solid fa-list-check me-2" aria-hidden="true"></i>
-            {$_('pages.servers.plugins.tab-installed')}
-          </PageNavItem>
-          <PageNavItem href="/servers/{serverId}/plugins?tab=browse" active={tab === 'browse'}>
-            <i class="fa-solid fa-magnifying-glass me-2" aria-hidden="true"></i>
-            {$_('pages.servers.plugins.tab-browse')}
-          </PageNavItem>
-        </PageNav>
-      </div>
-    </PageActions>
-  {/if}
+{#if canBrowse}
+  <PageActions>
+    <div slot="left">
+      <PageNav>
+        <PageNavItem href="/servers/{serverId}/plugins" active={tab === 'installed'}>
+          <i class="fa-solid fa-list-check me-2" aria-hidden="true"></i>
+          {$_('pages.servers.plugins.tab-installed')}
+        </PageNavItem>
+        <PageNavItem href="/servers/{serverId}/plugins?tab=browse" active={tab === 'browse'}>
+          <i class="fa-solid fa-magnifying-glass me-2" aria-hidden="true"></i>
+          {$_('pages.servers.plugins.tab-browse')}
+        </PageNavItem>
+      </PageNav>
+    </div>
+  </PageActions>
+{/if}
 
-  {#if tab === 'browse' && canBrowse}
-    <ServerPluginBrowser {serverId} {canInstall} oninstalled={() => void loadPlugins()} />
-  {:else if !listable}
-    <!-- §2.4.35 — nothing can list the plugins (Vanilla has none; the node is offline; the
+{#if tab === 'browse' && canBrowse}
+  <ServerPluginBrowser {serverId} {canInstall} oninstalled={() => void loadPlugins()} />
+{:else if !listable}
+  <!-- §2.4.35 — nothing can list the plugins (Vanilla has none; the node is offline; the
          plugin lacks the capability): the notice is the whole page, never a "could not be
          loaded" state with a Refresh that cannot help. -->
-    <ServerCapabilityNotice
-      server={$server}
-      feature="plugins.list"
-      section="components.server-navigation-menu.plugins" />
-  {:else}
-    {#if restartRequired}
-      <div class="alert alert-warning d-flex align-items-start gap-2 mb-0" role="alert">
-        <i class="fa-solid fa-rotate-right mt-1" aria-hidden="true"></i>
+  <ServerCapabilityNotice
+    server={$server}
+    feature="plugins.list"
+    section="components.server-navigation-menu.plugins" />
+{:else}
+  {#if restartRequired}
+    <div class="alert alert-warning d-flex align-items-start gap-2 mb-0" role="alert">
+      <i class="fa-solid fa-rotate-right mt-1" aria-hidden="true"></i>
+      <div>
+        <div class="fw-semibold">{$_('pages.servers.plugins.restart-required-title')}</div>
+        <div class="small">{$_('pages.servers.plugins.restart-required-description')}</div>
+      </div>
+    </div>
+  {/if}
+
+  <div class="card">
+    <CardHeader>
+      <span slot="left" class="d-flex align-items-center gap-2">
+        {$_('pages.servers.plugins.title')}
+        <span class="badge rounded-pill text-bg-secondary">
+          {$_('pages.servers.plugins.count', { values: { count: rows.length } })}
+        </span>
+        {#if updateCount > 0}
+          <span class="badge rounded-pill text-bg-warning">
+            {$_('pages.servers.plugins.updates.count', { values: { count: updateCount } })}
+          </span>
+        {/if}
+      </span>
+
+      <span
+        slot="right"
+        class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-end gap-2 w-100">
+        {#if canUpdate && updateCount > 0}
+          <button
+            type="button"
+            class="btn btn-sm btn-warning text-nowrap"
+            disabled={updatingAll || loading}
+            onclick={() => void updateAll()}>
+            {#if updatingAll}
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {:else}
+              <i class="fa-solid fa-circle-arrow-up me-1" aria-hidden="true"></i>
+            {/if}
+            {$_('pages.servers.plugins.updates.update-all', {
+              values: { count: updateCount },
+            })}
+          </button>
+        {/if}
+
+        {#if canInstall}
+          <!-- A jar from the admin's own computer, into plugins/ or mods/. -->
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary text-nowrap"
+            disabled={loading}
+            onclick={openUpload}>
+            <i class="fa-solid fa-upload me-1" aria-hidden="true"></i>
+            {$_('pages.servers.plugins.upload.button')}
+          </button>
+        {/if}
+
+        {#if canIdentify}
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary text-nowrap"
+            disabled={identifying || loading}
+            use:tooltip={[
+              $_('pages.servers.plugins.updates.identify-hint'),
+              { placement: 'bottom' },
+            ]}
+            onclick={() => void identifySources()}>
+            {#if identifying}
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {:else}
+              <i class="fa-solid fa-fingerprint me-1" aria-hidden="true"></i>
+            {/if}
+            {$_('pages.servers.plugins.updates.identify')}
+          </button>
+        {/if}
+
+        <span class="plugin-search w-100">
+          <SearchInput
+            autofocus
+            placeholderKey="pages.servers.plugins.search-placeholder"
+            ariaLabelKey="pages.servers.plugins.search-placeholder"
+            showSpinner={false}
+            onchange={(value) => (query = value)} />
+        </span>
+      </span>
+    </CardHeader>
+
+    {#if loading}
+      <div class="card-body d-flex justify-content-center py-5">
+        <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+      </div>
+    {:else if listError}
+      <div class="card-body text-center vstack gap-3 py-5">
         <div>
-          <div class="fw-semibold">{$_('pages.servers.plugins.restart-required-title')}</div>
-          <div class="small">{$_('pages.servers.plugins.restart-required-description')}</div>
+          <i class="fa-solid fa-puzzle-piece fa-3x text-body-secondary" aria-hidden="true"></i>
         </div>
+        <div class="text-body-secondary">{$_(listError)}</div>
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            onclick={() => void loadPlugins()}>
+            {$_('buttons.refresh')}
+          </button>
+        </div>
+      </div>
+    {:else if !visibleRows.length}
+      <div class="card-body">
+        <NoContent
+          icon="fa-solid fa-puzzle-piece fa-3x"
+          text={query.trim()
+            ? $_('pages.servers.plugins.no-matches')
+            : online || managed
+              ? $_('pages.servers.plugins.empty')
+              : $_('pages.servers.plugins.empty-offline')} />
+      </div>
+    {:else}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.plugins.column-name')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.plugins.column-version')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.plugins.column-authors')}</th>
+              {#if managed}
+                <th scope="col" class="text-nowrap"
+                  >{$_('pages.servers.plugins.installed.column-file')}</th>
+              {:else}
+                <th scope="col" class="text-nowrap"
+                  >{$_('pages.servers.plugins.column-description')}</th>
+              {/if}
+              <th scope="col" class="text-end text-nowrap"
+                >{$_('pages.servers.plugins.column-enabled')}</th>
+              {#if canRemove}
+                <th scope="col" class="text-end text-nowrap">
+                  {$_('pages.servers.plugins.installed.column-actions')}
+                </th>
+              {/if}
+            </tr>
+          </thead>
+          <tbody>
+            {#each visibleRows as row (row.key)}
+              <tr>
+                <td class="fw-semibold text-break">
+                  {row.name}
+                  {#if !row.loaded && row.fileEnabled}
+                    <span
+                      class="badge rounded-pill text-bg-warning ms-1 align-middle"
+                      use:tooltip={[
+                        $_('pages.servers.plugins.installed.not-loaded-hint'),
+                        { placement: 'top' },
+                      ]}>
+                      {$_('pages.servers.plugins.installed.not-loaded')}
+                    </span>
+                  {/if}
+                  {#if row.sourceName}
+                    <!-- SM-48 — where the jar came from, as Pano recorded it on install or
+                           worked out from the file's hash. -->
+                    <span
+                      class="badge rounded-pill text-bg-light border fw-normal ms-1 align-middle"
+                      use:tooltip={[
+                        $_(
+                          row.identified
+                            ? 'pages.servers.plugins.updates.source-identified-hint'
+                            : 'pages.servers.plugins.updates.source-hint',
+                          { values: { source: row.sourceName } },
+                        ),
+                        { placement: 'top' },
+                      ]}>
+                      {row.sourceName}
+                    </span>
+                  {/if}
+                </td>
+                <td class="small">
+                  <span class="text-nowrap font-monospace">
+                    {row.version || row.trackedVersion || '-'}
+                  </span>
+                  {#if row.updateAvailable}
+                    <span class="d-block mt-1">
+                      {#if row.pageUrl}
+                        <a
+                          class="badge rounded-pill text-bg-warning text-decoration-none"
+                          href={row.pageUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          use:tooltip={[
+                            $_('pages.servers.plugins.updates.update-available-hint', {
+                              values: { version: row.latestVersion },
+                            }),
+                            { placement: 'top' },
+                          ]}>
+                          {$_('pages.servers.plugins.updates.update-available', {
+                            values: { version: row.latestVersion },
+                          })}
+                        </a>
+                      {:else}
+                        <span class="badge rounded-pill text-bg-warning">
+                          {$_('pages.servers.plugins.updates.update-available', {
+                            values: { version: row.latestVersion },
+                          })}
+                        </span>
+                      {/if}
+                    </span>
+                  {/if}
+                </td>
+                <td class="small text-body-secondary text-break">
+                  {row.authors.length
+                    ? row.authors.join(', ')
+                    : $_('pages.servers.plugins.authors-unknown')}
+                </td>
+                {#if managed}
+                  <td class="small text-body-secondary">
+                    {#if row.filename}
+                      <span class="plugin-file d-inline-block text-truncate font-monospace">
+                        {row.filename}
+                      </span>
+                      {#if row.size}
+                        <span class="ms-1 opacity-75">({formatBytes(row.size, 1)})</span>
+                      {/if}
+                    {:else}
+                      <span class="opacity-75">
+                        {$_('pages.servers.plugins.installed.no-file')}
+                      </span>
+                    {/if}
+                  </td>
+                {:else}
+                  <td class="plugin-description small text-body-secondary text-break">
+                    {row.description || $_('pages.servers.plugins.no-description')}
+                  </td>
+                {/if}
+                <td class="text-end">
+                  {#if fileToggle && row.filename && !row.protected}
+                    <!-- The node switches the jar itself (`x.jar` ⇄ `x.jar.disabled`), so the
+                           switch is what the next start will load, for every jar on disk. -->
+                    {@render toggleSwitch(row, row.fileEnabled)}
+                  {:else if !row.loaded}
+                    <span class="badge rounded-pill text-bg-secondary">
+                      {row.fileEnabled
+                        ? $_('pages.servers.plugins.installed.status-on-disk')
+                        : $_('pages.servers.plugins.disabled-badge')}
+                    </span>
+                  {:else if canToggle && !row.protected}
+                    {@render toggleSwitch(row, row.enabled)}
+                  {:else}
+                    <span
+                      class="badge rounded-pill"
+                      class:text-bg-success={row.enabled}
+                      class:text-bg-secondary={!row.enabled}>
+                      {row.enabled
+                        ? $_('pages.servers.plugins.enabled-badge')
+                        : $_('pages.servers.plugins.disabled-badge')}
+                    </span>
+                  {/if}
+                </td>
+                {#if canRemove}
+                  <td class="text-end text-nowrap">
+                    {#if row.updateAvailable && row.filename}
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-warning me-1"
+                        disabled={isUpdating(row.filename) || busyFile === row.filename}
+                        use:tooltip={[
+                          $_('pages.servers.plugins.updates.update-available', {
+                            values: { version: row.latestVersion },
+                          }),
+                          { placement: 'left' },
+                        ]}
+                        onclick={() => void updateFile(row.filename)}>
+                        {#if isUpdating(row.filename)}
+                          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        {:else}
+                          <i class="fa-solid fa-circle-arrow-up" aria-hidden="true"></i>
+                        {/if}
+                        <span class="ms-1">{$_('pages.servers.plugins.updates.update')}</span>
+                      </button>
+                    {/if}
+                    {#if row.filename}
+                      <button
+                        type="button"
+                        class="btn btn-link btn-sm link-danger"
+                        disabled={busyFile === row.filename || isUpdating(row.filename)}
+                        aria-label={$_('pages.servers.plugins.installed.remove')}
+                        use:tooltip={[
+                          $_('pages.servers.plugins.installed.remove'),
+                          { placement: 'left' },
+                        ]}
+                        onclick={() => askRemove(row)}>
+                        {#if busyFile === row.filename}
+                          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        {:else}
+                          <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                        {/if}
+                      </button>
+                    {:else}
+                      <span class="text-body-secondary">—</span>
+                    {/if}
+                  </td>
+                {/if}
+              </tr>
+            {/each}
+          </tbody>
+        </table>
       </div>
     {/if}
 
-    <div class="card">
-      <CardHeader>
-        <span slot="left" class="d-flex align-items-center gap-2">
-          {$_('pages.servers.plugins.title')}
-          <span class="badge rounded-pill text-bg-secondary">
-            {$_('pages.servers.plugins.count', { values: { count: rows.length } })}
-          </span>
-          {#if updateCount > 0}
-            <span class="badge rounded-pill text-bg-warning">
-              {$_('pages.servers.plugins.updates.count', { values: { count: updateCount } })}
-            </span>
-          {/if}
-        </span>
-
-        <span
-          slot="right"
-          class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-end gap-2 w-100">
-          {#if canUpdate && updateCount > 0}
-            <button
-              type="button"
-              class="btn btn-sm btn-warning text-nowrap"
-              disabled={updatingAll || loading}
-              onclick={() => void updateAll()}>
-              {#if updatingAll}
-                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-              {:else}
-                <i class="fa-solid fa-circle-arrow-up me-1" aria-hidden="true"></i>
-              {/if}
-              {$_('pages.servers.plugins.updates.update-all', {
-                values: { count: updateCount },
-              })}
-            </button>
-          {/if}
-
-          {#if canInstall}
-            <!-- A jar from the admin's own computer, into plugins/ or mods/. -->
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-primary text-nowrap"
-              disabled={loading}
-              onclick={openUpload}>
-              <i class="fa-solid fa-upload me-1" aria-hidden="true"></i>
-              {$_('pages.servers.plugins.upload.button')}
-            </button>
-          {/if}
-
-          {#if canIdentify}
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary text-nowrap"
-              disabled={identifying || loading}
-              use:tooltip={[
-                $_('pages.servers.plugins.updates.identify-hint'),
-                { placement: 'bottom' },
-              ]}
-              onclick={() => void identifySources()}>
-              {#if identifying}
-                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-              {:else}
-                <i class="fa-solid fa-fingerprint me-1" aria-hidden="true"></i>
-              {/if}
-              {$_('pages.servers.plugins.updates.identify')}
-            </button>
-          {/if}
-
-          <span class="plugin-search w-100">
-            <SearchInput
-              placeholderKey="pages.servers.plugins.search-placeholder"
-              ariaLabelKey="pages.servers.plugins.search-placeholder"
-              showSpinner={false}
-              onchange={(value) => (query = value)} />
-          </span>
-        </span>
-      </CardHeader>
-
-      {#if loading}
-        <div class="card-body d-flex justify-content-center py-5">
-          <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
-        </div>
-      {:else if listError}
-        <div class="card-body text-center vstack gap-3 py-5">
-          <div>
-            <i class="fa-solid fa-puzzle-piece fa-3x text-body-secondary" aria-hidden="true"></i>
-          </div>
-          <div class="text-body-secondary">{$_(listError)}</div>
-          <div>
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary"
-              onclick={() => void loadPlugins()}>
-              {$_('buttons.refresh')}
-            </button>
-          </div>
-        </div>
-      {:else if !visibleRows.length}
-        <div class="card-body">
-          <NoContent
-            icon="fa-solid fa-puzzle-piece fa-3x"
-            text={query.trim()
-              ? $_('pages.servers.plugins.no-matches')
-              : online || managed
-                ? $_('pages.servers.plugins.empty')
-                : $_('pages.servers.plugins.empty-offline')} />
-        </div>
-      {:else}
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
-            <thead>
-              <tr>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.plugins.column-name')}</th>
-                <th scope="col" class="text-nowrap"
-                  >{$_('pages.servers.plugins.column-version')}</th>
-                <th scope="col" class="text-nowrap"
-                  >{$_('pages.servers.plugins.column-authors')}</th>
-                {#if managed}
-                  <th scope="col" class="text-nowrap"
-                    >{$_('pages.servers.plugins.installed.column-file')}</th>
-                {:else}
-                  <th scope="col" class="text-nowrap"
-                    >{$_('pages.servers.plugins.column-description')}</th>
-                {/if}
-                <th scope="col" class="text-end text-nowrap"
-                  >{$_('pages.servers.plugins.column-enabled')}</th>
-                {#if canRemove}
-                  <th scope="col" class="text-end text-nowrap">
-                    {$_('pages.servers.plugins.installed.column-actions')}
-                  </th>
-                {/if}
-              </tr>
-            </thead>
-            <tbody>
-              {#each visibleRows as row (row.key)}
-                <tr>
-                  <td class="fw-semibold text-break">
-                    {row.name}
-                    {#if !row.loaded && row.fileEnabled}
-                      <span
-                        class="badge rounded-pill text-bg-warning ms-1 align-middle"
-                        use:tooltip={[
-                          $_('pages.servers.plugins.installed.not-loaded-hint'),
-                          { placement: 'top' },
-                        ]}>
-                        {$_('pages.servers.plugins.installed.not-loaded')}
-                      </span>
-                    {/if}
-                    {#if row.sourceName}
-                      <!-- SM-48 — where the jar came from, as Pano recorded it on install or
-                           worked out from the file's hash. -->
-                      <span
-                        class="badge rounded-pill text-bg-light border fw-normal ms-1 align-middle"
-                        use:tooltip={[
-                          $_(
-                            row.identified
-                              ? 'pages.servers.plugins.updates.source-identified-hint'
-                              : 'pages.servers.plugins.updates.source-hint',
-                            { values: { source: row.sourceName } },
-                          ),
-                          { placement: 'top' },
-                        ]}>
-                        {row.sourceName}
-                      </span>
-                    {/if}
-                  </td>
-                  <td class="small">
-                    <span class="text-nowrap font-monospace">
-                      {row.version || row.trackedVersion || '-'}
-                    </span>
-                    {#if row.updateAvailable}
-                      <span class="d-block mt-1">
-                        {#if row.pageUrl}
-                          <a
-                            class="badge rounded-pill text-bg-warning text-decoration-none"
-                            href={row.pageUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            use:tooltip={[
-                              $_('pages.servers.plugins.updates.update-available-hint', {
-                                values: { version: row.latestVersion },
-                              }),
-                              { placement: 'top' },
-                            ]}>
-                            {$_('pages.servers.plugins.updates.update-available', {
-                              values: { version: row.latestVersion },
-                            })}
-                          </a>
-                        {:else}
-                          <span class="badge rounded-pill text-bg-warning">
-                            {$_('pages.servers.plugins.updates.update-available', {
-                              values: { version: row.latestVersion },
-                            })}
-                          </span>
-                        {/if}
-                      </span>
-                    {/if}
-                  </td>
-                  <td class="small text-body-secondary text-break">
-                    {row.authors.length
-                      ? row.authors.join(', ')
-                      : $_('pages.servers.plugins.authors-unknown')}
-                  </td>
-                  {#if managed}
-                    <td class="small text-body-secondary">
-                      {#if row.filename}
-                        <span class="plugin-file d-inline-block text-truncate font-monospace">
-                          {row.filename}
-                        </span>
-                        {#if row.size}
-                          <span class="ms-1 opacity-75">({formatBytes(row.size, 1)})</span>
-                        {/if}
-                      {:else}
-                        <span class="opacity-75">
-                          {$_('pages.servers.plugins.installed.no-file')}
-                        </span>
-                      {/if}
-                    </td>
-                  {:else}
-                    <td class="plugin-description small text-body-secondary text-break">
-                      {row.description || $_('pages.servers.plugins.no-description')}
-                    </td>
-                  {/if}
-                  <td class="text-end">
-                    {#if fileToggle && row.filename && !row.protected}
-                      <!-- The node switches the jar itself (`x.jar` ⇄ `x.jar.disabled`), so the
-                           switch is what the next start will load, for every jar on disk. -->
-                      {@render toggleSwitch(row, row.fileEnabled)}
-                    {:else if !row.loaded}
-                      <span class="badge rounded-pill text-bg-secondary">
-                        {row.fileEnabled
-                          ? $_('pages.servers.plugins.installed.status-on-disk')
-                          : $_('pages.servers.plugins.disabled-badge')}
-                      </span>
-                    {:else if canToggle && !row.protected}
-                      {@render toggleSwitch(row, row.enabled)}
-                    {:else}
-                      <span
-                        class="badge rounded-pill"
-                        class:text-bg-success={row.enabled}
-                        class:text-bg-secondary={!row.enabled}>
-                        {row.enabled
-                          ? $_('pages.servers.plugins.enabled-badge')
-                          : $_('pages.servers.plugins.disabled-badge')}
-                      </span>
-                    {/if}
-                  </td>
-                  {#if canRemove}
-                    <td class="text-end text-nowrap">
-                      {#if row.updateAvailable && row.filename}
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-outline-warning me-1"
-                          disabled={isUpdating(row.filename) || busyFile === row.filename}
-                          use:tooltip={[
-                            $_('pages.servers.plugins.updates.update-available', {
-                              values: { version: row.latestVersion },
-                            }),
-                            { placement: 'left' },
-                          ]}
-                          onclick={() => void updateFile(row.filename)}>
-                          {#if isUpdating(row.filename)}
-                            <span class="spinner-border spinner-border-sm" aria-hidden="true"
-                            ></span>
-                          {:else}
-                            <i class="fa-solid fa-circle-arrow-up" aria-hidden="true"></i>
-                          {/if}
-                          <span class="ms-1">{$_('pages.servers.plugins.updates.update')}</span>
-                        </button>
-                      {/if}
-                      {#if row.filename}
-                        <button
-                          type="button"
-                          class="btn btn-link btn-sm link-danger"
-                          disabled={busyFile === row.filename || isUpdating(row.filename)}
-                          aria-label={$_('pages.servers.plugins.installed.remove')}
-                          use:tooltip={[
-                            $_('pages.servers.plugins.installed.remove'),
-                            { placement: 'left' },
-                          ]}
-                          onclick={() => askRemove(row)}>
-                          {#if busyFile === row.filename}
-                            <span class="spinner-border spinner-border-sm" aria-hidden="true"
-                            ></span>
-                          {:else}
-                            <i class="fa-solid fa-trash" aria-hidden="true"></i>
-                          {/if}
-                        </button>
-                      {:else}
-                        <span class="text-body-secondary">—</span>
-                      {/if}
-                    </td>
-                  {/if}
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
-
-      {#if !loading && !listError}
-        <div class="card-footer small text-body-secondary vstack gap-1">
-          {#if jarList}
-            <!-- §2.4.17 — nothing inside the game answered, so this is the jar scan: what is on
+    {#if !loading && !listError}
+      <div class="card-footer small text-body-secondary vstack gap-1">
+        {#if jarList}
+          <!-- §2.4.17 — nothing inside the game answered, so this is the jar scan: what is on
                  disk, not what the running server loaded. -->
-            <span>
-              <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-              {$_('pages.servers.plugins.jar-list-hint')}
-            </span>
-          {/if}
-          {#if managed && !capable}
-            <span>
-              <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-              {$_('pages.servers.plugins.installed.game-list-unavailable')}
-            </span>
-          {/if}
-          {#if !managed}
-            <span>
-              <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-              {$_('pages.servers.plugins.linked-hint')}
-            </span>
-          {/if}
-          {#if canToggle}
-            <span>
-              <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-              {$_(
-                fileToggle
-                  ? 'pages.servers.plugins.file-toggle-hint'
-                  : 'pages.servers.plugins.restart-hint',
-              )}
-            </span>
-          {/if}
-        </div>
-      {/if}
-    </div>
-  {/if}
-</div>
+          <span>
+            <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
+            {$_('pages.servers.plugins.jar-list-hint')}
+          </span>
+        {/if}
+        {#if managed && !capable}
+          <span>
+            <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
+            {$_('pages.servers.plugins.installed.game-list-unavailable')}
+          </span>
+        {/if}
+        {#if !managed}
+          <span>
+            <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
+            {$_('pages.servers.plugins.linked-hint')}
+          </span>
+        {/if}
+        {#if canToggle}
+          <span>
+            <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
+            {$_(
+              fileToggle
+                ? 'pages.servers.plugins.file-toggle-hint'
+                : 'pages.servers.plugins.restart-hint',
+            )}
+          </span>
+        {/if}
+      </div>
+    {/if}
+  </div>
+{/if}
 
 <ServerPluginUploadModal />
 

@@ -69,7 +69,11 @@
 <Sidebar />
 
 <!--  Main  -->
-<main class="main-container d-flex h-100 flex-grow-1 flex-column overflow-auto">
+<main
+  class="main-container d-flex h-100 flex-grow-1 flex-column overflow-auto"
+  data-bs-theme={$sidebarTabsState === 'game' ? 'dark' : undefined}
+  class:workspace-game={$sidebarTabsState === 'game'}
+  use:fadeChange>
   {#if $siteInfo?.isDemo}
     <div class="alert alert-info fade show mb-0" role="alert">
       <div class="container-fluid d-flex align-items-center">
@@ -82,9 +86,7 @@
     </div>
   {/if}
   {#if $showDevModeAlert}
-    <div
-      class="alert alert-warning alert-dismissible fade show mb-0"
-      role="alert">
+    <div class="alert alert-warning alert-dismissible fade show mb-0" role="alert">
       <div class="container-fluid d-flex align-items-center">
         <i class="fa-solid fa-triangle-exclamation me-3"></i>
         <div>
@@ -116,8 +118,11 @@
   import { _ } from 'svelte-i18n';
   import { invalidateAll } from '$app/navigation';
 
+  import { fadeChange } from '$lib/fadeChange.util.js';
+
   const showDevModeAlert = getContext('showDevModeAlert');
   const siteInfo = getContext('siteInfo');
+  const sidebarTabsState = getContext('sidebarTabsState');
 
   function dismissDevModeAlert() {
     $showDevModeAlert = false;

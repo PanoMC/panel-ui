@@ -426,6 +426,7 @@
       </div>
       <div slot="middle" style="width: 250px;">
         <SearchInput
+          autofocus
           placeholderKey="buttons.find"
           showSpinner={false}
           on:change={(e) => (groupSearchQuery = e.detail.value)} />
@@ -579,6 +580,7 @@
         </div>
         <div slot="middle" style="width: 250px;">
           <SearchInput
+            autofocus
             placeholderKey="buttons.find"
             showSpinner={false}
             on:change={(e) => (trackSearchQuery = e.detail.value)} />
@@ -831,6 +833,7 @@
         </div>
         <div slot="middle" style="width: 250px;">
           <SearchInput
+            autofocus
             placeholderKey="buttons.find"
             showSpinner={false}
             on:change={(e) => (playerSearchQuery = e.detail.value)} />

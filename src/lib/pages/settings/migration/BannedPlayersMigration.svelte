@@ -155,6 +155,7 @@
 
       <div slot="middle" style="width: 250px;">
         <SearchInput
+          autofocus
           placeholderKey="buttons.find"
           showSpinner={false}
           on:change={(e) => (searchQuery = e.detail.value)} />
@@ -522,11 +523,14 @@
     importProgress = 0;
     uploadError = null;
 
-    const progressInterval = setInterval(() => {
-      if (importProgress < 0.9) {
-        importProgress += 0.05;
-      }
-    }, Math.max(100, selectedItems.size * 10));
+    const progressInterval = setInterval(
+      () => {
+        if (importProgress < 0.9) {
+          importProgress += 0.05;
+        }
+      },
+      Math.max(100, selectedItems.size * 10),
+    );
 
     try {
       const result = await ApiUtil.post({

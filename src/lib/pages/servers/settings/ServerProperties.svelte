@@ -66,7 +66,7 @@
           </div>
         </div>
         <span class="property-search w-100">
-          <SearchInput showSpinner={false} onchange={(value) => (query = value)} />
+          <SearchInput autofocus showSpinner={false} onchange={(value) => (query = value)} />
         </span>
       </div>
 

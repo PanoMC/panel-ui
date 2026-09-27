@@ -1,24 +1,8 @@
 <style>
-  .choice-card {
-    border: 1px solid var(--bs-border-color);
-    border-radius: var(--bs-border-radius-lg);
-    text-align: start;
-    width: 100%;
-    transition: border-color 0.15s ease-in-out;
-  }
-
-  .choice-card:hover:not(:disabled),
-  .choice-card:focus-visible {
-    border-color: var(--bs-primary);
-  }
-
-  .choice-card.selected {
-    border-color: var(--bs-primary);
-    box-shadow: 0 0 0 1px var(--bs-primary);
-  }
-
-  .choice-card:disabled {
-    opacity: 0.5;
+  /* Bootstrap's floating label pins a field to a single row's height, so the arguments box has
+     to be told that it may grow with its rows. */
+  .form-floating > textarea.form-control {
+    height: auto;
   }
 
   .choice-icon {
@@ -59,16 +43,9 @@
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="min-w-0">
-          <h5 class="modal-title" id="createServerTitle">
-            {$_('components.modals.create-server.title')}
-          </h5>
-          <div class="small text-body-secondary">
-            {$_('components.modals.create-server.step-of', {
-              values: { current: step + 1, total: STEP_COUNT, name: $_(stepLabel) },
-            })}
-          </div>
-        </div>
+        <h5 class="modal-title" id="createServerTitle">
+          {$_('components.modals.create-server.title')}
+        </h5>
         <button
           class="btn-close"
           aria-label={$_('buttons.close')}
@@ -90,38 +67,39 @@
           <div class="progress-bar" style="width: {((step + 1) / STEP_COUNT) * 100}%;"></div>
         </div>
 
-        {#if step === STEP_SOURCE}
-          <p class="text-body-secondary small">
-            {$_('components.modals.create-server.source-description')}
-          </p>
+        <p class="mb-3">
+          {$_('components.modals.create-server.step-of', {
+            values: { current: step + 1, total: STEP_COUNT, name: $_(stepLabel) },
+          })}
+        </p>
 
-          <div class="row g-2">
+        {#if step === STEP_SOURCE}
+          <div class="list-group">
             {#each SOURCES as option (option.id)}
-              <div class="col-md-6">
-                <!-- A disabled button swallows pointer events, so the tooltip sits outside. -->
-                <span
-                  class="d-inline-block w-100"
+              {#if option.enabled}
+                <button
+                  type="button"
+                  class="list-group-item list-group-item-action text-start"
+                  class:active={source === option.id}
+                  aria-pressed={source === option.id}
+                  onclick={() => (source = option.id)}>
+                  <span class="fw-semibold d-block">{$_(option.title)}</span>
+                  <span class="text-body-secondary">{$_(option.description)}</span>
+                </button>
+              {:else}
+                <!-- A disabled button swallows pointer events, so the tooltip needs a real
+                     element to sit on: the row stays in the list, it just is not a button. -->
+                <div
+                  class="list-group-item opacity-50"
+                  aria-disabled="true"
                   use:tooltip={[
-                    option.enabled ? '' : $_('components.modals.create-server.coming-later'),
+                    $_('components.modals.create-server.coming-later'),
                     { placement: 'top' },
                   ]}>
-                  <button
-                    type="button"
-                    class="choice-card card h-100 p-3 bg-body"
-                    class:selected={source === option.id}
-                    disabled={!option.enabled}
-                    aria-pressed={source === option.id}
-                    onclick={() => (source = option.id)}>
-                    <div class="d-flex align-items-center gap-2 mb-1">
-                      <span class="choice-icon bg-body-secondary">
-                        <i class={option.icon} aria-hidden="true"></i>
-                      </span>
-                      <span class="fw-semibold">{$_(option.title)}</span>
-                    </div>
-                    <span class="small text-body-secondary">{$_(option.description)}</span>
-                  </button>
-                </span>
-              </div>
+                  <span class="fw-semibold d-block">{$_(option.title)}</span>
+                  <span class="text-body-secondary">{$_(option.description)}</span>
+                </div>
+              {/if}
             {/each}
           </div>
         {:else if step === STEP_NODE}
@@ -155,33 +133,20 @@
               </div>
             </NoContent>
           {:else}
-            <p class="text-body-secondary small">
-              {$_('components.modals.create-server.node-description')}
-            </p>
-
-            <div class="vstack gap-2">
+            <div class="list-group">
               {#each usableNodes as node (node.id)}
                 <button
                   type="button"
-                  class="choice-card card p-3 bg-body"
-                  class:selected={Number(nodeId) === Number(node.id)}
+                  class="list-group-item list-group-item-action text-start"
+                  class:active={Number(nodeId) === Number(node.id)}
                   aria-pressed={Number(nodeId) === Number(node.id)}
                   onclick={() => selectNode(node)}>
-                  <div class="d-flex flex-wrap align-items-center gap-2">
-                    <span class="choice-icon bg-body-secondary">
-                      <i
-                        class="fa-solid {node.kind === NodeKinds.LOCAL
-                          ? 'fa-house-laptop'
-                          : 'fa-server'}"
-                        aria-hidden="true"></i>
-                    </span>
+                  <span class="d-flex flex-wrap align-items-center gap-2">
                     <span class="fw-semibold text-break">{getNodeDisplayName(node)}</span>
                     <span class="badge text-bg-secondary">{node.kind || NodeKinds.REMOTE}</span>
                     <span class="badge text-bg-success">{$_(nodeStatusLabel(node))}</span>
-                  </div>
-                  <div class="small text-body-secondary mt-1">
-                    {nodeSummary(node)}
-                  </div>
+                  </span>
+                  <span class="text-body-secondary d-block">{nodeSummary(node)}</span>
                 </button>
               {/each}
             </div>
@@ -193,44 +158,34 @@
           {/if}
         {:else if step === STEP_SOFTWARE}
           {#if isFolderSource(source)}
-            <p class="text-body-secondary small">
-              {$_(
-                source === Sources.IN_PLACE
-                  ? 'components.modals.create-server.in-place-description'
-                  : 'components.modals.create-server.folder-description',
-              )}
-            </p>
-
-            <label class="form-label" for="createServerFolder">
-              {$_('components.modals.create-server.folder-label')}
-            </label>
-            <input
-              id="createServerFolder"
-              type="text"
-              class="form-control font-monospace"
-              class:is-invalid={folderPath.trim() !== '' && !folderPathValid}
-              placeholder="/home/minecraft/survival"
-              bind:value={folderPath} />
-            <div class="invalid-feedback">
-              {$_('components.modals.create-server.import.folder-invalid')}
+            <div class="form-floating">
+              <input
+                id="createServerFolder"
+                type="text"
+                class="form-control font-monospace"
+                class:is-invalid={folderPath.trim() !== '' && !folderPathValid}
+                placeholder=" "
+                bind:value={folderPath} />
+              <label for="createServerFolder">
+                {$_('components.modals.create-server.folder-label')}
+              </label>
+              <div class="invalid-feedback">
+                {$_('components.modals.create-server.import.folder-invalid')}
+              </div>
             </div>
             <div class="form-text">{$_('components.modals.create-server.folder-hint')}</div>
             {#if source === Sources.IN_PLACE}
-              <div class="alert alert-warning mt-3 mb-0 small" role="alert">
+              <div class="alert alert-warning mt-3 mb-0" role="alert">
                 <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
                 {$_('components.modals.create-server.in-place-stop-note')}
               </div>
             {:else}
-              <div class="alert alert-info mt-3 mb-0 small" role="alert">
+              <div class="alert alert-info mt-3 mb-0" role="alert">
                 <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
                 {$_('components.modals.create-server.import.folder-copy-note')}
               </div>
             {/if}
           {:else if source === Sources.UPLOAD}
-            <p class="text-body-secondary small">
-              {$_('components.modals.create-server.import.upload-description')}
-            </p>
-
             {#if uploadTicket}
               <div class="alert alert-success d-flex align-items-center gap-3 mb-0" role="alert">
                 <i class="fa-solid fa-file-zipper fa-2x" aria-hidden="true"></i>
@@ -279,13 +234,12 @@
                 on:error={(event) => onUploadRejected(event.detail)} />
             {/if}
           {:else if source === Sources.MODPACK}
-            <p class="text-body-secondary small">
-              {$_('components.modals.create-server.import.modpack-description')}
-            </p>
-
+            <!-- The wizard's only field on this screen, so it is the default size rather than
+                 the small search box the pages use in a card header. -->
             <SearchInput
               placeholderKey="components.modals.create-server.import.modpack-search-placeholder"
               ariaLabelKey="components.modals.create-server.import.modpack-search-placeholder"
+              small={false}
               searching={modpackSearching}
               initialValue={modpackQuery}
               onchange={(value) => searchModpacks(value)} />
@@ -296,61 +250,47 @@
               </div>
             {:else if modpackError}
               <div class="alert alert-warning mt-3 mb-0" role="alert">{$_(modpackError)}</div>
-            {:else if modpackResults.length === 0}
-              <NoContent
-                icon="fa-solid fa-cubes fa-3x"
-                text={modpackQuery.trim()
-                  ? $_('components.modals.create-server.import.modpack-no-results')
-                  : $_('components.modals.create-server.import.modpack-search-hint')} />
-            {:else}
-              <div class="modpack-results vstack gap-2 mt-3">
-                {#each modpackResults as item (item.key)}
-                  <button
-                    type="button"
-                    class="choice-card card p-2 bg-body"
-                    class:selected={modpackProject?.key === item.key}
-                    aria-pressed={modpackProject?.key === item.key}
-                    onclick={() => selectModpack(item)}>
-                    <div class="d-flex align-items-center gap-2">
-                      {#if item.iconUrl}
-                        <img
-                          src={sanitizeImageSrc(item.iconUrl, '')}
-                          alt=""
-                          width="32"
-                          height="32"
-                          class="rounded flex-shrink-0" />
-                      {:else}
-                        <span class="choice-icon bg-body-secondary">
-                          <i class="fa-solid fa-cubes" aria-hidden="true"></i>
-                        </span>
-                      {/if}
-                      <span class="min-w-0">
-                        <span class="fw-semibold d-block text-break">{item.name}</span>
-                        <span class="small text-body-secondary d-block text-break">
-                          {item.summary || item.author}
+            {:else if modpackResults.length > 0}
+              <!-- Nothing under the search box until there is something to show: no empty-state
+                   card, no icon, no line of text. -->
+              <div class="modpack-results mt-3">
+                <div class="list-group">
+                  {#each modpackResults as item (item.key)}
+                    <button
+                      type="button"
+                      class="list-group-item list-group-item-action text-start"
+                      class:active={modpackProject?.key === item.key}
+                      aria-pressed={modpackProject?.key === item.key}
+                      onclick={() => selectModpack(item)}>
+                      <span class="d-flex align-items-center gap-2">
+                        {#if item.iconUrl}
+                          <img
+                            src={sanitizeImageSrc(item.iconUrl, '')}
+                            alt=""
+                            width="32"
+                            height="32"
+                            class="rounded flex-shrink-0" />
+                        {:else}
+                          <span class="choice-icon bg-body-secondary">
+                            <i class="fa-solid fa-cubes" aria-hidden="true"></i>
+                          </span>
+                        {/if}
+                        <span class="min-w-0">
+                          <span class="fw-semibold d-block text-break">{item.name}</span>
+                          <span class="text-body-secondary d-block text-break">
+                            {item.summary || item.author}
+                          </span>
                         </span>
                       </span>
-                    </div>
-                  </button>
-                {/each}
+                    </button>
+                  {/each}
+                </div>
               </div>
             {/if}
 
             {#if modpackProject}
               <div class="mt-3">
-                <label class="form-label" for="createServerModpackVersion">
-                  {$_('components.modals.create-server.import.modpack-version-label')}
-                </label>
-                {#if modpackVersionsLoading}
-                  <div class="text-center py-2">
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
-                    ></span>
-                  </div>
-                {:else if modpackVersions.length === 0}
-                  <div class="alert alert-warning mb-0 small" role="alert">
-                    {$_('components.modals.create-server.import.modpack-no-versions')}
-                  </div>
-                {:else}
+                <div class="form-floating">
                   <select
                     id="createServerModpackVersion"
                     class="form-select"
@@ -359,6 +299,19 @@
                       <option value={option.id}>{option.label}</option>
                     {/each}
                   </select>
+                  <label for="createServerModpackVersion">
+                    {$_('components.modals.create-server.import.modpack-version-label')}
+                  </label>
+                </div>
+                {#if modpackVersionsLoading}
+                  <div class="text-center py-2">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                    ></span>
+                  </div>
+                {:else if modpackVersions.length === 0}
+                  <div class="alert alert-warning mb-0" role="alert">
+                    {$_('components.modals.create-server.import.modpack-no-versions')}
+                  </div>
                 {/if}
               </div>
             {/if}
@@ -373,67 +326,63 @@
                 ? $_('components.modals.create-server.software-unavailable')
                 : $_('components.modals.create-server.software-empty')} />
           {:else}
-            <p class="text-body-secondary small">
-              {$_('components.modals.create-server.software-description')}
-            </p>
-
-            <div class="row g-2">
+            <div class="list-group">
               {#each softwareList as item (item.id)}
                 {@const noteBadge = softwareNoteBadge(item)}
-                <div class="col-md-6">
-                  <button
-                    type="button"
-                    class="choice-card card h-100 p-3 bg-body"
-                    class:selected={softwareId === item.id}
-                    aria-pressed={softwareId === item.id}
-                    onclick={() => selectSoftware(item)}>
-                    <div class="d-flex flex-wrap align-items-center gap-2">
-                      <SoftwareLogo id={item.id} />
-                      <span class="fw-semibold">{item.name || item.id}</span>
-                      {#if item.recommended}
-                        <span class="badge text-bg-primary">
-                          {$_('components.modals.create-server.software-recommended')}
-                        </span>
-                      {/if}
-                      {#if noteBadge}
-                        <!-- Why this software is special: compiled on the node, straight off a
-                             CI, or end of life. A note the badge cannot say in two words is in
-                             its tooltip. -->
-                        <span
-                          class="badge {noteBadge.className}"
-                          use:tooltip={[
-                            noteBadge.hint ? $_(noteBadge.hint) : '',
-                            { placement: 'top' },
-                          ]}>
-                          {$_(noteBadge.label)}
-                        </span>
-                      {/if}
-                    </div>
-                    <span class="small text-body-secondary">
-                      {$_('components.modals.create-server.software-versions', {
-                        values: { count: versionsOf(item).length },
-                      })}
-                    </span>
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  class="list-group-item list-group-item-action text-start"
+                  class:active={softwareId === item.id}
+                  aria-pressed={softwareId === item.id}
+                  onclick={() => selectSoftware(item)}>
+                  <span class="d-flex flex-wrap align-items-center gap-2">
+                    <SoftwareLogo id={item.id} />
+                    <span class="fw-semibold">{item.name || item.id}</span>
+                    {#if item.recommended}
+                      <span class="badge text-bg-primary">
+                        {$_('components.modals.create-server.software-recommended')}
+                      </span>
+                    {/if}
+                    {#if noteBadge}
+                      <!-- Why this software is special: compiled on the node, straight off a
+                           CI, or end of life. A note the badge cannot say in two words is in
+                           its tooltip. -->
+                      <span
+                        class="badge {noteBadge.className}"
+                        use:tooltip={[
+                          noteBadge.hint ? $_(noteBadge.hint) : '',
+                          { placement: 'top' },
+                        ]}>
+                        {$_(noteBadge.label)}
+                      </span>
+                    {/if}
+                  </span>
+                  <span class="text-body-secondary d-block">
+                    {$_('components.modals.create-server.software-versions', {
+                      values: { count: versionsOf(item).length },
+                    })}
+                  </span>
+                </button>
               {/each}
             </div>
 
             {#if selectedSoftware}
               <div class="mt-3">
-                <label class="form-label" for="createServerVersion">
-                  {$_('components.modals.create-server.version-label')}
-                </label>
-                <select id="createServerVersion" class="form-select" bind:value={version}>
-                  {#each versionsOf(selectedSoftware) as option (option)}
-                    {@const versionLabel = softwareVersionLabelKey(selectedSoftware, option)}
-                    <option value={option}>{versionLabel ? $_(versionLabel) : option}</option>
-                  {/each}
-                </select>
+                <div class="form-floating">
+                  <select id="createServerVersion" class="form-select" bind:value={version}>
+                    {#each versionsOf(selectedSoftware) as option (option)}
+                      {@const versionLabel = softwareVersionLabelKey(selectedSoftware, option)}
+                      <option value={option}>{versionLabel ? $_(versionLabel) : option}</option>
+                    {/each}
+                  </select>
+                  <label for="createServerVersion">
+                    {$_('components.modals.create-server.version-label')}
+                  </label>
+                </div>
               </div>
 
               {#if BUILD_TOOLS_SOFTWARE.includes(String(selectedSoftware.id).toUpperCase())}
-                <div class="alert alert-warning mt-3 mb-0 small" role="alert">
+                <div class="alert alert-warning mt-3 mb-0" role="alert">
                   <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
                   {$_('components.modals.create-server.spigot-hint')}
                 </div>
@@ -441,67 +390,44 @@
             {/if}
           {/if}
         {:else if step === STEP_SETTINGS}
-          {#if isImport}
-            <!-- §2.4.8: an import has no software step — the node reads the jar, the loader and
-                 the port out of what it just took over and Pano fills the row from IMPORT_RESULT. -->
-            <div class="alert alert-info small" role="alert">
-              <i class="fa-solid fa-wand-magic-sparkles me-1" aria-hidden="true"></i>
-              {$_('components.modals.create-server.import.detected-note')}
-              <div class="mt-2 vstack gap-1">
-                <div>
-                  <span class="text-body-secondary"
-                    >{$_('components.modals.create-server.review-software')}:</span>
-                  <span class="fst-italic"
-                    >{$_('components.modals.create-server.import.will-be-detected')}</span>
-                </div>
-                <div>
-                  <span class="text-body-secondary"
-                    >{$_('components.modals.create-server.version-label')}:</span>
-                  <span class="fst-italic"
-                    >{$_('components.modals.create-server.import.will-be-detected')}</span>
-                </div>
-              </div>
-            </div>
-          {/if}
-
+          <!-- §2.4.8: an import has no software step — the node reads the jar, the loader and
+               the port out of what it just took over, and the review table below is where Pano
+               says so (IMPORT_RESULT). -->
           <div class="row g-3">
             <div class="col-12">
-              <label class="form-label" for="createServerName">
-                {$_('components.modals.create-server.name-label')}
-              </label>
-              <input
-                id="createServerName"
-                type="text"
-                class="form-control"
-                maxlength="64"
-                placeholder={$_('components.modals.create-server.name-placeholder')}
-                bind:value={name} />
+              <div class="form-floating">
+                <input
+                  id="createServerName"
+                  type="text"
+                  class="form-control"
+                  maxlength="64"
+                  placeholder=" "
+                  bind:value={name} />
+                <label for="createServerName">
+                  {$_('components.modals.create-server.name-label')}
+                </label>
+              </div>
             </div>
 
             <div class="col-md-6">
-              <label class="form-label" for="createServerMemory">
-                {$_('pages.servers.create.memory-label')}
-              </label>
-              <div class="input-group">
+              <div class="form-floating">
                 <input
                   id="createServerMemory"
                   type="number"
                   class="form-control"
                   min="512"
                   step="512"
+                  placeholder=" "
                   bind:value={memoryMb} />
-                <span class="input-group-text">MB</span>
-              </div>
-              <div class="form-text">
-                {$_('pages.servers.create.memory-hint', {
-                  values: { heap: heapMbOf(memoryMb) ?? '—' },
-                })}
+                <label for="createServerMemory">
+                  {$_('pages.servers.create.memory-label')} (MB)
+                </label>
               </div>
               <div class="btn-group btn-group-sm mt-2" role="group">
                 {#each MEMORY_PRESETS as preset (preset)}
                   <button
                     type="button"
-                    class="btn btn-outline-secondary"
+                    class="btn btn-outline-primary"
                     class:active={Number(memoryMb) === preset}
                     onclick={() => (memoryMb = preset)}>
                     {preset / 1024} GB
@@ -511,59 +437,58 @@
             </div>
 
             <div class="col-md-6">
-              <label class="form-label" for="createServerPort">
-                {$_('pages.servers.create.port-label')}
-              </label>
-              <input
-                id="createServerPort"
-                type="number"
-                class="form-control"
-                min="1"
-                max="65535"
-                bind:value={port} />
-              <div class="form-text">{$_('pages.servers.create.port-hint')}</div>
+              <div class="form-floating">
+                <input
+                  id="createServerPort"
+                  type="number"
+                  class="form-control"
+                  min="1"
+                  max="65535"
+                  placeholder=" "
+                  bind:value={port} />
+                <label for="createServerPort">{$_('pages.servers.create.port-label')}</label>
+              </div>
             </div>
 
             <div class="col-md-6">
-              <label class="form-label" for="createServerJava">
-                {$_('pages.servers.create.java-label')}
-              </label>
-              <select id="createServerJava" class="form-select" bind:value={javaMajor}>
-                <option value="">{javaAutoLabel(automaticJava)}</option>
-                {#each javaChoices.installed as major (major)}
-                  <option value={String(major)}>Java {major}</option>
-                {/each}
-                {#each javaChoices.downloadable as entry (entry.major)}
-                  <option value={String(entry.major)}>{javaDownloadLabel(entry)}</option>
-                {/each}
-              </select>
-              <div class="form-text">
-                {#if javaDownloadNote}
+              <div class="form-floating">
+                <select id="createServerJava" class="form-select" bind:value={javaMajor}>
+                  <option value="">{javaAutoLabel(automaticJava)}</option>
+                  {#each javaChoices.installed as major (major)}
+                    <option value={String(major)}>Java {major}</option>
+                  {/each}
+                  {#each javaChoices.downloadable as entry (entry.major)}
+                    <option value={String(entry.major)}>{javaDownloadLabel(entry)}</option>
+                  {/each}
+                </select>
+                <label for="createServerJava">{$_('pages.servers.create.java-label')}</label>
+              </div>
+              {#if javaDownloadNote}
+                <div class="form-text">
                   <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
                   {javaDownloadNote}
-                {:else}
-                  {$_('pages.servers.create.java-hint')}
-                {/if}
-              </div>
+                </div>
+              {/if}
             </div>
 
             <div class="col-12">
-              <label class="form-label" for="createServerJvmArgs">
-                {$_('pages.servers.create.jvm-args-label')}
-              </label>
-              <textarea
-                id="createServerJvmArgs"
-                class="form-control font-monospace"
-                rows="3"
-                spellcheck="false"
-                bind:value={jvmArgs}></textarea>
-              <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
-                <button type="button" class="btn btn-outline-secondary btn-sm" onclick={useAikar}>
-                  <i class="fa-solid fa-wand-magic-sparkles me-1" aria-hidden="true"></i>
-                  {$_('pages.servers.create.aikar-preset')}
-                </button>
-                <span class="form-text m-0">{$_('pages.servers.create.jvm-args-hint')}</span>
+              <div class="form-floating">
+                <textarea
+                  id="createServerJvmArgs"
+                  class="form-control font-monospace"
+                  rows="3"
+                  spellcheck="false"
+                  placeholder=" "
+                  bind:value={jvmArgs}></textarea>
+                <label for="createServerJvmArgs">{$_('pages.servers.create.jvm-args-label')}</label>
               </div>
+              <button
+                type="button"
+                class="btn btn-outline-secondary btn-sm mt-2"
+                onclick={useAikar}>
+                <i class="fa-solid fa-wand-magic-sparkles me-1" aria-hidden="true"></i>
+                {$_('pages.servers.create.aikar-preset')}
+              </button>
             </div>
 
             <div class="col-md-6">
@@ -577,7 +502,6 @@
                 <label class="form-check-label" for="createServerAutoStart">
                   {$_('pages.servers.create.auto-start-label')}
                 </label>
-                <div class="form-text">{$_('pages.servers.create.auto-start-hint')}</div>
               </div>
             </div>
 
@@ -592,9 +516,6 @@
                 <label class="form-check-label" for="createServerCrashRestart">
                   {$_('pages.servers.create.crash-restart-label')}
                 </label>
-                <div class="form-text">
-                  {$_('pages.servers.create.crash-restart-hint')}
-                </div>
               </div>
             </div>
 
@@ -610,7 +531,6 @@
                   <label class="form-check-label" for="createServerWhitelist">
                     {$_('pages.servers.create.whitelist-label')}
                   </label>
-                  <div class="form-text">{$_('pages.servers.create.whitelist-hint')}</div>
                 </div>
               </div>
             {/if}
@@ -651,10 +571,6 @@
             </div>
           </div>
         {:else}
-          <p class="text-body-secondary small">
-            {$_('components.modals.create-server.review-description')}
-          </p>
-
           <table class="table table-sm mb-0">
             <tbody>
               {#each reviewRows as row (row.label)}
@@ -670,40 +586,42 @@
         {/if}
       </div>
 
-      <div class="modal-footer justify-content-between flex-nowrap">
-        <button
-          type="button"
-          class="btn btn-link"
-          disabled={step === STEP_SOURCE || submitting}
-          onclick={back}>
-          {$_('buttons.back')}
-        </button>
-
-        <div class="d-flex gap-2">
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            data-bs-dismiss="modal"
-            disabled={submitting}>
-            {$_('buttons.cancel')}
-          </button>
-
-          {#if step === STEP_REVIEW}
+      <!-- Cancel is gone (the × and Escape still leave): the two buttons are the wizard's
+           back and forward, so they split the footer in half. -->
+      <div class="modal-footer">
+        <div class="row g-2 w-100">
+          <div class="col-6">
             <button
               type="button"
-              class="btn btn-primary"
-              disabled={!canContinue || submitting}
-              onclick={submit}>
-              {#if submitting}
-                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-              {/if}
-              {$_('components.modals.create-server.create-button')}
+              class="btn btn-link w-100 text-decoration-none"
+              disabled={step === STEP_SOURCE || submitting}
+              onclick={back}>
+              {$_('buttons.back')}
             </button>
-          {:else}
-            <button type="button" class="btn btn-primary" disabled={!canContinue} onclick={next}>
-              {$_('buttons.next')}
-            </button>
-          {/if}
+          </div>
+
+          <div class="col-6">
+            {#if step === STEP_REVIEW}
+              <button
+                type="button"
+                class="btn btn-secondary w-100"
+                disabled={!canContinue || submitting}
+                onclick={submit}>
+                {#if submitting}
+                  <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                {/if}
+                {$_('components.modals.create-server.create-button')}
+              </button>
+            {:else}
+              <button
+                type="button"
+                class="btn btn-primary w-100"
+                disabled={!canContinue}
+                onclick={next}>
+                {$_('buttons.next')}
+              </button>
+            {/if}
+          </div>
         </div>
       </div>
     </div>
@@ -799,7 +717,6 @@
     showServerActionError,
     softwareNoteBadge,
     softwareVersionLabelKey,
-    heapMbOf,
   } from '$lib/servers.util.js';
   import { onNode, onNodeRemoved, subscribeNodes } from '$lib/panelRealtime.js';
   import { sanitizeImageSrc } from '$lib/security.util.js';
@@ -824,35 +741,30 @@
   const SOURCES = [
     {
       id: Sources.FRESH,
-      icon: 'fa-solid fa-wand-magic-sparkles',
       title: 'components.modals.create-server.source-fresh-title',
       description: 'components.modals.create-server.source-fresh-description',
       enabled: true,
     },
     {
       id: Sources.EXISTING_FOLDER,
-      icon: 'fa-solid fa-folder-open',
       title: 'components.modals.create-server.source-folder-title',
       description: 'components.modals.create-server.source-folder-description',
       enabled: true,
     },
     {
       id: Sources.IN_PLACE,
-      icon: 'fa-solid fa-link',
       title: 'components.modals.create-server.source-in-place-title',
       description: 'components.modals.create-server.source-in-place-description',
       enabled: true,
     },
     {
       id: Sources.UPLOAD,
-      icon: 'fa-solid fa-file-zipper',
       title: 'components.modals.create-server.source-upload-title',
       description: 'components.modals.create-server.source-upload-description',
       enabled: true,
     },
     {
       id: Sources.MODPACK,
-      icon: 'fa-solid fa-cubes',
       title: 'components.modals.create-server.source-modpack-title',
       description: 'components.modals.create-server.source-modpack-description',
       enabled: true,
@@ -1042,8 +954,6 @@
         !PROXY_SOFTWARE.includes(String(softwareId || '').toUpperCase())),
   );
 
-  /** Everything that is not a fresh install takes an existing server over (§2.4.8). */
-  const isImport = $derived(source !== Sources.FRESH);
   const folderPathValid = $derived(isAbsoluteNodePath(folderPath));
   const selectedModpackVersion = $derived(
     modpackVersions.find((entry) => entry.id === modpackVersionId) ?? null,

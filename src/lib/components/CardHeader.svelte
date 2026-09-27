@@ -1,5 +1,5 @@
 <div class="card-header py-3">
-  <div class="row d-flex align-items-center gx-0 gy-2">
+  <div class="row d-flex align-items-center gx-0 gy-2 {rowClasses}">
     <div
       class="{$$slots.middle
         ? $$slots.right && showRight
@@ -37,5 +37,11 @@
   export let leftClasses = '';
   export let rightClasses = '';
   export let middleClasses = '';
+  /**
+   * The row the columns sit in. It has no `justify-content` of its own, so by default they pack
+   * to the left; a header whose columns are content-sized passes `justify-content-lg-between`
+   * here to deal the rest of the width out between them.
+   */
+  export let rowClasses = '';
   export let showRight = true;
 </script>

@@ -77,7 +77,8 @@
       <div class="card-body py-3">
         <div class="row g-2 mb-2">
           <div class="col-12 col-sm-8">
-            <label class="form-label small mb-1" for="dbHost">{$_('pages.migration.authme.host')}</label>
+            <label class="form-label small mb-1" for="dbHost"
+              >{$_('pages.migration.authme.host')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
@@ -85,7 +86,8 @@
               bind:value={dbConnectionInfo.host} />
           </div>
           <div class="col-12 col-sm-4">
-            <label class="form-label small mb-1" for="dbPort">{$_('pages.migration.authme.port')}</label>
+            <label class="form-label small mb-1" for="dbPort"
+              >{$_('pages.migration.authme.port')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
@@ -95,7 +97,8 @@
         </div>
         <div class="row g-2 mb-2">
           <div class="col-12 col-sm-6">
-            <label class="form-label small mb-1" for="dbName">{$_('pages.migration.authme.database')}</label>
+            <label class="form-label small mb-1" for="dbName"
+              >{$_('pages.migration.authme.database')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
@@ -103,7 +106,8 @@
               bind:value={dbConnectionInfo.database} />
           </div>
           <div class="col-12 col-sm-6">
-            <label class="form-label small mb-1" for="dbTable">{$_('pages.migration.authme.table')}</label>
+            <label class="form-label small mb-1" for="dbTable"
+              >{$_('pages.migration.authme.table')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
@@ -113,7 +117,8 @@
         </div>
         <div class="row g-2">
           <div class="col-12 col-sm-6">
-            <label class="form-label small mb-1" for="dbUser">{$_('pages.migration.authme.username')}</label>
+            <label class="form-label small mb-1" for="dbUser"
+              >{$_('pages.migration.authme.username')}</label>
             <input
               type="text"
               class="form-control form-control-sm"
@@ -121,7 +126,8 @@
               bind:value={dbConnectionInfo.username} />
           </div>
           <div class="col-12 col-sm-6">
-            <label class="form-label small mb-1" for="dbPass">{$_('pages.migration.authme.password')}</label>
+            <label class="form-label small mb-1" for="dbPass"
+              >{$_('pages.migration.authme.password')}</label>
             <input
               type="password"
               class="form-control form-control-sm"
@@ -281,22 +287,30 @@
   <div class="card mb-3">
     <CardHeader>
       <div slot="left">
-        <span class="me-3"><strong>{$_('pages.migration.authme.total-data', { values: { count: previewData.totalCount } })}</strong></span>
-        <span class="badge text-bg-success me-2">{$_('pages.migration.authme.new', { values: { count: previewData.newCount } })}</span>
-        <span class="badge text-bg-warning">{$_('pages.migration.authme.existing', { values: { count: previewData.existingCount } })}</span>
+        <span class="me-3"
+          ><strong
+            >{$_('pages.migration.authme.total-data', {
+              values: { count: previewData.totalCount },
+            })}</strong
+          ></span>
+        <span class="badge text-bg-success me-2"
+          >{$_('pages.migration.authme.new', { values: { count: previewData.newCount } })}</span>
+        <span class="badge text-bg-warning"
+          >{$_('pages.migration.authme.existing', {
+            values: { count: previewData.existingCount },
+          })}</span>
       </div>
 
       <div slot="middle" style="width: 250px;">
         <SearchInput
+          autofocus
           placeholderKey="buttons.find"
           showSpinner={false}
           on:change={(e) => (importSearchQuery = e.detail.value)} />
       </div>
 
       <div slot="right" class="d-flex flex-wrap gap-2">
-        <button
-          class="btn btn-link text-decoration-none px-0 px-md-2"
-          on:click={selectAllNew}>
+        <button class="btn btn-link text-decoration-none px-0 px-md-2" on:click={selectAllNew}>
           {$_('pages.migration.authme.select-all-new')}
         </button>
       </div>
@@ -315,10 +329,14 @@
                   on:change={toggleAll} />
               </th>
               <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.name')}</th>
-              <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.authme.email')}</th>
-              <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.authme.ip')}</th>
-              <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.authme.status')}</th>
-              <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.authme.password')}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_('pages.migration.authme.email')}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_('pages.migration.authme.ip')}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_('pages.migration.authme.status')}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_('pages.migration.authme.password')}</th>
             </tr>
           </thead>
           <tbody>
@@ -336,9 +354,11 @@
                 <td><code class="user-select-all">{user.ip || '-'}</code></td>
                 <td>
                   {#if user.status === 'new'}
-                    <span class="badge text-bg-success">{$_('pages.migration.authme.status-new')}</span>
+                    <span class="badge text-bg-success"
+                      >{$_('pages.migration.authme.status-new')}</span>
                   {:else}
-                    <span class="badge text-bg-warning">{$_('pages.migration.authme.status-existing')}</span>
+                    <span class="badge text-bg-warning"
+                      >{$_('pages.migration.authme.status-existing')}</span>
                   {/if}
                 </td>
                 <td>
@@ -369,18 +389,19 @@
     </div>
   </div>
 
-
-
   {#if previewData.panoOnlyUsers && previewData.panoOnlyUsers.length > 0}
     <div class="card mt-3">
       <CardHeader>
         <div slot="left">
           <strong>
-            {$_('pages.migration.authme.pano-only-title', { values: { count: previewData.panoOnlyUsers.length } })}
+            {$_('pages.migration.authme.pano-only-title', {
+              values: { count: previewData.panoOnlyUsers.length },
+            })}
           </strong>
         </div>
         <div slot="middle" style="width: 250px;">
           <SearchInput
+            autofocus
             placeholderKey="buttons.find"
             showSpinner={false}
             on:change={(e) => (deleteSearchQuery = e.detail.value)} />
@@ -399,8 +420,10 @@
                     checked={deleteUsers.size === previewData.panoOnlyUsers.length}
                     on:change={toggleAllPanoOnly} />
                 </th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.players.table.name')}</th>
-                <th class="align-middle text-nowrap" scope="col">{$_('pages.migration.authme.email')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.players.table.name')}</th>
+                <th class="align-middle text-nowrap" scope="col"
+                  >{$_('pages.migration.authme.email')}</th>
               </tr>
             </thead>
             <tbody>
@@ -476,9 +499,12 @@
     <div>
       <h6 class="alert-heading mb-1">{$_('pages.migration.authme.result-title')}</h6>
       <p class="mb-0 small">
-        <strong>{importResult.importedCount}</strong> {$_('pages.migration.authme.result-imported')}{#if importResult.updatedCount > 0},
-          <strong>{importResult.updatedCount}</strong> {$_('pages.migration.authme.result-updated')}{/if}{#if importResult.deletedCount > 0},
-          <strong>{importResult.deletedCount}</strong> {$_('pages.migration.authme.result-deleted')}{/if}.
+        <strong>{importResult.importedCount}</strong>
+        {$_('pages.migration.authme.result-imported')}{#if importResult.updatedCount > 0},
+          <strong>{importResult.updatedCount}</strong>
+          {$_('pages.migration.authme.result-updated')}{/if}{#if importResult.deletedCount > 0},
+          <strong>{importResult.deletedCount}</strong>
+          {$_('pages.migration.authme.result-deleted')}{/if}.
       </p>
     </div>
   </div>
@@ -486,7 +512,8 @@
   {#if importResult?.errors && importResult.errors.length > 0}
     <div class="alert alert-warning mt-3">
       <h6 class="alert-heading mb-2">
-        <i class="fas fa-exclamation-triangle me-1"></i> {$_('pages.migration.authme.some-issues-occurred')}
+        <i class="fas fa-exclamation-triangle me-1"></i>
+        {$_('pages.migration.authme.some-issues-occurred')}
       </h6>
       <ul class="mb-0 small">
         {#each importResult.errors as err}
@@ -778,7 +805,8 @@
       });
 
       if (result?.result === 'error') {
-        uploadError = result.message || result.error || $_('pages.migration.authme.error-upload-failed');
+        uploadError =
+          result.message || result.error || $_('pages.migration.authme.error-upload-failed');
         return;
       }
 
@@ -876,7 +904,8 @@
       importProgress = 1;
 
       if (result?.result === 'error') {
-        uploadError = result.message || result.error || $_('pages.migration.authme.error-import-failed');
+        uploadError =
+          result.message || result.error || $_('pages.migration.authme.error-import-failed');
         return;
       }
 

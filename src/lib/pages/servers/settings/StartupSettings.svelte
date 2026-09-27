@@ -33,7 +33,7 @@
             {#each MEMORY_PRESETS as preset (preset)}
               <button
                 type="button"
-                class="btn btn-outline-secondary"
+                class="btn btn-outline-primary"
                 class:active={Number(form.memoryMb) === preset}
                 onclick={() => (form.memoryMb = preset)}>
                 {preset / 1024} GB

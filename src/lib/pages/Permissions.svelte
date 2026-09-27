@@ -30,7 +30,10 @@
       <i class="fas fa-info-circle me-3"></i>
       <div>
         {$_('pages.permissions.panel.luckperms-alert')}
-        <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms" target="_blank" class="alert-link ms-1">
+        <a
+          href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms"
+          target="_blank"
+          class="alert-link ms-1">
           {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
           <i class="fas fa-external-link-alt ms-1"></i>
         </a>
@@ -45,6 +48,7 @@
   <PageActions leftClasses="d-lg-flex d-none">
     <div slot="middle" class="hstack gap-2">
       <SearchInput
+        autofocus
         showSpinner={false}
         placeholderKey="pages.permissions.panel.search.placeholder"
         ariaLabelKey="pages.permissions.panel.search.placeholder"
@@ -185,8 +189,12 @@
                                     type="button"
                                     class="list-group-item list-group-item-action py-1"
                                     on:click|stopPropagation={() => selectGroupByName(gname)}
-                                    aria-label={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}
-                                    title={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}>
+                                    aria-label={$_('pages.permissions.panel.actions.go-to-group', {
+                                      values: { name: gname },
+                                    })}
+                                    title={$_('pages.permissions.panel.actions.go-to-group', {
+                                      values: { name: gname },
+                                    })}>
                                     {gname}
                                   </button>
                                 {/each}
@@ -371,8 +379,12 @@
                         class="badge text-bg-primary rounded-pill btn btn-sm btn-link text-decoration-none focus-ring me-1"
                         style="cursor: pointer;"
                         on:click={() => selectGroupByName(pg.name)}
-                        aria-label={$_('pages.permissions.panel.actions.go-to-parent-group', { values: { name: pg.name } })}
-                        title={$_('pages.permissions.panel.actions.go-to-parent-group', { values: { name: pg.name } })}>
+                        aria-label={$_('pages.permissions.panel.actions.go-to-parent-group', {
+                          values: { name: pg.name },
+                        })}
+                        title={$_('pages.permissions.panel.actions.go-to-parent-group', {
+                          values: { name: pg.name },
+                        })}>
                         {pg.name}
                       </button>
                     {/each}
@@ -437,8 +449,12 @@
                         class="badge text-bg-primary ms-1"
                         style="cursor: pointer;"
                         on:click={() => selectGroupByName(gname)}
-                        aria-label={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}
-                        title={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}>
+                        aria-label={$_('pages.permissions.panel.actions.go-to-group', {
+                          values: { name: gname },
+                        })}
+                        title={$_('pages.permissions.panel.actions.go-to-group', {
+                          values: { name: gname },
+                        })}>
                         {gname}
                       </button>
                     {/each}
@@ -597,8 +613,12 @@
                     type="button"
                     class="list-group-item list-group-item-action py-1"
                     on:click={() => selectGroupByName(gname)}
-                    aria-label={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}
-                    title={$_('pages.permissions.panel.actions.go-to-group', { values: { name: gname } })}>
+                    aria-label={$_('pages.permissions.panel.actions.go-to-group', {
+                      values: { name: gname },
+                    })}
+                    title={$_('pages.permissions.panel.actions.go-to-group', {
+                      values: { name: gname },
+                    })}>
                     {gname}
                   </button>
                 {/each}
@@ -1014,8 +1034,6 @@
     return uniqueActive;
   }
 
-
-
   function formatNodeContext(ctx, nodeStr) {
     if (!ctx || typeof ctx !== 'object') return [];
     const entries = [];
@@ -1101,8 +1119,6 @@
     selectedUser = null;
     refreshCurrentNodes();
   }
-
-
 
   const normalizeWeight = (raw) => {
     const n = parseInt(raw);

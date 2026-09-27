@@ -19,355 +19,344 @@
 <!-- SM-33 — the backups of one server (§2.4.4, §2.4.17). Creating and restoring are tasks on
      whichever side Pano picked, so the page follows their `taskProgress` frames and re-reads the
      list on the `backups` nudge. -->
-<div class="container vstack gap-3">
-  <ServerCapabilityNotice
-    server={$server}
-    feature="backups.create"
-    section="components.server-navigation-menu.backups" />
+<ServerCapabilityNotice
+  server={$server}
+  feature="backups.create"
+  section="components.server-navigation-menu.backups" />
 
-  <!-- §2.4.35 — while nothing can take a backup the notice above is the whole page: the list
+<!-- §2.4.35 — while nothing can take a backup the notice above is the whole page: the list
        comes from the same side, so its "could not be loaded" state would only repeat it. -->
-  {#if available}
-    <div class="card">
-      <CardHeader>
-        <span slot="left" class="d-flex align-items-center gap-2">
-          {$_('pages.servers.backups.title')}
-          <span class="badge rounded-pill text-bg-secondary">
-            {$_('pages.servers.backups.count', { values: { count: backups.length } })}
-          </span>
-        </span>
-      </CardHeader>
+{#if available}
+  <div class="card">
+    <CardHeader>
+      <!-- The count is the card's subject: how many backups there are says what the card is
+           about, the way "{n} Posts" does on the posts list. It only becomes the title once the
+           list has actually arrived — until then it would read a bare "0". -->
+      <span slot="left">
+        {loading
+          ? $_('pages.servers.backups.title')
+          : $_('pages.servers.backups.count', { values: { count: backups.length } })}
+      </span>
+    </CardHeader>
 
-      <div class="card-body vstack gap-3">
-        <div class="small text-body-secondary">{$_('pages.servers.backups.description')}</div>
+    <div class="card-body vstack gap-3">
+      <div class="small text-body-secondary">{$_('pages.servers.backups.description')}</div>
 
-        {#if canManage}
-          <div>
-            <button
-              type="button"
-              class="btn btn-primary"
-              disabled={creating || !!runningTask}
-              onclick={openCreate}>
-              {#if creating || runningTask?.kind === 'BACKUP'}
-                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-              {:else}
-                <i class="fa-solid fa-box-archive me-1" aria-hidden="true"></i>
-              {/if}
-              {$_('pages.servers.backups.create')}
-            </button>
-          </div>
-        {/if}
-
-        {#if activeTask}
-          <div>
-            <div class="d-flex justify-content-between small text-body-secondary">
-              <span>
-                {$_(
-                  activeTask.kind === 'RESTORE'
-                    ? 'pages.servers.backups.task-restore'
-                    : 'pages.servers.backups.task-backup',
-                )}
-                {#if activeTask.message}
-                  <span class="text-break">&middot; {activeTask.message}</span>
-                {/if}
-              </span>
-              <span class="font-monospace">{taskPercent}%</span>
-            </div>
-            <div
-              class="progress mt-1"
-              style="height: 6px;"
-              role="progressbar"
-              aria-label={$_('pages.servers.backups.task-backup')}
-              aria-valuenow={taskPercent}
-              aria-valuemin="1"
-              aria-valuemax="100">
-              <div
-                class="progress-bar progress-bar-striped"
-                class:progress-bar-animated={activeTask.status !== 'FAILED'}
-                class:bg-danger={activeTask.status === 'FAILED'}
-                style="width: {taskPercent}%;">
-              </div>
-            </div>
-          </div>
-        {/if}
-
-        {#if canManage && retentionSupported}
-          <!-- One rule per kind: full zips are counted, snapshots are counted and may also be capped
-             by what the repository takes on disk. A pinned backup is never removed by either. -->
-          <div class="vstack gap-2">
-            <div class="d-flex flex-wrap align-items-center gap-2">
-              <label class="form-label m-0 retention-label" for="backupRetention">
-                <i class="fa-solid fa-file-zipper me-1" aria-hidden="true"></i>
-                {$_('pages.servers.backups.retention-full-label')}
-              </label>
-              <input
-                id="backupRetention"
-                type="number"
-                class="form-control form-control-sm retention-input"
-                min="1"
-                max="100"
-                bind:value={keepLast} />
-            </div>
-            <div class="d-flex flex-wrap align-items-center gap-2">
-              <label class="form-label m-0 retention-label" for="snapshotRetention">
-                <i class="fa-solid fa-layer-group me-1" aria-hidden="true"></i>
-                {$_('pages.servers.backups.retention-snapshot-label')}
-              </label>
-              <input
-                id="snapshotRetention"
-                type="number"
-                class="form-control form-control-sm retention-input"
-                min="1"
-                max="500"
-                bind:value={snapshotKeepLast} />
-              <label class="form-label m-0 ms-md-2" for="snapshotCap">
-                {$_('pages.servers.backups.retention-cap-label')}
-              </label>
-              <div class="input-group input-group-sm retention-cap">
-                <input
-                  id="snapshotCap"
-                  type="number"
-                  class="form-control"
-                  min="0"
-                  step="0.5"
-                  placeholder={$_('pages.servers.backups.retention-cap-none')}
-                  bind:value={snapshotCapGb} />
-                <span class="input-group-text">GB</span>
-              </div>
-            </div>
-            <div class="d-flex flex-wrap align-items-center gap-2">
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-secondary"
-                disabled={savingRetention}
-                onclick={() => void saveRetention()}>
-                {#if savingRetention}
-                  <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-                {/if}
-                {$_('buttons.save')}
-              </button>
-              <span class="form-text m-0">{$_('pages.servers.backups.retention-hint')}</span>
-            </div>
-          </div>
-        {/if}
-      </div>
-    </div>
-
-    <div class="card">
-      {#if loading}
-        <div class="card-body d-flex justify-content-center py-5">
-          <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+      {#if canManage}
+        <div>
+          <button
+            type="button"
+            class="btn btn-primary"
+            disabled={creating || !!runningTask}
+            onclick={openCreate}>
+            {#if creating || runningTask?.kind === 'BACKUP'}
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {:else}
+              <i class="fa-solid fa-box-archive me-1" aria-hidden="true"></i>
+            {/if}
+            {$_('pages.servers.backups.create')}
+          </button>
         </div>
-      {:else if listError}
-        <div class="card-body text-center vstack gap-3 py-5">
-          <div>
-            <i class="fa-solid fa-box-archive fa-3x text-body-secondary" aria-hidden="true"></i>
+      {/if}
+
+      {#if activeTask}
+        <div>
+          <div class="d-flex justify-content-between small text-body-secondary">
+            <span>
+              {$_(
+                activeTask.kind === 'RESTORE'
+                  ? 'pages.servers.backups.task-restore'
+                  : 'pages.servers.backups.task-backup',
+              )}
+              {#if activeTask.message}
+                <span class="text-break">&middot; {activeTask.message}</span>
+              {/if}
+            </span>
+            <span class="font-monospace">{taskPercent}%</span>
           </div>
-          <div class="text-body-secondary">{$_(listError)}</div>
-          <div>
+          <div
+            class="progress mt-1"
+            style="height: 6px;"
+            role="progressbar"
+            aria-label={$_('pages.servers.backups.task-backup')}
+            aria-valuenow={taskPercent}
+            aria-valuemin="1"
+            aria-valuemax="100">
+            <div
+              class="progress-bar progress-bar-striped"
+              class:progress-bar-animated={activeTask.status !== 'FAILED'}
+              class:bg-danger={activeTask.status === 'FAILED'}
+              style="width: {taskPercent}%;">
+            </div>
+          </div>
+        </div>
+      {/if}
+
+      {#if canManage && retentionSupported}
+        <!-- One rule per kind: full zips are counted, snapshots are counted and may also be capped
+             by what the repository takes on disk. A pinned backup is never removed by either. -->
+        <div class="vstack gap-2">
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <label class="form-label m-0 retention-label" for="backupRetention">
+              <i class="fa-solid fa-file-zipper me-1" aria-hidden="true"></i>
+              {$_('pages.servers.backups.retention-full-label')}
+            </label>
+            <input
+              id="backupRetention"
+              type="number"
+              class="form-control form-control-sm retention-input"
+              min="1"
+              max="100"
+              bind:value={keepLast} />
+          </div>
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <label class="form-label m-0 retention-label" for="snapshotRetention">
+              <i class="fa-solid fa-layer-group me-1" aria-hidden="true"></i>
+              {$_('pages.servers.backups.retention-snapshot-label')}
+            </label>
+            <input
+              id="snapshotRetention"
+              type="number"
+              class="form-control form-control-sm retention-input"
+              min="1"
+              max="500"
+              bind:value={snapshotKeepLast} />
+            <label class="form-label m-0 ms-md-2" for="snapshotCap">
+              {$_('pages.servers.backups.retention-cap-label')}
+            </label>
+            <div class="input-group input-group-sm retention-cap">
+              <input
+                id="snapshotCap"
+                type="number"
+                class="form-control"
+                min="0"
+                step="0.5"
+                placeholder={$_('pages.servers.backups.retention-cap-none')}
+                bind:value={snapshotCapGb} />
+              <span class="input-group-text">GB</span>
+            </div>
+          </div>
+          <div class="d-flex flex-wrap align-items-center gap-2">
             <button
               type="button"
               class="btn btn-sm btn-outline-secondary"
-              onclick={() => void loadBackups()}>
-              {$_('buttons.refresh')}
+              disabled={savingRetention}
+              onclick={() => void saveRetention()}>
+              {#if savingRetention}
+                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+              {/if}
+              {$_('buttons.save')}
             </button>
+            <span class="form-text m-0">{$_('pages.servers.backups.retention-hint')}</span>
           </div>
         </div>
-      {:else if !backups.length}
-        <div class="card-body">
-          <NoContent
-            icon="fa-solid fa-box-archive fa-3x"
-            text={$_('pages.servers.backups.empty')} />
+      {/if}
+    </div>
+  </div>
+
+  <div class="card">
+    {#if loading}
+      <div class="card-body d-flex justify-content-center py-5">
+        <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+      </div>
+    {:else if listError}
+      <div class="card-body text-center vstack gap-3 py-5">
+        <div>
+          <i class="fa-solid fa-box-archive fa-3x text-body-secondary" aria-hidden="true"></i>
         </div>
-      {:else}
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
-            <thead>
+        <div class="text-body-secondary">{$_(listError)}</div>
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            onclick={() => void loadBackups()}>
+            {$_('buttons.refresh')}
+          </button>
+        </div>
+      </div>
+    {:else if !backups.length}
+      <div class="card-body">
+        <NoContent icon="fa-solid fa-box-archive fa-3x" text={$_('pages.servers.backups.empty')} />
+      </div>
+    {:else}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.backups.column-name')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.backups.column-size')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.backups.column-created')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.backups.column-creator')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.backups.column-status')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.backups.column-checksum')}</th>
+              <th scope="col" class="text-end text-nowrap"
+                >{$_('pages.servers.backups.column-actions')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each backups as backup (backup.id)}
               <tr>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.backups.column-name')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.backups.column-size')}</th>
-                <th scope="col" class="text-nowrap"
-                  >{$_('pages.servers.backups.column-created')}</th>
-                <th scope="col" class="text-nowrap"
-                  >{$_('pages.servers.backups.column-creator')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.backups.column-status')}</th>
-                <th scope="col" class="text-nowrap"
-                  >{$_('pages.servers.backups.column-checksum')}</th>
-                <th scope="col" class="text-end text-nowrap"
-                  >{$_('pages.servers.backups.column-actions')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each backups as backup (backup.id)}
-                <tr>
-                  <th scope="row" class="fw-semibold text-break">
-                    <span class="d-flex flex-wrap align-items-center gap-1">
-                      {#if backup.pinned}
-                        <i
-                          class="fa-solid fa-thumbtack text-warning me-1"
-                          role="img"
-                          aria-label={$_('pages.servers.backups.pinned')}
-                          use:tooltip={[
-                            $_('pages.servers.backups.pinned-hint'),
-                            { placement: 'top' },
-                          ]}></i>
-                      {/if}
-                      {backup.name}
-                      <span
-                        class="badge fw-normal {backup.mode === 'SNAPSHOT'
-                          ? 'text-bg-info'
-                          : 'text-bg-secondary'}">
-                        <i
-                          class="fa-solid {backup.mode === 'SNAPSHOT'
-                            ? 'fa-layer-group'
-                            : 'fa-file-zipper'} me-1"
-                          aria-hidden="true"></i>
-                        {$_(`components.backup-options.mode-${backup.mode.toLowerCase()}`)}
-                      </span>
-                      {#if backup.scope !== 'ALL'}
-                        <span
-                          class="badge text-bg-dark fw-normal"
-                          use:tooltip={[
-                            backup.scope === 'CUSTOM' ? backup.include.join(', ') : '',
-                            { placement: 'top' },
-                          ]}>
-                          {$_(`components.backup-options.scope-${backup.scope.toLowerCase()}`)}
-                        </span>
-                      {/if}
-                    </span>
-                  </th>
-                  <td class="text-nowrap font-monospace small">
-                    {formatBytes(backup.sizeBytes, 1)}
-                    {#if backup.mode === 'SNAPSHOT' && backup.storedBytes != null}
-                      <span
-                        class="d-block text-body-secondary"
+                <th scope="row" class="fw-semibold text-break">
+                  <span class="d-flex flex-wrap align-items-center gap-1">
+                    {#if backup.pinned}
+                      <i
+                        class="fa-solid fa-thumbtack text-warning me-1"
+                        role="img"
+                        aria-label={$_('pages.servers.backups.pinned')}
                         use:tooltip={[
-                          $_('pages.servers.backups.stored-hint'),
+                          $_('pages.servers.backups.pinned-hint'),
+                          { placement: 'top' },
+                        ]}></i>
+                    {/if}
+                    {backup.name}
+                    <span
+                      class="badge fw-normal {backup.mode === 'SNAPSHOT'
+                        ? 'text-bg-info'
+                        : 'text-bg-secondary'}">
+                      <i
+                        class="fa-solid {backup.mode === 'SNAPSHOT'
+                          ? 'fa-layer-group'
+                          : 'fa-file-zipper'} me-1"
+                        aria-hidden="true"></i>
+                      {$_(`components.backup-options.mode-${backup.mode.toLowerCase()}`)}
+                    </span>
+                    {#if backup.scope !== 'ALL'}
+                      <span
+                        class="badge text-bg-dark fw-normal"
+                        use:tooltip={[
+                          backup.scope === 'CUSTOM' ? backup.include.join(', ') : '',
                           { placement: 'top' },
                         ]}>
-                        +{formatBytes(backup.storedBytes, 1)}
+                        {$_(`components.backup-options.scope-${backup.scope.toLowerCase()}`)}
                       </span>
                     {/if}
-                  </td>
-                  <td class="text-nowrap small">
-                    {#if backup.createdAt}
-                      <DateComponent time={backup.createdAt} relativeFormat />
-                    {:else}
-                      —
-                    {/if}
-                  </td>
-                  <td class="small text-body-secondary text-break">
-                    {backup.createdBy || $_('pages.servers.backups.creator-unknown')}
-                  </td>
-                  <td>
-                    <span class="badge rounded-pill text-bg-{statusColour(backup.status)}">
-                      {statusLabel(backup.status)}
+                  </span>
+                </th>
+                <td class="text-nowrap font-monospace small">
+                  {formatBytes(backup.sizeBytes, 1)}
+                  {#if backup.mode === 'SNAPSHOT' && backup.storedBytes != null}
+                    <span
+                      class="d-block text-body-secondary"
+                      use:tooltip={[$_('pages.servers.backups.stored-hint'), { placement: 'top' }]}>
+                      +{formatBytes(backup.storedBytes, 1)}
                     </span>
-                  </td>
-                  <td>
-                    {#if backup.sha256}
-                      <button
-                        type="button"
-                        class="btn btn-link btn-sm p-0 d-inline-flex align-items-center gap-1"
-                        onclick={() => copyChecksum(backup)}
-                        use:tooltip={[
-                          copiedId === backup.id
-                            ? $_('components.modals.connect-server.copied')
-                            : $_('pages.servers.backups.copy-checksum'),
-                          { placement: 'top', hideOnClick: false },
-                        ]}>
-                        <code class="sha-value text-truncate d-inline-block">{backup.sha256}</code>
-                        <i class="fa-regular fa-copy small" aria-hidden="true"></i>
+                  {/if}
+                </td>
+                <td class="text-nowrap small">
+                  {#if backup.createdAt}
+                    <DateComponent time={backup.createdAt} relativeFormat />
+                  {:else}
+                    —
+                  {/if}
+                </td>
+                <td class="small text-body-secondary text-break">
+                  {backup.createdBy || $_('pages.servers.backups.creator-unknown')}
+                </td>
+                <td>
+                  <span class="badge rounded-pill text-bg-{statusColour(backup.status)}">
+                    {statusLabel(backup.status)}
+                  </span>
+                </td>
+                <td>
+                  {#if backup.sha256}
+                    <button
+                      type="button"
+                      class="btn btn-link btn-sm p-0 d-inline-flex align-items-center gap-1"
+                      onclick={() => copyChecksum(backup)}
+                      use:tooltip={[
+                        copiedId === backup.id
+                          ? $_('components.modals.connect-server.copied')
+                          : $_('pages.servers.backups.copy-checksum'),
+                        { placement: 'top', hideOnClick: false },
+                      ]}>
+                      <code class="sha-value text-truncate d-inline-block">{backup.sha256}</code>
+                      <i class="fa-regular fa-copy small" aria-hidden="true"></i>
+                    </button>
+                  {:else}
+                    <span class="text-body-secondary">—</span>
+                  {/if}
+                </td>
+                <td class="text-end">
+                  <span class="dropdown position-static">
+                    <button
+                      type="button"
+                      class="btn btn-link btn-sm"
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                      data-bs-toggle="dropdown"
+                      disabled={busyId === backup.id}
+                      aria-label={$_('pages.servers.backups.column-actions')}>
+                      {#if busyId === backup.id}
+                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                      {:else}
+                        <span class="fas fa-ellipsis-v"></span>
+                      {/if}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end">
+                      <button type="button" class="dropdown-item" onclick={() => download(backup)}>
+                        <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
+                        {$_('buttons.download')}
                       </button>
-                    {:else}
-                      <span class="text-body-secondary">—</span>
-                    {/if}
-                  </td>
-                  <td class="text-end">
-                    <span class="dropdown position-static">
-                      <button
-                        type="button"
-                        class="btn btn-link btn-sm"
-                        aria-expanded="false"
-                        aria-haspopup="true"
-                        data-bs-toggle="dropdown"
-                        disabled={busyId === backup.id}
-                        aria-label={$_('pages.servers.backups.column-actions')}>
-                        {#if busyId === backup.id}
-                          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                        {:else}
-                          <span class="fas fa-ellipsis-v"></span>
-                        {/if}
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-end">
+
+                      {#if canUploadToPanoBackup && backup.mode !== 'SNAPSHOT' && String(backup.status || '').toUpperCase() === 'READY'}
                         <button
                           type="button"
                           class="dropdown-item"
-                          onclick={() => download(backup)}>
-                          <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
-                          {$_('buttons.download')}
+                          onclick={() => void uploadToPanoBackup(backup)}>
+                          <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
+                          {$_('pages.servers.backups.pano-backup-upload')}
+                        </button>
+                      {/if}
+
+                      {#if canManage}
+                        <button
+                          type="button"
+                          class="dropdown-item"
+                          onclick={() => void togglePin(backup)}>
+                          <i class="fa-solid fa-thumbtack me-2" aria-hidden="true"></i>
+                          {backup.pinned
+                            ? $_('pages.servers.backups.unpin')
+                            : $_('pages.servers.backups.pin')}
+                        </button>
+                        <button
+                          type="button"
+                          class="dropdown-item"
+                          disabled={!!restoreBlockedReason || !!runningTask}
+                          onclick={() => askRestore(backup)}>
+                          <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"></i>
+                          {$_('pages.servers.backups.restore')}
                         </button>
 
-                        {#if canUploadToPanoBackup && backup.mode !== 'SNAPSHOT' && String(backup.status || '').toUpperCase() === 'READY'}
-                          <button
-                            type="button"
-                            class="dropdown-item"
-                            onclick={() => void uploadToPanoBackup(backup)}>
-                            <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
-                            {$_('pages.servers.backups.pano-backup-upload')}
-                          </button>
-                        {/if}
+                        <div class="dropdown-divider"></div>
+                        <button
+                          type="button"
+                          class="dropdown-item text-danger"
+                          onclick={() => askDelete(backup)}>
+                          <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
+                          {$_('buttons.delete')}
+                        </button>
+                      {/if}
+                    </div>
+                  </span>
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
 
-                        {#if canManage}
-                          <button
-                            type="button"
-                            class="dropdown-item"
-                            onclick={() => void togglePin(backup)}>
-                            <i class="fa-solid fa-thumbtack me-2" aria-hidden="true"></i>
-                            {backup.pinned
-                              ? $_('pages.servers.backups.unpin')
-                              : $_('pages.servers.backups.pin')}
-                          </button>
-                          <button
-                            type="button"
-                            class="dropdown-item"
-                            disabled={!!restoreBlockedReason || !!runningTask}
-                            onclick={() => askRestore(backup)}>
-                            <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"></i>
-                            {$_('pages.servers.backups.restore')}
-                          </button>
-
-                          <div class="dropdown-divider"></div>
-                          <button
-                            type="button"
-                            class="dropdown-item text-danger"
-                            onclick={() => askDelete(backup)}>
-                            <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
-                            {$_('buttons.delete')}
-                          </button>
-                        {/if}
-                      </div>
-                    </span>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
+      {#if restoreBlockedReason}
+        <div class="card-footer small text-body-secondary">
+          <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
+          {$_(restoreBlockedReason, { values: { section: $_(SECTION_KEY) } })}
         </div>
-
-        {#if restoreBlockedReason}
-          <div class="card-footer small text-body-secondary">
-            <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-            {$_(restoreBlockedReason, { values: { section: $_(SECTION_KEY) } })}
-          </div>
-        {/if}
       {/if}
-    </div>
-  {/if}
-</div>
+    {/if}
+  </div>
+{/if}
 
 <div class="modal fade" tabindex="-1" aria-hidden="true" bind:this={createModalElement}>
-  <div class="modal-dialog modal-lg modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form
         onsubmit={(event) => {
@@ -375,10 +364,7 @@
           void createBackup();
         }}>
         <div class="modal-header">
-          <h5 class="modal-title">
-            <i class="fa-solid fa-box-archive me-2" aria-hidden="true"></i>
-            {$_('pages.servers.backups.create')}
-          </h5>
+          <h5 class="modal-title">{$_('pages.servers.backups.backup')}</h5>
           <button
             type="button"
             class="btn-close"
@@ -387,17 +373,20 @@
         </div>
         <div class="modal-body vstack gap-3">
           <div>
-            <label class="form-label" for="backupName">
-              {$_('pages.servers.backups.name-label')}
-            </label>
-            <input
-              id="backupName"
-              type="text"
-              class="form-control"
-              maxlength="64"
-              placeholder={$_('pages.servers.backups.name-placeholder')}
-              bind:value={createName} />
-            <div class="form-text">{$_('pages.servers.backups.name-hint')}</div>
+            <div class="form-floating">
+              <input
+                id="backupName"
+                type="text"
+                class="form-control"
+                maxlength="64"
+                placeholder=" "
+                bind:value={createName} />
+              <label for="backupName">{$_('pages.servers.backups.name-label')}</label>
+            </div>
+            <div class="form-text">
+              {$_('pages.servers.backups.name-hint')}
+              <span class="opacity-75">{$_('pages.servers.backups.name-placeholder')}</span>
+            </div>
           </div>
 
           <BackupOptions
@@ -406,12 +395,10 @@
             idPrefix="create-backup" />
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-link m-0" data-bs-dismiss="modal">
-            {$_('buttons.cancel')}
-          </button>
+          <!-- One full-width action; the header's close button is the way out. -->
           <button
             type="submit"
-            class="btn btn-primary m-0"
+            class="btn btn-secondary w-100"
             disabled={creating || !!runningTask || !backupOptionsValid(createOptions)}>
             {#if creating}
               <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
@@ -1207,6 +1194,11 @@
     deletePasswordInput?.focus();
   }
 
+  /** The name is the one field there is to fill in, so the caret waits in it. */
+  function focusBackupName() {
+    createModalElement?.querySelector('#backupName')?.focus();
+  }
+
   onMount(() => {
     restoreModal = window.bootstrap?.Modal
       ? window.bootstrap.Modal.getOrCreateInstance(restoreModalElement, {
@@ -1227,6 +1219,7 @@
     restoreModalElement?.addEventListener('shown.bs.modal', focusRestorePassword);
     restoreModalElement?.addEventListener('hidden.bs.modal', onRestoreHidden);
     deleteModalElement?.addEventListener('shown.bs.modal', focusDeletePassword);
+    createModalElement?.addEventListener('shown.bs.modal', focusBackupName);
 
     const offTask = onTaskProgress((frame) => {
       if (serverId == null || Number(frame.serverId) !== Number(serverId)) {
@@ -1270,6 +1263,7 @@
       restoreModalElement?.removeEventListener('shown.bs.modal', focusRestorePassword);
       restoreModalElement?.removeEventListener('hidden.bs.modal', onRestoreHidden);
       deleteModalElement?.removeEventListener('shown.bs.modal', focusDeletePassword);
+      createModalElement?.removeEventListener('shown.bs.modal', focusBackupName);
       offTask();
       offBackups();
     };

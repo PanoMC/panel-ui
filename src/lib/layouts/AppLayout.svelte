@@ -536,8 +536,6 @@
     usageMode.set(data.usageMode);
     panelTheme.set(data.session.basicData.panelTheme || 'dark');
 
-    sidebarTabsState.set(getCurrentSidebarState());
-
     // Auto-Reset Layout State: If we navigate to a non-plugin route, force resetLayout to false.
     // The auth pages are chrome-free too, so they keep the flag their layout load set — and so
     // does the login form the root error page shows in place of a page (`requireSignedIn`).
@@ -651,15 +649,26 @@
   /**
    * The tab `Sidebar` and `Navbar` both render from. Every usage mode has the pills, so the
    * persisted choice is honoured wherever the mode leaves both workspaces reachable.
+   *
+   * @param {string} pathname the page the answer is for.
    */
-  function getCurrentSidebarState() {
+  function getCurrentSidebarState(pathname) {
     return resolveSidebarTab({
       usageMode: data.usageMode,
       canManageServers: hasPermission(Permissions.MANAGE_SERVERS),
       // The page decides, not a remembered pill: a site page must not be shown with the servers
       // menu beside it, and the answer has to be the same on the server and in the browser.
-      getStoredTab: () => sidebarTabForPath(get(page).url.pathname, base),
+      getStoredTab: () => sidebarTabForPath(pathname, base),
     });
+  }
+
+  // The workspace follows the page, and this runs once both halves of that answer are current: the
+  // new page data and the new path. Deriving it inside the `page` subscription read the outgoing
+  // page's `usageMode` beside the incoming path, so the sidebar could settle on one tab and then
+  // move to the other — a second flicker on every navigation.
+  $: currentSidebarState = getCurrentSidebarState($page.url.pathname);
+  $: if (currentSidebarState !== $sidebarTabsState) {
+    sidebarTabsState.set(currentSidebarState);
   }
 
   setTimeout(function () {
