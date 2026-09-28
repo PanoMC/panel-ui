@@ -556,7 +556,11 @@
           "auth-methods": "Giriş Methodu",
           "description": "Pano, e-posta gönderebilmek için bir e-posta sağlayıcısına ihtiyaç duyar. Lütfen kullanmak istediğiniz e-posta servisi ile oturum açın.",
           "email-validation-error": "E-mail ayarları doğrulanamadı: {mailError}",
-          "smtp-disabled-alert": "<strong class=\"me-2\">SMTP Devre Dışı</strong> Pano; kayıt veya şifre kurtarma işlemleri için e-posta gönderemeyecektir."
+          "smtp-disabled-alert": "<strong class=\"me-2\">SMTP Devre Dışı</strong> Pano; kayıt veya şifre kurtarma işlemleri için e-posta gönderemeyecektir.",
+          "host-mail": "Pano Host e-postası",
+          "own-mail": "Kendi e-posta sunucum",
+          "host-mail-description": "E-postalar Pano Host paketinizin e-posta hizmetiyle gönderilir. Limitler ve gönderim kaydı panomc.com'daki instance'ınızın E-posta sayfasındadır.",
+          "use-host-mail": "Pano Host e-postasını kullan"
         },
         "smtp-settings": "SMTP",
         "toggle-smtp": "SMTP'yi Değiştir",

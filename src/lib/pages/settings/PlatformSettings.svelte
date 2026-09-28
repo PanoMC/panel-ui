@@ -733,137 +733,177 @@
       </div>
     {/if}
 
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="mailUsername"
-        >{$_('pages.settings.platform.smtp.username')}</label>
-      <div class="col-md-6">
+    {#if data.email.hostMailAvailable}
+      <!-- Pano Host: the instance's package mail, or the customer's own provider (kept across restarts). -->
+      <div class="btn-group w-100 mb-3" role="group">
         <input
-          class="form-control"
-          id="mailUsername"
-          type="text"
-          placeholder="no-reply"
-          bind:value={data.email.username}
-          disabled={smtpDisabled} />
-      </div>
-    </div>
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="mailUserPassword"
-        >{$_('pages.settings.platform.smtp.password')}</label>
-      <div class="col-md-6">
+          type="radio"
+          class="btn-check"
+          id="mailModeHost"
+          value="host"
+          bind:group={mailMode}
+          disabled={smtpDisabled || saveEmailLoading} />
+        <label class="btn btn-outline-primary" for="mailModeHost"
+          >{$_('pages.settings.platform.smtp.host-mail')}</label>
         <input
-          class="form-control"
-          id="mailUserPassword"
-          placeholder="****************"
-          bind:value={data.email.password}
-          type="password"
-          disabled={smtpDisabled} />
+          type="radio"
+          class="btn-check"
+          id="mailModeOwn"
+          value="own"
+          bind:group={mailMode}
+          on:change={onOwnMailSelected}
+          disabled={smtpDisabled || saveEmailLoading} />
+        <label class="btn btn-outline-primary" for="mailModeOwn"
+          >{$_('pages.settings.platform.smtp.own-mail')}</label>
       </div>
-    </div>
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="useSSLCheck">
-        {$_('pages.settings.platform.smtp.ssl')}
-      </label>
-      <div class="col-md-6">
-        <div class="form-check">
+    {/if}
+
+    {#if data.email.hostMailAvailable && mailMode === 'host'}
+      <p class="text-muted mb-3">{$_('pages.settings.platform.smtp.host-mail-description')}</p>
+      {#if !data.email.hostManaged}
+        <button
+          class="btn btn-secondary"
+          on:click={onUseHostMailClick}
+          disabled={saveEmailLoading || smtpDisabled}
+          >{$_('pages.settings.platform.smtp.use-host-mail')}
+          {#if saveEmailLoading}
+            <span class="spinner-border spinner-border-sm ms-2" role="status"></span>
+          {/if}
+        </button>
+      {/if}
+    {:else}
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="mailUsername"
+          >{$_('pages.settings.platform.smtp.username')}</label>
+        <div class="col-md-6">
           <input
-            class="form-check-input"
-            type="checkbox"
-            name="useSSLCheck"
-            id="useSSLCheck"
-            aria-checked={data.email.ssl}
-            bind:checked={data.email.ssl}
+            class="form-control"
+            id="mailUsername"
+            type="text"
+            placeholder="no-reply"
+            bind:value={data.email.username}
             disabled={smtpDisabled} />
         </div>
       </div>
-    </div>
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="port"
-        >{$_('pages.settings.platform.smtp.tls-setting')}</label>
-      <div class="col-md-6">
-        <select
-          class="form-select"
-          id="port"
-          bind:value={data.email.starttls}
-          disabled={smtpDisabled}>
-          <option value="REQUIRED">REQUIRED</option>
-          <option value="OPTIONAL">OPTIONAL</option>
-          <option value="DISABLED">DISABLED</option>
-        </select>
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="mailUserPassword"
+          >{$_('pages.settings.platform.smtp.password')}</label>
+        <div class="col-md-6">
+          <input
+            class="form-control"
+            id="mailUserPassword"
+            placeholder="****************"
+            bind:value={data.email.password}
+            type="password"
+            disabled={smtpDisabled} />
+        </div>
       </div>
-    </div>
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="useSSLCheck">
+          {$_('pages.settings.platform.smtp.ssl')}
+        </label>
+        <div class="col-md-6">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="useSSLCheck"
+              id="useSSLCheck"
+              aria-checked={data.email.ssl}
+              bind:checked={data.email.ssl}
+              disabled={smtpDisabled} />
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="port"
+          >{$_('pages.settings.platform.smtp.tls-setting')}</label>
+        <div class="col-md-6">
+          <select
+            class="form-select"
+            id="port"
+            bind:value={data.email.starttls}
+            disabled={smtpDisabled}>
+            <option value="REQUIRED">REQUIRED</option>
+            <option value="OPTIONAL">OPTIONAL</option>
+            <option value="DISABLED">DISABLED</option>
+          </select>
+        </div>
+      </div>
 
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="senderAddress"
-        >{$_('pages.settings.platform.smtp.sender-address')}</label>
-      <div class="col-md-6">
-        <input
-          class="form-control"
-          id="senderAddress"
-          type="text"
-          placeholder="no-reply@forexample.com"
-          bind:value={data.email.sender}
-          disabled={smtpDisabled} />
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="senderAddress"
+          >{$_('pages.settings.platform.smtp.sender-address')}</label>
+        <div class="col-md-6">
+          <input
+            class="form-control"
+            id="senderAddress"
+            type="text"
+            placeholder="no-reply@forexample.com"
+            bind:value={data.email.sender}
+            disabled={smtpDisabled} />
+        </div>
       </div>
-    </div>
 
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="hostAddress"
-        >{$_('pages.settings.platform.smtp.hostname')}</label>
-      <div class="col-md-6">
-        <input
-          class="form-control"
-          id="hostAddress"
-          type="text"
-          placeholder="smtp.forexample.com"
-          bind:value={data.email.hostname}
-          disabled={smtpDisabled} />
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="hostAddress"
+          >{$_('pages.settings.platform.smtp.hostname')}</label>
+        <div class="col-md-6">
+          <input
+            class="form-control"
+            id="hostAddress"
+            type="text"
+            placeholder="smtp.forexample.com"
+            bind:value={data.email.hostname}
+            disabled={smtpDisabled} />
+        </div>
       </div>
-    </div>
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="port"
-        >{$_('pages.settings.platform.smtp.port')}</label>
-      <div class="col-md-6">
-        <input
-          class="form-control"
-          id="port"
-          placeholder="465"
-          type="number"
-          bind:value={data.email.port}
-          disabled={smtpDisabled} />
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="port"
+          >{$_('pages.settings.platform.smtp.port')}</label>
+        <div class="col-md-6">
+          <input
+            class="form-control"
+            id="port"
+            placeholder="465"
+            type="number"
+            bind:value={data.email.port}
+            disabled={smtpDisabled} />
+        </div>
       </div>
-    </div>
 
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="authMethods"
-        >{$_('pages.settings.platform.smtp.auth-methods')}</label>
-      <div class="col-md-6">
-        <select
-          class="form-select"
-          id="authMethods"
-          bind:value={data.email.authMethods}
-          disabled={smtpDisabled}>
-          <option value="PLAIN">PLAIN</option>
-          <option value=""></option>
-        </select>
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="authMethods"
+          >{$_('pages.settings.platform.smtp.auth-methods')}</label>
+        <div class="col-md-6">
+          <select
+            class="form-select"
+            id="authMethods"
+            bind:value={data.email.authMethods}
+            disabled={smtpDisabled}>
+            <option value="PLAIN">PLAIN</option>
+            <option value=""></option>
+          </select>
+        </div>
       </div>
-    </div>
 
-    <button
-      class="btn btn-secondary"
-      on:click={onSaveSmtpClick}
-      disabled={saveEmailLoading || !mailValidated || smtpDisabled}
-      >{$_(!$siteInfo.emailEnabled ? 'buttons.enable' : 'buttons.save')}
-    </button>
-    {#if !mailValidated && !emailSaveDisabled}
       <button
-        class="btn btn-outline-primary"
-        on:click={onValidateEmailClick}
-        disabled={saveEmailLoading || smtpDisabled}
-        >{$_('buttons.validate')}
-        {#if saveEmailLoading}
-          <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
-        {/if}
+        class="btn btn-secondary"
+        on:click={onSaveSmtpClick}
+        disabled={saveEmailLoading || !mailValidated || smtpDisabled}
+        >{$_(!$siteInfo.emailEnabled ? 'buttons.enable' : 'buttons.save')}
       </button>
+      {#if !mailValidated && !emailSaveDisabled}
+        <button
+          class="btn btn-outline-primary"
+          on:click={onValidateEmailClick}
+          disabled={saveEmailLoading || smtpDisabled}
+          >{$_('buttons.validate')}
+          {#if saveEmailLoading}
+            <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+          {/if}
+        </button>
+      {/if}
     {/if}
   </div>
 </div>
@@ -1442,6 +1482,72 @@
         mailValidated = true;
 
         await showSuccessToast('components.toasts.email-config-validate-success');
+      },
+    });
+  }
+
+  /** Pano Host: `host` = the package mail (`email.hostManaged`), `own` = the customer's own provider. */
+  let mailMode = data.email?.hostManaged === false ? 'own' : 'host';
+
+  // A save / reload that changes the stored choice resets the selector to it.
+  $: syncMailMode(data.email?.hostManaged);
+
+  function syncMailMode(hostManaged) {
+    mailMode = hostManaged === false ? 'own' : 'host';
+  }
+
+  /** Starting an own provider: the relay's values are no use there, so the form starts empty. */
+  function onOwnMailSelected() {
+    if (!data.email.hostManaged) return;
+
+    data.email = {
+      ...data.email,
+      hostname: '',
+      port: 587,
+      ssl: false,
+      starttls: 'REQUIRED',
+      username: '',
+      password: '',
+      sender: '',
+      authMethods: '',
+    };
+    mailValidated = false;
+  }
+
+  /** Back to Pano Host mail: the control plane's relay settings are applied again (and on every boot). */
+  function onUseHostMailClick() {
+    saveEmailLoading = true;
+
+    const formData = new FormData();
+
+    formData.append(
+      'email',
+      JSON.stringify({
+        enabled: true,
+        hostManaged: true,
+        hostname: '',
+        port: 0,
+        ssl: false,
+        starttls: 'OPTIONAL',
+        username: '',
+        password: '',
+        sender: '',
+      }),
+    );
+
+    ApiUtil.put({
+      path: '/api/panel/settings',
+      body: formData,
+      handler: async (body, reject) => {
+        saveEmailLoading = false;
+
+        if (body.error) {
+          reject();
+          return;
+        }
+
+        await invalidateAll();
+        await showSuccessToast('components.toasts.settings-save-success');
       },
     });
   }

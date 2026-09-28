@@ -556,7 +556,11 @@
           "auth-methods": "Auth Methods",
           "description": "Pano requires an email provider to be able to send emails. Please log in with the e-mail service you want to use.",
           "email-validation-error": "Couldn't validate e-mail settings: {mailError}",
-          "smtp-disabled-alert": "<strong class=\"me-2\">SMTP Disabled</strong> Pano will not be able to send emails for registration or password recovery."
+          "smtp-disabled-alert": "<strong class=\"me-2\">SMTP Disabled</strong> Pano will not be able to send emails for registration or password recovery.",
+          "host-mail": "Pano Host mail",
+          "own-mail": "My own mail server",
+          "host-mail-description": "E-mails go out through your Pano Host package's mail. Limits and the send log are on your instance's Mail page on panomc.com.",
+          "use-host-mail": "Use Pano Host mail"
         },
         "smtp-settings": "SMTP",
         "toggle-smtp": "Toggle SMTP",
