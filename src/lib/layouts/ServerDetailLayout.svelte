@@ -352,26 +352,25 @@
        running, which is the reinstall itself. -->
   {#if installError && !headerTask && processState !== ProcessStates.INSTALLING}
     <!-- The settings area's titled alert (PlatformSettings, the migration results): the icon
-         inside the heading, the sentence under it, the error and the way out below that. -->
-    <div class="alert alert-danger" role="alert">
-      <h6 class="alert-heading mb-2">
+         inside the heading, the error and the way out below that. -->
+    <div class="alert alert-danger mb-0" role="alert">
+      <h5 class="alert-heading mb-2">
         <i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>
         {$_('pages.servers.header.install-failed-title')}
-      </h6>
-      <p class="mb-0">{$_('pages.servers.header.install-failed-body')}</p>
+      </h5>
       <pre class="install-error mt-2 mb-0">{installError}</pre>
       {#if canReinstall}
         <div class="d-flex flex-wrap gap-2 mt-2">
           <button
             type="button"
-            class="btn btn-sm btn-danger"
+            class="btn btn-danger"
             on:click={() => showChangeSoftwareModal({ server: $server, lockSoftware: true })}>
             <i class="fa-solid fa-rotate me-1" aria-hidden="true"></i>
             {$_('buttons.reinstall')}
           </button>
           <button
             type="button"
-            class="btn btn-sm btn-link link-danger text-decoration-none"
+            class="btn btn-link link-danger text-decoration-none"
             on:click={() => showChangeSoftwareModal({ server: $server })}>
             <i class="fa-solid fa-shuffle me-1" aria-hidden="true"></i>
             {$_('pages.servers.settings.change-software-button')}
@@ -625,6 +624,7 @@
     plugins: 'components.server-navigation-menu.plugins',
     backups: 'components.server-navigation-menu.backups',
     schedules: 'components.server-navigation-menu.schedules',
+    activity: 'components.server-navigation-menu.activity',
     settings: 'components.server-navigation-menu.settings',
   };
 

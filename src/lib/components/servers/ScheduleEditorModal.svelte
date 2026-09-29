@@ -20,7 +20,7 @@
      The cron field is checked by `GET /api/panel/cron/preview`, which is also where the human
      description and the next five runs come from, so the panel never parses cron itself. -->
 <div class="modal fade" tabindex="-1" aria-hidden="true" bind:this={modalElement}>
-  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
@@ -38,33 +38,35 @@
       </div>
 
       <div class="modal-body vstack gap-3">
-        <div>
-          <label class="form-label" for="scheduleName">
-            {$_('components.modals.schedule-editor.name-label')}
-          </label>
+        <!-- `text-capitalize` the way the retention rules on the Backups page do it: the
+             dictionaries carry sentence case for their running text, but a field label opens
+             its own line, so it reads as a title. -->
+        <div class="form-floating">
           <input
             id="scheduleName"
             type="text"
-            class="form-control"
+            class="form-control text-capitalize"
             maxlength="64"
             placeholder={$_('components.modals.schedule-editor.name-placeholder')}
             bind:value={name} />
+          <label class="text-capitalize" for="scheduleName">
+            {$_('components.modals.schedule-editor.name-label')}
+          </label>
         </div>
 
         <div>
-          <span class="form-label d-block" id="scheduleCronLabel">
-            {$_('components.modals.schedule-editor.cron-label')}
-          </span>
+          <!-- The heading this group used to carry is gone; the label now names the group for
+               assistive tech only, and the field below keeps it as its own accessible name. -->
           <div
             class="btn-group btn-group-sm flex-wrap"
             role="group"
-            aria-labelledby="scheduleCronLabel">
+            aria-label={$_('components.modals.schedule-editor.cron-label')}>
             {#each CRON_PRESETS as preset (preset.id)}
               <button
                 type="button"
                 class="btn"
                 class:btn-primary={activePreset === preset.id}
-                class:btn-outline-secondary={activePreset !== preset.id}
+                class:btn-outline-primary={activePreset !== preset.id}
                 onclick={() => (cron = preset.cron)}>
                 {$_(`pages.servers.schedules.presets.${preset.id}`)}
               </button>
@@ -73,7 +75,7 @@
               type="button"
               class="btn"
               class:btn-primary={activePreset === 'custom'}
-              class:btn-outline-secondary={activePreset !== 'custom'}
+              class:btn-outline-primary={activePreset !== 'custom'}
               onclick={() => customCronInput?.focus()}>
               {$_('pages.servers.schedules.presets.custom')}
             </button>
@@ -91,26 +93,34 @@
 
         <div class="row g-3">
           <div class="col-md-7">
-            <label class="form-label" for="scheduleTimezone">
-              {$_('components.modals.schedule-editor.timezone-label')}
-            </label>
-            <select id="scheduleTimezone" class="form-select" bind:value={timezone}>
-              {#each timezoneOptions as zone (zone)}
-                <option value={zone}>{zone}</option>
-              {/each}
-            </select>
+            <div class="form-floating">
+              <select id="scheduleTimezone" class="form-select" bind:value={timezone}>
+                {#each timezoneOptions as zone (zone)}
+                  <option value={zone}>{zone}</option>
+                {/each}
+              </select>
+              <label class="text-capitalize" for="scheduleTimezone">
+                {$_('components.modals.schedule-editor.timezone-label')}
+              </label>
+            </div>
           </div>
           <div class="col-md-5">
-            <label class="form-label" for="scheduleWarnMinutes">
-              {$_('components.modals.schedule-editor.warn-label')}
-            </label>
-            <input
-              id="scheduleWarnMinutes"
-              type="number"
-              class="form-control"
-              min="0"
-              max="60"
-              bind:value={warnMinutes} />
+            <!-- Bootstrap floats the label once the field holds a value, and measures that off
+                 the placeholder. A number field has none of its own here, so it gets the single
+                 space the other floating fields use. -->
+            <div class="form-floating">
+              <input
+                id="scheduleWarnMinutes"
+                type="number"
+                class="form-control"
+                placeholder=" "
+                min="0"
+                max="60"
+                bind:value={warnMinutes} />
+              <label class="text-capitalize" for="scheduleWarnMinutes">
+                {$_('components.modals.schedule-editor.warn-label')}
+              </label>
+            </div>
             <div class="form-text">{$_('components.modals.schedule-editor.warn-hint')}</div>
           </div>
         </div>
@@ -218,7 +228,7 @@
                       bind:value={task.keep} />
                     <button
                       type="button"
-                      class="btn btn-sm btn-outline-secondary text-nowrap"
+                      class="btn btn-sm btn-primary text-nowrap"
                       aria-expanded={task.showOptions}
                       onclick={() => (task.showOptions = !task.showOptions)}>
                       <i class="fa-solid fa-sliders me-1" aria-hidden="true"></i>
@@ -231,7 +241,7 @@
                   <div class="btn-group btn-group-sm ms-auto">
                     <button
                       type="button"
-                      class="btn btn-outline-secondary"
+                      class="btn btn-outline-primary"
                       disabled={index === 0}
                       aria-label={$_('components.modals.schedule-editor.move-up')}
                       onclick={() => moveTask(index, -1)}>
@@ -239,7 +249,7 @@
                     </button>
                     <button
                       type="button"
-                      class="btn btn-outline-secondary"
+                      class="btn btn-outline-primary"
                       disabled={index === tasks.length - 1}
                       aria-label={$_('components.modals.schedule-editor.move-down')}
                       onclick={() => moveTask(index, 1)}>
@@ -268,24 +278,18 @@
           {/if}
 
           <div class="d-flex flex-wrap gap-2 pt-2">
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary"
-              onclick={() => addTask('POWER')}>
+            <button type="button" class="btn btn-sm btn-primary" onclick={() => addTask('POWER')}>
               <i class="fa-solid fa-power-off me-1" aria-hidden="true"></i>
               {$_('pages.servers.schedules.task-kind.power')}
             </button>
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary"
-              onclick={() => addTask('COMMAND')}>
+            <button type="button" class="btn btn-sm btn-primary" onclick={() => addTask('COMMAND')}>
               <i class="fa-solid fa-terminal me-1" aria-hidden="true"></i>
               {$_('pages.servers.schedules.task-kind.command')}
             </button>
             {#if canBackup}
               <button
                 type="button"
-                class="btn btn-sm btn-outline-secondary"
+                class="btn btn-sm btn-primary"
                 onclick={() => addTask('BACKUP')}>
                 <i class="fa-solid fa-box-archive me-1" aria-hidden="true"></i>
                 {$_('pages.servers.schedules.task-kind.backup')}
@@ -315,19 +319,21 @@
         {/if}
       </div>
 
-      <div class="modal-footer flex-nowrap">
-        <button type="button" class="btn btn-link col-6 m-0" data-bs-dismiss="modal">
-          {$_('buttons.cancel')}
-        </button>
+      <!-- The backdrop is static and Esc is off, so the ✕ in the header is the way out; one
+           full-width action says what the modal is for. Creating is the secondary action and
+           editing the primary one, the way the other add/edit dialogs are worded. -->
+      <div class="modal-footer">
         <button
           type="button"
-          class="btn btn-primary col-6 m-0"
+          class="btn w-100"
+          class:btn-secondary={editingId == null}
+          class:btn-primary={editingId != null}
           disabled={saving}
           onclick={() => void save()}>
           {#if saving}
             <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
           {/if}
-          {$_('buttons.save')}
+          {editingId == null ? $_('buttons.create') : $_('buttons.save')}
         </button>
       </div>
     </div>
@@ -735,6 +741,11 @@
     }
   }
 
+  /** The name is the one field there is to fill in, so the caret waits in it. */
+  function focusName() {
+    modalElement?.querySelector('#scheduleName')?.focus();
+  }
+
   onMount(() => {
     modal = window.bootstrap?.Modal
       ? window.bootstrap.Modal.getOrCreateInstance(modalElement, {
@@ -742,11 +753,16 @@
           keyboard: false,
         })
       : null;
+
+    // Only once Bootstrap reports the dialog as shown: until then it puts focus on the dialog
+    // itself, which would take the caret straight back out of the field.
+    modalElement?.addEventListener('shown.bs.modal', focusName);
   });
 
   onDestroy(() => {
     previewSeq += 1;
     clearTimeout(previewTimer);
+    modalElement?.removeEventListener('shown.bs.modal', focusName);
     modal?.hide();
     modal = null;
   });

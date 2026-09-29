@@ -1,14 +1,15 @@
 <!-- Per-server alert switches: each server-scoped alert follows the platform setting unless this
      server says otherwise (`settings.alerts`). E-mail stays a platform decision. -->
 <div class="card">
-  <div class="card-header">{$_('pages.servers.settings.alerts.title')}</div>
+  <div class="card-header text-capitalize">{$_('pages.servers.settings.alerts.title')}</div>
   <div class="card-body">
     <p class="text-body-secondary small">{$_('pages.servers.settings.alerts.description')}</p>
 
     {#each SERVER_ALERT_KINDS as kind (kind)}
       <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="serverAlert-{kind}">
-          {$_('pages.settings.platform.alerts.kinds.' + kind.toLowerCase())}
+          <span class="text-capitalize"
+            >{$_('pages.settings.platform.alerts.kinds.' + kind.toLowerCase())}</span>
           <small class="d-block text-body-secondary">
             {$_('pages.settings.platform.alerts.hints.' + kind.toLowerCase())}
           </small>
@@ -20,9 +21,11 @@
             value={choices[kind]}
             disabled={saving || !canEdit}
             onchange={(event) => (choices[kind] = event.currentTarget.value)}>
-            <option value={Choice.DEFAULT}>{defaultLabel(kind)}</option>
-            <option value={Choice.ON}>{$_('pages.servers.settings.alerts.option-on')}</option>
-            <option value={Choice.OFF}>{$_('pages.servers.settings.alerts.option-off')}</option>
+            <option value={Choice.DEFAULT}>{capitalize(defaultLabel(kind), $locale)}</option>
+            <option value={Choice.ON}
+              >{capitalize($_('pages.servers.settings.alerts.option-on'), $locale)}</option>
+            <option value={Choice.OFF}
+              >{capitalize($_('pages.servers.settings.alerts.option-off'), $locale)}</option>
           </select>
         </div>
       </div>
@@ -78,11 +81,12 @@
 
 <script>
   import { getContext, onMount, untrack } from 'svelte';
-  import { _ } from 'svelte-i18n';
+  import { _, locale } from 'svelte-i18n';
 
   import ApiUtil from '$lib/api.util.js';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { isEndpointUnavailable } from '$lib/servers.util.js';
+  import { capitalize } from '$lib/string.util.js';
 
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
 

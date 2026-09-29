@@ -1,11 +1,11 @@
 <!-- Server Settings Sub Page -->
 {#if $server && form}
   <div class="card">
-    <div class="card-header">{$_('pages.servers.settings.preferences')}</div>
+    <div class="card-header text-capitalize">{$_('pages.servers.settings.preferences')}</div>
     <div class="card-body">
       <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="serverName">
-          {$_('pages.servers.settings.server-name')}
+          <span class="text-capitalize">{$_('pages.servers.settings.server-name')}</span>
         </label>
         <div class="col">
           <div class="mb-3">
@@ -22,8 +22,9 @@
       </div>
       <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="mainServer">
-          {$_('pages.servers.settings.main-server')}
-          <small class="d-block">{$_('pages.servers.settings.main-server-info')}</small>
+          <span class="text-capitalize">{$_('pages.servers.settings.main-server')}</span>
+          <small class="d-block text-body-secondary"
+            >{$_('pages.servers.settings.main-server-info')}</small>
         </label>
         <div class="col col-form-label">
           {#if $mainServer && Number($server.id) === Number($mainServer.id)}
@@ -47,8 +48,9 @@
              whose plugins Pano tracks; the plugins page still shows updates when opened. -->
         <div class="row mb-3">
           <label class="col-md-6 col-form-label" for="autoUpdateCheck">
-            {$_('pages.servers.settings.auto-update-check')}
-            <small class="d-block">{$_('pages.servers.settings.auto-update-check-info')}</small>
+            <span class="text-capitalize">{$_('pages.servers.settings.auto-update-check')}</span>
+            <small class="d-block text-body-secondary"
+              >{$_('pages.servers.settings.auto-update-check-info')}</small>
           </label>
           <div class="col col-form-label">
             <div class="form-check form-switch">
@@ -84,20 +86,21 @@
 {/if}
 
 {#if $server && (canReinstall || canRemove)}
-  <div class="card border-danger">
-    <div class="card-header">{$_('pages.servers.settings.danger-zone')}</div>
+  <div class="card">
+    <div class="card-header text-capitalize">{$_('pages.servers.settings.danger-zone')}</div>
     <div class="card-body">
       {#if canReinstall}
         <div class="row mb-3">
           <label class="col-md-6 col-form-label" for="changeServerSoftware">
-            {$_('pages.servers.settings.change-software')}
-            <small class="d-block">{$_('pages.servers.settings.change-software-info')}</small>
+            <span class="text-capitalize">{$_('pages.servers.settings.change-software')}</span>
+            <small class="d-block text-body-secondary"
+              >{$_('pages.servers.settings.change-software-info')}</small>
           </label>
           <div class="col col-form-label">
             <button
               id="changeServerSoftware"
               type="button"
-              class="btn btn-outline-danger btn-sm"
+              class="btn btn-danger btn-sm"
               on:click={() => showChangeSoftwareModal({ server: $server })}>
               <i class="fa-solid fa-shuffle me-1" aria-hidden="true"></i>
               {$_('pages.servers.settings.change-software-button')}
@@ -106,14 +109,15 @@
         </div>
         <div class="row">
           <label class="col-md-6 col-form-label" for="reinstallServer">
-            {$_('pages.servers.settings.reinstall')}
-            <small class="d-block">{$_('pages.servers.settings.reinstall-info')}</small>
+            <span class="text-capitalize">{$_('pages.servers.settings.reinstall')}</span>
+            <small class="d-block text-body-secondary"
+              >{$_('pages.servers.settings.reinstall-info')}</small>
           </label>
           <div class="col col-form-label">
             <button
               id="reinstallServer"
               type="button"
-              class="btn btn-outline-danger btn-sm"
+              class="btn btn-danger btn-sm"
               on:click={() => showChangeSoftwareModal({ server: $server, lockSoftware: true })}>
               <i class="fa-solid fa-rotate me-1" aria-hidden="true"></i>
               {$_('buttons.reinstall')}
@@ -126,12 +130,13 @@
              disconnected from Pano, its files stay on the Minecraft server. -->
         <div class="row" class:mt-3={canReinstall}>
           <label class="col-md-6 col-form-label" for="removeServer">
-            {$_(
-              managed && !inPlace
-                ? 'pages.servers.settings.delete-server'
-                : 'pages.servers.settings.remove-server',
-            )}
-            <small class="d-block">
+            <span class="text-capitalize"
+              >{$_(
+                managed && !inPlace
+                  ? 'pages.servers.settings.delete-server'
+                  : 'pages.servers.settings.remove-server',
+              )}</span>
+            <small class="d-block text-body-secondary">
               {$_(
                 inPlace
                   ? 'pages.servers.settings.remove-in-place-info'
@@ -145,7 +150,7 @@
             <button
               id="removeServer"
               type="button"
-              class="btn btn-outline-danger btn-sm"
+              class="btn btn-danger btn-sm"
               on:click={() => showRemoveServerModal($server)}>
               <i
                 class="fa-solid {managed && !inPlace ? 'fa-trash' : 'fa-link-slash'} me-1"

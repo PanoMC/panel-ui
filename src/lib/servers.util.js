@@ -1272,7 +1272,7 @@ export function softwareNoteBadge(item) {
 
   if (note === SoftwareNotes.BUILD) {
     return {
-      className: 'text-bg-primary',
+      className: 'text-bg-secondary text-capitalize',
       label: 'components.modals.create-server.software-build',
       hint: 'components.modals.create-server.software-build-hint',
     };
@@ -1289,7 +1289,7 @@ export function softwareNoteBadge(item) {
   // `deprecated` is accepted next to the note so an entry that only carries the flag still warns.
   if (note === SoftwareNotes.DEPRECATED || item?.deprecated === true) {
     return {
-      className: 'text-bg-warning',
+      className: 'text-bg-danger text-capitalize',
       label: 'components.modals.create-server.software-deprecated',
       hint: '',
     };

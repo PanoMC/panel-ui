@@ -297,13 +297,13 @@
       "new-register-text": "{newRegisterCount} Yeni Kayıt",
       "total-player-text": "{totalPlayerCount} Toplam Oyuncu",
       "online-player-card": {
-        "title": "Çevrimiçi Oyuncular"
+        "title": "Çevrimiçi Oyuncu"
       },
       "new-register-card": {
-        "title": "Yeni Kayıtlar"
+        "title": "Yeni Kayıt"
       },
       "total-player-card": {
-        "title": "Toplam Oyuncular"
+        "title": "Toplam Oyuncu"
       },
       "period-label": {
         "week": "Bu hafta",
@@ -638,7 +638,7 @@
             "backup_failed": "Yedekleme başarısız",
             "disk_low": "Disk doluyor",
             "tps_low": "TPS düşük",
-            "schedule_failed": "Zamanlanmış görev başarısız",
+            "schedule_failed": "Görev başarısız",
             "plugin_updates": "Eklenti güncellemeleri"
           },
           "hints": {
@@ -647,7 +647,7 @@
             "backup_failed": "Bir yedekleme tamamlanamadı.",
             "disk_low": "Bir düğümün diski %90'dan fazla dolu; en fazla altı saatte bir bildirilir.",
             "tps_low": "Bir sunucu üst üste beş ölçümde 15 TPS'nin altında kaldı; en fazla 30 dakikada bir bildirilir.",
-            "schedule_failed": "Zamanlanmış bir çalışma hatayla bitti.",
+            "schedule_failed": "Bir görev hatayla bitti.",
             "plugin_updates": "Yönetilen bir sunucudaki eklenti veya modların yeni bir sürümü var; günde bir kez denetlenir."
           }
         }
@@ -1354,7 +1354,7 @@
         "command-disabled-cooldown": "Arka arkaya çok fazla komut gönderildi. Komut satırı birazdan geri gelecek.",
         "history-hint": "Yukarı ve aşağı ok tuşları bu sunucuya gönderdiğin komutlar arasında gezinir.",
         "load-failed": "Konsol geçmişi yüklenemedi.",
-        "source-node": "Yönetilen konsol",
+        "source-node": "Yönetilen Konsol",
         "source-plugin": "Bağlı konsol",
         "source-hint": "Satırların nereden okunduğu: düğüm sunucu sürecinin kendi çıktısını aktarır, eklenti ise oyunun günlükçüsüne bağlanır.",
         "reached-start": "En başa ulaştın",
@@ -1372,7 +1372,6 @@
         "description": "Şu anda bu sunucuda kimler var ve onlarla neler yapabilirsin.",
         "online-count": "{online}/{max} Oyuncu",
         "empty": "Şu anda çevrimiçi kimse yok.",
-        "empty-offline": "Sunucu çevrimdışı olduğu için kimse çevrimiçi değil.",
         "no-matches": "Aramayla eşleşen oyuncu yok.",
         "column-actions": "İşlemler",
         "column-player": "Oyuncu",
@@ -1381,6 +1380,7 @@
         "column-ip": "IP",
         "ping-value": "{ping} ms",
         "ping-unknown": "Bilinmiyor",
+        "uuid-copy": "UUID Kopyala",
         "uuid-copied": "UUID kopyalandı.",
         "session-days": "{days}g {hours}sa",
         "session-hours": "{hours}sa {minutes}dk",
@@ -1410,6 +1410,7 @@
         "current": "Şu anki",
         "ban-needs-commands": "{username} adlı oyuncunun Pano hesabı yok; bu yüzden ban, sunucunun kendi ban komutuyla yapılır ve bu sunucu şu an komut alamıyor.",
         "column-account": "Pano hesabı",
+        "column-op": "OP",
         "account-yes": "Kayıtlı",
         "account-no": "Yok",
         "account-yes-hint": "Buradan verilen ban Pano yasağıdır: site ve ban entegrasyonu açık her sunucu.",
@@ -1559,7 +1560,7 @@
         "prompt-new-name": "Yeni ad",
         "prompt-extract-into": "Çıkartılacak klasör",
         "prompt-mode": "İzin",
-        "prompt-confirm": "Uygula",
+        "prompt-confirm": "Tamam",
         "delete-title": "Kalıcı olarak silinsin mi?",
         "delete-description": "{count} öğe sunucudan silinecek. Bir klasörü silmek içindeki her şeyi de siler.",
         "created": "{name} oluşturuldu.",
@@ -1592,6 +1593,8 @@
         "retention-unavailable": "Pano'nun bu sürümü saklama ayarını henüz tutamıyor.",
         "list-failed": "Yedekler okunamadı.",
         "empty": "Henüz yedek yok.",
+        "no-matches": "Bu aramayla eşleşen yedek yok.",
+        "settings-title": "Yedekleme Ayarları",
         "column-name": "Ad",
         "column-size": "Boyut",
         "column-created": "Alınma",
@@ -1600,7 +1603,7 @@
         "column-checksum": "SHA-256",
         "column-actions": "İşlemler",
         "creator-unknown": "Bilinmiyor",
-        "copy-checksum": "Sağlama toplamını kopyala",
+        "copy-checksum": "Kopyala",
         "restore": "Geri yükle",
         "restore-title": "Bu yedek geri yüklensin mi?",
         "restore-description": "Sunucu klasöründeki her şey {name} yedeğinin içeriğiyle değiştirilecek. Bu işlem geri alınamaz.",
@@ -1651,17 +1654,16 @@
           "server_plugin_toggled": "Eklenti açıldı/kapatıldı",
           "server_file_changed": "Dosya değişti",
           "server_backup_action": "Yedek",
-          "server_schedule_run": "Zamanlama çalıştı",
+          "server_schedule_run": "Görev çalıştı",
           "server_crashed": "Çökme",
           "server_pano_plugin_updated": "Pano eklentisi güncellendi",
           "linked_agent_server": "Pano Agent ile bağlandı",
           "server_plugin_file_action": "Eklenti dosyası",
-          "server_schedule_action": "Zamanlama",
+          "server_schedule_action": "Görev",
           "created_server": "Oluşturuldu",
           "reinstalled_server": "Yeniden kuruldu",
           "updated_server_startup": "Başlangıç ayarları"
         },
-        "search-placeholder": "Etkinlikte ara...",
         "filter-user-label": "Kullanıcıya göre filtrele",
         "filter-user-all": "Tüm kullanıcılar",
         "end-of-history": "Bu sunucunun geçmişinin başına geldiniz."
@@ -1905,7 +1907,7 @@
         "java-size-unknown": "boyut bilinmiyor"
       },
       "startup": {
-        "restart-hint": "Değişiklikler sunucu bir sonraki açılışında geçerli olur. İşin bitince sunucuyu yeniden başlat.",
+        "restart-hint": "Değişiklikler sunucu bir sonraki açılışında geçerli olur.",
         "process-title": "Süreç",
         "properties-title": "server.properties",
         "properties-description": "Dosyanın tüm ayarları artık kendi sekmesinde.",
@@ -1915,13 +1917,10 @@
         "properties-open": "server.properties'i aç"
       },
       "schedules": {
-        "title": "Zamanlanmış görevler",
-        "description-managed": "Düğümün bu sunucu için çalıştırdığı cron görevleri: yeniden başlatma, komut ve yedekleme; sıraladığın düzende işletilir.",
-        "description-linked": "Pano'nun bu sunucu için çalıştırdığı cron görevleri. Bağlı sunucunun düğümü olmadığından yalnızca güç işlemleri ve komutlar kullanılabilir.",
-        "count": "{count} görev",
-        "create": "Yeni görev",
-        "empty": "Bu sunucuda henüz zamanlanmış görev yok.",
-        "list-failed": "Zamanlanmış görevler yüklenemedi.",
+        "title": "Görevler",
+        "count": "{count} Görev",
+        "create": "Yeni Görev",
+        "list-failed": "Görevler yüklenemedi.",
         "column-name": "Ad",
         "column-cron": "Çalışma zamanı",
         "column-next-run": "Sonraki çalışma",
@@ -1929,7 +1928,7 @@
         "column-enabled": "Etkin",
         "column-actions": "İşlemler",
         "never-run": "Hiç çalışmadı",
-        "no-tasks": "Görev yok",
+        "no-tasks": "İşlem yok",
         "run-now": "Şimdi çalıştır",
         "run-started": "{name} başlatıldı.",
         "run-finished": "{name} tamamlandı.",
@@ -1967,7 +1966,6 @@
       },
       "properties": {
         "title": "server.properties",
-        "description": "Dosyanın tüm ayarları, gruplanmış. Değiştirdikleriniz node'daki dosyaya yazılır; dosyadaki başka hiçbir şeye dokunulmaz.",
         "applies-next-start": "Değişiklikler sunucunun bir sonraki başlatılışında geçerli olur.",
         "source-file": "Node'daki dosyadan okundu",
         "source-stored": "Node'a ulaşılamıyor — Pano'nun kaydettiği değerler gösteriliyor",
@@ -2818,14 +2816,15 @@
       "files": "Dosyalar",
       "plugins": "Eklentiler",
       "backups": "Yedekler",
-      "schedules": "Zamanlanmış görevler",
+      "schedules": "Görevler",
+      "activity": "Hareketler",
       "settings": "Ayarlar",
       "add-server": "Sunucu ekle",
       "no-selected-server": "Seçili Sunucu Yok",
       "select-server": "Sunucu Seç",
       "connect-server": "Sunucu Bağla",
       "nodes": "Düğümler",
-      "no-selected-server-hint": "Konsolunu, oyuncularını, dosyalarını ve fazlasını görmek için bir sunucu seç."
+      "no-selected-server-hint": "Konsol, oyuncu ve dosya verileri için sunucu seçin."
     },
     "post-row": {
       "actions": "İşlemler",
@@ -2883,7 +2882,6 @@
       "server": "Sunucu",
       "game-integration": "Oyun Entegrasyonu",
       "startup": "Başlangıç",
-      "activity": "Hareketler",
       "properties": "Server properties"
     },
     "modals": {
@@ -3373,7 +3371,7 @@
         },
         "source-in-place-title": "Var Olan Klasör, Yerinde Çalıştır",
         "source-in-place-description": "Düğüm, makinesinde zaten bulunan bir sunucu klasörünü olduğu yerden çalıştırır. Hiçbir şey kopyalanmaz ya da taşınmaz.",
-        "in-place-stop-note": "Çalışan bir klasör kabul edilmez: aynı klasörde iki süreç dünyayı bozar. Sunucu ve onu başlatan süreç (systemd, screen, panel) durdurulmalı."
+        "in-place-stop-note": "Çalışan bir klasör kabul edilmez: aynı klasörde iki süreç dünyayı bozar."
       },
       "file-editor": {
         "unsaved": "Kaydedilmedi",
@@ -3405,7 +3403,7 @@
         "backups-size": "Dosyaları ve {count} yedeği ({size}) de düğümden silinecek."
       },
       "schedule-editor": {
-        "create-title": "Yeni zamanlanmış görev",
+        "create-title": "Yeni Görev",
         "edit-title": "Görevi düzenle",
         "name-label": "Ad",
         "name-placeholder": "Gece yeniden başlatma",
@@ -3418,10 +3416,10 @@
         "preview-loading": "İfade denetleniyor...",
         "preview-invalid": "Pano bu cron ifadesini okuyamıyor.",
         "preview-failed": "Önizleme yüklenemedi.",
-        "tasks-label": "Görevler",
+        "tasks-label": "İşlemler",
         "tasks-hint": "Yukarıdan aşağıya, sırayla çalışırlar.",
-        "tasks-empty": "En az bir görev ekle.",
-        "task-kind": "Görev türü",
+        "tasks-empty": "En az bir işlem ekle.",
+        "task-kind": "İşlem türü",
         "task-action": "Güç işlemi",
         "task-command": "Komut",
         "task-command-placeholder": "say Sunucu birazdan yeniden başlıyor",
@@ -3430,13 +3428,13 @@
         "task-keep": "Kaç yedek saklanacak",
         "move-up": "Yukarı taşı",
         "move-down": "Aşağı taşı",
-        "backup-unavailable": "Yedekleme görevleri için bu sunucuyu yedekleyebilen bir düğüm ya da Pano eklentisi gerekir.",
+        "backup-unavailable": "Yedekleme işlemleri için bu sunucuyu yedekleyebilen bir düğüm ya da Pano eklentisi gerekir.",
         "enabled-label": "Bu görev çalışsın",
         "error-name": "Göreve bir ad ver.",
         "error-cron": "Bir cron ifadesi gir.",
         "error-cron-invalid": "Pano bu cron ifadesini okuyamıyor.",
-        "error-tasks": "En az bir görev ekle.",
-        "error-command": "Komut görevi için bir komut gerekir.",
+        "error-tasks": "En az bir işlem ekle.",
+        "error-command": "Komut işlemi için bir komut gerekir.",
         "save-failed": "Görev kaydedilemedi.",
         "error-backup-include": "Özel bir yedek için dahil edilecek en az bir yol gerekir."
       },
@@ -3590,10 +3588,10 @@
         "no-backup-warning": "Korunmayan her şey silinir.",
         "start-after": "Ardından sunucuyu başlat",
         "start-after-running": "Şu an açık; önce durdurulacak.",
-        "start-after-stopped": "Şu an kapalı.",
+
         "password-label": "Hesap parolası",
-        "summary-running": "{from} → {to}. Kurulum başarısız olursa geri alınır.",
-        "summary-stopped": "{from} → {to}. Kurulum başarısız olursa geri alınır.",
+        "summary-running": "{from} → {to}",
+        "summary-stopped": "{from} → {to}",
         "submit": "Yazılımı Değiştir",
         "progress-running": "Çalışılıyor…",
         "progress-waiting": "Node bekleniyor…",
@@ -3846,8 +3844,8 @@
       "description": "Bir sunucunun eklentilerini ve modlarını yükleyebilir, güncelleyebilir ve kaldırabilir."
     },
     "MANAGE_SERVER_SCHEDULES": {
-      "title": "Sunucu Zamanlamalarını Yönet",
-      "description": "Bir sunucunun zamanlanmış görevlerini oluşturabilir, düzenleyebilir ve çalıştırabilir."
+      "title": "Sunucu Görevlerini Yönet",
+      "description": "Bir sunucunun görevlerini oluşturabilir, düzenleyebilir ve çalıştırabilir."
     },
     "MANAGE_SERVER_STARTUP": {
       "title": "Sunucu Başlatma Ayarlarını Yönet",
@@ -3966,8 +3964,8 @@
     "SERVER_PLUGIN_TOGGLED": "**{username}**, {serverName} sunucusunda {plugin} eklentisini {enabled, select, true {etkinleştirdi} other {devre dışı bıraktı}}.",
     "SERVER_PLUGIN_UPDATED": "**{username}**, {serverName} sunucusunda {pluginName} eklentisini güncelledi.",
     "SERVER_POWER_ACTION": "**{username}**, {serverName} sunucusunu {action, select, START {başlattı} STOP {durdurdu} RESTART {yeniden başlattı} KILL {zorla kapattı} other {yönetti}}.",
-    "SERVER_SCHEDULE_ACTION": "**{username}**, {serverName} sunucusunda {name} zamanlamasını {action, select, CREATE {oluşturdu} UPDATE {düzenledi} DELETE {sildi} TOGGLE {açıp kapattı} RUN {çalıştırdı} other {değiştirdi}}.",
-    "SERVER_SCHEDULE_RUN": "{serverName} sunucusundaki {name} zamanlaması {ok, select, true {çalıştı} other {başarısız oldu}}.",
+    "SERVER_SCHEDULE_ACTION": "**{username}**, {serverName} sunucusunda {name} görevini {action, select, CREATE {oluşturdu} UPDATE {düzenledi} DELETE {sildi} TOGGLE {açıp kapattı} RUN {çalıştırdı} other {değiştirdi}}.",
+    "SERVER_SCHEDULE_RUN": "{serverName} sunucusundaki {name} görevi {ok, select, true {çalıştı} other {başarısız oldu}}.",
     "UPDATED_SERVER_STARTUP": "**{username}**, {serverName} sunucusunun başlangıç ayarlarını değiştirdi."
   },
   "notifications": {
@@ -3982,7 +3980,7 @@
     "BACKUP_FAILED": "Bir yedekleme başarısız oldu.",
     "DISK_LOW": "Bir düğümün disk alanı tükeniyor.",
     "TPS_LOW": "Bir sunucu 15 TPS'nin altında çalışıyor.",
-    "SCHEDULE_FAILED": "Zamanlanmış bir çalışma başarısız oldu.",
+    "SCHEDULE_FAILED": "Bir görev başarısız oldu.",
     "PLUGIN_UPDATES": "<b>{serverName}</b> için <b>{count}</b> eklenti güncellemesi var: {names}"
   },
   "errors": {

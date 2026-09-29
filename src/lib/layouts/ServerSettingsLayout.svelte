@@ -17,12 +17,6 @@
       <PageNavItem href="/servers/{$server.id}/settings/game-integration" startsWith>
         {$_('components.server-settings-layout.game-integration')}
       </PageNavItem>
-      {#if hasPermission(Permissions.MANAGE_SERVERS)}
-        <!-- §2.4.12 — the log is read with the same grant that opened this workspace. -->
-        <PageNavItem href="/servers/{$server.id}/settings/activity" startsWith>
-          {$_('components.server-settings-layout.activity')}
-        </PageNavItem>
-      {/if}
     </PageNav>
   </div>
 </PageActions>

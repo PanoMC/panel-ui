@@ -21,69 +21,11 @@
     border-bottom-right-radius: var(--bs-card-inner-border-radius);
   }
 
-  /* The statistics as packed columns: groups flow into the next column instead of one long
-     table, and a group is never split across two. */
-  .stats-columns {
-    column-count: 1;
-    column-gap: 2rem;
-  }
-
-  @media (min-width: 768px) {
-    .stats-columns {
-      column-count: 2;
-    }
-  }
-
-  @media (min-width: 1400px) {
-    .stats-columns {
-      column-count: 3;
-    }
-  }
-
-  .stats-group {
-    break-inside: avoid;
-    margin-bottom: 1rem;
-  }
-
-  .stats-group-title {
-    margin-bottom: 0.25rem;
-    padding-bottom: 0.25rem;
-    border-bottom: 1px solid var(--bs-border-color);
-  }
-
-  .stats-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1rem;
-    padding: 0.3rem 0;
-    border-bottom: 1px solid var(--bs-border-color-translucent);
-  }
-
-  .stats-row:last-child {
-    border-bottom: 0;
-  }
-
-  .stats-label {
-    flex-shrink: 0;
-  }
-
-  .stats-value {
-    text-align: right;
-    min-width: 0;
-  }
-
-  .stats-row.expanded {
-    border-bottom: 0;
-  }
-
-  .stats-code:last-child {
-    border-bottom: 0;
-  }
-
+  /* The statistics as a table, the same label/value shape the Statistics page's total
+     statistics card uses. A long argument list opens below its row, full width: squeezed
+     into the value column it reads badly. */
   .stats-code {
-    padding: 0.25rem 0 0.5rem;
-    border-bottom: 1px solid var(--bs-border-color-translucent);
+    padding: 0 0.5rem 0.5rem;
   }
 
   .stats-code-chevron {
@@ -266,7 +208,7 @@
     <div class="card">
       <CardHeader>
         <span slot="left" class="d-flex flex-wrap align-items-center column-gap-2">
-          {$_('pages.servers.overview.metrics-title')}
+          <span class="text-capitalize">{$_('pages.servers.overview.metrics-title')}</span>
           {#if !metricsSample}
             <small class="opacity-75 fw-normal">
               {isServerOnline(view)
@@ -391,7 +333,8 @@
            none of the tiles that could only ever read "—". -->
     <div class="card">
       <CardHeader>
-        <span slot="left">{$_('pages.servers.overview.metrics-title')}</span>
+        <span slot="left" class="text-capitalize"
+          >{$_('pages.servers.overview.metrics-title')}</span>
       </CardHeader>
       <div class="card-body">
         <NoContent
@@ -413,7 +356,8 @@
          state, the same answer the Performance card above gives. -->
   <div class="card">
     <CardHeader>
-      <span slot="left">{$_('pages.servers.overview.activity-chart-title')}</span>
+      <span slot="left" class="text-capitalize"
+        >{$_('pages.servers.overview.activity-chart-title')}</span>
       {#if hasActivityChart}
         <CardFilters slot="right">
           <CardFiltersItem
@@ -482,7 +426,7 @@
           <div class="card h-100">
             <CardHeader>
               <span slot="left" class="d-flex align-items-center gap-2">
-                {$_('pages.servers.overview.console-title')}
+                <span class="text-capitalize">{$_('pages.servers.overview.console-title')}</span>
                 {#if consoleSourceLabel}
                   <small
                     class="opacity-75"
@@ -548,11 +492,12 @@
         <div class="col-12" class:col-lg-6={showConsole}>
           <div class="card h-100">
             <CardHeader>
-              <span slot="left">{$_('pages.servers.overview.activity-title')}</span>
+              <span slot="left" class="text-capitalize"
+                >{$_('pages.servers.overview.activity-title')}</span>
               <span slot="right">
                 <a
                   class="btn-link text-decoration-none focus-ring rounded"
-                  href="{base}/servers/{view.id}/settings/activity"
+                  href="{base}/servers/{view.id}/activity"
                   title={$_('pages.servers.overview.activity-open')}
                   aria-label={$_('pages.servers.overview.activity-open')}>
                   <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
@@ -601,135 +546,128 @@
     </div>
   {/if}
 
-  <!-- Everything Pano knows about this server, grouped and packed into columns: a group
-         appears only where it applies — the runtime of a process Pano owns, the plugin of a
-         server that has one — and a value nobody reported reads "—". -->
+  <!-- Everything Pano knows about this server, as a label/value table like the Statistics page's
+         total statistics card: a row appears only where it applies — the runtime of a process Pano
+         owns, the plugin of a server that has one — and a value nobody reported reads "—". -->
   <div class="card">
     <CardHeader>
-      <span slot="left">{$_('pages.servers.overview.statistics')}</span>
+      <span slot="left" class="text-capitalize">{$_('pages.servers.overview.statistics')}</span>
     </CardHeader>
-    <div class="card-body stats-columns">
-      {#each statGroups as group (group.key)}
-        <section class="stats-group">
-          <h6 class="stats-group-title text-uppercase fw-semibold">
-            <small class="opacity-75">{$_(group.title)}</small>
-          </h6>
-          {#each group.rows as row (row.key)}
-            <div
-              class="stats-row small"
-              class:expanded={row.collapsible && shownCodeRows.includes(row.key)}>
-              <span class="stats-label opacity-75">{$_(row.label)}</span>
-              <span class="stats-value text-break" class:font-monospace={row.mono}>
-                {#if row.kind === 'date'}
-                  {#if Number(row.time) > 0}
-                    <DateComponent time={row.time} />
-                  {:else}
-                    —
-                  {/if}
-                {:else if row.kind === 'uuid'}
-                  <span class="d-inline-flex align-items-center gap-2">
-                    <code>{row.text}</code>
+    <div class="table-responsive">
+      <table class="table">
+        <tbody>
+          {#each statGroups as group (group.key)}
+            {#each group.rows as row (row.key)}
+              <tr>
+                <th scope="row" class="text-capitalize">{$_(row.label)}</th>
+                <td class="text-break" class:font-monospace={row.mono}>
+                  {#if row.kind === 'date'}
+                    {#if Number(row.time) > 0}
+                      <DateComponent time={row.time} />
+                    {:else}
+                      —
+                    {/if}
+                  {:else if row.kind === 'uuid'}
+                    <span class="d-inline-flex align-items-center gap-2">
+                      <code>{row.text}</code>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-link p-0"
+                        aria-label={$_('buttons.copy')}
+                        use:tooltip={[
+                          uuidCopied
+                            ? $_('components.modals.connect-server.copied')
+                            : $_('buttons.copy'),
+                          { placement: 'top', hideOnClick: false },
+                        ]}
+                        on:click={() => copyUuid(row.text)}>
+                        <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                      </button>
+                    </span>
+                  {:else if row.kind === 'code' && row.collapsible}
                     <button
                       type="button"
-                      class="btn btn-sm btn-link p-0"
-                      aria-label={$_('buttons.copy')}
-                      use:tooltip={[
-                        uuidCopied
-                          ? $_('components.modals.connect-server.copied')
-                          : $_('buttons.copy'),
-                        { placement: 'top', hideOnClick: false },
-                      ]}
-                      on:click={() => copyUuid(row.text)}>
-                      <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                      class="btn btn-sm btn-link p-0 text-decoration-none"
+                      aria-expanded={shownCodeRows.includes(row.key)}
+                      aria-controls="stats-code-{group.key}-{row.key}"
+                      on:click={() => toggleCodeRow(row.key)}>
+                      {shownCodeRows.includes(row.key)
+                        ? $_('pages.servers.overview.info.code-hide')
+                        : $_('pages.servers.overview.info.code-show', {
+                            values: { count: row.count },
+                          })}
+                      <i
+                        class="fa-solid fa-chevron-down ms-1 stats-code-chevron"
+                        class:open={shownCodeRows.includes(row.key)}
+                        aria-hidden="true"></i>
                     </button>
-                  </span>
-                {:else if row.kind === 'code' && row.collapsible}
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-link p-0 text-decoration-none"
-                    aria-expanded={shownCodeRows.includes(row.key)}
-                    aria-controls="stats-code-{group.key}-{row.key}"
-                    on:click={() => toggleCodeRow(row.key)}>
-                    {shownCodeRows.includes(row.key)
-                      ? $_('pages.servers.overview.info.code-hide')
-                      : $_('pages.servers.overview.info.code-show', {
-                          values: { count: row.count },
-                        })}
-                    <i
-                      class="fa-solid fa-chevron-down ms-1 stats-code-chevron"
-                      class:open={shownCodeRows.includes(row.key)}
-                      aria-hidden="true"></i>
-                  </button>
-                {:else if row.kind === 'code'}
-                  <code class="text-break">{row.text}</code>
-                {:else if row.kind === 'plugin-version'}
-                  <span
-                    class="d-inline-flex flex-wrap align-items-center justify-content-end gap-2">
-                    {row.text}
-                    <!-- §2.4.26 — only when Pano knows what it would install; a dev or local
-                           build has no comparable version, so it gets no badge at all. -->
-                    {#if data.panoPlugin?.updateAvailable === true}
-                      <span class="badge text-bg-warning">
-                        {$_('pages.servers.overview.info.plugin-update-available', {
-                          values: { version: data.panoPlugin.latestVersion ?? '' },
-                        })}
-                      </span>
-                      {#if data.panoPlugin?.updateMode || data.panoPlugin?.updateManual}
-                        <!-- One click: the node swaps the jar, or the plugin stages its own
-                               update; either way it loads on the next restart. A plugin too old
-                               for either gets the hand-update steps instead. -->
-                        <PanoPluginUpdateButton
-                          server={view}
-                          latestVersion={data.panoPlugin.latestVersion ?? null}
-                          label="buttons.update"
-                          class="py-0" />
+                  {:else if row.kind === 'code'}
+                    <code class="text-break">{row.text}</code>
+                  {:else if row.kind === 'plugin-version'}
+                    <span class="d-inline-flex flex-wrap align-items-center gap-2">
+                      {row.text}
+                      <!-- §2.4.26 — only when Pano knows what it would install; a dev or local
+                             build has no comparable version, so it gets no badge at all. -->
+                      {#if data.panoPlugin?.updateAvailable === true}
+                        <span class="badge text-bg-warning">
+                          {$_('pages.servers.overview.info.plugin-update-available', {
+                            values: { version: data.panoPlugin.latestVersion ?? '' },
+                          })}
+                        </span>
+                        {#if data.panoPlugin?.updateMode || data.panoPlugin?.updateManual}
+                          <!-- One click: the node swaps the jar, or the plugin stages its own
+                                 update; either way it loads on the next restart. A plugin too old
+                                 for either gets the hand-update steps instead. -->
+                          <PanoPluginUpdateButton
+                            server={view}
+                            latestVersion={data.panoPlugin.latestVersion ?? null}
+                            label="buttons.update"
+                            class="py-0" />
+                        {/if}
+                      {:else if data.panoPlugin?.updateAvailable === false}
+                        <span class="badge text-bg-success">
+                          {$_('pages.servers.overview.info.plugin-up-to-date')}
+                        </span>
                       {/if}
-                    {:else if data.panoPlugin?.updateAvailable === false}
-                      <span class="badge text-bg-success">
-                        {$_('pages.servers.overview.info.plugin-up-to-date')}
-                      </span>
-                    {/if}
-                  </span>
-                {:else if row.kind === 'capabilities'}
-                  {#if Array.isArray(view.capabilities) && view.capabilities.length}
-                    <span class="d-inline-flex justify-content-end">
+                    </span>
+                  {:else if row.kind === 'capabilities'}
+                    {#if Array.isArray(view.capabilities) && view.capabilities.length}
                       <ServerCapabilityChips server={view} />
-                    </span>
+                    {:else}
+                      —
+                    {/if}
+                  {:else if row.kind === 'last-backup'}
+                    {#if lastBackup}
+                      <span class="d-inline-flex flex-wrap align-items-center gap-2">
+                        <DateComponent time={lastBackup.time} />
+                        {#if lastBackup.name}
+                          <small class="opacity-75 text-break">{lastBackup.name}</small>
+                        {/if}
+                        <small>
+                          <a href="{base}/servers/{view.id}/backups">
+                            {$_('pages.servers.overview.last-backup-open')}
+                          </a>
+                        </small>
+                      </span>
+                    {:else}
+                      —
+                    {/if}
                   {:else}
-                    —
+                    {row.text}
                   {/if}
-                {:else if row.kind === 'last-backup'}
-                  {#if lastBackup}
-                    <span
-                      class="d-inline-flex flex-wrap align-items-center justify-content-end gap-2">
-                      <DateComponent time={lastBackup.time} />
-                      {#if lastBackup.name}
-                        <small class="opacity-75 text-break">{lastBackup.name}</small>
-                      {/if}
-                      <small>
-                        <a href="{base}/servers/{view.id}/backups">
-                          {$_('pages.servers.overview.last-backup-open')}
-                        </a>
-                      </small>
-                    </span>
-                  {:else}
-                    —
-                  {/if}
-                {:else}
-                  {row.text}
-                {/if}
-              </span>
-            </div>
-            {#if row.collapsible && shownCodeRows.includes(row.key)}
-              <!-- Below the row, full width: a long argument list reads badly squeezed into
-                     the value column. -->
-              <div class="stats-code" id="stats-code-{group.key}-{row.key}">
-                <small><code class="text-break">{row.text}</code></small>
-              </div>
-            {/if}
+                </td>
+              </tr>
+              {#if row.collapsible && shownCodeRows.includes(row.key)}
+                <tr>
+                  <td colspan="2" class="stats-code" id="stats-code-{group.key}-{row.key}">
+                    <small><code class="text-break">{row.text}</code></small>
+                  </td>
+                </tr>
+              {/if}
+            {/each}
           {/each}
-        </section>
-      {/each}
+        </tbody>
+      </table>
     </div>
   </div>
 {/if}

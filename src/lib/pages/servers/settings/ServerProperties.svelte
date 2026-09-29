@@ -61,9 +61,6 @@
       <div class="d-flex flex-wrap align-items-center gap-2">
         <div class="me-auto">
           <div class="fw-semibold">{$_('pages.servers.properties.title')}</div>
-          <div class="text-body-secondary small">
-            {$_('pages.servers.properties.description')}
-          </div>
         </div>
         <span class="property-search w-100">
           <SearchInput autofocus showSpinner={false} onchange={(value) => (query = value)} />
@@ -98,7 +95,7 @@
     <div class="card">
       <div class="card-header d-flex align-items-center gap-2">
         <i class="{group.icon} text-body-secondary" aria-hidden="true"></i>
-        {$_(`pages.servers.properties.groups.${group.key}`)}
+        <span class="text-capitalize">{$_(`pages.servers.properties.groups.${group.key}`)}</span>
       </div>
       <div class="card-body py-1">
         {#each group.keys as key (key)}
@@ -107,7 +104,8 @@
           <div class="property-row">
             <div class="min-w-0">
               <label class="form-label mb-0 d-flex align-items-center gap-2" for={id}>
-                {$_(`pages.servers.properties.keys.${key}.label`)}
+                <span class="text-capitalize"
+                  >{$_(`pages.servers.properties.keys.${key}.label`)}</span>
                 {#if isChanged(key)}
                   <span
                     class="changed-dot"

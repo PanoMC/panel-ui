@@ -56,7 +56,7 @@
   <div class="card">
     <CardHeader>
       <span slot="left" class="d-flex align-items-center gap-2">
-        {$_('pages.servers.plugins.title')}
+        <span class="text-capitalize">{$_('pages.servers.plugins.title')}</span>
         <span class="badge rounded-pill text-bg-secondary">
           {$_('pages.servers.plugins.count', { values: { count: rows.length } })}
         </span>
@@ -65,6 +65,15 @@
             {$_('pages.servers.plugins.updates.count', { values: { count: updateCount } })}
           </span>
         {/if}
+      </span>
+
+      <span slot="middle" class="plugin-search">
+        <SearchInput
+          autofocus
+          placeholderKey="pages.servers.plugins.search-placeholder"
+          ariaLabelKey="pages.servers.plugins.search-placeholder"
+          showSpinner={false}
+          onchange={(value) => (query = value)} />
       </span>
 
       <span
@@ -117,15 +126,6 @@
             {$_('pages.servers.plugins.updates.identify')}
           </button>
         {/if}
-
-        <span class="plugin-search w-100">
-          <SearchInput
-            autofocus
-            placeholderKey="pages.servers.plugins.search-placeholder"
-            ariaLabelKey="pages.servers.plugins.search-placeholder"
-            showSpinner={false}
-            onchange={(value) => (query = value)} />
-        </span>
       </span>
     </CardHeader>
 

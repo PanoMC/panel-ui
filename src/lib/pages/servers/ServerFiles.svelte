@@ -160,13 +160,10 @@
             aria-label={$_('pages.servers.files.path-label')}
             placeholder={$_('pages.servers.files.path-placeholder')}
             bind:value={pathInput} />
-          <button class="btn btn-outline-secondary" type="submit">
+          <button class="btn btn-primary" type="submit">
             {$_('pages.servers.files.path-go')}
           </button>
-          <button
-            class="btn btn-outline-secondary"
-            type="button"
-            onclick={() => (editingPath = false)}>
+          <button class="btn btn-primary" type="button" onclick={() => (editingPath = false)}>
             {$_('buttons.cancel')}
           </button>
         </form>
@@ -227,7 +224,9 @@
             {$_('pages.servers.files.selected', { values: { count: selectedNames.length } })}
           </span>
           <!-- One file downloads as itself; anything more, or a folder, arrives as one zip that is
-               built while it downloads — nothing is left behind on the server. -->
+               built while it downloads — nothing is left behind on the server. `text-capitalize`
+               because the label is written lowercased in the dictionaries ("Zip olarak indir")
+               and it now sits beside a solid button. -->
           <span
             class="d-inline-block"
             use:tooltip={[
@@ -236,7 +235,7 @@
             ]}>
             <button
               type="button"
-              class="btn btn-sm btn-outline-secondary"
+              class="btn btn-sm btn-primary text-capitalize"
               disabled={busy}
               onclick={() => downloadNames(selectedNames)}>
               <i
@@ -247,75 +246,75 @@
                 : $_('pages.servers.files.action-download')}
             </button>
           </span>
+          <!-- Icon and tip alone: Download is the solid button here, so a second filled one
+               would compete with it for the eye. The label lives in the tip and in `aria-label`. -->
           <button
             type="button"
-            class="btn btn-sm btn-outline-danger"
+            class="btn btn-sm btn-link link-danger p-0"
             disabled={!canManage || busy}
-            onclick={() => askDelete(selectedNames)}>
-            <i class="fa-solid fa-trash me-1" aria-hidden="true"></i>
-            {$_('buttons.delete')}
+            aria-label={$_('buttons.delete')}
+            onclick={() => askDelete(selectedNames)}
+            use:tooltip={[$_('buttons.delete'), { placement: 'bottom' }]}>
+            <i class="fa-solid fa-trash" aria-hidden="true"></i>
           </button>
         {/if}
 
-        <!-- The directory's own actions behind one menu, the way the console header does it:
-             `title` rather than a tippy tooltip, as the other action menus do, and named items
-             so nothing here needs a label of its own. -->
-        <div class="dropdown">
+        <!-- The directory's own actions as icons with tips. They are the same handful on every
+             directory, so a menu would only be a click deeper for no gain; each label lives in
+             its tip and in `aria-label`. They lead, so the filled Upload at the end has the edge
+             of the header to itself. -->
+        <button
+          type="button"
+          class="btn btn-sm btn-link p-0"
+          disabled={!canManage || busy}
+          aria-label={$_('pages.servers.files.new-file')}
+          onclick={() => startPrompt('new-file')}
+          use:tooltip={[$_('pages.servers.files.new-file'), { placement: 'bottom' }]}>
+          <i class="fa-solid fa-file-circle-plus" aria-hidden="true"></i>
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-link p-0"
+          disabled={!canManage || busy}
+          aria-label={$_('pages.servers.files.new-folder')}
+          onclick={() => startPrompt('new-folder')}
+          use:tooltip={[$_('pages.servers.files.new-folder'), { placement: 'bottom' }]}>
+          <i class="fa-solid fa-folder-plus" aria-hidden="true"></i>
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-link p-0"
+          disabled={loading}
+          aria-label={$_('buttons.refresh')}
+          onclick={() => void refresh()}
+          use:tooltip={[$_('buttons.refresh'), { placement: 'bottom' }]}>
+          <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
+        </button>
+
+        {#if path}
           <button
             type="button"
-            class="btn btn-sm btn-link"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            title={$_('pages.servers.files.column-actions')}
-            aria-label={$_('pages.servers.files.column-actions')}>
-            <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
+            class="btn btn-sm btn-link p-0"
+            aria-label={$_('pages.servers.files.go-up')}
+            onclick={goUp}
+            use:tooltip={[$_('pages.servers.files.go-up'), { placement: 'bottom' }]}>
+            <i class="fa-solid fa-arrow-turn-up" aria-hidden="true"></i>
           </button>
+        {/if}
 
-          <div class="dropdown-menu dropdown-menu-end">
-            <button
-              type="button"
-              class="dropdown-item text-capitalize"
-              disabled={!canManage || busy}
-              onclick={() => startPrompt('new-file')}>
-              <i class="fa-solid fa-file-circle-plus me-2" aria-hidden="true"></i>
-              {$_('pages.servers.files.new-file')}
-            </button>
-
-            <button
-              type="button"
-              class="dropdown-item text-capitalize"
-              disabled={!canManage || busy}
-              onclick={() => startPrompt('new-folder')}>
-              <i class="fa-solid fa-folder-plus me-2" aria-hidden="true"></i>
-              {$_('pages.servers.files.new-folder')}
-            </button>
-
-            <button
-              type="button"
-              class="dropdown-item text-capitalize"
-              disabled={!canManage || busy}
-              onclick={() => showUploadModal(path, (files) => void uploadFiles(files))}>
-              <i class="fa-solid fa-upload me-2" aria-hidden="true"></i>
-              {$_('pages.servers.files.upload')}
-            </button>
-
-            <button
-              type="button"
-              class="dropdown-item text-capitalize"
-              disabled={loading}
-              onclick={() => void refresh()}>
-              <i class="fa-solid fa-rotate-right me-2" aria-hidden="true"></i>
-              {$_('buttons.refresh')}
-            </button>
-
-            {#if path}
-              <button type="button" class="dropdown-item text-capitalize" onclick={goUp}>
-                <i class="fa-solid fa-arrow-turn-up me-2" aria-hidden="true"></i>
-                {$_('pages.servers.files.go-up')}
-              </button>
-            {/if}
-          </div>
-        </div>
+        <!-- Uploading is the one thing on this header that adds to the listing, so it is the one
+             that is filled and the one that carries its label — and it sits at the far end, where
+             the eye lands last and comes to rest. -->
+        <button
+          type="button"
+          class="btn btn-sm btn-primary"
+          disabled={!canManage || busy}
+          onclick={() => showUploadModal(path, (files) => void uploadFiles(files))}>
+          <i class="fa-solid fa-upload me-1" aria-hidden="true"></i>
+          {$_('pages.servers.files.upload')}
+        </button>
       </span>
     </CardHeader>
 
@@ -323,20 +322,15 @@
       <div class="card-body d-flex justify-content-center py-5">
         <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
       </div>
+      <!-- §2.4.35 — the same reasoning as above: a directory that could not be read says so and
+         nothing more. A Refresh here would only repeat the answer it just gave, and the state
+         that caused it (node offline, feature away) is the notice's to explain. -->
     {:else if listError}
       <div class="card-body text-center vstack gap-3 py-5">
         <div>
           <i class="fa-solid fa-folder-open fa-3x text-body-secondary" aria-hidden="true"></i>
         </div>
         <div class="text-body-secondary">{$_(listError)}</div>
-        <div>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-secondary"
-            onclick={() => void refresh()}>
-            {$_('buttons.refresh')}
-          </button>
-        </div>
       </div>
     {:else if !visibleEntries.length}
       <div class="card-body">
@@ -534,7 +528,9 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{promptTitle ? $_(promptTitle) : ''}</h5>
+        <!-- `text-capitalize`: the mode titles are lowercased in the dictionaries ("yeni dosya")
+             the way the dropdown items were. -->
+        <h5 class="modal-title text-capitalize">{promptTitle ? $_(promptTitle) : ''}</h5>
       </div>
       <div class="modal-body">
         <!-- Bootstrap's floating label: the caption sits inside the empty field and lifts out of

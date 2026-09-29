@@ -69,7 +69,7 @@ export function consoleStreamSource(server, state = null) {
  * @returns {string} the icon the console header shows for it.
  */
 export function consoleSourceIcon(source) {
-  return source === 'plugin' ? 'fa-solid fa-link' : 'fa-solid fa-server';
+  return source === 'plugin' ? 'fa-solid fa-cog' : 'fa-solid fa-cog';
 }
 
 /**

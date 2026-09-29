@@ -1381,6 +1381,7 @@
         "column-ip": "IP",
         "ping-value": "{ping} ms",
         "ping-unknown": "Unknown",
+        "uuid-copy": "Copy UUID",
         "uuid-copied": "UUID copied.",
         "session-days": "{days}d {hours}h",
         "session-hours": "{hours}h {minutes}m",
@@ -1410,6 +1411,7 @@
         "current": "Current",
         "ban-needs-commands": "{username} has no Pano account, so a ban is this server's own ban command, and this server cannot take commands right now.",
         "column-account": "Pano account",
+        "column-op": "OP",
         "account-yes": "Registered",
         "account-no": "None",
         "account-yes-hint": "A ban from here is a Pano ban: the website and every server with ban integration.",
@@ -1559,7 +1561,7 @@
         "prompt-new-name": "New name",
         "prompt-extract-into": "Extract into",
         "prompt-mode": "Mode",
-        "prompt-confirm": "Apply",
+        "prompt-confirm": "OK",
         "delete-title": "Delete for good?",
         "delete-description": "{count} entries are deleted from the server. Deleting a folder deletes everything in it.",
         "created": "{name} was created.",
@@ -1592,6 +1594,8 @@
         "retention-unavailable": "This build of Pano cannot keep a retention setting yet.",
         "list-failed": "The backups could not be read.",
         "empty": "No backup yet.",
+        "no-matches": "No backup matches that search.",
+        "settings-title": "Backup Settings",
         "column-name": "Name",
         "column-size": "Size",
         "column-created": "Created",
@@ -1600,7 +1604,7 @@
         "column-checksum": "SHA-256",
         "column-actions": "Actions",
         "creator-unknown": "Unknown",
-        "copy-checksum": "Copy the checksum",
+        "copy-checksum": "Copy",
         "restore": "Restore",
         "restore-title": "Restore this backup?",
         "restore-description": "Everything in the server directory is replaced with the contents of {name}. This cannot be undone.",
@@ -1661,7 +1665,6 @@
           "reinstalled_server": "Reinstalled",
           "updated_server_startup": "Startup settings"
         },
-        "search-placeholder": "Search activity...",
         "filter-user-label": "Filter by user",
         "filter-user-all": "All users",
         "end-of-history": "That's the beginning of this server's history."
@@ -1916,11 +1919,8 @@
       },
       "schedules": {
         "title": "Schedules",
-        "description-managed": "Cron jobs the node runs for this server: restarts, commands and backups, in the order you put them.",
-        "description-linked": "Cron jobs Pano runs for this server. A linked server has no node, so only power actions and commands are available.",
-        "count": "{count} schedules",
-        "create": "New schedule",
-        "empty": "This server has no schedule yet.",
+        "count": "{count} Schedules",
+        "create": "New Schedule",
         "list-failed": "The schedules could not be loaded.",
         "column-name": "Name",
         "column-cron": "Runs",
@@ -2819,13 +2819,14 @@
       "plugins": "Plugins",
       "backups": "Backups",
       "schedules": "Schedules",
+      "activity": "Activity",
       "settings": "Settings",
       "add-server": "Add server",
       "no-selected-server": "No selected server.",
       "select-server": "Select Server",
       "connect-server": "Connect Server",
       "nodes": "Nodes",
-      "no-selected-server-hint": "Pick a server to see its console, players, files and more."
+      "no-selected-server-hint": "Select a server to view its console, players and files."
     },
     "post-row": {
       "actions": "Actions",
@@ -2883,7 +2884,6 @@
       "server": "Server",
       "game-integration": "Game Integration",
       "startup": "Startup",
-      "activity": "Activity",
       "properties": "Server properties"
     },
     "modals": {
@@ -3373,7 +3373,7 @@
         },
         "source-in-place-title": "Existing Folder, Run in Place",
         "source-in-place-description": "The node runs a server folder that is already on its machine, from where it is. Nothing is copied or moved.",
-        "in-place-stop-note": "A running folder is refused: two processes in one folder corrupt the world. Stop the server and the process that started it (systemd, screen, another panel)."
+        "in-place-stop-note": "A running folder is refused: two processes in one folder corrupt the world."
       },
       "file-editor": {
         "unsaved": "Unsaved",
@@ -3405,7 +3405,7 @@
         "backups-size": "Its files and {count, plural, one {its backup} other {all # backups}} ({size}) are deleted from the node too."
       },
       "schedule-editor": {
-        "create-title": "New schedule",
+        "create-title": "New Schedule",
         "edit-title": "Edit schedule",
         "name-label": "Name",
         "name-placeholder": "Nightly restart",

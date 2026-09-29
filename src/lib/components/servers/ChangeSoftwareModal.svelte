@@ -167,7 +167,7 @@
                       <SoftwareLogo id={item.id} />
                       <span class="fw-semibold">{item.name || item.id}</span>
                       {#if current}
-                        <span class="badge text-bg-primary">
+                        <span class="badge text-bg-success">
                           {$_('components.modals.change-software.current')}
                         </span>
                       {/if}
@@ -188,30 +188,44 @@
                 {#if selectedSoftware}
                   <div class="row g-3 mt-0">
                     <div class="col-md-6">
-                      <label class="form-label" for="changeSoftwareVersion">
-                        {$_('components.modals.create-server.version-label')}
-                      </label>
-                      <select
-                        id="changeSoftwareVersion"
-                        class="form-select"
-                        bind:value={version}
-                        onchange={loadPreview}>
-                        {#each versionsOf(selectedSoftware) as option (option)}
-                          {@const versionLabel = softwareVersionLabelKey(selectedSoftware, option)}
-                          <option value={option}>
-                            {versionLabel ? $_(versionLabel) : option}{option === fromVersion &&
-                            sameSoftware(selectedSoftware.id, fromSoftware)
-                              ? ` (${$_('components.modals.change-software.current')})`
-                              : ''}
-                          </option>
-                        {/each}
-                      </select>
+                      <div class="form-floating">
+                        <select
+                          id="changeSoftwareVersion"
+                          class="form-select"
+                          bind:value={version}
+                          onchange={loadPreview}>
+                          {#each versionsOf(selectedSoftware) as option (option)}
+                            {@const versionLabel = softwareVersionLabelKey(
+                              selectedSoftware,
+                              option,
+                            )}
+                            <option value={option}>
+                              {versionLabel ? $_(versionLabel) : option}{option === fromVersion &&
+                              sameSoftware(selectedSoftware.id, fromSoftware)
+                                ? ` (${$_('components.modals.change-software.current')})`
+                                : ''}
+                            </option>
+                          {/each}
+                        </select>
+                        <label for="changeSoftwareVersion">
+                          {$_('components.modals.create-server.version-label')}
+                        </label>
+                      </div>
                     </div>
                     <div class="col-md-6">
-                      <span class="form-label d-block">
-                        {$_('pages.servers.create.java-label')}
-                      </span>
-                      <div class="form-control-plaintext py-1">
+                      <div class="form-floating">
+                        <input
+                          id="changeSoftwareJava"
+                          class="form-control-plaintext py-1"
+                          type="text"
+                          readonly
+                          value={javaLabel}
+                          placeholder=" " />
+                        <label for="changeSoftwareJava">
+                          {$_('pages.servers.create.java-label')}
+                        </label>
+                      </div>
+                      <div class="form-control-plaintext py-1" style="display: none;">
                         {javaLabel}
                       </div>
                       {#if javaDownloadNote}
@@ -354,23 +368,13 @@
                     role="switch"
                     id="changeSoftwareStartAfter"
                     bind:checked={startAfter} />
-                  <label class="form-check-label" for="changeSoftwareStartAfter">
-                    <!-- The switch's own line is a title; the state under it stays a sentence. -->
-                    <span class="text-capitalize">
-                      {$_('components.modals.change-software.start-after')}
-                    </span>
-                    <small class="d-block text-body-secondary">
-                      {$_(
-                        running
-                          ? 'components.modals.change-software.start-after-running'
-                          : 'components.modals.change-software.start-after-stopped',
-                      )}
-                    </small>
+                  <label class="form-check-label text-capitalize" for="changeSoftwareStartAfter">
+                    {$_('components.modals.change-software.start-after')}
                   </label>
                 </div>
 
                 {#if toKind !== 'proxy'}
-                  <div class="form-check mb-0">
+                  <div class="form-check mb-0 pt-2">
                     <input
                       class="form-check-input"
                       type="checkbox"
@@ -388,19 +392,19 @@
                   </div>
                 {/if}
 
-                <div>
-                  <label class="form-label mb-1" for="changeSoftwarePassword">
-                    {$_('components.modals.change-software.password-label')}
-                  </label>
+                <div class="form-floating">
                   <input
                     id="changeSoftwarePassword"
                     class="form-control"
                     type="password"
                     autocomplete="current-password"
-                    placeholder={$_('pages.servers.nodes.delete-password')}
+                    placeholder=" "
                     bind:value={password}
                     bind:this={passwordInput}
                     class:is-invalid={passwordError} />
+                  <label for="changeSoftwarePassword" class="text-capitalize">
+                    {$_('components.modals.change-software.password-label')}
+                  </label>
                   {#if passwordError}
                     <div class="invalid-feedback">
                       {$_('pages.servers.errors.wrong-password')}
@@ -411,16 +415,6 @@
                 {#if submitError}
                   <div class="alert alert-danger mb-0" role="alert">{submitError}</div>
                 {/if}
-
-                <div class="small text-body-secondary">
-                  <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-                  {$_(
-                    running
-                      ? 'components.modals.change-software.summary-running'
-                      : 'components.modals.change-software.summary-stopped',
-                    { values: { from: fromLabel, to: toLabel } },
-                  )}
-                </div>
               </div>
             </section>
           </div>
@@ -1133,7 +1127,10 @@
       modalInstance?.show();
     };
 
-    const onShown = () => passwordInput?.focus();
+    const onShown = () => {
+      const firstItem = modalElement?.querySelector('.list-group-item-action');
+      firstItem?.focus();
+    };
 
     modalElement?.addEventListener('shown.bs.modal', onShown);
 

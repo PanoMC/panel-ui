@@ -8,350 +8,363 @@
   }
 </style>
 
-<ServerCapabilityNotice
-  server={$server}
-  feature="players.list"
-  section="components.server-navigation-menu.players" />
-
-<!-- §2.4.35 — while nothing can list the players the notice above is the whole page: an empty
-       roster under it would only say the same thing less precisely. -->
-{#if rosterCapable}
-  <div class="card">
-    <CardHeader>
-      <!-- The roster's size stands in for the title: the section is already named in the server
+<div class="card">
+  <CardHeader>
+    <!-- The roster's size stands in for the title: the section is already named in the server
            menu, and `1/12 Oyuncu` says what the card is actually about. -->
-      <div slot="left">
-        {$_('pages.servers.players.online-count', {
-          values: { online: onlineCount, max: maxPlayerCount },
-        })}
-      </div>
+    <div slot="left" class="text-capitalize">
+      {$_('pages.servers.players.online-count', {
+        values: { online: onlineCount, max: maxPlayerCount },
+      })}
+    </div>
 
-      <div slot="middle" class="player-search w-100">
-        <SearchInput autofocus onchange={(value) => (query = value)} />
-      </div>
+    <div slot="middle" class="player-search w-100">
+      <SearchInput autofocus onchange={(value) => (query = value)} />
+    </div>
 
-      <!-- Empty, and that is the whole reason it is here: `CardHeader` splits into the even
+    <!-- Empty, and that is the whole reason it is here: `CardHeader` splits into the even
            `col-lg-3 / col-lg-6 / col-lg-3` only when all three slots are filled. With a left and
            a middle alone it is 50/50, which would centre the field in the card's right half
            rather than in the card. -->
-      <div slot="right" aria-hidden="true"></div>
-    </CardHeader>
+    <div slot="right" aria-hidden="true"></div>
+  </CardHeader>
 
-    {#if loading}
-      <div class="card-body d-flex justify-content-center py-5">
-        <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
-      </div>
-    {:else if !visiblePlayers.length}
-      <!-- Which of the three empty states this is still matters: no match for what was typed,
+  {#if loading}
+    <div class="card-body d-flex justify-content-center py-5">
+      <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+    </div>
+  {:else if !visiblePlayers.length}
+    <!-- Which of the three empty states this is still matters: no match for what was typed,
            nobody playing, or a server that cannot be asked. -->
-      <div class="card-body">
-        <NoContent
-          icon="fa-solid fa-ghost fa-3x"
-          text={query.trim()
-            ? $_('pages.servers.players.no-matches')
-            : rosterLive
-              ? $_('pages.servers.players.empty')
-              : $_('pages.servers.players.empty-offline')} />
-      </div>
-    {:else}
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead>
+    <div class="card-body">
+      <NoContent
+        icon="fa-solid fa-ghost fa-3x"
+        text={query.trim()
+          ? $_('pages.servers.players.no-matches')
+          : rosterLive
+            ? $_('pages.servers.players.empty')
+            : undefined} />
+    </div>
+  {:else}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <Hook
+              name="panel:servers:players:table:header:start"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
+            <!-- The row header that carries the "…" menu has no caption of its own, but the
+                   cell still has to be accounted for or every column after it shifts one across. -->
+            {#if showActions}
+              <th scope="col" class="text-center"
+                ><span class="visually-hidden">{$_('pages.servers.players.column-actions')}</span
+                ></th>
+            {/if}
+            <th scope="col" class="text-nowrap text-capitalize"
+              >{$_('pages.servers.players.column-player')}</th>
+            <th scope="col" class="text-nowrap text-capitalize"
+              >{$_('pages.servers.players.column-account')}</th>
+            <!-- A column of its own so a roster can be scanned for who is an operator; the
+                   badge under the name stays, since that is where the eye lands first. -->
+            <th scope="col" class="text-nowrap text-capitalize"
+              >{$_('pages.servers.players.column-op')}</th>
+            <th scope="col" class="text-nowrap text-capitalize"
+              >{$_('pages.servers.players.column-ping')}</th>
+            {#if hasGamemodeColumn}
+              <th scope="col" class="text-nowrap text-capitalize"
+                >{$_('pages.servers.players.column-gamemode')}</th>
+            {/if}
+            <th scope="col" class="text-nowrap text-capitalize"
+              >{$_('pages.servers.players.column-session')}</th>
+            {#if hasIpColumn}
+              <th scope="col" class="text-nowrap text-capitalize"
+                >{$_('pages.servers.players.column-ip')}</th>
+            {/if}
+            <Hook
+              name="panel:servers:players:table:header:end"
+              tag="th"
+              class="align-middle text-nowrap"
+              scope="col" />
+          </tr>
+        </thead>
+        <tbody>
+          {#each visiblePlayers as player (player.uuid)}
             <tr>
               <Hook
-                name="panel:servers:players:table:header:start"
-                tag="th"
-                class="align-middle text-nowrap"
-                scope="col" />
-              <!-- The row header that carries the "…" menu has no caption of its own, but the
-                   cell still has to be accounted for or every column after it shifts one across. -->
+                name="panel:servers:players:table:row:start"
+                {player}
+                tag="td"
+                class="align-middle text-nowrap" />
               {#if showActions}
-                <th scope="col" class="text-center"
-                  ><span class="visually-hidden">{$_('pages.servers.players.column-actions')}</span
-                  ></th>
-              {/if}
-              <th scope="col" class="text-nowrap text-capitalize"
-                >{$_('pages.servers.players.column-player')}</th>
-              <th scope="col" class="text-nowrap text-capitalize"
-                >{$_('pages.servers.players.column-account')}</th>
-              <th scope="col" class="text-nowrap text-capitalize"
-                >{$_('pages.servers.players.column-ping')}</th>
-              {#if hasGamemodeColumn}
-                <th scope="col" class="text-nowrap text-capitalize"
-                  >{$_('pages.servers.players.column-gamemode')}</th>
-              {/if}
-              <th scope="col" class="text-nowrap text-capitalize"
-                >{$_('pages.servers.players.column-session')}</th>
-              {#if hasIpColumn}
-                <th scope="col" class="text-nowrap text-capitalize"
-                  >{$_('pages.servers.players.column-ip')}</th>
-              {/if}
-              <Hook
-                name="panel:servers:players:table:header:end"
-                tag="th"
-                class="align-middle text-nowrap"
-                scope="col" />
-            </tr>
-          </thead>
-          <tbody>
-            {#each visiblePlayers as player (player.uuid)}
-              <tr>
-                <Hook
-                  name="panel:servers:players:table:row:start"
-                  {player}
-                  tag="td"
-                  class="align-middle text-nowrap" />
-                {#if showActions}
-                  <th scope="row" class="text-center">
-                    <!-- A disabled button drops pointer events, so the tooltip sits on the wrapper. -->
-                    <span
-                      class="d-inline-block dropdown position-static"
-                      use:tooltip={[
-                        actionsDisabledReason
-                          ? $_(actionsDisabledReason, {
-                              values: {
-                                section: $_('components.server-navigation-menu.players'),
-                              },
-                            })
-                          : '',
-                        { placement: 'right' },
-                      ]}>
-                      <button
-                        type="button"
-                        class="btn btn-link"
-                        aria-expanded="false"
-                        aria-haspopup="true"
-                        data-bs-toggle="dropdown"
-                        disabled={!!actionsDisabledReason || busyUuid === player.uuid}
-                        aria-label={$_('pages.servers.players.column-actions')}>
-                        {#if busyUuid === player.uuid}
-                          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                        {:else}
-                          <span class="fas fa-ellipsis-v"></span>
-                        {/if}
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-start">
-                        {#if canModerate}
+                <th scope="row" class="text-center">
+                  <!-- A disabled button drops pointer events, so the tooltip sits on the wrapper. -->
+                  <span
+                    class="d-inline-block dropdown position-static"
+                    use:tooltip={[
+                      actionsDisabledReason
+                        ? $_(actionsDisabledReason, {
+                            values: {
+                              section: $_('components.server-navigation-menu.players'),
+                            },
+                          })
+                        : '',
+                      { placement: 'right' },
+                    ]}>
+                    <button
+                      type="button"
+                      class="btn btn-link"
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                      data-bs-toggle="dropdown"
+                      disabled={!!actionsDisabledReason || busyUuid === player.uuid}
+                      aria-label={$_('pages.servers.players.column-actions')}>
+                      {#if busyUuid === player.uuid}
+                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                      {:else}
+                        <span class="fas fa-ellipsis-v"></span>
+                      {/if}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-start">
+                      {#if canModerate}
+                        <button
+                          type="button"
+                          class="dropdown-item text-capitalize text-danger"
+                          on:click={() => openTextModal(player, 'KICK')}>
+                          <i class="fa-solid fa-door-open me-2" aria-hidden="true"></i>
+                          {$_('pages.servers.players.action-kick')}
+                        </button>
+                        <button
+                          type="button"
+                          class="dropdown-item text-capitalize"
+                          on:click={() => openTextModal(player, 'MESSAGE')}>
+                          <i class="fa-regular fa-comment me-2" aria-hidden="true"></i>
+                          {$_('pages.servers.players.action-message')}
+                        </button>
+                      {/if}
+
+                      {#if canModerate || canRunCommands}
+                        <!-- A Pano account is banned by Pano; anyone else only on this server's
+                               own list, which a proxy does not have. -->
+                        <span
+                          class="d-block"
+                          use:tooltip={[banDisabledReason(player), { placement: 'right' }]}>
                           <button
                             type="button"
                             class="dropdown-item text-capitalize text-danger"
-                            on:click={() => openTextModal(player, 'KICK')}>
-                            <i class="fa-solid fa-door-open me-2" aria-hidden="true"></i>
-                            {$_('pages.servers.players.action-kick')}
+                            disabled={!!banDisabledReason(player)}
+                            on:click={() => openBanModal(player)}>
+                            <i class="fa-solid fa-gavel me-2" aria-hidden="true"></i>
+                            {$_('pages.servers.players.action-ban')}
                           </button>
+                        </span>
+                      {/if}
+
+                      {#if canRunCommands}
+                        {#if !isProxy}
+                          <div class="dropdown-divider"></div>
+                          <!-- Only the one that changes something, once the server has said
+                                 which side the player is on; both while it has not. -->
+                          {#if player.op !== true}
+                            <button
+                              type="button"
+                              class="dropdown-item text-capitalize"
+                              on:click={() => runAction(player, 'OP')}>
+                              <i class="fa-solid fa-user-shield me-2" aria-hidden="true"></i>
+                              {$_('pages.servers.players.action-op')}
+                            </button>
+                          {/if}
+                          {#if player.op !== false}
+                            <button
+                              type="button"
+                              class="dropdown-item text-capitalize"
+                              on:click={() => runAction(player, 'DEOP')}>
+                              <i class="fa-solid fa-user-minus me-2" aria-hidden="true"></i>
+                              {$_('pages.servers.players.action-deop')}
+                            </button>
+                          {/if}
+
+                          <h6 class="dropdown-header">
+                            {$_('pages.servers.players.action-gamemode')}
+                          </h6>
+                          {#each GAMEMODES as gamemode (gamemode)}
+                            <button
+                              type="button"
+                              class="dropdown-item text-capitalize d-flex align-items-center"
+                              class:active={player.gamemode === gamemode}
+                              disabled={player.gamemode === gamemode}
+                              aria-current={player.gamemode === gamemode ? 'true' : undefined}
+                              on:click={() => runAction(player, 'GAMEMODE', { gamemode })}>
+                              <i class="{GAMEMODE_ICONS[gamemode]} fa-fw me-2" aria-hidden="true"
+                              ></i>
+                              {$_('pages.servers.players.gamemode-' + gamemode)}
+                              {#if player.gamemode === gamemode}
+                                <i class="fa-solid fa-check ms-auto ps-2" aria-hidden="true"></i>
+                              {/if}
+                            </button>
+                          {/each}
+                        {/if}
+
+                        <div class="dropdown-divider"></div>
+                        {#if player.whitelisted !== true}
                           <button
                             type="button"
                             class="dropdown-item text-capitalize"
-                            on:click={() => openTextModal(player, 'MESSAGE')}>
-                            <i class="fa-regular fa-comment me-2" aria-hidden="true"></i>
-                            {$_('pages.servers.players.action-message')}
+                            on:click={() => runAction(player, 'WHITELIST_ADD')}>
+                            <i class="fa-solid fa-list-check me-2" aria-hidden="true"></i>
+                            {$_('pages.servers.players.action-whitelist-add')}
                           </button>
                         {/if}
+                        {#if player.whitelisted !== false}
+                          <button
+                            type="button"
+                            class="dropdown-item text-capitalize"
+                            on:click={() => runAction(player, 'WHITELIST_REMOVE')}>
+                            <i class="fa-solid fa-list-ul me-2" aria-hidden="true"></i>
+                            {$_('pages.servers.players.action-whitelist-remove')}
+                          </button>
+                        {/if}
+                      {/if}
+                    </div>
+                  </span>
+                </th>
+              {/if}
 
-                        {#if canModerate || canRunCommands}
-                          <!-- A Pano account is banned by Pano; anyone else only on this server's
-                               own list, which a proxy does not have. -->
-                          <span
-                            class="d-block"
-                            use:tooltip={[banDisabledReason(player), { placement: 'right' }]}>
-                            <button
-                              type="button"
-                              class="dropdown-item text-capitalize text-danger"
-                              disabled={!!banDisabledReason(player)}
-                              on:click={() => openBanModal(player)}>
-                              <i class="fa-solid fa-gavel me-2" aria-hidden="true"></i>
-                              {$_('pages.servers.players.action-ban')}
-                            </button>
+              <td>
+                <div class="d-flex align-items-center gap-2 min-w-0">
+                  <img
+                    src="/api/profile/picture/{player.username}?{$avatarVersion}"
+                    alt={player.username}
+                    width="32"
+                    height="32"
+                    class="rounded-circle flex-shrink-0" />
+                  <div class="min-w-0">
+                    <!-- Only an account has a player page to open. -->
+                    {#if player.panoUser}
+                      <a
+                        class="text-decoration-none text-truncate d-block"
+                        href="{base}/players/detail/{player.username}">
+                        {player.username}
+                      </a>
+                    {:else}
+                      <span class="text-truncate d-block">{player.username}</span>
+                    {/if}
+                    {#if player.op || player.whitelisted}
+                      <span class="d-flex gap-1 my-1">
+                        {#if player.op}
+                          <span class="badge text-bg-warning">
+                            <i class="fa-solid fa-user-shield me-1" aria-hidden="true"></i>
+                            {$_('pages.servers.players.badge-op')}
                           </span>
                         {/if}
-
-                        {#if canRunCommands}
-                          {#if !isProxy}
-                            <div class="dropdown-divider"></div>
-                            <!-- Only the one that changes something, once the server has said
-                                 which side the player is on; both while it has not. -->
-                            {#if player.op !== true}
-                              <button
-                                type="button"
-                                class="dropdown-item text-capitalize"
-                                on:click={() => runAction(player, 'OP')}>
-                                <i class="fa-solid fa-user-shield me-2" aria-hidden="true"></i>
-                                {$_('pages.servers.players.action-op')}
-                              </button>
-                            {/if}
-                            {#if player.op !== false}
-                              <button
-                                type="button"
-                                class="dropdown-item text-capitalize"
-                                on:click={() => runAction(player, 'DEOP')}>
-                                <i class="fa-solid fa-user-minus me-2" aria-hidden="true"></i>
-                                {$_('pages.servers.players.action-deop')}
-                              </button>
-                            {/if}
-
-                            <h6 class="dropdown-header">
-                              {$_('pages.servers.players.action-gamemode')}
-                            </h6>
-                            {#each GAMEMODES as gamemode (gamemode)}
-                              <button
-                                type="button"
-                                class="dropdown-item text-capitalize d-flex align-items-center"
-                                class:active={player.gamemode === gamemode}
-                                disabled={player.gamemode === gamemode}
-                                aria-current={player.gamemode === gamemode ? 'true' : undefined}
-                                on:click={() => runAction(player, 'GAMEMODE', { gamemode })}>
-                                <i class="{GAMEMODE_ICONS[gamemode]} fa-fw me-2" aria-hidden="true"
-                                ></i>
-                                {$_('pages.servers.players.gamemode-' + gamemode)}
-                                {#if player.gamemode === gamemode}
-                                  <i class="fa-solid fa-check ms-auto ps-2" aria-hidden="true"></i>
-                                {/if}
-                              </button>
-                            {/each}
-                          {/if}
-
-                          <div class="dropdown-divider"></div>
-                          {#if player.whitelisted !== true}
-                            <button
-                              type="button"
-                              class="dropdown-item text-capitalize"
-                              on:click={() => runAction(player, 'WHITELIST_ADD')}>
-                              <i class="fa-solid fa-list-check me-2" aria-hidden="true"></i>
-                              {$_('pages.servers.players.action-whitelist-add')}
-                            </button>
-                          {/if}
-                          {#if player.whitelisted !== false}
-                            <button
-                              type="button"
-                              class="dropdown-item text-capitalize"
-                              on:click={() => runAction(player, 'WHITELIST_REMOVE')}>
-                              <i class="fa-solid fa-list-ul me-2" aria-hidden="true"></i>
-                              {$_('pages.servers.players.action-whitelist-remove')}
-                            </button>
-                          {/if}
+                        {#if player.whitelisted}
+                          <span class="badge text-bg-secondary">
+                            <i class="fa-solid fa-list-check me-1" aria-hidden="true"></i>
+                            {$_('pages.servers.players.badge-whitelisted')}
+                          </span>
                         {/if}
-                      </div>
-                    </span>
-                  </th>
-                {/if}
-
-                <td>
-                  <div class="d-flex align-items-center gap-2 min-w-0">
-                    <img
-                      src="/api/profile/picture/{player.username}?{$avatarVersion}"
-                      alt={player.username}
-                      width="32"
-                      height="32"
-                      class="rounded-circle flex-shrink-0" />
-                    <div class="min-w-0">
-                      <!-- Only an account has a player page to open. -->
-                      {#if player.panoUser}
-                        <a
-                          class="text-decoration-none text-truncate d-block"
-                          href="{base}/players/detail/{player.username}">
-                          {player.username}
-                        </a>
-                      {:else}
-                        <span class="text-truncate d-block">{player.username}</span>
-                      {/if}
-                      {#if player.op || player.whitelisted}
-                        <span class="d-flex gap-1 my-1">
-                          {#if player.op}
-                            <span class="badge text-bg-warning">
-                              <i class="fa-solid fa-user-shield me-1" aria-hidden="true"></i>
-                              {$_('pages.servers.players.badge-op')}
-                            </span>
-                          {/if}
-                          {#if player.whitelisted}
-                            <span class="badge text-bg-secondary">
-                              <i class="fa-solid fa-list-check me-1" aria-hidden="true"></i>
-                              {$_('pages.servers.players.badge-whitelisted')}
-                            </span>
-                          {/if}
-                        </span>
-                      {/if}
-                      <button
-                        type="button"
-                        class="player-uuid btn btn-link p-0 text-body-secondary text-decoration-none font-monospace text-truncate d-block"
-                        on:click={() => copyUuid(player.uuid)}>
-                        {player.uuid}
-                        <i class="fa-regular fa-copy ms-1" aria-hidden="true"></i>
-                      </button>
-                    </div>
-                  </div>
-                </td>
-
-                <!-- Decides what Ban does: a Pano ban for an account, this server's own list
-                     otherwise. -->
-                <td class="text-nowrap">
-                  {#if player.panoUser}
-                    <span
-                      class="text-success"
-                      use:tooltip={[
-                        $_('pages.servers.players.account-yes-hint'),
-                        { placement: 'top' },
-                      ]}>
-                      <i class="fa-solid fa-circle-check me-1" aria-hidden="true"></i>
-                      {$_('pages.servers.players.account-yes')}
-                    </span>
-                  {:else}
-                    <span
-                      class="text-body-secondary"
-                      use:tooltip={[
-                        $_('pages.servers.players.account-no-hint'),
-                        { placement: 'top' },
-                      ]}>
-                      <i class="fa-regular fa-circle me-1" aria-hidden="true"></i>
-                      {$_('pages.servers.players.account-no')}
-                    </span>
-                  {/if}
-                </td>
-
-                <!-- A number that has to be compared down the column reads better in figures
-                     than in the body face; the "unknown" wording is prose, so it is not. -->
-                <td class="text-nowrap {pingClass(player.ping)}">
-                  {#if player.ping == null}
-                    {$_('pages.servers.players.ping-unknown')}
-                  {:else}
-                    <span class="font-monospace">
-                      {$_('pages.servers.players.ping-value', { values: { ping: player.ping } })}
-                    </span>
-                  {/if}
-                </td>
-
-                {#if hasGamemodeColumn}
-                  <td class="text-nowrap">
-                    {#if player.gamemode}
-                      <i
-                        class="{GAMEMODE_ICONS[player.gamemode] ??
-                          'fa-solid fa-gamepad'} fa-fw me-1 text-body-secondary"
-                        aria-hidden="true"></i>
-                      {$_('pages.servers.players.gamemode-' + player.gamemode)}
-                    {:else}
-                      <span class="text-body-secondary"
-                        >{$_('pages.servers.players.gamemode-unknown')}</span>
+                      </span>
                     {/if}
-                  </td>
-                {/if}
+                    <button
+                      type="button"
+                      class="player-uuid btn btn-link p-0 text-body-secondary text-decoration-none font-monospace text-truncate d-block"
+                      use:tooltip={[
+                        player.uuid === copiedUuid
+                          ? $_('pages.servers.players.uuid-copied')
+                          : $_('pages.servers.players.uuid-copy'),
+                        { placement: 'top', hideOnClick: false },
+                      ]}
+                      on:click={() => copyUuid(player.uuid)}>
+                      {player.uuid}
+                      <i class="fa-regular fa-copy ms-1" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </td>
 
-                <td class="text-nowrap">{formatSession(player.loginTime, checkTime)}</td>
-
-                {#if hasIpColumn}
-                  <td class="text-nowrap font-monospace small">{player.ip || '-'}</td>
+              <!-- Decides what Ban does: a Pano ban for an account, this server's own list
+                     otherwise. -->
+              <td class="text-nowrap">
+                {#if player.panoUser}
+                  <span
+                    class="text-success"
+                    use:tooltip={[
+                      $_('pages.servers.players.account-yes-hint'),
+                      { placement: 'top' },
+                    ]}>
+                    <i class="fa-solid fa-circle-check me-1" aria-hidden="true"></i>
+                    {$_('pages.servers.players.account-yes')}
+                  </span>
+                {:else}
+                  <span
+                    class="text-body-secondary"
+                    use:tooltip={[
+                      $_('pages.servers.players.account-no-hint'),
+                      { placement: 'top' },
+                    ]}>
+                    <i class="fa-regular fa-circle me-1" aria-hidden="true"></i>
+                    {$_('pages.servers.players.account-no')}
+                  </span>
                 {/if}
-                <Hook
-                  name="panel:servers:players:table:row:end"
-                  {player}
-                  tag="td"
-                  class="align-middle text-nowrap" />
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
-    {/if}
-  </div>
-{/if}
+              </td>
+
+              <!-- `false` and `null` are both "not an operator" to a reader: the node has
+                   either said no or has not said at all, and the badge above treats them the
+                   same way. Plain words rather than a badge, so the column can be read straight
+                   down; the "no" is dimmed because most of a roster is "no". -->
+              <td class="text-nowrap">
+                {#if player.op}
+                  {$_('buttons.yes')}
+                {:else}
+                  <span class="text-body-secondary">{$_('buttons.no')}</span>
+                {/if}
+              </td>
+
+              <!-- A number that has to be compared down the column reads better in figures
+                     than in the body face; the "unknown" wording is prose, so it is not. -->
+              <td class="text-nowrap {pingClass(player.ping)}">
+                {#if player.ping == null}
+                  {$_('pages.servers.players.ping-unknown')}
+                {:else}
+                  <span class="font-monospace">
+                    {$_('pages.servers.players.ping-value', { values: { ping: player.ping } })}
+                  </span>
+                {/if}
+              </td>
+
+              {#if hasGamemodeColumn}
+                <td class="text-nowrap">
+                  {#if player.gamemode}
+                    <i
+                      class="{GAMEMODE_ICONS[player.gamemode] ??
+                        'fa-solid fa-gamepad'} fa-fw me-1 text-body-secondary"
+                      aria-hidden="true"></i>
+                    {$_('pages.servers.players.gamemode-' + player.gamemode)}
+                  {:else}
+                    <span class="text-body-secondary"
+                      >{$_('pages.servers.players.gamemode-unknown')}</span>
+                  {/if}
+                </td>
+              {/if}
+
+              <td class="text-nowrap">{formatSession(player.loginTime, checkTime)}</td>
+
+              {#if hasIpColumn}
+                <td class="text-nowrap font-monospace small">{player.ip || '-'}</td>
+              {/if}
+              <Hook
+                name="panel:servers:players:table:row:end"
+                {player}
+                tag="td"
+                class="align-middle text-nowrap" />
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  {/if}
+</div>
 
 <ServerPlayerActionModal />
 <ConfirmBanPlayerModal />
@@ -736,11 +749,23 @@
   }
 
   /**
+   * The UUID whose tooltip is currently reading "copied". Only one at a time, so the row that
+   * was copied is the row that says so.
+   *
+   * @type {string | null}
+   */
+  let copiedUuid = null;
+  let copiedUuidTimer;
+
+  /**
    * @param {string} uuid
    */
   function copyUuid(uuid) {
     copy(uuid);
-    showSuccess('pages.servers.players.uuid-copied');
+
+    copiedUuid = uuid;
+    clearTimeout(copiedUuidTimer);
+    copiedUuidTimer = setTimeout(() => (copiedUuid = null), 2000);
   }
 
   /**
@@ -836,6 +861,10 @@
 
     if (clock) {
       clearInterval(clock);
+    }
+
+    if (copiedUuidTimer) {
+      clearTimeout(copiedUuidTimer);
     }
   });
 </script>

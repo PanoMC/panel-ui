@@ -30,7 +30,7 @@
 <div class="card h-100 vital-card {colorClass}">
   <div class="card-body">
     <div class="card-top">
-      <small class="text-truncate m-0 d-block">{title}</small>
+      <span class="text-truncate m-0 d-block">{title}</span>
       {#if loading}
         <!-- The figure's own height, so nothing moves when the first sample lands. -->
         <!-- A normal-size line (`fs-6`) inside the figure's line box: the panel's placeholder size,

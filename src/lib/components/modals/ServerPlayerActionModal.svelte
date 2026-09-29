@@ -3,7 +3,7 @@
   <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">
+        <h5 class="modal-title text-capitalize">
           {$action === 'KICK'
             ? $_('components.modals.server-player-action.kick-title', {
                 values: { username: $player?.username ?? '' },
@@ -16,28 +16,27 @@
         ></button>
       </div>
       <div class="modal-body">
-        <label class="form-label" for="serverPlayerActionText">
-          {$action === 'KICK'
-            ? $_('components.modals.server-player-action.kick-label')
-            : $_('components.modals.server-player-action.message-label')}
-        </label>
-        <input
-          type="text"
-          class="form-control"
-          id="serverPlayerActionText"
-          maxlength="256"
-          placeholder={$action === 'KICK'
-            ? $_('components.modals.server-player-action.kick-placeholder')
-            : $_('components.modals.server-player-action.message-placeholder')}
-          bind:value={$text} />
+        <!-- Bootstrap floats the label over the field once it holds a value. It needs a
+             placeholder to measure that by, so it is a single space: the real label replaces it. -->
+        <div class="form-floating">
+          <input
+            type="text"
+            class="form-control"
+            id="serverPlayerActionText"
+            maxlength="256"
+            placeholder=" "
+            bind:value={$text} />
+          <label for="serverPlayerActionText">
+            {$action === 'KICK'
+              ? $_('components.modals.server-player-action.kick-label')
+              : $_('components.modals.server-player-action.message-label')}
+          </label>
+        </div>
       </div>
-      <div class="modal-footer flex-nowrap">
-        <button type="button" class="btn btn-link col-6 m-0" onclick={hide}>
-          {$_('buttons.cancel')}
-        </button>
+      <div class="modal-footer">
         <button
           type="button"
-          class="btn col-6 m-0"
+          class="btn w-100"
           class:btn-danger={$action === 'KICK'}
           class:btn-primary={$action !== 'KICK'}
           disabled={$busy || ($action === 'MESSAGE' && !$text.trim())}

@@ -10,20 +10,32 @@
     min-height: 0;
     overflow-y: auto;
   }
+
+  /* The Find field in the header's middle slot. `CardHeader` centres that slot already
+     (`justify-content-center`), so the cap is what keeps the field from stretching across the
+     whole card. */
+  .activity-search {
+    width: 100%;
+    max-width: 260px;
+  }
 </style>
 
 <div class="card activity-card" bind:this={cardElement} style:height={cardHeight}>
   <CardHeader>
-    <span slot="left">{$_('pages.servers.activity.title')}</span>
+    <span slot="left" class="text-capitalize">{$_('pages.servers.activity.title')}</span>
+
+    <!-- Find sits in the middle so it is at the card's centre, the way the backups list's and the
+         console's are. No `placeholderKey`: the field falls back to `SearchInput`'s own default,
+         the panel-wide "Bul...". -->
+    <div slot="middle" class="activity-search">
+      <SearchInput
+        autofocus
+        inputId="serverActivitySearch"
+        initialValue={searchText}
+        onchange={(value) => (searchText = value)} />
+    </div>
+
     <span slot="right" class="d-flex flex-wrap align-items-center justify-content-end gap-2">
-      <div style="min-width: 12rem;">
-        <SearchInput
-          autofocus
-          inputId="serverActivitySearch"
-          placeholderKey="pages.servers.activity.search-placeholder"
-          initialValue={searchText}
-          onchange={(value) => (searchText = value)} />
-      </div>
       <label class="visually-hidden" for="serverActivityUser">
         {$_('pages.servers.activity.filter-user-label')}
       </label>
@@ -31,10 +43,14 @@
         id="serverActivityUser"
         class="form-select form-select-sm w-auto"
         bind:value={userFilter}>
-        <option value="">{$_('pages.servers.activity.filter-user-all')}</option>
+        <option value="">
+          {capitalize($_('pages.servers.activity.filter-user-all'), $locale)}</option>
         {#if hasSystemEntries}
-          <option value={SYSTEM_ACTIVITY_USER}>{$_('pages.servers.activity.system')}</option>
+          <option value={SYSTEM_ACTIVITY_USER}
+            >{capitalize($_('pages.servers.activity.system'), $locale)}</option>
         {/if}
+        <!-- A username is left exactly as it is: it is a name, not a label, and capitalising or
+             translating it would break the copy the admin recognises. -->
         {#each userOptions as option (option)}
           <option value={option}>{option}</option>
         {/each}
@@ -46,9 +62,9 @@
         id="serverActivityType"
         class="form-select form-select-sm w-auto"
         bind:value={typeFilter}>
-        <option value="">{$_('pages.servers.activity.filter-all')}</option>
+        <option value="">{capitalize($_('pages.servers.activity.filter-all'), $locale)}</option>
         {#each typeOptions as option (option)}
-          <option value={option}>{activityTypeLabel(option, $_)}</option>
+          <option value={option}>{capitalize(activityTypeLabel(option, $_), $locale)}</option>
         {/each}
       </select>
     </span>
@@ -167,7 +183,7 @@
    * while the list is open and numbered pages would shift under the reader.
    */
   import { getContext, onMount, tick } from 'svelte';
-  import { _ } from 'svelte-i18n';
+  import { _, locale } from 'svelte-i18n';
 
   import { browser } from '$app/environment';
 
@@ -180,6 +196,7 @@
     isSystemActivity,
     SYSTEM_ACTIVITY_USER,
   } from '$lib/serverActivity.util.js';
+  import { capitalize } from '$lib/string.util.js';
 
   export let data;
 

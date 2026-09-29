@@ -37,13 +37,19 @@
   <!-- The Find field in the header's middle slot, with the sides taking one equal share each on
        lg (see `.console-toolbar`) — that is what holds it at the card's centre. -->
   <CardHeader rowClasses="console-toolbar" middleClasses="console-search">
-    <span slot="left" class="d-flex align-items-center gap-2">
-      {$_('pages.servers.console.title')}
+    <!-- Two `text-truncate`s, on purpose. The title is a flex item here, and a flex item only
+         ellipsises when it may shrink below its content: `text-truncate`'s `overflow: hidden`
+         is what drops its automatic minimum size. The outer span needs it too — as a flex item
+         of `CardHeader`'s left column it would otherwise keep its min-content width (the
+         nowrap title) and never let the title shrink, so the text was only clipped, not
+         shortened. The icon does not shrink (`flex-shrink-0`), so the title is what gives way. -->
+    <span slot="left" class="d-flex align-items-center gap-2 text-truncate">
+      <span class="text-truncate">{$_('pages.servers.console.title')}</span>
       {#if sourceLabel}
         <!-- Where the lines come from, as an icon: the node's own pipe (managed) or the
                plugin's logger tap (linked). -->
         <i
-          class="{sourceIcon} text-body-secondary small"
+          class="{sourceIcon} text-body-secondary small flex-shrink-0"
           role="img"
           aria-label={$_(sourceLabel)}
           use:tooltip={[$_(sourceLabel), { placement: 'bottom' }]}></i>

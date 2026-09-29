@@ -7,11 +7,13 @@
           <div class="pb-3">
             <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
           </div>
-          {$_(
-            $managed && !$inPlace
-              ? 'components.modals.remove-server.delete-title'
-              : 'components.modals.remove-server.remove-title',
-          )}
+          <p>
+            {$_(
+              $managed && !$inPlace
+                ? 'components.modals.remove-server.delete-title'
+                : 'components.modals.remove-server.remove-title',
+            )}
+          </p>
 
           {#if !$managed}
             <div class="small text-body-secondary mt-2">
@@ -52,13 +54,22 @@
             </div>
           {/if}
 
-          <input
-            class="form-control zmt-3"
-            placeholder={$_('components.modals.remove-server.account-password')}
-            type="password"
-            bind:value={$currentPassword}
-            bind:this={$passwordInput}
-            class:border-danger={$passwordError} />
+          <!-- Bootstrap floats the label over the field once it holds a value. It needs a
+               placeholder to measure that by, so it is a single space: the real label replaces
+               it. `mt-3` rather than the `zmt-3` this used to carry, which was never defined. -->
+          <div class="form-floating mt-3">
+            <input
+              class="form-control"
+              id="removeServerPassword"
+              placeholder=" "
+              type="password"
+              bind:value={$currentPassword}
+              bind:this={$passwordInput}
+              class:border-danger={$passwordError} />
+            <label for="removeServerPassword">
+              {$_('components.modals.remove-server.account-password')}
+            </label>
+          </div>
         </div>
 
         <div class="modal-footer flex-nowrap">

@@ -1,10 +1,10 @@
 <div class="card">
-  <div class="card-header">{$_('pages.servers.game-integration.minecraft')}</div>
+  <div class="card-header text-capitalize">{$_('pages.servers.game-integration.minecraft')}</div>
   <div class="card-body">
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="authIntegration">
-        {$_('pages.servers.game-integration.auth-integration')}
-        <small class="d-block"
+        <span class="text-capitalize">{$_('pages.servers.game-integration.auth-integration')}</span>
+        <small class="d-block text-body-secondary"
           >{$_('pages.servers.game-integration.auth-integration-description')}<br />
           <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/authme" target="_blank"
             >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
@@ -35,8 +35,9 @@
           class:border-gray={!serverSettings.authIntegration}
           style="width: 2px;"></span>
         <span class="ps-3 d-block">
-          {$_('pages.servers.game-integration.auth-require-verified')}
-          <small class="d-block"
+          <span class="text-capitalize"
+            >{$_('pages.servers.game-integration.auth-require-verified')}</span>
+          <small class="d-block text-body-secondary"
             >{$_('pages.servers.game-integration.auth-require-verified-description')}<br />
             <a
               href="{PANO_WEBSITE_URL}/docs/platform/integrations/authme/#step-3-verify-auth-integration-is-enabled-in-panel"
@@ -64,8 +65,9 @@
           class:border-gray={!serverSettings.authIntegration}
           style="width: 2px;"></span>
         <span class="ps-3 d-block">
-          {$_('pages.servers.game-integration.auth-kick-after-register')}
-          <small class="d-block"
+          <span class="text-capitalize"
+            >{$_('pages.servers.game-integration.auth-kick-after-register')}</span>
+          <small class="d-block text-body-secondary"
             >{$_('pages.servers.game-integration.auth-kick-after-register-description')}<br />
             <a
               href="{PANO_WEBSITE_URL}/docs/platform/integrations/authme/#step-3-verify-auth-integration-is-enabled-in-panel"
@@ -87,8 +89,9 @@
     </div>
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="permissionIntegration">
-        {$_('pages.servers.game-integration.permission-integration')}
-        <small class="d-block"
+        <span class="text-capitalize"
+          >{$_('pages.servers.game-integration.permission-integration')}</span>
+        <small class="d-block text-body-secondary"
           >{$_('pages.servers.game-integration.permission-integration-description')}<br />
           <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms/" target="_blank"
             >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a
@@ -107,8 +110,8 @@
     </div>
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="banIntegration">
-        {$_('pages.servers.game-integration.ban-integration')}
-        <small class="d-block"
+        <span class="text-capitalize">{$_('pages.servers.game-integration.ban-integration')}</span>
+        <small class="d-block text-body-secondary"
           >{$_('pages.servers.game-integration.ban-integration-description')}<br />
           <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/ban-management/" target="_blank"
             >{$_('buttons.see-docs')} <i class="fas fa-external-link"></i></a

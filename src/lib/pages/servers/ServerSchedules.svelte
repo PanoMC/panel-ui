@@ -14,11 +14,13 @@
 
 <div class="card">
   <CardHeader>
-    <span slot="left" class="d-flex align-items-center gap-2">
-      {$_('pages.servers.schedules.title')}
-      <span class="badge rounded-pill text-bg-secondary">
-        {$_('pages.servers.schedules.count', { values: { count: schedules.length } })}
-      </span>
+    <!-- The count is the card's subject: how many schedules there are says what the card is
+         about, the way "{n} Backups" does on the backups list. It only becomes the title once the
+         list has actually arrived — until then it would read a bare "0". -->
+    <span slot="left">
+      {loading
+        ? $_('pages.servers.schedules.title')
+        : $_('pages.servers.schedules.count', { values: { count: schedules.length } })}
     </span>
 
     <span slot="right">
@@ -28,16 +30,6 @@
       </button>
     </span>
   </CardHeader>
-
-  <div class="card-body pb-0">
-    <div class="small text-body-secondary">
-      {$_(
-        managed
-          ? 'pages.servers.schedules.description-managed'
-          : 'pages.servers.schedules.description-linked',
-      )}
-    </div>
-  </div>
 
   {#if loading}
     <div class="card-body d-flex justify-content-center py-5">
@@ -60,7 +52,7 @@
     </div>
   {:else if !schedules.length}
     <div class="card-body">
-      <NoContent icon="fa-solid fa-clock fa-3x" text={$_('pages.servers.schedules.empty')} />
+      <NoContent icon="fa-solid fa-clock fa-3x" />
     </div>
   {:else}
     <div class="table-responsive">
@@ -237,7 +229,6 @@
   import {
     hasFeature,
     isEndpointUnavailable,
-    isManaged,
     showServerActionError,
     showServerLoadError,
   } from '$lib/servers.util.js';
@@ -268,7 +259,6 @@
   let listSeq = 0;
 
   const serverId = $derived($server?.id ?? null);
-  const managed = $derived(isManaged($server));
   /** §2.4.17 — a BACKUP task is offered wherever a backup can actually be taken. */
   const canBackup = $derived(hasFeature($server, 'backups.create'));
 

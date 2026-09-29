@@ -1,11 +1,10 @@
 <!-- Upload into the folder the file manager is showing: the add-on installer's drop zone, with
      the destination named above it so nobody uploads into the wrong folder. -->
 <div role="dialog" class="modal fade" bind:this={$modalElement} tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">
-          <i class="fa-solid fa-upload me-2" aria-hidden="true"></i>
+        <h5 class="modal-title text-capitalize">
           {$_('components.modals.server-file-upload.title')}
         </h5>
         <button type="button" class="btn-close" aria-label={$_('buttons.close')} on:click={hide}

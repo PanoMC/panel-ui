@@ -42,10 +42,10 @@
     <!-- No server selected (a fresh install, or the selected one was deleted): say so and offer
          the way out, instead of an empty menu. The servers modal also adds servers. -->
     <div class="text-center px-3 py-4 opacity-75">
-      <i class="fa-solid fa-ghost fa-3x mb-3" aria-hidden="true"></i>
+      <i class="fa-solid fa-cube fa-3x mb-3" aria-hidden="true"></i>
       <p class="fw-semibold mb-1">{$_('components.server-navigation-menu.no-selected-server')}</p>
       <p class="small mb-3">{$_('components.server-navigation-menu.no-selected-server-hint')}</p>
-      <button type="button" class="btn btn-sm btn-primary" on:click={showServersModal}>
+      <button type="button" class="btn btn-sm btn-success" on:click={showServersModal}>
         {$_('components.server-navigation-menu.select-server')}
       </button>
     </div>
@@ -138,6 +138,15 @@
       startsWith: true,
       permission: Permissions.MANAGE_SERVER_SCHEDULES,
       feature: 'schedules.runner',
+    },
+    {
+      // The log is read with the same grant that opens the server workspace (§2.4.12), so it
+      // sits here beside the other sections rather than inside Settings, and just above it.
+      href: '/activity',
+      icon: 'fas fa-clock-rotate-left',
+      text: 'components.server-navigation-menu.activity',
+      startsWith: true,
+      permission: Permissions.MANAGE_SERVERS,
     },
     {
       href: '/settings',

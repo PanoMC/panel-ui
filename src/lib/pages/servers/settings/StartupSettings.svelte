@@ -7,12 +7,12 @@
   </div>
 
   <div class="card">
-    <div class="card-header">{$_('pages.servers.startup.process-title')}</div>
+    <div class="card-header text-capitalize">{$_('pages.servers.startup.process-title')}</div>
     <div class="card-body">
       <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="startupMemory">
-          {$_('pages.servers.create.memory-label')}
-          <small class="d-block">
+          <span class="text-capitalize">{$_('pages.servers.create.memory-label')}</span>
+          <small class="d-block text-body-secondary">
             {$_('pages.servers.create.memory-hint', {
               values: { heap: heapMbOf(form.memoryMb) ?? '—' },
             })}
@@ -45,8 +45,8 @@
 
       <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="startupPort">
-          {$_('pages.servers.create.port-label')}
-          <small class="d-block">{$_('pages.servers.create.port-hint')}</small>
+          <span class="text-capitalize">{$_('pages.servers.create.port-label')}</span>
+          <small class="d-block text-body-secondary">{$_('pages.servers.create.port-hint')}</small>
         </label>
         <div class="col">
           <input
@@ -61,8 +61,8 @@
 
       <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="startupJava">
-          {$_('pages.servers.create.java-label')}
-          <small class="d-block">{$_('pages.servers.create.java-hint')}</small>
+          <span class="text-capitalize">{$_('pages.servers.create.java-label')}</span>
+          <small class="d-block text-body-secondary">{$_('pages.servers.create.java-hint')}</small>
         </label>
         <div class="col">
           <select id="startupJava" class="form-select" bind:value={form.javaMajor}>
@@ -99,7 +99,7 @@
 
       <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="startupAutoStart">
-          {$_('pages.servers.create.auto-start-label')}
+          <span class="text-capitalize">{$_('pages.servers.create.auto-start-label')}</span>
         </label>
         <div class="col col-form-label">
           <div class="form-check form-switch">
@@ -115,7 +115,7 @@
 
       <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="startupCrashRestart">
-          {$_('pages.servers.create.crash-restart-label')}
+          <span class="text-capitalize">{$_('pages.servers.create.crash-restart-label')}</span>
         </label>
         <div class="col col-form-label">
           <div class="form-check form-switch">
@@ -131,8 +131,9 @@
 
       <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="startupJvmArgs">
-          {$_('pages.servers.create.jvm-args-label')}
-          <small class="d-block">{$_('pages.servers.create.jvm-args-hint')}</small>
+          <span class="text-capitalize">{$_('pages.servers.create.jvm-args-label')}</span>
+          <small class="d-block text-body-secondary"
+            >{$_('pages.servers.create.jvm-args-hint')}</small>
         </label>
         <div class="col">
           <textarea
@@ -147,22 +148,6 @@
           </button>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- server.properties has a tab of its own now, with every key; this only points there. -->
-  <div class="card">
-    <div class="card-body d-flex flex-wrap align-items-center gap-3">
-      <div class="me-auto">
-        <div class="fw-semibold">{$_('pages.servers.startup.properties-title')}</div>
-        <div class="text-body-secondary small">
-          {$_('pages.servers.startup.properties-description')}
-        </div>
-      </div>
-      <a class="btn btn-outline-secondary" href="{base}/servers/{$server.id}/settings/properties">
-        <i class="fa-solid fa-sliders me-1" aria-hidden="true"></i>
-        {$_('pages.servers.startup.properties-open')}
-      </a>
     </div>
   </div>
 
@@ -346,12 +331,11 @@
     });
   });
   const dirty = $derived(JSON.stringify(form) !== JSON.stringify(original));
+  // Only the fields this form owns. `max-players` and `view-distance` are server.properties keys
+  // and are validated by the Server properties tab, against its own rows; naming them here
+  // compared `undefined` to a number, so this was never true and Save never enabled.
   const valid = $derived(
-    Number(form.memoryMb) >= 512 &&
-      Number(form.port) >= 1 &&
-      Number(form.port) <= 65535 &&
-      Number(form.maxPlayers) >= 1 &&
-      Number(form.viewDistance) >= 2,
+    Number(form.memoryMb) >= 512 && Number(form.port) >= 1 && Number(form.port) <= 65535,
   );
 
   /**
