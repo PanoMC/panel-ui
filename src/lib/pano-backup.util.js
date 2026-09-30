@@ -1,5 +1,5 @@
 /**
- * Pure helpers of the Pano Backup pages (settings/backups): archive sniffing, job progress, the
+ * Pure helpers of the backups page (/backups): archive sniffing, job progress, the
  * mapping of backend/Pano Host error codes to lang keys, and small form rules. Kept free of
  * Svelte and `$lib` imports so `bun test` runs them as they are.
  */
@@ -10,9 +10,6 @@ export const LOCAL_SCHEDULES = Object.freeze(['OFF', 'DAILY', 'WEEKLY']);
 
 /** Pano Backup schedule (`PUT …/remote/settings`); plans have no frequency limit. */
 export const REMOTE_SCHEDULES = Object.freeze(['OFF', 'DAILY', 'WEEKLY']);
-
-/** Where the account's Pano Backup plan and every Pano's backups are managed on the website. */
-export const MANAGE_BACKUPS_URL = 'https://panomc.com/host/manage/backups';
 
 /** The panel page that runs the panomc.com platform connection flow. */
 export const CONNECT_PATH = '/settings/platform';
@@ -232,27 +229,30 @@ export function connectionState(remote) {
 }
 
 /**
- * A website manage page, derived from the Pano Host API the Pano talks to
- * (`https://api.example.com/…` → `https://example.com/host/manage/backups`); anything else (a local
- * or IP API) falls back to panomc.com.
+ * A Pano Host manage page on the Pano website this panel is configured with (siteInfo's website
+ * URL, `PANO_WEBSITE_URL`), e.g. `<website>/host/manage/instances`.
  *
- * @param {string | null | undefined} apiUrl
+ * @param {string | null | undefined} websiteUrl
  * @param {'backups' | 'instances'} [section]
  */
-export function manageBackupsUrl(apiUrl, section = 'backups') {
-  let origin = 'https://panomc.com';
-
-  try {
-    const url = new URL(String(apiUrl || ''));
-
-    if (url.protocol === 'https:' && url.hostname.startsWith('api.')) {
-      origin = `https://${url.hostname.slice(4)}`;
-    }
-  } catch {
-    // not a URL
-  }
+export function hostManageUrl(websiteUrl, section = 'backups') {
+  const origin = String(websiteUrl || 'https://panomc.com').replace(/\/+$/, '');
 
   return `${origin}/host/manage/${section}`;
+}
+
+/**
+ * The website's Pano Backup plan page, with this panel's backups page as `panoCallback` — the same
+ * round trip as installing from the store: the website sends the browser back to
+ * `<panoCallback>?planUpdated` once a plan is picked (or `?back` when the owner just returns).
+ *
+ * @param {string} websiteUrl `PANO_WEBSITE_URL`.
+ * @param {string} callback absolute URL of this panel's backups page.
+ */
+export function backupPlanUrl(websiteUrl, callback) {
+  const origin = String(websiteUrl || 'https://panomc.com').replace(/\/+$/, '');
+
+  return `${origin}/host/manage/backups?panoCallback=${encodeURIComponent(callback)}`;
 }
 
 /**
@@ -343,7 +343,8 @@ function formatTime(ms, locale) {
  * job (`{error, details?, rolledBack?}`); Pano Host errors are unwrapped from `PANO_HOST_ERROR`.
  *
  * @param {object | null | undefined} source
- * @param {{ locale?: string }} [options]
+ * @param {{ locale?: string, website?: string }} [options] `website`: the Pano website's host
+ *   (`{website}` in the texts), see `describeBackupError`.
  * @returns {{ code: string, key: string, values: Record<string, string | number> } | null}
  */
 export function describeError(source, options = {}) {
@@ -373,6 +374,7 @@ export function describeError(source, options = {}) {
     used: details.usedBytes != null ? formatBytes(Number(details.usedBytes)) : '',
     max: details.maxBytes != null ? formatBytes(Number(details.maxBytes)) : '',
     minLength: Number(details.minLength) || MIN_PASSPHRASE_LENGTH,
+    website: options.website || 'panomc.com',
   };
 
   const key = KNOWN_ERRORS.includes(code)

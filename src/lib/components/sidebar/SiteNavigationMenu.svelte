@@ -125,7 +125,7 @@
       permission: Permissions.MANAGE_PLATFORM_SETTINGS,
     },
     {
-      href: '/settings/backups',
+      href: '/backups',
       icon: 'fa-solid fa-cloud-arrow-up',
       text: 'components.site-navigation-menu.backups',
       startsWith: true,

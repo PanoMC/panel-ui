@@ -1,5 +1,5 @@
-<!-- Pano backups: local backups and Pano Backup (panomc.com) — create, download, delete, restore. -->
-<div class="vstack gap-3">
+<!-- Pano backups on one page: local backups, Pano Backup (panomc.com) and the transfer to Pano Host; settings, passphrase and transfer open in modals. -->
+<div class="container vstack gap-3">
   <PageActions>
     <div slot="left" class="small text-body-secondary">
       {$_('pages.settings.backups.local-used', {
@@ -15,16 +15,10 @@
         <i class="fa-solid fa-file-arrow-up me-lg-2" aria-hidden="true"></i>
         <span class="d-none d-lg-inline">{$_('pages.settings.backups.restore-from-file')}</span>
       </button>
-      {#if connected}
-        <button
-          type="button"
-          class="btn btn-secondary"
-          disabled={running || busyAction === 'upload' || !remote.passphraseSet}
-          onclick={() => void uploadToPanoBackup()}>
-          <i class="fa-solid fa-cloud-arrow-up me-lg-2" aria-hidden="true"></i>
-          <span class="d-none d-lg-inline">{$_('pages.settings.backups.upload-now')}</span>
-        </button>
-      {/if}
+      <button type="button" class="btn btn-secondary" onclick={() => settingsModal?.open()}>
+        <i class="fa-solid fa-gear me-lg-2" aria-hidden="true"></i>
+        <span class="d-none d-lg-inline">{$_('buttons.settings')}</span>
+      </button>
       <button type="button" class="btn btn-primary" disabled={running} onclick={openCreate}>
         <i class="fa-solid fa-plus me-lg-2" aria-hidden="true"></i>
         <span class="d-none d-lg-inline">{$_('pages.settings.backups.create')}</span>
@@ -42,13 +36,6 @@
   <div class="card">
     <div class="card-header d-flex align-items-center">
       <span>{$_('pages.settings.backups.local-title')}</span>
-      <button
-        type="button"
-        class="btn btn-link btn-sm ms-auto"
-        aria-label={$_('buttons.refresh')}
-        onclick={() => void refresh()}>
-        <i class="fa-solid fa-arrows-rotate" class:fa-spin={refreshing}></i>
-      </button>
     </div>
     {#if local.backups.length === 0}
       <NoContent
@@ -133,153 +120,217 @@
     {/if}
   </div>
 
-  <!-- Pano Backup: every Pano of the connected account, this one first -->
-  <PanoBackupAccountCard {remote} />
+  <!-- Pano Backup: the account, its plan and storage, then every Pano of the account, this one first -->
+  <div class="card">
+    <div class="card-header d-flex align-items-center gap-2">
+      <span>{$_('pages.settings.backups.remote-title')}</span>
+      <!-- Nothing to act on while panomc.com cannot be reached. -->
+      {#if connected && !hostUnavailable}
+        <div class="ms-auto hstack gap-2">
+          <button
+            type="button"
+            class="btn btn-link btn-sm"
+            title={$_('pages.settings.backups.passphrase-title')}
+            onclick={() => passphraseModal?.open()}>
+            <i
+              class="fa-solid {remote.passphraseSet ? 'fa-lock' : 'fa-lock-open'} me-lg-1"
+              aria-hidden="true"></i>
+            <span class="d-none d-lg-inline">{$_('pages.settings.backups.passphrase-title')}</span>
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            disabled={running || busyAction === 'upload'}
+            onclick={() => uploadModal?.show()}>
+            <i class="fa-solid fa-cloud-arrow-up me-lg-1" aria-hidden="true"></i>
+            <span class="d-none d-lg-inline">{$_('pages.settings.backups.upload-now')}</span>
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            disabled={running || !!openTransfer}
+            onclick={() => transferModal?.open()}>
+            <i class="fa-solid fa-right-left me-lg-1" aria-hidden="true"></i>
+            <span class="d-none d-lg-inline">{$_('pages.settings.backups.transfer.title')}</span>
+          </button>
+        </div>
+      {/if}
+    </div>
 
-  {#if connected}
-    <div class="card">
-      <div class="card-header d-flex align-items-center gap-2">
-        <span>{$_('pages.settings.backups.remote-title')}</span>
-        {#if remote.plan?.tier}
-          <span class="badge text-bg-primary">{remote.plan.tier.name}</span>
-        {/if}
+    <PanoBackupAccountSummary {remote} />
+
+    <!-- A transfer to Pano Host waiting for the owner's confirmation on panomc.com. -->
+    {#if connected && openTransfer}
+      <div class="card-body pt-0">
+        <div class="alert alert-warning small mb-0 d-flex flex-wrap align-items-center gap-2">
+          <span>
+            {$_('pages.settings.backups.transfer.awaiting', {
+              values: { website: websiteDisplayHost() },
+            })}
+            {#if openTransfer.status === 'AWAITING_CONFIRMATION' && openTransfer.expiresAt}
+              · {$_('pages.settings.backups.transfer.confirm-until')}
+              <DateComponent time={openTransfer.expiresAt} relativeFormat />
+            {/if}
+          </span>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger ms-auto"
+            disabled={cancelling === openTransfer.id}
+            onclick={() => void cancelTransfer(openTransfer)}>
+            {$_('buttons.cancel')}
+          </button>
+        </div>
       </div>
+    {/if}
+
+    <!-- When panomc.com cannot be reached the summary above already says so; the list would only
+         repeat it. -->
+    {#if connected && !hostUnavailable}
+      <div class="border-top"></div>
       {#if remoteError}
         <div class="card-body">
           <div class="alert alert-danger small mb-0">
             {$_(remoteError.key, { values: remoteError.values })}
           </div>
         </div>
+      {:else if !groupsHaveBackups}
+        <NoContent icon="fa-solid fa-cloud fa-3x" text={$_('pages.settings.backups.no-remote')} />
       {:else}
-        {#if !remote.passphraseSet}
-          <div class="card-body pb-0">
-            <div class="alert alert-warning small mb-0">
-              {$_('pages.settings.backups.passphrase-missing')}
-              <a href="{base}/settings/backups/pano-backup">
-                {$_('pages.settings.backups.go-settings')}
-              </a>
-            </div>
-          </div>
-        {/if}
-        {#if !groupsHaveBackups}
-          <NoContent icon="fa-solid fa-cloud fa-3x" text={$_('pages.settings.backups.no-remote')} />
-        {:else}
-          <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
-              <thead>
-                <tr>
-                  <th>{$_('pages.settings.backups.column-created')}</th>
-                  <th>{$_('pages.settings.backups.column-source')}</th>
-                  <th>{$_('pages.settings.backups.column-size')}</th>
-                  <th class="text-end"></th>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead>
+              <tr>
+                <th>{$_('pages.settings.backups.column-created')}</th>
+                <th>{$_('pages.settings.backups.column-source')}</th>
+                <th>{$_('pages.settings.backups.column-size')}</th>
+                <th class="text-end"></th>
+              </tr>
+            </thead>
+            {#each groups as group (group.instanceId)}
+              <tbody>
+                <tr class="table-group-divider">
+                  <th colspan="4" class="bg-body-tertiary">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                      <i class="fa-solid fa-server text-body-secondary" aria-hidden="true"></i>
+                      <span>{group.instanceName}</span>
+                      {#if group.current}
+                        <span class="badge text-bg-primary">
+                          {$_('pages.settings.backups.this-pano')}
+                        </span>
+                      {:else if group.connected === false}
+                        <span class="badge text-bg-secondary">
+                          {$_('pages.settings.backups.pano-disconnected')}
+                        </span>
+                      {/if}
+                      <span class="small fw-normal text-body-secondary ms-auto">
+                        {$_('pages.settings.backups.pano-used', {
+                          values: {
+                            size: formatBytes(group.usedBytes),
+                            count: group.backups.length,
+                          },
+                        })}
+                      </span>
+                    </div>
+                  </th>
                 </tr>
-              </thead>
-              {#each groups as group (group.instanceId)}
-                <tbody>
-                  <tr class="table-group-divider">
-                    <th colspan="4" class="bg-body-tertiary">
-                      <div class="d-flex flex-wrap align-items-center gap-2">
-                        <i class="fa-solid fa-server text-body-secondary" aria-hidden="true"></i>
-                        <span>{group.instanceName}</span>
-                        {#if group.current}
-                          <span class="badge text-bg-primary">
-                            {$_('pages.settings.backups.this-pano')}
-                          </span>
-                        {:else if group.connected === false}
-                          <span class="badge text-bg-secondary">
-                            {$_('pages.settings.backups.pano-disconnected')}
-                          </span>
-                        {/if}
-                        <span class="small fw-normal text-body-secondary ms-auto">
-                          {$_('pages.settings.backups.pano-used', {
-                            values: {
-                              size: formatBytes(group.usedBytes),
-                              count: group.backups.length,
-                            },
-                          })}
-                        </span>
-                      </div>
-                    </th>
+                {#if group.backups.length === 0}
+                  <tr>
+                    <td colspan="4" class="small text-body-secondary fst-italic">
+                      {$_('pages.settings.backups.no-remote-this-pano')}
+                    </td>
                   </tr>
-                  {#if group.backups.length === 0}
-                    <tr>
-                      <td colspan="4" class="small text-body-secondary fst-italic">
-                        {$_('pages.settings.backups.no-remote-this-pano')}
-                      </td>
-                    </tr>
-                  {/if}
-                  {#each group.backups as backup (backup.id)}
-                    <tr>
-                      <td>
-                        <DateComponent time={backup.createdAt} relativeFormat />
-                        {#if backup.status !== 'DONE'}
-                          <span class="badge text-bg-secondary ms-1">
-                            {$_(
-                              `pages.settings.backups.remote-status-${String(backup.status).toLowerCase()}`,
-                            )}
-                          </span>
-                        {/if}
-                      </td>
-                      <td>
-                        <span
-                          class="badge text-bg-{backup.kind === 'mc-server' ? 'info' : 'primary'}">
-                          {backup.kind === 'mc-server'
-                            ? $_('pages.settings.backups.kind-mc-server')
-                            : $_('pages.settings.backups.kind-pano')}
+                {/if}
+                {#each group.backups as backup (backup.id)}
+                  <tr>
+                    <td>
+                      <DateComponent time={backup.createdAt} relativeFormat />
+                      {#if backup.status !== 'DONE'}
+                        <span class="badge text-bg-secondary ms-1">
+                          {$_(
+                            `pages.settings.backups.remote-status-${String(backup.status).toLowerCase()}`,
+                          )}
                         </span>
-                        {#if backup.subject}
-                          <div class="small text-body-secondary">{backup.subject}</div>
-                        {/if}
-                      </td>
-                      <td>{formatBytes(backup.sizeBytes || 0)}</td>
-                      <td class="text-end">
-                        {#if canRestoreRemote(backup) || backup.own}
-                          <span class="dropdown">
-                            <button
-                              type="button"
-                              class="btn btn-link btn-sm"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false"
-                              aria-label={$_('pages.settings.backups.column-actions')}>
-                              <span class="fas fa-ellipsis-v"></span>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-end">
-                              {#if canRestoreRemote(backup)}
-                                <button
-                                  type="button"
-                                  class="dropdown-item"
-                                  disabled={running}
-                                  onclick={() => askRestoreRemote(backup, group)}>
-                                  <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"
-                                  ></i>
-                                  {$_('pages.settings.backups.restore.submit')}
-                                </button>
-                              {/if}
-                              {#if backup.own && backup.status === 'DONE'}
-                                <div class="dropdown-divider"></div>
-                                <button
-                                  type="button"
-                                  class="dropdown-item text-danger"
-                                  onclick={() => askDelete('remote', backup)}>
-                                  <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
-                                  {$_('buttons.delete')}
-                                </button>
-                              {/if}
-                            </div>
-                          </span>
-                        {/if}
-                      </td>
-                    </tr>
-                  {/each}
-                </tbody>
-              {/each}
-            </table>
-          </div>
-        {/if}
+                      {/if}
+                    </td>
+                    <td>
+                      <span
+                        class="badge text-bg-{backup.kind === 'mc-server' ? 'info' : 'primary'}">
+                        {backup.kind === 'mc-server'
+                          ? $_('pages.settings.backups.kind-mc-server')
+                          : $_('pages.settings.backups.kind-pano')}
+                      </span>
+                      {#if backup.subject}
+                        <div class="small text-body-secondary">{backup.subject}</div>
+                      {/if}
+                    </td>
+                    <td>{formatBytes(backup.sizeBytes || 0)}</td>
+                    <td class="text-end">
+                      {#if canRestoreRemote(backup) || backup.own}
+                        <span class="dropdown">
+                          <button
+                            type="button"
+                            class="btn btn-link btn-sm"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-label={$_('pages.settings.backups.column-actions')}>
+                            <span class="fas fa-ellipsis-v"></span>
+                          </button>
+                          <div class="dropdown-menu dropdown-menu-end">
+                            {#if canRestoreRemote(backup)}
+                              <button
+                                type="button"
+                                class="dropdown-item"
+                                disabled={running}
+                                onclick={() => askRestoreRemote(backup, group)}>
+                                <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"
+                                ></i>
+                                {$_('pages.settings.backups.restore.submit')}
+                              </button>
+                            {/if}
+                            {#if backup.own && backup.status === 'DONE'}
+                              <div class="dropdown-divider"></div>
+                              <button
+                                type="button"
+                                class="dropdown-item text-danger"
+                                onclick={() => askDelete('remote', backup)}>
+                                <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
+                                {$_('buttons.delete')}
+                              </button>
+                            {/if}
+                          </div>
+                        </span>
+                      {/if}
+                    </td>
+                  </tr>
+                {/each}
+              </tbody>
+            {/each}
+          </table>
+        </div>
       {/if}
-    </div>
-  {/if}
+    {/if}
+  </div>
 </div>
+
+<PanoBackupSettingsModal
+  bind:this={settingsModal}
+  {local}
+  {remote}
+  onsaved={() => void refresh()} />
+
+<PanoBackupPassphraseModal
+  bind:this={passphraseModal}
+  passphraseSet={remote.passphraseSet}
+  onsaved={() => (remote = { ...remote, passphraseSet: true })} />
+
+<PanoTransferModal
+  bind:this={transferModal}
+  {remote}
+  disabled={running}
+  onstarted={(next) => {
+    if (next) job = next;
+    void refresh();
+  }} />
 
 <!-- Create a local backup, optionally passphrase-encrypted. -->
 <BsModal bind:this={createModal}>
@@ -337,6 +388,35 @@
   </form>
 </BsModal>
 
+<!-- Confirms a manual backup to Pano Backup: says whether it goes up encrypted or plain. -->
+<BsModal bind:this={uploadModal}>
+  <div class="modal-body text-center">
+    <i class="fa-solid fa-cloud-arrow-up fa-3x d-block m-auto text-primary pb-3"></i>
+    <h5 class="mb-2">{$_('pages.settings.backups.upload-confirm.title')}</h5>
+    <div class="text-body-secondary small">
+      {$_('pages.settings.backups.upload-confirm.description')}
+      {remote.passphraseSet
+        ? $_('pages.settings.backups.upload-confirm.encrypted')
+        : $_('pages.settings.backups.upload-confirm.plain')}
+    </div>
+  </div>
+  <div class="modal-footer flex-nowrap">
+    <button type="button" class="btn btn-link col-6 m-0" data-bs-dismiss="modal">
+      {$_('buttons.cancel')}
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary col-6 m-0"
+      disabled={running || busyAction === 'upload'}
+      onclick={() => void uploadToPanoBackup()}>
+      {#if busyAction === 'upload'}
+        <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+      {/if}
+      {$_('pages.settings.backups.upload-now')}
+    </button>
+  </div>
+</BsModal>
+
 <BsModal bind:this={deleteModal}>
   <div class="modal-body text-center">
     <i class="fa-solid fa-trash fa-3x d-block m-auto text-danger pb-3"></i>
@@ -367,7 +447,12 @@
 <RestorePanoBackupModal bind:this={restoreModal} onsubmit={submitRestore} />
 
 <script module>
+  import { redirect } from '@sveltejs/kit';
+
+  import { base } from '$app/paths';
+
   import ApiUtil from '$lib/api.util.js';
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { canRestoreRemote, connectionState } from '$lib/pano-backup.util.js';
 
   /**
@@ -382,32 +467,49 @@
    * @type {import('@sveltejs/kit').Load}
    */
   export async function load(event) {
-    await event.parent();
+    const { user } = await event.parent();
+
+    if (!hasPermission(Permissions.MANAGE_PANO_BACKUPS, user)) {
+      throw redirect(302, base);
+    }
 
     const [local, remote] = await Promise.all([
       read('/api/panel/pano-backups', event),
-      read('/api/panel/pano-backups/remote', event),
+      // Back from picking a plan on the website: the cached plan is stale, ask panomc.com again.
+      read(
+        event.url.searchParams.has('planUpdated')
+          ? '/api/panel/pano-backups/remote?fresh=true'
+          : '/api/panel/pano-backups/remote',
+        event,
+      ),
     ]);
 
-    const remoteList =
+    const [remoteList, transferList] =
       connectionState(remote) !== 'not-connected'
-        ? await read('/api/panel/pano-backups/remote/backups', event)
-        : null;
+        ? await Promise.all([
+            read('/api/panel/pano-backups/remote/backups', event),
+            read('/api/panel/pano-backups/remote/transfers', event),
+          ])
+        : [null, null];
 
-    return { local, remote, remoteList };
+    return { local, remote, remoteList, transferList };
   }
 </script>
 
 <script>
-  import { _ } from 'svelte-i18n';
+  import { getContext, onMount } from 'svelte';
 
-  import { base } from '$app/paths';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
+  import { _ } from 'svelte-i18n';
+  import { websiteDisplayHost } from '$lib/website-display.util.js';
 
   import { formatBytes } from '$lib/string.util.js';
+  import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
   import {
-    describeError,
     groupRemoteBackups,
     isJobRunning,
+    isTransferOpen,
     tagColour,
   } from '$lib/pano-backup.util.js';
 
@@ -417,11 +519,32 @@
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   import BsModal from '$lib/components/settings/pano-backup/BsModal.svelte';
   import PanoBackupJobCard from '$lib/components/settings/pano-backup/PanoBackupJobCard.svelte';
-  import PanoBackupAccountCard from '$lib/components/settings/pano-backup/PanoBackupAccountCard.svelte';
+  import PanoBackupAccountSummary from '$lib/components/settings/pano-backup/PanoBackupAccountSummary.svelte';
   import PassphraseFields from '$lib/components/settings/pano-backup/PassphraseFields.svelte';
   import RestorePanoBackupModal from '$lib/components/settings/pano-backup/RestorePanoBackupModal.svelte';
+  import PanoBackupSettingsModal from '$lib/components/settings/pano-backup/PanoBackupSettingsModal.svelte';
+  import PanoBackupPassphraseModal from '$lib/components/settings/pano-backup/PanoBackupPassphraseModal.svelte';
+  import PanoTransferModal from '$lib/components/settings/pano-backup/PanoTransferModal.svelte';
 
   let { data } = $props();
+
+  getContext('pageTitle').set('pages.settings.backups.title');
+
+  // The website sends the owner back with `?planUpdated` (a plan was picked) or `?back`, like the
+  // store does with `?install=`; the flag is shown once and dropped from the address.
+  onMount(() => {
+    const params = $page.url.searchParams;
+
+    if (!params.has('planUpdated') && !params.has('back')) {
+      return;
+    }
+
+    if (params.has('planUpdated')) {
+      void showSuccess('pages.settings.backups.account.plan-updated');
+    }
+
+    void goto(`${base}/backups`, { replaceState: true, noScroll: true, keepFocus: true });
+  });
 
   const EMPTY_LOCAL = { backups: [], usedBytes: 0, job: null, restartRequired: false };
 
@@ -429,9 +552,9 @@
   let local = $derived(normaliseLocal(data?.local));
   let remote = $derived(normaliseRemote(data?.remote));
   let remoteList = $derived(/** @type {any} */ (data?.remoteList ?? null));
+  let transferList = $derived(/** @type {any} */ (data?.transferList ?? null));
   let job = $derived(/** @type {any} */ (data?.remote?.job ?? data?.local?.job ?? null));
 
-  let refreshing = $state(false);
   /** @type {'create' | 'upload' | 'delete' | null} */
   let busyAction = $state(null);
 
@@ -439,8 +562,22 @@
   let createModal = $state();
   /** @type {BsModal | undefined} */
   let deleteModal = $state();
+  /** @type {BsModal | undefined} */
+  let uploadModal = $state();
   /** @type {RestorePanoBackupModal | undefined} */
   let restoreModal = $state();
+  /** @type {PanoBackupSettingsModal | undefined} */
+  let settingsModal = $state();
+  /** @type {PanoBackupPassphraseModal | undefined} */
+  let passphraseModal = $state();
+  /** @type {PanoTransferModal | undefined} */
+  let transferModal = $state();
+
+  /** @type {string | null} */
+  let cancelling = $state(null);
+
+  /** A pending transfer is re-read this often, so the owner's confirmation shows up here. */
+  const OPEN_TRANSFER_POLL_MS = 10_000;
 
   let createEncrypt = $state(true);
   let createPassphrase = $state('');
@@ -455,9 +592,28 @@
 
   const running = $derived(isJobRunning(job));
   const connected = $derived(connectionState(remote) !== 'not-connected');
+  const hostUnavailable = $derived(connectionState(remote) === 'unavailable');
   const groups = $derived(groupRemoteBackups(remoteList?.error ? null : remoteList));
   const groupsHaveBackups = $derived(groups.some((group) => group.backups.length > 0));
   const remoteError = $derived(remoteList?.error ? describeError(remoteList) : null);
+  const transfers = $derived(
+    /** @type {any[]} */ (
+      transferList && !transferList.error && Array.isArray(transferList.transfers)
+        ? transferList.transfers
+        : []
+    ),
+  );
+  const openTransfer = $derived(transfers.find((transfer) => isTransferOpen(transfer.status)));
+
+  $effect(() => {
+    if (!openTransfer || running) {
+      return;
+    }
+
+    const timer = setInterval(() => void refresh(), OPEN_TRANSFER_POLL_MS);
+
+    return () => clearInterval(timer);
+  });
 
   /** @param {any} body */
   function normaliseLocal(body) {
@@ -469,37 +625,42 @@
     return body && !body.error ? body : { connected: false, passphraseSet: false };
   }
 
-  /** @param {{ local?: any, remote?: any, remoteList?: any }} source */
+  /** @param {{ local?: any, remote?: any, remoteList?: any, transferList?: any }} source */
   function apply(source) {
     local = normaliseLocal(source.local);
     remote = normaliseRemote(source.remote);
     remoteList = source.remoteList ?? null;
+    transferList = source.transferList ?? null;
     job = source.remote?.job ?? source.local?.job ?? job;
   }
 
   async function refresh() {
-    refreshing = true;
+    const [nextLocal, nextRemote] = await Promise.all([
+      ApiUtil.get({ path: '/api/panel/pano-backups' }).catch(() => null),
+      ApiUtil.get({ path: '/api/panel/pano-backups/remote?fresh=true' }).catch(() => null),
+    ]);
+    const [nextList, nextTransfers] =
+      connectionState(nextRemote) !== 'not-connected'
+        ? await Promise.all([
+            ApiUtil.get({ path: '/api/panel/pano-backups/remote/backups' }).catch(() => null),
+            ApiUtil.get({ path: '/api/panel/pano-backups/remote/transfers' }).catch(() => null),
+          ])
+        : [null, null];
 
-    try {
-      const [nextLocal, nextRemote] = await Promise.all([
-        ApiUtil.get({ path: '/api/panel/pano-backups' }).catch(() => null),
-        ApiUtil.get({ path: '/api/panel/pano-backups/remote?fresh=true' }).catch(() => null),
-      ]);
-      const nextList =
-        connectionState(nextRemote) !== 'not-connected'
-          ? await ApiUtil.get({ path: '/api/panel/pano-backups/remote/backups' }).catch(() => null)
-          : null;
-
-      apply({ local: nextLocal, remote: nextRemote, remoteList: nextList });
-    } finally {
-      refreshing = false;
-    }
+    apply({
+      local: nextLocal,
+      remote: nextRemote,
+      remoteList: nextList,
+      transferList: nextTransfers,
+    });
   }
 
   /** @param {any} finished */
   async function onJobFinished(finished) {
     if (finished.status === 'DONE') {
-      void showSuccess(`pages.settings.backups.job.done-${String(finished.type).toLowerCase()}`);
+      void showSuccess(`pages.settings.backups.job.done-${String(finished.type).toLowerCase()}`, {
+        website: websiteDisplayHost(),
+      });
     }
 
     if (finished.type === 'RESTORE' && finished.status === 'DONE') {
@@ -569,6 +730,8 @@
 
       if (error) {
         void showError(error.key, error.values);
+      } else {
+        uploadModal?.hide();
       }
     } finally {
       busyAction = null;
@@ -677,6 +840,29 @@
       await refresh();
     } finally {
       busyAction = null;
+    }
+  }
+
+  /** @param {any} transfer */
+  async function cancelTransfer(transfer) {
+    cancelling = transfer.id;
+
+    try {
+      const body = await ApiUtil.delete({
+        path: `/api/panel/pano-backups/remote/transfers/${encodeURIComponent(transfer.id)}`,
+      }).catch(() => ({ error: 'NETWORK_ERROR' }));
+
+      if (body?.error) {
+        const error = describeError(body);
+
+        if (error) {
+          void showError(error.key, error.values);
+        }
+      }
+
+      await refresh();
+    } finally {
+      cancelling = null;
     }
   }
 </script>

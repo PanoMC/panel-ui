@@ -7,6 +7,7 @@ import { originalServerNavItems } from '$lib/components/sidebar/ServerNavigation
 import { originalThemeMenuItems } from '$lib/pages/view/Themes.svelte';
 import { originalPostMenuItems } from '$lib/pages/Posts.svelte';
 import { avatarVersion } from './Store.js';
+import { completeSignIn } from './signIn.util.js';
 // The shared plugin engine lives in @panomc/theme-core. The panel is NOT yet wired with the
 // `$pano` vite alias (that lands with the theme-core migration), so this imports through the
 // package's exports map — resolvable regardless of the alias.
@@ -46,6 +47,36 @@ export async function init() {
 
 export const executeLifecycle = lifecycle.executeLifecycle;
 export const executeHookLoad = hooks.executeHookLoad;
+export const executeViewLoad = slots.executeViewLoad;
+
+/**
+ * The panel's sign-in page runs the same plugin pipeline as the theme's `/login`: the
+ * `panel:login:load` lifecycle, then the `login-content` and `login-alt-methods` view slots.
+ * Shared by the page load and the plugin-facing `pano.ui.auth.login.load`, so a plugin page that
+ * presents a login (social login's completion step, …) gets the same widgets.
+ *
+ * @param {any} [event] the SvelteKit load event; absent when called from a component.
+ * @returns {Promise<{ error: string | null, username: string | null, event: any }>}
+ */
+export async function executeLoginLoad(event) {
+  // Plugin handlers read `event.url` (`?socialError=`, `?mcError=`, …); a component-side call
+  // has no load event, so it gets the address in the bar.
+  if (!event && browser) {
+    event = { url: new URL(window.location.href) };
+  }
+
+  slots.edit('login-content', (items) => {
+    items.push({ id: 'login-form', priority: 100, hidden: false });
+  });
+
+  const data = { error: null, username: null, event };
+
+  await lifecycle.executeLifecycle('panel:login:load', data, event);
+  await slots.executeViewLoad('login-content', event);
+  await slots.executeViewLoad('login-alt-methods', event);
+
+  return data;
+}
 
 export const panoApi = {
   ...baseAPI,
@@ -77,6 +108,71 @@ export const panoApi = {
       themes: {
         async editMenu(handler = async (items) => items) {
           themeMenuItems.set(await handler(get(themeMenuItems)));
+        },
+      },
+      // The generic view-slot surface, same as the theme's `pano.ui.view`.
+      register(options) {
+        slots.register(options);
+      },
+      hide(viewId, id) {
+        slots.hide(viewId, id);
+      },
+      show(viewId, id) {
+        slots.show(viewId, id);
+      },
+      move(viewId, id, priority) {
+        slots.move(viewId, id, priority);
+      },
+      get(viewId) {
+        return slots.get(viewId);
+      },
+      onLoad(viewId, handler) {
+        panoApi.ui.lifecycle.on(`panel:view:${viewId}:load`, handler);
+      },
+      async load(viewId, event) {
+        return await slots.executeViewLoad(viewId, event);
+      },
+    },
+    /**
+     * The sign-in surface, shaped exactly like the theme's `pano.ui.auth.login` so a plugin
+     * registers the same captcha, 2FA and alternative-method items in both. The panel only shows
+     * its own sign-in page on a SERVERS install (no theme runs there); anywhere else a signed-out
+     * visitor is sent to the theme's `/login` and these handlers never fire.
+     */
+    auth: {
+      login: {
+        content: {
+          edit(callback) {
+            slots.edit('login-content', callback);
+          },
+          get() {
+            return slots.get('login-content');
+          },
+        },
+        alternativeMethods: {
+          add(method) {
+            slots.upsert('login-alt-methods', method);
+          },
+          get() {
+            return slots.get('login-alt-methods');
+          },
+        },
+        onLoad(handler) {
+          panoApi.ui.lifecycle.on('panel:login:load', handler);
+        },
+        async load(event) {
+          return await executeLoginLoad(event);
+        },
+        /**
+         * Panel-only: finishes a plugin sign-in flow once the backend has set the cookies —
+         * checks panel access (a session without it is closed again), then opens `?next=` or the
+         * dashboard. Resolves to `'ok'` or `'NO_PANEL_ACCESS'`.
+         *
+         * @param {string} csrfToken
+         * @param {{ target?: string }} [options]
+         */
+        complete(csrfToken, options) {
+          return completeSignIn(csrfToken, options);
         },
       },
     },
@@ -115,6 +211,10 @@ export const panoApi = {
     lifecycle: {
       on(name, handler) {
         lifecycle.on(name, handler);
+      },
+      async execute(name, data = {}, event) {
+        await lifecycle.executeLifecycle(name, data, event);
+        return data;
       },
     },
     hook: {

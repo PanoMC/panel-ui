@@ -179,12 +179,16 @@
                       </button>
 
                       {#if canUploadToPanoBackup && backup.mode !== 'SNAPSHOT' && String(backup.status || '').toUpperCase() === 'READY'}
+                        <!-- Not offered yet: shown as coming soon, never clickable. -->
                         <button
                           type="button"
-                          class="dropdown-item text-capitalize"
-                          onclick={() => void uploadToPanoBackup(backup)}>
+                          class="dropdown-item text-capitalize d-flex align-items-center"
+                          disabled>
                           <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
                           {$_('pages.servers.backups.pano-backup-upload')}
+                          <span class="badge text-bg-secondary text-uppercase ms-2">
+                            {$_('pages.servers.backups.coming-soon')}
+                          </span>
                         </button>
                       {/if}
 
@@ -674,7 +678,7 @@
     showServerLoadError,
   } from '$lib/servers.util.js';
   import { onServerBackupsChanged, onTaskProgress } from '$lib/panelRealtime.js';
-  import { describeError } from '$lib/pano-backup.util.js';
+  import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
 
   import BackupOptions, {
     backupOptionsPayload,
@@ -697,7 +701,7 @@
   const SECTION_KEY = 'components.server-navigation-menu.backups';
 
   const hasPermissionToManage = hasPermission(Permissions.MANAGE_SERVER_BACKUPS);
-  /** A FULL backup can also be sent to Pano Backup (panomc.com), E2E-encrypted. */
+  /** A FULL backup can also be sent to Pano Backup (panomc.com), E2E-encrypted when a passphrase is set. */
   const canUploadToPanoBackup =
     hasPermissionToManage && hasPermission(Permissions.MANAGE_PANO_BACKUPS);
 
@@ -1084,7 +1088,7 @@
 
   /**
    * Sends one FULL backup to Pano Backup; the platform runs it as a Pano backup job (progress on
-   * the Backups settings page).
+   * the Backups page). Not wired to the menu while the feature is marked "coming soon".
    *
    * @param {object} backup
    */

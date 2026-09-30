@@ -36,17 +36,18 @@
         <p class="mb-3">
           {$_('pages.theme-detail.license.not-connected', {
             ...websiteI18n,
-            default: 'Connect your panomc.com account to verify this theme’s license.',
+            default: 'Connect your {website} account to verify this theme’s license.',
           })}
         </p>
         <a class="btn btn-primary" href="{base}/settings/platform">
           <i class="fa-solid fa-link me-2"></i>
-          {$_('buttons.connect-pano-account', { default: 'Connect panomc.com account' })}
+          {$_('buttons.connect-pano-account', { default: 'Connect Pano account' })}
         </a>
       {:else if theme.licenseStatus === 'EXPIRED'}
         <p class="mb-0">
           {$_('pages.theme-detail.license.expired', {
-            default: 'Your license has expired. Renew it on panomc.com to keep using this theme.',
+            ...websiteI18n,
+            default: 'Your license has expired. Renew it on {website} to keep using this theme.',
           })}
         </p>
       {:else if theme.licenseStatus === 'NETWORK_ERROR'}

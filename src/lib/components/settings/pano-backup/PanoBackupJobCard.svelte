@@ -59,7 +59,9 @@
         </div>
       {:else if job.status === 'DONE' && job.type === 'TRANSFER'}
         <div class="small text-body-secondary">
-          {$_('pages.settings.backups.job.transfer-done')}
+          {$_('pages.settings.backups.job.transfer-done', {
+            values: { website: websiteDisplayHost() },
+          })}
         </div>
       {/if}
 
@@ -78,10 +80,12 @@
 
 <script>
   import { _ } from 'svelte-i18n';
+  import { websiteDisplayHost } from '$lib/website-display.util.js';
 
   import ApiUtil from '$lib/api.util.js';
   import { formatBytes } from '$lib/string.util.js';
-  import { describeError, isJobRunning, jobPercent } from '$lib/pano-backup.util.js';
+  import { isJobRunning, jobPercent } from '$lib/pano-backup.util.js';
+  import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
 
   import DateComponent from '$lib/components/Date.svelte';
 

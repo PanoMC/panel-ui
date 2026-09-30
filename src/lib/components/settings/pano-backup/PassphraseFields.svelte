@@ -2,7 +2,7 @@
 <div class="vstack gap-2">
   <div class="alert alert-warning small mb-0">
     <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
-    {$_('pages.settings.backups.passphrase-warning')}
+    {$_('pages.settings.backups.passphrase-warning', { values: { website: websiteDisplayHost() } })}
   </div>
   <div>
     <label class="form-label small" for="{id}-passphrase">
@@ -49,6 +49,7 @@
 
 <script>
   import { _ } from 'svelte-i18n';
+  import { websiteDisplayHost } from '$lib/website-display.util.js';
 
   import { MIN_PASSPHRASE_LENGTH, passphraseProblem } from '$lib/pano-backup.util.js';
 

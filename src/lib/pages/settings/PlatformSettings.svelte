@@ -759,7 +759,11 @@
     {/if}
 
     {#if data.email.hostMailAvailable && mailMode === 'host'}
-      <p class="text-muted mb-3">{$_('pages.settings.platform.smtp.host-mail-description')}</p>
+      <p class="text-muted mb-3">
+        {$_('pages.settings.platform.smtp.host-mail-description', {
+          values: { website: websiteDisplayHost() },
+        })}
+      </p>
       {#if !data.email.hostManaged}
         <button
           class="btn btn-secondary"
@@ -1018,6 +1022,7 @@
 <script>
   import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import { websiteDisplayHost } from '$lib/website-display.util.js';
 
   import { page } from '$app/stores';
   import { goto, invalidateAll } from '$app/navigation';

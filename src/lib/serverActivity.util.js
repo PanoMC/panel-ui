@@ -15,7 +15,7 @@ import { isEndpointUnavailable } from '$lib/servers.util.js';
 export const SERVER_ACTIVITY_PAGE_SIZE = 50;
 
 /**
- * Icon and colour per log type. `SERVER_PLUGIN_*` and `SERVER_SCHEDULE_*` are families whose
+ * Icon and colour per log type. `SERVER_PLUGIN_*`, `SERVER_BACKUP_*` and `SERVER_SCHEDULE_*` are families whose
  * exact members the backend may still grow, so they are matched by prefix and an unknown member
  * still gets the right icon instead of the generic one.
  *
@@ -29,7 +29,7 @@ const ACTIVITY_TYPE_STYLES = Object.freeze([
   { prefix: 'SERVER_PANO_PLUGIN_', icon: 'fa-solid fa-puzzle-piece', colour: 'warning' },
   { prefix: 'LINKED_AGENT_SERVER', icon: 'fa-solid fa-microchip', colour: 'success' },
   { prefix: 'SERVER_FILE_CHANGED', icon: 'fa-solid fa-file-pen', colour: 'secondary' },
-  { prefix: 'SERVER_BACKUP_ACTION', icon: 'fa-solid fa-box-archive', colour: 'success' },
+  { prefix: 'SERVER_BACKUP_', icon: 'fa-solid fa-box-archive', colour: 'success' },
   { prefix: 'SERVER_SCHEDULE_', icon: 'fa-solid fa-clock', colour: 'primary' },
   { prefix: 'SERVER_CRASHED', icon: 'fa-solid fa-triangle-exclamation', colour: 'danger' },
 ]);

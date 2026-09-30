@@ -27,35 +27,57 @@
       </ul>
 
       {#if source === 'file'}
-        <div>
-          <label class="form-label small" for="pano-restore-file">
-            {$_('pages.settings.backups.restore.file')}
-          </label>
-          <input
-            id="pano-restore-file"
-            class="form-control"
-            type="file"
-            accept=".panoarc,.zip"
-            onchange={pickFile} />
+        <div class="vstack gap-2">
           {#if file}
-            <div class="form-text">
-              {file.name} · {formatBytes(file.size)}
-              {#if archive.type === 'encrypted'}
-                · <i class="fa-solid fa-lock" aria-hidden="true"></i>
-                {$_('pages.settings.backups.encrypted')}
-              {:else if archive.type === 'plain'}
-                · {$_('pages.settings.backups.plain')}
-              {/if}
+            <div class="d-flex align-items-center gap-3 border rounded p-3">
+              <i
+                class="fa-solid {archive.type === 'encrypted'
+                  ? 'fa-file-shield'
+                  : 'fa-file-zipper'} fa-2x text-body-secondary"
+                aria-hidden="true"></i>
+              <div class="vstack min-w-0">
+                <span class="text-truncate">{file.name}</span>
+                <span class="small text-body-secondary">
+                  {formatBytes(file.size)}
+                  {#if archive.type === 'encrypted'}
+                    · <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                    {$_('pages.settings.backups.encrypted')}
+                  {:else if archive.type === 'plain'}
+                    · {$_('pages.settings.backups.plain')}
+                  {/if}
+                </span>
+              </div>
+              <button
+                type="button"
+                class="btn btn-link btn-sm ms-auto"
+                aria-label={$_('pages.settings.backups.restore.change-file')}
+                title={$_('pages.settings.backups.restore.change-file')}
+                disabled={busy}
+                onclick={clearFile}>
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+              </button>
             </div>
-            {#if archive.type === 'unknown'}
-              <div class="form-text text-danger">
-                {$_('pages.settings.backups.restore.not-an-archive')}
-              </div>
-            {:else if archive.keyMode === 'workload'}
-              <div class="form-text text-danger">
-                {$_('pages.settings.backups.restore.workload-key')}
-              </div>
-            {/if}
+          {:else}
+            <DragAndDropZone
+              id="pano-restore-file"
+              accept={['.panoarc', '.zip']}
+              style="min-height: 9rem; cursor: pointer;"
+              icon="fa-solid fa-file-arrow-up fa-2x"
+              title={$_('pages.settings.backups.restore.drop')}
+              subtitle={$_('pages.settings.backups.restore.file')}
+              on:drop={(event) => void pickFile(event.detail)}
+              on:error={() => (fileRejected = true)} />
+          {/if}
+          {#if fileRejected || (file && archive.type === 'unknown' && !inspecting)}
+            <div class="form-text text-danger mt-0">
+              {$_('pages.settings.backups.restore.not-an-archive')}
+            </div>
+          {:else if file && archive.keyMode === 'workload'}
+            <div class="form-text text-danger mt-0">
+              {$_('pages.settings.backups.restore.workload-key', {
+                values: { website: websiteDisplayHost() },
+              })}
+            </div>
           {/if}
         </div>
       {/if}
@@ -70,6 +92,7 @@
             class="form-control"
             type="password"
             autocomplete="off"
+            bind:this={passphraseInput}
             bind:value={passphrase}
             class:border-danger={error?.code === 'WRONG_PASSPHRASE' ||
               error?.code === 'PASSPHRASE_REQUIRED'} />
@@ -124,11 +147,14 @@
 </BsModal>
 
 <script>
+  import { tick } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import { websiteDisplayHost } from '$lib/website-display.util.js';
 
   import { formatBytes } from '$lib/string.util.js';
   import { inspectArchiveFile } from '$lib/pano-backup.util.js';
 
+  import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
   import BsModal from './BsModal.svelte';
 
   /**
@@ -149,6 +175,12 @@
   /** @type {File | null} */
   let file = $state(null);
   let archive = $state({ type: 'unknown', keyMode: /** @type {string | null} */ (null) });
+  /** The header of the picked file is still being read. */
+  let inspecting = $state(false);
+  /** The dropped file was not a .panoarc / .zip at all. */
+  let fileRejected = $state(false);
+  /** @type {HTMLInputElement | undefined} */
+  let passphraseInput = $state();
   let passphrase = $state('');
   let currentPassword = $state('');
   let confirmed = $state(false);
@@ -165,7 +197,8 @@
   const passphraseOk = $derived(!askPassphrase || source === 'remote' || passphrase.length > 0);
 
   const fileOk = $derived(
-    source !== 'file' || (!!file && archive.type !== 'unknown' && archive.keyMode !== 'workload'),
+    source !== 'file' ||
+      (!!file && !inspecting && archive.type !== 'unknown' && archive.keyMode !== 'workload'),
   );
 
   const canSubmit = $derived(
@@ -190,24 +223,45 @@
   function reset() {
     file = null;
     archive = { type: 'unknown', keyMode: null };
+    inspecting = false;
+    fileRejected = false;
     passphrase = '';
     currentPassword = '';
     confirmed = false;
     error = null;
   }
 
-  /** @param {Event} event */
-  async function pickFile(event) {
-    const input = /** @type {HTMLInputElement} */ (event.currentTarget);
-    const picked = input.files?.[0] || null;
-
+  /**
+   * Reads the start of the chosen archive: an encrypted one asks for its passphrase right away,
+   * anything that is not a Pano backup is refused before it is uploaded.
+   *
+   * @param {File} picked
+   */
+  async function pickFile(picked) {
     file = picked;
     archive = { type: 'unknown', keyMode: null };
+    fileRejected = false;
     error = null;
+    inspecting = true;
 
-    if (picked) {
+    try {
       archive = await inspectArchiveFile(picked).catch(() => ({ type: 'unknown', keyMode: null }));
+    } finally {
+      inspecting = false;
     }
+
+    if (archive.type === 'encrypted') {
+      await tick();
+      passphraseInput?.focus();
+    }
+  }
+
+  function clearFile() {
+    file = null;
+    archive = { type: 'unknown', keyMode: null };
+    fileRejected = false;
+    passphrase = '';
+    error = null;
   }
 
   async function submit() {

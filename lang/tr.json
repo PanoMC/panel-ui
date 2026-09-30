@@ -113,6 +113,7 @@
         "forgot-support": "Giriş yapamıyor musun? {email} adresine yaz",
         "forgot-no-support": "Şifreni sıfırlaması için başka bir yöneticiye ulaş.",
         "back-to-sign-in": "Girişe dön",
+        "or": "veya",
         "two-factor-title": "İki adımlı doğrulama",
         "two-factor-description": "Doğrulama uygulamandaki 6 haneli kodu gir.",
         "two-factor-label": "Doğrulama kodu",
@@ -134,7 +135,7 @@
           "banned-until": "Hesabın {until} tarihine kadar yasaklı.",
           "banned-until-reason": "Hesabın {until} tarihine kadar yasaklı. Sebep: {reason}",
           "ip-banned": "Bu IP adresi yasaklı.",
-          "captcha": "Bu giriş captcha istiyor, panel ise captcha gösteremiyor. Bunun yerine siteden giriş yap.",
+          "captcha": "Captcha doğrulanamadı. Captcha'yı tamamlayıp tekrar dene.",
           "denied": "Bir eklenti bu girişi reddetti.",
           "no-panel-access": "Bu hesabın panele erişim yetkisi yok.",
           "invalid-email": "Bu e-posta adresi geçerli değil.",
@@ -559,7 +560,7 @@
           "smtp-disabled-alert": "<strong class=\"me-2\">SMTP Devre Dışı</strong> Pano; kayıt veya şifre kurtarma işlemleri için e-posta gönderemeyecektir.",
           "host-mail": "Pano Host e-postası",
           "own-mail": "Kendi e-posta sunucum",
-          "host-mail-description": "E-postalar Pano Host paketinizin e-posta hizmetiyle gönderilir. Limitler ve gönderim kaydı panomc.com'daki instance'ınızın E-posta sayfasındadır.",
+          "host-mail-description": "E-postalar Pano Host paketinizin e-posta hizmetiyle gönderilir. Limitler ve gönderim kaydı {website} üzerindeki instance'ınızın E-posta sayfasındadır.",
           "use-host-mail": "Pano Host e-postasını kullan"
         },
         "smtp-settings": "SMTP",
@@ -717,12 +718,17 @@
         }
       },
       "backups": {
-        "nav-backups": "Yedekler",
-        "nav-pano-backup": "Pano Backup",
-        "nav-transfer": "Pano Host'a taşı",
+        "title": "Yedekler",
+        "settings-title": "Yedekleme ayarları",
         "local-used": "{count} yerel yedek · {size}",
         "restore-from-file": "Dosyadan geri yükle",
         "upload-now": "Pano Backup'a yedekle",
+        "upload-confirm": {
+          "title": "Pano Backup'a yedeklensin mi?",
+          "description": "Bu Pano'nun yedeği alınır ve Pano Backup'a yüklenir.",
+          "encrypted": "Yedek bu sunucudan çıkmadan önce parolanızla şifrelenir.",
+          "plain": "Parola belirlenmediği için yedek düz arşiv olarak yüklenir."
+        },
         "create": "Yedek oluştur",
         "create-description": "Yedek bu Pano'nun veritabanını, ayarlarını, eklentilerini, temalarını ve yüklenen dosyalarını içerir. Bu sunucuda saklanır.",
         "encrypt": "Parola ile şifrele",
@@ -733,8 +739,6 @@
         "remote-title": "Pano Backup",
         "no-local": "Bu sunucuda henüz yedek yok.",
         "no-remote": "Henüz Pano Backup yedeği yok.",
-        "go-settings": "Pano Backup ayarları",
-        "passphrase-missing": "Pano Backup'a yedeklemeden önce bir parola belirleyin.",
         "column-created": "Oluşturulma",
         "column-type": "Tür",
         "column-size": "Boyut",
@@ -760,12 +764,12 @@
         "passphrase-confirm": "Parolayı tekrarlayın",
         "passphrase-min": "En az {min} karakter.",
         "passphrase-mismatch": "Parolalar eşleşmiyor.",
-        "passphrase-warning": "Parola bu sunucudan hiç çıkmaz ve panomc.com onu sıfırlayamaz. Kaybederseniz onunla şifrelenen yedekler asla geri yüklenemez.",
+        "passphrase-warning": "Parola bu sunucudan hiç çıkmaz ve {website} onu sıfırlayamaz. Kaybederseniz onunla şifrelenen yedekler asla geri yüklenemez.",
         "passphrase-understood": "Parolanın kaybolması durumunda bu yedeklerin kurtarılamayacağını anlıyorum.",
         "passphrase-title": "Şifreleme parolası",
         "passphrase-set": "Belirlendi",
         "passphrase-not-set": "Belirlenmedi",
-        "passphrase-description": "Pano Backup yedekleri yüklenmeden önce bu sunucuda bu parolayla şifrelenir (uçtan uca). Zamanlanmış yedekler çalışabilsin diye bu sunucuda saklanır, ama hiçbir yedeğin içine girmez.",
+        "passphrase-description": "Önerilir: parola belirlerseniz Pano Backup yedekleri yüklenmeden önce bu sunucuda şifrelenir (uçtan uca), yani yalnızca siz açabilirsiniz. Parola yoksa yedekler düz arşiv olarak yüklenir. Parola zamanlanmış yedeklerin çalışabilmesi için bu sunucuda saklanır, ama hiçbir yedeğin içine girmez.",
         "passphrase-change-hint": "Parolayı değiştirmek eski yedekleri yeniden şifrelemez. Onları geri yüklemek için eski parolayı saklayın.",
         "passphrase-saved": "Parola kaydedildi.",
         "settings-saved": "Ayarlar kaydedildi.",
@@ -780,7 +784,7 @@
         "keep": "Tutulacak",
         "last-upload": "Son yedek:",
         "mc-servers-title": "Minecraft sunucu yedekleri",
-        "mc-servers-description": "Seçilen sunucuların yeni tam yedekleri de aynı parolayla şifrelenerek Pano Backup'a yüklenir.",
+        "mc-servers-description": "Seçilen sunucuların yeni tam yedekleri de Pano Backup'a yüklenir; parola belirlenmişse onunla şifrelenir.",
         "mc-servers-none": "Yönetilen sunucu yok.",
         "usage": "Kullanılan",
         "job": {
@@ -799,12 +803,12 @@
           "phase-fetching": "Sunucu yedeği alınıyor…",
           "restore-running": "Geri yükleme sürerken Pano bakım modundadır ve bittiğinde yeniden başlar.",
           "rolled-back": "Hiçbir şey değişmedi: geri yükleme öncesindeki durum geri getirildi.",
-          "transfer-done": "Yüklendi. Tamamlamak için taşımayı panomc.com üzerinde onaylayın.",
+          "transfer-done": "Yüklendi. Tamamlamak için taşımayı {website} üzerinde onaylayın.",
           "restart-required": "Geri yüklemeyi tamamlamak için Pano yeniden başlamalı. Kendiliğinden başlamazsa elle yeniden başlatın.",
           "done-create": "Yedek oluşturuldu.",
           "done-restore": "Geri yükleme tamamlandı. Pano yeniden başlıyor.",
           "done-upload": "Yedek Pano Backup'a yüklendi.",
-          "done-transfer": "Taşıma yüklendi. panomc.com üzerinde onaylayın.",
+          "done-transfer": "Taşıma yüklendi. {website} üzerinde onaylayın.",
           "done-mc_upload": "Sunucu yedeği Pano Backup'a yüklendi."
         },
         "restore": {
@@ -814,36 +818,27 @@
           "step-replace": "Veritabanı, ayarlar, eklentiler, temalar ve yüklenen dosyalar yedektekilerle değiştirilir.",
           "step-restart": "Pano yeniden başlar. Bir şey ters giderse güvenlik yedeği geri getirilir.",
           "file": "Yedek dosyası (.panoarc veya dışa aktarılmış .zip)",
+          "drop": "Yedeği buraya bırak ya da seçmek için tıkla",
+          "change-file": "Başka dosya seç",
           "not-an-archive": "Bu dosya bir Pano yedeği değil.",
-          "workload-key": "Bu, örnek anahtarıyla şifrelenmiş bir Pano Host yedeği. Bunun yerine panomc.com'dan dışa aktarma olarak indirin.",
+          "workload-key": "Bu, örnek anahtarıyla şifrelenmiş bir Pano Host yedeği. Bunun yerine {website} üzerinden dışa aktarma olarak indirin.",
           "passphrase-saved-hint": "Kayıtlı parolayı kullanmak için boş bırakın.",
           "confirm": "Bu Pano'nun mevcut verilerinin değiştirileceğini anlıyorum.",
           "submit": "Geri yükle"
         },
         "transfer": {
-          "title": "Pano Host'a taşı",
+          "title": "Pano Host'a Aktar",
           "step-push": "Bu Pano'nun bir kopyasını yükleyin.",
-          "step-confirm": "Taşımayı 24 saat içinde panomc.com üzerinde onaylayın. Örnek bu kopyadan geri yüklenir.",
+          "step-confirm": "Taşımayı 24 saat içinde {website} üzerinde onaylayın. Örnek bu kopyadan geri yüklenir.",
           "plain-note": "Kopya, Pano Host geri yükleyebilsin diye parolayla şifrelenmez; TLS üzerinden gider ve taşımadan sonra silinir.",
           "max-size": "En fazla {size}",
           "start": "Taşımayı başlat",
-          "awaiting": "Bekleyen bir taşıma var. panomc.com üzerinde onaylayın veya reddedin.",
-          "history": "Taşımalar",
-          "none": "Henüz taşıma yok.",
+          "awaiting": "Bekleyen bir taşıma var. {website} üzerinde onaylayın veya reddedin.",
           "confirm-until": "Son onay:",
-          "status-uploading": "Yükleniyor",
-          "status-awaiting_confirmation": "Onay bekleniyor",
-          "status-restoring": "Geri yükleniyor",
-          "status-done": "Tamamlandı",
-          "status-failed": "Başarısız",
-          "status-rejected": "Reddedildi",
-          "status-canceled": "İptal edildi",
-          "status-expired": "Süresi doldu",
           "step-pick": "Bu Pano'nun taşınacağı, hesabınızdaki Pano Host örneğini seçin.",
           "target": "Pano Host örneği",
-          "not-connected": "Bu Pano'yu Pano Host örneklerinizden birine taşımak için platform ayarlarından panomc.com hesabınıza bağlayın.",
           "no-workloads": "Hesabınızda taşınabilecek bir Pano Host örneği yok.",
-          "get-instance": "panomc.com üzerinden edinin"
+          "get-instance": "{website} üzerinden edinin"
         },
         "errors": {
           "generic": "Bir şeyler ters gitti ({code}).",
@@ -871,10 +866,10 @@
           "SAFETY_BACKUP_FAILED": "Güvenlik yedeği oluşturulamadığı için hiçbir şey geri yüklenmedi.",
           "DATABASE_CONNECTION_FAILED": "Veritabanına bağlanılamadı. Hiçbir şey değişmedi.",
           "INTERNAL_ERROR": "Dahili bir hata oluştu. Pano günlüklerine bakın.",
-          "PANO_HOST_UNAVAILABLE": "panomc.com'a ulaşılamadı. Daha sonra tekrar deneyin.",
+          "PANO_HOST_UNAVAILABLE": "{website} adresine ulaşılamadı. Daha sonra tekrar deneyin.",
           "PASSPHRASE_NOT_SET": "Önce Pano Backup ayarlarından bir parola belirleyin.",
           "NOT_AVAILABLE": "Pano Backup bu sunucuda kullanılamıyor.",
-          "INVALID_TOKEN": "panomc.com bağlantısı iptal edilmiş. Yeniden bağlanın.",
+          "INVALID_TOKEN": "{website} bağlantısı iptal edilmiş. Yeniden bağlanın.",
           "UPLOAD_FAILED": "Yükleme başarısız oldu. Tekrar deneyin.",
           "DOWNLOAD_FAILED": "İndirme başarısız oldu. Tekrar deneyin.",
           "INTEGRITY_FAILED": "Dosya sağlam ulaşmadı. Tekrar deneyin.",
@@ -888,25 +883,25 @@
           "BACKUP_NOT_FOUND": "Yedek artık mevcut değil.",
           "NOT_A_FULL_BACKUP": "Pano Backup'a yalnızca tam yedekler yüklenebilir.",
           "NETWORK_ERROR": "Pano'ya ulaşılamadı. Bağlantınızı kontrol edin.",
-          "CONNECT_REQUIRED": "Bu Pano bir panomc.com hesabına bağlı değil. Platform ayarlarından bağlayın.",
-          "STOPPED_REMOTELY": "Yedekleme panomc.com üzerinden durduruldu.",
-          "PAYMENT_REQUIRED_NO_SUBSCRIPTION": "Hesabınızın Pano Backup planı yok. panomc.com üzerinden bir plan seçin.",
+          "CONNECT_REQUIRED": "Bu Pano bir {website} hesabına bağlı değil. Platform ayarlarından bağlayın.",
+          "STOPPED_REMOTELY": "Yedekleme {website} üzerinden durduruldu.",
+          "PAYMENT_REQUIRED_NO_SUBSCRIPTION": "Hesabınızın Pano Backup planı yok. {website} üzerinden bir plan seçin.",
           "PAYMENT_REQUIRED_LAPSED": "Pano Backup planınızın ödemesi yapılmadı. Yeni yedekler duraklatıldı; plan ödenmezse saklanan yedekler {graceUntil} sonrasında silinir."
         },
         "account": {
-          "title": "panomc.com hesabı",
+          "title": "Pano Backup",
           "connected": "Bağlı",
-          "not-connected": "Pano Backup, bu Pano'nun bağlı olduğu panomc.com hesabı üzerinden çalışır. Yedekleri uçtan uca şifreli olarak bu sunucunun dışında tutmak için platform ayarlarından bağlayın.",
-          "revoked": "panomc.com bağlantısı iptal edildi. Bu Pano'yu platform ayarlarından yeniden bağlayın.",
-          "connection-settings": "Bağlantı ayarları",
-          "unavailable": "panomc.com'a ulaşılamadı, bu yüzden plan ve kullanım gösterilemiyor. Daha sonra tekrar deneyin.",
+          "not-connected": "Pano Backup, bu Pano için hızlı ve güvenli bulut depolamadır: parola belirlerseniz yedekler bu sunucudan çıkmadan önce şifrelenir, yani yalnızca siz açabilirsiniz. Başlamak için {website} hesabınızı platform ayarlarından bağlayın.",
+          "revoked": "{website} bağlantısı iptal edildi. Bu Pano'yu platform ayarlarından yeniden bağlayın.",
+          "plan": "Plan",
+          "unavailable": "{website} adresine ulaşılamadı, bu yüzden plan ve kullanım gösterilemiyor. Daha sonra tekrar deneyin.",
           "canceling": "Dönem sonunda bitiyor",
-          "no-plan": "Hesabınızın henüz bir Pano Backup planı yok. Yedeklemeye başlamak için panomc.com üzerinden bir plan seçin.",
+          "no-plan": "Hesabınızın henüz bir Pano Backup planı yok. Yedeklemeye başlamak için {website} üzerinden bir plan seçin.",
           "used": "{size} kullanıldı",
-          "free": "{quota} alanın {size} kadarı boş",
+          "usage-of": "{quota} alanın {used} kadarı kullanıldı",
           "shared-hint": "Depolama alanı bu hesaba bağlı tüm Pano'lar arasında paylaşılır.",
-          "manage-plan": "Planı yönet",
-          "get-plan": "Pano Backup planı al"
+          "manage-plan": "Yedekleme Planını Yönet",
+          "plan-updated": "Pano Backup planınız güncellendi."
         },
         "schedule-needs-plan": "Zamanlanmış yedekler yalnızca hesabınızın bir Pano Backup planı varken çalışır.",
         "pano-disconnected": "bağlı değil",
@@ -1637,6 +1632,7 @@
         "stored-hint": "Bu snapshot'ın diske eklediği yeni veri; geri kalanı diğer snapshot'larla paylaşılıyor.",
         "restore-worlds-replaced": "Yedekteki dünya klasörleri mevcutların yerini tamamen alır; diğer dosyalar olanların üzerine yazılır.",
         "pano-backup-upload": "Pano Backup'a yükle",
+        "coming-soon": "Yakında",
         "pano-backup-started": "Pano Backup'a yükleniyor. Yedekler sayfasından takip edin."
       },
       "activity": {
@@ -1658,6 +1654,7 @@
           "server_plugin_toggled": "Eklenti açıldı/kapatıldı",
           "server_file_changed": "Dosya değişti",
           "server_backup_action": "Yedek",
+          "server_backup_system": "Otomatik yedek",
           "server_schedule_run": "Görev çalıştı",
           "server_crashed": "Çökme",
           "server_pano_plugin_updated": "Pano eklentisi güncellendi",
@@ -2653,7 +2650,7 @@
     },
     "hosted-banner": {
       "managed": "Bu Pano, Pano Host tarafından yönetiliyor.",
-      "manage": "panomc.com'da yönet",
+      "manage": "{website} üzerinde yönet",
       "details": "Ayrıntılar",
       "dismiss": "Kapat",
       "notices": {
@@ -2667,7 +2664,7 @@
         },
         "HOST_TRIAL_ENDING": {
           "title": "Deneme süresi bitiyor",
-          "message": "Ücretsiz deneme {days} gün içinde bitiyor. Bu sunucuyu korumak için panomc.com'da bir paket seçin."
+          "message": "Ücretsiz deneme {days} gün içinde bitiyor. Bu sunucuyu korumak için {website} üzerinden bir paket seçin."
         },
         "HOST_DELETION_SCHEDULED": {
           "title": "Silme planlandı",
@@ -2679,7 +2676,7 @@
         },
         "HOST_WORKLOAD_CRASHLOOP": {
           "title": "Sunucu sürekli yeniden başlıyor",
-          "message": "Bu sunucu art arda çöktü. panomc.com'daki konsolu kontrol edin."
+          "message": "Bu sunucu art arda çöktü. {website} üzerindeki konsolu kontrol edin."
         },
         "HOST_SUPPORT_ACCESS": {
           "title": "Destek erişimi",
@@ -2879,8 +2876,7 @@
       "platform": "Platform",
       "migration": "İçe Aktar",
       "updates": "Güncellemeler",
-      "about": "Hakkında",
-      "backups": "Yedekler"
+      "about": "Hakkında"
     },
     "server-settings-layout": {
       "server": "Sunucu",
@@ -3592,7 +3588,6 @@
         "no-backup-warning": "Korunmayan her şey silinir.",
         "start-after": "Ardından sunucuyu başlat",
         "start-after-running": "Şu an açık; önce durdurulacak.",
-
         "password-label": "Hesap parolası",
         "summary-running": "{from} → {to}",
         "summary-stopped": "{from} → {to}",
@@ -3970,7 +3965,10 @@
     "SERVER_POWER_ACTION": "**{username}**, {serverName} sunucusunu {action, select, START {başlattı} STOP {durdurdu} RESTART {yeniden başlattı} KILL {zorla kapattı} other {yönetti}}.",
     "SERVER_SCHEDULE_ACTION": "**{username}**, {serverName} sunucusunda {name} görevini {action, select, CREATE {oluşturdu} UPDATE {düzenledi} DELETE {sildi} TOGGLE {açıp kapattı} RUN {çalıştırdı} other {değiştirdi}}.",
     "SERVER_SCHEDULE_RUN": "{serverName} sunucusundaki {name} görevi {ok, select, true {çalıştı} other {başarısız oldu}}.",
-    "UPDATED_SERVER_STARTUP": "**{username}**, {serverName} sunucusunun başlangıç ayarlarını değiştirdi."
+    "UPDATED_SERVER_STARTUP": "**{username}**, {serverName} sunucusunun başlangıç ayarlarını değiştirdi.",
+    "PANO_BACKUP_ACTION": "**{username}** {action, select, CREATE {bir Pano yedeği aldı} DELETE {bir Pano yedeğini sildi} DOWNLOAD {bir Pano yedeğini indirdi} RESTORE {Pano'yu bir yedekten geri yükledi} RESTORE_FILE {Pano'yu yüklenen bir dosyadan geri yükledi} RESTORE_REMOTE {Pano'yu Pano Backup'tan geri yükledi} SETTINGS {Pano yedekleme zamanlamasını değiştirdi} UPLOAD {Pano'yu Pano Backup'a yedekledi} DELETE_REMOTE {bir Pano Backup yedeğini sildi} REMOTE_SETTINGS {Pano Backup zamanlamasını değiştirdi} PASSPHRASE {Pano Backup şifreleme parolasını belirledi} TRANSFER {Pano Host'a bir aktarım başlattı} TRANSFER_CANCEL {Pano Host'a aktarımı iptal etti} other {Pano yedeklerini değiştirdi}}.",
+    "PANO_BACKUP_SYSTEM": "{action, select, SCHEDULED {Zamanlanmış Pano yedeği {ok, select, true {alındı} other {alınamadı}}} SCHEDULED_UPLOAD {Pano Backup'a zamanlanmış yükleme {ok, select, true {tamamlandı} other {başarısız oldu}}} RETENTION {Saklama kuralı {count} eski Pano yedeğini sildi} other {Pano yedekleri değişti}}.",
+    "SERVER_BACKUP_SYSTEM": "{serverName} sunucusunda {action, select, SCHEDULED {bir görev {name} yedeğini aldı} RETENTION {saklama kuralı {name} yedeğini sildi} other {{name} yedeği değişti}}."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> destek talebinde mesaj gönderdi (<b>#{id}</b>).",

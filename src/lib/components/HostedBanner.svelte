@@ -15,7 +15,7 @@
             href={info.manageUrl}
             rel="noopener noreferrer"
             target="_blank">
-            {$_('components.hosted-banner.manage')}
+            {$_('components.hosted-banner.manage', { values: { website: manageHost } })}
             <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
           </a>
         {/if}
@@ -58,6 +58,8 @@
 <script>
   import { onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
+
+  import { websiteDisplayHost } from '$lib/website-display.util.js';
   import ApiUtil from '$lib/api.util.js';
 
   /** Same cadence as the backend's notice cache. */
@@ -78,6 +80,9 @@
 
   /** @type {{ hosted: boolean, workloadId?: string, manageUrl?: string, notices: any[] } | null} */
   let info = $state(null);
+
+  /** Where the instance is managed (the control plane's `manageUrl`), else this panel's Pano website. */
+  const manageHost = $derived(websiteDisplayHost(info?.manageUrl || undefined));
 
   /** @type {string[]} */
   let dismissed = $state(readDismissed());
@@ -116,7 +121,7 @@
 
     return $_(`components.hosted-banner.notices.${notice.type}.${field}`, {
       default: fallback,
-      values: notice.data || {},
+      values: { website: manageHost, ...(notice.data || {}) },
     });
   }
 

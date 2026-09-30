@@ -76,12 +76,17 @@
     if (registeredPage.permission && !hasPermission(registeredPage.permission, user))
       throw error(404);
 
-    resetLayout.set(registeredPage.resetLayout || false);
+    // A public page is part of signing in, so unless it asks for something else it renders in
+    // the same chrome-free shell as the panel's login.
+    const systemLayoutName =
+      registeredPage.systemLayout || (registeredPage.public ? 'AuthShell' : null);
+
+    resetLayout.set(registeredPage.resetLayout ?? !!registeredPage.public);
 
     let systemLayout = null;
     let systemLayoutOutput = {};
-    if (registeredPage.systemLayout) {
-      const module = layoutMap[registeredPage.systemLayout];
+    if (systemLayoutName) {
+      const module = layoutMap[systemLayoutName];
       if (module) {
         systemLayout = module.default;
         if (typeof module.load === 'function') systemLayoutOutput = await module.load(event);

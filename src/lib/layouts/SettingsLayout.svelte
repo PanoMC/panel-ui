@@ -7,12 +7,6 @@
           <PageNavItem href="/settings">{$_('components.settings-layout.website')}</PageNavItem>
           <PageNavItem href="/settings/platform" startsWith
             >{$_('components.settings-layout.platform')}</PageNavItem>
-        {/if}
-        {#if canManageBackups}
-          <PageNavItem href="/settings/backups" startsWith
-            >{$_('components.settings-layout.backups')}</PageNavItem>
-        {/if}
-        {#if canManageSettings}
           <PageNavItem href="/settings/updates" classes="position-relative" startsWith
             >{$_('components.settings-layout.updates')}
             {#if data.session.basicData.hasUpdate}
@@ -45,7 +39,8 @@
     const parentData = await parent();
     const { user } = parentData;
 
-    // The backups pages have their own permission (MANAGE_PANO_BACKUPS); their layout checks it.
+    // The old /settings/backups addresses only redirect to /backups, which checks its own
+    // permission (MANAGE_PANO_BACKUPS); an admin without platform settings still gets there.
     const backupsPage =
       url.pathname === `${base}/settings/backups` ||
       url.pathname.startsWith(`${base}/settings/backups/`);
@@ -68,5 +63,4 @@
   export let data;
 
   $: canManageSettings = hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS, data.user);
-  $: canManageBackups = hasPermission(Permissions.MANAGE_PANO_BACKUPS, data.user);
 </script>

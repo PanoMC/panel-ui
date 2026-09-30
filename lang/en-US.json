@@ -113,6 +113,7 @@
         "forgot-support": "Trouble signing in? Write to {email}",
         "forgot-no-support": "Ask another administrator to reset your password.",
         "back-to-sign-in": "Back to sign in",
+        "or": "or",
         "two-factor-title": "Two-step verification",
         "two-factor-description": "Enter the 6-digit code from your authenticator app.",
         "two-factor-label": "Verification code",
@@ -134,7 +135,7 @@
           "banned-until": "Your account is banned until {until}.",
           "banned-until-reason": "Your account is banned until {until}. Reason: {reason}",
           "ip-banned": "This IP address is banned.",
-          "captcha": "This login needs a captcha, which the panel cannot show. Sign in on the website instead.",
+          "captcha": "The captcha check failed. Complete it and try again.",
           "denied": "A plugin refused this login.",
           "no-panel-access": "This account has no access to the panel.",
           "invalid-email": "That e-mail address is not valid.",
@@ -559,7 +560,7 @@
           "smtp-disabled-alert": "<strong class=\"me-2\">SMTP Disabled</strong> Pano will not be able to send emails for registration or password recovery.",
           "host-mail": "Pano Host mail",
           "own-mail": "My own mail server",
-          "host-mail-description": "E-mails go out through your Pano Host package's mail. Limits and the send log are on your instance's Mail page on panomc.com.",
+          "host-mail-description": "E-mails go out through your Pano Host package's mail. Limits and the send log are on your instance's Mail page on {website}.",
           "use-host-mail": "Use Pano Host mail"
         },
         "smtp-settings": "SMTP",
@@ -717,12 +718,17 @@
         }
       },
       "backups": {
-        "nav-backups": "Backups",
-        "nav-pano-backup": "Pano Backup",
-        "nav-transfer": "Transfer to Pano Host",
+        "title": "Backups",
+        "settings-title": "Backup settings",
         "local-used": "{count, plural, one {# local backup} other {# local backups}} · {size}",
         "restore-from-file": "Restore from file",
         "upload-now": "Back up to Pano Backup",
+        "upload-confirm": {
+          "title": "Back up to Pano Backup?",
+          "description": "A backup of this Pano is created and uploaded to Pano Backup.",
+          "encrypted": "It is encrypted with your passphrase before it leaves this server.",
+          "plain": "No passphrase is set, so it is uploaded as a plain archive."
+        },
         "create": "Create backup",
         "create-description": "A backup contains the database, config, plugins, themes and uploaded files of this Pano. It is stored on this server.",
         "encrypt": "Encrypt with a passphrase",
@@ -733,8 +739,6 @@
         "remote-title": "Pano Backup",
         "no-local": "There are no backups on this server yet.",
         "no-remote": "There are no Pano Backups yet.",
-        "go-settings": "Pano Backup settings",
-        "passphrase-missing": "Set a passphrase before backing up to Pano Backup.",
         "column-created": "Created",
         "column-type": "Type",
         "column-size": "Size",
@@ -760,12 +764,12 @@
         "passphrase-confirm": "Repeat passphrase",
         "passphrase-min": "At least {min} characters.",
         "passphrase-mismatch": "The passphrases do not match.",
-        "passphrase-warning": "The passphrase never leaves this server and panomc.com cannot reset it. If you lose it, the backups encrypted with it can never be restored.",
+        "passphrase-warning": "The passphrase never leaves this server and {website} cannot reset it. If you lose it, the backups encrypted with it can never be restored.",
         "passphrase-understood": "I understand that a lost passphrase means these backups are unrecoverable.",
         "passphrase-title": "Encryption passphrase",
         "passphrase-set": "Set",
         "passphrase-not-set": "Not set",
-        "passphrase-description": "Pano Backups are encrypted on this server with this passphrase before they are uploaded (end-to-end). It is kept on this server so scheduled backups can run, but never inside a backup.",
+        "passphrase-description": "Recommended: with a passphrase, Pano Backups are encrypted on this server before they are uploaded (end-to-end), so only you can open them. Without one they are uploaded as plain archives. It is kept on this server so scheduled backups can run, but never inside a backup.",
         "passphrase-change-hint": "Changing the passphrase does not re-encrypt older backups. Keep the old passphrase to restore them.",
         "passphrase-saved": "Passphrase saved.",
         "settings-saved": "Settings saved.",
@@ -780,7 +784,7 @@
         "keep": "Keep",
         "last-upload": "Last backup:",
         "mc-servers-title": "Minecraft server backups",
-        "mc-servers-description": "New full backups of the selected servers are also uploaded to Pano Backup, encrypted with the same passphrase.",
+        "mc-servers-description": "New full backups of the selected servers are also uploaded to Pano Backup, encrypted with your passphrase when one is set.",
         "mc-servers-none": "There are no managed servers.",
         "usage": "Used",
         "job": {
@@ -799,12 +803,12 @@
           "phase-fetching": "Fetching the server backup…",
           "restore-running": "Pano is in maintenance mode while the restore runs and restarts when it is done.",
           "rolled-back": "Nothing was changed: the state from before the restore was put back.",
-          "transfer-done": "Uploaded. Confirm the transfer on panomc.com to finish it.",
+          "transfer-done": "Uploaded. Confirm the transfer on {website} to finish it.",
           "restart-required": "Pano must restart to finish the restore. If it does not restart by itself, restart it by hand.",
           "done-create": "Backup created.",
           "done-restore": "Restore finished. Pano is restarting.",
           "done-upload": "Backup uploaded to Pano Backup.",
-          "done-transfer": "Transfer uploaded. Confirm it on panomc.com.",
+          "done-transfer": "Transfer uploaded. Confirm it on {website}.",
           "done-mc_upload": "Server backup uploaded to Pano Backup."
         },
         "restore": {
@@ -814,36 +818,27 @@
           "step-replace": "The database, config, plugins, themes and uploaded files are replaced by the backup.",
           "step-restart": "Pano restarts. If anything fails, the safety backup is put back.",
           "file": "Backup file (.panoarc or export .zip)",
+          "drop": "Drop a backup here or click to choose",
+          "change-file": "Choose another file",
           "not-an-archive": "This file is not a Pano backup.",
-          "workload-key": "This is a Pano Host backup encrypted with the instance key. Download it as an export from panomc.com instead.",
+          "workload-key": "This is a Pano Host backup encrypted with the instance key. Download it as an export from {website} instead.",
           "passphrase-saved-hint": "Leave empty to use the saved passphrase.",
           "confirm": "I understand that the current data of this Pano will be replaced.",
           "submit": "Restore"
         },
         "transfer": {
-          "title": "Move to Pano Host",
+          "title": "Transfer to Pano Host",
           "step-push": "Upload a copy of this Pano.",
-          "step-confirm": "Confirm the transfer on panomc.com within 24 hours. The instance is restored from the copy.",
+          "step-confirm": "Confirm the transfer on {website} within 24 hours. The instance is restored from the copy.",
           "plain-note": "The copy is not passphrase encrypted, so Pano Host can restore it; it travels over TLS and is deleted after the transfer.",
           "max-size": "Up to {size}",
           "start": "Start transfer",
-          "awaiting": "A transfer is waiting. Confirm or reject it on panomc.com.",
-          "history": "Transfers",
-          "none": "No transfers yet.",
+          "awaiting": "A transfer is waiting. Confirm or reject it on {website}.",
           "confirm-until": "Confirm until",
-          "status-uploading": "Uploading",
-          "status-awaiting_confirmation": "Waiting for confirmation",
-          "status-restoring": "Restoring",
-          "status-done": "Done",
-          "status-failed": "Failed",
-          "status-rejected": "Rejected",
-          "status-canceled": "Canceled",
-          "status-expired": "Expired",
           "step-pick": "Pick the Pano Host instance of your account this Pano should move to.",
           "target": "Pano Host instance",
-          "not-connected": "Connect this Pano to your panomc.com account in the platform settings to move it to one of your Pano Host instances.",
           "no-workloads": "Your account has no Pano Host instance to move into.",
-          "get-instance": "Get one on panomc.com"
+          "get-instance": "Get one on {website}"
         },
         "errors": {
           "generic": "Something went wrong ({code}).",
@@ -871,10 +866,10 @@
           "SAFETY_BACKUP_FAILED": "The safety backup could not be created, so nothing was restored.",
           "DATABASE_CONNECTION_FAILED": "Could not connect to the database. Nothing was changed.",
           "INTERNAL_ERROR": "An internal error occurred. Check the Pano logs.",
-          "PANO_HOST_UNAVAILABLE": "panomc.com could not be reached. Try again later.",
+          "PANO_HOST_UNAVAILABLE": "{website} could not be reached. Try again later.",
           "PASSPHRASE_NOT_SET": "Set a passphrase in the Pano Backup settings first.",
           "NOT_AVAILABLE": "Pano Backup is not available on this server.",
-          "INVALID_TOKEN": "The connection to panomc.com was revoked. Connect again.",
+          "INVALID_TOKEN": "The connection to {website} was revoked. Connect again.",
           "UPLOAD_FAILED": "The upload failed. Try again.",
           "DOWNLOAD_FAILED": "The download failed. Try again.",
           "INTEGRITY_FAILED": "The file did not arrive intact. Try again.",
@@ -888,25 +883,25 @@
           "BACKUP_NOT_FOUND": "The backup does not exist any more.",
           "NOT_A_FULL_BACKUP": "Only full backups can be uploaded to Pano Backup.",
           "NETWORK_ERROR": "Could not reach Pano. Check your connection.",
-          "CONNECT_REQUIRED": "This Pano is not connected to a panomc.com account. Connect it in the platform settings.",
-          "STOPPED_REMOTELY": "The backup was stopped on panomc.com.",
-          "PAYMENT_REQUIRED_NO_SUBSCRIPTION": "Your account has no Pano Backup plan. Pick one on panomc.com.",
+          "CONNECT_REQUIRED": "This Pano is not connected to a {website} account. Connect it in the platform settings.",
+          "STOPPED_REMOTELY": "The backup was stopped on {website}.",
+          "PAYMENT_REQUIRED_NO_SUBSCRIPTION": "Your account has no Pano Backup plan. Pick one on {website}.",
           "PAYMENT_REQUIRED_LAPSED": "Your Pano Backup plan is unpaid. New backups are paused and the stored backups are deleted after {graceUntil} unless the plan is paid."
         },
         "account": {
-          "title": "panomc.com account",
+          "title": "Pano Backup",
           "connected": "Connected",
-          "not-connected": "Pano Backup runs on the panomc.com account this Pano is connected to. Connect it in the platform settings to keep end-to-end encrypted backups off this server.",
-          "revoked": "The connection to panomc.com was revoked. Connect this Pano again in the platform settings.",
-          "connection-settings": "Connection settings",
-          "unavailable": "panomc.com could not be reached, so the plan and usage are not shown. Try again later.",
+          "not-connected": "Pano Backup is fast, secure cloud storage for this Pano: with a passphrase, backups are encrypted on this server before they leave it, so only you can open them. Connect your {website} account in the platform settings to start.",
+          "revoked": "The connection to {website} was revoked. Connect this Pano again in the platform settings.",
+          "plan": "Plan",
+          "unavailable": "{website} could not be reached, so the plan and usage are not shown. Try again later.",
           "canceling": "Ends at period end",
-          "no-plan": "Your account has no Pano Backup plan yet. Pick one on panomc.com to start backing up.",
+          "no-plan": "Your account has no Pano Backup plan yet. Pick one on {website} to start backing up.",
           "used": "{size} used",
-          "free": "{size} free of {quota}",
+          "usage-of": "{used} of {quota} used",
           "shared-hint": "The storage is shared by every Pano connected to this account.",
-          "manage-plan": "Manage plan",
-          "get-plan": "Get a Pano Backup plan"
+          "manage-plan": "Manage Your Backup Plan",
+          "plan-updated": "Your Pano Backup plan was updated."
         },
         "schedule-needs-plan": "Scheduled backups run only while your account has a Pano Backup plan.",
         "pano-disconnected": "not connected",
@@ -1638,6 +1633,7 @@
         "stored-hint": "New data this snapshot added to disk; everything else is shared with other snapshots.",
         "restore-worlds-replaced": "World folders in the backup replace the current ones completely; other files are written over what is there.",
         "pano-backup-upload": "Upload to Pano Backup",
+        "coming-soon": "Coming soon",
         "pano-backup-started": "Uploading to Pano Backup. Follow it on the Backups page."
       },
       "activity": {
@@ -1659,6 +1655,7 @@
           "server_plugin_toggled": "Plugin toggled",
           "server_file_changed": "File changed",
           "server_backup_action": "Backup",
+          "server_backup_system": "Automatic backup",
           "server_schedule_run": "Schedule ran",
           "server_crashed": "Crash",
           "server_pano_plugin_updated": "Pano plugin updated",
@@ -2655,7 +2652,7 @@
     },
     "hosted-banner": {
       "managed": "This Pano is managed by Pano Host.",
-      "manage": "Manage on panomc.com",
+      "manage": "Manage on {website}",
       "details": "Details",
       "dismiss": "Dismiss",
       "notices": {
@@ -2669,7 +2666,7 @@
         },
         "HOST_TRIAL_ENDING": {
           "title": "Trial ending",
-          "message": "The free trial ends in {days} day(s). Choose a plan on panomc.com to keep this instance."
+          "message": "The free trial ends in {days} day(s). Choose a plan on {website} to keep this instance."
         },
         "HOST_DELETION_SCHEDULED": {
           "title": "Deletion scheduled",
@@ -2681,7 +2678,7 @@
         },
         "HOST_WORKLOAD_CRASHLOOP": {
           "title": "Instance keeps restarting",
-          "message": "This instance crashed repeatedly. Check the console on panomc.com."
+          "message": "This instance crashed repeatedly. Check the console on {website}."
         },
         "HOST_SUPPORT_ACCESS": {
           "title": "Support access",
@@ -2881,8 +2878,7 @@
       "platform": "Platform",
       "migration": "Migration",
       "updates": "Updates",
-      "about": "About",
-      "backups": "Backups"
+      "about": "About"
     },
     "server-settings-layout": {
       "server": "Server",
@@ -3972,7 +3968,10 @@
     "SERVER_POWER_ACTION": "**{username}** {action, select, START {started} STOP {stopped} RESTART {restarted} KILL {killed} other {changed the power of}} {serverName}.",
     "SERVER_SCHEDULE_ACTION": "**{username}** {action, select, CREATE {created schedule {name}} UPDATE {edited schedule {name}} DELETE {deleted schedule {name}} TOGGLE {switched schedule {name} on or off} RUN {ran schedule {name}} other {changed schedule {name}}} on {serverName}.",
     "SERVER_SCHEDULE_RUN": "Schedule {name} on {serverName} {ok, select, true {ran} other {failed}}.",
-    "UPDATED_SERVER_STARTUP": "**{username}** changed the startup settings of {serverName}."
+    "UPDATED_SERVER_STARTUP": "**{username}** changed the startup settings of {serverName}.",
+    "PANO_BACKUP_ACTION": "**{username}** {action, select, CREATE {created a Pano backup} DELETE {deleted a Pano backup} DOWNLOAD {downloaded a Pano backup} RESTORE {restored Pano from a backup} RESTORE_FILE {restored Pano from an uploaded file} RESTORE_REMOTE {restored Pano from Pano Backup} SETTINGS {changed the Pano backup schedule} UPLOAD {backed Pano up to Pano Backup} DELETE_REMOTE {deleted a Pano Backup} REMOTE_SETTINGS {changed the Pano Backup schedule} PASSPHRASE {set the Pano Backup encryption passphrase} TRANSFER {started a transfer to Pano Host} TRANSFER_CANCEL {cancelled a transfer to Pano Host} other {changed the Pano backups}}.",
+    "PANO_BACKUP_SYSTEM": "{action, select, SCHEDULED {The scheduled Pano backup {ok, select, true {was taken} other {failed}}} SCHEDULED_UPLOAD {The scheduled upload to Pano Backup {ok, select, true {finished} other {failed}}} RETENTION {{count, plural, one {# old Pano backup was} other {# old Pano backups were}} removed by retention} other {The Pano backups changed}}.",
+    "SERVER_BACKUP_SYSTEM": "{action, select, SCHEDULED {A schedule took backup {name}} RETENTION {Retention removed backup {name}} other {Backup {name} changed}} on {serverName}."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> sent a message in ticket (<b>#{id}</b>).",

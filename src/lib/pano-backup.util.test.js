@@ -2,14 +2,14 @@ import { describe, expect, test } from 'bun:test';
 
 import {
   ENVELOPE_MAGIC,
-  MANAGE_BACKUPS_URL,
   REMOTE_SCHEDULES,
   accountUsage,
   canRestoreRemote,
   connectionState,
   describeError,
   groupRemoteBackups,
-  manageBackupsUrl,
+  hostManageUrl,
+  backupPlanUrl,
   usageColour,
   inspectArchiveFile,
   inspectArchiveHeader,
@@ -204,16 +204,18 @@ describe('connected account', () => {
     );
   });
 
-  test('manageBackupsUrl follows the API host, else panomc.com', () => {
-    expect(manageBackupsUrl('https://api.panomc.com')).toBe(MANAGE_BACKUPS_URL);
-    expect(manageBackupsUrl('https://api.example.org/api')).toBe(
-      'https://example.org/host/manage/backups',
+  test('backupPlanUrl sends the backups page along as panoCallback', () => {
+    expect(backupPlanUrl('https://local.panomc.com:3003/', 'https://my.pano/panel/backups')).toBe(
+      'https://local.panomc.com:3003/host/manage/backups?panoCallback=https%3A%2F%2Fmy.pano%2Fpanel%2Fbackups',
     );
-    expect(manageBackupsUrl('http://127.0.0.1:18102/api')).toBe(MANAGE_BACKUPS_URL);
-    expect(manageBackupsUrl(null)).toBe(MANAGE_BACKUPS_URL);
-    expect(manageBackupsUrl('https://api.panomc.com', 'instances')).toBe(
-      'https://panomc.com/host/manage/instances',
+    expect(backupPlanUrl('', 'x')).toBe('https://panomc.com/host/manage/backups?panoCallback=x');
+  });
+
+  test('hostManageUrl uses the configured Pano website', () => {
+    expect(hostManageUrl('https://local.panomc.com:3003/', 'instances')).toBe(
+      'https://local.panomc.com:3003/host/manage/instances',
     );
+    expect(hostManageUrl(null)).toBe('https://panomc.com/host/manage/backups');
   });
 
   test('groupRemoteBackups puts this Pano first and hides failed or stopped rows', () => {

@@ -3,6 +3,21 @@
     max-width: 26rem;
   }
 
+  .alt-methods-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--bs-secondary-color);
+    font-size: 0.875rem;
+  }
+
+  .alt-methods-divider::before,
+  .alt-methods-divider::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid var(--bs-border-color);
+  }
+
   .totp-input {
     font-size: 1.5rem;
     letter-spacing: 0.5rem;
@@ -164,6 +179,16 @@
           </div>
         {/if}
 
+        <!-- Plugin widgets that belong inside the form (auth-guard's captcha, …): the same
+             priority < 100 rule the theme's login view uses. -->
+        {#each $contentItems as item (item.id)}
+          {#if item.id !== 'login-form' && item.component && (item.priority || 0) < 100}
+            <div class="mb-3">
+              <ViewComponent component={item.component} data={{ pageType: 'login' }} />
+            </div>
+          {/if}
+        {/each}
+
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
           <div class="form-check m-0">
             <input
@@ -197,9 +222,27 @@
           {$_('pages.auth.login.submit')}
         </button>
       </form>
+
+      {#if $altMethods?.length}
+        <div class="alt-methods-divider my-3">{$_('pages.auth.login.or')}</div>
+
+        <div class="vstack gap-2">
+          {#each $altMethods as method (method.id)}
+            <ViewComponent component={method.component} data={{ pageType: 'login' }} />
+          {/each}
+        </div>
+      {/if}
     {/if}
   </div>
 </div>
+
+<!-- Plugin items placed after the form (priority >= 100): auth-guard's 2FA modal, … They stay
+     mounted across the steps, since they intercept the sign-in request itself. -->
+{#each $contentItems as item (item.id)}
+  {#if item.id !== 'login-form' && item.component && (item.priority || 0) >= 100}
+    <ViewComponent component={item.component} data={{ pageType: 'login' }} />
+  {/if}
+{/each}
 
 <script context="module">
   import { redirect } from '@sveltejs/kit';
@@ -208,6 +251,7 @@
 
   import { isSignedIn, safeNextPath } from '$lib/auth.api.js';
   import { UsageModes } from '$lib/navigation.util.js';
+  import { executeLoginLoad } from '$lib/PluginAPI.js';
 
   /**
    * U-06 — the panel's own sign-in page, so a `usage-mode = SERVERS` install (which never
@@ -229,7 +273,11 @@
       throw redirect(302, '/login');
     }
 
-    return {};
+    // The same plugin pipeline as the theme's /login (captcha, 2FA, social buttons, …). A
+    // handler can hand back an error to show, e.g. `?socialError=` after a failed OAuth round.
+    const loginData = await executeLoginLoad(event);
+
+    return { initialError: loginData.error || null, loginLoaded: true };
   }
 </script>
 
@@ -240,11 +288,15 @@
    * cookies, the CSRF token and every error code behave identically; nothing about the session
    * is panel-specific.
    *
+   * Plugins take part exactly as on the theme's login: the `login-content` slot (captcha inside
+   * the form, auth-guard's 2FA modal after it) and the `login-alt-methods` slot (social,
+   * Microsoft, magic-link buttons), fed by `pano.ui.auth.login` (see `PluginAPI.js`).
+   *
    * Two-factor authentication is not part of core: `pano-plugin-auth-guard` denies the login
    * from its `onBeforeLogin` hook with `PLUGIN_DENIED_LOGIN` + a `two-factor-required` reason,
-   * and the same request is replayed with `totpCode` added to the body. The theme does that
-   * with a fetch interceptor it injects into the theme bundle; the panel has no such component,
-   * so the step is handled here explicitly.
+   * and the same request is replayed with `totpCode` added to the body. A current auth-guard
+   * does that with its own 2FA modal in the `login-content` slot; the step below is only the
+   * fallback for an auth-guard that does not register itself on the panel yet.
    */
   import { getContext, onMount, tick } from 'svelte';
   import { _ } from 'svelte-i18n';
@@ -252,13 +304,19 @@
   import * as dateFnsLocales from 'date-fns/locale';
 
   import { browser } from '$app/environment';
-  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
 
-  import { getCredentials, sendLogin, sendLogout } from '$lib/auth.api.js';
+  import { sendLogin } from '$lib/auth.api.js';
+  import { completeSignIn } from '$lib/signIn.util.js';
   import { currentLanguage } from '$lib/language.util.js';
-  import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
-  // `UsageModes` comes from the module script above, whose scope this shares.
+  import { panoApiClient } from '$lib/PluginAPI.js';
+  import { showError } from '$lib/components/ToastContainer.svelte';
+  import ViewComponent from '$lib/components/ViewComponent.svelte';
+  // `UsageModes` and `executeLoginLoad` come from the module script above, whose scope this
+  // shares.
+
+  /** Absent when the root error page renders this form in place of a page (`requireSignedIn`). */
+  let { data = null } = $props();
 
   /** Which form the card is showing. */
   const Steps = Object.freeze({
@@ -283,6 +341,9 @@
     'TWO_FACTOR_REQUIRED',
     'plugins.pano-plugin-auth-guard.errors.two-factor-required',
   ];
+
+  /** auth-guard's own 2FA modal; while it is on the page it answers the challenge, not us. */
+  const PLUGIN_TWO_FACTOR_ITEM_ID = 'pano-plugin-auth-guard-2fa-guard';
 
   const TWO_FACTOR_INVALID_REASONS = [
     'TWO_FACTOR_INVALID_CODE',
@@ -313,6 +374,13 @@
   const pageTitle = getContext('pageTitle');
 
   pageTitle.set('pages.auth.login.title');
+
+  const contentItems = panoApiClient.ui.auth.login.content.get();
+  const altMethods = panoApiClient.ui.auth.login.alternativeMethods.get();
+
+  const pluginHandlesTwoFactor = $derived(
+    $contentItems.some((item) => item.id === PLUGIN_TWO_FACTOR_ITEM_ID && item.component),
+  );
 
   let step = $state(Steps.CREDENTIALS);
   let usernameOrEmail = $state('');
@@ -471,35 +539,18 @@
   async function onSignedIn(csrfToken) {
     rememberIdentifier();
 
-    // Confirms the cookies really took before the panel opens. A failure here is not fatal —
-    // the loads below re-read `basicData` anyway.
-    const credentials = await getCredentials(csrfToken).catch(() => null);
-
-    // A backend older than the `panel` flag signs anybody in. Such a session is of no use here
-    // and would only strand the visitor on the permission splash, so it is closed again at once.
-    if (credentials?.result === 'ok' && credentials.panelAccess === false) {
-      await sendLogout().catch(() => null);
-
-      fail(ERROR_KEYS.NO_PANEL_ACCESS);
-
-      return;
-    }
-
-    await showSuccess('pages.auth.login.signed-in');
-
     // Rendered in place of a page (the root error page, `requireSignedIn`), the address to go
     // back to is the one in the bar; on /panel/login itself it is `next`, else the dashboard.
     const onLoginPage = String($page.route?.id || '').startsWith('/(auth)');
     const here = `${$page.url.pathname}${$page.url.search}`;
 
-    const target =
-      safeNextPath($page.url.searchParams.get('next'), base) || (onLoginPage ? base : here) || '/';
+    const result = await completeSignIn(csrfToken, {
+      target: safeNextPath($page.url.searchParams.get('next'), base) || (onLoginPage ? base : here),
+    });
 
-    // No document reload: every load runs again with the new cookies (the root server load
-    // re-reads `basicData` through hooks), the layout that answered 401 now lets the page
-    // through, and the root layout wires the realtime hub the moment `signedIn` turns true.
-    // `replaceState` keeps the signed-out view out of the history.
-    await goto(target, { invalidateAll: true, replaceState: true });
+    if (result === 'NO_PANEL_ACCESS') {
+      fail(ERROR_KEYS.NO_PANEL_ACCESS);
+    }
   }
 
   /**
@@ -511,7 +562,9 @@
     if (code === 'PLUGIN_DENIED_LOGIN') {
       const reason = String(response.reason || '');
 
-      if (TWO_FACTOR_REQUIRED_REASONS.includes(reason)) {
+      // auth-guard's modal answers the challenge itself; a denial reaching us means it was
+      // cancelled, so it is shown like any other plugin refusal.
+      if (TWO_FACTOR_REQUIRED_REASONS.includes(reason) && !pluginHandlesTwoFactor) {
         captchaStepToken = response.captchaStepToken ?? null;
         step = Steps.TWO_FACTOR;
         totpCode = '';
@@ -523,7 +576,7 @@
         return;
       }
 
-      if (TWO_FACTOR_INVALID_REASONS.includes(reason)) {
+      if (TWO_FACTOR_INVALID_REASONS.includes(reason) && !pluginHandlesTwoFactor) {
         totpCode = '';
         fail('pages.auth.login.errors.two-factor-invalid');
 
@@ -533,7 +586,9 @@
         return;
       }
 
-      fail(ERROR_KEYS.PLUGIN_DENIED_LOGIN);
+      // A plugin's reason is its own i18n key (`plugins.<id>.…`); anything else keeps the
+      // generic line.
+      fail(reason.startsWith('plugins.') ? reason : ERROR_KEYS.PLUGIN_DENIED_LOGIN);
 
       return;
     }
@@ -624,7 +679,37 @@
     }
   }
 
+  /**
+   * An error a plugin's login handler handed back (`?socialError=`, `?mcError=`, …): a known
+   * core code, a plugin's own i18n key, or a bare code shown through the generic line.
+   *
+   * @param {unknown} value
+   */
+  function showInitialError(value) {
+    const code = String(value || '').trim();
+
+    if (!code) {
+      return;
+    }
+
+    if (ERROR_KEYS[code.toUpperCase()]) {
+      fail(ERROR_KEYS[code.toUpperCase()]);
+    } else if (code.startsWith('plugins.')) {
+      fail(code);
+    } else {
+      fail('pages.auth.login.errors.generic', { code });
+    }
+  }
+
   onMount(() => {
+    // The root error page shows this form without the page load, so the plugin pipeline runs
+    // here instead; everything it adds is client-only anyway (captcha, 2FA, OAuth buttons).
+    if (!data?.loginLoaded) {
+      void executeLoginLoad().then((loginData) => showInitialError(loginData.error));
+    } else {
+      showInitialError(data.initialError);
+    }
+
     try {
       const remembered = localStorage.getItem(REMEMBER_STORAGE_KEY);
 
