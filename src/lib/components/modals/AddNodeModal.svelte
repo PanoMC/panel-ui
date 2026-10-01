@@ -704,7 +704,13 @@
     serverActionErrorKey,
     showServerActionError,
   } from '$lib/servers.util.js';
-  import { onNode, onTaskProgress, subscribeNodes } from '$lib/panelRealtime.js';
+  import {
+    onNode,
+    onNodePairingCode,
+    onTaskProgress,
+    subscribeNodePairingCode,
+    subscribeNodes,
+  } from '$lib/panelRealtime.js';
 
   import NodeBootstrapLog from '$lib/components/servers/NodeBootstrapLog.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
@@ -759,6 +765,13 @@
   /** The pairing code rotates every 30 s (§2.4.3), so the countdown starts there. */
   const PAIRING_CODE_SECONDS = 30;
 
+  /**
+   * The code is pushed over the panel socket (`nodePairingCode`). Only when a push is this late —
+   * after opening, after the shown code expired, or after the override changed — is it fetched
+   * over HTTP once instead (socket down, or a Pano without the feed).
+   */
+  const PUSH_GRACE_MS = 4_000;
+
   /** The box is a live tail, not an archive — older lines are dropped. */
   const MAX_LOG_LINES = 500;
 
@@ -781,6 +794,7 @@
   let installCommand = $state('');
   let installCommandWindows = $state('');
   let platform = $state('linux');
+  /** @type {number|string} seconds, or '...' while the next code is on its way */
   let secondsLeft = $state(PAIRING_CODE_SECONDS);
   let pairingLoading = $state(false);
   let pairingUnavailable = $state(false);
@@ -848,6 +862,15 @@
   let knownNodeIds = new Set();
 
   let countdownTimer;
+  /** When the shown code stops being valid, on this browser's clock. */
+  let pairingExpiresAt = 0;
+  /** When the HTTP fallback kicks in if nothing has been pushed by then. */
+  let pairingFallbackAt = 0;
+  let pairingFallbackInFlight = false;
+  /** @type {{ release: () => void, update: (panoUrl: string|null) => void } | null} */
+  let pairingSubscription = null;
+  /** The override the subscription was last sent with. */
+  let pairingPanoUrl = null;
   let copiedTimer;
   let releaseNodes = null;
 
@@ -1137,7 +1160,47 @@
     command = String(body.command ?? '');
     installCommand = String(body.installCommand ?? '');
     installCommandWindows = String(body.installCommandWindows ?? '');
-    secondsLeft = remainingSeconds(body);
+    setPairingExpiry(Date.now() + remainingSeconds(body) * 1000);
+  }
+
+  /** @param {number} expiresAt this browser's clock */
+  function setPairingExpiry(expiresAt) {
+    pairingExpiresAt = expiresAt;
+    pairingFallbackAt = expiresAt + PUSH_GRACE_MS;
+    tickCountdown();
+  }
+
+  /**
+   * A pushed code (on subscribe, on every rotation, and when the override changes).
+   *
+   * @param {{ pairingCode: string, expiresAt: number, installCommand: string,
+   *   installCommandWindows: string }} frame
+   */
+  function applyPushedPairingCode(frame) {
+    pairingLoading = false;
+    pairingUnavailable = false;
+    code = frame.pairingCode;
+    installCommand = frame.installCommand;
+    installCommandWindows = frame.installCommandWindows;
+    setPairingExpiry(frame.expiresAt);
+  }
+
+  /** The HTTP fallback: one request, only when nothing was pushed in time. */
+  async function fetchPairingCodeFallback() {
+    pairingFallbackInFlight = true;
+    // A failed request is not retried every second: the next try is a whole period away.
+    pairingFallbackAt = Date.now() + PAIRING_CODE_SECONDS * 1000;
+
+    try {
+      await loadPairingCode();
+    } finally {
+      pairingFallbackInFlight = false;
+    }
+  }
+
+  /** The override the install commands should carry right now, or null for the website URL. */
+  function currentPanoUrl() {
+    return panoUrlTrimmed && panoUrlValid ? panoUrlTrimmed : null;
   }
 
   /**
@@ -1169,18 +1232,41 @@
     return PAIRING_CODE_SECONDS;
   }
 
+  function tickCountdown() {
+    const now = Date.now();
+    const left = Math.ceil((pairingExpiresAt - now) / 1000);
+
+    // At zero the next code is on its way over the panel socket; there is nothing to fetch.
+    secondsLeft = left > 0 ? Math.min(left, PAIRING_CODE_SECONDS) : '...';
+
+    if (now >= pairingFallbackAt && !pairingFallbackInFlight && !pairingUnavailable) {
+      void fetchPairingCodeFallback();
+    }
+  }
+
   function startCountdown() {
     stopCountdown();
 
-    countdownTimer = setInterval(() => {
-      if (secondsLeft > 0) {
-        secondsLeft -= 1;
+    countdownTimer = setInterval(tickCountdown, 1000);
+  }
 
-        return;
-      }
+  /** The dialog opened: subscribe to the pushed code; the hub sends the current one at once. */
+  function startPairingFeed() {
+    stopPairingFeed();
 
-      void loadPairingCode();
-    }, 1000);
+    pairingLoading = true;
+    pairingExpiresAt = 0;
+    pairingFallbackAt = Date.now() + PUSH_GRACE_MS;
+    pairingPanoUrl = currentPanoUrl();
+    pairingSubscription = subscribeNodePairingCode(pairingPanoUrl);
+
+    startCountdown();
+  }
+
+  function stopPairingFeed() {
+    stopCountdown();
+    pairingSubscription?.release();
+    pairingSubscription = null;
   }
 
   function stopCountdown() {
@@ -1202,7 +1288,22 @@
       return;
     }
 
-    void loadPairingCode();
+    const panoUrl = currentPanoUrl();
+
+    if (!pairingSubscription) {
+      void loadPairingCode();
+
+      return;
+    }
+
+    if (panoUrl === pairingPanoUrl) {
+      return;
+    }
+
+    // The hub answers a new override with a frame of its own; the fallback covers it if not.
+    pairingPanoUrl = panoUrl;
+    pairingSubscription.update(panoUrl);
+    pairingFallbackAt = Math.min(pairingFallbackAt, Date.now() + PUSH_GRACE_MS);
   }
 
   function copyCommand() {
@@ -1533,12 +1634,11 @@
     const unregister = setAddNodeOpener(show);
 
     const onShown = () => {
-      void loadPairingCode();
-      startCountdown();
+      startPairingFeed();
     };
 
     const onHidden = () => {
-      stopCountdown();
+      stopPairingFeed();
       stopLocalPoll();
       releaseNodes?.();
       releaseNodes = null;
@@ -1564,6 +1664,14 @@
       }
     });
 
+    const offPairingCode = onNodePairingCode((frame) => {
+      if (!pairingSubscription) {
+        return;
+      }
+
+      applyPushedPairingCode(frame);
+    });
+
     const offNode = onNode(({ node }) => {
       const cached = cacheNode(node);
 
@@ -1587,7 +1695,8 @@
       unregister();
       offTaskProgress();
       offNode();
-      stopCountdown();
+      offPairingCode();
+      stopPairingFeed();
       stopLocalPoll();
 
       if (copiedTimer) {

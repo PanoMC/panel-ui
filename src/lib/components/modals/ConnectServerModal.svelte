@@ -163,20 +163,29 @@
 </script>
 
 <script>
-  import { getContext, onDestroy, onMount } from 'svelte';
+  import { getContext, onMount } from 'svelte';
   import { get } from 'svelte/store';
   import copy from 'copy-to-clipboard';
-  import { differenceInSeconds } from 'date-fns';
   import { _ } from 'svelte-i18n';
 
   import { browser } from '$app/environment';
 
   import ApiUtil from '$lib/api.util';
   import tooltip from '$lib/tooltip.util';
+  import { onPlatformKey, subscribePlatformKey } from '$lib/panelRealtime.js';
 
   import { showError as showErrorToast } from '$lib/components/ToastContainer.svelte';
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
+
+  /** How long one platform key lives (Pano's `PlatformCodeManager`). */
+  const KEY_PERIOD_MS = 30000;
+
+  /**
+   * How late a pushed key may be — after opening, or after the shown key expired — before it is
+   * fetched over HTTP once instead (socket down, or a Pano without the `platformKey` feed).
+   */
+  const PUSH_GRACE_MS = 4000;
 
   const platformServerMatchKey = getContext('platformServerMatchKey');
   const platformKeyRefreshedTime = getContext('platformKeyRefreshedTime');
@@ -189,59 +198,95 @@
   let copyClickIDForCommandText = 0;
   let isCommandTextForConsoleCopied = false;
   let copyClickIDForCommandTextForConsole = 0;
-  let firstStartCountDown = false;
   let isRemoteConnection = false;
+
+  /** When the shown key stops being valid, on this browser's clock. */
+  let keyExpiresAt = 0;
+  /** When the HTTP fallback kicks in if no key has been pushed by then. */
+  let fallbackAt = 0;
+  let fallbackInFlight = false;
+  /** @type {ReturnType<typeof setInterval> | null} */
+  let countdownTimer = null;
+  /** @type {(() => void) | null} */
+  let releasePlatformKey = null;
 
   const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '0.0.0.0']);
 
   let acceptPluginAuth = $session.basicData.acceptPluginAuth;
   let toggleLoading;
 
-  function getTimeLeftInSeconds() {
-    const now = new Date(); // current time
-    const end = new Date(get(platformKeyRefreshedTime)); // future time
+  /**
+   * @param {number|string} key
+   * @param {number} timeStarted
+   * @param {number} expiresAt this browser's clock
+   */
+  function applyKey(key, timeStarted, expiresAt) {
+    platformServerMatchKey.set(key);
+    platformKeyRefreshedTime.set(timeStarted);
 
-    const difference = differenceInSeconds(now, end);
+    keyExpiresAt = expiresAt;
+    fallbackAt = expiresAt + PUSH_GRACE_MS;
 
-    return 30 - difference;
+    tick();
   }
 
-  function startCountDown() {
-    timeToRefreshKey = getTimeLeftInSeconds();
+  function tick() {
+    const now = Date.now();
+    const left = Math.ceil((keyExpiresAt - now) / 1000);
 
-    const timer = setInterval(() => {
-      if (timeToRefreshKey > 0) {
-        timeToRefreshKey--;
-      } else {
-        clearInterval(timer);
+    // At zero the next key is on its way over the panel socket; there is nothing to fetch.
+    timeToRefreshKey = left > 0 ? Math.min(left, KEY_PERIOD_MS / 1000) : '...';
 
-        timeToRefreshKey = '...';
-
-        refreshKey();
-      }
-    }, 1000);
+    if (now >= fallbackAt && !fallbackInFlight) {
+      void fetchKey();
+    }
   }
 
-  function refreshKey() {
-    ApiUtil.get({
+  /** The HTTP fallback: one request, only when no key was pushed in time. */
+  async function fetchKey() {
+    fallbackInFlight = true;
+    // A failed request is not retried every second: the next try is a whole period away.
+    fallbackAt = Date.now() + KEY_PERIOD_MS;
+
+    const body = await ApiUtil.get({
       path: '/api/panel/platformAuth/refreshKey',
-      handler: (body, reject) => {
-        if (body.error) {
-          reject();
-
-          return;
-        }
-
-        platformServerMatchKey.set(body.key);
-        platformKeyRefreshedTime.set(body.timeStarted);
-
-        if (!firstStartCountDown) {
-          return;
-        }
-
-        startCountDown();
-      },
+      handler: (response) => response,
     });
+
+    fallbackInFlight = false;
+
+    if (!body || body.error || body.key == null) {
+      return;
+    }
+
+    const timeStarted = Number(body.timeStarted) || Date.now();
+
+    applyKey(body.key, timeStarted, timeStarted + KEY_PERIOD_MS);
+  }
+
+  /** The dialog opened: listen for pushed keys, and count down the one we already have. */
+  function startKeyFeed() {
+    stopKeyFeed();
+
+    keyExpiresAt = Number(get(platformKeyRefreshedTime) || 0) + KEY_PERIOD_MS;
+    // The hub sends the current key as soon as the subscription arrives.
+    fallbackAt = Date.now() + PUSH_GRACE_MS;
+
+    releasePlatformKey = subscribePlatformKey();
+
+    tick();
+
+    countdownTimer = setInterval(tick, 1000);
+  }
+
+  function stopKeyFeed() {
+    if (countdownTimer) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+    }
+
+    releasePlatformKey?.();
+    releasePlatformKey = null;
   }
 
   function toggleAcceptPluginAuth() {
@@ -335,41 +380,39 @@
   onMount(() => {
     setDefaultConnectionTab();
 
+    const offPlatformKey = onPlatformKey((frame) => {
+      if (!releasePlatformKey) {
+        return;
+      }
+
+      applyKey(frame.key, frame.timeStarted, frame.expiresAt);
+    });
+
+    const offHostAddress = platformHostAddress.subscribe(() => {
+      updateCommandText();
+    });
+
+    const offMatchKey = platformServerMatchKey.subscribe(() => {
+      updateCommandText();
+    });
+
     const modalElement = document.getElementById('connectServer');
-    if (!modalElement) return;
 
     const handleShow = () => {
       setDefaultConnectionTab();
+      startKeyFeed();
     };
 
-    modalElement.addEventListener('show.bs.modal', handleShow);
+    modalElement?.addEventListener('show.bs.modal', handleShow);
+    modalElement?.addEventListener('hidden.bs.modal', stopKeyFeed);
 
     return () => {
-      modalElement.removeEventListener('show.bs.modal', handleShow);
+      modalElement?.removeEventListener('show.bs.modal', handleShow);
+      modalElement?.removeEventListener('hidden.bs.modal', stopKeyFeed);
+      offPlatformKey();
+      offHostAddress();
+      offMatchKey();
+      stopKeyFeed();
     };
   });
-
-  if (browser) {
-    onDestroy(
-      platformKeyRefreshedTime.subscribe((value) => {
-        if (value !== 0 && !firstStartCountDown) {
-          firstStartCountDown = true;
-
-          startCountDown();
-        }
-      }),
-    );
-
-    onDestroy(
-      platformHostAddress.subscribe(() => {
-        updateCommandText();
-      }),
-    );
-
-    onDestroy(
-      platformServerMatchKey.subscribe(() => {
-        updateCommandText();
-      }),
-    );
-  }
 </script>

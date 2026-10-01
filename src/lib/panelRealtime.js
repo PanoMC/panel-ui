@@ -58,6 +58,8 @@ const nodeRemovedListeners = new Set();
 const nodeMetricsListeners = new Set();
 const serverStateListeners = new Set();
 const taskProgressListeners = new Set();
+const platformKeyListeners = new Set();
+const nodePairingCodeListeners = new Set();
 
 /** How many tasks the servers overview's "recent tasks" list keeps. */
 const RECENT_TASK_LIMIT = 10;
@@ -100,6 +102,43 @@ const serversListSubscribers = new Set();
  * @type {Set<{ intervalMs: number|null, nodeIds: number[]|null }>}
  */
 const nodesSubscribers = new Set();
+/**
+ * The open connect-server dialogs: while any is open the hub pushes the rotating platform key as
+ * `platformKey` frames ([onPlatformKey]) instead of the dialog polling it over HTTP every 30 s.
+ */
+const platformKeySubscribers = new Set();
+/**
+ * Same for the add-node dialog's pairing code (`nodePairingCode` frames). A token carries the
+ * `panoUrl` override the frame's install commands are built with; the newest token's wins.
+ *
+ * @type {Set<{ panoUrl: string|null }>}
+ */
+const nodePairingCodeSubscribers = new Set();
+
+/** @returns {string|null} */
+function currentNodePairingPanoUrl() {
+  let panoUrl = null;
+
+  nodePairingCodeSubscribers.forEach((token) => {
+    panoUrl = token.panoUrl;
+  });
+
+  return panoUrl;
+}
+
+/**
+ * When a rotating code stops being valid, on this browser's clock: Pano sends its own clock along
+ * (`serverTime`), so a skewed local clock does not throw the countdown off.
+ *
+ * @param {number} expiresAt Pano's clock.
+ * @param {unknown} serverTime Pano's clock when it sent the frame.
+ * @returns {number}
+ */
+function toLocalExpiry(expiresAt, serverTime) {
+  const sentAt = Number(serverTime);
+
+  return Number.isFinite(sentAt) && sentAt > 0 ? Date.now() + (expiresAt - sentAt) : expiresAt;
+}
 
 /**
  * @param {number|string|null|undefined} value
@@ -400,6 +439,8 @@ function shouldKeepWebSocket() {
     wantNodes ||
     wantServerId != null ||
     wantNotifications ||
+    platformKeySubscribers.size > 0 ||
+    nodePairingCodeSubscribers.size > 0 ||
     consoleFeed.current() != null ||
     metricsFeed.current() != null ||
     multiMetricsFeed.currentIds().length > 0 ||
@@ -490,6 +531,11 @@ function sendConfig() {
       metricsIntervalMs: currentMetricsInterval(),
       subscribePlayersServerId: playersFeed.current(),
       subscribePluginsServerId: pluginsFeed.current(),
+      // The rotating codes of the open connect-server / add-node dialogs. The hub sends the
+      // current one as soon as a subscription starts, so a reconnect gets a fresh one too.
+      subscribePlatformKey: platformKeySubscribers.size > 0,
+      subscribeNodePairingCode: nodePairingCodeSubscribers.size > 0,
+      nodePairingPanoUrl: currentNodePairingPanoUrl(),
     }),
   );
 }
@@ -626,6 +672,33 @@ function connect() {
         scheduleId: msg.scheduleId == null ? null : Number(msg.scheduleId),
         ok: msg.ok !== false,
         error: msg.error == null ? null : String(msg.error),
+      });
+      return;
+    }
+    if (msg.type === 'platformKey' && msg.key != null) {
+      const timeStarted = Number(msg.timeStarted) || Date.now();
+      const periodMs = Number(msg.periodMs) || 30000;
+
+      emit(platformKeyListeners, {
+        key: msg.key,
+        timeStarted,
+        periodMs,
+        expiresAt: toLocalExpiry(timeStarted + periodMs, msg.serverTime),
+      });
+      return;
+    }
+    if (msg.type === 'nodePairingCode' && msg.pairingCode != null) {
+      const generatedAt = Number(msg.generatedAt) || Date.now();
+      const periodMs = Number(msg.periodMs) || 30000;
+      const expiresAt = Number(msg.expiresAt) || generatedAt + periodMs;
+
+      emit(nodePairingCodeListeners, {
+        pairingCode: String(msg.pairingCode),
+        generatedAt,
+        periodMs,
+        expiresAt: toLocalExpiry(expiresAt, msg.serverTime),
+        installCommand: String(msg.installCommand ?? ''),
+        installCommandWindows: String(msg.installCommandWindows ?? ''),
       });
       return;
     }
@@ -887,6 +960,93 @@ export function subscribeNodeMetrics(intervalMs, nodeIds = null) {
       updateConnection();
     },
   };
+}
+
+/**
+ * Subscribe to the rotating platform key (the `/pano connect` code) while a connect-server dialog
+ * is open: the current key arrives at once and every new one as it rotates ([onPlatformKey]).
+ * Needs MANAGE_SERVERS; without it the hub sends nothing.
+ *
+ * @returns {() => void} release function; calling it twice is a no-op.
+ */
+export function subscribePlatformKey() {
+  const token = {};
+  platformKeySubscribers.add(token);
+  updateConnection();
+
+  let released = false;
+
+  return () => {
+    if (released) {
+      return;
+    }
+
+    released = true;
+    platformKeySubscribers.delete(token);
+    updateConnection();
+  };
+}
+
+/**
+ * Subscribe to the rotating node pairing code while the add-node dialog is open, with its install
+ * commands built for [panoUrl] (null = the website URL). Needs MANAGE_NODES and a usage mode with
+ * servers; otherwise the hub sends nothing.
+ *
+ * @param {string|null} [panoUrl]
+ * @returns {{ release: () => void, update: (panoUrl: string|null) => void }}
+ *   `update` swaps the override in place; the hub answers with a frame for it.
+ */
+export function subscribeNodePairingCode(panoUrl = null) {
+  const token = { panoUrl: panoUrl || null };
+  nodePairingCodeSubscribers.add(token);
+  updateConnection();
+
+  let released = false;
+
+  return {
+    release() {
+      if (released) {
+        return;
+      }
+
+      released = true;
+      nodePairingCodeSubscribers.delete(token);
+      updateConnection();
+    },
+    update(nextPanoUrl) {
+      if (released) {
+        return;
+      }
+
+      token.panoUrl = nextPanoUrl || null;
+      updateConnection();
+    },
+  };
+}
+
+/**
+ * A platform key, pushed on subscribe and on every rotation. `expiresAt` is on this browser's
+ * clock. Needs [subscribePlatformKey].
+ *
+ * @param {(frame: { key: number|string, timeStarted: number, periodMs: number, expiresAt: number }) => void} fn
+ * @returns {() => void}
+ */
+export function onPlatformKey(fn) {
+  platformKeyListeners.add(fn);
+  return () => platformKeyListeners.delete(fn);
+}
+
+/**
+ * A node pairing code with its install commands, pushed on subscribe, on every rotation and when
+ * the override changes. `expiresAt` is on this browser's clock. Needs [subscribeNodePairingCode].
+ *
+ * @param {(frame: { pairingCode: string, generatedAt: number, periodMs: number, expiresAt: number,
+ *   installCommand: string, installCommandWindows: string }) => void} fn
+ * @returns {() => void}
+ */
+export function onNodePairingCode(fn) {
+  nodePairingCodeListeners.add(fn);
+  return () => nodePairingCodeListeners.delete(fn);
 }
 
 /**
@@ -1193,6 +1353,10 @@ export function teardownPanelRealtime() {
   nodeMetricsListeners.clear();
   serverStateListeners.clear();
   taskProgressListeners.clear();
+  platformKeyListeners.clear();
+  nodePairingCodeListeners.clear();
+  platformKeySubscribers.clear();
+  nodePairingCodeSubscribers.clear();
   recentTasks.set([]);
   serversListSubscribers.clear();
   nodesSubscribers.clear();
