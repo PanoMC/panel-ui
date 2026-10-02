@@ -1,27 +1,10 @@
 <!--
-  Pano Host banner: a "managed by Pano Host" link and the control plane's notices (quota, trial,
-  scheduled deletion, …) from `GET /api/panel/hosted`. Informational only; renders nothing on a
-  self-hosted Pano (`hosted: false`) or when the request fails.
+  Pano Host banner: the control plane's notices (quota, trial, payment, …) from
+  `GET /api/panel/hosted`. Informational only; renders nothing on a self-hosted Pano
+  (`hosted: false`), without notices, or when the request fails.
 -->
-{#if info?.hosted}
+{#if info?.hosted && visibleNotices.length}
   <div class="hosted-banner flex-shrink-0">
-    <div class="alert alert-light border-0 border-bottom mb-0 rounded-0 py-1 small" role="status">
-      <div class="container-fluid d-flex align-items-center">
-        <i class="fa-solid fa-cloud me-2 text-primary"></i>
-        <span class="text-muted">{$_('components.hosted-banner.managed')}</span>
-        {#if info.manageUrl}
-          <a
-            class="alert-link ms-2"
-            href={info.manageUrl}
-            rel="noopener noreferrer"
-            target="_blank">
-            {$_('components.hosted-banner.manage', { values: { website: manageHost } })}
-            <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
-          </a>
-        {/if}
-      </div>
-    </div>
-
     {#each visibleNotices as notice (notice.id)}
       <div
         class="alert {LEVEL_CLASS[notice.level] || LEVEL_CLASS.info} mb-0 rounded-0"
@@ -61,6 +44,7 @@
 
   import { websiteDisplayHost } from '$lib/website-display.util.js';
   import ApiUtil from '$lib/api.util.js';
+  import { hostedMocked, mockHostedInfo } from '$lib/hosted-mock.util.js';
 
   /** Same cadence as the backend's notice cache. */
   const REFRESH_MS = 5 * 60 * 1000;
@@ -79,7 +63,7 @@
   };
 
   /** @type {{ hosted: boolean, workloadId?: string, manageUrl?: string, notices: any[] } | null} */
-  let info = $state(null);
+  let info = $state(hostedMocked ? mockHostedInfo() : null);
 
   /** Where the instance is managed (the control plane's `manageUrl`), else this panel's Pano website. */
   const manageHost = $derived(websiteDisplayHost(info?.manageUrl || undefined));
@@ -119,13 +103,28 @@
 
     if (!notice.type) return fallback;
 
+    const values = { website: manageHost, ...(notice.data || {}) };
+
+    // The payment notice only carries the grace end; its text needs the days left (or `none`).
+    if (notice.type === 'HOST_PAYMENT_PAST_DUE')
+      values.days = daysUntil(values.graceExpiresAt) ?? 'none';
+
     return $_(`components.hosted-banner.notices.${notice.type}.${field}`, {
       default: fallback,
-      values: { website: manageHost, ...(notice.data || {}) },
+      values,
     });
   }
 
+  /** Whole days (rounded up, as the control plane counts) until [at], or null when past / missing. */
+  function daysUntil(at) {
+    const left = typeof at === 'number' ? at - Date.now() : 0;
+
+    return left > 0 ? Math.ceil(left / (24 * 60 * 60 * 1000)) : null;
+  }
+
   function load() {
+    if (hostedMocked) return;
+
     ApiUtil.get({
       path: '/api/panel/hosted',
       handler: (body) => {

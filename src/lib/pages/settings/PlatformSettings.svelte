@@ -734,170 +734,212 @@
     {/if}
 
     {#if data.email.hostMailAvailable}
-      <!-- Pano Host: the instance's package mail, or the customer's own provider (kept across restarts). -->
+      <!-- Pano Host: its package mail or the customer's own SMTP. Picking one only changes the form;
+           Save switches (after a confirmation), and each side keeps its settings. -->
       <div class="btn-group w-100 mb-3" role="group">
-        <input
-          type="radio"
-          class="btn-check"
-          id="mailModeHost"
-          value="host"
-          bind:group={mailMode}
-          disabled={smtpDisabled || saveEmailLoading} />
-        <label class="btn btn-outline-primary" for="mailModeHost"
-          >{$_('pages.settings.platform.smtp.host-mail')}</label>
-        <input
-          type="radio"
-          class="btn-check"
-          id="mailModeOwn"
-          value="own"
-          bind:group={mailMode}
-          on:change={onOwnMailSelected}
-          disabled={smtpDisabled || saveEmailLoading} />
-        <label class="btn btn-outline-primary" for="mailModeOwn"
-          >{$_('pages.settings.platform.smtp.own-mail')}</label>
+        <button
+          type="button"
+          class="btn"
+          class:btn-primary={mailMode === 'host'}
+          class:btn-outline-primary={mailMode !== 'host'}
+          aria-pressed={mailMode === 'host'}
+          on:click={() => requestMailMode('host')}
+          disabled={smtpDisabled || saveEmailLoading}
+          >{$_('pages.settings.platform.smtp.host-mail')}</button>
+        <button
+          type="button"
+          class="btn"
+          class:btn-primary={mailMode === 'own'}
+          class:btn-outline-primary={mailMode !== 'own'}
+          aria-pressed={mailMode === 'own'}
+          on:click={() => requestMailMode('own')}
+          disabled={smtpDisabled || saveEmailLoading}
+          >{$_('pages.settings.platform.smtp.own-mail')}</button>
       </div>
+
+      {#if mailMode === 'host'}
+        <p class="text-muted mb-3">
+          {$_('pages.settings.platform.smtp.host-mail-description', {
+            values: { website: websiteDisplayHost() },
+          })}
+        </p>
+      {/if}
     {/if}
 
-    {#if data.email.hostMailAvailable && mailMode === 'host'}
-      <p class="text-muted mb-3">
-        {$_('pages.settings.platform.smtp.host-mail-description', {
-          values: { website: websiteDisplayHost() },
-        })}
-      </p>
-      {#if !data.email.hostManaged}
-        <button
-          class="btn btn-secondary"
-          on:click={onUseHostMailClick}
-          disabled={saveEmailLoading || smtpDisabled}
-          >{$_('pages.settings.platform.smtp.use-host-mail')}
-          {#if saveEmailLoading}
-            <span class="spinner-border spinner-border-sm ms-2" role="status"></span>
-          {/if}
-        </button>
-      {/if}
-    {:else}
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="mailUsername"
-          >{$_('pages.settings.platform.smtp.username')}</label>
-        <div class="col-md-6">
+    <!-- Pano Host mail: the same form, filled with the relay's settings and locked except the
+         sender (the rest is written from the host's env on every boot). -->
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="mailUsername"
+        >{$_('pages.settings.platform.smtp.username')}</label>
+      <div class="col-md-6">
+        <input
+          class="form-control"
+          id="mailUsername"
+          type="text"
+          placeholder="no-reply"
+          bind:value={data.email.username}
+          disabled={smtpDisabled || hostMailLocked} />
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="mailUserPassword"
+        >{$_('pages.settings.platform.smtp.password')}</label>
+      <div class="col-md-6">
+        <input
+          class="form-control"
+          id="mailUserPassword"
+          placeholder="****************"
+          bind:value={data.email.password}
+          type="password"
+          disabled={smtpDisabled || hostMailLocked} />
+        {#if !hostMailLocked && hasStoredPassword && !data.email.password}
+          <div class="form-text">{$_('pages.settings.platform.smtp.password-kept')}</div>
+        {/if}
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="useSSLCheck">
+        {$_('pages.settings.platform.smtp.ssl')}
+      </label>
+      <div class="col-md-6">
+        <div class="form-check">
           <input
-            class="form-control"
-            id="mailUsername"
-            type="text"
-            placeholder="no-reply"
-            bind:value={data.email.username}
-            disabled={smtpDisabled} />
+            class="form-check-input"
+            type="checkbox"
+            name="useSSLCheck"
+            id="useSSLCheck"
+            aria-checked={data.email.ssl}
+            bind:checked={data.email.ssl}
+            disabled={smtpDisabled || hostMailLocked} />
         </div>
       </div>
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="mailUserPassword"
-          >{$_('pages.settings.platform.smtp.password')}</label>
-        <div class="col-md-6">
-          <input
-            class="form-control"
-            id="mailUserPassword"
-            placeholder="****************"
-            bind:value={data.email.password}
-            type="password"
-            disabled={smtpDisabled} />
-        </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="port"
+        >{$_('pages.settings.platform.smtp.tls-setting')}</label>
+      <div class="col-md-6">
+        <select
+          class="form-select"
+          id="port"
+          bind:value={data.email.starttls}
+          disabled={smtpDisabled || hostMailLocked}>
+          <option value="REQUIRED">REQUIRED</option>
+          <option value="OPTIONAL">OPTIONAL</option>
+          <option value="DISABLED">DISABLED</option>
+        </select>
       </div>
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="useSSLCheck">
-          {$_('pages.settings.platform.smtp.ssl')}
-        </label>
-        <div class="col-md-6">
-          <div class="form-check">
+    </div>
+
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="senderAddress"
+        >{$_('pages.settings.platform.smtp.sender-address')}</label>
+      <div class="col-md-6">
+        <!-- Pano Host mail: only the name before `@` is the customer's; the domain is the host's. -->
+        <div class="input-group" class:has-validation={hostMailLocked && hostSenderInvalid}>
+          {#if hostMailLocked && hostDefaultDomain}
             <input
-              class="form-check-input"
-              type="checkbox"
-              name="useSSLCheck"
-              id="useSSLCheck"
-              aria-checked={data.email.ssl}
-              bind:checked={data.email.ssl}
+              class="form-control"
+              class:is-invalid={hostSenderInvalid}
+              id="senderAddress"
+              type="text"
+              placeholder="noreply"
+              maxlength="64"
+              value={hostSenderLocal}
+              on:input={onHostSenderLocalInput}
               disabled={smtpDisabled} />
+            <span class="input-group-text">@{hostDefaultDomain}</span>
+          {:else}
+            <input
+              class="form-control"
+              id="senderAddress"
+              type="text"
+              placeholder="no-reply@forexample.com"
+              bind:value={data.email.sender}
+              disabled={smtpDisabled} />
+          {/if}
+          <!-- Only once the sender differs from the default: nothing to reset otherwise. -->
+          {#if hostMailLocked && hostSenderCustomized}
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              title={$_('pages.settings.platform.smtp.reset-sender')}
+              aria-label={$_('pages.settings.platform.smtp.reset-sender')}
+              on:click={onResetHostSenderClick}
+              disabled={smtpDisabled}>
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          {/if}
+        </div>
+        {#if hostMailLocked && hostSenderInvalid}
+          <div class="invalid-feedback d-block">
+            {$_('pages.settings.platform.smtp.sender-local-invalid')}
           </div>
-        </div>
+        {/if}
       </div>
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="port"
-          >{$_('pages.settings.platform.smtp.tls-setting')}</label>
-        <div class="col-md-6">
-          <select
-            class="form-select"
-            id="port"
-            bind:value={data.email.starttls}
-            disabled={smtpDisabled}>
-            <option value="REQUIRED">REQUIRED</option>
-            <option value="OPTIONAL">OPTIONAL</option>
-            <option value="DISABLED">DISABLED</option>
-          </select>
-        </div>
-      </div>
+    </div>
 
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="senderAddress"
-          >{$_('pages.settings.platform.smtp.sender-address')}</label>
-        <div class="col-md-6">
-          <input
-            class="form-control"
-            id="senderAddress"
-            type="text"
-            placeholder="no-reply@forexample.com"
-            bind:value={data.email.sender}
-            disabled={smtpDisabled} />
-        </div>
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="hostAddress"
+        >{$_('pages.settings.platform.smtp.hostname')}</label>
+      <div class="col-md-6">
+        <input
+          class="form-control"
+          id="hostAddress"
+          type="text"
+          placeholder="smtp.forexample.com"
+          bind:value={data.email.hostname}
+          disabled={smtpDisabled || hostMailLocked} />
       </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="port"
+        >{$_('pages.settings.platform.smtp.port')}</label>
+      <div class="col-md-6">
+        <input
+          class="form-control"
+          id="port"
+          placeholder="465"
+          type="number"
+          bind:value={data.email.port}
+          disabled={smtpDisabled || hostMailLocked} />
+      </div>
+    </div>
 
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="hostAddress"
-          >{$_('pages.settings.platform.smtp.hostname')}</label>
-        <div class="col-md-6">
-          <input
-            class="form-control"
-            id="hostAddress"
-            type="text"
-            placeholder="smtp.forexample.com"
-            bind:value={data.email.hostname}
-            disabled={smtpDisabled} />
-        </div>
+    <div class="row mb-3">
+      <label class="col-md-6 col-form-label" for="authMethods"
+        >{$_('pages.settings.platform.smtp.auth-methods')}</label>
+      <div class="col-md-6">
+        <select
+          class="form-select"
+          id="authMethods"
+          bind:value={data.email.authMethods}
+          disabled={smtpDisabled || hostMailLocked}>
+          <option value="PLAIN">PLAIN</option>
+          <option value=""></option>
+        </select>
       </div>
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="port"
-          >{$_('pages.settings.platform.smtp.port')}</label>
-        <div class="col-md-6">
-          <input
-            class="form-control"
-            id="port"
-            placeholder="465"
-            type="number"
-            bind:value={data.email.port}
-            disabled={smtpDisabled} />
-        </div>
-      </div>
+    </div>
 
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="authMethods"
-          >{$_('pages.settings.platform.smtp.auth-methods')}</label>
-        <div class="col-md-6">
-          <select
-            class="form-select"
-            id="authMethods"
-            bind:value={data.email.authMethods}
-            disabled={smtpDisabled}>
-            <option value="PLAIN">PLAIN</option>
-            <option value=""></option>
-          </select>
-        </div>
-      </div>
-
+    {#if hostMailLocked}
+      <button
+        class="btn btn-secondary"
+        on:click={onSaveHostMailClick}
+        disabled={saveEmailLoading ||
+          smtpDisabled ||
+          !hostMailChanged ||
+          !data.email.sender ||
+          hostSenderInvalid}
+        >{$_(hostMailActivating ? 'buttons.activate' : 'buttons.save')}
+      </button>
+    {:else}
       <button
         class="btn btn-secondary"
         on:click={onSaveSmtpClick}
         disabled={saveEmailLoading || !mailValidated || smtpDisabled}
-        >{$_(!$siteInfo.emailEnabled ? 'buttons.enable' : 'buttons.save')}
+        >{$_(customActivating ? 'buttons.activate' : 'buttons.save')}
       </button>
-      {#if !mailValidated && !emailSaveDisabled}
+      <!-- Turning the custom SMTP on always validates first, even when its form is unchanged. -->
+      {#if !mailValidated && (customActivating ? customPasswordKnown : !emailSaveDisabled)}
         <button
           class="btn btn-outline-primary"
           on:click={onValidateEmailClick}
@@ -925,6 +967,10 @@
   import { base } from '$app/paths';
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
   import { isEndpointUnavailable } from '$lib/servers.util.js';
+  import { hostedMocked, mockHostMail } from '$lib/hosted-mock.util.js';
+
+  /** Pano Host mail sender name (before `@`); mirrors `HostedEnvConfig.SENDER_LOCAL`. */
+  export const HOST_SENDER_LOCAL = /^[A-Za-z0-9_+-]+(\.[A-Za-z0-9_+-]+)*$/;
 
   /**
    * The alert kinds of §2.4.7, in the order the card lists them. They mirror the backend's
@@ -1000,6 +1046,12 @@
       !!alertSettings && !isEndpointUnavailable(alertSettings) && !alertSettings.error;
 
     const body = { ...generalSettings, ...authSettings, ...maintenanceSettings };
+
+    // Dev-only Pano Host preview (`VITE_MOCK_HOSTED`): offer the package mail as Pano Host does.
+    if (hostedMocked && body.email) {
+      body.email.hostMailAvailable = true;
+      body.email.hostMail ??= mockHostMail(body.email.hostSender);
+    }
 
     body.oldSettings = structuredClone(body);
 
@@ -1181,6 +1233,12 @@
   let connecting = !data.panoAccount && data.state && data.encodedData;
   let disconnecting;
   let mailValidated;
+
+  /** The SMTP fields [mailValidated] holds for: any edit after validating asks for a new validation. */
+  let validatedFields = '';
+
+  $: if (mailValidated && data.email && JSON.stringify(emailFields()) !== validatedFields)
+    mailValidated = false;
   let mailError;
   let toggleSmtpLoading;
   let saveMaintenanceLoading;
@@ -1223,7 +1281,8 @@
     data.oldSettings.passwordHashAlgorithm === data.passwordHashAlgorithm;
 
   $: emailSaveDisabled =
-    JSON.stringify(data.oldSettings.email) === JSON.stringify(data.email) || !data.email.password;
+    JSON.stringify(data.oldSettings.email) === JSON.stringify(data.email) ||
+    (!data.email.password && !hasStoredPassword);
 
   // invalidateAll() swaps `data` for a fresh payload, so re-apply the defaults on every load.
   $: if (!data.maintenance) {
@@ -1474,7 +1533,7 @@
 
     ApiUtil.post({
       path: '/api/panel/settings/verify/mail',
-      body: data.email,
+      body: emailFields(),
       handler: async (body, reject) => {
         saveEmailLoading = false;
 
@@ -1484,43 +1543,169 @@
           return;
         }
 
-        mailValidated = true;
+        if (!hostMailLocked) {
+          mailValidated = true;
+          validatedFields = JSON.stringify(emailFields());
+        }
 
         await showSuccessToast('components.toasts.email-config-validate-success');
       },
     });
   }
 
-  /** Pano Host: `host` = the package mail (`email.hostManaged`), `own` = the customer's own provider. */
-  let mailMode = data.email?.hostManaged === false ? 'own' : 'host';
+  /** The SMTP fields the save and verify routes take (nothing of the Pano Host extras). */
+  function emailFields() {
+    const { hostname, port, ssl, starttls, username, password, sender, authMethods } = data.email;
 
-  // A save / reload that changes the stored choice resets the selector to it.
-  $: syncMailMode(data.email?.hostManaged);
-
-  function syncMailMode(hostManaged) {
-    mailMode = hostManaged === false ? 'own' : 'host';
+    return {
+      hostname: hostname || '',
+      port: port || 0,
+      ssl: ssl || false,
+      starttls: starttls || 'DISABLED',
+      username: username || '',
+      password: password || '',
+      sender: (sender || '').trim(),
+      authMethods: authMethods || '',
+    };
   }
 
-  /** Starting an own provider: the relay's values are no use there, so the form starts empty. */
-  function onOwnMailSelected() {
-    if (!data.email.hostManaged) return;
+  /** Pano Host: `host` = the package mail (`email.hostManaged`), `own` = the customer's own SMTP. */
+  let mailMode = data.email?.hostManaged === false ? 'own' : 'host';
+
+  /** The form as it was when the current mode was shown: anything else is an unsaved edit. */
+  let mailModeSnapshot = '';
+  let mailStateFor;
+
+  // A (re)load sets the mode to the stored one. Keyed on the loaded snapshot (`oldSettings`): `data`
+  // itself is invalidated by every edit of the form, and re-syncing then would undo the user's pick.
+  $: resetMailState(data.oldSettings);
+
+  function resetMailState(loaded) {
+    if (loaded === mailStateFor) return;
+
+    mailStateFor = loaded;
+    mailMode = data.email?.hostManaged === false ? 'own' : 'host';
+    mailValidated = false;
+
+    if (data.email?.hostMailAvailable && mailMode === 'host') showHostMail();
+
+    mailModeSnapshot = JSON.stringify(data.email);
+  }
+
+  /** Pano Host mail selected: the SMTP form shows the relay's settings, read-only but the sender. */
+  $: hostMailLocked = !!data.email?.hostMailAvailable && mailMode === 'host';
+
+  $: storedEmail = data.oldSettings?.email || {};
+
+  /** The instance's own default sender (`PANO_SMTP_FROM`), what the reset button restores. */
+  $: hostDefaultSender = data.email?.hostMail?.defaultSender || '';
+
+  $: hostDefaultDomain = hostDefaultSender.split('@')[1] || '';
+
+  /** Pano Host mail: the sender's name before `@` (the domain is always the host's). */
+  $: hostSenderLocal = String(data.email?.sender || '').split('@')[0];
+
+  /** Letters, digits and `. _ + -`, not starting or ending with a dot: what the backend accepts. */
+  $: hostSenderInvalid = !HOST_SENDER_LOCAL.test(hostSenderLocal);
+
+  /** The sender differs from the default (case aside), so the reset button has something to do. */
+  $: hostSenderCustomized =
+    !!hostDefaultSender &&
+    String(data.email?.sender || '')
+      .trim()
+      .toLowerCase() !== hostDefaultSender.toLowerCase();
+
+  function onHostSenderLocalInput(event) {
+    const local = event.target.value.replace(/@.*$/, '').trim();
+
+    data.email.sender = local ? `${local}@${hostDefaultDomain}` : '';
+  }
+
+  /** Saving the custom SMTP turns it on: mail is off, or Pano Host mail is the stored one. */
+  $: customActivating =
+    !storedEmail.enabled || (!!data.email?.hostMailAvailable && storedEmail.hostManaged !== false);
+
+  /** A password to validate with: typed, or the stored one of the same server and account. */
+  $: customPasswordKnown = !!data.email?.password || hasStoredPassword;
+
+  /** Saving Pano Host mail turns it on: mail is off, or the customer's own SMTP is the stored one. */
+  $: hostMailActivating = !storedEmail.enabled || storedEmail.hostManaged === false;
+
+  /** Something to save for Pano Host mail: switching to it, turning mail on, or another sender. */
+  $: hostMailChanged =
+    !storedEmail.hostManaged ||
+    !storedEmail.enabled ||
+    String(data.email?.sender || '').trim() !== (storedEmail.hostMail?.sender || '');
+
+  /** Own SMTP: a stored password of this server and account is kept when the field stays empty. */
+  $: hasStoredPassword =
+    !!data.email?.customHasPassword &&
+    data.email?.custom?.hostname === data.email?.hostname &&
+    data.email?.custom?.username === data.email?.username;
+
+  function showHostMail() {
+    const hostMail = data.email.hostMail;
+
+    if (hostMail) data.email = { ...data.email, ...hostMail, password: '' };
+  }
+
+  function showOwnMail() {
+    // Own SMTP in use: its stored values. Pano Host mail in use: the kept copy, else an empty form.
+    const custom = storedEmail.hostManaged === false ? storedEmail : data.email.custom;
 
     data.email = {
       ...data.email,
-      hostname: '',
-      port: 587,
-      ssl: false,
-      starttls: 'REQUIRED',
-      username: '',
+      hostname: custom?.hostname || '',
+      port: custom?.port || 587,
+      ssl: custom?.ssl ?? false,
+      starttls: custom?.starttls || 'REQUIRED',
+      username: custom?.username || '',
       password: '',
-      sender: '',
-      authMethods: '',
+      sender: custom?.sender || '',
+      authMethods: custom?.authMethods || '',
     };
-    mailValidated = false;
   }
 
-  /** Back to Pano Host mail: the control plane's relay settings are applied again (and on every boot). */
-  function onUseHostMailClick() {
+  function setMailMode(mode) {
+    mailMode = mode;
+    mailValidated = false;
+    mailError = null;
+
+    if (mode === 'host') showHostMail();
+    else showOwnMail();
+
+    mailModeSnapshot = JSON.stringify(data.email);
+  }
+
+  /** Switching discards unsaved edits of the form, so that asks first. */
+  function requestMailMode(mode) {
+    if (mode === mailMode) return;
+
+    if (JSON.stringify(data.email) === mailModeSnapshot) {
+      setMailMode(mode);
+
+      return;
+    }
+
+    showConfirmActionModal('pages.settings.platform.smtp.confirm-discard', () => setMailMode(mode));
+  }
+
+  function onResetHostSenderClick() {
+    data.email.sender = hostDefaultSender;
+  }
+
+  /** Pano Host mail: switch to it (confirmed), turn mail on or save another sender. */
+  function onSaveHostMailClick() {
+    if (storedEmail.hostManaged === false) {
+      showConfirmActionModal('pages.settings.platform.smtp.confirm-switch-host', saveHostMail);
+
+      return;
+    }
+
+    saveHostMail();
+  }
+
+  function saveHostMail() {
     saveEmailLoading = true;
 
     const formData = new FormData();
@@ -1536,7 +1721,8 @@
         starttls: 'OPTIONAL',
         username: '',
         password: '',
-        sender: '',
+        sender: String(data.email.sender || '').trim(),
+        authMethods: '',
       }),
     );
 
@@ -1557,25 +1743,29 @@
     });
   }
 
+  /** Own SMTP: switching away from Pano Host mail asks first. */
   function onSaveSmtpClick() {
+    if (data.email.hostMailAvailable && storedEmail.hostManaged !== false) {
+      showConfirmActionModal('pages.settings.platform.smtp.confirm-switch-own', saveSmtp);
+
+      return;
+    }
+
+    saveSmtp();
+  }
+
+  function saveSmtp() {
     saveEmailLoading = true;
 
     const formData = new FormData();
-
-    const { hostname, port, ssl, starttls, username, password, sender, authMethods } = data.email;
 
     formData.append(
       'email',
       JSON.stringify({
         enabled: true,
-        hostname: hostname || '',
-        port: port || 3306,
-        ssl: ssl || false,
-        starttls: starttls || 'DISABLED',
-        username: username || '',
-        password: password || '',
-        sender: sender || '',
-        authMethods: authMethods || '',
+        ...emailFields(),
+        // Pano Host: own SMTP explicitly (an older backend ignores the field).
+        ...(data.email.hostMailAvailable ? { hostManaged: false } : {}),
       }),
     );
 
@@ -1625,6 +1815,18 @@
   }
 
   function onToggleSmtp(event) {
+    // Mail was never turned on (only switched on here, unsaved): switching it off again just drops
+    // the unsaved edits, nothing to confirm or save.
+    if (!event.target.checked && !storedEmail.enabled) {
+      $siteInfo.emailEnabled = false;
+      data.email = structuredClone(data.oldSettings.email);
+      mailError = null;
+      mailStateFor = null;
+      resetMailState(data.oldSettings);
+
+      return;
+    }
+
     if (!event.target.checked) {
       $siteInfo.emailEnabled = true;
       showConfirmDisableEmailModal(() => {
@@ -1646,6 +1848,10 @@
             password: '',
             sender: '',
             authMethods: '',
+            // Pano Host: turning mail off keeps the chosen mode.
+            ...(data.email.hostMailAvailable
+              ? { hostManaged: storedEmail.hostManaged !== false }
+              : {}),
           }),
         );
 

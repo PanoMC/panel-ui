@@ -493,7 +493,11 @@
             "manual": "Manual (Certificate & Key)"
           },
           "restart-required-alert": "You have changed critical settings. You must restart Pano to apply these changes.",
-          "restart-now": "Restart Now"
+          "restart-now": "Restart Now",
+          "host-managed": {
+            "title": "Managed by Pano Host",
+            "description": "HTTPS and ports of this Pano are handled by Pano Host. Certificates, including your custom domains', are issued and renewed automatically."
+          }
         }
       },
       "platform": {
@@ -559,9 +563,14 @@
           "email-validation-error": "Couldn't validate e-mail settings: {mailError}",
           "smtp-disabled-alert": "<strong class=\"me-2\">SMTP Disabled</strong> Pano will not be able to send emails for registration or password recovery.",
           "host-mail": "Pano Host mail",
-          "own-mail": "My own mail server",
+          "own-mail": "Custom SMTP",
           "host-mail-description": "E-mails go out through your Pano Host package's mail. Limits and the send log are on your instance's Mail page on {website}.",
-          "use-host-mail": "Use Pano Host mail"
+          "reset-sender": "Use the Pano Host default",
+          "password-kept": "Leave empty to keep the saved password.",
+          "confirm-discard": "Discard your unsaved mail changes?",
+          "confirm-switch-host": "Send e-mails with Pano Host mail from now on? Your custom SMTP settings are kept.",
+          "confirm-switch-own": "Send e-mails with your custom SMTP from now on instead of Pano Host mail?",
+          "sender-local-invalid": "Use letters, digits and . _ + - only (up to 64)."
         },
         "smtp-settings": "SMTP",
         "toggle-smtp": "Toggle SMTP",
@@ -2651,8 +2660,6 @@
       "go-to-settings": "Go to settings"
     },
     "hosted-banner": {
-      "managed": "This Pano is managed by Pano Host.",
-      "manage": "Manage on {website}",
       "details": "Details",
       "dismiss": "Dismiss",
       "notices": {
@@ -2668,21 +2675,13 @@
           "title": "Trial ending",
           "message": "The free trial ends in {days} day(s). Choose a plan on {website} to keep this instance."
         },
+        "HOST_PAYMENT_PAST_DUE": {
+          "title": "Payment failed",
+          "message": "{days, select, none {The renewal payment of this instance failed. Update your payment method on {website} to keep it.} other {The renewal payment of this instance failed. Update your payment method on {website} within {days} day(s) to keep it.}}"
+        },
         "HOST_DELETION_SCHEDULED": {
           "title": "Deletion scheduled",
           "message": "This instance is scheduled for deletion in {days} day(s)."
-        },
-        "HOST_PACKAGE_CHANGE": {
-          "title": "Plan change scheduled",
-          "message": "This instance moves to the {packageId} plan at the end of the billing period."
-        },
-        "HOST_WORKLOAD_CRASHLOOP": {
-          "title": "Instance keeps restarting",
-          "message": "This instance crashed repeatedly. Check the console on {website}."
-        },
-        "HOST_SUPPORT_ACCESS": {
-          "title": "Support access",
-          "message": "Pano support signed in to this panel."
         }
       }
     },
@@ -3765,7 +3764,9 @@
       "website-logo-wrong-content-type": "Website logo file type is invalid. Only PNG, JPG, JPEG, and GIF files are allowed.",
       "maintenance-save-success": "Maintenance mode settings saved.",
       "maintenance-ban-removed": "IP ban removed.",
-      "maintenance-page-reset": "The maintenance page was reset to the default design."
+      "maintenance-page-reset": "The maintenance page was reset to the default design.",
+      "smtp-disabled-success": "E-mail sending turned off.",
+      "smtp-enabled-success": "E-mail sending turned on."
     },
     "search-input": {
       "searching": "Searching..."

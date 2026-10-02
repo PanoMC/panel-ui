@@ -16,8 +16,13 @@
     <div class="w-100">
       <div class="text-center mb-4">
         <span
-          class="auth-logo bg-primary p-2 shadow-sm d-inline-flex align-items-center justify-content-center">
-          <img src="{base}/assets/img/logo.svg" alt="Pano" class="w-100 h-100 object-fit-contain" />
+          class="auth-logo p-2 shadow-sm d-inline-flex align-items-center justify-content-center"
+          class:bg-primary={!$page.data.hosted}
+          class:bg-info={$page.data.hosted}>
+          <img
+            src="{base}/assets/img/logo.svg"
+            alt={$page.data.hosted ? 'Pano Host' : 'Pano'}
+            class="w-100 h-100 object-fit-contain" />
         </span>
         <div class="h6 mt-3 mb-0 text-break">{websiteName}</div>
         <div class="small text-body-secondary">{$_('pages.auth.panel-name')}</div>
@@ -28,7 +33,9 @@
   </main>
 
   <footer class="text-center small text-body-secondary pb-4">
-    Pano{$siteInfo?.panoVersion ? ` ${$siteInfo.panoVersion}` : ''}
+    {$page.data.hosted ? 'Pano Host' : 'Pano'}{$siteInfo?.panoVersion
+      ? ` ${$siteInfo.panoVersion}`
+      : ''}
   </footer>
 </div>
 
@@ -42,6 +49,7 @@
   import { _ } from 'svelte-i18n';
 
   import { base } from '$app/paths';
+  import { page } from '$app/stores';
 
   let { children } = $props();
 

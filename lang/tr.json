@@ -493,7 +493,11 @@
             "manual": "Manuel (Sertifika & Anahtar)"
           },
           "restart-required-alert": "Kritik ayarları değiştirdiniz. Bu değişikliklerin uygulanması için Pano'yu yeniden başlatmalısınız.",
-          "restart-now": "Şimdi Yeniden Başlat"
+          "restart-now": "Şimdi Yeniden Başlat",
+          "host-managed": {
+            "title": "Pano Host tarafından yönetiliyor",
+            "description": "Bu Pano'nun HTTPS ve port ayarlarını Pano Host yönetir. Özel alan adlarınız dahil sertifikalar otomatik olarak alınır ve yenilenir."
+          }
         }
       },
       "platform": {
@@ -559,9 +563,14 @@
           "email-validation-error": "E-mail ayarları doğrulanamadı: {mailError}",
           "smtp-disabled-alert": "<strong class=\"me-2\">SMTP Devre Dışı</strong> Pano; kayıt veya şifre kurtarma işlemleri için e-posta gönderemeyecektir.",
           "host-mail": "Pano Host e-postası",
-          "own-mail": "Kendi e-posta sunucum",
+          "own-mail": "Özel SMTP",
           "host-mail-description": "E-postalar Pano Host paketinizin e-posta hizmetiyle gönderilir. Limitler ve gönderim kaydı {website} üzerindeki instance'ınızın E-posta sayfasındadır.",
-          "use-host-mail": "Pano Host e-postasını kullan"
+          "reset-sender": "Pano Host varsayılanını kullan",
+          "password-kept": "Kayıtlı şifreyi korumak için boş bırakın.",
+          "confirm-discard": "Kaydedilmemiş e-posta değişiklikleri silinsin mi?",
+          "confirm-switch-host": "E-postalar bundan sonra Pano Host e-postasıyla gönderilsin mi? Özel SMTP ayarlarınız saklanır.",
+          "confirm-switch-own": "E-postalar bundan sonra Pano Host e-postası yerine özel SMTP ile gönderilsin mi?",
+          "sender-local-invalid": "Yalnızca harf, rakam ve . _ + - kullanın (en fazla 64)."
         },
         "smtp-settings": "SMTP",
         "toggle-smtp": "SMTP'yi Değiştir",
@@ -2649,8 +2658,6 @@
       "go-to-settings": "Ayarlara git"
     },
     "hosted-banner": {
-      "managed": "Bu Pano, Pano Host tarafından yönetiliyor.",
-      "manage": "{website} üzerinde yönet",
       "details": "Ayrıntılar",
       "dismiss": "Kapat",
       "notices": {
@@ -2666,21 +2673,13 @@
           "title": "Deneme süresi bitiyor",
           "message": "Ücretsiz deneme {days} gün içinde bitiyor. Bu sunucuyu korumak için {website} üzerinden bir paket seçin."
         },
+        "HOST_PAYMENT_PAST_DUE": {
+          "title": "Ödeme başarısız",
+          "message": "{days, select, none {Bu sunucunun yenileme ödemesi başarısız oldu. Sunucuyu korumak için {website} üzerinden ödeme yönteminizi güncelleyin.} other {Bu sunucunun yenileme ödemesi başarısız oldu. Sunucuyu korumak için {days} gün içinde {website} üzerinden ödeme yönteminizi güncelleyin.}}"
+        },
         "HOST_DELETION_SCHEDULED": {
           "title": "Silme planlandı",
           "message": "Bu sunucu {days} gün içinde silinecek."
-        },
-        "HOST_PACKAGE_CHANGE": {
-          "title": "Paket değişikliği planlandı",
-          "message": "Bu sunucu fatura döneminin sonunda {packageId} paketine geçecek."
-        },
-        "HOST_WORKLOAD_CRASHLOOP": {
-          "title": "Sunucu sürekli yeniden başlıyor",
-          "message": "Bu sunucu art arda çöktü. {website} üzerindeki konsolu kontrol edin."
-        },
-        "HOST_SUPPORT_ACCESS": {
-          "title": "Destek erişimi",
-          "message": "Pano desteği bu panele giriş yaptı."
         }
       }
     },
@@ -3762,7 +3761,9 @@
       "website-logo-wrong-content-type": "Web sitesi logosu dosya türü geçersiz. Sadece PNG, JPG, JPEG ve GIF dosyalarına izin verilir.",
       "maintenance-save-success": "Bakım modu ayarları kaydedildi.",
       "maintenance-ban-removed": "IP yasağı kaldırıldı.",
-      "maintenance-page-reset": "Bakım sayfası varsayılan tasarıma sıfırlandı."
+      "maintenance-page-reset": "Bakım sayfası varsayılan tasarıma sıfırlandı.",
+      "smtp-disabled-success": "E-posta gönderimi kapatıldı.",
+      "smtp-enabled-success": "E-posta gönderimi açıldı."
     },
     "search-input": {
       "searching": "Aranıyor..."

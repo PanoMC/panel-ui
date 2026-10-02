@@ -81,7 +81,7 @@
           bind:value={data.websiteUrl}
           aria-describedby="websiteUrl"
           class="form-control"
-          class:is-invalid={data.sslMode === 'LETS_ENCRYPT' && !isDomainValidForLE}
+          class:is-invalid={!hosted && data.sslMode === 'LETS_ENCRYPT' && !isDomainValidForLE}
           placeholder={$_('pages.settings.site-settings.inputs.website-url.placeholder')}
           id="websiteUrl"
           type="text" />
@@ -300,149 +300,173 @@
     <hr />
     <h5 class="mb-3">{$_('pages.settings.site-settings.ssl.title')}</h5>
 
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="httpPort">
-        <span class="d-inline-block position-relative">
-          {$_('pages.settings.site-settings.inputs.http-port.label')}
-          <i
-            class="fas fa-circle-info label-restart-info text-secondary"
-            use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
-        </span>
-      </label>
-      <div class="col-md-6">
-        <input
-          id="httpPort"
-          class="form-control"
-          class:is-invalid={data.sslMode === 'LETS_ENCRYPT' && !isPortValidForLE}
-          type="number"
-          bind:value={data.httpPort} />
-      </div>
-    </div>
-
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="httpsPort">
-        <span class="d-inline-block position-relative">
-          {$_('pages.settings.site-settings.inputs.https-port.label')}
-          <i
-            class="fas fa-circle-info label-restart-info text-secondary"
-            use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
-        </span>
-      </label>
-      <div class="col-md-6">
-        <input
-          id="httpsPort"
-          class="form-control"
-          class:is-invalid={data.sslMode === 'LETS_ENCRYPT' && !isHttpsPortValidForLE}
-          type="number"
-          disabled={data.sslMode === 'DISABLED'}
-          bind:value={data.httpsPort} />
-      </div>
-    </div>
-
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="redirectHttps">
-        {$_('pages.settings.site-settings.inputs.redirect-https.label')}
-      </label>
-      <div class="col-md-6 d-flex align-items-center">
-        <div class="form-check form-switch">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="redirectHttps"
-            disabled={data.sslMode === 'DISABLED'}
-            bind:checked={data.redirectHttps} />
-        </div>
-      </div>
-    </div>
-
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="sslMode">
-        <span class="d-inline-block position-relative">
+    {#if hosted}
+      <!-- Pano Host terminates TLS in front of this Pano and fixes its ports: nothing to set here. -->
+      <div class="row mb-3">
+        <div class="col-md-6 col-form-label">
           {$_('pages.settings.site-settings.inputs.ssl-mode.label')}
-          <i
-            class="fas fa-circle-info label-restart-info text-secondary"
-            use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
-        </span>
-      </label>
-      <div class="col-md-6">
-        <select id="sslMode" class="form-select" bind:value={data.sslMode}>
-          <option value="DISABLED">{$_('pages.settings.site-settings.ssl.modes.disabled')}</option>
-          <option value="LETS_ENCRYPT"
-            >{$_('pages.settings.site-settings.ssl.modes.lets-encrypt')}</option>
-          <option value="MANUAL">{$_('pages.settings.site-settings.ssl.modes.manual')}</option>
-        </select>
-
-        {#if isLetsEncryptInvalid}
-          <div class="alert alert-danger mt-2 mb-0">
-            <i class="fas fa-circle-exclamation me-2"></i>
-            {$_('pages.settings.site-settings.ssl.lets-encrypt-invalid-config')}
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex align-items-center gap-2 form-control-plaintext">
+            <span
+              class="bg-info rounded d-inline-flex align-items-center justify-content-center flex-shrink-0"
+              style="width: 24px; height: 24px;">
+              <img src="{base}/assets/img/logo.svg" width="14" height="14" alt="" />
+            </span>
+            <span class="fw-semibold"
+              >{$_('pages.settings.site-settings.ssl.host-managed.title')}</span>
           </div>
-        {/if}
+          <div class="form-text mt-0">
+            {$_('pages.settings.site-settings.ssl.host-managed.description')}
+          </div>
+        </div>
       </div>
-    </div>
-
-    {#if data.sslMode === 'MANUAL'}
+    {:else}
       <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="sslCert">
+        <label class="col-md-6 col-form-label" for="httpPort">
           <span class="d-inline-block position-relative">
-            {$_('pages.settings.site-settings.inputs.ssl-cert.label')}
+            {$_('pages.settings.site-settings.inputs.http-port.label')}
             <i
               class="fas fa-circle-info label-restart-info text-secondary"
               use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
           </span>
         </label>
         <div class="col-md-6">
-          <div class="position-relative">
-            <textarea
-              disabled={data.sslCert === '****************'}
-              bind:value={data.sslCert}
-              class="form-control font-monospace"
-              class:is-invalid={data.sslMode === 'MANUAL' && !data.sslCert}
-              id="sslCert"
-              rows="5"
-              placeholder="-----BEGIN CERTIFICATE-----"></textarea>
-            {#if data.sslCert === '****************'}
-              <button
-                class="btn btn-sm btn-secondary position-absolute top-50 start-50 translate-middle"
-                on:click|preventDefault={() => revealSsl('sslCert')}>
-                <i class="fas fa-eye me-1"></i>
-                {$_('buttons.reveal')}
-              </button>
-            {/if}
-          </div>
+          <input
+            id="httpPort"
+            class="form-control"
+            class:is-invalid={data.sslMode === 'LETS_ENCRYPT' && !isPortValidForLE}
+            type="number"
+            bind:value={data.httpPort} />
         </div>
       </div>
 
       <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="sslKey">
+        <label class="col-md-6 col-form-label" for="httpsPort">
           <span class="d-inline-block position-relative">
-            {$_('pages.settings.site-settings.inputs.ssl-key.label')}
+            {$_('pages.settings.site-settings.inputs.https-port.label')}
             <i
               class="fas fa-circle-info label-restart-info text-secondary"
               use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
           </span>
         </label>
         <div class="col-md-6">
-          <div class="position-relative">
-            <textarea
-              disabled={data.sslKey === '****************'}
-              bind:value={data.sslKey}
-              class="form-control font-monospace"
-              class:is-invalid={data.sslMode === 'MANUAL' && !data.sslKey}
-              id="sslKey"
-              rows="5"
-              placeholder="-----BEGIN PRIVATE KEY-----"></textarea>
-            {#if data.sslKey === '****************'}
-              <button
-                class="btn btn-sm btn-secondary position-absolute top-50 start-50 translate-middle"
-                on:click|preventDefault={() => revealSsl('sslKey')}>
-                <i class="fas fa-eye me-1"></i>
-                {$_('buttons.reveal')}
-              </button>
-            {/if}
+          <input
+            id="httpsPort"
+            class="form-control"
+            class:is-invalid={data.sslMode === 'LETS_ENCRYPT' && !isHttpsPortValidForLE}
+            type="number"
+            disabled={data.sslMode === 'DISABLED'}
+            bind:value={data.httpsPort} />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="redirectHttps">
+          {$_('pages.settings.site-settings.inputs.redirect-https.label')}
+        </label>
+        <div class="col-md-6 d-flex align-items-center">
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="redirectHttps"
+              disabled={data.sslMode === 'DISABLED'}
+              bind:checked={data.redirectHttps} />
           </div>
         </div>
       </div>
+
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="sslMode">
+          <span class="d-inline-block position-relative">
+            {$_('pages.settings.site-settings.inputs.ssl-mode.label')}
+            <i
+              class="fas fa-circle-info label-restart-info text-secondary"
+              use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
+          </span>
+        </label>
+        <div class="col-md-6">
+          <select id="sslMode" class="form-select" bind:value={data.sslMode}>
+            <option value="DISABLED"
+              >{$_('pages.settings.site-settings.ssl.modes.disabled')}</option>
+            <option value="LETS_ENCRYPT"
+              >{$_('pages.settings.site-settings.ssl.modes.lets-encrypt')}</option>
+            <option value="MANUAL">{$_('pages.settings.site-settings.ssl.modes.manual')}</option>
+          </select>
+
+          {#if isLetsEncryptInvalid}
+            <div class="alert alert-danger mt-2 mb-0">
+              <i class="fas fa-circle-exclamation me-2"></i>
+              {$_('pages.settings.site-settings.ssl.lets-encrypt-invalid-config')}
+            </div>
+          {/if}
+        </div>
+      </div>
+
+      {#if data.sslMode === 'MANUAL'}
+        <div class="row mb-3">
+          <label class="col-md-6 col-form-label" for="sslCert">
+            <span class="d-inline-block position-relative">
+              {$_('pages.settings.site-settings.inputs.ssl-cert.label')}
+              <i
+                class="fas fa-circle-info label-restart-info text-secondary"
+                use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
+            </span>
+          </label>
+          <div class="col-md-6">
+            <div class="position-relative">
+              <textarea
+                disabled={data.sslCert === '****************'}
+                bind:value={data.sslCert}
+                class="form-control font-monospace"
+                class:is-invalid={data.sslMode === 'MANUAL' && !data.sslCert}
+                id="sslCert"
+                rows="5"
+                placeholder="-----BEGIN CERTIFICATE-----"></textarea>
+              {#if data.sslCert === '****************'}
+                <button
+                  class="btn btn-sm btn-secondary position-absolute top-50 start-50 translate-middle"
+                  on:click|preventDefault={() => revealSsl('sslCert')}>
+                  <i class="fas fa-eye me-1"></i>
+                  {$_('buttons.reveal')}
+                </button>
+              {/if}
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="col-md-6 col-form-label" for="sslKey">
+            <span class="d-inline-block position-relative">
+              {$_('pages.settings.site-settings.inputs.ssl-key.label')}
+              <i
+                class="fas fa-circle-info label-restart-info text-secondary"
+                use:tooltip={[$_('pages.settings.site-settings.inputs.requires-restart')]}></i>
+            </span>
+          </label>
+          <div class="col-md-6">
+            <div class="position-relative">
+              <textarea
+                disabled={data.sslKey === '****************'}
+                bind:value={data.sslKey}
+                class="form-control font-monospace"
+                class:is-invalid={data.sslMode === 'MANUAL' && !data.sslKey}
+                id="sslKey"
+                rows="5"
+                placeholder="-----BEGIN PRIVATE KEY-----"></textarea>
+              {#if data.sslKey === '****************'}
+                <button
+                  class="btn btn-sm btn-secondary position-absolute top-50 start-50 translate-middle"
+                  on:click|preventDefault={() => revealSsl('sslKey')}>
+                  <i class="fas fa-eye me-1"></i>
+                  {$_('buttons.reveal')}
+                </button>
+              {/if}
+            </div>
+          </div>
+        </div>
+      {/if}
     {/if}
 
     <button
@@ -488,6 +512,8 @@
 <script>
   import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import { base } from '$app/paths';
+  import { page } from '$app/stores';
   import tooltip from '$lib/tooltip.util';
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
 
@@ -599,9 +625,7 @@
       if (!data.websiteUrl) return '';
       // https fallback matches the backend's normalization of scheme-less URLs, so the
       // default-port detection agrees with what actually gets stored.
-      const url = data.websiteUrl.includes('://')
-        ? data.websiteUrl
-        : 'https://' + data.websiteUrl;
+      const url = data.websiteUrl.includes('://') ? data.websiteUrl : 'https://' + data.websiteUrl;
       const parsed = new URL(url);
       return parsed.port;
     } catch (e) {
@@ -630,11 +654,15 @@
   $: isPortMismatch =
     typeof window !== 'undefined' && hasExplicitPort && portFromUrl !== window.location.port;
 
+  /** Pano Host: SSL and ports are managed by the host, so nothing here can be invalid. */
+  $: hosted = $page.data.hosted === true;
+
   $: isLetsEncryptInvalid =
+    !hosted &&
     data.sslMode === 'LETS_ENCRYPT' &&
     (!isDomainValidForLE || !isPortValidForLE || !isHttpsPortValidForLE || !isCurrentDomainMatched);
 
-  $: isManualInvalid = data.sslMode === 'MANUAL' && (!data.sslCert || !data.sslKey);
+  $: isManualInvalid = !hosted && data.sslMode === 'MANUAL' && (!data.sslCert || !data.sslKey);
 
   function handleFileError(event, type = 'favicon') {
     const { error } = event.detail;
@@ -695,12 +723,15 @@
     formData.append('serverIpAddress', data.serverIpAddress);
     formData.append('serverGameVersion', data.serverGameVersion);
     formData.append('keywords', data.keywords);
-    formData.append('httpPort', data.httpPort);
-    formData.append('httpsPort', data.httpsPort);
-    formData.append('sslMode', data.sslMode);
-    formData.append('redirectHttps', data.redirectHttps);
-    if (data.sslCert) formData.append('sslCert', data.sslCert);
-    if (data.sslKey) formData.append('sslKey', data.sslKey);
+    // On Pano Host SSL and ports are managed by the host (the backend ignores them there too).
+    if (!hosted) {
+      formData.append('httpPort', data.httpPort);
+      formData.append('httpsPort', data.httpsPort);
+      formData.append('sslMode', data.sslMode);
+      formData.append('redirectHttps', data.redirectHttps);
+      if (data.sslCert) formData.append('sslCert', data.sslCert);
+      if (data.sslKey) formData.append('sslKey', data.sslKey);
+    }
     if (password) formData.append('password', password);
 
     if (faviconFiles && faviconFiles[0]) {

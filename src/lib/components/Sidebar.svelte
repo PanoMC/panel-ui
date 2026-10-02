@@ -210,7 +210,20 @@
           class="navbar-brand m-auto position-relative focus-ring focus-ring-white rounded d-flex align-items-center justify-content-center"
           href="{base}/"
           style="width: 48px; height: 48px;">
-          <img alt="Pano" title={'Pano'} src={base + '/assets/img/logo.svg'} width="20" />
+          {#if $page.data.hosted}
+            <!-- Pano Host: the mark on its own color tile (the website's Pano Host brand). -->
+            <span
+              class="bg-info rounded d-inline-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;">
+              <img
+                alt="Pano Host"
+                title="Pano Host"
+                src={base + '/assets/img/logo.svg'}
+                width="20" />
+            </span>
+          {:else}
+            <img alt="Pano" title={'Pano'} src={base + '/assets/img/logo.svg'} width="20" />
+          {/if}
           {#if isAlpha}
             <span
               class="badge text-bg-info position-absolute top-100 start-50 translate-middle small d-none"

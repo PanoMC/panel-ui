@@ -122,9 +122,15 @@
   in:fade
   out:fade>
   <div class="loader-content position-relative" style="height: 100px; width: 100px;">
+    <!-- Pano Host wears the same mark on its own color (as the website's Pano Host brand). -->
     <div
-      class="logo-wrapper bg-primary p-2 shadow-sm pano-anim center-content d-flex align-items-center justify-content-center">
-      <img alt="Pano" src="{base}/assets/img/logo.svg" class="w-100 h-100 object-fit-contain" />
+      class="logo-wrapper p-2 shadow-sm pano-anim center-content d-flex align-items-center justify-content-center"
+      class:bg-primary={!$page.data.hosted}
+      class:bg-info={$page.data.hosted}>
+      <img
+        alt={$page.data.hosted ? 'Pano Host' : 'Pano'}
+        src="{base}/assets/img/logo.svg"
+        class="w-100 h-100 object-fit-contain" />
     </div>
     <div
       class="mc-img-wrapper mc-anim center-content d-flex align-items-center justify-content-center">
@@ -197,6 +203,7 @@
     retryingNetworkErrors,
   } from '$lib/Store';
   import { base } from '$app/paths';
+  import { page } from '$app/stores';
 
   let networkErrors = false;
   let jsLoaded = false;

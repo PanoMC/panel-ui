@@ -30,7 +30,7 @@
       </div>
     {/if}
 
-    <!-- Pano Host: "managed by" link + control-plane notices; nothing on a self-hosted Pano. -->
+    <!-- Pano Host: control-plane notices; nothing on a self-hosted Pano. -->
     {#if signedIn && !$resetLayout && !inlineLogin}
       <HostedBanner />
     {/if}
@@ -80,6 +80,7 @@
   import { base } from '$app/paths';
   import { browser } from '$app/environment';
   import { error, redirect } from '@sveltejs/kit';
+  import { hostedMocked } from '$lib/hosted-mock.util.js';
 
   import { navigating } from '$app/stores';
 
@@ -287,6 +288,9 @@
       panoWebsiteUrlEnv,
       panoWebsiteApiUrlEnv,
       avatarVersionDate,
+      // Pano Host: Pano starts this UI with its own env, so `PANO_HOSTED` reaches it as well; the
+      // panel then wears the Pano Host mark. Dev: `VITE_MOCK_HOSTED`.
+      hosted: hostedMocked || !!process.env.PANO_HOSTED?.trim(),
     };
   }
 
@@ -307,6 +311,7 @@
         panoWebsiteUrlEnv,
         panoWebsiteApiUrlEnv,
         avatarVersionDate,
+        hosted,
       },
       parent,
     } = event;
@@ -407,6 +412,7 @@
       selectedServer: basicData.selectedServer,
       connectedServerCount: basicData.connectedServerCount,
       siteInfo,
+      hosted: hosted === true,
       // Which parts of the panel exist at all. An install that predates the setting sends
       // nothing, which resolves to BOTH — today's behaviour.
       usageMode: normalizeUsageMode(siteInfo?.usageMode),
