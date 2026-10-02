@@ -171,6 +171,11 @@
     return sortedEntries.map((entry) => entry.date);
   }
 
+  // A site set up today has a single day: a line needs two points, so show that one as a dot.
+  function pointRadius() {
+    return sortedEntries.length === 1 ? 3 : 0;
+  }
+
   function renderChart() {
     if (!canvasEl) return;
 
@@ -184,7 +189,7 @@
             borderColor: color,
             backgroundColor: color + '33',
             borderWidth: 2,
-            pointRadius: 0,
+            pointRadius: pointRadius(),
             pointHoverRadius: 3,
             tension: 0.4,
             fill: true,
@@ -217,6 +222,7 @@
     if (!chart) return;
     chart.data.labels = buildLabels();
     chart.data.datasets[0].data = buildDataset();
+    chart.data.datasets[0].pointRadius = pointRadius();
     chart.data.datasets[0].borderColor = color;
     chart.data.datasets[0].backgroundColor = color + '33';
     chart.update();
