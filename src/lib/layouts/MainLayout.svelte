@@ -5,6 +5,15 @@
   }
 
   /*
+   * Room under every page, so scrolling to the end doesn't leave the last card glued to the
+   * window's bottom edge. Only page containers get it: full-height pages (error, store loading)
+   * centre themselves with `flex-grow-1` and would gain a scrollbar.
+   */
+  .main-container > :global(.container) {
+    padding-bottom: 3rem;
+  }
+
+  /*
    * Unread notifications: a soft tint and a small dot at the start of the row, both fading out
    * once the row counts as read. Nothing about the row's size changes (no border that grows, no
    * text that turns bold), so a row turning read never makes the list jump.
