@@ -86,7 +86,8 @@
 
   let loading = false;
 
-  $: showBackgroundOption = runMode != null && !runMode.background;
+  // Container mode (Pano Host, Docker): the launcher owns the process, no terminal to detach from.
+  $: showBackgroundOption = runMode != null && !runMode.background && !runMode.container;
   $: if (showBackgroundOption) $background = true;
   else $background = false;
 

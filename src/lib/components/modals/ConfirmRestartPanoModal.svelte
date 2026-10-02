@@ -116,7 +116,8 @@
   // Offer the "restart in background" toggle whenever the platform isn't already detached.
   // -bg only controls terminal attachment, so even in GUI mode the launching terminal/SSH
   // session can still kill the process when closed — the toggle stays useful.
-  $: showBackgroundOption = runMode != null && !runMode.background;
+  // Container mode (Pano Host, Docker): the launcher owns the process, no terminal to detach from.
+  $: showBackgroundOption = runMode != null && !runMode.background && !runMode.container;
   $: if (showBackgroundOption) $background = true;
   else $background = false;
 
