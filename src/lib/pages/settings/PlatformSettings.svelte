@@ -1,31 +1,4 @@
 <style>
-  /* Usage mode radio cards. Bootstrap has no radio-card component, so the selected state is a
-     border + tint on a plain button that carries the radio role. */
-  .usage-mode-box {
-    background-color: transparent;
-    border-color: var(--bs-border-color) !important;
-    color: inherit;
-    transition:
-      border-color 0.15s ease-in-out,
-      background-color 0.15s ease-in-out;
-  }
-
-  .usage-mode-box:hover {
-    border-color: var(--bs-secondary-border-subtle) !important;
-    background-color: rgba(var(--bs-secondary-rgb), 0.08);
-  }
-
-  .usage-mode-box.selected {
-    border-color: var(--bs-primary) !important;
-    background-color: rgba(var(--bs-primary-rgb), 0.1);
-    box-shadow: inset 0 0 0 1px var(--bs-primary);
-  }
-
-  .usage-mode-box-icon {
-    color: var(--bs-primary);
-    font-size: 1.25rem;
-  }
-
   .connect-account-board {
     background-size: cover;
     background-position: center;
@@ -154,30 +127,31 @@
     {$_('pages.settings.platform.preferences')}
   </div>
   <div class="card-body">
-    <div class="mb-3">
-      <span class="form-label d-block" id="usageModeLabel">
+    <div class="row mb-3">
+      <span class="col-md-6 col-form-label" id="usageModeLabel">
         {$_('pages.settings.platform.usage-mode.label')}
       </span>
-      <div class="row g-2" role="radiogroup" aria-labelledby="usageModeLabel">
-        {#each usageModeOptions as option (option.value)}
-          <div class="col-12 col-md-4">
+      <div class="col-md-6">
+        <div class="list-group list-group-horizontal-md" role="radiogroup" aria-labelledby="usageModeLabel">
+          {#each usageModeOptions as option (option.value)}
             <button
               type="button"
               role="radio"
               aria-checked={data.usageMode === option.value}
-              class="usage-mode-box h-100 w-100 rounded border p-3 text-start"
-              class:selected={data.usageMode === option.value}
+              class="list-group-item list-group-item-action flex-fill text-start"
+              class:active={data.usageMode === option.value}
               on:click={() => (data.usageMode = option.value)}>
-              <i class="{option.icon} usage-mode-box-icon mb-2 d-block"></i>
-              <span class="d-block fw-semibold">{$_(option.titleKey)}</span>
-              <small class="text-body-secondary d-block">{$_(option.descriptionKey)}</small>
+              <span class="d-block fw-semibold">
+                <i class="{option.icon} me-2"></i>{$_(option.titleKey)}
+              </span>
+              <small class="d-block">{$_(option.descriptionKey)}</small>
             </button>
-          </div>
-        {/each}
+          {/each}
+        </div>
+        <div class="form-text">
+          {$_('pages.settings.platform.usage-mode.hint')}
+        </div>
       </div>
-      <small class="text-muted d-block mt-2">
-        {$_('pages.settings.platform.usage-mode.hint')}
-      </small>
     </div>
 
     <div class="row mb-3">

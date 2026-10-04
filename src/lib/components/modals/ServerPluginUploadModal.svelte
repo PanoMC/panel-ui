@@ -2,7 +2,7 @@
      one POST per jar to /plugins/upload, which puts it into plugins/ or mods/ on the node. -->
 <div
   role="dialog"
-  class="modal modal-lg fade"
+  class="modal fade"
   bind:this={$modalElement}
   aria-hidden="true"
   aria-labelledby="serverPluginUploadTitle">
@@ -25,13 +25,15 @@
             accept={['.jar', 'application/java-archive']}
             maxFileSize={MAX_UPLOAD_BYTES}
             multiple
-            on:drop={(event) => void uploadAll(event.detail)}
+            on:drop={(event) => stage(event.detail)}
             on:error={(event) => onZoneError(event.detail)} />
         </div>
 
-        <div class="small text-body-secondary">
-          {$_('pages.servers.plugins.upload.hint', { values: { directory: $directory } })}
-        </div>
+        {#each $errors as error, index (index)}
+          <div class="alert alert-danger mb-0" role="alert">
+            {@html $_(error.key, { values: error.values })}
+          </div>
+        {/each}
 
         {#if $uploads.length}
           <ul class="list-group">
@@ -41,6 +43,8 @@
                   {#if upload.status === 'uploading'}
                     <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"
                     ></span>
+                  {:else if upload.status === 'pending'}
+                    <i class="fa-solid fa-file text-body-secondary" aria-hidden="true"></i>
                   {:else if upload.status === 'done'}
                     <i class="fa-solid fa-circle-check text-success" aria-hidden="true"></i>
                   {:else}
@@ -70,8 +74,12 @@
         {/if}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" on:click={hide}>
-          {$_('buttons.close')}
+        <button
+          type="button"
+          class="btn btn-primary w-100"
+          disabled={!hasPending || uploading}
+          on:click={() => void uploadPending()}>
+          {$_('pages.servers.plugins.upload.button')}
         </button>
       </div>
     </div>
@@ -87,8 +95,11 @@
   const modalElement = writable();
   const serverIdStore = writable(null);
   const directory = writable('plugins');
-  /** @type {import('svelte/store').Writable<Array<{ id: number, name: string, percent: number, status: 'uploading' | 'done' | 'failed' }>>} */
+  /** @type {import('svelte/store').Writable<Array<{ id: number, name: string, file: File, percent: number, status: 'pending' | 'uploading' | 'done' | 'failed' }>>} */
   const uploads = writable([]);
+  /** What went wrong, shown as alerts inside the modal instead of toasts. */
+  /** @type {import('svelte/store').Writable<Array<{ key: string, values: Record<string, unknown> }>>} */
+  const errors = writable([]);
 
   /** @type {() => void} */
   let onUploaded = () => {};
@@ -104,6 +115,7 @@
     serverIdStore.set(serverId);
     directory.set(options.directory || 'plugins');
     uploads.set([]);
+    errors.set([]);
     onUploaded = options.onUploaded || (() => {});
 
     modal = window.bootstrap.Modal.getOrCreateInstance(get(modalElement));
@@ -119,10 +131,17 @@
   import { _ } from 'svelte-i18n';
 
   import ApiUtil from '$lib/api.util.js';
-  import { isEndpointUnavailable, showServerActionError } from '$lib/servers.util.js';
+  import {
+    getRetryAfterSeconds,
+    isEndpointUnavailable,
+    isRateLimitError,
+    isServerStateError,
+    serverActionErrorKey,
+    serverStateErrorMessage,
+  } from '$lib/servers.util.js';
 
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
-  import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
+  import { showSuccess } from '$lib/components/ToastContainer.svelte';
 
   /**
    * @param {number} id
@@ -133,42 +152,101 @@
   }
 
   /**
-   * @param {{ error: string, file?: File }} detail
+   * @param {string} key
+   * @param {Record<string, unknown>} [values]
    */
-  function onZoneError(detail) {
-    if (detail?.error === 'INVALID_SIZE') {
-      void showError('pages.servers.plugins.upload.too-large', { name: detail.file?.name || '' });
+  function addError(key, values = {}) {
+    errors.update((list) => [...list, { key, values }]);
+  }
+
+  /**
+   * The same sentence the toast would have said, as an alert.
+   *
+   * @param {string} error the `error` field of the response body.
+   * @param {any} body
+   */
+  function addServerError(error, body) {
+    if (isServerStateError(error)) {
+      const message = serverStateErrorMessage(error, body);
+
+      addError(message.key, message.values);
+
+      return;
+    }
+
+    const key = serverActionErrorKey(error);
+
+    if (isRateLimitError(error)) {
+      addError(key, { seconds: getRetryAfterSeconds(body) });
+    } else if (key === 'pages.servers.errors.generic') {
+      // Stripped to [A-Z0-9_], so it is safe inside the markup.
+      const code = String(error ?? '')
+        .replace(/[^A-Za-z0-9_]/g, '')
+        .toUpperCase();
+
+      addError(key, { error: `<code>${code || 'UNKNOWN'}</code>` });
     } else {
-      void showError('pages.servers.plugins.upload.invalid-type');
+      addError(key);
     }
   }
 
   /**
-   * One request per jar, in order: the node writes them one at a time anyway, and a failure then
-   * names the file it belongs to.
+   * @param {{ error: string, file?: File }} detail
+   */
+  function onZoneError(detail) {
+    if (detail?.error === 'INVALID_SIZE') {
+      addError('pages.servers.plugins.upload.too-large', { name: detail.file?.name || '' });
+    } else {
+      addError('pages.servers.plugins.upload.invalid-type');
+    }
+  }
+
+  let uploading = false;
+
+  $: hasPending = $uploads.some((item) => item.status === 'pending');
+
+  /**
+   * Picking or dropping jars only lists them; nothing is sent until the Upload button is pressed.
    *
    * @param {File[] | File} dropped
    */
-  async function uploadAll(dropped) {
-    const serverId = get(serverIdStore);
+  function stage(dropped) {
     const files = Array.isArray(dropped) ? dropped : [dropped];
-    let uploaded = 0;
+
+    errors.set([]);
 
     for (const file of files) {
       if (!file) {
         continue;
       }
 
-      const id = ++nextId;
-
-      uploads.update((list) => [...list, { id, name: file.name, percent: 0, status: 'uploading' }]);
-
       if (!/\.jar$/i.test(file.name)) {
-        patch(id, { status: 'failed' });
-        void showError('pages.servers.plugins.upload.invalid-type');
+        addError('pages.servers.plugins.upload.invalid-type');
 
         continue;
       }
+
+      uploads.update((list) => [
+        ...list,
+        { id: ++nextId, name: file.name, file, percent: 0, status: 'pending' },
+      ]);
+    }
+  }
+
+  /**
+   * One request per jar, in order: the node writes them one at a time anyway, and a failure then
+   * names the file it belongs to.
+   */
+  async function uploadPending() {
+    const serverId = get(serverIdStore);
+    const queue = get(uploads).filter((item) => item.status === 'pending');
+    let uploaded = 0;
+
+    uploading = true;
+    errors.set([]);
+
+    for (const { id, file } of queue) {
+      patch(id, { status: 'uploading' });
 
       const form = new FormData();
 
@@ -195,13 +273,13 @@
         patch(id, { status: 'failed', percent: 100 });
 
         if (response?.error === 'INVALID_DATA') {
-          void showError('pages.servers.plugins.upload.invalid-type');
+          addError('pages.servers.plugins.upload.invalid-type');
         } else if (response?.error) {
-          showServerActionError(response.error, response);
+          addServerError(response.error, response);
         } else if (response && isEndpointUnavailable(response)) {
-          void showError('pages.servers.errors.unavailable');
+          addError('pages.servers.errors.unavailable');
         } else {
-          void showError('pages.servers.plugins.upload.failed', { name: file.name });
+          addError('pages.servers.plugins.upload.failed', { name: file.name });
         }
 
         continue;
@@ -214,6 +292,8 @@
         name: response.filename || file.name,
       });
     }
+
+    uploading = false;
 
     if (uploaded > 0) {
       onUploaded();

@@ -609,21 +609,11 @@
                       <!-- §2.4.26 — only when Pano knows what it would install; a dev or local
                              build has no comparable version, so it gets no badge at all. -->
                       {#if data.panoPlugin?.updateAvailable === true}
-                        <span class="badge text-bg-warning">
+                        <span class="badge text-bg-secondary">
                           {$_('pages.servers.overview.info.plugin-update-available', {
                             values: { version: data.panoPlugin.latestVersion ?? '' },
                           })}
                         </span>
-                        {#if data.panoPlugin?.updateMode || data.panoPlugin?.updateManual}
-                          <!-- One click: the node swaps the jar, or the plugin stages its own
-                                 update; either way it loads on the next restart. A plugin too old
-                                 for either gets the hand-update steps instead. -->
-                          <PanoPluginUpdateButton
-                            server={view}
-                            latestVersion={data.panoPlugin.latestVersion ?? null}
-                            label="buttons.update"
-                            class="py-0" />
-                        {/if}
                       {:else if data.panoPlugin?.updateAvailable === false}
                         <span class="badge text-bg-success">
                           {$_('pages.servers.overview.info.plugin-up-to-date')}

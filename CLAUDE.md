@@ -17,7 +17,7 @@ the package manager is **Bun**.
 ## Commands
 
 ```bash
-bun install                 # also runs postinstall → bundles the local @panomc/sdk (src/pano-sdk)
+bun install                 # also runs postinstall → bundles the internal libs from the theme-core submodule
 bun run dev                 # Vite dev on 0.0.0.0:3001 (DEV=true)
 bun run dev:ui              # dev + a concurrent `sass --watch` (use this when touching SCSS)
 bun run build               # production SSR build (DEV=false)
@@ -31,9 +31,10 @@ bun run format              # prettier --write
 - **API base is `/panel/api`**, proxied in dev to the backend via `VITE_API_URL` in `.env`. The app
   is mounted under the `/panel` base path (see `svelte.config.js`). To run it against a local
   backend, set `init-ui = true` in the platform's `config.conf` and start both.
-- The HTTP/data layer comes from a **vendored `@panomc/sdk`** at `src/pano-sdk`, bundled into
-  `node_modules` by `scripts/bundle-internal-libs.js` on postinstall — edit the SDK there, then
-  re-run `bun run bundle:libs`.
+- The HTTP/data layer comes from `@panomc/sdk`, resolved from the **`theme-core` submodule**
+  (`file:./theme-core/packages/sdk`, pinned per the parent commit) into `node_modules` by
+  `bundle-internal-libs.js` on postinstall. To change the SDK, edit it in `theme-core/` and
+  bump the submodule pointer, then re-run `bun run bundle:libs`.
 - SCSS lives in `src/styles/`; Vite does **not** compile it — `watch:ui`/`build:ui` do. Run
   `dev:ui` (not plain `dev`) when editing styles.
 - Routes are grouped as `(panel)` (the dashboard) and `(plugin-ui)` (slots where installed plugins

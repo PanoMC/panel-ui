@@ -131,19 +131,10 @@ export default createViteConfig({
   ],
   // Panel-only OSS license collection plugin.
   extraPlugins: [generateLicensesPlugin()],
-  // The panel's vendored @panomc/sdk (a git submodule, older snapshot) does not
-  // declare a "./core/*" subpath in its package `exports`, so core kit's imports
-  // of @panomc/sdk/core/js/{variables,api.util,...} fail strict exports
-  // resolution at build time. Redirect that prefix to the submodule's on-disk
-  // core/ dir. This ALSO unifies the module instance with the panel's own
-  // $lib/{variables,api.util}.js (which import ../pano-sdk/core/js/* relatively),
-  // so the factory's runtime env updates (updateApiUrl, updatePanoWebsiteUrl) and
-  // the panel's app code share one API_URL binding — preserving pre-migration
-  // runtime behavior. (vanilla-theme instead ships an SDK that exports ./core/*.)
-  extraAliases: {
-    // sdk now comes from the theme-core submodule via node_modules (its
-    // package exports ./core/*); no vendored-path alias needed anymore.
-  },
+  // No alias needed for @panomc/sdk: it comes from the theme-core submodule via
+  // node_modules (file:./theme-core/packages/sdk) and its package exports ./core/*.
+  // The pre-migration vendored copy at src/pano-sdk is gone — see CLAUDE.md.
+  extraAliases: {},
   // The TipTap editor stack must resolve to ONE ProseMirror instance. Left to
   // lazy discovery, the dev dep-optimizer bundles a private prosemirror-state /
   // -model / -transform copy into each @tiptap/* entry it finds, and the editor

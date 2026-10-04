@@ -1,6 +1,6 @@
 <div class="d-flex flex-wrap gap-1 {classes}">
   {#each capabilities as capability (capability)}
-    <span class="badge rounded-pill text-bg-light border fw-normal">
+    <span class="badge rounded-pill text-bg-primary fw-normal">
       <i
         class="{SERVER_CAPABILITY_ICONS[capability] || 'fa-solid fa-circle'} me-1"
         aria-hidden="true"></i>

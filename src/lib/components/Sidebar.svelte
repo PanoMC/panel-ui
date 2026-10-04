@@ -208,21 +208,30 @@
 
         <a
           class="navbar-brand m-auto position-relative focus-ring focus-ring-white rounded d-flex align-items-center justify-content-center"
+          class:gap-2={$page.data.hosted}
           href="{base}/"
-          style="width: 48px; height: 48px;">
+          style="min-width: 48px; height: 48px;">
           {#if $page.data.hosted}
             <!-- Pano Host: the mark on its own color tile (the website's Pano Host brand). -->
             <span
-              class="bg-info rounded d-inline-flex align-items-center justify-content-center"
-              style="width: 32px; height: 32px;">
+              class="rounded d-inline-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px; padding: 0.375rem; background-image: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-info) 100%);">
               <img
                 alt="Pano Host"
                 title="Pano Host"
                 src={base + '/assets/img/logo.svg'}
-                width="20" />
+                class="w-100 h-100 object-fit-contain" />
             </span>
+            <span class="fw-normal text-white" style="font-size: 1.25rem; letter-spacing: -0.5px;"
+              >Host</span>
           {:else}
-            <img alt="Pano" title={'Pano'} src={base + '/assets/img/logo.svg'} width="20" />
+            <img
+              alt="Pano"
+              title={'Pano'}
+              src={base + '/assets/img/logo.svg'}
+              width="34"
+              class="border rounded"
+              style="padding: 0.375rem;" />
           {/if}
           {#if isAlpha}
             <span

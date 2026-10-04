@@ -10,8 +10,7 @@
      settings' Activity page so the two always read the same. -->
 {#snippet entryContent()}
   <span class="d-flex flex-wrap align-items-center gap-2">
-    <span class="badge text-bg-{meta.colour} fw-normal">
-      <i class="{meta.icon} me-1" aria-hidden="true"></i>
+    <span class="badge text-bg-{meta.colour} fw-normal text-capitalize">
       {activityTypeLabel(entry.type, $_)}
     </span>
     <span class="fw-semibold d-inline-flex align-items-center gap-2 min-w-0">

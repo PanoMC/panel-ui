@@ -309,8 +309,8 @@
         <div class="col-md-6">
           <div class="d-flex align-items-center gap-2 form-control-plaintext">
             <span
-              class="bg-info rounded d-inline-flex align-items-center justify-content-center flex-shrink-0"
-              style="width: 24px; height: 24px;">
+              class="rounded d-inline-flex align-items-center justify-content-center flex-shrink-0"
+              style="width: 24px; height: 24px; background-image: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-info) 100%);">
               <img src="{base}/assets/img/logo.svg" width="14" height="14" alt="" />
             </span>
             <span class="fw-semibold"

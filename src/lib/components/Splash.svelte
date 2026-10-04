@@ -126,7 +126,7 @@
     <div
       class="logo-wrapper p-2 shadow-sm pano-anim center-content d-flex align-items-center justify-content-center"
       class:bg-primary={!$page.data.hosted}
-      class:bg-info={$page.data.hosted}>
+      style:background-image={$page.data.hosted ? 'linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-info) 100%)' : undefined}>
       <img
         alt={$page.data.hosted ? 'Pano Host' : 'Pano'}
         src="{base}/assets/img/logo.svg"

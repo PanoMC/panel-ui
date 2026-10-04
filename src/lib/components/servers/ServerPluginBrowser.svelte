@@ -1,13 +1,13 @@
 <style>
   .result-icon {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
   }
 
   .result-icon-placeholder {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     background-color: rgba(var(--bs-secondary-rgb), 0.15);
   }
 
@@ -34,27 +34,37 @@
      `/plugins/install`; the download itself happens on the node and is reported as a
      PLUGIN_INSTALL task. -->
 <div class="card">
-  <div class="card-body vstack gap-3">
-    <div class="small text-body-secondary">{$_('pages.servers.plugins.browse.description')}</div>
+  {#if sourcesLoading}
+    <div class="card-body d-flex justify-content-center py-5">
+      <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+    </div>
+  {:else if sourcesError}
+    <div class="card-body text-center vstack gap-3 py-5">
+      <div class="text-body-secondary">{$_(sourcesError)}</div>
+      <div>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          onclick={() => void loadSources()}>
+          {$_('buttons.refresh')}
+        </button>
+      </div>
+    </div>
+  {:else}
+    <!-- The same card the files page is: sources on the left, find in the middle, the list as a
+         table with a menu per row. -->
+    <CardHeader>
+      <span slot="left" class="text-nowrap">{activeSourceName}</span>
 
-    {#if sourcesLoading}
-      <div class="d-flex justify-content-center py-4">
-        <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+      <div slot="middle">
+        <SearchInput
+          autofocus
+          debounceMs={400}
+          {searching}
+          onchange={(value) => onQueryChange(value)} />
       </div>
-    {:else if sourcesError}
-      <div class="text-center vstack gap-3 py-4">
-        <div class="text-body-secondary">{$_(sourcesError)}</div>
-        <div>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-secondary"
-            onclick={() => void loadSources()}>
-            {$_('buttons.refresh')}
-          </button>
-        </div>
-      </div>
-    {:else}
-      <div class="d-flex flex-wrap align-items-center gap-2">
+
+      <div slot="right">
         <CardFilters>
           {#each sources as source (source.id)}
             {#if source.enabled}
@@ -81,192 +91,168 @@
             {/if}
           {/each}
         </CardFilters>
-
-        <div class="ms-auto" style="min-width: 240px;">
-          <SearchInput
-            placeholderKey="pages.servers.plugins.browse.search-placeholder"
-            ariaLabelKey="pages.servers.plugins.browse.search-placeholder"
-            debounceMs={400}
-            {searching}
-            onchange={(value) => onQueryChange(value)} />
-        </div>
       </div>
+    </CardHeader>
 
-      {#if !sources.some((source) => source.enabled)}
+    {#if !sources.some((source) => source.enabled)}
+      <div class="card-body border-bottom">
         <div class="alert alert-secondary mb-0 small" role="alert">
           {$_('pages.servers.plugins.browse.no-sources')}
         </div>
-      {/if}
+      </div>
+    {/if}
 
-      {#if activeTask}
-        <div>
-          <div class="d-flex justify-content-between small text-body-secondary">
-            <span>
-              {$_('pages.servers.plugins.browse.task-install', {
-                values: { filename: activeTask.filename },
-              })}
-              {#if activeTask.message}
-                <span class="text-break">&middot; {activeTask.message}</span>
-              {/if}
-            </span>
-            <span class="d-inline-flex flex-wrap justify-content-end column-gap-2 text-end">
-              {#if activeTask.status !== 'FAILED' && taskTransferText(activeTask)}
-                <span class="font-monospace text-nowrap">{taskTransferText(activeTask)}</span>
-              {/if}
-              <span class="font-monospace">{taskPercent}%</span>
-            </span>
-          </div>
+    {#if activeTask}
+      <div class="card-body border-bottom">
+        <div class="d-flex justify-content-between small text-body-secondary">
+          <span>
+            {$_('pages.servers.plugins.browse.task-install', {
+              values: { filename: activeTask.filename },
+            })}
+            {#if activeTask.message}
+              <span class="text-break">&middot; {activeTask.message}</span>
+            {/if}
+          </span>
+          <span class="d-inline-flex flex-wrap justify-content-end column-gap-2 text-end">
+            {#if activeTask.status !== 'FAILED' && taskTransferText(activeTask)}
+              <span class="font-monospace text-nowrap">{taskTransferText(activeTask)}</span>
+            {/if}
+            <span class="font-monospace">{taskPercent}%</span>
+          </span>
+        </div>
+        <div
+          class="progress mt-1"
+          style="height: 6px;"
+          role="progressbar"
+          aria-label={$_('pages.servers.plugins.browse.install')}
+          aria-valuenow={taskPercent}
+          aria-valuemin="0"
+          aria-valuemax="100">
           <div
-            class="progress mt-1"
-            style="height: 6px;"
-            role="progressbar"
-            aria-label={$_('pages.servers.plugins.browse.install')}
-            aria-valuenow={taskPercent}
-            aria-valuemin="0"
-            aria-valuemax="100">
-            <div
-              class="progress-bar progress-bar-striped"
-              class:progress-bar-animated={activeTask.status !== 'FAILED'}
-              class:bg-danger={activeTask.status === 'FAILED'}
-              style="width: {taskPercent}%;">
-            </div>
+            class="progress-bar progress-bar-striped"
+            class:progress-bar-animated={activeTask.status !== 'FAILED'}
+            class:bg-danger={activeTask.status === 'FAILED'}
+            style="width: {taskPercent}%;">
           </div>
         </div>
-      {/if}
+      </div>
+    {/if}
 
-      {#if searchError}
+    {#if searchError}
+      <div class="card-body">
         <NoContent icon="fa-solid fa-triangle-exclamation fa-3x" text={$_(searchError)} />
-      {:else if searching && !results.length}
-        <div class="d-flex justify-content-center py-4">
-          <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
-        </div>
-      {:else if !results.length}
+      </div>
+    {:else if searching && !results.length}
+      <div class="card-body d-flex justify-content-center py-5">
+        <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+      </div>
+    {:else if !results.length}
+      <div class="card-body">
         <NoContent
           icon="fa-solid fa-puzzle-piece fa-3x"
           text={query.trim()
             ? $_('pages.servers.plugins.browse.no-results')
             : $_('pages.servers.plugins.browse.search-hint')} />
-      {:else}
-        {#if !query.trim()}
-          <div class="small fw-semibold text-body-secondary">
-            <i class="fa-solid fa-fire me-1" aria-hidden="true"></i>
-            {$_('pages.servers.plugins.browse.popular-title', {
-              values: { source: activeSourceName },
-            })}
-          </div>
-        {/if}
-        <div class="row row-cols-1 row-cols-lg-2 g-3">
-          {#each results as result (result.key)}
-            <div class="col">
-              <div class="card h-100">
-                <div class="card-body d-flex gap-3">
-                  {#if result.iconUrl}
-                    <img
-                      class="result-icon rounded flex-shrink-0"
-                      src={sanitizeImageSrc(result.iconUrl)}
-                      alt=""
-                      loading="lazy" />
-                  {:else}
-                    <div
-                      class="result-icon-placeholder d-flex align-items-center justify-content-center rounded flex-shrink-0">
-                      <i class="fa-solid fa-puzzle-piece text-body-secondary" aria-hidden="true"
-                      ></i>
-                    </div>
-                  {/if}
+      </div>
+    {:else}
+      <!-- A row is the way into the project's versions; the project page is a link of its own. -->
+      <div class="list-group list-group-flush">
+        {#each results as result (result.key)}
+          <div
+            class="list-group-item list-group-item-action d-flex align-items-center gap-3"
+            role="button"
+            tabindex="0"
+            onclick={() => void openVersions(result)}
+            onkeydown={(event) => {
+              if (
+                event.target === event.currentTarget &&
+                (event.key === 'Enter' || event.key === ' ')
+              ) {
+                event.preventDefault();
+                void openVersions(result);
+              }
+            }}>
+            {#if result.iconUrl}
+              <img
+                class="result-icon rounded flex-shrink-0"
+                src={sanitizeImageSrc(result.iconUrl)}
+                alt=""
+                loading="lazy" />
+            {:else}
+              <div
+                class="result-icon-placeholder d-flex align-items-center justify-content-center rounded flex-shrink-0">
+                <i class="fa-solid fa-puzzle-piece text-body-secondary" aria-hidden="true"></i>
+              </div>
+            {/if}
 
-                  <div class="vstack gap-1 overflow-hidden">
-                    <div class="d-flex flex-wrap align-items-center gap-2">
-                      <span class="fw-semibold text-break">{result.name}</span>
-                      {#if result.compatible}
-                        <span class="badge rounded-pill text-bg-success">
-                          {$_('pages.servers.plugins.browse.compatible')}
-                        </span>
-                      {:else}
-                        <span class="badge rounded-pill text-bg-warning">
-                          {$_('pages.servers.plugins.browse.incompatible')}
-                        </span>
-                      {/if}
-                    </div>
-
-                    {#if result.author}
-                      <div class="small text-body-secondary text-break">
-                        {$_('pages.servers.plugins.browse.by-author', {
-                          values: { author: result.author },
-                        })}
-                      </div>
-                    {/if}
-
-                    <div class="result-summary small text-body-secondary text-break">
-                      {result.summary}
-                    </div>
-
-                    <div
-                      class="d-flex flex-wrap align-items-center gap-2 small text-body-secondary">
-                      <span>
-                        <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
-                        {$_('pages.servers.plugins.browse.downloads', {
-                          values: { count: formatCount(result.downloads) },
-                        })}
-                      </span>
-                      {#each result.categories.slice(0, 3) as category (category)}
-                        <span class="badge rounded-pill text-bg-light">{category}</span>
-                      {/each}
-                    </div>
-
-                    <div class="d-flex flex-wrap gap-2 pt-1">
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-primary"
-                        onclick={() => void openVersions(result)}>
-                        <i class="fa-solid fa-code-branch me-1" aria-hidden="true"></i>
-                        {$_('pages.servers.plugins.browse.versions')}
-                      </button>
-                      {#if result.pageUrl}
-                        <a
-                          class="btn btn-sm btn-outline-secondary"
-                          href={sanitizeLinkHref(result.pageUrl)}
-                          target="_blank"
-                          rel="noopener noreferrer">
-                          <i class="fa-solid fa-arrow-up-right-from-square me-1" aria-hidden="true"
-                          ></i>
-                          {$_('pages.servers.plugins.browse.open-page')}
-                        </a>
-                      {/if}
-                    </div>
-                  </div>
+            <div class="min-w-0 flex-grow-1">
+              <div class="d-flex flex-wrap align-items-center gap-2">
+                <span class="text-break">{result.name}</span>
+                {#if result.compatible}
+                  <span class="badge rounded-pill text-bg-primary">
+                    {$_('pages.servers.plugins.browse.compatible')}
+                  </span>
+                {:else}
+                  <span class="badge rounded-pill text-bg-primary">
+                    {$_('pages.servers.plugins.browse.incompatible')}
+                  </span>
+                {/if}
+              </div>
+              {#if result.author}
+                <div class="small text-body-secondary text-break">
+                  {$_('pages.servers.plugins.browse.by-author', {
+                    values: { author: result.author },
+                  })}
                 </div>
+              {/if}
+              <div class="result-summary small text-body-secondary text-break">
+                {result.summary}
               </div>
             </div>
-          {/each}
-        </div>
 
-        {#if hasMore}
-          <div class="text-center">
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary"
-              disabled={loadingMore}
-              onclick={() => void search(page + 1)}>
-              {#if loadingMore}
-                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-              {/if}
-              {$_('pages.servers.plugins.browse.load-more')}
-            </button>
+            <div class="small text-body-secondary text-nowrap d-none d-md-block">
+              <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
+              {$_('pages.servers.plugins.browse.downloads', {
+                values: { count: formatCount(result.downloads) },
+              })}
+            </div>
+
+            {#if result.pageUrl}
+              <a
+                class="btn btn-link btn-sm flex-shrink-0"
+                href={sanitizeLinkHref(result.pageUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={$_('pages.servers.plugins.browse.open-page')}
+                use:tooltip={[$_('pages.servers.plugins.browse.open-page'), { placement: 'left' }]}
+                onclick={(event) => event.stopPropagation()}>
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+              </a>
+            {/if}
           </div>
-        {/if}
+        {/each}
+      </div>
+
+      {#if totalPage > 1}
+        <div class="card-footer">
+          <Pagination
+            page={page + 1}
+            {totalPage}
+            on:firstPageClick={() => goToPage(1)}
+            on:lastPageClick={() => goToPage(totalPage)}
+            on:pageLinkClick={(event) => goToPage(event.detail.page)} />
+        </div>
       {/if}
     {/if}
-  </div>
+  {/if}
 </div>
 
 <div class="modal fade" tabindex="-1" aria-hidden="true" bind:this={versionsModalElement}>
-  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title text-break">
-          {$_('pages.servers.plugins.browse.versions-title', {
-            values: { name: versionsProject?.name || '' },
-          })}
+        <h5 class="modal-title text-break text-capitalize">
+          {$_('pages.servers.plugins.browse.versions')}
         </h5>
         <button
           type="button"
@@ -302,12 +288,12 @@
                       {$_('pages.servers.plugins.browse.compatible')}
                     </span>
                   {:else}
-                    <span class="badge rounded-pill text-bg-warning">
+                    <span class="badge rounded-pill text-bg-danger">
                       {$_('pages.servers.plugins.browse.incompatible')}
                     </span>
                   {/if}
                   {#if version.channel}
-                    <span class="badge rounded-pill text-bg-secondary">{version.channel}</span>
+                    <span class="badge rounded-pill text-bg-primary">{version.channel}</span>
                   {/if}
                   {#if version.publishedAt}
                     <span class="small text-body-secondary ms-auto">
@@ -357,7 +343,7 @@
 
                   <button
                     type="button"
-                    class="btn btn-sm btn-primary ms-auto"
+                    class="btn btn-secondary ms-auto"
                     disabled={!canInstall || !version.files.length || !!installingVersionId}
                     use:tooltip={[
                       canInstall ? '' : $_('pages.servers.plugins.browse.install-no-permission'),
@@ -406,9 +392,11 @@
   import { onTaskProgress } from '$lib/panelRealtime.js';
 
   import CardFilters from '$lib/components/CardFilters.svelte';
+  import CardHeader from '$lib/components/CardHeader.svelte';
   import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
   import DateComponent from '$lib/components/Date.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
 
@@ -425,7 +413,7 @@
   let sourcesLoading = $state(true);
   let sourcesError = $state('');
   let activeSource = $state('');
-  /** The shown name of [activeSource], for the "Popular on …" heading. */
+  /** The shown name of [activeSource], the card's title. */
   const activeSourceName = $derived(
     sources.find((source) => source.id === activeSource)?.name || activeSource,
   );
@@ -434,8 +422,13 @@
   let results = $state([]);
   let page = $state(0);
   let hasMore = $state(false);
+  /**
+   * The search answers "is there a next page", never how many there are, so the pager knows the
+   * pages reached so far plus the one `hasMore` promises, and grows as the admin goes on.
+   */
+  let knownPages = $state(1);
+  const totalPage = $derived(Math.max(knownPages, page + 1 + (hasMore ? 1 : 0)));
   let searching = $state(false);
-  let loadingMore = $state(false);
   let searchError = $state('');
   /** @type {object|null} */
   let versionsProject = $state(null);
@@ -560,6 +553,7 @@
     results = [];
     page = 0;
     hasMore = false;
+    knownPages = 1;
 
     // With nothing typed this is that source's popular list.
     void search(0);
@@ -573,7 +567,19 @@
     results = [];
     page = 0;
     hasMore = false;
+    knownPages = 1;
     void search(0);
+  }
+
+  /**
+   * @param {number} number the 1-based page the pager asked for.
+   */
+  function goToPage(number) {
+    if (!Number.isFinite(number) || number < 1 || number === page + 1) {
+      return;
+    }
+
+    void search(number - 1);
   }
 
   /**
@@ -590,11 +596,7 @@
 
     const sequence = ++searchSeq;
 
-    if (nextPage > 0) {
-      loadingMore = true;
-    } else {
-      searching = true;
-    }
+    searching = true;
 
     searchError = '';
 
@@ -615,7 +617,6 @@
     }
 
     searching = false;
-    loadingMore = false;
 
     if (!body) {
       searchError = 'pages.servers.plugins.browse.search-failed';
@@ -658,7 +659,8 @@
 
     page = Number(body.page) || nextPage;
     hasMore = body.hasMore === true;
-    results = nextPage > 0 ? [...results, ...rows] : rows;
+    knownPages = Math.max(knownPages, page + 1 + (hasMore ? 1 : 0));
+    results = rows;
   }
 
   /**

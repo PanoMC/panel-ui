@@ -10,6 +10,14 @@
   .plugin-file {
     max-width: 22ch;
   }
+
+  .sort-button {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+  }
 </style>
 
 <!-- SM-16 + SM-32 — what a server has installed, and (for a managed one) the catalogue it can
@@ -20,11 +28,9 @@
     <div slot="left">
       <PageNav>
         <PageNavItem href="/servers/{serverId}/plugins" active={tab === 'installed'}>
-          <i class="fa-solid fa-list-check me-2" aria-hidden="true"></i>
           {$_('pages.servers.plugins.tab-installed')}
         </PageNavItem>
         <PageNavItem href="/servers/{serverId}/plugins?tab=browse" active={tab === 'browse'}>
-          <i class="fa-solid fa-magnifying-glass me-2" aria-hidden="true"></i>
           {$_('pages.servers.plugins.tab-browse')}
         </PageNavItem>
       </PageNav>
@@ -56,8 +62,8 @@
   <div class="card">
     <CardHeader>
       <span slot="left" class="d-flex align-items-center gap-2">
-        <span class="text-capitalize">{$_('pages.servers.plugins.title')}</span>
-        <span class="badge rounded-pill text-bg-secondary">
+        <!-- Plain text, the way the files page shows its count: a pill would say "status". -->
+        <span class="text-nowrap">
           {$_('pages.servers.plugins.count', { values: { count: rows.length } })}
         </span>
         {#if updateCount > 0}
@@ -68,62 +74,97 @@
       </span>
 
       <span slot="middle" class="plugin-search">
-        <SearchInput
-          autofocus
-          placeholderKey="pages.servers.plugins.search-placeholder"
-          ariaLabelKey="pages.servers.plugins.search-placeholder"
-          showSpinner={false}
-          onchange={(value) => (query = value)} />
+        <SearchInput autofocus showSpinner={false} onchange={(value) => (query = value)} />
       </span>
 
-      <span
-        slot="right"
-        class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-end gap-2 w-100">
-        {#if canUpdate && updateCount > 0}
-          <button
-            type="button"
-            class="btn btn-sm btn-warning text-nowrap"
-            disabled={updatingAll || loading}
-            onclick={() => void updateAll()}>
-            {#if updatingAll}
-              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-            {:else}
-              <i class="fa-solid fa-circle-arrow-up me-1" aria-hidden="true"></i>
-            {/if}
-            {$_('pages.servers.plugins.updates.update-all', {
-              values: { count: updateCount },
-            })}
-          </button>
+      <span slot="right" class="d-flex flex-wrap align-items-center gap-2">
+        {#if selectedRows.length}
+          <span class="small text-body-secondary">
+            {$_('pages.servers.plugins.selected', { values: { count: selectedRows.length } })}
+          </span>
+          {#if canUpdate && selectedUpdatable.length}
+            <button
+              type="button"
+              class="btn btn-sm btn-link p-0"
+              disabled={bulkBusy || loading}
+              aria-label={$_('pages.servers.plugins.updates.update')}
+              onclick={() => void updateSelected()}
+              use:tooltip={[$_('pages.servers.plugins.updates.update'), { placement: 'bottom' }]}>
+              <i class="fa-solid fa-circle-arrow-up" aria-hidden="true"></i>
+            </button>
+          {/if}
+          {#if canRemove && selectedRemovable.length}
+            <button
+              type="button"
+              class="btn btn-sm btn-link link-danger p-0"
+              disabled={bulkBusy || loading}
+              aria-label={$_('pages.servers.plugins.installed.remove')}
+              onclick={askRemoveSelected}
+              use:tooltip={[$_('pages.servers.plugins.installed.remove'), { placement: 'bottom' }]}>
+              <i class="fa-solid fa-trash" aria-hidden="true"></i>
+            </button>
+          {/if}
         {/if}
 
-        {#if canInstall}
-          <!-- A jar from the admin's own computer, into plugins/ or mods/. -->
+        <!-- The page's own actions as icons with tips, the way the files page does it; the one
+             that adds to the list is filled, carries its label and sits at the far end. -->
+        {#if canUpdate && updateCount > 0}
+          {@const updateAllLabel = $_('pages.servers.plugins.updates.update-all', {
+            values: { count: updateCount },
+          })}
           <button
             type="button"
-            class="btn btn-sm btn-outline-primary text-nowrap"
-            disabled={loading}
-            onclick={openUpload}>
-            <i class="fa-solid fa-upload me-1" aria-hidden="true"></i>
-            {$_('pages.servers.plugins.upload.button')}
+            class="btn btn-sm btn-link p-0"
+            disabled={updatingAll || loading}
+            aria-label={updateAllLabel}
+            onclick={() => void updateAll()}
+            use:tooltip={[updateAllLabel, { placement: 'bottom' }]}>
+            {#if updatingAll}
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            {:else}
+              <i class="fa-solid fa-circle-arrow-up" aria-hidden="true"></i>
+            {/if}
           </button>
         {/if}
 
         {#if canIdentify}
           <button
             type="button"
-            class="btn btn-sm btn-outline-secondary text-nowrap"
+            class="btn btn-sm btn-link p-0"
             disabled={identifying || loading}
+            aria-label={$_('pages.servers.plugins.updates.identify')}
+            onclick={() => void identifySources()}
             use:tooltip={[
               $_('pages.servers.plugins.updates.identify-hint'),
               { placement: 'bottom' },
-            ]}
-            onclick={() => void identifySources()}>
+            ]}>
             {#if identifying}
-              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
             {:else}
-              <i class="fa-solid fa-fingerprint me-1" aria-hidden="true"></i>
+              <i class="fa-solid fa-fingerprint" aria-hidden="true"></i>
             {/if}
-            {$_('pages.servers.plugins.updates.identify')}
+          </button>
+        {/if}
+
+        <button
+          type="button"
+          class="btn btn-sm btn-link p-0"
+          disabled={loading}
+          aria-label={$_('buttons.refresh')}
+          onclick={() => void loadPlugins()}
+          use:tooltip={[$_('buttons.refresh'), { placement: 'bottom' }]}>
+          <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
+        </button>
+
+        {#if canInstall}
+          <!-- A jar from the admin's own computer, into plugins/ or mods/. -->
+          <button
+            type="button"
+            class="btn btn-sm btn-primary text-nowrap"
+            disabled={loading}
+            onclick={openUpload}>
+            <i class="fa-solid fa-upload me-1" aria-hidden="true"></i>
+            {$_('pages.servers.plugins.upload.button')}
           </button>
         {/if}
       </span>
@@ -163,29 +204,98 @@
         <table class="table table-hover align-middle mb-0">
           <thead>
             <tr>
-              <th scope="col" class="text-nowrap">{$_('pages.servers.plugins.column-name')}</th>
-              <th scope="col" class="text-nowrap">{$_('pages.servers.plugins.column-version')}</th>
-              <th scope="col" class="text-nowrap">{$_('pages.servers.plugins.column-authors')}</th>
+              {#if selectable}
+                <th scope="col" style="width: 2.5rem;">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    checked={allSelected}
+                    indeterminate={selectedRows.length > 0 && !allSelected}
+                    disabled={!selectableRows.length}
+                    aria-label={$_('pages.servers.plugins.select-all')}
+                    onchange={toggleSelectAll} />
+                </th>
+              {/if}
+              {#if canRemove}
+                <th scope="col"></th>
+              {/if}
+              <th scope="col" class="text-nowrap">
+                {@render sortHeader('name', 'pages.servers.plugins.column-name')}
+              </th>
+              <th scope="col" class="text-nowrap">
+                {@render sortHeader('version', 'pages.servers.plugins.column-version')}
+              </th>
+              <th scope="col" class="text-nowrap">
+                {@render sortHeader('authors', 'pages.servers.plugins.column-authors')}
+              </th>
               {#if managed}
-                <th scope="col" class="text-nowrap"
-                  >{$_('pages.servers.plugins.installed.column-file')}</th>
+                <th scope="col" class="text-nowrap">
+                  {@render sortHeader('file', 'pages.servers.plugins.installed.column-file')}
+                </th>
               {:else}
                 <th scope="col" class="text-nowrap"
                   >{$_('pages.servers.plugins.column-description')}</th>
               {/if}
               <th scope="col" class="text-end text-nowrap"
                 >{$_('pages.servers.plugins.column-enabled')}</th>
-              {#if canRemove}
-                <th scope="col" class="text-end text-nowrap">
-                  {$_('pages.servers.plugins.installed.column-actions')}
-                </th>
-              {/if}
             </tr>
           </thead>
           <tbody>
             {#each visibleRows as row (row.key)}
-              <tr>
-                <td class="fw-semibold text-break">
+              <tr class:table-active={selectedKeys.includes(row.key)}>
+                {#if selectable}
+                  <td>
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      checked={selectedKeys.includes(row.key)}
+                      disabled={!row.filename}
+                      aria-label={row.name}
+                      onchange={() => toggleSelect(row.key)} />
+                  </td>
+                {/if}
+                {#if canRemove}
+                  <th scope="row" class="align-middle text-center">
+                    {#if row.filename}
+                      <div class="dropdown position-static">
+                        <button
+                          type="button"
+                          class="btn btn-link"
+                          data-bs-toggle="dropdown"
+                          title={$_('pages.servers.plugins.installed.column-actions')}
+                          aria-label={$_('pages.servers.plugins.installed.column-actions')}>
+                          {#if busyFile === row.filename || isUpdating(row.filename)}
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"
+                            ></span>
+                          {:else}
+                            <span class="fas fa-ellipsis-v"></span>
+                          {/if}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-start">
+                          {#if row.updateAvailable}
+                            <button
+                              type="button"
+                              class="dropdown-item text-capitalize"
+                              disabled={isUpdating(row.filename) || busyFile === row.filename}
+                              onclick={() => void updateFile(row.filename)}>
+                              <i class="fa-solid fa-circle-arrow-up me-2" aria-hidden="true"></i>
+                              {$_('pages.servers.plugins.updates.update')}
+                            </button>
+                          {/if}
+                          <button
+                            type="button"
+                            class="dropdown-item text-capitalize link-danger"
+                            disabled={busyFile === row.filename || isUpdating(row.filename)}
+                            onclick={() => askRemove(row)}>
+                            <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
+                            {$_('pages.servers.plugins.installed.remove')}
+                          </button>
+                        </div>
+                      </div>
+                    {/if}
+                  </th>
+                {/if}
+                <td class="text-break">
                   {row.name}
                   {#if !row.loaded && row.fileEnabled}
                     <span
@@ -296,50 +406,6 @@
                     </span>
                   {/if}
                 </td>
-                {#if canRemove}
-                  <td class="text-end text-nowrap">
-                    {#if row.updateAvailable && row.filename}
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-outline-warning me-1"
-                        disabled={isUpdating(row.filename) || busyFile === row.filename}
-                        use:tooltip={[
-                          $_('pages.servers.plugins.updates.update-available', {
-                            values: { version: row.latestVersion },
-                          }),
-                          { placement: 'left' },
-                        ]}
-                        onclick={() => void updateFile(row.filename)}>
-                        {#if isUpdating(row.filename)}
-                          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                        {:else}
-                          <i class="fa-solid fa-circle-arrow-up" aria-hidden="true"></i>
-                        {/if}
-                        <span class="ms-1">{$_('pages.servers.plugins.updates.update')}</span>
-                      </button>
-                    {/if}
-                    {#if row.filename}
-                      <button
-                        type="button"
-                        class="btn btn-link btn-sm link-danger"
-                        disabled={busyFile === row.filename || isUpdating(row.filename)}
-                        aria-label={$_('pages.servers.plugins.installed.remove')}
-                        use:tooltip={[
-                          $_('pages.servers.plugins.installed.remove'),
-                          { placement: 'left' },
-                        ]}
-                        onclick={() => askRemove(row)}>
-                        {#if busyFile === row.filename}
-                          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                        {:else}
-                          <i class="fa-solid fa-trash" aria-hidden="true"></i>
-                        {/if}
-                      </button>
-                    {:else}
-                      <span class="text-body-secondary">—</span>
-                    {/if}
-                  </td>
-                {/if}
               </tr>
             {/each}
           </tbody>
@@ -349,14 +415,6 @@
 
     {#if !loading && !listError}
       <div class="card-footer small text-body-secondary vstack gap-1">
-        {#if jarList}
-          <!-- §2.4.17 — nothing inside the game answered, so this is the jar scan: what is on
-                 disk, not what the running server loaded. -->
-          <span>
-            <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-            {$_('pages.servers.plugins.jar-list-hint')}
-          </span>
-        {/if}
         {#if managed && !capable}
           <span>
             <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
@@ -385,6 +443,13 @@
 {/if}
 
 <ServerPluginUploadModal />
+
+{#snippet sortHeader(/** @type {string} */ key, /** @type {string} */ label)}
+  <button type="button" class="sort-button" onclick={() => sortBy(key)}>
+    {$_(label)}
+    <i class="{sortIcon(key)} ms-1 small" aria-hidden="true"></i>
+  </button>
+{/snippet}
 
 {#snippet toggleSwitch(/** @type {any} */ row, /** @type {boolean} */ checked)}
   <!-- A disabled switch drops pointer events, so the tooltip sits on the wrapper. -->
@@ -571,10 +636,7 @@
    * the node scans and renames the jars, a protocol-2 plugin does the same from the inside, and
    * either one may be the one that is there. Without `features` these are the old rules.
    */
-  const listSource = $derived(featureSource($server, 'plugins.list'));
   const listable = $derived(hasFeature($server, 'plugins.list'));
-  /** The list is the jar scan rather than what the running server loaded. */
-  const jarList = $derived(listSource === FeatureSources.NODE);
   const toggleSource = $derived(featureSource($server, 'plugins.toggle'));
   const canToggle = $derived(
     canManage && (toggleSource === undefined ? toggleable : toggleSource !== null),
@@ -698,21 +760,122 @@
     return [...loadedRows, ...unloadedRows];
   });
 
+  let sortKey = $state('name');
+  let sortDirection = $state('asc');
+  /** @type {string[]} the keys of the ticked rows. */
+  let selectedKeys = $state([]);
+  /** A bulk update or delete is running. */
+  let bulkBusy = $state(false);
+
+  /**
+   * @param {{ name: string, version: string, trackedVersion: string, authors: string[], filename: string }} row
+   * @param {string} key
+   * @returns {string}
+   */
+  function sortValue(row, key) {
+    switch (key) {
+      case 'version':
+        return row.version || row.trackedVersion || '';
+      case 'authors':
+        return row.authors.join(', ');
+      case 'file':
+        return row.filename;
+      default:
+        return row.name;
+    }
+  }
+
   const visibleRows = $derived.by(() => {
     const needle = query.trim().toLowerCase();
 
-    if (!needle) {
-      return rows;
-    }
+    const filtered = !needle
+      ? rows
+      : rows.filter(
+          (row) =>
+            row.name.toLowerCase().includes(needle) ||
+            row.filename.toLowerCase().includes(needle) ||
+            row.description.toLowerCase().includes(needle) ||
+            row.authors.some((author) => author.toLowerCase().includes(needle)),
+        );
 
-    return rows.filter(
-      (row) =>
-        row.name.toLowerCase().includes(needle) ||
-        row.filename.toLowerCase().includes(needle) ||
-        row.description.toLowerCase().includes(needle) ||
-        row.authors.some((author) => author.toLowerCase().includes(needle)),
+    const direction = sortDirection === 'asc' ? 1 : -1;
+
+    return [...filtered].sort(
+      (a, b) =>
+        direction *
+        sortValue(a, sortKey).localeCompare(sortValue(b, sortKey), undefined, {
+          numeric: true,
+          sensitivity: 'base',
+        }),
     );
   });
+
+  /** Ticking is for the bulk actions, so it only exists where one of them can run. */
+  const selectable = $derived(canRemove || canUpdate);
+  /** A row with no jar behind it has nothing to update or delete. */
+  const selectableRows = $derived(visibleRows.filter((row) => row.filename));
+  const selectedRows = $derived(visibleRows.filter((row) => selectedKeys.includes(row.key)));
+  const selectedRemovable = $derived(selectedRows.filter((row) => row.filename && !row.protected));
+  const selectedUpdatable = $derived(
+    selectedRows.filter((row) => row.updateAvailable && row.filename && !isUpdating(row.filename)),
+  );
+  const allSelected = $derived(
+    selectableRows.length > 0 && selectableRows.every((row) => selectedKeys.includes(row.key)),
+  );
+
+  // A row that is gone after a re-read must not stay ticked in the background.
+  $effect(() => {
+    const keys = new Set(rows.map((row) => row.key));
+
+    untrack(() => {
+      if (selectedKeys.some((key) => !keys.has(key))) {
+        selectedKeys = selectedKeys.filter((key) => keys.has(key));
+      }
+    });
+  });
+
+  /**
+   * @param {string} key
+   * @returns {string} the Font Awesome classes of the header's sort marker.
+   */
+  function sortIcon(key) {
+    if (sortKey !== key) {
+      return 'fa-solid fa-sort opacity-25';
+    }
+
+    return sortDirection === 'asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
+  }
+
+  /**
+   * @param {string} key
+   */
+  function sortBy(key) {
+    if (sortKey === key) {
+      sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+
+      return;
+    }
+
+    sortKey = key;
+    sortDirection = 'asc';
+  }
+
+  /**
+   * @param {string} key
+   */
+  function toggleSelect(key) {
+    selectedKeys = selectedKeys.includes(key)
+      ? selectedKeys.filter((entry) => entry !== key)
+      : [...selectedKeys, key];
+  }
+
+  function toggleSelectAll() {
+    const visible = selectableRows.map((row) => row.key);
+
+    selectedKeys = allSelected
+      ? selectedKeys.filter((key) => !visible.includes(key))
+      : [...new Set([...selectedKeys, ...visible])];
+  }
 
   // Called once here so the very first render — SSR included — already is the finished list,
   // and again from the effect below when the route moves to another server.
@@ -1000,10 +1163,12 @@
 
   /**
    * @param {string} filename
+   * @param {boolean} [quiet] a bulk delete says one thing at the end and re-reads the list once.
+   * @returns {Promise<boolean>} whether the file is gone.
    */
-  async function removeFile(filename) {
+  async function removeFile(filename, quiet = false) {
     if (!canRemove || serverId == null || busyFile) {
-      return;
+      return false;
     }
 
     busyFile = filename;
@@ -1016,25 +1181,96 @@
       });
 
       if (!body) {
-        return;
+        return false;
       }
 
       if (isEndpointUnavailable(body)) {
         void showError('pages.servers.errors.unavailable');
 
-        return;
+        return false;
       }
 
       if (body.error) {
         showServerActionError(body.error, body, { server: $server, feature: 'plugins.install' });
 
-        return;
+        return false;
       }
 
-      void showSuccess('pages.servers.plugins.installed.removed', { filename });
-      await loadPlugins();
+      if (!quiet) {
+        void showSuccess('pages.servers.plugins.installed.removed', { filename });
+        await loadPlugins();
+      }
+
+      return true;
     } finally {
       busyFile = null;
+    }
+  }
+
+  function askRemoveSelected() {
+    const filenames = selectedRemovable.map((row) => row.filename);
+
+    if (!canRemove || !filenames.length || bulkBusy || busyFile) {
+      return;
+    }
+
+    void showConfirmActionModal(
+      'pages.servers.plugins.installed.remove-selected-confirm',
+      { count: filenames.length },
+      () => void removeSelected(filenames),
+    );
+  }
+
+  /**
+   * @param {string[]} filenames
+   */
+  async function removeSelected(filenames) {
+    bulkBusy = true;
+
+    let removed = 0;
+
+    try {
+      for (const filename of filenames) {
+        // A failure has already said why; the rest still go.
+        if (await removeFile(filename, true)) {
+          removed++;
+        }
+      }
+    } finally {
+      bulkBusy = false;
+    }
+
+    if (removed > 0) {
+      void showSuccess('pages.servers.plugins.installed.removed-many', { count: removed });
+      selectedKeys = [];
+      await loadPlugins();
+    }
+  }
+
+  async function updateSelected() {
+    const filenames = selectedUpdatable.map((row) => row.filename);
+
+    if (!canUpdate || !filenames.length || bulkBusy) {
+      return;
+    }
+
+    bulkBusy = true;
+
+    let started = 0;
+
+    try {
+      for (const filename of filenames) {
+        if (await updateFile(filename, true)) {
+          started++;
+        }
+      }
+    } finally {
+      bulkBusy = false;
+    }
+
+    if (started > 0) {
+      void showSuccess('pages.servers.plugins.updates.update-started');
+      selectedKeys = [];
     }
   }
 
@@ -1044,9 +1280,9 @@
    *
    * @param {string} filename
    */
-  async function updateFile(filename) {
+  async function updateFile(filename, quiet = false) {
     if (!canUpdate || serverId == null || !filename || isUpdating(filename)) {
-      return;
+      return false;
     }
 
     updatingFiles = [...updatingFiles, filename];
@@ -1062,13 +1298,13 @@
 
       if (!body) {
         // ApiUtil already raised the offline splash for a network error.
-        return;
+        return false;
       }
 
       if (isEndpointUnavailable(body)) {
         void showError('pages.servers.errors.unavailable');
 
-        return;
+        return false;
       }
 
       // The one code this page answers itself: the row is stale, not broken.
@@ -1076,16 +1312,20 @@
         void showSuccess('pages.servers.plugins.updates.up-to-date', { filename });
         await loadPlugins();
 
-        return;
+        return false;
       }
 
       showServerActionError(body.error, body, { server: $server, feature: 'plugins.install' });
 
-      return;
+      return false;
     }
 
     rememberUpdateTask(body.taskId, body.filename == null ? filename : String(body.filename));
-    void showSuccess('pages.servers.plugins.updates.update-started');
+    if (!quiet) {
+      void showSuccess('pages.servers.plugins.updates.update-started');
+    }
+
+    return true;
   }
 
   async function updateAll() {
