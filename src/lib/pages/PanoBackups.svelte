@@ -537,6 +537,7 @@
     isJobRunning,
     isTransferOpen,
     tagColour,
+    waitForRestart,
   } from '$lib/pano-backup.util.js';
 
   import DateComponent from '$lib/components/Date.svelte';
@@ -716,8 +717,16 @@
   /** @param {any} finished */
   async function onJobFinished(finished) {
     if (finished.type === 'RESTORE' && finished.status === 'DONE') {
-      // Everything changed underneath the panel (and the session may be gone): start over.
-      setTimeout(() => window.location.reload(), 3000);
+      // Everything changed underneath the panel (and the session may be gone): start over, but
+      // only once the restarting Pano answers again, or the reload lands on a dead port.
+      await waitForRestart({
+        probe: () =>
+          ApiUtil.get({ path: '/api/panel/basicData' }).then(
+            (body) => !!body && typeof body === 'object',
+          ),
+      });
+
+      window.location.reload();
 
       return;
     }

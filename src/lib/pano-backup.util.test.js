@@ -12,6 +12,7 @@ import {
   backupPlanUrl,
   usageColour,
   inspectArchiveFile,
+  waitForRestart,
   inspectArchiveHeader,
   isTransferOpen,
   jobPercent,
@@ -247,5 +248,54 @@ describe('connected account', () => {
     expect(canRestoreRemote({ status: 'DONE', kind: 'pano-instance', own: false })).toBe(true);
     expect(canRestoreRemote({ status: 'UPLOADING', kind: 'pano-instance' })).toBe(false);
     expect(canRestoreRemote({ status: 'DONE', kind: 'mc-server' })).toBe(false);
+  });
+});
+
+describe('waitForRestart', () => {
+  const clock = () => {
+    let time = 0;
+
+    return { now: () => time, sleep: async (ms) => void (time += ms) };
+  };
+
+  test('waits until Pano went down and answers again', async () => {
+    const answers = [true, false, false, true];
+    let probes = 0;
+
+    const done = await waitForRestart({ ...clock(), probe: async () => answers[probes++] });
+
+    expect(done).toBe(true);
+    expect(probes).toBe(4);
+  });
+
+  test('a failing probe counts as down', async () => {
+    let probes = 0;
+
+    const done = await waitForRestart({
+      ...clock(),
+      probe: async () => {
+        if (probes++ === 0) throw new Error('refused');
+
+        return true;
+      },
+    });
+
+    expect(done).toBe(true);
+    expect(probes).toBe(2);
+  });
+
+  test('a Pano that never goes down is taken as up after the grace period', async () => {
+    const time = clock();
+
+    expect(
+      await waitForRestart({ ...time, probe: async () => true, intervalMs: 1000, graceMs: 5000 }),
+    ).toBe(true);
+    expect(time.now()).toBe(5000);
+  });
+
+  test('gives up after the timeout', async () => {
+    expect(await waitForRestart({ ...clock(), probe: async () => false, timeoutMs: 6000 })).toBe(
+      false,
+    );
   });
 });

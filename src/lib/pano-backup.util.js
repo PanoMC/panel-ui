@@ -429,3 +429,45 @@ export function transferColour(status) {
     }[status || ''] || 'secondary'
   );
 }
+
+/**
+ * Waits for Pano to come back after a restore restarted it, so the page is not reloaded into a
+ * dead port. `probe` answers whether Pano responds right now. It returns once Pano was seen down
+ * and is up again; a Pano that never goes down (it is restarted by hand later) is taken as up
+ * after `graceMs`. Gives up after `timeoutMs` and returns false.
+ *
+ * @param {{
+ *   probe: () => Promise<boolean>,
+ *   sleep?: (ms: number) => Promise<void>,
+ *   now?: () => number,
+ *   intervalMs?: number,
+ *   graceMs?: number,
+ *   timeoutMs?: number,
+ * }} options
+ * @returns {Promise<boolean>}
+ */
+export async function waitForRestart({
+  probe,
+  sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+  now = () => Date.now(),
+  intervalMs = 1500,
+  graceMs = 15000,
+  timeoutMs = 180000,
+}) {
+  const startedAt = now();
+  let sawDown = false;
+
+  while (now() - startedAt < timeoutMs) {
+    const up = await probe().catch(() => false);
+
+    if (!up) {
+      sawDown = true;
+    } else if (sawDown || now() - startedAt >= graceMs) {
+      return true;
+    }
+
+    await sleep(intervalMs);
+  }
+
+  return false;
+}
