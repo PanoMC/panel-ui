@@ -22,7 +22,7 @@
           href={base + item.href}
           class:active={matching($page.url.pathname, base + item.href, item.startsWith)}>
           {#if item.hasUpdate}
-            <span class="position-relative" class:pe-2={$session.basicData.hasUpdate}>
+            <span class="position-relative" class:pe-3={$session.basicData.hasUpdate}>
               <i class="{item.icon} fa-fw me-2"></i>
               {$_(item.text)}
               {#if $session.basicData.hasUpdate}
