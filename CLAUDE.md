@@ -43,3 +43,11 @@ bun run format              # prettier --write
   commit** messages. Production bundles are pinned by the backend in its `ui-releases.yml`.
 
 Use Svelte 5 runes for new code; i18n via `svelte-i18n`'s `_` store.
+
+<!-- pano-design-guidelines:start -->
+## Panel design guidelines
+
+Before designing or changing any panel UI (pages, components, modals, alerts, forms…), read
+`design/README.md` and then **only** the topic file it points to for what you are building. These
+rules are mandatory. Do not load every file in `design/`.
+<!-- pano-design-guidelines:end -->
