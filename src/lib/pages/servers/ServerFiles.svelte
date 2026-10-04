@@ -531,6 +531,11 @@
         <!-- `text-capitalize`: the mode titles are lowercased in the dictionaries ("yeni dosya")
              the way the dropdown items were. -->
         <h5 class="modal-title text-capitalize">{promptTitle ? $_(promptTitle) : ''}</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label={$_('buttons.close')}></button>
       </div>
       <div class="modal-body">
         <!-- Bootstrap's floating label: the caption sits inside the empty field and lifts out of
@@ -1202,13 +1207,6 @@
     if (event.key === 'Enter') {
       event.preventDefault();
       void confirmPrompt();
-      return;
-    }
-
-    // With the header's close button gone, Escape is the way out of this dialog.
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      promptModal?.hide();
     }
   }
 
@@ -1593,10 +1591,7 @@
 
   onMount(() => {
     promptModal = window.bootstrap?.Modal
-      ? window.bootstrap.Modal.getOrCreateInstance(promptModalElement, {
-          backdrop: 'static',
-          keyboard: false,
-        })
+      ? window.bootstrap.Modal.getOrCreateInstance(promptModalElement)
       : null;
     deleteModal = window.bootstrap?.Modal
       ? window.bootstrap.Modal.getOrCreateInstance(deleteModalElement, {
