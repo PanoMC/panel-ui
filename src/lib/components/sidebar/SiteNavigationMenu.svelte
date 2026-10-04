@@ -126,7 +126,7 @@
     },
     {
       href: '/backups',
-      icon: 'fa-solid fa-cloud-arrow-up',
+      icon: 'fas fa-box-archive',
       text: 'components.site-navigation-menu.backups',
       startsWith: true,
       permission: Permissions.MANAGE_PANO_BACKUPS,

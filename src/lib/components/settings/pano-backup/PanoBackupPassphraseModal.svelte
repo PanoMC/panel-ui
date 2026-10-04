@@ -5,48 +5,49 @@
       event.preventDefault();
       void save();
     }}>
-    <div class="modal-header">
-      <h5 class="modal-title">{$_('pages.settings.backups.passphrase-title')}</h5>
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="modal"
-        aria-label={$_('buttons.close')}></button>
-    </div>
-    <div class="modal-body vstack gap-3">
-      <div class="small text-body-secondary">
-        {$_('pages.settings.backups.passphrase-description')}
-      </div>
-      {#if passphraseSet}
-        <div class="small text-body-secondary">
-          {$_('pages.settings.backups.passphrase-change-hint')}
+    <div class="modal-body text-center vstack gap-3">
+      <div>
+        <div class="pb-3">
+          <i class="fas fa-key fa-3x d-block m-auto text-gray"></i>
         </div>
+        <div class="text-capitalize">{$_('pages.settings.backups.passphrase-title')}</div>
+      </div>
+      <div>{$_('pages.settings.backups.passphrase-description')}</div>
+      {#if passphraseSet}
+        <div>{$_('pages.settings.backups.passphrase-change-hint')}</div>
       {/if}
       {#key formKey}
         <PassphraseFields bind:passphrase bind:valid />
       {/key}
-      <div>
-        <label class="form-label small" for="pano-passphrase-password">
-          {$_('pages.settings.backups.current-password')}
-        </label>
+      <div class="form-floating text-start">
         <input
           id="pano-passphrase-password"
           class="form-control"
           type="password"
+          placeholder=" "
           autocomplete="current-password"
           bind:value={password} />
+        <label class="text-capitalize" for="pano-passphrase-password">
+          {$_('pages.settings.backups.current-password')}
+        </label>
       </div>
       {#if error}
-        <div class="alert alert-danger small mb-0">
+        <div class="alert alert-danger mb-0">
           {$_(error.key, { values: error.values })}
         </div>
       {/if}
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-link" data-bs-dismiss="modal">
+    <div class="modal-footer flex-nowrap text-capitalize">
+      <button
+        type="button"
+        class="btn btn-link text-decoration-none col-6 m-0"
+        data-bs-dismiss="modal">
         {$_('buttons.cancel')}
       </button>
-      <button type="submit" class="btn btn-primary" disabled={!valid || !password || saving}>
+      <button
+        type="submit"
+        class="btn btn-primary col-6 m-0"
+        disabled={!valid || !password || saving}>
         {#if saving}
           <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
         {/if}

@@ -8,8 +8,8 @@
 </div>
 
 <script>
-  /** @type {{ children: import('svelte').Snippet, size?: string, onhidden?: () => void }} */
-  let { children, size = '', onhidden } = $props();
+  /** @type {{ children: import('svelte').Snippet, size?: string, onhidden?: () => void, onshown?: () => void }} */
+  let { children, size = '', onhidden, onshown } = $props();
 
   /** @type {HTMLDivElement | undefined} */
   let element = $state();
@@ -35,10 +35,15 @@
       return;
     }
 
-    const handler = () => onhidden?.();
+    const hidden = () => onhidden?.();
+    const shown = () => onshown?.();
 
-    el.addEventListener('hidden.bs.modal', handler);
+    el.addEventListener('hidden.bs.modal', hidden);
+    el.addEventListener('shown.bs.modal', shown);
 
-    return () => el.removeEventListener('hidden.bs.modal', handler);
+    return () => {
+      el.removeEventListener('hidden.bs.modal', hidden);
+      el.removeEventListener('shown.bs.modal', shown);
+    };
   });
 </script>

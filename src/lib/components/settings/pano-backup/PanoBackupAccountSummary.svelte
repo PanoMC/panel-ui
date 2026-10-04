@@ -13,7 +13,7 @@
         <img src="{base}/assets/img/logo.svg" width="28" height="28" alt="Pano Host" />
       </div>
       <div class="vstack gap-2 min-w-0">
-        <div class="small text-body-secondary">
+        <div>
           {revoked
             ? $_('pages.settings.backups.account.revoked', {
                 values: { website: websiteDisplayHost() },
@@ -23,18 +23,20 @@
               })}
         </div>
         <div>
-          <a class="btn btn-primary btn-sm" href="{base}{CONNECT_PATH}">
-            <i class="fa-solid fa-link me-1" aria-hidden="true"></i>
+          <a class="btn btn-primary" href="{base}{CONNECT_PATH}">
             {$_('buttons.connect-pano-account')}
           </a>
         </div>
       </div>
     </div>
   {:else if connection === 'unavailable'}
-    <div class="alert alert-warning small mb-0">
-      {$_('pages.settings.backups.account.unavailable', {
-        values: { website: websiteDisplayHost() },
-      })}
+    <div class="alert alert-warning d-flex align-items-center gap-2 mb-0">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <div>
+        {$_('pages.settings.backups.account.unavailable', {
+          values: { website: websiteDisplayHost() },
+        })}
+      </div>
     </div>
   {:else}
     <!-- Only while panomc.com answers: when it cannot be reached nothing about the account is shown. -->

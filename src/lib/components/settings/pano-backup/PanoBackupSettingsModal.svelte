@@ -5,131 +5,141 @@
       event.preventDefault();
       void save();
     }}>
-    <div class="modal-header">
-      <h5 class="modal-title">{$_('pages.settings.backups.settings-title')}</h5>
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="modal"
-        aria-label={$_('buttons.close')}></button>
-    </div>
-    <div class="modal-body vstack gap-4">
-      <div class="vstack gap-2">
-        <div class="fw-semibold">{$_('pages.settings.backups.local-schedule-title')}</div>
-        <div class="small text-body-secondary">
-          {$_('pages.settings.backups.local-schedule-description')}
+    <div class="modal-body text-center vstack gap-4">
+      <div>
+        <div class="pb-3">
+          <i class="fas fa-gear fa-3x d-block m-auto text-gray"></i>
         </div>
-        <div class="row g-2">
-          <div class="col-sm-5">
-            <label class="form-label small" for="pano-local-schedule">
-              {$_('pages.settings.backups.schedule')}
-            </label>
-            <select id="pano-local-schedule" class="form-select" bind:value={localSchedule}>
-              {#each LOCAL_SCHEDULES as option (option)}
-                <option value={option}>
-                  {$_(`pages.settings.backups.schedule-${option.toLowerCase()}`)}
-                </option>
-              {/each}
-            </select>
-          </div>
-          <div class="col-6 col-sm-4">
-            <label class="form-label small" for="pano-local-hour">
-              {$_('pages.settings.backups.hour')}
-            </label>
-            <select
-              id="pano-local-hour"
-              class="form-select"
-              bind:value={localHour}
-              disabled={localSchedule === 'OFF'}>
-              {#each HOURS as hour (hour)}
-                <option value={hour}>{String(hour).padStart(2, '0')}:00</option>
-              {/each}
-            </select>
-          </div>
-          <div class="col-6 col-sm-3">
-            <label class="form-label small" for="pano-local-keep">
-              {$_('pages.settings.backups.keep')}
-            </label>
-            <input
-              id="pano-local-keep"
-              class="form-control"
-              type="number"
-              min="1"
-              max="50"
-              bind:value={localKeep} />
-          </div>
-        </div>
+        <div class="text-capitalize">{$_('pages.settings.backups.settings-title')}</div>
       </div>
 
-      {#if connected}
-        <div class="vstack gap-2">
-          <div class="fw-semibold">{$_('pages.settings.backups.remote-schedule-title')}</div>
-          <div class="row g-2">
-            <div class="col-sm-7">
-              <label class="form-label small" for="pano-remote-schedule">
-                {$_('pages.settings.backups.schedule')}
-              </label>
-              <select id="pano-remote-schedule" class="form-select" bind:value={remoteSchedule}>
-                {#each REMOTE_SCHEDULES as option (option)}
+      <div class="vstack gap-3 text-start">
+        <div class="text-capitalize">{$_('pages.settings.backups.local-schedule-title')}</div>
+        <div>{$_('pages.settings.backups.local-schedule-description')}</div>
+        <div class="row g-2">
+          <div class="col-sm-5">
+            <div class="form-floating">
+              <select id="pano-local-schedule" class="form-select" bind:value={localSchedule}>
+                {#each LOCAL_SCHEDULES as option (option)}
                   <option value={option}>
                     {$_(`pages.settings.backups.schedule-${option.toLowerCase()}`)}
                   </option>
                 {/each}
               </select>
-            </div>
-            <div class="col-sm-5">
-              <label class="form-label small" for="pano-remote-hour">
-                {$_('pages.settings.backups.hour')}
+              <label class="text-capitalize" for="pano-local-schedule">
+                {$_('pages.settings.backups.schedule')}
               </label>
+            </div>
+          </div>
+          <div class="col-6 col-sm-4">
+            <div class="form-floating">
               <select
-                id="pano-remote-hour"
+                id="pano-local-hour"
                 class="form-select"
-                bind:value={remoteHour}
-                disabled={remoteSchedule === 'OFF'}>
+                bind:value={localHour}
+                disabled={localSchedule === 'OFF'}>
                 {#each HOURS as hour (hour)}
                   <option value={hour}>{String(hour).padStart(2, '0')}:00</option>
                 {/each}
               </select>
+              <label class="text-capitalize" for="pano-local-hour">
+                {$_('pages.settings.backups.hour')}
+              </label>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="form-floating">
+              <input
+                id="pano-local-keep"
+                class="form-control"
+                type="number"
+                placeholder=" "
+                min="1"
+                max="50"
+                bind:value={localKeep} />
+              <label class="text-capitalize" for="pano-local-keep">
+                {$_('pages.settings.backups.keep')}
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {#if connected}
+        <div class="vstack gap-3 text-start">
+          <div class="text-capitalize">{$_('pages.settings.backups.remote-schedule-title')}</div>
+          <div class="row g-2">
+            <div class="col-sm-7">
+              <div class="form-floating">
+                <select id="pano-remote-schedule" class="form-select" bind:value={remoteSchedule}>
+                  {#each REMOTE_SCHEDULES as option (option)}
+                    <option value={option}>
+                      {$_(`pages.settings.backups.schedule-${option.toLowerCase()}`)}
+                    </option>
+                  {/each}
+                </select>
+                <label class="text-capitalize" for="pano-remote-schedule">
+                  {$_('pages.settings.backups.schedule')}
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-5">
+              <div class="form-floating">
+                <select
+                  id="pano-remote-hour"
+                  class="form-select"
+                  bind:value={remoteHour}
+                  disabled={remoteSchedule === 'OFF'}>
+                  {#each HOURS as hour (hour)}
+                    <option value={hour}>{String(hour).padStart(2, '0')}:00</option>
+                  {/each}
+                </select>
+                <label class="text-capitalize" for="pano-remote-hour">
+                  {$_('pages.settings.backups.hour')}
+                </label>
+              </div>
             </div>
           </div>
           {#if !remote?.plan && !remote?.hostError}
-            <div class="form-text mt-0">{$_('pages.settings.backups.schedule-needs-plan')}</div>
+            <div>{$_('pages.settings.backups.schedule-needs-plan')}</div>
           {/if}
           {#if remote?.lastUploadAt}
-            <div class="small text-body-secondary">
+            <div>
               {$_('pages.settings.backups.last-upload')}
               <DateComponent time={remote.lastUploadAt} relativeFormat />
             </div>
           {/if}
         </div>
 
-        <div class="vstack gap-2">
+        <div class="vstack gap-3 text-start">
           <!-- Coming soon: nothing to pick yet (the platform does not upload MC server backups). -->
-          <div class="fw-semibold d-flex align-items-center gap-2">
+          <div class="d-flex align-items-center gap-2 text-capitalize">
             {$_('pages.settings.backups.mc-servers-title')}
             <span class="badge text-bg-secondary text-uppercase">
               {$_('pages.servers.backups.coming-soon')}
             </span>
           </div>
-          <div class="small text-body-secondary">
-            {$_('pages.settings.backups.mc-servers-description')}
-          </div>
+          <div>{$_('pages.settings.backups.mc-servers-description')}</div>
         </div>
       {/if}
 
       {#if error}
-        <div class="alert alert-danger small mb-0">
-          {$_(error.key, { values: error.values })}
+        <div class="alert alert-danger d-flex align-items-center gap-2 mb-0 text-start">
+          <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+          <div>{$_(error.key, { values: error.values })}</div>
         </div>
       {/if}
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-link" data-bs-dismiss="modal">
+    <div class="modal-footer flex-nowrap text-capitalize">
+      <button
+        type="button"
+        class="btn btn-link text-decoration-none col-6 m-0"
+        data-bs-dismiss="modal">
         {$_('buttons.cancel')}
       </button>
       <button
         type="submit"
-        class="btn btn-primary"
+        class="btn btn-primary col-6 m-0"
         disabled={saving || !(localKeep >= 1 && localKeep <= 50)}>
         {#if saving}
           <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>

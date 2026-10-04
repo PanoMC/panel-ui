@@ -1,21 +1,11 @@
 <!-- The running / last Pano backup job. Polls `GET /api/panel/pano-backups/job` while it runs. -->
-{#if job}
+{#if job && running}
   <div class="card" aria-live="polite">
     <div class="card-body vstack gap-2">
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        {#if running}
-          <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
-        {:else if job.status === 'DONE'}
-          <i class="fa-solid fa-circle-check text-success" aria-hidden="true"></i>
-        {:else}
-          <i class="fa-solid fa-circle-xmark text-danger" aria-hidden="true"></i>
-        {/if}
+        <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
         <strong>{$_(`pages.settings.backups.job.type-${String(job.type).toLowerCase()}`)}</strong>
-        <span
-          class="badge text-bg-{running ? 'info' : job.status === 'DONE' ? 'success' : 'danger'}">
-          {$_(`pages.settings.backups.job.status-${String(job.status).toLowerCase()}`)}
-        </span>
-        {#if running && job.phase}
+        {#if job.phase}
           <span class="text-body-secondary small">
             {$_(`pages.settings.backups.job.phase-${String(job.phase).toLowerCase()}`)}
           </span>
@@ -27,54 +17,63 @@
         {/if}
       </div>
 
-      {#if running}
+      <div
+        class="progress"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow={percent ?? undefined}>
         <div
-          class="progress"
-          role="progressbar"
-          aria-valuemin="0"
-          aria-valuemax="100"
-          aria-valuenow={percent ?? undefined}>
-          <div
-            class="progress-bar"
-            class:progress-bar-striped={percent === null}
-            class:progress-bar-animated={percent === null}
-            style="width: {percent ?? 100}%">
-            {#if percent !== null}{percent}%{/if}
-          </div>
+          class="progress-bar"
+          class:progress-bar-striped={percent === null}
+          class:progress-bar-animated={percent === null}
+          style="width: {percent ?? 100}%">
+          {#if percent !== null}{percent}%{/if}
         </div>
-        {#if percent !== null}
-          <div class="small text-body-secondary">
-            {formatBytes(job.bytesDone || 0)} / {formatBytes(job.bytesTotal || 0)}
-          </div>
-        {/if}
-        {#if job.type === 'RESTORE'}
-          <div class="small text-warning">{$_('pages.settings.backups.job.restore-running')}</div>
-        {/if}
-      {:else if error}
-        <div class="alert alert-danger mb-0 small">
-          {$_(error.key, { values: error.values })}
-          {#if job.rolledBack}
-            <div class="mt-1">{$_('pages.settings.backups.job.rolled-back')}</div>
-          {/if}
-        </div>
-      {:else if job.status === 'DONE' && job.type === 'TRANSFER'}
+      </div>
+      {#if percent !== null}
         <div class="small text-body-secondary">
-          {$_('pages.settings.backups.job.transfer-done', {
-            values: { website: websiteDisplayHost() },
-          })}
+          {formatBytes(job.bytesDone || 0)} / {formatBytes(job.bytesTotal || 0)}
         </div>
       {/if}
-
-      {#if restartRequired}
-        <div class="alert alert-warning mb-0 small">
-          {$_('pages.settings.backups.job.restart-required')}
-        </div>
+      {#if job.type === 'RESTORE'}
+        <div class="small text-warning">{$_('pages.settings.backups.job.restore-running')}</div>
       {/if}
     </div>
   </div>
-{:else if restartRequired}
-  <div class="alert alert-warning mb-0 small">
-    {$_('pages.settings.backups.job.restart-required')}
+{:else if job && dismissedId !== job.id}
+  <div
+    class="alert alert-{job.status === 'DONE'
+      ? 'success'
+      : 'danger'} alert-dismissible d-flex align-items-center gap-2 mb-0"
+    role="alert">
+    <i
+      class="fa-solid {job.status === 'DONE' ? 'fa-circle-check' : 'fa-circle-xmark'}"
+      aria-hidden="true"></i>
+    <div>
+      {#if job.status === 'DONE'}
+        {$_(`pages.settings.backups.job.done-${String(job.type).toLowerCase()}`, {
+          values: { website: websiteDisplayHost() },
+        })}
+      {:else if error}
+        {$_(error.key, { values: error.values })}
+        {#if job.rolledBack}
+          <div class="mt-1">{$_('pages.settings.backups.job.rolled-back')}</div>
+        {/if}
+      {/if}
+    </div>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label={$_('buttons.close')}
+      onclick={() => (dismissedId = job.id)}></button>
+  </div>
+{/if}
+
+{#if restartRequired}
+  <div class="alert alert-warning d-flex align-items-center gap-2 mb-0">
+    <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+    <div>{$_('pages.settings.backups.job.restart-required')}</div>
   </div>
 {/if}
 
@@ -98,6 +97,9 @@
    * }}
    */
   let { job = null, restartRequired = false, onupdate, onfinish } = $props();
+
+  /** The finished job whose alert the owner closed. */
+  let dismissedId = $state(null);
 
   const POLL_MS = 2000;
   /** Error answers in a row after which a restore is taken as done (its restart ended the session). */

@@ -1,12 +1,13 @@
 <!-- Transfer this Pano to a Pano Host instance of the connected account: pick it, push a plain archive, owner confirms. -->
 <BsModal bind:this={modal}>
-  <div class="modal-header">
-    <h5 class="modal-title">{$_('pages.settings.backups.transfer.title')}</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label={$_('buttons.close')}
-    ></button>
-  </div>
-  <div class="modal-body vstack gap-3">
-    <ol class="small mb-0 vstack gap-1">
+  <div class="modal-body text-center vstack gap-3">
+    <div>
+      <div class="pb-3">
+        <i class="fas fa-right-left fa-3x d-block m-auto text-gray"></i>
+      </div>
+      <div class="text-capitalize">{$_('pages.settings.backups.transfer.title')}</div>
+    </div>
+    <ol class="mb-0 vstack gap-1 text-start">
       <li>{$_('pages.settings.backups.transfer.step-pick')}</li>
       <li>{$_('pages.settings.backups.transfer.step-push')}</li>
       <li>
@@ -19,11 +20,11 @@
     {#if workloadList === null}
       <div class="spinner-border spinner-border-sm text-body-secondary" role="status"></div>
     {:else if workloadsError}
-      <div class="alert alert-danger small mb-0">
+      <div class="alert alert-danger mb-0">
         {$_(workloadsError.key, { values: workloadsError.values })}
       </div>
     {:else if workloads.length === 0}
-      <div class="small text-body-secondary">
+      <div>
         {$_('pages.settings.backups.transfer.no-workloads')}
         <a href={manageUrl} target="_blank" rel="noopener noreferrer">
           {$_('pages.settings.backups.transfer.get-instance', {
@@ -32,17 +33,19 @@
         </a>
       </div>
     {:else}
-      <div>
-        <label class="form-label small" for="pano-transfer-workload">
-          {$_('pages.settings.backups.transfer.target')}
-        </label>
-        <select id="pano-transfer-workload" class="form-select" bind:value={workloadId}>
-          {#each workloads as option (option.id)}
-            <option value={String(option.id)}>{workloadLabel(option)}</option>
-          {/each}
-        </select>
+      <div class="text-start">
+        <div class="form-floating">
+          <select id="pano-transfer-workload" class="form-select" bind:value={workloadId}>
+            {#each workloads as option (option.id)}
+              <option value={String(option.id)}>{workloadLabel(option)}</option>
+            {/each}
+          </select>
+          <label class="text-capitalize" for="pano-transfer-workload">
+            {$_('pages.settings.backups.transfer.target')}
+          </label>
+        </div>
         {#if selectedWorkload?.maxBytes}
-          <div class="form-text">
+          <div class="mt-1">
             {$_('pages.settings.backups.transfer.max-size', {
               values: { size: formatBytes(selectedWorkload.maxBytes) },
             })}
@@ -51,29 +54,31 @@
       </div>
     {/if}
 
-    <div class="alert alert-info small mb-0">
-      {$_('pages.settings.backups.transfer.plain-note')}
+    <div class="alert alert-info d-flex align-items-center gap-2 mb-0 text-start">
+      <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+      <div>{$_('pages.settings.backups.transfer.plain-note')}</div>
     </div>
 
     {#if error}
-      <div class="alert alert-danger small mb-0">
+      <div class="alert alert-danger mb-0">
         {$_(error.key, { values: error.values })}
       </div>
     {/if}
   </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-link" data-bs-dismiss="modal">
+  <div class="modal-footer flex-nowrap text-capitalize">
+    <button
+      type="button"
+      class="btn btn-link text-decoration-none col-6 m-0"
+      data-bs-dismiss="modal">
       {$_('buttons.cancel')}
     </button>
     <button
       type="button"
-      class="btn btn-primary"
+      class="btn btn-primary col-6 m-0"
       disabled={!selectedWorkload || disabled || starting}
       onclick={() => void start()}>
       {#if starting}
         <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-      {:else}
-        <i class="fa-solid fa-paper-plane me-1" aria-hidden="true"></i>
       {/if}
       {$_('pages.settings.backups.transfer.start')}
     </button>

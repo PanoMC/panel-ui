@@ -10,34 +10,39 @@
       event.preventDefault();
       void submit();
     }}>
-    <div class="modal-body vstack gap-3">
-      <div class="text-center">
-        <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto text-danger pb-3"></i>
-        <h5 class="mb-2">{$_('pages.settings.backups.restore.title')}</h5>
+    <div class="modal-body text-center vstack gap-3">
+      <div>
+        <div class="pb-3">
+          <i class="fas fa-triangle-exclamation fa-3x d-block m-auto text-gray"></i>
+        </div>
+        <div>{$_('pages.settings.backups.restore.title')}</div>
         {#if label}
-          <div class="text-body-secondary small">{label}</div>
+          <div>{label}</div>
         {/if}
       </div>
 
-      <ul class="small mb-0 text-body-secondary">
-        <li>{$_('pages.settings.backups.restore.step-maintenance')}</li>
-        <li>{$_('pages.settings.backups.restore.step-safety')}</li>
-        <li>{$_('pages.settings.backups.restore.step-replace')}</li>
-        <li>{$_('pages.settings.backups.restore.step-restart')}</li>
-      </ul>
+      <div class="alert alert-info d-flex gap-2 mb-0 text-start">
+        <i class="fa-solid fa-circle-info mt-1" aria-hidden="true"></i>
+        <ul class="mb-0 ps-3">
+          <li>{$_('pages.settings.backups.restore.step-maintenance')}</li>
+          <li>{$_('pages.settings.backups.restore.step-safety')}</li>
+          <li>{$_('pages.settings.backups.restore.step-replace')}</li>
+          <li>{$_('pages.settings.backups.restore.step-restart')}</li>
+        </ul>
+      </div>
 
       {#if source === 'file'}
-        <div class="vstack gap-2">
+        <div class="vstack gap-2 text-start">
           {#if file}
             <div class="d-flex align-items-center gap-3 border rounded p-3">
               <i
                 class="fa-solid {archive.type === 'encrypted'
                   ? 'fa-file-shield'
-                  : 'fa-file-zipper'} fa-2x text-body-secondary"
+                  : 'fa-file-zipper'} fa-2x"
                 aria-hidden="true"></i>
               <div class="vstack min-w-0">
                 <span class="text-truncate">{file.name}</span>
-                <span class="small text-body-secondary">
+                <span>
                   {formatBytes(file.size)}
                   {#if archive.type === 'encrypted'}
                     · <i class="fa-solid fa-lock" aria-hidden="true"></i>
@@ -69,11 +74,11 @@
               on:error={() => (fileRejected = true)} />
           {/if}
           {#if fileRejected || (file && archive.type === 'unknown' && !inspecting)}
-            <div class="form-text text-danger mt-0">
+            <div class="text-danger">
               {$_('pages.settings.backups.restore.not-an-archive')}
             </div>
           {:else if file && archive.keyMode === 'workload'}
-            <div class="form-text text-danger mt-0">
+            <div class="text-danger">
               {$_('pages.settings.backups.restore.workload-key', {
                 values: { website: websiteDisplayHost() },
               })}
@@ -83,60 +88,67 @@
       {/if}
 
       {#if askPassphrase}
-        <div>
-          <label class="form-label small" for="pano-restore-passphrase">
-            {$_('pages.settings.backups.passphrase')}
-          </label>
-          <input
-            id="pano-restore-passphrase"
-            class="form-control"
-            type="password"
-            autocomplete="off"
-            bind:this={passphraseInput}
-            bind:value={passphrase}
-            class:border-danger={error?.code === 'WRONG_PASSPHRASE' ||
-              error?.code === 'PASSPHRASE_REQUIRED'} />
+        <div class="text-start">
+          <div class="form-floating">
+            <input
+              id="pano-restore-passphrase"
+              class="form-control"
+              type="password"
+              placeholder=" "
+              autocomplete="off"
+              bind:this={passphraseInput}
+              bind:value={passphrase}
+              class:border-danger={error?.code === 'WRONG_PASSPHRASE' ||
+                error?.code === 'PASSPHRASE_REQUIRED'} />
+            <label class="text-capitalize" for="pano-restore-passphrase">
+              {$_('pages.settings.backups.passphrase')}
+            </label>
+          </div>
           {#if source === 'remote'}
-            <div class="form-text">
+            <div class="mt-1">
               {$_('pages.settings.backups.restore.passphrase-saved-hint')}
             </div>
           {/if}
         </div>
       {/if}
 
-      <div>
-        <label class="form-label small" for="pano-restore-password">
-          {$_('pages.settings.backups.current-password')}
-        </label>
+      <div class="form-floating text-start">
         <input
           id="pano-restore-password"
           class="form-control"
           type="password"
+          placeholder=" "
           autocomplete="current-password"
           bind:value={currentPassword}
           class:border-danger={error?.code === 'CURRENT_PASSWORD_NOT_CORRECT'} />
+        <label class="text-capitalize" for="pano-restore-password">
+          {$_('pages.settings.backups.current-password')}
+        </label>
       </div>
 
-      <div class="form-check">
+      <div class="form-check text-start">
         <input
           id="pano-restore-confirm"
           class="form-check-input"
           type="checkbox"
           bind:checked={confirmed} />
-        <label class="form-check-label small" for="pano-restore-confirm">
+        <label class="form-check-label" for="pano-restore-confirm">
           {$_('pages.settings.backups.restore.confirm')}
         </label>
       </div>
 
       {#if error}
-        <div class="alert alert-danger small mb-0">{$_(error.key, { values: error.values })}</div>
+        <div class="alert alert-danger mb-0">{$_(error.key, { values: error.values })}</div>
       {/if}
     </div>
-    <div class="modal-footer flex-nowrap">
-      <button type="button" class="btn btn-link col-6 m-0" data-bs-dismiss="modal">
+    <div class="modal-footer flex-nowrap text-capitalize">
+      <button
+        type="button"
+        class="btn btn-link text-decoration-none col-6 m-0"
+        data-bs-dismiss="modal">
         {$_('buttons.cancel')}
       </button>
-      <button type="submit" class="btn btn-danger col-6 m-0" disabled={!canSubmit}>
+      <button type="submit" class="btn btn-danger text-capitalize col-6 m-0" disabled={!canSubmit}>
         {#if busy}
           <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
         {/if}
