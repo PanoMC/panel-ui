@@ -5,9 +5,12 @@
       <form on:submit|preventDefault={deletePlayer}>
         <div class="modal-body text-center">
           <div class="pb-3">
-            <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
+            <i class="fas fa-question-circle fa-3x d-block m-auto"></i>
           </div>
-          {$_('components.modals.confirm-delete-player.title')}
+          <h5 class="mb-2">{$_('components.modals.confirm-delete-player.title')}</h5>
+          <div class="text-body-secondary">
+            {$_('components.modals.confirm-delete-player.description')}
+          </div>
 
           <input
             class="form-control d-inline-block text-center mt-3"
@@ -21,7 +24,7 @@
 
         <div class="modal-footer flex-nowrap">
           <button
-            class="btn btn-link col-6 m-0"
+            class="btn btn-link text-decoration-none col-6 m-0"
             type="button"
             on:click={hide}
             class:disabled={$loading}>{$_('buttons.cancel')}</button>
@@ -29,7 +32,11 @@
             class="btn btn-danger col-6 m-0"
             type="button"
             on:click={deletePlayer}
-            class:disabled={yesButtonDisabled}>{$_('buttons.yes')}</button>
+            class:disabled={yesButtonDisabled}
+            >{#if $loading}<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"
+              ></span
+              >{/if}
+            {$_('buttons.delete')}</button>
         </div>
       </form>
     </div>

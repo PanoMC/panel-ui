@@ -1,3 +1,7 @@
+import { get, writable } from 'svelte/store';
+
+import { base } from '$app/paths';
+
 /**
  * panel-ui quick + full list; because the API / theme may return a different shape.
  * @param { { status?: string | { name?: string } } } n
@@ -30,21 +34,71 @@ const SERVER_NOTIFICATION_TYPES = Object.freeze([
 ]);
 
 /**
+ * The ids of the servers the panel has seen a row of and knows to have no icon. Their icon
+ * endpoint answers 404, so the image is not asked for at all. Only ever written in the browser
+ * (a module-level store is shared by every SSR render).
+ *
+ * @type {import('svelte/store').Writable<Set<number>>}
+ */
+export const serversWithoutIcon = writable(new Set());
+
+/**
+ * Notes whether a server row carries an icon (`favicon`). Call it with any row the panel loads
+ * or receives; a row without a `favicon` key at all says nothing and is ignored.
+ *
+ * @param {{ id?: number | string, favicon?: string | null } | null | undefined} server
+ */
+export function rememberServerIcon(server) {
+  if (typeof window === 'undefined' || !server || !('favicon' in server)) {
+    return;
+  }
+
+  const id = Number(server.id);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    return;
+  }
+
+  const iconless = !String(server.favicon || '').trim();
+
+  if (get(serversWithoutIcon).has(id) === iconless) {
+    return;
+  }
+
+  serversWithoutIcon.update((ids) => {
+    const next = new Set(ids);
+
+    if (iconless) {
+      next.add(id);
+    } else {
+      next.delete(id);
+    }
+
+    return next;
+  });
+}
+
+/**
  * The icon of the server a notification is about, served by id, or '' when it is about no one
- * server. A server without an icon answers 404, which {@link imageFallback} turns into the
- * default server icon.
+ * server. A server known to have no icon gets the default one straight away; for one the panel
+ * has not seen, a 404 is what {@link imageFallback} turns into the default server icon.
  *
  * @param {{ type?: string, details?: Record<string, unknown> } | null | undefined} n
+ * @param {Set<number>} [iconless] `$serversWithoutIcon`, passed in so a template follows it.
  * @returns {string}
  */
-export function panelNotificationServerIcon(n) {
+export function panelNotificationServerIcon(n, iconless = get(serversWithoutIcon)) {
   if (!n || !SERVER_NOTIFICATION_TYPES.includes(String(n.type || ''))) {
     return '';
   }
 
   const id = Number(n.details?.serverId ?? n.details?.id);
 
-  return Number.isInteger(id) && id > 0 ? `/api/panel/servers/${id}/icon` : '';
+  if (!Number.isInteger(id) || id <= 0) {
+    return '';
+  }
+
+  return iconless.has(id) ? `${base}/assets/img/server-icon.png` : `/api/panel/servers/${id}/icon`;
 }
 
 /**

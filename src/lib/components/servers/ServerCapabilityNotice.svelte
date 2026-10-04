@@ -5,11 +5,11 @@
      has a source. -->
 {#if reason}
   <div class="alert alert-warning d-flex flex-wrap align-items-start gap-2 mb-0" role="status">
-    <i class="fa-solid fa-plug-circle-xmark mt-1" aria-hidden="true"></i>
+    <i class="fa-solid fa-plug-circle-xmark mt-1 me-1" aria-hidden="true"></i>
     <span class="flex-grow-1">{$_(reason, { values: { section: $_(section) } })}</span>
     <!-- What the sentence asks for, one click away. -->
     {#if needsNewerPlugin}
-      <PanoPluginUpdateButton {server} />
+      <PanoPluginUpdateButton {server} inAlert />
     {/if}
   </div>
 {/if}

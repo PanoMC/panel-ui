@@ -108,9 +108,17 @@
 
   function logoutSession(sessionId, isCurrent) {
     if (isCurrent) {
-      showConfirmModal('components.modals.logout-session-confirm.title', () => {
-        logout();
-      });
+      showConfirmModal(
+        {
+          title: 'components.modals.logout-session-confirm.title',
+          description: 'components.modals.logout-session-confirm.description',
+          confirmLabel: 'buttons.logout',
+          variant: 'danger',
+        },
+        () => {
+          logout();
+        },
+      );
       return;
     }
 

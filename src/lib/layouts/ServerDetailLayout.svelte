@@ -351,32 +351,32 @@
        here after the task's red bar is gone, with the way out beside it. Hidden while a task is
        running, which is the reinstall itself. -->
   {#if installError && !headerTask && processState !== ProcessStates.INSTALLING}
-    <!-- The settings area's titled alert (PlatformSettings, the migration results): the icon
-         inside the heading, the error and the way out below that. -->
-    <div class="alert alert-danger mb-0" role="alert">
-      <h5 class="alert-heading mb-2">
-        <i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>
-        {$_('pages.servers.header.install-failed-title')}
-      </h5>
-      <pre class="install-error mt-2 mb-0">{installError}</pre>
-      {#if canReinstall}
-        <div class="d-flex flex-wrap gap-2 mt-2">
-          <button
-            type="button"
-            class="btn btn-danger"
-            on:click={() => showChangeSoftwareModal({ server: $server, lockSoftware: true })}>
-            <i class="fa-solid fa-rotate me-1" aria-hidden="true"></i>
-            {$_('buttons.reinstall')}
-          </button>
-          <button
-            type="button"
-            class="btn btn-link link-danger text-decoration-none"
-            on:click={() => showChangeSoftwareModal({ server: $server })}>
-            <i class="fa-solid fa-shuffle me-1" aria-hidden="true"></i>
-            {$_('pages.servers.settings.change-software-button')}
-          </button>
-        </div>
-      {/if}
+    <!-- A titled alert as design/alerts.md has it: the icon on the left, then the title, the error
+         and the way out below that. -->
+    <div class="alert alert-danger d-flex align-items-start mb-0" role="alert">
+      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div class="flex-grow-1 min-w-0">
+        <b>{$_('pages.servers.header.install-failed-title')}</b>
+        <pre class="install-error mt-2 mb-0">{installError}</pre>
+        {#if canReinstall}
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            <button
+              type="button"
+              class="btn alert-btn"
+              on:click={() => showChangeSoftwareModal({ server: $server, lockSoftware: true })}>
+              <i class="fa-solid fa-rotate me-1" aria-hidden="true"></i>
+              {$_('buttons.reinstall')}
+            </button>
+            <button
+              type="button"
+              class="btn alert-btn"
+              on:click={() => showChangeSoftwareModal({ server: $server })}>
+              <i class="fa-solid fa-shuffle me-1" aria-hidden="true"></i>
+              {$_('pages.servers.settings.change-software-button')}
+            </button>
+          </div>
+        {/if}
+      </div>
     </div>
   {/if}
 
@@ -385,17 +385,17 @@
        automatic crash recovery; the alert says so and offers that restart. Dismissed per server
        and per adoption, so the next adoption shows it again. -->
   {#if adopted && !adoptedDismissed}
-    <div class="alert alert-warning alert-dismissible d-flex align-items-start gap-2" role="alert">
-      <i class="fa-solid fa-triangle-exclamation mt-1" aria-hidden="true"></i>
+    <div class="alert alert-warning alert-dismissible d-flex align-items-start" role="alert">
+      <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
       <div class="flex-grow-1">
-        {$_('pages.servers.header.adopted-alert')}
+        <div class="mb-2">{$_('pages.servers.header.adopted-alert')}</div>
         <!-- The header's own Restart, with its tooltip and disabled rules. -->
         <span
-          class="d-inline-block ms-1"
+          class="d-inline-block"
           use:tooltip={[restartAction?.tooltip || '', { ...HEADER_TOOLTIP, placement: 'bottom' }]}>
           <button
             type="button"
-            class="btn btn-sm btn-info"
+            class="btn alert-btn"
             disabled={!restartAction || restartAction.disabled}
             on:click={() => restartAction && askPower(restartAction)}>
             {#if powerBusy === 'RESTART'}
@@ -432,7 +432,7 @@
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
-          <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto text-warning"></i>
+          <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto"></i>
         </div>
         {#if pendingPower}
           <h5 class="mb-2">{$_(pendingPower.confirmTitle)}</h5>
@@ -446,7 +446,7 @@
       <div class="modal-footer flex-nowrap">
         <button
           type="button"
-          class="btn btn-link col-6 m-0"
+          class="btn btn-link text-decoration-none col-6 m-0"
           disabled={!!powerBusy}
           on:click={hidePowerModal}>
           {$_('buttons.cancel')}
@@ -1273,9 +1273,14 @@
   // what the navbar falls back to outside the servers workspace.
   $: if (browser && serverId != null && selectedId !== serverId) {
     selectedId = serverId;
-    void ApiUtil.post({ path: `/api/panel/servers/${serverId}/select` }).catch(() => {
-      /* remembering the last opened server is best effort */
-    });
+
+    // The endpoint is MANAGE_SERVERS-only; a user with just a section of this server (R3) keeps
+    // the browser's own copy below and is spared a 403.
+    if (hasPermission(Permissions.MANAGE_SERVERS)) {
+      void ApiUtil.post({ path: `/api/panel/servers/${serverId}/select` }).catch(() => {
+        /* remembering the last opened server is best effort */
+      });
+    }
   }
 
   // And the browser's own copy, right away: `basicData` is only read once per load, so without

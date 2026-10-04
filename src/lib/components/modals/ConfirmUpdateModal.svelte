@@ -11,18 +11,21 @@
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
-          <i class="fa-solid fa-download fa-3x d-block m-auto text-gray" aria-hidden="true"></i>
+          <i class="fa-solid fa-download fa-3x d-block m-auto" aria-hidden="true"></i>
         </div>
         <h5 class="mb-2 text-break" id="confirmUpdateTitle">{request.title}</h5>
         {#each request.lines as line, index (index)}
-          <div class="text-body-secondary small text-break">{line}</div>
+          <div class="text-body-secondary text-break">{line}</div>
         {/each}
       </div>
       <div class="modal-footer flex-nowrap">
-        <button type="button" class="btn btn-link col-6 m-0" onclick={() => answer(false)}>
+        <button
+          type="button"
+          class="btn btn-link text-decoration-none col-6 m-0"
+          onclick={() => answer(false)}>
           {$_('buttons.cancel')}
         </button>
-        <button type="button" class="btn btn-warning col-6 m-0" onclick={() => answer(true)}>
+        <button type="button" class="btn btn-primary col-6 m-0" onclick={() => answer(true)}>
           {request.confirmLabel || $_('buttons.update')}
         </button>
       </div>

@@ -30,8 +30,9 @@
         </div>
 
         {#each $errors as error, index (index)}
-          <div class="alert alert-danger mb-0" role="alert">
-            {@html $_(error.key, { values: error.values })}
+          <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>{@html $_(error.key, { values: error.values })}</div>
           </div>
         {/each}
 

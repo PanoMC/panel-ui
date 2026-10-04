@@ -10,12 +10,12 @@
       event.preventDefault();
       void submit();
     }}>
-    <div class="modal-body text-center vstack gap-3">
-      <div>
+    <div class="modal-body vstack gap-3">
+      <div class="text-center">
         <div class="pb-3">
-          <i class="fas fa-triangle-exclamation fa-3x d-block m-auto text-gray"></i>
+          <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto"></i>
         </div>
-        <div>{$_('pages.settings.backups.restore.title')}</div>
+        <h5 class="mb-2">{$_('pages.settings.backups.restore.title')}</h5>
         {#if label}
           <div>{label}</div>
         {/if}
@@ -138,10 +138,13 @@
       </div>
 
       {#if error}
-        <div class="alert alert-danger mb-0">{$_(error.key, { values: error.values })}</div>
+        <div class="alert alert-danger mb-0 d-flex align-items-start">
+          <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+          <div>{$_(error.key, { values: error.values })}</div>
+        </div>
       {/if}
     </div>
-    <div class="modal-footer flex-nowrap text-capitalize">
+    <div class="modal-footer flex-nowrap">
       <button
         type="button"
         class="btn btn-link text-decoration-none col-6 m-0"

@@ -16,7 +16,7 @@
     {#if $maintenanceMode}
       <div class="alert alert-danger fade show mb-0 rounded-0 flex-shrink-0" role="alert">
         <div class="container-fluid d-flex align-items-center">
-          <i class="fa-solid fa-screwdriver-wrench me-3"></i>
+          <i class="fa-solid fa-screwdriver-wrench me-3" aria-hidden="true"></i>
           <div>
             {$_('components.maintenance-banner.text')}
             {#if hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS)}
@@ -230,7 +230,7 @@
       addListener(type, (notification) => {
         const serverId = notification?.details?.serverId ?? notification?.details?.id ?? null;
 
-        goto(base + (serverId == null ? '/servers' : `/servers/${serverId}`), {
+        goto(base + (serverId == null ? '/' : `/servers/${serverId}`), {
           invalidateAll: true,
         });
       });
@@ -247,7 +247,7 @@
     addListener('PLUGIN_UPDATES', (notification) => {
       const serverId = notification?.details?.serverId ?? notification?.details?.id ?? null;
 
-      goto(base + (serverId == null ? '/servers' : `/servers/${serverId}/plugins`), {
+      goto(base + (serverId == null ? '/' : `/servers/${serverId}/plugins`), {
         invalidateAll: true,
       });
     });
@@ -440,7 +440,7 @@
 
   import { options, logoutLoading, initialized } from '$lib/Store';
   import { isSignedIn } from '$lib/auth.api.js';
-  import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { canAccessServers, hasPermission, Permissions } from '$lib/auth.util.js';
   import {
     onPanelServerRemoved,
     onPanelServerUpdate,
@@ -449,6 +449,7 @@
     setPanelSelectedServerSubscription,
   } from '$lib/panelRealtime.js';
   import { activeServer } from '$lib/servers.util.js';
+  import { rememberServerIcon } from '$lib/panelNotification.util.js';
   import { PanelSidebarStorageUtil } from '$lib/storage.util.js';
   import { resolveSidebarTab, sidebarTabForPath } from '$lib/navigation.util.js';
   import { cleanupOrphanOverlays } from '$lib/modal.util.js';
@@ -661,7 +662,7 @@
   function getCurrentSidebarState(pathname) {
     return resolveSidebarTab({
       usageMode: data.usageMode,
-      canManageServers: hasPermission(Permissions.MANAGE_SERVERS),
+      canManageServers: canAccessServers(),
       // The page decides, not a remembered pill: a site page must not be shown with the servers
       // menu beside it, and the answer has to be the same on the server and in the browser.
       getStoredTab: () => sidebarTabForPath(pathname, base),
@@ -690,6 +691,60 @@
     }
   }, 1500);
 
+  /**
+   * M9 — a SERVERS install opens on the servers workspace (§4: default tab = Servers). The
+   * sidebar follows the page, so the default is a landing page: arriving at the panel root —
+   * after signing in, or by opening the panel — moves on to the servers workspace. A reload or a
+   * back/forward of the dashboard stays put, and so does every in-panel navigation (the Site
+   * pill), because this only runs once per document.
+   *
+   * @param {boolean} signedInInPlace the session started on this document (the in-place form).
+   */
+  async function landOnDefaultWorkspace(signedInInPlace) {
+    if (data.usageMode !== UsageModes.SERVERS || !canAccessServers()) {
+      return;
+    }
+
+    const isPanelRoot = () => get(page).url.pathname.replace(/\/+$/, '') === base;
+
+    if (!isPanelRoot()) {
+      return;
+    }
+
+    if (!signedInInPlace) {
+      const entry = window.performance?.getEntriesByType?.('navigation')?.[0];
+
+      if (entry && entry.type !== 'navigate') {
+        return;
+      }
+    }
+
+    let serverId = get(selectedServer)?.id ?? null;
+
+    // No remembered server: the nodes page is where the workspace starts for whoever may see
+    // it; anyone else lands on the first server they can reach, if there is one.
+    if (serverId == null && !hasPermission(Permissions.MANAGE_NODES)) {
+      const body = await ApiUtil.get({
+        path: '/api/panel/servers',
+        handler: (response) => response,
+      }).catch(() => null);
+      const list =
+        body && typeof body === 'object' && !body.error
+          ? [...(body.pinned ?? []), ...(body.otherServers ?? body.servers ?? [])]
+          : [];
+
+      serverId = list[0]?.id ?? null;
+
+      if (serverId == null || !isPanelRoot()) {
+        return;
+      }
+    }
+
+    await goto(base + (serverId == null ? '/servers/nodes' : `/servers/${serverId}`), {
+      replaceState: true,
+    });
+  }
+
   /** Whether [wireSignedInSession] has run for the session this document is showing. */
   let sessionWired = false;
 
@@ -699,12 +754,14 @@
    * when a visitor signs in *in place* (the login form `requireSignedIn` shows, then
    * `invalidateAll`) — that sign-in reloads the data, not the document.
    */
-  function wireSignedInSession() {
+  function wireSignedInSession(signedInInPlace = false) {
     if (sessionWired || !browser || !signedIn) {
       return;
     }
 
     sessionWired = true;
+
+    void landOnDefaultWorkspace(signedInInPlace);
 
     // The hub rejects an unauthenticated socket and the client would reconnect forever, so the
     // login form never opens one.
@@ -758,7 +815,14 @@
 
   // A sign-in that happened in place: the same document, new data.
   $: if (mounted && signedIn) {
-    wireSignedInSession();
+    wireSignedInSession(true);
+  }
+
+  // L17 — which servers have no icon, so nothing asks their icon endpoint for a 404.
+  $: if (browser) {
+    rememberServerIcon($selectedServer);
+    rememberServerIcon($activeServer);
+    rememberServerIcon($mainServer);
   }
 
   $: inlineLogin = isInlineLogin($page);

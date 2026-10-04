@@ -96,8 +96,9 @@
 
     {#if !sources.some((source) => source.enabled)}
       <div class="card-body border-bottom">
-        <div class="alert alert-secondary mb-0 small" role="alert">
-          {$_('pages.servers.plugins.browse.no-sources')}
+        <div class="alert alert-secondary mb-0 d-flex align-items-start" role="alert">
+          <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+          <div>{$_('pages.servers.plugins.browse.no-sources')}</div>
         </div>
       </div>
     {/if}

@@ -1,0 +1,25 @@
+// Alerts (design/alerts.md).
+//
+// `.alert-btn` is the action button of an alert: `<button class="btn alert-btn">`. Like
+// `.alert-link` it takes the alert's own colour instead of a variant of its own, so one rule covers
+// every alert variant in the light and the dark themes. Provisional look.
+.alert-btn {
+  --bs-btn-color: var(--bs-alert-color);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: currentcolor;
+  --bs-btn-hover-color: var(--bs-alert-color);
+  --bs-btn-hover-bg: var(--bs-alert-border-color);
+  --bs-btn-hover-border-color: currentcolor;
+  --bs-btn-active-color: var(--bs-alert-color);
+  --bs-btn-active-bg: var(--bs-alert-border-color);
+  --bs-btn-active-border-color: currentcolor;
+  --bs-btn-disabled-color: var(--bs-alert-color);
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: currentcolor;
+
+  flex-shrink: 0;
+
+  &:focus-visible {
+    box-shadow: 0 0 0 0.25rem var(--bs-alert-border-color);
+  }
+}

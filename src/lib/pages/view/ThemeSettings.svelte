@@ -6,7 +6,7 @@
 
 {#if error}
   <div class="alert alert-danger d-flex align-items-center mb-0" role="alert">
-    <i class="fas fa-exclamation-triangle me-3"></i>
+    <i class="fa-solid fa-circle-exclamation me-3" aria-hidden="true"></i>
     <div class="flex-grow-1">
       {$_('pages.theme-settings.error')}
     </div>
@@ -14,9 +14,9 @@
       type="button"
       title={$_('buttons.try-again')}
       aria-label={$_('buttons.try-again')}
-      class="btn btn-danger btn-sm ms-3"
+      class="btn alert-btn ms-3"
       on:click={load}>
-      <i class="fas fa-redo"></i>
+      <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
     </button>
   </div>
 {/if}
@@ -73,9 +73,19 @@
     }
 
     if (data.type === 'show-confirm') {
-      showConfirm(data.title, () => {
-        frame?.contentWindow?.postMessage({ type: 'confirm-callback', id: data.id }, childOrigin);
-      });
+      // A theme may send the rest of the dialog next to the title; one that predates those
+      // fields sends the title alone and gets the default label and colour.
+      showConfirm(
+        {
+          title: data.title,
+          description: data.description,
+          confirmLabel: data.confirmLabel,
+          variant: data.variant,
+        },
+        () => {
+          frame?.contentWindow?.postMessage({ type: 'confirm-callback', id: data.id }, childOrigin);
+        },
+      );
     }
 
     if (data.type === 'show-toast') {
@@ -126,7 +136,7 @@
     // 2. Collect CSS links
     const cssLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
     const baseUrl = window.location.origin + base;
-    
+
     const globalLinks = cssLinks
       .map((link) => link.href || '')
       .filter((href) => {
@@ -147,7 +157,13 @@
               const appIndex = url.pathname.indexOf('/_app');
               const expectedBasePath = (base || '') + '/_app';
               if (appIndex > 0 && !url.pathname.startsWith(expectedBasePath)) {
-                return baseUrl + '/_app' + url.pathname.substring(appIndex + '/_app'.length) + (url.search || '') + (url.hash || '');
+                return (
+                  baseUrl +
+                  '/_app' +
+                  url.pathname.substring(appIndex + '/_app'.length) +
+                  (url.search || '') +
+                  (url.hash || '')
+                );
               }
             }
           }
@@ -157,10 +173,15 @@
         }
       });
 
-    console.log('Sending combined CSS to iframe. Inline length:', inlineCSS.length, 'Links:', globalLinks.length);
+    console.log(
+      'Sending combined CSS to iframe. Inline length:',
+      inlineCSS.length,
+      'Links:',
+      globalLinks.length,
+    );
     console.log('Inline CSS content:', inlineCSS);
     console.log('Global Links:', globalLinks);
-    
+
     frame.contentWindow.postMessage(
       {
         type: 'inject-css-all',

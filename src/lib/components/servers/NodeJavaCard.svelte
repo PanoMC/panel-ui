@@ -326,7 +326,7 @@
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
-          <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto text-danger"></i>
+          <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto"></i>
         </div>
         <h5 class="mb-2">{$_('pages.servers.nodes.java.remove-title')}</h5>
         <div class="text-body-secondary">
@@ -340,7 +340,10 @@
         </div>
       </div>
       <div class="modal-footer flex-nowrap">
-        <button type="button" class="btn btn-link col-6 m-0" data-bs-dismiss="modal">
+        <button
+          type="button"
+          class="btn btn-link text-decoration-none col-6 m-0"
+          data-bs-dismiss="modal">
           {$_('buttons.cancel')}
         </button>
         <button

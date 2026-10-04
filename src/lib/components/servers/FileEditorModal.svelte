@@ -48,24 +48,21 @@
 
       <div class="modal-body vstack gap-2">
         {#if loadError}
-          <div class="alert alert-danger mb-0 d-flex align-items-center gap-2" role="alert">
-            <span>{$_(loadError)}</span>
+          <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>{$_(loadError)}</div>
           </div>
         {/if}
 
         {#if binary}
-          <div class="alert alert-warning mb-0 d-flex align-items-center gap-2" role="alert">
-            <span>
-              <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
-              {$_('components.modals.file-editor.binary')}
-            </span>
+          <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>{$_('components.modals.file-editor.binary')}</div>
           </div>
         {:else if truncated}
-          <div class="alert alert-warning mb-0 d-flex align-items-center gap-2" role="alert">
-            <span>
-              <i class="fa-solid fa-scissors me-1" aria-hidden="true"></i>
-              {$_('components.modals.file-editor.truncated')}
-            </span>
+          <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-scissors me-3 mt-1" aria-hidden="true"></i>
+            <div>{$_('components.modals.file-editor.truncated')}</div>
           </div>
         {/if}
 

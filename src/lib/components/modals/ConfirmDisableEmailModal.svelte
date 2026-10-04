@@ -3,13 +3,16 @@
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
-          <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
+          <i class="fas fa-question-circle fa-3x d-block m-auto"></i>
         </div>
-        {$_('components.modals.confirm-disable-email.title')}
+        <h5 class="mb-2">{$_('components.modals.confirm-disable-email.title')}</h5>
+        <div class="text-body-secondary">
+          {$_('components.modals.confirm-disable-email.description')}
+        </div>
       </div>
       <div class="modal-footer flex-nowrap">
         <button
-          class="btn btn-link col-6 m-0"
+          class="btn btn-link text-decoration-none col-6 m-0"
           type="button"
           class:disabled={loading}
           on:click={hide}>
@@ -20,7 +23,10 @@
           type="button"
           class:disabled={loading}
           on:click={onYesClick}>
-          {$_('buttons.yes')}
+          {#if loading}
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+          {/if}
+          {$_('buttons.disable')}
         </button>
       </div>
     </div>

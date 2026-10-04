@@ -97,7 +97,7 @@
                         {:else if panelNotificationServerIcon(notification)}
                           <!-- The server the notification is about, by id; one without an icon gets the default. -->
                           <img
-                            src={panelNotificationServerIcon(notification)}
+                            src={panelNotificationServerIcon(notification, $serversWithoutIcon)}
                             use:imageFallback={base + '/assets/img/server-icon.png'}
                             alt={notification.details?.serverName || $_('buttons.view')}
                             width="18"
@@ -238,6 +238,7 @@
     imageFallback,
     isPanelNotificationUnread,
     panelNotificationServerIcon,
+    serversWithoutIcon,
   } from '$lib/panelNotification.util.js';
 
   const pageTitle = getContext('pageTitle');

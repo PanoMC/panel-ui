@@ -44,10 +44,13 @@
 
 {#if !data.panoAccount && data.platformConnectFailed}
   <!-- Error Alert -->
-  <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
+  <div
+    class="alert alert-danger alert-dismissible fade show d-flex align-items-start mb-0"
+    role="alert">
+    <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+    <div>{$_('pages.settings.platform.connect-failed-alert')}</div>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label={$_('buttons.close')}
     ></button>
-    {$_('pages.settings.platform.connect-failed-alert')}
   </div>
 {/if}
 
@@ -79,20 +82,21 @@
     style="background-image: var(--welcome-gradient), url('{base}/assets/img/connect-pano-bg.png');">
     <div class="row align-items-center">
       <div class="col-lg-9">
-        <h5 class="alert-heading mb-2">
-          <i class="fa-solid fa-user-circle me-2"></i>
-          {data.panoAccount
-            ? data.panoAccount.username
-            : $_('pages.settings.platform.online-account')}
-        </h5>
-        <p
-          class="mb-0"
-          class:text-success-emphasis={data.panoAccount}
-          class:text-body={!data.panoAccount}>
-          {data.panoAccount
-            ? $_('pages.settings.platform.connected-account-description')
-            : $_('pages.settings.platform.connect-online-account-alert')}
-        </p>
+        <div class="d-flex align-items-start">
+          <i class="fa-solid fa-circle-user me-3 mt-1" aria-hidden="true"></i>
+          <div>
+            <b>
+              {data.panoAccount
+                ? data.panoAccount.username
+                : $_('pages.settings.platform.online-account')}
+            </b>
+            <div>
+              {data.panoAccount
+                ? $_('pages.settings.platform.connected-account-description')
+                : $_('pages.settings.platform.connect-online-account-alert')}
+            </div>
+          </div>
+        </div>
       </div>
       <div class="col-lg-3 text-lg-end mt-3 mt-lg-0">
         {#if data.panoAccount}
@@ -132,7 +136,10 @@
         {$_('pages.settings.platform.usage-mode.label')}
       </span>
       <div class="col-md-6">
-        <div class="list-group list-group-horizontal-md" role="radiogroup" aria-labelledby="usageModeLabel">
+        <div
+          class="list-group list-group-horizontal-md"
+          role="radiogroup"
+          aria-labelledby="usageModeLabel">
           {#each usageModeOptions as option (option.value)}
             <button
               type="button"
@@ -181,9 +188,9 @@
         </select>
 
         {#if $siteInfo.userLocaleCode && $siteInfo.userLocaleCode !== $siteInfo.platformLocale}
-          <div class="alert alert-info mt-2 mb-0 py-2 px-3" role="alert">
-            <i class="fa-solid fa-circle-info me-1"></i>
-            <small>{$_('pages.settings.platform.user-locale-mismatch-warning')}</small>
+          <div class="alert alert-info mt-2 mb-0 d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+            <div>{$_('pages.settings.platform.user-locale-mismatch-warning')}</div>
           </div>
         {/if}
       </div>
@@ -241,13 +248,15 @@
         </select>
 
         {#if data.releaseChannel && data.releaseChannel !== 'RELEASE'}
-          <div class="alert alert-warning mt-2" role="alert">
-            <i class="fa-solid fa-triangle-exclamation me-2"></i>
-            {@html $_('pages.settings.platform.release-channel-warning')}
-            {#if data.releaseChannel === 'BETA'}
-              <br />
-              {@html $_('pages.settings.platform.release-channel-warning-beta')}
-            {/if}
+          <div class="alert alert-warning mt-2 d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>
+              {@html $_('pages.settings.platform.release-channel-warning')}
+              {#if data.releaseChannel === 'BETA'}
+                <br />
+                {@html $_('pages.settings.platform.release-channel-warning-beta')}
+              {/if}
+            </div>
           </div>
         {/if}
       </div>
@@ -314,22 +323,14 @@
     </div>
 
     {#if smtpDisabled}
-      <div class="alert alert-warning mt-3" role="alert">
-        <div class="d-flex align-items-center">
-          <i class="fa-solid fa-triangle-exclamation me-3"></i>
-          <div>
-            {@html $_('pages.settings.platform.auth.email-disabled-warning')}
-          </div>
-        </div>
+      <div class="alert alert-warning d-flex align-items-start mt-3" role="alert">
+        <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+        <div>{@html $_('pages.settings.platform.auth.email-disabled-warning')}</div>
       </div>
     {:else if !data.requireEmailVerification}
-      <div class="alert alert-warning mt-3" role="alert">
-        <div class="d-flex align-items-center">
-          <i class="fa-solid fa-triangle-exclamation me-3"></i>
-          <div>
-            {$_('pages.settings.platform.auth.require-email-verification-warning')}
-          </div>
-        </div>
+      <div class="alert alert-warning d-flex align-items-start mt-3" role="alert">
+        <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+        <div>{$_('pages.settings.platform.auth.require-email-verification-warning')}</div>
       </div>
     {/if}
 
@@ -357,13 +358,9 @@
     </div>
 
     {#if data.passwordHashAlgorithm === 'MD5'}
-      <div class="alert alert-danger mt-2">
-        <div class="hstack gap-3">
-          <i class="fa-solid fa-triangle-exclamation"></i>
-          <div>
-            {$_('pages.settings.platform.auth.password-hash-algorithm-warning')}
-          </div>
-        </div>
+      <div class="alert alert-danger d-flex align-items-start mt-2">
+        <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+        <div>{$_('pages.settings.platform.auth.password-hash-algorithm-warning')}</div>
       </div>
     {/if}
 
@@ -408,13 +405,9 @@
   </div>
   <div class="card-body" class:opacity-50={maintenanceDisabled}>
     {#if !maintenanceDisabled}
-      <div class="alert alert-danger border mb-3" role="alert">
-        <div class="d-flex align-items-center">
-          <i class="fa-solid fa-triangle-exclamation me-3"></i>
-          <div>
-            {$_('pages.settings.platform.maintenance.active-warning')}
-          </div>
-        </div>
+      <div class="alert alert-danger d-flex align-items-start mb-3" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+        <div>{$_('pages.settings.platform.maintenance.active-warning')}</div>
       </div>
     {/if}
 
@@ -589,14 +582,15 @@
       <div class="text-muted mb-3">{$_('pages.settings.platform.alerts.description')}</div>
 
       {#if !alertsSupported}
-        <div class="alert alert-secondary mb-0" role="alert">
-          {$_('pages.settings.platform.alerts.unavailable')}
+        <div class="alert alert-secondary mb-0 d-flex align-items-start" role="alert">
+          <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+          <div>{$_('pages.settings.platform.alerts.unavailable')}</div>
         </div>
       {:else}
         {#if !alertsEmailAvailable}
-          <div class="alert alert-warning border" role="alert">
-            <i class="fa-solid fa-envelope-circle-check me-2" aria-hidden="true"></i>
-            {$_('pages.settings.platform.alerts.email-unavailable')}
+          <div class="alert alert-warning d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-envelope-circle-check me-3 mt-1" aria-hidden="true"></i>
+            <div>{$_('pages.settings.platform.alerts.email-unavailable')}</div>
           </div>
         {/if}
 
@@ -673,11 +667,17 @@
 {/if}
 
 {#if mailError}
-  <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    {$_('pages.settings.platform.smtp.email-validation-error', {
-      values: { mailError },
-    })}
+  <div
+    class="alert alert-danger alert-dismissible fade show d-flex align-items-start mb-0"
+    role="alert">
+    <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+    <div>
+      {$_('pages.settings.platform.smtp.email-validation-error', {
+        values: { mailError },
+      })}
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label={$_('buttons.close')}
+    ></button>
   </div>
 {/if}
 
@@ -697,13 +697,9 @@
   </div>
   <div class="card-body" class:opacity-50={smtpDisabled}>
     {#if smtpDisabled}
-      <div class="alert alert-warning border mb-3" role="alert">
-        <div class="d-flex align-items-center">
-          <i class="fa-solid fa-triangle-exclamation me-3"></i>
-          <div>
-            {@html $_('pages.settings.platform.smtp.smtp-disabled-alert')}
-          </div>
-        </div>
+      <div class="alert alert-warning d-flex align-items-start mb-3" role="alert">
+        <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+        <div>{@html $_('pages.settings.platform.smtp.smtp-disabled-alert')}</div>
       </div>
     {/if}
 
@@ -942,6 +938,7 @@
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
   import { isEndpointUnavailable } from '$lib/servers.util.js';
   import { hostedMocked, mockHostMail } from '$lib/hosted-mock.util.js';
+  import { normalizeUsageMode, UsageModes } from '$lib/navigation.util.js';
 
   /** Pano Host mail sender name (before `@`); mirrors `HostedEnvConfig.SENDER_LOCAL`. */
   export const HOST_SENDER_LOCAL = /^[A-Za-z0-9_+-]+(\.[A-Za-z0-9_+-]+)*$/;
@@ -996,7 +993,11 @@
       parent,
       url: { searchParams },
     } = event;
-    await parent();
+    const { usageMode } = await parent();
+
+    // Alerts are a server-management feature: a WEBSITE install has no such endpoint (404), so
+    // it is not asked — also on the reload that follows saving the usage mode.
+    const alertsInUse = normalizeUsageMode(usageMode) !== UsageModes.WEBSITE;
 
     const [generalSettings, authSettings, maintenanceSettings, alertSettings] = await Promise.all([
       ApiUtil.get({
@@ -1013,7 +1014,7 @@
       }),
       // Alerts are a separate endpoint (§2.4.7) and an older backend does not have it, so the
       // card is hidden instead of failing the whole page.
-      ApiUtil.get({ path: '/api/panel/settings/alerts', request: event }),
+      alertsInUse ? ApiUtil.get({ path: '/api/panel/settings/alerts', request: event }) : null,
     ]);
 
     const alertsSupported =
@@ -1057,8 +1058,6 @@
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
   import { currentLanguage } from '$lib/language.util.js';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
-  import { normalizeUsageMode, UsageModes } from '$lib/navigation.util.js';
-
   import {
     showSuccess as showSuccessToast,
     showError as showErrorToast,
@@ -1203,6 +1202,15 @@
   let alertSettings = readAlertSettings(data.alerts);
   let alertsEmailAvailable = data.alertsEmailAvailable === true;
   let alertsSupported = data.alertsSupported !== false;
+  // The one time the snapshot is retaken: the alerts were not loaded (WEBSITE mode asks for
+  // none) and a usage-mode save has just brought them in, or the other way round.
+  let alertsLoaded = data.alertsSupported;
+  $: if (data.alertsSupported !== alertsLoaded) {
+    alertsLoaded = data.alertsSupported;
+    alertSettings = readAlertSettings(data.alerts);
+    alertsEmailAvailable = data.alertsEmailAvailable === true;
+    alertsSupported = data.alertsSupported !== false;
+  }
   let saveEmailLoading;
   let connecting = !data.panoAccount && data.state && data.encodedData;
   let disconnecting;
@@ -1661,7 +1669,15 @@
       return;
     }
 
-    showConfirmActionModal('pages.settings.platform.smtp.confirm-discard', () => setMailMode(mode));
+    showConfirmActionModal(
+      {
+        title: 'pages.settings.platform.smtp.confirm-discard-title',
+        description: 'pages.settings.platform.smtp.confirm-discard-description',
+        confirmLabel: 'buttons.discard',
+        variant: 'danger',
+      },
+      () => setMailMode(mode),
+    );
   }
 
   function onResetHostSenderClick() {
@@ -1671,7 +1687,15 @@
   /** Pano Host mail: switch to it (confirmed), turn mail on or save another sender. */
   function onSaveHostMailClick() {
     if (storedEmail.hostManaged === false) {
-      showConfirmActionModal('pages.settings.platform.smtp.confirm-switch-host', saveHostMail);
+      showConfirmActionModal(
+        {
+          title: 'pages.settings.platform.smtp.confirm-switch-host-title',
+          description: 'pages.settings.platform.smtp.confirm-switch-host-description',
+          confirmLabel: 'buttons.switch',
+          variant: 'primary',
+        },
+        saveHostMail,
+      );
 
       return;
     }
@@ -1720,7 +1744,15 @@
   /** Own SMTP: switching away from Pano Host mail asks first. */
   function onSaveSmtpClick() {
     if (data.email.hostMailAvailable && storedEmail.hostManaged !== false) {
-      showConfirmActionModal('pages.settings.platform.smtp.confirm-switch-own', saveSmtp);
+      showConfirmActionModal(
+        {
+          title: 'pages.settings.platform.smtp.confirm-switch-own-title',
+          description: 'pages.settings.platform.smtp.confirm-switch-own-description',
+          confirmLabel: 'buttons.switch',
+          variant: 'primary',
+        },
+        saveSmtp,
+      );
 
       return;
     }

@@ -5,25 +5,25 @@
       <form on:submit|preventDefault={sendDeleteServer}>
         <div class="modal-body text-center">
           <div class="pb-3">
-            <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
+            <i class="fas fa-question-circle fa-3x d-block m-auto"></i>
           </div>
-          <p>
+          <h5 class="mb-2">
             {$_(
               $managed && !$inPlace
                 ? 'components.modals.remove-server.delete-title'
                 : 'components.modals.remove-server.remove-title',
             )}
-          </p>
+          </h5>
 
           {#if !$managed}
-            <div class="small text-body-secondary mt-2">
+            <div class="text-body-secondary">
               {$_('components.modals.remove-server.remove-info')}
             </div>
           {:else if $inPlace}
             <!-- Run from its own folder: the node takes only its own files back out of it, and
                  the Pano Agent removes its .pano-agent folder (the jar is left to the admin).
                  Backups are Pano's and go. -->
-            <div class="small text-body-secondary mt-2">
+            <div class="text-body-secondary">
               {$_('components.modals.remove-server.in-place-info')}
               {#if $agent}
                 {$_('components.modals.remove-server.agent-info')}
@@ -34,7 +34,7 @@
             </div>
           {:else}
             <!-- SM-64: a managed server takes its files and its backups with it. -->
-            <div class="small text-body-secondary mt-2">
+            <div class="text-body-secondary">
               {#if $backups === null}
                 <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
                 {$_('components.modals.remove-server.backups-loading')}
@@ -73,7 +73,7 @@
         </div>
 
         <div class="modal-footer flex-nowrap">
-          <button class="btn btn-link col-6 m-0" type="button" on:click={hide}
+          <button class="btn btn-link text-decoration-none col-6 m-0" type="button" on:click={hide}
             >{$_('buttons.cancel')}</button>
           <button
             class="btn btn-danger col-6 m-0"

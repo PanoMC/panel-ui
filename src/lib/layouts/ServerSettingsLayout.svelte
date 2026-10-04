@@ -3,9 +3,11 @@
 <PageActions>
   <div slot="left">
     <PageNav>
-      <PageNavItem href="/servers/{$server.id}/settings">
-        {$_('components.server-settings-layout.server')}
-      </PageNavItem>
+      {#if canManageServers}
+        <PageNavItem href="/servers/{$server.id}/settings">
+          {$_('components.server-settings-layout.server')}
+        </PageNavItem>
+      {/if}
       {#if isManaged($server) && hasPermission(Permissions.MANAGE_SERVER_STARTUP)}
         <PageNavItem href="/servers/{$server.id}/settings/startup" startsWith>
           {$_('components.server-settings-layout.startup')}
@@ -14,9 +16,11 @@
           {$_('components.server-settings-layout.properties')}
         </PageNavItem>
       {/if}
-      <PageNavItem href="/servers/{$server.id}/settings/game-integration" startsWith>
-        {$_('components.server-settings-layout.game-integration')}
-      </PageNavItem>
+      {#if canManageServers}
+        <PageNavItem href="/servers/{$server.id}/settings/game-integration" startsWith>
+          {$_('components.server-settings-layout.game-integration')}
+        </PageNavItem>
+      {/if}
     </PageNav>
   </div>
 </PageActions>
@@ -36,4 +40,8 @@
 
   /** Published by `ServerDetailLayout`; the tabs are scoped to the server in the URL. */
   const server = getContext('server');
+
+  // R3 — the general and game-integration pages are the umbrella grant's; the startup pages
+  // have their own.
+  const canManageServers = hasPermission(Permissions.MANAGE_SERVERS);
 </script>

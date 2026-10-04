@@ -30,8 +30,8 @@
       </div>
     </div>
   {:else if connection === 'unavailable'}
-    <div class="alert alert-warning d-flex align-items-center gap-2 mb-0">
-      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+    <div class="alert alert-warning mb-0 d-flex align-items-start">
+      <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
       <div>
         {$_('pages.settings.backups.account.unavailable', {
           values: { website: websiteDisplayHost() },

@@ -27,7 +27,7 @@
 <div class="container vstack gap-3">
   {#if showLuckPermsAlert}
     <div class="alert alert-info d-flex align-items-center mb-0 alert-dismissible" role="alert">
-      <i class="fas fa-info-circle me-3"></i>
+      <i class="fa-solid fa-circle-info me-3" aria-hidden="true"></i>
       <div>
         {$_('pages.permissions.panel.luckperms-alert')}
         <a
@@ -35,7 +35,7 @@
           target="_blank"
           class="alert-link ms-1">
           {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
-          <i class="fas fa-external-link-alt ms-1"></i>
+          <i class="fa-solid fa-arrow-up-right-from-square ms-1" aria-hidden="true"></i>
         </a>
       </div>
       <button

@@ -5,9 +5,12 @@
       <form on:submit|preventDefault={onConfirm}>
         <div class="modal-body text-center">
           <div class="pb-3">
-            <i class="fas fa-triangle-exclamation fa-3x d-block m-auto text-warning"></i>
+            <i class="fas fa-triangle-exclamation fa-3x d-block m-auto"></i>
           </div>
-          {$_('components.modals.confirm-save-critical-settings.title')}
+          <h5 class="mb-2">{$_('components.modals.confirm-save-critical-settings.title')}</h5>
+          <div class="text-body-secondary">
+            {$_('components.modals.confirm-save-critical-settings.description')}
+          </div>
 
           <input
             class="form-control mt-3"
@@ -19,17 +22,21 @@
         </div>
 
         <div class="modal-footer flex-nowrap">
-          <button class="btn btn-link col-6 m-0" type="button" on:click={hide} disabled={$loading}>
+          <button
+            class="btn btn-link text-decoration-none col-6 m-0"
+            type="button"
+            on:click={hide}
+            disabled={$loading}>
             {$_('buttons.cancel')}
           </button>
           <button
-            class="btn btn-warning col-6 m-0"
+            class="btn btn-primary col-6 m-0"
             type="submit"
             disabled={confirmButtonDisabled || $loading}>
+            {#if $loading}<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"
+              ></span
+              >{/if}
             {$_('buttons.save')}
-            {#if $loading}
-              <i class="fas fa-sync fa-spin ms-2"></i>
-            {/if}
           </button>
         </div>
       </form>

@@ -32,8 +32,9 @@
         </label>
       </div>
       {#if error}
-        <div class="alert alert-danger mb-0">
-          {$_(error.key, { values: error.values })}
+        <div class="alert alert-danger mb-0 d-flex align-items-start">
+          <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+          <div>{$_(error.key, { values: error.values })}</div>
         </div>
       {/if}
     </div>

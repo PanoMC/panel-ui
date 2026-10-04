@@ -67,7 +67,7 @@
           <span class="d-lg-inline d-none ms-2">
             {$_(data.pageType === PageTypes.ADDON ? 'buttons.addons' : 'buttons.themes')}
           </span>
-        </button> 
+        </button>
       </PageActions>
     </div>
   {/if}
@@ -90,17 +90,14 @@
 <ConfirmInstallResourceModal />
 
 {#snippet versionNotFoundSnippet()}
-  <div class="alert alert-danger border mb-0" role="alert">
-    <h5 class="alert-heading mb-2">
-      <i class="fa-solid fa-circle-exclamation me-2"></i>
-      {$_('components.store-loading.version-not-found-title')}
-    </h5>
-    <p class="mb-0 text-body">
-      {$_('components.store-loading.version-not-found-description')}
-    </p>
+  <div class="alert alert-danger d-flex align-items-start mb-0" role="alert">
+    <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+    <div>
+      <b>{$_('components.store-loading.version-not-found-title')}</b>
+      <div>{$_('components.store-loading.version-not-found-description')}</div>
+    </div>
   </div>
 {/snippet}
-
 
 {#snippet accountNotConnectedSnippet()}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -116,13 +113,13 @@
     style="background-image: var(--welcome-gradient), url('{base}/assets/img/connect-pano-bg.png');">
     <div class="row align-items-center">
       <div class="col-lg-9">
-        <h5 class="alert-heading mb-2">
-          <i class="fa-solid fa-user-circle me-2"></i>
-          {$_('pages.settings.platform.online-account')}
-        </h5>
-        <p class="mb-0 text-body">
-          {$_('pages.settings.platform.connect-online-account-alert')}
-        </p>
+        <div class="d-flex align-items-start">
+          <i class="fa-solid fa-circle-user me-3 mt-1" aria-hidden="true"></i>
+          <div>
+            <b>{$_('pages.settings.platform.online-account')}</b>
+            <div>{$_('pages.settings.platform.connect-online-account-alert')}</div>
+          </div>
+        </div>
       </div>
       <div class="col-lg-3 text-lg-end mt-3 mt-lg-0">
         <div
@@ -140,7 +137,6 @@
     </div>
   </div>
 {/snippet}
-
 
 {#snippet loadingSnippet()}
   <div class="vstack gap-3 text-center">

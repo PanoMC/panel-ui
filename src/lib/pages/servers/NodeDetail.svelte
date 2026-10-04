@@ -184,7 +184,7 @@
     const { user } = await parent();
 
     if (!hasPermission(Permissions.MANAGE_NODES, user)) {
-      throw redirect(302, `${base}/servers`);
+      throw redirect(302, `${base}/`);
     }
 
     const id = Number(params.id);

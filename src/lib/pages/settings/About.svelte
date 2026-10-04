@@ -70,27 +70,29 @@
     </div>
   </div>
   <div class="col-lg-6 order-1 order-lg-2">
-    <div
-      class="alert alert-primary h-100 mb-0 d-flex flex-column blocks border">
-      <h5 class="alert-heading">{$_('pages.settings.about.support-pano')}</h5>
-      <p class="mb-3">
-        {$_('pages.settings.about.support-pano-text')}
-      </p>
-      <div class="mt-auto d-flex gap-3">
-        <a
-          href="{PANO_WEBSITE_URL}/source-code"
-          target="_blank"
-          class="btn btn-link p-0 text-decoration-none d-flex align-items-center">
-          <i class="fa-brands fa-github fa-lg me-2"></i>
-          <span class="fw-bold">{$_('pages.settings.about.support-pano-button')}</span>
-        </a>
-        <a
-          href="{PANO_WEBSITE_URL}/donate"
-          target="_blank"
-          class="btn btn-link p-0 text-decoration-none d-flex align-items-center">
-          <i class="fa-solid fa-donate fa-lg me-2"></i>
-          <span class="fw-bold">{$_('pages.settings.about.support-pano-donate')}</span>
-        </a>
+    <div class="alert alert-primary h-100 mb-0 d-flex blocks border">
+      <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+      <div class="d-flex flex-column flex-grow-1">
+        <b>{$_('pages.settings.about.support-pano')}</b>
+        <p class="mb-3">
+          {$_('pages.settings.about.support-pano-text')}
+        </p>
+        <div class="mt-auto d-flex gap-3">
+          <a
+            href="{PANO_WEBSITE_URL}/source-code"
+            target="_blank"
+            class="alert-link d-flex align-items-center">
+            <i class="fa-brands fa-github fa-lg me-2" aria-hidden="true"></i>
+            <span>{$_('pages.settings.about.support-pano-button')}</span>
+          </a>
+          <a
+            href="{PANO_WEBSITE_URL}/donate"
+            target="_blank"
+            class="alert-link d-flex align-items-center">
+            <i class="fa-solid fa-donate fa-lg me-2" aria-hidden="true"></i>
+            <span>{$_('pages.settings.about.support-pano-donate')}</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -117,7 +119,9 @@
                   target="_blank"
                   rel="noopener noreferrer"
                   class="text-decoration-none ms-2"
-                  aria-label={$_('pages.settings.about.open-homepage', { values: { name: license.name } })}
+                  aria-label={$_('pages.settings.about.open-homepage', {
+                    values: { name: license.name },
+                  })}
                   onclick={(e) => e.stopPropagation()}>
                   <i class="fa-solid fa-external-link"></i>
                 </a>

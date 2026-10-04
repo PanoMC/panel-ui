@@ -5,7 +5,7 @@
 
   import { base } from '$app/paths';
 
-  import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { canAccessServers } from '$lib/auth.util.js';
   import { requireServerSection } from '$lib/navigation.util.js';
 
   /**
@@ -22,7 +22,10 @@
     // Server management is switched off entirely in a WEBSITE install: 404, like its endpoints.
     requireServerSection(usageMode);
 
-    if (!hasPermission(Permissions.MANAGE_SERVERS, user)) {
+    // R3 — any server permission opens the workspace, not only the MANAGE_SERVERS umbrella: a
+    // user who holds just one server's console must reach `/servers/<id>/console`. What they may
+    // see inside is decided per page and, for the server itself, by the backend.
+    if (!canAccessServers(user)) {
       throw redirect(302, base);
     }
 

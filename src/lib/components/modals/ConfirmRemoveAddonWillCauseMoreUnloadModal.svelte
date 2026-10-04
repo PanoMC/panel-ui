@@ -3,28 +3,36 @@
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
-          <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
+          <i class="fas fa-question-circle fa-3x d-block m-auto"></i>
         </div>
-        {$_('components.modals.confirm-remove-addon.title', { values: { pluginId: $plugin.id } })}
-        <div class="mt-3 alert alert-warning text-left">
-          {$_('components.modals.confirm-remove-addon-will-cause-more-unload.description', {
-            values: { pluginId: $plugin.id },
-          })}
-          <br />
-          <br />
-          {#each $plugin.removeDependents as addon, index (addon)}
-            <a
-              class="badge bg-warning rounded-pill"
-              href="{base}/addons/detail/{addon}"
-              target="_blank">
-              {addon}
-            </a>
-          {/each}
+        <h5 class="mb-2">
+          {$_('components.modals.confirm-remove-addon.title', { values: { pluginId: $plugin.id } })}
+        </h5>
+        <div class="text-body-secondary">
+          {$_('components.modals.confirm-remove-addon.description')}
+        </div>
+        <div class="mt-3 alert alert-warning d-flex align-items-start text-start">
+          <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+          <div>
+            {$_('components.modals.confirm-remove-addon-will-cause-more-unload.warning', {
+              values: { pluginId: $plugin.id },
+            })}
+            <br />
+            <br />
+            {#each $plugin.removeDependents as addon, index (addon)}
+              <a
+                class="badge bg-warning rounded-pill"
+                href="{base}/addons/detail/{addon}"
+                target="_blank">
+                {addon}
+              </a>
+            {/each}
+          </div>
         </div>
       </div>
       <div class="modal-footer flex-nowrap">
         <button
-          class="btn btn-link col-6 m-0"
+          class="btn btn-link text-decoration-none col-6 m-0"
           type="button"
           class:disabled={loading}
           on:click={hide}>
@@ -35,7 +43,10 @@
           type="button"
           class:disabled={loading}
           on:click={onYesClick}>
-          {$_('buttons.yes')}
+          {#if loading}
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+          {/if}
+          {$_('buttons.remove')}
         </button>
       </div>
     </div>

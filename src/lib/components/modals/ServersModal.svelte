@@ -22,14 +22,16 @@
           <h5 class="modal-title mb-0 text-break">
             {$_('components.modals.servers.servers')}
           </h5>
-          <button
-            class="btn btn-sm btn-success flex-shrink-0"
-            on:click={openConnectServer}
-            type="button"
-            title={$_('components.modals.servers.connect-server-button')}
-            aria-label={$_('components.modals.servers.connect-server-button')}>
-            <i class="fa-solid fa-plus" aria-hidden="true"></i>
-          </button>
+          {#if canAddServers}
+            <button
+              class="btn btn-sm btn-success flex-shrink-0"
+              on:click={openConnectServer}
+              type="button"
+              title={$_('components.modals.servers.connect-server-button')}
+              aria-label={$_('components.modals.servers.connect-server-button')}>
+              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            </button>
+          {/if}
         </div>
         {#if !$loading && $otherServers.length > 0}
           <!-- The search shares the header line and centres itself in whatever room the title
@@ -241,6 +243,8 @@
     createKeyedLatestThrottle,
   } from '$lib/metricsSeries.util.js';
 
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { rememberServerIcon } from '$lib/panelNotification.util.js';
   import { applyTaskFrame } from '$lib/servers.util.js';
 
   import { show as showAddServerModal } from './AddServerModal.svelte';
@@ -248,6 +252,10 @@
 
   const selectedServer = getContext('selectedServer');
   const usageMode = getContext('usageMode');
+
+  // R3 — the list also opens for someone who only holds a section of some servers; adding a
+  // server and remembering the selected one both need MANAGE_SERVERS.
+  const canAddServers = hasPermission(Permissions.MANAGE_SERVERS);
 
   const SERVERS_MODAL_SEARCH_INPUT_ID = 'servers-modal-search-input';
 
@@ -287,6 +295,8 @@
   // Every server the modal lists — pinned and the rest, search or not — so a card that the
   // search reveals already has live numbers.
   $: listedServerIds = [...$pinnedServers, ...$otherServers].map((server) => server.id);
+  // L17 — the list says which servers have an icon at all.
+  $: [...$pinnedServers, ...$otherServers].forEach(rememberServerIcon);
 
   // The list travels with the subscription; a change re-sends it. The gauges run at the panel's
   // usual pace: the modal is open only while an admin is looking at it.
@@ -598,6 +608,15 @@
 
   function onSelect(server) {
     selectingServer.set(server.id);
+
+    if (!canAddServers) {
+      void goto(`${base}/servers/${server.id}`, { invalidateAll: true }).finally(() => {
+        selectingServer.set(null);
+        hide();
+      });
+
+      return;
+    }
 
     // The select call still runs so `basicData.selectedServer` remembers the last server the
     // admin opened, but the modal is a navigation now: every server page names its server in

@@ -7,8 +7,9 @@
         src="{base}/assets/img/404.png"
         width="280" />
 
-      <div class="alert alert-danger" role="alert">
-        {$_('page-error.' + $page.status) || $page.error.message}
+      <div class="alert alert-danger d-flex align-items-start" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+        <div>{$_('page-error.' + $page.status) || $page.error.message}</div>
       </div>
     </div>
   </div>

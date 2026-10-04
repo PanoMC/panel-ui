@@ -33,15 +33,25 @@
       <div class="modal-body">
         {#if $server}
           <!-- From a server's roster: say how far this ban reaches before it is issued. -->
-          <p class="alert small text-start {$server.panoUser ? 'alert-info' : 'alert-warning'}">
-            {$server.panoUser
-              ? $_('components.modals.confirm-ban-player.scope-pano', {
-                  values: { username: $player.username },
-                })
-              : $_('components.modals.confirm-ban-player.scope-server', {
-                  values: { username: $player.username },
-                })}
-          </p>
+          <div
+            class="alert d-flex align-items-start text-start {$server.panoUser
+              ? 'alert-info'
+              : 'alert-warning'}">
+            <i
+              class="fa-solid {$server.panoUser
+                ? 'fa-circle-info'
+                : 'fa-triangle-exclamation'} me-3 mt-1"
+              aria-hidden="true"></i>
+            <div>
+              {$server.panoUser
+                ? $_('components.modals.confirm-ban-player.scope-pano', {
+                    values: { username: $player.username },
+                  })
+                : $_('components.modals.confirm-ban-player.scope-server', {
+                    values: { username: $player.username },
+                  })}
+            </div>
+          </div>
         {/if}
 
         <!-- Ban Message -->

@@ -4,15 +4,22 @@
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
-          <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
+          <i class="fas fa-question-circle fa-3x d-block m-auto"></i>
         </div>
-        {$post.status === 0
-          ? $_('components.modals.confirm-delete-post.title-permanent')
-          : $_('components.modals.confirm-delete-post.title-trash')}
+        <h5 class="mb-2">
+          {$post.status === 0
+            ? $_('components.modals.confirm-delete-post.title-permanent')
+            : $_('components.modals.confirm-delete-post.title-trash')}
+        </h5>
+        <div class="text-body-secondary">
+          {$post.status === 0
+            ? $_('components.modals.confirm-delete-post.description-permanent')
+            : $_('components.modals.confirm-delete-post.description-trash')}
+        </div>
       </div>
       <div class="modal-footer flex-nowrap">
         <button
-          class="btn btn-link col-6 m-0"
+          class="btn btn-link text-decoration-none col-6 m-0"
           type="button"
           class:disabled={loading}
           on:click={hide}>
@@ -23,7 +30,10 @@
           type="button"
           class:disabled={loading}
           on:click={onYesClick}>
-          {$_('buttons.yes')}
+          {#if loading}
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+          {/if}
+          {$post.status === 0 ? $_('buttons.delete-permanently') : $_('buttons.move-to-trash')}
         </button>
       </div>
     </div>

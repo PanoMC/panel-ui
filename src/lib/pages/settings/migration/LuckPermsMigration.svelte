@@ -113,14 +113,16 @@
 </style>
 
 {#if currentStep === 'upload'}
-  <div class="alert alert-info mb-3">
-    <i class="fas fa-info-circle me-1"></i>
-    <strong>{$_('pages.migration.luckperms.supported-info-title')}</strong>
-    <ul class="mb-0 mt-1">
-      <li>{$_('pages.migration.luckperms.supported-backends')}</li>
-      <li>{$_('pages.migration.luckperms.supported-data')}</li>
-      <li>{$_('pages.migration.luckperms.merge-note')}</li>
-    </ul>
+  <div class="alert alert-info d-flex align-items-start mb-3">
+    <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+    <div>
+      <b>{$_('pages.migration.luckperms.supported-info-title')}</b>
+      <ul class="mb-0 mt-1">
+        <li>{$_('pages.migration.luckperms.supported-backends')}</li>
+        <li>{$_('pages.migration.luckperms.supported-data')}</li>
+        <li>{$_('pages.migration.luckperms.merge-note')}</li>
+      </ul>
+    </div>
   </div>
 
   <label class="form-label" for="lpUploadConfig"
@@ -153,9 +155,9 @@
     <div class="mt-3">
       <label class="form-label" for="lpUploadDb"
         >{$_('pages.migration.luckperms.h2-database-label')}</label>
-      <div class="alert alert-warning">
-        <i class="fas fa-info-circle me-1"></i>
-        {$_('pages.migration.luckperms.h2-detected-note')}
+      <div class="alert alert-warning d-flex align-items-start">
+        <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+        <div>{$_('pages.migration.luckperms.h2-detected-note')}</div>
       </div>
       {#if dbFile}
         <div class="position-relative">
@@ -288,9 +290,9 @@
   {/if}
 
   {#if uploadError}
-    <div class="alert alert-danger mt-3" role="alert">
-      <i class="fas fa-exclamation-triangle me-2"></i>
-      {uploadError}
+    <div class="alert alert-danger mt-3 d-flex align-items-start" role="alert">
+      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>{uploadError}</div>
     </div>
   {/if}
 {:else if currentStep === 'review' && previewData}
@@ -362,27 +364,33 @@
   </fieldset>
 
   {#if previewData.existingPanoNodeCount > 0}
-    <div class="alert {mergeStrategy === 'replace' ? 'alert-danger' : 'alert-warning'} mb-3">
-      <i class="fas fa-exclamation-triangle me-1"></i>
-      {#if mergeStrategy === 'replace'}
-        {$_('pages.migration.luckperms.existing-data-replace-warning', {
-          values: {
-            groupCount: previewData.existingPanoGroupCount,
-            nodeCount: previewData.existingPanoNodeCount,
-          },
-        })}
-      {:else}
-        {$_('pages.migration.luckperms.existing-data-warning', {
-          values: {
-            groupCount: previewData.existingPanoGroupCount,
-            nodeCount: previewData.existingPanoNodeCount,
-          },
-        })}
-      {/if}
+    <div
+      class="alert {mergeStrategy === 'replace'
+        ? 'alert-danger'
+        : 'alert-warning'} mb-3 d-flex align-items-start">
+      <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>
+        {#if mergeStrategy === 'replace'}
+          {$_('pages.migration.luckperms.existing-data-replace-warning', {
+            values: {
+              groupCount: previewData.existingPanoGroupCount,
+              nodeCount: previewData.existingPanoNodeCount,
+            },
+          })}
+        {:else}
+          {$_('pages.migration.luckperms.existing-data-warning', {
+            values: {
+              groupCount: previewData.existingPanoGroupCount,
+              nodeCount: previewData.existingPanoNodeCount,
+            },
+          })}
+        {/if}
+      </div>
     </div>
   {/if}
 
   <div class="alert alert-secondary d-flex flex-wrap gap-3 mb-3">
+    <i class="fa-solid fa-circle-info mt-1" aria-hidden="true"></i>
     <span>
       <span class="lp-legend-swatch lp-legend-new me-1"></span>
       {$_('pages.migration.luckperms.legend-new')}
@@ -691,13 +699,16 @@
                         {/if}
 
                         {#if chain.some((g) => !isGroupImportable(g))}
-                          <div class="alert alert-danger py-2 small">
-                            <i class="fas fa-exclamation-triangle me-1"></i>
-                            {$_('pages.migration.luckperms.track-unknown-groups', {
-                              values: {
-                                groups: chain.filter((g) => !isGroupImportable(g)).join(', '),
-                              },
-                            })}
+                          <div class="alert alert-danger d-flex align-items-start">
+                            <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"
+                            ></i>
+                            <div>
+                              {$_('pages.migration.luckperms.track-unknown-groups', {
+                                values: {
+                                  groups: chain.filter((g) => !isGroupImportable(g)).join(', '),
+                                },
+                              })}
+                            </div>
                           </div>
                         {/if}
 
@@ -884,18 +895,26 @@
         {/if}
 
         {#if importUserPermissions && creatablePlayers.length > 0}
-          <div class="alert {createMissingPlayers ? 'alert-success' : 'alert-warning'} mb-0 mt-3">
-            <i class="fas {createMissingPlayers ? 'fa-user-plus' : 'fa-exclamation-triangle'} me-1"
-            ></i>
-            {#if createMissingPlayers}
-              {$_('pages.migration.luckperms.players-will-be-created', {
-                values: { count: creatablePlayers.length, total: previewData.players.length },
-              })}
-            {:else}
-              {$_('pages.migration.luckperms.players-will-be-skipped', {
-                values: { count: creatablePlayers.length, total: previewData.players.length },
-              })}
-            {/if}
+          <div
+            class="alert {createMissingPlayers
+              ? 'alert-success'
+              : 'alert-warning'} mb-0 mt-3 d-flex align-items-start">
+            <i
+              class="fa-solid {createMissingPlayers
+                ? 'fa-user-plus'
+                : 'fa-triangle-exclamation'} me-3 mt-1"
+              aria-hidden="true"></i>
+            <div>
+              {#if createMissingPlayers}
+                {$_('pages.migration.luckperms.players-will-be-created', {
+                  values: { count: creatablePlayers.length, total: previewData.players.length },
+                })}
+              {:else}
+                {$_('pages.migration.luckperms.players-will-be-skipped', {
+                  values: { count: creatablePlayers.length, total: previewData.players.length },
+                })}
+              {/if}
+            </div>
           </div>
         {/if}
       </div>
@@ -1056,20 +1075,24 @@
   {/if}
 
   {#if incompleteNodeCount > 0}
-    <div class="alert alert-danger">
-      <i class="fas fa-exclamation-triangle me-1"></i>
-      {$_('pages.migration.luckperms.incomplete-nodes-warning', {
-        values: { count: incompleteNodeCount },
-      })}
+    <div class="alert alert-danger d-flex align-items-start">
+      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>
+        {$_('pages.migration.luckperms.incomplete-nodes-warning', {
+          values: { count: incompleteNodeCount },
+        })}
+      </div>
     </div>
   {/if}
 
   {#if invalidUsernameCount > 0}
-    <div class="alert alert-danger">
-      <i class="fas fa-exclamation-triangle me-1"></i>
-      {$_('pages.migration.luckperms.invalid-usernames-warning', {
-        values: { count: invalidUsernameCount },
-      })}
+    <div class="alert alert-danger d-flex align-items-start">
+      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>
+        {$_('pages.migration.luckperms.invalid-usernames-warning', {
+          values: { count: invalidUsernameCount },
+        })}
+      </div>
     </div>
   {/if}
 
@@ -1093,9 +1116,9 @@
   {/if}
 
   {#if uploadError}
-    <div class="alert alert-danger mt-3" role="alert">
-      <i class="fas fa-exclamation-triangle me-2"></i>
-      {uploadError}
+    <div class="alert alert-danger mt-3 d-flex align-items-start" role="alert">
+      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>{uploadError}</div>
     </div>
   {/if}
 
@@ -1117,11 +1140,11 @@
     </button>
   </div>
 {:else if currentStep === 'result' && importResult}
-  <div class="alert alert-success d-flex align-items-center" role="alert">
-    <i class="fas fa-check-circle fs-4 me-3"></i>
+  <div class="alert alert-success d-flex align-items-start" role="alert">
+    <i class="fa-solid fa-circle-check me-3 mt-1" aria-hidden="true"></i>
     <div>
-      <h6 class="alert-heading mb-1">{$_('pages.migration.luckperms.result-title')}</h6>
-      <p class="mb-0 small">
+      <b>{$_('pages.migration.luckperms.result-title')}</b>
+      <p class="mb-0">
         <strong>{importResult.importedGroups}</strong>
         {$_('pages.migration.luckperms.import-summary-groups')}{#if importResult.updatedGroups > 0},
           <strong>{importResult.updatedGroups}</strong>
@@ -1153,16 +1176,16 @@
   </div>
 
   {#if importResult?.errors && importResult.errors.length > 0}
-    <div class="alert alert-warning mt-3">
-      <h6 class="alert-heading mb-2">
-        <i class="fas fa-exclamation-triangle me-1"></i>
-        {$_('pages.migration.authme.some-issues-occurred')}
-      </h6>
-      <ul class="mb-0 small">
-        {#each importResult.errors as err}
-          <li><strong>{err.item}</strong>: {err.error}</li>
-        {/each}
-      </ul>
+    <div class="alert alert-warning d-flex align-items-start mt-3">
+      <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>
+        <b>{$_('pages.migration.authme.some-issues-occurred')}</b>
+        <ul class="mb-0 mt-1">
+          {#each importResult.errors as err}
+            <li><strong>{err.item}</strong>: {err.error}</li>
+          {/each}
+        </ul>
+      </div>
     </div>
   {/if}
 

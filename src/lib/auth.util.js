@@ -70,6 +70,37 @@ export function hasPermission(permission, user) {
 }
 
 /**
+ * The granular per-server permissions (`pano.panel.manage.server.*`). Each one opens one section
+ * of a server, and can be narrowed to individual servers through the node's `context.server`.
+ */
+export const SERVER_SECTION_PERMISSIONS = Object.freeze([
+  Permissions.MANAGE_SERVER_CONSOLE,
+  Permissions.MANAGE_SERVER_POWER,
+  Permissions.MANAGE_SERVER_PLAYERS,
+  Permissions.MANAGE_SERVER_FILES,
+  Permissions.MANAGE_SERVER_BACKUPS,
+  Permissions.MANAGE_SERVER_PLUGINS,
+  Permissions.MANAGE_SERVER_SCHEDULES,
+  Permissions.MANAGE_SERVER_STARTUP,
+]);
+
+/**
+ * Whether the servers workspace exists for this user at all (R3): the umbrella `MANAGE_SERVERS`,
+ * `CREATE_SERVERS`, or any single section of any server. Which servers a scoped grant reaches is
+ * the backend's answer — `GET /api/panel/servers` lists only those.
+ *
+ * @param {object} [user] the signed-in user; read off the page when omitted.
+ * @returns {boolean}
+ */
+export function canAccessServers(user) {
+  return (
+    hasPermission(Permissions.MANAGE_SERVERS, user) ||
+    hasPermission(Permissions.CREATE_SERVERS, user) ||
+    SERVER_SECTION_PERMISSIONS.some((permission) => hasPermission(permission, user))
+  );
+}
+
+/**
  * Permission nodes that can be narrowed to individual servers (§2.6). `MANAGE_SERVERS` is the
  * umbrella node; every granular `MANAGE_SERVER_*` permission lives under
  * `pano.panel.manage.server.`, so both shapes are recognised.

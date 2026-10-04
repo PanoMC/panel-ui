@@ -64,18 +64,18 @@
     Hidden when zero failures or when the dashboard payload doesn't include the field.
   -->
   {#if data.licenseFailedPluginCount && data.licenseFailedPluginCount > 0}
-    <div class="alert alert-warning d-flex align-items-center gap-3 mb-0 border-warning">
-      <i class="fa-solid fa-key fa-lg"></i>
+    <div class="alert alert-warning d-flex align-items-center gap-3 mb-0">
+      <i class="fa-solid fa-key fa-lg" aria-hidden="true"></i>
       <div class="flex-grow-1">
-        <strong
+        <b
           >{$_('pages.dashboard.license-banner.title', {
             values: { count: data.licenseFailedPluginCount },
-          })}</strong>
-        <div class="small text-body-secondary">
+          })}</b>
+        <div>
           {$_('pages.dashboard.license-banner.description')}
         </div>
       </div>
-      <a class="btn btn-sm btn-warning" href="{base}/addons?status=LICENSE_ISSUES">
+      <a class="btn alert-btn" href="{base}/addons?status=LICENSE_ISSUES">
         {$_('buttons.view')}
       </a>
     </div>
@@ -85,7 +85,7 @@
   {#if data.gettingStartedBlocks.welcomeBoard}
     <div class="alert alert-secondary welcome-board alert-dismissible mb-0 border">
       <div class="row">
-        <div class="mb-3 lead">
+        <div class="mb-3">
           {@html $_('pages.dashboard.welcome-card.description')}
         </div>
         <div class="col-lg-4">
@@ -98,16 +98,20 @@
                   <i class="fa-solid fa-server me-2"></i>
                   {$_('pages.dashboard.welcome-card.enable-server-management')}
                 </a>
-                <small class="d-block text-body-secondary">
+                <div>
                   {$_('pages.dashboard.welcome-card.enable-server-management-description')}
-                </small>
+                </div>
               {:else}
                 <button
                   type="button"
                   class="alert-link focus-ring rounded border-0 bg-transparent p-0"
                   on:click={() => showAddServerModal($usageMode)}>
                   <i class="fa-solid fa-gamepad me-2"></i>
-                  {$_('pages.dashboard.welcome-card.connect-server')}
+                  <!-- With the chooser behind it the button creates or links (§3); without
+                       the right to create it only ever links. -->
+                  {canCreateServers
+                    ? $_('components.modals.servers.connect-server-button')
+                    : $_('pages.dashboard.welcome-card.connect-server')}
                 </button>
               {/if}
             </li>
@@ -121,18 +125,21 @@
         </div>
         <div class="col-lg-4">
           <ul class="list-unstyled">
-            <li>
-              <a class="alert-link focus-ring rounded" href="{base}/posts/create-post">
-                <i class="fa-solid fa-pen me-2"></i>
-                {$_('pages.dashboard.welcome-card.publish-your-first-post')}
-              </a>
-            </li>
-            <li>
-              <a class="alert-link focus-ring rounded" href="{base}/view">
-                <i class="fa-solid fa-brush me-2"></i>
-                {$_('pages.dashboard.welcome-card.change-theme')}
-              </a>
-            </li>
+            <!-- M9 — a SERVERS install has no website: no posts and no theme to offer. -->
+            {#if $usageMode !== UsageModes.SERVERS}
+              <li>
+                <a class="alert-link focus-ring rounded" href="{base}/posts/create-post">
+                  <i class="fa-solid fa-pen me-2"></i>
+                  {$_('pages.dashboard.welcome-card.publish-your-first-post')}
+                </a>
+              </li>
+              <li>
+                <a class="alert-link focus-ring rounded" href="{base}/view">
+                  <i class="fa-solid fa-brush me-2"></i>
+                  {$_('pages.dashboard.welcome-card.change-theme')}
+                </a>
+              </li>
+            {/if}
             <li>
               <a class="alert-link focus-ring rounded" href="{base}/addons">
                 <i class="fa-solid fa-puzzle-piece me-2"></i>
@@ -156,7 +163,9 @@
                 href="{PANO_WEBSITE_URL}/addons"
                 target="_blank">
                 <i class="fa-solid fa-bag-shopping me-2"></i>
-                {$_('pages.dashboard.welcome-card.get-themes-and-extensions')}
+                {$usageMode === UsageModes.SERVERS
+                  ? $_('pages.dashboard.welcome-card.get-extensions')
+                  : $_('pages.dashboard.welcome-card.get-themes-and-extensions')}
               </a>
             </li>
             <li>
@@ -484,6 +493,10 @@
 
   const pageTitle = getContext('pageTitle');
   const usageMode = getContext('usageMode');
+
+  // Whether the getting-started button opens the create/link chooser or just the link dialog.
+  $: canCreateServers =
+    $usageMode !== UsageModes.WEBSITE && hasPermission(Permissions.CREATE_SERVERS);
 
   pageTitle.set('pages.dashboard.title');
 

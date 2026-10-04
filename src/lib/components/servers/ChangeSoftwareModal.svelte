@@ -118,11 +118,16 @@
           {/if}
 
           {#if taskStatus === 'FAILED'}
-            <div class="alert alert-danger mt-3 mb-0" role="alert">
-              {$_(serverActionErrorKey(taskError || 'TASK_FAILED'), {
-                values: { error: taskError || 'TASK_FAILED' },
-              })}
-              <div class="mt-1">{$_('components.modals.change-software.progress-rolled-back')}</div>
+            <div class="alert alert-danger d-flex align-items-start mt-3 mb-0" role="alert">
+              <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>
+                {$_(serverActionErrorKey(taskError || 'TASK_FAILED'), {
+                  values: { error: taskError || 'TASK_FAILED' },
+                })}
+                <div class="mt-1">
+                  {$_('components.modals.change-software.progress-rolled-back')}
+                </div>
+              </div>
             </div>
           {:else if taskStatus !== 'DONE'}
             <div class="form-text mt-3">
@@ -145,12 +150,15 @@
                   <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
                 </div>
               {:else if pickable.length === 0}
-                <div class="alert alert-warning mb-0" role="alert">
-                  {$_(
-                    softwareUnavailable
-                      ? 'components.modals.create-server.software-unavailable'
-                      : 'components.modals.create-server.software-empty',
-                  )}
+                <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
+                  <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                  <div>
+                    {$_(
+                      softwareUnavailable
+                        ? 'components.modals.create-server.software-unavailable'
+                        : 'components.modals.create-server.software-empty',
+                    )}
+                  </div>
                 </div>
               {:else}
                 <div class="list-group" class:software-grid={!locked}>
@@ -246,9 +254,11 @@
                   </div>
 
                   {#if BUILD_TOOLS_SOFTWARE.includes(String(selectedSoftware.id).toUpperCase())}
-                    <div class="alert alert-warning mt-3 mb-0" role="alert">
-                      <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
-                      {$_('components.modals.create-server.spigot-hint')}
+                    <div
+                      class="alert alert-warning mt-3 mb-0 d-flex align-items-start"
+                      role="alert">
+                      <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                      <div>{$_('components.modals.create-server.spigot-hint')}</div>
                     </div>
                   {/if}
                 {/if}
@@ -294,38 +304,44 @@
               </div>
 
               {#if kindChanges}
-                <div class="alert alert-warning mt-3 mb-0" role="alert">
-                  <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
-                  {$_(
-                    toKind === 'proxy'
-                      ? 'components.modals.change-software.warning-to-proxy'
-                      : 'components.modals.change-software.warning-to-backend',
-                  )}
+                <div class="alert alert-warning mt-3 mb-0 d-flex align-items-start" role="alert">
+                  <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                  <div>
+                    {$_(
+                      toKind === 'proxy'
+                        ? 'components.modals.change-software.warning-to-proxy'
+                        : 'components.modals.change-software.warning-to-backend',
+                    )}
+                  </div>
                 </div>
               {/if}
               {#if familyChanges && fromHasAddons}
-                <div class="alert alert-warning mt-3 mb-0" role="alert">
-                  <i class="fa-solid fa-puzzle-piece me-1" aria-hidden="true"></i>
-                  {$_(
-                    FAMILY_MODS.includes(fromFamily)
-                      ? 'components.modals.change-software.warning-mods'
-                      : 'components.modals.change-software.warning-plugins',
-                    { values: { from: fromName, to: toName } },
-                  )}
+                <div class="alert alert-warning mt-3 mb-0 d-flex align-items-start" role="alert">
+                  <i class="fa-solid fa-puzzle-piece me-3 mt-1" aria-hidden="true"></i>
+                  <div>
+                    {$_(
+                      FAMILY_MODS.includes(fromFamily)
+                        ? 'components.modals.change-software.warning-mods'
+                        : 'components.modals.change-software.warning-plugins',
+                      { values: { from: fromName, to: toName } },
+                    )}
+                  </div>
                 </div>
               {/if}
               {#if !keep.worlds && !kindChanges && toKind === 'backend'}
-                <div class="alert alert-danger mt-3 mb-0" role="alert">
-                  <i class="fa-solid fa-earth-europe me-1" aria-hidden="true"></i>
-                  {$_('components.modals.change-software.warning-worlds-dropped')}
+                <div class="alert alert-danger mt-3 mb-0 d-flex align-items-start" role="alert">
+                  <i class="fa-solid fa-earth-europe me-3 mt-1" aria-hidden="true"></i>
+                  <div>{$_('components.modals.change-software.warning-worlds-dropped')}</div>
                 </div>
               {/if}
               {#if worldsDowngrade}
-                <div class="alert alert-danger mt-3 mb-0" role="alert">
-                  <i class="fa-solid fa-clock-rotate-left me-1" aria-hidden="true"></i>
-                  {$_('components.modals.change-software.warning-worlds-downgrade', {
-                    values: { from: fromVersion, to: version },
-                  })}
+                <div class="alert alert-danger mt-3 mb-0 d-flex align-items-start" role="alert">
+                  <i class="fa-solid fa-clock-rotate-left me-3 mt-1" aria-hidden="true"></i>
+                  <div>
+                    {$_('components.modals.change-software.warning-worlds-downgrade', {
+                      values: { from: fromVersion, to: version },
+                    })}
+                  </div>
                 </div>
               {/if}
             </section>
@@ -354,9 +370,9 @@
                     </label>
                   </div>
                   {#if !backupFirst}
-                    <div class="alert alert-danger mb-0" role="alert">
-                      <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
-                      {$_('components.modals.change-software.no-backup-warning')}
+                    <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
+                      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                      <div>{$_('components.modals.change-software.no-backup-warning')}</div>
                     </div>
                   {/if}
                 {/if}
@@ -413,7 +429,10 @@
                 </div>
 
                 {#if submitError}
-                  <div class="alert alert-danger mb-0" role="alert">{submitError}</div>
+                  <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
+                    <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                    <div>{submitError}</div>
+                  </div>
                 {/if}
               </div>
             </section>

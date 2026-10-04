@@ -4,6 +4,7 @@ $pano-asset-path: '/panel/assets/';
 // as a plain CSS `@import` the browser cannot resolve from /panel.
 @import 'node_modules/animate.css/animate.min';
 @import 'workspace';
+@import 'alerts';
 $fa-font-path: '#{$pano-asset-path}webfonts';
 
 @import 'node_modules/tippy.js/dist/tippy';

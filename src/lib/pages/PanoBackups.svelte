@@ -180,7 +180,7 @@
     {#if connected && openTransfer}
       <div class="card-body pt-0">
         <div class="alert alert-warning mb-0 d-flex flex-wrap align-items-center gap-2">
-          <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+          <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
           <span>
             {$_('pages.settings.backups.transfer.awaiting', {
               values: { website: websiteDisplayHost() },
@@ -192,7 +192,7 @@
           </span>
           <button
             type="button"
-            class="btn btn-sm btn-outline-danger ms-auto"
+            class="btn alert-btn ms-auto"
             disabled={cancelling === openTransfer.id}
             onclick={() => void cancelTransfer(openTransfer)}>
             {$_('buttons.cancel')}
@@ -207,8 +207,8 @@
       <div class="border-top"></div>
       {#if remoteError}
         <div class="card-body">
-          <div class="alert alert-danger d-flex align-items-center gap-2 mb-0">
-            <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+          <div class="alert alert-danger mb-0 d-flex align-items-start">
+            <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
             <div>{$_(remoteError.key, { values: remoteError.values })}</div>
           </div>
         </div>
@@ -384,8 +384,8 @@
         <div>{$_('pages.settings.backups.plain-hint')}</div>
       {/if}
       {#if createError}
-        <div class="alert alert-danger d-flex align-items-center gap-2 mb-0">
-          <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+        <div class="alert alert-danger mb-0 d-flex align-items-start">
+          <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
           <div>{$_(createError.key, { values: createError.values })}</div>
         </div>
       {/if}
@@ -408,17 +408,17 @@
 <BsModal bind:this={uploadModal}>
   <div class="modal-body text-center">
     <div class="pb-3">
-      <i class="fa-solid fa-cloud-arrow-up fa-3x d-block m-auto text-gray"></i>
+      <i class="fa-solid fa-cloud-arrow-up fa-3x d-block m-auto"></i>
     </div>
-    <div class="text-capitalize mb-2">{$_('pages.settings.backups.upload-confirm.title')}</div>
-    <div>
+    <h5 class="mb-2">{$_('pages.settings.backups.upload-confirm.title')}</h5>
+    <div class="text-body-secondary">
       {$_('pages.settings.backups.upload-confirm.description')}
       {remote.passphraseSet
         ? $_('pages.settings.backups.upload-confirm.encrypted')
         : $_('pages.settings.backups.upload-confirm.plain')}
     </div>
   </div>
-  <div class="modal-footer flex-nowrap text-capitalize">
+  <div class="modal-footer flex-nowrap">
     <button
       type="button"
       class="btn btn-link text-decoration-none col-6 m-0"
@@ -433,7 +433,7 @@
       {#if busyAction === 'upload'}
         <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
       {/if}
-      {$_('pages.settings.backups.upload-now')}
+      {$_('pages.settings.backups.upload-confirm.confirm')}
     </button>
   </div>
 </BsModal>
@@ -441,16 +441,16 @@
 <BsModal bind:this={deleteModal} onhidden={() => (selectedId = null)}>
   <div class="modal-body text-center">
     <div class="pb-3">
-      <i class="fa-solid fa-trash fa-3x d-block m-auto text-gray"></i>
+      <i class="fa-solid fa-trash fa-3x d-block m-auto"></i>
     </div>
-    <div class="text-capitalize mb-2">{$_('pages.settings.backups.delete-title')}</div>
-    <div>
+    <h5 class="mb-2">{$_('pages.settings.backups.delete-title')}</h5>
+    <div class="text-body-secondary">
       {deleteTarget?.kind === 'remote'
         ? $_('pages.settings.backups.delete-remote-description')
         : $_('pages.settings.backups.delete-local-description')}
     </div>
   </div>
-  <div class="modal-footer flex-nowrap text-capitalize">
+  <div class="modal-footer flex-nowrap">
     <button
       type="button"
       class="btn btn-link text-decoration-none col-6 m-0"

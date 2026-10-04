@@ -219,7 +219,12 @@
 
   function onRemoveClick(bannedIp) {
     showConfirmActionModal(
-      'pages.settings.platform.maintenance.banned-ips.remove-confirm',
+      {
+        title: 'pages.settings.platform.maintenance.banned-ips.remove-title',
+        description: 'pages.settings.platform.maintenance.banned-ips.remove-description',
+        confirmLabel: 'buttons.remove-ban',
+        variant: 'primary',
+      },
       () => removeIps([bannedIp.ip]),
       { ip: bannedIp.ip },
     );
@@ -227,7 +232,12 @@
 
   function onClearAllClick() {
     showConfirmActionModal(
-      'pages.settings.platform.maintenance.banned-ips.clear-all-confirm',
+      {
+        title: 'pages.settings.platform.maintenance.banned-ips.clear-all-title',
+        description: 'pages.settings.platform.maintenance.banned-ips.clear-all-description',
+        confirmLabel: 'pages.settings.platform.maintenance.banned-ips.clear-all',
+        variant: 'primary',
+      },
       () => {
         actionLoading.set(true);
 

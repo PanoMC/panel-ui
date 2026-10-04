@@ -86,9 +86,9 @@
   {#if $siteInfo?.isDemo}
     <div class="alert alert-info fade show mb-0" role="alert">
       <div class="container-fluid d-flex align-items-center">
-        <i class="fa-solid fa-circle-info me-3"></i>
+        <i class="fa-solid fa-circle-info me-3" aria-hidden="true"></i>
         <div>
-          <strong class="me-2">{$_('components.alerts.demo-mode-title')}</strong>
+          <b class="me-2">{$_('components.alerts.demo-mode-title')}</b>
           {$_('components.alerts.demo-mode-description')}
         </div>
       </div>
@@ -97,9 +97,9 @@
   {#if $showDevModeAlert}
     <div class="alert alert-warning alert-dismissible fade show mb-0" role="alert">
       <div class="container-fluid d-flex align-items-center">
-        <i class="fa-solid fa-triangle-exclamation me-3"></i>
+        <i class="fa-solid fa-triangle-exclamation me-3" aria-hidden="true"></i>
         <div>
-          <strong class="me-2">{$_('components.alerts.dev-mode-title')}</strong>
+          <b class="me-2">{$_('components.alerts.dev-mode-title')}</b>
           {$_('components.alerts.dev-mode-description')}
         </div>
         <button

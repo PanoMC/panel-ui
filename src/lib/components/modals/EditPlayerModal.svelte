@@ -140,10 +140,9 @@
                 {/if}
               </div>
               {#if !$player.clearPassword && !String($player.email ?? '').trim()}
-                <div class="alert alert-info mt-2 mb-0 py-2 px-3" role="status">
-                  <i class="fa-solid fa-circle-info me-1"></i>
-                  <small
-                    >{$_('components.modals.edit-player.inputs.email.empty-login-notice')}</small>
+                <div class="alert alert-info mt-2 mb-0 d-flex align-items-start" role="status">
+                  <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+                  <div>{$_('components.modals.edit-player.inputs.email.empty-login-notice')}</div>
                 </div>
               {/if}
             </div>
@@ -190,9 +189,9 @@
                   </label>
                 </div>
                 {#if $player.clearPassword}
-                  <div class="alert alert-warning mt-2 mb-0 py-2 px-3" role="status">
-                    <i class="fa-solid fa-triangle-exclamation me-1"></i>
-                    <small>{$_('components.modals.edit-player.inputs.clear-password.help')}</small>
+                  <div class="alert alert-warning mt-2 mb-0 d-flex align-items-start" role="status">
+                    <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                    <div>{$_('components.modals.edit-player.inputs.clear-password.help')}</div>
                   </div>
                 {/if}
               {/if}
@@ -238,10 +237,9 @@
               </div>
 
               {#if $player.localeCode && $player.localeCode !== $siteInfo.platformLocale}
-                <div class="alert alert-info mt-2 mb-0 py-2 px-3" role="alert">
-                  <i class="fa-solid fa-circle-info me-1"></i>
-                  <small
-                    >{$_('components.modals.edit-player.inputs.locale.mismatch-warning')}</small>
+                <div class="alert alert-info mt-2 mb-0 d-flex align-items-start" role="alert">
+                  <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+                  <div>{$_('components.modals.edit-player.inputs.locale.mismatch-warning')}</div>
                 </div>
               {/if}
             </div>

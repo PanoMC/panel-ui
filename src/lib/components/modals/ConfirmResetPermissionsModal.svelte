@@ -6,22 +6,28 @@
         <div class="pb-3">
           <i class="fas fa-history fa-3x d-block m-auto"></i>
         </div>
-        {$_('pages.permissions.panel.actions.confirm-reset-title')}
+        <h5 class="mb-2">{$_('pages.permissions.panel.actions.confirm-reset-title')}</h5>
+        <div class="text-body-secondary">
+          {$_('pages.permissions.panel.actions.confirm-reset-description')}
+        </div>
       </div>
       <div class="modal-footer flex-nowrap">
         <button
-          class="btn btn-link col-6 m-0"
+          class="btn btn-link text-decoration-none col-6 m-0"
           type="button"
           class:disabled={loading}
           on:click={hide}>
           {$_('buttons.cancel')}
         </button>
         <button
-          class="btn btn-primary col-6 m-0"
+          class="btn btn-danger col-6 m-0"
           type="button"
           class:disabled={loading}
           on:click={onYesClick}>
-          {$_('buttons.yes')}
+          {#if loading}
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+          {/if}
+          {$_('buttons.reset')}
         </button>
       </div>
     </div>

@@ -20,8 +20,9 @@
     {#if workloadList === null}
       <div class="spinner-border spinner-border-sm text-body-secondary" role="status"></div>
     {:else if workloadsError}
-      <div class="alert alert-danger mb-0">
-        {$_(workloadsError.key, { values: workloadsError.values })}
+      <div class="alert alert-danger mb-0 d-flex align-items-start">
+        <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+        <div>{$_(workloadsError.key, { values: workloadsError.values })}</div>
       </div>
     {:else if workloads.length === 0}
       <div>
@@ -54,14 +55,15 @@
       </div>
     {/if}
 
-    <div class="alert alert-info d-flex align-items-center gap-2 mb-0 text-start">
-      <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+    <div class="alert alert-info mb-0 d-flex align-items-start">
+      <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
       <div>{$_('pages.settings.backups.transfer.plain-note')}</div>
     </div>
 
     {#if error}
-      <div class="alert alert-danger mb-0">
-        {$_(error.key, { values: error.values })}
+      <div class="alert alert-danger mb-0 d-flex align-items-start">
+        <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+        <div>{$_(error.key, { values: error.values })}</div>
       </div>
     {/if}
   </div>

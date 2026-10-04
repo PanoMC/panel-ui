@@ -4,15 +4,22 @@
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
-          <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
+          <i class="fas fa-question-circle fa-3x d-block m-auto"></i>
         </div>
-        {$selectedTickets.length === 1
-          ? $_('components.modals.confirm-delete-ticket.title-single')
-          : $_('components.modals.confirm-delete-ticket.title-multi')}
+        <h5 class="mb-2">
+          {$selectedTickets.length === 1
+            ? $_('components.modals.confirm-delete-ticket.title-single')
+            : $_('components.modals.confirm-delete-ticket.title-multi')}
+        </h5>
+        <div class="text-body-secondary">
+          {$selectedTickets.length === 1
+            ? $_('components.modals.confirm-delete-ticket.description-single')
+            : $_('components.modals.confirm-delete-ticket.description-multi')}
+        </div>
       </div>
       <div class="modal-footer flex-nowrap">
         <button
-          class="btn btn-link col-6 m-0"
+          class="btn btn-link text-decoration-none col-6 m-0"
           type="button"
           class:disabled={loading}
           aria-disabled={loading}
@@ -25,7 +32,10 @@
           class:disabled={loading}
           aria-disabled={loading}
           on:click={onYesClick}>
-          {$_('buttons.yes')}
+          {#if loading}
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+          {/if}
+          {$_('buttons.delete')}
         </button>
       </div>
     </div>

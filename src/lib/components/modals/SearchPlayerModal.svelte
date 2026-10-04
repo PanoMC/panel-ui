@@ -48,7 +48,10 @@
         </div>
 
         {#if $errorText}
-          <div class="alert alert-danger">{$errorText}</div>
+          <div class="alert alert-danger d-flex align-items-start">
+            <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>{$errorText}</div>
+          </div>
         {/if}
 
         {#if $results.length > 0}

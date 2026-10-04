@@ -75,8 +75,9 @@
           <!-- The local setup button in the footer is the whole screen. -->
         {:else if tab === 'manual'}
           {#if pairingUnavailable}
-            <div class="alert alert-warning mb-0" role="alert">
-              {$_('pages.servers.nodes.pairing-unavailable')}
+            <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
+              <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>{$_('pages.servers.nodes.pairing-unavailable')}</div>
             </div>
           {:else}
             <div class="text-center py-2">
@@ -134,8 +135,9 @@
             <!-- A backend from before the ready-made commands (§2.4.10): what is shown is the
                  panel's own guess, so the address in it is worth a look. -->
             {#if code && !installCommand && !installCommandWindows}
-              <div class="alert alert-warning small mt-3 mb-0" role="alert">
-                {$_('components.modals.add-node.pano-url.unsupported')}
+              <div class="alert alert-warning mt-3 mb-0 d-flex align-items-start" role="alert">
+                <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                <div>{$_('components.modals.add-node.pano-url.unsupported')}</div>
               </div>
             {/if}
 
@@ -150,9 +152,12 @@
 
           {#if bootstrapRefusal}
             <!-- Another system's words (§2.7): rendered as text, and never as a key. -->
-            <div class="alert alert-danger mt-3 mb-0 py-2 small" role="alert">
-              <div class="fw-semibold">{$_(bootstrapRefusalLabel)}</div>
-              <span class="text-break">{bootstrapRefusal}</span>
+            <div class="alert alert-danger d-flex align-items-start mt-3 mb-0" role="alert">
+              <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div class="min-w-0">
+                <b>{$_(bootstrapRefusalLabel)}</b>
+                <div class="text-break">{bootstrapRefusal}</div>
+              </div>
             </div>
           {/if}
 
@@ -166,11 +171,12 @@
             </button>
           {/if}
         {:else if phase === Phases.FINGERPRINT}
-          <div class="alert alert-warning" role="alert">
-            <div class="small text-uppercase fw-semibold mb-1">
-              {$_('components.modals.add-node.fingerprint-label')}
+          <div class="alert alert-warning d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div class="min-w-0">
+              <b>{$_('components.modals.add-node.fingerprint-label')}</b>
+              <div><code class="fingerprint">{bootstrapFingerprint}</code></div>
             </div>
-            <code class="fingerprint">{bootstrapFingerprint}</code>
           </div>
 
           <div class="d-flex flex-wrap gap-2">

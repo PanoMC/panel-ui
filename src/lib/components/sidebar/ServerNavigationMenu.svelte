@@ -76,7 +76,8 @@
    *
    * - `href` is relative to the server, so `/console` renders as `/servers/<id>/console` and
    *   `''` is the server overview itself;
-   * - `permission` is a `Permissions` key the signed-in user must hold;
+   * - `permission` is a `Permissions` key the signed-in user must hold, or a list of keys of
+   *   which one is enough;
    * - `feature` is a `features` path (§2.4.17) the section lives on — `console.stream`,
    *   `players.list`, ... The panel no longer asks whether a server is managed or which
    *   capability its plugin announced: Pano resolves who can serve each feature and the item
@@ -149,10 +150,12 @@
       permission: Permissions.MANAGE_SERVERS,
     },
     {
+      // General settings are the umbrella grant's; the startup pages have their own (R3).
       href: '/settings',
       icon: 'fas fa-cog',
       text: 'components.server-navigation-menu.settings',
       startsWith: true,
+      permission: [Permissions.MANAGE_SERVERS, Permissions.MANAGE_SERVER_STARTUP],
     },
   ];
 
@@ -161,7 +164,7 @@
    * now (the node is offline, the process is stopped) keeps its link, because the page says so
    * far better than an entry that silently disappears (decided 2026-09-21).
    *
-   * @param {{ permission?: string, feature?: string, modes?: string[], managedOnly?: boolean }} item
+   * @param {{ permission?: string | string[], feature?: string, modes?: string[], managedOnly?: boolean }} item
    * @param {object | null} server
    * @param {unknown} usageMode
    * @returns {boolean}
@@ -171,8 +174,12 @@
       return false;
     }
 
-    if (item.permission && !hasPermission(item.permission)) {
-      return false;
+    if (item.permission) {
+      const wanted = Array.isArray(item.permission) ? item.permission : [item.permission];
+
+      if (!wanted.some((permission) => hasPermission(permission))) {
+        return false;
+      }
     }
 
     if (!item.feature) {

@@ -50,11 +50,11 @@
     section="components.server-navigation-menu.plugins" />
 {:else}
   {#if restartRequired}
-    <div class="alert alert-warning d-flex align-items-start gap-2 mb-0" role="alert">
-      <i class="fa-solid fa-rotate-right mt-1" aria-hidden="true"></i>
+    <div class="alert alert-warning d-flex align-items-start mb-0" role="alert">
+      <i class="fa-solid fa-rotate-right me-3 mt-1" aria-hidden="true"></i>
       <div>
-        <div class="fw-semibold">{$_('pages.servers.plugins.restart-required-title')}</div>
-        <div class="small">{$_('pages.servers.plugins.restart-required-description')}</div>
+        <b>{$_('pages.servers.plugins.restart-required-title')}</b>
+        <div>{$_('pages.servers.plugins.restart-required-description')}</div>
       </div>
     </div>
   {/if}
@@ -1155,7 +1155,12 @@
     }
 
     void showConfirmActionModal(
-      'pages.servers.plugins.installed.remove-confirm',
+      {
+        title: 'pages.servers.plugins.installed.remove-title',
+        description: 'pages.servers.plugins.installed.remove-description',
+        confirmLabel: 'buttons.delete',
+        variant: 'danger',
+      },
       { filename: row.filename },
       () => void removeFile(row.filename),
     );
@@ -1215,7 +1220,12 @@
     }
 
     void showConfirmActionModal(
-      'pages.servers.plugins.installed.remove-selected-confirm',
+      {
+        title: 'pages.servers.plugins.installed.remove-selected-title',
+        description: 'pages.servers.plugins.installed.remove-selected-description',
+        confirmLabel: 'buttons.delete',
+        variant: 'danger',
+      },
       { count: filenames.length },
       () => void removeSelected(filenames),
     );

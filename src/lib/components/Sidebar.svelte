@@ -153,8 +153,13 @@
   }
 </style>
 
-{#if hasPermission(Permissions.MANAGE_SERVERS)}
+<!-- R3 — the switcher is for everyone the servers workspace exists for; linking and creating
+     servers stay with MANAGE_SERVERS. -->
+{#if canManageServers}
   <ServersModal />
+{/if}
+
+{#if hasPermission(Permissions.MANAGE_SERVERS)}
   <ConnectServerModal />
   <AddServerModal />
   {#if hasPermission(Permissions.CREATE_SERVERS)}
@@ -371,7 +376,7 @@
   import PanoPluginUpdateModal from './modals/PanoPluginUpdateModal.svelte';
   import { UI_URL } from '$lib/variables.js';
 
-  import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { canAccessServers, hasPermission, Permissions } from '$lib/auth.util.js';
   import { sidebarTabForPath, UsageModes } from '$lib/navigation.util.js';
   import { browser } from '$app/environment';
 
@@ -382,7 +387,9 @@
   const siteInfo = getContext('siteInfo');
   const usageMode = getContext('usageMode');
 
-  const canManageServers = hasPermission(Permissions.MANAGE_SERVERS);
+  // Whether the servers workspace exists for this user: any server permission, not only the
+  // MANAGE_SERVERS umbrella (R3).
+  const canManageServers = canAccessServers();
   const canManageNodes = hasPermission(Permissions.MANAGE_NODES);
   const selectedServer = getContext('selectedServer');
 
@@ -439,7 +446,7 @@
   let isScrolledTop = false;
 
   const unsubscribeSidebarTabsState = sidebarTabsState.subscribe((value) => {
-    if (value === 'website' || !hasPermission(Permissions.MANAGE_SERVERS)) {
+    if (value === 'website' || !canManageServers) {
       menuComponent = SiteNavigationMenu;
     } else {
       menuComponent = ServerNavigationMenu;
@@ -467,6 +474,13 @@
    * @param {'website' | 'game'} target
    */
   async function switchWorkspace(target) {
+    // R3 — no server in hand and no nodes page to fall back on: pick a server first.
+    if (target === 'game' && switcherServer?.id == null && !canManageNodes) {
+      showServersModal();
+
+      return;
+    }
+
     const destination =
       target === 'website'
         ? lastWebsitePath || `${base}/`

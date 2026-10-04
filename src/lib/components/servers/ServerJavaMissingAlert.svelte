@@ -20,10 +20,10 @@
               style="width: {Math.max(task.percent, 5)}%;">
             </div>
           </div>
-          <span class="small font-monospace">{task.percent}%</span>
+          <span class="font-monospace">{task.percent}%</span>
         </div>
         {#if task.message}
-          <div class="small text-body-secondary text-break mt-1">{task.message}</div>
+          <div class="text-break mt-1">{task.message}</div>
         {/if}
       {/if}
     </div>
@@ -32,7 +32,7 @@
       <span class="d-inline-block" use:tooltip={[buttonTooltip, { placement: 'bottom' }]}>
         <button
           type="button"
-          class="btn btn-sm btn-warning"
+          class="btn alert-btn"
           disabled={busy || !nodeOnline}
           onclick={downloadAndStart}>
           {#if busy}
@@ -44,7 +44,7 @@
         </button>
       </span>
     {:else}
-      <span class="small text-body-secondary">
+      <span>
         {$_('pages.servers.overview.java-missing-no-permission')}
       </span>
     {/if}

@@ -1,5 +1,6 @@
-<div class="alert alert-warning" role="alert">
-  <details {open}>
+<div class="alert alert-warning d-flex align-items-start" role="alert">
+  <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+  <details class="flex-grow-1" {open}>
     <summary> These translations are not used anymore, you can delete them: </summary>
     {#each translations as translation, index (translation)}
       <TranslationRow

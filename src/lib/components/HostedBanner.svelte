@@ -10,10 +10,11 @@
         class="alert {LEVEL_CLASS[notice.level] || LEVEL_CLASS.info} mb-0 rounded-0"
         role="alert">
         <div class="container-fluid d-flex align-items-center">
-          <i class="fa-solid {LEVEL_ICON[notice.level] || LEVEL_ICON.info} me-3"></i>
+          <i class="fa-solid {LEVEL_ICON[notice.level] || LEVEL_ICON.info} me-3" aria-hidden="true"
+          ></i>
           <div class="flex-grow-1">
             {#if notice.title}
-              <strong class="me-2">{text(notice, 'title')}</strong>
+              <b class="me-2">{text(notice, 'title')}</b>
             {/if}
             {text(notice, 'message')}
             {#if notice.url}

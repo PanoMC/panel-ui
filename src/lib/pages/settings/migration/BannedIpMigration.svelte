@@ -5,13 +5,15 @@
 </style>
 
 {#if currentStep === 'upload'}
-  <div class="alert alert-info mb-3">
-    <i class="fas fa-info-circle me-1"></i>
-    <strong>{$_('pages.migration.banned-ips.supported-info-title')}</strong>
-    <ul class="mb-0 mt-1">
-      <li>{$_('pages.migration.banned-ips.supported-format')}</li>
-      <li>{$_('pages.migration.banned-ips.enforce-info')}</li>
-    </ul>
+  <div class="alert alert-info d-flex align-items-start mb-3">
+    <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+    <div>
+      <b>{$_('pages.migration.banned-ips.supported-info-title')}</b>
+      <ul class="mb-0 mt-1">
+        <li>{$_('pages.migration.banned-ips.supported-format')}</li>
+        <li>{$_('pages.migration.banned-ips.enforce-info')}</li>
+      </ul>
+    </div>
   </div>
 
   <label class="form-label" for="uploadBannedIpFile">
@@ -61,9 +63,9 @@
   {/if}
 
   {#if uploadError}
-    <div class="alert alert-danger mt-3" role="alert">
-      <i class="fas fa-exclamation-triangle me-2"></i>
-      {uploadError}
+    <div class="alert alert-danger mt-3 d-flex align-items-start" role="alert">
+      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>{uploadError}</div>
     </div>
   {/if}
 {:else if currentStep === 'review'}
@@ -275,9 +277,9 @@
   {/if}
 
   {#if uploadError}
-    <div class="alert alert-danger mt-3" role="alert">
-      <i class="fas fa-exclamation-triangle me-2"></i>
-      {uploadError}
+    <div class="alert alert-danger mt-3 d-flex align-items-start" role="alert">
+      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>{uploadError}</div>
     </div>
   {/if}
 
@@ -296,13 +298,11 @@
     </button>
   </div>
 {:else if currentStep === 'result' && importResult}
-  <div class="alert alert-success d-flex align-items-center" role="alert">
-    <i class="fas fa-check-circle fs-4 me-3"></i>
+  <div class="alert alert-success d-flex align-items-start" role="alert">
+    <i class="fa-solid fa-circle-check me-3 mt-1" aria-hidden="true"></i>
     <div>
-      <h6 class="alert-heading mb-1">
-        {$_('pages.migration.banned-ips.result-title')}
-      </h6>
-      <p class="mb-0 small">
+      <b>{$_('pages.migration.banned-ips.result-title')}</b>
+      <p class="mb-0">
         <strong>{importResult.importedCount}</strong>
         {$_('pages.migration.banned-ips.result-imported')}{#if importResult.updatedCount > 0},
           <strong>{importResult.updatedCount}</strong>
@@ -314,16 +314,16 @@
   </div>
 
   {#if importResult?.errors && importResult.errors.length > 0}
-    <div class="alert alert-warning mt-3">
-      <h6 class="alert-heading mb-2">
-        <i class="fas fa-exclamation-triangle me-1"></i>
-        {$_('pages.migration.authme.some-issues-occurred')}
-      </h6>
-      <ul class="mb-0 small">
-        {#each importResult.errors as err}
-          <li><strong>{err.item}</strong>: {err.error}</li>
-        {/each}
-      </ul>
+    <div class="alert alert-warning d-flex align-items-start mt-3">
+      <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>
+        <b>{$_('pages.migration.authme.some-issues-occurred')}</b>
+        <ul class="mb-0 mt-1">
+          {#each importResult.errors as err}
+            <li><strong>{err.item}</strong>: {err.error}</li>
+          {/each}
+        </ul>
+      </div>
     </div>
   {/if}
 

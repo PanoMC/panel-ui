@@ -4,14 +4,17 @@
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
-          <i class="fas fa-download fa-3x d-block m-auto text-gray"></i>
+          <i class="fas fa-download fa-3x d-block m-auto"></i>
         </div>
-        {$_('components.modals.confirm-update-platform.title')}
+        <h5 class="mb-2">{$_('components.modals.confirm-update-platform.title')}</h5>
+        <div class="text-body-secondary">
+          {$_('components.modals.confirm-update-platform.description')}
+        </div>
 
         {#if showBackgroundOption}
-          <div class="alert alert-warning small text-start mt-3 mb-0">
-            <i class="fas fa-triangle-exclamation me-2"></i>
-            {$_('components.modals.confirm-update-platform.terminal-mode-warning')}
+          <div class="alert alert-warning text-start mt-3 mb-0 d-flex align-items-start">
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>{$_('components.modals.confirm-update-platform.terminal-mode-warning')}</div>
           </div>
           <div class="form-check form-switch text-start mt-2">
             <input
@@ -28,19 +31,22 @@
       </div>
       <div class="modal-footer flex-nowrap">
         <button
-          class="btn btn-link col-6 m-0"
+          class="btn btn-link text-decoration-none col-6 m-0"
           type="button"
           class:disabled={loading}
           on:click={hide}>
           {$_('buttons.cancel')}
         </button>
         <button
-          class="btn btn-secondary col-6 m-0"
+          class="btn btn-primary col-6 m-0"
           type="button"
           class:disabled={confirmDisabled}
           disabled={confirmDisabled}
           on:click={onYesClick}>
-          {$_('buttons.yes')}
+          {#if loading}
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+          {/if}
+          {$_('buttons.update')}
         </button>
       </div>
     </div>

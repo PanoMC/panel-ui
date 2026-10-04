@@ -75,6 +75,26 @@
 {:else}
   <ServerJavaMissingAlert />
 
+  <!-- L13 — a managed server that runs without a linked Pano plugin: say what that costs, and
+       why when Pano knows (`pluginUnsupportedReason`, absent on an older backend). -->
+  {#if pluginJavaTooOld}
+    <div class="alert alert-warning d-flex align-items-start mb-0" role="alert">
+      <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>
+        <b>{$_('pages.servers.overview.plugin-java-too-old-title')}</b>
+        <div>{$_('pages.servers.overview.plugin-java-too-old')}</div>
+      </div>
+    </div>
+  {:else if pluginMissing}
+    <div class="alert alert-info d-flex align-items-start mb-0" role="status">
+      <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+      <div>
+        <b>{$_('pages.servers.overview.plugin-missing-title')}</b>
+        <div>{$_('pages.servers.overview.plugin-missing')}</div>
+      </div>
+    </div>
+  {/if}
+
   <!-- §2.4.22 — the server's vitals in the Statistics page's stat-card look: the big value is
          the live sample, the sparkline the last hour (hover for a point). §2.4.23 — the toolbar
          picks how often the sources report while this page is open. -->
@@ -668,6 +688,7 @@
   import { browser } from '$app/environment';
 
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { PANEL_SERVER_LIVE_LOAD_KEY } from '$lib/panelRealtime.js';
   import { fetchConsoleHistory } from '$lib/serverConsole.util.js';
 
@@ -718,21 +739,29 @@
 
     depends(PANEL_SERVER_LIVE_LOAD_KEY);
 
-    await parent();
+    const { user } = await parent();
+
+    // R3 — both need MANAGE_SERVERS. Someone who only holds a section of this server (its
+    // console, say) still gets the page, drawn from the server row the layout loaded.
+    const mayReadDashboard = hasPermission(Permissions.MANAGE_SERVERS, user);
 
     const period = normalizeActivityPeriod(url.searchParams.get('period'));
     const wantsConsoleHistory = !browser || consoleHistoryLoadedFor !== String(params.id);
 
     const [dashboard, activityChart, consoleHistory] = await Promise.all([
-      ApiUtil.get({
-        path: `/api/panel/servers/${params.id}/dashboard`,
-        request: event,
-      }),
-      ApiUtil.get({
-        path: `/api/panel/servers/${params.id}/activity-chart` + buildQueryParams({ period }),
-        request: event,
-        handler: (response) => response,
-      }),
+      mayReadDashboard
+        ? ApiUtil.get({
+            path: `/api/panel/servers/${params.id}/dashboard`,
+            request: event,
+          })
+        : Promise.resolve({}),
+      mayReadDashboard
+        ? ApiUtil.get({
+            path: `/api/panel/servers/${params.id}/activity-chart` + buildQueryParams({ period }),
+            request: event,
+            handler: (response) => response,
+          })
+        : Promise.resolve(null),
       // Never throws: an offline server, a source that cannot tap the log or a missing
       // permission all come back as a status, and the mini console simply opens empty.
       wantsConsoleHistory
@@ -768,8 +797,8 @@
   import { base } from '$app/paths';
   import { navigating, page } from '$app/stores';
 
-  // `browser`, `ApiUtil` and `PANEL_SERVER_LIVE_LOAD_KEY` already come from the module script.
-  import { hasPermission, Permissions } from '$lib/auth.util.js';
+  // `browser`, `ApiUtil`, `hasPermission`, `Permissions` and `PANEL_SERVER_LIVE_LOAD_KEY`
+  // already come from the module script.
   import {
     FEATURE_REASON_KEYS,
     FeatureReasons,
@@ -784,7 +813,10 @@
     isFeatureNotSupported,
     isInPlace,
     isManaged,
+    isPluginConnected,
     isServerOnline,
+    getProcessState,
+    ProcessStates,
     ServerCapabilities,
   } from '$lib/servers.util.js';
   import {
@@ -860,6 +892,8 @@
   /** Ranges long enough that a tooltip needs the day as well as the time. */
   const VITALS_DATED_RANGES = Object.freeze(['24h', '7d', '30d']);
   const SERVER_TIME_KEY = 'pano.panel.server-overview.server-time';
+  /** How long a started server gets to link its Pano plugin before the notice calls it missing. */
+  const PLUGIN_LINK_GRACE_MS = 60000;
 
   /** Reasons that only say the server is not up right now; the Performance card shows N/A for them. */
   const STATE_REASON_KEYS = [
@@ -1124,6 +1158,20 @@
   // linked one; counted up every second while the server is up.
   $: uptimeStart = Number(view?.processStartedAt) || Number(view?.startTime) || 0;
   $: uptimeText = describeUptime(uptimeStart, isServerOnline(view), uptimeNow);
+
+  // L13 — `status` is the plugin socket, so a managed server can be RUNNING with it OFFLINE:
+  // Vanilla, a server the plugin could not be installed on, or a Java too old for it. A server
+  // that has only just come up gets a moment to link before the notice says it has not.
+  $: pluginJavaTooOld =
+    isManaged(view) &&
+    !isPluginConnected(view) &&
+    String(view?.pluginUnsupportedReason || '').toUpperCase() === 'JAVA_TOO_OLD';
+  $: pluginMissing =
+    isManaged(view) &&
+    !pluginJavaTooOld &&
+    !isPluginConnected(view) &&
+    getProcessState(view) === ProcessStates.RUNNING &&
+    (uptimeStart <= 0 || uptimeNow - uptimeStart > PLUGIN_LINK_GRACE_MS);
 
   $: vitalSeries = buildVitalSeries($_, vitalsSeries, vitalsSample);
 

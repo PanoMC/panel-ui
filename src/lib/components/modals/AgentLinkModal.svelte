@@ -46,8 +46,9 @@
 
       <div class="modal-body" class:opacity-50={!accepting}>
         {#if unavailable}
-          <div class="alert alert-warning mb-0" role="alert">
-            {$_('components.modals.agent-link.unavailable')}
+          <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>{$_('components.modals.agent-link.unavailable')}</div>
           </div>
         {:else}
           <ol class="list-group list-group-numbered">

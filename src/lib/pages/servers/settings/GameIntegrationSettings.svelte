@@ -22,9 +22,9 @@
       </div>
     </div>
     {#if !requireEmailVerification}
-      <div class="alert alert-warning py-2 mb-3" role="alert">
-        <i class="fas fa-exclamation-triangle me-2"></i>
-        {$_('pages.servers.game-integration.auth-require-verified-disabled-warning')}
+      <div class="alert alert-warning mb-3 d-flex align-items-start" role="alert">
+        <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+        <div>{$_('pages.servers.game-integration.auth-require-verified-disabled-warning')}</div>
       </div>
     {/if}
     <div class="row mb-3">

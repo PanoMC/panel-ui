@@ -447,6 +447,76 @@ export function isServerOnline(server) {
   return isServerRunning(server);
 }
 
+/** The port a Minecraft server listens on unless told otherwise. */
+export const DEFAULT_GAME_PORT = 25565;
+
+/**
+ * Every server the signed-in user may see, as one list (`GET /api/panel/servers`, either of its
+ * shapes). Never throws: a refusal or a backend without the endpoint is an empty list.
+ *
+ * @returns {Promise<object[]>}
+ */
+export async function fetchServersList() {
+  const body = await ApiUtil.get({
+    path: '/api/panel/servers',
+    handler: (response) => response,
+  }).catch(() => null);
+
+  if (!body || typeof body !== 'object' || body.error) {
+    return [];
+  }
+
+  return body.pinned != null || body.otherServers != null
+    ? [...(body.pinned ?? []), ...(body.otherServers ?? [])]
+    : (body.servers ?? []);
+}
+
+/**
+ * The other server on a node that already has a game port, if any (L1). Two servers on one
+ * node cannot both listen on the same port.
+ *
+ * @param {Array<{ id?: number|string, nodeId?: number|string|null, gamePort?: number|null }>} servers
+ * @param {number|string|null|undefined} nodeId
+ * @param {number|string} port
+ * @param {number|string|null} [exceptServerId] the server being edited, which may keep its own.
+ * @returns {object | null}
+ */
+export function gamePortOwner(servers, nodeId, port, exceptServerId = null) {
+  const wanted = Number(port);
+
+  if (nodeId == null || nodeId === '' || !Number.isInteger(wanted) || wanted <= 0) {
+    return null;
+  }
+
+  return (
+    (Array.isArray(servers) ? servers : []).find(
+      (server) =>
+        server?.nodeId != null &&
+        Number(server.nodeId) === Number(nodeId) &&
+        Number(server.gamePort) === wanted &&
+        (exceptServerId == null || Number(server.id) !== Number(exceptServerId)),
+    ) ?? null
+  );
+}
+
+/**
+ * The first port from `start` upwards that no server on the node uses.
+ *
+ * @param {object[]} servers
+ * @param {number|string|null|undefined} nodeId
+ * @param {number} [start]
+ * @returns {number}
+ */
+export function firstFreeGamePort(servers, nodeId, start = DEFAULT_GAME_PORT) {
+  let port = start;
+
+  while (port < 65535 && gamePortOwner(servers, nodeId, port)) {
+    port += 1;
+  }
+
+  return port;
+}
+
 /**
  * The server whose `/servers/[id]` route is open, kept live by `ServerDetailLayout` (realtime
  * frames are merged into it). `Navbar` and `ServerNavigationMenu` read it so they follow the
@@ -1250,6 +1320,7 @@ export const SoftwareNotes = Object.freeze({
   BUILD: 'build',
   JENKINS: 'jenkins',
   DEPRECATED: 'deprecated',
+  INSTALLER: 'installer',
 });
 
 /** The moving "newest build" a CI-published software lists first, instead of a version name. */
@@ -1283,6 +1354,14 @@ export function softwareNoteBadge(item) {
       className: 'text-bg-secondary',
       label: 'components.modals.create-server.software-jenkins',
       hint: 'components.modals.create-server.software-jenkins-hint',
+    };
+  }
+
+  if (note === SoftwareNotes.INSTALLER) {
+    return {
+      className: 'text-bg-secondary',
+      label: 'components.modals.create-server.software-installer',
+      hint: 'components.modals.create-server.software-installer-hint',
     };
   }
 
@@ -1517,6 +1596,8 @@ function normalizeBackups(list) {
       sha256: String(backup?.sha256 ?? ''),
       status: String(backup?.status ?? ''),
       createdBy: backup?.createdBy == null ? '' : String(backup.createdBy),
+      // L19 — who made it, by name. `createdBy` is a user id and is never shown.
+      createdByUsername: String(backup?.createdByUsername ?? '').trim(),
       createdAt: backup?.createdAt ?? null,
       // Absent on a backend older than backup modes, which only ever made full zips of it all.
       mode: backup?.mode === 'SNAPSHOT' ? 'SNAPSHOT' : 'FULL',

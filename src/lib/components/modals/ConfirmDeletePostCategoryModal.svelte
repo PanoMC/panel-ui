@@ -4,26 +4,32 @@
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
-          <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
+          <i class="fas fa-question-circle fa-3x d-block m-auto"></i>
         </div>
-        {$_('components.modals.confirm-delete-post-category.title')}
+        <h5 class="mb-2">{$_('components.modals.confirm-delete-post-category.title')}</h5>
+        <div class="text-body-secondary">
+          {$_('components.modals.confirm-delete-post-category.description')}
+        </div>
         {#if $category.postCount !== 0}
-          <div class="mt-3 alert alert-warning text-start mb-0">
-            <p>
-              {$_('components.modals.confirm-delete-post-category.description')}
-            </p>
-            <ul class="list-unstyled">
-              {#each $category.posts as post, index (post)}
-                <li>
-                  <a
-                    class="badge bg-warning rounded-pill"
-                    href="{base}/posts/detail/{post.id}"
-                    target="_blank">
-                    {post.title}
-                  </a>
-                </li>
-              {/each}
-            </ul>
+          <div class="mt-3 alert alert-warning d-flex align-items-start text-start mb-0">
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>
+              <p>
+                {$_('components.modals.confirm-delete-post-category.warning')}
+              </p>
+              <ul class="list-unstyled">
+                {#each $category.posts as post, index (post)}
+                  <li>
+                    <a
+                      class="badge bg-warning rounded-pill"
+                      href="{base}/posts/detail/{post.id}"
+                      target="_blank">
+                      {post.title}
+                    </a>
+                  </li>
+                {/each}
+              </ul>
+            </div>
           </div>
           {#if $category.postCount > 5}
             {$_('components.modals.confirm-delete-post-category.more-posts', {
@@ -34,7 +40,7 @@
       </div>
       <div class="modal-footer flex-nowrap">
         <button
-          class="btn btn-link col-6 m-0"
+          class="btn btn-link text-decoration-none col-6 m-0"
           type="button"
           class:disabled={loading}
           on:click={hide}>
@@ -45,7 +51,10 @@
           type="button"
           class:disabled={loading}
           on:click={onYesClick}>
-          {$_('buttons.yes')}
+          {#if loading}
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+          {/if}
+          {$_('buttons.delete')}
         </button>
       </div>
     </div>

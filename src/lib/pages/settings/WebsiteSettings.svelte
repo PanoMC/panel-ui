@@ -22,12 +22,12 @@
   </div>
   <div class="card-body">
     {#if restartRequired}
-      <div class="alert alert-warning d-flex align-items-center justify-content-between mb-4">
-        <div>
-          <i class="fas fa-triangle-exclamation me-2"></i>
+      <div class="alert alert-warning d-flex align-items-center mb-4">
+        <i class="fa-solid fa-triangle-exclamation me-3" aria-hidden="true"></i>
+        <div class="flex-grow-1">
           {$_('pages.settings.site-settings.ssl.restart-required-alert')}
         </div>
-        <button class="btn btn-warning btn-sm ms-3" on:click={showConfirmRestartPanoModal}>
+        <button class="btn alert-btn ms-3" on:click={showConfirmRestartPanoModal}>
           {$_('pages.settings.site-settings.ssl.restart-now')}
         </button>
       </div>
@@ -87,13 +87,13 @@
           type="text" />
         {#if isHostMismatch}
           <div class="alert alert-warning d-flex align-items-start mt-2 mb-0">
-            <i class="fas fa-triangle-exclamation me-2 mt-1"></i>
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
             <div>{$_('pages.settings.site-settings.inputs.website-url.host-mismatch')}</div>
           </div>
         {/if}
         {#if isPortMismatch}
           <div class="alert alert-warning d-flex align-items-start mt-2 mb-0">
-            <i class="fas fa-triangle-exclamation me-2 mt-1"></i>
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
             <div>
               {$_('pages.settings.site-settings.inputs.website-url.port-mismatch', {
                 values: { port: portFromUrl, current: window.location.port || '80/443' },
@@ -103,7 +103,7 @@
         {/if}
         {#if hasExplicitPort}
           <div class="alert alert-warning d-flex align-items-start mt-2 mb-0">
-            <i class="fas fa-triangle-exclamation me-2 mt-1"></i>
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
             <div>
               {$_('pages.settings.site-settings.inputs.website-url.explicit-port', {
                 values: { port: portFromUrl },
@@ -396,9 +396,9 @@
           </select>
 
           {#if isLetsEncryptInvalid}
-            <div class="alert alert-danger mt-2 mb-0">
-              <i class="fas fa-circle-exclamation me-2"></i>
-              {$_('pages.settings.site-settings.ssl.lets-encrypt-invalid-config')}
+            <div class="alert alert-danger mt-2 mb-0 d-flex align-items-start">
+              <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>{$_('pages.settings.site-settings.ssl.lets-encrypt-invalid-config')}</div>
             </div>
           {/if}
         </div>

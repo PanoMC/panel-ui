@@ -5,59 +5,58 @@
         <!-- Main Icon -->
         <div class="pb-3">
           {#if $versionInfoObj?.action === 'DOWNGRADE'}
-            <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto text-gray"></i>
+            <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto"></i>
           {:else if $versionInfoObj?.action === 'UPDATE'}
-            <i class="fa-solid fa-sync fa-3x d-block m-auto text-gray"></i>
+            <i class="fa-solid fa-sync fa-3x d-block m-auto"></i>
           {:else if $versionInfoObj?.action === 'REINSTALL'}
-            <i class="fa-solid fa-rotate-right fa-3x d-block m-auto text-gray"></i>
+            <i class="fa-solid fa-rotate-right fa-3x d-block m-auto"></i>
           {:else}
-            <i class="fa-solid fa-download fa-3x d-block m-auto text-gray"></i>
+            <i class="fa-solid fa-download fa-3x d-block m-auto"></i>
           {/if}
         </div>
 
         <!-- Title -->
-        <h5 class="mb-3">
+        <h5 class="mb-2">
           {#if $versionInfoObj?.action === 'INSTALL'}
-            {$_('components.store-loading.install-title', {
-              values: {
-                name: $versionInfoObj.version.resourceTitle,
-                version: $versionInfoObj.version.tag,
-              },
-            })}
+            {$_('components.store-loading.install-title')}
           {:else if $versionInfoObj?.action === 'UPDATE'}
-            {$_('components.store-loading.update-title', {
+            {$_('components.store-loading.update-title')}
+          {:else if $versionInfoObj?.action === 'DOWNGRADE'}
+            {$_('components.store-loading.downgrade-title')}
+          {:else}
+            {$_('components.store-loading.reinstall-title')}
+          {/if}
+        </h5>
+        <div class="text-body-secondary mb-3">
+          {#if $versionInfoObj?.action === 'INSTALL'}
+            {$_('components.store-loading.install-description')}
+          {:else if $versionInfoObj?.action === 'UPDATE'}
+            {$_('components.store-loading.update-description', {
               values: {
-                name: $versionInfoObj.version.resourceTitle,
-                version: $versionInfoObj.version.tag,
+                from: $versionInfoObj.installed?.version || '?',
+                to: $versionInfoObj.version.tag,
               },
             })}
           {:else if $versionInfoObj?.action === 'DOWNGRADE'}
-            {$_('components.store-loading.downgrade-title', {
+            {$_('components.store-loading.downgrade-description', {
               values: {
-                name: $versionInfoObj.version.resourceTitle,
-                version: $versionInfoObj.version.tag,
+                from: $versionInfoObj.installed?.version || '?',
+                to: $versionInfoObj.version.tag,
               },
             })}
           {:else}
-            {$_('components.store-loading.reinstall-title', {
-              values: {
-                name: $versionInfoObj.version.resourceTitle,
-                version: $versionInfoObj.version.tag,
-              },
+            {$_('components.store-loading.reinstall-description', {
+              values: { version: $versionInfoObj?.version.tag },
             })}
           {/if}
-        </h5>
+        </div>
         <!-- Unverified Warning -->
         {#if $versionInfoObj && !$versionInfoObj.version.verified}
-          <div
-            class="alert alert-warning text-start d-flex gap-2 align-items-center mb-3"
-            role="alert">
-            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+          <div class="alert alert-warning text-start d-flex align-items-start mb-3" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
             <div>
-              <strong>{$_('components.store-loading.unverified-resource-warning-title')}</strong>
-              <br />
-              <small
-                >{$_('components.store-loading.unverified-resource-warning-description')}</small>
+              <b>{$_('components.store-loading.unverified-resource-warning-title')}</b>
+              <div>{$_('components.store-loading.unverified-resource-warning-description')}</div>
             </div>
           </div>
         {/if}
@@ -170,14 +169,11 @@
           </div>
 
           {#if $versionInfoObj.action === 'DOWNGRADE'}
-            <div class="alert alert-warning mt-3 text-start d-flex gap-2 align-items-start mb-0">
-              <div class="flex-shrink-0 mt-1">
-                <i class="fa-solid fa-triangle-exclamation me-2"></i>
-              </div>
-              <div class="small">
-                <strong>{$_('components.store-loading.downgrade-warning-title')}</strong>
-                <br />
-                {$_('components.store-loading.downgrade-warning-description')}
+            <div class="alert alert-warning mt-3 text-start d-flex align-items-start mb-0">
+              <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>
+                <b>{$_('components.store-loading.downgrade-warning-title')}</b>
+                <div>{$_('components.store-loading.downgrade-warning-description')}</div>
               </div>
             </div>
           {/if}
@@ -185,13 +181,14 @@
       </div>
 
       <div class="modal-footer flex-nowrap">
-        <button class="btn btn-link col-6 m-0" type="button" on:click={hide}>
+        <button class="btn btn-link text-decoration-none col-6 m-0" type="button" on:click={hide}>
           {$_('buttons.cancel')}
         </button>
         <button
-          class="btn btn-secondary col-6 m-0"
+          class="btn col-6 m-0"
           type="button"
-          class:btn-warning={$versionInfoObj?.action === 'DOWNGRADE'}
+          class:btn-primary={$versionInfoObj?.action !== 'DOWNGRADE'}
+          class:btn-danger={$versionInfoObj?.action === 'DOWNGRADE'}
           on:click={onConfirmClick}>
           {#if $versionInfoObj?.action === 'INSTALL'}
             <i class="fa-solid fa-download me-2"></i> {$_('buttons.install')}

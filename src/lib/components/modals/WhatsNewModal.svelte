@@ -35,19 +35,23 @@
       </div>
       <div class="modal-body px-lg-5 py-5">
         <div class="row g-4 mb-4 text-start">
-          <div class="col-md-6">
-            <div class="d-flex align-items-start">
-              <div class="feature-icon-small bg-primary bg-gradient text-white rounded-3 p-2 me-3">
-                <i class="fas fa-file-alt"></i>
-              </div>
-              <div>
-                <h5 class="fw-bold mb-1">{$_('components.whats-new.features.cms')}</h5>
-                <p class=" mb-0">
-                  {$_('components.whats-new.features.cms-description')}
-                </p>
+          <!-- M9 — a SERVERS install has no website, so the CMS is not advertised to it. -->
+          {#if $usageMode !== UsageModes.SERVERS}
+            <div class="col-md-6">
+              <div class="d-flex align-items-start">
+                <div
+                  class="feature-icon-small bg-primary bg-gradient text-white rounded-3 p-2 me-3">
+                  <i class="fas fa-file-alt"></i>
+                </div>
+                <div>
+                  <h5 class="fw-bold mb-1">{$_('components.whats-new.features.cms')}</h5>
+                  <p class=" mb-0">
+                    {$_('components.whats-new.features.cms-description')}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          {/if}
           <div class="col-md-6">
             <div class="d-flex align-items-start">
               <div class="feature-icon-small bg-primary bg-gradient text-white rounded-3 p-2 me-3">
@@ -145,11 +149,13 @@
 </script>
 
 <script>
-  import { onMount } from 'svelte';
+  import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
   import { base } from '$app/paths';
   import ApiUtil from '$lib/api.util.js';
+  import { UsageModes } from '$lib/navigation.util.js';
 
+  const usageMode = getContext('usageMode');
 
   onMount(() => {
     const element = get(modalElement);

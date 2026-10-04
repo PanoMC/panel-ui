@@ -175,14 +175,14 @@
             </div>
             <div class="form-text">{$_('components.modals.create-server.folder-hint')}</div>
             {#if source === Sources.IN_PLACE}
-              <div class="alert alert-warning mt-3 mb-0" role="alert">
-                <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
-                {$_('components.modals.create-server.in-place-stop-note')}
+              <div class="alert alert-warning mt-3 mb-0 d-flex align-items-start" role="alert">
+                <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                <div>{$_('components.modals.create-server.in-place-stop-note')}</div>
               </div>
             {:else}
-              <div class="alert alert-info mt-3 mb-0" role="alert">
-                <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-                {$_('components.modals.create-server.import.folder-copy-note')}
+              <div class="alert alert-info mt-3 mb-0 d-flex align-items-start" role="alert">
+                <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+                <div>{$_('components.modals.create-server.import.folder-copy-note')}</div>
               </div>
             {/if}
           {:else if source === Sources.UPLOAD}
@@ -190,16 +190,13 @@
               <div class="alert alert-success d-flex align-items-center gap-3 mb-0" role="alert">
                 <i class="fa-solid fa-file-zipper fa-2x" aria-hidden="true"></i>
                 <div class="min-w-0 flex-grow-1">
-                  <div class="fw-semibold text-break">{uploadFilename}</div>
-                  <div class="small">
+                  <b class="text-break">{uploadFilename}</b>
+                  <div>
                     {formatBytes(uploadSize, uploadSize < 1024 ? 0 : 1)}
                     &middot; {$_('components.modals.create-server.import.upload-expires')}
                   </div>
                 </div>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-secondary"
-                  onclick={clearUpload}>
+                <button type="button" class="btn alert-btn" onclick={clearUpload}>
                   {$_('buttons.change')}
                 </button>
               </div>
@@ -249,7 +246,10 @@
                 <span class="spinner-border" role="status" aria-hidden="true"></span>
               </div>
             {:else if modpackError}
-              <div class="alert alert-warning mt-3 mb-0" role="alert">{$_(modpackError)}</div>
+              <div class="alert alert-warning mt-3 mb-0 d-flex align-items-start" role="alert">
+                <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                <div>{$_(modpackError)}</div>
+              </div>
             {:else if modpackResults.length > 0}
               <!-- Nothing under the search box until there is something to show: no empty-state
                    card, no icon, no line of text. -->
@@ -309,8 +309,9 @@
                     ></span>
                   </div>
                 {:else if modpackVersions.length === 0}
-                  <div class="alert alert-warning mb-0" role="alert">
-                    {$_('components.modals.create-server.import.modpack-no-versions')}
+                  <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                    <div>{$_('components.modals.create-server.import.modpack-no-versions')}</div>
                   </div>
                 {/if}
               </div>
@@ -382,9 +383,9 @@
               </div>
 
               {#if BUILD_TOOLS_SOFTWARE.includes(String(selectedSoftware.id).toUpperCase())}
-                <div class="alert alert-warning mt-3 mb-0" role="alert">
-                  <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
-                  {$_('components.modals.create-server.spigot-hint')}
+                <div class="alert alert-warning mt-3 mb-0 d-flex align-items-start" role="alert">
+                  <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                  <div>{$_('components.modals.create-server.spigot-hint')}</div>
                 </div>
               {/if}
             {/if}
@@ -445,9 +446,17 @@
                   min="1"
                   max="65535"
                   placeholder=" "
+                  oninput={() => (portEdited = true)}
                   bind:value={port} />
                 <label for="createServerPort">{$_('pages.servers.create.port-label')}</label>
               </div>
+              {#if portOwner}
+                <div class="form-text text-warning">
+                  {$_('pages.servers.create.port-in-use', {
+                    values: { port: String(port), name: getServerDisplayName(portOwner) },
+                  })}
+                </div>
+              {/if}
             </div>
 
             <div class="col-md-6">
@@ -687,7 +696,7 @@
 </script>
 
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import { _ } from 'svelte-i18n';
 
   import { base } from '$app/paths';
@@ -712,6 +721,11 @@
   } from '$lib/nodes.util.js';
   import {
     aikarFlags,
+    DEFAULT_GAME_PORT,
+    fetchServersList,
+    firstFreeGamePort,
+    gamePortOwner,
+    getServerDisplayName,
     isEndpointUnavailable,
     jvmArgsToList,
     showServerActionError,
@@ -837,7 +851,11 @@
 
   let name = $state('');
   let memoryMb = $state(2048);
-  let port = $state(25565);
+  let port = $state(DEFAULT_GAME_PORT);
+  /** Whether the admin typed a port; one Pano suggested follows the node, a typed one stays. */
+  let portEdited = $state(false);
+  /** L1 — the servers that already exist, for the ports their nodes have in use. */
+  let existingServers = $state([]);
   let javaMajor = $state('');
   let jvmArgs = $state('');
   let autoStart = $state(true);
@@ -851,6 +869,18 @@
 
   /** @type {(() => void) | null} */
   let releaseNodes = null;
+
+  /** The other server on the chosen node that already listens on the typed port, if any. */
+  const portOwner = $derived(gamePortOwner(existingServers, nodeId, port));
+
+  // L1 — the suggested port is the first one free on the chosen node, not a 25565 that is taken.
+  $effect(() => {
+    const suggestion = firstFreeGamePort(existingServers, nodeId);
+
+    if (!untrack(() => portEdited)) {
+      port = suggestion;
+    }
+  });
 
   const usableNodes = $derived(nodes.filter((node) => isNodeUsable(node)));
   const selectedNode = $derived(
@@ -1477,7 +1507,8 @@
     modpackError = '';
     name = '';
     memoryMb = 2048;
-    port = 25565;
+    port = DEFAULT_GAME_PORT;
+    portEdited = false;
     javaMajor = '';
     jvmArgs = '';
     autoStart = true;
@@ -1680,7 +1711,7 @@
     await showSuccess('components.modals.create-server.created', { name: payload.name });
 
     hide(() => {
-      void goto(createdId == null ? `${base}/servers` : `${base}/servers/${createdId}`, {
+      void goto(createdId == null ? `${base}/` : `${base}/servers/${createdId}`, {
         invalidateAll: true,
       });
     });
@@ -1715,6 +1746,7 @@
       releaseNodes = releaseNodes || subscribeNodes();
       void loadNodes();
       void loadSoftware();
+      void fetchServersList().then((list) => (existingServers = list));
     };
 
     const onHidden = () => {

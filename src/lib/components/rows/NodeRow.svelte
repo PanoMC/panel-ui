@@ -7,8 +7,16 @@
     flex-shrink: 0;
   }
 
+  /* L19 — thirteen columns have to fit beside the sidebar at 1440 px, so the usage cells take
+     only what the gauge and its figure need ("used /" over "total" when room is short) and the
+     name keeps a width of its own instead of being squeezed to a letter per line. */
   .usage-cell {
-    min-width: 8rem;
+    vertical-align: middle;
+  }
+
+  .name-cell {
+    min-width: 7rem;
+    max-width: 14rem;
   }
 </style>
 
@@ -49,7 +57,7 @@
       </div>
     </div>
   </th>
-  <td class="fw-semibold text-break align-middle">
+  <td class="name-cell fw-semibold text-break align-middle">
     <a
       class="text-reset text-decoration-none d-block text-truncate rounded focus-ring"
       href="{base}/servers/nodes/{node.id}">

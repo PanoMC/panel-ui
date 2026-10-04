@@ -5,7 +5,7 @@
 {#if visible}
   <button
     type="button"
-    class="btn btn-sm btn-outline-warning text-nowrap {className}"
+    class="btn {inAlert ? 'alert-btn' : 'btn-sm btn-outline-warning'} text-nowrap {className}"
     disabled={busy}
     onclick={() => void run()}>
     {#if busy}
@@ -33,13 +33,15 @@
 
   /**
    * @type {{ server: Record<string, any> | null, latestVersion?: string | null,
-   *   label?: string, class?: string }}
+   *   label?: string, class?: string, inAlert?: boolean }}
    */
   let {
     server,
     latestVersion = null,
     label = 'components.pano-plugin-update-button.label',
     class: className = '',
+    // Inside an alert the button takes the alert's own look (design/alerts.md).
+    inAlert = false,
   } = $props();
 
   let busy = $state(false);

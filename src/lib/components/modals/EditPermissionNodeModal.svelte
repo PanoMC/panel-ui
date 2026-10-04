@@ -19,11 +19,8 @@
             ? $_('components.modals.edit-permission-node.add-title')
             : $_('components.modals.edit-permission-node.title')}
         </h5>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label={$_('buttons.close')}
-          on:click={hide}></button>
+        <button type="button" class="btn-close" aria-label={$_('buttons.close')} on:click={hide}
+        ></button>
       </div>
       <div class="modal-body" style="overflow: visible;">
         {#if !$node}
@@ -32,26 +29,34 @@
           {#if $draft.contexts.some((ctx) => ctx.key?.trim() === 'pano' && ctx.value
                 ?.toString()
                 .trim() === 'true')}
-            <div
-              class="alert alert-warning alert-dismissible fade show mb-3 p-2"
-              role="alert">
-              <i class="fa fa-info-circle me-1"></i>
-              {$_('pages.permissions.panel.nodes.pano-only-alert')}
-              <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms/#%F0%9F%8C%90-pano-exclusive-permissions" target="_blank" class="alert-link ms-1">
-                {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
-                <i class="fa fa-external-link-alt ms-1"></i>
-              </a>
+            <div class="alert alert-warning d-flex align-items-start mb-3" role="alert">
+              <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>
+                {$_('pages.permissions.panel.nodes.pano-only-alert')}
+                <a
+                  href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms/#%F0%9F%8C%90-pano-exclusive-permissions"
+                  target="_blank"
+                  class="alert-link ms-1">
+                  {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
+                  <i class="fa-solid fa-arrow-up-right-from-square ms-1" aria-hidden="true"></i>
+                </a>
+              </div>
             </div>
           {:else if $draft.contexts.some((ctx) => ctx.key?.trim() === 'pano' && ctx.value
                 ?.toString()
                 .trim() === 'false')}
-            <div class="alert alert-info alert-dismissible fade show mb-3 p-2" role="alert">
-              <i class="fa fa-info-circle me-1"></i>
-              {$_('pages.permissions.panel.nodes.game-only-alert')}
-              <a href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms/#%F0%9F%8C%90-pano-exclusive-permissions" target="_blank" class="alert-link ms-1">
-                {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
-                <i class="fa fa-external-link-alt ms-1"></i>
-              </a>
+            <div class="alert alert-info d-flex align-items-start mb-3" role="alert">
+              <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+              <div>
+                {$_('pages.permissions.panel.nodes.game-only-alert')}
+                <a
+                  href="{PANO_WEBSITE_URL}/docs/platform/integrations/luckperms/#%F0%9F%8C%90-pano-exclusive-permissions"
+                  target="_blank"
+                  class="alert-link ms-1">
+                  {$_('pages.permissions.panel.nodes.pano-only-alert-link')}
+                  <i class="fa-solid fa-arrow-up-right-from-square ms-1" aria-hidden="true"></i>
+                </a>
+              </div>
             </div>
           {/if}
 
@@ -76,46 +81,46 @@
             {/if}
 
             <div class="position-relative">
-                <input
-                  id="nodeValue"
-                  class="form-control form-control-lg font-monospace"
-                  type="text"
-                  bind:value={$draft.nodeValue}
-                  placeholder={$_('components.modals.edit-permission-node.form.node-placeholder')}
-                  autocomplete="off"
-                  on:focus={() => (showNodeSuggestions = true)}
-                  on:keydown={(e) => {
-                    if (!showNodeSuggestions || filteredPanelNodes.length === 0) {
-                      if (e.key === 'ArrowDown') showNodeSuggestions = true;
-                      return;
-                    }
+              <input
+                id="nodeValue"
+                class="form-control form-control-lg font-monospace"
+                type="text"
+                bind:value={$draft.nodeValue}
+                placeholder={$_('components.modals.edit-permission-node.form.node-placeholder')}
+                autocomplete="off"
+                on:focus={() => (showNodeSuggestions = true)}
+                on:keydown={(e) => {
+                  if (!showNodeSuggestions || filteredPanelNodes.length === 0) {
+                    if (e.key === 'ArrowDown') showNodeSuggestions = true;
+                    return;
+                  }
 
-                    if (e.key === 'ArrowDown') {
+                  if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    activeSuggestionIndex = (activeSuggestionIndex + 1) % filteredPanelNodes.length;
+                  } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    activeSuggestionIndex =
+                      (activeSuggestionIndex - 1 + filteredPanelNodes.length) %
+                      filteredPanelNodes.length;
+                  } else if (e.key === 'Enter' || e.key === 'Tab') {
+                    const selected = filteredPanelNodes[activeSuggestionIndex];
+                    if (selected?.node) {
                       e.preventDefault();
-                      activeSuggestionIndex = (activeSuggestionIndex + 1) % filteredPanelNodes.length;
-                    } else if (e.key === 'ArrowUp') {
-                      e.preventDefault();
-                      activeSuggestionIndex =
-                        (activeSuggestionIndex - 1 + filteredPanelNodes.length) %
-                        filteredPanelNodes.length;
-                    } else if (e.key === 'Enter' || e.key === 'Tab') {
-                      const selected = filteredPanelNodes[activeSuggestionIndex];
-                      if (selected?.node) {
-                        e.preventDefault();
-                        draft.update((d) => ({ ...d, nodeValue: selected.node }));
-                        showNodeSuggestions = false;
-                      }
-                    } else if (e.key === 'Escape') {
+                      draft.update((d) => ({ ...d, nodeValue: selected.node }));
                       showNodeSuggestions = false;
                     }
-                  }}
-                  on:input={() => {
-                    showNodeSuggestions = true;
-                  }}
-                  on:blur={() => {
-                    // allow click on suggestion before closing
-                    setTimeout(() => (showNodeSuggestions = false), 300);
-                  }} />
+                  } else if (e.key === 'Escape') {
+                    showNodeSuggestions = false;
+                  }
+                }}
+                on:input={() => {
+                  showNodeSuggestions = true;
+                }}
+                on:blur={() => {
+                  // allow click on suggestion before closing
+                  setTimeout(() => (showNodeSuggestions = false), 300);
+                }} />
 
               {#if showNodeSuggestions}
                 <div
@@ -129,7 +134,9 @@
                         type="button"
                         role="option"
                         aria-selected={i === activeSuggestionIndex}
-                        class="list-group-item list-group-item-action {i === activeSuggestionIndex ? 'active' : ''}"
+                        class="list-group-item list-group-item-action {i === activeSuggestionIndex
+                          ? 'active'
+                          : ''}"
                         on:mouseenter={() => (activeSuggestionIndex = i)}
                         on:click={() => {
                           draft.update((d) => ({ ...d, nodeValue: p.node }));
@@ -148,8 +155,12 @@
                               </span>
                             {/if}
                             {#if p.type === 'plugin'}
-                              <span class="badge text-bg-secondary ms-2 small" style="font-size: 0.7em;">
-                                {p.pluginTitle !== `plugins.${p.pluginId}.title` ? p.pluginTitle : p.pluginId}
+                              <span
+                                class="badge text-bg-secondary ms-2 small"
+                                style="font-size: 0.7em;">
+                                {p.pluginTitle !== `plugins.${p.pluginId}.title`
+                                  ? p.pluginTitle
+                                  : p.pluginId}
                               </span>
                             {/if}
                           </p>
@@ -186,10 +197,7 @@
                     <button type="button" class="btn btn-link p-0 px-2" on:click={selectAllServers}>
                       {$_('pages.permissions.server-scope.select-all')}
                     </button>
-                    <button
-                      type="button"
-                      class="btn btn-link p-0 px-2"
-                      on:click={clearServerScope}>
+                    <button type="button" class="btn btn-link p-0 px-2" on:click={clearServerScope}>
                       {$_('pages.permissions.server-scope.clear')}
                     </button>
                   </div>
@@ -397,7 +405,10 @@
               {/each}
             {/if}
 
-            <button class="btn btn-link text-decoration-none w-100" type="button" on:click={addContext}>
+            <button
+              class="btn btn-link text-decoration-none w-100"
+              type="button"
+              on:click={addContext}>
               <i class="fa fa-plus me-2"></i>{$_('buttons.add')}
             </button>
           </div>
@@ -468,9 +479,7 @@
     permissionGroups.set(payload?.permissionGroups ?? []);
     siblingNodes.set(payload?.siblingNodes ?? []);
     evaluationNodes.set(payload?.evaluationNodes ?? []);
-    evaluationUserId.set(
-      payload?.evaluationUserId != null ? payload.evaluationUserId : null,
-    );
+    evaluationUserId.set(payload?.evaluationUserId != null ? payload.evaluationUserId : null);
     isAddMode.set(!!payload?.isAdd);
 
     const toLocalDatetime = (ms) => {
@@ -585,7 +594,7 @@
   import { _, dictionary, locale } from 'svelte-i18n';
   import NoContent from '$lib/components/NoContent.svelte';
 
-  import { PANO_WEBSITE_URL } from "$lib/variables.js";
+  import { PANO_WEBSITE_URL } from '$lib/variables.js';
   import {
     getDenyCommands,
     getServerScope,
@@ -666,7 +675,8 @@
 
   function evalIndirectGrantFromGroups(expandedGroupNames, permTrim, allNodes, allGroups) {
     const trimmed = String(permTrim || '').trim();
-    if (!trimmed || !(expandedGroupNames instanceof Set) || expandedGroupNames.size === 0) return false;
+    if (!trimmed || !(expandedGroupNames instanceof Set) || expandedGroupNames.size === 0)
+      return false;
 
     for (const gName of expandedGroupNames) {
       const gid = evalGroupIdByName(allGroups, gName);
@@ -821,8 +831,7 @@
   $: draftTrim = String($draft?.nodeValue || '').trim();
   $: holderNodeSelfId = $node?.id;
   $: otherHolderNodes = ($siblingNodes || []).filter(
-    (sn) =>
-      !(holderNodeSelfId != null && String(sn?.id ?? '') === String(holderNodeSelfId)),
+    (sn) => !(holderNodeSelfId != null && String(sn?.id ?? '') === String(holderNodeSelfId)),
   );
 
   /** Whether `draftTrim` conflicts with another row on this holder (not the row being edited). */
@@ -844,10 +853,7 @@
   };
 
   $: rawUserEffectiveBanner =
-    !$node ||
-    permEvalCtx.uid == null ||
-    !draftTrim ||
-    duplicateNodeOnHolder
+    !$node || permEvalCtx.uid == null || !draftTrim || duplicateNodeOnHolder
       ? null
       : analyzeUserEffective(
           permEvalCtx.uid,

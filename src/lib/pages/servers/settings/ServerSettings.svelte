@@ -170,6 +170,13 @@
 <RemoveServerModal />
 
 <script context="module">
+  import { redirect } from '@sveltejs/kit';
+
+  import { base } from '$app/paths';
+
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { getServerDisplayName, isInPlace, isManaged } from '$lib/servers.util.js';
+
   /**
    * The server is already loaded by `ServerDetailLayout`, so this page only takes an editable
    * copy of it.
@@ -177,8 +184,19 @@
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event) {
-    const { parent } = event;
-    const { server } = await parent();
+    const { parent, params } = event;
+    const { server, user } = await parent();
+
+    // R3 — this page is the umbrella grant's. Someone who only holds the startup grant goes to
+    // the page that is theirs, anyone else back to the server.
+    if (!hasPermission(Permissions.MANAGE_SERVERS, user)) {
+      throw redirect(
+        302,
+        isManaged(server) && hasPermission(Permissions.MANAGE_SERVER_STARTUP, user)
+          ? `${base}/servers/${params.id}/settings/startup`
+          : `${base}/servers/${params.id}`,
+      );
+    }
 
     const serverForm = {
       id: server.id,
@@ -196,8 +214,7 @@
   import { _ } from 'svelte-i18n';
 
   import ApiUtil from '$lib/api.util.js';
-  import { hasPermission, Permissions } from '$lib/auth.util.js';
-  import { getServerDisplayName, isInPlace, isManaged } from '$lib/servers.util.js';
+  // `base`, `hasPermission`, `Permissions` and the server helpers come from the module script.
 
   import PageLoading from '$lib/components/PageLoading.svelte';
   import ServerAlertSettingsCard from '$lib/components/servers/ServerAlertSettingsCard.svelte';

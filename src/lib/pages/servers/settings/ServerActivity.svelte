@@ -88,16 +88,16 @@
       </div>
     {:else if status === 'unavailable'}
       <div class="card-body">
-        <div class="alert alert-info mb-0" role="alert">
-          <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
-          {$_('pages.servers.activity.unavailable')}
+        <div class="alert alert-info mb-0 d-flex align-items-start" role="alert">
+          <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+          <div>{$_('pages.servers.activity.unavailable')}</div>
         </div>
       </div>
     {:else if status === 'error'}
       <div class="card-body">
-        <div class="alert alert-warning mb-0" role="alert">
-          <i class="fa-solid fa-triangle-exclamation me-2" aria-hidden="true"></i>
-          {$_('pages.servers.activity.load-failed')}
+        <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
+          <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+          <div>{$_('pages.servers.activity.load-failed')}</div>
         </div>
       </div>
     {:else}

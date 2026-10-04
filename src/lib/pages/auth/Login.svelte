@@ -50,7 +50,10 @@
       </p>
 
       {#if errorKey}
-        <div class="alert alert-danger py-2 small" role="alert">{$_(errorKey, errorValues)}</div>
+        <div class="alert alert-danger d-flex align-items-start" role="alert">
+          <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+          <div>{$_(errorKey, errorValues)}</div>
+        </div>
       {/if}
 
       <form onsubmit={onSubmit}>
@@ -89,7 +92,10 @@
       <p class="text-body-secondary small mb-3">{$_('pages.auth.login.subtitle')}</p>
 
       {#if errorKey}
-        <div class="alert alert-danger py-2 small" role="alert">{$_(errorKey, errorValues)}</div>
+        <div class="alert alert-danger d-flex align-items-start" role="alert">
+          <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+          <div>{$_(errorKey, errorValues)}</div>
+        </div>
       {/if}
 
       <form onsubmit={onSubmit}>

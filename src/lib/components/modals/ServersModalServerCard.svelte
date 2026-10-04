@@ -234,6 +234,9 @@
     getActiveTask,
     isManaged,
     isServerOnline,
+    getProcessState,
+    processStateColour,
+    processStateLabel,
     serverProblems,
     TASK_FAILURE_VISIBLE_MS,
     taskDetail,
@@ -293,12 +296,24 @@
   // The dot that used to sit beside the player count is gone, so the icon's 2 px border carries
   // the state: the task's colour while a task runs, green online, red offline. Nothing but a
   // sighted reader sees a colour, hence the label in the tooltip and the hidden text beside it.
-  $: statusBorderClass = task ? 'border-info' : online ? 'border-success' : 'border-danger';
+  // L13 — a managed server is named by its process (Running, Starting, Stopped, Crashed, ...),
+  // the way the server header names it: `status` only says whether the Pano plugin is linked,
+  // and a server without one runs all the same.
+  $: processState = managed ? getProcessState(server) : null;
+  $: statusBorderClass = task
+    ? 'border-info'
+    : processState
+      ? `border-${processStateColour(processState)}`
+      : online
+        ? 'border-success'
+        : 'border-danger';
   $: statusLabel = task
     ? taskLabel
-    : online
-      ? $_('components.modals.servers.online')
-      : $_('components.modals.servers.offline');
+    : processState
+      ? $_(processStateLabel(processState))
+      : online
+        ? $_('components.modals.servers.online')
+        : $_('components.modals.servers.offline');
 
   // A task that just failed says so for a few seconds, then the card is itself again.
   $: failure = server.taskFailure ?? null;

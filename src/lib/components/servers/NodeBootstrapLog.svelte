@@ -46,8 +46,9 @@
       : $_('components.modals.add-node.waiting')}</pre>
 
   {#if error}
-    <div class="alert alert-danger mb-0 py-2 small" role="alert">
-      {$_('components.modals.add-node.failed', { values: { error } })}
+    <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
+      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>{$_('components.modals.add-node.failed', { values: { error } })}</div>
     </div>
   {/if}
 </div>

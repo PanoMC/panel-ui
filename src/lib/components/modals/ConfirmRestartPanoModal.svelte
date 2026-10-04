@@ -5,14 +5,17 @@
       <form on:submit|preventDefault={sendRestartPano}>
         <div class="modal-body text-center">
           <div class="pb-3">
-            <i class="fas fa-refresh fa-3x d-block m-auto text-warning"></i>
+            <i class="fas fa-refresh fa-3x d-block m-auto"></i>
           </div>
-          {$_('components.modals.confirm-restart-pano.title')}
+          <h5 class="mb-2">{$_('components.modals.confirm-restart-pano.title')}</h5>
+          <div class="text-body-secondary">
+            {$_('components.modals.confirm-restart-pano.description')}
+          </div>
 
           {#if showBackgroundOption}
-            <div class="alert alert-warning small text-start mt-3 mb-0">
-              <i class="fas fa-triangle-exclamation me-2"></i>
-              {$_('components.modals.confirm-restart-pano.terminal-mode-warning')}
+            <div class="alert alert-warning text-start mt-3 mb-0 d-flex align-items-start">
+              <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>{$_('components.modals.confirm-restart-pano.terminal-mode-warning')}</div>
             </div>
             <div class="form-check form-switch text-start mt-2">
               <input
@@ -37,18 +40,22 @@
         </div>
 
         <div class="modal-footer flex-nowrap">
-          <button class="btn btn-link col-6 m-0" type="button" on:click={hide} disabled={$loading}>
+          <button
+            class="btn btn-link text-decoration-none col-6 m-0"
+            type="button"
+            on:click={hide}
+            disabled={$loading}>
             {$_('buttons.cancel')}
           </button>
           <button
-            class="btn btn-warning col-6 m-0"
+            class="btn btn-danger col-6 m-0"
             type="button"
             disabled={confirmButtonDisabled || $loading}
             on:click={sendRestartPano}>
-            {$_('buttons.yes')}
-            {#if $loading}
-              <i class="fas fa-sync fa-spin ms-2"></i>
-            {/if}
+            {#if $loading}<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"
+              ></span
+              >{/if}
+            {$_('buttons.restart')}
           </button>
         </div>
       </form>
@@ -124,8 +131,7 @@
   // When the toggle is visible we require the user to keep it on. Turning it off means
   // staying terminal-attached, which is the risky path we just warned them about — block
   // the confirm button so they have to opt in to background mode (or cancel).
-  $: confirmButtonDisabled =
-    $password.length === 0 || (showBackgroundOption && !$background);
+  $: confirmButtonDisabled = $password.length === 0 || (showBackgroundOption && !$background);
 
   async function isPanoHealthy() {
     try {

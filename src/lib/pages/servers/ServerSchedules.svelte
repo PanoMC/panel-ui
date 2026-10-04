@@ -570,7 +570,12 @@
    */
   function askDelete(schedule) {
     void showConfirmActionModal(
-      'pages.servers.schedules.delete-confirm',
+      {
+        title: 'pages.servers.schedules.delete-title',
+        description: 'pages.servers.schedules.delete-description',
+        confirmLabel: 'buttons.delete',
+        variant: 'danger',
+      },
       { name: schedule.name },
       () => void remove(schedule),
     );

@@ -1,9 +1,9 @@
 <!-- Startup settings (SM-27) — managed servers only: the process Pano launches, plus the
      server.properties fields people change most often. -->
 <div class="vstack gap-3">
-  <div class="alert alert-info mb-0 small" role="alert">
-    <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-    {$_('pages.servers.startup.restart-hint')}
+  <div class="alert alert-info mb-0 d-flex align-items-start" role="alert">
+    <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+    <div>{$_('pages.servers.startup.restart-hint')}</div>
   </div>
 
   <div class="card">
@@ -56,6 +56,13 @@
             min="1"
             max="65535"
             bind:value={form.port} />
+          {#if portOwner}
+            <div class="form-text text-warning">
+              {$_('pages.servers.create.port-in-use', {
+                values: { port: String(form.port), name: getServerDisplayName(portOwner) },
+              })}
+            </div>
+          {/if}
         </div>
       </div>
 
@@ -232,6 +239,9 @@
   import ApiUtil from '$lib/api.util.js';
   import {
     aikarFlags,
+    fetchServersList,
+    gamePortOwner,
+    getServerDisplayName,
     isEndpointUnavailable,
     jvmArgsToList,
     showServerActionError,
@@ -262,6 +272,11 @@
   let form = $state(buildForm(get(server)));
   let original = $state(structuredClone(buildForm(get(server))));
   let saving = $state(false);
+  /** L1 — the other servers, for the ports already taken on this server's node. */
+  let otherServers = $state([]);
+  const portOwner = $derived(
+    gamePortOwner(otherServers, $server?.nodeId ?? nodeRow?.id, form.port, data?.serverId),
+  );
   /** The node `load` read, falling back to whatever another page already cached. */
   let nodeRow = $state(untrack(() => data?.node ?? getCachedNode(get(server)?.nodeId)));
 
@@ -286,6 +301,12 @@
     const current = get(server);
     const nodeId = current?.nodeId ?? nodeRow?.id ?? null;
     let active = true;
+
+    void fetchServersList().then((list) => {
+      if (active) {
+        otherServers = list;
+      }
+    });
 
     if (nodeId != null) {
       void fetchNodeJava(nodeId).then((result) => {

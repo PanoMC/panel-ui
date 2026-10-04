@@ -461,27 +461,35 @@
     const activePlugins = data.plugins.filter((p) => p.status === 'STARTED');
     if (activePlugins.length === 0) return;
 
-    showConfirmActionModal('pages.addons.disable-all-confirm', async () => {
-      for (const plugin of activePlugins) {
-        plugin.loading = true;
-      }
-      data.plugins = data.plugins;
+    showConfirmActionModal(
+      {
+        title: 'pages.addons.disable-all-title',
+        description: 'pages.addons.disable-all-description',
+        confirmLabel: 'buttons.disable-all',
+        variant: 'danger',
+      },
+      async () => {
+        for (const plugin of activePlugins) {
+          plugin.loading = true;
+        }
+        data.plugins = data.plugins;
 
-      await Promise.all(
-        activePlugins.map(
-          (plugin) =>
-            new Promise((resolve) => {
-              ApiUtil.put({
-                path: `/api/panel/plugins/${plugin.id}`,
-                body: { status: false },
-                handler: (body) => resolve(body),
-              });
-            }),
-        ),
-      );
+        await Promise.all(
+          activePlugins.map(
+            (plugin) =>
+              new Promise((resolve) => {
+                ApiUtil.put({
+                  path: `/api/panel/plugins/${plugin.id}`,
+                  body: { status: false },
+                  handler: (body) => resolve(body),
+                });
+              }),
+          ),
+        );
 
-      await refreshData();
-    });
+        await refreshData();
+      },
+    );
   }
 
   async function enableAllAddons() {
@@ -490,26 +498,34 @@
     );
     if (inactivePlugins.length === 0) return;
 
-    showConfirmActionModal('pages.addons.enable-all-confirm', async () => {
-      for (const plugin of inactivePlugins) {
-        plugin.loading = true;
-      }
-      data.plugins = data.plugins;
+    showConfirmActionModal(
+      {
+        title: 'pages.addons.enable-all-title',
+        description: 'pages.addons.enable-all-description',
+        confirmLabel: 'buttons.enable-all',
+        variant: 'primary',
+      },
+      async () => {
+        for (const plugin of inactivePlugins) {
+          plugin.loading = true;
+        }
+        data.plugins = data.plugins;
 
-      await Promise.all(
-        inactivePlugins.map(
-          (plugin) =>
-            new Promise((resolve) => {
-              ApiUtil.put({
-                path: `/api/panel/plugins/${plugin.id}`,
-                body: { status: true },
-                handler: (body) => resolve(body),
-              });
-            }),
-        ),
-      );
+        await Promise.all(
+          inactivePlugins.map(
+            (plugin) =>
+              new Promise((resolve) => {
+                ApiUtil.put({
+                  path: `/api/panel/plugins/${plugin.id}`,
+                  body: { status: true },
+                  handler: (body) => resolve(body),
+                });
+              }),
+          ),
+        );
 
-      await refreshData();
-    });
+        await refreshData();
+      },
+    );
   }
 </script>

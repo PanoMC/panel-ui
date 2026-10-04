@@ -93,7 +93,25 @@
     "license-issues": "Lisans Sorunları",
     "connect-pano-account": "Pano Hesabını Bağla",
     "move-up": "Yukarı taşı",
-    "move-down": "Aşağı taşı"
+    "move-down": "Aşağı taşı",
+    "confirm": "Onayla",
+    "disable": "Devre Dışı Bırak",
+    "publish": "Yayımla",
+    "send": "Gönder",
+    "disconnect": "Bağlantıyı Kes",
+    "discard": "Sil",
+    "switch": "Geçiş Yap",
+    "unban": "Yasağı Kaldır",
+    "remove-ban": "Yasağı Kaldır",
+    "delete-permanently": "Kalıcı Olarak Sil",
+    "delete-all": "Tümünü Sil",
+    "move-to-trash": "Çöp Kutusuna Taşı",
+    "move-to-draft": "Taslağa Taşı",
+    "enable-all": "Tümünü Etkinleştir",
+    "disable-all": "Tümünü Devre Dışı Bırak",
+    "close-ticket": "Talebi Kapat",
+    "close-tickets": "Talepleri Kapat",
+    "set-as-main": "Ana Sunucu Yap"
   },
   "pages": {
     "auth": {
@@ -201,8 +219,10 @@
         "license-issues": "{amount} Eklentinin Lisans Sorunu Var"
       },
       "update-available": "Güncelleme Mevcut",
-      "enable-all-confirm": "Tüm eklentileri etkinleştirmek istediğinizden emin misiniz?",
-      "disable-all-confirm": "Tüm eklentileri devre dışı bırakmak istediğinizden emin misiniz?",
+      "enable-all-title": "Tüm eklentiler etkinleştirilsin mi?",
+      "enable-all-description": "Devre dışı olan tüm eklentiler etkinleştirilir ve başlatılır.",
+      "disable-all-title": "Tüm eklentiler devre dışı bırakılsın mı?",
+      "disable-all-description": "Etkin tüm eklentiler, yeniden etkinleştirilene kadar kapatılır.",
       "license-banner": "{count} premium eklenti geçerli bir lisansa ihtiyaç duyuyor."
     },
     "addon-detail": {
@@ -258,7 +278,7 @@
     "dashboard": {
       "title": "Panel",
       "license-banner": {
-        "title": "{count} premium eklenti lisans gerektiriyor",
+        "title": "{count} Premium Eklenti Lisans Gerektiriyor",
         "description": "Bir veya daha fazla premium eklenti doğrulanamadı. Durum ve çözüm seçenekleri için Görüntüle'ye tıklayın."
       },
       "welcome-card": {
@@ -274,7 +294,8 @@
         "change-theme": "Tema Görünümünü Değiştir",
         "manage-addons": "Eklentleri Yönet",
         "manage-players": "Oyuncuları Yönet",
-        "get-themes-and-extensions": "Tema ve Eklenti Al",
+        "get-themes-and-extensions": "Tema Ve Eklenti Al",
+        "get-extensions": "Eklenti Al",
         "documentations": "Dokümantasyon",
         "website": "Web Site",
         "discord": "Discord"
@@ -567,9 +588,12 @@
           "host-mail-description": "E-postalar Pano Host paketinizin e-posta hizmetiyle gönderilir. Limitler ve gönderim kaydı {website} üzerindeki instance'ınızın E-posta sayfasındadır.",
           "reset-sender": "Pano Host varsayılanını kullan",
           "password-kept": "Kayıtlı şifreyi korumak için boş bırakın.",
-          "confirm-discard": "Kaydedilmemiş e-posta değişiklikleri silinsin mi?",
-          "confirm-switch-host": "E-postalar bundan sonra Pano Host e-postasıyla gönderilsin mi? Özel SMTP ayarlarınız saklanır.",
-          "confirm-switch-own": "E-postalar bundan sonra Pano Host e-postası yerine özel SMTP ile gönderilsin mi?",
+          "confirm-discard-title": "Kaydedilmemiş e-posta değişiklikleri silinsin mi?",
+          "confirm-discard-description": "E-posta ayarlarında yaptığınız düzenlemeler kaybolur.",
+          "confirm-switch-host-title": "E-postalar bundan sonra Pano Host e-postasıyla gönderilsin mi?",
+          "confirm-switch-host-description": "Özel SMTP ayarlarınız saklanır.",
+          "confirm-switch-own-title": "E-postalar bundan sonra özel SMTP ile gönderilsin mi?",
+          "confirm-switch-own-description": "Bu sitenin e-postaları için artık Pano Host e-postası kullanılmaz.",
           "sender-local-invalid": "Yalnızca harf, rakam ve . _ + - kullanın (en fazla 64)."
         },
         "smtp-settings": "SMTP",
@@ -611,9 +635,11 @@
             "username-tried": "Son Denenen Kullanıcı Adı",
             "banned-at": "Yasaklanma Tarihi",
             "remove": "Yasağı kaldır",
-            "remove-confirm": "{ip} adresinin yasağı kaldırılsın mı?",
+            "remove-title": "{ip} adresinin yasağı kaldırılsın mı?",
+            "remove-description": "Bu adres bakım modunda yeniden giriş yapmayı deneyebilir.",
             "clear-all": "Tümünü Temizle",
-            "clear-all-confirm": "Tüm bakım modu IP yasakları kaldırılsın mı?",
+            "clear-all-title": "Tüm bakım modu IP yasakları kaldırılsın mı?",
+            "clear-all-description": "Yasaklanan tüm adresler bakım modunda yeniden giriş yapmayı deneyebilir.",
             "sub": "Çok fazla hatalı bakım modu girişinden sonra yasaklanan adresler. Yasak, buradan kaldırılana kadar sürer."
           },
           "modal": {
@@ -736,7 +762,8 @@
           "title": "Pano Backup'a yedeklensin mi?",
           "description": "Bu Pano'nun yedeği alınır ve Pano Backup'a yüklenir.",
           "encrypted": "Yedek bu sunucudan çıkmadan önce parolanızla şifrelenir.",
-          "plain": "Parola belirlenmediği için yedek düz arşiv olarak yüklenir."
+          "plain": "Parola belirlenmediği için yedek düz arşiv olarak yüklenir.",
+          "confirm": "Yedekle"
         },
         "create": "Yedek oluştur",
         "create-description": "Yedek bu Pano'nun veritabanını, ayarlarını, eklentilerini, temalarını ve yüklenen dosyalarını içerir. Bu sunucuda saklanır.",
@@ -835,7 +862,7 @@
           "workload-key": "Bu, örnek anahtarıyla şifrelenmiş bir Pano Host yedeği. Bunun yerine {website} üzerinden dışa aktarma olarak indirin.",
           "passphrase-saved-hint": "Kayıtlı parolayı kullanmak için boş bırakın.",
           "confirm": "Bu Pano'nun mevcut verilerinin değiştirileceğini anlıyorum.",
-          "submit": "Geri yükle"
+          "submit": "Geri Yükle"
         },
         "transfer": {
           "title": "Pano Host'a Aktar",
@@ -961,7 +988,8 @@
           "add-player": "Oyuncu Ekle",
           "go-to-group": "Gruba git: {name}",
           "go-to-parent-group": "Üst gruba git: {name}",
-          "confirm-reset-title": "Tüm kaydedilmemiş değişiklikleri sıfırlamak istediğinizden emin misiniz?"
+          "confirm-reset-title": "Kaydedilmemiş tüm değişiklikler sıfırlansın mı?",
+          "confirm-reset-description": "Henüz kaydetmediğiniz tüm değişiklikler silinir."
         },
         "accordions": {
           "tracks": "Trackler",
@@ -979,7 +1007,7 @@
           "expiry": "Süre",
           "pano-only-alert": "Bu permission node sadece Pano'da çalışacak ve oyuna yansımayacak.",
           "game-only-alert": "Bu permission node sadece oyunda çalışacak ama Pano'da çalışmayacak.",
-          "pano-only-alert-link": "Dokümantasyonu oku",
+          "pano-only-alert-link": "Dokümantasyonu Oku",
           "admin-group-delete-warning": "Bu grup tam yetkiye (*) sahip bir yönetici grubudur. Silmeniz durumunda bu gruptaki oyuncular yetkilerini kaybedebilir.",
           "admin-group-last-warning": "DİKKAT: Bu, sistemdeki SON yönetici grubudur. Bu grubu silerseniz platformda tam yetkili hiç kimse kalmayabilir!"
         },
@@ -1308,8 +1336,12 @@
           "plugin-up-to-date": "Güncel",
           "plugin-update-started": "Pano eklentisini {version} sürümüne güncelleme başladı. Yüklemek için sunucuyu yeniden başlat."
         },
+        "plugin-missing-title": "Bu Sunucuda Pano Eklentisi Yok",
+        "plugin-missing": "Sunucu çalışıyor ama ona bağlı bir Pano eklentisi yok: oyuncular, TPS ve oyun içi özellikler kullanılamıyor.",
+        "plugin-java-too-old-title": "Pano Eklentisi Java 11 Veya Üstünü Gerektirir",
+        "plugin-java-too-old": "Bu sunucu daha eski bir Java ile çalışıyor; bu yüzden Pano eklentisi kurulmadı ve sunucu bağlı değil: oyuncular, TPS ve oyun içi özellikler kullanılamıyor. Ayarlar → Başlangıç altından Java 11 veya daha yenisini seçin; Pano eklentiyi kurar ve sunucuyu bağlar.",
         "java-missing": "Son başlatma başarısız oldu: bu sunucunun ihtiyaç duyduğu Java {major} bu düğümde yok.",
-        "java-missing-action": "Java {major} indir ve başlat",
+        "java-missing-action": "Java {major} İndir Ve Başlat",
         "java-missing-no-permission": "Java {major} sürümünü yüklemesi için düğümleri yöneten birine başvurun."
       },
       "capability": {
@@ -1455,7 +1487,7 @@
         "tab-browse": "Keşfet",
         "list-failed": "Eklenti listesi yüklenemedi.",
         "linked-hint": "Pano bu listeyi yalnızca sunucudaki Pano eklentisinden okur. Dosya kurmak veya silmek için sunucuyu bir Pano düğümünde çalıştır.",
-        "restart-required-title": "Yeniden başlatma gerekiyor",
+        "restart-required-title": "Yeniden Başlatma Gerekiyor",
         "restart-required-description": "Sunucu eklentilerini son bildirdiğinden beri bu klasördeki dosyalar değişti. Değişikliklerin uygulanması için sunucuyu yeniden başlat.",
         "installed": {
           "column-file": "Dosya",
@@ -1466,8 +1498,10 @@
           "no-file": "Dosya yok",
           "game-list-unavailable": "Sunucu şu anda yüklü eklentilerini bildirmiyor, bu yüzden yalnızca diskteki dosyalar listeleniyor.",
           "remove": "Sil",
-          "remove-confirm": "{filename} dosyası sunucudan silinsin mi? Dosya kalıcı olarak silinir ve eklenti, sunucu yeniden başlayana kadar yüklü kalır.",
-          "remove-selected-confirm": "{count} dosya sunucudan silinsin mi? Dosyalar kalıcı olarak silinir ve eklentiler, sunucu yeniden başlayana kadar yüklü kalır.",
+          "remove-title": "{filename} dosyası sunucudan silinsin mi?",
+          "remove-description": "Dosya kalıcı olarak silinir ve eklenti, sunucu yeniden başlayana kadar yüklü kalır.",
+          "remove-selected-title": "{count} dosya sunucudan silinsin mi?",
+          "remove-selected-description": "Dosyalar kalıcı olarak silinir ve eklentiler, sunucu yeniden başlayana kadar yüklü kalır.",
           "removed-many": "{count} dosya silindi.",
           "removed": "{filename} silindi."
         },
@@ -1613,7 +1647,7 @@
         "column-actions": "İşlemler",
         "creator-unknown": "Bilinmiyor",
         "copy-checksum": "Kopyala",
-        "restore": "Geri yükle",
+        "restore": "Geri Yükle",
         "restore-title": "Bu yedek geri yüklensin mi?",
         "restore-description": "Sunucu klasöründeki her şey {name} yedeğinin içeriğiyle değiştirilecek. Bu işlem geri alınamaz.",
         "restore-needs-stop": "Bir yedeğin geri yüklenebilmesi için sunucunun durdurulmuş olması gerekir.",
@@ -1899,6 +1933,7 @@
         "memory-hint": "Sunucunun toplam belleği. Java heap'ine bunun {heap} MB'ı verilir; kalanı JVM'in heap dışındaki ihtiyacı.",
         "port-label": "Oyun Portu",
         "port-hint": "Oyuncuların bağlandığı port. Düğüm portun boş olduğunu kontrol eder.",
+        "port-in-use": "{port} portunu bu düğümde {name} zaten kullanıyor.",
         "java-label": "Java Sürümü",
         "java-auto": "Otomatik",
         "java-hint": "Otomatik seçenek, düğümdeki Java sürümleri arasından Minecraft sürümünün desteklediği en düşük sürümü seçer; düğümde hiçbiri yoksa onu indirir.",
@@ -1947,7 +1982,8 @@
         "created": "{name} oluşturuldu.",
         "updated": "{name} kaydedildi.",
         "deleted": "{name} silindi.",
-        "delete-confirm": "{name} görevi silinsin mi? Çalışması hemen durur.",
+        "delete-title": "{name} görevi silinsin mi?",
+        "delete-description": "Çalışması hemen durur.",
         "enabled-toast": "{name} açıldı.",
         "disabled-toast": "{name} kapatıldı.",
         "status-ok": "Başarılı",
@@ -2448,7 +2484,7 @@
         "importing-status": "{count} kullanıcı içe aktarılıyor...",
         "deleting-status": "{count} siliniyor...",
         "migration-completed": "İçe aktarma tamamlandı!",
-        "result-title": "Aktarma tamamlandı",
+        "result-title": "Aktarma Tamamlandı",
         "result-imported": "kullanıcı içe aktarıldı",
         "result-updated": "güncellendi",
         "result-deleted": "silindi",
@@ -2458,7 +2494,7 @@
         "result-summary-deleted": "<strong>{count}</strong> silindi",
         "status-new": "Yeni",
         "status-existing": "Mevcut",
-        "some-issues-occurred": "Bazı sorunlar oluştu:",
+        "some-issues-occurred": "Bazı Sorunlar Oluştu:",
         "start-new-migration": "Yeni içe aktarma başlat",
         "sqlite-detected-note": "config.yml dosyanız SQLite kullanıldığını gösteriyor.",
         "error-valid-yaml": "Lütfen geçerli bir YAML dosyası (.yml veya .yaml) yükleyin.",
@@ -2467,7 +2503,7 @@
         "error-import-failed": "İçe aktarma başarısız oldu."
       },
       "banned-players": {
-        "supported-info-title": "Sunucu yasaklarını içe aktar:",
+        "supported-info-title": "Sunucu Yasaklarını İçe Aktar:",
         "supported-format": "Sunucunuzun banned-players.json dosyasını yükleyin (Vanilla, Spigot, Paper).",
         "matching-info": "Her kayıt önce Minecraft UUID ile, ardından kullanıcı adı ile Pano oyuncularıyla eşleştirilir.",
         "unmatched-note": "Pano'da bulunmayan oyuncular yasaklanamaz ve atlanacaktır.",
@@ -2490,7 +2526,7 @@
         "override-already-banned-desc": "Pano'da zaten yasaklı olan oyuncuların yasak sebebini ve süresini güncelle ({count} kayıt etkilenir).",
         "unmatched-warning": "{count} kayıt bir Pano kullanıcısıyla eşleştirilemedi ve atlanacak.",
         "importing-status": "{count} yasak içe aktarılıyor...",
-        "result-title": "Yasak içe aktarma işlemi tamamlandı",
+        "result-title": "Yasak İçe Aktarma İşlemi Tamamlandı",
         "result-imported": "yasak içe aktarıldı",
         "result-skipped": "atlandı",
         "error-valid-json": "Lütfen geçerli bir banned-players.json dosyası yükleyin.",
@@ -2498,7 +2534,7 @@
         "error-import-failed": "İçe aktarma başarısız oldu."
       },
       "banned-ips": {
-        "supported-info-title": "Sunucu IP yasaklarını içe aktar:",
+        "supported-info-title": "Sunucu IP Yasaklarını İçe Aktar:",
         "supported-format": "Sunucunuzun banned-ips.json dosyasını yükleyin (Vanilla, Spigot, Paper).",
         "enforce-info": "İçe aktarılan IP'ler Pano'da giriş yapamaz ve kayıt olamaz.",
         "upload-label": "banned-ips.json Yükle",
@@ -2511,7 +2547,7 @@
         "override-existing": "Mevcut Olanları Güncelle",
         "override-existing-desc": "Pano'da zaten yasaklı olan IP'lerin sebep ve süresini güncelle ({count} kayıt etkilenir).",
         "importing-status": "{count} IP yasağı içe aktarılıyor...",
-        "result-title": "IP yasak içe aktarma tamamlandı",
+        "result-title": "IP Yasak İçe Aktarma Tamamlandı",
         "result-imported": "yeni IP yasağı",
         "result-updated": "güncellendi",
         "error-valid-json": "Lütfen geçerli bir banned-ips.json dosyası yükleyin.",
@@ -2540,7 +2576,7 @@
         "not-in-pano": "Pano'da değil",
         "will-import": "İçe aktarılacak",
         "will-skip": "Atlanacak",
-        "result-title": "LuckPerms içe aktarma işlemi tamamlandı!",
+        "result-title": "LuckPerms İçe Aktarma İşlemi Tamamlandı!",
         "import-summary-groups": " grup içe aktarıldı",
         "import-summary-updated": " güncellendi",
         "import-summary-group-nodes": " grup yetkisi",
@@ -2656,30 +2692,30 @@
     },
     "maintenance-banner": {
       "text": "Bakım modu açık. Ziyaretçiler web siteniz yerine bakım sayfasını görüyor.",
-      "go-to-settings": "Ayarlara git"
+      "go-to-settings": "Ayarlara Git"
     },
     "hosted-banner": {
       "details": "Ayrıntılar",
       "dismiss": "Kapat",
       "notices": {
         "HOST_DISK_QUOTA": {
-          "title": "Depolama dolmak üzere",
+          "title": "Depolama Dolmak Üzere",
           "message": "Bu sunucu {quotaMb} MB depolama alanının %{percent} kadarını kullanıyor."
         },
         "HOST_TRAFFIC_QUOTA": {
-          "title": "Aylık trafik bitmek üzere",
+          "title": "Aylık Trafik Bitmek Üzere",
           "message": "Bu sunucu bu ayki trafiğinin %{percent} kadarını kullandı."
         },
         "HOST_TRIAL_ENDING": {
-          "title": "Deneme süresi bitiyor",
+          "title": "Deneme Süresi Bitiyor",
           "message": "Ücretsiz deneme {days} gün içinde bitiyor. Bu sunucuyu korumak için {website} üzerinden bir paket seçin."
         },
         "HOST_PAYMENT_PAST_DUE": {
-          "title": "Ödeme başarısız",
+          "title": "Ödeme Başarısız",
           "message": "{days, select, none {Bu sunucunun yenileme ödemesi başarısız oldu. Sunucuyu korumak için {website} üzerinden ödeme yönteminizi güncelleyin.} other {Bu sunucunun yenileme ödemesi başarısız oldu. Sunucuyu korumak için {days} gün içinde {website} üzerinden ödeme yönteminizi güncelleyin.}}"
         },
         "HOST_DELETION_SCHEDULED": {
-          "title": "Silme planlandı",
+          "title": "Silme Planlandı",
           "message": "Bu sunucu {days} gün içinde silinecek."
         }
       }
@@ -2689,19 +2725,19 @@
       "please-wait": "Lütfen bekleyin.",
       "loading": "Yükleniyor...",
       "version-loading": "Sürüm yükleniyor...",
-      "version-not-found-title": "Sürüm bulunamadı",
+      "version-not-found-title": "Sürüm Bulunamadı",
       "version-not-found-description": "Bu mağaza sürümü bulunamadı. Kaldırılmış olabilir veya kurulum bağlantısı artık geçerli değil.",
       "account-not-connected": "Pano hesabı bağlı değil!",
       "not-connected-description": "Mağazaya erişmek için bir Pano hesabı bağlamalısınız.",
-      "install-title": "Bu kaynağı kurmak istediğinize emin misiniz?",
-      "update-title": "Bu kaynağı güncellemek istediğinize emin misiniz?",
-      "downgrade-title": "Bu kaynağı düşürmek istediğinize emin misiniz?",
-      "reinstall-title": "Bu kaynağı yeniden kurmak istediğinize emin misiniz?",
-      "install-description": "Bu kaynağı yüklemek üzeresiniz. Bu işlem geri alınamaz.",
-      "update-description": "Bu kaynağı {from} sürümünden {to} sürümüne güncellemek üzeresiniz.",
-      "downgrade-description": "Bu kaynağı {from} sürümünden {to} sürümüne indirgemek üzeresiniz.",
-      "reinstall-description": "{version} sürümünü yeniden yüklemek üzeresiniz. Mevcut dosyalar üzerine yazılacaktır.",
-      "downgrade-warning-title": "Uyarı: Sürüm düşürmek sorunlara yol açabilir!",
+      "install-title": "Bu kaynak kurulsun mu?",
+      "update-title": "Bu kaynak güncellensin mi?",
+      "downgrade-title": "Bu kaynağın sürümü düşürülsün mü?",
+      "reinstall-title": "Bu kaynak yeniden kurulsun mu?",
+      "install-description": "Kaynak indirilir ve bu Pano'ya kurulur.",
+      "update-description": "Kaynak {from} sürümünden {to} sürümüne güncellenir.",
+      "downgrade-description": "Kaynak {from} sürümünden {to} sürümüne düşürülür.",
+      "reinstall-description": "{version} sürümü yeniden kurulur ve mevcut dosyaların üzerine yazılır.",
+      "downgrade-warning-title": "Uyarı: Sürüm Düşürmek Sorunlara Yol Açabilir!",
       "downgrade-warning-description": "Daha eski bir sürüme geçmek veri kaybına veya uyumsuzluk sorunlarına neden olabilir. Dikkatli ilerleyin.",
       "unverified-resource-warning-title": "Doğrulanmamış Kaynak",
       "unverified-resource-warning-description": "Bu kaynak PanoMC tarafından doğrulanmamıştır. Riski size ait olmak üzere yükleyin.",
@@ -2938,48 +2974,59 @@
         "json": "JSON:"
       },
       "logout-session-confirm": {
-        "title": "Mevcut oturumunuzdan çıkış yapmak istediğinizden emin misiniz?"
+        "title": "Mevcut oturumunuzdan çıkış yapılsın mı?",
+        "description": "Bu cihazdaki oturumunuz kapatılır ve yeniden giriş yapmanız gerekir."
       },
       "confirm-remove-pano-account": {
-        "title": "Çevrimiçi Pano hesabınızı platformdan kaldırmak istediğinize emin misiniz?"
+        "title": "Pano hesabınızın bağlantısı kesilsin mi?",
+        "description": "Çevrimiçi Pano hesabınızın bu platformla bağlantısı kesilir."
       },
       "confirm-disable-email": {
-        "title": "E-posta’yı devre dışı bırakmak istediğinize emin misiniz? Kayıt/şifre sıfırlama gibi e-posta işlevleri çalışmayacaktır!"
+        "title": "E-posta devre dışı bırakılsın mı?",
+        "description": "Kayıt ve şifre sıfırlama gibi e-posta işlevleri çalışmaz."
       },
       "confirm-update-platform": {
-        "title": "Platformu güncellemek istediğinize emin misiniz? Güncelleme sırasında Pano birkaç dakika erişilemez olabilir. Bu sayfadan ayrılsanız bile güncelleme arka planda devam edecektir.",
+        "title": "Platform güncellensin mi?",
+        "description": "Güncelleme sırasında Pano birkaç dakika erişilemez olabilir. Bu sayfadan ayrılsanız bile güncelleme arka planda devam eder.",
         "terminal-mode-warning": "Pano şu anda bir terminale bağlı çalışıyor. Terminal'den bağımsız arkaplanda çalışma moduna geçsin mi?",
         "restart-in-background": "Güncellemeden sonra Pano'yu arka plan modunda yeniden başlat"
       },
       "confirm-update-resource": {
-        "title": "Bu kaynağı güncellemek istediğinize emin misiniz? Bu sayfadan ayrılsanız bile güncelleme arka planda devam edecektir."
+        "title": "Bu kaynak güncellensin mi?",
+        "description": "Bu sayfadan ayrılsanız bile güncelleme arka planda devam eder."
       },
       "confirm-update-resources": {
-        "title": "Tüm kaynakları güncellemek istediğinize emin misiniz? Bu sayfadan ayrılsanız bile yalnızca son kaynağın güncellemesi arka planda devam edecektir."
+        "title": "Tüm kaynaklar güncellensin mi?",
+        "description": "Bu sayfadan ayrılırsanız yalnızca son kaynağın güncellemesi arka planda devam eder."
       },
       "confirm-stop-theme": {
-        "title": "Mevcut aktif temayı durdurmak istediğinize emin misiniz? Bu, sitenin erişilemez olmasına neden olacaktır!",
+        "title": "Etkin tema durdurulsun mu?",
+        "description": "Tema yeniden başlatılana kadar site erişilemez olur.",
         "account-password": "Hesap Şifresi"
       },
       "confirm-stop-pano": {
-        "title": "Pano'yu durdurmak istediğinize emin misiniz? Bu, sitenin erişilemez olmasına neden olacaktır!",
+        "title": "Pano durdurulsun mu?",
+        "description": "Pano yeniden başlatılana kadar site erişilemez olur.",
         "account-password": "Hesap Şifresi"
       },
       "confirm-restart-pano": {
-        "title": "Pano'yu yeniden başlatmak istediğinize emin misiniz? Bu, sitenin geçici olarak erişilemez olmasına neden olacaktır!",
+        "title": "Pano yeniden başlatılsın mı?",
+        "description": "Pano yeniden başlarken site geçici olarak erişilemez olur.",
         "account-password": "Hesap Şifresi",
         "terminal-mode-warning": "Pano şu anda bir terminale bağlı çalışıyor. Terminal'den bağımsız arkaplanda çalışma moduna geçsin mi?",
         "restart-in-background": "Pano'yu arka plan modunda yeniden başlat"
       },
       "confirm-remove-theme": {
-        "title": "Bu temayı silmek istediğinizden emin misiniz?",
-        "title-active": "Bu aktif bir tema! Varsayılan olarak \"Vanilla\" tema kullanılacak. Silmek istediğinizden emin misiniz?"
+        "title": "Bu tema kaldırılsın mı?",
+        "description": "Tema bu Pano'dan kaldırılır.",
+        "description-active": "Bu tema etkin. Site, varsayılan \"Vanilla\" temaya geçer."
       },
       "confirm-install-resource": {
         "title": "\"{title}\" ({resourceId}) kurmak istediğinize emin misiniz?"
       },
       "confirm-save-critical-settings": {
-        "title": "Kritik web sitesi ayarlarını değiştiriyorsunuz. Bu değişiklikler sunucunun yeniden başlatılmasını gerektirebilir ve web sitenizin erişilebilirliğini etkileyebilir. Onaylamak için lütfen hesap şifrenizi girin.",
+        "title": "Kritik ayarlar kaydedilsin mi?",
+        "description": "Bu değişiklikler sunucunun yeniden başlatılmasını gerektirebilir ve sitenizin erişilebilirliğini etkileyebilir. Onaylamak için hesap şifrenizi girin.",
         "account-password": "Hesap Şifresi"
       },
       "confirm-reset-tab": {
@@ -2989,10 +3036,12 @@
         "title": "Tüm tema ayarlarını sıfırlamak istediğinize emin misiniz?"
       },
       "confirm-draft-post": {
-        "title": "Bu gönderiyi taslağa taşımak istediğinize emin misiniz?"
+        "title": "Bu yazı taslağa taşınsın mı?",
+        "description": "Yazı taslak olarak saklanır ve sitede görünmez."
       },
       "confirm-publish-post": {
-        "title": "Bu gönderiyi yayımlamak istediğinize emin misiniz? Herkese açık olacaktır."
+        "title": "Bu yazı yayımlansın mı?",
+        "description": "Yazı herkese açık olur."
       },
       "add-edit-post-category": {
         "create-category": "Kategori Oluştur",
@@ -3038,8 +3087,8 @@
         }
       },
       "confirm-send-verification-email": {
-        "title": "E-Posta Gönderilsin mi?",
-        "description": "Gerçekten aktivasyon emaili göndermek istediğinize emin misiniz?"
+        "title": "Doğrulama e-postası gönderilsin mi?",
+        "description": "Bu oyuncunun e-posta adresine bir doğrulama e-postası gönderilir."
       },
       "authorize-player": {
         "title": "Oyuncuyu Yetkilendir",
@@ -3082,15 +3131,18 @@
         "toast-ip-required": "Bir IP girin veya bir oyuncu seçin."
       },
       "confirm-close-ticket": {
-        "title-single": "Bu talebi kapatmak istediğinizden emin misiniz?",
-        "title-multi": "Bu talepleri kapatmak istediğinizden emin misiniz?"
+        "title-single": "Bu talep kapatılsın mı?",
+        "title-multi": "Bu talepler kapatılsın mı?",
+        "description-single": "Talep kapalı olarak işaretlenir.",
+        "description-multi": "Seçili talepler kapalı olarak işaretlenir."
       },
       "confirm-delete-permission-group": {
         "title": "Bu yetki grubunu kalıcı olarak silmek istediğinizden emin misiniz?",
         "description": "Yetki grubu içerisindeki şu kullanıcılar Oyuncu olarak değişecek:"
       },
       "confirm-delete-player": {
-        "title": "Bu oyuncuyu gerçekten silmek istediğinizden emin misiniz?",
+        "title": "Bu oyuncu silinsin mi?",
+        "description": "Oyuncunun hesabı Pano'dan silinir. Onaylamak için hesap şifrenizi girin.",
         "inputs": {
           "password": {
             "placeholder": "Şifre"
@@ -3098,30 +3150,38 @@
         }
       },
       "confirm-delete-post-category": {
-        "title": "Bu kategoriyi kalıcı olarak silmek istediğinizden emin misiniz?",
-        "description": "Kategori içerisindeki şu yazılar Kategorisiz olarak değişecek:",
+        "title": "Bu kategori silinsin mi?",
+        "description": "Kategori kalıcı olarak silinir. Bu işlem geri alınamaz.",
+        "warning": "Kategori içerisindeki şu yazılar Kategorisiz olarak değişecek:",
         "more-posts": "+{count} yazı daha"
       },
       "confirm-delete-post": {
-        "title-permanent": "Bu yazıyı kalıcı olarak silmek istediğinizden emin misiniz?",
-        "title-trash": "Bu yazıyı çöp kutusuna taşımak istediğinizden emin misiniz?"
+        "title-permanent": "Bu yazı kalıcı olarak silinsin mi?",
+        "title-trash": "Bu yazı çöp kutusuna taşınsın mı?",
+        "description-permanent": "Yazı tamamen silinir. Bu işlem geri alınamaz.",
+        "description-trash": "Yazı çöp kutusuna taşınır. Oradan kalıcı olarak silebilirsiniz."
       },
       "confirm-delete-ticket-category": {
-        "title-permanent": "Not: Eğer bu kategoriyi silerseniz, şu talepler Kategorisiz olarak kalacaklardır:",
-        "title": "Bu kategoriyi kalıcı olarak silmek istediğinizden emin misiniz?",
+        "uncategorized-note": "Not: Eğer bu kategoriyi silerseniz, şu talepler Kategorisiz olarak kalacaklardır:",
+        "title": "Bu kategori silinsin mi?",
+        "description": "Kategori kalıcı olarak silinir. Bu işlem geri alınamaz.",
         "more-tickets": "+{count} talep daha"
       },
       "confirm-remove-addon": {
-        "title": "\"{pluginId}\" eklentisini kaldırmak istediğinizden emin misiniz?"
+        "title": "\"{pluginId}\" eklentisi kaldırılsın mı?",
+        "description": "Eklenti bu Pano'dan kaldırılır."
       },
       "confirm-remove-perm-track": {
-        "title": "\"{trackName}\" track'ını kaldırmak istediğinizden emin misiniz?"
+        "title": "\"{trackName}\" track'ı kaldırılsın mı?",
+        "description": "Track kaldırılır. Değişiklik, kaydettiğinizde geçerli olur."
       },
       "confirm-remove-perm-group": {
-        "title": "\"{groupName}\" grubunu silmek istediğinizden emin misiniz?"
+        "title": "\"{groupName}\" grubu kaldırılsın mı?",
+        "description": "Grup ve izinleri kaldırılır. Değişiklik, kaydettiğinizde geçerli olur."
       },
       "confirm-remove-perm-user": {
-        "title": "\"{username}\" oyuncusunu listeden kaldırmak istediğinize emin misiniz?"
+        "title": "\"{username}\" oyuncusu listeden kaldırılsın mı?",
+        "description": "Oyuncu ve kendi izinleri listeden kaldırılır. Değişiklik, kaydettiğinizde geçerli olur."
       },
       "search-player": {
         "title": "Oyuncu Ara",
@@ -3164,25 +3224,31 @@
         }
       },
       "confirm-remove-addon-will-cause-more-unload": {
-        "description": "\"{pluginId}\" eklentisini kaldırmak bu eklentileri de devre dışı bırakacaktır:"
+        "warning": "\"{pluginId}\" eklentisini kaldırmak bu eklentileri de devre dışı bırakacaktır:"
       },
       "confirm-disable-addon-will-cause-more-disable": {
-        "title": "\"{pluginId}\" eklentisini devre dışı bırakmak istediğinizden emin misiniz?",
-        "description": "\"{pluginId}\" eklentisini devre dışı bırakmak bu eklentileri de devre dışı bırakacaktır:"
+        "title": "\"{pluginId}\" eklentisi devre dışı bırakılsın mı?",
+        "description": "Eklenti, yeniden etkinleştirilene kadar kapatılır.",
+        "warning": "\"{pluginId}\" eklentisini devre dışı bırakmak bu eklentileri de devre dışı bırakacaktır:"
       },
       "confirm-enabling-addon-will-cause-more-enable": {
-        "title": "\"{pluginId}\" eklentisini ektinleştirmek istediğinizden emin misiniz?",
-        "description": "\"{pluginId}\" eklentisini etkinleştirmek bu eklentileri de etkinleştirecektir:"
+        "title": "\"{pluginId}\" eklentisi etkinleştirilsin mi?",
+        "description": "Eklenti etkinleştirilir ve başlatılır.",
+        "warning": "\"{pluginId}\" eklentisini etkinleştirmek bu eklentileri de etkinleştirecektir:"
       },
       "confirm-delete-ticket": {
-        "title-single": "Bu talebi kalıcı olarak silmek istediğinizden emin misiniz?",
-        "title-multi": "Bu talepleri kalıcı olarak silmek istediğinizden emin misiniz?"
+        "title-single": "Bu talep silinsin mi?",
+        "title-multi": "Bu talepler silinsin mi?",
+        "description-single": "Talep kalıcı olarak silinir. Bu işlem geri alınamaz.",
+        "description-multi": "Seçili talepler kalıcı olarak silinir. Bu işlem geri alınamaz."
       },
       "confirm-remove-all-notifications": {
-        "title": "Tüm bildirimleri kalıcı olarak silmek istediğinizden emin misiniz?"
+        "title": "Tüm bildirimler silinsin mi?",
+        "description": "Tüm bildirimler kalıcı olarak silinir. Bu işlem geri alınamaz."
       },
       "confirm-delete-language": {
-        "title": "Bu dili silmek istediğinizden emin misiniz?"
+        "title": "Bu dil silinsin mi?",
+        "description": "Dil kalıcı olarak silinir. Bu işlem geri alınamaz."
       },
       "add-node": {
         "no-permission": "Bunun için \"düğümleri yönet\" iznine ihtiyacın var.",
@@ -3205,7 +3271,7 @@
         "sudo-label": "sudo kullan",
         "sudo-hint": "SSH kullanıcısı zaten root değilse açık bırak.",
         "ssh-submit": "Bağlan ve kur",
-        "fingerprint-label": "Sunucu anahtarı parmak izi",
+        "fingerprint-label": "Sunucu Anahtarı Parmak İzi",
         "fingerprint-confirm": "Bu benim sunucum, devam et",
         "coolify-url-label": "Coolify adresi",
         "coolify-token-label": "API anahtarı",
@@ -3232,8 +3298,8 @@
         "failed": "Kurulum başarısız oldu: {error}",
         "back": "Forma dön",
         "node-ready": "{name} bağlandı ve hazır.",
-        "coolify-refused": "Coolify dağıtımı reddetti:",
-        "local-failed": "Yerel node başlatılamadı:",
+        "coolify-refused": "Coolify Dağıtımı Reddetti:",
+        "local-failed": "Yerel Node Başlatılamadı:",
         "local-failed-generic": "Daemon bağlanamadan kapandı. Pano'nun yanındaki logs/pano-node.log dosyasına bak.",
         "local-starting": "Yerel node başlatılıyor…",
         "local-java": "Java {major} ({path})",
@@ -3320,6 +3386,8 @@
         "software-build-hint": "BuildTools, Spigot’u düğümün üzerinde derler: git ve uygun bir Java sürümü gerekir, bir sürümün ilk derlemesi yaklaşık 10 dakika sürer, sonraki kurulumlar bunu yeniden kullanır.",
         "software-jenkins": "Son CI derlemesi",
         "software-jenkins-hint": "Projenin Jenkins sunucusundan indirilir; sürüm numarası derleme numarasıdır.",
+        "software-installer": "Mod Yükleyici",
+        "software-installer-hint": "Node üzerinde yükleyicinin kendi kurulum programıyla kurulur. Bunun için Pano eklentisi yoktur: sunucu yönetilir, ancak oyuncular ve TPS gösterilmez.",
         "software-versions": "{count} sürüm",
         "software-empty": "Yazılım kataloğu boş. Pano’nun internete erişebildiğinden emin ol.",
         "software-unavailable": "Pano’nun bu sürümünde yazılım kataloğu yok.",
@@ -3386,7 +3454,8 @@
         "size-changed": "{size} ({delta} kaydedilmedi)"
       },
       "make-main-server": {
-        "title": "\"{serverName}\" sunucusunu ana sunucu yapmak istediğinizden emin misiniz?"
+        "title": "\"{serverName}\" ana sunucu yapılsın mı?",
+        "description": "Sitede bundan sonra bu sunucunun bilgileri gösterilir."
       },
       "remove-server": {
         "delete-title": "Bu sunucu silinsin mi?",
@@ -3480,10 +3549,12 @@
         }
       },
       "unban-player": {
-        "title": "Bu oyuncunun yasağını kaldırmak istediğinizden emin misiniz?"
+        "title": "Bu oyuncunun yasağı kaldırılsın mı?",
+        "description": "Oyuncunun yasağı hemen kaldırılır."
       },
       "unban-ip": {
-        "title": "{ip} için IP yasağını kaldırmak istediğinizden emin misiniz?"
+        "title": "{ip} için IP yasağı kaldırılsın mı?",
+        "description": "Bu adresin yasağı hemen kaldırılır."
       },
       "edit-player": {
         "title": "Oyuncu Bilgilerini Düzenle",
@@ -3789,7 +3860,7 @@
       "exclude-defaults": "Alışıldık Gereksizleri De Hariç Tut:"
     },
     "pano-plugin-update-button": {
-      "label": "Pano eklentisini güncelle"
+      "label": "Pano Eklentisini Güncelle"
     },
     "daemon-update": {
       "running-agent": "Pano Agent {version} sürümüne güncelleniyor…",

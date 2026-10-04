@@ -4,33 +4,36 @@
     <div class="modal-content">
       <div class="modal-body text-center">
         <div class="pb-3">
-          <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
+          <i class="fas fa-question-circle fa-3x d-block m-auto"></i>
+        </div>
+        <h5 class="mb-2">{$_('components.modals.confirm-delete-ticket-category.title')}</h5>
+        <div class="text-body-secondary">
+          {$_('components.modals.confirm-delete-ticket-category.description')}
         </div>
         {#if $category.ticketCount !== 0}
-          {$_('components.modals.confirm-delete-ticket-category.title-permanent')}
-          <br />
-          <br />
-
-          {#each $category.tickets as ticket, index (ticket)}
-            <a href="{base}/tickets/detail/{ticket.id}" target="_blank">
-              {ticket.title}
-            </a>
+          <div class="mt-3">
+            {$_('components.modals.confirm-delete-ticket-category.uncategorized-note')}
             <br />
-          {/each}
+            <br />
 
-          {#if $category.ticketCount > 5}
-            {$_('components.modals.confirm-delete-ticket-category.more-tickets', {
-              values: { count: $category.ticketCount - 5 },
-            })}
-          {/if}
+            {#each $category.tickets as ticket, index (ticket)}
+              <a href="{base}/tickets/detail/{ticket.id}" target="_blank">
+                {ticket.title}
+              </a>
+              <br />
+            {/each}
 
-          <br />
+            {#if $category.ticketCount > 5}
+              {$_('components.modals.confirm-delete-ticket-category.more-tickets', {
+                values: { count: $category.ticketCount - 5 },
+              })}
+            {/if}
+          </div>
         {/if}
-        {$_('components.modals.confirm-delete-ticket-category.title')}
       </div>
       <div class="modal-footer flex-nowrap">
         <button
-          class="btn btn-link col-6 m-0"
+          class="btn btn-link text-decoration-none col-6 m-0"
           type="button"
           class:disabled={loading}
           on:click={hide}>
@@ -41,7 +44,10 @@
           type="button"
           class:disabled={loading}
           on:click={onYesClick}>
-          {$_('buttons.yes')}
+          {#if loading}
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+          {/if}
+          {$_('buttons.delete')}
         </button>
       </div>
     </div>

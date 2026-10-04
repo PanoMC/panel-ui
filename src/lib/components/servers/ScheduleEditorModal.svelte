@@ -315,7 +315,10 @@
         </div>
 
         {#if formError}
-          <div class="alert alert-danger mb-0 small" role="alert">{$_(formError)}</div>
+          <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>{$_(formError)}</div>
+          </div>
         {/if}
       </div>
 

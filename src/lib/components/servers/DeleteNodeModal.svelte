@@ -101,7 +101,9 @@
           }}>
           <div class="modal-body vstack gap-3">
             <div class="text-center">
-              <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto text-danger mb-3"></i>
+              <div class="pb-3">
+                <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto"></i>
+              </div>
               <h5 class="mb-0">{$_('pages.servers.nodes.delete-title')}</h5>
             </div>
 
@@ -173,15 +175,19 @@
               </ul>
 
               {#if refusal}
-                <div class="alert alert-danger small mb-0" role="alert">
-                  <div>{$_(refusalKey)}</div>
-                  {#if refusal.detail}
-                    <div class="font-monospace text-break mt-1">{refusal.detail}</div>
-                  {/if}
+                <div class="alert alert-danger d-flex align-items-start mb-0" role="alert">
+                  <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                  <div class="min-w-0">
+                    <div>{$_(refusalKey)}</div>
+                    {#if refusal.detail}
+                      <div class="font-monospace text-break mt-1">{refusal.detail}</div>
+                    {/if}
+                  </div>
                 </div>
               {:else if needsForce}
-                <div class="alert alert-warning small mb-0" role="alert">
-                  {$_(warningKey)}
+                <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
+                  <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                  <div>{$_(warningKey)}</div>
                 </div>
               {/if}
 
@@ -228,7 +234,10 @@
             </div>
           </div>
           <div class="modal-footer flex-nowrap">
-            <button type="button" class="btn btn-link col-6 m-0" data-bs-dismiss="modal">
+            <button
+              type="button"
+              class="btn btn-link text-decoration-none col-6 m-0"
+              data-bs-dismiss="modal">
               {$_('buttons.cancel')}
             </button>
             <button type="submit" class="btn btn-danger col-6 m-0" disabled={!canSubmit}>

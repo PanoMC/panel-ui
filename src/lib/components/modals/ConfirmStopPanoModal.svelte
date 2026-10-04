@@ -5,9 +5,12 @@
       <form on:submit|preventDefault={sendStopPano}>
         <div class="modal-body text-center">
           <div class="pb-3">
-            <i class="fas fa-stop-circle fa-3x d-block m-auto text-gray"></i>
+            <i class="fas fa-stop-circle fa-3x d-block m-auto"></i>
           </div>
-          {$_('components.modals.confirm-stop-pano.title')}
+          <h5 class="mb-2">{$_('components.modals.confirm-stop-pano.title')}</h5>
+          <div class="text-body-secondary">
+            {$_('components.modals.confirm-stop-pano.description')}
+          </div>
 
           <input
             class="form-control mt-3"
@@ -19,7 +22,11 @@
         </div>
 
         <div class="modal-footer flex-nowrap">
-          <button class="btn btn-link col-6 m-0" type="button" on:click={hide} disabled={$loading}>
+          <button
+            class="btn btn-link text-decoration-none col-6 m-0"
+            type="button"
+            on:click={hide}
+            disabled={$loading}>
             {$_('buttons.cancel')}
           </button>
           <button
@@ -27,10 +34,10 @@
             type="button"
             disabled={confirmButtonDisabled || $loading}
             on:click={sendStopPano}>
-            {$_('buttons.yes')}
-            {#if $loading}
-              <i class="fa-solid fa-spinner fa-spin"></i>
-            {/if}
+            {#if $loading}<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"
+              ></span
+              >{/if}
+            {$_('buttons.stop')}
           </button>
         </div>
       </form>

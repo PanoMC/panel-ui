@@ -274,7 +274,7 @@
                   {/if}
                 </td>
                 <td class="small text-body-secondary text-break">
-                  {backup.createdBy || $_('pages.servers.backups.creator-unknown')}
+                  {backup.createdByUsername || '—'}
                 </td>
                 <td>
                   <span class="badge rounded-pill text-bg-{statusColour(backup.status)}">
@@ -451,8 +451,9 @@
         {:else}
           <!-- The gear is hidden once a save has proved the endpoint is missing, so this is only
                reachable in the moment between opening the dialog and that answer. -->
-          <div class="alert alert-warning mb-0 small" role="alert">
-            {$_('pages.servers.backups.retention-unavailable')}
+          <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>{$_('pages.servers.backups.retention-unavailable')}</div>
           </div>
         {/if}
       </div>
@@ -483,7 +484,7 @@
         }}>
         <div class="modal-body text-center">
           <div class="pb-3">
-            <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto text-danger"></i>
+            <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto"></i>
           </div>
           <h5 class="mb-2">{$_('pages.servers.backups.restore-title')}</h5>
           <div class="text-body-secondary">
@@ -503,8 +504,9 @@
                started meanwhile), and a closed dialog must not hold a second copy of the
                page's notice. -->
           {#if restoreOpen && restoreBlockedReason}
-            <div class="alert alert-warning mt-3 mb-0 small" role="alert">
-              {$_(restoreBlockedReason, { values: { section: $_(SECTION_KEY) } })}
+            <div class="alert alert-warning mt-3 mb-0 d-flex align-items-start" role="alert">
+              <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>{$_(restoreBlockedReason, { values: { section: $_(SECTION_KEY) } })}</div>
             </div>
           {/if}
           <input
@@ -517,7 +519,10 @@
             class:border-danger={passwordError} />
         </div>
         <div class="modal-footer flex-nowrap">
-          <button type="button" class="btn btn-link col-6 m-0" data-bs-dismiss="modal">
+          <button
+            type="button"
+            class="btn btn-link text-decoration-none col-6 m-0"
+            data-bs-dismiss="modal">
             {$_('buttons.cancel')}
           </button>
           <button
@@ -545,7 +550,7 @@
         }}>
         <div class="modal-body text-center">
           <div class="pb-3">
-            <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto text-danger"></i>
+            <i class="fa-solid fa-triangle-exclamation fa-3x d-block m-auto"></i>
           </div>
           <h5 class="mb-2">{$_('pages.servers.backups.delete-title')}</h5>
           <div class="text-body-secondary">
@@ -570,7 +575,10 @@
           </div>
         </div>
         <div class="modal-footer flex-nowrap">
-          <button type="button" class="btn btn-link col-6 m-0" data-bs-dismiss="modal">
+          <button
+            type="button"
+            class="btn btn-link text-decoration-none col-6 m-0"
+            data-bs-dismiss="modal">
             {$_('buttons.cancel')}
           </button>
           <button
