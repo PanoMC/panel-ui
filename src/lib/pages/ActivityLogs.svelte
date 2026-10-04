@@ -19,23 +19,26 @@
       </div>
       <div slot="right" aria-hidden="true"></div>
     </CardHeader>
-    {#if data.logs.length === 0}
+    {#if logs.length === 0}
       <NoContent />
     {:else}
       <div class="list-group list-group-flush">
-        {#each data.logs as log, index (log)}
+        {#each logs as log (log.id)}
           <ActivityLogRow {log} on:click={onShowViewActivityLogModalClick} />
         {/each}
       </div>
     {/if}
-    <div class="card-footer">
-      <Pagination
-        page={data.meta.page}
-        totalPage={data.meta.totalPage}
-        on:firstPageClick={() => onPageClick(1)}
-        on:lastPageClick={() => onPageClick(data.meta.totalPage)}
-        on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
-    </div>
+    <!-- Scrolling near the end loads the next page; the spinner is only there while it does. -->
+    {#if hasMore}
+      <div class="card-footer d-flex justify-content-center py-3" bind:this={sentinel}>
+        {#if loadMoreLoading}
+          <span
+            class="spinner-border spinner-border-sm text-primary"
+            role="status"
+            aria-hidden="true"></span>
+        {/if}
+      </div>
+    {/if}
   </div>
 </div>
 
@@ -55,12 +58,12 @@
     } = event;
     await parent();
 
-    const page = parseInt(searchParams.get('page')) || 1;
+    // The list always starts at the newest entries; older pages are appended while scrolling.
+    const page = 1;
     const search = searchParams.get('search')?.trim() || '';
     const locale = searchParams.get('locale')?.trim() || '';
 
     const queryParams = buildLoadQueryParams({
-      page,
       search: search || undefined,
       locale: locale || undefined,
     });
@@ -82,19 +85,19 @@
       logs: body.data,
       meta: { ...body.meta, page },
       search,
+      locale,
     };
   }
 </script>
 
 <script>
-  import { getContext } from 'svelte';
+  import { getContext, onDestroy, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
   import { goto } from '$app/navigation';
 
   import { buildQueryParams } from '$lib/api.util.js';
   import { currentLanguage } from '$lib/language.util.js';
 
-  import Pagination from '$lib/components/Pagination.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
@@ -116,9 +119,43 @@
 
   $: visibleLogCount = data.meta.filteredCount || data.meta.totalCount;
 
+  /** Everything shown so far: the loaded first page plus the pages appended while scrolling. */
+  let logs = data.logs;
+  let page = 1;
+  let totalPage = data.meta.totalPage;
+  let loadMoreLoading = false;
+  /** Bumped by every fresh first page, so a late answer for the previous list is dropped. */
+  let listGeneration = 0;
+
+  /** @type {HTMLDivElement | undefined} */
+  let sentinel;
+  /** @type {IntersectionObserver | undefined} */
+  let observer;
+
+  // A new first page (first visit, a search) starts the list over.
+  $: resetList(data);
+
+  $: hasMore = page < totalPage;
+
+  // (Re)watch the footer whenever it is (re)rendered; it only exists while there is more.
+  $: if (observer) {
+    observer.disconnect();
+
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+  }
+
+  function resetList(fresh) {
+    listGeneration++;
+    logs = fresh.logs;
+    page = 1;
+    totalPage = fresh.meta.totalPage;
+    loadMoreLoading = false;
+  }
+
   function onSearchInput(event) {
     search = event.detail.value;
-    data.meta.page = 1;
     refreshData();
   }
 
@@ -126,38 +163,100 @@
     isSearching = true;
 
     const queryParams = buildQueryParams({
-      page: data.meta.page,
       search: search || undefined,
       locale: search ? $currentLanguage?.code || undefined : undefined,
     });
 
-    await goto(queryParams, { invalidateAll: true, keepFocus: true });
+    await goto(queryParams || '?', { invalidateAll: true, keepFocus: true });
 
     isSearching = false;
   }
 
-  async function onPageClick(page) {
-    data.meta.page = page;
-    await refreshData();
+  /** The next page, appended; entries already shown are not shown twice. */
+  function loadMore() {
+    if (loadMoreLoading || page >= totalPage) {
+      return;
+    }
+
+    const generation = listGeneration;
+    const nextPage = page + 1;
+
+    loadMoreLoading = true;
+
+    ApiUtil.get({
+      path:
+        `/api/panel/logs/activity` +
+        buildQueryParams({
+          page: nextPage,
+          search: data.search || undefined,
+          locale: data.locale || undefined,
+        }),
+      handler: (body, reject) => {
+        if (generation !== listGeneration) {
+          return;
+        }
+
+        loadMoreLoading = false;
+
+        if (body.error) {
+          // The list shrank under us (logs were cleared): what is shown is all there is.
+          if (body.error === 'PAGE_NOT_FOUND') {
+            totalPage = page;
+
+            return;
+          }
+
+          reject();
+
+          return;
+        }
+
+        const shown = new Set(logs.map((log) => log.id));
+
+        logs = [...logs, ...(body.data || []).filter((log) => !shown.has(log.id))];
+        page = nextPage;
+        totalPage = body.meta?.totalPage ?? totalPage;
+      },
+    });
   }
 
   function onShowViewActivityLogModalClick(event) {
     const log = event.detail.log;
 
     log.selected = true;
-    data.logs = [...data.logs];
+    logs = [...logs];
 
     showViewActivityLogModal(log);
   }
 
   onViewActivityLogModalHide((log) => {
-    const _log = data.logs.find((_log) => _log.id === log.id);
+    const _log = logs.find((_log) => _log.id === log.id);
 
     if (!_log) {
       return;
     }
 
     _log.selected = false;
-    data.logs = [...data.logs];
+    logs = [...logs];
+  });
+
+  onMount(() => {
+    // A margin, so the next page is asked for before the reader actually hits the end.
+    observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          loadMore();
+        }
+      },
+      { rootMargin: '200px 0px' },
+    );
+
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+  });
+
+  onDestroy(() => {
+    observer?.disconnect();
   });
 </script>
