@@ -5,10 +5,11 @@
         {@render slots.left()}
       {:else}
         <PageNav>
-          <PageNavItem href="/players/detail/{data.player.username}"
-            >{$_('pages.player-detail.overview')}</PageNavItem>
-          <PageNavItem href="/players/detail/{data.player.username}/sessions"
-            >{$_('pages.player-detail.sessions')}</PageNavItem>
+          {#each menuItems as item (item.id)}
+            <PageNavItem
+              href={'/players/detail/' + data.player.username + item.href}
+              startsWith={item.startsWith}>{$_(item.text)}</PageNavItem>
+          {/each}
         </PageNav>
       {/if}
     </div>
@@ -181,7 +182,7 @@
 <script module>
   import ApiUtilModule, { buildQueryParams } from '$lib/api.util';
   import { error } from '@sveltejs/kit';
-  import { executeHookLoad } from '$lib/PluginAPI.js';
+  import { executeHookLoad, playerDetailMenuItems } from '$lib/PluginAPI.js';
   import { setContext } from 'svelte';
 
   const key = 'layout-slots';
@@ -261,6 +262,7 @@
   import Hook from '$lib/components/Hook.svelte';
   import { currentLanguage } from '$lib/language.util.js';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import { mergeMenuItems } from '$lib/mergeMenuItems.js';
   import ApiUtil from '$lib/api.util';
   import { avatarVersion } from '$lib/Store';
 
@@ -295,6 +297,8 @@
       Object.assign(slots, { right: null, left: null });
     }
   });
+
+  const menuItems = $derived(mergeMenuItems($playerDetailMenuItems, (p) => hasPermission(p)));
 
   let checkTime = $state(0);
   let interval;

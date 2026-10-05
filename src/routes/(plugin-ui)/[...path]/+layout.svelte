@@ -81,6 +81,10 @@
     const systemLayoutName =
       registeredPage.systemLayout || (registeredPage.public ? 'AuthShell' : null);
 
+    // System layouts and layouts read their route params (e.g. [username]) from the event,
+    // which only knows the catch-all, so hand them the registered page's params.
+    event.params = { ...event.params, ...registeredPage.params };
+
     resetLayout.set(registeredPage.resetLayout ?? !!registeredPage.public);
 
     let systemLayout = null;

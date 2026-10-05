@@ -35,11 +35,18 @@ export const serverNavigationItems = writable([]);
 export const themeMenuItems = writable([]);
 export const postMenuItems = writable([]);
 
+const originalPlayerDetailMenuItems = [
+  { id: 'overview', href: '', text: 'pages.player-detail.overview' },
+  { id: 'sessions', href: '/sessions', text: 'pages.player-detail.sessions' },
+];
+export const playerDetailMenuItems = writable([]);
+
 export async function init() {
   siteNavigationItems.set(structuredClone(originalSiteNavItems));
   serverNavigationItems.set(structuredClone(originalServerNavItems));
   themeMenuItems.set(structuredClone(originalThemeMenuItems));
   postMenuItems.set(structuredClone(originalPostMenuItems));
+  playerDetailMenuItems.set(structuredClone(originalPlayerDetailMenuItems));
   hooks.reset();
   slots.reset();
   lifecycle.reset();
@@ -182,6 +189,17 @@ export const panoApi = {
       },
       onLoad(handler) {
         panoApi.ui.lifecycle.on('panel:posts:load', handler);
+      },
+    },
+    player: {
+      detail: {
+        /**
+         * Edits the tab menu of the player detail page. Item: `{ id, href (relative to
+         * /players/detail/<username>), text (i18n key), permission?, startsWith? }`.
+         */
+        async editMenu(handler = async (items) => items) {
+          playerDetailMenuItems.set(await handler(get(playerDetailMenuItems)));
+        },
       },
     },
     addon: {
