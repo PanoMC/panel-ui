@@ -29,7 +29,7 @@
             <button
               type="button"
               title={$_('buttons.view')}
-              on:click={() => onNotificationClick(notification)}
+              on:click={() => onNotificationClick(notification, navigateTo)}
               class="btn btn-link text-decoration-none flex-grow-1 text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
               <span class="d-flex align-items-center">
                 {#if notification.details.faIcon}
@@ -61,7 +61,8 @@
 
               <div class="fw-normal">
                 <span class="text-wrap markdown-renderer"
-                  >{@html $_('notifications.' + notification.type, {
+                  >{@html $_(notificationTextKey(notification), {
+                    default: $_('notifications.UNKNOWN'),
                     values: { ...sanitizeObject(notification.details || {}) },
                   })}</span>
                 <br />
@@ -197,8 +198,10 @@
     show as showDeleteAllNotificationsModal,
     setCallback as setDeleteAllNotificationsModalCallback,
   } from '$lib/components/modals/ConfirmRemoveAllNotificationsModal.svelte';
-  import { onNotificationClick } from '$lib/NotificationManager.js';
+  import { notificationTextKey, onNotificationClick } from '$lib/NotificationManager.js';
+
   import { base } from '$app/paths';
+  import { goto } from '$app/navigation';
   import {
     imageFallback,
     isPanelNotificationUnread,
@@ -211,6 +214,8 @@
   import { avatarVersion } from '$lib/Store';
   import PageActions from '$lib/components/PageActions.svelte';
   import { onPanelNotificationRefresh } from '$lib/panelRealtime.js';
+
+  const navigateTo = (path) => goto(base + path);
 
   const pageTitle = getContext('pageTitle');
   const notificationCount = getContext('notificationCount');

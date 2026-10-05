@@ -3775,9 +3775,10 @@
       },
       "post-category-deleted-permanently": "\"{title}\" kalıcı olarak silindi.",
       "post-deleted-permanently": "\"{title}\" kalıcı olarak silindi.",
-      "post-moved-to-draft": "\"{title}\" taslaklara taşındı.",
-      "post-moved-to-trash": "\"{title}\" çöpe taşındı.",
+      "post-moved-to-draft": "\"<a href=\"{href}\">{title}</a>\" taslaklara taşındı.",
+      "post-moved-to-trash": "\"<a href=\"{href}\">{title}</a>\" çöpe taşındı.",
       "post-published": "\"{title}\" yayımlandı.",
+      "post-published-link": "\"<a href=\"{href}\">{title}</a>\" yayımlandı.",
       "post-saved": "\"{title}\" kaydedildi.",
       "rejected-server-connect": "Sunucu bağlantı isteği reddedildi.",
       "server-deleted-success": "\"{name}\" sunucu silindi.",
@@ -3788,7 +3789,7 @@
       "settings-save-success": "Ayarlar kaydedildi.",
       "ticket-category-deleted-permanently": "\"{title}\" kalıcı olarak silindi.",
       "ticket-closed": {
-        "multi": "{count} talep kapatıldı.",
+        "multi": "<a href=\"{href}\">{count}</a> talep kapatıldı.",
         "single": "Talep kapatıldı."
       },
       "tickets-deleted-permanently": {
@@ -4056,7 +4057,8 @@
     "DISK_LOW": "Bir düğümün disk alanı tükeniyor.",
     "TPS_LOW": "Bir sunucu 15 TPS'nin altında çalışıyor.",
     "SCHEDULE_FAILED": "Bir görev başarısız oldu.",
-    "PLUGIN_UPDATES": "<b>{serverName}</b> için <b>{count}</b> eklenti güncellemesi var: {names}"
+    "PLUGIN_UPDATES": "<b>{serverName}</b> için <b>{count}</b> eklenti güncellemesi var: {names}",
+    "UNKNOWN": "Bu bildirim görüntülenemiyor."
   },
   "errors": {
     "NETWORK_ERROR": "Bağlantı hatası! Lütfen bağlantınızı kontrol edin.",

@@ -3778,9 +3778,10 @@
       },
       "post-category-deleted-permanently": "\"{title}\" удалено навсегда.",
       "post-deleted-permanently": "\"{title}\" навсегда удалено.",
-      "post-moved-to-draft": "\"{title}\" перемещено в черновики.",
-      "post-moved-to-trash": "\"{title}\" перемещено в корзину.",
+      "post-moved-to-draft": "\"<a href=\"{href}\">{title}</a>\" перемещено в черновики.",
+      "post-moved-to-trash": "\"<a href=\"{href}\">{title}</a>\" перемещено в корзину.",
       "post-published": "\"{title}\" опубликовано.",
+      "post-published-link": "\"<a href=\"{href}\">{title}</a>\" опубликовано.",
       "post-saved": "\"{title}\" сохранено.",
       "rejected-server-connect": "Запрос на подключение сервера отклонен.",
       "server-deleted-success": "Удален сервер \"{name}\".",
@@ -3791,7 +3792,7 @@
       "settings-save-success": "Настройки сохранены.",
       "ticket-category-deleted-permanently": "\"{title}\" навсегда удалено.",
       "ticket-closed": {
-        "multi": "{count} тикетов закрыто.",
+        "multi": "<a href=\"{href}\">{count}</a> тикетов закрыто.",
         "single": "Тикет закрыт."
       },
       "tickets-deleted-permanently": {
@@ -4059,7 +4060,8 @@
     "DISK_LOW": "На узле заканчивается место на диске.",
     "TPS_LOW": "Сервер работает ниже 15 TPS.",
     "SCHEDULE_FAILED": "Запуск по расписанию завершился ошибкой.",
-    "PLUGIN_UPDATES": "Для <b>{serverName}</b> доступно обновлений плагинов: <b>{count}</b> — {names}"
+    "PLUGIN_UPDATES": "Для <b>{serverName}</b> доступно обновлений плагинов: <b>{count}</b> — {names}",
+    "UNKNOWN": "Это уведомление невозможно отобразить."
   },
   "errors": {
     "NETWORK_ERROR": "Сетевая ошибка! Пожалуйста, проверьте подключение.",

@@ -26,7 +26,30 @@ export const Permissions = Object.freeze({
   MANAGE_TRANSLATIONS: 'MANAGE_TRANSLATIONS',
 });
 
+/**
+ * Whether the signed-in user holds a permission.
+ *
+ * `permission` is one node, or a list of nodes of which holding any one is enough (an empty list
+ * is no requirement). The same shape is accepted by every plugin `permission` field: page
+ * registrations, nav items, sub-menu items, player-detail menu items and hooks.
+ *
+ * @param {string | string[]} permission
+ * @param {object} [user] the signed-in user; read off the page when omitted.
+ * @returns {boolean}
+ */
 export function hasPermission(permission, user) {
+  if (Array.isArray(permission)) {
+    if (permission.length === 0) {
+      return true;
+    }
+
+    if (!user) {
+      user = get(page).data.user;
+    }
+
+    return permission.some((node) => hasPermission(node, user));
+  }
+
   if (!user) {
     const { user: pageUser } = get(page).data;
 
@@ -34,6 +57,10 @@ export function hasPermission(permission, user) {
   }
 
   const userObject = user;
+
+  if (!userObject) {
+    return false;
+  }
 
   if (userObject.admin) {
     return true;
@@ -64,8 +91,8 @@ export function hasPermission(permission, user) {
   const permsLower = perms.map((x) => String(x || '').toLowerCase());
 
   // Prefer node-style checks; keep legacy key check for backward compatibility.
-  return (
-    (wantedNode && permsLower.includes(wantedNode)) || (wantedKey && perms.includes(wantedKey))
+  return Boolean(
+    (wantedNode && permsLower.includes(wantedNode)) || (wantedKey && perms.includes(wantedKey)),
   );
 }
 

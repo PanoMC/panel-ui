@@ -32,7 +32,7 @@
           <button
             type="button"
             title={$_('buttons.view')}
-            on:click={() => onNotificationClick(notification)}
+            on:click={() => onNotificationClick(notification, navigateTo)}
             class="text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
             <span class="d-flex align-items-center">
               {#if notification.details.faIcon}
@@ -64,7 +64,8 @@
 
             <span class="text-start">
               <span class="text-wrap markdown-renderer text-break">
-                {@html $_('notifications.' + notification.type, {
+                {@html $_(notificationTextKey(notification), {
+                  default: $_('notifications.UNKNOWN'),
                   values: { ...sanitizeObject(notification.details || {}) },
                 })}
               </span>
@@ -152,15 +153,19 @@
   import { quickNotifications, avatarVersion } from '$lib/Store';
   import ApiUtil from '$lib/api.util';
   import { formatDistanceToNow } from 'date-fns';
-  import { onNotificationClick } from '$lib/NotificationManager.js';
+  import { notificationTextKey, onNotificationClick } from '$lib/NotificationManager.js';
+
   import { currentLanguage } from '$lib/language.util.js';
   import { onPanelNotificationRefresh } from '$lib/panelRealtime.js';
   import { base } from '$app/paths';
+  import { goto } from '$app/navigation';
   import {
     imageFallback,
     panelNotificationServerIcon,
     serversWithoutIcon,
   } from '$lib/panelNotification.util.js';
+
+  const navigateTo = (path) => goto(base + path);
 
   let checkTime = 0;
   let interval;
@@ -262,7 +267,7 @@
 
   function onClick(notification) {
     markRead(notification.id);
-    onNotificationClick(notification);
+    onNotificationClick(notification, navigateTo);
     hide(notification.id);
   }
 

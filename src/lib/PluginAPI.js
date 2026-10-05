@@ -8,6 +8,8 @@ import { originalThemeMenuItems } from '$lib/pages/view/Themes.svelte';
 import { originalPostMenuItems } from '$lib/pages/Posts.svelte';
 import { avatarVersion } from './Store.js';
 import { completeSignIn } from './signIn.util.js';
+import { panelFeatures } from './panelFeatures.js';
+import { addPluginListener, resetPluginListeners } from './NotificationManager.js';
 // The shared plugin engine lives in @panomc/theme-core. The panel is NOT yet wired with the
 // `$pano` vite alias (that lands with the theme-core migration), so this imports through the
 // package's exports map — resolvable regardless of the alias.
@@ -50,6 +52,7 @@ export async function init() {
   hooks.reset();
   slots.reset();
   lifecycle.reset();
+  resetPluginListeners();
 }
 
 export const executeLifecycle = lifecycle.executeLifecycle;
@@ -87,6 +90,7 @@ export async function executeLoginLoad(event) {
 
 export const panoApi = {
   ...baseAPI,
+  features: panelFeatures,
   ui: {
     ...pageAPI,
     nav: {
@@ -191,23 +195,22 @@ export const panoApi = {
         panoApi.ui.lifecycle.on('panel:posts:load', handler);
       },
     },
-    player: {
-      detail: {
-        /**
-         * Edits the tab menu of the player detail page. Item: `{ id, href (relative to
-         * /players/detail/<username>), text (i18n key), permission?, startsWith? }`.
-         */
-        async editMenu(handler = async (items) => items) {
-          playerDetailMenuItems.set(await handler(get(playerDetailMenuItems)));
-        },
-      },
-    },
     addon: {
       onLoad(handler) {
         panoApi.ui.lifecycle.on('panel:addon-detail:load', handler);
       },
     },
     player: {
+      detail: {
+        /**
+         * Edits the tab menu of the player detail page. Item: `{ id, href (relative to
+         * /players/detail/<username>), text (i18n key), permission?, startsWith? }`.
+         * `permission` is one node or a list of which any one is enough.
+         */
+        async editMenu(handler = async (items) => items) {
+          playerDetailMenuItems.set(await handler(get(playerDetailMenuItems)));
+        },
+      },
       onEditLoad(handler) {
         panoApi.ui.lifecycle.on('panel:player-detail:edit-modal:load', handler);
       },
@@ -224,6 +227,19 @@ export const panoApi = {
             });
           },
         },
+      },
+    },
+    notification: {
+      /**
+       * Runs `handler(notification)` when a notification of `type` is clicked, after the
+       * core listeners. A type with no listener at all navigates to `details.href` when that
+       * is a safe local path.
+       *
+       * @param {string} type
+       * @param {(notification: object) => void} handler
+       */
+      onClick(type, handler) {
+        addPluginListener(type, handler);
       },
     },
     lifecycle: {

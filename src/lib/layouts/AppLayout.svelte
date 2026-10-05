@@ -101,6 +101,8 @@
   import Editor from '$lib/components/Editor.svelte';
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
+  import Hook from '$lib/components/Hook.svelte';
+  import ViewComponent from '$lib/components/ViewComponent.svelte';
 
   import tooltip from '$lib/tooltip.util';
 
@@ -343,6 +345,7 @@
       invalidate,
       invalidateAll,
       error,
+      redirect,
       components: {
         PageActions,
         PageLoader,
@@ -360,6 +363,8 @@
         Editor,
         DragAndDropZone,
         SearchInput,
+        Hook,
+        ViewComponent,
       },
       utils: {
         api: {
@@ -378,6 +383,9 @@
         },
         text: {
           copy,
+        },
+        auth: {
+          hasPermission,
         },
       },
       variables: {

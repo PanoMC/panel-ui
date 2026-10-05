@@ -3778,9 +3778,10 @@
       },
       "post-category-deleted-permanently": "\"{title}\" deleted permanently.",
       "post-deleted-permanently": "\"{title}\" is permanently deleted.",
-      "post-moved-to-draft": "\"{title}\" is moved to drafts.",
-      "post-moved-to-trash": "\"{title}\" is moved to trash.",
+      "post-moved-to-draft": "\"<a href=\"{href}\">{title}</a>\" is moved to drafts.",
+      "post-moved-to-trash": "\"<a href=\"{href}\">{title}</a>\" is moved to trash.",
       "post-published": "\"{title}\" is published.",
+      "post-published-link": "\"<a href=\"{href}\">{title}</a>\" is published.",
       "post-saved": "\"{title}\" is saved.",
       "rejected-server-connect": "Server connection request denied.",
       "server-deleted-success": "Deleted server \"{name}\".",
@@ -3791,7 +3792,7 @@
       "settings-save-success": "Settings saved.",
       "ticket-category-deleted-permanently": "\"{title}\" is permanently deleted.",
       "ticket-closed": {
-        "multi": "{count} tickets closed.",
+        "multi": "<a href=\"{href}\">{count}</a> tickets closed.",
         "single": "Ticket is closed."
       },
       "tickets-deleted-permanently": {
@@ -4059,7 +4060,8 @@
     "DISK_LOW": "A node is running out of disk space.",
     "TPS_LOW": "A server is running below 15 TPS.",
     "SCHEDULE_FAILED": "A scheduled run failed.",
-    "PLUGIN_UPDATES": "<b>{count}</b> plugin updates are available for <b>{serverName}</b>: {names}"
+    "PLUGIN_UPDATES": "<b>{count}</b> plugin updates are available for <b>{serverName}</b>: {names}",
+    "UNKNOWN": "This notification cannot be displayed."
   },
   "errors": {
     "NETWORK_ERROR": "Network error! Please check your connection.",

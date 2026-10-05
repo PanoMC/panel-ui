@@ -78,7 +78,7 @@
                     <button
                       type="button"
                       title={$_('buttons.view')}
-                      on:click={() => onNotificationClick(notification)}
+                      on:click={() => onNotificationClick(notification, navigateTo)}
                       class="text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
                       <div class="d-flex align-items-center">
                         {#if notification.details.faIcon}
@@ -110,7 +110,8 @@
 
                       <div class="fw-normal">
                         <span class="text-wrap markdown-renderer text-break"
-                          >{@html $_('notifications.' + notification.type, {
+                          >{@html $_(notificationTextKey(notification), {
+                            default: $_('notifications.UNKNOWN'),
                             values: {
                               ...sanitizeObject(notification.details || {}),
                             },
@@ -214,6 +215,7 @@
   import { sanitizeImageSrc } from '$lib/security.util.js';
 
   import { base } from '$app/paths';
+  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
 
   import ApiUtil from '$lib/api.util';
@@ -229,7 +231,8 @@
   import { currentLanguage } from '$lib/language.util';
   import { browser } from '$app/environment';
 
-  import { onNotificationClick } from '$lib/NotificationManager.js';
+  import { notificationTextKey, onNotificationClick } from '$lib/NotificationManager.js';
+
   import NoContent from '$lib/components/NoContent.svelte';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import SiteNavigationMenu from '$lib/components/sidebar/SiteNavigationMenu.svelte';
@@ -240,6 +243,8 @@
     panelNotificationServerIcon,
     serversWithoutIcon,
   } from '$lib/panelNotification.util.js';
+
+  const navigateTo = (path) => goto(base + path);
 
   const pageTitle = getContext('pageTitle');
   const user = getContext('user');
