@@ -321,12 +321,13 @@
           buttonsLoading = false;
 
           const foundTitle = data.posts.find((post) => post.id === id).title;
-          const title = `<a href="${base}/posts?pageType=DRAFT">${limitTitle(foundTitle)}</a>`;
+          const title = limitTitle(foundTitle);
 
           await invalidate((_) => true);
 
           await showSuccessToast('components.toasts.post-moved-to-draft', {
             title,
+            href: `${base}/posts?pageType=DRAFT`,
           });
         },
       });
@@ -357,11 +358,12 @@
           await goto(base + '/posts');
 
           const foundTitle = data.posts.find((post) => post.id === id).title;
-          const title = `<a href="${base}/posts/detail/${id}">${limitTitle(foundTitle)}</a>`;
+          const title = limitTitle(foundTitle);
 
-          await showSuccessToast('components.toasts.post-published', {
+          await showSuccessToast('components.toasts.post-published-link', {
             postId: id,
             title,
+            href: `${base}/posts/detail/${id}`,
           });
 
           await invalidate((_) => true);

@@ -478,9 +478,10 @@
 
           await goto(base + '/posts?pageType=DRAFT');
 
-          const title = `<a href="${base}/posts?pageType=DRAFT" target="_blank">${limitTitle(post.title)}</a>`;
-
-          await showSuccessToast('components.toasts.post-moved-to-draft', { title });
+          await showSuccessToast('components.toasts.post-moved-to-draft', {
+            title: limitTitle(post.title),
+            href: `${base}/posts?pageType=DRAFT`,
+          });
         },
       });
     });

@@ -109,8 +109,10 @@
           title: limitTitle(get(post).title),
         });
       } else {
-        const title = `<a href="${base}/posts?pageType=TRASH" target="_blank">${limitTitle(get(post).title)}</a>`;
-        showSuccessToast('components.toasts.post-moved-to-trash', { title });
+        showSuccessToast('components.toasts.post-moved-to-trash', {
+          title: limitTitle(get(post).title),
+          href: `${base}/posts?pageType=TRASH`,
+        });
       }
 
       callback(get(post));

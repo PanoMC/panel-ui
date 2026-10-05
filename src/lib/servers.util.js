@@ -1205,8 +1205,8 @@ export function showServerActionError(error, body = null, context = {}) {
   }
 
   if (key === 'pages.servers.errors.generic') {
-    // Sanitized to [A-Z0-9_] above, so it is safe inside the markup.
-    return showError(key, { error: `<code>${code || 'UNKNOWN'}</code>` });
+    // Toast values are HTML-escaped by DefaultToast, so the code goes in as plain text.
+    return showError(key, { error: code || 'UNKNOWN' });
   }
 
   return showError(key);

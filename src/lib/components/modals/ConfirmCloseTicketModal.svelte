@@ -119,7 +119,7 @@
           count > 1
             ? 'components.toasts.ticket-closed.multi'
             : 'components.toasts.ticket-closed.single',
-          { count: `<a href="${base}/tickets?pageType=CLOSED">${count}</a>` },
+          { count, href: `${base}/tickets?pageType=CLOSED` },
         );
 
         callback(get(selectedTickets));
