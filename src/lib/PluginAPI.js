@@ -9,6 +9,7 @@ import { originalPostMenuItems } from '$lib/pages/Posts.svelte';
 import { avatarVersion } from './Store.js';
 import { completeSignIn } from './signIn.util.js';
 import { panelFeatures } from './panelFeatures.js';
+import { editSerialized } from './editSerialized.js';
 import { addPluginListener, resetPluginListeners } from './NotificationManager.js';
 // The shared plugin engine lives in @panomc/theme-core. The panel is NOT yet wired with the
 // `$pano` vite alias (that lands with the theme-core migration), so this imports through the
@@ -96,7 +97,7 @@ export const panoApi = {
     nav: {
       site: {
         async editNavLinks(handler = async (navigationItems) => navigationItems) {
-          siteNavigationItems.set(await handler(get(siteNavigationItems)));
+          return editSerialized(siteNavigationItems, handler);
         },
       },
       server: {
@@ -111,14 +112,14 @@ export const panoApi = {
          * `components/sidebar/ServerNavigationMenu.svelte`.
          */
         async editNavLinks(handler = async (navigationItems) => navigationItems) {
-          serverNavigationItems.set(await handler(get(serverNavigationItems)));
+          return editSerialized(serverNavigationItems, handler);
         },
       },
     },
     view: {
       themes: {
         async editMenu(handler = async (items) => items) {
-          themeMenuItems.set(await handler(get(themeMenuItems)));
+          return editSerialized(themeMenuItems, handler);
         },
       },
       // The generic view-slot surface, same as the theme's `pano.ui.view`.
@@ -189,7 +190,7 @@ export const panoApi = {
     },
     posts: {
       async editMenu(handler = async (items) => items) {
-        postMenuItems.set(await handler(get(postMenuItems)));
+        return editSerialized(postMenuItems, handler);
       },
       onLoad(handler) {
         panoApi.ui.lifecycle.on('panel:posts:load', handler);
@@ -208,7 +209,7 @@ export const panoApi = {
          * `permission` is one node or a list of which any one is enough.
          */
         async editMenu(handler = async (items) => items) {
-          playerDetailMenuItems.set(await handler(get(playerDetailMenuItems)));
+          return editSerialized(playerDetailMenuItems, handler);
         },
       },
       onEditLoad(handler) {
