@@ -27,6 +27,10 @@ Column order is fixed:
 Row actions are always one dropdown (`btn btn-link` + `fa-ellipsis-v`, `dropdown-menu-start`),
 never loose buttons. A selected row gets `table-active`.
 
+Dropdown items are capitalized (`View Details`, `Delete`; add `text-capitalize` when the string
+is not) and carry a leading icon (`me-2`). A destructive item (delete, remove) is `link-danger`
+and comes last.
+
 ## Example
 
 ```svelte

@@ -16,6 +16,10 @@ Centered (`modal-body text-center`), in this order:
 3. **Description** — `<div class="text-body-secondary">`. One short summary of what will happen
    when the user confirms. Every confirmation modal has one.
 
+4. **Extra content** (optional) — only when the action needs one more input or a short list, e.g. a
+   passphrase or the items affected. It goes below the description in a `text-start mt-3` block.
+   It never replaces the description.
+
 ## Footer
 
 `modal-footer flex-nowrap`, two buttons of equal width (`col-6 m-0`), cancel first.

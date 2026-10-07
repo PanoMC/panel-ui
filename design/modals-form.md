@@ -8,6 +8,9 @@ A modal with inputs that creates, saves or edits something. Reference:
 
 - `modal-header` with the title (`<h5 class="modal-title">`) and, optionally, the default
   Bootstrap `btn-close` in the top right corner.
+- Header-level actions (a refresh, an info toggle) are icon-only `btn btn-link` buttons in a
+  `ms-auto d-flex align-items-center gap-1` group between the title and the `btn-close`. Never
+  more than two, and never a text button.
 - **The title is the only text describing the modal.** No description, subtitle, intro paragraph or
   hint under it or at the top of the body.
 
