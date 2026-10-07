@@ -41,6 +41,9 @@ Then:
 - they are one **dropdown menu**, not a row of buttons: trigger `btn btn-sm btn-link` with
   `fa-ellipsis-vertical`, menu `dropdown-menu dropdown-menu-end`, items `dropdown-item` — as in the
   console card.
+- **one action only → no menu**: a single action is a plain `btn btn-sm btn-link` (icon + label) in
+  the `right` slot. A menu that opens to show one item is an extra click for nothing. This applies to
+  card and page headers; a table row's control cell stays a dropdown (`tables.md`).
 
 ## Example
 
