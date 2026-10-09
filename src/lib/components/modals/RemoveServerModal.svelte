@@ -89,6 +89,7 @@
 </div>
 
 <script context="module">
+  import { errorCode } from '$lib/apiError.util.js';
   import { get, writable } from 'svelte/store';
 
   import { fetchServerBackups, isAgentServer, isInPlace, isManaged } from '$lib/servers.util.js';
@@ -207,18 +208,20 @@
     $loading = true;
 
     ApiUtil.post({
-      path: `/api/panel/servers/${$server.id}/delete`,
+      path: `/panel/servers/${$server.id}/delete`,
       body: { currentPassword: $currentPassword },
       handler: async (body) => {
         if (body.error) {
-          if (body.error === 'CURRENT_PASSWORD_NOT_CORRECT') {
+          if (body.error?.code === 'CURRENT_PASSWORD_NOT_CORRECT') {
             $passwordError = true;
             $loading = false;
             return;
           }
 
           $loading = false;
-          await showErrorToast('components.toasts.settings-save-error', { errorCode: body.error });
+          await showErrorToast('components.toasts.settings-save-error', {
+            errorCode: errorCode(body),
+          });
           return;
         }
 

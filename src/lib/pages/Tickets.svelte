@@ -50,7 +50,7 @@
       <div slot="left">
         {$_('pages.tickets.table-title', {
           values: {
-            ticketCount: data.ticketCount,
+            ticketCount: data.page.totalItems,
             pageType:
               data.pageType === PageTypes.WAITING_REPLY
                 ? $_('pages.tickets.waiting-reply')
@@ -98,7 +98,7 @@
     </CardHeader>
 
     <!-- No Tickets -->
-    {#if data.ticketCount === 0}
+    {#if data.page.totalItems === 0}
       <NoContent />
     {:else}
       <!-- Tickets Table -->
@@ -112,7 +112,7 @@
                     use:tooltip={[$_('pages.tickets.select-all')]}
                     class="form-check-input"
                     on:click={onSelectAllClick}
-                    checked={isAllTicketsSelected(data.tickets, $checkedList)}
+                    checked={isAllTicketsSelected(data.items, $checkedList)}
                     id="selectAll"
                     type="checkbox" />
                 </div>
@@ -131,7 +131,7 @@
             </tr>
           </thead>
           <tbody>
-            {#each data.tickets as ticket, index (ticket)}
+            {#each data.items as ticket, index (ticket)}
               <TicketRow
                 {ticket}
                 {checkedList}
@@ -147,9 +147,8 @@
         <!-- Pagination -->
         <Pagination
           page={data.page}
-          totalPage={data.totalPage}
           on:firstPageClick={() => onPageClick(1)}
-          on:lastPageClick={() => onPageClick(data.totalPage)}
+          on:lastPageClick={() => onPageClick(pageCount(data.page))}
           on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
       </div>
     {/if}
@@ -172,6 +171,8 @@
 
   export const DefaultPageType = PageTypes.ALL;
 
+  const PageSize = 10;
+
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
@@ -193,25 +194,25 @@
 
     const queryParams = buildQueryParams({
       page,
+      pageSize: PageSize,
       pageType,
       categoryUrl,
       search,
     });
 
     const body = await ApiUtil.get({
-      path: `/api/panel/tickets` + queryParams,
+      path: `/panel/tickets` + queryParams,
       request: event,
     });
 
     if (body.error) {
-      if (body.error === 'PAGE_NOT_FOUND') {
-        throw error(404, body.error);
+      if (body.error?.code === 'PAGE_NOT_FOUND') {
+        throw error(404, body.error?.code);
       }
 
-      throw error(500, body.error);
+      throw error(500, body.error?.code);
     }
 
-    body.page = page;
     body.pageType = pageType;
     body.categoryUrl = categoryUrl;
     body.search = search;
@@ -230,6 +231,7 @@
   import tooltip from '$lib/tooltip.util';
 
   import Pagination from '$lib/components/Pagination.svelte';
+  import { pageCount } from '$lib/components/pagination.util.js';
 
   import {
     setCallback as setCloseTicketModalCallback,
@@ -291,14 +293,13 @@
   function onSearchInput(event) {
     search = event.detail.value;
 
-    data.page = 1;
-    refreshData();
+    refreshData(1);
   }
 
-  async function refreshData() {
+  async function refreshData(pageNumber = data.page.number) {
     isSearching = true;
     const queryParams = buildQueryParams({
-      page: data.page,
+      page: pageNumber,
       categoryUrl: data.categoryUrl,
       pageType: data.pageType,
       search: search || undefined,
@@ -309,9 +310,7 @@
   }
 
   async function onPageClick(page) {
-    data.page = page;
-
-    await refreshData();
+    await refreshData(page);
   }
 
   function getListOfChecked(list) {
@@ -319,9 +318,9 @@
   }
 
   function onSelectAllClick() {
-    const isAllSelected = isAllTicketsSelected(data.tickets, $checkedList);
+    const isAllSelected = isAllTicketsSelected(data.items, $checkedList);
 
-    data.tickets.forEach((ticket) => {
+    data.items.forEach((ticket) => {
       $checkedList[ticket.id] = !isAllSelected;
     });
   }
@@ -347,9 +346,9 @@
   function onShowDeleteTicketsModalClick() {
     getListOfChecked(get(checkedList)).forEach(
       (id) =>
-        (data.tickets[
-          data.tickets.indexOf(
-            data.tickets.find((ticketInTickets) => ticketInTickets.id === parseInt(id)),
+        (data.items[
+          data.items.indexOf(
+            data.items.find((ticketInTickets) => ticketInTickets.id === parseInt(id)),
           )
         ].selected = true),
     );
@@ -358,8 +357,8 @@
   }
 
   function onShowDeleteTicketModalClick(id) {
-    data.tickets[
-      data.tickets.indexOf(data.tickets.find((ticketInTickets) => ticketInTickets.id === id))
+    data.items[
+      data.items.indexOf(data.items.find((ticketInTickets) => ticketInTickets.id === id))
     ].selected = true;
 
     showDeleteTicketModal([id]);
@@ -368,9 +367,9 @@
   function onShowCloseTicketsModalClick() {
     getListOfChecked(get(checkedList)).forEach(
       (id) =>
-        (data.tickets[
-          data.tickets.indexOf(
-            data.tickets.find((ticketInTickets) => ticketInTickets.id === parseInt(id)),
+        (data.items[
+          data.items.indexOf(
+            data.items.find((ticketInTickets) => ticketInTickets.id === parseInt(id)),
           )
         ].selected = true),
     );
@@ -379,8 +378,8 @@
   }
 
   function onShowCloseTicketModalClick(id) {
-    data.tickets[
-      data.tickets.indexOf(data.tickets.find((ticketInTickets) => ticketInTickets.id === id))
+    data.items[
+      data.items.indexOf(data.items.find((ticketInTickets) => ticketInTickets.id === id))
     ].selected = true;
 
     showCloseTicketModal([id]);
@@ -395,20 +394,20 @@
   });
 
   onConfirmDeleteTicketModalHide((selectedTickets) => {
-    if (!data.tickets || data.tickets.length === 0) {
+    if (!data.items || data.items.length === 0) {
       return;
     }
 
     Object.values(selectedTickets).forEach((id) => {
-      const index = data.tickets.indexOf(
-        data.tickets.find((ticketInTickets) => ticketInTickets.id === parseInt(id)),
+      const index = data.items.indexOf(
+        data.items.find((ticketInTickets) => ticketInTickets.id === parseInt(id)),
       );
 
       if (index === -1) {
         return;
       }
 
-      data.tickets[index].selected = false;
+      data.items[index].selected = false;
     });
   });
 
@@ -421,20 +420,20 @@
   });
 
   onConfirmCloseTicketModalHide((selectedTickets) => {
-    if (!data.tickets || data.tickets.length === 0) {
+    if (!data.items || data.items.length === 0) {
       return;
     }
 
     Object.values(selectedTickets).forEach((id) => {
-      const index = data.tickets.indexOf(
-        data.tickets.find((ticketInTickets) => ticketInTickets.id === parseInt(id)),
+      const index = data.items.indexOf(
+        data.items.find((ticketInTickets) => ticketInTickets.id === parseInt(id)),
       );
 
       if (index === -1) {
         return;
       }
 
-      data.tickets[index].selected = false;
+      data.items[index].selected = false;
     });
   });
 </script>

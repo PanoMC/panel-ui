@@ -63,6 +63,20 @@
       </span>
     </CardHeader>
     <div class="card-body">
+      {#if node?.unreachable}
+        <div class="alert alert-danger d-flex align-items-start" role="alert" data-node-unreachable>
+          <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+          <div>
+            <h5 class="alert-heading mb-2">{$_('pages.servers.nodes.unreachable-title')}</h5>
+            <div>{$_('pages.servers.nodes.unreachable-description')}</div>
+            {#if unreachablePath}
+              <a class="btn alert-btn mt-2" href={unreachablePath} download>
+                {$_('pages.servers.nodes.unreachable-download')}
+              </a>
+            {/if}
+          </div>
+        </div>
+      {/if}
       <dl class="row mb-0 small">
         <dt class="col-sm-4 col-lg-2">{$_('pages.servers.nodes.column-kind')}</dt>
         <dd class="col-sm-8 col-lg-4">{kindLabel}</dd>
@@ -289,6 +303,11 @@
   const node = $derived(
     liveNode && Number(liveNode.id) === Number(data.node?.id) ? liveNode : data.node,
   );
+  const unreachablePath = $derived.by(() => {
+    const path = node?.unreachable?.downloadPath;
+
+    return typeof path === 'string' && path.startsWith('/') && !path.startsWith('//') ? path : '';
+  });
   const kindLabel = $derived(
     $_(
       String(node?.kind || '').toUpperCase() === NodeKinds.LOCAL
@@ -439,7 +458,7 @@
       }
 
       if (result.status === 'error') {
-        await (result.error === 'NOT_EXISTS'
+        await (result.error?.code === 'NOT_EXISTS'
           ? showError('pages.servers.nodes.update-no-jar')
           : showServerActionError(result.error));
 

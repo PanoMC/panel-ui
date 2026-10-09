@@ -25,7 +25,7 @@ export async function completeSignIn(csrfToken, { target } = {}) {
   // A backend older than the `panel` login flag, or a plugin flow that has no such flag at all,
   // signs anybody in. Such a session is of no use here and would only strand the visitor on the
   // permission splash, so it is closed again at once.
-  if (credentials?.result === 'ok' && credentials.panelAccess === false) {
+  if (credentials && !credentials.error && credentials.panelAccess === false) {
     await sendLogout().catch(() => null);
 
     return 'NO_PANEL_ACCESS';

@@ -129,7 +129,7 @@
         <span class="me-3">
           <strong>
             {$_('pages.migration.banned-ips.total-entries', {
-              values: { count: previewData.totalCount },
+              values: { count: previewData.page.totalItems },
             })}
           </strong>
         </span>
@@ -241,13 +241,12 @@
       </div>
     </div>
 
-    {#if totalPages > 1}
+    {#if lastPage > 1}
       <div class="card-footer">
         <Pagination
-          page={currentPage}
-          totalPage={totalPages}
+          page={pageOf(currentPage, filteredItems.length, itemsPerPage)}
           on:firstPageClick={() => (currentPage = 1)}
-          on:lastPageClick={() => (currentPage = totalPages)}
+          on:lastPageClick={() => (currentPage = lastPage)}
           on:pageLinkClick={(e) => (currentPage = e.detail.page)} />
       </div>
     {/if}
@@ -341,6 +340,7 @@
   import CardHeader from '$lib/components/CardHeader.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
+  import { pageOf } from '$lib/components/pagination.util.js';
 
   export { resetForm, importItems, uploadAndPreview };
 
@@ -380,7 +380,7 @@
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
-  $: totalPages = Math.max(1, Math.ceil(filteredItems.length / itemsPerPage));
+  $: lastPage = Math.max(1, Math.ceil(filteredItems.length / itemsPerPage));
 
   $: areAllFilteredSelected =
     filteredItems.length > 0 && filteredItems.every((i) => selectedItems.has(i.ip));
@@ -417,16 +417,18 @@
       formData.append('file', file);
 
       const result = await ApiUtil.post({
-        path: '/api/panel/migration/server/banned-ips/upload',
+        path: '/panel/migration/server/banned-ips/upload',
         body: formData,
         onUploadProgress: (progress) => {
           uploadProgress = progress;
         },
       });
 
-      if (result?.result === 'error') {
+      if (!!result?.error) {
         uploadError =
-          result.message || result.error || $_('pages.migration.banned-ips.error-upload-failed');
+          result.error.message ||
+          result.error.code ||
+          $_('pages.migration.banned-ips.error-upload-failed');
         return;
       }
 
@@ -488,7 +490,7 @@
 
     try {
       const result = await ApiUtil.post({
-        path: '/api/panel/migration/server/banned-ips/import',
+        path: '/panel/migration/server/banned-ips/import',
         body: {
           selection: Array.from(selectedItems),
           skipExpired,
@@ -499,9 +501,11 @@
       clearInterval(progressInterval);
       importProgress = 1;
 
-      if (result?.result === 'error') {
+      if (!!result?.error) {
         uploadError =
-          result.message || result.error || $_('pages.migration.banned-ips.error-import-failed');
+          result.error.message ||
+          result.error.code ||
+          $_('pages.migration.banned-ips.error-import-failed');
         return;
       }
 

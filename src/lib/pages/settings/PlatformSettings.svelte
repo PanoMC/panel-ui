@@ -176,6 +176,29 @@
         </div>
       </div>
     </div>
+    {#if data.developmentMode && data.frontendSupported}
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="platformThemeDevServer">
+          {$_('pages.settings.platform.theme-dev-server')}
+        </label>
+        <div class="col-md-6">
+          <input
+            class="form-control font-monospace"
+            class:is-invalid={devUrlError}
+            id="platformThemeDevServer"
+            type="url"
+            autocomplete="off"
+            placeholder="http://localhost:3000"
+            bind:value={data.devUrl} />
+          <div class="form-text">
+            {$_('pages.settings.platform.theme-dev-server-hint')}
+            {#if data.frontendMode !== 'THEME'}
+              {$_('pages.settings.platform.theme-dev-server-inactive')}
+            {/if}
+          </div>
+        </div>
+      </div>
+    {/if}
     <div class="row mb-3">
       <label class="col-md-6 col-form-label" for="platformLanguage">
         {$_('pages.settings.platform.display-language')}
@@ -528,7 +551,7 @@
       <!-- Exiting first drops the bypass cookie, so the maintenance page is what actually renders. -->
       <a
         class="btn btn-link p-0 text-decoration-none"
-        href="/api/maintenance/exit"
+        href="/api/v1/maintenance/exit"
         target="_blank"
         rel="noopener noreferrer"
         class:disabled={maintenanceDisabled}
@@ -939,6 +962,8 @@
   import { isEndpointUnavailable } from '$lib/servers.util.js';
   import { hostedMocked, mockHostMail } from '$lib/hosted-mock.util.js';
   import { normalizeUsageMode, UsageModes } from '$lib/navigation.util.js';
+  import { createFrontendApi } from '$lib/pages/view/frontend/frontend.api.js';
+  import { describeError } from '$lib/pages/view/frontend/frontend.util.js';
 
   /** Pano Host mail sender name (before `@`); mirrors `HostedEnvConfig.SENDER_LOCAL`. */
   export const HOST_SENDER_LOCAL = /^[A-Za-z0-9_+-]+(\.[A-Za-z0-9_+-]+)*$/;
@@ -959,7 +984,7 @@
   ]);
 
   /**
-   * @param {unknown} response the body of `GET /api/panel/settings/alerts`.
+   * @param {unknown} response the body of `GET /api/v1/panel/settings/alerts`.
    * @returns {Record<string, { enabled: boolean, email: boolean }>} every kind the panel knows,
    *   defaulted to the contract's `{ enabled: true, email: false }`.
    */
@@ -998,29 +1023,40 @@
     // Alerts are a server-management feature: a WEBSITE install has no such endpoint (404), so
     // it is not asked — also on the reload that follows saving the usage mode.
     const alertsInUse = normalizeUsageMode(usageMode) !== UsageModes.WEBSITE;
+    // The theme dev server belongs to the front-end API, which a SERVERS install does not have.
+    const frontendInUse = normalizeUsageMode(usageMode) !== UsageModes.SERVERS;
 
-    const [generalSettings, authSettings, maintenanceSettings, alertSettings] = await Promise.all([
-      ApiUtil.get({
-        path: '/api/panel/settings' + buildQueryParams({ type: 'GENERAL' }),
-        request: event,
-      }),
-      ApiUtil.get({
-        path: '/api/panel/settings' + buildQueryParams({ type: 'AUTH' }),
-        request: event,
-      }),
-      ApiUtil.get({
-        path: '/api/panel/settings' + buildQueryParams({ type: 'MAINTENANCE' }),
-        request: event,
-      }),
-      // Alerts are a separate endpoint (§2.4.7) and an older backend does not have it, so the
-      // card is hidden instead of failing the whole page.
-      alertsInUse ? ApiUtil.get({ path: '/api/panel/settings/alerts', request: event }) : null,
-    ]);
+    const [generalSettings, authSettings, maintenanceSettings, alertSettings, frontendSettings] =
+      await Promise.all([
+        ApiUtil.get({
+          path: '/panel/settings' + buildQueryParams({ type: 'GENERAL' }),
+          request: event,
+        }),
+        ApiUtil.get({
+          path: '/panel/settings' + buildQueryParams({ type: 'AUTH' }),
+          request: event,
+        }),
+        ApiUtil.get({
+          path: '/panel/settings' + buildQueryParams({ type: 'MAINTENANCE' }),
+          request: event,
+        }),
+        // Alerts are a separate endpoint (§2.4.7) and an older backend does not have it, so the
+        // card is hidden instead of failing the whole page.
+        alertsInUse ? ApiUtil.get({ path: '/panel/settings/alerts', request: event }) : null,
+        frontendInUse ? createFrontendApi(ApiUtil, event).getFrontend() : null,
+      ]);
 
     const alertsSupported =
       !!alertSettings && !isEndpointUnavailable(alertSettings) && !alertSettings.error;
 
     const body = { ...generalSettings, ...authSettings, ...maintenanceSettings };
+
+    // `devUrl` ("Theme dev server") is stored with the front-end, not with the general settings,
+    // and sits in the snapshot below so the save button tracks it like any other field.
+    const frontendSupported = !!frontendSettings?.ok;
+
+    body.devUrl = frontendSupported ? (frontendSettings.body.devUrl ?? '') : '';
+    body.frontendMode = frontendSupported ? (frontendSettings.body.mode ?? 'THEME') : 'THEME';
 
     // Dev-only Pano Host preview (`VITE_MOCK_HOSTED`): offer the package mail as Pano Host does.
     if (hostedMocked && body.email) {
@@ -1039,6 +1075,7 @@
       alerts: readAlertSettings(alertsSupported ? alertSettings : null),
       alertsEmailAvailable: alertsSupported && alertSettings.emailAvailable === true,
       alertsSupported,
+      frontendSupported,
       platformConnectFailed: failed,
       encodedData,
       state,
@@ -1195,6 +1232,8 @@
   }
 
   let savePreferencesLoading;
+  /** True while the theme dev server address is refused (not a URL, or this Pano itself). */
+  let devUrlError = false;
   let saveAuthLoading;
   let saveAlertsLoading;
   // The switch grid is edited locally and written as a whole map, so it is snapshotted once
@@ -1256,7 +1295,8 @@
     data.oldSettings.locale === data.locale &&
     data.oldSettings.allowUserLocaleSelection === data.allowUserLocaleSelection &&
     data.oldSettings.telemetryEnabled === data.telemetryEnabled &&
-    data.oldSettings.developmentMode === data.developmentMode;
+    data.oldSettings.developmentMode === data.developmentMode &&
+    data.oldSettings.devUrl === data.devUrl;
 
   $: authSaveDisabled =
     data.oldSettings.requireEmailVerification === data.requireEmailVerification &&
@@ -1299,14 +1339,14 @@
   if (browser) {
     if (!data.panoAccount && data.state && data.encodedData) {
       ApiUtil.post({
-        path: '/api/panel/platform/connect',
+        path: '/panel/platform/connect',
         body: {
           encodedData: data.encodedData,
           state: data.state,
         },
         handler: async (body, reject) => {
           if (body.error) {
-            if (body.error === 'ALREADY_CONNECTED_TO_PANO') {
+            if (body.error?.code === 'ALREADY_CONNECTED_TO_PANO') {
               await goto($page.url.pathname, { invalidateAll: true });
               connecting = false;
               return;
@@ -1334,7 +1374,7 @@
     connecting = true;
 
     ApiUtil.post({
-      path: '/api/panel/platform/code',
+      path: '/panel/platform/code',
       handler: async (body, reject) => {
         if (body.error) {
           location.reload();
@@ -1359,10 +1399,10 @@
       disconnecting = true;
 
       ApiUtil.post({
-        path: '/api/panel/platform/disconnect',
+        path: '/panel/platform/disconnect',
         handler: async (body, reject) => {
           if (body.error) {
-            if (body.error === 'PANO_CONNECT_FAILED') {
+            if (body.error?.code === 'PANO_CONNECT_FAILED') {
               await showErrorToast('components.toasts.pano-account-disconnect-fail-cant-connect');
             } else {
               await showErrorToast('components.toasts.pano-account-disconnect-fail');
@@ -1409,6 +1449,28 @@
     }
 
     savePreferencesLoading = true;
+    devUrlError = false;
+
+    // The theme dev server is a front-end setting with its own endpoint. It goes first: a refused
+    // address stops the save, so the form never ends up half saved.
+    if (data.frontendSupported && data.devUrl !== data.oldSettings.devUrl) {
+      const result = await createFrontendApi(ApiUtil).saveFrontend({ devUrl: data.devUrl.trim() });
+
+      if (!result.ok) {
+        const { key, values } = describeError(result.error);
+
+        devUrlError = true;
+        savePreferencesLoading = false;
+
+        await showErrorToast(key, values);
+
+        return;
+      }
+
+      // The backend keeps the origin of what was typed.
+      data.devUrl = result.body.devUrl ?? '';
+      data.oldSettings.devUrl = data.devUrl;
+    }
 
     const formData = new FormData();
 
@@ -1421,7 +1483,7 @@
     formData.append('developmentMode', data.developmentMode);
 
     ApiUtil.put({
-      path: '/api/panel/settings',
+      path: '/panel/settings',
       body: formData,
       handler: async (body, reject) => {
         if (body.error) {
@@ -1465,7 +1527,7 @@
     saveAlertsLoading = true;
 
     ApiUtil.put({
-      path: '/api/panel/settings/alerts',
+      path: '/panel/settings/alerts',
       body: { alerts: alertSettings },
       handler: async (body, reject) => {
         saveAlertsLoading = false;
@@ -1489,7 +1551,7 @@
     formData.append('passwordHashAlgorithm', data.passwordHashAlgorithm);
 
     ApiUtil.put({
-      path: '/api/panel/settings',
+      path: '/panel/settings',
       body: formData,
       handler: async (body, reject) => {
         if (body.error) {
@@ -1514,7 +1576,7 @@
     mailError = null;
 
     ApiUtil.post({
-      path: '/api/panel/settings/verify/mail',
+      path: '/panel/settings/verify/mail',
       body: emailFields(),
       handler: async (body, reject) => {
         saveEmailLoading = false;
@@ -1725,7 +1787,7 @@
     );
 
     ApiUtil.put({
-      path: '/api/panel/settings',
+      path: '/panel/settings',
       body: formData,
       handler: async (body, reject) => {
         saveEmailLoading = false;
@@ -1776,7 +1838,7 @@
     );
 
     ApiUtil.put({
-      path: '/api/panel/settings',
+      path: '/panel/settings',
       body: formData,
       handler: async (body, reject) => {
         if (body.error) {
@@ -1862,7 +1924,7 @@
         );
 
         ApiUtil.put({
-          path: '/api/panel/settings',
+          path: '/panel/settings',
           body: formData,
           handler: async (body, reject) => {
             if (body.error) {
@@ -1983,7 +2045,7 @@
     saveMaintenanceLoading = true;
 
     ApiUtil.put({
-      path: '/api/panel/settings',
+      path: '/panel/settings',
       body: buildMaintenanceFormData(currentMaintenanceSettings()),
       handler: async (body, reject) => {
         if (body.error) {
@@ -1991,7 +2053,7 @@
 
           // A value this card sent was refused: that is not a connection problem, and the
           // network splash would hide the very form the operator has to correct.
-          if (body.error === 'BAD_REQUEST') {
+          if (body.error?.code === 'BAD_REQUEST') {
             await showErrorToast('errors.BAD_REQUEST');
 
             return;
@@ -2041,7 +2103,7 @@
     setSaveCriticalSettingsLoading(true);
 
     ApiUtil.put({
-      path: '/api/panel/settings',
+      path: '/panel/settings',
       body: buildMaintenanceFormData(maintenanceToggleSettings(enabled), password),
       handler: async (body, reject) => {
         if (body.error) {
@@ -2049,7 +2111,7 @@
           toggleMaintenanceLoading = false;
 
           // Wrong password: keep the modal open with the field marked so it can be retyped.
-          if (body.error === 'NO_PERMISSION') {
+          if (body.error?.code === 'NO_PERMISSION') {
             setSaveCriticalSettingsError(true);
 
             return;
@@ -2059,7 +2121,7 @@
 
           // See onSaveMaintenanceClick: a refused value is reported as such, not as a lost
           // connection with a Retry button that can only be refused again.
-          if (body.error === 'BAD_REQUEST') {
+          if (body.error?.code === 'BAD_REQUEST') {
             await showErrorToast('errors.BAD_REQUEST');
 
             return;

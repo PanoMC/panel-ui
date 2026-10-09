@@ -223,7 +223,7 @@
     previewLoading.set(true);
 
     ApiUtil.get({
-      path: '/api/panel/maintenance/page',
+      path: '/panel/maintenance/page',
       handler: async (body, reject) => {
         if (body.error) {
           previewLoading.set(false);
@@ -253,7 +253,7 @@
     previewLoading.set(true);
 
     ApiUtil.post({
-      path: '/api/panel/maintenance/preview',
+      path: '/panel/maintenance/preview',
       body: { templates: drafts ?? get(templates), showSiteLogo, focus: get(activeTab) },
       handler: async (body, reject) => {
         previewLoading.set(false);
@@ -273,13 +273,13 @@
     busy.set(true);
 
     ApiUtil.post({
-      path: '/api/panel/maintenance/page',
+      path: '/panel/maintenance/page',
       body: { templates: get(templates) },
       handler: async (body, reject) => {
         busy.set(false);
 
         if (body.error) {
-          if (body.error === 'BAD_REQUEST') {
+          if (body.error?.code === 'BAD_REQUEST') {
             await showErrorToast('errors.BAD_REQUEST');
 
             return;
@@ -301,7 +301,7 @@
     busy.set(true);
 
     ApiUtil.post({
-      path: '/api/panel/maintenance/page/reset',
+      path: '/panel/maintenance/page/reset',
       body: {},
       handler: async (body, reject) => {
         busy.set(false);

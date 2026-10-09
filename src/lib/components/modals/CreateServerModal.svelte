@@ -830,7 +830,7 @@
 
   let folderPath = $state('');
 
-  /** UPLOAD — the ticket `POST /api/panel/transfers/upload` handed back for the spooled zip. */
+  /** UPLOAD — the ticket `POST /api/v1/panel/transfers/upload` handed back for the spooled zip. */
   let uploadTicket = $state('');
   let uploadFilename = $state('');
   let uploadSize = $state(0);
@@ -1237,7 +1237,7 @@
   }
 
   /**
-   * Spools the zip through `POST /api/panel/transfers/upload` (multipart part `file`) and keeps
+   * Spools the zip through `POST /api/v1/panel/transfers/upload` (multipart part `file`) and keeps
    * the ticket it answers with. The ticket — not the file — is what the create call carries, so
    * the node can pull the archive itself; it expires after 30 minutes (§2.4.8).
    *
@@ -1264,7 +1264,7 @@
 
     try {
       body = await ApiUtil.post({
-        path: '/api/panel/transfers/upload',
+        path: '/panel/transfers/upload',
         body: form,
         onUploadProgress: (progress) => {
           uploadPercent = Math.min(100, Math.round(Number(progress) * 100));
@@ -1316,7 +1316,7 @@
   }
 
   /**
-   * `GET /api/panel/plugins/search?source=modrinth&type=modpack` — the same catalogue the plugin
+   * `GET /api/v1/panel/addons/search?source=modrinth&type=modpack` — the same catalogue the plugin
    * browser uses, asked for packs instead of plugins. A build without the endpoint answers with
    * the proxy's HTML, which becomes an explanatory line rather than an exception.
    *
@@ -1348,7 +1348,7 @@
     });
 
     const body = await ApiUtil.get({
-      path: `/api/panel/plugins/search?${params.toString()}`,
+      path: `/panel/addons/search?${params.toString()}`,
       handler: (/** @type {object} */ response) => response,
     });
 
@@ -1406,7 +1406,7 @@
     const sequence = ++modpackVersionsSeq;
 
     const body = await ApiUtil.get({
-      path: `/api/panel/plugins/search/${encodeURIComponent(MODPACK_SOURCE)}/${encodeURIComponent(item.projectId)}/versions?type=modpack`,
+      path: `/panel/addons/search/${encodeURIComponent(MODPACK_SOURCE)}/${encodeURIComponent(item.projectId)}/versions?type=modpack`,
       handler: (/** @type {object} */ response) => response,
     });
 
@@ -1556,7 +1556,7 @@
     softwareLoading = true;
 
     const body = await ApiUtil.get({
-      path: '/api/panel/software',
+      path: '/panel/software',
       handler: (response) => response,
     });
 
@@ -1580,7 +1580,7 @@
     }
 
     softwareUnavailable = false;
-    softwareList = Array.isArray(body.software) ? body.software : Array.isArray(body) ? body : [];
+    softwareList = Array.isArray(body.items) ? body.items : Array.isArray(body) ? body : [];
 
     const recommended = softwareList.find((item) => item.recommended) || softwareList[0];
 
@@ -1683,7 +1683,7 @@
     }
 
     const body = await ApiUtil.post({
-      path: '/api/panel/servers/create',
+      path: '/panel/servers/create',
       body: payload,
       handler: (response) => response,
     });

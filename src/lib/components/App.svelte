@@ -13,7 +13,7 @@
   import { page } from '$app/stores';
   import { onDestroy } from 'svelte';
   import PageLoader from '$lib/components/PageLoader.svelte';
-  import "@theme-style";
+  import '@theme-style';
 
   function loadPopOver() {
     if (window.bootstrap) {

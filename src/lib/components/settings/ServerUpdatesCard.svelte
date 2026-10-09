@@ -170,6 +170,7 @@
 </div>
 
 <script>
+  import { errorCode, errorDetails } from '$lib/apiError.util.js';
   import { onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
 
@@ -216,7 +217,7 @@
     loading = true;
 
     const body = await ApiUtil.get({
-      path: '/api/panel/updates/servers',
+      path: '/panel/updates/servers',
       handler: (response) => response,
     });
 
@@ -281,10 +282,10 @@
 
     const path =
       row.kind === 'pano-plugin'
-        ? `/api/panel/servers/${row.id}/pano-plugin/update`
+        ? `/panel/servers/${row.id}/pano-plugin/update`
         : row.kind === 'agent' && row.serverId != null
-          ? `/api/panel/servers/${row.serverId}/agent/update`
-          : `/api/panel/nodes/${row.id}/update`;
+          ? `/panel/servers/${row.serverId}/agent/update`
+          : `/panel/nodes/${row.id}/update`;
 
     try {
       const body = await ApiUtil.post({ path, handler: (response) => response });
@@ -294,10 +295,10 @@
       }
 
       if (body.error) {
-        if (body.manual === true && row.kind === 'pano-plugin') {
+        if (errorDetails(body).manual === true && row.kind === 'pano-plugin') {
           showPanoPluginUpdateModal(
             { id: row.id, name: row.name, type: row.serverType },
-            { latestVersion: row.latest ?? null, reason: body.reason },
+            { latestVersion: row.latest ?? null, reason: errorDetails(body).reason },
           );
         } else {
           showServerActionError(body.error, body);
@@ -327,7 +328,7 @@
 
     try {
       const body = await ApiUtil.post({
-        path: '/api/panel/servers/pano-plugin/update-all',
+        path: '/panel/servers/pano-plugin/update-all',
         handler: (response) => response,
       });
 
@@ -358,7 +359,7 @@
 
     try {
       const body = await ApiUtil.put({
-        path: '/api/panel/updates/node-auto-update',
+        path: '/panel/updates/node-auto-update',
         body: { enabled },
         handler: (response) => response,
       });

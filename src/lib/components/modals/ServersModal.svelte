@@ -189,7 +189,7 @@
 
   function initData() {
     ApiUtil.get({
-      path: `/api/panel/servers`,
+      path: `/panel/servers`,
       handler: (body, reject) => {
         if (body.error) {
           reject();
@@ -276,7 +276,7 @@
 
   /**
    * Per server id, the `latest` sample the cards' gauges are drawn from, as
-   * `GET /api/panel/servers-metrics` returns it. It stays empty on a backend that does not
+   * `GET /api/v1/panel/servers-metrics` returns it. It stays empty on a backend that does not
    * serve that endpoint yet, and the gauges then simply read "—".
    *
    * @type {Record<string, { latest?: object|null }>}
@@ -376,7 +376,7 @@
 
     try {
       const body = await ApiUtil.get({
-        path: `/api/panel/servers-metrics?range=1h`,
+        path: `/panel/servers-metrics?range=1h`,
         handler: (response) => response,
       });
 
@@ -622,9 +622,9 @@
     // admin opened, but the modal is a navigation now: every server page names its server in
     // the URL.
     ApiUtil.post({
-      path: `/api/panel/servers/${server.id}/select`,
+      path: `/panel/servers/${server.id}/select`,
       handler: async (body, reject) => {
-        if (body.result === 'ok') {
+        if (!body.error) {
           $selectedServer = server;
           await goto(`${base}/servers/${server.id}`, { invalidateAll: true });
           selectingServer.set(null);
@@ -634,7 +634,7 @@
           });
 
           return;
-        } else if (body.error && body.error === 'NOT_EXISTS') {
+        } else if (body.error && body.error?.code === 'NOT_EXISTS') {
           selectingServer.set(null);
           await showErrorToast('components.toasts.server-not-exists');
           initData();

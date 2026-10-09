@@ -52,7 +52,7 @@
       <div slot="left">
         {$_('pages.translations.card-title', {
           values: {
-            count: data.filter !== FilterTypes.ALL ? data.meta.filterCount : data.meta.totalCount,
+            count: data.filter !== FilterTypes.ALL ? data.meta.filterCount : data.meta.totalItems,
           },
         })}
       </div>
@@ -217,11 +217,11 @@
     }
 
     const localesBody = await ApiUtil.get({
-      path: `/api/panel/locales`,
+      path: `/panel/locales` + buildQueryParams({ pageSize: 100 }),
       request: event,
     });
 
-    const locales = localesBody.data;
+    const locales = localesBody.items;
 
     if (!locales.some((item) => item.code === locale)) {
       throw error(404, 'PAGE_NOT_FOUND');
@@ -234,12 +234,17 @@
     });
 
     const translationsBody = await ApiUtil.get({
-      path: `/api/panel/locales/${localeId}/types/${type}/translations${queryParams}`,
+      path: `/panel/locales/${localeId}/types/${type}/translations${queryParams}`,
       request: event,
     });
 
-    let translations = translationsBody.data;
-    const meta = translationsBody.meta;
+    let translations = translationsBody.items;
+    // The list's own keys (`filterCount`, `filterResult`) and the page object sit beside `items`.
+    const meta = {
+      filterCount: translationsBody.filterCount,
+      filterResult: translationsBody.filterResult,
+      totalItems: translationsBody.page?.totalItems,
+    };
 
     if (filter !== DefaultFilter && meta.filterResult) {
       translations = meta.filterResult;
@@ -414,7 +419,7 @@
 
   // (Re)build indexes ONLY when dataset changes (type/locale/filter), not on every custom input change.
   $: {
-    const nextToken = `${data?.localeId ?? ''}|${data?.type ?? ''}|${data?.filter ?? ''}|${data?.meta?.totalCount ?? ''}`;
+    const nextToken = `${data?.localeId ?? ''}|${data?.type ?? ''}|${data?.filter ?? ''}|${data?.meta?.totalItems ?? ''}`;
     if (nextToken && nextToken !== datasetToken) {
       ready = false;
       datasetToken = nextToken;
@@ -531,7 +536,7 @@
     );
 
     ApiUtil.put({
-      path: `/api/panel/locales/${data.localeId}/types/${data.type}/translations`,
+      path: `/panel/locales/${data.localeId}/types/${data.type}/translations`,
       body: { translations },
       handler: async (body, _) => {
         if (body.error) {

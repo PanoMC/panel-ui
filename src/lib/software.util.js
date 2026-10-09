@@ -5,7 +5,7 @@
  * server cards, the server header — and a bare string is hard to scan. This module is the single place that maps a software id to its bundled logo, so the
  * files in `static/assets/img/software/` are referenced from exactly one spot.
  *
- * Ids arrive in two shapes and both are accepted: `/api/panel/software` reports them lowercase
+ * Ids arrive in two shapes and both are accepted: `/api/v1/panel/software` reports them lowercase
  * (`paper`, `velocity`) while a connected server reports `server.type` uppercase (`PAPER`,
  * `VELOCITY`), so every lookup lowercases first.
  *

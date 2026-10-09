@@ -57,7 +57,7 @@
         title={player.username}
         href="{base}/players/detail/{player.username}">
         <img
-          src="/api/profile/picture/{player.username}?{$avatarVersion}"
+          src="/api/v1/profile/picture/{player.username}?{$avatarVersion}"
           alt={player.username}
           width="32"
           height="32"

@@ -1,10 +1,7 @@
 <PageActions>
   <div slot="right" class="d-flex align-items-center gap-2">
     {#if activeTab === 'authme' && authMeStep === 'upload' && authMeConfigFile && !authMeDbUpload}
-      <button
-        class="btn btn-primary"
-        on:click={authMeUploadAndPreview}
-        disabled={authMeProcessing}>
+      <button class="btn btn-primary" on:click={authMeUploadAndPreview} disabled={authMeProcessing}>
         {#if authMeProcessing}
           <span class="spinner-border spinner-border-sm me-2" role="status"></span>
         {/if}

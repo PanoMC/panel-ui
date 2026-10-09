@@ -162,7 +162,7 @@
   import BsModal from './BsModal.svelte';
 
   /**
-   * `local` / `remote` = `GET /api/panel/pano-backups` and `…/remote`; `onsaved` lets the page
+   * `local` / `remote` = `GET /api/v1/panel/pano-backups` and `…/remote`; `onsaved` lets the page
    * re-read them so the next open starts from what was saved.
    *
    * @type {{ local: any, remote: any, onsaved?: () => void }}
@@ -210,7 +210,9 @@
    * @returns {Promise<ReturnType<typeof describeError>>}
    */
   async function put(path, body) {
-    const response = await ApiUtil.put({ path, body }).catch(() => ({ error: 'NETWORK_ERROR' }));
+    const response = await ApiUtil.put({ path, body }).catch(() => ({
+      error: { code: 'NETWORK_ERROR' },
+    }));
 
     return response?.error ? describeError(response) : null;
   }
@@ -219,14 +221,14 @@
     saving = true;
 
     try {
-      error = await put('/api/panel/pano-backups/settings', {
+      error = await put('/panel/pano-backups/settings', {
         schedule: localSchedule,
         hour: Number(localHour),
         keep: Number(localKeep),
       });
 
       if (!error && connected) {
-        error = await put('/api/panel/pano-backups/remote/settings', {
+        error = await put('/panel/pano-backups/remote/settings', {
           schedule: remoteSchedule,
           hour: Number(remoteHour),
           mcServerIds,

@@ -340,16 +340,16 @@
     }
 
     ApiUtil.post({
-      path: `/api/panel/players/${$player.username}/ban`,
+      path: `/panel/players/${$player.username}/ban`,
       body,
       handler: (body, reject) => {
         if (body.error) {
-          if (body.error === 'ALREADY_BANNED' || body.error === 'NOT_EXISTS') {
+          if (body.error?.code === 'ALREADY_BANNED' || body.error?.code === 'NOT_EXISTS') {
             location.reload();
             return;
           }
 
-          reject(body.error);
+          reject(body.error?.code);
           return;
         }
 
@@ -359,14 +359,12 @@
           username: $player.username,
           event: body.error
             ? $_('components.toasts.player-ban.could-not-ban', {
-                values: $_('errors.' + body.error),
+                values: $_('errors.' + body.error?.code),
               })
             : $_('components.toasts.player-ban.banned'),
         });
 
-        if (body.result === 'ok') {
-          callback($player);
-        }
+        callback($player);
 
         loading = false;
       },
@@ -398,7 +396,7 @@
 
     try {
       const response = await ApiUtil.post({
-        path: `/api/panel/servers/${fromServer.id}/players/${encodeURIComponent($player.uuid || $player.username)}/action`,
+        path: `/panel/servers/${fromServer.id}/players/${encodeURIComponent($player.uuid || $player.username)}/action`,
         body,
         handler: (response) => response,
       });

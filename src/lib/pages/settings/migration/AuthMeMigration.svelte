@@ -292,7 +292,7 @@
         <span class="me-3"
           ><strong
             >{$_('pages.migration.authme.total-data', {
-              values: { count: previewData.totalCount },
+              values: { count: previewData.users.length },
             })}</strong
           ></span>
         <span class="badge text-bg-success me-2"
@@ -383,10 +383,9 @@
 
     <div class="card-footer">
       <Pagination
-        page={currentPage}
-        totalPage={totalPages}
+        page={pageOf(currentPage, filteredUsers.length, itemsPerPage)}
         on:firstPageClick={() => (currentPage = 1)}
-        on:lastPageClick={() => (currentPage = totalPages)}
+        on:lastPageClick={() => (currentPage = lastPage)}
         on:pageLinkClick={(e) => (currentPage = e.detail.page)} />
     </div>
   </div>
@@ -539,6 +538,7 @@
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
+  import { pageOf } from '$lib/components/pagination.util.js';
 
   export { resetForm, importUsers, uploadAndPreview };
 
@@ -559,7 +559,6 @@
   const mockPreviewData = {
     authmeHashAlgorithm: 'SHA256',
     defaultHashAlgorithm: 'BCRYPT',
-    totalCount: 6,
     newCount: 4,
     existingCount: 2,
     users: [
@@ -673,7 +672,7 @@
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
-  $: totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  $: lastPage = Math.ceil(filteredUsers.length / itemsPerPage);
 
   $: filteredPanoOnlyUsers =
     previewData?.panoOnlyUsers?.filter((u) => {
@@ -799,16 +798,18 @@
       }
 
       const result = await ApiUtil.post({
-        path: '/api/panel/migration/authme/upload',
+        path: '/panel/migration/authme/upload',
         body: formData,
         onUploadProgress: (progress) => {
           uploadProgress = progress;
         },
       });
 
-      if (result?.result === 'error') {
+      if (!!result?.error) {
         uploadError =
-          result.message || result.error || $_('pages.migration.authme.error-upload-failed');
+          result.error.message ||
+          result.error.code ||
+          $_('pages.migration.authme.error-upload-failed');
         return;
       }
 
@@ -893,7 +894,7 @@
 
     try {
       const result = await ApiUtil.post({
-        path: '/api/panel/migration/authme/import',
+        path: '/panel/migration/authme/import',
         body: {
           usernames: Array.from(selectedUsers),
           deleteUsernames: Array.from(deleteUsers),
@@ -905,9 +906,11 @@
       clearInterval(progressInterval);
       importProgress = 1;
 
-      if (result?.result === 'error') {
+      if (!!result?.error) {
         uploadError =
-          result.message || result.error || $_('pages.migration.authme.error-import-failed');
+          result.error.message ||
+          result.error.code ||
+          $_('pages.migration.authme.error-import-failed');
         return;
       }
 

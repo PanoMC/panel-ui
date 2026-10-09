@@ -331,7 +331,7 @@
                       <div class="me-2 d-flex align-items-center overflow-hidden">
                         {#if user.username}
                           <img
-                            src={`/api/profile/picture/${encodeURIComponent(user.username)}?${$avatarVersion}`}
+                            src={`/api/v1/profile/picture/${encodeURIComponent(user.username)}?${$avatarVersion}`}
                             alt={`${user.username}`}
                             width="24"
                             height="24"
@@ -429,7 +429,7 @@
                 <h5 class="mb-0 d-flex align-items-center">
                   {#if selectedUser.username}
                     <img
-                      src={`/api/profile/picture/${encodeURIComponent(selectedUser.username)}?${$avatarVersion}`}
+                      src={`/api/v1/profile/picture/${encodeURIComponent(selectedUser.username)}?${$avatarVersion}`}
                       alt={`${selectedUser.username} avatar`}
                       width="28"
                       height="28"
@@ -654,11 +654,11 @@
   /** @type {import('@sveltejs/kit').PageLoad} */
   export async function load(event) {
     const res = await ApiUtilModule.get({
-      path: '/api/panel/permission/snapshot',
+      path: '/panel/permission/snapshot',
       request: event,
     });
     if (res?.error) {
-      throw error(500, res.error);
+      throw error(500, res.error?.code);
     }
     return { snapshot: res };
   }
@@ -1461,7 +1461,7 @@
     const prevUserId = selectedUser?.id;
     const prevUserName = selectedUser?.username;
 
-    const res = await ApiUtil.get({ path: '/api/panel/permission/snapshot' });
+    const res = await ApiUtil.get({ path: '/panel/permission/snapshot' });
     if (res?.error) {
       console.error('Failed to load snapshot:', res.error);
       return;
@@ -1526,13 +1526,13 @@
       nodes,
     };
     const res = await ApiUtil.post({
-      path: '/api/panel/permission/snapshot',
+      path: '/panel/permission/snapshot',
       body,
     });
     if (res?.error) {
       console.error('Failed to save snapshot:', res.error);
       await showErrorToast('components.toasts.settings-save-error', {
-        errorCode: $_('errors.' + res.error),
+        errorCode: $_('errors.' + res.error?.code),
       });
 
       // §2.4.11 — the per-server scope rides along in `permission_node.context`. A build whose

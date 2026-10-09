@@ -80,13 +80,12 @@
             </table>
           </div>
 
-          {#if $totalPage > 1}
+          {#if pageCount($page) > 1}
             <div class="mt-3">
               <Pagination
                 page={$page}
-                totalPage={$totalPage}
                 on:firstPageClick={() => load(1)}
-                on:lastPageClick={() => load($totalPage)}
+                on:lastPageClick={() => load(pageCount($page))}
                 on:pageLinkClick={(event) => load(event.detail.page)} />
             </div>
           {/if}
@@ -119,12 +118,13 @@
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
   import { show as showConfirmActionModal } from '$lib/components/modals/ConfirmActionModal.svelte';
   import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
+  import { pageCount, pageNumber } from '$lib/components/pagination.util.js';
 
   const modalElement = writable();
   const rows = writable([]);
   const count = writable(0);
-  const page = writable(1);
-  const totalPage = writable(1);
+  /** The page object of the list shown (`{ number, size, totalItems }` and more). */
+  const page = writable({ number: 1 });
   const loading = writable(false);
   const actionLoading = writable(false);
 
@@ -149,7 +149,7 @@
 
     count.set(initialCount || 0);
     rows.set([]);
-    totalPage.set(1);
+    page.set({ number: 1 });
     actionLoading.set(false);
 
     modal = new window.bootstrap.Modal(element, { backdrop: 'static', keyboard: true });
@@ -167,12 +167,12 @@
     onCountChange(value);
   }
 
-  function load(nextPage = get(page)) {
+  function load(nextPage = pageNumber(get(page))) {
     loading.set(true);
-    page.set(nextPage);
+    page.update((current) => ({ ...current, number: nextPage }));
 
     ApiUtil.get({
-      path: '/api/panel/maintenance/banned-ips' + buildQueryParams({ page: nextPage }),
+      path: '/panel/maintenance/banned-ips' + buildQueryParams({ page: nextPage }),
       handler: async (body, reject) => {
         if (body.error) {
           loading.set(false);
@@ -181,12 +181,12 @@
           return;
         }
 
-        const list = body.bannedIps || [];
+        const list = body.items || [];
 
         rows.set(list);
-        totalPage.set(body.totalPage || 1);
+        page.set(body.page ?? { number: nextPage });
         loading.set(false);
-        setCount(body.count == null ? list.length : body.count);
+        setCount(body.page?.totalItems ?? list.length);
       },
     });
   }
@@ -195,7 +195,7 @@
     actionLoading.set(true);
 
     ApiUtil.post({
-      path: '/api/panel/maintenance/banned-ips/remove',
+      path: '/panel/maintenance/banned-ips/remove',
       body: { ips },
       handler: async (body, reject) => {
         actionLoading.set(false);
@@ -209,7 +209,7 @@
         await showSuccessToast('components.toasts.maintenance-ban-removed');
 
         // Emptying the last page would otherwise leave the list on a page that no longer exists.
-        const current = get(page);
+        const current = pageNumber(get(page));
         const nextPage = get(rows).length === ips.length && current > 1 ? current - 1 : current;
 
         load(nextPage);
@@ -242,7 +242,7 @@
         actionLoading.set(true);
 
         ApiUtil.post({
-          path: '/api/panel/maintenance/banned-ips/clear',
+          path: '/panel/maintenance/banned-ips/clear',
           body: {},
           handler: async (body, reject) => {
             actionLoading.set(false);
@@ -254,8 +254,7 @@
             }
 
             rows.set([]);
-            page.set(1);
-            totalPage.set(1);
+            page.set({ number: 1 });
             setCount(0);
 
             await showSuccessToast('components.toasts.maintenance-ban-removed');

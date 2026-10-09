@@ -498,7 +498,7 @@
     });
 
     const body = await ApiUtil.get({
-      path: '/api/panel/settings' + queryParams,
+      path: '/panel/settings' + queryParams,
       request: event,
     });
 
@@ -599,8 +599,8 @@
 
   let keywordInputError = false;
 
-  let favicon = '/api/favicon?_=' + Date.now();
-  let websiteLogo = '/api/websiteLogo?_=' + Date.now();
+  let favicon = '/api/v1/favicon?_=' + Date.now();
+  let websiteLogo = '/api/v1/website-logo?_=' + Date.now();
 
   $: domainFromUrl = (() => {
     try {
@@ -752,13 +752,13 @@
       data.oldSettings.redirectHttps !== data.redirectHttps;
 
     ApiUtil.put({
-      path: '/api/panel/settings',
+      path: '/panel/settings',
       body: formData,
       handler: async (body, reject) => {
         saveButtonLoading = false;
         setSaveCriticalSettingsLoading(false);
 
-        if (body.error === 'NO_PERMISSION' && password) {
+        if (body.error?.code === 'NO_PERMISSION' && password) {
           setSaveCriticalSettingsError(true);
           return;
         }
@@ -814,12 +814,12 @@
       setSaveCriticalSettingsLoading(true);
 
       ApiUtil.post({
-        path: '/api/panel/settings/reveal-ssl',
+        path: '/panel/settings/reveal-ssl',
         body: { password },
         handler: (body, reject) => {
           setSaveCriticalSettingsLoading(false);
 
-          if (body.error === 'NO_PERMISSION') {
+          if (body.error?.code === 'NO_PERMISSION') {
             setSaveCriticalSettingsError(true);
             return;
           }

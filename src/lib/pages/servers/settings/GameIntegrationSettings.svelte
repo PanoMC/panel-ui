@@ -201,12 +201,12 @@
     const settings = Object.fromEntries(INTEGRATION_KEYS.map((key) => [key, serverSettings[key]]));
 
     ApiUtil.put({
-      path: `/api/panel/servers/${$server.id}/settings`,
+      path: `/panel/servers/${$server.id}/settings`,
       body: { settings },
       handler: async (body, reject) => {
         saving = false;
 
-        if (body.result !== 'ok') {
+        if (body.error) {
           reject();
 
           return;

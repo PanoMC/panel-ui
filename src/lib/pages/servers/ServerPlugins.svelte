@@ -484,6 +484,7 @@
 {/snippet}
 
 <script module>
+  import { errorCode } from '$lib/apiError.util.js';
   import { redirect } from '@sveltejs/kit';
 
   import { base } from '$app/paths';
@@ -1094,7 +1095,7 @@
 
     try {
       const body = await ApiUtil.put({
-        path: `/api/panel/servers/${serverId}/plugins/${encodeURIComponent(byFile ? row.filename : row.name)}/enabled`,
+        path: `/panel/servers/${serverId}/plugins/${encodeURIComponent(byFile ? row.filename : row.name)}/enabled`,
         body: { enabled },
         handler: (/** @type {object} */ response) => response,
       });
@@ -1180,7 +1181,7 @@
 
     try {
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${serverId}/plugins/remove`,
+        path: `/panel/servers/${serverId}/plugins/remove`,
         body: { filename },
         handler: (/** @type {object} */ response) => response,
       });
@@ -1298,7 +1299,7 @@
     updatingFiles = [...updatingFiles, filename];
 
     const body = await ApiUtil.post({
-      path: `/api/panel/servers/${serverId}/plugins/update`,
+      path: `/panel/servers/${serverId}/plugins/update`,
       body: { filename },
       handler: (/** @type {object} */ response) => response,
     });
@@ -1318,7 +1319,7 @@
       }
 
       // The one code this page answers itself: the row is stale, not broken.
-      if (String(body.error).toUpperCase() === 'PLUGIN_UP_TO_DATE') {
+      if (errorCode(body).toUpperCase() === 'PLUGIN_UP_TO_DATE') {
         void showSuccess('pages.servers.plugins.updates.up-to-date', { filename });
         await loadPlugins();
 
@@ -1347,7 +1348,7 @@
 
     try {
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${serverId}/plugins/update-all`,
+        path: `/panel/servers/${serverId}/plugins/update-all`,
         body: {},
         handler: (/** @type {object} */ response) => response,
       });
@@ -1425,7 +1426,7 @@
 
     try {
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${serverId}/plugins/identify`,
+        path: `/panel/servers/${serverId}/plugins/identify`,
         body: {},
         handler: (/** @type {object} */ response) => response,
       });

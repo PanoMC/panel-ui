@@ -161,6 +161,7 @@
 {/snippet}
 
 <script context="module">
+  import { errorCode } from '$lib/apiError.util.js';
   import { redirect } from '@sveltejs/kit';
 
   import { base } from '$app/paths';
@@ -281,23 +282,23 @@
 
   async function getStoreTokenResponse() {
     const getStoreTokenResponse = await ApiUtil.get({
-      path: `/api/panel/platform/store/authorize/token`,
+      path: `/panel/platform/store/authorize/token`,
     });
 
-    if (getStoreTokenResponse.error === 'PANO_NOT_CONNECTED') {
+    if (getStoreTokenResponse.error?.code === 'PANO_NOT_CONNECTED') {
       data.accountConnected = false;
 
       return null;
     }
 
-    if (getStoreTokenResponse.error === 'PANO_CONNECT_FAILED') {
+    if (getStoreTokenResponse.error?.code === 'PANO_CONNECT_FAILED') {
       await goto('?failedLogin');
 
       return null;
     }
 
     if (getStoreTokenResponse.error) {
-      data.error = getStoreTokenResponse.error;
+      data.error = errorCode(getStoreTokenResponse);
 
       return null;
     }
@@ -309,18 +310,18 @@
     data.installingView = true;
 
     const getStoreTokenResponse = await ApiUtil.get({
-      path: `/api/panel/install/store/${data.install}/info`,
+      path: `/panel/install/store/${data.install}/info`,
     });
 
-    if (getStoreTokenResponse.error === 'PANO_NOT_CONNECTED') {
+    if (getStoreTokenResponse.error?.code === 'PANO_NOT_CONNECTED') {
       data.accountConnected = false;
 
       return;
     }
 
     if (
-      getStoreTokenResponse.error === 'NOT_FOUND' ||
-      getStoreTokenResponse.error === 'BAD_REQUEST'
+      getStoreTokenResponse.error?.code === 'NOT_FOUND' ||
+      getStoreTokenResponse.error?.code === 'BAD_REQUEST'
     ) {
       data.installingView = false;
       versionNotFound = true;
@@ -329,7 +330,7 @@
     }
 
     if (getStoreTokenResponse.error) {
-      data.error = getStoreTokenResponse.error;
+      data.error = errorCode(getStoreTokenResponse);
 
       return;
     }
@@ -427,7 +428,7 @@
     connecting = true;
 
     ApiUtil.post({
-      path: '/api/panel/platform/code',
+      path: '/panel/platform/code',
       handler: async (body, reject) => {
         if (body.error) {
           location.reload();

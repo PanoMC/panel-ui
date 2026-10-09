@@ -103,10 +103,10 @@
     $passwordError = false;
 
     ApiUtil.post({
-      path: '/api/panel/settings/stop-pano',
+      path: '/panel/settings/stop-pano',
       body: { password: $password },
       handler: (body, reject) => {
-        if (body.error === 'NO_PERMISSION') {
+        if (body.error?.code === 'NO_PERMISSION') {
           $passwordError = true;
           $loading = false;
           return;

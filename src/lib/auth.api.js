@@ -4,7 +4,7 @@ import { error } from '@sveltejs/kit';
  * The core authentication endpoints, called exactly the way the theme calls them
  * (`@panomc/theme-core` → `src/lib/services/auth.js`). The panel-native login (U-06) is a
  * second front end for the *same* API, so nothing here may diverge: the backend sets the auth
- * and CSRF cookies itself on `POST /api/auth/login` (HttpOnly, path `/`), and the panel's
+ * and CSRF cookies itself on `POST /api/v1/auth/login` (HttpOnly, path `/`), and the panel's
  * `hooks.server.js` picks them up on the next document load — which is why the login page
  * finishes with a full navigation instead of a client-side `goto`.
  *
@@ -13,34 +13,35 @@ import { error } from '@sveltejs/kit';
  */
 
 import ApiUtil from '$lib/api.util.js';
+import { errorCode } from '$lib/apiError.util.js';
 
 /**
- * `POST /api/auth/login`.
+ * `POST /api/v1/auth/login`.
  *
  * Body: `{ usernameOrEmail, password?, registerEmail?, newUsername? }` — plus any field a
  * plugin's `AuthEventListener` reads straight off the request body (pano-plugin-auth-guard
- * reads `totpCode` and `captchaStepToken` there). Answers `{ result: 'ok', csrfToken }`, or
- * `{ result: 'error', error: '<CODE>', ... }`.
+ * reads `totpCode` and `captchaStepToken` there). Answers `{ csrfToken }`, or
+ * `{ error: { code, message?, details?, fields? } }`.
  *
  * @param {Record<string, unknown>} body
  * @returns {Promise<Record<string, any> | undefined>}
  */
 export function sendLogin(body) {
-  return ApiUtil.post({ path: '/api/auth/login', body });
+  return ApiUtil.post({ path: '/auth/login', body });
 }
 
 /**
- * `POST /api/auth/logout` — clears the auth cookies server-side. Allowed while the site is in
+ * `POST /api/v1/auth/logout` — clears the auth cookies server-side. Allowed while the site is in
  * maintenance, so it works from anywhere.
  *
  * @returns {Promise<Record<string, any> | undefined>}
  */
 export function sendLogout() {
-  return ApiUtil.post({ path: '/api/auth/logout' });
+  return ApiUtil.post({ path: '/auth/logout' });
 }
 
 /**
- * `GET /api/auth/credentials` — the signed-in user. The theme calls it right after a login to
+ * `GET /api/v1/auth/credentials` — the signed-in user. The theme calls it right after a login to
  * refresh its session store; the panel only uses it to confirm the cookies really took before
  * it navigates into the dashboard.
  *
@@ -48,7 +49,7 @@ export function sendLogout() {
  * @returns {Promise<Record<string, any> | undefined>}
  */
 export function getCredentials(csrfToken) {
-  return ApiUtil.get({ path: '/api/auth/credentials', csrfToken });
+  return ApiUtil.get({ path: '/auth/credentials', csrfToken });
 }
 
 /**
@@ -56,21 +57,21 @@ export function getCredentials(csrfToken) {
  * `ACCESS_PANEL` answers `NO_PERMISSION` instead — sending them to the login page would only
  * bounce them straight back, so that case keeps the existing "no permission" splash.
  *
- * @param {{ result?: string, error?: string } | null | undefined} basicData
+ * @param {{ error?: { code?: string } } | null | undefined} basicData
  * @returns {boolean}
  */
 export function isNotLoggedIn(basicData) {
-  return String(basicData?.error || '').toUpperCase() === 'NOT_LOGGED_IN';
+  return errorCode(basicData).toUpperCase() === 'NOT_LOGGED_IN';
 }
 
 /**
  * Whether `basicData` describes a usable panel session.
  *
- * @param {{ result?: string } | null | undefined} basicData
+ * @param {{ error?: unknown } | null | undefined} basicData
  * @returns {boolean}
  */
 export function isSignedIn(basicData) {
-  return basicData?.result === 'ok';
+  return !!basicData && !basicData.error;
 }
 
 /**

@@ -201,7 +201,7 @@
 
     try {
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${current.id}/power`,
+        path: `/panel/servers/${current.id}/power`,
         body: { action: 'START' },
         handler: (response) => response,
       });

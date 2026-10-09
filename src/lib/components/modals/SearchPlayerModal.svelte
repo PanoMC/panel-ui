@@ -64,7 +64,7 @@
                 <div class="d-flex align-items-center overflow-hidden">
                   {#if u.username}
                     <img
-                      src={`/api/profile/picture/${encodeURIComponent(u.username)}?${$avatarVersion}`}
+                      src={`/api/v1/profile/picture/${encodeURIComponent(u.username)}?${$avatarVersion}`}
                       alt={`${u.username}`}
                       width="24"
                       height="24"
@@ -95,6 +95,7 @@
 </div>
 
 <script context="module">
+  import { errorCode } from '$lib/apiError.util.js';
   import { writable, get } from 'svelte/store';
 
   const modalElement = writable();
@@ -248,16 +249,16 @@
       }
 
       const res = await ApiUtil.get({
-        path: `/api/panel/player/search?q=${encodeURIComponent(q)}`,
+        path: `/panel/player/search?q=${encodeURIComponent(q)}`,
       });
       if (token !== activeSearchToken) return;
 
       if (res?.error) {
-        errorText.set(res.error);
+        errorText.set(errorCode(res));
         // keep local results if we have any
         if (localResults.length === 0) results.set([]);
       } else {
-        const apiPlayers = Array.isArray(res?.players) ? res.players : [];
+        const apiPlayers = Array.isArray(res?.items) ? res.items : [];
 
         const seen = new Set();
         const merged = [];

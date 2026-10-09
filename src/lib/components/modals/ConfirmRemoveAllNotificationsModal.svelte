@@ -82,7 +82,7 @@
     loading = true;
 
     ApiUtil.delete({
-      path: '/api/panel/notifications',
+      path: '/panel/notifications',
       handler: (body, reject) => {
         if (body.error) {
           refreshBrowserPage();

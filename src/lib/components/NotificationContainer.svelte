@@ -41,8 +41,8 @@
                 <img
                   src={sanitizeImageSrc(
                     notification.details.image ||
-                      `/api/profile/picture/${notification.details.username}?${$avatarVersion}`,
-                    '/api/server/icon/default',
+                      `/api/v1/profile/picture/${notification.details.username}?${$avatarVersion}`,
+                    '/api/v1/server/icon/default',
                   )}
                   alt={$_('buttons.view')}
                   width="48"
@@ -241,7 +241,7 @@
     quickFetchInFlight = true;
 
     ApiUtil.get({
-      path: '/api/panel/notifications/quick',
+      path: '/panel/notifications/quick',
       handler: (body, reject) => {
         quickFetchInFlight = false;
         if (body.error) {
@@ -250,7 +250,7 @@
           return;
         }
 
-        setNotifications(body.notifications);
+        setNotifications(body.items || []);
 
         notificationCount.set(body.notificationCount);
         runNextQuickFetchIfPending();
@@ -260,7 +260,7 @@
 
   function markRead(id) {
     ApiUtil.post({
-      path: `/api/panel/notifications/${id}/read`,
+      path: `/panel/notifications/${id}/read`,
       handler: () => {},
     });
   }

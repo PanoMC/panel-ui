@@ -1,7 +1,7 @@
 <!--
   The top of the Pano Backup card: the connect prompt when this Pano has no panomc.com account,
   else the account, the plan with the button to pick or change it on the website, and how much of
-  the account's storage is used. `remote` = `GET /api/panel/pano-backups/remote`.
+  the account's storage is used. `remote` = `GET /api/v1/panel/pano-backups/remote`.
 -->
 <div class="card-body vstack gap-3">
   {#if connection === 'not-connected'}

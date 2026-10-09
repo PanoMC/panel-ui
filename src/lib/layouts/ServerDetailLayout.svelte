@@ -308,6 +308,47 @@
              the plugin; a server a node runs offers neither here (the node is updated on the
              Nodes page, its plugin under Settings → Updates and on the Overview). Hidden while
              that very update is running: its bar above says so instead. -->
+        <!-- A plugin, node or Pano Agent too old to reach this Pano at all: it cannot connect or
+             update itself, so the jar is replaced by hand. The same steps and download as the
+             manual plugin update; the Nodes page carries a node's own. -->
+        {#if pluginUnreachable}
+          <div class="d-flex flex-wrap align-items-center gap-2 mt-2" data-server-unreachable>
+            <span class="badge text-bg-danger text-wrap text-start">
+              <i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>
+              {$_('pages.servers.header.plugin-unreachable')}
+            </span>
+            <PanoPluginUpdateButton
+              server={$server}
+              latestVersion={pluginUpdate?.latestVersion ?? null}
+              label="pages.servers.header.download"
+              class="py-0" />
+          </div>
+        {/if}
+        {#if daemonUnreachable}
+          <div class="d-flex flex-wrap align-items-center gap-2 mt-2" data-server-unreachable>
+            <span class="badge text-bg-danger text-wrap text-start">
+              <i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>
+              {$_(
+                daemonUnreachable.agent
+                  ? 'pages.servers.header.agent-unreachable'
+                  : 'pages.servers.header.node-unreachable',
+              )}
+            </span>
+            {#if daemonUnreachable.agent && daemonUnreachable.downloadPath}
+              <a
+                class="btn btn-sm btn-outline-danger py-0"
+                href={daemonUnreachable.downloadPath}
+                download>
+                <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
+                {$_('pages.servers.header.download-agent')}
+              </a>
+            {:else}
+              <a class="btn btn-sm btn-outline-danger py-0" href="{base}/servers/nodes">
+                {$_('pages.servers.header.open-nodes')}
+              </a>
+            {/if}
+          </div>
+        {/if}
         {#if agentNeedsUpdate}
           <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
             <span class="badge text-bg-warning">
@@ -491,7 +532,7 @@
     }
 
     const response = await ApiUtil.get({
-      path: `/api/panel/servers/${id}`,
+      path: `/panel/servers/${id}`,
       request: event,
     });
 
@@ -548,6 +589,8 @@
     isInPlace,
     isManaged,
     isPanoPluginUpdateTask,
+    isPluginUnreachable,
+    unreachableDaemon,
     isRateLimitError,
     isPluginConnected,
     isServerOnline,
@@ -650,7 +693,7 @@
   $: pageSubtitle?.set($server ? getServerDisplayName($server) : null);
 
   /**
-   * All four actions go to the same `POST /api/panel/servers/:id/power` endpoint (§2.4.3).
+   * All four actions go to the same `POST /api/v1/panel/servers/:id/power` endpoint (§2.4.3).
    * `feature` is who can do it at all (§2.4.17): Start and Kill are the node's alone, Stop and
    * Restart are the node's stdin or the plugin's own power call, whichever Pano picked. `can`
    * stays panel-side and answers the other half — "does this make sense in the current state".
@@ -808,6 +851,8 @@
     !!pluginUpdate &&
     (pluginUpdate.available === true || pluginUpdate.outdatedProtocol === true) &&
     (!!pluginUpdate.mode || pluginUpdate.manual === true);
+  $: pluginUnreachable = isPluginUnreachable($server);
+  $: daemonUnreachable = unreachableDaemon($server);
   $: agentOutdated = agent && $server?.agentInfo?.updateAvailable === true;
   // With auto-update on this clears itself within seconds of connecting; the button is for an
   // install that turned it off, or an update that did not go through.
@@ -851,7 +896,7 @@
 
     try {
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${id}/agent/update`,
+        path: `/panel/servers/${id}/agent/update`,
         handler: (response) => response,
       });
 
@@ -1234,7 +1279,7 @@
 
     try {
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${serverId}/power`,
+        path: `/panel/servers/${serverId}/power`,
         body: { action: action.power },
         handler: (response) => response,
       });
@@ -1277,7 +1322,7 @@
     // The endpoint is MANAGE_SERVERS-only; a user with just a section of this server (R3) keeps
     // the browser's own copy below and is spared a 403.
     if (hasPermission(Permissions.MANAGE_SERVERS)) {
-      void ApiUtil.post({ path: `/api/panel/servers/${serverId}/select` }).catch(() => {
+      void ApiUtil.post({ path: `/panel/servers/${serverId}/select` }).catch(() => {
         /* remembering the last opened server is best effort */
       });
     }
@@ -1350,7 +1395,7 @@
     }
 
     try {
-      const response = await ApiUtil.get({ path: `/api/panel/servers/${id}` });
+      const response = await ApiUtil.get({ path: `/panel/servers/${id}` });
 
       if (response?.server && Number(get(server)?.id) === Number(id)) {
         applyServer(response.server);
@@ -1413,7 +1458,7 @@
   }
 
   /**
-   * `POST /api/panel/servers/:id/icon`: the new icon as multipart; the answer carries the icon
+   * `POST /api/v1/panel/servers/:id/icon`: the new icon as multipart; the answer carries the icon
    * as the panel should show it and whether the game only picks it up after a restart.
    *
    * @param {File} file
@@ -1433,7 +1478,7 @@
       form.append('icon', file);
 
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${id}/icon`,
+        path: `/panel/servers/${id}/icon`,
         body: form,
         handler: (response) => response,
       });

@@ -14,7 +14,7 @@
           aria-label={$_('buttons.enable-all-addons')}
           title={$_('buttons.enable-all-addons')}
           on:click={enableAllAddons}
-          disabled={data.plugins.every((p) => p.status === 'STARTED')}>
+          disabled={data.plugins.every((p) => p.status === 'STARTED' || isLocked(p))}>
           <i class="fa-solid fa-play"></i>
         </button>
         <button
@@ -131,20 +131,11 @@
                     </button>
                   {/if}
                   <AddonSettingsButton {plugin} />
-                  <div class="form-check form-switch">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      role="switch"
-                      checked={plugin.status === 'STARTED'}
-                      disabled={plugin.loading ||
-                        (plugin.status !== 'STARTED' &&
-                          isPremiumAddonEnableBlockedByLicense(plugin))}
-                      on:click={(e) => {
-                        e.preventDefault();
-                        onTogglePluginStateClick(plugin);
-                      }} />
-                  </div>
+                  <AddonToggle
+                    {plugin}
+                    disabled={plugin.loading ||
+                      (plugin.status !== 'STARTED' && isPremiumAddonEnableBlockedByLicense(plugin))}
+                    onToggle={() => onTogglePluginStateClick(plugin)} />
                 {/if}
               </div>
 
@@ -153,7 +144,7 @@
                   href="{base}/addons/detail/{plugin.id}"
                   class="text-decoration-none rounded focus-ring mb-2">
                   <img
-                    src="/api/panel/plugins/{plugin.id}/logo"
+                    src="/api/v1/panel/addons/{plugin.id}/logo"
                     class="rounded mb-2"
                     width="64"
                     height="64"
@@ -193,6 +184,7 @@
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
   import { ADDON_LICENSE_ISSUE_STATUSES } from '$lib/addon-license-issue.util.js';
   import { error } from '@sveltejs/kit';
+  import { isLocked } from '$lib/pages/addons/compat/compat.util.js';
 
   export const PageTypes = Object.freeze({
     ALL: 'ALL',
@@ -226,7 +218,7 @@
     const serverStatus = status === PageTypes.LICENSE_ISSUES ? PageTypes.ALL : status;
     const queryParams = buildQueryParams({ status: serverStatus, search });
     const body = await ApiUtil.get({
-      path: `/api/panel/plugins` + queryParams,
+      path: `/panel/addons` + queryParams,
       request: event,
     });
 
@@ -234,7 +226,7 @@
       throw error(500, body);
     }
 
-    let plugins = body.data;
+    let plugins = body.items;
     if (status === PageTypes.LICENSE_ISSUES) {
       plugins = plugins.filter(
         (p) => p.premium && ADDON_LICENSE_ISSUE_STATUSES.has(p.licenseStatus),
@@ -290,6 +282,7 @@
   import { goto, invalidateAll } from '$app/navigation';
   import { panoApiClient } from '$lib/PluginAPI.js';
   import AddonSettingsButton from '$lib/pages/addons/AddonSettingsButton.svelte';
+  import AddonToggle from '$lib/pages/addons/AddonToggle.svelte';
 
   export let data;
   let search = '';
@@ -386,6 +379,12 @@
 
   function onTogglePluginStateClick(plugin) {
     const turningOn = plugin.status !== 'STARTED';
+
+    // A refused addon is never switched on: the switch is disabled, this is the same rule for any other caller.
+    if (turningOn && isLocked(plugin)) {
+      return;
+    }
+
     if (turningOn && isPremiumAddonEnableBlockedByLicense(plugin)) {
       showErrorToast('components.toasts.addon-license-startup-blocked', {
         addon: plugin.id,
@@ -407,6 +406,11 @@
   }
 
   function togglePluginState(plugin, status, callback = () => {}) {
+    if (status && isLocked(plugin)) {
+      callback();
+      return;
+    }
+
     if (status && isPremiumAddonEnableBlockedByLicense(plugin)) {
       showErrorToast('components.toasts.addon-license-startup-blocked', {
         addon: plugin.id,
@@ -419,12 +423,12 @@
     data.plugins = data.plugins;
 
     ApiUtil.put({
-      path: `/api/panel/plugins/${plugin.id}`,
+      path: `/panel/addons/${plugin.id}`,
       body: { status },
       handler: async (body, reject) => {
         try {
-          if (body.result !== 'ok') {
-            reject(body.error);
+          if (!!body.error) {
+            reject(body.error?.code);
 
             return;
           }
@@ -479,7 +483,7 @@
             (plugin) =>
               new Promise((resolve) => {
                 ApiUtil.put({
-                  path: `/api/panel/plugins/${plugin.id}`,
+                  path: `/panel/addons/${plugin.id}`,
                   body: { status: false },
                   handler: (body) => resolve(body),
                 });
@@ -494,7 +498,7 @@
 
   async function enableAllAddons() {
     const inactivePlugins = data.plugins.filter(
-      (p) => p.status !== 'STARTED' && !isPremiumAddonEnableBlockedByLicense(p),
+      (p) => p.status !== 'STARTED' && !isLocked(p) && !isPremiumAddonEnableBlockedByLicense(p),
     );
     if (inactivePlugins.length === 0) return;
 
@@ -516,7 +520,7 @@
             (plugin) =>
               new Promise((resolve) => {
                 ApiUtil.put({
-                  path: `/api/panel/plugins/${plugin.id}`,
+                  path: `/panel/addons/${plugin.id}`,
                   body: { status: true },
                   handler: (body) => resolve(body),
                 });

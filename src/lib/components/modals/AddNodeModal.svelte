@@ -594,6 +594,7 @@
 {/snippet}
 
 <script context="module">
+  import { errorCode, errorDetails } from '$lib/apiError.util.js';
   /** @type {(() => void) | null} */
   let openModal = null;
 
@@ -896,7 +897,7 @@
   const panoUrlValid = $derived(panoUrlTrimmed === '' || isPanoUrlValid(panoUrlTrimmed));
 
   /**
-   * The install one-liner. `GET /api/panel/nodes/pairing-code` returns a ready-made
+   * The install one-liner. `GET /api/v1/panel/nodes/pairing-code` returns a ready-made
    * `installCommand` / `installCommandWindows` (§2.4.10); the hand-built fallback keeps the tab
    * useful against a backend that only returns the code.
    */
@@ -1138,7 +1139,7 @@
       panoUrlTrimmed && panoUrlValid ? `?panoUrl=${encodeURIComponent(panoUrlTrimmed)}` : '';
 
     const body = await ApiUtil.get({
-      path: `/api/panel/nodes/pairing-code${query}`,
+      path: `/panel/nodes/pairing-code${query}`,
       handler: (response) => response,
     });
 
@@ -1344,7 +1345,7 @@
   }
 
   /**
-   * `POST /api/panel/nodes/ssh-bootstrap` (§2.4.10). Pano opens the session, reads the host key
+   * `POST /api/v1/panel/nodes/ssh-bootstrap` (§2.4.10). Pano opens the session, reads the host key
    * and answers `{ taskId, fingerprint }` — nothing is installed until the fingerprint is
    * confirmed, which is the whole point of the extra round-trip.
    */
@@ -1357,7 +1358,7 @@
 
     await beginBootstrap();
 
-    const body = await postBootstrap('/api/panel/nodes/ssh-bootstrap', {
+    const body = await postBootstrap('/panel/nodes/ssh-bootstrap', {
       host: sshHost.trim(),
       port: Number(sshPort) || 22,
       username: sshUsername.trim(),
@@ -1397,7 +1398,7 @@
     phase = Phases.PROGRESS;
   }
 
-  /** `POST /api/panel/nodes/ssh-bootstrap/:taskId/confirm` — "yes, that is my server". */
+  /** `POST /api/v1/panel/nodes/ssh-bootstrap/:taskId/confirm` — "yes, that is my server". */
   async function confirmFingerprint() {
     const taskId = bootstrapTaskIds[0];
 
@@ -1408,7 +1409,7 @@
     submitting = true;
 
     const body = await ApiUtil.post({
-      path: `/api/panel/nodes/ssh-bootstrap/${encodeURIComponent(taskId)}/confirm`,
+      path: `/panel/nodes/ssh-bootstrap/${encodeURIComponent(taskId)}/confirm`,
       handler: (response) => response,
     });
 
@@ -1433,7 +1434,7 @@
     phase = Phases.PROGRESS;
   }
 
-  /** `POST /api/panel/nodes/coolify-bootstrap` (§2.4.10) — no confirmation step. */
+  /** `POST /api/v1/panel/nodes/coolify-bootstrap` (§2.4.10) — no confirmation step. */
   async function startCoolifyBootstrap() {
     if (submitting || !coolifyValid) {
       return;
@@ -1443,7 +1444,7 @@
 
     await beginBootstrap();
 
-    const body = await postBootstrap('/api/panel/nodes/coolify-bootstrap', {
+    const body = await postBootstrap('/panel/nodes/coolify-bootstrap', {
       coolifyUrl: coolifyUrl.trim().replace(/\/+$/, ''),
       apiToken: coolifyToken,
       serverUuid: coolifyServerUuid.trim(),
@@ -1512,13 +1513,13 @@
     // answer (a rejected port range, a project that does not exist), so it belongs on the
     // progress screen next to the form that produced it, not in a splash that would only say
     // the error code back. The task id comes along so its frames keep arriving.
-    if (response.error === 'COOLIFY_BOOTSTRAP_FAILED') {
-      rememberTaskIds(response);
+    if (response.error?.code === 'COOLIFY_BOOTSTRAP_FAILED') {
+      rememberTaskIds(errorDetails(response));
 
-      bootstrapRefusal = String(response.message || '').trim();
+      bootstrapRefusal = String(response.error.message || '').trim();
       bootstrapRefusalLabel = 'components.modals.add-node.coolify-refused';
       // Without a message there is nothing to read, so the log's own failure line stays.
-      bootstrapError = bootstrapRefusal ? '' : String(response.error);
+      bootstrapError = bootstrapRefusal ? '' : errorCode(response);
       bootstrapStatus = 'FAILED';
       phase = Phases.PROGRESS;
 

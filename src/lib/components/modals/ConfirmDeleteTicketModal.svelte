@@ -93,8 +93,7 @@
     loading = true;
 
     ApiUtil.delete({
-      path:
-        '/api/panel/tickets?ids=' + Object.values(get(selectedTickets)).map((id) => parseInt(id)),
+      path: '/panel/tickets?ids=' + Object.values(get(selectedTickets)).map((id) => parseInt(id)),
       handler: (body, reject) => {
         if (body.error) {
           refreshBrowserPage();

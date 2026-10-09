@@ -117,7 +117,7 @@
     loading = true;
 
     const bodyHandler = (body, reject) => {
-      if (body.result === 'ok') {
+      if (!body.error) {
         loading = false;
 
         hide();
@@ -125,10 +125,10 @@
         callback(true);
 
         return;
-      } else if (body.result === 'errors') {
+      } else if (body.error?.fields) {
         loading = false;
 
-        errors.set(body.errors);
+        errors.set(body.error.fields);
 
         return;
       }
@@ -138,7 +138,7 @@
 
     if (get(mode) === 'edit') {
       ApiUtil.put({
-        path: `/api/panel/ticket/categories/${get(category).id}`,
+        path: `/panel/ticket/categories/${get(category).id}`,
         body: get(category),
         handler: bodyHandler,
       });
@@ -147,7 +147,7 @@
     }
 
     ApiUtil.post({
-      path: '/api/panel/ticket/category',
+      path: '/panel/ticket/category',
       body: get(category),
       handler: bodyHandler,
     });

@@ -20,12 +20,7 @@
 
       <div class="modal-body vstack gap-3">
         <p class="text-body-secondary small mb-0">
-          {$_(
-            reason === 'SERVER_OFFLINE'
-              ? 'components.modals.pano-plugin-update.why-offline'
-              : 'components.modals.pano-plugin-update.why-too-old',
-            { values: { name: serverName } },
-          )}
+          {$_(whyKey, { values: { name: serverName } })}
         </p>
 
         <div class="d-flex gap-2 align-items-start">
@@ -70,6 +65,7 @@
 </div>
 
 <script module>
+  import { errorDetails } from '$lib/apiError.util.js';
   import ApiUtil from '$lib/api.util.js';
   import { getServerDisplayName, showServerActionError } from '$lib/servers.util.js';
   import { showSuccess } from '$lib/components/ToastContainer.svelte';
@@ -102,7 +98,7 @@
     }
 
     const body = await ApiUtil.post({
-      path: `/api/panel/servers/${server.id}/pano-plugin/update`,
+      path: `/panel/servers/${server.id}/pano-plugin/update`,
       handler: (response) => response,
     });
 
@@ -111,8 +107,8 @@
     }
 
     if (body.error) {
-      if (body.manual === true) {
-        show(server, { latestVersion: options.latestVersion, reason: body.reason });
+      if (errorDetails(body).manual === true) {
+        show(server, { latestVersion: options.latestVersion, reason: errorDetails(body).reason });
       } else {
         showServerActionError(body.error, body, { server });
       }
@@ -143,7 +139,14 @@
   let modal;
 
   const serverName = $derived(server ? getServerDisplayName(server) : '');
-  const jarUrl = $derived(server ? `/api/panel/servers/${server.id}/pano-plugin/jar` : '#');
+  const whyKey = $derived(
+    reason === 'PLUGIN_UNREACHABLE'
+      ? 'components.modals.pano-plugin-update.why-unreachable'
+      : reason === 'SERVER_OFFLINE'
+        ? 'components.modals.pano-plugin-update.why-offline'
+        : 'components.modals.pano-plugin-update.why-too-old',
+  );
+  const jarUrl = $derived(server ? `/api/v1/panel/servers/${server.id}/pano-plugin/jar` : '#');
   const pluginFolder = $derived(
     MOD_LOADERS.includes(String(server?.type || '').toUpperCase()) ? 'mods' : 'plugins',
   );

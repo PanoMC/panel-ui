@@ -18,7 +18,7 @@ const ALLOWED_IMAGE_MIME_TYPES = new Set([
 
 /**
  * Validates an image source URL for safe rendering.
- * - Allows relative URLs (e.g. /api/server/icon/default)
+ * - Allows relative URLs (e.g. /api/v1/server/icon/default)
  * - Allows HTTPS URLs
  * - Allows data: URLs only if MIME type is in the whitelist
  * - Rejects javascript: URLs

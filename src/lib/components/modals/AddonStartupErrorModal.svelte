@@ -1,3 +1,19 @@
+<style>
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #1e1e1e;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+</style>
+
 <div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="dialog">
     <div class="modal-content border-0 shadow-lg">
@@ -13,7 +29,9 @@
           on:click={hide}></button>
       </div>
       <div class="modal-body bg-dark text-white p-0 overflow-hidden">
-        <div class="bg-black p-3 font-monospace overflow-auto custom-scrollbar" style="max-height: 500px; white-space: pre-wrap; font-size: 0.875rem; color: #dcdccc; border: 1px solid #333;">
+        <div
+          class="bg-black p-3 font-monospace overflow-auto custom-scrollbar"
+          style="max-height: 500px; white-space: pre-wrap; font-size: 0.875rem; color: #dcdccc; border: 1px solid #333;">
           {$errorContent}
         </div>
       </div>
@@ -36,22 +54,6 @@
     </div>
   </div>
 </div>
-
-<style>
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: #1e1e1e;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #444;
-    border-radius: 4px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-</style>
 
 <script context="module">
   import { get, writable } from 'svelte/store';

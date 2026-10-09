@@ -111,7 +111,7 @@
     try {
       await new Promise((resolve) => {
         ApiUtil.post({
-          path: `/api/panel/themes/${theme.id}/license/refresh`,
+          path: `/panel/themes/${theme.id}/license/refresh`,
           handler: () => resolve(),
         });
       });

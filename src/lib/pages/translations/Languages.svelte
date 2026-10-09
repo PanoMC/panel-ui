@@ -18,16 +18,16 @@
   <div class="card">
     <div class="card-header">
       {$_('pages.languages.card-title', {
-        values: { count: data.meta.totalCount },
+        values: { count: data.page.totalItems },
       })}
     </div>
     <!-- No Content -->
-    {#if data.meta.totalCount === 0}
+    {#if data.page.totalItems === 0}
       <NoContent />
     {/if}
 
     <!-- Locales Table -->
-    {#if data.meta.totalCount > 0}
+    {#if data.page.totalItems > 0}
       <div class="table-responsive">
         <table class="table table-hover">
           <thead>
@@ -58,10 +58,9 @@
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination
-        page={data.meta.page}
-        totalPage={data.meta.totalPage}
+        page={data.page}
         on:firstPageClick={() => onPageClick(1)}
-        on:lastPageClick={() => onPageClick(data.meta.totalPage)}
+        on:lastPageClick={() => onPageClick(pageCount(data.page))}
         on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
     </div>
   </div>
@@ -89,22 +88,19 @@
     const queryParams = buildQueryParams({ page });
 
     const body = await ApiUtil.get({
-      path: `/api/panel/locales` + queryParams,
+      path: `/panel/locales` + queryParams,
       request: event,
     });
 
     if (body.error) {
-      if (body.error === 'PAGE_NOT_FOUND') {
-        throw error(404, body.error);
+      if (body.error?.code === 'PAGE_NOT_FOUND') {
+        throw error(404, body.error?.code);
       }
 
-      throw error(500, body.error);
+      throw error(500, body.error?.code);
     }
 
-    const locales = body.data;
-    const meta = body.meta;
-
-    return { locales, meta: { ...meta, page: parseInt(page) } };
+    return { locales: body.items, page: body.page };
   }
 </script>
 
@@ -115,6 +111,7 @@
   import { goto } from '$app/navigation';
 
   import Pagination from '$lib/components/Pagination.svelte';
+  import { pageCount } from '$lib/components/pagination.util.js';
 
   import AddEditLanguageModal, {
     show as showAddEditLanguageModal,
@@ -142,14 +139,14 @@
 
   async function refreshData() {
     const queryParams = buildQueryParams({
-      page: data.meta.page,
+      page: data.page.number,
     });
 
     await goto(queryParams, { invalidateAll: true });
   }
 
   async function onPageClick(page) {
-    data.meta.page = page;
+    data.page = { ...data.page, number: page };
 
     await refreshData();
   }
@@ -166,7 +163,7 @@
 
   setCallbackForAddEditLanguageModal((routeFirstPage) => {
     if (routeFirstPage) {
-      data.page = 1;
+      data.page = { ...data.page, number: 1 };
     }
 
     refreshData();

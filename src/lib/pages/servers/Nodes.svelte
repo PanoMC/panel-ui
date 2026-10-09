@@ -145,10 +145,9 @@
     {#if !unavailable && approvedNodes.length > 0}
       <div class="card-footer">
         <Pagination
-          page={currentPage}
-          totalPage={totalPages}
+          page={pageOf(currentPage, approvedNodes.length, NODES_PAGE_SIZE)}
           on:firstPageClick={() => (currentPage = 1)}
-          on:lastPageClick={() => (currentPage = totalPages)}
+          on:lastPageClick={() => (currentPage = lastPage)}
           on:pageLinkClick={(event) => (currentPage = event.detail.page)} />
       </div>
     {/if}
@@ -272,6 +271,7 @@
   import NoContent from '$lib/components/NoContent.svelte';
   import NodeRow from '$lib/components/rows/NodeRow.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
+  import { pageOf } from '$lib/components/pagination.util.js';
   import PageActions from '$lib/components/PageActions.svelte';
   import DeleteNodeModal from '$lib/components/servers/DeleteNodeModal.svelte';
   import { confirmNodeUpdate } from '$lib/components/modals/ConfirmUpdateModal.svelte';
@@ -352,14 +352,14 @@
 
   const NODES_PAGE_SIZE = 10;
   let currentPage = $state(1);
-  const totalPages = $derived(Math.max(1, Math.ceil(approvedNodes.length / NODES_PAGE_SIZE)));
+  const lastPage = $derived(Math.max(1, Math.ceil(approvedNodes.length / NODES_PAGE_SIZE)));
   const pagedApprovedNodes = $derived(
     approvedNodes.slice((currentPage - 1) * NODES_PAGE_SIZE, currentPage * NODES_PAGE_SIZE),
   );
 
   $effect(() => {
-    if (currentPage > totalPages) {
-      currentPage = totalPages;
+    if (currentPage > lastPage) {
+      currentPage = lastPage;
     }
   });
 
@@ -607,7 +607,7 @@
       stopUpdating(id);
 
       // Pano has no daemon jar of its own to offer, so no node can be updated from here at all.
-      if (result.error === 'NOT_EXISTS') {
+      if (result.error?.code === 'NOT_EXISTS') {
         updateUnsupported = true;
         await showError('pages.servers.nodes.update-no-jar');
 
@@ -652,7 +652,7 @@
     busyId = node.id;
 
     const body = await ApiUtil.post({
-      path: `/api/panel/nodes/${node.id}/accept`,
+      path: `/panel/nodes/${node.id}/accept`,
       handler: (response) => response,
     });
 
@@ -685,7 +685,7 @@
     busyId = node.id;
 
     const body = await ApiUtil.put({
-      path: `/api/panel/nodes/${node.id}`,
+      path: `/panel/nodes/${node.id}`,
       body: { name: renameValue.trim() },
       handler: (response) => response,
     });

@@ -17,8 +17,7 @@
       <a
         href="{base}/tickets/detail/{ticket.id}"
         class="rounded focus-ring text-decoration-none d-block text-truncate"
-        title={ticket.title}
-        >
+        title={ticket.title}>
         {ticket.title}
       </a>
     </div>
@@ -37,7 +36,7 @@
         title={$_('buttons.view')}
         class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center">
         <img
-          src="/api/profile/picture/{ticket.writer.username}?{$avatarVersion}"
+          src="/api/v1/profile/picture/{ticket.writer.username}?{$avatarVersion}"
           alt={$_('components.ticket-row.player-name')}
           class="rounded-circle me-2 flex-shrink-0"
           height="32"

@@ -154,6 +154,7 @@
 </div>
 
 <script module>
+  import { errorCode } from '$lib/apiError.util.js';
   /** @type {(() => void) | null} */
   let openModal = null;
 
@@ -190,7 +191,7 @@
    */
   const RETRY_MS = 2000;
 
-  /** What `GET /api/panel/servers/agent-link` answers, before it has. */
+  /** What `GET /api/v1/panel/servers/agent-link` answers, before it has. */
   function emptyLink() {
     return {
       expiresAt: 0,
@@ -272,7 +273,7 @@
 
     try {
       const body = await ApiUtil.get({
-        path: '/api/panel/servers/agent-link',
+        path: '/panel/servers/agent-link',
         handler: (response) => response,
       });
 
@@ -351,7 +352,7 @@
 
     try {
       const body = await ApiUtil.put({
-        path: '/api/panel/servers/agent-link/toggle',
+        path: '/panel/servers/agent-link/toggle',
         handler: (response) => response,
       });
 
@@ -361,7 +362,7 @@
 
       if (body.error || typeof body.acceptAgentLinks !== 'boolean') {
         await showErrorToast('components.toasts.settings-save-error', {
-          errorCode: body.error || 'UNKNOWN',
+          errorCode: errorCode(body) || 'UNKNOWN',
         });
 
         return;

@@ -106,9 +106,9 @@
     loaded = true;
 
     ApiUtil.get({
-      path: '/api/panel/permission/registered',
+      path: '/panel/permission/registered',
       handler: (body) => {
-        if (body.result === 'ok') {
+        if (!body.error) {
           registered = body.data || {};
         }
       },

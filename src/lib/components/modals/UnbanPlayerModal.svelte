@@ -83,15 +83,15 @@
     loading = true;
 
     ApiUtil.post({
-      path: `/api/panel/players/${$player.username}/unban`,
+      path: `/panel/players/${$player.username}/unban`,
       handler: (body, reject) => {
         if (body.error) {
-          if (body.error === 'NOT_BANNED' || body.error === 'NOT_EXISTS') {
+          if (body.error?.code === 'NOT_BANNED' || body.error?.code === 'NOT_EXISTS') {
             location.reload();
             return;
           }
 
-          reject(body.error);
+          reject(body.error?.code);
           return;
         }
 
@@ -101,7 +101,7 @@
           username: $player.username,
           event: body.error
             ? $_('components.toasts.player-unban.could-not-remove-ban', {
-                values: $_('errors.' + body.error),
+                values: $_('errors.' + body.error?.code),
               })
             : $_('components.toasts.player-unban.removed-ban'),
         });

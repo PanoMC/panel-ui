@@ -111,7 +111,8 @@
     "disable-all": "Tümünü Devre Dışı Bırak",
     "close-ticket": "Talebi Kapat",
     "close-tickets": "Talepleri Kapat",
-    "set-as-main": "Ana Sunucu Yap"
+    "set-as-main": "Ana Sunucu Yap",
+    "retry": "Yeniden Dene"
   },
   "pages": {
     "auth": {
@@ -185,7 +186,18 @@
     },
     "theme-settings": {
       "title": "Tema Ayarları",
-      "error": "Tema ayarları yüklenirken bir hata oluştu, lütfen tekrar deneyin."
+      "error": "Tema ayarları yüklenirken bir hata oluştu, lütfen tekrar deneyin.",
+      "home": {
+        "label": "Ana Sayfa",
+        "description": "Ziyaretçilerin sitenizin önünde gördüğü sayfa.",
+        "default": "Varsayılan",
+        "unavailable": "Kullanılamıyor",
+        "custom-path": "Site yolu",
+        "custom-path-placeholder": "/kurallar",
+        "custom-path-invalid": "Tek bir eğik çizgiyle başlayan bir site yolu yazın, örneğin /kurallar. Boşluk ve [köşeli parantez] kullanılamaz.",
+        "saved": "Ana sayfa kaydedildi.",
+        "save-failed": "Ana sayfa kaydedilemedi."
+      }
     },
     "theme-detail": {
       "title": "Tema Detayı",
@@ -195,6 +207,7 @@
       "pano-version": "Pano Versiyonu",
       "developer": "Geliştirici",
       "license": "Lisans",
+      "api-level": "API seviyesi",
       "source": "Kaynak",
       "installed-at": "Yüklendi",
       "updated-at": "Güncellendi",
@@ -251,6 +264,7 @@
       "dependencies": "Bağımlılıklar",
       "requires": "Gerekliler",
       "size": "Boyut",
+      "api-level": "API seviyesi",
       "unknown": "Bilinmiyor"
     },
     "activity-logs": {
@@ -273,7 +287,9 @@
     "translations": {
       "unsaved-changes-alert-text": "Kaydedilmemiş değişiklikleriniz var! Emin misiniz?",
       "title": "Çeviriler",
-      "card-title": "{count} Çeviri"
+      "card-title": "{count} Çeviri",
+      "source-theme": "Tema",
+      "source-theme-title": "Bu metin eklentiden değil, etkin temanın lang-overrides klasöründen geliyor."
     },
     "dashboard": {
       "title": "Panel",
@@ -690,7 +706,11 @@
             "schedule_failed": "Bir görev hatayla bitti.",
             "plugin_updates": "Yönetilen bir sunucudaki eklenti veya modların yeni bir sürümü var; günde bir kez denetlenir."
           }
-        }
+        },
+        "theme-dev-server": "Tema geliştirme sunucusu",
+        "theme-dev-server-hint": "Geliştirici Modu açıkken Pano, tema yerine bu adresi gösterir, örneğin http://localhost:3000. Panel, kurulum ve eklenti arayüzleri çalışmaya devam eder. Yüklü temayı kullanmak için boş bırakın.",
+        "theme-dev-server-inactive": "Yalnızca ön yüz modu Tema iken geçerlidir.",
+        "theme-dev-server-saved": "Tema geliştirme sunucusu kaydedildi."
       },
       "updates": {
         "title": "Güncellemeler",
@@ -750,6 +770,36 @@
             "SERVER_OFFLINE": "Sunucu çevrimdışı",
             "JAR_UNAVAILABLE": "Eklenti derlemesi yok"
           }
+        },
+        "plan": {
+          "loading": "Bu güncellemenin eklenti ve temalarınıza ne yapacağı kontrol ediliyor. Bu 20 saniyeye kadar sürebilir.",
+          "waiting": "Önce güncelleme planını bekleyin.",
+          "failed": {
+            "title": "Güncelleme Planı Okunamadı",
+            "description": "Pano bu güncellemenin eklenti ve temalarınıza ne yapacağını bulamadı; bu yüzden güncelleme düğmesi kapalı. Yeniden Dene'ye basın ya da aşağıdaki kutuyu işaretleyip kendi sorumluluğunuzda güncelleyin.",
+            "acknowledge": "Plansız güncelle. Sonrasında eklenti ya da temaların kapanabileceğini biliyorum."
+          },
+          "attention": {
+            "title": "Güncellemeden Önce Bunu Okuyun"
+          },
+          "safe": {
+            "title": "Bu Güncelleme Eklenti Ve Temalarınıza Uyuyor"
+          },
+          "target": "Pano {version}, API seviyesi {min} ile {current} arasında yapılmış eklenti ve temaları çalıştırır.",
+          "unknown": "Pano {version} hangi API seviyesini gerektirdiğini bildirmiyor; bu yüzden eklenti ve temalarınıza ne olacağı bilinemiyor. Sonrasında kendiniz kontrol edin.",
+          "disable": {
+            "title": "{count, plural, one {# Eklenti Ya Da Tema Kapanacak} other {# Eklenti Ve Tema Kapanacak}}",
+            "description": "Mağazada bunların uyumlu sürümü yok. Yeniden başlatmadan sonra yapımcıları bir sürüm yayımlayana kadar kapalı kalırlar ve o sürümü elle kurmanız gerekir."
+          },
+          "update": {
+            "title": "{count, plural, one {# Eklenti Ya Da Tema Yeniden Başlatmadan Sonra Güncellenecek} other {# Eklenti Ve Tema Yeniden Başlatmadan Sonra Güncellenecek}}",
+            "description": "Pano yeniden başlarken mağazadan uyumlu sürümü kurar. Bunun için sunucunun internet erişimi olmalı."
+          },
+          "agents": {
+            "title": "{count, plural, one {# Oyun Sunucusu Ya Da Node İçin Yeni Jar Elle Konmalı} other {# Oyun Sunucusu Ve Node İçin Yeni Jar Elle Konmalı}}"
+          },
+          "store-down": "Mağazaya ulaşılamadı; bu yüzden yukarıdaki listede var olan güncellemeler eksik olabilir. Karar vermeden önce Yeniden Dene'ye basın.",
+          "compatible": "{count, plural, one {# eklenti ya da tema olduğu gibi çalışmaya devam eder.} other {# eklenti ve tema olduğu gibi çalışmaya devam eder.}}"
         }
       },
       "backups": {
@@ -1225,7 +1275,13 @@
         "update-agent": "Pano Agent güncellemesi var",
         "update-daemon-started": "Güncelleniyor — sunucu çalışmaya devam ediyor.",
         "install-failed-title": "Kurulum Başarısız Oldu",
-        "install-failed-body": "Düğüm bu sunucuyu kuramadı, bu yüzden henüz başlatılacak bir şey yok. Sebep düğüm tarafındaysa aşağıdakini düzeltin, sonra yeniden yükleyin."
+        "install-failed-body": "Düğüm bu sunucuyu kuramadı, bu yüzden henüz başlatılacak bir şey yok. Sebep düğüm tarafındaysa aşağıdakini düzeltin, sonra yeniden yükleyin.",
+        "plugin-unreachable": "Pano eklentisi bu Pano'ya ulaşamayacak kadar eski",
+        "node-unreachable": "Node bu Pano'ya ulaşamayacak kadar eski",
+        "agent-unreachable": "Pano Agent bu Pano'ya ulaşamayacak kadar eski",
+        "download": "Jar'ı Değiştir",
+        "download-agent": "Agent Jar'ını İndir",
+        "open-nodes": "Node'ları Aç"
       },
       "overview": {
         "capabilities-title": "Yetenekler",
@@ -1926,7 +1982,12 @@
           "copied": "Kopyalandı"
         },
         "column-network": "Ağ",
-        "network-rate": "↓ {rx} · ↑ {tx}"
+        "network-rate": "↓ {rx} · ↑ {tx}",
+        "unreachable": "Çok eski",
+        "unreachable-hint": "Bu node bu Pano'ya ulaşamayacak kadar eski. Jar'ını elle değiştir.",
+        "unreachable-title": "Bu Node'un Yeni Bir Jar'a İhtiyacı Var",
+        "unreachable-description": "Bu node bu Pano'ya ulaşamayacak kadar eski. Durdur, jar'ını aşağıdakiyle değiştir ve yeniden başlat; kendiliğinden yeniden bağlanır.",
+        "unreachable-download": "Node Jar'ını İndir"
       },
       "create": {
         "memory-label": "Bellek",
@@ -2664,6 +2725,379 @@
         "no-players": "Eşleşen oyuncu yok.",
         "no-groups": "Eşleşen grup yok."
       }
+    },
+    "frontend": {
+      "menu": "Ön Yüz",
+      "title": "Ön Yüz",
+      "load-failed": "Ön yüz ayarları yüklenemedi.",
+      "copied": "Panoya kopyalandı.",
+      "copy-failed": "Kopyalanamadı. Metni seçip elle kopyalayın.",
+      "tabs": {
+        "keys": "Anahtarlar",
+        "mode": "Mod",
+        "origins": "İzinli Kaynaklar",
+        "urls": "Bağlantı Hedefleri",
+        "settings": "Ayarlar"
+      },
+      "proxy": {
+        "untrusted": {
+          "title": "Pano Ters Vekil Sunucunuza Güvenmiyor",
+          "description": "İstekler {peers} adresinden, birbirinden farklı çok sayıda iletilen adresle geliyor; Pano bunları yok sayıyor ve tüm ziyaretçiler tek adres gibi görünüyor (hız sınırları, yasaklar ve kayıtlar etkilenir). Bu sizin ters vekil sunucunuzsa, config.conf dosyasının server bloğuna şu satırı ekleyip Pano'yu yeniden başlatın:",
+          "copy-line": "Satırı Kopyala"
+        },
+        "single": {
+          "title": "Tüm Ziyaretçiler Tek Adres Gibi Görünüyor",
+          "description": "Neredeyse tüm istekler aynı özel adrese çözülüyor. {peers} adresindeki vekil sunucu X-Forwarded-For başlığı göndermiyor, bu yüzden Pano ziyaretçilerin kim olduğunu göremiyor. Vekil sunucunun X-Forwarded-For göndermesini sağlayın (henüz güvenilir değilse trusted-proxies listesine ekleyin)."
+        }
+      },
+      "keys": {
+        "description": "Ön yüz anahtarı, Pano'nun dışında çalışan bir ön yüz sunucusunun (örneğin özel bir site) API'yi kendi adına çağırmasını sağlar. Anahtarı o sunucunun .env dosyasına koyun; bir daha gösterilmez.",
+        "table-title": "{count}/{max} Anahtar",
+        "empty": "Henüz ön yüz anahtarı yok.",
+        "actions": "Anahtar işlemleri",
+        "never-used": "Hiç",
+        "revoked": "Anahtar iptal edildi.",
+        "table": {
+          "name": "Ad",
+          "key": "Anahtar",
+          "created": "Oluşturulma",
+          "last-used": "Son Kullanım"
+        },
+        "create": {
+          "title": "Ön yüz anahtarı oluştur",
+          "button": "Anahtar Oluştur",
+          "placeholder": "Anahtar adı, örneğin sitem"
+        },
+        "reveal": {
+          "title": "Anahtarı şimdi kopyalayın. Yalnızca bir kez gösterilir",
+          "key": "Anahtar",
+          "env": ".env dosyası",
+          "done": "Tamam"
+        },
+        "revoke": {
+          "button": "İptal Et",
+          "title": "Bu anahtar iptal edilsin mi?",
+          "description": "Anahtarı kullanan ön yüz sunucusu bir sonraki isteğinde çalışmayı bırakır.",
+          "confirm": "İptal Et"
+        }
+      },
+      "mode": {
+        "saved": "Ön yüz kaydedildi.",
+        "save-anyway": "Yine de Kaydet",
+        "dev-url-active": "Tema geliştirme sunucusu etkin: site {url} adresinden sunuluyor (Geliştirici Modu).",
+        "theme": {
+          "title": "Tema",
+          "description": "Pano'nun çalıştırdığı etkin tema."
+        },
+        "custom-app": {
+          "title": "Özel uygulama",
+          "description": "Zip olarak yüklediğiniz, Pano'nun çalıştırdığı uygulama."
+        },
+        "external": {
+          "title": "Harici",
+          "description": "Pano siteyi kendi sunucunuza yönlendirir."
+        },
+        "none": {
+          "title": "Yok",
+          "description": "Site yok; yalnızca panel ve API."
+        },
+        "fields": {
+          "upstream-url": "Üst sunucu adresi",
+          "site-url": "Site adresi",
+          "site-url-hint": "Ziyaretçilerin siteyi açtığı adres. Web sitesi adresini kullanmak için boş bırakın.",
+          "descriptor-url": "Tanımlayıcı adresi",
+          "descriptor-url-hint": "İsteğe bağlı. Ön yüzün sayfalarını adlandıran bir pano-frontend.json. Üst sunucu veya site ile aynı sunucuda olmalıdır."
+        }
+      },
+      "custom-apps": {
+        "empty": "Henüz özel uygulama yüklenmedi.",
+        "upload": "Uygulama Yükle (.zip)",
+        "uploaded": "{title} yüklendi. Kullanmak için kaydedin.",
+        "deleted": "Uygulama silindi.",
+        "active": "Etkin",
+        "actions": "Uygulama işlemleri",
+        "table": {
+          "name": "Uygulama",
+          "version": "Sürüm",
+          "author": "Yazar"
+        },
+        "delete": {
+          "button": "Sil",
+          "title": "Bu uygulama silinsin mi?",
+          "description": "Dosyaları bu sunucudan kaldırılır. Bu işlem geri alınamaz.",
+          "confirm": "Sil"
+        }
+      },
+      "errors": {
+        "CUSTOM_APP_INVALID_MANIFEST": "Uygulamanın manifest.json dosyası geçerli değil. \"{field}\" alanını kontrol edin.",
+        "CUSTOM_APP_NO_ENTRY": "Zip dosyasının kökünde index.js yok.",
+        "CUSTOM_APP_ID_TAKEN": "\"{id}\" kimliği zaten bir temaya veya yerleşik bir arayüze ait. manifest.json içinde başka bir kimlik seçin.",
+        "CUSTOM_APP_API_LEVEL": "Uygulama API seviyesi {apiLevel} için geliştirilmiş; bu Pano {min} ile {current} arasındaki seviyeleri destekliyor.",
+        "CUSTOM_APP_ACTIVE": "Bu uygulama etkin ön yüz. Önce başka bir moda veya uygulamaya geçin.",
+        "UPSTREAM_INVALID_URL": "http:// veya https:// ile başlayan, sunucu adı olan ve yolu olmayan bir adres girin, örneğin http://127.0.0.1:4000.",
+        "UPSTREAM_IS_PANO": "Bu adres Pano'nun kendisi; ona yönlendirmek döngü oluşturur.",
+        "UPSTREAM_UNREACHABLE": "Bu adreste 5 saniye içinde yanıt veren olmadı.",
+        "DESCRIPTOR_HOST_NOT_ALLOWED": "Tanımlayıcı, üst sunucu adresiyle veya site adresiyle aynı sunucudan sunulmalıdır.",
+        "FRONTEND_START_FAILED": "Yeni ön yüz başlatılamadı, bu yüzden öncekisi hizmet vermeye devam ediyor. {message}",
+        "FILE_TOO_LARGE": "Dosya 100 MB'tan büyük.",
+        "NOT_A_ZIP": "Bir .zip dosyası seçin.",
+        "FRONTEND_KEY_LIMIT_REACHED": "Ön yüz anahtarı sınırına ulaştınız. Önce birini iptal edin.",
+        "INVALID_FIELDS": "Vurgulanan alanları kontrol edin.",
+        "DISABLED_FOR_DEMO": "Bu, demoda devre dışı.",
+        "NETWORK_ERROR": "Pano yanıt vermedi. Tekrar deneyin.",
+        "UNKNOWN": "Bir şeyler ters gitti. Tekrar deneyin.",
+        "ORIGIN_DIFFERENT_SITE": "Farklı bir alan adı ön yüz anahtarı kullanır. Yalnızca sitenizin kendi alan adındaki kaynaklara izin verilebilir.",
+        "ORIGIN_LIMIT_REACHED": "İzinli kaynak sınırına ulaştınız. Önce birini kaldırın.",
+        "INVALID_ORIGIN": "https://play.example.com gibi bir kaynak girin: protokol ve ana makine, yol ve joker karakter olmadan. localhost dışında https kullanın.",
+        "INVALID_LOCATION": "/shop gibi bir site yolu veya tam bir http(s) adresi girin.",
+        "FRONTEND_SETTINGS_NO_SCHEMA": "Etkin ön yüz bir ayar formu tanımlamıyor.",
+        "FRONTEND_SETTINGS_SCHEMA_INVALID": "Ön yüzün ayar şeması geçerli değil ({message}).",
+        "FRONTEND_SETTING_INVALID": "\"{key}\" değeri kabul edilmedi ({reason})."
+      },
+      "origins": {
+        "description": "Kendi alan adınızdaki bir tarayıcı sitesi (örneğin https://play.example.com), kaynağı bu listeye eklendiğinde ziyaretçinin girişiyle API'yi çağırabilir. Farklı bir alan adındaki site bunun yerine ön yüz anahtarı kullanır.",
+        "table-title": "{count}/{max} Kaynak",
+        "empty": "Henüz izinli kaynak yok.",
+        "actions": "Kaynak işlemleri",
+        "added": "Kaynak eklendi.",
+        "removed": "Kaynak kaldırıldı.",
+        "table": {
+          "origin": "Kaynak"
+        },
+        "add": {
+          "title": "İzinli kaynak ekle",
+          "button": "Kaynak Ekle",
+          "placeholder": "https://play.example.com"
+        },
+        "remove": {
+          "button": "Kaldır",
+          "title": "Bu kaynak kaldırılsın mı?",
+          "description": "Bu kaynaktaki bir site artık ziyaretçinin girişiyle API'yi çağıramaz.",
+          "confirm": "Kaldır"
+        }
+      },
+      "urls": {
+        "description": "Pano'nun e-postalarda, yönlendirmelerde ve ödeme dönüşlerinde bağlantı verdiği sayfalar. Her satır bağlantının şu an nereye gittiğini gösterir. Kendi sayfanıza yönlendirmek için bir geçersiz kılma ayarlayın.",
+        "table-title": "{count} Bağlantı Hedefi",
+        "empty": "Bağlantı hedefi yok.",
+        "actions": "Hedef işlemleri",
+        "saved": "Geçersiz kılma kaydedildi.",
+        "override-removed": "Geçersiz kılma kaldırıldı.",
+        "owner-core": "Pano",
+        "needed-for-server": "sunucu tarafı ön yüzler için gerekli",
+        "table": {
+          "target": "Hedef",
+          "owner": "Sahibi",
+          "source": "Kaynak",
+          "path": "Gittiği Yer",
+          "override": "Geçersiz Kılma"
+        },
+        "source": {
+          "OVERRIDE": "Yönetici ayarı",
+          "FRONTEND": "Ön yüz",
+          "THEME": "Tema",
+          "FALLBACK": "Yerleşik sayfa",
+          "NONE": "Sayfa yok"
+        },
+        "override": {
+          "button": "Geçersiz Kıl",
+          "remove": "Geçersiz Kılmayı Kaldır",
+          "title": "{target} için geçersiz kılma",
+          "placeholder": "/shop veya https://example.com/shop"
+        }
+      },
+      "settings": {
+        "saved": "Ayarlar kaydedildi.",
+        "own-page": "Bu temanın kendi ayar sayfası var.",
+        "open-theme-settings": "Tema Ayarlarını Aç",
+        "none": "Etkin ön yüzün burada düzenlenecek ayarı yok."
+      }
+    },
+    "theme-compat": {
+      "title": "Bazı Tema Görünümleri Eklentinin Varsayılanını Gösteriyor",
+      "description": "Etkin temanın bu görünümleri eklentilerinin eski bir sürümü için yapılmış; bu yüzden eklentinin kendi görünümü gösteriliyor. Hiçbir şey bozuk değil ve eklenti güncellemeleri asla engellenmez; temayı güncelleyin ya da yapımcısından yeni sürüm isteyin.",
+      "badge": "{count, plural, one {# Görünüm Eski} other {# Görünüm Eski}}",
+      "badge-title": "{count, plural, one {Bu temanın # görünümü eklentinin varsayılan görünümünü gösteriyor} other {Bu temanın # görünümü eklentinin varsayılan görünümünü gösteriyor}}",
+      "toast-more": "{count, plural, one {# görünüm daha eklentinin varsayılan görünümünü gösteriyor. Görünüm, Temalar sayfasına bakın.} other {# görünüm daha eklentinin varsayılan görünümünü gösteriyor. Görünüm, Temalar sayfasına bakın.}}",
+      "issues": {
+        "CONTRACT_MISMATCH": "{plugin} eklentisinin {view} görünümü eklentinin varsayılan görünümünü gösteriyor: tema {themeContract}. sürüm için yapılmış, eklenti {currentContract}. sürümde",
+        "CONTROLLER_MISMATCH": "{plugin} eklentisinin {view} görünümü eklentinin varsayılan görünümünü gösteriyor: tema {controller} denetleyicisinin {themeVersion}. sürümünü kullanıyor, eklenti {currentVersion}. sürümde",
+        "VIEW_REMOVED": "{plugin} eklentisinin {view} görünümü artık eklentide yok (sürüm {pluginVersion}); temanın kopyası kullanılmıyor",
+        "ENGINE_MISMATCH": "Tema motorunun {view} görünümü motorun varsayılan görünümünü gösteriyor: tema {themeContract}. sürüm için yapılmış, motor {engineContract}. sürümde",
+        "NAMESPACE_CLASH": "{pluginId} eklentisi {namespace} kısa adını istiyor ama bu ad zaten {heldBy} tarafından kullanılıyor; eklentinin site sayfaları gösterilmiyor",
+        "UNKNOWN": "{view} görünümünde bu panelin henüz tanımadığı bir sorun var ({type})"
+      },
+      "alert": {
+        "title": "Tema Bazı Eklentiler İçin Güncel Değil",
+        "description": "Eklenti tema yapıldıktan sonra değiştiği için {theme} temasının {count, plural, one {# görünümü} other {# görünümü}} eklentinin varsayılan görünümünü gösteriyor.",
+        "view": "Ayrıntıları Gör"
+      }
+    },
+    "webhooks": {
+      "title": "Webhooklar",
+      "load-failed": "Webhooklar yüklenemedi.",
+      "copied": "Kopyalandı.",
+      "copy-failed": "Kopyalanamadı. Metni seçip elle kopyalayın.",
+      "tabs": {
+        "endpoints": "Uç Noktalar",
+        "deliveries": "Gönderimler"
+      },
+      "filters": {
+        "source": "Kaynak",
+        "status": "Durum",
+        "all-sources": "Tüm kaynaklar",
+        "all-statuses": "Tüm durumlar"
+      },
+      "format": {
+        "JSON": "JSON",
+        "DISCORD": "Discord"
+      },
+      "signing": {
+        "NONE": "İmzasız",
+        "HMAC_SHA256": "HMAC SHA-256"
+      },
+      "status": {
+        "PENDING": "Bekliyor",
+        "SENDING": "Gönderiliyor",
+        "SUCCEEDED": "Başarılı",
+        "FAILED": "Başarısız",
+        "DEAD": "Vazgeçildi"
+      },
+      "secret": {
+        "title": "İmza gizli anahtarını şimdi kopyalayın. Yalnızca bir kez gösterilir",
+        "label": "İmza gizli anahtarı",
+        "hint": "Alıcı tarafta her isteğin imzasını doğrulamak için kullanın. Pano onu şifreli saklar ve bir daha gösteremez.",
+        "done": "Tamam"
+      },
+      "form": {
+        "title-create": "Webhook oluştur",
+        "title-edit": "Webhook düzenle",
+        "name": "Ad, örneğin Discord duyuruları",
+        "format": "Biçim",
+        "url": "Alıcı adres, örneğin https://example.com/hook",
+        "all-events": "Tüm olaylar",
+        "source-all": "Her {source} olayı",
+        "unlisted": "Pano veya bir eklenti artık sunmuyor (abonelik sürüyor)",
+        "signing": "İmzalama",
+        "signing-discord": "Discord imzaları denetlemez.",
+        "signing-hint": "Kaydettiğinizde bir gizli anahtar üretilir ve bir kez gösterilir.",
+        "max-attempts": "Deneme sayısı (1 ile 20)",
+        "headers": "Ek başlıklar",
+        "header-name": "Başlık adı",
+        "header-value": "Başlık değeri",
+        "add-header": "Başlık ekle",
+        "custom-template": "Kendi mesajımı yazacağım",
+        "template": "JSON olarak mesaj",
+        "enabled": "Etkin"
+      },
+      "endpoints": {
+        "table-title": "{count}/{max} Webhook",
+        "create": "Webhook Oluştur",
+        "empty": "Henüz webhook yok.",
+        "actions": "Webhook işlemleri",
+        "send-test": "Test Gönder",
+        "deliveries": "Gönderimler",
+        "disable": "Devre Dışı Bırak",
+        "enable": "Etkinleştir",
+        "all-events": "Hepsi",
+        "enabled": "Etkin",
+        "disabled": "Devre dışı",
+        "auto-disabled": "Hatalardan sonra durduruldu",
+        "deleted": "Webhook silindi.",
+        "table": {
+          "name": "Ad",
+          "url": "URL",
+          "events": "Olaylar",
+          "format": "Biçim",
+          "status": "Durum",
+          "last-delivery": "Son Gönderim"
+        },
+        "delete": {
+          "title": "Bu webhook silinsin mi?",
+          "description": "{name} artık olay almaz. Ona bekleyen gönderimler vazgeçildi olarak biter.",
+          "confirm": "Sil"
+        },
+        "regenerate": {
+          "button": "Yeni Gizli Anahtar",
+          "title": "Yeni bir imza gizli anahtarı üretilsin mi?",
+          "description": "Eski anahtar hemen geçersiz olur. Alıcıyı yeni anahtarla güncelleyin.",
+          "confirm": "Üret"
+        },
+        "test": {
+          "ok": "Alıcı {ms} ms içinde {status} yanıtı verdi.",
+          "failed": "Test başarısız: {error}."
+        }
+      },
+      "deliveries": {
+        "table-title": "{count} Gönderim",
+        "empty": "Henüz gönderim yok.",
+        "actions": "Gönderim işlemleri",
+        "all-endpoints": "Tüm uç noktalar",
+        "direct": "Doğrudan",
+        "ms": "{ms} ms",
+        "redelivered": "Gönderim yeniden kuyruğa alındı.",
+        "table": {
+          "event": "Olay",
+          "endpoint": "Uç Nokta",
+          "subject": "Konu",
+          "status": "Durum",
+          "attempts": "Denemeler",
+          "http": "HTTP",
+          "duration": "Süre",
+          "created": "Oluşturulma",
+          "delivered": "İletilme"
+        },
+        "redeliver": {
+          "button": "Yeniden Gönder",
+          "title": "Bu gönderim yeniden yapılsın mı?",
+          "description": "Aynı olay aynı olay kimliğiyle yeniden gönderilir.",
+          "confirm": "Yeniden Gönder"
+        },
+        "detail": {
+          "title": "Gönderim",
+          "url": "URL",
+          "error": "Son hata",
+          "body": "Gövde",
+          "response": "Son yanıt"
+        }
+      },
+      "errors": {
+        "WEBHOOK_URL_REFUSED": "Pano bu adrese göndermez.",
+        "WEBHOOK_LIMIT": "{limit} webhook sınırına ulaştınız. Önce birini silin.",
+        "WEBHOOK_UNKNOWN_EVENT": "Bu olaylar yok: {events}.",
+        "WEBHOOK_HEADERS_INVALID": "Ek başlıkları kontrol edin.",
+        "WEBHOOK_NOT_FOUND": "Bu webhook veya gönderim artık yok.",
+        "WEBHOOK_IN_FLIGHT": "Gönderim şu anda yapılıyor. Biraz sonra tekrar deneyin.",
+        "INVALID_FIELDS": "Vurgulanan alanları kontrol edin.",
+        "PAGE_NOT_FOUND": "Listenin bu sayfası artık yok.",
+        "NO_PERMISSION": "Webhookları yönetme yetkiniz yok.",
+        "DISABLED_FOR_DEMO": "Bu, demoda devre dışıdır.",
+        "NETWORK_ERROR": "Pano yanıt vermedi. Tekrar deneyin.",
+        "UNKNOWN": "Bir şeyler ters gitti. Tekrar deneyin."
+      },
+      "field-errors": {
+        "REQUIRED": "Bu alan zorunludur.",
+        "TOO_LONG": "Bu çok uzun.",
+        "TOO_MANY": "Çok fazla var.",
+        "INVALID": "Bu değer geçerli değil.",
+        "INVALID_URL": "http:// veya https:// ile başlayan bir adres girin.",
+        "INVALID_JSON": "Bu geçerli bir JSON değil.",
+        "INVALID_NAME": "Başlık adı yalnızca harf, rakam ve tire içerir.",
+        "INVALID_VALUE": "Başlık değeri en çok 512 karakterlik düz metindir.",
+        "FORBIDDEN_NAME": "Bu başlığı Pano kendisi koyar. Başka bir ad seçin.",
+        "DUPLICATE": "Bu başlık iki kez yazılmış.",
+        "OUT_OF_RANGE": "1 ile 20 arasında bir tam sayı girin.",
+        "NOT_ALLOWED": "Yalnızca Discord webhookunun mesajı olur.",
+        "UNKNOWN_EVENT": "Olaylardan biri yok.",
+        "MALFORMED": "Bu geçerli bir adres değil.",
+        "SCHEME": "http:// veya https:// kullanın.",
+        "USERINFO": "Adresten kullanıcı adı ve parolayı çıkarın.",
+        "HOST": "Bu ana makine kullanılamaz.",
+        "PORT": "Bu bağlantı noktası kullanılamaz.",
+        "DISCORD_URL": "Bir Discord webhook adresi girin, https://discord.com/api/webhooks/...",
+        "DNS": "Bu alan adı çözümlenemiyor.",
+        "PRIVATE_ADDRESS": "Bu adres özel bir ağda; Pano oraya göndermez."
+      }
     }
   },
   "components": {
@@ -2910,6 +3344,7 @@
     "settings-layout": {
       "website": "Web Site",
       "platform": "Platform",
+      "webhooks": "Webhooklar",
       "migration": "İçe Aktar",
       "updates": "Güncellemeler",
       "about": "Hakkında"
@@ -3545,7 +3980,10 @@
           "crash-reason": "Sebep: {reason}",
           "plugin-outdated": "Bu sunucudaki Pano eklentisi eski ve bu Pano ile tam uyumlu değil. Sunucunun sayfasından güncelle.",
           "node-outdated": "Bu sunucuyu çalıştıran node eski ve bu Pano ile tam uyumlu değil. Node'lar sayfasından güncelle.",
-          "agent-outdated": "Bu sunucuyu çalıştıran Pano Agent eski ve bu Pano ile tam uyumlu değil. Sunucunun sayfasından güncelle."
+          "agent-outdated": "Bu sunucuyu çalıştıran Pano Agent eski ve bu Pano ile tam uyumlu değil. Sunucunun sayfasından güncelle.",
+          "plugin-unreachable": "Bu sunucudaki Pano eklentisi bu Pano'ya ulaşamayacak kadar eski. Yeni jar'ı indir, sunucuyu durdur, eski jar'ı değiştir ve sunucuyu yeniden başlat.",
+          "node-unreachable": "Bu sunucuyu çalıştıran node bu Pano'ya ulaşamayacak kadar eski. Jar'ını elle değiştir; indirme için Node'lar sayfasını aç.",
+          "agent-unreachable": "Bu sunucuyu çalıştıran Pano Agent bu Pano'ya ulaşamayacak kadar eski. Jar'ını elle değiştir: sunucuyu durdur, yeni agent jar'ını koy ve yeniden başlat."
         }
       },
       "unban-player": {
@@ -3706,7 +4144,8 @@
         "download": "Pano eklentisini indir",
         "download-version": "Pano eklentisi {version} indir",
         "step-replace": "Sunucuyu durdur. {folder} klasöründeki eski Pano jar’ını (pano.jar ya da pano-…jar) sil ve indirdiğini oraya koy.",
-        "step-start": "Sunucuyu başlat. Yeni eklentiyle bağlanır; sonraki güncelleme tek tık."
+        "step-start": "Sunucuyu başlat. Yeni eklentiyle bağlanır; sonraki güncelleme tek tık.",
+        "why-unreachable": "{name} üzerindeki Pano eklentisi bu Pano'ya ulaşamayacak kadar eski, bu yüzden bağlanamıyor ve kendini güncelleyemiyor. Jar'ı bu seferlik elle değiştir; sonraki güncellemeler Pano’dan tek tık."
       }
     },
     "editor": {
@@ -3874,6 +4313,78 @@
       "done-plain": "Güncellendi",
       "failed": "Güncelleme başarısız: {message}",
       "failed-plain": "Güncelleme başarısız"
+    },
+    "schema-form": {
+      "remove-file": "Dosyayı kaldır",
+      "clear-file": "Seçilen dosyayı temizle",
+      "reasons": {
+        "REQUIRED": "Bu alan zorunludur.",
+        "WRONG_TYPE": "Bu değerin türü yanlış.",
+        "TOO_SHORT": "Metin çok kısa.",
+        "TOO_LONG": "Metin çok uzun.",
+        "BELOW_MIN": "Sayı en küçük değerin altında.",
+        "ABOVE_MAX": "Sayı en büyük değerin üstünde.",
+        "NOT_AN_OPTION": "Listelenen seçeneklerden birini seçin.",
+        "INVALID_COLOR": "#1a2b3c gibi bir renk girin.",
+        "INVALID_URL": "/shop gibi bir site yolu veya bir http(s) adresi girin.",
+        "NOT_AN_IMAGE": "Bir görsel dosyası seçin.",
+        "UNKNOWN": "Bu değer kabul edilmedi."
+      }
+    },
+    "compatibility-card": {
+      "title": "{count, plural, one {# Uyumluluk Sorunu} other {# Uyumluluk Sorunu}}",
+      "type": {
+        "PLUGIN": "Eklenti",
+        "THEME": "Tema"
+      },
+      "verdict": {
+        "OK": "Uyumlu",
+        "TOO_OLD": "Çok Eski",
+        "TOO_NEW": "Çok Yeni",
+        "UNKNOWN": "Bilinmiyor"
+      },
+      "level": "API seviyesi {level}",
+      "level-short": "API {level}",
+      "level-none": "API seviyesi yok (API seviyelerinden önce yapılmış)",
+      "row-level": "API seviyesi {level} için yapılmış",
+      "row-refused": "API seviyesi {level} için yapılmış. Bu Pano onu çalıştırmıyor.",
+      "locked": "Bu Pano ile uyumlu değil (API seviyesi {level} için yapılmış). Güncellenene kadar kapalı kalır.",
+      "locked-theme": "Bu Pano ile uyumlu değil (API seviyesi {level} için yapılmış). Güncellenene kadar etkinleştirilemez.",
+      "held": "{name} gerekiyor ve o bu Pano ile uyumlu değil: {name} eklentisini güncelleyin. Bu eklenti ardından kendiliğinden başlar.",
+      "held-short": "{name} bekleniyor",
+      "refused": {
+        "title": "{count, plural, one {# Eklenti Ya Da Tema Kapalı} other {# Eklenti Ve Tema Kapalı}}",
+        "description": "Bu Pano, API seviyesi {min} ile {current} arasında yapılmış eklenti ve temaları çalıştırır. Aşağıdakiler başka bir seviye için yapılmış; bu yüzden Pano onları kapalı tutuyor. Hiçbiri kalıcı olarak devre dışı bırakılmadı: uyumlu bir sürüm kurulur kurulmaz kendiliğinden açılır. Yapmanız gereken: Pano'nun mağazadan uyumlu sürüm araması için Yeniden Dene'ye basın ya da Güncellemeler sayfasından elle güncelleyin. Kapalı bir tema yerine pakete dahil Vanilla teması gösterilir."
+      },
+      "note": {
+        "error": "Son deneme başarısız oldu: {error}",
+        "update-found": "Mağazada uyumlu bir sürüm bulundu. Kurmak için Yeniden Dene'ye basın.",
+        "no-update": "Mağazada uyumlu sürüm yok. Yapımcısından güncelleme isteyin ya da kaldırın."
+      },
+      "theme-fallback": "Bu düzelene kadar siteniz pakete dahil Vanilla temasını gösterir.",
+      "store-down": "Mağazaya ulaşılamadı; bu yüzden Pano uyumlu sürümleri arayamadı. Bu sunucunun internet erişimini kontrol edin, sonra Yeniden Dene'ye basın.",
+      "open-updates": "Güncellemeleri Aç",
+      "retry-done": "Her şey artık uyumlu.",
+      "retry-still": "{count, plural, one {# öğe hâlâ kapalı.} other {# öğe hâlâ kapalı.}}",
+      "retry-failed": "Yeniden deneme başarısız oldu ({code}).",
+      "agents": {
+        "title": "{count, plural, one {# Oyun Sunucusu Ya Da Node İçin Yeni Jar Elle Konmalı} other {# Oyun Sunucusu Ve Node İçin Yeni Jar Elle Konmalı}}",
+        "description": "Bunlar hâlâ bu Pano'nun yeni API'sine ulaşamayan eski bir jar çalıştırıyor ve Pano onu sizin yerinize değiştiremez. Her biri yeni jar ile yeniden bağlanana kadar bu listede kalır.",
+        "steps": "Her biri için: jar'ı indirin, sunucuyu ya da node'u durdurun, eski jar'ın yerine yenisini koyun ve yeniden başlatın."
+      },
+      "agent-type": {
+        "SERVER": "Oyun sunucusu",
+        "NODE": "Node",
+        "AGENT": "Agent"
+      },
+      "agent-protocol": "protokol {protocol} bildiriyor, {required} gerekiyor",
+      "download-jar": "Jar'ı İndir",
+      "urls": {
+        "title": "{count, plural, one {# Pano Dışı Adres Değişti} other {# Pano Dışı Adres Değişti}}",
+        "description": "Eklentiler bu adresleri başka hizmetlere (giriş uygulaması, ödeme geçidi gibi) kaydetmişti. Bu güncellemeyle değiştiler. Her birini kopyalayıp diğer hizmetin ayarlarına elle yapıştırın; yapana kadar o adresi kullanan özellik çalışmaz."
+      },
+      "copied": "Adres kopyalandı.",
+      "copy-failed": "Kopyalanamadı. Adresi seçip elle kopyalayın."
     }
   },
   "page-error": {
@@ -4042,7 +4553,20 @@
     "UPDATED_SERVER_STARTUP": "**{username}**, {serverName} sunucusunun başlangıç ayarlarını değiştirdi.",
     "PANO_BACKUP_ACTION": "**{username}** {action, select, CREATE {bir Pano yedeği aldı} DELETE {bir Pano yedeğini sildi} DOWNLOAD {bir Pano yedeğini indirdi} RESTORE {Pano'yu bir yedekten geri yükledi} RESTORE_FILE {Pano'yu yüklenen bir dosyadan geri yükledi} RESTORE_REMOTE {Pano'yu Pano Backup'tan geri yükledi} SETTINGS {Pano yedekleme zamanlamasını değiştirdi} UPLOAD {Pano'yu Pano Backup'a yedekledi} DELETE_REMOTE {bir Pano Backup yedeğini sildi} REMOTE_SETTINGS {Pano Backup zamanlamasını değiştirdi} PASSPHRASE {Pano Backup şifreleme parolasını belirledi} TRANSFER {Pano Host'a bir aktarım başlattı} TRANSFER_CANCEL {Pano Host'a aktarımı iptal etti} other {Pano yedeklerini değiştirdi}}.",
     "PANO_BACKUP_SYSTEM": "{action, select, SCHEDULED {Zamanlanmış Pano yedeği {ok, select, true {alındı} other {alınamadı}}} SCHEDULED_UPLOAD {Pano Backup'a zamanlanmış yükleme {ok, select, true {tamamlandı} other {başarısız oldu}}} RETENTION {Saklama kuralı {count} eski Pano yedeğini sildi} other {Pano yedekleri değişti}}.",
-    "SERVER_BACKUP_SYSTEM": "{serverName} sunucusunda {action, select, SCHEDULED {bir görev {name} yedeğini aldı} RETENTION {saklama kuralı {name} yedeğini sildi} other {{name} yedeği değişti}}."
+    "SERVER_BACKUP_SYSTEM": "{serverName} sunucusunda {action, select, SCHEDULED {bir görev {name} yedeğini aldı} RETENTION {saklama kuralı {name} yedeğini sildi} other {{name} yedeği değişti}}.",
+    "CREATED_FRONTEND_KEY": "**{username}** \"{name}\" ön yüz anahtarını oluşturdu.",
+    "DELETED_FRONTEND_KEY": "**{username}** \"{name}\" ön yüz anahtarını iptal etti.",
+    "CHANGED_FRONTEND_MODE": "**{username}** ön yüz modunu {mode} olarak değiştirdi.",
+    "UPLOADED_CUSTOM_APP": "**{username}** {appId} özel uygulamasını ({version}) yükledi.",
+    "DELETED_CUSTOM_APP": "**{username}** {appId} özel uygulamasını sildi.",
+    "UPDATED_FRONTEND_ORIGINS": "**{username}** izin verilen ön yüz kaynaklarını güncelledi ({count}).",
+    "CHANGED_FRONTEND_URLS": "**{username}** ön yüz sayfa adreslerini değiştirdi ({count}).",
+    "CHANGED_FRONTEND_SETTINGS": "**{username}** {frontendId} ön yüzünün ayarlarını değiştirdi.",
+    "REFRESHED_FRONTEND_DESCRIPTOR": "**{username}** {frontendId} ön yüzünün tanımlayıcısını yeniledi.",
+    "CREATED_WEBHOOK": "**{username}** \"{name}\" webhook'unu oluşturdu.",
+    "UPDATED_WEBHOOK": "**{username}** \"{name}\" webhook'unu güncelledi.",
+    "DELETED_WEBHOOK": "**{username}** \"{name}\" webhook'unu sildi.",
+    "REDELIVERED_WEBHOOK": "**{username}** \"{name}\" webhook'unun bir olayını yeniden gönderdi."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> destek talebinde mesaj gönderdi (<b>#{id}</b>).",
@@ -4118,6 +4642,7 @@
     "PANO_CONNECT_FAILED": "Pano sunucularına bağlanılamadı, lütfen daha sonra tekrar deneyin.",
     "PANO_DISCONNECT_FAILED": "Pano hesabı bağlantısı kesilemedi, lütfen daha sonra tekrar deneyin.",
     "PANO_NOT_CONNECTED": "Herhangi bir Pano hesabı bağlı değil.",
+    "PLUGIN_API_LEVEL_UNSUPPORTED": "Bu eklenti bu Pano ile uyumlu olmadığı için açılamaz. Önce uyumlu bir sürüme güncelleyin.",
     "PASSWORD_EMPTY": "Şifre boş olamaz.",
     "PASSWORD_TOO_LONG": "Şifre çok uzun.",
     "PASSWORD_TOO_SHORT": "Şifre çok kısa.",
@@ -4141,12 +4666,14 @@
     "SOME_TICKETS_ARENT_EXISTS": "Bazı destek talepleri mevcut değil.",
     "SOME_USERS_ARENT_EXISTS": "Bazı kullanıcılar mevcut değil.",
     "TICKET_IS_CLOSED": "Destek talebi zaten kapatılmış.",
+    "THEME_API_LEVEL_UNSUPPORTED": "Bu tema bu Pano ile uyumlu olmadığı için etkinleştirilemez. Önce uyumlu bir sürüme güncelleyin.",
     "TITLE_CANT_BE_EMPTY": "Başlık boş olamaz.",
     "UNAUTHORIZED": "Bu kaynağa erişim yetkiniz yok.",
     "WEBSITE_LOGO_EXCEEDS_SIZE": "Web sitesi logosu izin verilen maksimum boyutu aşıyor.",
     "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Web sitesi logosu geçersiz içerik türüne sahip.",
     "KEEP_INCOMPATIBLE": "Bu yazılıma geçerken bu seçenek korunamaz. “Neler korunsun” seçimlerini kontrol et.",
-    "NETWORK_ROLE_CONFLICT": "Bu sunucu bir ağın parçası. Proxy ile oyun sunucusu arasında geçiş yapmadan önce onu ağdan çıkar."
+    "NETWORK_ROLE_CONFLICT": "Bu sunucu bir ağın parçası. Proxy ile oyun sunucusu arasında geçiş yapmadan önce onu ağdan çıkar.",
+    "INVALID_HOME_PAGE": "Bu, etkin temanın bir ana sayfa seçeneği değil."
   },
   "panel-themes": {
     "light": "Açık",

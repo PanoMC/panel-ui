@@ -126,7 +126,9 @@
     <div
       class="logo-wrapper p-2 shadow-sm pano-anim center-content d-flex align-items-center justify-content-center"
       class:bg-primary={!$page.data.hosted}
-      style:background-image={$page.data.hosted ? 'linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-info) 100%)' : undefined}>
+      style:background-image={$page.data.hosted
+        ? 'linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-info) 100%)'
+        : undefined}>
       <img
         alt={$page.data.hosted ? 'Pano Host' : 'Pano'}
         src="{base}/assets/img/logo.svg"
@@ -212,8 +214,8 @@
 
   $: basicData = $session.basicData;
 
-  $: notLoggedIn = basicData.error === 'NOT_LOGGED_IN';
-  $: noPermission = basicData.error === 'NO_PERMISSION';
+  $: notLoggedIn = basicData.error?.code === 'NOT_LOGGED_IN';
+  $: noPermission = basicData.error?.code === 'NO_PERMISSION';
 
   onMount(() => {
     jsLoaded = true;

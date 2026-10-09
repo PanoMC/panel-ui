@@ -1,14 +1,6 @@
-<script>
-  import { _ } from 'svelte-i18n';
-  import { base } from '$app/paths';
-  import { panoApiClient } from '$lib/PluginAPI.js';
+<AddonApiLevel {plugin} refusedOnly />
 
-  export let plugin;
-
-  $: hooks = panoApiClient.ui.hook.get(`panel:plugin-detail:content:${plugin.id}`);
-</script>
-
-{#if ($hooks.length > 0) && plugin.status === 'STARTED'}
+{#if $hooks.length > 0 && plugin.status === 'STARTED'}
   <a
     href="{base}/addons/detail/{plugin.id}/settings"
     class="btn btn-link p-0"
@@ -17,3 +9,14 @@
     <i class="fa-solid fa-sliders-h"></i>
   </a>
 {/if}
+
+<script>
+  import { _ } from 'svelte-i18n';
+  import { base } from '$app/paths';
+  import { panoApiClient } from '$lib/PluginAPI.js';
+  import AddonApiLevel from './AddonApiLevel.svelte';
+
+  export let plugin;
+
+  $: hooks = panoApiClient.ui.hook.get(`panel:plugin-detail:content:${plugin.id}`);
+</script>

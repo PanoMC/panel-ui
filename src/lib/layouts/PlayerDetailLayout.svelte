@@ -108,7 +108,7 @@
             class:border-3={isOnline || data.player.isBanned}
             class:border-success={!data.player.isBanned && isOnline}
             class:border-danger={data.player.isBanned}
-            src="/api/profile/picture/{data.player.username}?{$avatarVersion}"
+            src="/api/v1/profile/picture/{data.player.username}?{$avatarVersion}"
             use:tooltip={!data.player.isBanned && [
               isOnline
                 ? $_('pages.player-detail.online-text', {
@@ -121,7 +121,6 @@
                 : getOfflineRelativeDateText(checkTime, locales[$currentLanguage.dateFnsCode]),
               { placement: 'bottom' },
             ]} />
-
         </div>
 
         <div class="card-body">
@@ -183,6 +182,7 @@
   import ApiUtilModule, { buildQueryParams } from '$lib/api.util';
   import { error } from '@sveltejs/kit';
   import { executeHookLoad, playerDetailMenuItems } from '$lib/PluginAPI.js';
+  import { withPlayerPages } from '$lib/layouts/playerDetailPages.js';
   import { setContext } from 'svelte';
 
   const key = 'layout-slots';
@@ -205,8 +205,8 @@
     await parent();
 
     const username = event.params.username;
-    const ticketsPage = searchParams.get('ticketsPage') || 1;
-    const banHistoryPage = searchParams.get('banHistoryPage') || 1;
+    const ticketsPage = parseInt(searchParams.get('ticketsPage')) || 1;
+    const banHistoryPage = parseInt(searchParams.get('banHistoryPage')) || 1;
 
     const queryParams = buildQueryParams({
       ticketsPage,
@@ -214,21 +214,21 @@
     });
 
     const body = await ApiUtilModule.get({
-      path: `/api/panel/players/${username}` + queryParams,
+      path: `/panel/players/${username}` + queryParams,
       request: event,
     });
 
     if (body.error) {
-      if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
-        throw error(404, body.error);
+      if (body.error?.code === 'NOT_EXISTS' || body.error?.code === 'PAGE_NOT_FOUND') {
+        throw error(404, body.error?.code);
       }
 
-      throw error(500, body.error);
+      throw error(500, body.error?.code);
     }
 
     body.username = username;
-    body.ticketsPage = parseInt(ticketsPage);
-    body.banHistoryPage = parseInt(banHistoryPage);
+    // `{ items, page }` for both sub-lists, which is what PlayerDetail and the pager read.
+    withPlayerPages(body, ticketsPage, banHistoryPage);
 
     body.hookProps = {};
     body.hookProps['panel:player-detail:bottom'] = await executeHookLoad(
@@ -312,8 +312,6 @@
       locale,
     }).capitalize();
   }
-
-
 
   setEditPlayerModalCallback((newPlayer) => {
     if (data.player.username !== newPlayer.username) {

@@ -463,7 +463,7 @@
 
     const payloadPlayer = get(player);
     ApiUtil.put({
-      path: `/api/panel/players/${payloadPlayer.id}`,
+      path: `/panel/players/${payloadPlayer.id}`,
       body: {
         username: payloadPlayer.username,
         email: payloadPlayer.email == null ? '' : String(payloadPlayer.email),
@@ -475,7 +475,7 @@
         clearPassword: !!payloadPlayer.clearPassword,
       },
       handler: async (body, reject) => {
-        if (body.result === 'ok') {
+        if (!body.error) {
           if (get(playerBackup).username === get(user).username) {
             user.update((user) => {
               user.username = get(player).username;
@@ -506,13 +506,13 @@
           await showSuccessToast('components.toasts.player-info-saved-success');
 
           return;
-        } else if (body.result === 'NOT_EXISTS') {
+        } else if (body.error?.code === 'NOT_EXISTS') {
           refreshBrowserPage();
 
           return;
-        } else if (body.errors) {
+        } else if (body.error?.fields) {
           loading = false;
-          errors.set(body.errors);
+          errors.set(body.error.fields);
 
           return;
         } else if (body.error) {

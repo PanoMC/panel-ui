@@ -264,7 +264,7 @@
 
   /**
    * The newest metric sample for this server, straight from the `latest` of
-   * `GET /api/panel/servers-metrics`. It stays null on a backend without that endpoint, and
+   * `GET /api/v1/panel/servers-metrics`. It stays null on a backend without that endpoint, and
    * every gauge then reads "—" instead of the card breaking.
    *
    * @type {{ cpu?: number|null, processCpu?: number|null, memUsed?: number|null, memMax?: number|null, memRss?: number|null, hostMemTotal?: number|null, diskUsed?: number|null, diskTotal?: number|null, source?: string } | null}

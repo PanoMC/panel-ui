@@ -140,11 +140,11 @@
     });
 
     const stats = await ApiUtil.get({
-      path: `/api/panel/statistics` + queryParams,
+      path: `/panel/statistics` + queryParams,
       request: event,
     });
 
-    if (!stats.result) {
+    if (!stats || stats.error) {
       throw error(404, stats);
     }
 

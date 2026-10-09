@@ -10,11 +10,8 @@
             {$_('pages.permission-groups.tracks.add-permission-track')}
           {/if}
         </h5>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label={$_('buttons.close')}
-          on:click={hide}></button>
+        <button type="button" class="btn-close" aria-label={$_('buttons.close')} on:click={hide}
+        ></button>
       </div>
       <div class="modal-body">
         <div class="form-floating mb-3">
@@ -64,8 +61,12 @@
                   draggable="true"
                   on:dragstart={(e) => onAvailableDragStart(e, group.name)}
                   on:dragend={() => (draggingAvailableName = null)}
-                  aria-label={$_('pages.permission-groups.tracks.groups.drag-to-add', { values: { name: group.name } })}
-                  title={$_('pages.permission-groups.tracks.groups.drag-to-add', { values: { name: group.name } })}>
+                  aria-label={$_('pages.permission-groups.tracks.groups.drag-to-add', {
+                    values: { name: group.name },
+                  })}
+                  title={$_('pages.permission-groups.tracks.groups.drag-to-add', {
+                    values: { name: group.name },
+                  })}>
                   <span>{groupLabel(group.name)}</span>
                 </button>
               {/each}

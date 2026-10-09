@@ -86,16 +86,16 @@
     $loading = true;
 
     ApiUtil.post({
-      path: `/api/panel/servers/${$server.id}/main`,
+      path: `/panel/servers/${$server.id}/main`,
       handler: async (body, reject) => {
-        if (body.result === 'ok') {
+        if (!body.error) {
           callback($server);
           await invalidateAll();
           hide();
           await showSuccessToast('components.toasts.server-made-main', { name: $server.name });
 
           return;
-        } else if (body.result === 'error') {
+        } else if (body.error) {
           location.reload();
 
           return;

@@ -147,7 +147,7 @@
     loading = true;
 
     const bodyHandler = (body, reject) => {
-      if (body.result === 'ok') {
+      if (!body.error) {
         loading = false;
 
         hide();
@@ -159,10 +159,10 @@
         callback(true, newCategory);
 
         return;
-      } else if (body.result === 'errors') {
+      } else if (body.error?.fields) {
         loading = false;
 
-        errors.set(body.errors);
+        errors.set(body.error.fields);
 
         return;
       }
@@ -172,7 +172,7 @@
 
     if (get(mode) === 'edit') {
       ApiUtil.put({
-        path: `/api/panel/post/categories/${get(category).id}`,
+        path: `/panel/post/categories/${get(category).id}`,
         body: get(category),
         handler: bodyHandler,
       });
@@ -181,7 +181,7 @@
     }
 
     ApiUtil.post({
-      path: '/api/panel/post/categories',
+      path: '/panel/post/categories',
       body: get(category),
       handler: bodyHandler,
     });

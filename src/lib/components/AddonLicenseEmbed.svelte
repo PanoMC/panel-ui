@@ -113,12 +113,12 @@
 
     ApiUtil.get({
       path:
-        `/api/panel/plugins/${addon.id}/license/embed` +
+        `/panel/addons/${addon.id}/license/embed` +
         `?theme=${encodeURIComponent(theme)}&hl=${encodeURIComponent(hl)}`,
       handler: (body) => {
         loading = false;
 
-        if (body?.error === 'PANO_NOT_CONNECTED') {
+        if (body?.error?.code === 'PANO_NOT_CONNECTED') {
           notConnected = true;
 
           return;
@@ -145,11 +145,11 @@
     refreshing = true;
 
     ApiUtil.post({
-      path: `/api/panel/plugins/${addon.id}/license/tiers/refresh`,
+      path: `/panel/addons/${addon.id}/license/tiers/refresh`,
       handler: (body) => {
         refreshing = false;
 
-        if (body?.error === 'PANO_NOT_CONNECTED') {
+        if (body?.error?.code === 'PANO_NOT_CONNECTED') {
           notConnected = true;
 
           return;

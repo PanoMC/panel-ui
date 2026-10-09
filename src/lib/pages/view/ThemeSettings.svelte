@@ -1,3 +1,9 @@
+{#if homeController}
+  <div class="mb-3">
+    <HomePageSelect controller={homeController} />
+  </div>
+{/if}
+
 {#if loading || alwaysLoading}
   <div class="d-flex align-items-center justify-content-center" style="height: 500px;">
     <div class="spinner-border text-primary" role="status" aria-label="Loading"></div>
@@ -42,8 +48,17 @@
   import { fade } from 'svelte/transition';
   import { base } from '$app/paths';
   import { browser } from '$app/environment';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import {
+    show as showToast,
+    showError as showErrorToast,
+    showSuccess as showSuccessToast,
+  } from '$lib/components/ToastContainer.svelte';
   import { show as showConfirm } from '$lib/components/modals/ConfirmActionModal.svelte';
+  import ApiUtil from '$lib/api.util.js';
+
+  import HomePageSelect from './theme/HomePageSelect.svelte';
+  import { createHomeController } from './theme/home.controller.js';
+  import { createThemeApi } from './theme/theme.api.js';
 
   const pageTitle = getContext('pageTitle');
   const panelTheme = getContext('panelTheme');
@@ -57,6 +72,26 @@
   let error;
 
   let alwaysLoading = false;
+
+  // The home page select above the settings (doc 01 section 9). It shows only when the backend
+  // answers the read: an older backend or a failed call leaves the page as it was.
+  let homeController = null;
+
+  async function loadHome() {
+    const themeApi = createThemeApi(ApiUtil);
+    const result = await themeApi.getHome();
+
+    if (result.ok && Array.isArray(result.body?.options)) {
+      homeController = createHomeController({
+        api: themeApi,
+        notify: {
+          success: (key, values) => showSuccessToast(key, values),
+          error: (key, values) => showErrorToast(key, values),
+        },
+        initial: result.body,
+      });
+    }
+  }
 
   function handleMessage(e) {
     if (childOrigin !== '*' && e.origin !== childOrigin) return;
@@ -252,6 +287,7 @@
 
   onMount(() => {
     cleanupLoad = load();
+    loadHome();
 
     unsubscribeTheme = panelTheme.subscribe((value) => {
       sendTheme(value);

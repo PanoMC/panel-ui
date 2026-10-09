@@ -1,3 +1,6 @@
+{#if translation.source === 'theme'}
+  <div class="mb-1"><SourceTag source={translation.source} /></div>
+{/if}
 <div class="row mb-3 g-2">
   <div class="col-md">
     <div class="form-floating">
@@ -53,6 +56,8 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
+
+  import SourceTag from '$lib/pages/translations/SourceTag.svelte';
 
   export let translation;
   export let pluginId;

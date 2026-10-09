@@ -61,6 +61,14 @@
     const plan = server.panoPluginUpdate ?? null;
     const latest = latestVersion ?? plan?.latestVersion ?? null;
 
+    // Too old to reach this Pano at all: nothing can be asked of the plugin, so the hand-made
+    // replacement steps open straight away, with the download.
+    if (plan?.unreachableProtocol === true) {
+      showPanoPluginUpdateModal(server, { latestVersion: latest, reason: 'PLUGIN_UNREACHABLE' });
+
+      return;
+    }
+
     // Only the admin can do it (too old to update itself, or not connected): nothing runs from
     // here, so there is nothing to confirm — the steps open straight away.
     if (plan?.manual === true && !plan.mode) {

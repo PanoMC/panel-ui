@@ -499,7 +499,7 @@
 
     try {
       const response = await ApiUtil.post({
-        path: `/api/panel/servers/${serverId}/schedules/${encodeURIComponent(schedule.id)}/${action}`,
+        path: `/panel/servers/${serverId}/schedules/${encodeURIComponent(schedule.id)}/${action}`,
         body,
         handler: (/** @type {object} */ answer) => answer,
       });

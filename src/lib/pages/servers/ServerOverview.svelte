@@ -751,13 +751,13 @@
     const [dashboard, activityChart, consoleHistory] = await Promise.all([
       mayReadDashboard
         ? ApiUtil.get({
-            path: `/api/panel/servers/${params.id}/dashboard`,
+            path: `/panel/servers/${params.id}/dashboard`,
             request: event,
           })
         : Promise.resolve({}),
       mayReadDashboard
         ? ApiUtil.get({
-            path: `/api/panel/servers/${params.id}/activity-chart` + buildQueryParams({ period }),
+            path: `/panel/servers/${params.id}/activity-chart` + buildQueryParams({ period }),
             request: event,
             handler: (response) => response,
           })
@@ -1384,7 +1384,7 @@
     }
 
     const body = await ApiUtil.get({
-      path: `/api/panel/servers/${id}/metrics?range=${range}`,
+      path: `/panel/servers/${id}/metrics?range=${range}`,
       handler: (response) => response,
     });
 
@@ -1415,7 +1415,7 @@
     const generation = ++performanceGeneration;
 
     const body = await ApiUtil.get({
-      path: `/api/panel/servers/${id}/metrics?${PERFORMANCE_RANGES[performanceRange].query}`,
+      path: `/panel/servers/${id}/metrics?${PERFORMANCE_RANGES[performanceRange].query}`,
       handler: (response) => response,
     });
 

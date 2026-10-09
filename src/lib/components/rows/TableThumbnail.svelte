@@ -18,11 +18,7 @@
 
 <div class="table-thumbnail">
   {#if src}
-    <a
-      {href}
-      {target}
-      title={tooltipText}
-      class="focus-ring d-block {anchorClass}">
+    <a {href} {target} title={tooltipText} class="focus-ring d-block {anchorClass}">
       <div class="ratio ratio-16x9 thumbnail-frame bg-primary-subtle">
         <img
           src={preview ? getPreviewUrl(src) : src}
@@ -58,9 +54,7 @@
 
     const lastDotIndex = originalUrl.lastIndexOf('.');
     return lastDotIndex > 0
-      ? originalUrl.substring(0, lastDotIndex) +
-          '-preview' +
-          originalUrl.substring(lastDotIndex)
+      ? originalUrl.substring(0, lastDotIndex) + '-preview' + originalUrl.substring(lastDotIndex)
       : originalUrl + '-preview';
   }
 </script>

@@ -83,11 +83,11 @@
     loading = true;
 
     ApiUtil.post({
-      path: `/api/panel/players/${$player.username}/verificationMail`,
+      path: `/panel/players/${$player.username}/verificationMail`,
       handler: async (body, reject) => {
         loading = false;
 
-        if (body.result === 'ok') {
+        if (!body.error) {
           hide();
           await showSuccessToast('components.toasts.verification-email-sent-successful', {
             username: $player.username,
@@ -98,7 +98,7 @@
 
         await showErrorToast('components.toasts.verification-email-sent-error', {
           username: $player.username,
-          errorCode: $_('errors.' + body.error),
+          errorCode: $_('errors.' + body.error?.code),
         });
 
         hide();

@@ -7,6 +7,8 @@
           <PageNavItem href="/settings">{$_('components.settings-layout.website')}</PageNavItem>
           <PageNavItem href="/settings/platform" startsWith
             >{$_('components.settings-layout.platform')}</PageNavItem>
+          <PageNavItem href={WEBHOOKS_SETTINGS_ITEM.href} startsWith
+            >{$_(WEBHOOKS_SETTINGS_ITEM.text)}</PageNavItem>
           <PageNavItem href="/settings/updates" classes="position-relative" startsWith
             >{$_('components.settings-layout.updates')}
             {#if data.session.basicData.hasUpdate}
@@ -56,6 +58,7 @@
 <script>
   import { _ } from 'svelte-i18n';
 
+  import { WEBHOOKS_SETTINGS_ITEM } from '$lib/navigation.util.js';
   import PageActions from '$lib/components/PageActions.svelte';
   import PageNav from '$lib/components/PageNav.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';

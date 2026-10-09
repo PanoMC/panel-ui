@@ -16,7 +16,8 @@
     ]}>
     <i class="fa-solid {entry.icon} {entry.iconClass}" aria-hidden="true"></i>
     {#if labeled}
-      <span class="small text-body-secondary">{$_(entry.labelKey, { ...websiteI18n, default: entry.labelKey })}</span>
+      <span class="small text-body-secondary"
+        >{$_(entry.labelKey, { ...websiteI18n, default: entry.labelKey })}</span>
     {/if}
   </span>
 {/if}

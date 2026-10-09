@@ -325,15 +325,15 @@
     }
 
     ApiUtil.post({
-      path: '/api/panel/banned-ips',
+      path: '/panel/banned-ips',
       body,
       handler: (res, reject) => {
         if (res.error) {
-          if (res.error === 'ALREADY_IP_BANNED' || res.error === 'INVALID_IP_ADDRESS') {
+          if (res.error.code === 'ALREADY_IP_BANNED' || res.error.code === 'INVALID_IP_ADDRESS') {
             location.reload();
             return;
           }
-          reject(res.error);
+          reject(res.error.code);
           return;
         }
 
@@ -343,9 +343,7 @@
           values: { ip: trimmedIp },
         });
 
-        if (res.result === 'ok') {
-          callback();
-        }
+        callback();
 
         loading = false;
       },

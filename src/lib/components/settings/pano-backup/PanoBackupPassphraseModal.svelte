@@ -96,9 +96,9 @@
 
     try {
       const response = await ApiUtil.put({
-        path: '/api/panel/pano-backups/remote/passphrase',
+        path: '/panel/pano-backups/remote/passphrase',
         body: { currentPassword: password, passphrase },
-      }).catch(() => ({ error: 'NETWORK_ERROR' }));
+      }).catch(() => ({ error: { code: 'NETWORK_ERROR' } }));
 
       error = response?.error ? describeError(response) : null;
 

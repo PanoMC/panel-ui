@@ -135,9 +135,9 @@
 
   async function isPanoHealthy() {
     try {
-      const getHealthResponse = await ApiUtil.get({ path: '/api/health' });
+      const getHealthResponse = await ApiUtil.get({ path: '/health' });
 
-      return getHealthResponse.result === 'ok';
+      return !getHealthResponse.error;
     } catch (_) {
       return false;
     }
@@ -153,10 +153,10 @@
     $platformRestarting = true;
 
     ApiUtil.post({
-      path: '/api/panel/settings/restart-pano',
+      path: '/panel/settings/restart-pano',
       body: { password: $password, background: $background },
       handler: (body) => {
-        if (body.error === 'NO_PERMISSION') {
+        if (body.error?.code === 'NO_PERMISSION') {
           $passwordError = true;
           $loading = false;
           $platformRestarting = false;

@@ -3,15 +3,13 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{$_('components.pagination.jump-to-page')}</h5>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label={$_('buttons.close')}
-          onclick={hide}></button>
+        <button type="button" class="btn-close" aria-label={$_('buttons.close')} onclick={hide}
+        ></button>
       </div>
       <div class="modal-body">
         <div class="mb-3">
-          <label for="pageInput" class="form-label">{$_('components.pagination.enter-page-number')}</label>
+          <label for="pageInput" class="form-label"
+            >{$_('components.pagination.enter-page-number')}</label>
           <input
             type="number"
             class="form-control"
@@ -19,8 +17,7 @@
             bind:value={$targetPage}
             min="1"
             max={$maxPage}
-            onkeydown={(e) => e.key === 'Enter' && submit()}
-          />
+            onkeydown={(e) => e.key === 'Enter' && submit()} />
         </div>
       </div>
       <div class="modal-footer flex-nowrap">

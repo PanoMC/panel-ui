@@ -9,6 +9,7 @@
  */
 
 import ApiUtil from '$lib/api.util.js';
+import { errorCode, errorDetails } from '$lib/apiError.util.js';
 import { isEndpointUnavailable } from '$lib/servers.util.js';
 import { formatBytes } from '$lib/string.util.js';
 
@@ -277,7 +278,7 @@ export function forgetNode(nodeId) {
 }
 
 /**
- * One row straight from `GET /api/panel/nodes/:id`, uncached. Anything that is not a node row —
+ * One row straight from `GET /api/v1/panel/nodes/:id`, uncached. Anything that is not a node row —
  * no `MANAGE_NODES`, a deleted node, a backend without the endpoint, a request that never
  * completed — resolves to null, so no caller ever has to catch.
  *
@@ -287,7 +288,7 @@ export function forgetNode(nodeId) {
  */
 function requestNode(id, request) {
   return ApiUtil.get({
-    path: `/api/panel/nodes/${id}`,
+    path: `/panel/nodes/${id}`,
     request,
     handler: (response) => response,
   })
@@ -302,7 +303,7 @@ function requestNode(id, request) {
 }
 
 /**
- * One `GET /api/panel/nodes/:id` per node per page load: concurrent callers share the same
+ * One `GET /api/v1/panel/nodes/:id` per node per page load: concurrent callers share the same
  * promise, and a node that is already cached resolves without a request. A failure (no
  * `MANAGE_NODES`, node deleted, backend without the endpoint) resolves to null so callers can
  * fall back to "Managed" without a node name instead of blowing up.
@@ -392,7 +393,7 @@ export function openAddNodeModal() {
  */
 export async function requestLocalNodeSetup() {
   const body = await ApiUtil.post({
-    path: '/api/panel/nodes/local/setup',
+    path: '/panel/nodes/local/setup',
     handler: (response) => response,
   });
 
@@ -410,8 +411,8 @@ export async function requestLocalNodeSetup() {
     // config.conf); the code alone would only say "bad request" back.
     return {
       status: 'error',
-      error: String(body.error),
-      message: body.message == null ? '' : String(body.message),
+      error: errorCode(body),
+      message: body.error.message == null ? '' : String(body.error.message),
     };
   }
 
@@ -419,7 +420,7 @@ export async function requestLocalNodeSetup() {
 }
 
 /**
- * `GET /api/panel/nodes/local` — the supervisor's view of the local daemon: `status`
+ * `GET /api/v1/panel/nodes/local` — the supervisor's view of the local daemon: `status`
  * (`RUNNING`/`STOPPED`/`FAILED`/`NOT_SET_UP`/`DISABLED`), `nodeId`, `pid`, `javaMajor`,
  * `javaPath`, `error`, `givenUp`.
  *
@@ -427,7 +428,7 @@ export async function requestLocalNodeSetup() {
  */
 export async function fetchLocalNodeStatus() {
   const body = await ApiUtil.get({
-    path: '/api/panel/nodes/local',
+    path: '/panel/nodes/local',
     handler: (response) => response,
   });
 
@@ -440,7 +441,7 @@ export async function fetchLocalNodeStatus() {
   }
 
   if (body.error) {
-    return { status: 'error', error: String(body.error) };
+    return { status: 'error', error: errorCode(body) };
   }
 
   return { status: 'ok', local: body };
@@ -461,7 +462,7 @@ export async function fetchNodeStatus(nodeId) {
   }
 
   const body = await ApiUtil.get({
-    path: `/api/panel/nodes/${id}`,
+    path: `/panel/nodes/${id}`,
     handler: (response) => response,
   });
 
@@ -484,7 +485,7 @@ export async function fetchNodeStatus(nodeId) {
  */
 export async function requestNodeUpdate(nodeId) {
   const body = await ApiUtil.post({
-    path: `/api/panel/nodes/${nodeId}/update`,
+    path: `/panel/nodes/${nodeId}/update`,
     handler: (response) => response,
   });
 
@@ -498,7 +499,7 @@ export async function requestNodeUpdate(nodeId) {
   }
 
   if (body.error) {
-    return { status: 'error', error: String(body.error) };
+    return { status: 'error', error: errorCode(body) };
   }
 
   return {
@@ -509,7 +510,7 @@ export async function requestNodeUpdate(nodeId) {
 }
 
 /**
- * `GET /api/panel/nodes`, normalized: the list endpoint may answer with `{ nodes: [...] }` or a
+ * `GET /api/v1/panel/nodes`, normalized: the list endpoint may answer with `{ nodes: [...] }` or a
  * bare array, and every row is pushed into the cache.
  *
  * @param {import('@sveltejs/kit').LoadEvent | undefined} [request] pass a load event for SSR.
@@ -517,7 +518,7 @@ export async function requestNodeUpdate(nodeId) {
  */
 export async function fetchNodes(request) {
   const body = await ApiUtil.get({
-    path: '/api/panel/nodes',
+    path: '/panel/nodes',
     request,
     handler: (response) => response,
   });
@@ -531,7 +532,7 @@ export async function fetchNodes(request) {
   }
 
   if (body.error) {
-    return { status: 'error', error: String(body.error), nodes: [] };
+    return { status: 'error', error: errorCode(body), nodes: [] };
   }
 
   const nodes = Array.isArray(body.nodes) ? body.nodes : Array.isArray(body) ? body : [];
@@ -682,7 +683,7 @@ export function getNodeJavaRuntimes(node) {
  */
 
 /**
- * `GET /api/panel/nodes/:id/java`, normalized. An offline node answers with only the runtimes it
+ * `GET /api/v1/panel/nodes/:id/java`, normalized. An offline node answers with only the runtimes it
  * reported last; a node older than SM-63 has no catalogue at all, which the backend says with a
  * flag — either way `downloads` is false and nothing may be offered for download.
  *
@@ -737,7 +738,7 @@ export async function fetchNodeJava(nodeId) {
 
   try {
     body = await ApiUtil.get({
-      path: `/api/panel/nodes/${id}/java`,
+      path: `/panel/nodes/${id}/java`,
       handler: (response) => response,
     });
   } catch {
@@ -753,7 +754,7 @@ export async function fetchNodeJava(nodeId) {
   }
 
   if (body.error) {
-    return { status: 'error', error: String(body.error) };
+    return { status: 'error', error: errorCode(body) };
   }
 
   return { status: 'ok', catalog: normalizeJavaCatalog(body) };
@@ -773,14 +774,14 @@ function taskResult(body) {
   }
 
   if (body.error) {
-    return { status: 'error', error: String(body.error) };
+    return { status: 'error', error: errorCode(body) };
   }
 
   return { status: 'ok', taskId: body.taskId == null ? '' : String(body.taskId) };
 }
 
 /**
- * `POST /api/panel/nodes/:id/java { major }` — download (or update) a Java major on the node.
+ * `POST /api/v1/panel/nodes/:id/java { major }` — download (or update) a Java major on the node.
  *
  * @param {number|string} nodeId
  * @param {number} major
@@ -788,7 +789,7 @@ function taskResult(body) {
 export async function requestJavaInstall(nodeId, major) {
   return taskResult(
     await ApiUtil.post({
-      path: `/api/panel/nodes/${nodeId}/java`,
+      path: `/panel/nodes/${nodeId}/java`,
       body: { major: Number(major) },
       handler: (response) => response,
     }),
@@ -796,7 +797,7 @@ export async function requestJavaInstall(nodeId, major) {
 }
 
 /**
- * `POST /api/panel/nodes/:id/java/:major/delete { version? }` — remove a runtime Pano installed.
+ * `POST /api/v1/panel/nodes/:id/java/:major/delete { version? }` — remove a runtime Pano installed.
  *
  * @param {number|string} nodeId
  * @param {number} major
@@ -805,7 +806,7 @@ export async function requestJavaInstall(nodeId, major) {
 export async function requestJavaRemove(nodeId, major, version) {
   return taskResult(
     await ApiUtil.post({
-      path: `/api/panel/nodes/${nodeId}/java/${Number(major)}/delete`,
+      path: `/panel/nodes/${nodeId}/java/${Number(major)}/delete`,
       body: version ? { version } : {},
       handler: (response) => response,
     }),
@@ -900,7 +901,7 @@ export function resolveAutomaticJava(requirement, choices) {
 
 /**
  * The Java a software version needs, from the wizard's version resolve
- * (`GET /api/panel/software/:id/versions/:version`): `java: { minimum, maximum }`, or the older
+ * (`GET /api/v1/panel/software/:id/versions/:version`): `java: { minimum, maximum }`, or the older
  * `javaMajor` alone. Best effort — null when the version cannot be resolved.
  *
  * @param {string} softwareId catalogue id (lowercase).
@@ -919,7 +920,7 @@ export async function fetchSoftwareJavaRequirement(softwareId, version) {
 
   try {
     body = await ApiUtil.get({
-      path: `/api/panel/software/${encodeURIComponent(id)}/versions/${encodeURIComponent(name)}`,
+      path: `/panel/software/${encodeURIComponent(id)}/versions/${encodeURIComponent(name)}`,
       handler: (response) => response,
     });
   } catch {
@@ -953,7 +954,7 @@ export function javaDownloadSize(size) {
 }
 
 /**
- * What deleting a node takes with it (SM-64, §2.4.29): `GET /api/panel/nodes/:id/delete-preview`.
+ * What deleting a node takes with it (SM-64, §2.4.29): `GET /api/v1/panel/nodes/:id/delete-preview`.
  * `status` is `'unavailable'` on a Pano built before SM-64 and `'error'`/`'network'` when it could
  * not be read — the delete dialog then falls back to what the node row says.
  *
@@ -964,7 +965,7 @@ export function javaDownloadSize(size) {
  */
 export async function fetchNodeDeletePreview(nodeId) {
   const body = await ApiUtil.get({
-    path: `/api/panel/nodes/${nodeId}/delete-preview`,
+    path: `/panel/nodes/${nodeId}/delete-preview`,
     handler: (response) => response,
   });
 
@@ -977,7 +978,7 @@ export async function fetchNodeDeletePreview(nodeId) {
   }
 
   if (body.error) {
-    return { status: 'error', error: String(body.error), preview: null };
+    return { status: 'error', error: errorCode(body), preview: null };
   }
 
   const backupBytes = Number(body.backupBytes);
@@ -1011,7 +1012,7 @@ function normalizeManualSteps(list) {
 }
 
 /**
- * `POST /api/panel/nodes/:id/delete { currentPassword, force? }` (SM-64). An online node
+ * `POST /api/v1/panel/nodes/:id/delete { currentPassword, force? }` (SM-64). An online node
  * uninstalls itself first, which can take up to two minutes — the request is simply left
  * running (ApiUtil sets no timeout) while `NODE_UNINSTALL` progress arrives over the realtime
  * socket.
@@ -1028,7 +1029,7 @@ function normalizeManualSteps(list) {
  */
 export async function requestNodeDelete(nodeId, currentPassword, force) {
   const body = await ApiUtil.post({
-    path: `/api/panel/nodes/${nodeId}/delete`,
+    path: `/panel/nodes/${nodeId}/delete`,
     body: force ? { currentPassword, force: true } : { currentPassword },
     handler: (response) => response,
   });
@@ -1042,11 +1043,12 @@ export async function requestNodeDelete(nodeId, currentPassword, force) {
   }
 
   if (body.error) {
-    const error = String(body.error);
-    const manualSteps = normalizeManualSteps(body.manualSteps);
+    const error = errorCode(body);
+    const details = errorDetails(body);
+    const manualSteps = normalizeManualSteps(details.manualSteps);
 
     if (error === 'NODE_OFFLINE' || error === 'NODE_UNINSTALL_FAILED') {
-      const detail = [body.nodeError, body.reason, body.detail, body.message].find(
+      const detail = [details.nodeError, details.reason, details.detail, body.error.message].find(
         (value) => typeof value === 'string' && value.trim(),
       );
 

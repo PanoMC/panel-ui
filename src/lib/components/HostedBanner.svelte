@@ -1,6 +1,6 @@
 <!--
   Pano Host banner: the control plane's notices (quota, trial, payment, …) from
-  `GET /api/panel/hosted`. Informational only; renders nothing on a self-hosted Pano
+  `GET /api/v1/panel/hosted`. Informational only; renders nothing on a self-hosted Pano
   (`hosted: false`), without notices, or when the request fails.
 -->
 {#if info?.hosted && visibleNotices.length}
@@ -127,9 +127,9 @@
     if (hostedMocked) return;
 
     ApiUtil.get({
-      path: '/api/panel/hosted',
+      path: '/panel/hosted',
       handler: (body) => {
-        if (body && body.result === 'ok') {
+        if (body && !body.error) {
           info = body;
         }
       },

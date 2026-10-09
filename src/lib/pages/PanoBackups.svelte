@@ -79,7 +79,7 @@
                     <div class="dropdown-menu dropdown-menu-start text-capitalize">
                       <a
                         class="dropdown-item text-capitalize"
-                        href="/api/panel/pano-backups/{encodeURIComponent(backup.id)}/download"
+                        href="/api/v1/panel/pano-backups/{encodeURIComponent(backup.id)}/download"
                         download="pano-backup-{backup.id}.panoarc">
                         <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
                         {$_('buttons.download')}
@@ -128,10 +128,9 @@
       </div>
       <div class="card-footer">
         <Pagination
-          page={localPage}
-          totalPage={localTotalPage}
+          page={pageOf(localPage, filteredLocal.length, LOCAL_PAGE_SIZE)}
           on:firstPageClick={() => (localPage = 1)}
-          on:lastPageClick={() => (localPage = localTotalPage)}
+          on:lastPageClick={() => (localPage = localLastPage)}
           on:pageLinkClick={(event) => (localPage = event.detail.page)} />
       </div>
     {/if}
@@ -500,12 +499,12 @@
     }
 
     const [local, remote] = await Promise.all([
-      read('/api/panel/pano-backups', event),
+      read('/panel/pano-backups', event),
       // Back from picking a plan on the website: the cached plan is stale, ask panomc.com again.
       read(
         event.url.searchParams.has('planUpdated')
-          ? '/api/panel/pano-backups/remote?fresh=true'
-          : '/api/panel/pano-backups/remote',
+          ? '/panel/pano-backups/remote?fresh=true'
+          : '/panel/pano-backups/remote',
         event,
       ),
     ]);
@@ -513,8 +512,8 @@
     const [remoteList, transferList] =
       connectionState(remote) !== 'not-connected'
         ? await Promise.all([
-            read('/api/panel/pano-backups/remote/backups', event),
-            read('/api/panel/pano-backups/remote/transfers', event),
+            read('/panel/pano-backups/remote/backups', event),
+            read('/panel/pano-backups/remote/transfers', event),
           ])
         : [null, null];
 
@@ -546,6 +545,7 @@
   import CardFilters from '$lib/components/CardFilters.svelte';
   import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
+  import { pageOf } from '$lib/components/pagination.util.js';
   import PageActions from '$lib/components/PageActions.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   import BsModal from '$lib/components/settings/pano-backup/BsModal.svelte';
@@ -595,7 +595,7 @@
   const filteredLocal = $derived(
     localTag === 'ALL' ? local.backups : local.backups.filter((backup) => backup.tag === localTag),
   );
-  const localTotalPage = $derived(Math.max(1, Math.ceil(filteredLocal.length / LOCAL_PAGE_SIZE)));
+  const localLastPage = $derived(Math.max(1, Math.ceil(filteredLocal.length / LOCAL_PAGE_SIZE)));
   const pagedLocal = $derived(
     filteredLocal.slice((localPage - 1) * LOCAL_PAGE_SIZE, localPage * LOCAL_PAGE_SIZE),
   );
@@ -603,8 +603,8 @@
   let selectedId = $state(null);
 
   $effect(() => {
-    if (localPage > localTotalPage) {
-      localPage = localTotalPage;
+    if (localPage > localLastPage) {
+      localPage = localLastPage;
     }
   });
 
@@ -695,14 +695,14 @@
 
   async function refresh() {
     const [nextLocal, nextRemote] = await Promise.all([
-      ApiUtil.get({ path: '/api/panel/pano-backups' }).catch(() => null),
-      ApiUtil.get({ path: '/api/panel/pano-backups/remote?fresh=true' }).catch(() => null),
+      ApiUtil.get({ path: '/panel/pano-backups' }).catch(() => null),
+      ApiUtil.get({ path: '/panel/pano-backups/remote?fresh=true' }).catch(() => null),
     ]);
     const [nextList, nextTransfers] =
       connectionState(nextRemote) !== 'not-connected'
         ? await Promise.all([
-            ApiUtil.get({ path: '/api/panel/pano-backups/remote/backups' }).catch(() => null),
-            ApiUtil.get({ path: '/api/panel/pano-backups/remote/transfers' }).catch(() => null),
+            ApiUtil.get({ path: '/panel/pano-backups/remote/backups' }).catch(() => null),
+            ApiUtil.get({ path: '/panel/pano-backups/remote/transfers' }).catch(() => null),
           ])
         : [null, null];
 
@@ -721,7 +721,7 @@
       // only once the restarting Pano answers again, or the reload lands on a dead port.
       await waitForRestart({
         probe: () =>
-          ApiUtil.get({ path: '/api/panel/basicData' }).then(
+          ApiUtil.get({ path: '/panel/basicData' }).then(
             (body) => !!body && typeof body === 'object',
           ),
       });
@@ -741,10 +741,10 @@
    * @returns {Promise<ReturnType<typeof describeError>>}
    */
   async function startJob(request) {
-    const body = await request.catch(() => ({ error: 'NETWORK_ERROR' }));
+    const body = await request.catch(() => ({ error: { code: 'NETWORK_ERROR' } }));
 
     if (!body || body.error) {
-      return describeError(body || { error: 'NETWORK_ERROR' });
+      return describeError(body || { error: { code: 'NETWORK_ERROR' } });
     }
 
     if (body.job) {
@@ -767,7 +767,7 @@
     try {
       createError = await startJob(
         ApiUtil.post({
-          path: '/api/panel/pano-backups',
+          path: '/panel/pano-backups',
           body: createEncrypt ? { passphrase: createPassphrase } : {},
         }),
       );
@@ -785,9 +785,7 @@
     busyAction = 'upload';
 
     try {
-      const error = await startJob(
-        ApiUtil.post({ path: '/api/panel/pano-backups/remote/backups' }),
-      );
+      const error = await startJob(ApiUtil.post({ path: '/panel/pano-backups/remote/backups' }));
 
       if (error) {
         void showError(error.key, error.values);
@@ -833,7 +831,7 @@
       form.append('passphrase', input.passphrase);
       form.append('file', input.file);
 
-      return startJob(ApiUtil.post({ path: '/api/panel/pano-backups/restore', body: form }));
+      return startJob(ApiUtil.post({ path: '/panel/pano-backups/restore', body: form }));
     }
 
     const target = restoreTarget;
@@ -845,8 +843,8 @@
     const id = encodeURIComponent(target.backup.id);
     const path =
       target.kind === 'remote'
-        ? `/api/panel/pano-backups/remote/backups/${id}/restore`
-        : `/api/panel/pano-backups/${id}/restore`;
+        ? `/panel/pano-backups/remote/backups/${id}/restore`
+        : `/panel/pano-backups/${id}/restore`;
 
     return startJob(
       ApiUtil.post({
@@ -883,9 +881,9 @@
       const body = await ApiUtil.delete({
         path:
           target.kind === 'remote'
-            ? `/api/panel/pano-backups/remote/backups/${id}`
-            : `/api/panel/pano-backups/${id}`,
-      }).catch(() => ({ error: 'NETWORK_ERROR' }));
+            ? `/panel/pano-backups/remote/backups/${id}`
+            : `/panel/pano-backups/${id}`,
+      }).catch(() => ({ error: { code: 'NETWORK_ERROR' } }));
 
       if (body?.error) {
         const error = describeError(body);
@@ -911,8 +909,8 @@
 
     try {
       const body = await ApiUtil.delete({
-        path: `/api/panel/pano-backups/remote/transfers/${encodeURIComponent(transfer.id)}`,
-      }).catch(() => ({ error: 'NETWORK_ERROR' }));
+        path: `/panel/pano-backups/remote/transfers/${encodeURIComponent(transfer.id)}`,
+      }).catch(() => ({ error: { code: 'NETWORK_ERROR' } }));
 
       if (body?.error) {
         const error = describeError(body);

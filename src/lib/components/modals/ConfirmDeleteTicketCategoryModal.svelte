@@ -112,7 +112,7 @@
     loading = true;
 
     ApiUtil.delete({
-      path: `/api/panel/ticket/categories/${get(category).id}`,
+      path: `/panel/ticket/categories/${get(category).id}`,
       handler: (body, reject) => {
         if (body.error) {
           refreshBrowserPage();

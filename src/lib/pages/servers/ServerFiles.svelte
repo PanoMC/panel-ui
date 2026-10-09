@@ -1144,7 +1144,7 @@
 
     try {
       const response = await ApiUtil.post({
-        path: `/api/panel/servers/${serverId}/files/${endpoint}`,
+        path: `/panel/servers/${serverId}/files/${endpoint}`,
         body,
         handler: (result) => result,
       });
@@ -1272,7 +1272,7 @@
 
     try {
       const response = await ApiUtil.put({
-        path: `/api/panel/servers/${serverId}/files/content`,
+        path: `/panel/servers/${serverId}/files/content`,
         body: { path: filePath, content: '' },
         handler: (result) => result,
       });
@@ -1382,7 +1382,7 @@
 
       try {
         response = await ApiUtil.post({
-          path: `/api/panel/servers/${serverId}/files/upload?path=${encodeURIComponent(target)}`,
+          path: `/panel/servers/${serverId}/files/upload?path=${encodeURIComponent(target)}`,
           body: form,
           onUploadProgress: (progress) => {
             patchUpload(id, { percent: Math.min(100, Math.round(Number(progress) * 100)) });

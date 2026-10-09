@@ -89,15 +89,15 @@
     loading = true;
 
     ApiUtil.delete({
-      path: `/api/panel/banned-ips/${row.id}`,
+      path: `/panel/banned-ips/${row.id}`,
       handler: (body, reject) => {
         if (body.error) {
-          if (body.error === 'NOT_EXISTS') {
+          if (body.error?.code === 'NOT_EXISTS') {
             location.reload();
             return;
           }
 
-          reject(body.error);
+          reject(body.error?.code);
           loading = false;
           return;
         }

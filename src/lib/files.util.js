@@ -9,6 +9,7 @@
  */
 
 import ApiUtil from '$lib/api.util.js';
+import { errorCode } from '$lib/apiError.util.js';
 import { isEndpointUnavailable } from '$lib/servers.util.js';
 import { formatBytes } from '$lib/string.util.js';
 
@@ -198,7 +199,7 @@ export function fileDownloadUrl(serverId, paths, { base, archive = false, inline
     query.set('inline', 'true');
   }
 
-  return `/api/panel/servers/${serverId}/files/download?${query.toString()}`;
+  return `/api/v1/panel/servers/${serverId}/files/download?${query.toString()}`;
 }
 
 /**
@@ -435,7 +436,7 @@ export function isModeValid(value) {
 }
 
 /**
- * `GET /api/panel/servers/:id/files?path=` — one directory listing (§2.4.4).
+ * `GET /api/v1/panel/servers/:id/files?path=` — one directory listing (§2.4.4).
  *
  * The page's `load` and the file manager's own navigation both come through here, so SSR and
  * the client parse the same answer. Nothing throws: an unsafe path never leaves the browser
@@ -455,7 +456,7 @@ export async function fetchServerFiles(serverId, path, request) {
   }
 
   const body = await ApiUtil.get({
-    path: `/api/panel/servers/${serverId}/files?path=${encodeURIComponent(target)}`,
+    path: `/panel/servers/${serverId}/files?path=${encodeURIComponent(target)}`,
     request,
     handler: (/** @type {object} */ response) => response,
   });
@@ -470,7 +471,7 @@ export async function fetchServerFiles(serverId, path, request) {
   }
 
   if (body.error) {
-    return { status: 'error', error: String(body.error), path: target, entries: [] };
+    return { status: 'error', error: errorCode(body), path: target, entries: [] };
   }
 
   return { status: 'ok', path: target, entries: normalizeEntries(body.entries) };

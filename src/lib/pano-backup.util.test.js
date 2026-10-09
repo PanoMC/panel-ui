@@ -91,6 +91,25 @@ describe('describeError', () => {
     ).toBe('PAYMENT_REQUIRED_NO_SUBSCRIPTION');
   });
 
+  test('reads the error envelope of a response body', () => {
+    const at = Date.UTC(2026, 8, 26, 12, 0, 0);
+    const result = describeError(
+      {
+        error: {
+          code: 'PANO_HOST_ERROR',
+          details: { hostError: 'PAYMENT_REQUIRED', reason: 'LAPSED', graceUntil: at },
+        },
+      },
+      { locale: 'en-US' },
+    );
+
+    expect(result?.code).toBe('PAYMENT_REQUIRED_LAPSED');
+    expect(result?.values.graceUntil).toBe(new Date(at).toLocaleString('en-US'));
+    expect(describeError({ error: { code: 'SOMETHING_NEW' } })?.key).toBe(
+      'pages.settings.backups.errors.generic',
+    );
+  });
+
   test('connection and remote-stop errors have their own sentence', () => {
     expect(
       describeError({

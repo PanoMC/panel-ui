@@ -59,11 +59,15 @@
     </button>
   {/if}
   {#if !theme.active && (!theme.premium || theme.licenseStatus === 'LICENSED')}
-    <button class="btn btn-secondary" onclick={activate} disabled={activating}>
-      {$_('buttons.activate')}{#if activating}<i class="fas fa-spinner fa-spin ms-2"></i>{/if}
-    </button>
+    <ThemeActivateButton {theme} {activating} onActivate={activate} />
   {/if}
 {/snippet}
+
+{#if compat}
+  <div class="mb-3">
+    <ThemeCompatIssues report={compat} />
+  </div>
+{/if}
 
 <div class="card">
   <div class="card-body">
@@ -89,7 +93,7 @@
               <div class={'carousel-item' + (i === 0 ? ' active' : '')}>
                 <div class="ratio ratio-16x9">
                   <img
-                    src={`/api/panel/themes/${theme.id}/screenshots/${key}?hash=${theme.screenshots[key]}`}
+                    src={`/api/v1/panel/themes/${theme.id}/screenshots/${key}?hash=${theme.screenshots[key]}`}
                     class="d-block w-100"
                     style="object-fit: cover; object-position: top;"
                     alt={$_('pages.theme-detail.screenshot') + ` ${i + 1}`} />
@@ -135,7 +139,9 @@
             <div class="small mb-2 hstack gap-2">
               <span class="user-select-all font-monospace">{theme.id}</span>
               <span class="vr"></span>
-              <span use:tooltip={[$_('pages.theme-detail.version')]} class="user-select-all font-monospace">
+              <span
+                use:tooltip={[$_('pages.theme-detail.version')]}
+                class="user-select-all font-monospace">
                 {theme.version}
               </span>
               <span class="vr"></span>
@@ -162,6 +168,12 @@
               <strong>{$_('pages.theme-detail.license')}:</strong>
               {theme.license || $_('pages.theme-detail.unknown')}
             </li>
+            {#if Number.isFinite(theme.apiLevel) || isRefused(theme.verdict)}
+              <li class="list-group-item">
+                <strong>{$_('pages.theme-detail.api-level')}:</strong>
+                <AddonApiLevel plugin={theme} />
+              </li>
+            {/if}
             <li class="list-group-item">
               <strong>{$_('pages.theme-detail.source')}:</strong>
               <a
@@ -211,8 +223,14 @@
 <ConfirmStopThemeModal />
 
 <script context="module">
+  import { errorDetails } from '$lib/apiError.util.js';
   import ApiUtil from '$lib/api.util.js';
   import { error } from '@sveltejs/kit';
+
+  import { normalizeReport } from './theme/compat.util.js';
+  import AddonApiLevel from '../addons/AddonApiLevel.svelte';
+  import { isRefused } from '../addons/compat/compat.util.js';
+  import { createThemeApi } from './theme/theme.api.js';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -224,20 +242,29 @@
     const themeId = event.params.themeId;
 
     const body = await ApiUtil.get({
-      path: `/api/panel/themes/${themeId}`,
+      path: `/panel/themes/${themeId}`,
       request: event,
     });
 
-    if (body.error === 'NOT_FOUND') {
-      throw error(404, body.error);
+    if (body.error?.code === 'NOT_FOUND') {
+      throw error(404, body.error?.code);
     }
 
-    return { theme: body.data };
+    // The override warnings only concern the active theme; a failed read leaves the list out.
+    let compat = null;
+
+    if (body.data?.active) {
+      const report = await createThemeApi(ApiUtil, event).getCompatibility();
+
+      compat = report.ok ? normalizeReport(report.body) : null;
+    }
+
+    return { theme: body.data, compat };
   }
 </script>
 
 <script>
-  import { getContext } from 'svelte';
+  import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
 
@@ -261,6 +288,9 @@
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
   import LicenseStatusBadge from '$lib/components/LicenseStatusBadge.svelte';
   import ThemeLicenseCard from '$lib/components/ThemeLicenseCard.svelte';
+  import ThemeCompatIssues from './theme/ThemeCompatIssues.svelte';
+  import ThemeActivateButton from './theme/ThemeActivateButton.svelte';
+  import { rememberReport } from './theme/compat.util.js';
   import ConfirmStopThemeModal, {
     show as showStopModal,
     passwordError,
@@ -270,10 +300,15 @@
 
   export let data;
   let theme;
+  let compat = null;
 
   $: {
     theme = data.theme;
+    compat = data.compat ?? null;
   }
+
+  // The admin reads the list now, so a later plugin update only toasts what is new after this.
+  onMount(() => rememberReport(compat));
 
   const slots = getContext('layout-slots');
   Object.assign(slots, { left, right });
@@ -287,9 +322,9 @@
       removing = true;
 
       ApiUtil.delete({
-        path: `/api/panel/themes/${theme.id}`,
+        path: `/panel/themes/${theme.id}`,
         handler: async (activateResponse) => {
-          if (activateResponse.result !== 'ok') {
+          if (!!activateResponse.error) {
             location.reload();
             return;
           }
@@ -310,14 +345,14 @@
 
       return new Promise((resolve) => {
         ApiUtil.customRequest({
-          path: `/api/panel/themes`,
+          path: `/panel/themes`,
           data: {
             method: 'DELETE',
             body: { password },
           },
           handler: async (stopResponse) => {
-            if (stopResponse.result !== 'ok') {
-              if (stopResponse.error === 'NO_PERMISSION') {
+            if (stopResponse.error) {
+              if (stopResponse.error?.code === 'NO_PERMISSION') {
                 stoping = false;
                 passwordError.set(true);
                 resolve(false);
@@ -345,9 +380,9 @@
     starting = true;
 
     ApiUtil.post({
-      path: `/api/panel/themes`,
+      path: `/panel/themes`,
       handler: async (stopResponse) => {
-        if (stopResponse.result !== 'ok') {
+        if (stopResponse.error) {
           location.reload();
           return;
         }
@@ -362,23 +397,28 @@
   }
 
   async function activate() {
+    // A refused theme is never activated (its button is disabled; this is the same rule for any other caller).
+    if (isRefused(theme.verdict)) {
+      return;
+    }
+
     activating = true;
 
     const activateResponse = await ApiUtil.put({
-      path: `/api/panel/themes/${theme.id}`,
+      path: `/panel/themes/${theme.id}`,
     });
 
-    if (activateResponse.result !== 'ok') {
+    if (!!activateResponse.error) {
       // Surface the precise denial reason returned by the backend. The button only renders
       // when licenseStatus === 'LICENSED', so reaching this branch on a license error means
       // the backend re-checked at activate time and disagrees with the panel's cached view
       // (e.g. file-tampered, jar-hash-mismatch, expired between page load and click).
-      if (activateResponse.error === 'THEME_LICENSE_REQUIRED') {
-        const reason = activateResponse.licenseDeniedReason || 'unknown';
+      if (activateResponse.error?.code === 'THEME_LICENSE_REQUIRED') {
+        const reason = errorDetails(activateResponse).licenseDeniedReason || 'unknown';
         console.error('Theme activate license-denied', {
           themeId: theme.id,
           reason,
-          message: activateResponse.message,
+          message: activateResponse.error?.message,
           response: activateResponse,
         });
         await showErrorToast('pages.theme-detail.license-denied-toast', {

@@ -5,7 +5,7 @@
  */
 import { formatBytes } from './string.util.js';
 
-/** Local schedule (`PUT /api/panel/pano-backups/settings`). */
+/** Local schedule (`PUT /api/v1/panel/pano-backups/settings`). */
 export const LOCAL_SCHEDULES = Object.freeze(['OFF', 'DAILY', 'WEEKLY']);
 
 /** Pano Backup schedule (`PUT …/remote/settings`); plans have no frequency limit. */
@@ -207,7 +207,7 @@ export function usageColour(percent) {
 }
 
 /**
- * The connection state of `GET /api/panel/pano-backups/remote`.
+ * The connection state of `GET /api/v1/panel/pano-backups/remote`.
  *
  * @param {Record<string, any> | null | undefined} remote
  * @returns {'connected' | 'not-connected' | 'unavailable'} `not-connected` = show the connect prompt
@@ -339,7 +339,7 @@ function formatTime(ms, locale) {
 }
 
 /**
- * Turns an error into a lang key + values. Accepts a response body (`{error, hostError?, …}`) or a
+ * Turns an error into a lang key + values. Accepts a response body (`{ error: { code, details } }`, `hostError` and `reason` sit in `details`) or a
  * job (`{error, details?, rolledBack?}`); Pano Host errors are unwrapped from `PANO_HOST_ERROR`.
  *
  * @param {object | null | undefined} source
@@ -352,11 +352,16 @@ export function describeError(source, options = {}) {
     return null;
   }
 
-  const details = { ...(source.details || {}), ...source };
-  let code = String(source.error);
+  // A response body carries the envelope `{ error: { code, details } }`; a job record keeps its
+  // own flat `{ error: 'CODE', details }` shape. Both read the same way below.
+  const envelope = typeof source.error === 'object' ? source.error : null;
+  const details = envelope
+    ? { ...(envelope.details || {}) }
+    : { ...(source.details || {}), ...source };
+  let code = String(envelope ? envelope.code : source.error);
 
   if (code === 'PANO_HOST_ERROR') {
-    code = String(source.hostError || 'PANO_HOST_UNAVAILABLE');
+    code = String(details.hostError || 'PANO_HOST_UNAVAILABLE');
   }
 
   if ((code === 'QUOTA_EXCEEDED' || code === 'PAYMENT_REQUIRED') && details.reason) {

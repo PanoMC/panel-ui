@@ -15,7 +15,7 @@ const WORKLOAD_ID = 'p-k3x9q2m7ta';
 const PAYMENT_GRACE_MS = 3 * DAY_MS;
 
 /**
- * One notice as `GET /api/panel/hosted` relays it: the control plane's `HostInstanceNotices.build`
+ * One notice as `GET /api/v1/panel/hosted` relays it: the control plane's `HostInstanceNotices.build`
  * shape after the platform's `PanoHostClient.notices` (null `data` values dropped, no `url`).
  */
 function notice(id, level, type, title, message, data = {}) {
@@ -23,7 +23,7 @@ function notice(id, level, type, title, message, data = {}) {
 }
 
 /**
- * What `GET /api/panel/hosted` answers on Pano Host: a Starter-package workload (10 GB disk,
+ * What `GET /api/v1/panel/hosted` answers on Pano Host: a Starter-package workload (10 GB disk,
  * 100 GB/month traffic) with every notice the control plane can send at once. `manageUrl` comes from
  * the control plane's `websiteUrl` (panomc.com, dev.panomc.com, local.panomc.com:3003, …); here the
  * panel's own website stands in for it. `HOST_DELETION_SCHEDULED`
@@ -36,7 +36,6 @@ export function mockHostedInfo() {
   const graceExpiresAt = pastDueSince + PAYMENT_GRACE_MS;
 
   return {
-    result: 'ok',
     hosted: true,
     workloadId: WORKLOAD_ID,
     manageUrl: `${PANO_WEBSITE_URL.replace(/\/+$/, '')}/host/manage/instances/${WORKLOAD_ID}`,

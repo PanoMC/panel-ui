@@ -97,7 +97,7 @@
     loading = true;
 
     ApiUtil.put({
-      path: '/api/panel/tickets',
+      path: '/panel/tickets',
       body: {
         tickets: Object.values(get(selectedTickets).map((id) => parseInt(id))),
         status: TicketStatuses.CLOSED,

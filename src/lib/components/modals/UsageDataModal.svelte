@@ -141,7 +141,7 @@
     // Deliberately no `handler`: ApiUtil only escalates to the global network-error splash
     // when one is given, and this is an illustration inside an explanatory modal — it must
     // never take the settings page over when the platform cannot build it.
-    const body = await ApiUtil.get({ path: '/api/panel/telemetry/preview' });
+    const body = await ApiUtil.get({ path: '/panel/telemetry/preview' });
 
     previewLoading.set(false);
 

@@ -564,8 +564,7 @@
       </small>
       <div class="ms-auto">
         <Pagination
-          page={groupPage}
-          totalPage={totalGroupPages}
+          page={pageOf(groupPage, filteredGroups.length, groupsPerPage)}
           on:firstPageClick={() => (groupPage = 1)}
           on:lastPageClick={() => (groupPage = totalGroupPages)}
           on:pageLinkClick={(e) => (groupPage = e.detail.page)} />
@@ -814,8 +813,7 @@
         </small>
         <div class="ms-auto">
           <Pagination
-            page={trackPage}
-            totalPage={totalTrackPages}
+            page={pageOf(trackPage, filteredTracks.length, tracksPerPage)}
             on:firstPageClick={() => (trackPage = 1)}
             on:lastPageClick={() => (trackPage = totalTrackPages)}
             on:pageLinkClick={(e) => (trackPage = e.detail.page)} />
@@ -1063,8 +1061,7 @@
           </small>
           <div class="ms-auto">
             <Pagination
-              page={playerPage}
-              totalPage={totalPlayerPages}
+              page={pageOf(playerPage, filteredPlayers.length, playersPerPage)}
               on:firstPageClick={() => (playerPage = 1)}
               on:lastPageClick={() => (playerPage = totalPlayerPages)}
               on:pageLinkClick={(e) => (playerPage = e.detail.page)} />
@@ -1203,6 +1200,7 @@
   import CardHeader from '$lib/components/CardHeader.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
+  import { pageOf } from '$lib/components/pagination.util.js';
   import LuckPermsNodeTable from './LuckPermsNodeTable.svelte';
 
   export { resetForm, importData, uploadAndPreview };
@@ -1444,16 +1442,18 @@
       }
 
       const result = await ApiUtil.post({
-        path: '/api/panel/migration/luckperms/upload',
+        path: '/panel/migration/luckperms/upload',
         body: formData,
         onUploadProgress: (progress) => {
           uploadProgress = progress;
         },
       });
 
-      if (result?.result === 'error') {
+      if (!!result?.error) {
         uploadError =
-          result.message || result.error || $_('pages.migration.authme.error-upload-failed');
+          result.error.message ||
+          result.error.code ||
+          $_('pages.migration.authme.error-upload-failed');
         return;
       }
 
@@ -2035,7 +2035,7 @@
       const nodeEdits = collectNodeEdits();
 
       const result = await ApiUtil.post({
-        path: '/api/panel/migration/luckperms/import',
+        path: '/panel/migration/luckperms/import',
         body: {
           selectedGroups: Array.from(selectedGroups),
           selectedTracks: Array.from(selectedTracks),
@@ -2053,9 +2053,11 @@
       clearInterval(progressInterval);
       importProgress = 1;
 
-      if (result?.result === 'error') {
+      if (!!result?.error) {
         uploadError =
-          result.message || result.error || $_('pages.migration.authme.error-import-failed');
+          result.error.message ||
+          result.error.code ||
+          $_('pages.migration.authme.error-import-failed');
         return;
       }
 

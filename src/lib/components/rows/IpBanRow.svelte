@@ -69,7 +69,7 @@
           title={$_('buttons.view')}
           class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center">
           <img
-            src="/api/profile/picture/{bannedIp.bannedBy}?{$avatarVersion}"
+            src="/api/v1/profile/picture/{bannedIp.bannedBy}?{$avatarVersion}"
             alt={bannedIp.bannedBy}
             class="rounded-circle me-2 flex-shrink-0"
             height="24"

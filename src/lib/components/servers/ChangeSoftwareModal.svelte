@@ -459,6 +459,7 @@
 </div>
 
 <script module>
+  import { errorCode } from '$lib/apiError.util.js';
   /** @type {((options: { server: object, lockSoftware?: boolean }) => void) | null} */
   let openModal = null;
 
@@ -908,7 +909,7 @@
 
     try {
       body = await ApiUtil.get({
-        path: `/api/panel/servers/${id}/reinstall-preview?software=${encodeURIComponent(
+        path: `/panel/servers/${id}/reinstall-preview?software=${encodeURIComponent(
           target,
         )}&version=${encodeURIComponent(targetVersion)}`,
         handler: (response) => response,
@@ -933,7 +934,7 @@
       preview = null;
 
       if (body?.error) {
-        submitError = $_(serverActionErrorKey(body.error), { values: { error: body.error } });
+        submitError = $_(serverActionErrorKey(body.error), { values: { error: errorCode(body) } });
       }
     }
 
@@ -944,7 +945,7 @@
     softwareLoading = true;
 
     const body = await ApiUtil.get({
-      path: '/api/panel/software',
+      path: '/panel/software',
       handler: (response) => response,
     });
 
@@ -968,7 +969,7 @@
     }
 
     softwareUnavailable = false;
-    softwareList = Array.isArray(body.software) ? body.software : Array.isArray(body) ? body : [];
+    softwareList = Array.isArray(body.items) ? body.items : Array.isArray(body) ? body : [];
 
     const current = softwareList.find((item) => sameSoftware(item.id, fromSoftware));
 
@@ -1034,7 +1035,7 @@
     };
 
     const body = await ApiUtil.post({
-      path: `/api/panel/servers/${server.id}/reinstall`,
+      path: `/panel/servers/${server.id}/reinstall`,
       body: payload,
       handler: (response) => response,
     });
@@ -1053,7 +1054,7 @@
     }
 
     if (body.error) {
-      const code = String(body.error).toUpperCase();
+      const code = errorCode(body).toUpperCase();
 
       if (code === 'CURRENT_PASSWORD_NOT_CORRECT' || code === 'WRONG_PASSWORD') {
         passwordError = true;

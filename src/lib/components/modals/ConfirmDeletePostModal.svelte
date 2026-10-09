@@ -120,7 +120,7 @@
 
     if (get(post).status === 0) {
       ApiUtil.delete({
-        path: `/api/panel/posts/${get(post).id}`,
+        path: `/panel/posts/${get(post).id}`,
         handler: bodyHandler,
       });
 
@@ -128,7 +128,7 @@
     }
 
     ApiUtil.put({
-      path: `/api/panel/posts/${get(post).id}/status`,
+      path: `/panel/posts/${get(post).id}/status`,
       body: {
         to: 'TRASH',
       },

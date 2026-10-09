@@ -18,7 +18,7 @@ export const quickNotifications = writable([]);
 
 export const logoutLoading = writable(false);
 
-export const websiteLogoSrc = writable('/api/websiteLogo');
+export const websiteLogoSrc = writable('/api/v1/website-logo');
 
 export const initialized = writable(false);
 export const avatarVersion = writable('');
@@ -79,7 +79,7 @@ export async function logout() {
   logoutLoading.set(true);
 
   await ApiUtil.post({
-    path: '/api/auth/logout',
+    path: '/auth/logout',
     handler: () => {
       // A `SERVERS` install never starts a theme, so "/" has nothing to render. Reloading the
       // page the admin is on shows the panel's sign-in form right there (U-06), and signing in

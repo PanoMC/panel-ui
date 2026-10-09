@@ -18,7 +18,9 @@
         <span
           class="auth-logo p-2 shadow-sm d-inline-flex align-items-center justify-content-center"
           class:bg-primary={!$page.data.hosted}
-          style:background-image={$page.data.hosted ? 'linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-info) 100%)' : undefined}>
+          style:background-image={$page.data.hosted
+            ? 'linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-info) 100%)'
+            : undefined}>
           <img
             src="{base}/assets/img/logo.svg"
             alt={$page.data.hosted ? 'Pano Host' : 'Pano'}

@@ -234,13 +234,12 @@
         {/each}
       </div>
 
-      {#if totalPage > 1}
+      {#if reachedPages > 1}
         <div class="card-footer">
           <Pagination
-            page={page + 1}
-            {totalPage}
+            page={pageOf(page + 1, reachedPages * PAGE_SIZE, PAGE_SIZE)}
             on:firstPageClick={() => goToPage(1)}
-            on:lastPageClick={() => goToPage(totalPage)}
+            on:lastPageClick={() => goToPage(reachedPages)}
             on:pageLinkClick={(event) => goToPage(event.detail.page)} />
         </div>
       {/if}
@@ -381,6 +380,7 @@
   import { _ } from 'svelte-i18n';
 
   import ApiUtil from '$lib/api.util.js';
+  import { pageOf } from '$lib/components/pagination.util.js';
   import tooltip from '$lib/tooltip.util';
   import { formatBytes } from '$lib/string.util.js';
   import { sanitizeImageSrc } from '$lib/security.util.js';
@@ -428,7 +428,7 @@
    * pages reached so far plus the one `hasMore` promises, and grows as the admin goes on.
    */
   let knownPages = $state(1);
-  const totalPage = $derived(Math.max(knownPages, page + 1 + (hasMore ? 1 : 0)));
+  const reachedPages = $derived(Math.max(knownPages, page + 1 + (hasMore ? 1 : 0)));
   let searching = $state(false);
   let searchError = $state('');
   /** @type {object|null} */
@@ -495,7 +495,7 @@
     sourcesError = '';
 
     const body = await ApiUtil.get({
-      path: `/api/panel/servers/${serverId}/plugins/sources`,
+      path: `/panel/servers/${serverId}/plugins/sources`,
       handler: (/** @type {object} */ response) => response,
     });
 
@@ -609,7 +609,7 @@
     });
 
     const body = await ApiUtil.get({
-      path: `/api/panel/servers/${serverId}/plugins/search?${params.toString()}`,
+      path: `/panel/servers/${serverId}/plugins/search?${params.toString()}`,
       handler: (/** @type {object} */ response) => response,
     });
 
@@ -677,7 +677,7 @@
     const sequence = ++versionsSeq;
 
     const body = await ApiUtil.get({
-      path: `/api/panel/servers/${serverId}/plugins/search/${encodeURIComponent(project.source)}/${encodeURIComponent(project.projectId)}/versions`,
+      path: `/panel/servers/${serverId}/plugins/search/${encodeURIComponent(project.source)}/${encodeURIComponent(project.projectId)}/versions`,
       handler: (/** @type {object} */ response) => response,
     });
 
@@ -766,7 +766,7 @@
 
     try {
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${serverId}/plugins/install`,
+        path: `/panel/servers/${serverId}/plugins/install`,
         body: {
           source: versionsProject.source,
           projectId: versionsProject.projectId,

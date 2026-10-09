@@ -88,6 +88,7 @@
 </div>
 
 <script context="module">
+  import { errorCode } from '$lib/apiError.util.js';
   import { get, writable } from 'svelte/store';
 
   /** The endpoint's ceiling (PanelUploadServerPluginAPI.MAX_UPLOAD_BYTES). */
@@ -258,7 +259,7 @@
 
       try {
         response = await ApiUtil.post({
-          path: `/api/panel/servers/${serverId}/plugins/upload`,
+          path: `/panel/servers/${serverId}/plugins/upload`,
           body: form,
           onUploadProgress: (progress) => {
             patch(id, { percent: Math.min(100, Math.round(Number(progress) * 100)) });
@@ -273,10 +274,10 @@
       if (!response || isEndpointUnavailable(response) || response.error) {
         patch(id, { status: 'failed', percent: 100 });
 
-        if (response?.error === 'INVALID_DATA') {
+        if (response?.error?.code === 'INVALID_DATA') {
           addError('pages.servers.plugins.upload.invalid-type');
         } else if (response?.error) {
-          addServerError(response.error, response);
+          addServerError(errorCode(response), response);
         } else if (response && isEndpointUnavailable(response)) {
           addError('pages.servers.errors.unavailable');
         } else {

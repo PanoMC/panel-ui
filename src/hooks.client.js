@@ -1,4 +1,8 @@
-import { installRuntimeRegistry, createClientInit, createClientHandleError } from '$pano/kit/hooks-client.js';
+import {
+  installRuntimeRegistry,
+  createClientInit,
+  createClientHandleError,
+} from '$pano/kit/hooks-client.js';
 
 installRuntimeRegistry();
 

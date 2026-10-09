@@ -174,7 +174,7 @@
       </select>
     {/if}
 
-    {#if totalPages > 1}
+    {#if lastPage > 1}
       <button
         class="btn btn-sm btn-outline-secondary"
         disabled={page <= 1}
@@ -182,11 +182,11 @@
         aria-label={$_('buttons.previous')}>
         <i class="fas fa-chevron-left"></i>
       </button>
-      <small class="opacity-75">{page} / {totalPages}</small>
+      <small class="opacity-75">{page} / {lastPage}</small>
       <button
         class="btn btn-sm btn-outline-secondary"
-        disabled={page >= totalPages}
-        on:click={() => (page = Math.min(totalPages, page + 1))}
+        disabled={page >= lastPage}
+        on:click={() => (page = Math.min(lastPage, page + 1))}
         aria-label={$_('buttons.next')}>
         <i class="fas fa-chevron-right"></i>
       </button>
@@ -208,9 +208,9 @@
   let nodesPerPage = 10;
   let page = 1;
 
-  $: totalPages = Math.max(1, Math.ceil(nodes.length / nodesPerPage));
+  $: lastPage = Math.max(1, Math.ceil(nodes.length / nodesPerPage));
   // Removing the last row of the last page must not strand the user on an empty page.
-  $: if (page > totalPages) page = totalPages;
+  $: if (page > lastPage) page = lastPage;
   $: pagedNodes = nodes.slice((page - 1) * nodesPerPage, page * nodesPerPage);
 
   function patch(node, changes) {

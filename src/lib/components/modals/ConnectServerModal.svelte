@@ -153,6 +153,7 @@
 </div>
 
 <script context="module">
+  import { errorCode } from '$lib/apiError.util.js';
   /** Open the Connect Server modal (same as #connectServer / navbar). */
   export function show() {
     if (typeof window === 'undefined' || !window.bootstrap?.Modal) return;
@@ -249,7 +250,7 @@
     fallbackAt = Date.now() + KEY_PERIOD_MS;
 
     const body = await ApiUtil.get({
-      path: '/api/panel/platformAuth/refreshKey',
+      path: '/panel/platformAuth/refreshKey',
       handler: (response) => response,
     });
 
@@ -292,10 +293,12 @@
   function toggleAcceptPluginAuth() {
     toggleLoading = true;
     ApiUtil.put({
-      path: '/api/panel/platformAuth/toggle',
+      path: '/panel/platformAuth/toggle',
       handler: async (body) => {
         if (body?.error) {
-          await showErrorToast('components.toasts.settings-save-error', { errorCode: body.error });
+          await showErrorToast('components.toasts.settings-save-error', {
+            errorCode: errorCode(body),
+          });
           toggleLoading = false;
           return;
         }

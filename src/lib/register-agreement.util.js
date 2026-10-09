@@ -17,9 +17,7 @@ export function normalizeRegisterAgreement(html) {
   }
   try {
     const doc = new DOMParser().parseFromString(trimmed, 'text/html');
-    const text = (doc.body.textContent || '')
-      .replace(/\u00a0/g, ' ')
-      .trim();
+    const text = (doc.body.textContent || '').replace(/\u00a0/g, ' ').trim();
     return text ? trimmed : '';
   } catch {
     return trimmed;

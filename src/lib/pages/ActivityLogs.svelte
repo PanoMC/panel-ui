@@ -59,7 +59,6 @@
     await parent();
 
     // The list always starts at the newest entries; older pages are appended while scrolling.
-    const page = 1;
     const search = searchParams.get('search')?.trim() || '';
     const locale = searchParams.get('locale')?.trim() || '';
 
@@ -69,21 +68,21 @@
     });
 
     const body = await ApiUtil.get({
-      path: `/api/panel/logs/activity` + queryParams,
+      path: `/panel/logs/activity` + queryParams,
       request: event,
     });
 
     if (body.error) {
-      if (body.error === 'PAGE_NOT_FOUND') {
-        throw error(404, body.error);
+      if (body.error?.code === 'PAGE_NOT_FOUND') {
+        throw error(404, body.error?.code);
       }
 
-      throw error(500, body.error);
+      throw error(500, body.error?.code);
     }
 
     return {
-      logs: body.data,
-      meta: { ...body.meta, page },
+      logs: body.items,
+      page: body.page,
       search,
       locale,
     };
@@ -97,6 +96,7 @@
 
   import { buildQueryParams } from '$lib/api.util.js';
   import { currentLanguage } from '$lib/language.util.js';
+  import { hasNextPage, pageNumber } from '$lib/components/pagination.util.js';
 
   import CardHeader from '$lib/components/CardHeader.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
@@ -111,18 +111,18 @@
 
   let search = data.search || '';
   let isSearching = false;
-  let visibleLogCount = data.meta.filteredCount || data.meta.totalCount;
+  let visibleLogCount = data.page.totalItems;
 
   const pageTitle = getContext('pageTitle');
 
   pageTitle.set('pages.activity-logs.title');
 
-  $: visibleLogCount = data.meta.filteredCount || data.meta.totalCount;
+  $: visibleLogCount = data.page.totalItems;
 
   /** Everything shown so far: the loaded first page plus the pages appended while scrolling. */
   let logs = data.logs;
-  let page = 1;
-  let totalPage = data.meta.totalPage;
+  /** The page object of the last page loaded. */
+  let loaded = data.page;
   let loadMoreLoading = false;
   /** Bumped by every fresh first page, so a late answer for the previous list is dropped. */
   let listGeneration = 0;
@@ -135,7 +135,7 @@
   // A new first page (first visit, a search) starts the list over.
   $: resetList(data);
 
-  $: hasMore = page < totalPage;
+  $: hasMore = hasNextPage(loaded);
 
   // (Re)watch the footer whenever it is (re)rendered; it only exists while there is more.
   $: if (observer) {
@@ -149,8 +149,7 @@
   function resetList(fresh) {
     listGeneration++;
     logs = fresh.logs;
-    page = 1;
-    totalPage = fresh.meta.totalPage;
+    loaded = fresh.page;
     loadMoreLoading = false;
   }
 
@@ -174,18 +173,18 @@
 
   /** The next page, appended; entries already shown are not shown twice. */
   function loadMore() {
-    if (loadMoreLoading || page >= totalPage) {
+    if (loadMoreLoading || !hasNextPage(loaded)) {
       return;
     }
 
     const generation = listGeneration;
-    const nextPage = page + 1;
+    const nextPage = pageNumber(loaded) + 1;
 
     loadMoreLoading = true;
 
     ApiUtil.get({
       path:
-        `/api/panel/logs/activity` +
+        `/panel/logs/activity` +
         buildQueryParams({
           page: nextPage,
           search: data.search || undefined,
@@ -200,8 +199,8 @@
 
         if (body.error) {
           // The list shrank under us (logs were cleared): what is shown is all there is.
-          if (body.error === 'PAGE_NOT_FOUND') {
-            totalPage = page;
+          if (body.error?.code === 'PAGE_NOT_FOUND') {
+            loaded = { ...loaded, totalItems: logs.length };
 
             return;
           }
@@ -213,9 +212,8 @@
 
         const shown = new Set(logs.map((log) => log.id));
 
-        logs = [...logs, ...(body.data || []).filter((log) => !shown.has(log.id))];
-        page = nextPage;
-        totalPage = body.meta?.totalPage ?? totalPage;
+        logs = [...logs, ...(body.items || []).filter((log) => !shown.has(log.id))];
+        loaded = body.page ?? { ...loaded, number: nextPage };
       },
     });
   }

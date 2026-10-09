@@ -131,6 +131,7 @@
 </div>
 
 <script context="module">
+  import { errorCode } from '$lib/apiError.util.js';
   import { writable, get } from 'svelte/store';
 
   const modalElement = writable();
@@ -206,7 +207,7 @@
     loading = true;
 
     const bodyHandler = (body, reject) => {
-      if (body.result === 'ok') {
+      if (!body.error) {
         loading = false;
 
         hide();
@@ -224,10 +225,10 @@
         );
 
         return;
-      } else if (body.result === 'error') {
+      } else if (body.error) {
         loading = false;
 
-        error.set(body.error);
+        error.set(errorCode(body));
 
         return;
       }
@@ -237,7 +238,7 @@
 
     if (get(mode) === 'edit') {
       ApiUtil.put({
-        path: `/api/panel/locales/${get(locale).id}`,
+        path: `/panel/locales/${get(locale).id}`,
         body: get(locale),
         handler: bodyHandler,
       });
@@ -246,7 +247,7 @@
     }
 
     ApiUtil.post({
-      path: '/api/panel/locales',
+      path: '/panel/locales',
       body: get(locale),
       handler: bodyHandler,
     });

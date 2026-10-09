@@ -16,10 +16,10 @@ export const Languages = writable({});
 
 async function fetchLanguages(event) {
   const response = await ApiUtil.get({
-    path: `/api/locales`,
+    path: `/locales`,
     request: event,
   });
-  const locales = response.data;
+  const locales = response.items ?? response.data;
 
   Languages.set(Object.fromEntries(locales.map((item) => [item.code, item])));
 }
@@ -67,13 +67,13 @@ export async function loadLanguage(language, event) {
   const [localTranslationsResponse, translationsResponse] = await Promise.all([
     useFetch(base + `/panel-api/languages/${language.code}.json`),
     ApiUtil.get({
-      path: `/api/locales/${language.code}/translations/types/PANEL`,
+      path: `/locales/${language.code}/translations/types/PANEL`,
       request: event,
     }),
   ]);
 
   const languageFile = await localTranslationsResponse.json();
-  const customTranslations = translationsResponse.result !== 'ok' ? {} : translationsResponse.data;
+  const customTranslations = translationsResponse?.error ? {} : translationsResponse.data;
 
   const translations = unflattenObject({
     ...flattenObject(languageFile),

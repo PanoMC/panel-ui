@@ -38,8 +38,8 @@
                 <div class="col-auto">
                   <img
                     src={sanitizeImageSrc(
-                      $server.favicon ? $server.favicon : '/api/server/icon/default',
-                      '/api/server/icon/default'
+                      $server.favicon ? $server.favicon : '/api/v1/server/icon/default',
+                      '/api/v1/server/icon/default',
                     )}
                     class="rounded border"
                     width="48"
@@ -50,7 +50,8 @@
                   <span class="badge text-bg-primary rounded-pill mb-2">{$server.type}</span>
                   <div class="d-flex flex-row justify-content-between gap-2 mb-1">
                     <span class="small text-body-secondary">{$_('buttons.remote')}:</span>
-                    <span class="flex-shrink-0">{$server.playerCount}/{$server.maxPlayerCount}</span>
+                    <span class="flex-shrink-0"
+                      >{$server.playerCount}/{$server.maxPlayerCount}</span>
                   </div>
                   <div class="font-monospace user-select-all text-break mb-1">
                     {getPrimaryAddress($server)}
@@ -171,10 +172,10 @@
 
   function initData(serverId) {
     ApiUtil.get({
-      path: `/api/panel/servers/${serverId}`,
+      path: `/panel/servers/${serverId}`,
       handler: (body, reject) => {
         if (body.error) {
-          if (body.error === 'NOT_EXISTS') {
+          if (body.error?.code === 'NOT_EXISTS') {
             showExpiredToast();
 
             return;
@@ -195,7 +196,7 @@
         acceptDisplayName.set(
           body.server.customName != null && String(body.server.customName).trim() !== ''
             ? String(body.server.customName).trim()
-            : body.server.name || ''
+            : body.server.name || '',
         );
         loading.set(false);
       },
@@ -232,10 +233,10 @@
     const customNamePayload = rawName.length === 0 ? null : rawName;
 
     ApiUtil.post({
-      path: `/api/panel/servers/${$server.id}/accept`,
+      path: `/panel/servers/${$server.id}/accept`,
       body: { customName: customNamePayload },
       handler: async (body, reject) => {
-        if (body.result === 'ok') {
+        if (!body.error) {
           callback($server);
 
           $selectedServer = { ...$server, permissionGranted: true, customName: customNamePayload };
@@ -252,7 +253,7 @@
           $submitLoading = false;
 
           return;
-        } else if (body.result === 'error') {
+        } else if (body.error) {
           await hideBootstrapModalAndWait(getServerRequestModalEl());
           await showErrorToast('components.toasts.expired-server-connect-request');
           $submitLoading = false;
@@ -270,16 +271,16 @@
     $submitLoading = true;
 
     ApiUtil.post({
-      path: `/api/panel/servers/${$server.id}/reject`,
+      path: `/panel/servers/${$server.id}/reject`,
       handler: async (body, reject) => {
-        if (body.result === 'ok') {
+        if (!body.error) {
           callback($server);
           await hideBootstrapModalAndWait(getServerRequestModalEl());
           $submitLoading = false;
           showSuccessToast('components.toasts.rejected-server-connect');
 
           return;
-        } else if (body.result === 'error') {
+        } else if (body.error) {
           await hideBootstrapModalAndWait(getServerRequestModalEl());
           $submitLoading = false;
           showErrorToast('components.toasts.expired-server-connect-request');

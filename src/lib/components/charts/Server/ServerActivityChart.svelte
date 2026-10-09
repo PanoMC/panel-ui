@@ -15,7 +15,7 @@
    * period — the Overview's counterpart to the Statistics page's Website Activity card
    * (§2.4.19, §2.4.26).
    *
-   * Both maps come from `GET /api/panel/servers/:id/activity-chart` keyed by bucket start, and an
+   * Both maps come from `GET /api/v1/panel/servers/:id/activity-chart` keyed by bucket start, and an
    * empty map is a perfectly good answer: a server Pano has never recorded simply draws flat.
    */
   import { _ } from 'svelte-i18n';

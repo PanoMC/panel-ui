@@ -46,7 +46,7 @@
         {#if data.view === Views.PLAYERS}
           {$_('pages.players.table-title', {
             values: {
-              playerCount: data.playerCount,
+              playerCount: data.page.totalItems,
               pageType:
                 data.pageType === PageTypes.HAS_PERM
                   ? $_('pages.players.authorized') + ' '
@@ -104,7 +104,7 @@
     </CardHeader>
 
     <!-- No Players -->
-    {#if data.playerCount === 0}
+    {#if data.page.totalItems === 0}
       <NoContent />
     {:else}
       {#if data.view === Views.BANS}
@@ -129,7 +129,7 @@
               </tr>
             </thead>
             <tbody>
-              {#each data.players as banHistory, index (banHistory.banHistoryId ?? `${banHistory.username}-${banHistory.bannedAt}-${index}`)}
+              {#each data.items as banHistory, index (banHistory.banHistoryId ?? `${banHistory.username}-${banHistory.bannedAt}-${index}`)}
                 <BanHistoryRow {banHistory} showBannedPlayer={true} />
               {/each}
             </tbody>
@@ -155,7 +155,7 @@
               </tr>
             </thead>
             <tbody>
-              {#each data.players as bannedIp (bannedIp.id)}
+              {#each data.items as bannedIp (bannedIp.id)}
                 <IpBanRow {bannedIp} on:unban={(e) => onUnbanIp(e.detail.bannedIp)} />
               {/each}
             </tbody>
@@ -214,7 +214,7 @@
               </tr>
             </thead>
             <tbody>
-              {#each data.players as player (player.username)}
+              {#each data.items as player (player.username)}
                 <PlayerRow
                   {player}
                   {checkTime}
@@ -233,9 +233,8 @@
         <!-- Pagination -->
         <Pagination
           page={data.page}
-          totalPage={data.totalPage}
           on:firstPageClick={() => onPageClick(1)}
-          on:lastPageClick={() => onPageClick(data.totalPage)}
+          on:lastPageClick={() => onPageClick(pageCount(data.page))}
           on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
       </div>
     {/if}
@@ -268,6 +267,8 @@
 
   export const DefaultIpBanStatus = IpBanStatuses.ACTIVE;
 
+  const PageSize = 10;
+
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
@@ -296,6 +297,7 @@
 
     const queryParams = buildQueryParams({
       page,
+      pageSize: PageSize,
       status: pageType,
       view,
       permissionGroup,
@@ -304,19 +306,18 @@
     });
 
     const body = await ApiUtil.get({
-      path: `/api/panel/players` + queryParams,
+      path: `/panel/players` + queryParams,
       request: event,
     });
 
     if (body.error) {
-      if (body.error === 'PAGE_NOT_FOUND') {
-        throw error(404, body.error);
+      if (body.error?.code === 'PAGE_NOT_FOUND') {
+        throw error(404, body.error?.code);
       }
 
-      throw error(500, body.error);
+      throw error(500, body.error?.code);
     }
 
-    body.page = page;
     body.pageType = pageType;
     body.search = search;
     body.view = view;
@@ -335,6 +336,7 @@
   import { base } from '$app/paths';
 
   import Pagination from '$lib/components/Pagination.svelte';
+  import { pageCount } from '$lib/components/pagination.util.js';
 
   import {
     show as showEditPlayerModal,
@@ -413,7 +415,7 @@
   function openBanWithPlayerSearch() {
     setSearchPlayerModalCallback(onPlayerSelectedForBanFromHistory);
     showSearchPlayerModal({
-      localPlayers: data.view === Views.BANS && Array.isArray(data.players) ? data.players : null,
+      localPlayers: data.view === Views.BANS && Array.isArray(data.items) ? data.items : null,
       selectOnlyBadge: true,
     });
   }
@@ -460,14 +462,13 @@
   function onSearchInput(event) {
     search = event.detail.value;
 
-    data.page = 1;
-    refreshData();
+    refreshData(1);
   }
 
-  async function refreshData() {
+  async function refreshData(pageNumber = data.page.number) {
     isSearching = true;
     const queryParams = buildQueryParams({
-      page: data.page,
+      page: pageNumber,
       permissionGroup: data.permissionGroup?.name,
       pageType: data.pageType,
       view: data.view,
@@ -480,13 +481,11 @@
   }
 
   async function onPageClick(page) {
-    data.page = page;
-
-    await refreshData();
+    await refreshData(page);
   }
 
   function onShowEditPlayerModalClick(player) {
-    data.players[data.players.indexOf(player)].selected = true;
+    data.items[data.items.indexOf(player)].selected = true;
 
     showEditPlayerModal(player);
   }
@@ -500,13 +499,13 @@
   }
 
   function showBanPlayerModalClick(player) {
-    data.players[data.players.indexOf(player)].selected = true;
+    data.items[data.items.indexOf(player)].selected = true;
 
     showConfirmBanPlayerModal(player);
   }
 
   function showUnbanPlayerModalClick(player) {
-    data.players[data.players.indexOf(player)].selected = true;
+    data.items[data.items.indexOf(player)].selected = true;
 
     showUnbanPlayerModal(player);
   }
@@ -516,59 +515,59 @@
   });
 
   onEditPlayerModalHide((newPlayer) => {
-    if (!data.players) {
+    if (!data.items) {
       return;
     }
 
-    data.players.forEach((player) => {
+    data.items.forEach((player) => {
       if (player.id === newPlayer.id) {
         player.selected = false;
       }
     });
 
-    data.players = data.players;
+    data.items = data.items;
   });
 
   onConfirmBanPlayerModalHide((newPlayer) => {
-    if (!data.players) {
+    if (!data.items) {
       return;
     }
 
-    data.players.forEach((player) => {
+    data.items.forEach((player) => {
       if (player.id === newPlayer.id) {
         player.selected = false;
       }
     });
 
-    data.players = data.players;
+    data.items = data.items;
   });
 
   onUnbanPlayerModalHide((newPlayer) => {
-    if (!data.players) {
+    if (!data.items) {
       return;
     }
 
-    data.players.forEach((player) => {
+    data.items.forEach((player) => {
       if (player.id === newPlayer.id) {
         player.selected = false;
       }
     });
 
-    data.players = data.players;
+    data.items = data.items;
   });
 
   setConfirmBanPlayerModalCallback((newPlayer) => {
-    if (!data.players) {
+    if (!data.items) {
       return;
     }
 
-    data.players.forEach((player) => {
+    data.items.forEach((player) => {
       if (player.id === newPlayer.id) {
         player.selected = false;
       }
     });
 
-    data.players = data.players;
+    data.items = data.items;
 
     refreshData();
   });
@@ -578,17 +577,17 @@
   });
 
   setUnbanPlayerModalCallback((newPlayer) => {
-    if (!data.players) {
+    if (!data.items) {
       return;
     }
 
-    data.players.forEach((player) => {
+    data.items.forEach((player) => {
       if (player.id === newPlayer.id) {
         player.selected = false;
       }
     });
 
-    data.players = data.players;
+    data.items = data.items;
 
     refreshData();
   });

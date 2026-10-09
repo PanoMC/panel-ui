@@ -24,7 +24,7 @@
       {:else if entry.username}
         <!-- The same avatar the users pages show, at their secondary 24 px. -->
         <img
-          src="/api/profile/picture/{entry.username}?{$avatarVersion}"
+          src="/api/v1/profile/picture/{entry.username}?{$avatarVersion}"
           alt={entry.username}
           width="24"
           height="24"

@@ -3,11 +3,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{$_('pages.settings.updates.changelog')}</h5>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label={$_('buttons.close')}
-          onclick={hide}></button>
+        <button type="button" class="btn-close" aria-label={$_('buttons.close')} onclick={hide}
+        ></button>
       </div>
       <div class="modal-body">
         <div class="markdown-renderer">

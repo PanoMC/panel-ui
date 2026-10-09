@@ -117,11 +117,15 @@
                   </button>
                   <button
                     class="btn btn-sm btn-secondary d-flex align-items-center gap-2"
+                    title={updateAllowed ? '' : $_('pages.settings.updates.plan.waiting')}
+                    aria-disabled={!updateAllowed}
+                    data-update-platform
                     on:click={onUpdatePlatformClick}
                     class:disabled={loading ||
                       $platformUpdating ||
                       inProgressResource ||
-                      updatingAll}>
+                      updatingAll ||
+                      !updateAllowed}>
                     {#if $platformUpdating}
                       <i class="fas fa-circle-notch fa-spin"></i>
                     {:else}
@@ -131,6 +135,16 @@
                   <!-- Dropped btn-group since only one button remains in the main action area -->
                 </div>
               </div>
+
+              <!-- What this update does to the plugins and themes, before the button works -->
+              {#if !$platformUpdating && !platformUpdateError}
+                <div class="mt-3">
+                  <UpdatePlan
+                    state={planState}
+                    onretry={() => planController.load()}
+                    onacknowledge={(value) => planController.acknowledge(value)} />
+                </div>
+              {/if}
 
               <!-- Progress -->
               {#if $platformUpdating || platformUpdateError}
@@ -245,7 +259,7 @@
                       width={update.type === 'THEME' ? 114 : 64}
                       height="64"
                       class="rounded"
-                      src={`/api/panel/updates/icon/${update.iconFileName}?type=${update.type}`}
+                      src={`/api/v1/panel/updates/icon/${update.iconFileName}?type=${update.type}`}
                       alt={update.name || update.id} />
                   {:else}
                     <div
@@ -422,6 +436,7 @@
 <ChangelogModal />
 
 <script context="module">
+  import { errorCode, errorDetails } from '$lib/apiError.util.js';
   import ApiUtil, { buildQueryParams } from '$lib/api.util';
 
   /**
@@ -436,7 +451,7 @@
     });
 
     return await ApiUtil.get({
-      path: '/api/panel/settings' + queryParams,
+      path: '/panel/settings' + queryParams,
       request: event,
     });
   }
@@ -487,6 +502,13 @@
   import ChangelogModal, {
     show as showChangelogModal,
   } from '$lib/components/modals/ChangelogModal.svelte';
+
+  import { createCompatWatcher } from '$lib/pages/view/theme/compat.util.js';
+  import { createThemeApi } from '$lib/pages/view/theme/theme.api.js';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
+  import UpdatePlan from '$lib/pages/addons/compat/UpdatePlan.svelte';
+  import { createCompatibilityApi } from '$lib/pages/addons/compat/compat.api.js';
+  import { canUpdate, createPlanController } from '$lib/pages/addons/compat/compat.util.js';
 
   export let data;
 
@@ -563,6 +585,22 @@
     }
   }
 
+  // The update plan (doc 04 section 7, gate 2): the platform update button works once it is read.
+  let planState = { status: 'loading', plan: null, errorCode: '', acknowledged: false };
+  let planVersion = null;
+  const planController = createPlanController({
+    api: createCompatibilityApi(ApiUtil),
+    onChange: (next) => (planState = next),
+  });
+
+  $: updateAllowed = canUpdate(planState);
+
+  // Read the plan again whenever a different platform update is found (and once on arrival).
+  $: if (browser && data.platformUpdate && data.platformUpdate.version !== planVersion) {
+    planVersion = data.platformUpdate.version;
+    planController.load();
+  }
+
   const platformUpdating = getContext('platformUpdating');
   const platformRestarting = getContext('platformRestarting');
 
@@ -597,9 +635,9 @@
 
   async function isPanoHealthy() {
     try {
-      const getHealthResponse = await ApiUtil.get({ path: '/api/health' });
+      const getHealthResponse = await ApiUtil.get({ path: '/health' });
 
-      return getHealthResponse.result === 'ok';
+      return !getHealthResponse.error;
     } catch (_) {
       return false;
     }
@@ -612,7 +650,8 @@
   }
 
   async function handlePlatformUpdateSSEMessage(message) {
-    if (message.result === 'ok') {
+    // A stream event is a failure when it has the `error` key (doc 04 section 3).
+    if (!message.error) {
       if (message.status === 'progress') {
         currentPlatformProgress = message.progress;
         return;
@@ -644,14 +683,14 @@
     } else {
       await showErrorToast('components.toasts.platform-update-failed');
 
-      platformUpdateError = message.error;
-      console.error(message.error, message.message);
+      platformUpdateError = errorCode(message);
+      console.error(message.error?.code, message.error?.message);
       $platformUpdating = false;
     }
   }
 
   async function handleResourceUpdateSSEMessage(update, message) {
-    if (message.result === 'ok') {
+    if (!message.error) {
       if (message.status === 'progress') {
         currentResourceProgress = message.progress;
         return;
@@ -666,6 +705,10 @@
         });
 
         await invalidateAll();
+
+        if (update.type === 'PLUGIN') {
+          await checkThemeCompat();
+        }
 
         if (!updatingAll) {
           confetti.default({
@@ -686,9 +729,22 @@
         id: update.id,
       });
 
-      resourceUpdateError = { ...update, error: message.error };
-      console.error(message.error, message.message);
+      resourceUpdateError = { ...update, error: errorCode(message) };
+      console.error(message.error?.code, message.error?.message);
       inProgressResource = null;
+    }
+  }
+
+  // A finished plugin update may have left views of the theme on the plugin's default look: the
+  // watcher toasts the overrides that just fell back (a failed read only skips the toast).
+  async function checkThemeCompat() {
+    try {
+      await createCompatWatcher({
+        api: createThemeApi(ApiUtil),
+        notify: { warn: (key, values) => showToast(key, values) },
+      }).check();
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -729,13 +785,18 @@
     await delay(500);
 
     const eventSource = new EventSource(
-      `/api/panel/updates/platform/stream?state=${data.platformUpdate.state}&background=${background ? 'true' : 'false'}`,
+      `/api/v1/panel/updates/platform/stream?state=${data.platformUpdate.state}&background=${background ? 'true' : 'false'}`,
     );
 
     handlePlatformUpdateEventSource(eventSource);
   }
 
   function onUpdatePlatformClick() {
+    // The button also answers the keyboard while it looks off: the plan has to be read first.
+    if (!updateAllowed) {
+      return;
+    }
+
     showUpdatePlatformModal((background) => {
       installPlatformUpdate(background);
     });
@@ -749,7 +810,7 @@
     await delay(500);
 
     const eventSource = new EventSource(
-      `/api/panel/updates/resources/${update.id}/stream?state=${update.state}`,
+      `/api/v1/panel/updates/resources/${update.id}/stream?state=${update.state}`,
     );
 
     handleResourceUpdateEventSource(update, eventSource);
@@ -796,17 +857,17 @@
     loading = true;
     await Promise.all([
       ApiUtil.get({
-        path: '/api/panel/updates/platform',
+        path: '/panel/updates/platform',
         handler: async (body) => {
           await invalidateAll();
           loading = false;
 
-          if (body.error === 'PANO_CONNECT_FAILED') {
+          if (body.error?.code === 'PANO_CONNECT_FAILED') {
             await showErrorToast('components.toasts.check-resources-update-failed-pano-account');
             return;
           }
 
-          if (body.error === 'PANO_NOT_CONNECTED') {
+          if (body.error?.code === 'PANO_NOT_CONNECTED') {
             await invalidateAll();
             await showErrorToast(
               'components.toasts.check-resources-update-failed-pano-account-needed',
@@ -814,7 +875,7 @@
             return;
           }
 
-          if (body.result !== 'ok') {
+          if (body.error) {
             await showErrorToast('components.toasts.check-update-failed');
             return;
           }

@@ -100,7 +100,7 @@
   import BsModal from './BsModal.svelte';
 
   /**
-   * `remote` = `GET /api/panel/pano-backups/remote`; `disabled` while another job runs;
+   * `remote` = `GET /api/v1/panel/pano-backups/remote`; `disabled` while another job runs;
    * `onstarted(job)` puts the transfer job on the page.
    *
    * @type {{ remote: any, disabled?: boolean, onstarted?: (job: any) => void }}
@@ -153,9 +153,9 @@
 
     modal?.show();
 
-    void ApiUtil.get({ path: '/api/panel/pano-backups/remote/workloads' })
-      .catch(() => ({ error: 'NETWORK_ERROR' }))
-      .then((body) => (workloadList = body || { error: 'NETWORK_ERROR' }));
+    void ApiUtil.get({ path: '/panel/pano-backups/remote/workloads' })
+      .catch(() => ({ error: { code: 'NETWORK_ERROR' } }))
+      .then((body) => (workloadList = body || { error: { code: 'NETWORK_ERROR' } }));
   }
 
   async function start() {
@@ -170,9 +170,9 @@
 
     try {
       const body = await ApiUtil.post({
-        path: '/api/panel/pano-backups/remote/transfers',
+        path: '/panel/pano-backups/remote/transfers',
         body: { workloadId: String(target.id) },
-      }).catch(() => ({ error: 'NETWORK_ERROR' }));
+      }).catch(() => ({ error: { code: 'NETWORK_ERROR' } }));
 
       if (body?.error) {
         error = describeError(body);

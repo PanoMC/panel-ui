@@ -63,6 +63,10 @@
     LicenseManager so an admin sees them before browsing the addons page.
     Hidden when zero failures or when the dashboard payload doesn't include the field.
   -->
+  <!-- One card for everything the API level gate and the theme need from the admin; it shows only
+       while something is refused, has to be done by hand, or the theme falls back. -->
+  <CompatibilityCard report={data.compatibility} theme={data.themeCompat} />
+
   {#if data.licenseFailedPluginCount && data.licenseFailedPluginCount > 0}
     <div class="alert alert-warning d-flex align-items-center gap-3 mb-0">
       <i class="fa-solid fa-key fa-lg" aria-hidden="true"></i>
@@ -239,7 +243,7 @@
                               class="rounded-circle"
                               height="32"
                               width="32"
-                              src="/api/profile/picture/{player.username}?{$avatarVersion}" />
+                              src="/api/v1/profile/picture/{player.username}?{$avatarVersion}" />
                           </a>
                           <a
                             class="text-decoration-none w-100 rounded focus-ring d-block text-truncate p-1"
@@ -294,7 +298,8 @@
                             title={ticket.writer.username}
                             href="{base}/players/detail/{ticket.writer.username}">
                             <img
-                              src="/api/profile/picture/{ticket.writer.username}?{$avatarVersion}"
+                              src="/api/v1/profile/picture/{ticket.writer
+                                .username}?{$avatarVersion}"
                               alt={$_('pages.dashboard.last-tickets.player-name')}
                               class="rounded-circle"
                               height="32"
@@ -333,7 +338,7 @@
         </CardHeader>
         <div class="card-body p-0 overflow-auto">
           <ul class="list-group list-group-flush">
-            {#each data.activityLogs.data as log, index (log)}
+            {#each data.activityLogs.items as log, index (log)}
               <ActivityLogRow {log} on:click={onShowViewActivityLogModalClick} />
             {:else}
               <NoContent />
@@ -424,6 +429,11 @@
   import ApiUtil from '$lib/api.util.js';
   import { hasPermission, Permissions } from '$lib/auth.util';
 
+  import { normalizeReport } from './view/theme/compat.util.js';
+  import { createThemeApi } from './view/theme/theme.api.js';
+  import { createCompatibilityApi } from './addons/compat/compat.api.js';
+  import { normalizeCompatibility } from './addons/compat/compat.util.js';
+
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
@@ -433,31 +443,49 @@
     const canFetchAbout =
       layoutData?.user && hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS, layoutData.user);
 
-    const [dashboardResult, activityLogsResult, aboutResult] = await Promise.all([
-      ApiUtil.get({
-        path: `/api/panel/dashboard`,
-        request: event,
-      }).catch(() => null),
-      ApiUtil.get({
-        path: `/api/panel/logs/activity`,
-        request: event,
-      }).catch(() => null),
-      canFetchAbout
-        ? ApiUtil.get({
-            path: `/api/panel/settings?type=ABOUT`,
-            request: event,
-          }).catch(() => null)
-        : Promise.resolve(null),
-    ]);
+    const canReadTheme =
+      layoutData?.user && hasPermission(Permissions.MANAGE_VIEW, layoutData.user);
 
-    const dashboard = dashboardResult?.result === 'ok' ? dashboardResult : {};
-    const activityLogs = activityLogsResult?.result === 'ok' ? activityLogsResult : { data: [] };
+    // The compatibility surface is open to the holders of either permission (doc 04 section 7).
+    const canReadCompatibility =
+      layoutData?.user &&
+      (hasPermission(Permissions.MANAGE_ADDONS, layoutData.user) || canReadTheme);
+
+    const [dashboardResult, activityLogsResult, aboutResult, themeCompat, compatibility] =
+      await Promise.all([
+        ApiUtil.get({
+          path: `/panel/dashboard`,
+          request: event,
+        }).catch(() => null),
+        ApiUtil.get({
+          path: `/panel/logs/activity`,
+          request: event,
+        }).catch(() => null),
+        canFetchAbout
+          ? ApiUtil.get({
+              path: `/panel/settings?type=ABOUT`,
+              request: event,
+            }).catch(() => null)
+          : Promise.resolve(null),
+        // One alert while the active theme is OUTDATED; a failed or refused read just leaves it out.
+        canReadTheme ? createThemeApi(ApiUtil, event).getCompatibility() : Promise.resolve(null),
+        // The refused plugins and themes, the jars to place by hand, the changed addresses.
+        canReadCompatibility
+          ? createCompatibilityApi(ApiUtil, event).getCompatibility()
+          : Promise.resolve(null),
+      ]);
+
+    const dashboard = dashboardResult && !dashboardResult.error ? dashboardResult : {};
+    const activityLogs =
+      activityLogsResult && !activityLogsResult.error ? activityLogsResult : { items: [] };
     const about = aboutResult?.data || aboutResult || {};
 
     return {
       ...dashboard,
       activityLogs,
       about,
+      themeCompat: themeCompat?.ok ? normalizeReport(themeCompat.body) : null,
+      compatibility: compatibility?.ok ? normalizeCompatibility(compatibility.body) : null,
     };
   }
 </script>
@@ -488,6 +516,9 @@
   import PlayerStatusBadge from '$lib/components/badges/PlayerStatusBadge.svelte';
   import PlayerPermissionBadge from '$lib/components/badges/PlayerPermissionBadge.svelte';
   import ViewAllLink from '$lib/components/ViewAllLink.svelte';
+  import CompatibilityCard from '$lib/components/CompatibilityCard.svelte';
+  import { createCompatWatcher } from './view/theme/compat.util.js';
+  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
   export let data;
 
@@ -502,7 +533,7 @@
 
   function onCloseGettingStartedCard() {
     ApiUtil.post({
-      path: '/api/panel/dashboard/closeGettingStartedCard',
+      path: '/panel/dashboard/closeGettingStartedCard',
       handler: () => {},
     });
   }
@@ -512,17 +543,17 @@
 
     log.selected = true;
 
-    data.activityLogs.data = data.activityLogs.data;
+    data.activityLogs.items = data.activityLogs.items;
 
     showViewActivityLogModal(log);
   }
 
   onViewActivityLogModalHide((log) => {
-    const _log = data.activityLogs.data.find((_log) => _log.id === log.id);
+    const _log = data.activityLogs.items.find((_log) => _log.id === log.id);
 
     _log.selected = false;
 
-    data.activityLogs.data = data.activityLogs.data;
+    data.activityLogs.items = data.activityLogs.items;
   });
 
   const mansoryLayoutCols = writable(2);
@@ -540,6 +571,14 @@
   }
 
   onMount(() => {
+    // A plugin update may have left views of the theme on the plugin's default look: say so once.
+    if (data.themeCompat) {
+      createCompatWatcher({
+        api: createThemeApi(ApiUtil),
+        notify: { warn: (key, values) => showToast(key, values) },
+      }).check();
+    }
+
     checkMobile();
 
     window.addEventListener('resize', checkMobile);

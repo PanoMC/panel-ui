@@ -114,7 +114,7 @@ export const SERVER_SECTION_PERMISSIONS = Object.freeze([
 /**
  * Whether the servers workspace exists for this user at all (R3): the umbrella `MANAGE_SERVERS`,
  * `CREATE_SERVERS`, or any single section of any server. Which servers a scoped grant reaches is
- * the backend's answer — `GET /api/panel/servers` lists only those.
+ * the backend's answer — `GET /api/v1/panel/servers` lists only those.
  *
  * @param {object} [user] the signed-in user; read off the page when omitted.
  * @returns {boolean}

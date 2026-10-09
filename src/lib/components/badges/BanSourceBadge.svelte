@@ -1,4 +1,10 @@
-<span class="badge" class:text-bg-primary={variant === 'panel'} class:text-bg-secondary={variant === 'migration'} class:text-bg-info={variant === 'server'} class:text-bg-light={variant === 'other'} use:tooltip={[tooltipText]}>
+<span
+  class="badge"
+  class:text-bg-primary={variant === 'panel'}
+  class:text-bg-secondary={variant === 'migration'}
+  class:text-bg-info={variant === 'server'}
+  class:text-bg-light={variant === 'other'}
+  use:tooltip={[tooltipText]}>
   <i class={icon} class:me-1={!!label}></i>{label}
 </span>
 

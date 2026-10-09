@@ -1,14 +1,16 @@
 /**
  * The per-server activity log (§2.4.12).
  *
- * `GET /api/panel/servers/:id/activity?limit=50&before=<cursor>` answers
- * `{ entries: [{ id, type, userId, username, createdAt, details }] }`, newest first, filtered to
- * the log types that belong to one server. Everything an entry carries was written by a person —
+ * `GET /api/v1/panel/servers/:id/activity?limit=50&cursor=<cursor>` answers
+ * `{ items: [{ id, type, userId, username, createdAt, details }], page: { size, nextCursor } }`,
+ * newest first, filtered to the log types that belong to one server; `nextCursor` is null on the
+ * last page. Everything an entry carries was written by a person —
  * a command they typed, a file they edited — so it is untrusted text and is only ever rendered
  * as text, never as HTML (§2.7).
  */
 
 import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
+import { errorCode } from '$lib/apiError.util.js';
 import { isEndpointUnavailable } from '$lib/servers.util.js';
 
 /** How many entries one page asks for, and therefore how "there is more" is detected. */
@@ -146,46 +148,50 @@ function normalizeEntry(entry) {
  * @param {object} options
  * @param {number|string} options.serverId
  * @param {number} [options.limit]
- * @param {string} [options.before] the id of the oldest entry already shown.
+ * @param {string} [options.cursor] the `nextCursor` of the page before.
  * @param {import('@sveltejs/kit').LoadEvent | Request} [options.request]
- * @returns {Promise<{ status: string, entries: object[], hasMore: boolean, error?: string }>}
+ * @returns {Promise<{ status: string, entries: object[], hasMore: boolean, nextCursor: string | null, error?: string }>}
  */
 export async function fetchServerActivity({
   serverId,
   limit = SERVER_ACTIVITY_PAGE_SIZE,
-  before = '',
+  cursor = '',
   request,
 }) {
-  const query = buildQueryParams({ limit, before: before || undefined });
+  const query = buildQueryParams({ limit, cursor: cursor || undefined });
 
   const body = await ApiUtil.get({
-    path: `/api/panel/servers/${serverId}/activity${query}`,
+    path: `/panel/servers/${serverId}/activity${query}`,
     request,
     handler: (/** @type {object} */ response) => response,
   });
 
   if (body === undefined || body === null) {
-    return { status: 'network', entries: [], hasMore: false };
+    return { status: 'network', entries: [], hasMore: false, nextCursor: null };
   }
 
   if (isEndpointUnavailable(body)) {
-    return { status: 'unavailable', entries: [], hasMore: false };
+    return { status: 'unavailable', entries: [], hasMore: false, nextCursor: null };
   }
 
   if (body.error) {
-    return { status: 'error', error: String(body.error), entries: [], hasMore: false };
+    return {
+      status: 'error',
+      error: errorCode(body),
+      entries: [],
+      hasMore: false,
+      nextCursor: null,
+    };
   }
 
-  const raw = Array.isArray(body.entries) ? body.entries : Array.isArray(body) ? body : [];
+  const raw = Array.isArray(body.items) ? body.items : [];
   const entries = raw.map((/** @type {object} */ entry) => normalizeEntry(entry));
 
-  // A short page is the end of the log. `hasMore` is only ever a hint for the button — asking
-  // again and getting nothing back simply hides it.
-  return {
-    status: 'ok',
-    entries,
-    hasMore: typeof body.hasMore === 'boolean' ? body.hasMore : entries.length >= Number(limit),
-  };
+  // No cursor is the end of the log. `hasMore` is only ever a hint for the button — asking again
+  // and getting nothing back simply hides it.
+  const nextCursor = typeof body.page?.nextCursor === 'string' ? body.page.nextCursor : null;
+
+  return { status: 'ok', entries, hasMore: nextCursor !== null, nextCursor };
 }
 
 /**

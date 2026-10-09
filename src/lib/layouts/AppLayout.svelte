@@ -1,5 +1,5 @@
 <svelte:head>
-  <link href="/api/favicon?hash={data.siteInfo.faviconHash}" rel="icon" />
+  <link href="/api/v1/favicon?hash={data.siteInfo.faviconHash}" rel="icon" />
 
   <title>{title}</title>
 
@@ -264,7 +264,7 @@
     } = event;
 
     let siteInfo = await ApiUtil.get({
-      path: '/api/siteInfo',
+      path: '/site-info',
       request: event,
       csrfToken,
     });
@@ -430,7 +430,7 @@
       pageTitle: browser ? clientPageTitle || (clientPageTitle = writable(null)) : writable(null),
     };
 
-    if (basicData.result !== 'ok') {
+    if (!basicData || basicData.error) {
       output.NETWORK_ERROR = true;
     }
 
@@ -733,7 +733,7 @@
     // it; anyone else lands on the first server they can reach, if there is one.
     if (serverId == null && !hasPermission(Permissions.MANAGE_NODES)) {
       const body = await ApiUtil.get({
-        path: '/api/panel/servers',
+        path: '/panel/servers',
         handler: (response) => response,
       }).catch(() => null);
       const list =

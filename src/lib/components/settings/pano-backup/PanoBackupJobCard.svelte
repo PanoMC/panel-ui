@@ -1,4 +1,4 @@
-<!-- The running / last Pano backup job. Polls `GET /api/panel/pano-backups/job` while it runs. -->
+<!-- The running / last Pano backup job. Polls `GET /api/v1/panel/pano-backups/job` while it runs. -->
 {#if job && running}
   <div class="card" aria-live="polite">
     <div class="card-body vstack gap-2">
@@ -122,7 +122,7 @@
 
     const tick = async () => {
       // A restore restarts Pano: a failed read here is the restart, not an error — try again.
-      const body = await ApiUtil.get({ path: '/api/panel/pano-backups/job' }).catch(() => null);
+      const body = await ApiUtil.get({ path: '/panel/pano-backups/job' }).catch(() => null);
 
       if (stopped) {
         return;

@@ -4,3 +4,12 @@ build
 functions
 node_modules
 .svelte-kit
+theme-core
+.design-sync
+ds-bundle
+CLAUDE.md
+AGENTS.md
+src/error.html
+jsconfig.json
+error.html
+agent-guide

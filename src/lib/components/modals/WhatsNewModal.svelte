@@ -173,7 +173,7 @@
   async function handleDismissal() {
     if (get(showDonotShowAgain) && get(dontShowAgain)) {
       await ApiUtil.post({
-        path: '/api/panel/dismissWhatsNew',
+        path: '/panel/dismissWhatsNew',
         body: {
           version: WHATS_NEW_VERSION,
         },

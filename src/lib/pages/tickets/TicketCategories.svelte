@@ -20,7 +20,7 @@
     <CardHeader>
       <div slot="left">
         {$_('pages.ticket-categories.card-title', {
-          values: { count: data.categoryCount },
+          values: { count: data.page.totalItems },
         })}
       </div>
 
@@ -38,12 +38,12 @@
       <div slot="right" aria-hidden="true"></div>
     </CardHeader>
     <!-- No Category -->
-    {#if data.categoryCount === 0}
+    {#if data.page.totalItems === 0}
       <NoContent />
     {/if}
 
     <!-- Tickets Table -->
-    {#if data.categoryCount > 0}
+    {#if data.page.totalItems > 0}
       <div class="table-responsive">
         <table class="table table-hover">
           <thead>
@@ -56,7 +56,7 @@
             </tr>
           </thead>
           <tbody>
-            {#each data.categories as category, index (category)}
+            {#each data.items as category, index (category)}
               <TicketCategoryRow
                 {category}
                 {index}
@@ -71,9 +71,8 @@
         <!-- Pagination -->
         <Pagination
           page={data.page}
-          totalPage={data.totalPage}
           on:firstPageClick={() => onPageClick(1)}
-          on:lastPageClick={() => onPageClick(data.totalPage)}
+          on:lastPageClick={() => onPageClick(pageCount(data.page))}
           on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
       </div>
     {/if}
@@ -90,6 +89,8 @@
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
   import { error } from '@sveltejs/kit';
 
+  const PageSize = 10;
+
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
@@ -100,28 +101,28 @@
     } = event;
     await parent();
 
-    const page = searchParams.get('page') || 1;
+    const page = parseInt(searchParams.get('page')) || 1;
     const search = searchParams.get('search');
 
     const queryParams = buildQueryParams({
       page,
+      pageSize: PageSize,
       search,
     });
 
     const body = await ApiUtil.get({
-      path: `/api/panel/ticket/categories` + queryParams,
+      path: `/panel/ticket/categories` + queryParams,
       request: event,
     });
 
     if (body.error) {
-      if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
-        throw error(404, body.error);
+      if (body.error?.code === 'NOT_EXISTS' || body.error?.code === 'PAGE_NOT_FOUND') {
+        throw error(404, body.error?.code);
       }
 
-      throw error(500, body.error);
+      throw error(500, body.error?.code);
     }
 
-    body.page = parseInt(page);
     body.search = search;
 
     return body;
@@ -136,6 +137,7 @@
   import { base } from '$app/paths';
 
   import Pagination from '$lib/components/Pagination.svelte';
+  import { pageCount } from '$lib/components/pagination.util.js';
 
   import AddEditTicketCategoryModal, {
     show as showTicketCategoriesAddEditModal,
@@ -169,14 +171,13 @@
   function onSearchInput(event) {
     search = event.detail.value;
 
-    data.page = 1;
-    refreshData();
+    refreshData(1);
   }
 
-  async function refreshData() {
+  async function refreshData(pageNumber = data.page.number) {
     isSearching = true;
     const queryParams = buildQueryParams({
-      page: data.page === 1 ? null : data.page,
+      page: pageNumber === 1 ? null : pageNumber,
       search: search || undefined,
     });
 
@@ -185,9 +186,7 @@
   }
 
   async function onPageClick(page) {
-    data.page = page;
-
-    await refreshData();
+    await refreshData(page);
   }
 
   function onCreateCategoryClick() {
@@ -195,28 +194,24 @@
   }
 
   function onShowEditCategoryButtonClick(index) {
-    data.categories[index].selected = true;
+    data.items[index].selected = true;
 
-    showTicketCategoriesAddEditModal('edit', data.categories[index]);
+    showTicketCategoriesAddEditModal('edit', data.items[index]);
   }
 
   function onShowDeleteTicketCategoryModalClick(index) {
-    data.categories[index].selected = true;
+    data.items[index].selected = true;
 
-    showDeleteTicketCategoryModal(data.categories[index]);
+    showDeleteTicketCategoryModal(data.items[index]);
   }
 
   setCallbackForTicketCategoriesAddEditModal((routeFirstPage) => {
-    if (routeFirstPage) {
-      data.page = 1;
-    }
-
-    refreshData();
+    refreshData(routeFirstPage ? 1 : undefined);
   });
 
   onAddEditTicketCategoryModalHide((category) => {
-    if (data.categories.indexOf(category) !== -1)
-      data.categories[data.categories.indexOf(category)].selected = false;
+    if (data.items.indexOf(category) !== -1)
+      data.items[data.items.indexOf(category)].selected = false;
   });
 
   setDeleteTicketCategoryModalCallback(() => {
@@ -224,7 +219,7 @@
   });
 
   onConfirmDeleteTicketCategoryModalHide((category) => {
-    if (data.categories.indexOf(category) !== -1)
-      data.categories[data.categories.indexOf(category)].selected = false;
+    if (data.items.indexOf(category) !== -1)
+      data.items[data.items.indexOf(category)].selected = false;
   });
 </script>

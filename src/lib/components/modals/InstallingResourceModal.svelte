@@ -53,7 +53,8 @@
             <span class="text-danger">
               {#if $installLicenseDeniedReason}
                 {$_(
-                  'components.modals.installing-resource.license-denied.' + $installLicenseDeniedReason,
+                  'components.modals.installing-resource.license-denied.' +
+                    $installLicenseDeniedReason,
                   {
                     values: { website: websiteDisplayHost() },
                     default: $_('components.modals.installing-resource.license-denied.generic', {
@@ -101,6 +102,7 @@
 </div>
 
 <script context="module">
+  import { errorCode, errorDetails } from '$lib/apiError.util.js';
   import { writable, get } from 'svelte/store';
 
   import { browser } from '$app/environment';
@@ -216,7 +218,7 @@
     body.append('file', file);
 
     const uploadResponse = await ApiUtil.put({
-      path: `/api/panel/install/upload`,
+      path: `/panel/install/upload`,
       body,
       onUploadProgress: (progress) => {
         currentProgress.set(progress);
@@ -225,7 +227,7 @@
 
     if (uploadResponse.error) {
       installLicenseDeniedReason.set(null);
-      installError.set(uploadResponse.error);
+      installError.set(errorCode(uploadResponse));
       installing = false;
 
       return null;
@@ -242,7 +244,8 @@
   }
 
   async function handleSSEMessage(message) {
-    if (message.result === 'ok') {
+    // A stream event is a failure when it has the `error` key (doc 04 section 3).
+    if (!message.error) {
       if (message.status === 'progress') {
         currentProgress.set(message.progress);
         return;
@@ -263,11 +266,13 @@
       }
     } else {
       installing = false;
+      const licenseDeniedReason = errorDetails(message).licenseDeniedReason;
+
       installLicenseDeniedReason.set(
-        typeof message.licenseDeniedReason === 'string' ? message.licenseDeniedReason : null,
+        typeof licenseDeniedReason === 'string' ? licenseDeniedReason : null,
       );
-      installError.set(message.error);
-      console.error(message.error, message.message);
+      installError.set(errorCode(message));
+      console.error(message.error?.code, message.error?.message);
     }
   }
 
@@ -278,17 +283,27 @@
 
     eventSource.onerror = () => {
       eventSource.close();
+
+      // A failure before the stream starts arrives as an HTTP error; without this the modal
+      // would wait for ever.
+      if (installing) {
+        installing = false;
+        installLicenseDeniedReason.set(null);
+        installError.set('NETWORK_ERROR');
+      }
     };
   }
 
   async function installResourceFromStore(versionId) {
-    const eventSource = new EventSource(`/api/panel/install/store/${versionId}/stream`);
+    const eventSource = new EventSource(`/api/v1/panel/install/store/${versionId}/stream`);
 
     handleEventSource(eventSource);
   }
 
   async function installResourceFromLocal(fileName) {
-    const eventSource = new EventSource(`/api/panel/install/local/${get(type)}/${fileName}/stream`);
+    const eventSource = new EventSource(
+      `/api/v1/panel/install/local/${get(type)}/${fileName}/stream`,
+    );
 
     handleEventSource(eventSource);
   }

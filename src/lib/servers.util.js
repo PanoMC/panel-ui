@@ -19,6 +19,7 @@ import { _, json } from 'svelte-i18n';
 import { browser } from '$app/environment';
 
 import ApiUtil from '$lib/api.util.js';
+import { errorCode, errorDetails } from '$lib/apiError.util.js';
 import { formatBytes } from '$lib/string.util.js';
 import { showError } from '$lib/components/ToastContainer.svelte';
 
@@ -385,7 +386,7 @@ export function isEndpointUnavailable(body) {
     return false;
   }
 
-  const error = String(/** @type {{ error?: string }} */ (body).error || '').toUpperCase();
+  const error = normalizeServerErrorCode(/** @type {{ error?: unknown }} */ (body).error);
 
   return error === 'NOT_IMPLEMENTED' || error === 'UNSUPPORTED' || error === 'PAGE_NOT_FOUND';
 }
@@ -451,14 +452,14 @@ export function isServerOnline(server) {
 export const DEFAULT_GAME_PORT = 25565;
 
 /**
- * Every server the signed-in user may see, as one list (`GET /api/panel/servers`, either of its
+ * Every server the signed-in user may see, as one list (`GET /api/v1/panel/servers`, either of its
  * shapes). Never throws: a refusal or a backend without the endpoint is an empty list.
  *
  * @returns {Promise<object[]>}
  */
 export async function fetchServersList() {
   const body = await ApiUtil.get({
-    path: '/api/panel/servers',
+    path: '/panel/servers',
     handler: (response) => response,
   }).catch(() => null);
 
@@ -980,9 +981,7 @@ function translate(key) {
  */
 export function serverStateErrorMessage(error, body = null, context = {}) {
   const code = normalizeServerErrorCode(error);
-  const row = /** @type {{ feature?: unknown, reason?: unknown }} */ (
-    body && typeof body === 'object' ? body : {}
-  );
+  const row = /** @type {{ feature?: unknown, reason?: unknown }} */ (errorDetails(body));
   const feature = cleanFeaturePath(row.feature) || cleanFeaturePath(context.feature);
   const section = translate(context.section || featureSectionKey(feature));
 
@@ -1094,7 +1093,7 @@ export function isRateLimitError(error) {
  * @returns {number}
  */
 export function getRetryAfterSeconds(body) {
-  const row = /** @type {Record<string, unknown>} */ (body && typeof body === 'object' ? body : {});
+  const row = /** @type {Record<string, unknown>} */ (errorDetails(body));
   const seconds = Number(row.retryAfter ?? row.retryAfterSeconds ?? row.retry_after);
 
   // Clamped: a nonsense value from an unknown build must not produce "wait 9000000 seconds".
@@ -1152,7 +1151,11 @@ export function createServerActionCooldown(ms = SERVER_ACTION_COOLDOWN_MS) {
  * @returns {string} the code, with everything a code cannot contain removed.
  */
 function normalizeServerErrorCode(error) {
-  return String(error || '')
+  // The `error` of a response body is the envelope object `{ code, ... }`; a bare code works too.
+  const raw =
+    error && typeof error === 'object' ? /** @type {{ code?: unknown }} */ (error).code : error;
+
+  return String(raw || '')
     .toUpperCase()
     .replace(/[^A-Z0-9_]/g, '');
 }
@@ -1263,11 +1266,7 @@ function hasMessage(key) {
  * @returns {string}
  */
 export function getDeniedCommandPattern(body, command = '') {
-  const row = /** @type {{ pattern?: unknown, error?: { pattern?: unknown } }} */ (
-    body && typeof body === 'object' ? body : {}
-  );
-  const reported =
-    row.pattern ?? (row.error && typeof row.error === 'object' ? row.error.pattern : null);
+  const reported = errorDetails(body).pattern ?? null;
   const raw =
     reported ??
     String(command || '')
@@ -1308,7 +1307,7 @@ const SERVER_ERROR_KEYS = Object.freeze({
 });
 
 /**
- * The `note` values `/api/panel/software` can put on a catalogue entry (§2.4.15). A note says how
+ * The `note` values `/api/v1/panel/software` can put on a catalogue entry (§2.4.15). A note says how
  * the jar is obtained, never how the server runs once it exists: `build` is compiled on the node by
  * BuildTools, `jenkins` is downloaded from the project's own CI, `deprecated` marks a project that
  * is end of life. A Pano built before SM-49 sends no note at all, so an entry without one is simply
@@ -1332,7 +1331,7 @@ const LATEST_VERSION = 'latest';
  * no explaining).
  *
  * @param {{ id?: string, note?: string|null, deprecated?: boolean } | null | undefined} item
- *   a catalogue entry as `/api/panel/software` reports it.
+ *   a catalogue entry as `/api/v1/panel/software` reports it.
  * @returns {{ className: string, label: string, hint: string } | null} null when there is nothing
  *   to flag.
  */
@@ -1436,10 +1435,8 @@ function sectionFailure(body) {
     return { status: 'unavailable' };
   }
 
-  const error = /** @type {{ error?: unknown }} */ (body).error;
-
-  if (error) {
-    return { status: 'error', error: String(error) };
+  if (/** @type {{ error?: unknown }} */ (body).error) {
+    return { status: 'error', error: errorCode(body) };
   }
 
   return null;
@@ -1532,7 +1529,7 @@ function normalizeFilenames(list) {
 }
 
 /**
- * `GET /api/panel/servers/:id/plugins` (SM-16 / SM-32 / SM-48) — the loaded plugins, the jars in
+ * `GET /api/v1/panel/servers/:id/plugins` (SM-16 / SM-32 / SM-48) — the loaded plugins, the jars in
  * the directory, and what Pano knows about where each one came from.
  *
  * @param {number|string} serverId
@@ -1543,7 +1540,7 @@ function normalizeFilenames(list) {
  */
 export async function fetchServerPlugins(serverId, request) {
   const body = await ApiUtil.get({
-    path: `/api/panel/servers/${serverId}/plugins`,
+    path: `/panel/servers/${serverId}/plugins`,
     request,
     handler: (/** @type {object} */ response) => response,
   });
@@ -1611,7 +1608,7 @@ function normalizeBackups(list) {
 }
 
 /**
- * `GET /api/panel/servers/:id/backups` (SM-33). `keepLast` is null on a build whose backup
+ * `GET /api/v1/panel/servers/:id/backups` (SM-33). `keepLast` is null on a build whose backup
  * settings are not exposed yet, which is what hides the retention control.
  *
  * @param {number|string} serverId
@@ -1620,7 +1617,7 @@ function normalizeBackups(list) {
  */
 export async function fetchServerBackups(serverId, request) {
   const body = await ApiUtil.get({
-    path: `/api/panel/servers/${serverId}/backups`,
+    path: `/panel/servers/${serverId}/backups`,
     request,
     handler: (/** @type {object} */ response) => response,
   });
@@ -1706,7 +1703,7 @@ function normalizeSchedules(list) {
 }
 
 /**
- * `GET /api/panel/servers/:id/schedules` (SM-34, §2.4.6).
+ * `GET /api/v1/panel/servers/:id/schedules` (SM-34, §2.4.6).
  *
  * @param {number|string} serverId
  * @param {import('@sveltejs/kit').LoadEvent | Request} [request]
@@ -1714,7 +1711,7 @@ function normalizeSchedules(list) {
  */
 export async function fetchServerSchedules(serverId, request) {
   const body = await ApiUtil.get({
-    path: `/api/panel/servers/${serverId}/schedules`,
+    path: `/panel/servers/${serverId}/schedules`,
     request,
     handler: (/** @type {object} */ response) => response,
   });
@@ -1749,7 +1746,7 @@ export function normalizeServerPlayers(list) {
 }
 
 /**
- * `GET /api/panel/servers/:id/players` (SM-14, §2.4.2) — the roster as it was when the page
+ * `GET /api/v1/panel/servers/:id/players` (SM-14, §2.4.2) — the roster as it was when the page
  * opened; the `players` and `metrics` feeds keep it live from there.
  *
  * @param {number|string} serverId
@@ -1758,7 +1755,7 @@ export function normalizeServerPlayers(list) {
  */
 export async function fetchServerPlayers(serverId, request) {
   const body = await ApiUtil.get({
-    path: `/api/panel/servers/${serverId}/players`,
+    path: `/panel/servers/${serverId}/players`,
     request,
     handler: (/** @type {object} */ response) => response,
   });
@@ -2059,10 +2056,47 @@ export function applyTaskFrame(server, frame) {
 }
 
 /**
+ * Whether the Pano plugin on [server] is too old to reach this Pano at all (its stored protocol is
+ * below the minimum), whether it is connected or not. Only a hand-made jar replacement helps; the
+ * jar is offered from the server's own plugin-update steps.
+ *
+ * @param {Record<string, any> | null | undefined} server
+ */
+export function isPluginUnreachable(server) {
+  return server?.panoPluginUpdate?.unreachableProtocol === true;
+}
+
+/**
+ * The node (or Pano Agent) behind [server] when it is too old to reach this Pano:
+ * `{ nodeId, name, agent, downloadPath }`, else null. A path that is not an absolute path of this
+ * Pano is dropped, so a hostile value gives no link.
+ *
+ * @param {Record<string, any> | null | undefined} server
+ * @returns {{ nodeId: any, name: string, agent: boolean, downloadPath: string | null } | null}
+ */
+export function unreachableDaemon(server) {
+  const info = server?.nodeUnreachable;
+
+  if (!info || typeof info !== 'object') {
+    return null;
+  }
+
+  const path = typeof info.downloadPath === 'string' ? info.downloadPath : '';
+
+  return {
+    nodeId: info.nodeId ?? server.nodeId ?? null,
+    name: String(info.name ?? ''),
+    agent: info.agent === true || server.agent === true,
+    downloadPath: path.startsWith('/') && !path.startsWith('//') ? path : null,
+  };
+}
+
+/**
  * What is wrong with [server] that the servers modal marks with a red exclamation mark, as the
  * sentences its tooltip reads: a crash (with the exit code and the reason the node gave, when it
  * gave them), a Pano plugin that speaks an older protocol than this Pano, and a node or Pano Agent
- * that does. Empty when nothing is.
+ * that does; and, apart from those, a plugin or node/agent so old it cannot reach this Pano at
+ * all (`unreachableProtocol`, `nodeUnreachable`), whose jar must be replaced by hand. Empty when nothing is.
  *
  * Each entry is an i18n key and its values; the crash reason is the node's own text and travels
  * as a value, never as markup.
@@ -2094,11 +2128,22 @@ export function serverProblems(server) {
     }
   }
 
-  if (server.panoPluginUpdate?.outdatedProtocol === true) {
+  if (isPluginUnreachable(server)) {
+    // Connected or not, the jar is too old to reach this Pano: it must be replaced by hand.
+    problems.push({ key: 'components.modals.servers.problems.plugin-unreachable' });
+  } else if (server.panoPluginUpdate?.outdatedProtocol === true) {
     problems.push({ key: 'components.modals.servers.problems.plugin-outdated' });
   }
 
-  if (server.nodeOutdated === true) {
+  const daemon = unreachableDaemon(server);
+
+  if (daemon) {
+    problems.push({
+      key: daemon.agent
+        ? 'components.modals.servers.problems.agent-unreachable'
+        : 'components.modals.servers.problems.node-unreachable',
+    });
+  } else if (server.nodeOutdated === true) {
     problems.push({
       key: server.agent
         ? 'components.modals.servers.problems.agent-outdated'

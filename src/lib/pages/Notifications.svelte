@@ -38,8 +38,8 @@
                   <img
                     src={sanitizeImageSrc(
                       notification.details.image ||
-                        `/api/profile/picture/${notification.details.username}?${$avatarVersion}`,
-                      '/api/server/icon/default',
+                        `/api/v1/profile/picture/${notification.details.username}?${$avatarVersion}`,
+                      '/api/v1/server/icon/default',
                     )}
                     alt={$_('buttons.view')}
                     width="30"
@@ -171,13 +171,13 @@
     await parent();
 
     const body = await ApiUtil.get({
-      path: '/api/panel/notifications',
+      path: '/panel/notifications',
       request: event,
     });
 
     // A fresh first page on every visit: the store outlives the page, and merging into what an
     // earlier visit left behind kept rows (and their unread look) from a list that is gone.
-    notifications.set(body.notifications || []);
+    notifications.set(body.items || []);
 
     count.set(parseInt(body.notificationCount));
     takeNotReadCount(body);
@@ -302,7 +302,7 @@
     listFetchInFlight = true;
 
     ApiUtil.get({
-      path: '/api/panel/notifications',
+      path: '/panel/notifications',
       handler: (body) => {
         listFetchInFlight = false;
         if (gen !== listFetchGeneration) {
@@ -310,8 +310,8 @@
           return;
         }
 
-        if (body.result === 'ok') {
-          setNotifications(body.notifications);
+        if (!body.error) {
+          setNotifications(body.items || []);
 
           count.set(parseInt(body.notificationCount));
           takeNotReadCount(body);
@@ -334,7 +334,7 @@
     loadMoreLoading = true;
 
     ApiUtil.get({
-      path: `/api/panel/notifications/${last.id}/more`,
+      path: `/panel/notifications/${last.id}/more`,
       handler: (body, reject) => {
         loadMoreLoading = false;
 
@@ -344,7 +344,7 @@
           return;
         }
 
-        const older = body.notifications || [];
+        const older = body.items || [];
 
         takeNotReadCount(body);
 
@@ -364,7 +364,7 @@
 
   function onDeleteNotificationClick(id) {
     ApiUtil.delete({
-      path: `/api/panel/notifications/${id}`,
+      path: `/panel/notifications/${id}`,
       handler: (body, reject) => {
         if (body.error) {
           reject();

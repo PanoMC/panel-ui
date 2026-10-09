@@ -7,7 +7,7 @@
           title={banHistory.username}
           href="{base}/players/detail/{banHistory.username}">
           <img
-            src="/api/profile/picture/{banHistory.username}?{$avatarVersion}"
+            src="/api/v1/profile/picture/{banHistory.username}?{$avatarVersion}"
             alt={banHistory.username}
             width="32"
             height="32"
@@ -59,7 +59,7 @@
           title={$_('buttons.view')}
           class="rounded focus-ring text-decoration-none text-truncate d-flex align-items-center">
           <img
-            src="/api/profile/picture/{banHistory.bannedBy}?{$avatarVersion}"
+            src="/api/v1/profile/picture/{banHistory.bannedBy}?{$avatarVersion}"
             alt={banHistory.bannedBy}
             class="rounded-circle me-2 flex-shrink-0"
             height="24"

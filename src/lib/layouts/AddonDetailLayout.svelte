@@ -61,20 +61,12 @@
               class:disabled={removing}>
               <i class="fas fa-trash"></i>
             </button>
-            <div class="form-check form-switch">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                role="switch"
-                checked={data.addon.status === 'STARTED'}
-                disabled={enableDisableLoading ||
-                  (data.addon.status !== 'STARTED' &&
-                    isPremiumAddonEnableBlockedByLicense(data.addon))}
-                onclick={(e) => {
-                  e.preventDefault();
-                  onTogglePluginStateClick();
-                }} />
-            </div>
+            <AddonToggle
+              plugin={data.addon}
+              disabled={enableDisableLoading ||
+                (data.addon.status !== 'STARTED' &&
+                  isPremiumAddonEnableBlockedByLicense(data.addon))}
+              onToggle={onTogglePluginStateClick} />
           {/if}
         </div>
       {/if}
@@ -87,7 +79,7 @@
         <div
           class="col-auto d-flex justify-content-center align-items-start rounded-start rounded-top">
           <img
-            src="/api/panel/plugins/{data.addon.id}/logo"
+            src="/api/v1/panel/addons/{data.addon.id}/logo"
             class="img-fluid rounded"
             alt={data.addon.name}
             height="86"
@@ -178,12 +170,12 @@
     const addonId = event.params.addonId;
 
     const body = await ApiUtilModule.get({
-      path: `/api/panel/plugins/${addonId}`,
+      path: `/panel/addons/${addonId}`,
       request: event,
     });
 
-    if (body.error === 'NOT_FOUND') {
-      throw error(404, body.error);
+    if (body.error?.code === 'NOT_FOUND') {
+      throw error(404, body.error?.code);
     }
 
     // Pre-resolve hooks and their data to ensure they render simultaneously with the page
@@ -208,6 +200,8 @@
   import { getContext, onDestroy } from 'svelte';
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
+  import AddonToggle from '$lib/pages/addons/AddonToggle.svelte';
+  import { isLocked } from '$lib/pages/addons/compat/compat.util.js';
 
   import { goto, invalidateAll } from '$app/navigation';
   import { base } from '$app/paths';
@@ -300,10 +294,10 @@
     removing = true;
 
     ApiUtilModule.delete({
-      path: `/api/panel/plugins/${data.addon.id}`,
+      path: `/panel/addons/${data.addon.id}`,
       handler: async (body, reject) => {
-        if (body.result !== 'ok') {
-          reject(body.error);
+        if (body.error) {
+          reject(body.error?.code);
           removing = false;
 
           return;
@@ -320,6 +314,12 @@
 
   function onTogglePluginStateClick() {
     const turningOn = data.addon.status !== 'STARTED';
+
+    // A refused addon is never switched on (the switch is disabled; this is the same rule for any other caller).
+    if (turningOn && isLocked(data.addon)) {
+      return;
+    }
+
     if (turningOn && isPremiumAddonEnableBlockedByLicense(data.addon)) {
       showErrorToast('components.toasts.addon-license-startup-blocked', {
         addon: data.addon.id,
@@ -341,6 +341,11 @@
   }
 
   function togglePluginState(status, callback = () => {}) {
+    if (status && isLocked(data.addon)) {
+      callback();
+      return;
+    }
+
     if (status && isPremiumAddonEnableBlockedByLicense(data.addon)) {
       showErrorToast('components.toasts.addon-license-startup-blocked', {
         addon: data.addon.id,
@@ -353,12 +358,12 @@
     data.addon.loading = true;
 
     ApiUtilModule.put({
-      path: `/api/panel/plugins/${data.addon.id}`,
+      path: `/panel/addons/${data.addon.id}`,
       body: { status },
       handler: async (body, reject) => {
         try {
-          if (body.result !== 'ok') {
-            reject(body.error);
+          if (body.error) {
+            reject(body.error?.code);
 
             return;
           }

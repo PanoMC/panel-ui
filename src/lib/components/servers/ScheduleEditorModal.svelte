@@ -17,7 +17,7 @@
 </style>
 
 <!-- SM-34 — the editor behind "New schedule" and the pencil in the schedules table (§2.4.6).
-     The cron field is checked by `GET /api/panel/cron/preview`, which is also where the human
+     The cron field is checked by `GET /api/v1/panel/cron/preview`, which is also where the human
      description and the next five runs come from, so the panel never parses cron itself. -->
 <div class="modal fade" tabindex="-1" aria-hidden="true" bind:this={modalElement}>
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -616,7 +616,7 @@
     }
 
     const body = await ApiUtil.get({
-      path: `/api/panel/cron/preview?${params.toString()}`,
+      path: `/panel/cron/preview?${params.toString()}`,
       handler: (/** @type {object} */ response) => response,
     });
 
@@ -708,8 +708,8 @@
     try {
       const path =
         editingId == null
-          ? `/api/panel/servers/${serverId}/schedules`
-          : `/api/panel/servers/${serverId}/schedules/${encodeURIComponent(editingId)}`;
+          ? `/panel/servers/${serverId}/schedules`
+          : `/panel/servers/${serverId}/schedules/${encodeURIComponent(editingId)}`;
 
       const response = await (editingId == null
         ? ApiUtil.post({ path, body, handler: (/** @type {object} */ answer) => answer })

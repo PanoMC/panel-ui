@@ -88,7 +88,7 @@
                 : ''}">
               <div class="ratio ratio-16x9">
                 <img
-                  src="/api/panel/themes/{theme.id}/screenshots/{getFirstScreenshotUrl(theme) ||
+                  src="/api/v1/panel/themes/{theme.id}/screenshots/{getFirstScreenshotUrl(theme) ||
                     'screenshot.png'}"
                   class="card-img-top object-fit-cover"
                   style="background-color: #eee;"
@@ -116,7 +116,9 @@
                     </small>
                   </div>
                   <div class="hstack gap-2">
+                    <AddonApiLevel plugin={theme} refusedOnly />
                     {#if theme.active}
+                      <ThemeCompatBadge report={compat} />
                       <span class="badge text-bg-success">{$_('pages.themes.active')}</span>
                     {/if}
                   </div>
@@ -150,6 +152,9 @@
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
   import { error } from '@sveltejs/kit';
 
+  import { normalizeReport } from './theme/compat.util.js';
+  import { createThemeApi } from './theme/theme.api.js';
+
   export const PageTypes = Object.freeze({
     ALL: 'ALL',
     ACTIVE: 'ACTIVE',
@@ -178,19 +183,22 @@
 
     const queryParams = buildQueryParams({ status, search });
     const body = await ApiUtil.get({
-      path: `/api/panel/themes` + queryParams,
+      path: `/panel/themes` + queryParams,
       request: event,
     });
 
     if (body.error) {
-      throw error(500, body.error);
+      throw error(500, body.error?.code);
     }
+
+    // The override warnings of the active theme; a failed read only leaves the badge out.
+    const compat = await createThemeApi(ApiUtil, event).getCompatibility();
 
     return {
       pageType: status,
-      themes: body.data,
-      meta: body.meta,
+      themes: body.items,
       failedLogin,
+      compat: compat.ok ? normalizeReport(compat.body) : null,
     };
   }
 
@@ -202,6 +210,11 @@
     {
       href: '/view/theme-settings',
       text: 'buttons.theme-settings',
+    },
+    {
+      id: 'frontend',
+      href: '/view/frontend',
+      text: 'pages.frontend.menu',
     },
   ];
 </script>
@@ -224,8 +237,13 @@
     show as showInstallResourceModal,
   } from '$lib/components/modals/InstallResourceModal.svelte';
   import FailedLoginPanoStoreAlert from '$lib/components/FailedLoginPanoStoreAlert.svelte';
+  import ThemeCompatBadge from './theme/ThemeCompatBadge.svelte';
+  import AddonApiLevel from '../addons/AddonApiLevel.svelte';
+  import { rememberReport } from './theme/compat.util.js';
 
   export let data;
+
+  $: compat = data.compat ?? null;
 
   let search = '';
   let isSearching = false;
@@ -254,6 +272,9 @@
 
   let installedId = '';
   onMount(() => {
+    // The admin sees the badge now, so a later plugin update only toasts what is new after this.
+    rememberReport(compat);
+
     const url = new URL(window.location.href);
     const id = url.searchParams.get('installed');
     if (id) {
@@ -275,7 +296,7 @@
     reloading = true;
 
     await ApiUtil.put({
-      path: `/api/panel/themes`,
+      path: `/panel/themes`,
     });
 
     await invalidate((_) => true);

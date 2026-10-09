@@ -47,6 +47,7 @@
 </div>
 
 <script module>
+  import { errorCode } from '$lib/apiError.util.js';
   /**
    * The alerts that are about one server (ServerAlertKind.serverScoped); the node alerts are about
    * a machine and stay platform-wide.
@@ -145,18 +146,20 @@
     }
 
     const body = await ApiUtil.put({
-      path: `/api/panel/servers/${id}/settings`,
+      path: `/panel/servers/${id}/settings`,
       body: { settings: { alerts } },
       handler: (/** @type {any} */ response) => response,
     });
 
     saving = false;
 
-    if (!body || body.result !== 'ok') {
+    if (!body || !!body.error) {
       if (body && isEndpointUnavailable(body)) {
         void showError('pages.servers.errors.unavailable');
       } else {
-        void showError('pages.servers.errors.generic', { error: body?.error || 'NETWORK_ERROR' });
+        void showError('pages.servers.errors.generic', {
+          error: errorCode(body) || 'NETWORK_ERROR',
+        });
       }
 
       return;
@@ -187,7 +190,7 @@
     }
 
     void ApiUtil.get({
-      path: '/api/panel/settings/alerts',
+      path: '/panel/settings/alerts',
       handler: (/** @type {any} */ response) => response,
     }).then((body) => {
       const raw = body?.alerts;

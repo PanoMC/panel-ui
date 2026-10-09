@@ -72,14 +72,14 @@
     const username = event.params.username;
 
     const body = await ApiUtil.get({
-      path: `/api/panel/players/${username}/sessions`,
+      path: `/panel/players/${username}/sessions`,
       request: event,
     });
 
     if (!body.error) {
       data.sessions = body.sessions;
     } else {
-      throw error(500, body.error);
+      throw error(500, body.error?.code);
     }
 
     return data;
@@ -125,12 +125,12 @@
     loadingSessionId = sessionId;
 
     ApiUtil.delete({
-      path: `/api/panel/players/${data.username}/sessions/${sessionId}`,
+      path: `/panel/players/${data.username}/sessions/${sessionId}`,
       handler: async (body) => {
         loadingSessionId = null;
 
         if (body.error) {
-          await showErrorToast('errors.' + body.error);
+          await showErrorToast('errors.' + body.error?.code);
           return;
         }
 

@@ -6,11 +6,8 @@
         <h5 class="modal-title">
           {$_('pages.permission-groups.create-permission-group-button')}
         </h5>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label={$_('buttons.close')}
-          on:click={hide}></button>
+        <button type="button" class="btn-close" aria-label={$_('buttons.close')} on:click={hide}
+        ></button>
       </div>
       <div class="modal-body">
         <form on:submit|preventDefault={handleSubmit}>
@@ -96,8 +93,7 @@
                 disabled={!String(parentToAdd || '').trim()}
                 aria-disabled={!String(parentToAdd || '').trim()}
                 on:click={addParent}>
-                <i class="fa fa-plus"></i></button
-              >
+                <i class="fa fa-plus"></i></button>
             </div>
           {/if}
         </form>

@@ -234,7 +234,7 @@
               <td>
                 <div class="d-flex align-items-center gap-2 min-w-0">
                   <img
-                    src="/api/profile/picture/{player.username}?{$avatarVersion}"
+                    src="/api/v1/profile/picture/{player.username}?{$avatarVersion}"
                     alt={player.username}
                     width="32"
                     height="32"
@@ -827,7 +827,7 @@
 
     try {
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${serverId}/players/${encodeURIComponent(player.uuid)}/action`,
+        path: `/panel/servers/${serverId}/players/${encodeURIComponent(player.uuid)}/action`,
         body: { action, ...extras },
         handler: (response) => response,
       });

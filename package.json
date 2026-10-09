@@ -10,7 +10,7 @@
     "build": "cross-env DEV=false vite build",
     "postinstall": "bun node_modules/@panomc/theme-core/bin/bundle-internal-libs.js && bun node_modules/@panomc/theme-core/bin/generate-runtime-shims.js",
     "preview": "cross-env DEV=false vite preview ",
-    "test": "bun test src",
+    "test": "bun test ./src",
     "lint": "npm-run-all -c lint:*",
     "lint:prettier": "prettier -c . --config .prettierrc",
     "format": "npm-run-all -c format:*",
@@ -97,6 +97,7 @@
   "overrides": {
     "dompurify": "^3.2.7",
     "sanitize-html": "^2.17.5",
-    "esbuild": ">=0.25.0"
+    "esbuild": ">=0.25.0",
+    "@panomc/sdk": "file:./theme-core/packages/sdk"
   }
 }

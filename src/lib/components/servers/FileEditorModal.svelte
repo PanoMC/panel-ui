@@ -249,7 +249,7 @@
     currentContent = '';
 
     const body = await ApiUtil.get({
-      path: `/api/panel/servers/${serverId}/files/content?path=${encodeURIComponent(filePath)}`,
+      path: `/panel/servers/${serverId}/files/content?path=${encodeURIComponent(filePath)}`,
       handler: (response) => response,
     });
 
@@ -345,7 +345,7 @@
 
     try {
       const body = await ApiUtil.put({
-        path: `/api/panel/servers/${serverId}/files/content`,
+        path: `/panel/servers/${serverId}/files/content`,
         body: { path, content: currentContent },
         handler: (response) => response,
       });

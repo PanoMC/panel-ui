@@ -1,7 +1,5 @@
 import { get, writable } from 'svelte/store';
 
-import { base } from '$app/paths';
-
 /**
  * SvelteKit `load` functions that call `depends(PANEL_SERVER_LIVE_LOAD_KEY)` re-run when
  * `invalidate(PANEL_SERVER_LIVE_LOAD_KEY)` is called (e.g. after WebSocket server updates).
@@ -465,18 +463,15 @@ function emit(listeners, payload) {
 
 function buildWsUrl() {
   if (typeof window === 'undefined') return '';
-  const withBase = `${base || ''}/api/panel/ws`.replace(/\/+/g, '/');
-  const path = withBase.startsWith('/') ? withBase : `/${withBase}`;
-  const u = new URL(path, window.location.origin);
+  // The API lives at the origin root; the old `<base>/api` mount (`/panel/api`) is gone.
+  const u = new URL('/api/v1/panel/ws', window.location.origin);
   u.protocol = u.protocol === 'https:' ? 'wss:' : 'ws:';
   return u.toString();
 }
 
 function buildSiteInfoProbeUrl() {
   if (typeof window === 'undefined') return '';
-  const withBase = `${base || ''}/api/siteInfo`.replace(/\/+/g, '/');
-  const path = withBase.startsWith('/') ? withBase : `/${withBase}`;
-  return new URL(path, window.location.origin).href;
+  return new URL('/api/v1/site-info', window.location.origin).href;
 }
 
 async function registerWsBackendUnreachable() {

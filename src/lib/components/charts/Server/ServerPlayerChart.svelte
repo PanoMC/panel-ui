@@ -14,24 +14,11 @@
 </div>
 
 <script>
-  import {
-    Chart,
-    PieController,
-    ArcElement,
-    Tooltip,
-    Legend,
-    Colors
-  } from 'chart.js';
+  import { Chart, PieController, ArcElement, Tooltip, Legend, Colors } from 'chart.js';
   import { onDestroy, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  Chart.register(
-    PieController,
-    ArcElement,
-    Tooltip,
-    Legend,
-    Colors
-  );
+  Chart.register(PieController, ArcElement, Tooltip, Legend, Colors);
 
   export let playerCount = 0;
   export let maxPlayerCount = 0;
@@ -58,7 +45,9 @@
       online: '#0d6efd', // primary
       empty: dark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
       text: dark ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)',
-      border: style.getPropertyValue('--bs-border-color') || (dark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.175)')
+      border:
+        style.getPropertyValue('--bs-border-color') ||
+        (dark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.175)'),
     };
   }
 
@@ -72,33 +61,36 @@
       type: 'pie',
       data: {
         labels: [$_('pages.servers.card.online'), $_('pages.servers.card.offline')],
-        datasets: [{
-          data: maxPlayerCount === 0 && playerCount === 0 ? [0, 1] : [displayPlayerCount, emptyCount],
-          backgroundColor: [colors.online, colors.empty],
-          borderColor: colors.border,
-          borderWidth: 1,
-          hoverOffset: 4
-        }]
+        datasets: [
+          {
+            data:
+              maxPlayerCount === 0 && playerCount === 0 ? [0, 1] : [displayPlayerCount, emptyCount],
+            backgroundColor: [colors.online, colors.empty],
+            borderColor: colors.border,
+            borderWidth: 1,
+            hoverOffset: 4,
+          },
+        ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            display: false
+            display: false,
           },
           tooltip: {
             enabled: true,
             callbacks: {
-              label: function(context) {
+              label: function (context) {
                 const label = context.label || '';
                 const value = context.parsed || 0;
                 return `${label}: ${value}`;
-              }
-            }
-          }
-        }
-      }
+              },
+            },
+          },
+        },
+      },
     });
   }
 
@@ -108,8 +100,9 @@
     let displayMax = maxPlayerCount === 0 ? 1 : maxPlayerCount;
     let displayPlayerCount = playerCount;
     const emptyCount = Math.max(0, displayMax - displayPlayerCount);
-    
-    chart.data.datasets[0].data = maxPlayerCount === 0 && playerCount === 0 ? [0, 1] : [displayPlayerCount, emptyCount];
+
+    chart.data.datasets[0].data =
+      maxPlayerCount === 0 && playerCount === 0 ? [0, 1] : [displayPlayerCount, emptyCount];
     chart.data.datasets[0].backgroundColor = [colors.online, colors.empty];
     chart.data.datasets[0].borderColor = colors.border;
     chart.update();

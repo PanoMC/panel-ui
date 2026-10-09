@@ -95,6 +95,7 @@
 </div>
 
 <script module>
+  import { errorCode } from '$lib/apiError.util.js';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import {
     featureSource,
@@ -340,7 +341,7 @@
 
     try {
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${id}/console/command`,
+        path: `/panel/servers/${id}/console/command`,
         body: { command: value },
         handler: (response) => response,
       });
@@ -354,7 +355,7 @@
       if (body.error) {
         // §2.4.12 — a deny policy on the caller's console grant refused this command. Naming
         // the pattern is the whole point: "op" and "op*" fail for visibly different reasons.
-        if (String(body.error).toUpperCase() === 'COMMAND_DENIED') {
+        if (errorCode(body).toUpperCase() === 'COMMAND_DENIED') {
           showError('pages.servers.errors.command-denied', {
             pattern: getDeniedCommandPattern(body, value),
           });

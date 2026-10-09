@@ -64,11 +64,7 @@
           bind:resetForm={bannedResetForm}
           bind:importItems={bannedImportItems} />
       </div>
-      <div
-        class="tab-pane"
-        id="banned-ips"
-        role="tabpanel"
-        aria-labelledby="banned-ips-tab">
+      <div class="tab-pane" id="banned-ips" role="tabpanel" aria-labelledby="banned-ips-tab">
         <BannedIpMigration
           bind:file={bannedIpFile}
           bind:currentStep={bannedIpStep}

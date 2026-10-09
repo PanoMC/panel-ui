@@ -306,12 +306,12 @@
     const saved = structuredClone(form);
 
     ApiUtil.put({
-      path: `/api/panel/servers/${form.id}/settings`,
+      path: `/panel/servers/${form.id}/settings`,
       body: payload,
       handler: async (body, reject) => {
         saving = false;
 
-        if (body.result !== 'ok') {
+        if (body.error) {
           reject();
 
           return;

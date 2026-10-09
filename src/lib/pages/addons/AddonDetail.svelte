@@ -40,6 +40,18 @@
           <strong>{$_('pages.addon-detail.requires')}:</strong>
           <span class="text-break">{isBlank(data.addon.requires) ? '-' : data.addon.requires}</span>
         </li>
+        {#if held}
+          <li class="list-group-item" data-held-by={held.pluginId}>
+            <strong>{$_('pages.addon-detail.api-level')}:</strong>
+            <AddonApiLevel plugin={data.addon} />
+            <div class="text-body-secondary mt-1">{heldReason(data.addon, $_)}</div>
+          </li>
+        {:else if hasApiLevel(data.addon)}
+          <li class="list-group-item">
+            <strong>{$_('pages.addon-detail.api-level')}:</strong>
+            <AddonApiLevel plugin={data.addon} />
+          </li>
+        {/if}
         <li class="list-group-item">
           <strong>Hash:</strong>
           <code class="overflow-auto text-break user-select-all">sha256:{data.addon.hash}</code>
@@ -56,10 +68,19 @@
 <script>
   import { _ } from 'svelte-i18n';
   import { formatBytes } from '$lib/string.util';
+  import AddonApiLevel from './AddonApiLevel.svelte';
+  import { heldReason, isRefused, normalizeHeldBy } from './compat/compat.util.js';
   import AddonLicenseCard from '$lib/components/AddonLicenseCard.svelte';
   import AddonLicenseEmbed from '$lib/components/AddonLicenseEmbed.svelte';
 
   let { data } = $props();
+
+  const held = $derived(normalizeHeldBy(data.addon?.heldBy));
+
+  // The level and verdict come with the answer of platforms that know them; nothing renders without.
+  function hasApiLevel(addon) {
+    return Number.isFinite(addon?.apiLevel) || isRefused(addon?.verdict);
+  }
 
   function isBlank(value) {
     return value === null || value === undefined || value.toString().trim() === '';

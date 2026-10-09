@@ -111,7 +111,8 @@
     "disable-all": "Disable All",
     "close-ticket": "Close Ticket",
     "close-tickets": "Close Tickets",
-    "set-as-main": "Set As Main"
+    "set-as-main": "Set As Main",
+    "retry": "Retry"
   },
   "pages": {
     "auth": {
@@ -185,7 +186,18 @@
     },
     "theme-settings": {
       "title": "Theme Settings",
-      "error": "Error occurred while loading theme settings, please try again."
+      "error": "Error occurred while loading theme settings, please try again.",
+      "home": {
+        "label": "Home Page",
+        "description": "The page visitors see at the front of your site.",
+        "default": "Default",
+        "unavailable": "Unavailable",
+        "custom-path": "Site path",
+        "custom-path-placeholder": "/rules",
+        "custom-path-invalid": "Type a site path that starts with one slash, for example /rules. Spaces and [brackets] are not allowed.",
+        "saved": "Home page saved.",
+        "save-failed": "Home page could not be saved."
+      }
     },
     "theme-detail": {
       "title": "Theme Detail",
@@ -195,6 +207,7 @@
       "pano-version": "Pano Version",
       "developer": "Developer",
       "license": "License",
+      "api-level": "API level",
       "source": "Source",
       "installed-at": "Installed",
       "updated-at": "Updated",
@@ -251,6 +264,7 @@
       "dependencies": "Dependencies",
       "requires": "Requires",
       "size": "Size",
+      "api-level": "API level",
       "unknown": "Unknown"
     },
     "activity-logs": {
@@ -273,7 +287,9 @@
     "translations": {
       "unsaved-changes-alert-text": "You have unsaved changes, are you sure?",
       "title": "Translations",
-      "card-title": "{count} Translations"
+      "card-title": "{count} Translations",
+      "source-theme": "Theme",
+      "source-theme-title": "This text comes from the active theme's lang-overrides folder, not from the plugin."
     },
     "dashboard": {
       "title": "Panel",
@@ -690,7 +706,11 @@
             "schedule_failed": "A scheduled run ended with an error.",
             "plugin_updates": "A managed server has plugins or mods with a newer version, checked once a day."
           }
-        }
+        },
+        "theme-dev-server": "Theme dev server",
+        "theme-dev-server-hint": "While Development Mode is on, Pano shows this address instead of the theme, for example http://localhost:3000. The panel, setup and plugin UIs keep working. Leave it empty to use the installed theme.",
+        "theme-dev-server-inactive": "It only applies while the front-end mode is Theme.",
+        "theme-dev-server-saved": "The theme dev server was saved."
       },
       "updates": {
         "title": "Updates",
@@ -750,6 +770,36 @@
             "SERVER_OFFLINE": "Server offline",
             "JAR_UNAVAILABLE": "No plugin build available"
           }
+        },
+        "plan": {
+          "loading": "Checking what this update would do to your addons and themes. This can take up to 20 seconds.",
+          "waiting": "Wait for the update plan first.",
+          "failed": {
+            "title": "The Update Plan Could Not Be Read",
+            "description": "Pano could not work out what this update does to your addons and themes, so the update button stays off. Press Retry, or tick the box below and update at your own risk.",
+            "acknowledge": "Update without the plan. I know addons or themes may be switched off afterwards."
+          },
+          "attention": {
+            "title": "Read This Before You Update"
+          },
+          "safe": {
+            "title": "This Update Fits Your Addons And Themes"
+          },
+          "target": "Pano {version} runs addons and themes built for API level {min} to {current}.",
+          "unknown": "Pano {version} does not say which API level it needs, so Pano cannot tell what will happen to your addons and themes. Check them yourself afterwards.",
+          "disable": {
+            "title": "{count, plural, one {# Addon Or Theme Will Be Switched Off} other {# Addons And Themes Will Be Switched Off}}",
+            "description": "The store has no compatible version of these. After the restart they stay off until their author publishes one, and you have to install it by hand."
+          },
+          "update": {
+            "title": "{count, plural, one {# Addon Or Theme Will Be Updated After The Restart} other {# Addons And Themes Will Be Updated After The Restart}}",
+            "description": "Pano installs a compatible version from the store when it starts again. The server needs internet access for this."
+          },
+          "agents": {
+            "title": "{count, plural, one {# Game Server Or Node Needs A New Jar By Hand} other {# Game Servers And Nodes Need A New Jar By Hand}}"
+          },
+          "store-down": "The store could not be reached, so the list above may be missing updates that exist. Press Retry before you decide.",
+          "compatible": "{count, plural, one {# addon or theme keeps running as it is.} other {# addons and themes keep running as they are.}}"
         }
       },
       "backups": {
@@ -1225,7 +1275,13 @@
         "update-agent": "Pano Agent update available",
         "update-daemon-started": "Updating — the server keeps running.",
         "install-failed-title": "The Install Failed",
-        "install-failed-body": "The node could not set this server up, so there is nothing to start yet. Fix the cause below if it is on the node's side, then reinstall."
+        "install-failed-body": "The node could not set this server up, so there is nothing to start yet. Fix the cause below if it is on the node's side, then reinstall.",
+        "plugin-unreachable": "The Pano plugin is too old to reach this Pano",
+        "node-unreachable": "The node is too old to reach this Pano",
+        "agent-unreachable": "The Pano Agent is too old to reach this Pano",
+        "download": "Replace Jar",
+        "download-agent": "Download Agent Jar",
+        "open-nodes": "Open Nodes"
       },
       "overview": {
         "capabilities-title": "Capabilities",
@@ -1927,7 +1983,12 @@
           "copied": "Copied"
         },
         "column-network": "Network",
-        "network-rate": "↓ {rx} · ↑ {tx}"
+        "network-rate": "↓ {rx} · ↑ {tx}",
+        "unreachable": "Too old",
+        "unreachable-hint": "This node is too old to reach this Pano. Replace its jar by hand.",
+        "unreachable-title": "This Node Needs A New Jar",
+        "unreachable-description": "This node is too old to reach this Pano. Stop it, replace its jar with the one below and start it again; it reconnects on its own.",
+        "unreachable-download": "Download Node Jar"
       },
       "create": {
         "memory-label": "Memory",
@@ -2666,6 +2727,379 @@
         "no-players": "No players match.",
         "no-groups": "No groups match."
       }
+    },
+    "frontend": {
+      "menu": "Front-end",
+      "title": "Front-end",
+      "load-failed": "The front-end settings could not be loaded.",
+      "copied": "Copied to the clipboard.",
+      "copy-failed": "Could not copy. Select the text and copy it by hand.",
+      "tabs": {
+        "keys": "Keys",
+        "mode": "Mode",
+        "origins": "Allowed Origins",
+        "urls": "Link Targets",
+        "settings": "Settings"
+      },
+      "proxy": {
+        "untrusted": {
+          "title": "Pano Does Not Trust Your Reverse Proxy",
+          "description": "Requests arrive from {peers} carrying many different forwarded addresses, so Pano ignores them and every visitor shares one address (rate limits, bans and logs are affected). If that is your reverse proxy, add this line to the server block of config.conf and restart Pano:",
+          "copy-line": "Copy Line"
+        },
+        "single": {
+          "title": "All Visitors Look Like One Address",
+          "description": "Almost every request resolves to the same private address. The proxy at {peers} does not send an X-Forwarded-For header, so Pano cannot see who the visitors are. Make the proxy send X-Forwarded-For (and, if it is not trusted yet, add it to trusted-proxies)."
+        }
+      },
+      "keys": {
+        "description": "A front-end key lets a front-end server that runs outside Pano (for example a custom site) call the API as itself. Put the key in that server's .env file; it is never shown again.",
+        "table-title": "{count}/{max} Keys",
+        "empty": "No front-end keys yet.",
+        "actions": "Key actions",
+        "never-used": "Never",
+        "revoked": "The key was revoked.",
+        "table": {
+          "name": "Name",
+          "key": "Key",
+          "created": "Created",
+          "last-used": "Last Used"
+        },
+        "create": {
+          "title": "Create a front-end key",
+          "button": "Create Key",
+          "placeholder": "Key name, for example my-site"
+        },
+        "reveal": {
+          "title": "Copy the key now. It is shown only once",
+          "key": "Key",
+          "env": ".env file",
+          "done": "Done"
+        },
+        "revoke": {
+          "button": "Revoke",
+          "title": "Revoke this key?",
+          "description": "The front-end server that uses it stops working on its next request.",
+          "confirm": "Revoke"
+        }
+      },
+      "mode": {
+        "saved": "The front-end was saved.",
+        "save-anyway": "Save Anyway",
+        "dev-url-active": "A theme dev server is active: the site is served from {url} (Development Mode).",
+        "theme": {
+          "title": "Theme",
+          "description": "The active theme, run by Pano."
+        },
+        "custom-app": {
+          "title": "Custom app",
+          "description": "An app you upload as a zip, run by Pano."
+        },
+        "external": {
+          "title": "External",
+          "description": "Pano proxies the site to your own server."
+        },
+        "none": {
+          "title": "None",
+          "description": "No site; the panel and the API only."
+        },
+        "fields": {
+          "upstream-url": "Upstream URL",
+          "site-url": "Site URL",
+          "site-url-hint": "Where visitors open the site. Leave it empty to use the website URL.",
+          "descriptor-url": "Descriptor URL",
+          "descriptor-url-hint": "Optional. A pano-frontend.json that names the front-end's pages. It must be on the upstream or site host."
+        }
+      },
+      "custom-apps": {
+        "empty": "No custom app uploaded yet.",
+        "upload": "Upload App (.zip)",
+        "uploaded": "{title} was uploaded. Save to use it.",
+        "deleted": "The app was deleted.",
+        "active": "Active",
+        "actions": "App actions",
+        "table": {
+          "name": "App",
+          "version": "Version",
+          "author": "Author"
+        },
+        "delete": {
+          "button": "Delete",
+          "title": "Delete this app?",
+          "description": "Its files are removed from this server. This cannot be undone.",
+          "confirm": "Delete"
+        }
+      },
+      "errors": {
+        "CUSTOM_APP_INVALID_MANIFEST": "The app's manifest.json is not valid. Check the field \"{field}\".",
+        "CUSTOM_APP_NO_ENTRY": "The zip has no index.js at its root.",
+        "CUSTOM_APP_ID_TAKEN": "The id \"{id}\" already belongs to a theme or a built-in UI. Choose another id in manifest.json.",
+        "CUSTOM_APP_API_LEVEL": "The app was built for API level {apiLevel}; this Pano supports levels {min} to {current}.",
+        "CUSTOM_APP_ACTIVE": "This app is the active front-end. Switch to another mode or app first.",
+        "UPSTREAM_INVALID_URL": "Enter an address that starts with http:// or https://, has a host and no path, for example http://127.0.0.1:4000.",
+        "UPSTREAM_IS_PANO": "That address is this Pano itself; proxying to it would loop.",
+        "UPSTREAM_UNREACHABLE": "Nothing answered at that address within 5 seconds.",
+        "DESCRIPTOR_HOST_NOT_ALLOWED": "The descriptor must be served from the same host as the upstream URL or the site URL.",
+        "FRONTEND_START_FAILED": "The new front-end could not be started, so the previous one keeps serving. {message}",
+        "FILE_TOO_LARGE": "The file is bigger than 100 MB.",
+        "NOT_A_ZIP": "Choose a .zip file.",
+        "FRONTEND_KEY_LIMIT_REACHED": "You reached the limit of front-end keys. Revoke one first.",
+        "INVALID_FIELDS": "Check the highlighted fields.",
+        "DISABLED_FOR_DEMO": "This is disabled in the demo.",
+        "NETWORK_ERROR": "Pano did not answer. Try again.",
+        "UNKNOWN": "Something went wrong. Try again.",
+        "ORIGIN_DIFFERENT_SITE": "A different domain uses a front-end key. Only origins on your site's own domain can be allowed.",
+        "ORIGIN_LIMIT_REACHED": "You reached the limit of allowed origins. Remove one first.",
+        "INVALID_ORIGIN": "Enter an origin such as https://play.example.com: a scheme and a host, no path and no wildcard. Use https unless it is localhost.",
+        "INVALID_LOCATION": "Enter a site path such as /shop or a full http(s) address.",
+        "FRONTEND_SETTINGS_NO_SCHEMA": "The active front-end declares no settings form.",
+        "FRONTEND_SETTINGS_SCHEMA_INVALID": "The front-end's settings schema is not valid ({message}).",
+        "FRONTEND_SETTING_INVALID": "The value of \"{key}\" is not accepted ({reason})."
+      },
+      "origins": {
+        "description": "A browser site on your own domain (for example https://play.example.com) can call the API with the visitor's login once its origin is on this list. A site on a different domain uses a front-end key instead.",
+        "table-title": "{count}/{max} Origins",
+        "empty": "No allowed origins yet.",
+        "actions": "Origin actions",
+        "added": "The origin was added.",
+        "removed": "The origin was removed.",
+        "table": {
+          "origin": "Origin"
+        },
+        "add": {
+          "title": "Add an allowed origin",
+          "button": "Add Origin",
+          "placeholder": "https://play.example.com"
+        },
+        "remove": {
+          "button": "Remove",
+          "title": "Remove this origin?",
+          "description": "A site on this origin can no longer call the API with the visitor's login.",
+          "confirm": "Remove"
+        }
+      },
+      "urls": {
+        "description": "The pages Pano links to in emails, redirects and payment returns. Each row shows where the link points now. Set an override to send it to a page of your own.",
+        "table-title": "{count} Link Targets",
+        "empty": "No link targets.",
+        "actions": "Target actions",
+        "saved": "The override was saved.",
+        "override-removed": "The override was removed.",
+        "owner-core": "Pano",
+        "needed-for-server": "needed for server-side front-ends",
+        "table": {
+          "target": "Target",
+          "owner": "Owner",
+          "source": "Source",
+          "path": "Points To",
+          "override": "Override"
+        },
+        "source": {
+          "OVERRIDE": "Admin override",
+          "FRONTEND": "Front-end",
+          "THEME": "Theme",
+          "FALLBACK": "Built-in page",
+          "NONE": "No page"
+        },
+        "override": {
+          "button": "Set Override",
+          "remove": "Remove Override",
+          "title": "Override for {target}",
+          "placeholder": "/shop or https://example.com/shop"
+        }
+      },
+      "settings": {
+        "saved": "The settings were saved.",
+        "own-page": "This theme has its own settings page.",
+        "open-theme-settings": "Open Theme Settings",
+        "none": "The active front-end has no settings to edit here."
+      }
+    },
+    "theme-compat": {
+      "title": "Some Theme Views Show The Plugin Default",
+      "description": "These views of the active theme were made for an older version of their plugin, so the plugin's own look shows instead. Nothing is broken and plugin updates are never blocked; update the theme or ask its author for a new version.",
+      "badge": "{count, plural, one {# View Outdated} other {# Views Outdated}}",
+      "badge-title": "{count, plural, one {# view of this theme shows the plugin's default look} other {# views of this theme show the plugin's default look}}",
+      "toast-more": "{count, plural, one {# more view shows the plugin's default look. See Appearance, Themes.} other {# more views show the plugin's default look. See Appearance, Themes.}}",
+      "issues": {
+        "CONTRACT_MISMATCH": "{view} of {plugin} shows the plugin's default look: the theme was made for version {themeContract}, the plugin is on {currentContract}",
+        "CONTROLLER_MISMATCH": "{view} of {plugin} shows the plugin's default look: the theme uses the {controller} controller at version {themeVersion}, the plugin is on {currentVersion}",
+        "VIEW_REMOVED": "{view} of {plugin} no longer exists in the plugin (version {pluginVersion}), so the theme's copy of it is not used",
+        "ENGINE_MISMATCH": "{view} of the theme engine shows the engine's default look: the theme was made for version {themeContract}, the engine is on {engineContract}",
+        "NAMESPACE_CLASH": "The plugin {pluginId} asks for the short name {namespace}, which {heldBy} already holds, so its site pages are not shown",
+        "UNKNOWN": "{view} has an issue this panel does not know yet ({type})"
+      },
+      "alert": {
+        "title": "Theme Is Out Of Date For Some Plugins",
+        "description": "{count, plural, one {# view of {theme} shows} other {# views of {theme} show}} the plugin's default look because the plugin changed after the theme was made.",
+        "view": "View Details"
+      }
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "load-failed": "Webhooks could not be loaded.",
+      "copied": "Copied.",
+      "copy-failed": "Could not copy. Select the text and copy it by hand.",
+      "tabs": {
+        "endpoints": "Endpoints",
+        "deliveries": "Deliveries"
+      },
+      "filters": {
+        "source": "Source",
+        "status": "Status",
+        "all-sources": "All sources",
+        "all-statuses": "All statuses"
+      },
+      "format": {
+        "JSON": "JSON",
+        "DISCORD": "Discord"
+      },
+      "signing": {
+        "NONE": "No signature",
+        "HMAC_SHA256": "HMAC SHA-256"
+      },
+      "status": {
+        "PENDING": "Pending",
+        "SENDING": "Sending",
+        "SUCCEEDED": "Succeeded",
+        "FAILED": "Failed",
+        "DEAD": "Dead"
+      },
+      "secret": {
+        "title": "Copy the signing secret now. It is shown only once",
+        "label": "Signing secret",
+        "hint": "Use it on the receiving side to check the signature of each request. Pano keeps it encrypted and cannot show it again.",
+        "done": "Done"
+      },
+      "form": {
+        "title-create": "Create a webhook",
+        "title-edit": "Edit webhook",
+        "name": "Name, for example Discord announcements",
+        "format": "Format",
+        "url": "Receiving URL, for example https://example.com/hook",
+        "all-events": "All events",
+        "source-all": "Every {source} event",
+        "unlisted": "No longer offered by Pano or a plugin (still subscribed)",
+        "signing": "Signing",
+        "signing-discord": "Discord does not check signatures.",
+        "signing-hint": "A secret is made when you save and shown once.",
+        "max-attempts": "Attempts (1 to 20)",
+        "headers": "Extra headers",
+        "header-name": "Header name",
+        "header-value": "Header value",
+        "add-header": "Add header",
+        "custom-template": "Write my own message",
+        "template": "Message as JSON",
+        "enabled": "Active"
+      },
+      "endpoints": {
+        "table-title": "{count}/{max} Webhooks",
+        "create": "Create Webhook",
+        "empty": "No webhooks yet.",
+        "actions": "Webhook actions",
+        "send-test": "Send Test",
+        "deliveries": "Deliveries",
+        "disable": "Disable",
+        "enable": "Enable",
+        "all-events": "All",
+        "enabled": "Active",
+        "disabled": "Disabled",
+        "auto-disabled": "Stopped after failures",
+        "deleted": "The webhook was deleted.",
+        "table": {
+          "name": "Name",
+          "url": "URL",
+          "events": "Events",
+          "format": "Format",
+          "status": "Status",
+          "last-delivery": "Last Delivery"
+        },
+        "delete": {
+          "title": "Delete this webhook?",
+          "description": "{name} stops receiving events. Deliveries still waiting for it end as dead.",
+          "confirm": "Delete"
+        },
+        "regenerate": {
+          "button": "New Secret",
+          "title": "Make a new signing secret?",
+          "description": "The old secret stops matching at once. Update the receiver with the new one.",
+          "confirm": "Make Secret"
+        },
+        "test": {
+          "ok": "The receiver answered {status} in {ms} ms.",
+          "failed": "The test failed: {error}."
+        }
+      },
+      "deliveries": {
+        "table-title": "{count} Deliveries",
+        "empty": "No deliveries yet.",
+        "actions": "Delivery actions",
+        "all-endpoints": "All endpoints",
+        "direct": "Direct",
+        "ms": "{ms} ms",
+        "redelivered": "The delivery is queued again.",
+        "table": {
+          "event": "Event",
+          "endpoint": "Endpoint",
+          "subject": "Subject",
+          "status": "Status",
+          "attempts": "Attempts",
+          "http": "HTTP",
+          "duration": "Duration",
+          "created": "Created",
+          "delivered": "Delivered"
+        },
+        "redeliver": {
+          "button": "Redeliver",
+          "title": "Send this delivery again?",
+          "description": "The same event is sent again with the same event id.",
+          "confirm": "Redeliver"
+        },
+        "detail": {
+          "title": "Delivery",
+          "url": "URL",
+          "error": "Last error",
+          "body": "Body",
+          "response": "Last response"
+        }
+      },
+      "errors": {
+        "WEBHOOK_URL_REFUSED": "Pano will not send to that address.",
+        "WEBHOOK_LIMIT": "You reached the limit of {limit} webhooks. Delete one first.",
+        "WEBHOOK_UNKNOWN_EVENT": "These events do not exist: {events}.",
+        "WEBHOOK_HEADERS_INVALID": "Check the extra headers.",
+        "WEBHOOK_NOT_FOUND": "That webhook or delivery no longer exists.",
+        "WEBHOOK_IN_FLIGHT": "The delivery is being sent right now. Try again in a moment.",
+        "INVALID_FIELDS": "Check the highlighted fields.",
+        "PAGE_NOT_FOUND": "That page of the list no longer exists.",
+        "NO_PERMISSION": "You do not have permission to manage webhooks.",
+        "DISABLED_FOR_DEMO": "This is disabled in the demo.",
+        "NETWORK_ERROR": "Pano did not answer. Try again.",
+        "UNKNOWN": "Something went wrong. Try again."
+      },
+      "field-errors": {
+        "REQUIRED": "This field is required.",
+        "TOO_LONG": "This is too long.",
+        "TOO_MANY": "There are too many.",
+        "INVALID": "This value is not valid.",
+        "INVALID_URL": "Enter an address that starts with http:// or https://.",
+        "INVALID_JSON": "This is not valid JSON.",
+        "INVALID_NAME": "A header name has letters, digits and dashes only.",
+        "INVALID_VALUE": "A header value is plain text of up to 512 characters.",
+        "FORBIDDEN_NAME": "Pano sets this header itself. Choose another name.",
+        "DUPLICATE": "This header is listed twice.",
+        "OUT_OF_RANGE": "Enter a whole number from 1 to 20.",
+        "NOT_ALLOWED": "Only a Discord webhook has a message.",
+        "UNKNOWN_EVENT": "One of the events does not exist.",
+        "MALFORMED": "This is not a valid address.",
+        "SCHEME": "Use http:// or https://.",
+        "USERINFO": "Remove the user name and password from the address.",
+        "HOST": "That host cannot be used.",
+        "PORT": "That port cannot be used.",
+        "DISCORD_URL": "Enter a Discord webhook address, https://discord.com/api/webhooks/...",
+        "DNS": "That host name does not resolve.",
+        "PRIVATE_ADDRESS": "That address is on a private network, which Pano does not send to."
+      }
     }
   },
   "components": {
@@ -2912,6 +3346,7 @@
     "settings-layout": {
       "website": "Website",
       "platform": "Platform",
+      "webhooks": "Webhooks",
       "migration": "Migration",
       "updates": "Updates",
       "about": "About"
@@ -3547,7 +3982,10 @@
           "crash-reason": "Reason: {reason}",
           "plugin-outdated": "The Pano plugin on this server is outdated and not fully compatible with this Pano. Update it from the server's page.",
           "node-outdated": "The node running this server is outdated and not fully compatible with this Pano. Update it from the Nodes page.",
-          "agent-outdated": "The Pano Agent running this server is outdated and not fully compatible with this Pano. Update it from the server's page."
+          "agent-outdated": "The Pano Agent running this server is outdated and not fully compatible with this Pano. Update it from the server's page.",
+          "plugin-unreachable": "The Pano plugin on this server is too old to reach this Pano. Download the new jar, stop the server, replace the old jar and start it again.",
+          "node-unreachable": "The node running this server is too old to reach this Pano. Replace its jar by hand; open the Nodes page for the download.",
+          "agent-unreachable": "The Pano Agent running this server is too old to reach this Pano. Replace its jar by hand: stop the server, put in the new agent jar and start it again."
         }
       },
       "unban-player": {
@@ -3709,7 +4147,8 @@
         "download": "Download the Pano plugin",
         "download-version": "Download Pano plugin {version}",
         "step-replace": "Stop the server. In its {folder} folder, delete the old Pano jar (pano.jar or pano-…jar) and put the downloaded one there.",
-        "step-start": "Start the server. It connects with the new plugin, and the next update is one click."
+        "step-start": "Start the server. It connects with the new plugin, and the next update is one click.",
+        "why-unreachable": "The Pano plugin on {name} is too old to reach this Pano, so it cannot connect or update itself. Replace the jar by hand this once; after that, updates are one click from Pano."
       }
     },
     "editor": {
@@ -3877,6 +4316,78 @@
       "done-plain": "Updated",
       "failed": "Update failed: {message}",
       "failed-plain": "Update failed"
+    },
+    "schema-form": {
+      "remove-file": "Remove the file",
+      "clear-file": "Clear the chosen file",
+      "reasons": {
+        "REQUIRED": "This field is required.",
+        "WRONG_TYPE": "This value has the wrong type.",
+        "TOO_SHORT": "The text is too short.",
+        "TOO_LONG": "The text is too long.",
+        "BELOW_MIN": "The number is below the minimum.",
+        "ABOVE_MAX": "The number is above the maximum.",
+        "NOT_AN_OPTION": "Choose one of the listed options.",
+        "INVALID_COLOR": "Enter a color such as #1a2b3c.",
+        "INVALID_URL": "Enter a site path such as /shop or an http(s) address.",
+        "NOT_AN_IMAGE": "Choose an image file.",
+        "UNKNOWN": "This value is not accepted."
+      }
+    },
+    "compatibility-card": {
+      "title": "{count, plural, one {# Compatibility Issue} other {# Compatibility Issues}}",
+      "type": {
+        "PLUGIN": "Addon",
+        "THEME": "Theme"
+      },
+      "verdict": {
+        "OK": "Compatible",
+        "TOO_OLD": "Too Old",
+        "TOO_NEW": "Too New",
+        "UNKNOWN": "Unknown"
+      },
+      "level": "API level {level}",
+      "level-short": "API {level}",
+      "level-none": "No API level (built before API levels existed)",
+      "row-level": "Built for API level {level}",
+      "row-refused": "Built for API level {level}. This Pano does not run it.",
+      "locked": "Not compatible with this Pano (built for API level {level}). It stays off until you update it.",
+      "locked-theme": "Not compatible with this Pano (built for API level {level}). It can not be activated until you update it.",
+      "held": "Needs {name}, which is not compatible with this Pano: update {name}. This addon starts by itself afterwards.",
+      "held-short": "Waiting for {name}",
+      "refused": {
+        "title": "{count, plural, one {# Addon Or Theme Is Switched Off} other {# Addons And Themes Are Switched Off}}",
+        "description": "This Pano runs addons and themes built for API level {min} to {current}. The ones below were built for another level, so Pano keeps them off. Nothing was disabled for good: the moment a compatible version is installed, it starts by itself. What you have to do: press Retry so Pano asks the store for a compatible version, or update it by hand under Updates. A theme that is switched off is replaced by the bundled Vanilla theme."
+      },
+      "note": {
+        "error": "The last attempt failed: {error}",
+        "update-found": "A compatible version was found in the store. Press Retry to install it.",
+        "no-update": "The store has no compatible version. Ask the author for an update, or remove it."
+      },
+      "theme-fallback": "Your site shows the bundled Vanilla theme until this is fixed.",
+      "store-down": "The store could not be reached, so Pano could not look for compatible versions. Check this server's internet access, then press Retry.",
+      "open-updates": "Open Updates",
+      "retry-done": "Everything is compatible now.",
+      "retry-still": "{count, plural, one {# item is still switched off.} other {# items are still switched off.}}",
+      "retry-failed": "Retry failed ({code}).",
+      "agents": {
+        "title": "{count, plural, one {# Game Server Or Node Needs A New Jar By Hand} other {# Game Servers And Nodes Need A New Jar By Hand}}",
+        "description": "These still run an old jar that cannot reach this Pano's new API, and Pano cannot replace it for you. Each stays in this list until it reconnects with the new jar.",
+        "steps": "For each one: download the jar, stop the server or node, put the new jar in place of the old one, then start it again."
+      },
+      "agent-type": {
+        "SERVER": "Game server",
+        "NODE": "Node",
+        "AGENT": "Agent"
+      },
+      "agent-protocol": "reports protocol {protocol}, needs {required}",
+      "download-jar": "Download Jar",
+      "urls": {
+        "title": "{count, plural, one {# Address Outside Pano Changed} other {# Addresses Outside Pano Changed}}",
+        "description": "Addons registered these addresses with other services, such as a sign-in app or a payment gateway. They changed with this update. Copy each one and paste it into the other service's settings by hand; until you do, the feature that uses it fails."
+      },
+      "copied": "Address copied.",
+      "copy-failed": "Could not copy. Select the address and copy it by hand."
     }
   },
   "page-error": {
@@ -4045,7 +4556,20 @@
     "UPDATED_SERVER_STARTUP": "**{username}** changed the startup settings of {serverName}.",
     "PANO_BACKUP_ACTION": "**{username}** {action, select, CREATE {created a Pano backup} DELETE {deleted a Pano backup} DOWNLOAD {downloaded a Pano backup} RESTORE {restored Pano from a backup} RESTORE_FILE {restored Pano from an uploaded file} RESTORE_REMOTE {restored Pano from Pano Backup} SETTINGS {changed the Pano backup schedule} UPLOAD {backed Pano up to Pano Backup} DELETE_REMOTE {deleted a Pano Backup} REMOTE_SETTINGS {changed the Pano Backup schedule} PASSPHRASE {set the Pano Backup encryption passphrase} TRANSFER {started a transfer to Pano Host} TRANSFER_CANCEL {cancelled a transfer to Pano Host} other {changed the Pano backups}}.",
     "PANO_BACKUP_SYSTEM": "{action, select, SCHEDULED {The scheduled Pano backup {ok, select, true {was taken} other {failed}}} SCHEDULED_UPLOAD {The scheduled upload to Pano Backup {ok, select, true {finished} other {failed}}} RETENTION {{count, plural, one {# old Pano backup was} other {# old Pano backups were}} removed by retention} other {The Pano backups changed}}.",
-    "SERVER_BACKUP_SYSTEM": "{action, select, SCHEDULED {A schedule took backup {name}} RETENTION {Retention removed backup {name}} other {Backup {name} changed}} on {serverName}."
+    "SERVER_BACKUP_SYSTEM": "{action, select, SCHEDULED {A schedule took backup {name}} RETENTION {Retention removed backup {name}} other {Backup {name} changed}} on {serverName}.",
+    "CREATED_FRONTEND_KEY": "**{username}** created the \"{name}\" front-end key.",
+    "DELETED_FRONTEND_KEY": "**{username}** revoked the \"{name}\" front-end key.",
+    "CHANGED_FRONTEND_MODE": "**{username}** changed the front-end mode to {mode}.",
+    "UPLOADED_CUSTOM_APP": "**{username}** uploaded the custom app {appId} ({version}).",
+    "DELETED_CUSTOM_APP": "**{username}** deleted the custom app {appId}.",
+    "UPDATED_FRONTEND_ORIGINS": "**{username}** updated the allowed front-end origins ({count}).",
+    "CHANGED_FRONTEND_URLS": "**{username}** changed the front-end page addresses ({count}).",
+    "CHANGED_FRONTEND_SETTINGS": "**{username}** changed the settings of the front-end {frontendId}.",
+    "REFRESHED_FRONTEND_DESCRIPTOR": "**{username}** refreshed the descriptor of the front-end {frontendId}.",
+    "CREATED_WEBHOOK": "**{username}** created the \"{name}\" webhook.",
+    "UPDATED_WEBHOOK": "**{username}** updated the \"{name}\" webhook.",
+    "DELETED_WEBHOOK": "**{username}** deleted the \"{name}\" webhook.",
+    "REDELIVERED_WEBHOOK": "**{username}** redelivered an event of the \"{name}\" webhook."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> sent a message in ticket (<b>#{id}</b>).",
@@ -4121,6 +4645,7 @@
     "PANO_CONNECT_FAILED": "Failed to connect to Pano servers, please try again later.",
     "PANO_DISCONNECT_FAILED": "Failed to disconnect Pano account, please try again later.",
     "PANO_NOT_CONNECTED": "No Pano account is connected.",
+    "PLUGIN_API_LEVEL_UNSUPPORTED": "This addon is not compatible with this Pano, so it can't be switched on. Update it to a compatible version first.",
     "PASSWORD_EMPTY": "Password can't be empty.",
     "PASSWORD_TOO_LONG": "Password is too long.",
     "PASSWORD_TOO_SHORT": "Password is too short.",
@@ -4144,12 +4669,14 @@
     "SOME_TICKETS_ARENT_EXISTS": "Some tickets don't exist.",
     "SOME_USERS_ARENT_EXISTS": "Some users don't exist.",
     "TICKET_IS_CLOSED": "Ticket is already closed.",
+    "THEME_API_LEVEL_UNSUPPORTED": "This theme is not compatible with this Pano, so it can't be activated. Update it to a compatible version first.",
     "TITLE_CANT_BE_EMPTY": "Title can't be empty.",
     "UNAUTHORIZED": "You are not authorized to access this resource.",
     "WEBSITE_LOGO_EXCEEDS_SIZE": "Website logo exceeds maximum allowed size.",
     "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Website logo has an invalid content type.",
     "KEEP_INCOMPATIBLE": "That can’t be kept when switching to this software. Check the “What to keep” choices.",
-    "NETWORK_ROLE_CONFLICT": "This server is part of a network. Remove it from the network before switching between a proxy and a game server."
+    "NETWORK_ROLE_CONFLICT": "This server is part of a network. Remove it from the network before switching between a proxy and a game server.",
+    "INVALID_HOME_PAGE": "This is not a home page option of the active theme."
   },
   "panel-themes": {
     "light": "Light",

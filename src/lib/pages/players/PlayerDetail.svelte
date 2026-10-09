@@ -4,12 +4,12 @@
     <div class="card-header">
       {$_('pages.player-detail.last-tickets')}
     </div>
-    {#if data.ticketCount === 0}
+    {#if data.tickets.page.totalItems === 0}
       <NoContent />
     {:else}
       <div class="table-responsive">
         <table class="table table-hover">
-          {#each data.tickets as ticket, index (ticket)}
+          {#each data.tickets.items as ticket, index (ticket)}
             <tbody>
               <tr>
                 <td class="align-middle text-nowrap">
@@ -41,10 +41,9 @@
       <div class="card-footer">
         <!-- Pagination -->
         <Pagination
-          page={data.ticketsPage}
-          totalPage={data.ticketTotalPage}
+          page={data.tickets.page}
           on:firstPageClick={() => onTicketsPageClick(1)}
-          on:lastPageClick={() => onTicketsPageClick(data.ticketTotalPage)}
+          on:lastPageClick={() => onTicketsPageClick(pageCount(data.tickets.page))}
           on:pageLinkClick={(event) => onTicketsPageClick(event.detail.page)} />
       </div>
     {/if}
@@ -56,7 +55,7 @@
   <div class="card-header">
     {$_('pages.player-detail.ban-history')}
   </div>
-  {#if data.banHistoryCount === 0}
+  {#if data.banHistory.page.totalItems === 0}
     <NoContent />
   {:else}
     <div class="table-responsive">
@@ -65,15 +64,14 @@
           <tr>
             <th class="align-middle">{$_('pages.player-detail.ban-duration')}</th>
             <th class="align-middle">{$_('pages.player-detail.ban-reason')}</th>
-            <th class="align-middle text-center"
-              >{$_('pages.player-detail.email-notification')}</th>
+            <th class="align-middle text-center">{$_('pages.player-detail.email-notification')}</th>
             <th class="align-middle">{$_('pages.player-detail.banned-by')}</th>
             <th class="align-middle">{$_('pages.player-detail.ban-source')}</th>
             <th class="align-middle">{$_('pages.player-detail.banned-at')}</th>
           </tr>
         </thead>
         <tbody>
-          {#each data.banHistory as banHistory, index (banHistory)}
+          {#each data.banHistory.items as banHistory, index (banHistory)}
             <BanHistoryRow {banHistory} />
           {/each}
         </tbody>
@@ -82,10 +80,9 @@
     <div class="card-footer">
       <!-- Pagination -->
       <Pagination
-        page={data.banHistoryPage}
-        totalPage={data.banHistoryTotalPage}
+        page={data.banHistory.page}
         on:firstPageClick={() => onBanHistoryPageClick(1)}
-        on:lastPageClick={() => onBanHistoryPageClick(data.banHistoryTotalPage)}
+        on:lastPageClick={() => onBanHistoryPageClick(pageCount(data.banHistory.page))}
         on:pageLinkClick={(event) => onBanHistoryPageClick(event.detail.page)} />
     </div>
   {/if}
@@ -107,6 +104,7 @@
   import TicketStatusBadge from '$lib/components/badges/TicketStatusBadge.svelte';
   import DateComponent from '$lib/components/Date.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
+  import { pageCount } from '$lib/components/pagination.util.js';
 
   import NoContent from '$lib/components/NoContent.svelte';
   import BanHistoryRow from '$lib/components/rows/BanHistoryRow.svelte';
@@ -116,24 +114,20 @@
 
   const usageMode = getContext('usageMode');
 
-  async function refreshData() {
+  async function refreshData(ticketsPage, banHistoryPage) {
     const queryParams = buildQueryParams({
-      ticketsPage: data.ticketsPage,
-      banHistoryPage: data.banHistoryPage,
+      ticketsPage,
+      banHistoryPage,
     });
 
     await goto(queryParams);
   }
 
   async function onTicketsPageClick(ticketsPage) {
-    data.ticketsPage = ticketsPage;
-
-    await refreshData();
+    await refreshData(ticketsPage, data.banHistory.page.number);
   }
 
   async function onBanHistoryPageClick(banHistoryPage) {
-    data.banHistoryPage = banHistoryPage;
-
-    await refreshData();
+    await refreshData(data.tickets?.page.number, banHistoryPage);
   }
 </script>

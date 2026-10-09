@@ -200,6 +200,7 @@
 <AddEditPostCategoryModal />
 
 <script module>
+  import { errorCode } from '$lib/apiError.util.js';
   import ApiUtil from '$lib/api.util';
   import { error } from '@sveltejs/kit';
   import { executeHookLoad } from '$lib/PluginAPI.js';
@@ -245,16 +246,16 @@
       const id = parseInt(event.params.id) || -1;
 
       const postBody = await ApiUtil.get({
-        path: `/api/panel/posts/${id}`,
+        path: `/panel/posts/${id}`,
         request: event,
       });
 
       if (postBody.error) {
-        if (postBody.error === 'POST_NOT_FOUND') {
-          throw error(404, postBody.error);
+        if (postBody.error?.code === 'POST_NOT_FOUND') {
+          throw error(404, postBody.error?.code);
         }
 
-        throw error(500, postBody.error);
+        throw error(500, postBody.error?.code);
       }
 
       postBody.id = id;
@@ -263,7 +264,7 @@
     }
 
     const categoriesBody = await ApiUtil.get({
-      path: '/api/panel/post/categories',
+      path: '/panel/post/categories',
       request: event,
     });
 
@@ -386,7 +387,7 @@
       loading = true;
 
       const bodyHandler = (body, reject) => {
-        if (body.result === 'ok') {
+        if (!body.error) {
           loading = false;
 
           if (data.mode === Modes.CREATE) {
@@ -416,10 +417,10 @@
           thumbnailFiles = null;
 
           return;
-        } else if (body.result === 'error') {
+        } else if (body.error) {
           loading = false;
 
-          data.error = body.error;
+          data.error = errorCode(body);
 
           return;
         }
@@ -442,7 +443,7 @@
 
       if (post.id === -1) {
         ApiUtil.post({
-          path: '/api/panel/post',
+          path: '/panel/post',
           body,
           handler: bodyHandler,
         });
@@ -451,7 +452,7 @@
       }
 
       ApiUtil.put({
-        path: `/api/panel/posts/${post.id}`,
+        path: `/panel/posts/${post.id}`,
         body,
         handler: bodyHandler,
       });
@@ -463,7 +464,7 @@
       loading = true;
 
       ApiUtil.put({
-        path: `/api/panel/posts/${post.id}/status`,
+        path: `/panel/posts/${post.id}/status`,
         body: {
           to: 'DRAFT',
         },
@@ -501,7 +502,7 @@
 
   setCallbackForAddEditPostCategoryModal((routeFirstPage, category) => {
     ApiUtil.get({
-      path: '/api/panel/post/categories',
+      path: '/panel/post/categories',
       handler: (body, reject) => {
         if (body.error) {
           reject();

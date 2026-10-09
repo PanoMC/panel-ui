@@ -88,7 +88,7 @@
     loading = true;
 
     ApiUtil.delete({
-      path: `/api/panel/locales/${get(locale).id}`,
+      path: `/panel/locales/${get(locale).id}`,
       handler: (body, reject) => {
         if (body.error) {
           refreshBrowserPage();

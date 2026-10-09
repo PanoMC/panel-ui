@@ -98,7 +98,9 @@ export function panelNotificationServerIcon(n, iconless = get(serversWithoutIcon
     return '';
   }
 
-  return iconless.has(id) ? `${base}/assets/img/server-icon.png` : `/api/panel/servers/${id}/icon`;
+  return iconless.has(id)
+    ? `${base}/assets/img/server-icon.png`
+    : `/api/v1/panel/servers/${id}/icon`;
 }
 
 /**

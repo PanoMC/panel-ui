@@ -179,7 +179,7 @@
 <script>
   /**
    * SM-46/§2.4.12 — who did what to this server. The endpoint pages backwards through the log
-   * with a `before` cursor rather than page numbers, because entries keep arriving at the top
+   * with a cursor rather than page numbers, because entries keep arriving at the top
    * while the list is open and numbered pages would shift under the reader.
    */
   import { getContext, onMount, tick } from 'svelte';
@@ -209,6 +209,8 @@
   let loading = false;
   let loadingMore = false;
   let hasMore = false;
+  /** The cursor of the next older page, from the page object of the last answer. */
+  let nextCursor = '';
   let typeFilter = '';
   let userFilter = '';
   let searchText = '';
@@ -237,7 +239,7 @@
   $: userOptions = [...new Set(entries.map((entry) => entry.username).filter(Boolean))].sort(
     (a, b) => a.localeCompare(b),
   );
-  // The endpoint pages by time only (`before` / `limit`), so the filters narrow what is loaded —
+  // The endpoint pages by cursor only (`cursor` / `limit`), so the filters narrow what is loaded —
   // and [fillViewport] keeps loading older pages while the result does not fill the box, so a
   // filter never shows an empty box while older matches exist.
   $: visibleEntries = entries.filter((entry) =>
@@ -282,6 +284,7 @@
     status = result.status;
     entries = result.entries;
     hasMore = result.hasMore;
+    nextCursor = result.nextCursor ?? '';
     loading = false;
   }
 
@@ -391,7 +394,7 @@
 
   async function loadMore() {
     const id = serverId;
-    const cursor = entries.length > 0 ? entries[entries.length - 1].id : '';
+    const cursor = nextCursor;
 
     if (id == null || loadingMore || !hasMore || !cursor) {
       return;
@@ -403,7 +406,7 @@
       const result = await fetchServerActivity({
         serverId: id,
         limit: SERVER_ACTIVITY_PAGE_SIZE,
-        before: cursor,
+        cursor,
       });
 
       if (loadedId !== id || result.status !== 'ok') {
@@ -420,6 +423,7 @@
 
       entries = [...entries, ...fresh];
       hasMore = result.hasMore && fresh.length > 0;
+      nextCursor = result.nextCursor ?? '';
     } finally {
       loadingMore = false;
     }

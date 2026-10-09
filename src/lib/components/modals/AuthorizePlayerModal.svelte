@@ -46,7 +46,8 @@
             <!-- Add Button -->
             <button class="btn btn-primary btn-sm">{$_('buttons.add')} 1/1 </button>
 
-            <label for="authorizePlayerPermissions">{$_('components.modals.authorize-player.permissions-label')}</label>
+            <label for="authorizePlayerPermissions"
+              >{$_('components.modals.authorize-player.permissions-label')}</label>
             <div class="list-group">
               <label
                 for="example-permission"
@@ -79,8 +80,6 @@
 
 <script context="module">
   import { writable, get } from 'svelte/store';
-
-  import ApiUtil from '$lib/api.util';
 
   const modalElement = writable();
   const player = writable({});
@@ -126,22 +125,12 @@
     hideCallback = newCallback;
   }
 
+  // The permission group endpoints this unfinished modal called were removed with the permission
+  // group rework (the groups are managed through /panel/permission/snapshot now), and nothing
+  // opens the modal. It makes no request until it is wired to the snapshot API.
   function initData() {
-    loading.set(true);
-
-    ApiUtil.get({
-      path: '/api/panel/permissionGroups',
-      handler: (body, reject) => {
-        if (body.error) {
-          reject();
-
-          return;
-        }
-
-        permissionGroups.set(body.permissionGroups);
-        loading.set(false);
-      },
-    });
+    permissionGroups.set([]);
+    loading.set(false);
   }
 </script>
 
@@ -150,41 +139,12 @@
 
   import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
 
-  function onSubmit() {
-    submitLoading.set(true);
+  // No request: see initData. Saving only reports the chosen group to the caller.
+  async function onSubmit() {
+    hide();
 
-    ApiUtil.put({
-      path: `/api/panel/players/${get(player).username}/permissionGroup`,
-      body: {
-        permissionGroup: get(player).permissionGroup,
-      },
-      handler: async (body, reject) => {
-        if (body.result === 'ok') {
-          submitLoading.set(false);
+    await callback(get(player));
 
-          hide();
-
-          await callback(get(player));
-
-          await showSuccessToast('components.toasts.player-authorized-success');
-
-          return;
-        } else if (body.result === 'NOT_EXISTS') {
-          location.reload();
-
-          return;
-        } else if (body.errors) {
-          errors.set(body.errors);
-
-          return;
-        } else if (body.error) {
-          location.reload();
-
-          return;
-        }
-
-        reject();
-      },
-    });
+    await showSuccessToast('components.toasts.player-authorized-success');
   }
 </script>

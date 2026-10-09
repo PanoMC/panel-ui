@@ -110,7 +110,7 @@
               <div class="col-auto">
                 <a href="{base}/players/detail/{message.username}" class="rounded focus-ring">
                   <img
-                    src="/api/profile/picture/{message.username}?{$avatarVersion}"
+                    src="/api/v1/profile/picture/{message.username}?{$avatarVersion}"
                     alt={message.username}
                     class="rounded-circle"
                     use:tooltip={[message.username, { placement: 'bottom' }]}
@@ -124,7 +124,7 @@
               <div class="col-auto">
                 <a href="{base}/players/detail/{message.username}">
                   <img
-                    src="/api/profile/picture/{message.username}?{$avatarVersion}"
+                    src="/api/v1/profile/picture/{message.username}?{$avatarVersion}"
                     alt={message.username}
                     class="rounded-circle"
                     use:tooltip={[message.username, { placement: 'bottom' }]}
@@ -183,16 +183,16 @@
     const id = event.params.id;
 
     const body = await ApiUtil.get({
-      path: `/api/panel/tickets/${id}`,
+      path: `/panel/tickets/${id}`,
       request: event,
     });
 
     if (body.error) {
-      if (body.error === 'NOT_EXISTS' || body.error === 'PAGE_NOT_FOUND') {
-        throw error(404, body.error);
+      if (body.error?.code === 'NOT_EXISTS' || body.error?.code === 'PAGE_NOT_FOUND') {
+        throw error(404, body.error?.code);
       }
 
-      throw error(500, body.error);
+      throw error(500, body.error?.code);
     }
 
     body.ticket.id = parseInt(id);
@@ -247,10 +247,10 @@
     loadMoreLoading = true;
 
     ApiUtil.get({
-      path: `/api/panel/tickets/${data.ticket.id}/messages?lastMessageId=${data.ticket.messages[0].id}`,
+      path: `/panel/tickets/${data.ticket.id}/messages?lastMessageId=${data.ticket.messages[0].id}`,
       handler: (body, reject) => {
         if (body.error) {
-          if (body.error === 'NOT_EXISTS') {
+          if (body.error?.code === 'NOT_EXISTS') {
             goto(base + '/error-404');
 
             return;
@@ -273,13 +273,13 @@
     messageSendLoading = true;
 
     ApiUtil.post({
-      path: `/api/panel/tickets/${data.ticket.id}/messages`,
+      path: `/panel/tickets/${data.ticket.id}/messages`,
       body: {
         message: messageText,
       },
       handler: (body, reject) => {
         if (body.error) {
-          if (body.error === 'NOT_EXISTS') {
+          if (body.error?.code === 'NOT_EXISTS') {
             goto(base + '/error-404');
 
             return;

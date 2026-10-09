@@ -183,7 +183,7 @@
     });
 
     const apiData = await ApiUtil.get({
-      path: '/api/panel/settings' + queryParams,
+      path: '/panel/settings' + queryParams,
       request: event,
     });
 
@@ -191,11 +191,11 @@
     let licenses = [];
     try {
       const licensesResponse = await ApiUtil.get({
-        path: '/api/panel/licenses/oss',
+        path: '/panel/licenses/oss',
         request: event,
       });
 
-      licenses = licensesResponse.data;
+      licenses = licensesResponse.items;
 
       // If an error is returned, fall back to an empty array
       if (!Array.isArray(licenses)) {

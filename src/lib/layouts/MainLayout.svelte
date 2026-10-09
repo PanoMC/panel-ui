@@ -136,7 +136,7 @@
   function dismissDevModeAlert() {
     $showDevModeAlert = false;
     ApiUtil.post({
-      path: '/api/panel/dashboard/closeDevModeAlert',
+      path: '/panel/dashboard/closeDevModeAlert',
       handler: async () => {
         await invalidateAll();
       },

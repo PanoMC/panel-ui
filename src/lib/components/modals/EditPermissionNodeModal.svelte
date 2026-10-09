@@ -516,7 +516,7 @@
   }
 
   /**
-   * The servers the picker offers. Read once per page load: `/api/panel/servers` needs
+   * The servers the picker offers. Read once per page load: `/api/v1/panel/servers` needs
    * `MANAGE_SERVERS`, and an admin who may edit permissions but not see servers keeps whatever
    * scope the node already carries instead of silently widening it.
    */
@@ -536,7 +536,7 @@
 
     import('$lib/api.util').then(({ default: ApiUtil }) => {
       ApiUtil.get({
-        path: '/api/panel/servers',
+        path: '/panel/servers',
         handler: (body) => {
           scopeLoading.set(false);
 
@@ -566,9 +566,9 @@
   function fetchRegisteredPermissions() {
     import('$lib/api.util').then(({ default: ApiUtil }) => {
       ApiUtil.get({
-        path: '/api/panel/permission/registered',
+        path: '/panel/permission/registered',
         handler: (body) => {
-          if (body.result === 'ok') {
+          if (!body.error) {
             registeredPermissions.set(body.data || {});
           }
         },

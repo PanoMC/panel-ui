@@ -405,7 +405,7 @@
     };
 
     const body = await ApiUtil.put({
-      path: `/api/panel/servers/${get(server).id}/startup`,
+      path: `/panel/servers/${get(server).id}/startup`,
       body: payload,
       handler: (response) => response,
     });

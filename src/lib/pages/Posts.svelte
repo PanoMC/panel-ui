@@ -13,7 +13,7 @@
     <div slot="left">
       {$_('pages.posts.table-title', {
         values: {
-          postCount: data.postCount,
+          postCount: data.page.totalItems,
           pageType:
             data.pageType === PageTypes.PUBLISHED
               ? $_('pages.posts.published') + ' '
@@ -52,7 +52,7 @@
     </CardFilters>
   </CardHeader>
   <!-- No Posts -->
-  {#if data.postCount === 0}
+  {#if data.page.totalItems === 0}
     <NoContent />
   {:else}
     <!-- Posts Table -->
@@ -102,7 +102,7 @@
           </tr>
         </thead>
         <tbody>
-          {#each data.posts as post, index (post)}
+          {#each data.items as post, index (post)}
             <PostRow
               {post}
               pageType={data.pageType}
@@ -118,9 +118,8 @@
       <!-- Pagination -->
       <Pagination
         page={data.page}
-        totalPage={data.totalPage}
         on:firstPageClick={() => onPageClick(1)}
-        on:lastPageClick={() => onPageClick(data.totalPage)}
+        on:lastPageClick={() => onPageClick(pageCount(data.page))}
         on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
     </div>
   {/if}
@@ -138,6 +137,8 @@
   });
 
   export const DefaultPageType = PageTypes.PUBLISHED;
+
+  const PageSize = 10;
 
   export const originalPostMenuItems = [
     {
@@ -161,7 +162,7 @@
     } = event;
     await parent();
 
-    let page = searchParams.get('page') || 1;
+    let page = parseInt(searchParams.get('page')) || 1;
     const categoryUrl = searchParams.get('categoryUrl');
     const pageType = searchParams.get('pageType') || DefaultPageType;
     const search = searchParams.get('search');
@@ -172,19 +173,20 @@
 
     const queryParams = buildQueryParams({
       page,
+      pageSize: PageSize,
       pageType,
       categoryUrl,
       search,
     });
 
     const body = await ApiUtil.get({
-      path: `/api/panel/posts` + queryParams,
+      path: `/panel/posts` + queryParams,
       request: event,
     }).catch((err) => {
       throw error(500, err);
     });
 
-    if (body.error === 'PAGE_NOT_FOUND') {
+    if (body.error?.code === 'PAGE_NOT_FOUND') {
       page = 1;
 
       const queryParams = buildQueryParams({
@@ -197,10 +199,9 @@
     }
 
     if (body.error) {
-      throw error(500, body.error);
+      throw error(500, body.error?.code);
     }
 
-    body.page = parseInt(page);
     body.pageType = pageType;
     body.categoryUrl = categoryUrl;
     body.search = search;
@@ -233,6 +234,7 @@
   import { base } from '$app/paths';
 
   import Pagination from '$lib/components/Pagination.svelte';
+  import { pageCount } from '$lib/components/pagination.util.js';
 
   import {
     setCallback as setDeletePostModalCallback,
@@ -301,14 +303,14 @@
   }
 
   function onMoveToDraftClick(id) {
-    data.posts.find((post) => post.id === id).selected = true;
-    data.posts = data.posts;
+    data.items.find((post) => post.id === id).selected = true;
+    data.items = data.items;
 
     showDraftPostModal(() => {
       buttonsLoading = true;
 
       ApiUtil.put({
-        path: `/api/panel/posts/${id}/status`,
+        path: `/panel/posts/${id}/status`,
         body: {
           to: 'DRAFT',
         },
@@ -320,7 +322,7 @@
 
           buttonsLoading = false;
 
-          const foundTitle = data.posts.find((post) => post.id === id).title;
+          const foundTitle = data.items.find((post) => post.id === id).title;
           const title = limitTitle(foundTitle);
 
           await invalidate((_) => true);
@@ -335,14 +337,14 @@
   }
 
   function onPublishClick(id) {
-    data.posts.find((post) => post.id === id).selected = true;
-    data.posts = data.posts;
+    data.items.find((post) => post.id === id).selected = true;
+    data.items = data.items;
 
     showPublishPostModal(() => {
       buttonsLoading = true;
 
       ApiUtil.put({
-        path: `/api/panel/posts/${id}/status`,
+        path: `/panel/posts/${id}/status`,
         body: {
           to: 'PUBLISHED',
         },
@@ -357,7 +359,7 @@
 
           await goto(base + '/posts');
 
-          const foundTitle = data.posts.find((post) => post.id === id).title;
+          const foundTitle = data.items.find((post) => post.id === id).title;
           const title = limitTitle(foundTitle);
 
           await showSuccessToast('components.toasts.post-published-link', {
@@ -378,14 +380,13 @@
   function onSearchInput(event) {
     search = event.detail.value;
 
-    data.page = 1;
-    refreshData();
+    refreshData(1);
   }
 
-  async function refreshData() {
+  async function refreshData(pageNumber = data.page.number) {
     isSearching = true;
     const queryParams = buildQueryParams({
-      page: data.page,
+      page: pageNumber,
       categoryUrl: data.categoryUrl,
       pageType: data.pageType,
       search: search || undefined,
@@ -396,21 +397,19 @@
   }
 
   async function onPageClick(page) {
-    data.page = page;
-
-    await refreshData();
+    await refreshData(page);
   }
 
   function onDeletePostClick(post) {
-    data.posts[data.posts.indexOf(post)].selected = true;
+    data.items[data.items.indexOf(post)].selected = true;
 
     showDeletePostModal(post);
   }
 
   function removeSelection() {
-    if (!data.posts) return;
-    data.posts.forEach((post) => (post.selected = false));
-    data.posts = data.posts;
+    if (!data.items) return;
+    data.items.forEach((post) => (post.selected = false));
+    data.items = data.items;
   }
 
   setDeletePostModalCallback(() => {

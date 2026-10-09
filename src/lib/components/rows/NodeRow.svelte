@@ -97,6 +97,26 @@
         {$_('pages.servers.nodes.update-available')}
       </span>
     {/if}
+    {#if node.unreachable}
+      <!-- Too old to reach this Pano: the jar is replaced by hand, so the download is right here. -->
+      <span
+        class="badge text-bg-danger ms-1"
+        data-node-unreachable
+        use:tooltip={[$_('pages.servers.nodes.unreachable-hint'), { placement: 'top' }]}>
+        <i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>
+        {$_('pages.servers.nodes.unreachable')}
+      </span>
+      {#if safePath(node.unreachable.downloadPath)}
+        <a
+          class="ms-1"
+          href={safePath(node.unreachable.downloadPath)}
+          download
+          aria-label={$_('pages.servers.nodes.unreachable-download')}
+          use:tooltip={[$_('pages.servers.nodes.unreachable-download'), { placement: 'top' }]}>
+          <i class="fa-solid fa-download" aria-hidden="true"></i>
+        </a>
+      {/if}
+    {/if}
     {#if updateProgress}
       <DaemonUpdateProgress progress={updateProgress} compact class="mt-1" />
     {/if}
@@ -177,6 +197,11 @@
   export let selected = false;
 
   const dispatch = createEventDispatcher();
+
+  /** A download path of this Pano only; anything else gets no link. */
+  function safePath(path) {
+    return typeof path === 'string' && path.startsWith('/') && !path.startsWith('//') ? path : '';
+  }
 
   function onRename() {
     dispatch('rename', { node });

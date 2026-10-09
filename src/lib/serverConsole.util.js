@@ -10,6 +10,7 @@
 import { format } from 'date-fns';
 
 import ApiUtil from '$lib/api.util.js';
+import { errorCode } from '$lib/apiError.util.js';
 import { featureSource, isEndpointUnavailable } from '$lib/servers.util.js';
 
 /** How many entries the browser keeps. Older ones fall off the top. */
@@ -612,7 +613,7 @@ export function pushCommandHistory(serverId, history, command) {
 }
 
 /**
- * `GET /api/panel/servers/:id/console?limit=` — the ring buffer the hub kept, which is what the
+ * `GET /api/v1/panel/servers/:id/console?limit=` — the ring buffer the hub kept, which is what the
  * page opens with before the live stream takes over. `dropped` is cumulative here, so it becomes
  * a single marker at the top of the buffer.
  *
@@ -650,7 +651,7 @@ export async function fetchConsoleHistory({
   const text = String(query ?? '').trim();
   const filter = text ? `&query=${encodeURIComponent(text)}` : '';
   const body = await ApiUtil.get({
-    path: `/api/panel/servers/${serverId}/console?limit=${pageSize}&skip=${offset}${filter}`,
+    path: `/panel/servers/${serverId}/console?limit=${pageSize}&skip=${offset}${filter}`,
     request,
     handler: (/** @type {object} */ response) => response,
   });
@@ -667,7 +668,7 @@ export async function fetchConsoleHistory({
   if (body.error) {
     return {
       status: 'error',
-      error: String(body.error),
+      error: errorCode(body),
       capable: null,
       lines: [],
       dropped: 0,
@@ -687,13 +688,13 @@ export async function fetchConsoleHistory({
 }
 
 /**
- * `GET /api/panel/servers/:id/console/search` — one step of a search through every log file the
+ * `GET /api/v1/panel/servers/:id/console/search` — one step of a search through every log file the
  * server has, newest first (§2.4.20, deep search).
  *
- * Each call scans on from `cursor` for a time budget and answers with what it found in that
- * time, newest match first, and the cursor to carry on from; the panel keeps calling until
- * `done`. `status: 'unavailable'` is a backend (or a source) that does not know deep search —
- * the caller falls back to the windowed search of {@link fetchConsoleHistory}.
+ * Each call scans on from `cursor` for a time budget and answers `{ items, page: { size,
+ * nextCursor } }`: what it found in that time, newest match first, and the cursor to carry on
+ * from; the panel keeps calling until there is none (`done`). `status: 'unavailable'` is a
+ * backend (or a source) that does not know deep search — the caller falls back to the windowed search of {@link fetchConsoleHistory}.
  *
  * @param {{ serverId: number | string, query: string, cursor?: string | null, limit?: number }} options
  */
@@ -705,7 +706,7 @@ export async function fetchConsoleSearch({ serverId, query, cursor = null, limit
   }
 
   const body = await ApiUtil.get({
-    path: `/api/panel/servers/${serverId}/console/search?${params.toString()}`,
+    path: `/panel/servers/${serverId}/console/search?${params.toString()}`,
     handler: (/** @type {object} */ response) => response,
   });
 
@@ -718,15 +719,18 @@ export async function fetchConsoleSearch({ serverId, query, cursor = null, limit
   }
 
   if (body.error) {
-    return { status: 'error', error: String(body.error), lines: [], done: true };
+    return { status: 'error', error: errorCode(body), lines: [], done: true };
   }
+
+  const nextCursor =
+    typeof body.page?.nextCursor === 'string' && body.page.nextCursor ? body.page.nextCursor : null;
 
   return {
     status: 'ok',
     // Newest first, as found.
-    lines: Array.isArray(body.lines) ? body.lines : [],
-    cursor: typeof body.cursor === 'string' && body.cursor ? body.cursor : null,
-    done: body.done === true || !body.cursor,
+    lines: Array.isArray(body.items) ? body.items : [],
+    cursor: nextCursor,
+    done: !nextCursor,
     scannedFiles: Number(body.scannedFiles) || 0,
     totalFiles: Number(body.totalFiles) || 0,
     capped: body.capped === true,

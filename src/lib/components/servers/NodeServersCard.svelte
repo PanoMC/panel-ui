@@ -230,7 +230,7 @@
    */
   let { node, refreshInterval = 0 } = $props();
 
-  /** `GET /api/panel/servers` needs `MANAGE_SERVERS`; without it the card is left out. */
+  /** `GET /api/v1/panel/servers` needs `MANAGE_SERVERS`; without it the card is left out. */
   const canListServers = hasPermission(Permissions.MANAGE_SERVERS);
   const canCreateServers = hasPermission(Permissions.CREATE_SERVERS);
 
@@ -239,7 +239,7 @@
   let servers = $state([]);
   let loading = $state(true);
   /**
-   * Per server id, the newest metric sample (`latest` of `GET /api/panel/servers-metrics`,
+   * Per server id, the newest metric sample (`latest` of `GET /api/v1/panel/servers-metrics`,
    * then the hub's frames merged on top).
    *
    * @type {Record<string, Record<string, any>>}
@@ -280,7 +280,7 @@
 
   async function loadServers() {
     const body = await ApiUtil.get({
-      path: '/api/panel/servers',
+      path: '/panel/servers',
       handler: (response) => response,
     });
 
@@ -305,7 +305,7 @@
    */
   async function loadInitialMetrics() {
     const body = await ApiUtil.get({
-      path: '/api/panel/servers-metrics?range=1h',
+      path: '/panel/servers-metrics?range=1h',
       handler: (response) => response,
     });
 

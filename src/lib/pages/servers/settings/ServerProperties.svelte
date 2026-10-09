@@ -355,7 +355,7 @@
     // The file as it is on the node right now, and what Pano stores as a fallback. A backend or
     // a node that cannot answer leaves `file` null and the page says it is showing stored values.
     const properties = await ApiUtil.get({
-      path: `/api/panel/servers/${params.id}/startup/properties`,
+      path: `/panel/servers/${params.id}/startup/properties`,
       request: event,
       handler: (response) => response,
     });
@@ -499,7 +499,7 @@
 
     try {
       const body = await ApiUtil.put({
-        path: `/api/panel/servers/${serverId}/startup`,
+        path: `/panel/servers/${serverId}/startup`,
         body: { properties },
         handler: (response) => response,
       });

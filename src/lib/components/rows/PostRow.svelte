@@ -1,5 +1,3 @@
-
-
 <tr class:table-active={post.selected}>
   <th scope="row" class="align-middle text-center">
     <div class="dropdown position-static">
@@ -102,7 +100,7 @@
         class="rounded-circle"
         width="32"
         height="32"
-        src="/api/profile/picture/{post.writer.username}?{$avatarVersion}" />
+        src="/api/v1/profile/picture/{post.writer.username}?{$avatarVersion}" />
     </a>
   </td>
   <Hook

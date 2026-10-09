@@ -87,8 +87,8 @@
                           <img
                             src={sanitizeImageSrc(
                               notification.details.image ||
-                                `/api/profile/picture/${notification.details.username}?${$avatarVersion}`,
-                              '/api/server/icon/default',
+                                `/api/v1/profile/picture/${notification.details.username}?${$avatarVersion}`,
+                              '/api/v1/server/icon/default',
                             )}
                             alt={$_('buttons.view')}
                             width="18"
@@ -179,7 +179,7 @@
             aria-label={$_('components.navbar.account-dropdown.session')}
             title={$_('components.navbar.account-dropdown.session')}>
             <img
-              src="/api/profile/picture/{$user.username}?{$avatarVersion}"
+              src="/api/v1/profile/picture/{$user.username}?{$avatarVersion}"
               width="20"
               height="20"
               class="rounded-circle"
@@ -279,7 +279,7 @@
     selectingPanelTheme = true;
 
     ApiUtil.put({
-      path: '/api/panel/panelTheme/select',
+      path: '/panel/panelTheme/select',
       body: { theme },
       handler: (body) => {
         if (body.error) {
@@ -326,13 +326,13 @@
     await delay(1000);
 
     ApiUtil.post({
-      path: '/api/panel/notifications/quick/markAsRead',
+      path: '/panel/notifications/quick/markAsRead',
       handler: (body) => {
         if (quickNotificationProcessID !== id) {
           return;
         }
 
-        if (body.result === 'ok') {
+        if (!body.error) {
           notificationCount.set(body.notificationCount);
         }
 

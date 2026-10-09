@@ -309,13 +309,12 @@
 
       <!-- Why restore is off limits is on the row's own Restore item, which is what the admin
            clicked; a line under the table repeated it once per page of rows. -->
-      {#if totalPages > 1}
+      {#if lastPage > 1}
         <div class="card-footer">
           <Pagination
-            page={currentPage}
-            totalPage={totalPages}
+            page={pageOf(currentPage, visibleBackups.length, BACKUPS_PAGE_SIZE)}
             on:firstPageClick={() => (currentPage = 1)}
-            on:lastPageClick={() => (currentPage = totalPages)}
+            on:lastPageClick={() => (currentPage = lastPage)}
             on:pageLinkClick={(event) => (currentPage = event.detail.page)} />
         </div>
       {/if}
@@ -697,6 +696,7 @@
   import DateComponent from '$lib/components/Date.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
+  import { pageOf } from '$lib/components/pagination.util.js';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import ServerCapabilityNotice from '$lib/components/servers/ServerCapabilityNotice.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
@@ -773,15 +773,15 @@
   // The list arrives whole (there is no page on the endpoint), so the pages are cut here.
   const BACKUPS_PAGE_SIZE = 10;
   let currentPage = $state(1);
-  const totalPages = $derived(Math.max(1, Math.ceil(visibleBackups.length / BACKUPS_PAGE_SIZE)));
+  const lastPage = $derived(Math.max(1, Math.ceil(visibleBackups.length / BACKUPS_PAGE_SIZE)));
   const pagedBackups = $derived(
     visibleBackups.slice((currentPage - 1) * BACKUPS_PAGE_SIZE, currentPage * BACKUPS_PAGE_SIZE),
   );
 
   // A filter that leaves fewer rows than the page asked for takes the page with it.
   $effect(() => {
-    if (currentPage > totalPages) {
-      currentPage = totalPages;
+    if (currentPage > lastPage) {
+      currentPage = lastPage;
     }
   });
   const taskPercent = $derived(
@@ -987,7 +987,7 @@
    */
   async function loadWorldsPreview() {
     const body = await ApiUtil.get({
-      path: `/api/panel/servers/${serverId}/backups/worlds`,
+      path: `/panel/servers/${serverId}/backups/worlds`,
       handler: (response) => response,
     });
 
@@ -1008,7 +1008,7 @@
 
     try {
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${serverId}/backups/${encodeURIComponent(backup.id)}/pin`,
+        path: `/panel/servers/${serverId}/backups/${encodeURIComponent(backup.id)}/pin`,
         body: { pinned: !backup.pinned },
         handler: (response) => response,
       });
@@ -1041,7 +1041,7 @@
     try {
       const name = createName.trim();
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${serverId}/backups`,
+        path: `/panel/servers/${serverId}/backups`,
         body: { ...(name ? { name } : {}), ...backupOptionsPayload(createOptions) },
         handler: (response) => response,
       });
@@ -1089,7 +1089,7 @@
       return;
     }
 
-    downloadAnchor.href = `/api/panel/servers/${serverId}/backups/${encodeURIComponent(backup.id)}/download`;
+    downloadAnchor.href = `/api/v1/panel/servers/${serverId}/backups/${encodeURIComponent(backup.id)}/download`;
     downloadAnchor.download = `${backup.name || backup.id}.zip`;
     downloadAnchor.click();
   }
@@ -1109,12 +1109,12 @@
 
     try {
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${serverId}/backups/${encodeURIComponent(backup.id)}/pano-backup`,
+        path: `/panel/servers/${serverId}/backups/${encodeURIComponent(backup.id)}/pano-backup`,
         handler: (response) => response,
       });
 
       if (!body || body.error) {
-        const error = describeError(body || { error: 'NETWORK_ERROR' });
+        const error = describeError(body || { error: { code: 'NETWORK_ERROR' } });
 
         void showError(error.key, error.values);
 
@@ -1183,7 +1183,7 @@
 
     try {
       const body = await ApiUtil.post({
-        path: `/api/panel/servers/${serverId}/backups/${encodeURIComponent(targetBackup.id)}/${action}`,
+        path: `/panel/servers/${serverId}/backups/${encodeURIComponent(targetBackup.id)}/${action}`,
         body: { currentPassword },
         handler: (response) => response,
       });
@@ -1200,7 +1200,8 @@
 
       if (body.error) {
         passwordError =
-          body.error === 'WRONG_PASSWORD' || body.error === 'CURRENT_PASSWORD_NOT_CORRECT';
+          body.error?.code === 'WRONG_PASSWORD' ||
+          body.error?.code === 'CURRENT_PASSWORD_NOT_CORRECT';
 
         showServerActionError(body.error, body, {
           server: $server,
@@ -1262,7 +1263,7 @@
 
     try {
       const body = await ApiUtil.put({
-        path: `/api/panel/servers/${serverId}/backups/settings`,
+        path: `/panel/servers/${serverId}/backups/settings`,
         body: {
           keepLast: Math.max(1, Number(keepLast) || 1),
           snapshotKeepLast: Math.max(1, Number(snapshotKeepLast) || 1),

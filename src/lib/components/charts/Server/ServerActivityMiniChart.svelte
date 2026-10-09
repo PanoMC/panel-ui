@@ -55,8 +55,12 @@
       // Generate points safely
       let points = [];
       const now = Date.now();
-      
-      if (activityData && typeof activityData === 'object' && Object.keys(activityData).length > 0) {
+
+      if (
+        activityData &&
+        typeof activityData === 'object' &&
+        Object.keys(activityData).length > 0
+      ) {
         points = Object.keys(activityData)
           .map((key) => ({
             x: Number(key),
@@ -85,7 +89,7 @@
           responsive: true,
           maintainAspectRatio: false,
           layout: {
-            padding: 0
+            padding: 0,
           },
           interaction: {
             mode: 'index',
@@ -93,7 +97,7 @@
           },
           animation: {
             duration: 800,
-            easing: 'easeInOutQuart'
+            easing: 'easeInOutQuart',
           },
           plugins: {
             legend: { display: false },
@@ -119,7 +123,7 @@
             },
           },
           scales: {
-            x: { 
+            x: {
               type: 'time',
               display: false,
               offset: false,
@@ -128,7 +132,7 @@
               type: 'linear',
               display: false,
               beginAtZero: true,
-              suggestedMax: points.length > 0 ? Math.max(...points.map(p => p.y || 0)) + 2 : 10,
+              suggestedMax: points.length > 0 ? Math.max(...points.map((p) => p.y || 0)) + 2 : 10,
             },
           },
         },
@@ -148,7 +152,7 @@
         .sort((a, b) => a.x - b.x);
       chart.data.datasets[0].data = points;
       if (points.length > 0) {
-        chart.options.scales.y.suggestedMax = Math.max(...points.map(p => p.y || 0)) + 2;
+        chart.options.scales.y.suggestedMax = Math.max(...points.map((p) => p.y || 0)) + 2;
       }
       chart.update('none');
     } catch (err) {

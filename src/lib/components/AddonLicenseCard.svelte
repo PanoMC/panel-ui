@@ -30,46 +30,44 @@
         <p class="mb-0 text-body-secondary">
           {$_('pages.addon-detail.license.active')}
         </p>
-      {:else}
-        {#if addon.licenseStatus === 'NO_PURCHASE' || addon.licenseStatus === 'MISSING' || addon.licenseStatus === 'NEEDS_REFRESH' || addon.licenseStatus === 'JAR_TAMPERED' || addon.licenseStatus === 'SIGNATURE_INVALID'}
-          <p class="mb-3">
-            {$_('pages.addon-detail.license.no-purchase', websiteI18n)}
-          </p>
-          {#if addon.purchaseUrl}
-            <a class="btn btn-warning" href={addon.purchaseUrl} target="_blank" rel="noopener">
-              <i class="fa-solid fa-store me-2"></i>
-              {$_('buttons.buy-addon-on-market', websiteI18n)}
-            </a>
-          {/if}
-        {:else if addon.licenseStatus === 'NOT_CONNECTED'}
-          <p class="mb-3">
-            {$_('pages.addon-detail.license.not-connected', websiteI18n)}
-          </p>
-          <a class="btn btn-primary" href="{base}/settings/platform">
-            <i class="fa-solid fa-link me-2"></i>
-            {$_('buttons.connect-pano-account')}
+      {:else if addon.licenseStatus === 'NO_PURCHASE' || addon.licenseStatus === 'MISSING' || addon.licenseStatus === 'NEEDS_REFRESH' || addon.licenseStatus === 'JAR_TAMPERED' || addon.licenseStatus === 'SIGNATURE_INVALID'}
+        <p class="mb-3">
+          {$_('pages.addon-detail.license.no-purchase', websiteI18n)}
+        </p>
+        {#if addon.purchaseUrl}
+          <a class="btn btn-warning" href={addon.purchaseUrl} target="_blank" rel="noopener">
+            <i class="fa-solid fa-store me-2"></i>
+            {$_('buttons.buy-addon-on-market', websiteI18n)}
           </a>
-        {:else if addon.licenseStatus === 'EXPIRED'}
-          <p class="mb-3">
-            {$_('pages.addon-detail.license.expired')}
-          </p>
-        {:else if addon.licenseStatus === 'NETWORK_ERROR'}
-          <p class="mb-0">
-            {$_('pages.addon-detail.license.network-error', websiteI18n)}
-          </p>
-        {:else if addon.licenseStatus === 'VERSION_MISMATCH'}
-          <p class="mb-0">
-            {$_('pages.addon-detail.license.version-mismatch', websiteI18n)}
-          </p>
-        {:else}
-          <p class="mb-0">
-            {addon.licenseFailureMessage ||
-              $_('components.license-status.UNKNOWN-tooltip', {
-                ...websiteI18n,
-                default: 'Unknown license issue',
-              })}
-          </p>
         {/if}
+      {:else if addon.licenseStatus === 'NOT_CONNECTED'}
+        <p class="mb-3">
+          {$_('pages.addon-detail.license.not-connected', websiteI18n)}
+        </p>
+        <a class="btn btn-primary" href="{base}/settings/platform">
+          <i class="fa-solid fa-link me-2"></i>
+          {$_('buttons.connect-pano-account')}
+        </a>
+      {:else if addon.licenseStatus === 'EXPIRED'}
+        <p class="mb-3">
+          {$_('pages.addon-detail.license.expired')}
+        </p>
+      {:else if addon.licenseStatus === 'NETWORK_ERROR'}
+        <p class="mb-0">
+          {$_('pages.addon-detail.license.network-error', websiteI18n)}
+        </p>
+      {:else if addon.licenseStatus === 'VERSION_MISMATCH'}
+        <p class="mb-0">
+          {$_('pages.addon-detail.license.version-mismatch', websiteI18n)}
+        </p>
+      {:else}
+        <p class="mb-0">
+          {addon.licenseFailureMessage ||
+            $_('components.license-status.UNKNOWN-tooltip', {
+              ...websiteI18n,
+              default: 'Unknown license issue',
+            })}
+        </p>
       {/if}
     </div>
   </div>
@@ -95,7 +93,7 @@
     try {
       await new Promise((resolve) => {
         ApiUtil.post({
-          path: `/api/panel/plugins/${addon.id}/license/refresh`,
+          path: `/panel/addons/${addon.id}/license/refresh`,
           handler: () => resolve(),
         });
       });

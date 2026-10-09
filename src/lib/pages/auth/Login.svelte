@@ -251,6 +251,7 @@
 {/each}
 
 <script context="module">
+  import { errorCode, errorDetails } from '$lib/apiError.util.js';
   import { redirect } from '@sveltejs/kit';
 
   import { base } from '$app/paths';
@@ -290,7 +291,7 @@
 <script>
   /**
    * The panel-native login form (§2.4.9). It is a second front end for the *same* endpoints the
-   * theme's login page uses — `POST /api/auth/login` then `GET /api/auth/credentials` — so the
+   * theme's login page uses — `POST /api/v1/auth/login` then `GET /api/v1/auth/credentials` — so the
    * cookies, the CSRF token and every error code behave identically; nothing about the session
    * is panel-specific.
    *
@@ -527,7 +528,7 @@
         return;
       }
 
-      if (response.result === 'ok') {
+      if (!response.error) {
         await onSignedIn(String(response.csrfToken || ''));
 
         return;
@@ -560,18 +561,19 @@
   }
 
   /**
-   * @param {Record<string, any>} response the `{ result: 'error', ... }` body.
+   * @param {Record<string, any>} response the `{ error: { code, details } }` body.
    */
   async function handleFailure(response) {
-    const code = String(response.error || '').toUpperCase();
+    const code = errorCode(response).toUpperCase();
+    const details = errorDetails(response);
 
     if (code === 'PLUGIN_DENIED_LOGIN') {
-      const reason = String(response.reason || '');
+      const reason = String(details.reason || '');
 
       // auth-guard's modal answers the challenge itself; a denial reaching us means it was
       // cancelled, so it is shown like any other plugin refusal.
       if (TWO_FACTOR_REQUIRED_REASONS.includes(reason) && !pluginHandlesTwoFactor) {
-        captchaStepToken = response.captchaStepToken ?? null;
+        captchaStepToken = details.captchaStepToken ?? null;
         step = Steps.TWO_FACTOR;
         totpCode = '';
         clearError();
@@ -629,14 +631,14 @@
 
     if (code === 'LOGIN_EMAIL_NOT_VERIFIED') {
       fail('pages.auth.login.errors.email-not-verified', {
-        email: String(response.email || usernameOrEmail),
+        email: String(details.email || usernameOrEmail),
       });
 
       return;
     }
 
     if (code === 'LOGIN_USER_IS_BANNED') {
-      fail(...describeBan(response));
+      fail(...describeBan(details));
 
       return;
     }
@@ -648,19 +650,19 @@
    * The ban response carries an optional `reason` and an optional `until` (epoch millis, absent
    * for a permanent ban), which is four different sentences.
    *
-   * @param {{ reason?: string, until?: number }} response
+   * @param {{ reason?: string, until?: number }} details the `error.details` of the response.
    * @returns {[string, Record<string, unknown>]}
    */
-  function describeBan(response) {
-    const reason = String(response.reason || '').trim();
+  function describeBan(details) {
+    const reason = String(details.reason || '').trim();
 
-    if (!response.until) {
+    if (!details.until) {
       return reason
         ? ['pages.auth.login.errors.banned-permanent-reason', { reason }]
         : ['pages.auth.login.errors.banned-permanent', {}];
     }
 
-    const until = format(new Date(Number(response.until)), 'dd/MM/yyyy HH:mm', {
+    const until = format(new Date(Number(details.until)), 'dd/MM/yyyy HH:mm', {
       locale: dateFnsLocales[$currentLanguage?.dateFnsCode],
     });
 

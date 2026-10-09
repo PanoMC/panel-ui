@@ -106,10 +106,10 @@
     $loading = true;
 
     ApiUtil.post({
-      path: `/api/panel/players/${$player.username}/delete`,
+      path: `/panel/players/${$player.username}/delete`,
       body: { currentPassword: $currentPassword },
       handler: async (body, reject) => {
-        if (body.result === 'ok') {
+        if (!body.error) {
           callback($player);
           await goto(base + '/players');
           hide();
@@ -118,7 +118,7 @@
           });
           return;
         } else if (body.error) {
-          if (body.error === 'CURRENT_PASSWORD_NOT_CORRECT') {
+          if (body.error?.code === 'CURRENT_PASSWORD_NOT_CORRECT') {
             $passwordError = true;
             $loading = false;
           } else {
