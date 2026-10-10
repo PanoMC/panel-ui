@@ -130,7 +130,7 @@
                       <i class="fas fa-sync"></i>
                     </button>
                   {/if}
-                  <AddonSettingsButton {plugin} />
+                  <AddonSettingsButton {plugin} report={data.compatibility} />
                   <AddonToggle
                     {plugin}
                     disabled={plugin.loading ||
@@ -184,7 +184,8 @@
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
   import { ADDON_LICENSE_ISSUE_STATUSES } from '$lib/addon-license-issue.util.js';
   import { error } from '@sveltejs/kit';
-  import { isLocked } from '$lib/pages/addons/compat/compat.util.js';
+  import { isLocked, normalizeCompatibility } from '$lib/pages/addons/compat/compat.util.js';
+  import { createCompatibilityApi } from '$lib/pages/addons/compat/compat.api.js';
 
   export const PageTypes = Object.freeze({
     ALL: 'ALL',
@@ -233,7 +234,15 @@
       );
     }
 
-    return { plugins, pageType: status, failedLogin };
+    // Accepted levels and changed addresses for the icon on a card; a failed read leaves them out.
+    const compatibility = await createCompatibilityApi(ApiUtil, event).getCompatibility();
+
+    return {
+      plugins,
+      pageType: status,
+      failedLogin,
+      compatibility: compatibility.ok ? normalizeCompatibility(compatibility.body) : null,
+    };
   }
 </script>
 
@@ -242,6 +251,8 @@
   import { _ } from 'svelte-i18n';
 
   import { base } from '$app/paths';
+  import { browser } from '$app/environment';
+  import { refreshCompatAttention } from '$lib/compat-attention.store.js';
 
   import { websiteDisplayHost } from '$lib/website-display.util.js';
 
@@ -285,6 +296,9 @@
   import AddonToggle from '$lib/pages/addons/AddonToggle.svelte';
 
   export let data;
+
+  // The sidebar's exclamation icons follow what this list just loaded.
+  $: if (browser) void (data.compatibility, refreshCompatAttention());
   let search = '';
   let isSearching = false;
 

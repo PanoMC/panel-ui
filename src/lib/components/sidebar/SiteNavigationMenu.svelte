@@ -32,6 +32,17 @@
           {:else}
             <i class="{item.icon} fa-fw me-2"></i>
             {$_(item.text)}
+            {#if attentionText(item, $compatAttention)}
+              <!-- Something inside needs the admin: the same icon as on the card itself. -->
+              <span
+                class="text-warning ms-1"
+                role="img"
+                aria-label={attentionText(item, $compatAttention)}
+                data-nav-attention={item.attention}
+                use:tooltip={[attentionText(item, $compatAttention)]}>
+                <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+              </span>
+            {/if}
           {/if}
         </a>
       </li>
@@ -94,6 +105,7 @@
       text: 'components.site-navigation-menu.view',
       startsWith: true,
       permission: Permissions.MANAGE_VIEW,
+      attention: 'themes',
       // Site-only section: a SERVERS install has no public website to manage.
       modes: [UsageModes.WEBSITE, UsageModes.BOTH],
     },
@@ -110,6 +122,7 @@
       text: 'components.site-navigation-menu.addons',
       startsWith: true,
       permission: Permissions.MANAGE_ADDONS,
+      attention: 'addons',
     },
     {
       href: '/logs',
@@ -143,18 +156,35 @@
 </script>
 
 <script>
-  import { getContext } from 'svelte';
+  import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
 
   import { base } from '$app/paths';
   import { page } from '$app/stores';
 
   import { hasPermission } from '$lib/auth.util.js';
+  import { compatAttention, refreshCompatAttention } from '$lib/compat-attention.store.js';
+  import tooltip from '$lib/tooltip.util';
   import { isNavItemVisible } from '$lib/navigation.util.js';
   import { siteNavigationItems } from '$lib/PluginAPI.js';
 
   const session = getContext('session');
   const usageMode = getContext('usageMode');
+
+  onMount(() => {
+    if (hasPermission(Permissions.MANAGE_ADDONS) || hasPermission(Permissions.MANAGE_VIEW)) {
+      refreshCompatAttention();
+    }
+  });
+
+  /** The tooltip of the exclamation icon beside a menu item, empty when nothing needs attention. */
+  function attentionText(item, counts) {
+    const count = item.attention ? (counts?.[item.attention] ?? 0) : 0;
+
+    return count > 0
+      ? $_(`components.site-navigation-menu.attention.${item.attention}`, { values: { count } })
+      : '';
+  }
 
   function matching(path, pathName, startsWith = false) {
     return (

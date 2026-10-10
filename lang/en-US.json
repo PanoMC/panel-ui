@@ -775,31 +775,17 @@
           "loading": "Checking what this update would do to your addons and themes. This can take up to 20 seconds.",
           "waiting": "Wait for the update plan first.",
           "failed": {
-            "title": "The Update Plan Could Not Be Read",
-            "description": "Pano could not work out what this update does to your addons and themes, so the update button stays off. Press Retry, or tick the box below and update at your own risk.",
-            "acknowledge": "Update without the plan. I know addons or themes may be switched off afterwards."
+            "title": "The update plan could not be read",
+            "description": "Pano could not work out what this update does to your addons and themes. You can still update; check them afterwards."
           },
-          "attention": {
-            "title": "Read This Before You Update"
-          },
-          "safe": {
-            "title": "This Update Fits Your Addons And Themes"
-          },
-          "target": "Pano {version} runs addons and themes built for API level {min} to {current}.",
           "unknown": "Pano {version} does not say which API level it needs, so Pano cannot tell what will happen to your addons and themes. Check them yourself afterwards.",
-          "disable": {
-            "title": "{count, plural, one {# Addon Or Theme Will Be Switched Off} other {# Addons And Themes Will Be Switched Off}}",
-            "description": "The store has no compatible version of these. After the restart they stay off until their author publishes one, and you have to install it by hand."
-          },
-          "update": {
-            "title": "{count, plural, one {# Addon Or Theme Will Be Updated After The Restart} other {# Addons And Themes Will Be Updated After The Restart}}",
-            "description": "Pano installs a compatible version from the store when it starts again. The server needs internet access for this."
-          },
-          "agents": {
-            "title": "{count, plural, one {# Game Server Or Node Needs A New Jar By Hand} other {# Game Servers And Nodes Need A New Jar By Hand}}"
-          },
-          "store-down": "The store could not be reached, so the list above may be missing updates that exist. Press Retry before you decide.",
-          "compatible": "{count, plural, one {# addon or theme keeps running as it is.} other {# addons and themes keep running as they are.}}"
+          "tip": {
+            "unknown": "Pano {version} does not say which API level it needs, so the effect on your addons and themes is unknown. Check them afterwards.",
+            "disable": "{count, plural, one {# addon or theme will be switched off} other {# addons and themes will be switched off}} (no compatible version in the store): {names}.",
+            "update": "{count, plural, one {# addon or theme} other {# addons and themes}} will be updated by Pano after the restart: {names}.",
+            "agents": "{count, plural, one {# game server or node needs} other {# game servers and nodes need}} a new jar by hand: {names}.",
+            "store-down": "The store could not be reached, so updates may be missing. Press retry."
+          }
         }
       },
       "backups": {
@@ -2918,7 +2904,6 @@
     "theme-compat": {
       "title": "Some Theme Views Show The Plugin Default",
       "description": "These views of the active theme were made for an older version of their plugin, so the plugin's own look shows instead. Nothing is broken and plugin updates are never blocked; update the theme or ask its author for a new version.",
-      "badge": "{count, plural, one {# View Outdated} other {# Views Outdated}}",
       "badge-title": "{count, plural, one {# view of this theme shows the plugin's default look} other {# views of this theme show the plugin's default look}}",
       "toast-more": "{count, plural, one {# more view shows the plugin's default look. See Appearance, Themes.} other {# more views show the plugin's default look. See Appearance, Themes.}}",
       "issues": {
@@ -2928,11 +2913,6 @@
         "ENGINE_MISMATCH": "{view} of the theme engine shows the engine's default look: the theme was made for version {themeContract}, the engine is on {engineContract}",
         "NAMESPACE_CLASH": "The plugin {pluginId} asks for the short name {namespace}, which {heldBy} already holds, so its site pages are not shown",
         "UNKNOWN": "{view} has an issue this panel does not know yet ({type})"
-      },
-      "alert": {
-        "title": "Theme Is Out Of Date For Some Plugins",
-        "description": "{count, plural, one {# view of {theme} shows} other {# views of {theme} show}} the plugin's default look because the plugin changed after the theme was made.",
-        "view": "View Details"
       }
     },
     "webhooks": {
@@ -3251,7 +3231,11 @@
       "logs": "Logs",
       "settings": "Settings",
       "translations": "Translations",
-      "backups": "Backups"
+      "backups": "Backups",
+      "attention": {
+        "addons": "{count, plural, one {# addon needs attention} other {# addons need attention}}",
+        "themes": "{count, plural, one {# theme needs attention} other {# themes need attention}}"
+      }
     },
     "navbar": {
       "show-menu": "Show Menu",
@@ -3426,7 +3410,8 @@
         "title": "Update the platform?",
         "description": "Pano may be inaccessible for a few minutes during the update. The update continues in the background if you leave this page.",
         "terminal-mode-warning": "Pano is currently attached to a terminal. Switch to terminal-independent background mode?",
-        "restart-in-background": "Relaunch Pano in background mode after the update"
+        "restart-in-background": "Relaunch Pano in background mode after the update",
+        "plan-failed": "Pano could not read the update plan, so it cannot tell what this update does to your addons and themes. Check them after the update."
       },
       "confirm-update-resource": {
         "title": "Update this resource?",
@@ -4335,11 +4320,6 @@
       }
     },
     "compatibility-card": {
-      "title": "{count, plural, one {# Compatibility Issue} other {# Compatibility Issues}}",
-      "type": {
-        "PLUGIN": "Addon",
-        "THEME": "Theme"
-      },
       "verdict": {
         "OK": "Compatible",
         "TOO_OLD": "Too Old",
@@ -4348,46 +4328,25 @@
       },
       "level": "API level {level}",
       "level-short": "API {level}",
-      "level-none": "No API level (built before API levels existed)",
       "row-level": "Built for API level {level}",
       "row-refused": "Built for API level {level}. This Pano does not run it.",
       "locked": "Not compatible with this Pano (built for API level {level}). It stays off until you update it.",
       "locked-theme": "Not compatible with this Pano (built for API level {level}). It can not be activated until you update it.",
       "held": "Needs {name}, which is not compatible with this Pano: update {name}. This addon starts by itself afterwards.",
       "held-short": "Waiting for {name}",
-      "refused": {
-        "title": "{count, plural, one {# Addon Or Theme Is Switched Off} other {# Addons And Themes Are Switched Off}}",
-        "description": "This Pano runs addons and themes built for API level {min} to {current}. The ones below were built for another level, so Pano keeps them off. Nothing was disabled for good: the moment a compatible version is installed, it starts by itself. What you have to do: press Retry so Pano asks the store for a compatible version, or update it by hand under Updates. A theme that is switched off is replaced by the bundled Vanilla theme."
-      },
-      "note": {
-        "error": "The last attempt failed: {error}",
-        "update-found": "A compatible version was found in the store. Press Retry to install it.",
-        "no-update": "The store has no compatible version. Ask the author for an update, or remove it."
-      },
-      "theme-fallback": "Your site shows the bundled Vanilla theme until this is fixed.",
-      "store-down": "The store could not be reached, so Pano could not look for compatible versions. Check this server's internet access, then press Retry.",
-      "open-updates": "Open Updates",
-      "retry-done": "Everything is compatible now.",
-      "retry-still": "{count, plural, one {# item is still switched off.} other {# items are still switched off.}}",
-      "retry-failed": "Retry failed ({code}).",
-      "agents": {
-        "title": "{count, plural, one {# Game Server Or Node Needs A New Jar By Hand} other {# Game Servers And Nodes Need A New Jar By Hand}}",
-        "description": "These still run an old jar that cannot reach this Pano's new API, and Pano cannot replace it for you. Each stays in this list until it reconnects with the new jar.",
-        "steps": "For each one: download the jar, stop the server or node, put the new jar in place of the old one, then start it again."
-      },
-      "agent-type": {
-        "SERVER": "Game server",
-        "NODE": "Node",
-        "AGENT": "Agent"
-      },
-      "agent-protocol": "reports protocol {protocol}, needs {required}",
-      "download-jar": "Download Jar",
       "urls": {
-        "title": "{count, plural, one {# Address Outside Pano Changed} other {# Addresses Outside Pano Changed}}",
-        "description": "Addons registered these addresses with other services, such as a sign-in app or a payment gateway. They changed with this update. Copy each one and paste it into the other service's settings by hand; until you do, the feature that uses it fails."
+        "title": "Addresses Outside Pano Changed",
+        "description": "This addon registered these addresses with other services, such as a sign-in app or a payment gateway. They changed with an update. Copy each one and paste it into the other service's settings by hand; until you do, the feature that uses it fails."
       },
       "copied": "Address copied.",
-      "copy-failed": "Could not copy. Select the address and copy it by hand."
+      "copy-failed": "Could not copy. Select the address and copy it by hand.",
+      "problem": {
+        "too-old": "Too old for this Pano: built for API level {level}, this Pano accepts {min} to {current}. Update it.",
+        "too-new": "Too new for this Pano: built for API level {level}, this Pano accepts {min} to {current}. Update Pano or install an older version of it.",
+        "too-old-plain": "Too old for this Pano (built for API level {level}). Update it.",
+        "too-new-plain": "Too new for this Pano (built for API level {level}). Update Pano or install an older version of it.",
+        "urls": "Its addresses outside Pano changed. Enter the new ones at the provider; they are on its detail page."
+      }
     }
   },
   "page-error": {

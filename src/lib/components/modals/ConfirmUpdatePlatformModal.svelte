@@ -11,6 +11,16 @@
           {$_('components.modals.confirm-update-platform.description')}
         </div>
 
+        {#if $planFailed}
+          <!-- The update plan could not be read, so nothing is known about the addons and themes. -->
+          <div
+            class="alert alert-warning text-start mt-3 mb-0 d-flex align-items-start"
+            data-plan-failed-note>
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>{$_('components.modals.confirm-update-platform.plan-failed')}</div>
+          </div>
+        {/if}
+
         {#if showBackgroundOption}
           <div class="alert alert-warning text-start mt-3 mb-0 d-flex align-items-start">
             <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
@@ -62,9 +72,15 @@
   let modal;
   const continueProcessObj = writable();
   const background = writable(false);
+  const planFailed = writable(false);
 
-  export function show(continueProcess) {
+  /**
+   * @param {(background: boolean) => any} continueProcess
+   * @param {{ planFailed?: boolean }} [options] `planFailed`: the update plan could not be read, say so.
+   */
+  export function show(continueProcess, options = {}) {
     continueProcessObj.set(continueProcess);
+    planFailed.set(options.planFailed === true);
 
     modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: 'static',

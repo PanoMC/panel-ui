@@ -1,5 +1,5 @@
 /**
- * Plain helpers of the Compatibility card and the update plan (doc 04 section 7).
+ * Plain helpers of the compatibility icons and the update plan (doc 04 section 7).
  *
  * `GET /panel/compatibility` says which plugins and themes the API level gate refused, which game
  * servers and nodes need their new jar placed by hand, and which addresses outside Pano changed.
@@ -125,13 +125,6 @@ export function safeDownloadPath(value) {
   return path.startsWith('/') && !path.startsWith('//') && !path.includes('\\') ? path : null;
 }
 
-/** The lang key of an agent type's name. */
-export const AGENT_TYPE_KEYS = Object.freeze({
-  SERVER: 'components.compatibility-card.agent-type.SERVER',
-  NODE: 'components.compatibility-card.agent-type.NODE',
-  AGENT: 'components.compatibility-card.agent-type.AGENT',
-});
-
 /**
  * The lang key of a gate verdict's short name. The same words everywhere a row shows one (the card,
  * the addon list, the update plan).
@@ -203,67 +196,115 @@ export function lockedReason(resource, translate, type = 'PLUGIN') {
 }
 
 /**
- * What the card has to say. `theme` is the answer of `/panel/theme/compatibility` (already
- * normalized by `normalizeReport`), or null.
+ * The text of the exclamation icon on a refused or held plugin or theme: why Pano keeps it off and
+ * what to do. Empty for a resource the gate lets run.
  *
- * @param {ReturnType<typeof normalizeCompatibility>} report
- * @param {any} [theme]
+ * @param {{ verdict?: string | null, apiLevel?: number | null, heldBy?: any } | null | undefined} resource
+ * @param {{ min?: number | null, current?: number | null } | null | undefined} range the levels this
+ *   Pano accepts (`apiLevel` of the compatibility report); null when the report is not at hand.
+ * @param {(key: string, options?: any) => string} translate the `$_` of svelte-i18n
  */
-export function cardSections(report, theme = null) {
-  // The backend lists only refused rows; a row that says OK is not a reason to show the card.
-  const resources = (report?.resources ?? []).filter(
-    (row) => row.verdict !== Verdicts.OK || isHeld(row),
+export function refusalProblem(resource, range, translate) {
+  if (!isRefused(resource?.verdict)) {
+    return heldReason(resource, translate);
+  }
+
+  const old = resource.verdict === Verdicts.TOO_OLD;
+  const level = Number.isFinite(resource.apiLevel) ? resource.apiLevel : 0;
+  const ranged = Number.isFinite(range?.min) && Number.isFinite(range?.current);
+
+  return translate(
+    `components.compatibility-card.problem.${old ? 'too-old' : 'too-new'}${ranged ? '' : '-plain'}`,
+    { values: { level, min: range?.min, current: range?.current } },
   );
-  const themeOutdated = theme?.status === 'OUTDATED';
-  const fallback = themeOutdated
-    ? (theme.issues ?? []).filter((issue) => issue?.type !== 'NAMESPACE_CLASH').length
-    : 0;
-
-  const sections = {
-    plugins: resources.filter((row) => row.type === 'PLUGIN'),
-    themes: resources.filter((row) => row.type === 'THEME'),
-    externalUrls: report?.externalUrls ?? [],
-    themeViews:
-      themeOutdated && fallback > 0 ? { theme: theme.theme ?? null, count: fallback } : null,
-  };
-
-  const count =
-    sections.plugins.length +
-    sections.themes.length +
-    sections.externalUrls.length +
-    (sections.themeViews ? 1 : 0);
-
-  return { ...sections, count, visible: count > 0 };
 }
 
-/** The refused rows a Retry could still fix: a compatible version exists, or the store was not asked yet. */
-export function retryable(report) {
-  return (report?.resources ?? []).some((row) => isLocked(row));
+/** The addresses outside Pano that changed for one plugin, from the compatibility report. */
+export function externalUrlsOf(report, pluginId) {
+  return (report?.externalUrls ?? []).filter((row) => row.pluginId === pluginId);
 }
 
 /**
- * The sentence that explains a refused row, as a lang key and its values: what the last reconcile
- * learned about it.
+ * Every problem the list shows as an icon on a plugin card, as lines of one tooltip, and how loud
+ * it is: `danger` while Pano keeps the plugin off, `warning` for addresses to re-enter.
+ *
+ * @param {any} plugin the row of `GET /panel/addons`
+ * @param {ReturnType<typeof normalizeCompatibility> | null} report
+ * @param {(key: string, options?: any) => string} translate
+ * @returns {{ text: string, level: 'danger' | 'warning' } | null}
  */
-export function resourceNote(row) {
-  const held = normalizeHeldBy(row.heldBy);
+export function pluginProblem(plugin, report, translate) {
+  const lines = [];
+  const refusal = refusalProblem(plugin, report?.apiLevel, translate);
 
-  if (held && !isRefused(row.verdict)) {
-    return { key: 'components.compatibility-card.held', values: { name: held.name } };
+  if (refusal) lines.push(refusal);
+
+  if (externalUrlsOf(report, plugin?.id).length > 0) {
+    lines.push(translate('components.compatibility-card.problem.urls'));
   }
 
-  if (row.lastError) {
-    return {
-      key: 'components.compatibility-card.note.error',
-      values: { error: row.lastError },
-    };
+  if (lines.length === 0) return null;
+
+  return { text: lines.join(' · '), level: refusal ? 'danger' : 'warning' };
+}
+
+/**
+ * The same for a theme: refused by the gate, or (the active one) some of its views show a plugin's
+ * default look.
+ *
+ * @param {any} theme the row of `GET /panel/themes`
+ * @param {ReturnType<typeof normalizeCompatibility> | null} report
+ * @param {any} themeReport the normalized `/panel/theme/compatibility` answer, or null
+ * @param {(key: string, options?: any) => string} translate
+ * @returns {{ text: string, level: 'danger' | 'warning' } | null}
+ */
+export function themeProblem(theme, report, themeReport, translate) {
+  const lines = [];
+  const refusal = isRefused(theme?.verdict)
+    ? refusalProblem(theme, report?.apiLevel, translate)
+    : '';
+
+  if (refusal) lines.push(refusal);
+
+  const fallback =
+    theme?.active && themeReport?.status === 'OUTDATED'
+      ? (themeReport.issues ?? []).filter((issue) => issue?.type !== 'NAMESPACE_CLASH').length
+      : 0;
+
+  if (fallback > 0) {
+    lines.push(translate('pages.theme-compat.badge-title', { values: { count: fallback } }));
   }
 
-  if (row.hasCompatibleUpdate) {
-    return { key: 'components.compatibility-card.note.update-found', values: {} };
+  if (lines.length === 0) return null;
+
+  return { text: lines.join(' · '), level: refusal ? 'danger' : 'warning' };
+}
+
+/**
+ * What the sidebar counts: plugins Pano keeps off or holds, plugins with changed addresses, themes
+ * the gate refused, and the active theme when views fall back.
+ *
+ * @param {ReturnType<typeof normalizeCompatibility> | null} report
+ * @param {any} themeReport
+ */
+export function attentionCounts(report, themeReport = null) {
+  const rows = report?.resources ?? [];
+  const plugins = new Set(
+    rows
+      .filter((row) => row.type === 'PLUGIN' && (row.verdict !== Verdicts.OK || isHeld(row)))
+      .map((row) => row.id),
+  );
+
+  for (const row of report?.externalUrls ?? []) {
+    if (row.pluginId) plugins.add(row.pluginId);
   }
 
-  return { key: 'components.compatibility-card.note.no-update', values: {} };
+  const themes = rows.filter((row) => row.type === 'THEME' && row.verdict !== Verdicts.OK).length;
+  const fallback =
+    themeReport?.status === 'OUTDATED' &&
+    (themeReport.issues ?? []).some((issue) => issue?.type !== 'NAMESPACE_CLASH');
+
+  return { addons: plugins.size, themes: themes + (fallback ? 1 : 0) };
 }
 
 /* ------------------------------------------------------------------------------------------ */
@@ -339,24 +380,64 @@ const NO_PLAN_CODES = ['NOT_FOUND', 'PAGE_NOT_FOUND'];
 /**
  * The state machine behind the update button:
  *
- * - `loading`: the plan is being asked for (the store may take 20 seconds); the button is off.
- * - `ready`: the plan is shown; the button is on.
+ * - `loading`: the plan is being asked for (the store may take 20 seconds); the button waits.
+ * - `ready`: the plan is read; the button is on.
  * - `unavailable`: this Pano has no plan endpoint (an older platform); nothing to wait for.
- * - `failed`: the plan could not be read; the button stays off until the admin says they want to
- *   update without it, or a retry reads it.
+ * - `failed`: the plan could not be read; the button is on all the same, the icon beside it warns
+ *   and the confirmation says so.
  *
- * @param {{ status: 'loading' | 'ready' | 'unavailable' | 'failed', plan: any, acknowledged: boolean }} state
+ * @param {{ status: 'loading' | 'ready' | 'unavailable' | 'failed' }} state
  */
 export function canUpdate(state) {
-  switch (state.status) {
-    case 'ready':
-    case 'unavailable':
-      return true;
-    case 'failed':
-      return state.acknowledged === true;
-    default:
-      return false;
+  return state.status !== 'loading';
+}
+
+/**
+ * The lines of the tooltip beside the update button, joined with a dot like a server's problems.
+ * Empty while the update fits (the icon then shows nothing).
+ *
+ * @param {{ status: string, plan: any }} state
+ * @param {(key: string, options?: any) => string} translate
+ */
+export function planProblem(state, translate) {
+  if (state.status !== 'ready' || !state.plan?.target) return '';
+
+  const plan = state.plan;
+  const lines = [];
+  const names = (rows) => rows.map((row) => row.id).join(', ');
+  const disabled = planRows(plan, PlanVerdicts.DISABLE);
+  const updated = planRows(plan, PlanVerdicts.UPDATE);
+  const base = 'pages.settings.updates.plan.tip';
+
+  if (plan.known === false) {
+    lines.push(translate(`${base}.unknown`, { values: { version: plan.target.version } }));
   }
+
+  if (disabled.length > 0) {
+    lines.push(
+      translate(`${base}.disable`, { values: { count: disabled.length, names: names(disabled) } }),
+    );
+  }
+
+  if (updated.length > 0) {
+    lines.push(
+      translate(`${base}.update`, { values: { count: updated.length, names: names(updated) } }),
+    );
+  }
+
+  if (plan.agents.length > 0) {
+    lines.push(
+      translate(`${base}.agents`, {
+        values: { count: plan.agents.length, names: plan.agents.map((row) => row.name).join(', ') },
+      }),
+    );
+  }
+
+  if (plan.storeReachable === false) {
+    lines.push(translate(`${base}.store-down`));
+  }
+
+  return lines.join(' · ');
 }
 
 /**
@@ -366,8 +447,8 @@ export function canUpdate(state) {
  * @param {{ api: { getPlan: () => Promise<any> }, onChange?: (state: any) => void }} options
  */
 export function createPlanController({ api, onChange = () => {} }) {
-  /** @type {{ status: 'loading' | 'ready' | 'unavailable' | 'failed', plan: any, errorCode: string, acknowledged: boolean }} */
-  let state = { status: 'loading', plan: null, errorCode: '', acknowledged: false };
+  /** @type {{ status: 'loading' | 'ready' | 'unavailable' | 'failed', plan: any, errorCode: string }} */
+  let state = { status: 'loading', plan: null, errorCode: '' };
   let run = 0;
 
   const set = (next) => {
@@ -384,7 +465,7 @@ export function createPlanController({ api, onChange = () => {} }) {
     async load() {
       const mine = ++run;
 
-      set({ status: 'loading', errorCode: '', acknowledged: false });
+      set({ status: 'loading', errorCode: '' });
 
       const result = await api.getPlan();
 
@@ -407,76 +488,8 @@ export function createPlanController({ api, onChange = () => {} }) {
       return state;
     },
 
-    /** The admin's "update without the plan" box. Only means something while the plan has failed. */
-    acknowledge(value) {
-      set({ acknowledged: value === true });
-    },
-
     get canUpdate() {
       return canUpdate(state);
-    },
-  };
-}
-
-/* ------------------------------------------------------------------------------------------ */
-/* The Retry of the card                                                                      */
-/* ------------------------------------------------------------------------------------------ */
-
-/**
- * Holds the card's report and runs its Retry (`POST /panel/compatibility/reconcile`). The call
- * answers with the refreshed report, so the card never needs a second read.
- *
- * @param {{ api: { reconcile: () => Promise<any> },
- *   report: ReturnType<typeof normalizeCompatibility>,
- *   notify?: { success: (key: string, values?: any) => void, error: (key: string, values?: any) => void },
- *   onChange?: (state: any) => void }} options
- */
-export function createCompatibilityController({
-  api,
-  report,
-  notify = { success() {}, error() {} },
-  onChange = () => {},
-}) {
-  let state = { report, retrying: false, failed: false };
-
-  const set = (next) => {
-    state = { ...state, ...next };
-    onChange(state);
-  };
-
-  return {
-    get state() {
-      return state;
-    },
-
-    async retry() {
-      if (state.retrying) return state;
-
-      set({ retrying: true, failed: false });
-
-      const result = await api.reconcile();
-      const next = result.ok ? normalizeCompatibility(result.body) : null;
-
-      if (!next) {
-        set({ retrying: false, failed: true });
-        notify.error('components.compatibility-card.retry-failed', {
-          code: result.error?.code ?? 'UNKNOWN',
-        });
-
-        return state;
-      }
-
-      const left = next.resources.filter((row) => isLocked(row)).length;
-
-      set({ report: next, retrying: false, failed: false });
-
-      if (left === 0) {
-        notify.success('components.compatibility-card.retry-done');
-      } else {
-        notify.error('components.compatibility-card.retry-still', { count: left });
-      }
-
-      return state;
     },
   };
 }

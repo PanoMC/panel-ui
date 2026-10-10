@@ -1,4 +1,4 @@
-<AddonApiLevel {plugin} refusedOnly />
+<AddonProblemIcon {plugin} {report} />
 
 {#if $hooks.length > 0 && plugin.status === 'STARTED'}
   <a
@@ -14,9 +14,12 @@
   import { _ } from 'svelte-i18n';
   import { base } from '$app/paths';
   import { panoApiClient } from '$lib/PluginAPI.js';
-  import AddonApiLevel from './AddonApiLevel.svelte';
+  import AddonProblemIcon from './AddonProblemIcon.svelte';
 
   export let plugin;
+
+  /** The compatibility report the list loaded (accepted levels, changed addresses), or null. */
+  export let report = null;
 
   $: hooks = panoApiClient.ui.hook.get(`panel:plugin-detail:content:${plugin.id}`);
 </script>

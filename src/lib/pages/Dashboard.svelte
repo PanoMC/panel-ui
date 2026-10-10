@@ -63,10 +63,6 @@
     LicenseManager so an admin sees them before browsing the addons page.
     Hidden when zero failures or when the dashboard payload doesn't include the field.
   -->
-  <!-- One card for everything the API level gate and the theme need from the admin; it shows only
-       while something is refused, has to be done by hand, or the theme falls back. -->
-  <CompatibilityCard report={data.compatibility} theme={data.themeCompat} />
-
   {#if data.licenseFailedPluginCount && data.licenseFailedPluginCount > 0}
     <div class="alert alert-warning d-flex align-items-center gap-3 mb-0">
       <i class="fa-solid fa-key fa-lg" aria-hidden="true"></i>
@@ -431,8 +427,6 @@
 
   import { normalizeReport } from './view/theme/compat.util.js';
   import { createThemeApi } from './view/theme/theme.api.js';
-  import { createCompatibilityApi } from './addons/compat/compat.api.js';
-  import { normalizeCompatibility } from './addons/compat/compat.util.js';
 
   /**
    * @type {import('@sveltejs/kit').PageLoad}
@@ -446,34 +440,24 @@
     const canReadTheme =
       layoutData?.user && hasPermission(Permissions.MANAGE_VIEW, layoutData.user);
 
-    // The compatibility surface is open to the holders of either permission (doc 04 section 7).
-    const canReadCompatibility =
-      layoutData?.user &&
-      (hasPermission(Permissions.MANAGE_ADDONS, layoutData.user) || canReadTheme);
-
-    const [dashboardResult, activityLogsResult, aboutResult, themeCompat, compatibility] =
-      await Promise.all([
-        ApiUtil.get({
-          path: `/panel/dashboard`,
-          request: event,
-        }).catch(() => null),
-        ApiUtil.get({
-          path: `/panel/logs/activity`,
-          request: event,
-        }).catch(() => null),
-        canFetchAbout
-          ? ApiUtil.get({
-              path: `/panel/settings?type=ABOUT`,
-              request: event,
-            }).catch(() => null)
-          : Promise.resolve(null),
-        // One alert while the active theme is OUTDATED; a failed or refused read just leaves it out.
-        canReadTheme ? createThemeApi(ApiUtil, event).getCompatibility() : Promise.resolve(null),
-        // The refused plugins and themes, the jars to place by hand, the changed addresses.
-        canReadCompatibility
-          ? createCompatibilityApi(ApiUtil, event).getCompatibility()
-          : Promise.resolve(null),
-      ]);
+    const [dashboardResult, activityLogsResult, aboutResult, themeCompat] = await Promise.all([
+      ApiUtil.get({
+        path: `/panel/dashboard`,
+        request: event,
+      }).catch(() => null),
+      ApiUtil.get({
+        path: `/panel/logs/activity`,
+        request: event,
+      }).catch(() => null),
+      canFetchAbout
+        ? ApiUtil.get({
+            path: `/panel/settings?type=ABOUT`,
+            request: event,
+          }).catch(() => null)
+        : Promise.resolve(null),
+      // Feeds the one-time toast while the active theme is OUTDATED; a failed read leaves it out.
+      canReadTheme ? createThemeApi(ApiUtil, event).getCompatibility() : Promise.resolve(null),
+    ]);
 
     const dashboard = dashboardResult && !dashboardResult.error ? dashboardResult : {};
     const activityLogs =
@@ -485,7 +469,6 @@
       activityLogs,
       about,
       themeCompat: themeCompat?.ok ? normalizeReport(themeCompat.body) : null,
-      compatibility: compatibility?.ok ? normalizeCompatibility(compatibility.body) : null,
     };
   }
 </script>
@@ -516,7 +499,6 @@
   import PlayerStatusBadge from '$lib/components/badges/PlayerStatusBadge.svelte';
   import PlayerPermissionBadge from '$lib/components/badges/PlayerPermissionBadge.svelte';
   import ViewAllLink from '$lib/components/ViewAllLink.svelte';
-  import CompatibilityCard from '$lib/components/CompatibilityCard.svelte';
   import { createCompatWatcher } from './view/theme/compat.util.js';
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
 

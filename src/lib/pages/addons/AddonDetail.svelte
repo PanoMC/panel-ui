@@ -2,6 +2,36 @@
   <AddonLicenseCard addon={data.addon} />
   <AddonLicenseEmbed addon={data.addon} />
 
+  {#if urls.length > 0}
+    <!-- The addresses this plugin registered with other services changed: here they are to copy. -->
+    <div class="card" data-external-urls>
+      <div class="card-header">{$_('components.compatibility-card.urls.title')}</div>
+      <div class="card-body">
+        <p class="text-body-secondary">{$_('components.compatibility-card.urls.description')}</p>
+        <ul class="list-unstyled vstack gap-3 mb-0">
+          {#each urls as address (address.url)}
+            <li>
+              {#if address.label}
+                <div class="fw-semibold">{address.label}</div>
+              {/if}
+              <div class="d-flex flex-wrap align-items-center gap-2">
+                <code class="user-select-all text-break">{address.url}</code>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-link"
+                  data-copy-url
+                  onclick={() => copyAddress(address.url)}>
+                  <i class="fa-solid fa-copy me-1" aria-hidden="true"></i>
+                  {$_('buttons.copy')}
+                </button>
+              </div>
+            </li>
+          {/each}
+        </ul>
+      </div>
+    </div>
+  {/if}
+
   <div class="card">
     <div class="card-header">
       {$_('buttons.toggle-details')}
@@ -69,13 +99,27 @@
   import { _ } from 'svelte-i18n';
   import { formatBytes } from '$lib/string.util';
   import AddonApiLevel from './AddonApiLevel.svelte';
-  import { heldReason, isRefused, normalizeHeldBy } from './compat/compat.util.js';
+  import copy from 'copy-to-clipboard';
+  import {
+    showError as showErrorToast,
+    showSuccess as showSuccessToast,
+  } from '$lib/components/ToastContainer.svelte';
+  import { externalUrlsOf, heldReason, isRefused, normalizeHeldBy } from './compat/compat.util.js';
   import AddonLicenseCard from '$lib/components/AddonLicenseCard.svelte';
   import AddonLicenseEmbed from '$lib/components/AddonLicenseEmbed.svelte';
 
   let { data } = $props();
 
   const held = $derived(normalizeHeldBy(data.addon?.heldBy));
+  const urls = $derived(externalUrlsOf(data.compatibility, data.addon?.id));
+
+  function copyAddress(url) {
+    if (copy(url)) {
+      void showSuccessToast('components.compatibility-card.copied');
+    } else {
+      void showErrorToast('components.compatibility-card.copy-failed');
+    }
+  }
 
   // The level and verdict come with the answer of platforms that know them; nothing renders without.
   function hasApiLevel(addon) {

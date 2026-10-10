@@ -11,21 +11,23 @@ import {
 } from '../../view/frontend/testkit.js';
 import { createCompatibilityApi } from './compat.api.js';
 import {
+  attentionCounts,
   canUpdate,
-  cardSections,
-  createCompatibilityController,
   createPlanController,
+  externalUrlsOf,
   normalizeCompatibility,
   normalizePlan,
   planCounts,
   planNeedsAttention,
-  resourceNote,
-  retryable,
+  planProblem,
+  pluginProblem,
+  refusalProblem,
   safeDownloadPath,
   lockedReason,
   heldReason,
   isLocked,
   normalizeHeldBy,
+  themeProblem,
   verdictKey,
 } from './compat.util.js';
 
@@ -38,9 +40,9 @@ mock.module('$lib/components/ToastContainer.svelte', () => ({
 }));
 mock.module('$lib/tooltip.util', () => ({ default: () => ({}) }));
 
-const { default: CompatibilityCard } = await import('$lib/components/CompatibilityCard.svelte');
-const { default: UpdatePlan } = await import('./UpdatePlan.svelte');
-const { default: AgentJarList } = await import('./AgentJarList.svelte');
+const { default: CompatProblemIcon } = await import('$lib/components/CompatProblemIcon.svelte');
+const { default: UpdatePlanIcon } = await import('./UpdatePlanIcon.svelte');
+const { default: AddonProblemIcon } = await import('../AddonProblemIcon.svelte');
 const { default: AddonApiLevel } = await import('../AddonApiLevel.svelte');
 const { default: AddonToggle } = await import('../AddonToggle.svelte');
 const { default: AddonDetail } = await import('../AddonDetail.svelte');
@@ -190,56 +192,80 @@ describe('normalizeCompatibility', () => {
   });
 });
 
-describe('cardSections', () => {
-  test('counts every part and says visible', () => {
-    const sections = cardSections(normalizeCompatibility(REPORT), OUTDATED_THEME);
+const translate = (key, options) => key + JSON.stringify(options?.values ?? {});
 
-    expect(sections.plugins).toHaveLength(1);
-    expect(sections.themes).toHaveLength(1);
-    // The jars to place by hand belong to their servers and nodes, not to this card.
-    expect(sections.agents).toBeUndefined();
-    expect(sections.externalUrls).toHaveLength(1);
-    // The namespace clash is a plugin matter, not a view that shows the default look.
-    expect(sections.themeViews).toEqual({ theme: OUTDATED_THEME.theme, count: 2 });
-    expect(sections.count).toBe(1 + 1 + 1 + 1);
-    expect(sections.visible).toBe(true);
-  });
+describe('the problem texts', () => {
+  const report = normalizeCompatibility(REPORT);
+  const [market, blaze] = report.resources;
 
-  test('nothing to say hides the card', () => {
-    expect(cardSections(normalizeCompatibility({ resources: [], agents: [] }), null).visible).toBe(
-      false,
-    );
-    expect(cardSections(null, null).visible).toBe(false);
-    expect(cardSections(normalizeCompatibility({}), { status: 'OK', issues: [] }).visible).toBe(
-      false,
+  test('a refused plugin says why, its level against the accepted range, and to update', () => {
+    expect(refusalProblem(market, report.apiLevel, translate)).toBe(
+      'components.compatibility-card.problem.too-old{"level":0,"min":1,"current":2}',
     );
     expect(
-      cardSections(normalizeCompatibility({}), { status: 'UNKNOWN', issues: [] }).visible,
-    ).toBe(false);
+      refusalProblem({ verdict: 'TOO_NEW', apiLevel: 9 }, report.apiLevel, translate),
+    ).toContain('problem.too-new{');
+    // Without the report only the plain wording is possible.
+    expect(refusalProblem(market, null, translate)).toContain('problem.too-old-plain');
+    expect(refusalProblem({ verdict: 'OK' }, report.apiLevel, translate)).toBe('');
   });
 
-  test('a row that says OK is not an issue', () => {
-    const report = normalizeCompatibility({
-      resources: [{ id: 'a', type: 'PLUGIN', verdict: 'OK' }],
+  test('a held plugin names the dependency to update', () => {
+    const held = { verdict: 'OK', heldBy: { pluginId: 'm', name: 'Market', verdict: 'TOO_OLD' } };
+
+    expect(refusalProblem(held, report.apiLevel, translate)).toBe(heldReason(held, translate));
+  });
+
+  test('pluginProblem is red for a refusal, amber for changed addresses, and joins both', () => {
+    const premium = { id: 'pano-plugin-premium-login', verdict: 'OK' };
+
+    expect(pluginProblem(market, report, translate).level).toBe('danger');
+    expect(pluginProblem(premium, report, translate)).toEqual({
+      text: 'components.compatibility-card.problem.urls{}',
+      level: 'warning',
     });
-
-    expect(cardSections(report).visible).toBe(false);
+    expect(
+      pluginProblem({ ...market, id: 'pano-plugin-premium-login' }, report, translate).text,
+    ).toContain(' · ');
+    expect(pluginProblem({ id: 'fine', verdict: 'OK' }, report, translate)).toBeNull();
+    expect(pluginProblem({ id: 'fine', verdict: 'OK' }, null, translate)).toBeNull();
   });
 
-  test('retryable only while something is refused', () => {
-    expect(retryable(normalizeCompatibility(REPORT))).toBe(true);
-    expect(retryable(normalizeCompatibility({ agents: REPORT.agents }))).toBe(false);
+  test('externalUrlsOf keeps only the addresses of one plugin', () => {
+    expect(externalUrlsOf(report, 'pano-plugin-premium-login')).toHaveLength(1);
+    expect(externalUrlsOf(report, 'other')).toEqual([]);
+    expect(externalUrlsOf(null, 'other')).toEqual([]);
   });
 
-  test('resourceNote says what the last reconcile learned', () => {
-    const [market, blaze] = normalizeCompatibility(REPORT).resources;
+  test('themeProblem: a refused theme, or the active theme whose views fall back', () => {
+    const themeReport = { status: 'OUTDATED', issues: OUTDATED_THEME.issues };
 
-    expect(resourceNote(market).key).toBe('components.compatibility-card.note.update-found');
-    expect(resourceNote(blaze).key).toBe('components.compatibility-card.note.error');
-    expect(resourceNote({ ...market, hasCompatibleUpdate: false }).key).toBe(
-      'components.compatibility-card.note.no-update',
+    expect(themeProblem({ verdict: 'TOO_OLD', apiLevel: 0 }, report, null, translate).level).toBe(
+      'danger',
     );
+    expect(themeProblem({ active: true, verdict: 'OK' }, report, themeReport, translate)).toEqual({
+      text: 'pages.theme-compat.badge-title{"count":2}',
+      level: 'warning',
+    });
+    // Only the active theme falls back; a theme that is not active shows nothing.
+    expect(
+      themeProblem({ active: false, verdict: 'OK' }, report, themeReport, translate),
+    ).toBeNull();
+    expect(themeProblem({ active: true, verdict: 'OK' }, report, null, translate)).toBeNull();
+  });
+
+  test('the sidebar counts plugins once and themes with fallbacks', () => {
+    expect(attentionCounts(report, { status: 'OUTDATED', issues: OUTDATED_THEME.issues })).toEqual({
+      addons: 2,
+      themes: 2,
+    });
+    expect(attentionCounts(null, null)).toEqual({ addons: 0, themes: 0 });
+    expect(attentionCounts(normalizeCompatibility({}), { status: 'OK', issues: [] })).toEqual({
+      addons: 0,
+      themes: 0,
+    });
     expect(verdictKey('SOMETHING_NEW')).toBe('components.compatibility-card.verdict.UNKNOWN');
+    expect(blaze.type).toBe('THEME');
   });
 });
 
@@ -247,17 +273,14 @@ describe('the api', () => {
   test('asks the paths of doc 04 section 7', async () => {
     const client = stubClient({
       'GET /panel/compatibility': REPORT,
-      'POST /panel/compatibility/reconcile': REPORT,
       'GET /panel/updates/platform/plan': PLAN,
     });
     const api = createCompatibilityApi(client);
 
     expect((await api.getCompatibility()).ok).toBe(true);
-    expect((await api.reconcile()).ok).toBe(true);
     expect((await api.getPlan()).ok).toBe(true);
     expect(client.calls.map((call) => `${call.method} ${call.path}`)).toEqual([
       'GET /panel/compatibility',
-      'POST /panel/compatibility/reconcile',
       'GET /panel/updates/platform/plan',
     ]);
   });
@@ -276,103 +299,6 @@ describe('the api', () => {
     });
 
     expect((await broken.getPlan()).error.code).toBe('NETWORK_ERROR');
-  });
-});
-
-describe('the Retry controller', () => {
-  const recorder = () => {
-    const toasts = [];
-
-    return {
-      toasts,
-      notify: {
-        success: (key, values) => toasts.push(['success', key, values]),
-        error: (key, values) => toasts.push(['error', key, values]),
-      },
-    };
-  };
-
-  test('takes the refreshed report from the answer of the call', async () => {
-    const { toasts, notify } = recorder();
-    const calls = [];
-    const clean = { ...REPORT, resources: [], agents: [], externalUrls: [] };
-    const controller = createCompatibilityController({
-      api: {
-        reconcile: async () => {
-          calls.push('reconcile');
-
-          return { ok: true, body: clean, error: null };
-        },
-      },
-      report: normalizeCompatibility(REPORT),
-      notify,
-    });
-
-    await controller.retry();
-
-    expect(calls).toEqual(['reconcile']);
-    expect(controller.state.report.resources).toEqual([]);
-    expect(controller.state.retrying).toBe(false);
-    expect(toasts).toEqual([['success', 'components.compatibility-card.retry-done', undefined]]);
-  });
-
-  test('says how many are still off when the store had nothing', async () => {
-    const { toasts, notify } = recorder();
-    const controller = createCompatibilityController({
-      api: { reconcile: async () => ({ ok: true, body: REPORT, error: null }) },
-      report: null,
-      notify,
-    });
-
-    await controller.retry();
-
-    expect(toasts).toEqual([['error', 'components.compatibility-card.retry-still', { count: 2 }]]);
-    expect(controller.state.report.resources).toHaveLength(2);
-  });
-
-  test('a failed call keeps the old report and says so', async () => {
-    const { toasts, notify } = recorder();
-    const before = normalizeCompatibility(REPORT);
-    const controller = createCompatibilityController({
-      api: { reconcile: async () => ({ ok: false, body: null, error: { code: 'NO_PERMISSION' } }) },
-      report: before,
-      notify,
-    });
-
-    await controller.retry();
-
-    expect(controller.state.report).toBe(before);
-    expect(controller.state.failed).toBe(true);
-    expect(toasts).toEqual([
-      ['error', 'components.compatibility-card.retry-failed', { code: 'NO_PERMISSION' }],
-    ]);
-  });
-
-  test('a second press while one runs does not start another call', async () => {
-    let calls = 0;
-    let release;
-    const gate = new Promise((resolve) => (release = resolve));
-    const controller = createCompatibilityController({
-      api: {
-        reconcile: async () => {
-          calls++;
-          await gate;
-
-          return { ok: true, body: REPORT, error: null };
-        },
-      },
-      report: null,
-    });
-
-    const first = controller.retry();
-    const second = controller.retry();
-
-    expect(controller.state.retrying).toBe(true);
-
-    release();
-    await Promise.all([first, second]);
-
-    expect(calls).toBe(1);
   });
 });
 
@@ -410,8 +336,8 @@ describe('the update plan', () => {
     expect(canUpdate({ status: 'loading' })).toBe(false);
     expect(canUpdate({ status: 'ready' })).toBe(true);
     expect(canUpdate({ status: 'unavailable' })).toBe(true);
-    expect(canUpdate({ status: 'failed', acknowledged: false })).toBe(false);
-    expect(canUpdate({ status: 'failed', acknowledged: true })).toBe(true);
+    // A plan that could not be read does not lock the button; the icon and the confirmation warn.
+    expect(canUpdate({ status: 'failed' })).toBe(true);
   });
 
   test('loading, then ready', async () => {
@@ -441,7 +367,7 @@ describe('the update plan', () => {
     expect(controller.canUpdate).toBe(true);
   });
 
-  test('any other failure keeps the button off until the admin says so', async () => {
+  test('any other failure leaves the button usable', async () => {
     const controller = createPlanController({
       api: { getPlan: async () => ({ ok: false, body: null, error: { code: 'NETWORK_ERROR' } }) },
     });
@@ -450,13 +376,7 @@ describe('the update plan', () => {
 
     expect(controller.state.status).toBe('failed');
     expect(controller.state.errorCode).toBe('NETWORK_ERROR');
-    expect(controller.canUpdate).toBe(false);
-
-    controller.acknowledge(true);
     expect(controller.canUpdate).toBe(true);
-
-    controller.acknowledge(false);
-    expect(controller.canUpdate).toBe(false);
   });
 
   test('a body that is not a plan is a failure', async () => {
@@ -469,7 +389,7 @@ describe('the update plan', () => {
     expect(controller.state.status).toBe('failed');
   });
 
-  test('a retry drops the acknowledgement and the older answer', async () => {
+  test('a retry drops the older answer', async () => {
     const answers = [];
     const controller = createPlanController({
       api: {
@@ -493,121 +413,105 @@ describe('the update plan', () => {
   });
 });
 
-describe('CompatibilityCard', () => {
-  const render = (props) => renderHtml(CompatibilityCard, props);
+describe('CompatProblemIcon', () => {
+  test('draws the exclamation with the text for a screen reader, red by default', () => {
+    const html = renderHtml(CompatProblemIcon, { text: 'Too old. Update it.' });
 
-  test('renders nothing while everything is compatible', () => {
-    expect(render({ report: normalizeCompatibility({}), theme: null })).not.toContain(
-      'data-compat-card',
+    expect(html).toContain('fa-circle-exclamation');
+    expect(html).toContain('text-danger');
+    expect(html).toContain('aria-label="Too old. Update it."');
+    expect(renderHtml(CompatProblemIcon, { text: 'x', level: 'warning' })).toContain(
+      'text-warning',
     );
-    expect(render({ report: null, theme: null })).not.toContain('data-compat-card');
   });
 
-  test('says loudly what is off and offers Retry', () => {
-    const html = render({ report: normalizeCompatibility(REPORT) });
-    const text = textOf(html);
-
-    expect(html).toContain('data-compat-refused');
-    expect(text).toContain('2 Addons And Themes Are Switched Off');
-    expect(text).toContain('API level 1 to 2');
-    expect(text).toContain('press Retry');
-    expect(html).toContain('data-compat-retry');
-    expect(text).toContain('Retry');
-    // Every row: name, type, version, level, verdict and what the last attempt learned.
-    expect(text).toContain('Market');
-    expect(text).toContain('v1.0.0-dev.18');
-    expect(text).toContain('Too Old');
-    expect(text).toContain('No API level');
-    expect(text).toContain('A compatible version was found in the store');
-    expect(text).toContain('The last attempt failed: DOWNLOAD_FAILED');
-    // A refused theme means the site shows Vanilla, and that is said.
-    expect(text).toContain('Your site shows the bundled Vanilla theme');
-    // The store was not reached in the last run.
-    expect(html).toContain('data-compat-store-down');
-    expect(html).toContain('href="/addons/detail/pano-plugin-market"');
-    expect(html).toContain('href="/view/detail/blaze-theme"');
+  test('draws nothing without a text', () => {
+    expect(renderHtml(CompatProblemIcon, { text: '' })).not.toContain('fa-circle-exclamation');
+    expect(renderHtml(CompatProblemIcon, {})).not.toContain('data-compat-problem');
   });
 
-  test('the jars to place by hand are not announced on the card any more', () => {
-    const html = render({ report: normalizeCompatibility(REPORT) });
-
-    expect(html).not.toContain('data-compat-agent-alert');
-    expect(html).not.toContain('data-compat-agents');
-    expect(textOf(html)).not.toContain('Need A New Jar By Hand');
-  });
-
-  test('only agents affected renders nothing, not an empty card', () => {
-    const html = render({
-      report: normalizeCompatibility({ resources: [], externalUrls: [], agents: REPORT.agents }),
+  test('a refused plugin card shows the icon with the reason, a fine one nothing', () => {
+    const report = normalizeCompatibility(REPORT);
+    const refused = renderHtml(AddonProblemIcon, {
+      plugin: { id: 'pano-plugin-market', status: 'DISABLED', verdict: 'TOO_OLD', apiLevel: 0 },
+      report,
     });
 
-    expect(html).not.toContain('data-compat-card');
-    expect(textOf(html)).toBe('');
+    expect(refused).toContain('data-compat-problem="danger"');
+    expect(refused).toContain('built for API level 0, this Pano accepts 1 to 2');
+    expect(refused).not.toContain('badge');
+
+    const fine = renderHtml(AddonProblemIcon, {
+      plugin: { id: 'fine', status: 'DISABLED', verdict: 'OK', apiLevel: 2 },
+      report,
+    });
+
+    expect(fine).not.toContain('data-compat-problem');
   });
 
-  test('lists the changed addresses with a copy button', () => {
-    const html = render({ report: normalizeCompatibility(REPORT) });
-    const text = textOf(html);
+  test('the detail page lists the changed addresses of that plugin with copy buttons', () => {
+    const addon = {
+      id: 'pano-plugin-premium-login',
+      status: 'STARTED',
+      verdict: 'OK',
+      apiLevel: 2,
+      dependencies: [],
+      requires: '',
+      hash: 'x',
+      size: 1,
+    };
+    const html = renderHtml(AddonDetail, {
+      data: { addon, compatibility: normalizeCompatibility(REPORT) },
+    });
 
-    expect(html).toContain('data-compat-urls');
-    expect(text).toContain('Microsoft redirect URL');
-    expect(text).toContain('https://example.com/api/plugins/pano-plugin-premium-login/callback');
-    expect(html).toContain('data-compat-copy');
-    expect(text).toContain('paste it into the other service');
+    expect(html).toContain('data-external-urls');
+    expect(html).toContain('callback');
+    expect(html).toContain('data-copy-url');
+    expect(html).not.toContain('class="alert');
+
+    const other = renderHtml(AddonDetail, {
+      data: { addon: { ...addon, id: 'other' }, compatibility: normalizeCompatibility(REPORT) },
+    });
+
+    expect(other).not.toContain('data-external-urls');
   });
 
-  test('shows the theme whose views fall back, from the theme report', () => {
-    const html = render({ report: normalizeCompatibility({}), theme: OUTDATED_THEME });
+  test('changed addresses give the plugin card an amber icon', () => {
+    const html = renderHtml(AddonProblemIcon, {
+      plugin: { id: 'pano-plugin-premium-login', status: 'STARTED', verdict: 'OK', apiLevel: 2 },
+      report: normalizeCompatibility(REPORT),
+    });
 
-    expect(html).toContain('data-compat-card');
-    expect(html).toContain('data-compat-alert');
-    expect(textOf(html)).toContain('2 views of blaze-theme show');
-    expect(html).toContain('href="/view/detail/blaze-theme"');
-    // Nothing else shows when only the theme has something to say.
-    expect(html).not.toContain('data-compat-refused');
-    expect(html).not.toContain('data-compat-agent-alert');
-  });
-
-  test('uses the alert structure of the panel design guide', () => {
-    const html = render({ report: normalizeCompatibility(REPORT), theme: OUTDATED_THEME });
-
-    // Titles are h5.alert-heading, actions are alert-btn / alert-link; no other button variant.
-    expect(html).toContain('class="alert-heading mb-2"');
-    expect(html).not.toMatch(/btn-(primary|secondary|warning|danger|outline)/);
-    expect(html).not.toContain('<h6');
+    expect(html).toContain('data-compat-problem="warning"');
+    expect(textOf(html)).not.toContain('example.com');
   });
 });
 
-describe('UpdatePlan', () => {
-  const render = (state) => renderHtml(UpdatePlan, { state });
-  const ready = (plan) => ({ status: 'ready', plan: normalizePlan(plan), acknowledged: false });
+describe('UpdatePlanIcon', () => {
+  const render = (state, props = {}) => renderHtml(UpdatePlanIcon, { state, ...props });
+  const ready = (plan) => ({ status: 'ready', plan: normalizePlan(plan) });
 
-  test('says it is checking while the plan loads', () => {
-    const html = render({ status: 'loading', plan: null, acknowledged: false });
+  test('a spinner while the plan loads', () => {
+    const html = render({ status: 'loading', plan: null });
 
     expect(html).toContain('data-plan-loading');
-    expect(textOf(html)).toContain('up to 20 seconds');
+    expect(html).toContain('spinner-border');
+    expect(html).toContain('up to 20 seconds');
   });
 
-  test('says what will be switched off, what is updated, and what stays', () => {
-    const html = render(ready(PLAN));
-    const text = textOf(html);
+  test('says what will be switched off, what is updated and the jars by hand', () => {
+    const html = render(ready({ ...PLAN, agents: REPORT.agents }));
 
-    expect(html).toContain('data-plan-ready');
-    expect(text).toContain('Read This Before You Update');
-    expect(text).toContain('Pano v2.0.0 runs addons and themes built for API level 2 to 3');
-    expect(html).toContain('data-plan-disable');
-    expect(text).toContain('1 Addon Or Theme Will Be Switched Off');
-    expect(text).toContain('you have to install it by hand');
-    expect(text).toContain('pano-plugin-old');
-    expect(html).toContain('data-plan-update');
-    expect(text).toContain('1 Addon Or Theme Will Be Updated After The Restart');
-    expect(text).toContain('pano-plugin-market');
-    expect(html).toContain('data-plan-compatible');
-    expect(text).toContain('1 addon or theme keeps running as it is.');
+    expect(html).toContain('data-plan-attention');
+    expect(html).toContain('text-warning');
+    expect(html).toContain('1 addon or theme will be switched off');
+    expect(html).toContain('pano-plugin-old');
+    expect(html).toContain('will be updated by Pano after the restart: pano-plugin-market');
+    expect(html).toContain('game servers and nodes need a new jar by hand: Survival, Node One');
+    expect(html).not.toContain('data-plan-retry');
   });
 
-  test('an update that touches nothing is a green notice', () => {
+  test('an update that touches nothing shows no icon at all', () => {
     const html = render(
       ready({
         ...PLAN,
@@ -615,9 +519,8 @@ describe('UpdatePlan', () => {
       }),
     );
 
-    expect(html).toContain('alert-success');
-    expect(textOf(html)).toContain('This Update Fits Your Addons And Themes');
-    expect(html).not.toContain('data-plan-disable');
+    expect(html).not.toContain('fa-circle-exclamation');
+    expect(html).not.toContain('alert');
   });
 
   test('an unknown target says it cannot tell', () => {
@@ -628,41 +531,30 @@ describe('UpdatePlan', () => {
       }),
     );
 
-    expect(html).toContain('data-plan-unknown');
-    expect(textOf(html)).toContain('does not say which API level it needs');
-    expect(html).toContain('alert-warning');
+    expect(html).toContain('does not say which API level it needs');
   });
 
-  test('game servers that need a jar are part of the plan', () => {
-    const html = render(ready({ ...PLAN, resources: [], agents: REPORT.agents }));
-
-    expect(html).toContain('data-plan-agents');
-    expect(html).toContain('href="/api/v1/panel/servers/3/pano-plugin/jar"');
-    expect(textOf(html)).toContain('put the new jar in place of the old one');
-  });
-
-  test('an unreachable store is said and offers a retry', () => {
+  test('an unreachable store is said and offers a retry button', () => {
     const html = render(ready({ ...PLAN, storeReachable: false }));
 
-    expect(html).toContain('data-plan-store-down');
+    expect(html).toContain('The store could not be reached');
     expect(html).toContain('data-plan-retry');
   });
 
-  test('a failed plan offers a retry and the explicit way around it', () => {
-    const html = render({ status: 'failed', plan: null, acknowledged: false });
-    const text = textOf(html);
+  test('a failed plan is a red icon with a retry button and no checkbox', () => {
+    const html = render({ status: 'failed', plan: null });
 
     expect(html).toContain('data-plan-failed');
-    expect(text).toContain('The Update Plan Could Not Be Read');
-    expect(text).toContain('Update without the plan');
+    expect(html).toContain('text-danger');
     expect(html).toContain('data-plan-retry');
-    expect(html).not.toContain('checked');
-    expect(render({ status: 'failed', plan: null, acknowledged: true })).toContain('checked');
+    expect(html).toContain('The update plan could not be read');
+    expect(html).not.toContain('checkbox');
   });
 
   test('draws nothing when the platform has no plan or no update', () => {
-    expect(textOf(render({ status: 'unavailable', plan: null, acknowledged: false }))).toBe('');
-    expect(textOf(render(ready({ target: null, resources: [], agents: [] })))).toBe('');
+    expect(textOf(render({ status: 'unavailable', plan: null }))).toBe('');
+    expect(render({ status: 'unavailable', plan: null })).not.toContain('fa-circle-exclamation');
+    expect(planProblem(ready({ target: null, resources: [], agents: [] }), translate)).toBe('');
   });
 });
 
@@ -677,20 +569,6 @@ describe('AddonApiLevel', () => {
 
   test('shows the verdict of a refused addon in red', () => {
     const html = renderHtml(AddonApiLevel, { plugin: { apiLevel: 0, verdict: 'TOO_OLD' } });
-
-    expect(html).toContain('text-bg-danger');
-    expect(textOf(html)).toContain('Too Old');
-  });
-
-  test('on a card the level is hidden and a refusal still shows', () => {
-    expect(
-      renderHtml(AddonApiLevel, { plugin: { apiLevel: 2, verdict: 'OK' }, refusedOnly: true }),
-    ).not.toContain('data-api-level');
-
-    const html = renderHtml(AddonApiLevel, {
-      plugin: { apiLevel: 0, verdict: 'TOO_OLD' },
-      refusedOnly: true,
-    });
 
     expect(html).toContain('text-bg-danger');
     expect(textOf(html)).toContain('Too Old');
@@ -807,11 +685,11 @@ describe('a plugin held back by a refused required plugin', () => {
     );
   });
 
-  test('the list badge and the detail line say why', () => {
-    const badge = renderHtml(AddonApiLevel, { plugin: held, refusedOnly: true });
+  test('the list icon and the detail line say why', () => {
+    const icon = renderHtml(AddonProblemIcon, { plugin: held });
 
-    expect(badge).toContain('data-held-by="market"');
-    expect(textOf(badge)).toContain('Waiting for Market');
+    expect(icon).toContain('data-compat-problem="danger"');
+    expect(icon).toContain('Needs Market, which is not compatible with this Pano: update Market.');
 
     const detail = renderHtml(AddonDetail, {
       data: { addon: { ...held, dependencies: [], requires: '', hash: 'x', size: 1 } },
@@ -820,7 +698,7 @@ describe('a plugin held back by a refused required plugin', () => {
     expect(textOf(detail)).toContain('update Market');
   });
 
-  test('the compatibility card counts and lists it, the retry counts it as still locked', () => {
+  test('the retry-free counts: the held plugin counts for the sidebar', () => {
     const report = normalizeCompatibility({
       resources: [
         { id: 'market', type: 'PLUGIN', title: 'Market', verdict: 'TOO_OLD', apiLevel: 0 },
@@ -828,15 +706,7 @@ describe('a plugin held back by a refused required plugin', () => {
       ],
     });
 
-    const sections = cardSections(report);
-
-    expect(sections.plugins.map((row) => row.id)).toEqual(['market', 'pay']);
-    expect(sections.count).toBe(2);
-    expect(resourceNote(report.resources[1]).key).toBe('components.compatibility-card.held');
-
-    const html = renderHtml(CompatibilityCard, { report: { ...report, agents: [] } });
-
-    expect(html).toContain('data-held-by="market"');
+    expect(attentionCounts(report)).toEqual({ addons: 2, themes: 0 });
   });
 
   test('every language has the held texts', () => {
@@ -846,16 +716,6 @@ describe('a plugin held back by a refused required plugin', () => {
       expect(card.held).toContain('{name}');
       expect(card['held-short']).toContain('{name}');
     }
-  });
-});
-
-describe('AgentJarList', () => {
-  test('one line per agent', () => {
-    const html = renderHtml(AgentJarList, { agents: normalizeCompatibility(REPORT).agents });
-
-    expect((html.match(/<li>/g) ?? []).length).toBe(2);
-    expect(textOf(html)).toContain('Game server');
-    expect(textOf(html)).toContain('Download Jar');
   });
 });
 
@@ -873,7 +733,7 @@ describe('lang files', () => {
         .filter((name) => name.endsWith('.svelte'))
         .map((n) => join(COMPONENT_DIRS[0], n)),
       join(COMPONENT_DIRS[1], 'AddonApiLevel.svelte'),
-      join(COMPONENT_DIRS[2], 'CompatibilityCard.svelte'),
+      join(COMPONENT_DIRS[2], 'CompatProblemIcon.svelte'),
     ];
     const keys = new Set();
 
@@ -900,15 +760,26 @@ describe('lang files', () => {
       expect(typeof lookup(messages, verdictKey(verdict))).toBe('string');
     }
 
-    for (const type of ['PLUGIN', 'THEME']) {
-      expect(typeof lookup(messages, `components.compatibility-card.type.${type}`)).toBe('string');
-    }
-
-    for (const type of ['SERVER', 'NODE', 'AGENT']) {
-      expect(typeof lookup(messages, `components.compatibility-card.agent-type.${type}`)).toBe(
+    // The problem texts and the plan tooltip lines are picked at run time.
+    for (const name of ['too-old', 'too-new', 'too-old-plain', 'too-new-plain', 'urls']) {
+      expect(typeof lookup(messages, `components.compatibility-card.problem.${name}`)).toBe(
         'string',
       );
     }
+
+    for (const name of ['unknown', 'disable', 'update', 'agents', 'store-down']) {
+      expect(typeof lookup(messages, `pages.settings.updates.plan.tip.${name}`)).toBe('string');
+    }
+
+    for (const name of ['addons', 'themes']) {
+      expect(typeof lookup(messages, `components.site-navigation-menu.attention.${name}`)).toBe(
+        'string',
+      );
+    }
+
+    expect(typeof lookup(messages, 'components.modals.confirm-update-platform.plan-failed')).toBe(
+      'string',
+    );
 
     expect(typeof messages.buttons.retry).toBe('string');
   });

@@ -32,14 +32,7 @@
    */
   export let plugin;
 
-  /**
-   * Cards and list rows pass true: only the verdict of a refused addon shows there,
-   * the level itself belongs to the detail page.
-   * @type {boolean}
-   */
-  export let refusedOnly = false;
-
   $: refused = isRefused(plugin?.verdict);
   $: held = normalizeHeldBy(plugin?.heldBy);
-  $: shown = refused || (!refusedOnly && Number.isFinite(plugin?.apiLevel));
+  $: shown = refused || Number.isFinite(plugin?.apiLevel);
 </script>

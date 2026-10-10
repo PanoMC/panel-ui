@@ -115,6 +115,10 @@
                     on:click={() => copyHashToClipboard(data.platformUpdate.hash)}>
                     <i class="fa-solid fa-hashtag fa-lg"></i>
                   </button>
+                  <!-- What this update does to the plugins and themes, read before the button works -->
+                  {#if !$platformUpdating && !platformUpdateError}
+                    <UpdatePlanIcon state={planState} onretry={() => planController.load()} />
+                  {/if}
                   <button
                     class="btn btn-sm btn-secondary d-flex align-items-center gap-2"
                     title={updateAllowed ? '' : $_('pages.settings.updates.plan.waiting')}
@@ -135,16 +139,6 @@
                   <!-- Dropped btn-group since only one button remains in the main action area -->
                 </div>
               </div>
-
-              <!-- What this update does to the plugins and themes, before the button works -->
-              {#if !$platformUpdating && !platformUpdateError}
-                <div class="mt-3">
-                  <UpdatePlan
-                    state={planState}
-                    onretry={() => planController.load()}
-                    onacknowledge={(value) => planController.acknowledge(value)} />
-                </div>
-              {/if}
 
               <!-- Progress -->
               {#if $platformUpdating || platformUpdateError}
@@ -506,7 +500,7 @@
   import { createCompatWatcher } from '$lib/pages/view/theme/compat.util.js';
   import { createThemeApi } from '$lib/pages/view/theme/theme.api.js';
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
-  import UpdatePlan from '$lib/pages/addons/compat/UpdatePlan.svelte';
+  import UpdatePlanIcon from '$lib/pages/addons/compat/UpdatePlanIcon.svelte';
   import { createCompatibilityApi } from '$lib/pages/addons/compat/compat.api.js';
   import { canUpdate, createPlanController } from '$lib/pages/addons/compat/compat.util.js';
 
@@ -585,8 +579,8 @@
     }
   }
 
-  // The update plan (doc 04 section 7, gate 2): the platform update button works once it is read.
-  let planState = { status: 'loading', plan: null, errorCode: '', acknowledged: false };
+  // The update plan (doc 04 section 7, gate 2): the platform update button waits while it is read.
+  let planState = { status: 'loading', plan: null, errorCode: '' };
   let planVersion = null;
   const planController = createPlanController({
     api: createCompatibilityApi(ApiUtil),
@@ -797,9 +791,12 @@
       return;
     }
 
-    showUpdatePlatformModal((background) => {
-      installPlatformUpdate(background);
-    });
+    showUpdatePlatformModal(
+      (background) => {
+        installPlatformUpdate(background);
+      },
+      { planFailed: planState.status === 'failed' },
+    );
   }
 
   async function updateResource(update) {

@@ -148,6 +148,8 @@
 
 <script module>
   import ApiUtilModule from '$lib/api.util.js';
+  import { createCompatibilityApi } from '$lib/pages/addons/compat/compat.api.js';
+  import { normalizeCompatibility } from '$lib/pages/addons/compat/compat.util.js';
   import { error } from '@sveltejs/kit';
   import { executeLifecycle, executeHookLoad } from '$lib/PluginAPI.js';
   import { setContext } from 'svelte';
@@ -186,8 +188,12 @@
 
     await executeLifecycle('panel:addon-detail:load', { addon: body.data }, event);
 
+    // The addresses outside Pano that changed for this plugin; a failed read just leaves them out.
+    const compatibility = await createCompatibilityApi(ApiUtilModule, event).getCompatibility();
+
     return {
       addon: body.data,
+      compatibility: compatibility.ok ? normalizeCompatibility(compatibility.body) : null,
       hookProps: {
         'panel:plugin-detail:content': globalHookProps,
         [`panel:plugin-detail:content:${addonId}`]: specificHookProps,

@@ -79,6 +79,7 @@
     {/if}
     <div class="row row-cols-xl-2 row-cols-1 g-3">
       {#each sortedThemes as theme (theme.id)}
+        {@const problem = themeProblem(theme, compatibility, compat, $_)}
         <div class="col">
           <a href="{base}/view/detail/{theme.id}" class="text-decoration-none">
             <div
@@ -116,9 +117,8 @@
                     </small>
                   </div>
                   <div class="hstack gap-2">
-                    <AddonApiLevel plugin={theme} refusedOnly />
+                    <CompatProblemIcon text={problem?.text} level={problem?.level} />
                     {#if theme.active}
-                      <ThemeCompatBadge report={compat} />
                       <span class="badge text-bg-success">{$_('pages.themes.active')}</span>
                     {/if}
                   </div>
@@ -154,6 +154,8 @@
 
   import { normalizeReport } from './theme/compat.util.js';
   import { createThemeApi } from './theme/theme.api.js';
+  import { createCompatibilityApi } from '../addons/compat/compat.api.js';
+  import { normalizeCompatibility } from '../addons/compat/compat.util.js';
 
   export const PageTypes = Object.freeze({
     ALL: 'ALL',
@@ -191,14 +193,19 @@
       throw error(500, body.error?.code);
     }
 
-    // The override warnings of the active theme; a failed read only leaves the badge out.
-    const compat = await createThemeApi(ApiUtil, event).getCompatibility();
+    // The override warnings of the active theme and the accepted API levels; a failed read only
+    // leaves the icon's details out.
+    const [compat, compatibility] = await Promise.all([
+      createThemeApi(ApiUtil, event).getCompatibility(),
+      createCompatibilityApi(ApiUtil, event).getCompatibility(),
+    ]);
 
     return {
       pageType: status,
       themes: body.items,
       failedLogin,
       compat: compat.ok ? normalizeReport(compat.body) : null,
+      compatibility: compatibility.ok ? normalizeCompatibility(compatibility.body) : null,
     };
   }
 
@@ -224,6 +231,8 @@
   import { _ } from 'svelte-i18n';
 
   import { base } from '$app/paths';
+  import { browser } from '$app/environment';
+  import { refreshCompatAttention } from '$lib/compat-attention.store.js';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import { goto, invalidate } from '$app/navigation';
 
@@ -237,13 +246,17 @@
     show as showInstallResourceModal,
   } from '$lib/components/modals/InstallResourceModal.svelte';
   import FailedLoginPanoStoreAlert from '$lib/components/FailedLoginPanoStoreAlert.svelte';
-  import ThemeCompatBadge from './theme/ThemeCompatBadge.svelte';
-  import AddonApiLevel from '../addons/AddonApiLevel.svelte';
+  import CompatProblemIcon from '$lib/components/CompatProblemIcon.svelte';
+  import { themeProblem } from '../addons/compat/compat.util.js';
   import { rememberReport } from './theme/compat.util.js';
 
   export let data;
 
+  // The sidebar's exclamation icons follow what this list just loaded.
+  $: if (browser) void (data.compatibility, refreshCompatAttention());
+
   $: compat = data.compat ?? null;
+  $: compatibility = data.compatibility ?? null;
 
   let search = '';
   let isSearching = false;

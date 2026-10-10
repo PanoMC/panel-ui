@@ -22,9 +22,7 @@ import {
   optionLabel,
 } from './home.controller.js';
 
-const { default: ThemeCompatBadge } = await import('./ThemeCompatBadge.svelte');
 const { default: ThemeCompatIssues } = await import('./ThemeCompatIssues.svelte');
-const { default: ThemeCompatAlert } = await import('./ThemeCompatAlert.svelte');
 const { default: HomePageSelect } = await import('./HomePageSelect.svelte');
 const { default: SourceTag } = await import('../../translations/SourceTag.svelte');
 
@@ -161,46 +159,6 @@ describe('issue sentences', () => {
     expect(normalizeReport(null)).toBeNull();
     expect(normalizeReport({ error: { code: 'NO_PERMISSION' } })).toBeNull();
     expect(normalizeReport({ status: 'WEIRD' }).status).toBe('UNKNOWN');
-  });
-});
-
-describe('badge and dashboard alert', () => {
-  test('the badge counts the views on the default look, not the namespace clash', () => {
-    const html = renderHtml(ThemeCompatBadge, { report: normalizeReport(REPORT) });
-
-    expect(html).toContain('data-compat-badge');
-    expect(textOf(html)).toBe('2 Views Outdated');
-  });
-
-  test('the badge is not shown for OK or UNKNOWN', () => {
-    for (const status of ['OK', 'UNKNOWN']) {
-      const html = renderHtml(ThemeCompatBadge, {
-        report: normalizeReport({ ...REPORT, status }),
-      });
-
-      expect(html).not.toContain('data-compat-badge');
-    }
-
-    expect(renderHtml(ThemeCompatBadge, { report: null })).not.toContain('data-compat-badge');
-  });
-
-  test('the dashboard alert shows while OUTDATED and links to the theme', () => {
-    const html = renderHtml(ThemeCompatAlert, { report: normalizeReport(REPORT) });
-
-    expect(html).toContain('data-compat-alert');
-    expect(html).toContain('class="alert alert-warning');
-    expect(html).toContain('<h5 class="alert-heading mb-2">');
-    expect(html).toContain('href="/view/detail/blaze-theme"');
-    expect(textOf(html)).toContain(
-      "2 views of blaze-theme show the plugin's default look because the plugin changed after the theme was made.",
-    );
-  });
-
-  test('the dashboard alert is gone when the theme is OK or the read failed', () => {
-    expect(renderHtml(ThemeCompatAlert, { report: normalizeReport(OK_REPORT) })).not.toContain(
-      'data-compat-alert',
-    );
-    expect(renderHtml(ThemeCompatAlert, { report: null })).not.toContain('data-compat-alert');
   });
 });
 
@@ -525,12 +483,8 @@ describe('lang keys', () => {
   const KEYS = [
     'pages.theme-compat.title',
     'pages.theme-compat.description',
-    'pages.theme-compat.badge',
     'pages.theme-compat.badge-title',
     'pages.theme-compat.toast-more',
-    'pages.theme-compat.alert.title',
-    'pages.theme-compat.alert.description',
-    'pages.theme-compat.alert.view',
     'pages.theme-settings.home.label',
     'pages.theme-settings.home.description',
     'pages.theme-settings.home.default',

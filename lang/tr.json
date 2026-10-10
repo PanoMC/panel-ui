@@ -775,31 +775,17 @@
           "loading": "Bu güncellemenin eklenti ve temalarınıza ne yapacağı kontrol ediliyor. Bu 20 saniyeye kadar sürebilir.",
           "waiting": "Önce güncelleme planını bekleyin.",
           "failed": {
-            "title": "Güncelleme Planı Okunamadı",
-            "description": "Pano bu güncellemenin eklenti ve temalarınıza ne yapacağını bulamadı; bu yüzden güncelleme düğmesi kapalı. Yeniden Dene'ye basın ya da aşağıdaki kutuyu işaretleyip kendi sorumluluğunuzda güncelleyin.",
-            "acknowledge": "Plansız güncelle. Sonrasında eklenti ya da temaların kapanabileceğini biliyorum."
+            "title": "Güncelleme planı okunamadı",
+            "description": "Pano bu güncellemenin eklenti ve temalarınıza ne yapacağını bulamadı. Yine de güncelleyebilirsiniz; sonrasında kontrol edin."
           },
-          "attention": {
-            "title": "Güncellemeden Önce Bunu Okuyun"
-          },
-          "safe": {
-            "title": "Bu Güncelleme Eklenti Ve Temalarınıza Uyuyor"
-          },
-          "target": "Pano {version}, API seviyesi {min} ile {current} arasında yapılmış eklenti ve temaları çalıştırır.",
           "unknown": "Pano {version} hangi API seviyesini gerektirdiğini bildirmiyor; bu yüzden eklenti ve temalarınıza ne olacağı bilinemiyor. Sonrasında kendiniz kontrol edin.",
-          "disable": {
-            "title": "{count, plural, one {# Eklenti Ya Da Tema Kapanacak} other {# Eklenti Ve Tema Kapanacak}}",
-            "description": "Mağazada bunların uyumlu sürümü yok. Yeniden başlatmadan sonra yapımcıları bir sürüm yayımlayana kadar kapalı kalırlar ve o sürümü elle kurmanız gerekir."
-          },
-          "update": {
-            "title": "{count, plural, one {# Eklenti Ya Da Tema Yeniden Başlatmadan Sonra Güncellenecek} other {# Eklenti Ve Tema Yeniden Başlatmadan Sonra Güncellenecek}}",
-            "description": "Pano yeniden başlarken mağazadan uyumlu sürümü kurar. Bunun için sunucunun internet erişimi olmalı."
-          },
-          "agents": {
-            "title": "{count, plural, one {# Oyun Sunucusu Ya Da Node İçin Yeni Jar Elle Konmalı} other {# Oyun Sunucusu Ve Node İçin Yeni Jar Elle Konmalı}}"
-          },
-          "store-down": "Mağazaya ulaşılamadı; bu yüzden yukarıdaki listede var olan güncellemeler eksik olabilir. Karar vermeden önce Yeniden Dene'ye basın.",
-          "compatible": "{count, plural, one {# eklenti ya da tema olduğu gibi çalışmaya devam eder.} other {# eklenti ve tema olduğu gibi çalışmaya devam eder.}}"
+          "tip": {
+            "unknown": "Pano {version} hangi API seviyesini gerektirdiğini bildirmiyor; eklenti ve temalarınıza etkisi bilinmiyor. Sonrasında kontrol edin.",
+            "disable": "{count, plural, one {# eklenti ya da tema kapatılacak} other {# eklenti ve tema kapatılacak}} (mağazada uyumlu sürüm yok): {names}.",
+            "update": "{count, plural, one {# eklenti ya da tema} other {# eklenti ve tema}} yeniden başlatmadan sonra Pano tarafından güncellenecek: {names}.",
+            "agents": "{count, plural, one {# oyun sunucusu ya da node} other {# oyun sunucusu ve node}} için yeni jar elle konmalı: {names}.",
+            "store-down": "Mağazaya ulaşılamadı, bu yüzden güncellemeler eksik olabilir. Yeniden dene'ye basın."
+          }
         }
       },
       "backups": {
@@ -2916,7 +2902,6 @@
     "theme-compat": {
       "title": "Bazı Tema Görünümleri Eklentinin Varsayılanını Gösteriyor",
       "description": "Etkin temanın bu görünümleri eklentilerinin eski bir sürümü için yapılmış; bu yüzden eklentinin kendi görünümü gösteriliyor. Hiçbir şey bozuk değil ve eklenti güncellemeleri asla engellenmez; temayı güncelleyin ya da yapımcısından yeni sürüm isteyin.",
-      "badge": "{count, plural, one {# Görünüm Eski} other {# Görünüm Eski}}",
       "badge-title": "{count, plural, one {Bu temanın # görünümü eklentinin varsayılan görünümünü gösteriyor} other {Bu temanın # görünümü eklentinin varsayılan görünümünü gösteriyor}}",
       "toast-more": "{count, plural, one {# görünüm daha eklentinin varsayılan görünümünü gösteriyor. Görünüm, Temalar sayfasına bakın.} other {# görünüm daha eklentinin varsayılan görünümünü gösteriyor. Görünüm, Temalar sayfasına bakın.}}",
       "issues": {
@@ -2926,11 +2911,6 @@
         "ENGINE_MISMATCH": "Tema motorunun {view} görünümü motorun varsayılan görünümünü gösteriyor: tema {themeContract}. sürüm için yapılmış, motor {engineContract}. sürümde",
         "NAMESPACE_CLASH": "{pluginId} eklentisi {namespace} kısa adını istiyor ama bu ad zaten {heldBy} tarafından kullanılıyor; eklentinin site sayfaları gösterilmiyor",
         "UNKNOWN": "{view} görünümünde bu panelin henüz tanımadığı bir sorun var ({type})"
-      },
-      "alert": {
-        "title": "Tema Bazı Eklentiler İçin Güncel Değil",
-        "description": "Eklenti tema yapıldıktan sonra değiştiği için {theme} temasının {count, plural, one {# görünümü} other {# görünümü}} eklentinin varsayılan görünümünü gösteriyor.",
-        "view": "Ayrıntıları Gör"
       }
     },
     "webhooks": {
@@ -3249,7 +3229,11 @@
       "logs": "Kayıtlar",
       "settings": "Ayarlar",
       "translations": "Çeviriler",
-      "backups": "Yedekler"
+      "backups": "Yedekler",
+      "attention": {
+        "addons": "{count, plural, one {# eklenti dikkat istiyor} other {# eklenti dikkat istiyor}}",
+        "themes": "{count, plural, one {# tema dikkat istiyor} other {# tema dikkat istiyor}}"
+      }
     },
     "navbar": {
       "selected-server": "Seçili Sunucu",
@@ -3424,7 +3408,8 @@
         "title": "Platform güncellensin mi?",
         "description": "Güncelleme sırasında Pano birkaç dakika erişilemez olabilir. Bu sayfadan ayrılsanız bile güncelleme arka planda devam eder.",
         "terminal-mode-warning": "Pano şu anda bir terminale bağlı çalışıyor. Terminal'den bağımsız arkaplanda çalışma moduna geçsin mi?",
-        "restart-in-background": "Güncellemeden sonra Pano'yu arka plan modunda yeniden başlat"
+        "restart-in-background": "Güncellemeden sonra Pano'yu arka plan modunda yeniden başlat",
+        "plan-failed": "Pano güncelleme planını okuyamadı; bu yüzden güncellemenin eklenti ve temalarınıza ne yapacağını bilmiyor. Güncellemeden sonra onları kontrol edin."
       },
       "confirm-update-resource": {
         "title": "Bu kaynak güncellensin mi?",
@@ -4332,11 +4317,6 @@
       }
     },
     "compatibility-card": {
-      "title": "{count, plural, one {# Uyumluluk Sorunu} other {# Uyumluluk Sorunu}}",
-      "type": {
-        "PLUGIN": "Eklenti",
-        "THEME": "Tema"
-      },
       "verdict": {
         "OK": "Uyumlu",
         "TOO_OLD": "Çok Eski",
@@ -4345,46 +4325,25 @@
       },
       "level": "API seviyesi {level}",
       "level-short": "API {level}",
-      "level-none": "API seviyesi yok (API seviyelerinden önce yapılmış)",
       "row-level": "API seviyesi {level} için yapılmış",
       "row-refused": "API seviyesi {level} için yapılmış. Bu Pano onu çalıştırmıyor.",
       "locked": "Bu Pano ile uyumlu değil (API seviyesi {level} için yapılmış). Güncellenene kadar kapalı kalır.",
       "locked-theme": "Bu Pano ile uyumlu değil (API seviyesi {level} için yapılmış). Güncellenene kadar etkinleştirilemez.",
       "held": "{name} gerekiyor ve o bu Pano ile uyumlu değil: {name} eklentisini güncelleyin. Bu eklenti ardından kendiliğinden başlar.",
       "held-short": "{name} bekleniyor",
-      "refused": {
-        "title": "{count, plural, one {# Eklenti Ya Da Tema Kapalı} other {# Eklenti Ve Tema Kapalı}}",
-        "description": "Bu Pano, API seviyesi {min} ile {current} arasında yapılmış eklenti ve temaları çalıştırır. Aşağıdakiler başka bir seviye için yapılmış; bu yüzden Pano onları kapalı tutuyor. Hiçbiri kalıcı olarak devre dışı bırakılmadı: uyumlu bir sürüm kurulur kurulmaz kendiliğinden açılır. Yapmanız gereken: Pano'nun mağazadan uyumlu sürüm araması için Yeniden Dene'ye basın ya da Güncellemeler sayfasından elle güncelleyin. Kapalı bir tema yerine pakete dahil Vanilla teması gösterilir."
-      },
-      "note": {
-        "error": "Son deneme başarısız oldu: {error}",
-        "update-found": "Mağazada uyumlu bir sürüm bulundu. Kurmak için Yeniden Dene'ye basın.",
-        "no-update": "Mağazada uyumlu sürüm yok. Yapımcısından güncelleme isteyin ya da kaldırın."
-      },
-      "theme-fallback": "Bu düzelene kadar siteniz pakete dahil Vanilla temasını gösterir.",
-      "store-down": "Mağazaya ulaşılamadı; bu yüzden Pano uyumlu sürümleri arayamadı. Bu sunucunun internet erişimini kontrol edin, sonra Yeniden Dene'ye basın.",
-      "open-updates": "Güncellemeleri Aç",
-      "retry-done": "Her şey artık uyumlu.",
-      "retry-still": "{count, plural, one {# öğe hâlâ kapalı.} other {# öğe hâlâ kapalı.}}",
-      "retry-failed": "Yeniden deneme başarısız oldu ({code}).",
-      "agents": {
-        "title": "{count, plural, one {# Oyun Sunucusu Ya Da Node İçin Yeni Jar Elle Konmalı} other {# Oyun Sunucusu Ve Node İçin Yeni Jar Elle Konmalı}}",
-        "description": "Bunlar hâlâ bu Pano'nun yeni API'sine ulaşamayan eski bir jar çalıştırıyor ve Pano onu sizin yerinize değiştiremez. Her biri yeni jar ile yeniden bağlanana kadar bu listede kalır.",
-        "steps": "Her biri için: jar'ı indirin, sunucuyu ya da node'u durdurun, eski jar'ın yerine yenisini koyun ve yeniden başlatın."
-      },
-      "agent-type": {
-        "SERVER": "Oyun sunucusu",
-        "NODE": "Node",
-        "AGENT": "Agent"
-      },
-      "agent-protocol": "protokol {protocol} bildiriyor, {required} gerekiyor",
-      "download-jar": "Jar'ı İndir",
       "urls": {
-        "title": "{count, plural, one {# Pano Dışı Adres Değişti} other {# Pano Dışı Adres Değişti}}",
-        "description": "Eklentiler bu adresleri başka hizmetlere (giriş uygulaması, ödeme geçidi gibi) kaydetmişti. Bu güncellemeyle değiştiler. Her birini kopyalayıp diğer hizmetin ayarlarına elle yapıştırın; yapana kadar o adresi kullanan özellik çalışmaz."
+        "title": "Pano Dışındaki Adresler Değişti",
+        "description": "Bu eklenti, giriş uygulaması ya da ödeme geçidi gibi başka hizmetlere bu adresleri kaydetmişti. Bir güncellemeyle değiştiler. Her birini kopyalayıp diğer hizmetin ayarlarına elle yapıştırın; yapana kadar bunu kullanan özellik çalışmaz."
       },
       "copied": "Adres kopyalandı.",
-      "copy-failed": "Kopyalanamadı. Adresi seçip elle kopyalayın."
+      "copy-failed": "Kopyalanamadı. Adresi seçip elle kopyalayın.",
+      "problem": {
+        "too-old": "Bu Pano için çok eski: API seviyesi {level} için yapılmış, bu Pano {min} ile {current} arasını kabul ediyor. Güncelleyin.",
+        "too-new": "Bu Pano için çok yeni: API seviyesi {level} için yapılmış, bu Pano {min} ile {current} arasını kabul ediyor. Pano'yu güncelleyin ya da eskisini kurun.",
+        "too-old-plain": "Bu Pano için çok eski (API seviyesi {level} için yapılmış). Güncelleyin.",
+        "too-new-plain": "Bu Pano için çok yeni (API seviyesi {level} için yapılmış). Pano'yu güncelleyin ya da eskisini kurun.",
+        "urls": "Pano dışındaki adresleri değişti. Yenilerini sağlayıcıda girin; detay sayfasında yazıyor."
+      }
     }
   },
   "page-error": {
