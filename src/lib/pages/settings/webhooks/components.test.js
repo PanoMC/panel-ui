@@ -269,7 +269,7 @@ describe('Endpoints tab', () => {
     const html = render(empty);
 
     expect(html).not.toContain('<table');
-    expect(textOf(html)).toContain('No webhooks yet.');
+    expect(textOf(html)).toContain('Here is empty.');
     expect(html).not.toMatch(/<button[^>]*disabled[^>]*data-create-endpoint/);
   });
 
@@ -405,7 +405,7 @@ describe('Deliveries tab', () => {
     );
 
     expect(empty).not.toContain('<table');
-    expect(textOf(empty)).toContain('No deliveries yet.');
+    expect(textOf(empty)).toContain('Here is empty.');
 
     const controller = deliveriesController({}, { initial: null });
 
