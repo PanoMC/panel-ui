@@ -2699,7 +2699,7 @@
     "frontend": {
       "title": "Ön Yüz",
       "settings-button": "Ön yüz ayarları",
-      "locked": "Anahtarlar ve izinli kaynaklar yalnızca ön yüz bir tema olmadığında çalışır. Kullanmak için modu değiştirin.",
+      "locked": "Ön yüz anahtarları yalnızca ön yüz bir tema olmadığında çalışır. Oluşturmak için modu değiştirin.",
       "not-shown": "Ziyaretçilere gösterilmiyor: ön yüz {mode} olarak ayarlı.",
       "load-failed": "Ön yüz ayarları yüklenemedi.",
       "copied": "Panoya kopyalandı.",
@@ -2814,7 +2814,7 @@
         "FILE_TOO_LARGE": "Dosya 100 MB'tan büyük.",
         "NOT_A_ZIP": "Bir .zip dosyası seçin.",
         "FRONTEND_KEY_LIMIT_REACHED": "Ön yüz anahtarı sınırına ulaştınız. Önce birini iptal edin.",
-        "FRONTEND_ACCESS_DISABLED": "Ön yüz bir tema iken ön yüz anahtarları ve izinli kaynaklar kapalıdır. Önce modu değiştirin.",
+        "FRONTEND_ACCESS_DISABLED": "Ön yüz bir tema iken ön yüz anahtarları kapalıdır. Önce modu değiştirin.",
         "INVALID_FIELDS": "Vurgulanan alanları kontrol edin.",
         "DISABLED_FOR_DEMO": "Bu, demoda devre dışı.",
         "NETWORK_ERROR": "Pano yanıt vermedi. Tekrar deneyin.",

@@ -51,7 +51,7 @@
     aria-labelledby="frontend-tab-origins"
     hidden={tab !== 'origins'}>
     {#if originsController}
-      <FrontendOrigins controller={originsController} {locked} />
+      <FrontendOrigins controller={originsController} />
     {:else}
       {@render loadFailed()}
     {/if}
@@ -123,8 +123,8 @@
   /**
    * The body of the Front-end settings modal (Themes page): the proxy banner and five tabs, Mode, Keys,
    * Allowed origins, Link targets and Settings. `api`, `notify` and `confirm` default to the panel's own;
-   * they are props so a test can pass stubs. While the saved mode is Theme, headless access is off: the
-   * Keys and Allowed origins tabs stay but cannot create or add. `onmodesaved` gets the saved mode;
+   * they are props so a test can pass stubs. While the saved mode is Theme, front-end keys are off: the
+   * Keys tab stays but cannot create. `onmodesaved` gets the saved mode;
    * `onretry` runs when a failed read's retry button is pressed.
    * @type {{ data: { keys: any, frontend: any, proxyStatus: any, origins?: any, urls?: any, settings?: any }, tab?: string, api?: any, notify?: any, confirm?: any, onmodesaved?: (mode: string) => void, onretry?: () => void }}
    */

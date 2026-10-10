@@ -701,7 +701,7 @@ describe('Front-end settings tabs', () => {
   });
 });
 
-describe('Only the selected front-end is used (headless is off in Theme mode)', () => {
+describe('Only the selected front-end is used (front-end keys are off in Theme mode)', () => {
   const dataFor = (mode) => ({
     keys: {
       items: [{ id: 1, name: 'my-site', hint: 'ab12', createdAt: 1, lastUsedAt: null }],
@@ -721,15 +721,12 @@ describe('Only the selected front-end is used (headless is off in Theme mode)', 
       confirm: () => {},
     });
 
-  test('with the saved mode Theme, create and add are disabled and the sentence is shown', () => {
+  test('with the saved mode Theme, key creation is disabled and the sentence is shown', () => {
     const html = renderContent('THEME');
 
     expect(tagWith(html, 'data-create-key')).toContain('disabled');
-    expect(tagWith(html, 'data-add-origin')).toContain('disabled');
-    expect(html.match(/data-frontend-locked/g)).toHaveLength(2);
-    expect(textOf(html)).toContain(
-      'Keys and allowed origins work only when the front-end is not a theme.',
-    );
+    expect(html.match(/data-frontend-locked/g)).toHaveLength(1);
+    expect(textOf(html)).toContain('Front-end keys work only when the front-end is not a theme.');
   });
 
   test('existing keys and origins stay listed and can still be removed', () => {
@@ -741,12 +738,17 @@ describe('Only the selected front-end is used (headless is off in Theme mode)', 
     expect(html).toContain('Remove');
   });
 
+  test('allowed origins stay fully usable in Theme mode', () => {
+    const html = renderContent('THEME');
+
+    expect(tagWith(html, 'data-add-origin')).not.toContain('disabled');
+  });
+
   test('another saved mode leaves the actions enabled and shows no sentence', () => {
     for (const mode of ['EXTERNAL', 'CUSTOM_APP', 'NONE']) {
       const html = renderContent(mode);
 
       expect(tagWith(html, 'data-create-key')).not.toContain('disabled');
-      expect(tagWith(html, 'data-add-origin')).not.toContain('disabled');
       expect(html).not.toContain('data-frontend-locked');
     }
   });
