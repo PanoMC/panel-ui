@@ -433,14 +433,14 @@ describe('Front-end settings', () => {
     }
   });
 
-  test('in Theme mode the keys row is disabled and nothing explains why', () => {
+  test('in Theme mode the keys row and its modal are not shown and nothing explains why', () => {
     const html = content(dataFor('THEME'));
 
-    expect(tagWith(html, 'data-open-keys')).toContain('disabled');
+    expect(html).not.toContain('data-row="keys"');
+    expect(html).not.toContain('data-open-keys');
+    expect(html).not.toContain('data-keys-modal');
     expect(html).not.toContain('data-frontend-locked');
-    expect(textOf(html)).not.toContain('work only when the front-end is not a theme');
-    // Stored keys stay in the list and work again when the mode changes.
-    expect(html).toContain('data-key-row="1"');
+    expect(textOf(html)).not.toContain('Site connection keys');
   });
 
   test('the other-websites switch and the link targets row work in every mode', () => {

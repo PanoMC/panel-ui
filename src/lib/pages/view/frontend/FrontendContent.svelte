@@ -9,20 +9,22 @@
 
   <div class="card">
     <div class="list-group list-group-flush">
-      <div class="list-group-item d-flex align-items-center gap-3" data-row="keys">
-        <div class="flex-grow-1">
-          <div class="fw-semibold">{$_('pages.frontend.keys.title')}</div>
-          <div class="text-body-secondary">{$_('pages.frontend.keys.block-title')}</div>
+      {#if keysUsable}
+        <div class="list-group-item d-flex align-items-center gap-3" data-row="keys">
+          <div class="flex-grow-1">
+            <div class="fw-semibold">{$_('pages.frontend.keys.title')}</div>
+            <div class="text-body-secondary">{$_('pages.frontend.keys.block-title')}</div>
+          </div>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            disabled={!keysController}
+            data-open-keys
+            onclick={() => keysModal?.show()}>
+            {$_('pages.frontend.manage')}
+          </button>
         </div>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          disabled={!keysUsable || !keysController}
-          data-open-keys
-          onclick={() => keysModal?.show()}>
-          {$_('pages.frontend.manage')}
-        </button>
-      </div>
+      {/if}
 
       {#if originsController}
         <FrontendOtherSites controller={originsController} />
@@ -47,7 +49,7 @@
   </div>
 </div>
 
-{#if keysController}
+{#if keysController && keysUsable}
   <FrontendKeys bind:this={keysModal} controller={keysController} {notify} />
 {/if}
 {#if urlsController}
@@ -137,7 +139,7 @@
   // The saved mode, not the form: headless access follows what is stored.
   // svelte-ignore state_referenced_locally
   const savedMode = modeController ? modeController.saved : readable(null);
-  // Site connection keys belong to a front-end that is not a theme: in Theme mode the row is disabled.
+  // Site connection keys belong to a front-end that is not a theme: in Theme mode the row is not shown.
   // Stored keys stay and work again when the mode changes.
   const keysUsable = $derived($savedMode != null && $savedMode.mode !== FrontendModes.THEME);
 
