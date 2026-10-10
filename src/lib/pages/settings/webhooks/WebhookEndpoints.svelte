@@ -23,7 +23,7 @@
       {/if}
       <button
         type="button"
-        class="btn btn-sm btn-link text-nowrap"
+        class="btn btn-sm btn-primary text-nowrap"
         disabled={$full}
         data-create-endpoint
         onclick={() => modal?.show()}>
@@ -34,7 +34,7 @@
   </CardHeader>
 
   {#if $visible.length === 0}
-    <NoContent icon="" text={$_('pages.webhooks.endpoints.empty')} />
+    <NoContent />
   {:else}
     <div class="table-responsive">
       <table class="table table-hover">

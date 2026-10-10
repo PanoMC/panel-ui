@@ -24,12 +24,11 @@
           </h5>
           {#if canAddServers}
             <button
-              class="btn btn-sm btn-success flex-shrink-0"
+              class="btn btn-sm btn-primary flex-shrink-0"
               on:click={openConnectServer}
-              type="button"
-              title={$_('components.modals.servers.connect-server-button')}
-              aria-label={$_('components.modals.servers.connect-server-button')}>
-              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              type="button">
+              <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
+              {$_('components.modals.servers.connect-server-button')}
             </button>
           {/if}
         </div>
@@ -43,7 +42,6 @@
                 inputId={SERVERS_MODAL_SEARCH_INPUT_ID}
                 placeholderKey="components.modals.servers.search-placeholder"
                 initialValue={$searchTerm}
-                small={false}
                 onchange={(v) => searchTerm.set(v)} />
             </div>
           </div>

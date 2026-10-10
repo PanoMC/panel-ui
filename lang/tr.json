@@ -445,7 +445,7 @@
         "license": "Lisans",
         "no-licenses": "Lisans bilgisi bulunamadı. Lütfen 'npm run generate-licenses' komutunu çalıştırın.",
         "support-pano": "Pano'yu Destekle",
-        "support-pano-text": "Pano, ücretsiz ve açık kaynaktır.",
+        "support-pano-text": "Pano ücretsiz ve açık kaynaklıdır. Geliştirilmesi topluluğun desteğiyle sürer: GitHub'da yıldız vererek projeyi daha çok kişiye ulaştırabilir ya da bağış yaparak geliştirmesine katkıda bulunabilirsiniz.",
         "support-pano-button": "GitHub'da Yıldız Ver",
         "support-pano-donate": "Bağış Yap",
         "open-homepage": "{name} ana sayfasını aç"
@@ -542,7 +542,6 @@
         "preferences": "Tercihler",
         "usage-mode": {
           "label": "Kullanım Modu",
-          "hint": "Mod değiştirmek panelde hangi bölümlerin görüneceğini değiştirir.",
           "website": {
             "title": "Web Site",
             "description": "Sadece web site: yazılar, talepler, temalar, oyuncu kaydı."
@@ -708,8 +707,8 @@
           }
         },
         "telemetry": {
-          "label": "{link} gönder",
-          "label-link": "Kullanım verileri",
+          "label": "{link} Gönder",
+          "label-link": "Kullanım Verileri",
           "description": "Bu veriler Pano'yu daha iyi hale getirmemiz için kullanılacaktır."
         },
         "alerts": {
@@ -739,7 +738,7 @@
             "plugin_updates": "Yönetilen bir sunucudaki eklenti veya modların yeni bir sürümü var; günde bir kez denetlenir."
           }
         },
-        "theme-dev-server": "Tema geliştirme sunucusu",
+        "theme-dev-server": "Tema Geliştirme Sunucusu",
         "theme-dev-server-hint": "Geliştirici Modu açıkken Pano, tema yerine bu adresi gösterir, örneğin http://localhost:3000. Panel, kurulum ve eklenti arayüzleri çalışmaya devam eder. Yüklü temayı kullanmak için boş bırakın.",
         "theme-dev-server-inactive": "Yalnızca site modu “Tema” iken geçerlidir.",
         "theme-dev-server-saved": "Tema geliştirme sunucusu kaydedildi."
@@ -747,6 +746,15 @@
       "updates": {
         "title": "Güncellemeler",
         "never": "Asla",
+        "table": {
+          "name": "Ad",
+          "version": "Sürüm",
+          "channel": "Kanal",
+          "size": "Boyut",
+          "date": "Tarih",
+          "developer": "Geliştirici",
+          "status": "Durum"
+        },
         "platform-updates": "Platform Güncellemeleri",
         "platform-updates-count": "{count} Platform Güncellemesi",
         "using-latest-pano": "Pano'nun en son sürümünü kullanıyorsunuz.",
@@ -775,30 +783,30 @@
         },
         "updating-leave-alert": "Bir güncelleme çalışıyor, bu sayfadan ayrılmak bazı özelliklerin bozulmasına yol açabilir!",
         "servers": {
-          "title": "Node'lar, agent'lar ve Pano eklentisi",
+          "title": "Düğümler, Agent'lar Ve Pano Eklentisi",
           "update-all-plugins": "Tüm Pano eklentilerini güncelle",
-          "auto-update": "Node ve agent'ları otomatik güncelle",
-          "auto-update-hint": "Pano'da daha yeni bir node sürümü varsa her node ve agent bağlanır bağlanmaz kendini günceller. Çalışan sunucular çalışmaya devam eder; Pano eklentisi senden habersiz asla güncellenmez.",
-          "unavailable": "Bu Pano sürümü node ve eklenti güncellemelerini henüz listeleyemiyor.",
-          "empty": "Henüz node, agent ya da Pano eklentili sunucu yok.",
+          "auto-update": "Düğüm Ve Agent'ları Otomatik Güncelle",
+          "auto-update-hint": "Pano'da daha yeni bir düğüm sürümü varsa her düğüm ve agent bağlanır bağlanmaz kendini günceller. Çalışan sunucular çalışmaya devam eder; Pano eklentisi senden habersiz asla güncellenmez.",
+          "unavailable": "Bu Pano sürümü düğüm ve eklenti güncellemelerini henüz listeleyemiyor.",
+          "empty": "Henüz düğüm, agent ya da Pano eklentili sunucu yok.",
           "column-name": "Ad",
           "column-kind": "Tür",
           "column-version": "Sürüm",
-          "kind-node": "Node",
+          "kind-node": "Düğüm",
           "kind-agent": "Pano Agent",
-          "kind-pano-plugin": "Pano eklentisi",
+          "kind-pano-plugin": "Pano Eklentisi",
           "offline": "Çevrimdışı — geri gelince güncellenir.",
           "up-to-date": "Güncel",
           "update-by-hand": "Elle güncelle",
           "unknown": "Sürüm henüz bilinmiyor",
-          "restart-note": "Pano eklentisi güncellemesi o sunucu bir sonraki yeniden başlatılışında yüklenir. Node ve agent'lar hiçbir sunucuyu durdurmadan güncellenir.",
+          "restart-note": "Pano eklentisi güncellemesi o sunucu bir sonraki yeniden başlatılışında yüklenir. Düğüm ve agent'lar hiçbir sunucuyu durdurmadan güncellenir.",
           "plugin-update-started": "{name} için Pano eklentisi güncellemesi başladı. Yüklemek için sunucuyu yeniden başlat.",
           "node-update-started": "{name} kendini güncelliyor.",
           "update-all-started": "{count} sunucuda Pano eklentisi güncelleniyor. Yüklemek için onları yeniden başlat.",
           "reason": {
             "NO_PLUGIN_MODULE": "Bu yazılım için Pano eklentisi yok",
             "PLUGIN_TOO_OLD": "Eklenti kendini güncelleyemeyecek kadar eski — bir kez elle güncelle",
-            "NODE_OFFLINE": "Node çevrimdışı",
+            "NODE_OFFLINE": "Çevrimdışı",
             "SERVER_OFFLINE": "Sunucu çevrimdışı",
             "JAR_UNAVAILABLE": "Eklenti derlemesi yok"
           }
@@ -1293,7 +1301,7 @@
         "task-buildtools-note": "BuildTools sunucuyu derliyor; bu genelde 5–10 dakika sürer.",
         "task-log-show": "Derleme çıktısını göster",
         "task-log-hide": "Derleme çıktısını gizle",
-        "task-log-hint": "Bu sayfa açıkken derlemenin bildirdiği satırlar, saniyede en fazla bir tane. Tam kaydı node buildtools.log dosyasında tutar.",
+        "task-log-hint": "Bu sayfa açıkken derlemenin bildirdiği satırlar, saniyede en fazla bir tane. Tam kaydı düğüm buildtools.log dosyasında tutar.",
         "update-plugin": "Pano eklentisi eski — {version} sürümü çıktı",
         "update-plugin-outdated": "Pano eklentisi eski",
         "update-agent": "Pano Agent güncellemesi var",
@@ -1301,11 +1309,11 @@
         "install-failed-title": "Kurulum Başarısız Oldu",
         "install-failed-body": "Düğüm bu sunucuyu kuramadı, bu yüzden henüz başlatılacak bir şey yok. Sebep düğüm tarafındaysa aşağıdakini düzeltin, sonra yeniden yükleyin.",
         "plugin-unreachable": "Pano eklentisi bu Pano'ya ulaşamayacak kadar eski",
-        "node-unreachable": "Node bu Pano'ya ulaşamayacak kadar eski",
+        "node-unreachable": "Düğüm bu Pano'ya ulaşamayacak kadar eski",
         "agent-unreachable": "Pano Agent bu Pano'ya ulaşamayacak kadar eski",
         "download": "Jar'ı Değiştir",
         "download-agent": "Agent Jar'ını İndir",
-        "open-nodes": "Node'ları Aç"
+        "open-nodes": "Düğümleri Aç"
       },
       "overview": {
         "capabilities-title": "Yetenekler",
@@ -1876,6 +1884,7 @@
         "add-node": "Düğüm ekle",
         "add-title": "Düğüm Ekle",
         "table-title": "{count} Düğüm",
+        "tab-approved": "Onaylı",
         "empty-description": "Henüz düğüm yok. Düğüm, sunucularını çalıştıran makinedir — yereldeki tek tıkla kurulur.",
         "unavailable": "Pano’nun bu sürümü henüz düğüm yönetemiyor. Yönetilen sunucular için Pano’yu güncelle.",
         "pending-title": "Onay bekleyenler",
@@ -2008,10 +2017,10 @@
         "column-network": "Ağ",
         "network-rate": "↓ {rx} · ↑ {tx}",
         "unreachable": "Çok eski",
-        "unreachable-hint": "Bu node bu Pano'ya ulaşamayacak kadar eski. Jar'ını elle değiştir.",
-        "unreachable-title": "Bu Node'un Yeni Bir Jar'a İhtiyacı Var",
-        "unreachable-description": "Bu node bu Pano'ya ulaşamayacak kadar eski. Durdur, jar'ını aşağıdakiyle değiştir ve yeniden başlat; kendiliğinden yeniden bağlanır.",
-        "unreachable-download": "Node Jar'ını İndir"
+        "unreachable-hint": "Bu düğüm bu Pano'ya ulaşamayacak kadar eski. Jar'ını elle değiştir.",
+        "unreachable-title": "Bu Düğümün Yeni Bir Jar'a İhtiyacı Var",
+        "unreachable-description": "Bu düğüm bu Pano'ya ulaşamayacak kadar eski. Durdur, jar'ını aşağıdakiyle değiştir ve yeniden başlat; kendiliğinden yeniden bağlanır.",
+        "unreachable-download": "Düğüm Jar'ını İndir"
       },
       "create": {
         "memory-label": "Bellek",
@@ -2099,8 +2108,8 @@
       "properties": {
         "title": "server.properties",
         "applies-next-start": "Değişiklikler sunucunun bir sonraki başlatılışında geçerli olur.",
-        "source-file": "Node'daki dosyadan okundu",
-        "source-stored": "Node'a ulaşılamıyor — Pano'nun kaydettiği değerler gösteriliyor",
+        "source-file": "Düğümdeki dosyadan okundu",
+        "source-stored": "Düğüme ulaşılamıyor — Pano'nun kaydettiği değerler gösteriliyor",
         "changed": "Değişti, henüz kaydedilmedi",
         "changed-count": "{count} kaydedilmemiş",
         "reset": "Varsayılana döndür",
@@ -2420,7 +2429,7 @@
           },
           "server-port": {
             "label": "Oyun portu",
-            "help": "Startup sekmesinden ayarlanır; node ayırır ve yayınlar."
+            "help": "Startup sekmesinden ayarlanır; düğüm ayırır ve yayınlar."
           },
           "enable-code-of-conduct": {
             "label": "Davranış kuralları",
@@ -2787,9 +2796,9 @@
           "placeholder": "Anahtar adı, örneğin sitem"
         },
         "reveal": {
-          "title": "Anahtarı şimdi kopyalayın. Yalnızca bir kez gösterilir",
+          "title": "Anahtarı Kopyalayın, Bir Kez Gösterilir",
           "key": "Anahtar",
-          "env": ".env dosyası",
+          "env": ".env Dosyası",
           "done": "Tamam"
         },
         "revoke": {
@@ -3761,14 +3770,14 @@
         "back": "Forma dön",
         "node-ready": "{name} bağlandı ve hazır.",
         "coolify-refused": "Coolify Dağıtımı Reddetti:",
-        "local-failed": "Yerel Node Başlatılamadı:",
+        "local-failed": "Yerel Düğüm Başlatılamadı:",
         "local-failed-generic": "Daemon bağlanamadan kapandı. Pano'nun yanındaki logs/pano-node.log dosyasına bak.",
-        "local-starting": "Yerel node başlatılıyor…",
+        "local-starting": "Yerel düğüm başlatılıyor…",
         "local-java": "Java {major} ({path})",
         "local-daemon-started": "Daemon başlatıldı (pid {pid}).",
-        "local-waiting": "Node'un Pano'ya bağlanması bekleniyor…",
-        "local-connected": "Yerel node bağlandı.",
-        "local-timeout": "Node {seconds} saniye içinde bağlanmadı. Pano'nun yanındaki logs/pano-node.log dosyasına bak.",
+        "local-waiting": "Düğümün Pano'ya bağlanması bekleniyor…",
+        "local-connected": "Yerel düğüm bağlandı.",
+        "local-timeout": "Düğüm {seconds} saniye içinde bağlanmadı. Pano'nun yanındaki logs/pano-node.log dosyasına bak.",
         "pano-url": {
           "advanced": "Gelişmiş",
           "label": "Düğümün ulaşabileceği Pano adresi",
@@ -3823,7 +3832,7 @@
       },
       "create-server": {
         "title": "Sunucu Oluştur",
-        "step-of": "Adım {current}/{total} · {name}",
+        "step-of": "{current}/{total} · {name}",
         "step-source": "Kaynak",
         "step-node": "Düğüm",
         "step-software": "Yazılım",
@@ -3849,7 +3858,7 @@
         "software-jenkins": "Son CI derlemesi",
         "software-jenkins-hint": "Projenin Jenkins sunucusundan indirilir; sürüm numarası derleme numarasıdır.",
         "software-installer": "Mod Yükleyici",
-        "software-installer-hint": "Node üzerinde yükleyicinin kendi kurulum programıyla kurulur. Bunun için Pano eklentisi yoktur: sunucu yönetilir, ancak oyuncular ve TPS gösterilmez.",
+        "software-installer-hint": "Düğüm üzerinde yükleyicinin kendi kurulum programıyla kurulur. Bunun için Pano eklentisi yoktur: sunucu yönetilir, ancak oyuncular ve TPS gösterilmez.",
         "software-versions": "{count} sürüm",
         "software-empty": "Yazılım kataloğu boş. Pano’nun internete erişebildiğinden emin ol.",
         "software-unavailable": "Pano’nun bu sürümünde yazılım kataloğu yok.",
@@ -3982,6 +3991,7 @@
         "reject": "Reddet",
         "connect": "Bağla",
         "display-name-label": "Panel görünen adı",
+        "display-name-placeholder": "Panel görünen adı (boşsa sunucunun bildirdiği ad)",
         "display-name-hint": "Oyuncu sunucu adı yerine panelde böyle görünür. Boş bırakırsanız sunucunun bildirdiği ad kullanılır."
       },
       "servers": {
@@ -4006,10 +4016,10 @@
           "crashed-exit": "Bu sunucu çöktü (çıkış kodu {code}).",
           "crash-reason": "Sebep: {reason}",
           "plugin-outdated": "Bu sunucudaki Pano eklentisi eski ve bu Pano ile tam uyumlu değil. Sunucunun sayfasından güncelle.",
-          "node-outdated": "Bu sunucuyu çalıştıran node eski ve bu Pano ile tam uyumlu değil. Node'lar sayfasından güncelle.",
+          "node-outdated": "Bu sunucuyu çalıştıran düğüm eski ve bu Pano ile tam uyumlu değil. Düğümler sayfasından güncelle.",
           "agent-outdated": "Bu sunucuyu çalıştıran Pano Agent eski ve bu Pano ile tam uyumlu değil. Sunucunun sayfasından güncelle.",
           "plugin-unreachable": "Bu sunucudaki Pano eklentisi bu Pano'ya ulaşamayacak kadar eski. Yeni jar'ı indir, sunucuyu durdur, eski jar'ı değiştir ve sunucuyu yeniden başlat.",
-          "node-unreachable": "Bu sunucuyu çalıştıran node bu Pano'ya ulaşamayacak kadar eski. Jar'ını elle değiştir; indirme için Node'lar sayfasını aç.",
+          "node-unreachable": "Bu sunucuyu çalıştıran düğüm bu Pano'ya ulaşamayacak kadar eski. Jar'ını elle değiştir; indirme için Düğümler sayfasını aç.",
           "agent-unreachable": "Bu sunucuyu çalıştıran Pano Agent bu Pano'ya ulaşamayacak kadar eski. Jar'ını elle değiştir: sunucuyu durdur, yeni agent jar'ını koy ve yeniden başlat."
         }
       },
@@ -4129,7 +4139,7 @@
         "summary-stopped": "{from} → {to}",
         "submit": "Yazılımı Değiştir",
         "progress-running": "Çalışılıyor…",
-        "progress-waiting": "Node bekleniyor…",
+        "progress-waiting": "Düğüm bekleniyor…",
         "progress-done": "Tamamlandı",
         "progress-failed": "Değişiklik başarısız oldu",
         "progress-rolled-back": "Sunucu eski hâline döndürüldü.",

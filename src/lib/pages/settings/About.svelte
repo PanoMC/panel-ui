@@ -73,11 +73,11 @@
     <div class="alert alert-primary h-100 mb-0 d-flex blocks border">
       <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
       <div class="d-flex flex-column flex-grow-1">
-        <b>{$_('pages.settings.about.support-pano')}</b>
+        <h5 class="alert-heading mb-2">{$_('pages.settings.about.support-pano')}</h5>
         <p class="mb-3">
           {$_('pages.settings.about.support-pano-text')}
         </p>
-        <div class="mt-auto d-flex gap-3">
+        <div class="d-flex gap-3">
           <a
             href="{PANO_WEBSITE_URL}/source-code"
             target="_blank"

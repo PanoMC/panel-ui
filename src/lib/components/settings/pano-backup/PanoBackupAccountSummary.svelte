@@ -23,7 +23,7 @@
               })}
         </div>
         <div>
-          <a class="btn btn-primary" href="{base}{CONNECT_PATH}">
+          <a class="btn btn-light" href="{base}{CONNECT_PATH}">
             {$_('buttons.connect-pano-account')}
           </a>
         </div>
@@ -33,21 +33,24 @@
     <div class="alert alert-warning mb-0 d-flex align-items-start">
       <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
       <div>
-        {$_('pages.settings.backups.account.unavailable', {
-          values: { website: websiteDisplayHost() },
-        })}
+        <h5 class="alert-heading mb-2">{$_('pages.settings.backups.remote-title')}</h5>
+        <div>
+          {$_('pages.settings.backups.account.unavailable', {
+            values: { website: websiteDisplayHost() },
+          })}
+        </div>
       </div>
     </div>
   {:else}
     <!-- Only while panomc.com answers: when it cannot be reached nothing about the account is shown. -->
     <div class="d-flex flex-wrap align-items-center gap-2 small">
-      <i class="fa-solid fa-user text-body-secondary" aria-hidden="true"></i>
+      <i class="fa-solid fa-user opacity-75" aria-hidden="true"></i>
       <span class="fw-semibold">{remote?.account?.username || '—'}</span>
     </div>
 
     <div class="d-flex flex-wrap align-items-center gap-2">
       <div class="vstack min-w-0">
-        <span class="small text-body-secondary">{$_('pages.settings.backups.account.plan')}</span>
+        <span class="small opacity-75">{$_('pages.settings.backups.account.plan')}</span>
         {#if plan}
           <div class="d-flex align-items-center gap-2">
             <span class="h5 mb-0">{plan.tier?.name || '—'}</span>
@@ -61,7 +64,7 @@
           <span class="h5 mb-0">{$_('pages.settings.backups.account.free-plan')}</span>
         {/if}
       </div>
-      <a class="btn btn-primary btn-sm ms-auto" href={planUrl}>
+      <a class="btn btn-light btn-sm ms-auto" href={planUrl}>
         <!-- The Pano Host mark: the plan is managed on Pano Host (same tab, it comes back here). -->
         <span
           class="d-inline-flex rounded justify-content-center align-items-center bg-info me-1 align-text-bottom"
@@ -90,7 +93,7 @@
           {/if}
         </span>
         {#if usage?.percent != null}
-          <span class="ms-auto text-body-secondary">{usage.percent}%</span>
+          <span class="ms-auto opacity-75">{usage.percent}%</span>
         {/if}
       </div>
       <div

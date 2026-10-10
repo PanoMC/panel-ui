@@ -6,16 +6,12 @@
       <div class="modal-header">
         <h5 class="modal-title text-capitalize">
           {$_('components.modals.server-file-upload.title')}
+          <span class="font-monospace text-body-secondary fw-normal">/{$directory}</span>
         </h5>
         <button type="button" class="btn-close" aria-label={$_('buttons.close')} on:click={hide}
         ></button>
       </div>
       <div class="modal-body vstack gap-3">
-        <div class="small text-body-secondary">
-          {$_('components.modals.server-file-upload.destination')}
-          <span class="font-monospace text-body">/{$directory}</span>
-        </div>
-
         <div style="height: 250px;">
           <DragAndDropZone
             multiple

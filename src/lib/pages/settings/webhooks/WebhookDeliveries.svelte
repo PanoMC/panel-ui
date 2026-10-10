@@ -65,7 +65,7 @@
       </div>
     </div>
   {:else if $items.length === 0}
-    <NoContent icon="" text={$_('pages.webhooks.deliveries.empty')} />
+    <NoContent />
   {:else}
     <div class="table-responsive">
       <table class="table table-hover">

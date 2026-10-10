@@ -541,17 +541,17 @@
         <!-- Bootstrap's floating label: the caption sits inside the empty field and lifts out of
              the way once there is a value. The blank placeholder is what tells the browser the
              field is empty, so the label does not start floated. -->
-        <div class="form-floating">
+        <div>
           <input
             id="filePromptInput"
             type="text"
             class="form-control font-monospace"
-            placeholder=" "
+            placeholder={promptLabel ? $_(promptLabel) : ''}
+            aria-label={promptLabel ? $_(promptLabel) : ''}
             autocomplete="off"
             spellcheck="false"
             bind:value={promptValue}
             onkeydown={onPromptKeydown} />
-          <label for="filePromptInput">{promptLabel ? $_(promptLabel) : ''}</label>
         </div>
         {#if promptHint}
           <div class="form-text">{$_(promptHint)}</div>
@@ -586,12 +586,15 @@
             values: { count: deleteTargets.length },
           })}
         </div>
-        <div class="small font-monospace text-break mt-2">{deleteTargets.join(', ')}</div>
+        <div class="text-start small font-monospace text-break mt-3">
+          {deleteTargets.join(', ')}
+        </div>
       </div>
       <div class="modal-footer flex-nowrap">
         <button
           type="button"
           class="btn btn-link text-decoration-none col-6 m-0"
+          disabled={busy}
           data-bs-dismiss="modal">
           {$_('buttons.cancel')}
         </button>

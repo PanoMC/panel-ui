@@ -136,7 +136,10 @@
           {/if}
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick={() => modalInstance?.hide()}>
+          <button
+            type="button"
+            class="btn btn-secondary w-100"
+            onclick={() => modalInstance?.hide()}>
             {$_('buttons.close')}
           </button>
         </div>

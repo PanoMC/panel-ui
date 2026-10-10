@@ -16,22 +16,18 @@
         ></button>
       </div>
       <div class="modal-body">
-        <!-- Bootstrap floats the label over the field once it holds a value. It needs a
-             placeholder to measure that by, so it is a single space: the real label replaces it. -->
-        <div class="form-floating">
-          <input
-            type="text"
-            class="form-control"
-            id="serverPlayerActionText"
-            maxlength="256"
-            placeholder=" "
-            bind:value={$text} />
-          <label for="serverPlayerActionText">
-            {$action === 'KICK'
-              ? $_('components.modals.server-player-action.kick-label')
-              : $_('components.modals.server-player-action.message-label')}
-          </label>
-        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="serverPlayerActionText"
+          maxlength="256"
+          placeholder={$action === 'KICK'
+            ? $_('components.modals.server-player-action.kick-placeholder')
+            : $_('components.modals.server-player-action.message-placeholder')}
+          aria-label={$action === 'KICK'
+            ? $_('components.modals.server-player-action.kick-label')
+            : $_('components.modals.server-player-action.message-label')}
+          bind:value={$text} />
       </div>
       <div class="modal-footer">
         <button

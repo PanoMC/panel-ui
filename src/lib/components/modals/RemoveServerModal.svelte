@@ -57,7 +57,7 @@
           <!-- Bootstrap floats the label over the field once it holds a value. It needs a
                placeholder to measure that by, so it is a single space: the real label replaces
                it. `mt-3` rather than the `zmt-3` this used to carry, which was never defined. -->
-          <div class="form-floating mt-3">
+          <div class="form-floating text-start mt-3">
             <input
               class="form-control"
               id="removeServerPassword"
@@ -73,15 +73,23 @@
         </div>
 
         <div class="modal-footer flex-nowrap">
-          <button class="btn btn-link text-decoration-none col-6 m-0" type="button" on:click={hide}
-            >{$_('buttons.cancel')}</button>
+          <button
+            class="btn btn-link text-decoration-none col-6 m-0"
+            type="button"
+            disabled={$loading}
+            on:click={hide}>
+            {$_('buttons.cancel')}
+          </button>
           <button
             class="btn btn-danger col-6 m-0"
             type="button"
-            disabled={confirmButtonDisabled}
-            class:disabled={confirmButtonDisabled}
-            on:click={sendDeleteServer}
-            >{$_($managed && !$inPlace ? 'buttons.delete' : 'buttons.remove')}</button>
+            disabled={confirmButtonDisabled || $loading}
+            on:click={sendDeleteServer}>
+            {#if $loading}
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {/if}
+            {$_($managed && !$inPlace ? 'buttons.delete' : 'buttons.remove')}
+          </button>
         </div>
       </form>
     </div>

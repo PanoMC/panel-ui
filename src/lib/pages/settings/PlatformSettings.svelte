@@ -155,9 +155,6 @@
             </button>
           {/each}
         </div>
-        <div class="form-text">
-          {$_('pages.settings.platform.usage-mode.hint')}
-        </div>
       </div>
     </div>
 
@@ -176,6 +173,30 @@
         </div>
       </div>
     </div>
+    {#if showNodeAutoUpdate && nodeAutoUpdate !== null}
+      <!-- The daemon updates itself without stopping the servers it runs, so this is on by
+           default; the Pano plugin needs a restart and is never automatic. Saved on its own, the
+           moment it is switched. -->
+      <div class="row mb-3">
+        <label class="col-md-6" for="platformNodeAutoUpdate">
+          {$_('pages.settings.updates.servers.auto-update')}
+        </label>
+        <div class="col">
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="platformNodeAutoUpdate"
+              autocomplete="off"
+              checked={nodeAutoUpdate}
+              disabled={savingNodeAutoUpdate}
+              on:change={(event) => saveNodeAutoUpdate(event.currentTarget.checked)} />
+          </div>
+          <div class="form-text">{$_('pages.settings.updates.servers.auto-update-hint')}</div>
+        </div>
+      </div>
+    {/if}
     {#if data.developmentMode && data.frontendSupported}
       <div class="row mb-3">
         <label class="col-md-6 col-form-label" for="platformThemeDevServer">
@@ -1239,7 +1260,7 @@
 <script context="module">
   import { base } from '$app/paths';
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
-  import { isEndpointUnavailable } from '$lib/servers.util.js';
+  import { isEndpointUnavailable, showServerActionError } from '$lib/servers.util.js';
   import { hostedMocked, mockHostMail } from '$lib/hosted-mock.util.js';
   import { normalizeUsageMode, UsageModes } from '$lib/navigation.util.js';
   import { createFrontendApi } from '$lib/pages/view/frontend/frontend.api.js';
@@ -1460,7 +1481,64 @@
 
   let showAlert = false;
 
+  /** Server management is on and the admin can reach it: only then the setting means anything. */
+  $: showNodeAutoUpdate =
+    $usageMode !== UsageModes.WEBSITE &&
+    (hasPermission(Permissions.MANAGE_SERVERS) || hasPermission(Permissions.MANAGE_NODES));
+  let nodeAutoUpdate = /** @type {boolean | null} */ (null);
+  let savingNodeAutoUpdate = false;
+
+  async function loadNodeAutoUpdate() {
+    if (!showNodeAutoUpdate) {
+      return;
+    }
+
+    const body = await ApiUtil.get({
+      path: '/panel/updates/servers',
+      handler: (response) => response,
+    });
+
+    if (
+      body &&
+      !isEndpointUnavailable(body) &&
+      !body.error &&
+      typeof body.nodeAutoUpdate === 'boolean'
+    ) {
+      nodeAutoUpdate = body.nodeAutoUpdate;
+    }
+  }
+
+  /** @param {boolean} enabled */
+  async function saveNodeAutoUpdate(enabled) {
+    savingNodeAutoUpdate = true;
+
+    try {
+      const body = await ApiUtil.put({
+        path: '/panel/updates/node-auto-update',
+        body: { enabled },
+        handler: (response) => response,
+      });
+
+      if (!body || body.error) {
+        if (body?.error) {
+          showServerActionError(body.error, body);
+        }
+
+        // Put the switch back where the server still has it.
+        nodeAutoUpdate = !enabled;
+
+        return;
+      }
+
+      nodeAutoUpdate = enabled;
+    } finally {
+      savingNodeAutoUpdate = false;
+    }
+  }
+
   onMount(() => {
+    void loadNodeAutoUpdate();
+
     if (browser) {
       if (data.panoAccount) {
         showAlert = true;

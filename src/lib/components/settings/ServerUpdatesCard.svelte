@@ -3,171 +3,181 @@
      resources above have their own cards. -->
 <div class="card">
   <CardHeader>
-    <div slot="left" class="d-flex align-items-center gap-2">
-      <i class="fa-solid fa-server text-body-secondary" aria-hidden="true"></i>
+    <div slot="left">
+      {#if availableCount}{availableCount}{/if}
       {$_('pages.settings.updates.servers.title')}
-      {#if availableCount}
-        <span class="badge rounded-pill text-bg-warning">{availableCount}</span>
-      {/if}
     </div>
-    <div slot="right" class="d-flex align-items-center gap-2">
-      <button
-        type="button"
-        class="btn btn-sm btn-link"
-        disabled={loading}
-        aria-label={$_('buttons.refresh')}
-        title={$_('buttons.refresh')}
-        onclick={() => void load()}>
-        <i class="fa-solid fa-rotate-right" class:fa-spin={loading} aria-hidden="true"></i>
-      </button>
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        disabled={busyAll || !pluginUpdatesAvailable}
-        onclick={() => void updateAllPlugins()}>
-        {#if busyAll}
-          <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-        {:else}
-          <i class="fas fa-download me-1" aria-hidden="true"></i>
-        {/if}
-        {$_('pages.settings.updates.servers.update-all-plugins')}
-      </button>
+    <div slot="right">
+      <div class="dropdown">
+        <button
+          type="button"
+          class="btn btn-sm btn-link"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          aria-label={$_('pages.servers.nodes.column-actions')}>
+          <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end">
+          <button
+            type="button"
+            class="dropdown-item text-capitalize"
+            disabled={loading}
+            onclick={() => void load()}>
+            <i class="fa-solid fa-rotate-right me-2" class:fa-spin={loading} aria-hidden="true"></i>
+            {$_('buttons.refresh')}
+          </button>
+          <button
+            type="button"
+            class="dropdown-item text-capitalize"
+            disabled={busyAll || !pluginUpdatesAvailable}
+            onclick={() => void updateAllPlugins()}>
+            <i class="fas fa-download me-2" aria-hidden="true"></i>
+            {$_('pages.settings.updates.servers.update-all-plugins')}
+          </button>
+        </div>
+      </div>
     </div>
   </CardHeader>
 
-  <div class="card-body vstack gap-3">
-    {#if autoUpdate !== null}
-      <!-- Node auto-update: the daemon updates itself without stopping the servers it runs, so
-           this is on by default; the Pano plugin needs a restart and is never automatic. -->
-      <div class="form-check form-switch m-0">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          role="switch"
-          id="nodeAutoUpdate"
-          checked={autoUpdate}
-          disabled={savingAutoUpdate}
-          onchange={(event) => void saveAutoUpdate(event.currentTarget.checked)} />
-        <label class="form-check-label" for="nodeAutoUpdate">
-          {$_('pages.settings.updates.servers.auto-update')}
-        </label>
-        <div class="form-text">{$_('pages.settings.updates.servers.auto-update-hint')}</div>
-      </div>
-    {/if}
-
-    {#if loading && !loaded}
-      <div class="d-flex justify-content-center py-4">
-        <span class="spinner-border" role="status" aria-hidden="true"></span>
-      </div>
-    {:else if unavailable}
-      <div class="text-body-secondary small">
-        {$_('pages.settings.updates.servers.unavailable')}
-      </div>
-    {:else if !rows.length}
-      <NoContent
-        icon="fas fa-server fa-3x"
-        text={$_('pages.settings.updates.servers.empty')}
-        dark={false} />
-    {:else}
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead>
+  {#if loading && !loaded}
+    <div class="card-body d-flex justify-content-center py-4">
+      <span class="spinner-border" role="status" aria-hidden="true"></span>
+    </div>
+  {:else if unavailable}
+    <NoContent
+      icon="fa-solid fa-plug-circle-xmark fa-3x"
+      text={$_('pages.settings.updates.servers.unavailable')} />
+  {:else if !rows.length}
+    <NoContent icon="fas fa-server fa-3x" text={$_('pages.settings.updates.servers.empty')} />
+  {:else}
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th class="align-middle" scope="col"></th>
+            <th class="align-middle text-nowrap" scope="col">
+              {$_('pages.settings.updates.servers.column-name')}
+            </th>
+            <th class="align-middle text-nowrap" scope="col">
+              {$_('pages.settings.updates.servers.column-kind')}
+            </th>
+            <th class="align-middle text-nowrap" scope="col">
+              {$_('pages.settings.updates.servers.column-version')}
+            </th>
+            <th class="align-middle text-nowrap" scope="col">
+              {$_('pages.settings.updates.table.status')}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each rows as row (row.key)}
             <tr>
-              <th scope="col">{$_('pages.settings.updates.servers.column-name')}</th>
-              <th scope="col">{$_('pages.settings.updates.servers.column-kind')}</th>
-              <th scope="col" class="text-nowrap"
-                >{$_('pages.settings.updates.servers.column-version')}</th>
-              <th scope="col" class="text-end"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each rows as row (row.key)}
-              <tr>
-                <th scope="row" class="fw-normal text-break">
-                  <span class="d-inline-flex align-items-center gap-2">
-                    <span
-                      class="rounded-circle d-inline-block"
-                      style="width: 0.5rem; height: 0.5rem;"
-                      class:bg-success={row.online}
-                      class:bg-secondary={!row.online}
-                      aria-hidden="true"></span>
-                    {#if row.href}
-                      <a href={row.href}>{row.name}</a>
-                    {:else}
-                      {row.name}
-                    {/if}
-                  </span>
-                </th>
-                <td class="text-nowrap small">
-                  <i class="{KIND_ICONS[row.kind]} me-1 text-body-secondary" aria-hidden="true"></i>
-                  {$_(`pages.settings.updates.servers.kind-${row.kind}`)}
-                </td>
-                <td class="text-nowrap small font-monospace">
-                  {row.current || '—'}
-                  {#if row.updateAvailable && row.latest}
-                    <i class="fa-solid fa-arrow-right mx-1 text-body-secondary" aria-hidden="true"
-                    ></i>
-                    <span class="text-warning">{row.latest}</span>
-                  {/if}
-                </td>
-                <td class="text-end text-nowrap">
-                  {#if row.updateAvailable}
+              <th scope="row" class="align-middle text-center">
+                {#if busyKey === row.key}
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  ></span>
+                {:else if row.updateAvailable || row.manual}
+                  <div class="dropdown position-static">
                     <button
                       type="button"
-                      class="btn btn-sm btn-outline-warning"
-                      disabled={busyKey === row.key || busyAll || !row.online}
-                      title={row.online ? '' : $_('pages.settings.updates.servers.offline')}
-                      onclick={() => void updateRow(row)}>
-                      {#if busyKey === row.key}
-                        <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"
-                        ></span>
+                      class="btn btn-link"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      title={$_('pages.servers.nodes.column-actions')}
+                      aria-label={$_('pages.servers.nodes.column-actions')}>
+                      <span class="fas fa-ellipsis-v"></span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-start">
+                      {#if row.updateAvailable}
+                        <button
+                          type="button"
+                          class="dropdown-item text-capitalize"
+                          disabled={busyAll || !row.online}
+                          title={row.online ? '' : $_('pages.settings.updates.servers.offline')}
+                          onclick={() => void updateRow(row)}>
+                          <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
+                          {$_('buttons.update')}
+                        </button>
+                      {:else}
+                        <!-- Too old to update itself, or not connected: the admin places the jar. -->
+                        <button
+                          type="button"
+                          class="dropdown-item text-capitalize"
+                          title={$_(`pages.settings.updates.servers.reason.${row.reason}`, {
+                            default: row.reason,
+                          })}
+                          onclick={() =>
+                            showPanoPluginUpdateModal(
+                              { id: row.id, name: row.name, type: row.serverType },
+                              { latestVersion: row.latest ?? null, reason: row.reason },
+                            )}>
+                          <i class="fa-solid fa-hand me-2" aria-hidden="true"></i>
+                          {$_('pages.settings.updates.servers.update-by-hand')}
+                        </button>
                       {/if}
-                      {$_('buttons.update')}
-                    </button>
-                  {:else if row.manual}
-                    <!-- Too old to update itself, or not connected: the admin places the jar. -->
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-secondary"
-                      title={$_(`pages.settings.updates.servers.reason.${row.reason}`, {
-                        default: row.reason,
-                      })}
-                      onclick={() =>
-                        showPanoPluginUpdateModal(
-                          { id: row.id, name: row.name, type: row.serverType },
-                          { latestVersion: row.latest ?? null, reason: row.reason },
-                        )}>
-                      <i class="fa-solid fa-hand me-1" aria-hidden="true"></i>
-                      {$_('pages.settings.updates.servers.update-by-hand')}
-                    </button>
-                  {:else if row.reason}
-                    <span class="small text-body-secondary">
-                      {$_(`pages.settings.updates.servers.reason.${row.reason}`, {
-                        default: row.reason,
-                      })}
-                    </span>
-                  {:else if !row.current}
-                    <!-- Nothing reported a version yet (never started, or no plugin in it), so
-                         there is nothing to call up to date. -->
-                    <span class="small text-body-secondary">
-                      {$_('pages.settings.updates.servers.unknown')}
-                    </span>
+                    </div>
+                  </div>
+                {/if}
+              </th>
+              <td class="align-middle text-break">
+                <span class="d-inline-flex align-items-center gap-2">
+                  <span
+                    class="rounded-circle d-inline-block"
+                    style="width: 0.5rem; height: 0.5rem;"
+                    class:bg-success={row.online}
+                    class:bg-secondary={!row.online}
+                    aria-hidden="true"></span>
+                  {#if row.href}
+                    <a href={row.href}>{row.name}</a>
                   {:else}
-                    <span class="small text-success">
-                      <i class="fa-solid fa-check me-1" aria-hidden="true"></i>
-                      {$_('pages.settings.updates.servers.up-to-date')}
-                    </span>
+                    {row.name}
                   {/if}
-                </td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
-      <div class="form-text m-0">{$_('pages.settings.updates.servers.restart-note')}</div>
-    {/if}
-  </div>
+                </span>
+              </td>
+              <td class="align-middle text-nowrap">
+                <i class="{KIND_ICONS[row.kind]} me-1" aria-hidden="true"></i>
+                {$_(`pages.settings.updates.servers.kind-${row.kind}`)}
+              </td>
+              <td class="align-middle text-nowrap font-monospace">
+                {row.current || '—'}
+                {#if row.updateAvailable && row.latest}
+                  <i class="fa-solid fa-arrow-right mx-1" aria-hidden="true"></i>
+                  <span class="text-warning">{row.latest}</span>
+                {/if}
+              </td>
+              <td class="align-middle text-nowrap">
+                {#if row.updateAvailable}
+                  <span class="badge text-bg-warning">
+                    {$_('buttons.update')}
+                  </span>
+                {:else if row.reason === 'NODE_OFFLINE'}
+                  <span class="badge text-bg-danger">
+                    {$_('pages.settings.updates.servers.reason.NODE_OFFLINE')}
+                  </span>
+                {:else if row.manual || row.reason}
+                  {$_(`pages.settings.updates.servers.reason.${row.reason}`, {
+                    default: row.reason,
+                  })}
+                {:else if !row.current}
+                  {$_('pages.settings.updates.servers.unknown')}
+                {:else}
+                  <span class="text-success">
+                    <i class="fa-solid fa-check me-1" aria-hidden="true"></i>
+                    {$_('pages.settings.updates.servers.up-to-date')}
+                  </span>
+                {/if}
+              </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  {/if}
 </div>
+
+{#if !loading && !unavailable && rows.length}
+  <div class="form-text">{$_('pages.settings.updates.servers.restart-note')}</div>
+{/if}
 
 <script>
   import { errorCode, errorDetails } from '$lib/apiError.util.js';
@@ -191,7 +201,7 @@
   } from '$lib/components/modals/ConfirmUpdateModal.svelte';
 
   const KIND_ICONS = {
-    node: 'fa-solid fa-server',
+    node: 'fa-solid fa-circle-nodes',
     agent: 'fa-solid fa-microchip',
     'pano-plugin': 'fa-solid fa-puzzle-piece',
   };
@@ -207,8 +217,6 @@
   let busyKey = $state('');
   let busyAll = $state(false);
   /** Null until the backend says it has the setting; the switch only shows once it does. */
-  let autoUpdate = $state(/** @type {boolean | null} */ (null));
-  let savingAutoUpdate = $state(false);
 
   const availableCount = $derived(rows.filter((row) => row.updateAvailable).length);
   const pluginUpdateCount = $derived(
@@ -240,10 +248,6 @@
     }
 
     unavailable = false;
-
-    if (typeof body.nodeAutoUpdate === 'boolean') {
-      autoUpdate = body.nodeAutoUpdate;
-    }
 
     const nodes = (Array.isArray(body.nodes) ? body.nodes : []).map((node) => ({
       ...node,
@@ -357,33 +361,6 @@
       await load();
     } finally {
       busyAll = false;
-    }
-  }
-
-  /**
-   * @param {boolean} enabled
-   */
-  async function saveAutoUpdate(enabled) {
-    savingAutoUpdate = true;
-
-    try {
-      const body = await ApiUtil.put({
-        path: '/panel/updates/node-auto-update',
-        body: { enabled },
-        handler: (response) => response,
-      });
-
-      if (!body || body.error) {
-        if (body?.error) {
-          showServerActionError(body.error, body);
-        }
-
-        return;
-      }
-
-      autoUpdate = enabled;
-    } finally {
-      savingAutoUpdate = false;
     }
   }
 

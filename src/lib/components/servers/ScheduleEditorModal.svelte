@@ -37,308 +37,312 @@
           aria-label={$_('buttons.close')}></button>
       </div>
 
-      <div class="modal-body vstack gap-3">
-        <!-- `text-capitalize` the way the retention rules on the Backups page do it: the
+      <form
+        class="d-flex flex-column overflow-hidden"
+        onsubmit={(event) => {
+          event.preventDefault();
+          void save();
+        }}>
+        <div class="modal-body vstack gap-3">
+          <!-- `text-capitalize` the way the retention rules on the Backups page do it: the
              dictionaries carry sentence case for their running text, but a field label opens
              its own line, so it reads as a title. -->
-        <div class="form-floating">
           <input
             id="scheduleName"
             type="text"
-            class="form-control text-capitalize"
+            class="form-control"
             maxlength="64"
+            aria-label={$_('components.modals.schedule-editor.name-label')}
             placeholder={$_('components.modals.schedule-editor.name-placeholder')}
             bind:value={name} />
-          <label class="text-capitalize" for="scheduleName">
-            {$_('components.modals.schedule-editor.name-label')}
-          </label>
-        </div>
 
-        <div>
-          <!-- The heading this group used to carry is gone; the label now names the group for
+          <div>
+            <!-- The heading this group used to carry is gone; the label now names the group for
                assistive tech only, and the field below keeps it as its own accessible name. -->
-          <div
-            class="btn-group btn-group-sm flex-wrap"
-            role="group"
-            aria-label={$_('components.modals.schedule-editor.cron-label')}>
-            {#each CRON_PRESETS as preset (preset.id)}
+            <div
+              class="btn-group btn-group-sm flex-wrap"
+              role="group"
+              aria-label={$_('components.modals.schedule-editor.cron-label')}>
+              {#each CRON_PRESETS as preset (preset.id)}
+                <button
+                  type="button"
+                  class="btn"
+                  class:btn-primary={activePreset === preset.id}
+                  class:btn-outline-primary={activePreset !== preset.id}
+                  onclick={() => (cron = preset.cron)}>
+                  {$_(`pages.servers.schedules.presets.${preset.id}`)}
+                </button>
+              {/each}
               <button
                 type="button"
                 class="btn"
-                class:btn-primary={activePreset === preset.id}
-                class:btn-outline-primary={activePreset !== preset.id}
-                onclick={() => (cron = preset.cron)}>
-                {$_(`pages.servers.schedules.presets.${preset.id}`)}
+                class:btn-primary={activePreset === 'custom'}
+                class:btn-outline-primary={activePreset !== 'custom'}
+                onclick={() => customCronInput?.focus()}>
+                {$_('pages.servers.schedules.presets.custom')}
               </button>
-            {/each}
-            <button
-              type="button"
-              class="btn"
-              class:btn-primary={activePreset === 'custom'}
-              class:btn-outline-primary={activePreset !== 'custom'}
-              onclick={() => customCronInput?.focus()}>
-              {$_('pages.servers.schedules.presets.custom')}
-            </button>
-          </div>
-
-          <input
-            type="text"
-            class="form-control font-monospace mt-2"
-            aria-label={$_('components.modals.schedule-editor.cron-label')}
-            placeholder="0 4 * * *"
-            bind:this={customCronInput}
-            bind:value={cron} />
-          <div class="form-text">{$_('components.modals.schedule-editor.cron-hint')}</div>
-        </div>
-
-        <div class="row g-3">
-          <div class="col-md-7">
-            <div class="form-floating">
-              <select id="scheduleTimezone" class="form-select" bind:value={timezone}>
-                {#each timezoneOptions as zone (zone)}
-                  <option value={zone}>{zone}</option>
-                {/each}
-              </select>
-              <label class="text-capitalize" for="scheduleTimezone">
-                {$_('components.modals.schedule-editor.timezone-label')}
-              </label>
             </div>
+
+            <input
+              type="text"
+              class="form-control font-monospace mt-2"
+              aria-label={$_('components.modals.schedule-editor.cron-label')}
+              placeholder="0 4 * * *"
+              bind:this={customCronInput}
+              bind:value={cron} />
+            <div class="form-text">{$_('components.modals.schedule-editor.cron-hint')}</div>
           </div>
-          <div class="col-md-5">
-            <!-- Bootstrap floats the label once the field holds a value, and measures that off
+
+          <div class="row g-3">
+            <div class="col-md-7">
+              <div class="form-floating">
+                <select id="scheduleTimezone" class="form-select" bind:value={timezone}>
+                  {#each timezoneOptions as zone (zone)}
+                    <option value={zone}>{zone}</option>
+                  {/each}
+                </select>
+                <label class="text-capitalize" for="scheduleTimezone">
+                  {$_('components.modals.schedule-editor.timezone-label')}
+                </label>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <!-- Bootstrap floats the label once the field holds a value, and measures that off
                  the placeholder. A number field has none of its own here, so it gets the single
                  space the other floating fields use. -->
-            <div class="form-floating">
-              <input
-                id="scheduleWarnMinutes"
-                type="number"
-                class="form-control"
-                placeholder=" "
-                min="0"
-                max="60"
-                bind:value={warnMinutes} />
-              <label class="text-capitalize" for="scheduleWarnMinutes">
-                {$_('components.modals.schedule-editor.warn-label')}
-              </label>
+              <div class="form-floating">
+                <input
+                  id="scheduleWarnMinutes"
+                  type="number"
+                  class="form-control"
+                  placeholder=" "
+                  min="0"
+                  max="60"
+                  bind:value={warnMinutes} />
+                <label class="text-capitalize" for="scheduleWarnMinutes">
+                  {$_('components.modals.schedule-editor.warn-label')}
+                </label>
+              </div>
+              <div class="form-text">{$_('components.modals.schedule-editor.warn-hint')}</div>
             </div>
-            <div class="form-text">{$_('components.modals.schedule-editor.warn-hint')}</div>
           </div>
-        </div>
 
-        {#if previewSupported}
-          <div class="border rounded p-3">
-            {#if previewLoading}
-              <div class="d-flex align-items-center gap-2 small text-body-secondary">
-                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                {$_('components.modals.schedule-editor.preview-loading')}
-              </div>
-            {:else if previewError}
-              <div class="small text-body-secondary">{$_(previewError)}</div>
-            {:else if preview && !preview.valid}
-              <div class="small text-danger">
-                {$_('components.modals.schedule-editor.preview-invalid')}
-              </div>
-            {:else if preview}
-              <div class="small fw-semibold">
-                {preview.description || $_('components.modals.schedule-editor.preview-title')}
-              </div>
-              {#if preview.next.length}
-                <ul class="preview-list small text-body-secondary mb-0 mt-2 ps-0">
-                  {#each preview.next as next, index (`${next}-${index}`)}
-                    <li>
-                      <i class="fa-regular fa-clock me-1" aria-hidden="true"></i>
-                      <DateComponent time={next} fullFormat />
-                    </li>
-                  {/each}
-                </ul>
-              {/if}
-            {:else}
-              <div class="small text-body-secondary">
-                {$_('components.modals.schedule-editor.preview-title')}
-              </div>
-            {/if}
-          </div>
-        {/if}
-
-        <div>
-          <span class="form-label d-block"
-            >{$_('components.modals.schedule-editor.tasks-label')}</span>
-          <div class="form-text mb-2">{$_('components.modals.schedule-editor.tasks-hint')}</div>
-
-          {#if !tasks.length}
-            <div class="text-body-secondary small border rounded p-3">
-              {$_('components.modals.schedule-editor.tasks-empty')}
-            </div>
-          {:else}
-            <div class="vstack gap-2">
-              {#each tasks as task, index (task.uid)}
-                <div class="border rounded p-2 d-flex flex-wrap align-items-center gap-2">
-                  <span class="badge rounded-pill text-bg-secondary">{index + 1}</span>
-
-                  <select
-                    class="form-select form-select-sm task-kind-select"
-                    aria-label={$_('components.modals.schedule-editor.task-kind')}
-                    value={task.kind}
-                    onchange={(event) => onKindChange(task, event)}>
-                    <option value="POWER">{$_('pages.servers.schedules.task-kind.power')}</option>
-                    <option value="COMMAND">
-                      {$_('pages.servers.schedules.task-kind.command')}
-                    </option>
-                    {#if canBackup}
-                      <option value="BACKUP">
-                        {$_('pages.servers.schedules.task-kind.backup')}
-                      </option>
-                    {/if}
-                  </select>
-
-                  {#if task.kind === 'POWER'}
-                    <select
-                      class="form-select form-select-sm task-action-select"
-                      aria-label={$_('components.modals.schedule-editor.task-action')}
-                      bind:value={task.action}>
-                      <option value="RESTART">
-                        {$_('pages.servers.schedules.power-action.restart')}
-                      </option>
-                      <option value="STOP"
-                        >{$_('pages.servers.schedules.power-action.stop')}</option>
-                    </select>
-                  {:else if task.kind === 'COMMAND'}
-                    <input
-                      type="text"
-                      class="form-control form-control-sm flex-grow-1 font-monospace"
-                      maxlength="512"
-                      aria-label={$_('components.modals.schedule-editor.task-command')}
-                      placeholder={$_('components.modals.schedule-editor.task-command-placeholder')}
-                      bind:value={task.command} />
-                  {:else}
-                    <input
-                      type="text"
-                      class="form-control form-control-sm flex-grow-1"
-                      maxlength="64"
-                      aria-label={$_('components.modals.schedule-editor.task-backup-name')}
-                      placeholder={$_('components.modals.schedule-editor.task-backup-placeholder')}
-                      bind:value={task.backupName} />
-                    <input
-                      type="number"
-                      class="form-control form-control-sm keep-input"
-                      min="0"
-                      max="100"
-                      aria-label={$_('components.modals.schedule-editor.task-keep')}
-                      title={$_('components.modals.schedule-editor.task-keep')}
-                      bind:value={task.keep} />
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-primary text-nowrap"
-                      aria-expanded={task.showOptions}
-                      onclick={() => (task.showOptions = !task.showOptions)}>
-                      <i class="fa-solid fa-sliders me-1" aria-hidden="true"></i>
-                      {$_(`components.backup-options.mode-${task.options.mode.toLowerCase()}`)}
-                      &middot;
-                      {$_(`components.backup-options.scope-${task.options.scope.toLowerCase()}`)}
-                    </button>
-                  {/if}
-
-                  <div class="btn-group btn-group-sm ms-auto">
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary"
-                      disabled={index === 0}
-                      aria-label={$_('components.modals.schedule-editor.move-up')}
-                      onclick={() => moveTask(index, -1)}>
-                      <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary"
-                      disabled={index === tasks.length - 1}
-                      aria-label={$_('components.modals.schedule-editor.move-down')}
-                      onclick={() => moveTask(index, 1)}>
-                      <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-danger"
-                      aria-label={$_('buttons.remove')}
-                      onclick={() => removeTask(index)}>
-                      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-                    </button>
-                  </div>
-
-                  {#if task.kind === 'BACKUP' && task.showOptions}
-                    <!-- Everything a backup from the Backups page can be, per step. -->
-                    <div class="w-100 border-top pt-2 mt-1">
-                      <BackupOptions
-                        bind:value={task.options}
-                        idPrefix="schedule-task-{task.uid}" />
-                    </div>
-                  {/if}
+          {#if previewSupported}
+            <div class="border rounded p-3">
+              {#if previewLoading}
+                <div class="d-flex align-items-center gap-2 small text-body-secondary">
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  {$_('components.modals.schedule-editor.preview-loading')}
                 </div>
-              {/each}
+              {:else if previewError}
+                <div class="small text-body-secondary">{$_(previewError)}</div>
+              {:else if preview && !preview.valid}
+                <div class="small text-danger">
+                  {$_('components.modals.schedule-editor.preview-invalid')}
+                </div>
+              {:else if preview}
+                <div class="small fw-semibold">
+                  {preview.description || $_('components.modals.schedule-editor.preview-title')}
+                </div>
+                {#if preview.next.length}
+                  <ul class="preview-list small text-body-secondary mb-0 mt-2 ps-0">
+                    {#each preview.next as next, index (`${next}-${index}`)}
+                      <li>
+                        <i class="fa-regular fa-clock me-1" aria-hidden="true"></i>
+                        <DateComponent time={next} fullFormat />
+                      </li>
+                    {/each}
+                  </ul>
+                {/if}
+              {:else}
+                <div class="small text-body-secondary">
+                  {$_('components.modals.schedule-editor.preview-title')}
+                </div>
+              {/if}
             </div>
           {/if}
 
-          <div class="d-flex flex-wrap gap-2 pt-2">
-            <button type="button" class="btn btn-sm btn-primary" onclick={() => addTask('POWER')}>
-              <i class="fa-solid fa-power-off me-1" aria-hidden="true"></i>
-              {$_('pages.servers.schedules.task-kind.power')}
-            </button>
-            <button type="button" class="btn btn-sm btn-primary" onclick={() => addTask('COMMAND')}>
-              <i class="fa-solid fa-terminal me-1" aria-hidden="true"></i>
-              {$_('pages.servers.schedules.task-kind.command')}
-            </button>
-            {#if canBackup}
+          <div>
+            <span class="form-label d-block"
+              >{$_('components.modals.schedule-editor.tasks-label')}</span>
+            <div class="form-text mb-2">{$_('components.modals.schedule-editor.tasks-hint')}</div>
+
+            {#if !tasks.length}
+              <div class="text-body-secondary small border rounded p-3">
+                {$_('components.modals.schedule-editor.tasks-empty')}
+              </div>
+            {:else}
+              <div class="vstack gap-2">
+                {#each tasks as task, index (task.uid)}
+                  <div class="border rounded p-2 d-flex flex-wrap align-items-center gap-2">
+                    <span class="badge rounded-pill text-bg-secondary">{index + 1}</span>
+
+                    <select
+                      class="form-select form-select-sm task-kind-select"
+                      aria-label={$_('components.modals.schedule-editor.task-kind')}
+                      value={task.kind}
+                      onchange={(event) => onKindChange(task, event)}>
+                      <option value="POWER">{$_('pages.servers.schedules.task-kind.power')}</option>
+                      <option value="COMMAND">
+                        {$_('pages.servers.schedules.task-kind.command')}
+                      </option>
+                      {#if canBackup}
+                        <option value="BACKUP">
+                          {$_('pages.servers.schedules.task-kind.backup')}
+                        </option>
+                      {/if}
+                    </select>
+
+                    {#if task.kind === 'POWER'}
+                      <select
+                        class="form-select form-select-sm task-action-select"
+                        aria-label={$_('components.modals.schedule-editor.task-action')}
+                        bind:value={task.action}>
+                        <option value="RESTART">
+                          {$_('pages.servers.schedules.power-action.restart')}
+                        </option>
+                        <option value="STOP"
+                          >{$_('pages.servers.schedules.power-action.stop')}</option>
+                      </select>
+                    {:else if task.kind === 'COMMAND'}
+                      <input
+                        type="text"
+                        class="form-control form-control-sm flex-grow-1 font-monospace"
+                        maxlength="512"
+                        aria-label={$_('components.modals.schedule-editor.task-command')}
+                        placeholder={$_(
+                          'components.modals.schedule-editor.task-command-placeholder',
+                        )}
+                        bind:value={task.command} />
+                    {:else}
+                      <input
+                        type="text"
+                        class="form-control form-control-sm flex-grow-1"
+                        maxlength="64"
+                        aria-label={$_('components.modals.schedule-editor.task-backup-name')}
+                        placeholder={$_(
+                          'components.modals.schedule-editor.task-backup-placeholder',
+                        )}
+                        bind:value={task.backupName} />
+                      <input
+                        type="number"
+                        class="form-control form-control-sm keep-input"
+                        min="0"
+                        max="100"
+                        aria-label={$_('components.modals.schedule-editor.task-keep')}
+                        title={$_('components.modals.schedule-editor.task-keep')}
+                        bind:value={task.keep} />
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-primary text-nowrap"
+                        aria-expanded={task.showOptions}
+                        onclick={() => (task.showOptions = !task.showOptions)}>
+                        <i class="fa-solid fa-sliders me-1" aria-hidden="true"></i>
+                        {$_(`components.backup-options.mode-${task.options.mode.toLowerCase()}`)}
+                        &middot;
+                        {$_(`components.backup-options.scope-${task.options.scope.toLowerCase()}`)}
+                      </button>
+                    {/if}
+
+                    <div class="btn-group btn-group-sm ms-auto">
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary"
+                        disabled={index === 0}
+                        aria-label={$_('components.modals.schedule-editor.move-up')}
+                        onclick={() => moveTask(index, -1)}>
+                        <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary"
+                        disabled={index === tasks.length - 1}
+                        aria-label={$_('components.modals.schedule-editor.move-down')}
+                        onclick={() => moveTask(index, 1)}>
+                        <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        aria-label={$_('buttons.remove')}
+                        onclick={() => removeTask(index)}>
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                      </button>
+                    </div>
+
+                    {#if task.kind === 'BACKUP' && task.showOptions}
+                      <!-- Everything a backup from the Backups page can be, per step. -->
+                      <div class="w-100 border-top pt-2 mt-1">
+                        <BackupOptions
+                          bind:value={task.options}
+                          idPrefix="schedule-task-{task.uid}" />
+                      </div>
+                    {/if}
+                  </div>
+                {/each}
+              </div>
+            {/if}
+
+            <div class="d-flex flex-wrap gap-2 pt-2">
+              <button type="button" class="btn btn-sm btn-primary" onclick={() => addTask('POWER')}>
+                <i class="fa-solid fa-power-off me-1" aria-hidden="true"></i>
+                {$_('pages.servers.schedules.task-kind.power')}
+              </button>
               <button
                 type="button"
                 class="btn btn-sm btn-primary"
-                onclick={() => addTask('BACKUP')}>
-                <i class="fa-solid fa-box-archive me-1" aria-hidden="true"></i>
-                {$_('pages.servers.schedules.task-kind.backup')}
+                onclick={() => addTask('COMMAND')}>
+                <i class="fa-solid fa-terminal me-1" aria-hidden="true"></i>
+                {$_('pages.servers.schedules.task-kind.command')}
               </button>
-            {:else}
-              <span class="form-text m-0 align-self-center">
-                {$_('components.modals.schedule-editor.backup-unavailable')}
-              </span>
-            {/if}
+              {#if canBackup}
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  onclick={() => addTask('BACKUP')}>
+                  <i class="fa-solid fa-box-archive me-1" aria-hidden="true"></i>
+                  {$_('pages.servers.schedules.task-kind.backup')}
+                </button>
+              {:else}
+                <span class="form-text m-0 align-self-center">
+                  {$_('components.modals.schedule-editor.backup-unavailable')}
+                </span>
+              {/if}
+            </div>
           </div>
+
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="scheduleEnabled"
+              bind:checked={enabled} />
+            <label class="form-check-label" for="scheduleEnabled">
+              {$_('components.modals.schedule-editor.enabled-label')}
+            </label>
+          </div>
+
+          {#if formError}
+            <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
+              <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>{$_(formError)}</div>
+            </div>
+          {/if}
         </div>
 
-        <div class="form-check form-switch">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            role="switch"
-            id="scheduleEnabled"
-            bind:checked={enabled} />
-          <label class="form-check-label" for="scheduleEnabled">
-            {$_('components.modals.schedule-editor.enabled-label')}
-          </label>
-        </div>
-
-        {#if formError}
-          <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
-            <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
-            <div>{$_(formError)}</div>
-          </div>
-        {/if}
-      </div>
-
-      <!-- The backdrop is static and Esc is off, so the ✕ in the header is the way out; one
+        <!-- The backdrop is static and Esc is off, so the ✕ in the header is the way out; one
            full-width action says what the modal is for. Creating is the secondary action and
            editing the primary one, the way the other add/edit dialogs are worded. -->
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn w-100"
-          class:btn-secondary={editingId == null}
-          class:btn-primary={editingId != null}
-          disabled={saving}
-          onclick={() => void save()}>
-          {#if saving}
-            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-          {/if}
-          {editingId == null ? $_('buttons.create') : $_('buttons.save')}
-        </button>
-      </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary w-100" disabled={saving}>
+            {#if saving}
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {/if}
+            {editingId == null ? $_('buttons.create') : $_('buttons.save')}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

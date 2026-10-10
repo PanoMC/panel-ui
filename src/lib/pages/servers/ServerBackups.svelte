@@ -340,20 +340,15 @@
         </div>
         <div class="modal-body vstack gap-3">
           <div>
-            <div class="form-floating">
-              <input
-                id="backupName"
-                type="text"
-                class="form-control"
-                maxlength="64"
-                placeholder=" "
-                bind:value={createName} />
-              <label for="backupName">{$_('pages.servers.backups.name-label')}</label>
-            </div>
-            <div class="form-text">
-              {$_('pages.servers.backups.name-hint')}
-              <span class="opacity-75">{$_('pages.servers.backups.name-placeholder')}</span>
-            </div>
+            <input
+              id="backupName"
+              type="text"
+              class="form-control"
+              maxlength="64"
+              placeholder={$_('pages.servers.backups.name-placeholder')}
+              aria-label={$_('pages.servers.backups.name-label')}
+              bind:value={createName} />
+            <div class="form-text">{$_('pages.servers.backups.name-hint')}</div>
           </div>
 
           <BackupOptions
@@ -365,7 +360,7 @@
           <!-- One full-width action; the header's close button is the way out. -->
           <button
             type="submit"
-            class="btn btn-secondary w-100"
+            class="btn btn-primary w-100"
             disabled={creating || !!runningTask || !backupOptionsValid(createOptions)}>
             {#if creating}
               <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
@@ -509,7 +504,7 @@
             </div>
           {/if}
           <input
-            class="form-control mt-3"
+            class="form-control text-start mt-3"
             type="password"
             autocomplete="current-password"
             placeholder={$_('pages.servers.backups.password-placeholder')}
@@ -521,6 +516,7 @@
           <button
             type="button"
             class="btn btn-link text-decoration-none col-6 m-0"
+            disabled={!!busyId}
             data-bs-dismiss="modal">
             {$_('buttons.cancel')}
           </button>
@@ -560,7 +556,7 @@
           <!-- Bootstrap's floating label: the caption sits inside the empty field and lifts out of
                the way once there is a value. The blank placeholder is what tells the browser the
                field is empty, so the label does not start floated. -->
-          <div class="form-floating mt-3">
+          <div class="form-floating text-start mt-3">
             <input
               id="deletePassword"
               class="form-control"
@@ -577,6 +573,7 @@
           <button
             type="button"
             class="btn btn-link text-decoration-none col-6 m-0"
+            disabled={!!busyId}
             data-bs-dismiss="modal">
             {$_('buttons.cancel')}
           </button>

@@ -16,14 +16,14 @@
         <button
           class="btn btn-link text-decoration-none col-6 m-0"
           type="button"
-          class:disabled={$loading}
+          disabled={$loading}
           on:click={hide}>
           {$_('buttons.cancel')}
         </button>
         <button
           class="btn btn-primary col-6 m-0"
           type="button"
-          class:disabled={$loading}
+          disabled={$loading}
           on:click={acceptServer}>
           {#if $loading}<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"
             ></span

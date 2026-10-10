@@ -215,12 +215,12 @@
           class="navbar-brand m-auto position-relative focus-ring focus-ring-white rounded d-flex align-items-center justify-content-center"
           class:gap-2={$page.data.hosted}
           href="{base}/"
-          style="min-width: 48px; height: 48px;">
+          style="min-width: 56px; height: 56px;">
           {#if $page.data.hosted}
             <!-- Pano Host: the mark on its own color tile (the website's Pano Host brand). -->
             <span
               class="rounded d-inline-flex align-items-center justify-content-center"
-              style="width: 32px; height: 32px; padding: 0.375rem; background-image: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-info) 100%);">
+              style="width: 40px; height: 40px; padding: 0.375rem; background-image: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-info) 100%);">
               <img
                 alt="Pano Host"
                 title="Pano Host"
@@ -234,7 +234,7 @@
               alt="Pano"
               title={'Pano'}
               src={base + '/assets/img/logo.svg'}
-              width="34"
+              width="42"
               class="border rounded"
               style="padding: 0.375rem;" />
           {/if}
@@ -269,7 +269,7 @@
             href={UI_URL}
             target="_blank"
             rel="noopener"
-            class="btn btn-sm btn-secondary w-100 d-flex align-items-center justify-content-center">
+            class="btn btn-sm btn-secondary shadow w-100 d-flex align-items-center justify-content-center">
             {$_('components.sidebar.show-website')}
             <i class="fa-solid fa-arrow-up-right-from-square ms-2" aria-hidden="true"></i>
           </a>
@@ -277,18 +277,18 @@
           <div class="hstack gap-1">
             {#if canManageNodes}
               <a
-                class="btn btn-sm btn-outline-success flex-shrink-0"
+                class="btn btn-sm btn-success shadow flex-shrink-0"
                 class:active={onNodesPage}
                 href="{base}/servers/nodes"
                 aria-current={onNodesPage ? 'page' : undefined}
                 aria-label={$_('components.server-navigation-menu.nodes')}
                 title={$_('components.server-navigation-menu.nodes')}>
-                <i class="fas fa-server" aria-hidden="true"></i>
+                <i class="fa-solid fa-circle-nodes" aria-hidden="true"></i>
               </a>
             {/if}
             <button
               type="button"
-              class="btn btn-sm btn-success flex-grow-1 d-flex align-items-center justify-content-center gap-2 min-w-0"
+              class="btn btn-sm btn-success shadow flex-grow-1 d-flex align-items-center justify-content-center gap-2 min-w-0"
               on:click={showServersModal}
               title={switcherServer
                 ? `${$_('components.navbar.selected-server')}: ${getServerDisplayName(switcherServer)}`
@@ -303,12 +303,12 @@
       <ul class="nav nav-pills nav-fill gap-1" data-bs-theme="dark">
         <li class="nav-item">
           <button
-            class="nav-link p-1 text-center"
-            aria-label={$_('components.sidebar.website')}
-            title={$_('components.sidebar.website')}
+            class="nav-link px-1 py-2 text-center w-100 d-flex flex-column align-items-center gap-1"
             on:click={onWebsiteMenuClick}
             class:active={$sidebarTabsState === 'website'}>
-            <i class="fas fa-globe"></i>
+            <i class="fas fa-globe" style="line-height: 1; font-size: 1.1em;"></i>
+            <span class="small fw-normal" style="line-height: 1;"
+              >{$_('components.sidebar.website')}</span>
           </button>
         </li>
         {#if canManageServers}
@@ -320,14 +320,14 @@
               { placement: 'bottom' },
             ]}>
             <button
-              class="nav-link p-1 text-center"
-              aria-label={$_('components.sidebar.server')}
-              title={isGameTabDisabled ? null : $_('components.sidebar.server')}
+              class="nav-link px-1 py-2 text-center w-100 d-flex flex-column align-items-center gap-1"
               disabled={isGameTabDisabled}
               aria-disabled={isGameTabDisabled ? 'true' : undefined}
               on:click={onGameMenuClick}
               class:active={$sidebarTabsState === 'game'}>
-              <i class="fas fa-cube"></i>
+              <i class="fas fa-cube" style="line-height: 1; font-size: 1.1em;"></i>
+              <span class="small fw-normal" style="line-height: 1;"
+                >{$_('components.sidebar.server')}</span>
             </button>
           </li>
         {/if}

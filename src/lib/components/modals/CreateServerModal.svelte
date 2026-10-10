@@ -67,7 +67,7 @@
           <div class="progress-bar" style="width: {((step + 1) / STEP_COUNT) * 100}%;"></div>
         </div>
 
-        <p class="mb-3">
+        <p class="mb-3 text-body-secondary">
           {$_('components.modals.create-server.step-of', {
             values: { current: step + 1, total: STEP_COUNT, name: $_(stepLabel) },
           })}
@@ -109,7 +109,7 @@
             </div>
           {:else if usableNodes.length === 0}
             <NoContent
-              icon="fa-solid fa-server fa-3x"
+              icon="fa-solid fa-circle-nodes fa-3x"
               text={nodesUnavailable
                 ? $_('components.modals.create-server.nodes-unavailable')
                 : $_('components.modals.create-server.node-empty-description')}>
@@ -122,11 +122,14 @@
                   {#if localSetupBusy}
                     <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
                   {:else}
-                    <i class="fa-solid fa-bolt me-1" aria-hidden="true"></i>
+                    <i class="fa-solid fa-circle-nodes me-1" aria-hidden="true"></i>
                   {/if}
                   {$_('pages.servers.create.setup-local-node')}
                 </button>
-                <button type="button" class="btn btn-outline-secondary btn-sm" onclick={addNode}>
+                <button
+                  type="button"
+                  class="btn btn-link text-primary text-decoration-none btn-sm text-capitalize"
+                  onclick={addNode}>
                   <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
                   {$_('components.modals.create-server.add-node')}
                 </button>
@@ -151,24 +154,25 @@
               {/each}
             </div>
 
-            <button type="button" class="btn btn-link btn-sm px-0 mt-2" onclick={addNode}>
+            <button
+              type="button"
+              class="btn btn-link text-primary text-decoration-none btn-sm text-capitalize px-0 mt-2"
+              onclick={addNode}>
               <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
               {$_('components.modals.create-server.add-node')}
             </button>
           {/if}
         {:else if step === STEP_SOFTWARE}
           {#if isFolderSource(source)}
-            <div class="form-floating">
+            <div>
               <input
                 id="createServerFolder"
                 type="text"
                 class="form-control font-monospace"
                 class:is-invalid={folderPath.trim() !== '' && !folderPathValid}
-                placeholder=" "
+                placeholder={$_('components.modals.create-server.folder-label')}
+                aria-label={$_('components.modals.create-server.folder-label')}
                 bind:value={folderPath} />
-              <label for="createServerFolder">
-                {$_('components.modals.create-server.folder-label')}
-              </label>
               <div class="invalid-feedback">
                 {$_('components.modals.create-server.import.folder-invalid')}
               </div>
@@ -396,18 +400,14 @@
                says so (IMPORT_RESULT). -->
           <div class="row g-3">
             <div class="col-12">
-              <div class="form-floating">
-                <input
-                  id="createServerName"
-                  type="text"
-                  class="form-control"
-                  maxlength="64"
-                  placeholder=" "
-                  bind:value={name} />
-                <label for="createServerName">
-                  {$_('components.modals.create-server.name-label')}
-                </label>
-              </div>
+              <input
+                id="createServerName"
+                type="text"
+                class="form-control"
+                maxlength="64"
+                placeholder={$_('components.modals.create-server.name-label')}
+                aria-label={$_('components.modals.create-server.name-label')}
+                bind:value={name} />
             </div>
 
             <div class="col-md-6">
@@ -481,16 +481,14 @@
             </div>
 
             <div class="col-12">
-              <div class="form-floating">
-                <textarea
-                  id="createServerJvmArgs"
-                  class="form-control font-monospace"
-                  rows="3"
-                  spellcheck="false"
-                  placeholder=" "
-                  bind:value={jvmArgs}></textarea>
-                <label for="createServerJvmArgs">{$_('pages.servers.create.jvm-args-label')}</label>
-              </div>
+              <textarea
+                id="createServerJvmArgs"
+                class="form-control font-monospace"
+                rows="3"
+                spellcheck="false"
+                placeholder={$_('pages.servers.create.jvm-args-label')}
+                aria-label={$_('pages.servers.create.jvm-args-label')}
+                bind:value={jvmArgs}></textarea>
               <button
                 type="button"
                 class="btn btn-outline-secondary btn-sm mt-2"
@@ -613,7 +611,7 @@
             {#if step === STEP_REVIEW}
               <button
                 type="button"
-                class="btn btn-secondary w-100"
+                class="btn btn-primary w-100"
                 disabled={!canContinue || submitting}
                 onclick={submit}>
                 {#if submitting}

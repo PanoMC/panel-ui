@@ -11,7 +11,7 @@
         value={created.key}
         onfocus={(event) => event.currentTarget.select()} />
       <button
-        class="btn btn-secondary"
+        class="btn btn-primary"
         type="button"
         title={$_('buttons.copy')}
         aria-label={$_('buttons.copy')}
@@ -27,7 +27,7 @@
           created.env,
         )}</pre>
       <button
-        class="btn btn-secondary"
+        class="btn btn-primary"
         type="button"
         title={$_('buttons.copy')}
         aria-label={$_('buttons.copy')}

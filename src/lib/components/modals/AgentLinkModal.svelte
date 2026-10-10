@@ -141,10 +141,7 @@
 
       {#if linkedServer}
         <div class="modal-footer">
-          <button type="button" class="btn btn-link m-0" onclick={hide}>
-            {$_('buttons.close')}
-          </button>
-          <button type="button" class="btn btn-primary m-0" onclick={openLinked}>
+          <button type="button" class="btn btn-primary w-100" onclick={openLinked}>
             {$_('components.modals.agent-link.open-server')}
           </button>
         </div>

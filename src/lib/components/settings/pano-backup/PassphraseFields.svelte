@@ -1,38 +1,30 @@
 <!-- New passphrase + confirmation. -->
 <div class="vstack gap-3 text-start">
   <div>
-    <div class="form-floating">
-      <input
-        id="{id}-passphrase"
-        class="form-control"
-        type="password"
-        placeholder=" "
-        autocomplete="new-password"
-        bind:value={passphrase}
-        class:is-invalid={touched && problem === 'too-short'} />
-      <label class="text-capitalize" for="{id}-passphrase">
-        {$_('pages.settings.backups.passphrase')}
-      </label>
-    </div>
-    <div class="mt-1">
+    <input
+      id="{id}-passphrase"
+      class="form-control form-control-lg text-capitalize"
+      type="password"
+      autocomplete="new-password"
+      placeholder={$_('pages.settings.backups.passphrase')}
+      aria-label={$_('pages.settings.backups.passphrase')}
+      bind:value={passphrase}
+      class:is-invalid={touched && problem === 'too-short'} />
+    <div class="form-text">
       {$_('pages.settings.backups.passphrase-min', { values: { min: MIN_PASSPHRASE_LENGTH } })}
     </div>
   </div>
   <div>
-    <div class="form-floating">
-      <input
-        id="{id}-confirm"
-        class="form-control"
-        type="password"
-        placeholder=" "
-        autocomplete="new-password"
-        bind:value={confirmation}
-        onblur={() => (touched = true)}
-        class:is-invalid={touched && problem === 'mismatch'} />
-      <label class="text-capitalize" for="{id}-confirm">
-        {$_('pages.settings.backups.passphrase-confirm')}
-      </label>
-    </div>
+    <input
+      id="{id}-confirm"
+      class="form-control form-control-lg text-capitalize"
+      type="password"
+      autocomplete="new-password"
+      placeholder={$_('pages.settings.backups.passphrase-confirm')}
+      aria-label={$_('pages.settings.backups.passphrase-confirm')}
+      bind:value={confirmation}
+      onblur={() => (touched = true)}
+      class:is-invalid={touched && problem === 'mismatch'} />
     {#if touched && problem === 'mismatch'}
       <div class="invalid-feedback d-block">{$_('pages.settings.backups.passphrase-mismatch')}</div>
     {/if}

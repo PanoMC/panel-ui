@@ -1,5 +1,5 @@
 <div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
-  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
@@ -7,9 +7,6 @@
           {#if $count > 0}
             <span class="badge text-bg-danger ms-2">{$count}</span>
           {/if}
-          <small class="d-block text-muted fw-normal">
-            {$_('pages.settings.platform.maintenance.banned-ips.sub')}
-          </small>
         </h5>
         <button
           aria-label={$_('buttons.close')}
@@ -29,9 +26,10 @@
             text={$_('pages.settings.platform.maintenance.banned-ips.empty')} />
         {:else}
           <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover">
               <thead>
                 <tr>
+                  <th class="align-middle" scope="col"></th>
                   <th class="align-middle text-nowrap" scope="col"
                     >{$_('pages.settings.platform.maintenance.banned-ips.ip')}</th>
                   <th class="align-middle text-nowrap" scope="col"
@@ -42,12 +40,34 @@
                     >{$_('pages.settings.platform.maintenance.banned-ips.username-tried')}</th>
                   <th class="align-middle text-nowrap" scope="col"
                     >{$_('pages.settings.platform.maintenance.banned-ips.banned-at')}</th>
-                  <th class="align-middle text-end" scope="col"></th>
                 </tr>
               </thead>
               <tbody>
                 {#each $rows as bannedIp (bannedIp.ip)}
                   <tr>
+                    <th scope="row" class="align-middle text-center">
+                      <div class="dropdown position-static">
+                        <button
+                          type="button"
+                          class="btn btn-link"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                          title={$_('pages.servers.nodes.column-actions')}
+                          aria-label={$_('pages.servers.nodes.column-actions')}>
+                          <span class="fas fa-ellipsis-v"></span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-start">
+                          <button
+                            type="button"
+                            class="dropdown-item link-danger text-capitalize"
+                            disabled={$actionLoading}
+                            onclick={() => onRemoveClick(bannedIp)}>
+                            <i class="fas fa-trash me-2"></i>
+                            {$_('pages.settings.platform.maintenance.banned-ips.remove')}
+                          </button>
+                        </div>
+                      </div>
+                    </th>
                     <td class="align-middle">
                       <code class="user-select-all">{bannedIp.ip}</code>
                     </td>
@@ -62,17 +82,6 @@
                       {:else}
                         -
                       {/if}
-                    </td>
-                    <td class="align-middle text-end">
-                      <button
-                        type="button"
-                        class="btn btn-link link-danger p-0"
-                        title={$_('pages.settings.platform.maintenance.banned-ips.remove')}
-                        aria-label={$_('pages.settings.platform.maintenance.banned-ips.remove')}
-                        disabled={$actionLoading}
-                        onclick={() => onRemoveClick(bannedIp)}>
-                        <i class="fas fa-trash"></i>
-                      </button>
                     </td>
                   </tr>
                 {/each}
@@ -91,19 +100,16 @@
           {/if}
         {/if}
       </div>
-      <div class="modal-footer flex-nowrap">
-        <button class="btn btn-link col-6 m-0" type="button" onclick={hide}>
-          {$_('buttons.close')}
-        </button>
+      <div class="modal-footer">
         <button
-          class="btn btn-link link-danger col-6 m-0"
+          class="btn btn-danger w-100"
           type="button"
           disabled={$actionLoading || $rows.length === 0}
           onclick={onClearAllClick}>
-          {$_('pages.settings.platform.maintenance.banned-ips.clear-all')}
           {#if $actionLoading}
-            <span class="spinner-border spinner-border-sm ms-2" role="status"></span>
+            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
           {/if}
+          {$_('pages.settings.platform.maintenance.banned-ips.clear-all')}
         </button>
       </div>
     </div>

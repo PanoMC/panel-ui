@@ -1,53 +1,41 @@
 <!-- Set or change the passphrase Pano Backups are encrypted with; needs the account password. -->
 <BsModal bind:this={modal}>
+  <div class="modal-header">
+    <h5 class="modal-title text-capitalize">{$_('pages.settings.backups.passphrase-title')}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label={$_('buttons.close')}
+    ></button>
+  </div>
   <form
     onsubmit={(event) => {
       event.preventDefault();
       void save();
     }}>
-    <div class="modal-body text-center vstack gap-3">
-      <div>
-        <div class="pb-3">
-          <i class="fas fa-key fa-3x d-block m-auto text-gray"></i>
-        </div>
-        <div class="text-capitalize">{$_('pages.settings.backups.passphrase-title')}</div>
-      </div>
-      <div>{$_('pages.settings.backups.passphrase-description')}</div>
-      {#if passphraseSet}
-        <div>{$_('pages.settings.backups.passphrase-change-hint')}</div>
-      {/if}
+    <div class="modal-body vstack gap-3">
       {#key formKey}
         <PassphraseFields bind:passphrase bind:valid />
       {/key}
-      <div class="form-floating text-start">
-        <input
-          id="pano-passphrase-password"
-          class="form-control"
-          type="password"
-          placeholder=" "
-          autocomplete="current-password"
-          bind:value={password} />
-        <label class="text-capitalize" for="pano-passphrase-password">
-          {$_('pages.settings.backups.current-password')}
-        </label>
-      </div>
+      <input
+        id="pano-passphrase-password"
+        class="form-control form-control-lg text-capitalize"
+        type="password"
+        autocomplete="current-password"
+        placeholder={$_('pages.settings.backups.current-password')}
+        aria-label={$_('pages.settings.backups.current-password')}
+        bind:value={password} />
       {#if error}
-        <div class="alert alert-danger mb-0 d-flex align-items-start">
+        <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
           <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
-          <div>{$_(error.key, { values: error.values })}</div>
+          <div>
+            <h5 class="alert-heading mb-2">{$_('pages.settings.backups.passphrase-title')}</h5>
+            <div>{$_(error.key, { values: error.values })}</div>
+          </div>
         </div>
       {/if}
     </div>
-    <div class="modal-footer flex-nowrap text-capitalize">
-      <button
-        type="button"
-        class="btn btn-link text-decoration-none col-6 m-0"
-        data-bs-dismiss="modal">
-        {$_('buttons.cancel')}
-      </button>
+    <div class="modal-footer">
       <button
         type="submit"
-        class="btn btn-primary col-6 m-0"
+        class="btn btn-primary w-100 text-capitalize"
         disabled={!valid || !password || saving}>
         {#if saving}
           <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>

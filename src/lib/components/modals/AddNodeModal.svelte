@@ -53,10 +53,7 @@
               <!-- A disabled button swallows pointer events, so the tooltip sits outside. -->
               <span
                 class="d-inline-block"
-                use:tooltip={[
-                  tabDisabledReason(entry) ? $_(tabDisabledReason(entry)) : '',
-                  { placement: 'top' },
-                ]}>
+                use:tooltip={[tabDisabledReason(entry) ? $_(tabDisabledReason(entry)) : '']}>
                 <button
                   type="button"
                   class="nav-link"
@@ -125,7 +122,7 @@
                   copied
                     ? $_('components.modals.connect-server.copied')
                     : $_('components.modals.connect-server.copy'),
-                  { placement: 'bottom', hideOnClick: false },
+                  { hideOnClick: false },
                 ]}>
                 <i class="fa-regular fa-clipboard" aria-hidden="true"></i>
               </button>
@@ -201,10 +198,8 @@
         {:else if tab === 'ssh'}
           <form id="addNodeSshForm" class="row g-3" onsubmit={onSubmitSsh}>
             <div class="col-md-8">
-              <label class="form-label" for="addNodeSshHost">
-                {$_('components.modals.add-node.host-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.host-label')}
                 id="addNodeSshHost"
                 type="text"
                 class="form-control"
@@ -215,10 +210,9 @@
             </div>
 
             <div class="col-md-4">
-              <label class="form-label" for="addNodeSshPort">
-                {$_('components.modals.add-node.port-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.port-label')}
+                placeholder={$_('components.modals.add-node.port-label')}
                 id="addNodeSshPort"
                 type="number"
                 class="form-control"
@@ -228,10 +222,8 @@
             </div>
 
             <div class="col-md-6">
-              <label class="form-label" for="addNodeSshUsername">
-                {$_('components.modals.add-node.username-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.username-label')}
                 id="addNodeSshUsername"
                 type="text"
                 class="form-control"
@@ -242,10 +234,8 @@
             </div>
 
             <div class="col-md-6">
-              <label class="form-label" for="addNodeSshName">
-                {$_('components.modals.add-node.name-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.name-label')}
                 id="addNodeSshName"
                 type="text"
                 class="form-control"
@@ -274,10 +264,9 @@
 
             {#if sshAuthType === 'password'}
               <div class="col-12">
-                <label class="form-label" for="addNodeSshPassword">
-                  {$_('components.modals.add-node.ssh-password-label')}
-                </label>
                 <input
+                  aria-label={$_('components.modals.add-node.ssh-password-label')}
+                  placeholder={$_('components.modals.add-node.ssh-password-label')}
                   id="addNodeSshPassword"
                   type="password"
                   class="form-control"
@@ -286,10 +275,8 @@
               </div>
             {:else}
               <div class="col-12">
-                <label class="form-label" for="addNodeSshKey">
-                  {$_('components.modals.add-node.private-key-label')}
-                </label>
                 <textarea
+                  aria-label={$_('components.modals.add-node.private-key-label')}
                   id="addNodeSshKey"
                   class="form-control font-monospace private-key-input"
                   rows="5"
@@ -302,10 +289,9 @@
               </div>
 
               <div class="col-12">
-                <label class="form-label" for="addNodeSshPassphrase">
-                  {$_('components.modals.add-node.passphrase-label')}
-                </label>
                 <input
+                  aria-label={$_('components.modals.add-node.passphrase-label')}
+                  placeholder={$_('components.modals.add-node.passphrase-label')}
                   id="addNodeSshPassphrase"
                   type="password"
                   class="form-control"
@@ -336,10 +322,8 @@
         {:else if tab === 'coolify'}
           <form id="addNodeCoolifyForm" class="row g-3" onsubmit={onSubmitCoolify}>
             <div class="col-md-7">
-              <label class="form-label" for="addNodeCoolifyUrl">
-                {$_('components.modals.add-node.coolify-url-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.coolify-url-label')}
                 id="addNodeCoolifyUrl"
                 type="url"
                 class="form-control"
@@ -350,10 +334,8 @@
             </div>
 
             <div class="col-md-5">
-              <label class="form-label" for="addNodeCoolifyName">
-                {$_('components.modals.add-node.name-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.name-label')}
                 id="addNodeCoolifyName"
                 type="text"
                 class="form-control"
@@ -363,23 +345,20 @@
             </div>
 
             <div class="col-12">
-              <label class="form-label" for="addNodeCoolifyToken">
-                {$_('components.modals.add-node.coolify-token-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.coolify-token-label')}
+                placeholder={$_('components.modals.add-node.coolify-token-label')}
                 id="addNodeCoolifyToken"
                 type="password"
                 class="form-control"
                 autocomplete="new-password"
                 bind:value={coolifyToken} />
-              <div class="form-text">{$_('components.modals.add-node.coolify-token-hint')}</div>
             </div>
 
             <div class="col-md-6">
-              <label class="form-label" for="addNodeCoolifyServer">
-                {$_('components.modals.add-node.coolify-server-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.coolify-server-label')}
+                placeholder={$_('components.modals.add-node.coolify-server-label')}
                 id="addNodeCoolifyServer"
                 type="text"
                 class="form-control font-monospace"
@@ -389,10 +368,9 @@
             </div>
 
             <div class="col-md-6">
-              <label class="form-label" for="addNodeCoolifyProject">
-                {$_('components.modals.add-node.coolify-project-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.coolify-project-label')}
+                placeholder={$_('components.modals.add-node.coolify-project-label')}
                 id="addNodeCoolifyProject"
                 type="text"
                 class="form-control font-monospace"
@@ -405,10 +383,9 @@
             </div>
 
             <div class="col-md-4">
-              <label class="form-label" for="addNodeCoolifyEnvironment">
-                {$_('components.modals.add-node.coolify-environment-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.coolify-environment-label')}
+                placeholder={$_('components.modals.add-node.coolify-environment-label')}
                 id="addNodeCoolifyEnvironment"
                 type="text"
                 class="form-control"
@@ -418,10 +395,9 @@
             </div>
 
             <div class="col-md-4">
-              <label class="form-label" for="addNodeCoolifyVolume">
-                {$_('components.modals.add-node.coolify-volume-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.coolify-volume-label')}
+                placeholder={$_('components.modals.add-node.coolify-volume-label')}
                 id="addNodeCoolifyVolume"
                 type="text"
                 class="form-control"
@@ -431,10 +407,8 @@
             </div>
 
             <div class="col-md-4">
-              <label class="form-label" for="addNodeCoolifyPorts">
-                {$_('components.modals.add-node.coolify-ports-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.coolify-ports-label')}
                 id="addNodeCoolifyPorts"
                 type="text"
                 class="form-control font-monospace"
@@ -489,16 +463,14 @@
 
 {#snippet currentPasswordField(id)}
   <div class="col-12">
-    <label class="form-label" for={id}>
-      {$_('components.modals.add-node.current-password-label')}
-    </label>
     <input
+      aria-label={$_('components.modals.add-node.current-password-label')}
+      placeholder={$_('components.modals.add-node.current-password-label')}
       {id}
       type="password"
       class="form-control"
       autocomplete="current-password"
       bind:value={currentPassword} />
-    <div class="form-text">{$_('components.modals.add-node.current-password-hint')}</div>
   </div>
 {/snippet}
 
@@ -521,10 +493,8 @@
 
     {#if advancedOpen}
       <div class="mt-2" id="{id}Panel">
-        <label class="form-label" for={id}>
-          {$_('components.modals.add-node.pano-url.label')}
-        </label>
         <input
+          aria-label={$_('components.modals.add-node.pano-url.label')}
           {id}
           type="url"
           class="form-control"
@@ -545,10 +515,8 @@
                default, and only wrong on a host that cannot reach the published registry. -->
           <div class="row g-3 mt-0">
             <div class="col-md-8">
-              <label class="form-label" for="addNodeCoolifyImage">
-                {$_('components.modals.add-node.coolify-image-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.coolify-image-label')}
                 id="addNodeCoolifyImage"
                 type="text"
                 class="form-control font-monospace"
@@ -564,10 +532,9 @@
             </div>
 
             <div class="col-md-4">
-              <label class="form-label" for="addNodeCoolifyImageTag">
-                {$_('components.modals.add-node.coolify-image-tag-label')}
-              </label>
               <input
+                aria-label={$_('components.modals.add-node.coolify-image-tag-label')}
+                placeholder={$_('components.modals.add-node.coolify-image-tag-label')}
                 id="addNodeCoolifyImageTag"
                 type="text"
                 class="form-control font-monospace"

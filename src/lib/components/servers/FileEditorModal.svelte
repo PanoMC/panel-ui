@@ -46,75 +46,71 @@
         </h5>
       </div>
 
-      <div class="modal-body vstack gap-2">
-        {#if loadError}
-          <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
-            <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
-            <div>{$_(loadError)}</div>
-          </div>
-        {/if}
+      <form
+        onsubmit={(event) => {
+          event.preventDefault();
+          void save();
+        }}>
+        <div class="modal-body vstack gap-2">
+          {#if loadError}
+            <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
+              <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>{$_(loadError)}</div>
+            </div>
+          {/if}
 
-        {#if binary}
-          <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
-            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
-            <div>{$_('components.modals.file-editor.binary')}</div>
-          </div>
-        {:else if truncated}
-          <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
-            <i class="fa-solid fa-scissors me-3 mt-1" aria-hidden="true"></i>
-            <div>{$_('components.modals.file-editor.truncated')}</div>
-          </div>
-        {/if}
+          {#if binary}
+            <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
+              <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>{$_('components.modals.file-editor.binary')}</div>
+            </div>
+          {:else if truncated}
+            <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
+              <i class="fa-solid fa-scissors me-3 mt-1" aria-hidden="true"></i>
+              <div>{$_('components.modals.file-editor.truncated')}</div>
+            </div>
+          {/if}
 
-        {#if loading}
-          <div class="d-flex justify-content-center py-5">
-            <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
-          </div>
-        {/if}
+          {#if loading}
+            <div class="d-flex justify-content-center py-5">
+              <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+            </div>
+          {/if}
 
-        <div
-          class="file-editor-host border rounded"
-          class:d-none={loading || binary || !!loadError}
-          bind:this={editorHost}>
+          <div
+            class="file-editor-host border rounded"
+            class:d-none={loading || binary || !!loadError}
+            bind:this={editorHost}>
+          </div>
         </div>
 
-        {#if !loading && !loadError && !binary}
-          <div class="small text-body-secondary d-flex flex-wrap gap-3">
-            <span>{$_('components.modals.file-editor.save-hint')}</span>
-          </div>
-        {/if}
-      </div>
-
-      <div class="modal-footer flex-nowrap">
-        {#if confirmDiscard}
-          <span class="me-auto small text-danger">
-            {$_('components.modals.file-editor.discard-question')}
-          </span>
-          <button type="button" class="btn btn-link m-0" onclick={() => (confirmDiscard = false)}>
-            {$_('components.modals.file-editor.keep-editing')}
-          </button>
-          <button type="button" class="btn btn-danger m-0" onclick={close}>
-            {$_('components.modals.file-editor.discard')}
-          </button>
-        {:else if cannotEdit && ondownload}
-          <!-- What the editor cannot show in full can still be taken away whole. -->
-          <button type="button" class="btn btn-primary w-100" onclick={() => ondownload(path)}>
-            <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
-            {$_('pages.servers.files.action-download')}
-          </button>
-        {:else}
-          <button
-            type="button"
-            class="btn btn-primary w-100"
-            disabled={!canSave}
-            onclick={() => void save()}>
-            {#if saving}
-              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-            {/if}
-            {$_('buttons.save')}
-          </button>
-        {/if}
-      </div>
+        <div class="modal-footer flex-nowrap">
+          {#if confirmDiscard}
+            <span class="me-auto small text-danger">
+              {$_('components.modals.file-editor.discard-question')}
+            </span>
+            <button type="button" class="btn btn-link m-0" onclick={() => (confirmDiscard = false)}>
+              {$_('components.modals.file-editor.keep-editing')}
+            </button>
+            <button type="button" class="btn btn-danger m-0" onclick={close}>
+              {$_('components.modals.file-editor.discard')}
+            </button>
+          {:else if cannotEdit && ondownload}
+            <!-- What the editor cannot show in full can still be taken away whole. -->
+            <button type="button" class="btn btn-primary w-100" onclick={() => ondownload(path)}>
+              <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
+              {$_('pages.servers.files.action-download')}
+            </button>
+          {:else}
+            <button class="btn btn-primary w-100" type="submit" disabled={!canSave}>
+              {#if saving}
+                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+              {/if}
+              {$_('buttons.save')}
+            </button>
+          {/if}
+        </div>
+      </form>
     </div>
   </div>
 </div>

@@ -42,6 +42,11 @@
             <span class="badge text-bg-primary fw-normal">{sizeText}</span>
           {/if}
         </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label={$_('buttons.close')}></button>
       </div>
 
       <div class="modal-body">

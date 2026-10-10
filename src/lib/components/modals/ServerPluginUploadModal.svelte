@@ -15,74 +15,72 @@
         <button type="button" class="btn-close" aria-label={$_('buttons.close')} on:click={hide}
         ></button>
       </div>
-      <div class="modal-body vstack gap-3">
-        <div style="height: 200px;">
-          <DragAndDropZone
-            class="rounded border h-100 w-100"
-            style="cursor: pointer;"
-            icon="fas fa-upload fa-2x"
-            title={$_('pages.servers.plugins.upload.drop')}
-            accept={['.jar', 'application/java-archive']}
-            maxFileSize={MAX_UPLOAD_BYTES}
-            multiple
-            on:drop={(event) => stage(event.detail)}
-            on:error={(event) => onZoneError(event.detail)} />
-        </div>
-
-        {#each $errors as error, index (index)}
-          <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
-            <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
-            <div>{@html $_(error.key, { values: error.values })}</div>
+      <form on:submit|preventDefault={() => void uploadPending()}>
+        <div class="modal-body vstack gap-3">
+          <div style="height: 200px;">
+            <DragAndDropZone
+              class="rounded border h-100 w-100"
+              style="cursor: pointer;"
+              icon="fas fa-upload fa-2x"
+              title={$_('pages.servers.plugins.upload.drop')}
+              accept={['.jar', 'application/java-archive']}
+              maxFileSize={MAX_UPLOAD_BYTES}
+              multiple
+              on:drop={(event) => stage(event.detail)}
+              on:error={(event) => onZoneError(event.detail)} />
           </div>
-        {/each}
 
-        {#if $uploads.length}
-          <ul class="list-group">
-            {#each $uploads as upload (upload.id)}
-              <li class="list-group-item">
-                <div class="d-flex align-items-center gap-2 small">
-                  {#if upload.status === 'uploading'}
-                    <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"
-                    ></span>
-                  {:else if upload.status === 'pending'}
-                    <i class="fa-solid fa-file text-body-secondary" aria-hidden="true"></i>
-                  {:else if upload.status === 'done'}
-                    <i class="fa-solid fa-circle-check text-success" aria-hidden="true"></i>
-                  {:else}
-                    <i class="fa-solid fa-circle-xmark text-danger" aria-hidden="true"></i>
-                  {/if}
-                  <span class="text-truncate flex-grow-1 font-monospace" title={upload.name}
-                    >{upload.name}</span>
-                  <span class="text-body-secondary flex-shrink-0">
-                    {$_('pages.servers.plugins.upload.status-' + upload.status)}
-                  </span>
-                </div>
-                {#if upload.status === 'uploading'}
-                  <div
-                    class="progress mt-2"
-                    style="height: 4px;"
-                    role="progressbar"
-                    aria-label={upload.name}
-                    aria-valuenow={upload.percent}
-                    aria-valuemin="0"
-                    aria-valuemax="100">
-                    <div class="progress-bar" style="width: {upload.percent}%;"></div>
+          {#each $errors as error, index (index)}
+            <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
+              <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>{@html $_(error.key, { values: error.values })}</div>
+            </div>
+          {/each}
+
+          {#if $uploads.length}
+            <ul class="list-group">
+              {#each $uploads as upload (upload.id)}
+                <li class="list-group-item">
+                  <div class="d-flex align-items-center gap-2 small">
+                    {#if upload.status === 'uploading'}
+                      <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"
+                      ></span>
+                    {:else if upload.status === 'pending'}
+                      <i class="fa-solid fa-file text-body-secondary" aria-hidden="true"></i>
+                    {:else if upload.status === 'done'}
+                      <i class="fa-solid fa-circle-check text-success" aria-hidden="true"></i>
+                    {:else}
+                      <i class="fa-solid fa-circle-xmark text-danger" aria-hidden="true"></i>
+                    {/if}
+                    <span class="text-truncate flex-grow-1 font-monospace" title={upload.name}
+                      >{upload.name}</span>
+                    <span class="text-body-secondary flex-shrink-0">
+                      {$_('pages.servers.plugins.upload.status-' + upload.status)}
+                    </span>
                   </div>
-                {/if}
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-primary w-100"
-          disabled={!hasPending || uploading}
-          on:click={() => void uploadPending()}>
-          {$_('pages.servers.plugins.upload.button')}
-        </button>
-      </div>
+                  {#if upload.status === 'uploading'}
+                    <div
+                      class="progress mt-2"
+                      style="height: 4px;"
+                      role="progressbar"
+                      aria-label={upload.name}
+                      aria-valuenow={upload.percent}
+                      aria-valuemin="0"
+                      aria-valuemax="100">
+                      <div class="progress-bar" style="width: {upload.percent}%;"></div>
+                    </div>
+                  {/if}
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary w-100" disabled={!hasPending || uploading}>
+            {$_('pages.servers.plugins.upload.button')}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

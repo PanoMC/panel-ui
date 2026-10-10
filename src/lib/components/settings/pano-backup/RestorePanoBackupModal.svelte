@@ -147,7 +147,7 @@
     <div class="modal-footer flex-nowrap">
       <button
         type="button"
-        class="btn btn-link text-decoration-none col-6 m-0"
+        class="btn btn-link text-decoration-none text-capitalize col-6 m-0"
         data-bs-dismiss="modal">
         {$_('buttons.cancel')}
       </button>

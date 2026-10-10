@@ -213,7 +213,7 @@
     <div class="card-footer">
       <button
         type="button"
-        class="btn btn-primary"
+        class="btn btn-secondary"
         disabled={$saving || !dirty}
         data-save-mode
         onclick={() => controller.save()}>

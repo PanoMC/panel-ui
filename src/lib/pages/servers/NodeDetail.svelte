@@ -1,18 +1,3 @@
-<style>
-  .usage-bar {
-    height: 4px;
-    max-width: 12rem;
-  }
-
-  .status-dot {
-    width: 0.6rem;
-    height: 0.6rem;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-  }
-</style>
-
 <!-- One node (SM-63): what it is, and the Java runtimes it has. -->
 <div class="container vstack gap-3">
   <PageActions middleClasses="d-none">
@@ -25,22 +10,40 @@
     <div slot="right">
       <button
         type="button"
-        class="btn btn-sm btn-outline-danger"
+        class="btn btn-sm btn-link link-danger"
+        aria-label={$_('buttons.delete')}
+        use:tooltip={[$_('buttons.delete'), { placement: 'bottom' }]}
         onclick={() => deleteNodeModal?.show(node)}>
-        <i class="fa-solid fa-trash me-1" aria-hidden="true"></i>
-        {$_('pages.servers.nodes.delete-title')}
+        <i class="fa-solid fa-trash" aria-hidden="true"></i>
       </button>
     </div>
   </PageActions>
 
+  {#if node?.unreachable}
+    <div
+      class="alert alert-danger d-flex align-items-start mb-0"
+      role="alert"
+      data-node-unreachable>
+      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>
+        <h5 class="alert-heading mb-2">{$_('pages.servers.nodes.unreachable-title')}</h5>
+        <div>{$_('pages.servers.nodes.unreachable-description')}</div>
+        {#if unreachablePath}
+          <a class="btn alert-btn mt-2" href={unreachablePath} download>
+            {$_('pages.servers.nodes.unreachable-download')}
+          </a>
+        {/if}
+      </div>
+    </div>
+  {/if}
+
   <div class="card">
     <CardHeader truncateLeftSlot={false}>
-      <span slot="left" class="d-inline-flex align-items-center gap-2 fw-semibold text-break">
-        <span class="status-dot bg-{nodeStatusColour(node)}"></span>
+      <span slot="left" class="d-inline-flex align-items-center gap-2 text-break">
         {getNodeDisplayName(node)}
+        <span class="badge text-bg-{nodeStatusColour(node)}">{$_(nodeStatusLabel(node))}</span>
       </span>
       <span slot="right" class="d-flex flex-wrap align-items-center justify-content-end gap-2">
-        <span class="small text-body-secondary">{$_(nodeStatusLabel(node))}</span>
         <!-- §2.4.30: how often the usage rows below move. -->
         <select
           class="form-select form-select-sm w-auto"
@@ -53,7 +56,7 @@
         </select>
         <button
           type="button"
-          class="btn btn-sm btn-outline-secondary"
+          class="btn btn-sm btn-primary"
           aria-label={$_('pages.servers.overview.refresh-now')}
           use:tooltip={[$_('pages.servers.overview.refresh-now'), { placement: 'bottom' }]}
           disabled={refreshing}
@@ -63,20 +66,6 @@
       </span>
     </CardHeader>
     <div class="card-body">
-      {#if node?.unreachable}
-        <div class="alert alert-danger d-flex align-items-start" role="alert" data-node-unreachable>
-          <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
-          <div>
-            <h5 class="alert-heading mb-2">{$_('pages.servers.nodes.unreachable-title')}</h5>
-            <div>{$_('pages.servers.nodes.unreachable-description')}</div>
-            {#if unreachablePath}
-              <a class="btn alert-btn mt-2" href={unreachablePath} download>
-                {$_('pages.servers.nodes.unreachable-download')}
-              </a>
-            {/if}
-          </div>
-        </div>
-      {/if}
       <dl class="row mb-0 small">
         <dt class="col-sm-4 col-lg-2">{$_('pages.servers.nodes.column-kind')}</dt>
         <dd class="col-sm-8 col-lg-4">{kindLabel}</dd>
@@ -123,42 +112,66 @@
         <dt class="col-sm-4 col-lg-2">{$_('pages.servers.nodes.column-runtime')}</dt>
         <dd class="col-sm-8 col-lg-4">{node?.runtime || NodeRuntimes.PROCESS}</dd>
         <dt class="col-sm-4 col-lg-2">{$_('pages.servers.nodes.column-last-seen')}</dt>
-        <dd class="col-sm-8 col-lg-4">
+        <dd class="col-sm-8 col-lg-4 mb-0">
           {#if node?.lastSeen}
             <DateComponent time={node.lastSeen} relativeFormat />
           {:else}
             {$_('pages.servers.nodes.never-seen')}
           {/if}
         </dd>
-        <dt class="col-sm-4 col-lg-2">{$_('pages.servers.nodes.column-cpu')}</dt>
-        <dd class="col-sm-8 col-lg-4">
-          {@render usage(cpuPercent, cpuPercent == null ? '—' : `${cpuPercent}%`)}
-        </dd>
-        <dt class="col-sm-4 col-lg-2">{$_('pages.servers.nodes.column-memory')}</dt>
-        <dd class="col-sm-8 col-lg-4">
-          {@render usage(
-            ratio(metrics.memUsed, metrics.memTotal),
-            bytesText(metrics.memUsed, metrics.memTotal),
-          )}
-        </dd>
-        <dt class="col-sm-4 col-lg-2">{$_('pages.servers.nodes.column-disk')}</dt>
-        <dd class="col-sm-8 col-lg-4 mb-lg-0">
-          {@render usage(
-            ratio(metrics.diskUsed, metrics.diskTotal),
-            bytesText(metrics.diskUsed, metrics.diskTotal),
-          )}
-        </dd>
-        <dt class="col-sm-4 col-lg-2">{$_('pages.servers.nodes.column-network')}</dt>
-        <dd class="col-sm-8 col-lg-4 mb-0">
-          {#if metrics.netRxBps == null && metrics.netTxBps == null}
-            —
-          {:else}
-            {$_('pages.servers.nodes.network-rate', {
-              values: { rx: rateText(metrics.netRxBps), tx: rateText(metrics.netTxBps) },
-            })}
-          {/if}
-        </dd>
       </dl>
+    </div>
+  </div>
+
+  <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-xl-4">
+    <div class="col">
+      <div class="card text-bg-warning h-100">
+        <div class="card-body">
+          <p class="text-truncate m-0">{$_('pages.servers.nodes.column-cpu')}</p>
+          <span class="fs-2 lh-1">{cpuPercent == null ? '—' : `${cpuPercent}%`}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card text-bg-primary h-100">
+        <div class="card-body">
+          <p class="text-truncate m-0">{$_('pages.servers.nodes.column-memory')}</p>
+          <div class="d-flex align-items-baseline gap-2">
+            <span class="fs-2 lh-1">{usedText(metrics.memUsed, metrics.memTotal)}</span>
+            <span class="text-truncate small">{totalText(metrics.memTotal)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card text-bg-secondary h-100">
+        <div class="card-body">
+          <p class="text-truncate m-0">{$_('pages.servers.nodes.column-disk')}</p>
+          <div class="d-flex align-items-baseline gap-2">
+            <span class="fs-2 lh-1">{usedText(metrics.diskUsed, metrics.diskTotal)}</span>
+            <span class="text-truncate small">{totalText(metrics.diskTotal)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card text-bg-info h-100">
+        <div class="card-body">
+          <p class="text-truncate m-0">{$_('pages.servers.nodes.column-network')}</p>
+          <div class="d-flex align-items-baseline gap-2">
+            <span class="fs-2 lh-1">
+              <i class="fa-solid fa-arrow-down fs-6 me-1" aria-hidden="true"></i>{rateText(
+                metrics.netRxBps,
+              )}
+            </span>
+            <span class="text-truncate small">
+              <i class="fa-solid fa-arrow-up me-1" aria-hidden="true"></i>{rateText(
+                metrics.netTxBps,
+              )}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -169,15 +182,6 @@
 </div>
 
 <DeleteNodeModal bind:this={deleteNodeModal} onDeleted={leaveDeletedNode} />
-
-{#snippet usage(/** @type {number | null} */ percent, /** @type {string} */ text)}
-  <div class="d-flex align-items-center gap-2">
-    <div class="progress usage-bar flex-grow-1" role="progressbar" aria-label={text}>
-      <div class="progress-bar" style:width="{percent ?? 0}%"></div>
-    </div>
-    <span class="text-nowrap">{text}</span>
-  </div>
-{/snippet}
 
 <script module>
   import { error, redirect } from '@sveltejs/kit';
@@ -351,27 +355,18 @@
   /**
    * @param {number | null | undefined} used
    * @param {number | null | undefined} total
-   * @returns {number | null}
+   * @returns {string}
    */
-  function ratio(used, total) {
-    if (used == null || !total) {
-      return null;
-    }
-
-    return Math.max(0, Math.min(100, Math.round((used / total) * 100)));
+  function usedText(used, total) {
+    return used == null || !total ? '—' : formatBytes(used, 1);
   }
 
   /**
-   * @param {number | null | undefined} used
    * @param {number | null | undefined} total
    * @returns {string}
    */
-  function bytesText(used, total) {
-    if (used == null || !total) {
-      return '—';
-    }
-
-    return `${formatBytes(used, 1)} / ${formatBytes(total, 1)}`;
+  function totalText(total) {
+    return total ? `/ ${formatBytes(total, 1)}` : '';
   }
 
   /**

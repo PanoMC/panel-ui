@@ -15,7 +15,23 @@
           </div>
         </div>
       {:else}
-        <div class="modal-header border-bottom-0">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            {$_('components.modals.server-request.title', {
+              values: { serverName: $server.name },
+            })}
+          </h5>
+          <div class="ms-auto d-flex align-items-center gap-1">
+            <button
+              class="btn btn-link link-danger"
+              type="button"
+              aria-label={$_('components.modals.server-request.reject')}
+              title={$_('components.modals.server-request.reject')}
+              disabled={$submitLoading}
+              on:click={rejectServer}>
+              <i class="fa-solid fa-ban" aria-hidden="true"></i>
+            </button>
+          </div>
           <button
             class="btn-close"
             aria-label={$_('buttons.close')}
@@ -23,77 +39,55 @@
             type="button">
           </button>
         </div>
-        <div class="modal-body text-center">
-          <div class="pb-3">
-            <i class="fas fa-plug fa-3x d-block m-auto text-gray"></i>
-          </div>
-          <p>
-            {$_('components.modals.server-request.title', {
-              values: { serverName: $server.name },
-            })}
-          </p>
-          <div class="card">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-auto">
-                  <img
-                    src={sanitizeImageSrc(
-                      $server.favicon ? $server.favicon : '/api/v1/server/icon/default',
-                      '/api/v1/server/icon/default',
-                    )}
-                    class="rounded border"
-                    width="48"
-                    height="48"
-                    alt={$server.name} />
-                </div>
-                <div class="col text-start">
-                  <span class="badge text-bg-primary rounded-pill mb-2">{$server.type}</span>
-                  <div class="d-flex flex-row justify-content-between gap-2 mb-1">
-                    <span class="small text-body-secondary">{$_('buttons.remote')}:</span>
-                    <span class="flex-shrink-0"
-                      >{$server.playerCount}/{$server.maxPlayerCount}</span>
+        <form on:submit|preventDefault={acceptServer}>
+          <div class="modal-body text-center">
+            <div class="pb-3">
+              <i class="fas fa-plug fa-3x d-block m-auto text-gray"></i>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-auto">
+                    <img
+                      src={sanitizeImageSrc(
+                        $server.favicon ? $server.favicon : '/api/v1/server/icon/default',
+                        '/api/v1/server/icon/default',
+                      )}
+                      class="rounded border"
+                      width="48"
+                      height="48"
+                      alt={$server.name} />
                   </div>
-                  <div class="font-monospace user-select-all text-break mb-1">
-                    {getPrimaryAddress($server)}
+                  <div class="col text-start">
+                    <span class="badge text-bg-primary rounded-pill mb-2">{$server.type}</span>
+                    <div class="d-flex flex-row justify-content-between gap-2 mb-1">
+                      <span class="small text-body-secondary">{$_('buttons.remote')}:</span>
+                      <span class="flex-shrink-0"
+                        >{$server.playerCount}/{$server.maxPlayerCount}</span>
+                    </div>
+                    <div class="font-monospace user-select-all text-break mb-1">
+                      {getPrimaryAddress($server)}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="text-start px-2 mt-3 w-100">
-            <label class="form-label small mb-1" for="acceptServerDisplayName">
-              {$_('components.modals.server-request.display-name-label')}
-            </label>
             <input
-              id="acceptServerDisplayName"
               type="text"
-              class="form-control form-control-sm"
+              class="form-control mt-3"
               maxlength="255"
+              placeholder={$_('components.modals.server-request.display-name-placeholder')}
+              aria-label={$_('components.modals.server-request.display-name-label')}
               bind:value={$acceptDisplayName}
               disabled={$submitLoading}
-              autocomplete="off"
-              aria-describedby="acceptServerDisplayNameHint" />
-            <small id="acceptServerDisplayNameHint" class="text-muted d-block mt-1">
-              {$_('components.modals.server-request.display-name-hint')}
-            </small>
+              autocomplete="off" />
           </div>
-        </div>
-        <div class="modal-footer flex-nowrap">
-          <button
-            class="btn btn-link link-danger col-6 m-0"
-            type="button"
-            class:disabled={$submitLoading}
-            on:click={rejectServer}>
-            {$_('components.modals.server-request.reject')}
-          </button>
-          <button
-            class="btn btn-secondary col-6 m-0"
-            type="button"
-            class:disabled={$submitLoading}
-            on:click={acceptServer}>
-            {$_('components.modals.server-request.connect')}
-          </button>
-        </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary w-100" type="submit" disabled={$submitLoading}>
+              {$_('components.modals.server-request.connect')}
+            </button>
+          </div>
+        </form>
       {/if}
     </div>
   </div>

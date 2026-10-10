@@ -33,12 +33,6 @@
     justify-content: center;
     background: rgba(var(--bs-body-bg-rgb), 0.65);
   }
-
-  /* The tab that is open is the dialog's subject, so it wears the primary colour rather than the
-     emphasis colour Bootstrap's tabs default to. */
-  .nav-tabs {
-    --bs-nav-tabs-link-active-color: var(--bs-primary);
-  }
 </style>
 
 <div aria-hidden="true" class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
@@ -48,6 +42,17 @@
         <h5 class="modal-title">
           {$_('pages.settings.platform.maintenance.modal.title')}
         </h5>
+        <div class="ms-auto d-flex align-items-center gap-1">
+          <button
+            type="button"
+            class="btn btn-link link-danger"
+            title={$_('pages.settings.platform.maintenance.modal.reset-page')}
+            aria-label={$_('pages.settings.platform.maintenance.modal.reset-page')}
+            disabled={$busy}
+            onclick={onResetClick}>
+            <i class="fa-regular fa-arrow-rotate-left" aria-hidden="true"></i>
+          </button>
+        </div>
         <button
           aria-label={$_('buttons.close')}
           type="button"
@@ -55,77 +60,62 @@
           data-bs-dismiss="modal"
           onclick={hide}></button>
       </div>
-      <div class="modal-body">
-        <ul class="nav nav-pills mb-3 flex-wrap">
-          {#each TABS as tab (tab.key)}
-            <li class="nav-item">
-              <button
-                type="button"
-                class="nav-link"
-                class:active={$activeTab === tab.key}
-                onclick={() => activeTab.set(tab.key)}>
-                {$_(tab.label)}
-              </button>
-            </li>
-          {/each}
-        </ul>
+      <form
+        onsubmit={(event) => {
+          event.preventDefault();
+          apply();
+        }}>
+        <div class="modal-body">
+          <ul class="nav nav-pills mb-3 flex-wrap">
+            {#each TABS as tab (tab.key)}
+              <li class="nav-item">
+                <button
+                  type="button"
+                  class="nav-link"
+                  class:active={$activeTab === tab.key}
+                  onclick={() => activeTab.set(tab.key)}>
+                  {$_(tab.label)}
+                </button>
+              </li>
+            {/each}
+          </ul>
 
-        <label class="form-label" for="maintenanceSource">
-          {$_('pages.settings.platform.maintenance.modal.source')}
-          <small class="d-block text-muted">
-            {$_(activeTabMeta.hint)}
-          </small>
-        </label>
-        <textarea
-          id="maintenanceSource"
-          class="form-control font-monospace maintenance-source"
-          spellcheck="false"
-          autocomplete="off"
-          autocapitalize="off"
-          autocorrect="off"
-          value={$templates[$activeTab] || ''}
-          oninput={onSourceInput}></textarea>
+          <textarea
+            id="maintenanceSource"
+            placeholder={$_('pages.settings.platform.maintenance.modal.source')}
+            aria-label={$_('pages.settings.platform.maintenance.modal.source')}
+            class="form-control font-monospace maintenance-source"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            autocorrect="off"
+            value={$templates[$activeTab] || ''}
+            oninput={onSourceInput}></textarea>
 
-        <span class="form-label d-block mt-3">
-          {$_('pages.settings.platform.maintenance.modal.preview')}
-        </span>
-        <div class="maintenance-preview">
-          <!-- Rendered by the backend from these drafts, so the pane cannot drift from what
+          <div class="maintenance-preview mt-3">
+            <!-- Rendered by the backend from these drafts, so the pane cannot drift from what
                visitors get. sandbox keeps the admin's own markup and CSS inert. -->
-          <iframe
-            title={$_('pages.settings.platform.maintenance.modal.preview')}
-            sandbox=""
-            srcdoc={$previewHtml}></iframe>
+            <iframe
+              title={$_('pages.settings.platform.maintenance.modal.preview')}
+              sandbox=""
+              srcdoc={$previewHtml}></iframe>
 
-          {#if $previewLoading}
-            <div class="maintenance-preview-overlay">
-              <span class="spinner-border text-primary" role="status"></span>
-            </div>
-          {/if}
+            {#if $previewLoading}
+              <div class="maintenance-preview-overlay">
+                <span class="spinner-border text-primary" role="status"></span>
+              </div>
+            {/if}
+          </div>
         </div>
-
-        <div class="mt-3">
-          <button
-            type="button"
-            class="btn btn-link link-danger p-0 text-decoration-none"
-            disabled={$busy}
-            onclick={onResetClick}>
-            <i class="fa-regular fa-arrow-rotate-left me-1"></i>
-            {$_('pages.settings.platform.maintenance.modal.reset-page')}
+        <div class="modal-footer">
+          <button class="btn btn-primary w-100" type="submit" disabled={$busy}>
+            {#if $busy}
+              <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+            {/if}
+            {$_('buttons.save')}
           </button>
         </div>
-      </div>
-      <div class="modal-footer flex-nowrap">
-        <button class="btn btn-link col-6 m-0" type="button" onclick={hide}>
-          {$_('buttons.cancel')}
-        </button>
-        <button class="btn btn-secondary col-6 m-0" type="button" disabled={$busy} onclick={apply}>
-          {$_('buttons.save')}
-          {#if $busy}
-            <span class="spinner-border spinner-border-sm ms-2" role="status"></span>
-          {/if}
-        </button>
-      </div>
+      </form>
     </div>
   </div>
 </div>
@@ -322,8 +312,6 @@
 
 <script>
   import { _ } from 'svelte-i18n';
-
-  const activeTabMeta = $derived(TABS.find((tab) => tab.key === $activeTab) ?? TABS[0]);
 
   // Keeps the pane on the current drafts and the open tab. Debounced because every render is a
   // request; switching tabs re-renders too, since the tab decides which page state is simulated.

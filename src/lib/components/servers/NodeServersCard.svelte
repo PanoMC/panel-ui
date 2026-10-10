@@ -22,18 +22,16 @@
 {#if canListServers}
   <div class="card">
     <CardHeader truncateLeftSlot={false}>
-      <span slot="left" class="d-inline-flex align-items-center gap-2">
-        <span>
-          <i class="fa-solid fa-server me-2" aria-hidden="true"></i>
-          {$_('pages.servers.nodes.column-servers')}
-        </span>
-        {#if !loading}
-          <span class="badge rounded-pill text-bg-secondary">{nodeServers.length}</span>
-        {/if}
+      <span slot="left">
+        {#if !loading}{nodeServers.length}{/if}
+        {$_('pages.servers.nodes.column-servers')}
       </span>
-      <span slot="right" class="d-flex align-items-center gap-2">
+      <span slot="right">
         {#if canCreateServers}
-          <button type="button" class="btn btn-sm btn-primary" onclick={openCreateServer}>
+          <button
+            type="button"
+            class="btn btn-sm btn-primary text-capitalize"
+            onclick={openCreateServer}>
             <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
             {$_('components.modals.create-server.create-button')}
           </button>
@@ -41,98 +39,99 @@
       </span>
     </CardHeader>
 
-    <div class="card-body vstack gap-2">
-      {#if loading}
-        <div class="placeholder-glow" aria-busy="true">
-          <span class="placeholder col-6"></span>
-          <span class="placeholder col-4"></span>
-        </div>
-      {:else if nodeServers.length === 0}
-        <NoContent icon="fa-solid fa-server fa-3x" text={$_('pages.servers.nodes.servers-empty')} />
-      {:else}
-        <div class="table-responsive">
-          <table class="table table-sm align-middle mb-0">
-            <thead>
+    {#if loading}
+      <div class="card-body placeholder-glow" aria-busy="true">
+        <span class="placeholder col-6"></span>
+        <span class="placeholder col-4"></span>
+      </div>
+    {:else if nodeServers.length === 0}
+      <NoContent icon="" text={$_('pages.servers.nodes.servers-empty')} />
+    {:else}
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col" class="align-middle text-nowrap"
+                >{$_('pages.servers.nodes.column-name')}</th>
+              <th scope="col" class="align-middle text-nowrap"
+                >{$_('pages.servers.nodes.column-status')}</th>
+              <th scope="col" class="align-middle text-nowrap"
+                >{$_('components.modals.create-server.review-software')}</th>
+              <th scope="col" class="align-middle text-nowrap"
+                >{$_('components.modals.create-server.review-port')}</th>
+              <th scope="col" class="align-middle text-nowrap"
+                >{$_('components.modals.create-server.review-memory')}</th>
+              <th scope="col" class="align-middle text-nowrap"
+                >{$_('pages.servers.overview.info.java')}</th>
+              <th scope="col" class="align-middle text-nowrap"
+                >{$_('pages.servers.nodes.column-cpu')}</th>
+              <th scope="col" class="align-middle text-nowrap"
+                >{$_('pages.servers.nodes.column-memory')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each nodeServers as server (server.id)}
+              {@const online = isServerOnline(server)}
+              {@const sample = online ? latest[server.id] : null}
+              {@const cpu = resolveCpu(sample)}
+              {@const ram = resolveMemory(sample, server)}
+              {@const software = server.software || server.type}
+              {@const task = getActiveTask(server)}
               <tr>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-name')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-status')}</th>
-                <th scope="col" class="text-nowrap"
-                  >{$_('components.modals.create-server.review-software')}</th>
-                <th scope="col" class="text-nowrap"
-                  >{$_('components.modals.create-server.review-port')}</th>
-                <th scope="col" class="text-nowrap"
-                  >{$_('components.modals.create-server.review-memory')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.overview.info.java')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-cpu')}</th>
-                <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-memory')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each nodeServers as server (server.id)}
-                {@const online = isServerOnline(server)}
-                {@const sample = online ? latest[server.id] : null}
-                {@const cpu = resolveCpu(sample)}
-                {@const ram = resolveMemory(sample, server)}
-                {@const software = server.software || server.type}
-                {@const task = getActiveTask(server)}
-                <tr>
-                  <th scope="row" class="text-nowrap">
-                    <a class="text-decoration-none" href="{base}/servers/{server.id}">
-                      {getServerDisplayName(server) || `#${server.id}`}
-                    </a>
-                  </th>
-                  <td class="text-nowrap task-cell">
-                    {#if isManaged(server)}
-                      {@const processState = getProcessState(server) ?? ProcessStates.STOPPED}
-                      <span class="badge rounded-pill text-bg-{processStateColour(processState)}">
-                        {$_(processStateLabel(processState))}
-                      </span>
-                      {#if task}
-                        {@render taskProgress(task)}
+                <td class="align-middle text-nowrap">
+                  <a class="text-decoration-none" href="{base}/servers/{server.id}">
+                    {getServerDisplayName(server) || `#${server.id}`}
+                  </a>
+                </td>
+                <td class="align-middle text-nowrap task-cell">
+                  {#if isManaged(server)}
+                    {@const processState = getProcessState(server) ?? ProcessStates.STOPPED}
+                    <span class="badge rounded-pill text-bg-{processStateColour(processState)}">
+                      {$_(processStateLabel(processState))}
+                    </span>
+                    {#if task}
+                      {@render taskProgress(task)}
+                    {/if}
+                  {:else}
+                    <span
+                      class="badge rounded-pill"
+                      class:text-bg-success={online}
+                      class:text-bg-danger={!online}>
+                      {online ? $_('pages.servers.card.online') : $_('pages.servers.card.offline')}
+                    </span>
+                  {/if}
+                </td>
+                <td class="align-middle text-nowrap">
+                  {#if software}
+                    <span class="d-inline-flex align-items-center gap-1">
+                      <SoftwareLogo id={software} size="1.25rem" />
+                      {softwareLabel(software)}
+                      {#if server.softwareVersion}
+                        <span class="text-body-secondary">{server.softwareVersion}</span>
                       {/if}
-                    {:else}
-                      <span
-                        class="badge rounded-pill"
-                        class:text-bg-success={online}
-                        class:text-bg-danger={!online}>
-                        {online
-                          ? $_('pages.servers.card.online')
-                          : $_('pages.servers.card.offline')}
-                      </span>
-                    {/if}
-                  </td>
-                  <td class="text-nowrap">
-                    {#if software}
-                      <span class="d-inline-flex align-items-center gap-1">
-                        <SoftwareLogo id={software} size="1.25rem" />
-                        {softwareLabel(software)}
-                        {#if server.softwareVersion}
-                          <span class="text-body-secondary">{server.softwareVersion}</span>
-                        {/if}
-                      </span>
-                    {:else}
-                      <span class="text-body-secondary">—</span>
-                    {/if}
-                  </td>
-                  <td class="text-nowrap font-monospace"
-                    >{server.gamePort ?? server.port ?? '—'}</td>
-                  <td class="text-nowrap">
-                    {server.memoryMb ? `${server.memoryMb} MB` : '—'}
-                  </td>
-                  <td class="text-nowrap">
-                    {server.javaVersion
-                      ? `Java ${server.javaVersion}`
-                      : $_('pages.servers.overview.info.java-automatic')}
-                  </td>
-                  <td class="usage-cell">{@render usage(cpu)}</td>
-                  <td class="usage-cell">{@render usage(ram)}</td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
-    </div>
+                    </span>
+                  {:else}
+                    <span class="text-body-secondary">—</span>
+                  {/if}
+                </td>
+                <td class="align-middle text-nowrap font-monospace"
+                  >{server.gamePort ?? server.port ?? '—'}</td>
+                <td class="align-middle text-nowrap">
+                  {server.memoryMb ? `${server.memoryMb} MB` : '—'}
+                </td>
+                <td class="align-middle text-nowrap">
+                  {server.javaVersion
+                    ? `Java ${server.javaVersion}`
+                    : $_('pages.servers.overview.info.java-automatic')}
+                </td>
+                <td class="align-middle usage-cell">{@render usage(cpu)}</td>
+                <td class="align-middle usage-cell">{@render usage(ram)}</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/if}
   </div>
 {/if}
 

@@ -57,9 +57,9 @@
       </div>
     </div>
   </th>
-  <td class="name-cell fw-semibold text-break align-middle">
+  <td class="name-cell text-break align-middle">
     <a
-      class="text-reset text-decoration-none d-block text-truncate rounded focus-ring"
+      class="rounded focus-ring text-decoration-none d-block text-truncate"
       href="{base}/servers/nodes/{node.id}">
       {getNodeDisplayName(node)}
     </a>

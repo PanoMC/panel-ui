@@ -1,5 +1,5 @@
 <div class="vstack gap-3">
-  <ul class="nav nav-tabs" role="tablist">
+  <ul class="nav nav-pills gap-1" role="tablist">
     {#each tabs as item (item.id)}
       <li class="nav-item" role="presentation">
         <button
@@ -12,7 +12,6 @@
           aria-controls="webhooks-pane-{item.id}"
           data-tab={item.id}
           onclick={() => selectTab(item.id)}>
-          <i class="{item.icon} me-1" aria-hidden="true"></i>
           {$_(item.titleKey)}
         </button>
       </li>
@@ -132,8 +131,8 @@
   pageTitle?.set('pages.webhooks.title');
 
   const tabs = [
-    { id: 'endpoints', icon: 'fa-solid fa-link', titleKey: 'pages.webhooks.tabs.endpoints' },
-    { id: 'deliveries', icon: 'fa-solid fa-list', titleKey: 'pages.webhooks.tabs.deliveries' },
+    { id: 'endpoints', titleKey: 'pages.webhooks.tabs.endpoints' },
+    { id: 'deliveries', titleKey: 'pages.webhooks.tabs.deliveries' },
   ];
 
   // svelte-ignore state_referenced_locally

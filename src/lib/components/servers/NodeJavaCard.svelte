@@ -19,24 +19,16 @@
 <div class="card">
   <CardHeader truncateLeftSlot={false}>
     <span slot="left">
-      <i class="fa-brands fa-java me-2" aria-hidden="true"></i>
+      {#if !(loading && !catalogLoaded)}{rows.length + pendingInstalls.length}{/if}
       {$_('pages.servers.nodes.java.title')}
     </span>
-    <span slot="right" class="d-flex align-items-center gap-2">
-      {#if catalogLoaded && (!managesJava || endpointMissing)}
-        <!-- An older daemon cannot download Java at all; updating it is the fix. -->
-        <span
-          class="text-body-secondary small"
-          use:tooltip={[$_('pages.servers.nodes.java.outdated-node'), { placement: 'top' }]}>
-          <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-          {$_('pages.servers.nodes.java.downloads-unsupported')}
-        </span>
-      {:else if catalogLoaded}
+    <span slot="right">
+      {#if catalogLoaded && managesJava && !endpointMissing}
         <!-- A disabled button swallows pointer events, so the tooltip sits on the wrapper. -->
         <span class="d-inline-block" use:tooltip={[installTooltip, { placement: 'top' }]}>
           <button
             type="button"
-            class="btn btn-sm btn-primary"
+            class="btn btn-sm btn-primary text-capitalize"
             disabled={!canInstall}
             onclick={openInstallModal}>
             <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
@@ -47,164 +39,185 @@
     </span>
   </CardHeader>
 
-  <div class="card-body vstack gap-2">
-    {#if loading && !catalogLoaded}
-      <div class="placeholder-glow" aria-busy="true">
-        <span class="placeholder col-6"></span>
-        <span class="placeholder col-4"></span>
-      </div>
-    {:else if rows.length === 0 && pendingInstalls.length === 0}
-      <div class="text-body-secondary small">
-        {$_('pages.servers.nodes.java.empty')}
-      </div>
-    {:else}
-      <div class="table-responsive">
-        <table class="table table-sm align-middle mb-0">
-          <thead>
+  {#if loading && !catalogLoaded}
+    <div class="card-body placeholder-glow" aria-busy="true">
+      <span class="placeholder col-6"></span>
+      <span class="placeholder col-4"></span>
+    </div>
+  {:else if rows.length === 0 && pendingInstalls.length === 0}
+    <NoContent icon="" text={$_('pages.servers.nodes.java.empty')} />
+  {:else}
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col" class="align-middle"></th>
+            <th scope="col" class="align-middle text-nowrap"
+              >{$_('pages.servers.nodes.java.column-major')}</th>
+            <th scope="col" class="align-middle text-nowrap"
+              >{$_('pages.servers.nodes.java.column-version')}</th>
+            <th scope="col" class="align-middle text-nowrap"
+              >{$_('pages.servers.nodes.java.column-vendor')}</th>
+            <th scope="col" class="align-middle text-nowrap"
+              >{$_('pages.servers.nodes.java.column-source')}</th>
+            <th scope="col" class="align-middle text-nowrap"
+              >{$_('pages.servers.nodes.java.column-path')}</th>
+            <th scope="col" class="align-middle text-nowrap"
+              >{$_('pages.servers.nodes.java.column-used-by')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each rows as runtime (runtime.path || `${runtime.major}-${runtime.version}`)}
+            {@const task = taskFor(runtime.major)}
+            {@const update = updateFor(runtime)}
             <tr>
-              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.java.column-major')}</th>
-              <th scope="col" class="text-nowrap"
-                >{$_('pages.servers.nodes.java.column-version')}</th>
-              <th scope="col" class="text-nowrap"
-                >{$_('pages.servers.nodes.java.column-vendor')}</th>
-              <th scope="col" class="text-nowrap"
-                >{$_('pages.servers.nodes.java.column-source')}</th>
-              <th scope="col">{$_('pages.servers.nodes.java.column-path')}</th>
-              <th scope="col" class="text-nowrap"
-                >{$_('pages.servers.nodes.java.column-used-by')}</th>
-              <th scope="col" class="text-end text-nowrap"
-                >{$_('pages.servers.nodes.column-actions')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each rows as runtime (runtime.path || `${runtime.major}-${runtime.version}`)}
-              {@const task = taskFor(runtime.major)}
-              {@const update = updateFor(runtime)}
-              <tr>
-                <th scope="row" class="text-nowrap">Java {runtime.major}</th>
-                <td class="text-nowrap">{runtime.version || '—'}</td>
-                <td class="text-nowrap">{vendorLabel(runtime.vendor)}</td>
-                <td>
-                  {#if runtime.managed}
-                    <span
-                      class="badge text-bg-primary"
-                      use:tooltip={[
-                        $_('pages.servers.nodes.java.source-pano-hint'),
-                        { placement: 'top' },
-                      ]}>
-                      {$_('pages.servers.nodes.java.source-pano')}
-                    </span>
-                  {:else}
-                    <span
-                      class="badge text-bg-secondary"
-                      use:tooltip={[
-                        $_('pages.servers.nodes.java.source-system-hint'),
-                        { placement: 'top' },
-                      ]}>
-                      {$_('pages.servers.nodes.java.source-system')}
-                    </span>
-                  {/if}
-                </td>
-                <td>
-                  <span class="font-monospace text-body-secondary java-path" title={runtime.path}
-                    >{runtime.path || '—'}</span>
-                </td>
-                <td>
-                  {#if runtime.usedBy.length === 0}
-                    <span class="text-body-secondary">—</span>
-                  {:else}
-                    <span class="d-flex flex-wrap gap-1">
-                      {#each runtime.usedBy as server, index (server.id ?? `uuid-${index}`)}
-                        {#if server.id != null}
-                          <a
-                            class="badge text-bg-light border text-decoration-none"
-                            href="{base}/servers/{server.id}">
-                            {server.name || `#${server.id}`}
-                          </a>
-                        {:else}
-                          <span class="badge text-bg-light border"
-                            >{server.name || $_('pages.servers.nodes.java.unknown-server')}</span>
-                        {/if}
-                      {/each}
-                    </span>
-                  {/if}
-                </td>
-                <td class="text-end text-nowrap">
-                  {#if task && runtime.managed}
-                    {@render progress(task)}
-                  {:else if runtime.managed && managesJava}
-                    {#if update}
+              <th scope="row" class="align-middle text-center">
+                {#if task && runtime.managed}
+                  {@render progress(task)}
+                {:else if runtime.managed && managesJava}
+                  <div class="dropdown position-static">
+                    <button
+                      type="button"
+                      class="btn btn-link"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      title={$_('pages.servers.nodes.column-actions')}
+                      aria-label={$_('pages.servers.nodes.column-actions')}>
+                      <span class="fas fa-ellipsis-v"></span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-start">
+                      {#if update}
+                        <span
+                          class="d-block"
+                          use:tooltip={[
+                            update.version
+                              ? $_('pages.servers.nodes.java.update-hint', {
+                                  values: { version: update.version },
+                                })
+                              : '',
+                            { placement: 'right' },
+                          ]}>
+                          <button
+                            type="button"
+                            class="dropdown-item text-capitalize"
+                            disabled={!nodeOnline || !!task}
+                            onclick={() => install(runtime.major)}>
+                            <i class="fa-solid fa-arrow-up me-2" aria-hidden="true"></i>
+                            {$_('pages.servers.nodes.java.update')}
+                          </button>
+                        </span>
+                      {/if}
                       <span
-                        class="d-inline-block"
-                        use:tooltip={[
-                          update.version
-                            ? $_('pages.servers.nodes.java.update-hint', {
-                                values: { version: update.version },
-                              })
-                            : '',
-                          { placement: 'top' },
-                        ]}>
+                        class="d-block"
+                        use:tooltip={[removeTooltip(runtime), { placement: 'right' }]}>
                         <button
                           type="button"
-                          class="btn btn-sm btn-outline-primary"
-                          disabled={!nodeOnline || !!task}
-                          onclick={() => install(runtime.major)}>
-                          <i class="fa-solid fa-arrow-up me-1" aria-hidden="true"></i>
-                          {$_('pages.servers.nodes.java.update')}
+                          class="dropdown-item link-danger text-capitalize"
+                          disabled={!canRemove(runtime)}
+                          onclick={() => askRemove(runtime)}>
+                          <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
+                          {$_('pages.servers.nodes.java.remove')}
                         </button>
                       </span>
-                    {/if}
-                    <span
-                      class="d-inline-block ms-1"
-                      use:tooltip={[removeTooltip(runtime), { placement: 'top' }]}>
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-outline-danger"
-                        aria-label={$_('pages.servers.nodes.java.remove')}
-                        disabled={!canRemove(runtime)}
-                        onclick={() => askRemove(runtime)}>
-                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
-                      </button>
-                    </span>
-                  {/if}
-                </td>
-              </tr>
-            {/each}
-            {#each pendingInstalls as task (task.major)}
-              <tr>
-                <th scope="row" class="text-nowrap">Java {task.major}</th>
-                <td colspan="5" class="text-body-secondary small text-break">
-                  {task.message || $_('pages.servers.nodes.java.installing')}
-                </td>
-                <td class="text-end">{@render progress(task)}</td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
-    {/if}
-
-    {#if catalogError}
-      <div class="small text-warning-emphasis">
-        <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
-        {catalogError}
-      </div>
-    {/if}
-
-    {#if autoDownload !== null}
-      <div class="small text-body-secondary">
-        <i
-          class="fa-solid {autoDownload ? 'fa-wand-magic-sparkles' : 'fa-hand'} me-1"
-          aria-hidden="true"></i>
-        {$_(
-          autoDownload
-            ? 'pages.servers.nodes.java.auto-download-on'
-            : 'pages.servers.nodes.java.auto-download-off',
-        )}
-      </div>
-    {/if}
-  </div>
+                    </div>
+                  </div>
+                {/if}
+              </th>
+              <td class="align-middle text-nowrap">Java {runtime.major}</td>
+              <td class="align-middle text-nowrap">{runtime.version || '—'}</td>
+              <td class="align-middle text-nowrap">{vendorLabel(runtime.vendor)}</td>
+              <td class="align-middle">
+                {#if runtime.managed}
+                  <span
+                    class="badge text-bg-primary"
+                    use:tooltip={[
+                      $_('pages.servers.nodes.java.source-pano-hint'),
+                      { placement: 'top' },
+                    ]}>
+                    {$_('pages.servers.nodes.java.source-pano')}
+                  </span>
+                {:else}
+                  <span
+                    class="badge text-bg-secondary"
+                    use:tooltip={[
+                      $_('pages.servers.nodes.java.source-system-hint'),
+                      { placement: 'top' },
+                    ]}>
+                    {$_('pages.servers.nodes.java.source-system')}
+                  </span>
+                {/if}
+              </td>
+              <td class="align-middle">
+                <span class="font-monospace text-body-secondary java-path" title={runtime.path}
+                  >{runtime.path || '—'}</span>
+              </td>
+              <td class="align-middle">
+                {#if runtime.usedBy.length === 0}
+                  <span class="text-body-secondary">—</span>
+                {:else}
+                  <span class="d-flex flex-wrap gap-1">
+                    {#each runtime.usedBy as server, index (server.id ?? `uuid-${index}`)}
+                      {#if server.id != null}
+                        <a
+                          class="badge text-bg-light border text-decoration-none"
+                          href="{base}/servers/{server.id}">
+                          {server.name || `#${server.id}`}
+                        </a>
+                      {:else}
+                        <span class="badge text-bg-light border"
+                          >{server.name || $_('pages.servers.nodes.java.unknown-server')}</span>
+                      {/if}
+                    {/each}
+                  </span>
+                {/if}
+              </td>
+            </tr>
+          {/each}
+          {#each pendingInstalls as task (task.major)}
+            <tr>
+              <th scope="row" class="align-middle text-center">{@render progress(task)}</th>
+              <td class="align-middle text-nowrap">Java {task.major}</td>
+              <td colspan="5" class="align-middle text-body-secondary text-break">
+                {task.message || $_('pages.servers.nodes.java.installing')}
+              </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  {/if}
 </div>
+
+<!-- Notes about the node's Java downloads sit outside the card: a table card carries no
+     informational content. -->
+{#if catalogLoaded && (!managesJava || endpointMissing)}
+  <!-- An older daemon cannot download Java at all; updating it is the fix. -->
+  <div class="text-body-secondary small" data-java-downloads-unsupported>
+    <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
+    {$_('pages.servers.nodes.java.downloads-unsupported')}
+    {$_('pages.servers.nodes.java.outdated-node')}
+  </div>
+{/if}
+
+{#if catalogError}
+  <div class="small text-warning-emphasis">
+    <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
+    {catalogError}
+  </div>
+{/if}
+
+{#if autoDownload !== null}
+  <div class="small text-body-secondary">
+    <i
+      class="fa-solid {autoDownload ? 'fa-wand-magic-sparkles' : 'fa-hand'} me-1"
+      aria-hidden="true"></i>
+    {$_(
+      autoDownload
+        ? 'pages.servers.nodes.java.auto-download-on'
+        : 'pages.servers.nodes.java.auto-download-off',
+    )}
+  </div>
+{/if}
 
 {#snippet progress(task)}
   <div class="d-inline-flex flex-column align-items-end gap-1">
@@ -382,6 +395,7 @@
   import { showServerActionError } from '$lib/servers.util.js';
 
   import CardHeader from '$lib/components/CardHeader.svelte';
+  import NoContent from '$lib/components/NoContent.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
 
   /** @type {{ node: object }} */

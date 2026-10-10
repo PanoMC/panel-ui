@@ -31,14 +31,34 @@
     </div>
   </PageActions>
 
-  {#if pendingNodes.length > 0}
-    <div class="card border-warning">
-      <CardHeader>
-        <span slot="left">
-          <i class="fa-solid fa-user-clock me-2" aria-hidden="true"></i>
-          {$_('pages.servers.nodes.pending-title')}
-        </span>
-      </CardHeader>
+  <div class="card">
+    <CardHeader>
+      <div slot="left">
+        {#if activeTab === 'pending'}
+          {pendingNodes.length} {$_('pages.servers.nodes.pending-title')}
+        {:else}
+          {$_('pages.servers.nodes.table-title', { values: { count: approvedNodes.length } })}
+        {/if}
+      </div>
+      <CardFilters slot="right">
+        {#if pendingNodes.length > 0}
+          <CardFiltersItem
+            button
+            active={activeTab === 'approved'}
+            onclick={() => (nodeTab = 'approved')}>
+            {$_('pages.servers.nodes.tab-approved')}
+          </CardFiltersItem>
+          <CardFiltersItem
+            button
+            active={activeTab === 'pending'}
+            onclick={() => (nodeTab = 'pending')}>
+            {$_('pages.servers.nodes.pending-title')}
+          </CardFiltersItem>
+        {/if}
+      </CardFilters>
+    </CardHeader>
+
+    {#if activeTab === 'pending'}
       <div class="card-body vstack gap-2">
         <div class="small text-body-secondary">
           {$_('pages.servers.nodes.pending-description')}
@@ -70,22 +90,12 @@
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
-
-  <div class="card">
-    <CardHeader>
-      <div slot="left">
-        {$_('pages.servers.nodes.table-title', { values: { count: approvedNodes.length } })}
-      </div>
-    </CardHeader>
-
-    {#if unavailable}
+    {:else if unavailable}
       <NoContent
         icon="fa-solid fa-plug-circle-xmark fa-3x"
         text={$_('pages.servers.nodes.unavailable')} />
     {:else if approvedNodes.length === 0}
-      <NoContent icon="fa-solid fa-server fa-3x" text={$_('pages.servers.nodes.empty-description')}>
+      <NoContent icon="fa-solid fa-circle-nodes fa-3x" text={$_('pages.servers.nodes.empty-description')}>
         <div class="d-flex flex-wrap justify-content-center gap-2 pb-3">
           <button
             type="button"
@@ -95,7 +105,7 @@
             {#if localSetupBusy}
               <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
             {:else}
-              <i class="fa-solid fa-bolt me-1" aria-hidden="true"></i>
+              <i class="fa-solid fa-circle-nodes me-1" aria-hidden="true"></i>
             {/if}
             {$_('pages.servers.create.setup-local-node')}
           </button>
@@ -142,7 +152,7 @@
         </table>
       </div>
     {/if}
-    {#if !unavailable && approvedNodes.length > 0}
+    {#if activeTab === 'approved' && !unavailable && approvedNodes.length > 0}
       <div class="card-footer">
         <Pagination
           page={pageOf(currentPage, approvedNodes.length, NODES_PAGE_SIZE)}
@@ -167,32 +177,33 @@
           type="button">
         </button>
       </div>
-      <div class="modal-body">
-        <label class="form-label" for="nodeRenameInput">
-          {$_('pages.servers.nodes.rename-label')}
-        </label>
-        <input
-          id="nodeRenameInput"
-          type="text"
-          class="form-control"
-          maxlength="64"
-          bind:value={renameValue} />
-      </div>
-      <div class="modal-footer flex-nowrap">
-        <button type="button" class="btn btn-link col-6 m-0" data-bs-dismiss="modal">
-          {$_('buttons.cancel')}
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary col-6 m-0"
-          disabled={renameValue.trim().length < 2 || !!busyId}
-          onclick={confirmRename}>
-          {#if busyId}
-            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-          {/if}
-          {$_('buttons.save')}
-        </button>
-      </div>
+      <form
+        onsubmit={(event) => {
+          event.preventDefault();
+          void confirmRename();
+        }}>
+        <div class="modal-body">
+          <input
+            id="nodeRenameInput"
+            type="text"
+            class="form-control form-control-lg"
+            maxlength="64"
+            placeholder={$_('pages.servers.nodes.rename-label')}
+            aria-label={$_('pages.servers.nodes.rename-label')}
+            bind:value={renameValue} />
+        </div>
+        <div class="modal-footer">
+          <button
+            type="submit"
+            class="btn btn-primary w-100"
+            disabled={renameValue.trim().length < 2 || !!busyId}>
+            {#if busyId}
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {/if}
+            {$_('buttons.save')}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -268,6 +279,8 @@
   } from '$lib/panelRealtime.js';
 
   import CardHeader from '$lib/components/CardHeader.svelte';
+  import CardFilters from '$lib/components/CardFilters.svelte';
+  import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
   import NodeRow from '$lib/components/rows/NodeRow.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
@@ -349,6 +362,9 @@
   const unavailable = $derived(!!data.unavailable);
   const approvedNodes = $derived(nodes.filter((node) => isNodeApproved(node)));
   const pendingNodes = $derived(nodes.filter((node) => !isNodeApproved(node)));
+  /** The tab the admin picked; it falls back to Approved once nothing is waiting. */
+  let nodeTab = $state('approved');
+  const activeTab = $derived(pendingNodes.length > 0 ? nodeTab : 'approved');
 
   const NODES_PAGE_SIZE = 10;
   let currentPage = $state(1);

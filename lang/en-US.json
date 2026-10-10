@@ -445,7 +445,7 @@
         "license": "License",
         "no-licenses": "No license information found. Please run 'npm run generate-licenses' command.",
         "support-pano": "Support Pano",
-        "support-pano-text": "Pano is free and open source.",
+        "support-pano-text": "Pano is free and open source. Its development continues with the community's support: you can star the project on GitHub to help more people find it, or donate to support its development.",
         "support-pano-button": "Star On GitHub",
         "support-pano-donate": "Donate",
         "open-homepage": "Open {name} homepage"
@@ -542,7 +542,6 @@
         "preferences": "Preferences",
         "usage-mode": {
           "label": "Usage mode",
-          "hint": "Switching modes changes which sections appear in the panel.",
           "website": {
             "title": "Website",
             "description": "Website only: posts, tickets, themes, player registration."
@@ -709,7 +708,7 @@
         },
         "telemetry": {
           "label": "Send {link}",
-          "label-link": "usage data",
+          "label-link": "Usage Data",
           "description": "This data is used to make Pano better."
         },
         "alerts": {
@@ -739,7 +738,7 @@
             "plugin_updates": "A managed server has plugins or mods with a newer version, checked once a day."
           }
         },
-        "theme-dev-server": "Theme dev server",
+        "theme-dev-server": "Theme Dev Server",
         "theme-dev-server-hint": "While Development Mode is on, Pano shows this address instead of the theme, for example http://localhost:3000. The panel, setup and plugin UIs keep working. Leave it empty to use the installed theme.",
         "theme-dev-server-inactive": "It only applies while the site mode is “Theme”.",
         "theme-dev-server-saved": "The theme dev server was saved."
@@ -747,6 +746,15 @@
       "updates": {
         "title": "Updates",
         "never": "Never",
+        "table": {
+          "name": "Name",
+          "version": "Version",
+          "channel": "Channel",
+          "size": "Size",
+          "date": "Date",
+          "developer": "Developer",
+          "status": "Status"
+        },
         "platform-updates": "Platform Updates",
         "platform-updates-count": "{count} Platform Updates",
         "using-latest-pano": "You are using latest version of Pano.",
@@ -775,9 +783,9 @@
         },
         "updating-leave-alert": "There is an update working, leaving this page may result in broken features!",
         "servers": {
-          "title": "Nodes, agents and the Pano plugin",
+          "title": "Nodes, Agents And The Pano Plugin",
           "update-all-plugins": "Update all Pano plugins",
-          "auto-update": "Update nodes and agents automatically",
+          "auto-update": "Update Nodes And Agents Automatically",
           "auto-update-hint": "When Pano has a newer node, every node and agent updates itself as soon as it connects. Running servers keep running; the Pano plugin is never updated without you.",
           "unavailable": "This build of Pano cannot list node and plugin updates yet.",
           "empty": "No nodes, agents or servers with the Pano plugin yet.",
@@ -786,7 +794,7 @@
           "column-version": "Version",
           "kind-node": "Node",
           "kind-agent": "Pano Agent",
-          "kind-pano-plugin": "Pano plugin",
+          "kind-pano-plugin": "Pano Plugin",
           "offline": "Offline — it updates once it is back.",
           "up-to-date": "Up to date",
           "update-by-hand": "Update by hand",
@@ -798,7 +806,7 @@
           "reason": {
             "NO_PLUGIN_MODULE": "No Pano plugin for this software",
             "PLUGIN_TOO_OLD": "Plugin too old to update itself — update it by hand once",
-            "NODE_OFFLINE": "Node offline",
+            "NODE_OFFLINE": "Offline",
             "SERVER_OFFLINE": "Server offline",
             "JAR_UNAVAILABLE": "No plugin build available"
           }
@@ -1877,6 +1885,7 @@
         "add-node": "Add node",
         "add-title": "Add A Node",
         "table-title": "{count} Nodes",
+        "tab-approved": "Approved",
         "empty-description": "No node yet. A node is the machine that runs your servers — the local one takes a single click.",
         "unavailable": "This build of Pano cannot manage nodes yet. Update Pano to use managed servers.",
         "pending-title": "Waiting for approval",
@@ -2789,9 +2798,9 @@
           "placeholder": "Key name, for example my-site"
         },
         "reveal": {
-          "title": "Copy the key now. It is shown only once",
+          "title": "Copy The Key, Shown Once",
           "key": "Key",
-          "env": ".env file",
+          "env": ".env File",
           "done": "Done"
         },
         "revoke": {
@@ -3825,7 +3834,7 @@
       },
       "create-server": {
         "title": "Create a Server",
-        "step-of": "Step {current} of {total} · {name}",
+        "step-of": "{current}/{total} · {name}",
         "step-source": "Source",
         "step-node": "Node",
         "step-software": "Software",
@@ -3984,6 +3993,7 @@
         "reject": "Reject",
         "connect": "Connect",
         "display-name-label": "Panel display name",
+        "display-name-placeholder": "Panel display name (empty: name reported by the server)",
         "display-name-hint": "Shown in the panel instead of the game server name. Leave empty to use the name reported by the server."
       },
       "servers": {
