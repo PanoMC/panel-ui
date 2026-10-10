@@ -165,6 +165,7 @@
               placeholder="http://127.0.0.1:4000"
               value={$draft.upstreamUrl}
               oninput={(event) => setField('upstreamUrl', event.currentTarget.value)} />
+            <div class="form-text">{$_('pages.frontend.mode.fields.upstream-url-hint')}</div>
           </div>
         </div>
       {/if}

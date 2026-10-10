@@ -709,7 +709,7 @@
         },
         "theme-dev-server": "Tema geliştirme sunucusu",
         "theme-dev-server-hint": "Geliştirici Modu açıkken Pano, tema yerine bu adresi gösterir, örneğin http://localhost:3000. Panel, kurulum ve eklenti arayüzleri çalışmaya devam eder. Yüklü temayı kullanmak için boş bırakın.",
-        "theme-dev-server-inactive": "Yalnızca ön yüz modu Tema iken geçerlidir.",
+        "theme-dev-server-inactive": "Yalnızca site modu “Tema” iken geçerlidir.",
         "theme-dev-server-saved": "Tema geliştirme sunucusu kaydedildi."
       },
       "updates": {
@@ -2697,21 +2697,21 @@
       }
     },
     "frontend": {
-      "title": "Ön Yüz",
-      "settings-button": "Ön yüz ayarları",
-      "not-shown": "Ziyaretçilere gösterilmiyor: ön yüz {mode} olarak ayarlı.",
-      "load-failed": "Ön yüz ayarları yüklenemedi.",
+      "title": "Sitenizi ne gösterecek?",
+      "settings-button": "Site gösterim ayarları",
+      "not-shown": "Ziyaretçilere gösterilmiyor: site şu an “{mode}” olarak ayarlı.",
+      "load-failed": "Site ayarları yüklenemedi.",
       "copied": "Panoya kopyalandı.",
       "copy-failed": "Kopyalanamadı. Metni seçip elle kopyalayın.",
       "proxy": {
         "untrusted": {
-          "title": "Pano Ters Vekil Sunucunuza Güvenmiyor",
-          "description": "İstekler {peers} adresinden, birbirinden farklı çok sayıda iletilen adresle geliyor; Pano bunları yok sayıyor ve tüm ziyaretçiler tek adres gibi görünüyor (hız sınırları, yasaklar ve kayıtlar etkilenir). Bu sizin ters vekil sunucunuzsa, config.conf dosyasının server bloğuna şu satırı ekleyip Pano'yu yeniden başlatın:",
+          "title": "Pano ziyaretçilerin gerçek adresini göremiyor",
+          "description": "Pano, {peers} adresinden gelen ziyaretçi adreslerine güvenmiyor; bu yüzden tüm ziyaretçiler tek kişi gibi görünüyor. Bu sizin sunucunuzsa config.conf dosyasının server bölümüne şu satırı ekleyip Pano'yu yeniden başlatın:",
           "copy-line": "Satırı Kopyala"
         },
         "single": {
-          "title": "Tüm Ziyaretçiler Tek Adres Gibi Görünüyor",
-          "description": "Neredeyse tüm istekler aynı özel adrese çözülüyor. {peers} adresindeki vekil sunucu X-Forwarded-For başlığı göndermiyor, bu yüzden Pano ziyaretçilerin kim olduğunu göremiyor. Vekil sunucunun X-Forwarded-For göndermesini sağlayın (henüz güvenilir değilse trusted-proxies listesine ekleyin)."
+          "title": "Tüm ziyaretçiler tek adres gibi görünüyor",
+          "description": "{peers} adresindeki sunucu X-Forwarded-For başlığını göndermiyor, bu yüzden Pano ziyaretçileri ayırt edemiyor. Sunucunuzun bu başlığı göndermesini sağlayın; Pano'ya güvenilir değilse trusted-proxies listesine de ekleyin."
         }
       },
       "keys": {
@@ -2741,75 +2741,76 @@
         "revoke": {
           "button": "İptal Et",
           "title": "Bu anahtar iptal edilsin mi?",
-          "description": "Anahtarı kullanan ön yüz sunucusu bir sonraki isteğinde çalışmayı bırakır.",
+          "description": "Bu anahtarı kullanan site bir sonraki istekte çalışmayı bırakır.",
           "confirm": "İptal Et"
         },
         "title": "Site bağlantı anahtarları",
         "block-title": "Kendi sitenizi bağlayın"
       },
       "mode": {
-        "saved": "Ön yüz kaydedildi.",
+        "saved": "Kaydedildi.",
         "save-anyway": "Yine de Kaydet",
         "dev-url-active": "Tema geliştirme sunucusu etkin: site {url} adresinden sunuluyor (Geliştirici Modu).",
         "theme": {
           "title": "Tema",
-          "description": "Pano'nun çalıştırdığı etkin tema."
+          "description": "Pano'ya kurduğunuz tema gösterilir."
         },
         "custom-app": {
-          "title": "Özel uygulama",
-          "description": "Zip olarak yüklediğiniz, Pano'nun çalıştırdığı uygulama."
+          "title": "Yüklediğim site",
+          "description": "Kendi yaptığınız siteyi zip olarak yüklersiniz, Pano çalıştırır."
         },
         "external": {
-          "title": "Harici",
-          "description": "Pano siteyi kendi sunucunuza yönlendirir."
+          "title": "Başka sunucudaki sitem",
+          "description": "Siteniz başka bir yerde çalışır, Pano ziyaretçileri oraya bağlar."
         },
         "none": {
-          "title": "Yok",
-          "description": "Site yok; yalnızca panel ve API."
+          "title": "Site yok",
+          "description": "Yalnızca panel çalışır."
         },
         "fields": {
-          "upstream-url": "Üst sunucu adresi",
-          "site-url": "Site adresi",
-          "site-url-hint": "Ziyaretçilerin siteyi açtığı adres. Web sitesi adresini kullanmak için boş bırakın.",
-          "descriptor-url": "Tanımlayıcı adresi",
-          "descriptor-url-hint": "İsteğe bağlı. Ön yüzün sayfalarını adlandıran bir pano-frontend.json. Üst sunucu veya site ile aynı sunucuda olmalıdır."
+          "upstream-url": "Sitenizin çalıştığı adres",
+          "upstream-url-hint": "Pano'nun sitenize ulaştığı adres. Örnek: http://127.0.0.1:3005",
+          "site-url": "Ziyaretçilerin gördüğü adres",
+          "site-url-hint": "Boş bırakırsanız web sitesi adresiniz kullanılır.",
+          "descriptor-url": "Sayfa listesi dosyası (isteğe bağlı)",
+          "descriptor-url-hint": "Sitenizdeki sayfaları Pano'ya tanıtan pano-frontend.json dosyasının adresi."
         },
-        "label": "Ön yüz modu"
+        "label": "Sitenizi ne gösterecek?"
       },
       "custom-apps": {
-        "empty": "Henüz özel uygulama yüklenmedi.",
-        "upload": "Uygulama Yükle (.zip)",
+        "empty": "Henüz site yüklenmedi.",
+        "upload": "Site Yükle (.zip)",
         "uploaded": "{title} yüklendi. Kullanmak için kaydedin.",
-        "deleted": "Uygulama silindi.",
+        "deleted": "Site silindi.",
         "active": "Etkin",
-        "actions": "Uygulama işlemleri",
+        "actions": "Site işlemleri",
         "table": {
-          "name": "Uygulama",
+          "name": "Site",
           "version": "Sürüm",
           "author": "Yazar"
         },
         "delete": {
           "button": "Sil",
-          "title": "Bu uygulama silinsin mi?",
+          "title": "Bu site silinsin mi?",
           "description": "Dosyaları bu sunucudan kaldırılır. Bu işlem geri alınamaz.",
           "confirm": "Sil"
         }
       },
       "errors": {
-        "CUSTOM_APP_INVALID_MANIFEST": "Uygulamanın manifest.json dosyası geçerli değil. \"{field}\" alanını kontrol edin.",
+        "CUSTOM_APP_INVALID_MANIFEST": "Sitenin manifest.json dosyası geçerli değil. “{field}” alanını kontrol edin.",
         "CUSTOM_APP_NO_ENTRY": "Zip dosyasının kökünde index.js yok.",
         "CUSTOM_APP_ID_TAKEN": "\"{id}\" kimliği zaten bir temaya veya yerleşik bir arayüze ait. manifest.json içinde başka bir kimlik seçin.",
-        "CUSTOM_APP_API_LEVEL": "Uygulama API seviyesi {apiLevel} için geliştirilmiş; bu Pano {min} ile {current} arasındaki seviyeleri destekliyor.",
-        "CUSTOM_APP_ACTIVE": "Bu uygulama etkin ön yüz. Önce başka bir moda veya uygulamaya geçin.",
-        "UPSTREAM_INVALID_URL": "http:// veya https:// ile başlayan, sunucu adı olan ve yolu olmayan bir adres girin, örneğin http://127.0.0.1:4000.",
-        "UPSTREAM_IS_PANO": "Bu adres Pano'nun kendisi; ona yönlendirmek döngü oluşturur.",
+        "CUSTOM_APP_API_LEVEL": "Bu site API seviyesi {apiLevel} için hazırlanmış; bu Pano {min} ile {current} arasındaki seviyeleri destekliyor.",
+        "CUSTOM_APP_ACTIVE": "Bu site şu an kullanımda. Önce başka bir seçenek seçin.",
+        "UPSTREAM_INVALID_URL": "http:// veya https:// ile başlayan, sunucu adı olan ve yolu olmayan bir adres girin, örneğin http://127.0.0.1:3005.",
+        "UPSTREAM_IS_PANO": "Bu adres Pano'nun kendisi; siteyi buraya bağlamak sonsuz döngü oluşturur.",
         "UPSTREAM_UNREACHABLE": "Bu adreste 5 saniye içinde yanıt veren olmadı.",
-        "DESCRIPTOR_HOST_NOT_ALLOWED": "Tanımlayıcı, üst sunucu adresiyle veya site adresiyle aynı sunucudan sunulmalıdır.",
-        "FRONTEND_START_FAILED": "Yeni ön yüz başlatılamadı, bu yüzden öncekisi hizmet vermeye devam ediyor. {message}",
+        "DESCRIPTOR_HOST_NOT_ALLOWED": "Sayfa listesi dosyası, sitenizin çalıştığı adresle veya ziyaretçilerin gördüğü adresle aynı sunucuda olmalıdır.",
+        "FRONTEND_START_FAILED": "Yeni site başlatılamadı, bu yüzden öncekisi çalışmaya devam ediyor. {message}",
         "FILE_TOO_LARGE": "Dosya 100 MB'tan büyük.",
         "NOT_A_ZIP": "Bir .zip dosyası seçin.",
         "FRONTEND_KEY_LIMIT_REACHED": "Site bağlantı anahtarı sınırına ulaştınız. Önce birini iptal edin.",
-        "FRONTEND_ACCESS_DISABLED": "Ön yüz bir tema iken site bağlantı anahtarları kapalıdır. Önce modu değiştirin.",
+        "FRONTEND_ACCESS_DISABLED": "Site olarak tema kullanılırken site bağlantı anahtarları kapalıdır. Önce seçimi değiştirin.",
         "INVALID_FIELDS": "Vurgulanan alanları kontrol edin.",
         "DISABLED_FOR_DEMO": "Bu, demoda devre dışı.",
         "NETWORK_ERROR": "Pano yanıt vermedi. Tekrar deneyin.",
@@ -2818,8 +2819,8 @@
         "ORIGIN_LIMIT_REACHED": "Web sitesi sınırına ulaştınız. Önce birini kaldırın.",
         "INVALID_ORIGIN": "https://play.example.com gibi bir site adresi girin: https:// ve alan adı, yol ve joker karakter olmadan. localhost dışında https kullanın.",
         "INVALID_LOCATION": "/shop gibi bir site yolu veya tam bir http(s) adresi girin.",
-        "FRONTEND_SETTINGS_NO_SCHEMA": "Etkin ön yüz bir ayar formu tanımlamıyor.",
-        "FRONTEND_SETTINGS_SCHEMA_INVALID": "Ön yüzün ayar şeması geçerli değil ({message}).",
+        "FRONTEND_SETTINGS_NO_SCHEMA": "Kullanılan site bir ayar formu tanımlamıyor.",
+        "FRONTEND_SETTINGS_SCHEMA_INVALID": "Sitenin ayar şeması geçerli değil ({message}).",
         "FRONTEND_SETTING_INVALID": "\"{key}\" değeri kabul edilmedi ({reason})."
       },
       "origins": {
@@ -2855,35 +2856,35 @@
         }
       },
       "urls": {
-        "description": "Pano'nun e-postalarda, yönlendirmelerde ve ödeme dönüşlerinde bağlantı verdiği sayfalar. Her satır bağlantının şu an nereye gittiğini gösterir. Kendi sayfanıza yönlendirmek için bir geçersiz kılma ayarlayın.",
-        "table-title": "{count} Bağlantı Hedefi",
-        "empty": "Bağlantı hedefi yok.",
-        "actions": "Hedef işlemleri",
-        "saved": "Geçersiz kılma kaydedildi.",
-        "override-removed": "Geçersiz kılma kaldırıldı.",
+        "description": "Pano e-postalarda ve yönlendirmelerde bu sayfalara bağlantı verir. Bir sayfanız farklı adreste ise buradan değiştirin.",
+        "table-title": "{count} Sayfa",
+        "empty": "Sayfa yok.",
+        "actions": "Sayfa işlemleri",
+        "saved": "Adres kaydedildi.",
+        "override-removed": "Varsayılana dönüldü.",
         "owner-core": "Pano",
-        "needed-for-server": "sunucu tarafı ön yüzler için gerekli",
+        "needed-for-server": "kendi sunucunuzda çalışan site için gerekli",
         "table": {
-          "target": "Hedef",
-          "owner": "Sahibi",
-          "source": "Kaynak",
-          "path": "Gittiği Yer",
-          "override": "Geçersiz Kılma"
+          "target": "Sayfa",
+          "owner": "Ait olduğu",
+          "source": "Nereden geliyor",
+          "path": "Şu anki adres",
+          "override": "Özel adres"
         },
         "source": {
           "OVERRIDE": "Yönetici ayarı",
-          "FRONTEND": "Ön yüz",
+          "FRONTEND": "Site",
           "THEME": "Tema",
-          "FALLBACK": "Yerleşik sayfa",
+          "FALLBACK": "Pano'nun kendi sayfası",
           "NONE": "Sayfa yok"
         },
         "override": {
-          "button": "Geçersiz Kıl",
-          "remove": "Geçersiz Kılmayı Kaldır",
-          "title": "{target} için geçersiz kılma",
+          "button": "Adresi Değiştir",
+          "remove": "Varsayılana Dön",
+          "title": "{target} için özel adres",
           "placeholder": "/shop veya https://example.com/shop"
         },
-        "title": "Bağlantı hedefleri"
+        "title": "Pano'nun bağlantı verdiği sayfalar"
       },
       "manage": "Yönet"
     },
@@ -4502,13 +4503,13 @@
     "SERVER_BACKUP_SYSTEM": "{serverName} sunucusunda {action, select, SCHEDULED {bir görev {name} yedeğini aldı} RETENTION {saklama kuralı {name} yedeğini sildi} other {{name} yedeği değişti}}.",
     "CREATED_FRONTEND_KEY": "**{username}** \"{name}\" site bağlantı anahtarını oluşturdu.",
     "DELETED_FRONTEND_KEY": "**{username}** \"{name}\" site bağlantı anahtarını iptal etti.",
-    "CHANGED_FRONTEND_MODE": "**{username}** ön yüz modunu {mode} olarak değiştirdi.",
+    "CHANGED_FRONTEND_MODE": "**{username}** site gösterimini {mode} olarak değiştirdi.",
     "UPLOADED_CUSTOM_APP": "**{username}** {appId} özel uygulamasını ({version}) yükledi.",
     "DELETED_CUSTOM_APP": "**{username}** {appId} özel uygulamasını sildi.",
     "UPDATED_FRONTEND_ORIGINS": "**{username}** bu Pano'ya erişebilen web sitelerini güncelledi ({count}).",
-    "CHANGED_FRONTEND_URLS": "**{username}** ön yüz sayfa adreslerini değiştirdi ({count}).",
-    "CHANGED_FRONTEND_SETTINGS": "**{username}** {frontendId} ön yüzünün ayarlarını değiştirdi.",
-    "REFRESHED_FRONTEND_DESCRIPTOR": "**{username}** {frontendId} ön yüzünün tanımlayıcısını yeniledi.",
+    "CHANGED_FRONTEND_URLS": "**{username}** Pano'nun bağlantı verdiği sayfa adreslerini değiştirdi ({count}).",
+    "CHANGED_FRONTEND_SETTINGS": "**{username}** {frontendId} sitesinin ayarlarını değiştirdi.",
+    "REFRESHED_FRONTEND_DESCRIPTOR": "**{username}** {frontendId} sitesinin sayfa listesi dosyasını yeniledi.",
     "CREATED_WEBHOOK": "**{username}** \"{name}\" webhook'unu oluşturdu.",
     "UPDATED_WEBHOOK": "**{username}** \"{name}\" webhook'unu güncelledi.",
     "DELETED_WEBHOOK": "**{username}** \"{name}\" webhook'unu sildi.",

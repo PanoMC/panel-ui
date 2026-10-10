@@ -255,7 +255,7 @@ describe('Mode tab', () => {
     expect(html).toContain('value="http://127.0.0.1:4000"');
     expect(html).toContain('value="https://example.com"');
     expect(html).toContain('data-section="descriptor-url"');
-    expect(textOf(html)).toContain('Upstream URL');
+    expect(textOf(html)).toContain('Address where your site runs');
   });
 
   test('CUSTOM_APP lists the uploaded apps with the active one badged and not deletable', () => {
@@ -278,7 +278,7 @@ describe('Mode tab', () => {
     expect(tagWith(html, 'data-delete-app="blog"')).toContain('disabled');
     expect(tagWith(html, 'data-delete-app="shop"')).not.toContain('disabled');
     expect(html).toContain('data-upload-input');
-    expect(text).toContain('Upload App (.zip)');
+    expect(text).toContain('Upload Site (.zip)');
   });
 
   test('CUSTOM_APP without any app shows the empty state next to the upload button', () => {
@@ -286,7 +286,7 @@ describe('Mode tab', () => {
       controller: modeController({ ...STATE, mode: 'CUSTOM_APP' }),
     });
 
-    expect(textOf(html)).toContain('No custom app uploaded yet.');
+    expect(textOf(html)).toContain('No site uploaded yet.');
     expect(html).toContain('data-upload-app');
   });
 
@@ -343,7 +343,7 @@ describe('Mode tab', () => {
 
     const html = renderHtml(FrontendMode, { controller });
 
-    expect(textOf(html)).toContain('Check the field "version".');
+    expect(textOf(html)).toContain('Check the field “version”.');
     expect(html).not.toContain('data-force-save');
   });
 });
@@ -420,7 +420,7 @@ describe('Front-end settings', () => {
     expect(html).toContain('data-row="urls"');
     expect(text).toContain('Site connection keys');
     expect(text).toContain('Allow other websites to access this Pano');
-    expect(text).toContain('Link targets');
+    expect(text).toContain('Pages Pano links to');
     expect(text).not.toMatch(/origin/i);
   });
 
@@ -528,13 +528,13 @@ describe('Link targets modal', () => {
     const html = renderHtml(FrontendUrls, { controller: urlsController() });
     const text = textOf(html);
 
-    expect(text).toContain('3 Link Targets');
+    expect(text).toContain('3 Pages');
     expect(html.match(/data-target-row=/g)).toHaveLength(3);
     expect(html).toContain('data-source="OVERRIDE"');
     expect(html).toContain('data-source="FALLBACK"');
     expect(html).toContain('data-source="NONE"');
     expect(text).toContain('Admin override');
-    expect(text).toContain('Built-in page');
+    expect(text).toContain("Pano's own page");
     expect(text).toContain('No page');
     expect(text).toContain('/_pano/market.order');
     expect(text).toContain('pano-plugin-market');
@@ -545,18 +545,18 @@ describe('Link targets modal', () => {
     const html = renderHtml(FrontendUrls, { controller: urlsController() });
     const rows = html.split('data-target-row=').slice(1);
 
-    expect(rows[0]).toContain('Remove Override');
-    expect(rows[1]).not.toContain('Remove Override');
-    expect(rows[1]).toContain('Set Override');
+    expect(rows[0]).toContain('Back to Default');
+    expect(rows[1]).not.toContain('Back to Default');
+    expect(rows[1]).toContain('Change Address');
   });
 
-  test('session-creating rows are marked "needed for server-side front-ends" only while a key is stored', () => {
+  test('session-creating rows are marked "needed for a site that runs on your own server" only while a key is stored', () => {
     const without = renderHtml(FrontendUrls, { controller: urlsController(URLS, readable(false)) });
     const withKey = renderHtml(FrontendUrls, { controller: urlsController(URLS, readable(true)) });
 
     expect(without).not.toContain('data-needed-for-server');
     expect(withKey.match(/data-needed-for-server/g)).toHaveLength(1);
-    expect(textOf(withKey)).toContain('needed for server-side front-ends');
+    expect(textOf(withKey)).toContain('needed for a site that runs on your own server');
 
     // The mark sits on the row that creates a session.
     const marked = withKey
@@ -678,7 +678,7 @@ describe('Front-end settings modal', () => {
 
     expect(html).toContain('modal-dialog-scrollable');
     expect(html).toContain('btn-close');
-    expect(textOf(html)).toContain('Front-end');
+    expect(textOf(html)).toContain('What will show your site?');
     expect(html).not.toContain('data-tab=');
   });
 });

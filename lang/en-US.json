@@ -709,7 +709,7 @@
         },
         "theme-dev-server": "Theme dev server",
         "theme-dev-server-hint": "While Development Mode is on, Pano shows this address instead of the theme, for example http://localhost:3000. The panel, setup and plugin UIs keep working. Leave it empty to use the installed theme.",
-        "theme-dev-server-inactive": "It only applies while the front-end mode is Theme.",
+        "theme-dev-server-inactive": "It only applies while the site mode is “Theme”.",
         "theme-dev-server-saved": "The theme dev server was saved."
       },
       "updates": {
@@ -2699,21 +2699,21 @@
       }
     },
     "frontend": {
-      "title": "Front-end",
-      "settings-button": "Front-end settings",
-      "not-shown": "Not shown to visitors: the front-end is set to {mode}.",
-      "load-failed": "The front-end settings could not be loaded.",
+      "title": "What will show your site?",
+      "settings-button": "Site display settings",
+      "not-shown": "Not shown to visitors: the site is currently set to “{mode}”.",
+      "load-failed": "The site settings could not be loaded.",
       "copied": "Copied to the clipboard.",
       "copy-failed": "Could not copy. Select the text and copy it by hand.",
       "proxy": {
         "untrusted": {
-          "title": "Pano Does Not Trust Your Reverse Proxy",
-          "description": "Requests arrive from {peers} carrying many different forwarded addresses, so Pano ignores them and every visitor shares one address (rate limits, bans and logs are affected). If that is your reverse proxy, add this line to the server block of config.conf and restart Pano:",
+          "title": "Pano Cannot See Visitors' Real Addresses",
+          "description": "Pano does not trust the visitor addresses coming from {peers}, so all visitors look like one person. If that is your own server, add this line to the server section of config.conf and restart Pano:",
           "copy-line": "Copy Line"
         },
         "single": {
           "title": "All Visitors Look Like One Address",
-          "description": "Almost every request resolves to the same private address. The proxy at {peers} does not send an X-Forwarded-For header, so Pano cannot see who the visitors are. Make the proxy send X-Forwarded-For (and, if it is not trusted yet, add it to trusted-proxies)."
+          "description": "The server at {peers} does not send the X-Forwarded-For header, so Pano cannot tell visitors apart. Make your server send this header, and if Pano does not trust it yet, add it to trusted-proxies as well."
         }
       },
       "keys": {
@@ -2743,75 +2743,76 @@
         "revoke": {
           "button": "Revoke",
           "title": "Revoke this key?",
-          "description": "The front-end server that uses it stops working on its next request.",
+          "description": "The site that uses this key stops working on its next request.",
           "confirm": "Revoke"
         },
         "title": "Site connection keys",
         "block-title": "Connect your own site"
       },
       "mode": {
-        "saved": "The front-end was saved.",
+        "saved": "Saved.",
         "save-anyway": "Save Anyway",
         "dev-url-active": "A theme dev server is active: the site is served from {url} (Development Mode).",
         "theme": {
           "title": "Theme",
-          "description": "The active theme, run by Pano."
+          "description": "The theme you installed on Pano is shown."
         },
         "custom-app": {
-          "title": "Custom app",
-          "description": "An app you upload as a zip, run by Pano."
+          "title": "A site I upload",
+          "description": "You upload the site you built as a zip, and Pano runs it."
         },
         "external": {
-          "title": "External",
-          "description": "Pano proxies the site to your own server."
+          "title": "My site on another server",
+          "description": "Your site runs somewhere else, and Pano sends visitors there."
         },
         "none": {
-          "title": "None",
-          "description": "No site; the panel and the API only."
+          "title": "No site",
+          "description": "Only the panel runs."
         },
         "fields": {
-          "upstream-url": "Upstream URL",
-          "site-url": "Site URL",
-          "site-url-hint": "Where visitors open the site. Leave it empty to use the website URL.",
-          "descriptor-url": "Descriptor URL",
-          "descriptor-url-hint": "Optional. A pano-frontend.json that names the front-end's pages. It must be on the upstream or site host."
+          "upstream-url": "Address where your site runs",
+          "upstream-url-hint": "The address Pano uses to reach your site. Example: http://127.0.0.1:3005",
+          "site-url": "Address visitors see",
+          "site-url-hint": "If you leave it empty, your website address is used.",
+          "descriptor-url": "Page list file (optional)",
+          "descriptor-url-hint": "The address of the pano-frontend.json file that tells Pano about the pages on your site."
         },
-        "label": "Front-end mode"
+        "label": "What will show your site?"
       },
       "custom-apps": {
-        "empty": "No custom app uploaded yet.",
-        "upload": "Upload App (.zip)",
+        "empty": "No site uploaded yet.",
+        "upload": "Upload Site (.zip)",
         "uploaded": "{title} was uploaded. Save to use it.",
-        "deleted": "The app was deleted.",
+        "deleted": "The site was deleted.",
         "active": "Active",
-        "actions": "App actions",
+        "actions": "Site actions",
         "table": {
-          "name": "App",
+          "name": "Site",
           "version": "Version",
           "author": "Author"
         },
         "delete": {
           "button": "Delete",
-          "title": "Delete this app?",
+          "title": "Delete this site?",
           "description": "Its files are removed from this server. This cannot be undone.",
           "confirm": "Delete"
         }
       },
       "errors": {
-        "CUSTOM_APP_INVALID_MANIFEST": "The app's manifest.json is not valid. Check the field \"{field}\".",
+        "CUSTOM_APP_INVALID_MANIFEST": "The site's manifest.json is not valid. Check the field “{field}”.",
         "CUSTOM_APP_NO_ENTRY": "The zip has no index.js at its root.",
         "CUSTOM_APP_ID_TAKEN": "The id \"{id}\" already belongs to a theme or a built-in UI. Choose another id in manifest.json.",
-        "CUSTOM_APP_API_LEVEL": "The app was built for API level {apiLevel}; this Pano supports levels {min} to {current}.",
-        "CUSTOM_APP_ACTIVE": "This app is the active front-end. Switch to another mode or app first.",
-        "UPSTREAM_INVALID_URL": "Enter an address that starts with http:// or https://, has a host and no path, for example http://127.0.0.1:4000.",
-        "UPSTREAM_IS_PANO": "That address is this Pano itself; proxying to it would loop.",
+        "CUSTOM_APP_API_LEVEL": "This site was made for API level {apiLevel}; this Pano supports levels {min} to {current}.",
+        "CUSTOM_APP_ACTIVE": "This site is in use right now. Choose another option first.",
+        "UPSTREAM_INVALID_URL": "Enter an address that starts with http:// or https://, has a host and no path, for example http://127.0.0.1:3005.",
+        "UPSTREAM_IS_PANO": "That address is Pano itself; connecting your site to it would loop forever.",
         "UPSTREAM_UNREACHABLE": "Nothing answered at that address within 5 seconds.",
-        "DESCRIPTOR_HOST_NOT_ALLOWED": "The descriptor must be served from the same host as the upstream URL or the site URL.",
-        "FRONTEND_START_FAILED": "The new front-end could not be started, so the previous one keeps serving. {message}",
+        "DESCRIPTOR_HOST_NOT_ALLOWED": "The page list file must be on the same server as the address where your site runs or the address visitors see.",
+        "FRONTEND_START_FAILED": "The new site could not be started, so the previous one keeps running. {message}",
         "FILE_TOO_LARGE": "The file is bigger than 100 MB.",
         "NOT_A_ZIP": "Choose a .zip file.",
         "FRONTEND_KEY_LIMIT_REACHED": "You reached the limit of site connection keys. Revoke one first.",
-        "FRONTEND_ACCESS_DISABLED": "Site connection keys are off while the front-end is a theme. Switch the mode first.",
+        "FRONTEND_ACCESS_DISABLED": "Site connection keys are off while the site is a theme. Change the choice first.",
         "INVALID_FIELDS": "Check the highlighted fields.",
         "DISABLED_FOR_DEMO": "This is disabled in the demo.",
         "NETWORK_ERROR": "Pano did not answer. Try again.",
@@ -2820,8 +2821,8 @@
         "ORIGIN_LIMIT_REACHED": "You reached the limit of websites. Remove one first.",
         "INVALID_ORIGIN": "Enter a site address such as https://play.example.com: https:// and the domain, no path and no wildcard. Use https unless it is localhost.",
         "INVALID_LOCATION": "Enter a site path such as /shop or a full http(s) address.",
-        "FRONTEND_SETTINGS_NO_SCHEMA": "The active front-end declares no settings form.",
-        "FRONTEND_SETTINGS_SCHEMA_INVALID": "The front-end's settings schema is not valid ({message}).",
+        "FRONTEND_SETTINGS_NO_SCHEMA": "The site in use does not define a settings form.",
+        "FRONTEND_SETTINGS_SCHEMA_INVALID": "The site's settings schema is not valid ({message}).",
         "FRONTEND_SETTING_INVALID": "The value of \"{key}\" is not accepted ({reason})."
       },
       "origins": {
@@ -2857,35 +2858,35 @@
         }
       },
       "urls": {
-        "description": "The pages Pano links to in emails, redirects and payment returns. Each row shows where the link points now. Set an override to send it to a page of your own.",
-        "table-title": "{count} Link Targets",
-        "empty": "No link targets.",
-        "actions": "Target actions",
-        "saved": "The override was saved.",
-        "override-removed": "The override was removed.",
+        "description": "Pano links to these pages in emails and redirects. If one of your pages is at a different address, change it here.",
+        "table-title": "{count} Pages",
+        "empty": "No pages.",
+        "actions": "Page actions",
+        "saved": "The address was saved.",
+        "override-removed": "Back to the default.",
         "owner-core": "Pano",
-        "needed-for-server": "needed for server-side front-ends",
+        "needed-for-server": "needed for a site that runs on your own server",
         "table": {
-          "target": "Target",
-          "owner": "Owner",
-          "source": "Source",
-          "path": "Points To",
-          "override": "Override"
+          "target": "Page",
+          "owner": "Belongs to",
+          "source": "Where it comes from",
+          "path": "Current address",
+          "override": "Custom address"
         },
         "source": {
           "OVERRIDE": "Admin override",
-          "FRONTEND": "Front-end",
+          "FRONTEND": "Site",
           "THEME": "Theme",
-          "FALLBACK": "Built-in page",
+          "FALLBACK": "Pano's own page",
           "NONE": "No page"
         },
         "override": {
-          "button": "Set Override",
-          "remove": "Remove Override",
-          "title": "Override for {target}",
+          "button": "Change Address",
+          "remove": "Back to Default",
+          "title": "Custom address for {target}",
           "placeholder": "/shop or https://example.com/shop"
         },
-        "title": "Link targets"
+        "title": "Pages Pano links to"
       },
       "manage": "Manage"
     },
@@ -4505,13 +4506,13 @@
     "SERVER_BACKUP_SYSTEM": "{action, select, SCHEDULED {A schedule took backup {name}} RETENTION {Retention removed backup {name}} other {Backup {name} changed}} on {serverName}.",
     "CREATED_FRONTEND_KEY": "**{username}** created the \"{name}\" site connection key.",
     "DELETED_FRONTEND_KEY": "**{username}** revoked the \"{name}\" site connection key.",
-    "CHANGED_FRONTEND_MODE": "**{username}** changed the front-end mode to {mode}.",
+    "CHANGED_FRONTEND_MODE": "**{username}** changed what shows the site to {mode}.",
     "UPLOADED_CUSTOM_APP": "**{username}** uploaded the custom app {appId} ({version}).",
     "DELETED_CUSTOM_APP": "**{username}** deleted the custom app {appId}.",
     "UPDATED_FRONTEND_ORIGINS": "**{username}** updated the websites that may access this Pano ({count}).",
-    "CHANGED_FRONTEND_URLS": "**{username}** changed the front-end page addresses ({count}).",
-    "CHANGED_FRONTEND_SETTINGS": "**{username}** changed the settings of the front-end {frontendId}.",
-    "REFRESHED_FRONTEND_DESCRIPTOR": "**{username}** refreshed the descriptor of the front-end {frontendId}.",
+    "CHANGED_FRONTEND_URLS": "**{username}** changed the addresses of the pages Pano links to ({count}).",
+    "CHANGED_FRONTEND_SETTINGS": "**{username}** changed the settings of the site {frontendId}.",
+    "REFRESHED_FRONTEND_DESCRIPTOR": "**{username}** refreshed the page list file of the site {frontendId}.",
     "CREATED_WEBHOOK": "**{username}** created the \"{name}\" webhook.",
     "UPDATED_WEBHOOK": "**{username}** updated the \"{name}\" webhook.",
     "DELETED_WEBHOOK": "**{username}** deleted the \"{name}\" webhook.",
