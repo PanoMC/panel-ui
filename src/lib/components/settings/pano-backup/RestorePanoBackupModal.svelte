@@ -182,7 +182,7 @@
 
   /** @type {BsModal | undefined} */
   let modal = $state();
-  /** @type {'local' | 'remote' | 'file'} */
+  /** @type {'local' | 'remote' | 'snapshot' | 'file'} */
   let source = $state('local');
   let label = $state('');
   /** Whether the chosen archive is encrypted; null = unknown. */
@@ -221,7 +221,7 @@
   );
 
   /**
-   * @param {{ source: 'local' | 'remote' | 'file', label?: string, encrypted?: boolean | null }} options
+   * @param {{ source: 'local' | 'remote' | 'snapshot' | 'file', label?: string, encrypted?: boolean | null }} options
    */
   export function open(options) {
     reset();

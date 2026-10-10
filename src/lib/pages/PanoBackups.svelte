@@ -143,16 +143,20 @@
       <!-- Nothing to act on while panomc.com cannot be reached. -->
       <div slot="right">
         <div class="hstack gap-2">
-          <button
-            type="button"
-            class="btn btn-link btn-sm"
-            title={$_('pages.settings.backups.passphrase-title')}
-            onclick={() => passphraseModal?.open()}>
-            <i
-              class="fa-solid {remote.passphraseSet ? 'fa-lock' : 'fa-lock-open'} me-lg-1"
-              aria-hidden="true"></i>
-            <span class="d-none d-lg-inline">{$_('pages.settings.backups.passphrase-title')}</span>
-          </button>
+          {#if backupMode === 'FULL'}
+            <button
+              type="button"
+              class="btn btn-link btn-sm"
+              title={$_('pages.settings.backups.passphrase-title')}
+              onclick={() => passphraseModal?.open()}>
+              <i
+                class="fa-solid {remote.passphraseSet ? 'fa-lock' : 'fa-lock-open'} me-lg-1"
+                aria-hidden="true"></i>
+              <span class="d-none d-lg-inline">
+                {$_('pages.settings.backups.passphrase-title')}
+              </span>
+            </button>
+          {/if}
           <button
             type="button"
             class="btn btn-outline-primary btn-sm"
@@ -261,7 +265,7 @@
                 {#each group.backups as backup (backup.id)}
                   <tr>
                     <th scope="row" class="align-middle text-center">
-                      {#if canRestoreRemote(backup) || backup.own}
+                      {#if canRestoreRow(backup) || canDeleteRow(backup)}
                         <div class="dropdown position-static">
                           <button
                             type="button"
@@ -272,7 +276,7 @@
                             <span class="fas fa-ellipsis-v"></span>
                           </button>
                           <div class="dropdown-menu dropdown-menu-start text-capitalize">
-                            {#if canRestoreRemote(backup)}
+                            {#if canRestoreRow(backup)}
                               <button
                                 type="button"
                                 class="dropdown-item text-capitalize"
@@ -283,11 +287,15 @@
                                 {$_('pages.settings.backups.restore.submit')}
                               </button>
                             {/if}
-                            {#if backup.own && backup.status === 'DONE'}
+                            {#if canDeleteRow(backup)}
                               <button
                                 type="button"
                                 class="dropdown-item text-danger text-capitalize"
-                                onclick={() => askDelete('remote', backup)}>
+                                onclick={() =>
+                                  askDelete(
+                                    backup.type === 'snapshot' ? 'snapshot' : 'remote',
+                                    backup,
+                                  )}>
                                 <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
                                 {$_('buttons.delete')}
                               </button>
@@ -299,7 +307,10 @@
                     <td>
                       <DateComponent time={backup.createdAt} relativeFormat />
                       {#if backup.status !== 'DONE'}
-                        <span class="badge text-bg-secondary ms-1">
+                        <span
+                          class="badge text-bg-{backup.status === 'FAILED'
+                            ? 'danger'
+                            : 'secondary'} ms-1">
                           {$_(
                             `pages.settings.backups.remote-status-${String(backup.status).toLowerCase()}`,
                           )}
@@ -313,11 +324,48 @@
                           ? $_('pages.settings.backups.kind-mc-server')
                           : $_('pages.settings.backups.kind-pano')}
                       </span>
+                      <div class="small text-body-secondary">
+                        {backup.type === 'snapshot'
+                          ? $_('pages.settings.backups.type-snapshot')
+                          : $_('pages.settings.backups.type-full')}
+                      </div>
                       {#if backup.subject}
                         <div class="small text-body-secondary">{backup.subject}</div>
                       {/if}
                     </td>
-                    <td>{formatBytes(backup.sizeBytes || 0)}</td>
+                    <td>
+                      {#if backup.type === 'snapshot'}
+                        {#if backup.status === 'DONE'}
+                          <div>
+                            {$_('pages.settings.backups.snapshot.site-size', {
+                              values: { size: formatSnapshotBytes(backup.logicalBytes) },
+                            })}
+                          </div>
+                          <div class="small text-body-secondary">
+                            {$_('pages.settings.backups.snapshot.own-size', {
+                              values: { size: formatSnapshotBytes(backup.uniqueBytes) },
+                            })}
+                            <i
+                              class="fa-solid fa-circle-info ms-1"
+                              aria-label={$_('pages.settings.backups.snapshot.own-size-hint')}
+                              use:tooltip={[$_('pages.settings.backups.snapshot.own-size-hint')]}
+                            ></i>
+                          </div>
+                        {/if}
+                        {#if snapshotProblem(backup)}
+                          {@const problem = snapshotProblem(backup)}
+                          <div class="small text-danger">
+                            {$_(problem.key, { values: problem.values })}
+                            {#if problem.storageFull}
+                              <a href={planUrl}
+                                >{$_('pages.settings.backups.account.manage-plan')}</a>
+                            {/if}
+                          </div>
+                        {/if}
+                      {:else}
+                        {formatBytes(backup.sizeBytes || 0)}
+                      {/if}
+                    </td>
                   </tr>
                 {/each}
               </tbody>
@@ -412,9 +460,13 @@
     <h5 class="mb-2">{$_('pages.settings.backups.upload-confirm.title')}</h5>
     <div class="text-body-secondary">
       {$_('pages.settings.backups.upload-confirm.description')}
-      {remote.passphraseSet
-        ? $_('pages.settings.backups.upload-confirm.encrypted')
-        : $_('pages.settings.backups.upload-confirm.plain')}
+      {#if backupMode === 'SNAPSHOT'}
+        {$_('pages.settings.backups.snapshot.upload-note')}
+      {:else}
+        {remote.passphraseSet
+          ? $_('pages.settings.backups.upload-confirm.encrypted')
+          : $_('pages.settings.backups.upload-confirm.plain')}
+      {/if}
     </div>
   </div>
   <div class="modal-footer flex-nowrap">
@@ -444,9 +496,11 @@
     </div>
     <h5 class="mb-2">{$_('pages.settings.backups.delete-title')}</h5>
     <div class="text-body-secondary">
-      {deleteTarget?.kind === 'remote'
-        ? $_('pages.settings.backups.delete-remote-description')
-        : $_('pages.settings.backups.delete-local-description')}
+      {deleteTarget?.kind === 'snapshot'
+        ? $_('pages.settings.backups.delete-snapshot-description')
+        : deleteTarget?.kind === 'remote'
+          ? $_('pages.settings.backups.delete-remote-description')
+          : $_('pages.settings.backups.delete-local-description')}
     </div>
   </div>
   <div class="modal-footer flex-nowrap">
@@ -478,7 +532,7 @@
 
   import ApiUtil from '$lib/api.util.js';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
-  import { canRestoreRemote, connectionState } from '$lib/pano-backup.util.js';
+  import { connectionState } from '$lib/pano-backup.util.js';
 
   /**
    * @param {string} path
@@ -509,15 +563,16 @@
       ),
     ]);
 
-    const [remoteList, transferList] =
+    const [remoteList, transferList, snapshotList] =
       connectionState(remote) !== 'not-connected'
         ? await Promise.all([
             read('/panel/pano-backups/remote/backups', event),
             read('/panel/pano-backups/remote/transfers', event),
+            read('/panel/pano-backups/remote/snapshots', event),
           ])
-        : [null, null];
+        : [null, null, null];
 
-    return { local, remote, remoteList, transferList };
+    return { local, remote, remoteList, transferList, snapshotList };
   }
 </script>
 
@@ -532,12 +587,21 @@
   import { formatBytes } from '$lib/string.util.js';
   import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
   import {
-    groupRemoteBackups,
+    backupPlanUrl,
+    canDeleteSnapshot,
+    canRestoreRemote,
+    canRestoreSnapshot,
+    formatSnapshotBytes,
     isJobRunning,
     isTransferOpen,
+    mergeRemoteList,
+    normaliseMode,
+    snapshotProblem,
     tagColour,
     waitForRestart,
   } from '$lib/pano-backup.util.js';
+  import tooltip from '$lib/tooltip.util';
+  import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
   import DateComponent from '$lib/components/Date.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
@@ -584,6 +648,7 @@
   let remote = $derived(normaliseRemote(data?.remote));
   let remoteList = $derived(/** @type {any} */ (data?.remoteList ?? null));
   let transferList = $derived(/** @type {any} */ (data?.transferList ?? null));
+  let snapshotList = $derived(/** @type {any} */ (data?.snapshotList ?? null));
   let job = $derived(/** @type {any} */ (data?.remote?.job ?? data?.local?.job ?? null));
 
   const LOCAL_TAGS = ['MANUAL', 'SCHEDULED', 'PRE_RESTORE'];
@@ -644,15 +709,17 @@
   /** @type {ReturnType<typeof describeError>} */
   let createError = $state(null);
 
-  /** @type {{ kind: 'local' | 'remote', backup: any } | null} */
+  /** @type {{ kind: 'local' | 'remote' | 'snapshot', backup: any } | null} */
   let deleteTarget = $state(null);
-  /** @type {{ kind: 'local' | 'remote', backup: any } | null} */
+  /** @type {{ kind: 'local' | 'remote' | 'snapshot', backup: any } | null} */
   let restoreTarget = $state(null);
 
   const running = $derived(isJobRunning(job));
   const connected = $derived(connectionState(remote) !== 'not-connected');
   const hostUnavailable = $derived(connectionState(remote) === 'unavailable');
-  const groups = $derived(groupRemoteBackups(remoteList?.error ? null : remoteList));
+  const backupMode = $derived(normaliseMode(remote?.settings?.mode));
+  const planUrl = $derived(backupPlanUrl(PANO_WEBSITE_URL, `${$page.url.origin}${base}/backups`));
+  const groups = $derived(mergeRemoteList(remoteList?.error ? null : remoteList, snapshotList));
   const groupsHaveBackups = $derived(groups.some((group) => group.backups.length > 0));
   const remoteError = $derived(remoteList?.error ? describeError(remoteList) : null);
   const transfers = $derived(
@@ -674,6 +741,18 @@
     return () => clearInterval(timer);
   });
 
+  /** @param {any} row a remote list row (archive or snapshot). */
+  function canRestoreRow(row) {
+    return row.type === 'snapshot' ? canRestoreSnapshot(row) : canRestoreRemote(row);
+  }
+
+  /** @param {any} row a remote list row (archive or snapshot). */
+  function canDeleteRow(row) {
+    return row.type === 'snapshot'
+      ? canDeleteSnapshot(row)
+      : row.own === true && row.status === 'DONE';
+  }
+
   /** @param {any} body */
   function normaliseLocal(body) {
     return body && !body.error ? { ...EMPTY_LOCAL, ...body } : EMPTY_LOCAL;
@@ -684,12 +763,13 @@
     return body && !body.error ? body : { connected: false, passphraseSet: false };
   }
 
-  /** @param {{ local?: any, remote?: any, remoteList?: any, transferList?: any }} source */
+  /** @param {{ local?: any, remote?: any, remoteList?: any, transferList?: any, snapshotList?: any }} source */
   function apply(source) {
     local = normaliseLocal(source.local);
     remote = normaliseRemote(source.remote);
     remoteList = source.remoteList ?? null;
     transferList = source.transferList ?? null;
+    snapshotList = source.snapshotList ?? null;
     job = source.remote?.job ?? source.local?.job ?? job;
   }
 
@@ -698,19 +778,21 @@
       ApiUtil.get({ path: '/panel/pano-backups' }).catch(() => null),
       ApiUtil.get({ path: '/panel/pano-backups/remote?fresh=true' }).catch(() => null),
     ]);
-    const [nextList, nextTransfers] =
+    const [nextList, nextTransfers, nextSnapshots] =
       connectionState(nextRemote) !== 'not-connected'
         ? await Promise.all([
             ApiUtil.get({ path: '/panel/pano-backups/remote/backups' }).catch(() => null),
             ApiUtil.get({ path: '/panel/pano-backups/remote/transfers' }).catch(() => null),
+            ApiUtil.get({ path: '/panel/pano-backups/remote/snapshots' }).catch(() => null),
           ])
-        : [null, null];
+        : [null, null, null];
 
     apply({
       local: nextLocal,
       remote: nextRemote,
       remoteList: nextList,
       transferList: nextTransfers,
+      snapshotList: nextSnapshots,
     });
   }
 
@@ -785,7 +867,14 @@
     busyAction = 'upload';
 
     try {
-      const error = await startJob(ApiUtil.post({ path: '/panel/pano-backups/remote/backups' }));
+      const error = await startJob(
+        ApiUtil.post({
+          path:
+            backupMode === 'SNAPSHOT'
+              ? '/panel/pano-backups/remote/snapshots'
+              : '/panel/pano-backups/remote/backups',
+        }),
+      );
 
       if (error) {
         void showError(error.key, error.values);
@@ -812,11 +901,13 @@
    * @param {{ instanceName: string }} group
    */
   function askRestoreRemote(backup, group) {
-    restoreTarget = { kind: 'remote', backup };
+    const snapshot = backup.type === 'snapshot';
+
+    restoreTarget = { kind: snapshot ? 'snapshot' : 'remote', backup };
     restoreModal?.open({
-      source: 'remote',
+      source: snapshot ? 'snapshot' : 'remote',
       label: `${group.instanceName || backup.instanceName || ''} · ${new Date(backup.createdAt).toLocaleString()}`,
-      encrypted: true,
+      encrypted: !snapshot,
     });
   }
 
@@ -842,9 +933,11 @@
 
     const id = encodeURIComponent(target.backup.id);
     const path =
-      target.kind === 'remote'
-        ? `/panel/pano-backups/remote/backups/${id}/restore`
-        : `/panel/pano-backups/${id}/restore`;
+      target.kind === 'snapshot'
+        ? `/panel/pano-backups/remote/snapshots/${id}/restore`
+        : target.kind === 'remote'
+          ? `/panel/pano-backups/remote/backups/${id}/restore`
+          : `/panel/pano-backups/${id}/restore`;
 
     return startJob(
       ApiUtil.post({
@@ -858,7 +951,7 @@
   }
 
   /**
-   * @param {'local' | 'remote'} kind
+   * @param {'local' | 'remote' | 'snapshot'} kind
    * @param {any} backup
    */
   function askDelete(kind, backup) {
@@ -880,9 +973,11 @@
       const id = encodeURIComponent(target.backup.id);
       const body = await ApiUtil.delete({
         path:
-          target.kind === 'remote'
-            ? `/panel/pano-backups/remote/backups/${id}`
-            : `/panel/pano-backups/${id}`,
+          target.kind === 'snapshot'
+            ? `/panel/pano-backups/remote/snapshots/${id}`
+            : target.kind === 'remote'
+              ? `/panel/pano-backups/remote/backups/${id}`
+              : `/panel/pano-backups/${id}`,
       }).catch(() => ({ error: { code: 'NETWORK_ERROR' } }));
 
       if (body?.error) {
