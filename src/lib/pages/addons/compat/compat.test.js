@@ -12,14 +12,8 @@ import {
 import { createCompatibilityApi } from './compat.api.js';
 import {
   attentionCounts,
-  canUpdate,
-  createPlanController,
   externalUrlsOf,
   normalizeCompatibility,
-  normalizePlan,
-  planCounts,
-  planNeedsAttention,
-  planProblem,
   pluginProblem,
   refusalProblem,
   safeDownloadPath,
@@ -41,7 +35,6 @@ mock.module('$lib/components/ToastContainer.svelte', () => ({
 mock.module('$lib/tooltip.util', () => ({ default: () => ({}) }));
 
 const { default: CompatProblemIcon } = await import('$lib/components/CompatProblemIcon.svelte');
-const { default: UpdatePlanIcon } = await import('./UpdatePlanIcon.svelte');
 const { default: AddonProblemIcon } = await import('../AddonProblemIcon.svelte');
 const { default: AddonApiLevel } = await import('../AddonApiLevel.svelte');
 const { default: AddonToggle } = await import('../AddonToggle.svelte');
@@ -106,23 +99,6 @@ const REPORT = {
     },
   ],
   reconcile: { running: false, ranAt: 1700000000000, storeReachable: false, installed: [] },
-};
-
-const PLAN = {
-  target: { version: 'v2.0.0', apiLevel: 3, minApiLevel: 2 },
-  resources: [
-    {
-      id: 'pano-plugin-market',
-      type: 'PLUGIN',
-      installedVersion: 'v1.0.0',
-      verdict: 'UPDATE',
-      updateVersionId: 'abc',
-    },
-    { id: 'pano-plugin-old', type: 'PLUGIN', installedVersion: 'v0.3.0', verdict: 'DISABLE' },
-    { id: 'blaze-theme', type: 'THEME', installedVersion: '1.4.0', verdict: 'COMPATIBLE' },
-  ],
-  agents: [],
-  storeReachable: true,
 };
 
 const OUTDATED_THEME = {
@@ -273,15 +249,12 @@ describe('the api', () => {
   test('asks the paths of doc 04 section 7', async () => {
     const client = stubClient({
       'GET /panel/compatibility': REPORT,
-      'GET /panel/updates/platform/plan': PLAN,
     });
     const api = createCompatibilityApi(client);
 
     expect((await api.getCompatibility()).ok).toBe(true);
-    expect((await api.getPlan()).ok).toBe(true);
     expect(client.calls.map((call) => `${call.method} ${call.path}`)).toEqual([
       'GET /panel/compatibility',
-      'GET /panel/updates/platform/plan',
     ]);
   });
 
@@ -298,118 +271,7 @@ describe('the api', () => {
       },
     });
 
-    expect((await broken.getPlan()).error.code).toBe('NETWORK_ERROR');
-  });
-});
-
-describe('the update plan', () => {
-  test('normalizePlan reads the verdicts and the unknown target', () => {
-    const plan = normalizePlan(PLAN);
-
-    expect(plan.known).toBe(true);
-    expect(planCounts(plan)).toEqual({ COMPATIBLE: 1, UPDATE: 1, DISABLE: 1 });
-    expect(planNeedsAttention(plan)).toBe(true);
-
-    const unknown = normalizePlan({
-      target: { version: 'v2', apiLevel: null, minApiLevel: null },
-      resources: [{ id: 'a', type: 'PLUGIN', installedVersion: '1', verdict: 'COMPATIBLE' }],
-    });
-
-    expect(unknown.known).toBe(false);
-    expect(planNeedsAttention(unknown)).toBe(false);
-
-    expect(normalizePlan({ target: null }).target).toBeNull();
-    expect(normalizePlan({ error: { code: 'X' } })).toBeNull();
-    // A verdict a newer backend invents reads as compatible rather than breaking the page.
-    expect(normalizePlan({ resources: [{ id: 'a', verdict: 'NEW' }] }).resources[0].verdict).toBe(
-      'COMPATIBLE',
-    );
-  });
-
-  test('a game server waiting for its jar needs attention even when every resource fits', () => {
-    const plan = normalizePlan({ ...PLAN, resources: [], agents: REPORT.agents });
-
-    expect(planNeedsAttention(plan)).toBe(true);
-  });
-
-  test('the update button follows the state', () => {
-    expect(canUpdate({ status: 'loading' })).toBe(false);
-    expect(canUpdate({ status: 'ready' })).toBe(true);
-    expect(canUpdate({ status: 'unavailable' })).toBe(true);
-    // A plan that could not be read does not lock the button; the icon and the confirmation warn.
-    expect(canUpdate({ status: 'failed' })).toBe(true);
-  });
-
-  test('loading, then ready', async () => {
-    const seen = [];
-    const controller = createPlanController({
-      api: { getPlan: async () => ({ ok: true, body: PLAN, error: null }) },
-      onChange: (state) => seen.push(state.status),
-    });
-
-    expect(controller.canUpdate).toBe(false);
-
-    await controller.load();
-
-    expect(seen).toEqual(['loading', 'ready']);
-    expect(controller.canUpdate).toBe(true);
-    expect(controller.state.plan.target.version).toBe('v2.0.0');
-  });
-
-  test('an older platform has no plan: nothing to wait for', async () => {
-    const controller = createPlanController({
-      api: { getPlan: async () => ({ ok: false, body: null, error: { code: 'NOT_FOUND' } }) },
-    });
-
-    await controller.load();
-
-    expect(controller.state.status).toBe('unavailable');
-    expect(controller.canUpdate).toBe(true);
-  });
-
-  test('any other failure leaves the button usable', async () => {
-    const controller = createPlanController({
-      api: { getPlan: async () => ({ ok: false, body: null, error: { code: 'NETWORK_ERROR' } }) },
-    });
-
-    await controller.load();
-
-    expect(controller.state.status).toBe('failed');
-    expect(controller.state.errorCode).toBe('NETWORK_ERROR');
-    expect(controller.canUpdate).toBe(true);
-  });
-
-  test('a body that is not a plan is a failure', async () => {
-    const controller = createPlanController({
-      api: { getPlan: async () => ({ ok: true, body: { error: 'x' }, error: null }) },
-    });
-
-    await controller.load();
-
-    expect(controller.state.status).toBe('failed');
-  });
-
-  test('a retry drops the older answer', async () => {
-    const answers = [];
-    const controller = createPlanController({
-      api: {
-        getPlan: () =>
-          new Promise((resolve) => {
-            answers.push(resolve);
-          }),
-      },
-    });
-
-    const first = controller.load();
-    const second = controller.load();
-
-    // The second answer arrives first; the first (older) one must not overwrite it.
-    answers[1]({ ok: true, body: PLAN, error: null });
-    await second;
-    answers[0]({ ok: false, body: null, error: { code: 'NETWORK_ERROR' } });
-    await first;
-
-    expect(controller.state.status).toBe('ready');
+    expect((await broken.getCompatibility()).error.code).toBe('NETWORK_ERROR');
   });
 });
 
@@ -484,77 +346,6 @@ describe('CompatProblemIcon', () => {
 
     expect(html).toContain('data-compat-problem="warning"');
     expect(textOf(html)).not.toContain('example.com');
-  });
-});
-
-describe('UpdatePlanIcon', () => {
-  const render = (state, props = {}) => renderHtml(UpdatePlanIcon, { state, ...props });
-  const ready = (plan) => ({ status: 'ready', plan: normalizePlan(plan) });
-
-  test('a spinner while the plan loads', () => {
-    const html = render({ status: 'loading', plan: null });
-
-    expect(html).toContain('data-plan-loading');
-    expect(html).toContain('spinner-border');
-    expect(html).toContain('up to 20 seconds');
-  });
-
-  test('says what will be switched off, what is updated and the jars by hand', () => {
-    const html = render(ready({ ...PLAN, agents: REPORT.agents }));
-
-    expect(html).toContain('data-plan-attention');
-    expect(html).toContain('text-warning');
-    expect(html).toContain('1 addon or theme will be switched off');
-    expect(html).toContain('pano-plugin-old');
-    expect(html).toContain('will be updated by Pano after the restart: pano-plugin-market');
-    expect(html).toContain('game servers and nodes need a new jar by hand: Survival, Node One');
-    expect(html).not.toContain('data-plan-retry');
-  });
-
-  test('an update that touches nothing shows no icon at all', () => {
-    const html = render(
-      ready({
-        ...PLAN,
-        resources: [{ id: 'a', type: 'PLUGIN', installedVersion: '1', verdict: 'COMPATIBLE' }],
-      }),
-    );
-
-    expect(html).not.toContain('fa-circle-exclamation');
-    expect(html).not.toContain('alert');
-  });
-
-  test('an unknown target says it cannot tell', () => {
-    const html = render(
-      ready({
-        target: { version: 'v2.0.0', apiLevel: null, minApiLevel: null },
-        resources: [{ id: 'a', type: 'PLUGIN', installedVersion: '1', verdict: 'COMPATIBLE' }],
-      }),
-    );
-
-    expect(html).toContain('does not say which API level it needs');
-  });
-
-  test('an unreachable store is said and offers a retry button', () => {
-    const html = render(ready({ ...PLAN, storeReachable: false }));
-
-    expect(html).toContain('The store could not be reached');
-    expect(html).toContain('data-plan-retry');
-  });
-
-  test('a failed plan is a red icon with a retry button and no checkbox', () => {
-    const html = render({ status: 'failed', plan: null });
-
-    expect(html).toContain('data-plan-failed');
-    expect(html).toContain('text-danger');
-    expect(html).toContain('data-plan-retry');
-    expect(html).toContain('The update plan could not be read');
-    expect(html).not.toContain('checkbox');
-  });
-
-  test('draws nothing when the platform has no plan or no update', () => {
-    expect(textOf(render({ status: 'unavailable', plan: null }))).toBe('');
-    expect(render({ status: 'unavailable', plan: null })).not.toContain('fa-circle-exclamation');
-    expect(planProblem(ready({ target: null, resources: [], agents: [] }), translate)).toBe('');
   });
 });
 
@@ -760,15 +551,11 @@ describe('lang files', () => {
       expect(typeof lookup(messages, verdictKey(verdict))).toBe('string');
     }
 
-    // The problem texts and the plan tooltip lines are picked at run time.
+    // The problem texts are picked at run time.
     for (const name of ['too-old', 'too-new', 'too-old-plain', 'too-new-plain', 'urls']) {
       expect(typeof lookup(messages, `components.compatibility-card.problem.${name}`)).toBe(
         'string',
       );
-    }
-
-    for (const name of ['unknown', 'disable', 'update', 'agents', 'store-down']) {
-      expect(typeof lookup(messages, `pages.settings.updates.plan.tip.${name}`)).toBe('string');
     }
 
     for (const name of ['addons', 'themes']) {
@@ -776,10 +563,6 @@ describe('lang files', () => {
         'string',
       );
     }
-
-    expect(typeof lookup(messages, 'components.modals.confirm-update-platform.plan-failed')).toBe(
-      'string',
-    );
 
     expect(typeof messages.buttons.retry).toBe('string');
   });
@@ -798,7 +581,7 @@ describe('lang files', () => {
     for (const locale of ['tr', 'ru']) {
       const other = readLang(locale);
 
-      for (const root of ['components.compatibility-card', 'pages.settings.updates.plan']) {
+      for (const root of ['components.compatibility-card']) {
         for (const [key, value] of flatten(lookup(en, root), `${root}.`)) {
           const translated = lookup(other, key);
 

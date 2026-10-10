@@ -115,21 +115,14 @@
                     on:click={() => copyHashToClipboard(data.platformUpdate.hash)}>
                     <i class="fa-solid fa-hashtag fa-lg"></i>
                   </button>
-                  <!-- What this update does to the plugins and themes, read before the button works -->
-                  {#if !$platformUpdating && !platformUpdateError}
-                    <UpdatePlanIcon state={planState} onretry={() => planController.load()} />
-                  {/if}
                   <button
                     class="btn btn-sm btn-secondary d-flex align-items-center gap-2"
-                    title={updateAllowed ? '' : $_('pages.settings.updates.plan.waiting')}
-                    aria-disabled={!updateAllowed}
                     data-update-platform
                     on:click={onUpdatePlatformClick}
                     class:disabled={loading ||
                       $platformUpdating ||
                       inProgressResource ||
-                      updatingAll ||
-                      !updateAllowed}>
+                      updatingAll}>
                     {#if $platformUpdating}
                       <i class="fas fa-circle-notch fa-spin"></i>
                     {:else}
@@ -500,9 +493,6 @@
   import { createCompatWatcher } from '$lib/pages/view/theme/compat.util.js';
   import { createThemeApi } from '$lib/pages/view/theme/theme.api.js';
   import { show as showToast } from '$lib/components/ToastContainer.svelte';
-  import UpdatePlanIcon from '$lib/pages/addons/compat/UpdatePlanIcon.svelte';
-  import { createCompatibilityApi } from '$lib/pages/addons/compat/compat.api.js';
-  import { canUpdate, createPlanController } from '$lib/pages/addons/compat/compat.util.js';
 
   export let data;
 
@@ -577,22 +567,6 @@
     if (!data.panoAccount) {
       data.panoAccount = { username: 'demo' };
     }
-  }
-
-  // The update plan (doc 04 section 7, gate 2): the platform update button waits while it is read.
-  let planState = { status: 'loading', plan: null, errorCode: '' };
-  let planVersion = null;
-  const planController = createPlanController({
-    api: createCompatibilityApi(ApiUtil),
-    onChange: (next) => (planState = next),
-  });
-
-  $: updateAllowed = canUpdate(planState);
-
-  // Read the plan again whenever a different platform update is found (and once on arrival).
-  $: if (browser && data.platformUpdate && data.platformUpdate.version !== planVersion) {
-    planVersion = data.platformUpdate.version;
-    planController.load();
   }
 
   const platformUpdating = getContext('platformUpdating');
@@ -786,17 +760,9 @@
   }
 
   function onUpdatePlatformClick() {
-    // The button also answers the keyboard while it looks off: the plan has to be read first.
-    if (!updateAllowed) {
-      return;
-    }
-
-    showUpdatePlatformModal(
-      (background) => {
-        installPlatformUpdate(background);
-      },
-      { planFailed: planState.status === 'failed' },
-    );
+    showUpdatePlatformModal((background) => {
+      installPlatformUpdate(background);
+    });
   }
 
   async function updateResource(update) {

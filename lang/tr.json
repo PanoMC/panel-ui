@@ -770,22 +770,6 @@
             "SERVER_OFFLINE": "Sunucu çevrimdışı",
             "JAR_UNAVAILABLE": "Eklenti derlemesi yok"
           }
-        },
-        "plan": {
-          "loading": "Bu güncellemenin eklenti ve temalarınıza ne yapacağı kontrol ediliyor. Bu 20 saniyeye kadar sürebilir.",
-          "waiting": "Önce güncelleme planını bekleyin.",
-          "failed": {
-            "title": "Güncelleme planı okunamadı",
-            "description": "Pano bu güncellemenin eklenti ve temalarınıza ne yapacağını bulamadı. Yine de güncelleyebilirsiniz; sonrasında kontrol edin."
-          },
-          "unknown": "Pano {version} hangi API seviyesini gerektirdiğini bildirmiyor; bu yüzden eklenti ve temalarınıza ne olacağı bilinemiyor. Sonrasında kendiniz kontrol edin.",
-          "tip": {
-            "unknown": "Pano {version} hangi API seviyesini gerektirdiğini bildirmiyor; eklenti ve temalarınıza etkisi bilinmiyor. Sonrasında kontrol edin.",
-            "disable": "{count, plural, one {# eklenti ya da tema kapatılacak} other {# eklenti ve tema kapatılacak}} (mağazada uyumlu sürüm yok): {names}.",
-            "update": "{count, plural, one {# eklenti ya da tema} other {# eklenti ve tema}} yeniden başlatmadan sonra Pano tarafından güncellenecek: {names}.",
-            "agents": "{count, plural, one {# oyun sunucusu ya da node} other {# oyun sunucusu ve node}} için yeni jar elle konmalı: {names}.",
-            "store-down": "Mağazaya ulaşılamadı, bu yüzden güncellemeler eksik olabilir. Yeniden dene'ye basın."
-          }
         }
       },
       "backups": {
@@ -3408,8 +3392,7 @@
         "title": "Platform güncellensin mi?",
         "description": "Güncelleme sırasında Pano birkaç dakika erişilemez olabilir. Bu sayfadan ayrılsanız bile güncelleme arka planda devam eder.",
         "terminal-mode-warning": "Pano şu anda bir terminale bağlı çalışıyor. Terminal'den bağımsız arkaplanda çalışma moduna geçsin mi?",
-        "restart-in-background": "Güncellemeden sonra Pano'yu arka plan modunda yeniden başlat",
-        "plan-failed": "Pano güncelleme planını okuyamadı; bu yüzden güncellemenin eklenti ve temalarınıza ne yapacağını bilmiyor. Güncellemeden sonra onları kontrol edin."
+        "restart-in-background": "Güncellemeden sonra Pano'yu arka plan modunda yeniden başlat"
       },
       "confirm-update-resource": {
         "title": "Bu kaynak güncellensin mi?",

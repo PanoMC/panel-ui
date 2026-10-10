@@ -770,22 +770,6 @@
             "SERVER_OFFLINE": "Server offline",
             "JAR_UNAVAILABLE": "No plugin build available"
           }
-        },
-        "plan": {
-          "loading": "Checking what this update would do to your addons and themes. This can take up to 20 seconds.",
-          "waiting": "Wait for the update plan first.",
-          "failed": {
-            "title": "The update plan could not be read",
-            "description": "Pano could not work out what this update does to your addons and themes. You can still update; check them afterwards."
-          },
-          "unknown": "Pano {version} does not say which API level it needs, so Pano cannot tell what will happen to your addons and themes. Check them yourself afterwards.",
-          "tip": {
-            "unknown": "Pano {version} does not say which API level it needs, so the effect on your addons and themes is unknown. Check them afterwards.",
-            "disable": "{count, plural, one {# addon or theme will be switched off} other {# addons and themes will be switched off}} (no compatible version in the store): {names}.",
-            "update": "{count, plural, one {# addon or theme} other {# addons and themes}} will be updated by Pano after the restart: {names}.",
-            "agents": "{count, plural, one {# game server or node needs} other {# game servers and nodes need}} a new jar by hand: {names}.",
-            "store-down": "The store could not be reached, so updates may be missing. Press retry."
-          }
         }
       },
       "backups": {
@@ -3410,8 +3394,7 @@
         "title": "Update the platform?",
         "description": "Pano may be inaccessible for a few minutes during the update. The update continues in the background if you leave this page.",
         "terminal-mode-warning": "Pano is currently attached to a terminal. Switch to terminal-independent background mode?",
-        "restart-in-background": "Relaunch Pano in background mode after the update",
-        "plan-failed": "Pano could not read the update plan, so it cannot tell what this update does to your addons and themes. Check them after the update."
+        "restart-in-background": "Relaunch Pano in background mode after the update"
       },
       "confirm-update-resource": {
         "title": "Update this resource?",
