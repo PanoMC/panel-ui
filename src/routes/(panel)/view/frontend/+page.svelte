@@ -1,7 +1,1 @@
-<Frontend {data} />
-
-<script>
-  import Frontend from '$lib/pages/view/frontend/Frontend.svelte';
-
-  let { data } = $props();
-</script>
+<!-- The load redirects to the Themes page; this route has nothing to draw. -->

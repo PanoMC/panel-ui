@@ -6,6 +6,16 @@
     <div>{$_('pages.frontend.origins.description')}</div>
   </div>
 
+  {#if locked}
+    <div
+      class="alert alert-warning d-flex align-items-start mb-0"
+      role="alert"
+      data-frontend-locked>
+      <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>{$_('pages.frontend.locked')}</div>
+    </div>
+  {/if}
+
   <div class="card">
     <CardHeader>
       <div slot="left">
@@ -15,7 +25,7 @@
         slot="right"
         type="button"
         class="btn btn-sm btn-link"
-        disabled={$full}
+        disabled={$full || locked}
         data-add-origin
         onclick={() => modal?.show()}>
         <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
@@ -82,10 +92,11 @@
 
   /**
    * The Allowed origins tab: the browser origins that may call the API with a visitor's cookie, an add
-   * dialog and remove. All state lives in the controller.
-   * @type {{ controller: ReturnType<typeof import('./origins.controller.js').createOriginsController> }}
+   * dialog and remove. `locked` (the saved mode is Theme) disables adding; rows stay and can be removed.
+   * All state lives in the controller.
+   * @type {{ controller: ReturnType<typeof import('./origins.controller.js').createOriginsController>, locked?: boolean }}
    */
-  let { controller } = $props();
+  let { controller, locked = false } = $props();
 
   // The controller is fixed for the life of the page.
   // svelte-ignore state_referenced_locally

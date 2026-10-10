@@ -141,3 +141,29 @@ export function createFrontendApi(client, request) {
       call('get', { path: `/locales/${encodeURIComponent(locale)}/translations/types/THEME` }),
   };
 }
+
+/**
+ * The six reads behind the Front-end settings. Each can fail alone (an older backend has no proxy
+ * status, a key list can be refused), so a failed read is `null` and only its part says so.
+ *
+ * @param {ReturnType<typeof createFrontendApi>} api
+ */
+export async function loadFrontendData(api) {
+  const [keys, frontend, proxyStatus, origins, urls, settings] = await Promise.all([
+    api.listKeys(),
+    api.getFrontend(),
+    api.getProxyStatus(),
+    api.listOrigins(),
+    api.getUrls(),
+    api.getSettings(),
+  ]);
+
+  return {
+    keys: keys.ok ? keys.body : null,
+    frontend: frontend.ok ? frontend.body : null,
+    proxyStatus: proxyStatus.ok ? proxyStatus.body : null,
+    origins: origins.ok ? origins.body : null,
+    urls: urls.ok ? urls.body : null,
+    settings: settings.ok ? settings.body : null,
+  };
+}

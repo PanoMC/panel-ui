@@ -13,9 +13,9 @@ import {
   isModeDirty,
   maskKey,
   normalizeFrontendState,
+  themeNotShown,
 } from './frontend.util.js';
 import { readLang } from './testkit.js';
-import { FRONTEND_MENU_ITEM, withFrontendMenuItem } from '$lib/navigation.util.js';
 
 describe('normalizeFrontendState', () => {
   test('an empty or foreign answer becomes the THEME defaults', () => {
@@ -126,6 +126,48 @@ describe('describeError', () => {
   });
 });
 
+describe('FRONTEND_ACCESS_DISABLED', () => {
+  test('the code has its own translated message', () => {
+    expect(describeError({ code: 'FRONTEND_ACCESS_DISABLED' }).key).toBe(
+      'pages.frontend.errors.FRONTEND_ACCESS_DISABLED',
+    );
+  });
+});
+
+describe('themeNotShown', () => {
+  const translate = (key, options) =>
+    options?.values ? `${key}|${JSON.stringify(options.values)}` : key;
+
+  test('the active theme gets the hint with the name of the mode', () => {
+    expect(themeNotShown({ active: true }, 'EXTERNAL', translate)).toEqual({
+      text: 'pages.frontend.not-shown|{"mode":"pages.frontend.mode.external.title"}',
+      level: 'warning',
+    });
+    expect(themeNotShown({ active: true }, 'CUSTOM_APP', translate)?.text).toContain(
+      'pages.frontend.mode.custom-app.title',
+    );
+    expect(themeNotShown({ active: true }, 'NONE', translate)?.text).toContain(
+      'pages.frontend.mode.none.title',
+    );
+  });
+
+  test('nothing for Theme mode, an unknown mode, or a theme that is not active', () => {
+    expect(themeNotShown({ active: true }, 'THEME', translate)).toBeNull();
+    expect(themeNotShown({ active: true }, null, translate)).toBeNull();
+    expect(themeNotShown({ active: true }, 'OTHER', translate)).toBeNull();
+    expect(themeNotShown({ active: false }, 'EXTERNAL', translate)).toBeNull();
+    expect(themeNotShown(null, 'EXTERNAL', translate)).toBeNull();
+  });
+
+  test('the sentence reads well in every language', () => {
+    for (const locale of ['en-US', 'tr', 'ru']) {
+      const lang = readLang(locale);
+
+      expect(lang.pages.frontend['not-shown']).toContain('{mode}');
+    }
+  });
+});
+
 describe('small helpers', () => {
   test('the env lines are copied one per line', () => {
     expect(envText(['A=1', 'B=2'])).toBe('A=1\nB=2');
@@ -135,16 +177,6 @@ describe('small helpers', () => {
   test('a listed key shows only its hint', () => {
     expect(maskKey('ab12')).toEndWith('ab12');
     expect(maskKey('ab12')).toStartWith('pfk_');
-  });
-
-  test('the menu entry is added once and never twice', () => {
-    const items = [{ href: '/view', text: 'buttons.themes' }];
-    const withItem = withFrontendMenuItem(items);
-
-    expect(withItem.map((i) => i.href)).toEqual(['/view', '/view/frontend']);
-    expect(withFrontendMenuItem(withItem)).toBe(withItem);
-    expect(items).toHaveLength(1);
-    expect(FRONTEND_MENU_ITEM.text).toBe('pages.frontend.menu');
   });
 });
 
@@ -171,6 +203,11 @@ describe('lang files', () => {
     used.add(option.descriptionKey);
   }
 
+  // Used by the Themes page and the dialog's tabs, outside this folder.
+  used.add('pages.frontend.settings-button');
+  used.add('pages.frontend.locked');
+  used.add('pages.frontend.not-shown');
+
   for (const code of [
     'CUSTOM_APP_INVALID_MANIFEST',
     'CUSTOM_APP_NO_ENTRY',
@@ -185,6 +222,7 @@ describe('lang files', () => {
     'FILE_TOO_LARGE',
     'NOT_A_ZIP',
     'FRONTEND_KEY_LIMIT_REACHED',
+    'FRONTEND_ACCESS_DISABLED',
     'INVALID_FIELDS',
     'DISABLED_FOR_DEMO',
     'NETWORK_ERROR',
@@ -230,7 +268,7 @@ describe('lang files', () => {
     for (const locale of ['en-US', 'tr', 'ru']) {
       const lang = readLang(locale);
 
-      expect(lang.pages.frontend.menu).toBeString();
+      expect(lang.pages.frontend['settings-button']).toBeString();
 
       for (const type of [
         'CREATED_FRONTEND_KEY',

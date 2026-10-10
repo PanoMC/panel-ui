@@ -6,6 +6,16 @@
     <div>{$_('pages.frontend.keys.description')}</div>
   </div>
 
+  {#if locked}
+    <div
+      class="alert alert-warning d-flex align-items-start mb-0"
+      role="alert"
+      data-frontend-locked>
+      <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>{$_('pages.frontend.locked')}</div>
+    </div>
+  {/if}
+
   <div class="card">
     <CardHeader>
       <div slot="left">
@@ -15,7 +25,7 @@
         slot="right"
         type="button"
         class="btn btn-sm btn-link"
-        disabled={$full}
+        disabled={$full || locked}
         data-create-key
         onclick={() => modal?.show()}>
         <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
@@ -106,10 +116,11 @@
 
   /**
    * The Keys tab: the front-end keys with their last use, a create dialog that shows the key once,
-   * and revoke. All state lives in the controller.
-   * @type {{ controller: ReturnType<typeof import('./keys.controller.js').createKeysController>, notify?: any }}
+   * and revoke. `locked` (the saved mode is Theme) disables creating; rows stay and can be revoked.
+   * All state lives in the controller.
+   * @type {{ controller: ReturnType<typeof import('./keys.controller.js').createKeysController>, notify?: any, locked?: boolean }}
    */
-  let { controller, notify = undefined } = $props();
+  let { controller, notify = undefined, locked = false } = $props();
 
   // The controller is fixed for the life of the page.
   // svelte-ignore state_referenced_locally

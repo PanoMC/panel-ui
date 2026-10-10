@@ -2699,8 +2699,10 @@
       }
     },
     "frontend": {
-      "menu": "Front-end",
       "title": "Front-end",
+      "settings-button": "Front-end settings",
+      "locked": "Keys and allowed origins work only when the front-end is not a theme. Switch the mode to use them.",
+      "not-shown": "Not shown to visitors: the front-end is set to {mode}.",
       "load-failed": "The front-end settings could not be loaded.",
       "copied": "Copied to the clipboard.",
       "copy-failed": "Could not copy. Select the text and copy it by hand.",
@@ -2814,6 +2816,7 @@
         "FILE_TOO_LARGE": "The file is bigger than 100 MB.",
         "NOT_A_ZIP": "Choose a .zip file.",
         "FRONTEND_KEY_LIMIT_REACHED": "You reached the limit of front-end keys. Revoke one first.",
+        "FRONTEND_ACCESS_DISABLED": "Front-end keys and allowed origins are off while the front-end is a theme. Switch the mode first.",
         "INVALID_FIELDS": "Check the highlighted fields.",
         "DISABLED_FOR_DEMO": "This is disabled in the demo.",
         "NETWORK_ERROR": "Pano did not answer. Try again.",

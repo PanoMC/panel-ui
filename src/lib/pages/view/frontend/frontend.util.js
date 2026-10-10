@@ -182,6 +182,7 @@ const KNOWN_ERRORS = new Set([
   'FILE_TOO_LARGE',
   'NOT_A_ZIP',
   'FRONTEND_KEY_LIMIT_REACHED',
+  'FRONTEND_ACCESS_DISABLED',
   'ORIGIN_DIFFERENT_SITE',
   'ORIGIN_LIMIT_REACHED',
   'FRONTEND_SETTINGS_NO_SCHEMA',
@@ -226,4 +227,26 @@ export function envText(lines) {
 /** The key as the list shows it: only the last four characters are known. */
 export function maskKey(hint) {
   return `pfk_${'•'.repeat(8)}${hint ?? ''}`;
+}
+
+/**
+ * The hint on the active theme's card while the saved mode is not Theme: visitors see the custom app,
+ * the external site or nothing, not the theme. Null for a theme that is not active, for Theme mode and
+ * while the mode is unknown.
+ *
+ * @param {{ active?: boolean } | null | undefined} theme
+ * @param {string | null | undefined} mode the saved front-end mode
+ * @param {(key: string, options?: any) => string} translate
+ * @returns {{ text: string, level: 'warning' } | null}
+ */
+export function themeNotShown(theme, mode, translate) {
+  if (!theme?.active || !mode || mode === FrontendModes.THEME) return null;
+  if (!Object.values(FrontendModes).includes(mode)) return null;
+
+  const name = translate(`pages.frontend.mode.${mode.toLowerCase().replace('_', '-')}.title`);
+
+  return {
+    text: translate('pages.frontend.not-shown', { values: { mode: name } }),
+    level: 'warning',
+  };
 }

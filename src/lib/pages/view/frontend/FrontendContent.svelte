@@ -27,7 +27,7 @@
     aria-labelledby="frontend-tab-keys"
     hidden={tab !== 'keys'}>
     {#if keysController}
-      <FrontendKeys controller={keysController} {notify} />
+      <FrontendKeys controller={keysController} {notify} {locked} />
     {:else}
       {@render loadFailed()}
     {/if}
@@ -51,7 +51,7 @@
     aria-labelledby="frontend-tab-origins"
     hidden={tab !== 'origins'}>
     {#if originsController}
-      <FrontendOrigins controller={originsController} />
+      <FrontendOrigins controller={originsController} {locked} />
     {:else}
       {@render loadFailed()}
     {/if}
@@ -91,64 +91,28 @@
       title={$_('buttons.try-again')}
       aria-label={$_('buttons.try-again')}
       class="btn alert-btn ms-3"
-      onclick={() => invalidateAll()}>
+      onclick={() => onretry?.()}>
       <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
     </button>
   </div>
 {/snippet}
 
-<script module>
-  import ApiUtil from '$lib/api.util';
-
-  import { createFrontendApi } from './frontend.api.js';
-
-  /**
-   * The six reads of the page. Each can fail alone (an older backend has no proxy status, a key
-   * list can be refused), so a failed read is `null` and only its part of the page says so.
-   *
-   * @type {import('@sveltejs/kit').PageLoad}
-   */
-  export async function load(event) {
-    await event.parent();
-
-    const api = createFrontendApi(ApiUtil, event);
-    const [keys, frontend, proxyStatus, origins, urls, settings] = await Promise.all([
-      api.listKeys(),
-      api.getFrontend(),
-      api.getProxyStatus(),
-      api.listOrigins(),
-      api.getUrls(),
-      api.getSettings(),
-    ]);
-
-    return {
-      keys: keys.ok ? keys.body : null,
-      frontend: frontend.ok ? frontend.body : null,
-      proxyStatus: proxyStatus.ok ? proxyStatus.body : null,
-      origins: origins.ok ? origins.body : null,
-      urls: urls.ok ? urls.body : null,
-      settings: settings.ok ? settings.body : null,
-    };
-  }
-</script>
-
 <script>
-  import { getContext, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import { _, locale } from 'svelte-i18n';
-  import { derived, get } from 'svelte/store';
+  import { derived, get, readable } from 'svelte/store';
 
-  import { invalidateAll } from '$app/navigation';
-
+  import ApiUtil from '$lib/api.util';
   import { show as showConfirm } from '$lib/components/modals/ConfirmActionModal.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
-  import { withFrontendMenuItem } from '$lib/navigation.util.js';
-  import { themeMenuItems } from '$lib/PluginAPI.js';
 
   import FrontendKeys from './FrontendKeys.svelte';
   import FrontendMode from './FrontendMode.svelte';
   import FrontendOrigins from './FrontendOrigins.svelte';
   import FrontendSettings from './FrontendSettings.svelte';
   import FrontendUrls from './FrontendUrls.svelte';
+  import { createFrontendApi } from './frontend.api.js';
+  import { FrontendModes } from './frontend.util.js';
   import { createKeysController } from './keys.controller.js';
   import { createModeController } from './mode.controller.js';
   import { createOriginsController } from './origins.controller.js';
@@ -157,13 +121,18 @@
   import { createUrlsController } from './urls.controller.js';
 
   /**
-   * The Front-end page (Appearance -> Front-end): the proxy banner and five tabs, Keys, Mode, Allowed
-   * origins, Link targets and Settings. `api`, `notify` and `confirm` default to the panel's own; they
-   * are props so a test can pass stubs.
-   * @type {{ data: { keys: any, frontend: any, proxyStatus: any, origins?: any, urls?: any, settings?: any }, api?: any, notify?: any, confirm?: any }}
+   * The body of the Front-end settings modal (Themes page): the proxy banner and five tabs, Mode, Keys,
+   * Allowed origins, Link targets and Settings. `api`, `notify` and `confirm` default to the panel's own;
+   * they are props so a test can pass stubs. While the saved mode is Theme, headless access is off: the
+   * Keys and Allowed origins tabs stay but cannot create or add. `onmodesaved` gets the saved mode;
+   * `onretry` runs when a failed read's retry button is pressed.
+   * @type {{ data: { keys: any, frontend: any, proxyStatus: any, origins?: any, urls?: any, settings?: any }, tab?: string, api?: any, notify?: any, confirm?: any, onmodesaved?: (mode: string) => void, onretry?: () => void }}
    */
   let {
     data,
+    tab: initialTab = 'mode',
+    onmodesaved = undefined,
+    onretry = undefined,
     api = createFrontendApi(ApiUtil),
     notify = {
       success: (key, values) => showSuccess(key, values),
@@ -172,22 +141,16 @@
     confirm = showConfirm,
   } = $props();
 
-  const pageTitle = getContext('pageTitle');
-
-  pageTitle?.set('pages.frontend.title');
-
-  // The submenu lists this page while it is open, even before the menu itself carries the entry.
-  themeMenuItems.update(withFrontendMenuItem);
-
   const tabs = [
-    { id: 'keys', icon: 'fa-solid fa-key', titleKey: 'pages.frontend.tabs.keys' },
     { id: 'mode', icon: 'fa-solid fa-sliders', titleKey: 'pages.frontend.tabs.mode' },
+    { id: 'keys', icon: 'fa-solid fa-key', titleKey: 'pages.frontend.tabs.keys' },
     { id: 'origins', icon: 'fa-solid fa-globe', titleKey: 'pages.frontend.tabs.origins' },
     { id: 'urls', icon: 'fa-solid fa-link', titleKey: 'pages.frontend.tabs.urls' },
     { id: 'settings', icon: 'fa-solid fa-gear', titleKey: 'pages.frontend.tabs.settings' },
   ];
 
-  let tab = $state('keys');
+  // svelte-ignore state_referenced_locally
+  let tab = $state(tabs.some((item) => item.id === initialTab) ? initialTab : 'mode');
 
   // The controllers hold the state from here on; `data` only seeds them.
   // svelte-ignore state_referenced_locally
@@ -223,12 +186,19 @@
       })
     : null;
 
+  // The saved mode, not the form: headless access follows what is stored. Unknown (the read failed)
+  // locks nothing.
+  // svelte-ignore state_referenced_locally
+  const savedMode = modeController ? modeController.saved : readable(null);
+  const locked = $derived($savedMode?.mode === FrontendModes.THEME);
+
   // The link targets and the settings belong to the active front-end: a saved mode change, or another
   // custom app, makes both read again.
   onMount(() => {
     if (!modeController) return;
 
     let last = null;
+    let lastMode = null;
 
     return modeController.saved.subscribe((state) => {
       const next = `${state.mode}|${state.customAppId}|${state.activeId}`;
@@ -238,7 +208,10 @@
         settingsController?.refresh();
       }
 
+      if (last !== null && state.mode !== lastMode) onmodesaved?.(state.mode);
+
       last = next;
+      lastMode = state.mode;
     });
   });
 </script>

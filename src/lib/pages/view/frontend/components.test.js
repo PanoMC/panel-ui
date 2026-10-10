@@ -33,13 +33,13 @@ mock.module('$lib/tooltip.util', () => ({ default: () => ({}) }));
 mock.module('$lib/language.util.js', () => ({
   currentLanguage: writable({ dateFnsCode: 'enUS' }),
 }));
-mock.module('$lib/PluginAPI.js', () => ({ themeMenuItems: writable([]) }));
 
 const { default: FrontendKeys } = await import('./FrontendKeys.svelte');
 const { default: FrontendMode } = await import('./FrontendMode.svelte');
 const { default: ProxyBanner } = await import('./ProxyBanner.svelte');
 const { default: FrontendKeyReveal } = await import('./FrontendKeyReveal.svelte');
-const { default: Frontend } = await import('./Frontend.svelte');
+const { default: Frontend } = await import('./FrontendContent.svelte');
+const { default: FrontendModal } = await import('./FrontendModal.svelte');
 const { default: FrontendOrigins } = await import('./FrontendOrigins.svelte');
 const { default: FrontendUrls } = await import('./FrontendUrls.svelte');
 const { default: FrontendSettings } = await import('./FrontendSettings.svelte');
@@ -401,7 +401,7 @@ describe('Proxy banner', () => {
   });
 });
 
-describe('Front-end page', () => {
+describe('Front-end settings', () => {
   test('renders the banner, both tabs and both panes from the loaded data', () => {
     const html = renderHtml(Frontend, {
       data: {
@@ -427,9 +427,9 @@ describe('Front-end page', () => {
     expect(html).toContain('data-tab="mode"');
     expect(text).toContain('my-site');
     expect(html).toContain('data-section="custom-app"');
-    // Only the Keys tab is visible at first.
-    expect(html).toMatch(/id="frontend-pane-mode"[^>]*hidden/);
-    expect(html).not.toMatch(/id="frontend-pane-keys"[^>]*hidden/);
+    // Only the Mode tab is visible at first.
+    expect(html).toMatch(/id="frontend-pane-keys"[^>]*hidden/);
+    expect(html).not.toMatch(/id="frontend-pane-mode"[^>]*hidden/);
   });
 
   test('a read that failed is reported in its own tab only', () => {
@@ -655,7 +655,7 @@ describe('Settings tab', () => {
   });
 });
 
-describe('Front-end page tabs', () => {
+describe('Front-end settings tabs', () => {
   test('lists all five tabs and one pane for each', () => {
     const html = renderHtml(Frontend, {
       data: {
@@ -698,5 +698,98 @@ describe('Front-end page tabs', () => {
 
     expect(html.match(/data-load-failed/g)).toHaveLength(3);
     expect(html).toContain('data-mode="THEME"');
+  });
+});
+
+describe('Only the selected front-end is used (headless is off in Theme mode)', () => {
+  const dataFor = (mode) => ({
+    keys: {
+      items: [{ id: 1, name: 'my-site', hint: 'ab12', createdAt: 1, lastUsedAt: null }],
+      max: 20,
+    },
+    frontend: { ...STATE, mode },
+    proxyStatus: null,
+    origins: ORIGINS,
+    urls: URLS,
+    settings: SETTINGS,
+  });
+  const renderContent = (mode) =>
+    renderHtml(Frontend, {
+      data: dataFor(mode),
+      api: createFrontendApi(stubClient()),
+      notify: recordingNotify(),
+      confirm: () => {},
+    });
+
+  test('with the saved mode Theme, create and add are disabled and the sentence is shown', () => {
+    const html = renderContent('THEME');
+
+    expect(tagWith(html, 'data-create-key')).toContain('disabled');
+    expect(tagWith(html, 'data-add-origin')).toContain('disabled');
+    expect(html.match(/data-frontend-locked/g)).toHaveLength(2);
+    expect(textOf(html)).toContain(
+      'Keys and allowed origins work only when the front-end is not a theme.',
+    );
+  });
+
+  test('existing keys and origins stay listed and can still be removed', () => {
+    const html = renderContent('THEME');
+
+    expect(html).toContain('data-key-row="1"');
+    expect(html).toContain('data-origin-row="https://play.example.com"');
+    expect(html).toContain('Revoke');
+    expect(html).toContain('Remove');
+  });
+
+  test('another saved mode leaves the actions enabled and shows no sentence', () => {
+    for (const mode of ['EXTERNAL', 'CUSTOM_APP', 'NONE']) {
+      const html = renderContent(mode);
+
+      expect(tagWith(html, 'data-create-key')).not.toContain('disabled');
+      expect(tagWith(html, 'data-add-origin')).not.toContain('disabled');
+      expect(html).not.toContain('data-frontend-locked');
+    }
+  });
+
+  test('the tabs themselves stay visible in Theme mode', () => {
+    const html = renderContent('THEME');
+
+    expect(html).toContain('data-tab="keys"');
+    expect(html).toContain('data-tab="origins"');
+  });
+
+  test('the controls are enabled directly when no lock is passed', () => {
+    const html = renderHtml(FrontendKeys, { controller: keysController({ items: [], max: 20 }) });
+
+    expect(tagWith(html, 'data-create-key')).not.toContain('disabled');
+  });
+
+  test('a refused create in Theme mode explains itself with the translated message', async () => {
+    const notify = recordingNotify();
+    const controller = createKeysController({
+      api: createFrontendApi({
+        ...stubClient(),
+        post: async () => ({ error: { code: 'FRONTEND_ACCESS_DISABLED' } }),
+      }),
+      notify,
+      confirm: () => {},
+      initial: { items: [], max: 20 },
+    });
+
+    expect(await controller.create('my-site')).toBeNull();
+    expect(notify.toasts.map((t) => t.key)).toEqual([
+      'pages.frontend.errors.FRONTEND_ACCESS_DISABLED',
+    ]);
+  });
+});
+
+describe('Front-end settings modal', () => {
+  test('is a scrollable modal with the title and a close button, and no data until opened', () => {
+    const html = renderHtml(FrontendModal, { api: createFrontendApi(stubClient()) });
+
+    expect(html).toContain('modal-dialog-scrollable');
+    expect(html).toContain('btn-close');
+    expect(textOf(html)).toContain('Front-end');
+    expect(html).not.toContain('data-tab=');
   });
 });

@@ -146,34 +146,6 @@ export function requireServerSection(usageMode) {
 }
 
 /**
- * The Appearance submenu entry of the Front-end page (keys, mode, custom apps). The menu itself is
- * `originalThemeMenuItems` in `pages/view/Themes.svelte`; the Front-end route puts the entry back
- * with {@link withFrontendMenuItem} so the submenu is complete while the page is open.
- */
-export const FRONTEND_MENU_ITEM = Object.freeze({
-  id: 'frontend',
-  href: '/view/frontend',
-  text: 'pages.frontend.menu',
-});
-
-/**
- * Appearance submenu items with the Front-end entry present exactly once, after the last item.
- * An entry already there (the menu lists it itself, or a plugin added its own) is left alone.
- *
- * @param {Array<{ id?: string, href: string, text: string }>} items
- * @returns {Array<{ id?: string, href: string, text: string }>}
- */
-export function withFrontendMenuItem(items) {
-  const list = Array.isArray(items) ? items : [];
-
-  if (list.some((item) => item?.href === FRONTEND_MENU_ITEM.href)) {
-    return list;
-  }
-
-  return [...list, { ...FRONTEND_MENU_ITEM }];
-}
-
-/**
  * The Webhooks entry of the Settings navigation (endpoints and delivery log, doc 06 section 4.5).
  * It sits between Platform and Updates and needs the platform-settings permission like the rest of
  * Settings, which the Settings layout already enforces.

@@ -426,7 +426,7 @@
   import { _ } from 'svelte-i18n';
 
   /**
-   * The generic settings form (Appearance -> Front-end -> Settings). It draws the fields of a
+   * The generic settings form (Themes -> Front-end settings -> Settings). It draws the fields of a
    * `settingsSchema` and edits the bound state; saving is the caller's job (`buildSettings`).
    *
    * @type {{

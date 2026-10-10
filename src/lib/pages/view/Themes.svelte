@@ -32,6 +32,7 @@
 
 <!-- Theme Settings -->
 <InstallResourceModal />
+<FrontendModal bind:this={frontendModal} onmodesaved={(mode) => (frontendMode = mode)} />
 
 {#if data.failedLogin}
   <FailedLoginPanoStoreAlert />
@@ -46,6 +47,15 @@
     class:active={reloading}
     onclick={reloadThemes}>
     <i class="fas fa-sync" class:fa-spin={reloading}></i>
+  </button>
+  <button
+    type="button"
+    class="btn btn-link"
+    data-frontend-settings
+    aria-label={$_('pages.frontend.settings-button')}
+    use:tooltip={[$_('pages.frontend.settings-button')]}
+    onclick={() => frontendModal?.show()}>
+    <i class="fa-solid fa-gear" aria-hidden="true"></i>
   </button>
   <button type="button" class="btn btn-secondary" onclick={() => showInstallResourceModal('THEME')}>
     <i class="fas fa-plus"></i>
@@ -119,6 +129,10 @@
                   <div class="hstack gap-2">
                     <CompatProblemIcon text={problem?.text} level={problem?.level} />
                     {#if theme.active}
+                      {@const notShown = themeNotShown(theme, frontendMode, $_)}
+                      <CompatProblemIcon text={notShown?.text} level={notShown?.level} />
+                    {/if}
+                    {#if theme.active}
                       <span class="badge text-bg-success">{$_('pages.themes.active')}</span>
                     {/if}
                   </div>
@@ -154,6 +168,7 @@
 
   import { normalizeReport } from './theme/compat.util.js';
   import { createThemeApi } from './theme/theme.api.js';
+  import { createFrontendApi } from './frontend/frontend.api.js';
   import { createCompatibilityApi } from '../addons/compat/compat.api.js';
   import { normalizeCompatibility } from '../addons/compat/compat.util.js';
 
@@ -195,15 +210,18 @@
 
     // The override warnings of the active theme and the accepted API levels; a failed read only
     // leaves the icon's details out.
-    const [compat, compatibility] = await Promise.all([
+    const [compat, compatibility, frontend] = await Promise.all([
       createThemeApi(ApiUtil, event).getCompatibility(),
       createCompatibilityApi(ApiUtil, event).getCompatibility(),
+      createFrontendApi(ApiUtil, event).getFrontend(),
     ]);
 
     return {
       pageType: status,
       themes: body.items,
       failedLogin,
+      // The saved front-end mode: with anything but Theme the active theme is not what visitors see.
+      frontendMode: frontend.ok ? normalizeFrontendState(frontend.body).mode : null,
       compat: compat.ok ? normalizeReport(compat.body) : null,
       compatibility: compatibility.ok ? normalizeCompatibility(compatibility.body) : null,
     };
@@ -217,11 +235,6 @@
     {
       href: '/view/theme-settings',
       text: 'buttons.theme-settings',
-    },
-    {
-      id: 'frontend',
-      href: '/view/frontend',
-      text: 'pages.frontend.menu',
     },
   ];
 </script>
@@ -249,6 +262,9 @@
   import CompatProblemIcon from '$lib/components/CompatProblemIcon.svelte';
   import { themeProblem } from '../addons/compat/compat.util.js';
   import { rememberReport } from './theme/compat.util.js';
+  import FrontendModal from './frontend/FrontendModal.svelte';
+  import { normalizeFrontendState, themeNotShown } from './frontend/frontend.util.js';
+  import tooltip from '$lib/tooltip.util';
 
   export let data;
 
@@ -257,6 +273,11 @@
 
   $: compat = data.compat ?? null;
   $: compatibility = data.compatibility ?? null;
+
+  let frontendModal;
+  // The saved mode; the settings dialog updates it when a mode is saved there.
+  let frontendMode = null;
+  $: frontendMode = data.frontendMode ?? null;
 
   let search = '';
   let isSearching = false;
@@ -294,6 +315,16 @@
       installedId = id;
       url.searchParams.delete('installed');
       window.history.replaceState({}, '', url.toString());
+    }
+
+    // `?frontend` (the old /view/frontend address lands here) opens the settings dialog; its value can
+    // name the tab to start on.
+    if (url.searchParams.has('frontend')) {
+      const tab = url.searchParams.get('frontend');
+
+      url.searchParams.delete('frontend');
+      window.history.replaceState({}, '', url.toString());
+      frontendModal?.show(tab || undefined);
     }
   });
 

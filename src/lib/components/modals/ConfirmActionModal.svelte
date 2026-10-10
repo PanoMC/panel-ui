@@ -32,6 +32,8 @@
 <script context="module">
   import { writable, get } from 'svelte/store';
 
+  import { showStacked } from '$lib/modal-stack.util.js';
+
   const modalElement = writable();
   const titleValue = writable('');
   const titleValues = writable({});
@@ -88,7 +90,8 @@
       keyboard: false,
     });
 
-    modal.show();
+    // Above another open modal (a dialog that asks from inside a modal) when there is one.
+    showStacked(modal, element);
   }
 
   export function hide() {
