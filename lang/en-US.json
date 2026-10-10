@@ -970,6 +970,8 @@
           "TRANSFER_NOT_FOUND": "The transfer does not exist any more.",
           "BACKUP_NOT_FOUND": "The backup does not exist any more.",
           "NOT_A_FULL_BACKUP": "Only full backups can be uploaded to Pano Backup.",
+          "SNAPSHOT_BUSY": "This Pano has a snapshot being taken. Try again in a moment.",
+          "SNAPSHOT_NOT_FOUND": "The snapshot does not exist any more.",
           "NETWORK_ERROR": "Could not reach Pano. Check your connection.",
           "CONNECT_REQUIRED": "This Pano is not connected to a {website} account. Connect it in the platform settings.",
           "STOPPED_REMOTELY": "The backup was stopped on {website}.",
@@ -995,7 +997,25 @@
         "pano-disconnected": "not connected",
         "pano-used": "{count, plural, one {# backup} other {# backups}} · {size}",
         "no-remote-this-pano": "This Pano has no Pano Backups yet.",
-        "remote-status-canceled": "Stopped"
+        "remote-status-canceled": "Stopped",
+        "remote-status-pending": "Waiting",
+        "remote-status-running": "Running",
+        "mode-title": "Backup type",
+        "mode-snapshot": "Snapshot",
+        "mode-snapshot-description": "Only what changed is sent each day. Takes little space.",
+        "mode-full": "Full archive",
+        "mode-full-description": "The whole site every time. Takes more space. Can be protected with your own password.",
+        "type-snapshot": "Snapshot",
+        "type-full": "Full archive",
+        "delete-snapshot-description": "This snapshot will be deleted for good. Other backups stay as they are.",
+        "snapshot": {
+          "site-size": "Site: {size}",
+          "own-size": "Uses {size}",
+          "own-size-hint": "Space used only by this backup",
+          "storage-full": "Storage is full.",
+          "failed": "The backup failed.",
+          "upload-note": "Only what changed since the last snapshot is sent."
+        }
       }
     },
     "ticket-detail": {

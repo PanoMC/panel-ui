@@ -970,6 +970,8 @@
           "TRANSFER_NOT_FOUND": "Taşıma artık mevcut değil.",
           "BACKUP_NOT_FOUND": "Yedek artık mevcut değil.",
           "NOT_A_FULL_BACKUP": "Pano Backup'a yalnızca tam yedekler yüklenebilir.",
+          "SNAPSHOT_BUSY": "Bu Pano'nun bir anlık görüntüsü alınıyor. Biraz sonra tekrar deneyin.",
+          "SNAPSHOT_NOT_FOUND": "Anlık görüntü artık mevcut değil.",
           "NETWORK_ERROR": "Pano'ya ulaşılamadı. Bağlantınızı kontrol edin.",
           "CONNECT_REQUIRED": "Bu Pano bir {website} hesabına bağlı değil. Platform ayarlarından bağlayın.",
           "STOPPED_REMOTELY": "Yedekleme {website} üzerinden durduruldu.",
@@ -995,7 +997,25 @@
         "pano-disconnected": "bağlı değil",
         "pano-used": "{count} yedek · {size}",
         "no-remote-this-pano": "Bu Pano'nun henüz Pano Backup yedeği yok.",
-        "remote-status-canceled": "Durduruldu"
+        "remote-status-canceled": "Durduruldu",
+        "remote-status-pending": "Bekliyor",
+        "remote-status-running": "Sürüyor",
+        "mode-title": "Yedek türü",
+        "mode-snapshot": "Anlık görüntü",
+        "mode-snapshot-description": "Her gün yalnızca değişenler gönderilir. Az yer kaplar.",
+        "mode-full": "Tam arşiv",
+        "mode-full-description": "Her seferinde sitenin tamamı. Daha çok yer kaplar. Kendi parolanızla korunabilir.",
+        "type-snapshot": "Anlık görüntü",
+        "type-full": "Tam arşiv",
+        "delete-snapshot-description": "Bu anlık görüntü kalıcı olarak silinecek. Diğer yedekler olduğu gibi kalır.",
+        "snapshot": {
+          "site-size": "Site: {size}",
+          "own-size": "Kaplanan: {size}",
+          "own-size-hint": "Yalnızca bu yedeğin kapladığı alan",
+          "storage-full": "Depolama alanı dolu.",
+          "failed": "Yedekleme başarısız oldu.",
+          "upload-note": "Son anlık görüntüden bu yana yalnızca değişenler gönderilir."
+        }
       }
     },
     "ticket-detail": {

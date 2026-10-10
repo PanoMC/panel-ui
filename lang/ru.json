@@ -970,6 +970,8 @@
           "TRANSFER_NOT_FOUND": "Перенос больше не существует.",
           "BACKUP_NOT_FOUND": "Копия больше не существует.",
           "NOT_A_FULL_BACKUP": "В Pano Backup можно загружать только полные копии.",
+          "SNAPSHOT_BUSY": "Снимок этого Pano уже создаётся. Повторите чуть позже.",
+          "SNAPSHOT_NOT_FOUND": "Снимка больше не существует.",
           "NETWORK_ERROR": "Не удалось связаться с Pano. Проверьте подключение.",
           "CONNECT_REQUIRED": "Этот Pano не подключён к аккаунту {website}. Подключите его в настройках платформы.",
           "STOPPED_REMOTELY": "Резервное копирование было остановлено на {website}.",
@@ -995,7 +997,25 @@
         "pano-disconnected": "не подключён",
         "pano-used": "{count, plural, one {# копия} few {# копии} many {# копий} other {# копии}} · {size}",
         "no-remote-this-pano": "У этого Pano ещё нет копий в Pano Backup.",
-        "remote-status-canceled": "Остановлено"
+        "remote-status-canceled": "Остановлено",
+        "remote-status-pending": "Ожидает",
+        "remote-status-running": "Выполняется",
+        "mode-title": "Тип копии",
+        "mode-snapshot": "Снимок",
+        "mode-snapshot-description": "Каждый день отправляется только то, что изменилось. Занимает мало места.",
+        "mode-full": "Полный архив",
+        "mode-full-description": "Весь сайт каждый раз. Занимает больше места. Можно защитить своим паролем.",
+        "type-snapshot": "Снимок",
+        "type-full": "Полный архив",
+        "delete-snapshot-description": "Этот снимок будет удалён навсегда. Остальные копии не изменятся.",
+        "snapshot": {
+          "site-size": "Сайт: {size}",
+          "own-size": "Занимает {size}",
+          "own-size-hint": "Место, занятое только этой копией",
+          "storage-full": "Хранилище заполнено.",
+          "failed": "Не удалось создать копию.",
+          "upload-note": "Отправляется только то, что изменилось с прошлого снимка."
+        }
       }
     },
     "ticket-detail": {

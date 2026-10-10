@@ -100,6 +100,28 @@
               </div>
             </div>
           </div>
+          <div class="vstack gap-2">
+            <div>{$_('pages.settings.backups.mode-title')}</div>
+            {#each BACKUP_MODES as option (option)}
+              <div class="form-check">
+                <input
+                  id="pano-remote-mode-{option.toLowerCase()}"
+                  class="form-check-input"
+                  type="radio"
+                  name="pano-remote-mode"
+                  value={option}
+                  bind:group={remoteMode} />
+                <label class="form-check-label" for="pano-remote-mode-{option.toLowerCase()}">
+                  <span class="d-block">
+                    {$_(`pages.settings.backups.mode-${option.toLowerCase()}`)}
+                  </span>
+                  <span class="d-block small text-body-secondary">
+                    {$_(`pages.settings.backups.mode-${option.toLowerCase()}-description`)}
+                  </span>
+                </label>
+              </div>
+            {/each}
+          </div>
           {#if !remote?.plan && !remote?.hostError}
             <div>{$_('pages.settings.backups.schedule-needs-plan')}</div>
           {/if}
@@ -154,7 +176,13 @@
   import { _ } from 'svelte-i18n';
 
   import ApiUtil from '$lib/api.util.js';
-  import { LOCAL_SCHEDULES, REMOTE_SCHEDULES, connectionState } from '$lib/pano-backup.util.js';
+  import {
+    BACKUP_MODES,
+    LOCAL_SCHEDULES,
+    REMOTE_SCHEDULES,
+    connectionState,
+    normaliseMode,
+  } from '$lib/pano-backup.util.js';
   import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
 
   import DateComponent from '$lib/components/Date.svelte';
@@ -179,6 +207,7 @@
   let localKeep = $state(7);
   let remoteSchedule = $state('OFF');
   let remoteHour = $state(3);
+  let remoteMode = $state('SNAPSHOT');
   /** Kept as saved and sent back unchanged while MC server uploads are coming soon. */
   /** @type {number[]} */
   let mcServerIds = $state([]);
@@ -198,6 +227,7 @@
       ? String(remote.settings.schedule)
       : 'OFF';
     remoteHour = Number(remote?.settings?.hour ?? 3);
+    remoteMode = normaliseMode(remote?.settings?.mode);
     mcServerIds = (remote?.settings?.mcServerIds || []).map(Number);
     error = null;
 
@@ -231,6 +261,7 @@
         error = await put('/panel/pano-backups/remote/settings', {
           schedule: remoteSchedule,
           hour: Number(remoteHour),
+          mode: remoteMode,
           mcServerIds,
         });
       }
