@@ -11,6 +11,17 @@ export const LOCAL_SCHEDULES = Object.freeze(['OFF', 'DAILY', 'WEEKLY']);
 /** Pano Backup schedule (`PUT …/remote/settings`); plans have no frequency limit. */
 export const REMOTE_SCHEDULES = Object.freeze(['OFF', 'DAILY', 'WEEKLY']);
 
+/** Pano Backup type (`PUT …/remote/settings` `mode`): snapshots by default. */
+export const BACKUP_MODES = Object.freeze(['SNAPSHOT', 'FULL']);
+
+/**
+ * @param {unknown} mode
+ * @returns {'SNAPSHOT' | 'FULL'} the backup type to use; anything unknown is the default, snapshot.
+ */
+export function normaliseMode(mode) {
+  return mode === 'FULL' ? 'FULL' : 'SNAPSHOT';
+}
+
 /** The panel page that runs the panomc.com platform connection flow. */
 export const CONNECT_PATH = '/settings/platform';
 
@@ -75,6 +86,8 @@ export const KNOWN_ERRORS = Object.freeze([
   'BACKUP_NOT_FOUND',
   'NOT_A_FULL_BACKUP',
   'NETWORK_ERROR',
+  'SNAPSHOT_BUSY',
+  'SNAPSHOT_NOT_FOUND',
 ]);
 
 /**
@@ -291,6 +304,115 @@ export function groupRemoteBackups(list) {
     .filter((pano) => pano.current || pano.backups.length > 0)
     .sort((a, b) => Number(b.current) - Number(a.current) || a.index - b.index)
     .map(({ index: _index, ...pano }) => pano);
+}
+
+/**
+ * @param {number | null | undefined} bytes
+ * @returns {string} a short size, or a dash when the number is missing.
+ */
+export function formatSnapshotBytes(bytes) {
+  const value = Number(bytes);
+
+  return bytes == null || !Number.isFinite(value) || value < 0 ? '—' : formatBytes(value);
+}
+
+/** Snapshot statuses that are worth a row (a snapshot that is still being taken or failed too). */
+const SNAPSHOT_STATUSES = Object.freeze(['PENDING', 'RUNNING', 'DONE', 'FAILED']);
+
+/**
+ * @param {Record<string, any> | null | undefined} snapshot
+ * @returns {boolean} whether this Pano can restore it.
+ */
+export function canRestoreSnapshot(snapshot) {
+  return snapshot?.status === 'DONE';
+}
+
+/**
+ * @param {Record<string, any> | null | undefined} snapshot
+ * @returns {boolean} only this Pano's own finished or failed snapshots can be deleted.
+ */
+export function canDeleteSnapshot(snapshot) {
+  return snapshot?.own === true && (snapshot?.status === 'DONE' || snapshot?.status === 'FAILED');
+}
+
+/**
+ * Why a snapshot failed: a full storage has its own short sentence (and the page offers the plan
+ * link), any other reason the usual error text.
+ *
+ * @param {Record<string, any> | null | undefined} snapshot
+ * @returns {{ key: string, values: Record<string, string | number>, storageFull: boolean } | null}
+ *   null unless the snapshot failed.
+ */
+export function snapshotProblem(snapshot) {
+  if (snapshot?.status !== 'FAILED') {
+    return null;
+  }
+
+  const code = String(snapshot.error?.code ?? snapshot.error ?? '');
+
+  if (code === 'QUOTA_EXCEEDED') {
+    return { key: 'pages.settings.backups.snapshot.storage-full', values: {}, storageFull: true };
+  }
+
+  const described = describeError({ error: code || 'INTERNAL_ERROR' });
+
+  return {
+    key:
+      described?.code === 'INTERNAL_ERROR' || !KNOWN_ERRORS.includes(described?.code ?? '')
+        ? 'pages.settings.backups.snapshot.failed'
+        : described.key,
+    values: described?.values ?? {},
+    storageFull: false,
+  };
+}
+
+/**
+ * Puts the account's snapshots (`GET …/remote/snapshots`) into the groups of
+ * {@link groupRemoteBackups}: every row gets a `type` (`archive` | `snapshot`), each Pano's rows are
+ * mixed and sorted newest first, and a Pano that only has snapshots gets a group too. A group's
+ * `usedBytes` grows by the space its snapshots use alone.
+ *
+ * @param {Record<string, any> | null | undefined} list `GET …/remote/backups`.
+ * @param {Record<string, any> | null | undefined} snapshotList `GET …/remote/snapshots`.
+ * @returns {ReturnType<typeof groupRemoteBackups>}
+ */
+export function mergeRemoteList(list, snapshotList) {
+  const groups = groupRemoteBackups(list).map((group) => ({
+    ...group,
+    backups: group.backups.map((backup) => ({ ...backup, type: 'archive' })),
+  }));
+  const snapshots = (
+    snapshotList && !snapshotList.error && Array.isArray(snapshotList.snapshots)
+      ? snapshotList.snapshots
+      : []
+  ).filter((snapshot) => snapshot && SNAPSHOT_STATUSES.includes(snapshot.status));
+
+  for (const snapshot of snapshots) {
+    const instanceId = String(snapshot.instanceId ?? '');
+    let group = groups.find((candidate) => candidate.instanceId === instanceId);
+
+    if (!group) {
+      group = {
+        instanceId,
+        instanceName: String(snapshot.instanceName || instanceId),
+        current: snapshot.own === true || (!!list?.instanceId && instanceId === list.instanceId),
+        connected: null,
+        usedBytes: 0,
+        lastBackupAt: null,
+        backups: [],
+      };
+      groups.push(group);
+    }
+
+    group.usedBytes += Math.max(0, Number(snapshot.uniqueBytes) || 0);
+    group.backups.push({ ...snapshot, type: 'snapshot' });
+  }
+
+  for (const group of groups) {
+    group.backups.sort((a, b) => (Number(b.createdAt) || 0) - (Number(a.createdAt) || 0));
+  }
+
+  return groups.sort((a, b) => Number(b.current) - Number(a.current));
 }
 
 /**

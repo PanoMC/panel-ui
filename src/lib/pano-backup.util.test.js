@@ -19,6 +19,13 @@ import {
   passphraseProblem,
   toggleId,
   usagePercent,
+  BACKUP_MODES,
+  normaliseMode,
+  formatSnapshotBytes,
+  canRestoreSnapshot,
+  canDeleteSnapshot,
+  snapshotProblem,
+  mergeRemoteList,
 } from './pano-backup.util.js';
 
 /** @param {object} header */
@@ -316,5 +323,101 @@ describe('waitForRestart', () => {
     expect(await waitForRestart({ ...clock(), probe: async () => false, timeoutMs: 6000 })).toBe(
       false,
     );
+  });
+});
+
+describe('snapshots', () => {
+  test('the backup type defaults to snapshot', () => {
+    expect(BACKUP_MODES).toEqual(['SNAPSHOT', 'FULL']);
+    expect(normaliseMode('FULL')).toBe('FULL');
+    expect(normaliseMode('SNAPSHOT')).toBe('SNAPSHOT');
+    expect(normaliseMode(undefined)).toBe('SNAPSHOT');
+    expect(normaliseMode('nope')).toBe('SNAPSHOT');
+  });
+
+  test('sizes are short, missing ones a dash', () => {
+    expect(formatSnapshotBytes(0)).toBe('0 B');
+    expect(formatSnapshotBytes(1536)).toBe('1.5 KB');
+    expect(formatSnapshotBytes(null)).toBe('—');
+    expect(formatSnapshotBytes(undefined)).toBe('—');
+    expect(formatSnapshotBytes(-1)).toBe('—');
+  });
+
+  test('restore needs a finished snapshot, delete an own finished or failed one', () => {
+    expect(canRestoreSnapshot({ status: 'DONE' })).toBe(true);
+    expect(canRestoreSnapshot({ status: 'RUNNING' })).toBe(false);
+    expect(canDeleteSnapshot({ status: 'DONE', own: true })).toBe(true);
+    expect(canDeleteSnapshot({ status: 'FAILED', own: true })).toBe(true);
+    expect(canDeleteSnapshot({ status: 'DONE', own: false })).toBe(false);
+    expect(canDeleteSnapshot({ status: 'RUNNING', own: true })).toBe(false);
+  });
+
+  test('a full storage is its own reason, other failures use the usual texts', () => {
+    expect(snapshotProblem({ status: 'DONE' })).toBeNull();
+    expect(snapshotProblem({ status: 'FAILED', error: 'QUOTA_EXCEEDED' })).toEqual({
+      key: 'pages.settings.backups.snapshot.storage-full',
+      values: {},
+      storageFull: true,
+    });
+    expect(snapshotProblem({ status: 'FAILED', error: 'PAYMENT_REQUIRED' })?.key).toBe(
+      'pages.settings.backups.errors.PAYMENT_REQUIRED',
+    );
+    expect(snapshotProblem({ status: 'FAILED', error: 'WHATEVER' })?.key).toBe(
+      'pages.settings.backups.snapshot.failed',
+    );
+    expect(snapshotProblem({ status: 'FAILED', error: null })?.storageFull).toBe(false);
+  });
+
+  const list = {
+    instanceId: 'a',
+    panos: [
+      {
+        instanceId: 'a',
+        instanceName: 'Main',
+        current: true,
+        usedBytes: 100,
+        backups: [
+          { id: 'x1', status: 'DONE', createdAt: 200 },
+          { id: 'x2', status: 'FAILED', createdAt: 900 },
+        ],
+      },
+      {
+        instanceId: 'b',
+        instanceName: 'Other',
+        usedBytes: 50,
+        backups: [{ id: 'y1', status: 'DONE', createdAt: 10 }],
+      },
+    ],
+  };
+
+  test('snapshots and archives share one list, newest first, each row typed', () => {
+    const groups = mergeRemoteList(list, {
+      snapshots: [
+        { id: 's1', instanceId: 'a', status: 'DONE', createdAt: 300, uniqueBytes: 10, own: true },
+        { id: 's2', instanceId: 'a', status: 'FAILED', createdAt: 100, own: true },
+        { id: 's3', instanceId: 'b', status: 'DONE', createdAt: 20, uniqueBytes: 5, own: false },
+      ],
+    });
+
+    expect(groups.map((group) => group.instanceId)).toEqual(['a', 'b']);
+    expect(groups[0].backups.map((row) => [row.id, row.type])).toEqual([
+      ['s1', 'snapshot'],
+      ['x1', 'archive'],
+      ['s2', 'snapshot'],
+    ]);
+    expect(groups[0].usedBytes).toBe(110);
+    expect(groups[1].backups.map((row) => row.id)).toEqual(['s3', 'y1']);
+    expect(groups[1].usedBytes).toBe(55);
+  });
+
+  test('a Pano with only snapshots gets a group; no snapshot list changes nothing', () => {
+    const groups = mergeRemoteList(null, {
+      snapshots: [{ id: 's', instanceId: 'c', instanceName: 'New', status: 'DONE', own: true }],
+    });
+
+    expect(groups).toHaveLength(1);
+    expect(groups[0]).toMatchObject({ instanceId: 'c', instanceName: 'New', current: true });
+    expect(mergeRemoteList(list, { error: { code: 'X' } })).toEqual(mergeRemoteList(list, null));
+    expect(mergeRemoteList(list, null)[0].backups.map((row) => row.id)).toEqual(['x1']);
   });
 });
