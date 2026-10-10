@@ -416,7 +416,7 @@
 <!-- Server management is off in a WEBSITE install, and so are the endpoints this card reads. -->
 {#if $usageMode !== UsageModes.WEBSITE && (hasPermission(Permissions.MANAGE_SERVERS) || hasPermission(Permissions.MANAGE_NODES))}
   <div class="mt-3">
-    <ServerUpdatesCard />
+    <ServerUpdatesCard initial={data.serverUpdates} />
   </div>
 {/if}
 
@@ -431,16 +431,29 @@
    */
   export async function load(event) {
     const { parent } = event;
-    await parent();
+    const { usageMode } = await parent();
 
     const queryParams = buildQueryParams({
       type: 'UPDATES',
     });
 
-    return await ApiUtil.get({
-      path: '/panel/settings' + queryParams,
-      request: event,
-    });
+    // The server updates card arrives with the page instead of filling in afterwards. A WEBSITE
+    // install has no such endpoint, and the card decides by itself what a refused answer means.
+    const [settings, serverUpdates] = await Promise.all([
+      ApiUtil.get({
+        path: '/panel/settings' + queryParams,
+        request: event,
+      }),
+      usageMode === 'WEBSITE'
+        ? null
+        : ApiUtil.get({
+            path: '/panel/updates/servers',
+            request: event,
+            handler: (response) => response,
+          }).catch(() => null),
+    ]);
+
+    return { ...settings, serverUpdates };
   }
 </script>
 

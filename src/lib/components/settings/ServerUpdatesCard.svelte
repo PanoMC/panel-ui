@@ -196,6 +196,9 @@
     'pano-plugin': 'fa-solid fa-puzzle-piece',
   };
 
+  /** @type {{ initial?: any }} the page load's answer of `/panel/updates/servers`, when it has one */
+  let { initial = null } = $props();
+
   /** @type {Array<Record<string, any>>} */
   let rows = $state([]);
   let loading = $state(false);
@@ -222,6 +225,12 @@
     });
 
     loading = false;
+
+    apply(body);
+  }
+
+  /** @param {any} body the answer of `/panel/updates/servers`, from the page load or a refresh */
+  function apply(body) {
     loaded = true;
 
     if (!body || isEndpointUnavailable(body) || body.error) {
@@ -378,7 +387,10 @@
     }
   }
 
+  // The page load already brought the list; only a card mounted without it asks by itself.
+  if (initial) apply(initial);
+
   onMount(() => {
-    void load();
+    if (!initial) void load();
   });
 </script>

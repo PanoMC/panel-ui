@@ -3,9 +3,8 @@
  *
  * `GET /panel/compatibility` says which plugins and themes the API level gate refused, which game
  * servers and nodes need their new jar placed by hand, and which addresses outside Pano changed.
- * `GET /panel/updates/platform/plan` says what a later platform update would do to the installed
- * plugins and themes. Both are read defensively here: a field a newer or older backend leaves out
- * becomes an empty list, never a crash.
+ * It is read defensively here: a field a newer or older backend leaves out becomes an empty list,
+ * never a crash.
  */
 
 /** Verdicts of the API level gate; anything else is shown as the unknown one. */
