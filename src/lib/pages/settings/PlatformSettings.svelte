@@ -726,222 +726,460 @@
       </div>
     {/if}
 
-    {#if data.email.hostMailAvailable}
-      <!-- Pano Host: its package mail or the customer's own SMTP. Picking one only changes the form;
-           Save switches (after a confirmation), and each side keeps its settings. -->
-      <div class="btn-group w-100 mb-3" role="group">
+    {#if panoMailStatus}
+      <div
+        class="btn-group w-100 mb-3"
+        role="group"
+        aria-label={$_('pages.settings.platform.smtp.pano-mail.choice')}>
         <button
           type="button"
           class="btn"
-          class:btn-primary={mailMode === 'host'}
-          class:btn-outline-primary={mailMode !== 'host'}
-          aria-pressed={mailMode === 'host'}
-          on:click={() => requestMailMode('host')}
-          disabled={smtpDisabled || saveEmailLoading}
-          >{$_('pages.settings.platform.smtp.host-mail')}</button>
+          class:btn-primary={mailChoice === 'pano'}
+          class:btn-outline-primary={mailChoice !== 'pano'}
+          aria-pressed={mailChoice === 'pano'}
+          title={$_('pages.settings.platform.smtp.pano-mail.pano')}
+          aria-label={$_('pages.settings.platform.smtp.pano-mail.pano')}
+          on:click={() => (mailChoice = 'pano')}
+          disabled={saveEmailLoading || panoMailBusy}
+          >{$_('pages.settings.platform.smtp.pano-mail.pano')}</button>
         <button
           type="button"
           class="btn"
-          class:btn-primary={mailMode === 'own'}
-          class:btn-outline-primary={mailMode !== 'own'}
-          aria-pressed={mailMode === 'own'}
-          on:click={() => requestMailMode('own')}
-          disabled={smtpDisabled || saveEmailLoading}
-          >{$_('pages.settings.platform.smtp.own-mail')}</button>
+          class:btn-primary={mailChoice === 'own'}
+          class:btn-outline-primary={mailChoice !== 'own'}
+          aria-pressed={mailChoice === 'own'}
+          title={$_('pages.settings.platform.smtp.pano-mail.own')}
+          aria-label={$_('pages.settings.platform.smtp.pano-mail.own')}
+          on:click={() => (mailChoice = 'own')}
+          disabled={saveEmailLoading || panoMailBusy}
+          >{$_('pages.settings.platform.smtp.pano-mail.own')}</button>
       </div>
+    {/if}
 
-      {#if mailMode === 'host'}
-        <p class="text-muted mb-3">
-          {$_('pages.settings.platform.smtp.host-mail-description', {
-            values: { website: websiteDisplayHost() },
-          })}
-        </p>
+    {#if showPanoMail}
+      {#if panoMailPhase === 'connect'}
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <b>{$_('pages.settings.platform.smtp.pano-mail.pano')}</b>
+          <span class="badge text-bg-success"
+            >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
+        </div>
+        {#if panoMailStatus.freePlan}
+          <div>
+            {$_('pages.settings.platform.smtp.pano-mail.free-allowance', {
+              values: {
+                count: panoMailStatus.freePlan.mailsPerMonth.toLocaleString($currentLanguage.code),
+              },
+            })}
+          </div>
+        {/if}
+        <div class="mb-3">{$_('pages.settings.platform.smtp.pano-mail.no-setup')}</div>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          title={$_('pages.settings.platform.smtp.pano-mail.connect')}
+          aria-label={$_('pages.settings.platform.smtp.pano-mail.connect')}
+          on:click={onConnectClick}
+          disabled={connecting}>
+          {$_('pages.settings.platform.smtp.pano-mail.connect')}
+          {#if connecting}
+            <span class="spinner-border spinner-border-sm" role="status"></span>
+          {/if}
+        </button>
+      {:else if panoMailPhase === 'activate'}
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <b>{$_('pages.settings.platform.smtp.pano-mail.pano')}</b>
+          <span class="badge text-bg-success"
+            >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
+        </div>
+        {#if panoMailStatus.freePlan}
+          <div>
+            {$_('pages.settings.platform.smtp.pano-mail.free-allowance', {
+              values: {
+                count: panoMailStatus.freePlan.mailsPerMonth.toLocaleString($currentLanguage.code),
+              },
+            })}
+          </div>
+        {/if}
+        <div class="mb-3">{$_('pages.settings.platform.smtp.pano-mail.no-setup')}</div>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          title={$_('pages.settings.platform.smtp.pano-mail.use')}
+          aria-label={$_('pages.settings.platform.smtp.pano-mail.use')}
+          on:click={onUsePanoMailClick}
+          disabled={panoMailBusy}>
+          {$_('pages.settings.platform.smtp.pano-mail.use')}
+          {#if panoMailBusy}
+            <span class="spinner-border spinner-border-sm" role="status"></span>
+          {/if}
+        </button>
+      {:else if panoMailPhase === 'unreadable'}
+        <div class="alert alert-warning d-flex align-items-start mb-0" role="alert">
+          <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+          <div>
+            <div>{$_('pages.settings.platform.smtp.pano-mail.unreadable')}</div>
+            <button
+              type="button"
+              class="btn alert-btn mt-2"
+              title={$_('buttons.retry')}
+              aria-label={$_('buttons.retry')}
+              on:click={onPanoMailRetryClick}
+              disabled={panoMailBusy}>{$_('buttons.retry')}</button>
+          </div>
+        </div>
+      {:else}
+        {#if panoMailStatus.held}
+          <div class="alert alert-danger d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>
+              <h5 class="alert-heading mb-2">
+                {$_('pages.settings.platform.smtp.pano-mail.held-title')}
+              </h5>
+              <div>{$_('pages.settings.platform.smtp.pano-mail.held')}</div>
+            </div>
+          </div>
+        {/if}
+
+        {#if panoMailPreparing}
+          <div class="alert alert-info d-flex align-items-start" role="alert">
+            <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+            <div>{$_('pages.settings.platform.smtp.pano-mail.preparing')}</div>
+          </div>
+        {/if}
+
+        {#if panoMailUsageAlert}
+          <div class="alert alert-{panoMailUsageAlert.level} d-flex align-items-start" role="alert">
+            <i
+              class="fa-solid {panoMailUsageAlert.level === 'danger'
+                ? 'fa-circle-exclamation'
+                : 'fa-triangle-exclamation'} me-3 mt-1"
+              aria-hidden="true"></i>
+            <div>
+              {#if panoMailUsageAlert.level === 'danger'}
+                <h5 class="alert-heading mb-2">
+                  {$_('pages.settings.platform.smtp.pano-mail.limit-title')}
+                </h5>
+                <div>
+                  {$_(`pages.settings.platform.smtp.pano-mail.limit-${panoMailUsageAlert.period}`, {
+                    values: {
+                      date: formatReset(panoMailUsageAlert.resetsAt, $currentLanguage.code),
+                    },
+                  })}
+                </div>
+              {:else}
+                <h5 class="alert-heading mb-2">
+                  {$_('pages.settings.platform.smtp.pano-mail.near-title')}
+                </h5>
+                <div>
+                  {$_(`pages.settings.platform.smtp.pano-mail.near-${panoMailUsageAlert.period}`, {
+                    values: { percent: panoMailUsageAlert.percent },
+                  })}
+                </div>
+              {/if}
+              {#if panoMailStatus.manageUrl}
+                <a
+                  class="alert-link d-inline-block mt-2"
+                  href={panoMailStatus.manageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >{$_('pages.settings.platform.smtp.pano-mail.bigger-plan')}</a>
+              {/if}
+            </div>
+          </div>
+        {/if}
+
+        {#each [['month', panoMailStatus.usage.month], ['day', panoMailStatus.usage.day]] as [period, usage] (period)}
+          <div class="mb-3">
+            <div class="d-flex justify-content-between">
+              <span>{$_(`pages.settings.platform.smtp.pano-mail.${period}`)}</span>
+              <span
+                >{usage.used.toLocaleString($currentLanguage.code)} / {usage.limit.toLocaleString(
+                  $currentLanguage.code,
+                )}</span>
+            </div>
+            <div
+              class="progress"
+              style="height: 6px;"
+              role="progressbar"
+              aria-label={$_(`pages.settings.platform.smtp.pano-mail.${period}`)}
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow={percentUsed(usage)}>
+              <div
+                class="progress-bar"
+                class:bg-warning={usageLevel(usage) === 'warning'}
+                class:bg-danger={usageLevel(usage) === 'danger'}
+                style="width: {percentUsed(usage)}%;">
+              </div>
+            </div>
+            {#if usage.resetsAt}
+              <div class="form-text">
+                {$_('pages.settings.platform.smtp.pano-mail.resets', {
+                  values: { date: formatReset(usage.resetsAt, $currentLanguage.code) },
+                })}
+              </div>
+            {/if}
+          </div>
+        {/each}
+
+        <div class="row mb-3">
+          <div class="col-md-6">{$_('pages.settings.platform.smtp.pano-mail.plan')}</div>
+          <div class="col-md-6 d-flex align-items-center gap-2 flex-wrap">
+            <b>{panoMailStatus.plan.name}</b>
+            {#if panoMailStatus.plan.free}
+              <span class="badge text-bg-success"
+                >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
+            {/if}
+            {#if panoMailStatus.manageUrl}
+              <a href={panoMailStatus.manageUrl} target="_blank" rel="noopener noreferrer"
+                >{$_('pages.settings.platform.smtp.pano-mail.bigger-plan')}</a>
+            {/if}
+          </div>
+        </div>
+
+        {#if panoMailStatus.from}
+          <div class="row mb-3">
+            <label class="col-md-6 col-form-label" for="panoMailFrom"
+              >{$_('pages.settings.platform.smtp.pano-mail.from')}</label>
+            <div class="col-md-6">
+              <input
+                id="panoMailFrom"
+                type="text"
+                class="form-control"
+                value={panoMailStatus.from}
+                readonly />
+            </div>
+          </div>
+        {/if}
+
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          title={$_('pages.settings.platform.smtp.pano-mail.use-own')}
+          aria-label={$_('pages.settings.platform.smtp.pano-mail.use-own')}
+          on:click={() => (mailChoice = 'own')}
+          >{$_('pages.settings.platform.smtp.pano-mail.use-own')}</button>
       {/if}
     {/if}
 
-    <!-- Pano Host mail: the same form, filled with the relay's settings and locked except the
-         sender (the rest is written from the host's env on every boot). -->
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="mailUsername"
-        >{$_('pages.settings.platform.smtp.username')}</label>
-      <div class="col-md-6">
-        <input
-          class="form-control"
-          id="mailUsername"
-          type="text"
-          placeholder="no-reply"
-          bind:value={data.email.username}
-          disabled={smtpDisabled || hostMailLocked} />
-      </div>
-    </div>
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="mailUserPassword"
-        >{$_('pages.settings.platform.smtp.password')}</label>
-      <div class="col-md-6">
-        <input
-          class="form-control"
-          id="mailUserPassword"
-          placeholder="****************"
-          bind:value={data.email.password}
-          type="password"
-          disabled={smtpDisabled || hostMailLocked} />
-        {#if !hostMailLocked && hasStoredPassword && !data.email.password}
-          <div class="form-text">{$_('pages.settings.platform.smtp.password-kept')}</div>
+    {#if !showPanoMail}
+      {#if data.email.hostMailAvailable}
+        <!-- Pano Host: its package mail or the customer's own SMTP. Picking one only changes the form;
+           Save switches (after a confirmation), and each side keeps its settings. -->
+        <div class="btn-group w-100 mb-3" role="group">
+          <button
+            type="button"
+            class="btn"
+            class:btn-primary={mailMode === 'host'}
+            class:btn-outline-primary={mailMode !== 'host'}
+            aria-pressed={mailMode === 'host'}
+            on:click={() => requestMailMode('host')}
+            disabled={smtpDisabled || saveEmailLoading}
+            >{$_('pages.settings.platform.smtp.host-mail')}</button>
+          <button
+            type="button"
+            class="btn"
+            class:btn-primary={mailMode === 'own'}
+            class:btn-outline-primary={mailMode !== 'own'}
+            aria-pressed={mailMode === 'own'}
+            on:click={() => requestMailMode('own')}
+            disabled={smtpDisabled || saveEmailLoading}
+            >{$_('pages.settings.platform.smtp.own-mail')}</button>
+        </div>
+
+        {#if mailMode === 'host'}
+          <p class="text-muted mb-3">
+            {$_('pages.settings.platform.smtp.host-mail-description', {
+              values: { website: websiteDisplayHost() },
+            })}
+          </p>
         {/if}
-      </div>
-    </div>
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="useSSLCheck">
-        {$_('pages.settings.platform.smtp.ssl')}
-      </label>
-      <div class="col-md-6">
-        <div class="form-check">
+      {/if}
+
+      <!-- Pano Host mail: the same form, filled with the relay's settings and locked except the
+         sender (the rest is written from the host's env on every boot). -->
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="mailUsername"
+          >{$_('pages.settings.platform.smtp.username')}</label>
+        <div class="col-md-6">
           <input
-            class="form-check-input"
-            type="checkbox"
-            name="useSSLCheck"
-            id="useSSLCheck"
-            aria-checked={data.email.ssl}
-            bind:checked={data.email.ssl}
+            class="form-control"
+            id="mailUsername"
+            type="text"
+            placeholder="no-reply"
+            bind:value={data.email.username}
             disabled={smtpDisabled || hostMailLocked} />
         </div>
       </div>
-    </div>
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="port"
-        >{$_('pages.settings.platform.smtp.tls-setting')}</label>
-      <div class="col-md-6">
-        <select
-          class="form-select"
-          id="port"
-          bind:value={data.email.starttls}
-          disabled={smtpDisabled || hostMailLocked}>
-          <option value="REQUIRED">REQUIRED</option>
-          <option value="OPTIONAL">OPTIONAL</option>
-          <option value="DISABLED">DISABLED</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="senderAddress"
-        >{$_('pages.settings.platform.smtp.sender-address')}</label>
-      <div class="col-md-6">
-        <!-- Pano Host mail: only the name before `@` is the customer's; the domain is the host's. -->
-        <div class="input-group" class:has-validation={hostMailLocked && hostSenderInvalid}>
-          {#if hostMailLocked && hostDefaultDomain}
-            <input
-              class="form-control"
-              class:is-invalid={hostSenderInvalid}
-              id="senderAddress"
-              type="text"
-              placeholder="noreply"
-              maxlength="64"
-              value={hostSenderLocal}
-              on:input={onHostSenderLocalInput}
-              disabled={smtpDisabled} />
-            <span class="input-group-text">@{hostDefaultDomain}</span>
-          {:else}
-            <input
-              class="form-control"
-              id="senderAddress"
-              type="text"
-              placeholder="no-reply@forexample.com"
-              bind:value={data.email.sender}
-              disabled={smtpDisabled} />
-          {/if}
-          <!-- Only once the sender differs from the default: nothing to reset otherwise. -->
-          {#if hostMailLocked && hostSenderCustomized}
-            <button
-              class="btn btn-outline-secondary"
-              type="button"
-              title={$_('pages.settings.platform.smtp.reset-sender')}
-              aria-label={$_('pages.settings.platform.smtp.reset-sender')}
-              on:click={onResetHostSenderClick}
-              disabled={smtpDisabled}>
-              <i class="fa-solid fa-rotate-left"></i>
-            </button>
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="mailUserPassword"
+          >{$_('pages.settings.platform.smtp.password')}</label>
+        <div class="col-md-6">
+          <input
+            class="form-control"
+            id="mailUserPassword"
+            placeholder="****************"
+            bind:value={data.email.password}
+            type="password"
+            disabled={smtpDisabled || hostMailLocked} />
+          {#if !hostMailLocked && hasStoredPassword && !data.email.password}
+            <div class="form-text">{$_('pages.settings.platform.smtp.password-kept')}</div>
           {/if}
         </div>
-        {#if hostMailLocked && hostSenderInvalid}
-          <div class="invalid-feedback d-block">
-            {$_('pages.settings.platform.smtp.sender-local-invalid')}
+      </div>
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="useSSLCheck">
+          {$_('pages.settings.platform.smtp.ssl')}
+        </label>
+        <div class="col-md-6">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="useSSLCheck"
+              id="useSSLCheck"
+              aria-checked={data.email.ssl}
+              bind:checked={data.email.ssl}
+              disabled={smtpDisabled || hostMailLocked} />
           </div>
-        {/if}
+        </div>
       </div>
-    </div>
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="port"
+          >{$_('pages.settings.platform.smtp.tls-setting')}</label>
+        <div class="col-md-6">
+          <select
+            class="form-select"
+            id="port"
+            bind:value={data.email.starttls}
+            disabled={smtpDisabled || hostMailLocked}>
+            <option value="REQUIRED">REQUIRED</option>
+            <option value="OPTIONAL">OPTIONAL</option>
+            <option value="DISABLED">DISABLED</option>
+          </select>
+        </div>
+      </div>
 
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="hostAddress"
-        >{$_('pages.settings.platform.smtp.hostname')}</label>
-      <div class="col-md-6">
-        <input
-          class="form-control"
-          id="hostAddress"
-          type="text"
-          placeholder="smtp.forexample.com"
-          bind:value={data.email.hostname}
-          disabled={smtpDisabled || hostMailLocked} />
-      </div>
-    </div>
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="port"
-        >{$_('pages.settings.platform.smtp.port')}</label>
-      <div class="col-md-6">
-        <input
-          class="form-control"
-          id="port"
-          placeholder="465"
-          type="number"
-          bind:value={data.email.port}
-          disabled={smtpDisabled || hostMailLocked} />
-      </div>
-    </div>
-
-    <div class="row mb-3">
-      <label class="col-md-6 col-form-label" for="authMethods"
-        >{$_('pages.settings.platform.smtp.auth-methods')}</label>
-      <div class="col-md-6">
-        <select
-          class="form-select"
-          id="authMethods"
-          bind:value={data.email.authMethods}
-          disabled={smtpDisabled || hostMailLocked}>
-          <option value="PLAIN">PLAIN</option>
-          <option value=""></option>
-        </select>
-      </div>
-    </div>
-
-    {#if hostMailLocked}
-      <button
-        class="btn btn-secondary"
-        on:click={onSaveHostMailClick}
-        disabled={saveEmailLoading ||
-          smtpDisabled ||
-          !hostMailChanged ||
-          !data.email.sender ||
-          hostSenderInvalid}
-        >{$_(hostMailActivating ? 'buttons.activate' : 'buttons.save')}
-      </button>
-    {:else}
-      <button
-        class="btn btn-secondary"
-        on:click={onSaveSmtpClick}
-        disabled={saveEmailLoading || !mailValidated || smtpDisabled}
-        >{$_(customActivating ? 'buttons.activate' : 'buttons.save')}
-      </button>
-      <!-- Turning the custom SMTP on always validates first, even when its form is unchanged. -->
-      {#if !mailValidated && (customActivating ? customPasswordKnown : !emailSaveDisabled)}
-        <button
-          class="btn btn-outline-primary"
-          on:click={onValidateEmailClick}
-          disabled={saveEmailLoading || smtpDisabled}
-          >{$_('buttons.validate')}
-          {#if saveEmailLoading}
-            <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="senderAddress"
+          >{$_('pages.settings.platform.smtp.sender-address')}</label>
+        <div class="col-md-6">
+          <!-- Pano Host mail: only the name before `@` is the customer's; the domain is the host's. -->
+          <div class="input-group" class:has-validation={hostMailLocked && hostSenderInvalid}>
+            {#if hostMailLocked && hostDefaultDomain}
+              <input
+                class="form-control"
+                class:is-invalid={hostSenderInvalid}
+                id="senderAddress"
+                type="text"
+                placeholder="noreply"
+                maxlength="64"
+                value={hostSenderLocal}
+                on:input={onHostSenderLocalInput}
+                disabled={smtpDisabled} />
+              <span class="input-group-text">@{hostDefaultDomain}</span>
+            {:else}
+              <input
+                class="form-control"
+                id="senderAddress"
+                type="text"
+                placeholder="no-reply@forexample.com"
+                bind:value={data.email.sender}
+                disabled={smtpDisabled} />
+            {/if}
+            <!-- Only once the sender differs from the default: nothing to reset otherwise. -->
+            {#if hostMailLocked && hostSenderCustomized}
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                title={$_('pages.settings.platform.smtp.reset-sender')}
+                aria-label={$_('pages.settings.platform.smtp.reset-sender')}
+                on:click={onResetHostSenderClick}
+                disabled={smtpDisabled}>
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
+            {/if}
+          </div>
+          {#if hostMailLocked && hostSenderInvalid}
+            <div class="invalid-feedback d-block">
+              {$_('pages.settings.platform.smtp.sender-local-invalid')}
+            </div>
           {/if}
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="hostAddress"
+          >{$_('pages.settings.platform.smtp.hostname')}</label>
+        <div class="col-md-6">
+          <input
+            class="form-control"
+            id="hostAddress"
+            type="text"
+            placeholder="smtp.forexample.com"
+            bind:value={data.email.hostname}
+            disabled={smtpDisabled || hostMailLocked} />
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="port"
+          >{$_('pages.settings.platform.smtp.port')}</label>
+        <div class="col-md-6">
+          <input
+            class="form-control"
+            id="port"
+            placeholder="465"
+            type="number"
+            bind:value={data.email.port}
+            disabled={smtpDisabled || hostMailLocked} />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label class="col-md-6 col-form-label" for="authMethods"
+          >{$_('pages.settings.platform.smtp.auth-methods')}</label>
+        <div class="col-md-6">
+          <select
+            class="form-select"
+            id="authMethods"
+            bind:value={data.email.authMethods}
+            disabled={smtpDisabled || hostMailLocked}>
+            <option value="PLAIN">PLAIN</option>
+            <option value=""></option>
+          </select>
+        </div>
+      </div>
+
+      {#if hostMailLocked}
+        <button
+          class="btn btn-secondary"
+          on:click={onSaveHostMailClick}
+          disabled={saveEmailLoading ||
+            smtpDisabled ||
+            !hostMailChanged ||
+            !data.email.sender ||
+            hostSenderInvalid}
+          >{$_(hostMailActivating ? 'buttons.activate' : 'buttons.save')}
         </button>
+      {:else}
+        <button
+          class="btn btn-secondary"
+          on:click={onSaveSmtpClick}
+          disabled={saveEmailLoading || !mailValidated || smtpDisabled}
+          >{$_(customActivating ? 'buttons.activate' : 'buttons.save')}
+        </button>
+        <!-- Turning the custom SMTP on always validates first, even when its form is unchanged. -->
+        {#if !mailValidated && (customActivating ? customPasswordKnown : !emailSaveDisabled)}
+          <button
+            class="btn btn-outline-primary"
+            on:click={onValidateEmailClick}
+            disabled={saveEmailLoading || smtpDisabled}
+            >{$_('buttons.validate')}
+            {#if saveEmailLoading}
+              <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+            {/if}
+          </button>
+        {/if}
       {/if}
     {/if}
   </div>
@@ -964,6 +1202,14 @@
   import { normalizeUsageMode, UsageModes } from '$lib/navigation.util.js';
   import { createFrontendApi } from '$lib/pages/view/frontend/frontend.api.js';
   import { describeError } from '$lib/pages/view/frontend/frontend.util.js';
+  import {
+    createPanoMailApi,
+    formatReset,
+    panoMailView,
+    percentUsed,
+    usageAlert,
+    usageLevel,
+  } from './pano-mail.js';
 
   /** Pano Host mail sender name (before `@`); mirrors `HostedEnvConfig.SENDER_LOCAL`. */
   export const HOST_SENDER_LOCAL = /^[A-Za-z0-9_+-]+(\.[A-Za-z0-9_+-]+)*$/;
@@ -1026,25 +1272,33 @@
     // The theme dev server belongs to the front-end API, which a SERVERS install does not have.
     const frontendInUse = normalizeUsageMode(usageMode) !== UsageModes.SERVERS;
 
-    const [generalSettings, authSettings, maintenanceSettings, alertSettings, frontendSettings] =
-      await Promise.all([
-        ApiUtil.get({
-          path: '/panel/settings' + buildQueryParams({ type: 'GENERAL' }),
-          request: event,
-        }),
-        ApiUtil.get({
-          path: '/panel/settings' + buildQueryParams({ type: 'AUTH' }),
-          request: event,
-        }),
-        ApiUtil.get({
-          path: '/panel/settings' + buildQueryParams({ type: 'MAINTENANCE' }),
-          request: event,
-        }),
-        // Alerts are a separate endpoint (§2.4.7) and an older backend does not have it, so the
-        // card is hidden instead of failing the whole page.
-        alertsInUse ? ApiUtil.get({ path: '/panel/settings/alerts', request: event }) : null,
-        frontendInUse ? createFrontendApi(ApiUtil, event).getFrontend() : null,
-      ]);
+    const [
+      generalSettings,
+      authSettings,
+      maintenanceSettings,
+      alertSettings,
+      frontendSettings,
+      panoMailRead,
+    ] = await Promise.all([
+      ApiUtil.get({
+        path: '/panel/settings' + buildQueryParams({ type: 'GENERAL' }),
+        request: event,
+      }),
+      ApiUtil.get({
+        path: '/panel/settings' + buildQueryParams({ type: 'AUTH' }),
+        request: event,
+      }),
+      ApiUtil.get({
+        path: '/panel/settings' + buildQueryParams({ type: 'MAINTENANCE' }),
+        request: event,
+      }),
+      // Alerts are a separate endpoint (§2.4.7) and an older backend does not have it, so the
+      // card is hidden instead of failing the whole page.
+      alertsInUse ? ApiUtil.get({ path: '/panel/settings/alerts', request: event }) : null,
+      frontendInUse ? createFrontendApi(ApiUtil, event).getFrontend() : null,
+      // An older platform has no such route: then only the SMTP form is shown.
+      createPanoMailApi(ApiUtil, event).getStatus(),
+    ]);
 
     const alertsSupported =
       !!alertSettings && !isEndpointUnavailable(alertSettings) && !alertSettings.error;
@@ -1076,6 +1330,7 @@
       alertsEmailAvailable: alertsSupported && alertSettings.emailAvailable === true,
       alertsSupported,
       frontendSupported,
+      panoMail: panoMailRead,
       platformConnectFailed: failed,
       encodedData,
       state,
@@ -1611,6 +1866,63 @@
       sender: (sender || '').trim(),
       authMethods: authMethods || '',
     };
+  }
+
+  const panoMailApi = createPanoMailApi(ApiUtil);
+
+  /** Pano Mail status of the last load (or the last retry); `supported` is false on older platforms. */
+  let panoMail = data.panoMail ?? { supported: false, status: null };
+  let panoMailFor = data.panoMail;
+  /** Which side of the e-mail card is open: `pano` or `own`. Follows the stored provider on a reload. */
+  let mailChoice = panoMail.status?.provider === 'PANO_MAIL' ? 'pano' : 'own';
+  let panoMailBusy = false;
+
+  // A reload brings a fresh status: the choice follows what is stored again.
+  $: if (data.panoMail !== panoMailFor) {
+    panoMailFor = data.panoMail;
+    panoMail = data.panoMail ?? { supported: false, status: null };
+    mailChoice = panoMail.status?.provider === 'PANO_MAIL' ? 'pano' : 'own';
+  }
+
+  $: panoMailStatus = panoMail.supported ? panoMail.status : null;
+  $: showPanoMail = !!panoMailStatus && mailChoice === 'pano';
+  $: panoMailPhase = panoMailStatus ? panoMailView(panoMailStatus) : null;
+  $: panoMailUsageAlert = panoMailPhase === 'active' ? usageAlert(panoMailStatus.usage) : null;
+  $: panoMailPreparing =
+    panoMailPhase === 'active' && panoMailStatus.enabled && !panoMailStatus.ready;
+
+  async function onPanoMailRetryClick() {
+    panoMailBusy = true;
+
+    const result = await panoMailApi.getStatus();
+
+    if (result.supported) panoMail = result;
+
+    panoMailBusy = false;
+  }
+
+  async function onUsePanoMailClick() {
+    panoMailBusy = true;
+
+    const result = await panoMailApi.switchToPanoMail();
+
+    if (!result.ok) {
+      const key =
+        result.code === 'CONNECT_REQUIRED'
+          ? 'err-connect'
+          : result.code === 'PANO_MAIL_UNAVAILABLE'
+            ? 'err-unavailable'
+            : 'err-generic';
+
+      await showErrorToast(`pages.settings.platform.smtp.pano-mail.${key}`);
+      panoMailBusy = false;
+
+      return;
+    }
+
+    await invalidateAll();
+    await showSuccessToast('components.toasts.settings-save-success');
+    panoMailBusy = false;
   }
 
   /** Pano Host: `host` = the package mail (`email.hostManaged`), `own` = the customer's own SMTP. */
