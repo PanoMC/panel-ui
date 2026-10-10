@@ -1,4 +1,4 @@
-<!-- The Front-end settings (mode, custom apps, keys, allowed origins, link targets), opened from the Themes page. -->
+<!-- The Front-end settings (mode, site connection keys, other websites, link targets), opened from the Themes page. -->
 <div class="modal fade" bind:this={element} role="dialog" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="dialog">
     <div class="modal-content">
@@ -14,7 +14,7 @@
           </div>
         {:else if data}
           {#key epoch}
-            <FrontendContent {data} {tab} {api} {onmodesaved} onretry={load} />
+            <FrontendContent {data} {api} {onmodesaved} onretry={load} />
           {/key}
         {/if}
       </div>
@@ -34,7 +34,7 @@
   import { createFrontendApi, loadFrontendData } from './frontend.api.js';
 
   /**
-   * The modal around {@link FrontendContent}. It reads the six answers when it opens, so the Themes
+   * The modal around {@link FrontendContent}. It reads the five answers when it opens, so the Themes
    * page does not wait for them and the dialog always starts from what is stored. `onmodesaved` gets
    * the saved mode, so the page can tell whether visitors still see the active theme.
    * @type {{ api?: any, onmodesaved?: (mode: string) => void }}
@@ -45,7 +45,6 @@
   let loading = $state(false);
   /** @type {any} */
   let data = $state(null);
-  let tab = $state('mode');
   let epoch = $state(0);
   let modal;
 
@@ -60,11 +59,9 @@
     }
   }
 
-  /** @param {string} [initialTab] a tab id; anything else opens the Mode tab */
-  export async function show(initialTab) {
+  export async function show() {
     if (!element || !window.bootstrap?.Modal || element.classList.contains('show')) return;
 
-    tab = initialTab ?? 'mode';
     data = null;
     loading = true;
 

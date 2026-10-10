@@ -203,9 +203,13 @@ describe('lang files', () => {
     used.add(option.descriptionKey);
   }
 
-  // Used by the Themes page and the dialog's tabs, outside this folder.
+  // Used by the Themes page and the dialog, outside this folder.
   used.add('pages.frontend.settings-button');
-  used.add('pages.frontend.locked');
+  used.add('pages.frontend.manage');
+  used.add('pages.frontend.keys.title');
+  used.add('pages.frontend.keys.block-title');
+  used.add('pages.frontend.urls.title');
+  used.add('pages.frontend.mode.label');
   used.add('pages.frontend.not-shown');
 
   for (const code of [
@@ -249,7 +253,7 @@ describe('lang files', () => {
 
         // Every `{name}` placeholder gets a value, so only a real syntax error throws.
         const values = Object.fromEntries(
-          [...message.matchAll(/\{(\w+)\}/g)].map((m) => [m[1], 'x']),
+          [...message.matchAll(/\{(\w+)[,}]/g)].map((m) => [m[1], 1]),
         );
 
         try {

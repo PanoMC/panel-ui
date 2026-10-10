@@ -2699,18 +2699,10 @@
     "frontend": {
       "title": "Ön Yüz",
       "settings-button": "Ön yüz ayarları",
-      "locked": "Ön yüz anahtarları yalnızca ön yüz bir tema olmadığında çalışır. Oluşturmak için modu değiştirin.",
       "not-shown": "Ziyaretçilere gösterilmiyor: ön yüz {mode} olarak ayarlı.",
       "load-failed": "Ön yüz ayarları yüklenemedi.",
       "copied": "Panoya kopyalandı.",
       "copy-failed": "Kopyalanamadı. Metni seçip elle kopyalayın.",
-      "tabs": {
-        "keys": "Anahtarlar",
-        "mode": "Mod",
-        "origins": "İzinli Kaynaklar",
-        "urls": "Bağlantı Hedefleri",
-        "settings": "Ayarlar"
-      },
       "proxy": {
         "untrusted": {
           "title": "Pano Ters Vekil Sunucunuza Güvenmiyor",
@@ -2723,9 +2715,9 @@
         }
       },
       "keys": {
-        "description": "Ön yüz anahtarı, Pano'nun dışında çalışan bir ön yüz sunucusunun (örneğin özel bir site) API'yi kendi adına çağırmasını sağlar. Anahtarı o sunucunun .env dosyasına koyun; bir daha gösterilmez.",
-        "table-title": "{count}/{max} Anahtar",
-        "empty": "Henüz ön yüz anahtarı yok.",
+        "description": "Kendi sunucunuzda çalışan bir site, bu Pano ile konuşmak için bu gizli anahtarı kullanır. Anahtarı o sitenin .env dosyasına koyun; yalnızca bir kez gösterilir.",
+        "table-title": "{count}/{max} Site Bağlantı Anahtarı",
+        "empty": "Henüz site bağlantı anahtarı yok.",
         "actions": "Anahtar işlemleri",
         "never-used": "Hiç",
         "revoked": "Anahtar iptal edildi.",
@@ -2736,7 +2728,7 @@
           "last-used": "Son Kullanım"
         },
         "create": {
-          "title": "Ön yüz anahtarı oluştur",
+          "title": "Site bağlantı anahtarı oluştur",
           "button": "Anahtar Oluştur",
           "placeholder": "Anahtar adı, örneğin sitem"
         },
@@ -2751,7 +2743,9 @@
           "title": "Bu anahtar iptal edilsin mi?",
           "description": "Anahtarı kullanan ön yüz sunucusu bir sonraki isteğinde çalışmayı bırakır.",
           "confirm": "İptal Et"
-        }
+        },
+        "title": "Site bağlantı anahtarları",
+        "block-title": "Kendi sitenizi bağlayın"
       },
       "mode": {
         "saved": "Ön yüz kaydedildi.",
@@ -2779,7 +2773,8 @@
           "site-url-hint": "Ziyaretçilerin siteyi açtığı adres. Web sitesi adresini kullanmak için boş bırakın.",
           "descriptor-url": "Tanımlayıcı adresi",
           "descriptor-url-hint": "İsteğe bağlı. Ön yüzün sayfalarını adlandıran bir pano-frontend.json. Üst sunucu veya site ile aynı sunucuda olmalıdır."
-        }
+        },
+        "label": "Ön yüz modu"
       },
       "custom-apps": {
         "empty": "Henüz özel uygulama yüklenmedi.",
@@ -2813,40 +2808,50 @@
         "FRONTEND_START_FAILED": "Yeni ön yüz başlatılamadı, bu yüzden öncekisi hizmet vermeye devam ediyor. {message}",
         "FILE_TOO_LARGE": "Dosya 100 MB'tan büyük.",
         "NOT_A_ZIP": "Bir .zip dosyası seçin.",
-        "FRONTEND_KEY_LIMIT_REACHED": "Ön yüz anahtarı sınırına ulaştınız. Önce birini iptal edin.",
-        "FRONTEND_ACCESS_DISABLED": "Ön yüz bir tema iken ön yüz anahtarları kapalıdır. Önce modu değiştirin.",
+        "FRONTEND_KEY_LIMIT_REACHED": "Site bağlantı anahtarı sınırına ulaştınız. Önce birini iptal edin.",
+        "FRONTEND_ACCESS_DISABLED": "Ön yüz bir tema iken site bağlantı anahtarları kapalıdır. Önce modu değiştirin.",
         "INVALID_FIELDS": "Vurgulanan alanları kontrol edin.",
         "DISABLED_FOR_DEMO": "Bu, demoda devre dışı.",
         "NETWORK_ERROR": "Pano yanıt vermedi. Tekrar deneyin.",
         "UNKNOWN": "Bir şeyler ters gitti. Tekrar deneyin.",
-        "ORIGIN_DIFFERENT_SITE": "Farklı bir alan adı ön yüz anahtarı kullanır. Yalnızca sitenizin kendi alan adındaki kaynaklara izin verilebilir.",
-        "ORIGIN_LIMIT_REACHED": "İzinli kaynak sınırına ulaştınız. Önce birini kaldırın.",
-        "INVALID_ORIGIN": "https://play.example.com gibi bir kaynak girin: protokol ve ana makine, yol ve joker karakter olmadan. localhost dışında https kullanın.",
+        "ORIGIN_DIFFERENT_SITE": "Farklı bir alan adı site bağlantı anahtarı kullanır. Yalnızca kendi alan adınızdaki sitelere izin verilebilir.",
+        "ORIGIN_LIMIT_REACHED": "Web sitesi sınırına ulaştınız. Önce birini kaldırın.",
+        "INVALID_ORIGIN": "https://play.example.com gibi bir site adresi girin: https:// ve alan adı, yol ve joker karakter olmadan. localhost dışında https kullanın.",
         "INVALID_LOCATION": "/shop gibi bir site yolu veya tam bir http(s) adresi girin.",
         "FRONTEND_SETTINGS_NO_SCHEMA": "Etkin ön yüz bir ayar formu tanımlamıyor.",
         "FRONTEND_SETTINGS_SCHEMA_INVALID": "Ön yüzün ayar şeması geçerli değil ({message}).",
         "FRONTEND_SETTING_INVALID": "\"{key}\" değeri kabul edilmedi ({reason})."
       },
       "origins": {
-        "description": "Kendi alan adınızdaki bir tarayıcı sitesi (örneğin https://play.example.com), kaynağı bu listeye eklendiğinde ziyaretçinin girişiyle API'yi çağırabilir. Farklı bir alan adındaki site bunun yerine ön yüz anahtarı kullanır.",
-        "table-title": "{count}/{max} Kaynak",
-        "empty": "Henüz izinli kaynak yok.",
-        "actions": "Kaynak işlemleri",
-        "added": "Kaynak eklendi.",
-        "removed": "Kaynak kaldırıldı.",
+        "title": "Bu Pano'ya erişebilecek web siteleri",
+        "switch": "Başka web sitelerinin bu Pano'ya erişmesine izin ver",
+        "helper": "Diğer web siteleriniz (örneğin bir Pano bileşeni gömen site), ziyaretçinin tarayıcısında bu Pano'dan veri okuyabilir.",
+        "count": "{count} web sitesi",
+        "done": "Tamam",
+        "disabled": "Başka web siteleri artık bu Pano'ya erişemez.",
+        "table-title": "{count}/{max} Web Sitesi",
+        "empty": "Henüz web sitesi yok.",
+        "actions": "Web sitesi işlemleri",
+        "added": "Web sitesi eklendi.",
+        "removed": "Web sitesi kaldırıldı.",
         "table": {
-          "origin": "Kaynak"
+          "origin": "Site adresi"
         },
         "add": {
-          "title": "İzinli kaynak ekle",
-          "button": "Kaynak Ekle",
+          "title": "Web sitesi ekle",
+          "button": "Web Sitesi Ekle",
           "placeholder": "https://play.example.com"
         },
         "remove": {
           "button": "Kaldır",
-          "title": "Bu kaynak kaldırılsın mı?",
-          "description": "Bu kaynaktaki bir site artık ziyaretçinin girişiyle API'yi çağıramaz.",
+          "title": "Bu web sitesi kaldırılsın mı?",
+          "description": "Bu web sitesi artık bu Pano'ya erişemez.",
           "confirm": "Kaldır"
+        },
+        "disable": {
+          "title": "Başka web sitelerinin erişimi kapatılsın mı?",
+          "description": "Listedeki tüm web siteleri kaldırılır ve artık bu Pano'dan veri okuyamaz.",
+          "confirm": "Kapat"
         }
       },
       "urls": {
@@ -2877,14 +2882,10 @@
           "remove": "Geçersiz Kılmayı Kaldır",
           "title": "{target} için geçersiz kılma",
           "placeholder": "/shop veya https://example.com/shop"
-        }
+        },
+        "title": "Bağlantı hedefleri"
       },
-      "settings": {
-        "saved": "Ayarlar kaydedildi.",
-        "own-page": "Bu temanın kendi ayar sayfası var.",
-        "open-theme-settings": "Tema Ayarlarını Aç",
-        "none": "Etkin ön yüzün burada düzenlenecek ayarı yok."
-      }
+      "manage": "Yönet"
     },
     "theme-compat": {
       "title": "Bazı Tema Görünümleri Eklentinin Varsayılanını Gösteriyor",
@@ -4499,12 +4500,12 @@
     "PANO_BACKUP_ACTION": "**{username}** {action, select, CREATE {bir Pano yedeği aldı} DELETE {bir Pano yedeğini sildi} DOWNLOAD {bir Pano yedeğini indirdi} RESTORE {Pano'yu bir yedekten geri yükledi} RESTORE_FILE {Pano'yu yüklenen bir dosyadan geri yükledi} RESTORE_REMOTE {Pano'yu Pano Backup'tan geri yükledi} SETTINGS {Pano yedekleme zamanlamasını değiştirdi} UPLOAD {Pano'yu Pano Backup'a yedekledi} DELETE_REMOTE {bir Pano Backup yedeğini sildi} REMOTE_SETTINGS {Pano Backup zamanlamasını değiştirdi} PASSPHRASE {Pano Backup şifreleme parolasını belirledi} TRANSFER {Pano Host'a bir aktarım başlattı} TRANSFER_CANCEL {Pano Host'a aktarımı iptal etti} other {Pano yedeklerini değiştirdi}}.",
     "PANO_BACKUP_SYSTEM": "{action, select, SCHEDULED {Zamanlanmış Pano yedeği {ok, select, true {alındı} other {alınamadı}}} SCHEDULED_UPLOAD {Pano Backup'a zamanlanmış yükleme {ok, select, true {tamamlandı} other {başarısız oldu}}} RETENTION {Saklama kuralı {count} eski Pano yedeğini sildi} other {Pano yedekleri değişti}}.",
     "SERVER_BACKUP_SYSTEM": "{serverName} sunucusunda {action, select, SCHEDULED {bir görev {name} yedeğini aldı} RETENTION {saklama kuralı {name} yedeğini sildi} other {{name} yedeği değişti}}.",
-    "CREATED_FRONTEND_KEY": "**{username}** \"{name}\" ön yüz anahtarını oluşturdu.",
-    "DELETED_FRONTEND_KEY": "**{username}** \"{name}\" ön yüz anahtarını iptal etti.",
+    "CREATED_FRONTEND_KEY": "**{username}** \"{name}\" site bağlantı anahtarını oluşturdu.",
+    "DELETED_FRONTEND_KEY": "**{username}** \"{name}\" site bağlantı anahtarını iptal etti.",
     "CHANGED_FRONTEND_MODE": "**{username}** ön yüz modunu {mode} olarak değiştirdi.",
     "UPLOADED_CUSTOM_APP": "**{username}** {appId} özel uygulamasını ({version}) yükledi.",
     "DELETED_CUSTOM_APP": "**{username}** {appId} özel uygulamasını sildi.",
-    "UPDATED_FRONTEND_ORIGINS": "**{username}** izin verilen ön yüz kaynaklarını güncelledi ({count}).",
+    "UPDATED_FRONTEND_ORIGINS": "**{username}** bu Pano'ya erişebilen web sitelerini güncelledi ({count}).",
     "CHANGED_FRONTEND_URLS": "**{username}** ön yüz sayfa adreslerini değiştirdi ({count}).",
     "CHANGED_FRONTEND_SETTINGS": "**{username}** {frontendId} ön yüzünün ayarlarını değiştirdi.",
     "REFRESHED_FRONTEND_DESCRIPTOR": "**{username}** {frontendId} ön yüzünün tanımlayıcısını yeniledi.",

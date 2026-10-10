@@ -52,8 +52,8 @@
     type="button"
     class="btn btn-link"
     data-frontend-settings
+    title={$_('pages.frontend.settings-button')}
     aria-label={$_('pages.frontend.settings-button')}
-    use:tooltip={[$_('pages.frontend.settings-button')]}
     onclick={() => frontendModal?.show()}>
     <i class="fa-solid fa-gear" aria-hidden="true"></i>
   </button>
@@ -264,7 +264,6 @@
   import { rememberReport } from './theme/compat.util.js';
   import FrontendModal from './frontend/FrontendModal.svelte';
   import { normalizeFrontendState, themeNotShown } from './frontend/frontend.util.js';
-  import tooltip from '$lib/tooltip.util';
 
   export let data;
 
@@ -317,14 +316,11 @@
       window.history.replaceState({}, '', url.toString());
     }
 
-    // `?frontend` (the old /view/frontend address lands here) opens the settings dialog; its value can
-    // name the tab to start on.
+    // `?frontend` (the old /view/frontend address lands here) opens the settings dialog.
     if (url.searchParams.has('frontend')) {
-      const tab = url.searchParams.get('frontend');
-
       url.searchParams.delete('frontend');
       window.history.replaceState({}, '', url.toString());
-      frontendModal?.show(tab || undefined);
+      frontendModal?.show();
     }
   });
 

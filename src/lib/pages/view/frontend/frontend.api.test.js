@@ -69,7 +69,7 @@ describe('createFrontendApi', () => {
     expect(client.calls[0].body.get('file').name).toBe('app.zip');
   });
 
-  test('origins, link targets and settings go to their documented paths', async () => {
+  test('origins and link targets go to their documented paths', async () => {
     const client = stubClient();
     const api = createFrontendApi(client);
 
@@ -77,37 +77,15 @@ describe('createFrontendApi', () => {
     await api.saveOrigins(['https://play.example.com']);
     await api.getUrls();
     await api.saveUrls({ 'auth.login': '/sign-in' });
-    await api.getSettings();
-    await api.getFrontendTexts('tr');
 
     expect(client.calls.map((c) => `${c.method} ${c.path}`)).toEqual([
       'GET /panel/frontend/origins',
       'PUT /panel/frontend/origins',
       'GET /panel/frontend/urls',
       'PUT /panel/frontend/urls',
-      'GET /panel/frontend/settings',
-      'GET /locales/tr/translations/types/THEME',
     ]);
     expect(client.calls[1].body).toEqual({ origins: ['https://play.example.com'] });
     expect(client.calls[3].body).toEqual({ overrides: { 'auth.login': '/sign-in' } });
-  });
-
-  test('settings without an image are JSON, with an image they are multipart with the file named after the field', async () => {
-    const client = stubClient();
-    const api = createFrontendApi(client);
-    const picture = new File(['x'], 'logo.png', { type: 'image/png' });
-
-    await api.saveSettings({ title: 'Pano' });
-    await api.saveSettings({ title: 'Pano', 'remove-files': ['a.png'] }, { logo: picture });
-
-    expect(client.calls[0]).toMatchObject({ method: 'PUT', path: '/panel/frontend/settings' });
-    expect(client.calls[0].body).toEqual({ settings: { title: 'Pano' } });
-
-    const form = client.calls[1].body;
-
-    expect(form).toBeInstanceOf(FormData);
-    expect(form.get('logo').name).toBe('logo.png');
-    expect(JSON.parse(form.get('settings'))).toEqual({ title: 'Pano', 'remove-files': ['a.png'] });
   });
 
   test('the load event is handed on to the client', async () => {

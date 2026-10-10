@@ -27,6 +27,12 @@ export function createOriginsController({ api, notify, confirm, initial = {} }) 
 
   const full = derived([items, max], ([$items, $max]) => $items.length >= $max);
 
+  /** True from the moment the admin turns the switch on until the list editor closes with no site in it. */
+  const pending = writable(false);
+  /** The switch: on while the saved list has a site, or while the editor is open for the first one. */
+  const enabled = derived([items, pending], ([$items, $pending]) => $items.length > 0 || $pending);
+  const disabling = writable(false);
+
   /** The key of the message for a refused write; the invalid-origin field error has its own text. */
   function describe(failure) {
     if (failure.code === 'INVALID_FIELDS' && failure.fields?.origins) {
@@ -142,7 +148,61 @@ export function createOriginsController({ api, notify, confirm, initial = {} }) 
     );
   }
 
+  /** Turning the switch on: it reads as on while the list editor is open. */
+  function enable() {
+    pending.set(true);
+  }
+
+  /** The list editor closed: with no site left the switch goes back to off. */
+  function editorClosed() {
+    pending.set(false);
+  }
+
+  async function disable() {
+    disabling.set(true);
+
+    try {
+      const result = await api.saveOrigins([]);
+
+      if (!result.ok) {
+        const { key, values } = describe(result.error);
+
+        notify.error(key, values);
+
+        return false;
+      }
+
+      items.set(result.body.origins ?? []);
+      pending.set(false);
+      notify.success('pages.frontend.origins.disabled');
+
+      return true;
+    } finally {
+      disabling.set(false);
+    }
+  }
+
+  /** Turning the switch off asks first (every site stops being able to read from this Pano), then saves an empty list. */
+  function requestDisable() {
+    confirm(
+      {
+        title: 'pages.frontend.origins.disable.title',
+        description: 'pages.frontend.origins.disable.description',
+        confirmLabel: 'pages.frontend.origins.disable.confirm',
+        variant: 'danger',
+      },
+      () => disable(),
+    );
+  }
+
   return {
+    enabled,
+    pending,
+    disabling,
+    enable,
+    editorClosed,
+    disable,
+    requestDisable,
     items,
     max,
     full,

@@ -27,7 +27,7 @@
 
   <div class="card">
     <div class="card-body vstack gap-3">
-      <div role="radiogroup" aria-label={$_('pages.frontend.tabs.mode')}>
+      <div role="radiogroup" aria-label={$_('pages.frontend.mode.label')}>
         <div class="list-group list-group-horizontal-md">
           {#each frontendModeOptions as option (option.value)}
             <button

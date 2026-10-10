@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, mock, test } from 'bun:test';
-import { readable, writable } from 'svelte/store';
+import { get, readable, writable } from 'svelte/store';
 
 import {
   renderHtml,
@@ -13,7 +13,6 @@ import { createFrontendApi } from './frontend.api.js';
 import { createKeysController } from './keys.controller.js';
 import { createModeController } from './mode.controller.js';
 import { createOriginsController } from './origins.controller.js';
-import { createSettingsController } from './settings.controller.js';
 import { createUrlsController } from './urls.controller.js';
 
 // The page imports the panel's own HTTP client, toasts, confirm dialog and plugin menus; none of
@@ -40,9 +39,9 @@ const { default: ProxyBanner } = await import('./ProxyBanner.svelte');
 const { default: FrontendKeyReveal } = await import('./FrontendKeyReveal.svelte');
 const { default: Frontend } = await import('./FrontendContent.svelte');
 const { default: FrontendModal } = await import('./FrontendModal.svelte');
-const { default: FrontendOrigins } = await import('./FrontendOrigins.svelte');
+const { default: FrontendOriginsModal } = await import('./FrontendOriginsModal.svelte');
+const { default: FrontendOtherSites } = await import('./FrontendOtherSites.svelte');
 const { default: FrontendUrls } = await import('./FrontendUrls.svelte');
-const { default: FrontendSettings } = await import('./FrontendSettings.svelte');
 
 beforeAll(() => useLocale('en-US'));
 
@@ -126,20 +125,6 @@ const URLS = {
   ],
 };
 
-const SETTINGS = {
-  id: 'vanilla-theme',
-  mode: 'THEME',
-  hasSchema: true,
-  schema: {
-    fields: {
-      title: { type: 'text', label: 'Site title', help: 'Shown in the tab' },
-      compact: { type: 'boolean', label: 'Compact layout' },
-    },
-  },
-  settings: { title: 'Pano', compact: true },
-  files: {},
-};
-
 const originsController = (initial = ORIGINS) =>
   createOriginsController({
     api: createFrontendApi(stubClient()),
@@ -156,20 +141,13 @@ const urlsController = (initial = URLS, hasKey = readable(false)) =>
     hasKey,
   });
 
-const settingsController = (initial = SETTINGS) =>
-  createSettingsController({
-    api: createFrontendApi(stubClient()),
-    notify: recordingNotify(),
-    initial,
-  });
-
-describe('Keys tab', () => {
+describe('Site connection keys modal', () => {
   test('an empty list shows the empty state and no table', () => {
     const html = renderHtml(FrontendKeys, { controller: keysController({ items: [], max: 20 }) });
     const text = textOf(html);
 
-    expect(text).toContain('0/20 Keys');
-    expect(text).toContain('No front-end keys yet.');
+    expect(text).toContain('0/20 Site Connection Keys');
+    expect(text).toContain('No site connection keys yet.');
     expect(html).not.toContain('<table');
     expect(text).toContain('Create Key');
   });
@@ -192,7 +170,7 @@ describe('Keys tab', () => {
     });
     const text = textOf(html);
 
-    expect(text).toContain('2/20 Keys');
+    expect(text).toContain('2/20 Site Connection Keys');
     expect(text).toContain('my-site');
     expect(text).toContain('ab12');
     expect(text).toContain('Never');
@@ -216,7 +194,7 @@ describe('Keys tab', () => {
   test('the create dialog asks for a name only and has one full-width button', () => {
     const html = renderHtml(FrontendKeys, { controller: keysController({ items: [], max: 20 }) });
 
-    expect(textOf(html)).toContain('Create a front-end key');
+    expect(textOf(html)).toContain('Create a site connection key');
     expect(html).toContain('placeholder="Key name, for example my-site"');
     expect(html).toContain('maxlength="64"');
     expect(html).toContain('btn btn-primary w-100');
@@ -402,80 +380,115 @@ describe('Proxy banner', () => {
 });
 
 describe('Front-end settings', () => {
-  test('renders the banner, both tabs and both panes from the loaded data', () => {
-    const html = renderHtml(Frontend, {
-      data: {
-        keys: {
-          items: [{ id: 1, name: 'my-site', hint: 'ab12', createdAt: 1, lastUsedAt: null }],
-          max: 20,
-        },
-        frontend: { ...STATE, mode: 'CUSTOM_APP', customAppId: 'shop', customApps: APPS },
-        proxyStatus: {
-          state: 'UNTRUSTED_PROXY',
-          peers: ['203.0.113.7'],
-          suggestion: 'trusted-proxies = ["203.0.113.7"]',
-        },
-      },
+  const content = (data) =>
+    renderHtml(Frontend, {
+      data,
       api: createFrontendApi(stubClient()),
       notify: recordingNotify(),
       confirm: () => {},
+    });
+  const KEYS = {
+    items: [{ id: 1, name: 'my-site', hint: 'ab12', createdAt: 1, lastUsedAt: null }],
+    max: 20,
+  };
+  const dataFor = (mode) => ({
+    keys: KEYS,
+    frontend: { ...STATE, mode },
+    proxyStatus: null,
+    origins: ORIGINS,
+    urls: URLS,
+  });
+
+  test('has no tabs: the mode choice, then the keys, other websites and link targets rows', () => {
+    const html = content({
+      ...dataFor('CUSTOM_APP'),
+      frontend: { ...STATE, mode: 'CUSTOM_APP', customAppId: 'shop', customApps: APPS },
+      proxyStatus: {
+        state: 'UNTRUSTED_PROXY',
+        peers: ['203.0.113.7'],
+        suggestion: 'trusted-proxies = ["203.0.113.7"]',
+      },
     });
     const text = textOf(html);
 
     expect(html).toContain('data-proxy-banner');
-    expect(html).toContain('data-tab="keys"');
-    expect(html).toContain('data-tab="mode"');
-    expect(text).toContain('my-site');
+    expect(html).not.toContain('data-tab=');
+    expect(html).not.toContain('role="tablist"');
     expect(html).toContain('data-section="custom-app"');
-    // Only the Mode tab is visible at first.
-    expect(html).toMatch(/id="frontend-pane-keys"[^>]*hidden/);
-    expect(html).not.toMatch(/id="frontend-pane-mode"[^>]*hidden/);
+    expect(html).toContain('data-row="keys"');
+    expect(html).toContain('data-other-sites');
+    expect(html).toContain('data-row="urls"');
+    expect(text).toContain('Site connection keys');
+    expect(text).toContain('Allow other websites to access this Pano');
+    expect(text).toContain('Link targets');
+    expect(text).not.toMatch(/origin/i);
   });
 
-  test('a read that failed is reported in its own tab only', () => {
-    const html = renderHtml(Frontend, {
-      data: {
-        keys: null,
-        frontend: { ...STATE },
-        proxyStatus: null,
-        origins: ORIGINS,
-        urls: URLS,
-        settings: SETTINGS,
-      },
-      api: createFrontendApi(stubClient()),
-      notify: recordingNotify(),
-      confirm: () => {},
-    });
+  test('the keys row is enabled while the saved mode is Custom app, External or None', () => {
+    for (const mode of ['CUSTOM_APP', 'EXTERNAL', 'NONE']) {
+      const html = content(dataFor(mode));
 
+      expect(tagWith(html, 'data-open-keys')).not.toContain('disabled');
+      expect(html).toContain('data-keys-modal');
+    }
+  });
+
+  test('in Theme mode the keys row is disabled and nothing explains why', () => {
+    const html = content(dataFor('THEME'));
+
+    expect(tagWith(html, 'data-open-keys')).toContain('disabled');
+    expect(html).not.toContain('data-frontend-locked');
+    expect(textOf(html)).not.toContain('work only when the front-end is not a theme');
+    // Stored keys stay in the list and work again when the mode changes.
+    expect(html).toContain('data-key-row="1"');
+  });
+
+  test('the other-websites switch and the link targets row work in every mode', () => {
+    for (const mode of ['THEME', 'CUSTOM_APP', 'EXTERNAL', 'NONE']) {
+      const html = content(dataFor(mode));
+
+      expect(tagWith(html, 'data-other-sites-switch')).not.toContain('disabled');
+      expect(tagWith(html, 'data-open-urls')).not.toContain('disabled');
+    }
+  });
+
+  test('the rows mark the link targets from the keys the keys modal holds', () => {
+    const html = content(dataFor('EXTERNAL'));
+
+    expect(html.match(/data-needed-for-server/g)).toHaveLength(1);
+  });
+
+  test('a failed keys read disables the row; a failed websites read is reported in its row', () => {
+    const html = content({ ...dataFor('EXTERNAL'), keys: null, origins: null });
+
+    expect(tagWith(html, 'data-open-keys')).toContain('disabled');
     expect(html.match(/data-load-failed/g)).toHaveLength(1);
-    expect(html).toContain('data-mode="THEME"');
-    expect(html).not.toContain('data-proxy-banner');
   });
 });
 
-describe('Allowed origins tab', () => {
+describe('Websites list modal', () => {
   test('lists the origins with the count and a remove action each', () => {
-    const html = renderHtml(FrontendOrigins, { controller: originsController() });
+    const html = renderHtml(FrontendOriginsModal, { controller: originsController() });
     const text = textOf(html);
 
-    expect(text).toContain('2/20 Origins');
+    expect(text).toContain('2/20 Websites');
     expect(html.match(/data-origin-row=/g)).toHaveLength(2);
     expect(text).toContain('https://play.example.com');
     expect(text).toContain('Remove');
-    expect(text).toContain('Add Origin');
+    expect(text).toContain('Add Website');
   });
 
   test('an empty list shows the empty state and no table', () => {
-    const html = renderHtml(FrontendOrigins, {
+    const html = renderHtml(FrontendOriginsModal, {
       controller: originsController({ origins: [], max: 20 }),
     });
 
-    expect(textOf(html)).toContain('No allowed origins yet.');
+    expect(textOf(html)).toContain('No websites yet.');
     expect(html).not.toContain('<table');
   });
 
   test('the add button is disabled at the limit', () => {
-    const html = renderHtml(FrontendOrigins, {
+    const html = renderHtml(FrontendOriginsModal, {
       controller: originsController({ origins: ['https://a.example.com'], max: 1 }),
     });
 
@@ -483,10 +496,10 @@ describe('Allowed origins tab', () => {
   });
 
   test('the add dialog is one field and one full-width button', () => {
-    const html = renderHtml(FrontendOrigins, { controller: originsController() });
+    const html = renderHtml(FrontendOriginsModal, { controller: originsController() });
     const dialog = html.slice(html.indexOf('modal fade'));
 
-    expect(textOf(dialog)).toContain('Add an allowed origin');
+    expect(textOf(dialog)).toContain('Add a website');
     expect(dialog).toContain('placeholder="https://play.example.com"');
     expect(dialog).toMatch(/<button[^>]*class="btn btn-primary w-100"[^>]*type="submit"/);
   });
@@ -503,14 +516,14 @@ describe('Allowed origins tab', () => {
 
     await controller.add('https://evil.com');
 
-    const html = renderHtml(FrontendOrigins, { controller });
+    const html = renderHtml(FrontendOriginsModal, { controller });
 
     expect(html).toContain('data-origin-error="ORIGIN_DIFFERENT_SITE"');
-    expect(textOf(html).toLowerCase()).toContain('a different domain uses a front-end key');
+    expect(textOf(html).toLowerCase()).toContain('a different domain uses a site connection key');
   });
 });
 
-describe('Link targets tab', () => {
+describe('Link targets modal', () => {
   test('a row per target with its owner, source, path and override', () => {
     const html = renderHtml(FrontendUrls, { controller: urlsController() });
     const text = textOf(html);
@@ -554,7 +567,7 @@ describe('Link targets tab', () => {
     expect(marked).toContain('market.order');
   });
 
-  test('the page marks the rows from the keys the Keys tab holds', () => {
+  test('the page marks the rows from the keys the keys modal holds', () => {
     const html = renderHtml(Frontend, {
       data: {
         keys: {
@@ -565,7 +578,6 @@ describe('Link targets tab', () => {
         proxyStatus: null,
         origins: ORIGINS,
         urls: URLS,
-        settings: SETTINGS,
       },
       api: createFrontendApi(stubClient()),
       notify: recordingNotify(),
@@ -584,204 +596,79 @@ describe('Link targets tab', () => {
   });
 });
 
-describe('Settings tab', () => {
-  test('draws the schema form with the stored values', () => {
-    const html = renderHtml(FrontendSettings, { controller: settingsController() });
-
-    expect(html).toContain('data-schema-form');
-    expect(html).toMatch(/<input[^>]*id="frontend-setting-title"[^>]*value="Pano"/);
-    expect(html).toMatch(/<input[^>]*id="frontend-setting-compact"[^>]*checked/);
-    expect(textOf(html)).toContain('Site title');
-    expect(textOf(html)).toContain('Compact layout');
-    expect(tagWith(html, 'data-save-settings')).not.toContain('disabled');
-  });
-
-  test('without fields a theme links to its own settings page', () => {
-    const html = renderHtml(FrontendSettings, {
-      controller: settingsController({
-        id: 'vanilla-theme',
-        mode: 'THEME',
-        hasSchema: false,
-        schema: null,
-        settings: {},
-        files: {},
-      }),
+describe('Allow other websites switch', () => {
+  const sites = (initial) => {
+    const { confirm, dialogs } = autoConfirm();
+    const controller = createOriginsController({
+      api: createFrontendApi(stubClient({ 'PUT /panel/frontend/origins': { origins: [] } })),
+      notify: recordingNotify(),
+      confirm,
+      initial,
     });
 
-    expect(html).not.toContain('data-schema-form');
-    expect(html).toContain('data-own-settings');
-    expect(html).toContain('href="/view/theme-settings"');
-    expect(textOf(html)).toContain('Open Theme Settings');
+    return { controller, dialogs };
+  };
+
+  test('is off with an empty list: no count, no edit button', () => {
+    const { controller } = sites({ origins: [], max: 20 });
+    const html = renderHtml(FrontendOtherSites, { controller });
+
+    expect(tagWith(html, 'data-other-sites-switch')).not.toContain('checked');
+    expect(html).not.toContain('data-sites-count');
+    expect(html).not.toContain('data-edit-sites');
+    expect(textOf(html)).toContain('Allow other websites to access this Pano');
+    expect(textOf(html)).toContain('read data from this Pano in the visitor');
   });
 
-  test('another mode without fields has nothing to edit and no theme link', () => {
-    const html = renderHtml(FrontendSettings, {
-      controller: settingsController({
-        id: 'external',
-        mode: 'EXTERNAL',
-        hasSchema: false,
-        schema: null,
-        settings: {},
-        files: {},
-      }),
-    });
+  test('is on with a saved site and shows the count and an Edit button', () => {
+    const { controller } = sites(ORIGINS);
+    const html = renderHtml(FrontendOtherSites, { controller });
 
-    expect(html).not.toContain('theme-settings');
-    expect(textOf(html)).toContain('has no settings to edit here');
+    expect(tagWith(html, 'data-other-sites-switch')).toContain('checked');
+    expect(textOf(html)).toContain('2 websites');
+    expect(tagWith(html, 'data-edit-sites')).toContain('title="Edit"');
   });
 
-  test('a refused value shows its reason under the field', async () => {
-    const controller = createSettingsController({
+  test('turning it off asks first, then saves an empty list', async () => {
+    const { controller, dialogs } = sites(ORIGINS);
+
+    controller.requestDisable();
+    await Promise.resolve();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(dialogs).toHaveLength(1);
+    expect(dialogs[0].title).toBe('pages.frontend.origins.disable.title');
+    expect(get(controller.items)).toEqual([]);
+    expect(get(controller.enabled)).toBe(false);
+  });
+
+  test('turning it on reads as on until the editor closes empty, then goes back to off', () => {
+    const { controller } = sites({ origins: [], max: 20 });
+
+    controller.enable();
+    expect(get(controller.enabled)).toBe(true);
+
+    controller.editorClosed();
+    expect(get(controller.enabled)).toBe(false);
+  });
+
+  test('closing the editor with a site on the list keeps it on', async () => {
+    const { controller } = sites({ origins: [], max: 20 });
+    const added = createOriginsController({
       api: createFrontendApi(
-        stubClient({
-          'PUT /panel/frontend/settings': {
-            error: {
-              code: 'FRONTEND_SETTING_INVALID',
-              details: { key: 'title', reason: 'TOO_LONG' },
-            },
-          },
-        }),
+        stubClient({ 'PUT /panel/frontend/origins': { origins: ['https://play.example.com'] } }),
       ),
       notify: recordingNotify(),
-      initial: SETTINGS,
-    });
-
-    await controller.save({ values: { title: 'x', compact: false } });
-
-    const html = renderHtml(FrontendSettings, { controller });
-
-    expect(html).toContain('data-field-error="TOO_LONG"');
-    expect(textOf(html)).toContain('The text is too long.');
-  });
-});
-
-describe('Front-end settings tabs', () => {
-  test('lists all five tabs and one pane for each', () => {
-    const html = renderHtml(Frontend, {
-      data: {
-        keys: { items: [], max: 20 },
-        frontend: { ...STATE },
-        proxyStatus: null,
-        origins: ORIGINS,
-        urls: URLS,
-        settings: SETTINGS,
-      },
-      api: createFrontendApi(stubClient()),
-      notify: recordingNotify(),
       confirm: () => {},
+      initial: { origins: [], max: 20 },
     });
 
-    for (const id of ['keys', 'mode', 'origins', 'urls', 'settings']) {
-      expect(html).toContain(`data-tab="${id}"`);
-      expect(html).toContain(`id="frontend-pane-${id}"`);
-    }
+    added.enable();
+    await added.add('https://play.example.com');
+    added.editorClosed();
 
-    expect(textOf(html)).toContain('Allowed Origins');
-    expect(textOf(html)).toContain('Link Targets');
-    expect(html).toMatch(/id="frontend-pane-origins"[^>]*hidden/);
-  });
-
-  test('the three new reads fail alone, each in its own pane', () => {
-    const html = renderHtml(Frontend, {
-      data: {
-        keys: { items: [], max: 20 },
-        frontend: { ...STATE },
-        proxyStatus: null,
-        origins: null,
-        urls: null,
-        settings: null,
-      },
-      api: createFrontendApi(stubClient()),
-      notify: recordingNotify(),
-      confirm: () => {},
-    });
-
-    expect(html.match(/data-load-failed/g)).toHaveLength(3);
-    expect(html).toContain('data-mode="THEME"');
-  });
-});
-
-describe('Only the selected front-end is used (front-end keys are off in Theme mode)', () => {
-  const dataFor = (mode) => ({
-    keys: {
-      items: [{ id: 1, name: 'my-site', hint: 'ab12', createdAt: 1, lastUsedAt: null }],
-      max: 20,
-    },
-    frontend: { ...STATE, mode },
-    proxyStatus: null,
-    origins: ORIGINS,
-    urls: URLS,
-    settings: SETTINGS,
-  });
-  const renderContent = (mode) =>
-    renderHtml(Frontend, {
-      data: dataFor(mode),
-      api: createFrontendApi(stubClient()),
-      notify: recordingNotify(),
-      confirm: () => {},
-    });
-
-  test('with the saved mode Theme, key creation is disabled and the sentence is shown', () => {
-    const html = renderContent('THEME');
-
-    expect(tagWith(html, 'data-create-key')).toContain('disabled');
-    expect(html.match(/data-frontend-locked/g)).toHaveLength(1);
-    expect(textOf(html)).toContain('Front-end keys work only when the front-end is not a theme.');
-  });
-
-  test('existing keys and origins stay listed and can still be removed', () => {
-    const html = renderContent('THEME');
-
-    expect(html).toContain('data-key-row="1"');
-    expect(html).toContain('data-origin-row="https://play.example.com"');
-    expect(html).toContain('Revoke');
-    expect(html).toContain('Remove');
-  });
-
-  test('allowed origins stay fully usable in Theme mode', () => {
-    const html = renderContent('THEME');
-
-    expect(tagWith(html, 'data-add-origin')).not.toContain('disabled');
-  });
-
-  test('another saved mode leaves the actions enabled and shows no sentence', () => {
-    for (const mode of ['EXTERNAL', 'CUSTOM_APP', 'NONE']) {
-      const html = renderContent(mode);
-
-      expect(tagWith(html, 'data-create-key')).not.toContain('disabled');
-      expect(html).not.toContain('data-frontend-locked');
-    }
-  });
-
-  test('the tabs themselves stay visible in Theme mode', () => {
-    const html = renderContent('THEME');
-
-    expect(html).toContain('data-tab="keys"');
-    expect(html).toContain('data-tab="origins"');
-  });
-
-  test('the controls are enabled directly when no lock is passed', () => {
-    const html = renderHtml(FrontendKeys, { controller: keysController({ items: [], max: 20 }) });
-
-    expect(tagWith(html, 'data-create-key')).not.toContain('disabled');
-  });
-
-  test('a refused create in Theme mode explains itself with the translated message', async () => {
-    const notify = recordingNotify();
-    const controller = createKeysController({
-      api: createFrontendApi({
-        ...stubClient(),
-        post: async () => ({ error: { code: 'FRONTEND_ACCESS_DISABLED' } }),
-      }),
-      notify,
-      confirm: () => {},
-      initial: { items: [], max: 20 },
-    });
-
-    expect(await controller.create('my-site')).toBeNull();
-    expect(notify.toasts.map((t) => t.key)).toEqual([
-      'pages.frontend.errors.FRONTEND_ACCESS_DISABLED',
-    ]);
+    expect(get(added.enabled)).toBe(true);
+    expect(get(controller.enabled)).toBe(false);
   });
 });
 

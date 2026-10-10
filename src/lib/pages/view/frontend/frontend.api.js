@@ -103,59 +103,22 @@ export function createFrontendApi(client, request) {
      * @param {Record<string, string>} overrides
      */
     saveUrls: (overrides) => call('put', { path: '/panel/frontend/urls', body: { overrides } }),
-
-    /** `{ id, mode, hasSchema, schema, settings, files }` (doc 05 section 9) */
-    getSettings: () => call('get', { path: '/panel/frontend/settings' }),
-
-    /**
-     * Writes the whole form. JSON when no image is sent; multipart (the `settings` part as JSON text, one file
-     * part per image field, named after the field) when one is, as the theme settings always were.
-     *
-     * @param {Record<string, any>} settings the field values, plus `files` and `remove-files`
-     * @param {Record<string, File>} [uploads] image field to the chosen file
-     */
-    saveSettings: (settings, uploads = {}) => {
-      const names = Object.keys(uploads);
-
-      if (names.length === 0) {
-        return call('put', { path: '/panel/frontend/settings', body: { settings } });
-      }
-
-      const form = new FormData();
-
-      for (const name of names) {
-        form.append(name, uploads[name]);
-      }
-
-      form.append('settings', JSON.stringify(settings));
-
-      return call('put', { path: '/panel/frontend/settings', body: form });
-    },
-
-    /**
-     * The active front-end's own texts for a locale, with the admin's edits (nested object), used to
-     * resolve the labels of the settings form. Best effort: the form falls back to the plain label.
-     * @param {string} locale
-     */
-    getFrontendTexts: (locale) =>
-      call('get', { path: `/locales/${encodeURIComponent(locale)}/translations/types/THEME` }),
   };
 }
 
 /**
- * The six reads behind the Front-end settings. Each can fail alone (an older backend has no proxy
+ * The five reads behind the Front-end settings. Each can fail alone (an older backend has no proxy
  * status, a key list can be refused), so a failed read is `null` and only its part says so.
  *
  * @param {ReturnType<typeof createFrontendApi>} api
  */
 export async function loadFrontendData(api) {
-  const [keys, frontend, proxyStatus, origins, urls, settings] = await Promise.all([
+  const [keys, frontend, proxyStatus, origins, urls] = await Promise.all([
     api.listKeys(),
     api.getFrontend(),
     api.getProxyStatus(),
     api.listOrigins(),
     api.getUrls(),
-    api.getSettings(),
   ]);
 
   return {
@@ -164,6 +127,5 @@ export async function loadFrontendData(api) {
     proxyStatus: proxyStatus.ok ? proxyStatus.body : null,
     origins: origins.ok ? origins.body : null,
     urls: urls.ok ? urls.body : null,
-    settings: settings.ok ? settings.body : null,
   };
 }
