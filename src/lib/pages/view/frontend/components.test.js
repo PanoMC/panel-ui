@@ -533,7 +533,7 @@ describe('Link targets modal', () => {
     expect(html).toContain('data-source="OVERRIDE"');
     expect(html).toContain('data-source="FALLBACK"');
     expect(html).toContain('data-source="NONE"');
-    expect(text).toContain('Admin override');
+    expect(text).toContain('Set by an admin');
     expect(text).toContain("Pano's own page");
     expect(text).toContain('No page');
     expect(text).toContain('/_pano/market.order');
@@ -678,7 +678,7 @@ describe('Front-end settings modal', () => {
 
     expect(html).toContain('modal-dialog-scrollable');
     expect(html).toContain('btn-close');
-    expect(textOf(html)).toContain('What will show your site?');
+    expect(textOf(html)).toContain('What should visitors see?');
     expect(html).not.toContain('data-tab=');
   });
 });

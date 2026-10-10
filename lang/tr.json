@@ -2697,7 +2697,7 @@
       }
     },
     "frontend": {
-      "title": "Sitenizi ne gösterecek?",
+      "title": "Ziyaretçiler ne görsün?",
       "settings-button": "Site gösterim ayarları",
       "not-shown": "Ziyaretçilere gösterilmiyor: site şu an “{mode}” olarak ayarlı.",
       "load-failed": "Site ayarları yüklenemedi.",
@@ -2711,7 +2711,7 @@
         },
         "single": {
           "title": "Tüm ziyaretçiler tek adres gibi görünüyor",
-          "description": "{peers} adresindeki sunucu X-Forwarded-For başlığını göndermiyor, bu yüzden Pano ziyaretçileri ayırt edemiyor. Sunucunuzun bu başlığı göndermesini sağlayın; Pano'ya güvenilir değilse trusted-proxies listesine de ekleyin."
+          "description": "{peers} adresindeki sunucu X-Forwarded-For başlığını göndermiyor, bu yüzden Pano ziyaretçileri ayırt edemiyor. Sunucunuzun bu başlığı göndermesini sağlayın; Pano bu sunucuya henüz güvenmiyorsa onu trusted-proxies listesine de ekleyin."
         }
       },
       "keys": {
@@ -2775,7 +2775,7 @@
           "descriptor-url": "Sayfa listesi dosyası (isteğe bağlı)",
           "descriptor-url-hint": "Sitenizdeki sayfaları Pano'ya tanıtan pano-frontend.json dosyasının adresi."
         },
-        "label": "Sitenizi ne gösterecek?"
+        "label": "Ziyaretçiler ne görsün?"
       },
       "custom-apps": {
         "empty": "Henüz site yüklenmedi.",
@@ -2802,7 +2802,7 @@
         "CUSTOM_APP_ID_TAKEN": "\"{id}\" kimliği zaten bir temaya veya yerleşik bir arayüze ait. manifest.json içinde başka bir kimlik seçin.",
         "CUSTOM_APP_API_LEVEL": "Bu site API seviyesi {apiLevel} için hazırlanmış; bu Pano {min} ile {current} arasındaki seviyeleri destekliyor.",
         "CUSTOM_APP_ACTIVE": "Bu site şu an kullanımda. Önce başka bir seçenek seçin.",
-        "UPSTREAM_INVALID_URL": "http:// veya https:// ile başlayan, sunucu adı olan ve yolu olmayan bir adres girin, örneğin http://127.0.0.1:3005.",
+        "UPSTREAM_INVALID_URL": "http:// veya https:// ile başlayan ve sunucu adından sonra hiçbir şey içermeyen bir adres girin. Örnek: http://127.0.0.1:3005",
         "UPSTREAM_IS_PANO": "Bu adres Pano'nun kendisi; siteyi buraya bağlamak sonsuz döngü oluşturur.",
         "UPSTREAM_UNREACHABLE": "Bu adreste 5 saniye içinde yanıt veren olmadı.",
         "DESCRIPTOR_HOST_NOT_ALLOWED": "Sayfa listesi dosyası, sitenizin çalıştığı adresle veya ziyaretçilerin gördüğü adresle aynı sunucuda olmalıdır.",
@@ -2810,14 +2810,14 @@
         "FILE_TOO_LARGE": "Dosya 100 MB'tan büyük.",
         "NOT_A_ZIP": "Bir .zip dosyası seçin.",
         "FRONTEND_KEY_LIMIT_REACHED": "Site bağlantı anahtarı sınırına ulaştınız. Önce birini iptal edin.",
-        "FRONTEND_ACCESS_DISABLED": "Site olarak tema kullanılırken site bağlantı anahtarları kapalıdır. Önce seçimi değiştirin.",
+        "FRONTEND_ACCESS_DISABLED": "Siteyi tema gösterirken site bağlantı anahtarları kapalıdır. Önce başka bir seçenek seçin.",
         "INVALID_FIELDS": "Vurgulanan alanları kontrol edin.",
         "DISABLED_FOR_DEMO": "Bu, demoda devre dışı.",
         "NETWORK_ERROR": "Pano yanıt vermedi. Tekrar deneyin.",
         "UNKNOWN": "Bir şeyler ters gitti. Tekrar deneyin.",
-        "ORIGIN_DIFFERENT_SITE": "Farklı bir alan adı site bağlantı anahtarı kullanır. Yalnızca kendi alan adınızdaki sitelere izin verilebilir.",
+        "ORIGIN_DIFFERENT_SITE": "Başka bir alan adındaki site için site bağlantı anahtarı kullanılır. Buraya yalnızca kendi alan adınızdaki siteler eklenebilir.",
         "ORIGIN_LIMIT_REACHED": "Web sitesi sınırına ulaştınız. Önce birini kaldırın.",
-        "INVALID_ORIGIN": "https://play.example.com gibi bir site adresi girin: https:// ve alan adı, yol ve joker karakter olmadan. localhost dışında https kullanın.",
+        "INVALID_ORIGIN": "https://play.example.com gibi bir site adresi girin: yalnızca https:// ve alan adı, sonrasında hiçbir şey olmadan. localhost dışında https kullanın.",
         "INVALID_LOCATION": "/shop gibi bir site yolu veya tam bir http(s) adresi girin.",
         "FRONTEND_SETTINGS_NO_SCHEMA": "Kullanılan site bir ayar formu tanımlamıyor.",
         "FRONTEND_SETTINGS_SCHEMA_INVALID": "Sitenin ayar şeması geçerli değil ({message}).",
@@ -4503,7 +4503,7 @@
     "SERVER_BACKUP_SYSTEM": "{serverName} sunucusunda {action, select, SCHEDULED {bir görev {name} yedeğini aldı} RETENTION {saklama kuralı {name} yedeğini sildi} other {{name} yedeği değişti}}.",
     "CREATED_FRONTEND_KEY": "**{username}** \"{name}\" site bağlantı anahtarını oluşturdu.",
     "DELETED_FRONTEND_KEY": "**{username}** \"{name}\" site bağlantı anahtarını iptal etti.",
-    "CHANGED_FRONTEND_MODE": "**{username}** site gösterimini {mode} olarak değiştirdi.",
+    "CHANGED_FRONTEND_MODE": "**{username}** ziyaretçilerin gördüğü siteyi {mode} olarak değiştirdi.",
     "UPLOADED_CUSTOM_APP": "**{username}** {appId} özel uygulamasını ({version}) yükledi.",
     "DELETED_CUSTOM_APP": "**{username}** {appId} özel uygulamasını sildi.",
     "UPDATED_FRONTEND_ORIGINS": "**{username}** bu Pano'ya erişebilen web sitelerini güncelledi ({count}).",

@@ -2699,7 +2699,7 @@
       }
     },
     "frontend": {
-      "title": "What will show your site?",
+      "title": "What should visitors see?",
       "settings-button": "Site display settings",
       "not-shown": "Not shown to visitors: the site is currently set to “{mode}”.",
       "load-failed": "The site settings could not be loaded.",
@@ -2758,7 +2758,7 @@
           "description": "The theme you installed on Pano is shown."
         },
         "custom-app": {
-          "title": "A site I upload",
+          "title": "My uploaded site",
           "description": "You upload the site you built as a zip, and Pano runs it."
         },
         "external": {
@@ -2777,7 +2777,7 @@
           "descriptor-url": "Page list file (optional)",
           "descriptor-url-hint": "The address of the pano-frontend.json file that tells Pano about the pages on your site."
         },
-        "label": "What will show your site?"
+        "label": "What should visitors see?"
       },
       "custom-apps": {
         "empty": "No site uploaded yet.",
@@ -2804,7 +2804,7 @@
         "CUSTOM_APP_ID_TAKEN": "The id \"{id}\" already belongs to a theme or a built-in UI. Choose another id in manifest.json.",
         "CUSTOM_APP_API_LEVEL": "This site was made for API level {apiLevel}; this Pano supports levels {min} to {current}.",
         "CUSTOM_APP_ACTIVE": "This site is in use right now. Choose another option first.",
-        "UPSTREAM_INVALID_URL": "Enter an address that starts with http:// or https://, has a host and no path, for example http://127.0.0.1:3005.",
+        "UPSTREAM_INVALID_URL": "Enter an address that starts with http:// or https:// and has nothing after the server name. Example: http://127.0.0.1:3005",
         "UPSTREAM_IS_PANO": "That address is Pano itself; connecting your site to it would loop forever.",
         "UPSTREAM_UNREACHABLE": "Nothing answered at that address within 5 seconds.",
         "DESCRIPTOR_HOST_NOT_ALLOWED": "The page list file must be on the same server as the address where your site runs or the address visitors see.",
@@ -2812,14 +2812,14 @@
         "FILE_TOO_LARGE": "The file is bigger than 100 MB.",
         "NOT_A_ZIP": "Choose a .zip file.",
         "FRONTEND_KEY_LIMIT_REACHED": "You reached the limit of site connection keys. Revoke one first.",
-        "FRONTEND_ACCESS_DISABLED": "Site connection keys are off while the site is a theme. Change the choice first.",
+        "FRONTEND_ACCESS_DISABLED": "Site connection keys are off while a theme shows the site. Choose another option first.",
         "INVALID_FIELDS": "Check the highlighted fields.",
         "DISABLED_FOR_DEMO": "This is disabled in the demo.",
         "NETWORK_ERROR": "Pano did not answer. Try again.",
         "UNKNOWN": "Something went wrong. Try again.",
-        "ORIGIN_DIFFERENT_SITE": "A different domain uses a site connection key. Only sites on your own domain can be allowed.",
+        "ORIGIN_DIFFERENT_SITE": "A site on a different domain uses a site connection key instead. Only sites on your own domain can be added here.",
         "ORIGIN_LIMIT_REACHED": "You reached the limit of websites. Remove one first.",
-        "INVALID_ORIGIN": "Enter a site address such as https://play.example.com: https:// and the domain, no path and no wildcard. Use https unless it is localhost.",
+        "INVALID_ORIGIN": "Enter a site address such as https://play.example.com: only https:// and the domain, with nothing after it. Use https unless it is localhost.",
         "INVALID_LOCATION": "Enter a site path such as /shop or a full http(s) address.",
         "FRONTEND_SETTINGS_NO_SCHEMA": "The site in use does not define a settings form.",
         "FRONTEND_SETTINGS_SCHEMA_INVALID": "The site's settings schema is not valid ({message}).",
@@ -2874,7 +2874,7 @@
           "override": "Custom address"
         },
         "source": {
-          "OVERRIDE": "Admin override",
+          "OVERRIDE": "Set by an admin",
           "FRONTEND": "Site",
           "THEME": "Theme",
           "FALLBACK": "Pano's own page",
@@ -4506,7 +4506,7 @@
     "SERVER_BACKUP_SYSTEM": "{action, select, SCHEDULED {A schedule took backup {name}} RETENTION {Retention removed backup {name}} other {Backup {name} changed}} on {serverName}.",
     "CREATED_FRONTEND_KEY": "**{username}** created the \"{name}\" site connection key.",
     "DELETED_FRONTEND_KEY": "**{username}** revoked the \"{name}\" site connection key.",
-    "CHANGED_FRONTEND_MODE": "**{username}** changed what shows the site to {mode}.",
+    "CHANGED_FRONTEND_MODE": "**{username}** changed what visitors see to {mode}.",
     "UPLOADED_CUSTOM_APP": "**{username}** uploaded the custom app {appId} ({version}).",
     "DELETED_CUSTOM_APP": "**{username}** deleted the custom app {appId}.",
     "UPDATED_FRONTEND_ORIGINS": "**{username}** updated the websites that may access this Pano ({count}).",
