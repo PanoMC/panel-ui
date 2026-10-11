@@ -1016,9 +1016,7 @@
         "type-full": "Tam arşiv",
         "delete-snapshot-description": "Bu kayıt noktası kalıcı olarak silinecek. Diğer yedekler olduğu gibi kalır.",
         "snapshot": {
-          "site-size": "Site: {size}",
-          "own-size": "Kaplanan: {size}",
-          "own-size-hint": "Yalnızca bu yedeğin kapladığı alan",
+          "unpacked": "açılınca {size}",
           "storage-full": "Depolama alanı dolu.",
           "failed": "Yedekleme başarısız oldu.",
           "upload-note": "Son kayıt noktasından bu yana yalnızca değişenler gönderilir."

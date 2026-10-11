@@ -1016,9 +1016,7 @@
         "type-full": "Full archive",
         "delete-snapshot-description": "This snapshot will be deleted for good. Other backups stay as they are.",
         "snapshot": {
-          "site-size": "Site: {size}",
-          "own-size": "Uses {size}",
-          "own-size-hint": "Space used only by this backup",
+          "unpacked": "{size} unpacked",
           "storage-full": "Storage is full.",
           "failed": "The backup failed.",
           "upload-note": "Only what changed since the last snapshot is sent."

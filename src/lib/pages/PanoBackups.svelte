@@ -291,20 +291,14 @@
                     {#if backup.type !== 'snapshot'}
                       {formatBytes(backup.sizeBytes || 0)}
                     {:else if backup.status === 'DONE'}
-                      <div>
-                        {$_('pages.settings.backups.snapshot.site-size', {
-                          values: { size: formatSnapshotBytes(backup.logicalBytes) },
-                        })}
-                      </div>
-                      <div class="small text-body-secondary">
-                        {$_('pages.settings.backups.snapshot.own-size', {
-                          values: { size: formatSnapshotBytes(backup.uniqueBytes) },
-                        })}
-                        <i
-                          class="fa-solid fa-circle-info ms-1"
-                          aria-label={$_('pages.settings.backups.snapshot.own-size-hint')}
-                          use:tooltip={[$_('pages.settings.backups.snapshot.own-size-hint')]}></i>
-                      </div>
+                      <div>{formatSnapshotBytes(backup.downloadBytes)}</div>
+                      {#if backup.logicalBytes}
+                        <div class="small text-body-secondary">
+                          {$_('pages.settings.backups.snapshot.unpacked', {
+                            values: { size: formatSnapshotBytes(backup.logicalBytes) },
+                          })}
+                        </div>
+                      {/if}
                     {/if}
                   </td>
                   {#if showRemoteStatus}
@@ -570,7 +564,6 @@
     tagColour,
     waitForRestart,
   } from '$lib/pano-backup.util.js';
-  import tooltip from '$lib/tooltip.util';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
   import DateComponent from '$lib/components/Date.svelte';
