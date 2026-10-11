@@ -308,7 +308,7 @@
                     {#if backup.type !== 'snapshot'}
                       {formatBytes(backup.sizeBytes || 0)}
                     {:else if backup.status === 'DONE'}
-                      {formatSnapshotBytes(backup.uniqueBytes)}
+                      {formatSnapshotBytes(backup.storedBytes ?? backup.uniqueBytes)}
                     {/if}
                   </td>
                   {#if showRemoteStatus}
