@@ -917,17 +917,14 @@
         },
         "transfer": {
           "title": "Pano Host'a Aktar",
-          "step-push": "Bu Pano'nun bir kopyasını yükleyin.",
-          "step-confirm": "Taşımayı 24 saat içinde {website} üzerinde onaylayın. Örnek bu kopyadan geri yüklenir.",
-          "plain-note": "Kopya, Pano Host geri yükleyebilsin diye parolayla şifrelenmez; TLS üzerinden gider ve taşımadan sonra silinir.",
           "max-size": "En fazla {size}",
           "start": "Taşımayı başlat",
           "awaiting": "Bekleyen bir taşıma var. {website} üzerinde onaylayın veya reddedin.",
           "confirm-until": "Son onay:",
-          "step-pick": "Bu Pano'nun taşınacağı, hesabınızdaki Pano Host örneğini seçin.",
+          "step-pick": "Bir örnek seçin.",
           "target": "Pano Host örneği",
           "no-workloads": "Hesabınızda taşınabilecek bir Pano Host örneği yok.",
-          "get-instance": "{website} üzerinden edinin"
+          "create-instance": "Yeni bir örnek oluştur"
         },
         "errors": {
           "generic": "Bir şeyler ters gitti ({code}).",

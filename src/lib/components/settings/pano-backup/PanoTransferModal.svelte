@@ -7,15 +7,7 @@
       </div>
       <div class="text-capitalize">{$_('pages.settings.backups.transfer.title')}</div>
     </div>
-    <ol class="mb-0 vstack gap-1 text-start">
-      <li>{$_('pages.settings.backups.transfer.step-pick')}</li>
-      <li>{$_('pages.settings.backups.transfer.step-push')}</li>
-      <li>
-        {$_('pages.settings.backups.transfer.step-confirm', {
-          values: { website: websiteDisplayHost() },
-        })}
-      </li>
-    </ol>
+    <div>{$_('pages.settings.backups.transfer.step-pick')}</div>
 
     {#if workloadList === null}
       <div class="spinner-border spinner-border-sm text-body-secondary" role="status"></div>
@@ -25,14 +17,7 @@
         <div>{$_(workloadsError.key, { values: workloadsError.values })}</div>
       </div>
     {:else if workloads.length === 0}
-      <div>
-        {$_('pages.settings.backups.transfer.no-workloads')}
-        <a href={manageUrl} target="_blank" rel="noopener noreferrer">
-          {$_('pages.settings.backups.transfer.get-instance', {
-            values: { website: websiteDisplayHost() },
-          })}
-        </a>
-      </div>
+      <div>{$_('pages.settings.backups.transfer.no-workloads')}</div>
     {:else}
       <div class="text-start">
         <div class="form-floating">
@@ -55,10 +40,18 @@
       </div>
     {/if}
 
-    <div class="alert alert-info mb-0 d-flex align-items-start">
-      <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
-      <div>{$_('pages.settings.backups.transfer.plain-note')}</div>
-    </div>
+    {#if workloadList !== null && !workloadsError}
+      <div>
+        <a
+          class="btn btn-link text-decoration-none"
+          href={createUrl}
+          target="_blank"
+          rel="noopener noreferrer">
+          <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
+          {$_('pages.settings.backups.transfer.create-instance')}
+        </a>
+      </div>
+    {/if}
 
     {#if error}
       <div class="alert alert-danger mb-0 d-flex align-items-start">
@@ -89,7 +82,6 @@
 
 <script>
   import { _ } from 'svelte-i18n';
-  import { websiteDisplayHost } from '$lib/website-display.util.js';
 
   import ApiUtil from '$lib/api.util.js';
   import { formatBytes } from '$lib/string.util.js';
@@ -118,7 +110,7 @@
   /** @type {ReturnType<typeof describeError>} */
   let error = $state(null);
 
-  const manageUrl = $derived(hostManageUrl(PANO_WEBSITE_URL, 'instances'));
+  const createUrl = $derived(hostManageUrl(PANO_WEBSITE_URL, 'new'));
   const workloadsError = $derived(workloadList?.error ? describeError(workloadList) : null);
   const workloads = $derived(
     /** @type {any[]} */ (

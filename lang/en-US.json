@@ -917,17 +917,14 @@
         },
         "transfer": {
           "title": "Transfer to Pano Host",
-          "step-push": "Upload a copy of this Pano.",
-          "step-confirm": "Confirm the transfer on {website} within 24 hours. The instance is restored from the copy.",
-          "plain-note": "The copy is not passphrase encrypted, so Pano Host can restore it; it travels over TLS and is deleted after the transfer.",
           "max-size": "Up to {size}",
           "start": "Start transfer",
           "awaiting": "A transfer is waiting. Confirm or reject it on {website}.",
           "confirm-until": "Confirm until",
-          "step-pick": "Pick the Pano Host instance of your account this Pano should move to.",
+          "step-pick": "Select an instance.",
           "target": "Pano Host instance",
           "no-workloads": "Your account has no Pano Host instance to move into.",
-          "get-instance": "Get one on {website}"
+          "create-instance": "Create a new instance"
         },
         "errors": {
           "generic": "Something went wrong ({code}).",

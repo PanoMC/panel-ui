@@ -246,7 +246,7 @@ export function connectionState(remote) {
  * URL, `PANO_WEBSITE_URL`), e.g. `<website>/host/manage/instances`.
  *
  * @param {string | null | undefined} websiteUrl
- * @param {'backups' | 'instances'} [section]
+ * @param {'backups' | 'instances' | 'new'} [section]
  */
 export function hostManageUrl(websiteUrl, section = 'backups') {
   const origin = String(websiteUrl || 'https://panomc.com').replace(/\/+$/, '');
