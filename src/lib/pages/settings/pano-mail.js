@@ -56,6 +56,7 @@ function readPeriod(raw) {
  * @property {{ id: string, name: string, free: boolean, mailsPerMonth: number, mailsPerDay: number } | null} plan
  * @property {{ day: { used: number, limit: number, resetsAt: number | null }, month: { used: number, limit: number, resetsAt: number | null } } | null} usage
  * @property {{ mailsPerMonth: number, mailsPerDay: number } | null} freePlan
+ * @property {string[]} senders the domains the account may send from
  * @property {string} manageUrl
  */
 
@@ -108,6 +109,11 @@ export function readPanoMail(body) {
             mailsPerDay: num(freePlan.mailsPerDay) ?? 0,
           }
         : null,
+      senders: Array.isArray(body.senders)
+        ? body.senders
+            .map((/** @type {any} */ sender) => sender?.domain)
+            .filter((/** @type {any} */ domain) => typeof domain === 'string' && domain !== '')
+        : [],
       manageUrl: typeof body.manageUrl === 'string' ? body.manageUrl : '',
     },
   };
@@ -125,15 +131,20 @@ export function createPanoMailApi(client, request) {
 
     /**
      * `PUT /panel/settings` with the `email` form field `{ enabled: true, provider: 'PANO_MAIL' }`,
-     * the call the SMTP form uses too.
+     * the call the SMTP form uses too. With `from`, that address becomes the sender (it has to be at
+     * one of the account's sender domains, else `INVALID_DATA`).
      *
+     * @param {string} [from]
      * @returns {Promise<{ ok: boolean, code: string }>} `code` is `CONNECT_REQUIRED`,
      *   `PANO_MAIL_UNAVAILABLE` or another backend code when `ok` is false.
      */
-    switchToPanoMail: async () => {
+    switchToPanoMail: async (from) => {
       const form = new FormData();
 
-      form.append('email', JSON.stringify({ enabled: true, provider: 'PANO_MAIL' }));
+      form.append(
+        'email',
+        JSON.stringify({ enabled: true, provider: 'PANO_MAIL', ...(from ? { from } : {}) }),
+      );
 
       const body = await client.put({ path: '/panel/settings', body: form, request });
 
@@ -202,6 +213,43 @@ export function panoMailView(status) {
   if (status.provider !== 'PANO_MAIL') return 'activate';
 
   return status.usage && status.plan ? 'active' : 'unreadable';
+}
+
+/**
+ * The limits to show before Pano Mail is on: the connected account's own plan when it is known,
+ * else the free plan every account starts with.
+ *
+ * @param {PanoMailStatus} status
+ * @returns {{ name: string, free: boolean, mailsPerMonth: number, mailsPerDay: number } | null}
+ */
+export function offeredPlan(status) {
+  if (status.connected && status.plan) return status.plan;
+
+  return status.freePlan ? { name: '', free: true, ...status.freePlan } : null;
+}
+
+/**
+ * @param {string} address `local@domain` or `Name <local@domain>`
+ * @returns {{ localPart: string, domain: string }} empty strings when it is not an address
+ */
+export function splitAddress(address) {
+  const text = String(address ?? '').trim();
+  const bare = /<([^>]*)>\s*$/.exec(text)?.[1]?.trim() ?? text;
+  const at = bare.lastIndexOf('@');
+
+  if (at <= 0) return { localPart: '', domain: '' };
+
+  return { localPart: bare.slice(0, at), domain: bare.slice(at + 1).toLowerCase() };
+}
+
+const LOCAL_PART = /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*$/;
+
+/**
+ * @param {string} localPart
+ * @returns {boolean} a plain e-mail local part of at most 64 characters (the backend's rule)
+ */
+export function validLocalPart(localPart) {
+  return localPart.length > 0 && localPart.length <= 64 && LOCAL_PART.test(localPart);
 }
 
 /**

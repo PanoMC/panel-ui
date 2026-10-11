@@ -3,11 +3,14 @@ import { describe, expect, test } from 'bun:test';
 import {
   createPanoMailApi,
   formatReset,
+  offeredPlan,
   panoMailView,
   percentUsed,
   readPanoMail,
+  splitAddress,
   usageAlert,
   usageLevel,
+  validLocalPart,
 } from './pano-mail.js';
 import { stubClient } from '../view/frontend/testkit.js';
 
@@ -157,5 +160,63 @@ describe('formatReset', () => {
   test('empty without a time, text with one', () => {
     expect(formatReset(null, 'en-US')).toBe('');
     expect(formatReset(1_800_000_000_000, 'en-US')).not.toBe('');
+  });
+});
+
+describe('the sender picker and the offered plan', () => {
+  const base = readPanoMail({
+    connected: true,
+    provider: 'SMTP',
+    plan: { id: 'plus', name: 'Plus', free: false, mailsPerMonth: 5000, mailsPerDay: 500 },
+    freePlan: { mailsPerMonth: 500, mailsPerDay: 50 },
+    senders: [{ domain: 'mysite.mail.example', kind: 'SUBDOMAIN' }, { domain: '' }, null],
+  }).status;
+
+  test('reads the sender domains, skipping broken rows', () => {
+    expect(base.senders).toEqual(['mysite.mail.example']);
+    expect(readPanoMail({ connected: false }).status.senders).toEqual([]);
+  });
+
+  test('offers the account plan when connected, else the free plan', () => {
+    expect(offeredPlan(base)).toMatchObject({ name: 'Plus', free: false, mailsPerDay: 500 });
+    expect(offeredPlan({ ...base, connected: false })).toEqual({
+      name: '',
+      free: true,
+      mailsPerMonth: 500,
+      mailsPerDay: 50,
+    });
+    expect(offeredPlan({ ...base, plan: null, freePlan: null })).toBeNull();
+  });
+
+  test('splits an address with or without a display name', () => {
+    expect(splitAddress('hello@Play.Example.com')).toEqual({
+      localPart: 'hello',
+      domain: 'play.example.com',
+    });
+    expect(splitAddress('Site <no-reply@a.b>')).toEqual({ localPart: 'no-reply', domain: 'a.b' });
+    expect(splitAddress('nothing')).toEqual({ localPart: '', domain: '' });
+  });
+
+  test('accepts only a plain local part', () => {
+    expect(validLocalPart('no-reply')).toBe(true);
+    expect(validLocalPart('a.b')).toBe(true);
+    expect(validLocalPart('a b')).toBe(false);
+    expect(validLocalPart('a..b')).toBe(false);
+    expect(validLocalPart('')).toBe(false);
+    expect(validLocalPart('x'.repeat(65))).toBe(false);
+  });
+
+  test('sends the picked address with the switch call', async () => {
+    let sent;
+    const api = createPanoMailApi({
+      put: async ({ body }) => {
+        sent = JSON.parse(body.get('email'));
+
+        return { result: 'ok' };
+      },
+    });
+
+    expect(await api.switchToPanoMail('hello@play.example.com')).toEqual({ ok: true, code: '' });
+    expect(sent).toEqual({ enabled: true, provider: 'PANO_MAIL', from: 'hello@play.example.com' });
   });
 });

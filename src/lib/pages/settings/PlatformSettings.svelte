@@ -760,14 +760,19 @@
       {#if panoMailPhase === 'connect'}
         <div class="d-flex align-items-center gap-2 mb-1">
           <b>{$_('pages.settings.platform.smtp.pano-mail.pano')}</b>
-          <span class="badge text-bg-success"
-            >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
+          {#if panoMailOffered?.free}
+            <span class="badge text-bg-success"
+              >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
+          {:else if panoMailOffered?.name}
+            <span class="badge text-bg-secondary">{panoMailOffered.name}</span>
+          {/if}
         </div>
-        {#if panoMailStatus.freePlan}
+        {#if panoMailOffered}
           <div>
-            {$_('pages.settings.platform.smtp.pano-mail.free-allowance', {
+            {$_('pages.settings.platform.smtp.pano-mail.allowance', {
               values: {
-                count: panoMailStatus.freePlan.mailsPerMonth.toLocaleString($currentLanguage.code),
+                month: panoMailOffered.mailsPerMonth.toLocaleString($currentLanguage.code),
+                day: panoMailOffered.mailsPerDay.toLocaleString($currentLanguage.code),
               },
             })}
           </div>
@@ -788,14 +793,19 @@
       {:else if panoMailPhase === 'activate'}
         <div class="d-flex align-items-center gap-2 mb-1">
           <b>{$_('pages.settings.platform.smtp.pano-mail.pano')}</b>
-          <span class="badge text-bg-success"
-            >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
+          {#if panoMailOffered?.free}
+            <span class="badge text-bg-success"
+              >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
+          {:else if panoMailOffered?.name}
+            <span class="badge text-bg-secondary">{panoMailOffered.name}</span>
+          {/if}
         </div>
-        {#if panoMailStatus.freePlan}
+        {#if panoMailOffered}
           <div>
-            {$_('pages.settings.platform.smtp.pano-mail.free-allowance', {
+            {$_('pages.settings.platform.smtp.pano-mail.allowance', {
               values: {
-                count: panoMailStatus.freePlan.mailsPerMonth.toLocaleString($currentLanguage.code),
+                month: panoMailOffered.mailsPerMonth.toLocaleString($currentLanguage.code),
+                day: panoMailOffered.mailsPerDay.toLocaleString($currentLanguage.code),
               },
             })}
           </div>
@@ -937,7 +947,47 @@
           </div>
         </div>
 
-        {#if panoMailStatus.from}
+        {#if panoMailStatus.senders.length > 0}
+          <div class="row mb-3">
+            <label class="col-md-6 col-form-label" for="panoMailFromName"
+              >{$_('pages.settings.platform.smtp.pano-mail.from')}</label>
+            <div class="col-md-6">
+              <div class="input-group">
+                <input
+                  id="panoMailFromName"
+                  type="text"
+                  class="form-control"
+                  class:is-invalid={panoMailFromLocal !== '' && !validLocalPart(panoMailFromLocal)}
+                  maxlength="64"
+                  autocomplete="off"
+                  aria-label={$_('pages.settings.platform.smtp.pano-mail.from-name')}
+                  bind:value={panoMailFromLocal}
+                  disabled={panoMailBusy} />
+                <span class="input-group-text">@</span>
+                <select
+                  class="form-select"
+                  aria-label={$_('pages.settings.platform.smtp.pano-mail.from-domain')}
+                  bind:value={panoMailFromDomain}
+                  disabled={panoMailBusy || panoMailStatus.senders.length < 2}>
+                  {#each panoMailStatus.senders as domain (domain)}
+                    <option value={domain}>{domain}</option>
+                  {/each}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            on:click={onPanoMailSenderSaveClick}
+            disabled={panoMailBusy || !panoMailSenderChanged || !validLocalPart(panoMailFromLocal)}>
+            {$_('buttons.save')}
+            {#if panoMailBusy}
+              <span class="spinner-border spinner-border-sm" role="status"></span>
+            {/if}
+          </button>
+        {:else if panoMailStatus.from}
           <div class="row mb-3">
             <label class="col-md-6 col-form-label" for="panoMailFrom"
               >{$_('pages.settings.platform.smtp.pano-mail.from')}</label>
@@ -951,14 +1001,6 @@
             </div>
           </div>
         {/if}
-
-        <button
-          type="button"
-          class="btn btn-outline-primary"
-          title={$_('pages.settings.platform.smtp.pano-mail.use-own')}
-          aria-label={$_('pages.settings.platform.smtp.pano-mail.use-own')}
-          on:click={() => (mailChoice = 'own')}
-          >{$_('pages.settings.platform.smtp.pano-mail.use-own')}</button>
       {/if}
     {/if}
 
@@ -1204,6 +1246,9 @@
   import { describeError } from '$lib/pages/view/frontend/frontend.util.js';
   import {
     createPanoMailApi,
+    offeredPlan,
+    splitAddress,
+    validLocalPart,
     formatReset,
     panoMailView,
     percentUsed,
@@ -1890,6 +1935,63 @@
   $: panoMailUsageAlert = panoMailPhase === 'active' ? usageAlert(panoMailStatus.usage) : null;
   $: panoMailPreparing =
     panoMailPhase === 'active' && panoMailStatus.enabled && !panoMailStatus.ready;
+  $: panoMailOffered = panoMailStatus ? offeredPlan(panoMailStatus) : null;
+
+  /** The sender picker: the stored address split in two, reset whenever the status is (re)read. */
+  let panoMailFromLocal = '';
+  let panoMailFromDomain = '';
+  let panoMailSenderFor;
+
+  $: if (panoMailStatus !== panoMailSenderFor) {
+    panoMailSenderFor = panoMailStatus;
+
+    const stored = panoMailStoredSender(panoMailStatus);
+
+    panoMailFromLocal = stored.localPart;
+    panoMailFromDomain = stored.domain;
+  }
+
+  $: panoMailSenderChanged =
+    !!panoMailStatus &&
+    (panoMailFromLocal !== panoMailStoredSender(panoMailStatus).localPart ||
+      panoMailFromDomain !== panoMailStoredSender(panoMailStatus).domain);
+
+  /** This Pano's own sender while it is at one of the account's domains, else the website's default. */
+  function panoMailStoredSender(status) {
+    if (!status) return { localPart: '', domain: '' };
+
+    const own = splitAddress(status.provider === 'PANO_MAIL' ? data.email?.sender : '');
+    const picked = status.senders.includes(own.domain) ? own : splitAddress(status.from);
+
+    return {
+      localPart: picked.localPart || 'no-reply',
+      domain: status.senders.includes(picked.domain) ? picked.domain : (status.senders[0] ?? ''),
+    };
+  }
+
+  async function onPanoMailSenderSaveClick() {
+    panoMailBusy = true;
+
+    const result = await panoMailApi.switchToPanoMail(`${panoMailFromLocal}@${panoMailFromDomain}`);
+
+    if (!result.ok) {
+      const key =
+        result.code === 'INVALID_DATA'
+          ? 'err-sender'
+          : result.code === 'PANO_MAIL_UNAVAILABLE'
+            ? 'err-unavailable'
+            : 'err-generic';
+
+      await showErrorToast(`pages.settings.platform.smtp.pano-mail.${key}`);
+      panoMailBusy = false;
+
+      return;
+    }
+
+    await invalidateAll();
+    await showSuccessToast('components.toasts.settings-save-success');
+    panoMailBusy = false;
+  }
 
   async function onPanoMailRetryClick() {
     panoMailBusy = true;
