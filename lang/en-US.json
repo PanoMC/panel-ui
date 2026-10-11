@@ -868,9 +868,6 @@
         "hour": "Hour",
         "keep": "Keep",
         "last-upload": "Last backup:",
-        "mc-servers-title": "Minecraft server backups",
-        "mc-servers-description": "New full backups of the selected servers are also uploaded to Pano Backup, encrypted with your passphrase when one is set.",
-        "mc-servers-none": "There are no managed servers.",
         "usage": "Used",
         "job": {
           "type-create": "Backup",

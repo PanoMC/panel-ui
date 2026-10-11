@@ -1,4 +1,4 @@
-<!-- Backup schedules: local backups on this server, and (when connected) Pano Backup; MC server uploads are coming soon. -->
+<!-- Backup schedules: local backups on this server, and (when connected) Pano Backup. -->
 <BsModal bind:this={modal} size="modal-lg">
   <form
     onsubmit={(event) => {
@@ -129,17 +129,6 @@
             </div>
           {/if}
         </div>
-
-        <div class="vstack gap-3 text-start">
-          <!-- Coming soon: nothing to pick yet (the platform does not upload MC server backups). -->
-          <div class="d-flex align-items-center gap-2 text-capitalize">
-            {$_('pages.settings.backups.mc-servers-title')}
-            <span class="badge text-bg-secondary text-uppercase">
-              {$_('pages.servers.backups.coming-soon')}
-            </span>
-          </div>
-          <div>{$_('pages.settings.backups.mc-servers-description')}</div>
-        </div>
       {/if}
 
       {#if error}
@@ -205,7 +194,7 @@
   let remoteSchedule = $state('OFF');
   let remoteHour = $state(3);
   let remoteMode = $state('SNAPSHOT');
-  /** Kept as saved and sent back unchanged while MC server uploads are coming soon. */
+  /** Kept as saved and sent back unchanged: MC server uploads have no setting here yet. */
   /** @type {number[]} */
   let mcServerIds = $state([]);
 

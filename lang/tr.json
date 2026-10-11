@@ -868,9 +868,6 @@
         "hour": "Saat",
         "keep": "Tutulacak",
         "last-upload": "Son yedek:",
-        "mc-servers-title": "Minecraft sunucu yedekleri",
-        "mc-servers-description": "Seçilen sunucuların yeni tam yedekleri de Pano Backup'a yüklenir; parola belirlenmişse onunla şifrelenir.",
-        "mc-servers-none": "Yönetilen sunucu yok.",
         "usage": "Kullanılan",
         "job": {
           "type-create": "Yedekleme",
