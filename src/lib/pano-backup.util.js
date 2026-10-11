@@ -4,7 +4,6 @@
  * Svelte and `$lib` imports so `bun test` runs them as they are.
  */
 import { formatBytes } from './string.util.js';
-import { pageNumber } from './components/pagination.util.js';
 
 /** Local schedule (`PUT /api/v1/panel/pano-backups/settings`). */
 export const LOCAL_SCHEDULES = Object.freeze(['OFF', 'DAILY', 'WEEKLY']);
@@ -275,37 +274,6 @@ export function backupPlanUrl(websiteUrl, callback) {
  */
 export function canRestoreRemote(backup) {
   return backup?.status === 'DONE' && backup?.kind !== 'mc-server';
-}
-
-/**
- * Puts one page of `GET …/remote/list` (rows already grouped, ordered and cut by the server) under the Pano each
- * row belongs to. Only the Panos that have a row on this page get a group; this Pano is always shown on the first
- * page, even without a backup, so the page can say it has none. A group's `count` and `usedBytes` are the server's,
- * for all its backups, not only the page's.
- *
- * @param {Record<string, any> | null | undefined} list `GET …/remote/list`.
- * @returns {{ instanceId: string, instanceName: string, current: boolean, connected: boolean | null,
- *   usedBytes: number, lastBackupAt: number | null, count: number, backups: any[] }[]}
- */
-export function groupRemotePage(list) {
-  const items = Array.isArray(list?.items) ? list.items : [];
-  const groups = Array.isArray(list?.groups) ? list.groups : [];
-  const first = pageNumber(list?.page) === 1;
-
-  return groups
-    .map((group) => ({
-      instanceId: String(group?.instanceId ?? ''),
-      instanceName: String(group?.instanceName || group?.instanceId || ''),
-      current: group?.current === true,
-      connected: typeof group?.connected === 'boolean' ? group.connected : null,
-      usedBytes: Number(group?.usedBytes) || 0,
-      lastBackupAt: group?.lastBackupAt ?? null,
-      count: Number(group?.count) || 0,
-      backups: items.filter(
-        (row) => String(row?.instanceId ?? '') === String(group?.instanceId ?? ''),
-      ),
-    }))
-    .filter((group) => group.backups.length > 0 || (first && group.current && group.count === 0));
 }
 
 /**

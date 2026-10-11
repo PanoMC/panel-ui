@@ -136,42 +136,52 @@
     {/if}
   </div>
 
-  <!-- Pano Backup: the account, its plan and storage, then every Pano of the account, this one first -->
+  <!-- Pano Backup: the account, its plan and storage, then this Pano's backups -->
   <div class="card">
     <CardHeader showRight={connected && !hostUnavailable}>
-      <div slot="left">{$_('pages.settings.backups.remote-title')}</div>
+      <div slot="left">
+        {$_('pages.settings.backups.remote-count', {
+          values: { count: Number(remoteList?.page?.totalItems) || 0 },
+        })}
+      </div>
       <!-- Nothing to act on while panomc.com cannot be reached. -->
-      <div slot="right">
-        <div class="hstack gap-2">
+      <div slot="right" class="dropdown">
+        <button
+          type="button"
+          class="btn btn-sm btn-link"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          title={$_('pages.settings.backups.column-actions')}
+          aria-label={$_('pages.settings.backups.column-actions')}>
+          <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end">
           {#if backupMode === 'FULL'}
             <button
               type="button"
-              class="btn btn-link btn-sm"
-              title={$_('pages.settings.backups.passphrase-title')}
+              class="dropdown-item text-capitalize"
               onclick={() => passphraseModal?.open()}>
               <i
-                class="fa-solid {remote.passphraseSet ? 'fa-lock' : 'fa-lock-open'} me-lg-1"
+                class="fa-solid {remote.passphraseSet ? 'fa-lock' : 'fa-lock-open'} me-2"
                 aria-hidden="true"></i>
-              <span class="d-none d-lg-inline">
-                {$_('pages.settings.backups.passphrase-title')}
-              </span>
+              {$_('pages.settings.backups.passphrase-title')}
             </button>
           {/if}
           <button
             type="button"
-            class="btn btn-outline-primary btn-sm"
+            class="dropdown-item text-capitalize"
             disabled={running || busyAction === 'upload'}
             onclick={() => uploadModal?.show()}>
-            <i class="fa-solid fa-cloud-arrow-up me-lg-1" aria-hidden="true"></i>
-            <span class="d-none d-lg-inline">{$_('pages.settings.backups.upload-now')}</span>
+            <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
+            {$_('pages.settings.backups.upload-now')}
           </button>
           <button
             type="button"
-            class="btn btn-outline-primary btn-sm"
+            class="dropdown-item text-capitalize"
             disabled={running || !!openTransfer}
             onclick={() => transferModal?.open()}>
-            <i class="fa-solid fa-right-left me-lg-1" aria-hidden="true"></i>
-            <span class="d-none d-lg-inline">{$_('pages.settings.backups.transfer.title')}</span>
+            <i class="fa-solid fa-right-left me-2" aria-hidden="true"></i>
+            {$_('pages.settings.backups.transfer.title')}
           </button>
         </div>
       </div>
@@ -215,171 +225,148 @@
             <div>{$_(remoteError.key, { values: remoteError.values })}</div>
           </div>
         </div>
-      {:else if !groupsHaveBackups}
+      {:else if remoteLoading}
+        <div class="card-body d-flex justify-content-center py-5">
+          <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+        </div>
+      {:else if remoteRows.length === 0}
         <NoContent />
       {:else}
         <div class="table-responsive">
-          <table class="table table-hover mb-0 align-middle">
+          <table class="table table-hover mb-0">
             <thead>
               <tr>
                 <th scope="col"></th>
-                <th>{$_('pages.settings.backups.column-created')}</th>
-                <th>{$_('pages.settings.backups.column-source')}</th>
-                <th>{$_('pages.settings.backups.column-size')}</th>
+                <th class="align-middle text-nowrap" scope="col">
+                  {$_('pages.settings.backups.column-created')}
+                </th>
+                <th class="align-middle text-nowrap" scope="col">
+                  {$_('pages.settings.backups.column-type')}
+                </th>
+                <th class="align-middle text-nowrap" scope="col">
+                  {$_('pages.settings.backups.column-size')}
+                </th>
+                {#if showRemoteStatus}
+                  <th class="align-middle text-nowrap" scope="col">
+                    {$_('pages.settings.backups.column-status')}
+                  </th>
+                {/if}
               </tr>
             </thead>
-            {#each groups as group (group.instanceId)}
-              <tbody>
-                <tr class="table-group-divider">
-                  <th colspan="4" class="bg-body-tertiary">
-                    <div class="d-flex flex-wrap align-items-center gap-2">
-                      <i class="fa-solid fa-server text-body-secondary" aria-hidden="true"></i>
-                      <span>{group.instanceName}</span>
-                      {#if group.current}
-                        <span class="badge text-bg-primary">
-                          {$_('pages.settings.backups.this-pano')}
-                        </span>
-                      {:else if group.connected === false}
-                        <span class="badge text-bg-secondary">
-                          {$_('pages.settings.backups.pano-disconnected')}
-                        </span>
-                      {/if}
-                      <span class="small fw-normal text-body-secondary ms-auto">
-                        {$_('pages.settings.backups.pano-used', {
-                          values: {
-                            size: formatBytes(group.usedBytes),
-                            count: group.count,
-                          },
-                        })}
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-                {#if group.backups.length === 0}
-                  <tr>
-                    <td colspan="4" class="small text-body-secondary fst-italic">
-                      {$_('pages.settings.backups.no-remote-this-pano')}
-                    </td>
-                  </tr>
-                {/if}
-                {#each group.backups as backup (backup.id)}
-                  <tr>
-                    <th scope="row" class="align-middle text-center">
-                      {#if canDownloadRow(backup) || canRestoreRow(backup) || canDeleteRow(backup)}
-                        <div class="dropdown position-static">
-                          <button
-                            type="button"
-                            class="btn btn-link"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            aria-label={$_('pages.settings.backups.column-actions')}>
-                            <span class="fas fa-ellipsis-v"></span>
-                          </button>
-                          <div class="dropdown-menu dropdown-menu-start text-capitalize">
-                            {#if canDownloadRow(backup)}
-                              <button
-                                type="button"
-                                class="dropdown-item text-capitalize"
-                                disabled={running}
-                                onclick={() => void downloadSnapshot(backup)}>
-                                <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
-                                {$_('buttons.download')}
-                              </button>
-                            {/if}
-                            {#if canRestoreRow(backup)}
-                              <button
-                                type="button"
-                                class="dropdown-item text-capitalize"
-                                disabled={running}
-                                onclick={() => askRestoreRemote(backup, group)}>
-                                <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"
-                                ></i>
-                                {$_('pages.settings.backups.restore.submit')}
-                              </button>
-                            {/if}
-                            {#if canDeleteRow(backup)}
-                              <button
-                                type="button"
-                                class="dropdown-item text-danger text-capitalize"
-                                onclick={() =>
-                                  askDelete(
-                                    backup.type === 'snapshot' ? 'snapshot' : 'remote',
-                                    backup,
-                                  )}>
-                                <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
-                                {$_('buttons.delete')}
-                              </button>
-                            {/if}
-                          </div>
+            <tbody>
+              {#each remoteRows as backup (backup.id)}
+                <tr>
+                  <th scope="row" class="align-middle text-center">
+                    {#if canDownloadRow(backup) || canRestoreRow(backup) || canDeleteRow(backup)}
+                      <div class="dropdown position-static">
+                        <button
+                          type="button"
+                          class="btn btn-link"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                          title={$_('pages.settings.backups.column-actions')}
+                          aria-label={$_('pages.settings.backups.column-actions')}>
+                          <span class="fas fa-ellipsis-v"></span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-start">
+                          {#if canDownloadRow(backup)}
+                            <button
+                              type="button"
+                              class="dropdown-item text-capitalize"
+                              disabled={running}
+                              onclick={() => void downloadSnapshot(backup)}>
+                              <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
+                              {$_('buttons.download')}
+                            </button>
+                          {/if}
+                          {#if canRestoreRow(backup)}
+                            <button
+                              type="button"
+                              class="dropdown-item text-capitalize"
+                              disabled={running}
+                              onclick={() => askRestoreRemote(backup)}>
+                              <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"></i>
+                              {$_('pages.settings.backups.restore.submit')}
+                            </button>
+                          {/if}
+                          {#if canDeleteRow(backup)}
+                            <button
+                              type="button"
+                              class="dropdown-item link-danger text-capitalize"
+                              onclick={() =>
+                                askDelete(
+                                  backup.type === 'snapshot' ? 'snapshot' : 'remote',
+                                  backup,
+                                )}>
+                              <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
+                              {$_('buttons.delete')}
+                            </button>
+                          {/if}
                         </div>
-                      {/if}
-                    </th>
-                    <td>
-                      <DateComponent time={backup.createdAt} relativeFormat />
+                      </div>
+                    {/if}
+                  </th>
+                  <td class="align-middle">
+                    <DateComponent time={backup.createdAt} relativeFormat />
+                  </td>
+                  <td class="align-middle">
+                    <span class="badge text-bg-{backup.type === 'snapshot' ? 'info' : 'secondary'}">
+                      {backup.type === 'snapshot'
+                        ? $_('pages.settings.backups.type-snapshot')
+                        : backup.kind === 'mc-server'
+                          ? $_('pages.settings.backups.kind-mc-server')
+                          : $_('pages.settings.backups.type-full')}
+                    </span>
+                    {#if backup.subject}
+                      <div class="small text-body-secondary">{backup.subject}</div>
+                    {/if}
+                  </td>
+                  <td class="align-middle">
+                    {#if backup.type !== 'snapshot'}
+                      {formatBytes(backup.sizeBytes || 0)}
+                    {:else if backup.status === 'DONE'}
+                      <div>
+                        {$_('pages.settings.backups.snapshot.site-size', {
+                          values: { size: formatSnapshotBytes(backup.logicalBytes) },
+                        })}
+                      </div>
+                      <div class="small text-body-secondary">
+                        {$_('pages.settings.backups.snapshot.own-size', {
+                          values: { size: formatSnapshotBytes(backup.uniqueBytes) },
+                        })}
+                        <i
+                          class="fa-solid fa-circle-info ms-1"
+                          aria-label={$_('pages.settings.backups.snapshot.own-size-hint')}
+                          use:tooltip={[$_('pages.settings.backups.snapshot.own-size-hint')]}></i>
+                      </div>
+                    {/if}
+                  </td>
+                  {#if showRemoteStatus}
+                    <td class="align-middle">
                       {#if backup.status !== 'DONE'}
                         <span
                           class="badge text-bg-{backup.status === 'FAILED'
                             ? 'danger'
-                            : 'secondary'} ms-1">
+                            : 'secondary'}">
                           {$_(
                             `pages.settings.backups.remote-status-${String(backup.status).toLowerCase()}`,
                           )}
                         </span>
                       {/if}
-                    </td>
-                    <td>
-                      <span
-                        class="badge text-bg-{backup.kind === 'mc-server' ? 'info' : 'primary'}">
-                        {backup.kind === 'mc-server'
-                          ? $_('pages.settings.backups.kind-mc-server')
-                          : $_('pages.settings.backups.kind-pano')}
-                      </span>
-                      <div class="small text-body-secondary">
-                        {backup.type === 'snapshot'
-                          ? $_('pages.settings.backups.type-snapshot')
-                          : $_('pages.settings.backups.type-full')}
-                      </div>
-                      {#if backup.subject}
-                        <div class="small text-body-secondary">{backup.subject}</div>
+                      {#if snapshotProblem(backup)}
+                        {@const problem = snapshotProblem(backup)}
+                        <div class="small text-danger">
+                          {$_(problem.key, { values: problem.values })}
+                          {#if problem.storageFull}
+                            <a href={planUrl}>{$_('pages.settings.backups.account.manage-plan')}</a>
+                          {/if}
+                        </div>
                       {/if}
                     </td>
-                    <td>
-                      {#if backup.type === 'snapshot'}
-                        {#if backup.status === 'DONE'}
-                          <div>
-                            {$_('pages.settings.backups.snapshot.site-size', {
-                              values: { size: formatSnapshotBytes(backup.logicalBytes) },
-                            })}
-                          </div>
-                          <div class="small text-body-secondary">
-                            {$_('pages.settings.backups.snapshot.own-size', {
-                              values: { size: formatSnapshotBytes(backup.uniqueBytes) },
-                            })}
-                            <i
-                              class="fa-solid fa-circle-info ms-1"
-                              aria-label={$_('pages.settings.backups.snapshot.own-size-hint')}
-                              use:tooltip={[$_('pages.settings.backups.snapshot.own-size-hint')]}
-                            ></i>
-                          </div>
-                        {/if}
-                        {#if snapshotProblem(backup)}
-                          {@const problem = snapshotProblem(backup)}
-                          <div class="small text-danger">
-                            {$_(problem.key, { values: problem.values })}
-                            {#if problem.storageFull}
-                              <a href={planUrl}
-                                >{$_('pages.settings.backups.account.manage-plan')}</a>
-                            {/if}
-                          </div>
-                        {/if}
-                      {:else}
-                        {formatBytes(backup.sizeBytes || 0)}
-                      {/if}
-                    </td>
-                  </tr>
-                {/each}
-              </tbody>
-            {/each}
+                  {/if}
+                </tr>
+              {/each}
+            </tbody>
           </table>
         </div>
         {#if pageCount(remoteList?.page) > 1}
@@ -616,7 +603,6 @@
     formatSnapshotBytes,
     isJobRunning,
     isTransferOpen,
-    groupRemotePage,
     normaliseMode,
     snapshotDownloadUrl,
     snapshotProblem,
@@ -733,6 +719,7 @@
 
   /** @type {{ kind: 'local' | 'remote' | 'snapshot', backup: any } | null} */
   let deleteTarget = $state(null);
+  let remoteLoading = $state(false);
   /** @type {{ kind: 'local' | 'remote' | 'snapshot', backup: any } | null} */
   let restoreTarget = $state(null);
 
@@ -741,8 +728,12 @@
   const hostUnavailable = $derived(connectionState(remote) === 'unavailable');
   const backupMode = $derived(normaliseMode(remote?.settings?.mode));
   const planUrl = $derived(backupPlanUrl(PANO_WEBSITE_URL, `${$page.url.origin}${base}/backups`));
-  const groups = $derived(groupRemotePage(remoteList?.error ? null : remoteList));
-  const groupsHaveBackups = $derived(Number(remoteList?.page?.totalItems) > 0);
+  const remoteRows = $derived(
+    /** @type {any[]} */ (
+      !remoteList?.error && Array.isArray(remoteList?.items) ? remoteList.items : []
+    ),
+  );
+  const showRemoteStatus = $derived(remoteRows.some((row) => row.status !== 'DONE'));
   const remoteError = $derived(remoteList?.error ? describeError(remoteList) : null);
   const transfers = $derived(
     /** @type {any[]} */ (
@@ -818,11 +809,15 @@
 
   /** @param {number} number */
   async function goToRemotePage(number) {
+    remoteLoading = true;
+
     const next = await readRemotePage(number);
 
     if (next && !next.error) {
       remoteList = next;
     }
+
+    remoteLoading = false;
   }
 
   async function refresh() {
@@ -963,15 +958,14 @@
 
   /**
    * @param {any} backup
-   * @param {{ instanceName: string }} group
    */
-  function askRestoreRemote(backup, group) {
+  function askRestoreRemote(backup) {
     const snapshot = backup.type === 'snapshot';
 
     restoreTarget = { kind: snapshot ? 'snapshot' : 'remote', backup };
     restoreModal?.open({
       source: snapshot ? 'snapshot' : 'remote',
-      label: `${group.instanceName || backup.instanceName || ''} · ${new Date(backup.createdAt).toLocaleString()}`,
+      label: new Date(backup.createdAt).toLocaleString(),
       encrypted: !snapshot,
     });
   }

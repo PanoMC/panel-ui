@@ -7,7 +7,6 @@ import {
   canRestoreRemote,
   connectionState,
   describeError,
-  groupRemotePage,
   canDownloadSnapshot,
   snapshotDownloadUrl,
   hostManageUrl,
@@ -350,44 +349,5 @@ describe('snapshots', () => {
     expect(canDownloadSnapshot({ status: 'FAILED' })).toBe(false);
     expect(canDownloadSnapshot(null)).toBe(false);
     expect(snapshotDownloadUrl('a/b')).toBe('/api/v1/panel/pano-backups/remote/downloads/a%2Fb');
-  });
-
-  const groups = [
-    { instanceId: 'a', instanceName: 'Main', current: true, usedBytes: 110, count: 3 },
-    { instanceId: 'b', instanceName: 'Other', connected: false, usedBytes: 55, count: 1 },
-    { instanceId: 'c', instanceName: 'Mine too', current: true, usedBytes: 0, count: 0 },
-  ];
-
-  test('a page keeps the server order and only the Panos that have a row on it', () => {
-    const rows = groupRemotePage({
-      page: { number: 2, size: 2, totalItems: 4, totalPages: 2 },
-      items: [
-        { id: 'x1', instanceId: 'a', type: 'archive' },
-        { id: 'y1', instanceId: 'b', type: 'archive' },
-      ],
-      groups,
-    });
-
-    expect(rows.map((group) => group.instanceId)).toEqual(['a', 'b']);
-    expect(rows[0]).toMatchObject({ count: 3, usedBytes: 110, current: true });
-    expect(rows[1]).toMatchObject({ connected: false, count: 1 });
-    expect(rows[1].backups.map((row) => row.id)).toEqual(['y1']);
-  });
-
-  test('this Pano without backups is shown on the first page only, to say it has none', () => {
-    const first = groupRemotePage({
-      page: { number: 1, size: 10, totalItems: 0 },
-      items: [],
-      groups,
-    });
-    const later = groupRemotePage({
-      page: { number: 2, size: 10, totalItems: 12 },
-      items: [],
-      groups,
-    });
-
-    expect(first.map((group) => [group.instanceId, group.backups.length])).toEqual([['c', 0]]);
-    expect(later).toEqual([]);
-    expect(groupRemotePage(null)).toEqual([]);
   });
 });
