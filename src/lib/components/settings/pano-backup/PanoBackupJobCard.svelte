@@ -54,21 +54,14 @@
       {/if}
     </div>
   </div>
-{:else if job && dismissedId !== job.id}
+{:else if job && job.status !== 'DONE' && dismissedId !== job.id}
+  <!-- A finished job says so in a toast (`finished`); only a failed one stays on the page. -->
   <div
-    class="alert alert-{job.status === 'DONE'
-      ? 'success'
-      : 'danger'} alert-dismissible d-flex align-items-center gap-2 mb-0"
+    class="alert alert-danger alert-dismissible d-flex align-items-center gap-2 mb-0"
     role="alert">
-    <i
-      class="fa-solid {job.status === 'DONE' ? 'fa-circle-check' : 'fa-circle-xmark'}"
-      aria-hidden="true"></i>
+    <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
     <div>
-      {#if job.status === 'DONE'}
-        {$_(`pages.settings.backups.job.done-${String(job.type).toLowerCase()}`, {
-          values: { website: websiteDisplayHost() },
-        })}
-      {:else if error}
+      {#if error}
         {$_(error.key, { values: error.values })}
         {#if job.rolledBack}
           <div class="mt-1">{$_('pages.settings.backups.job.rolled-back')}</div>
@@ -100,6 +93,7 @@
   import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
 
   import DateComponent from '$lib/components/Date.svelte';
+  import { showSuccess } from '$lib/components/ToastContainer.svelte';
 
   /**
    * @type {{
@@ -114,8 +108,23 @@
   /** Smoothed bytes per second of the running job's current phase, or null while nothing moves. */
   let speed = $state(null);
 
-  /** The finished job whose alert the owner closed. */
+  /** The failed job whose alert the owner closed. */
   let dismissedId = $state(null);
+
+  /**
+   * A job that just ended: success is said in a toast, a failure stays on the page as an alert.
+   *
+   * @param {any} ended
+   */
+  function finished(ended) {
+    if (ended?.status === 'DONE') {
+      void showSuccess(`pages.settings.backups.job.done-${String(ended.type).toLowerCase()}`, {
+        website: websiteDisplayHost(),
+      });
+    }
+
+    onfinish?.(ended);
+  }
 
   const POLL_MS = 2000;
   /** Error answers in a row after which a restore is taken as done (its restart ended the session). */
@@ -199,7 +208,7 @@
             : { ...job, status: 'FAILED', error: job?.error || 'INTERNAL_ERROR' };
 
         onupdate?.(ended);
-        onfinish?.(ended);
+        finished(ended);
 
         return;
       }
@@ -208,7 +217,7 @@
         onupdate?.(next);
 
         if (!isJobRunning(next)) {
-          onfinish?.(next);
+          finished(next);
 
           return;
         }
