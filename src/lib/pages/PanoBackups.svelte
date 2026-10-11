@@ -145,7 +145,28 @@
         })}
       </div>
       <!-- Nothing to act on while panomc.com cannot be reached. -->
-      <div slot="right" class="dropdown d-flex align-items-center gap-2">
+      <div slot="right" class="d-flex align-items-center gap-2">
+        {#if backupMode === 'FULL'}
+          <button
+            type="button"
+            class="btn btn-sm btn-link"
+            title={$_('pages.settings.backups.passphrase-title')}
+            aria-label={$_('pages.settings.backups.passphrase-title')}
+            onclick={() => passphraseModal?.open()}>
+            <i
+              class="fa-solid {remote.passphraseSet ? 'fa-lock' : 'fa-lock-open'}"
+              aria-hidden="true"></i>
+          </button>
+        {/if}
+        <button
+          type="button"
+          class="btn btn-sm btn-link"
+          disabled={running || !!openTransfer}
+          title={$_('pages.settings.backups.transfer.title')}
+          aria-label={$_('pages.settings.backups.transfer.title')}
+          onclick={() => transferModal?.open()}>
+          <i class="fa-solid fa-right-left" aria-hidden="true"></i>
+        </button>
         <button
           type="button"
           class="btn btn-sm btn-secondary text-capitalize"
@@ -154,36 +175,6 @@
           <i class="fa-solid fa-cloud-arrow-up me-1" aria-hidden="true"></i>
           {$_('pages.settings.backups.upload-now')}
         </button>
-        <button
-          type="button"
-          class="btn btn-sm btn-link"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          title={$_('pages.settings.backups.column-actions')}
-          aria-label={$_('pages.settings.backups.column-actions')}>
-          <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
-        </button>
-        <div class="dropdown-menu dropdown-menu-end">
-          {#if backupMode === 'FULL'}
-            <button
-              type="button"
-              class="dropdown-item text-capitalize"
-              onclick={() => passphraseModal?.open()}>
-              <i
-                class="fa-solid {remote.passphraseSet ? 'fa-lock' : 'fa-lock-open'} me-2"
-                aria-hidden="true"></i>
-              {$_('pages.settings.backups.passphrase-title')}
-            </button>
-          {/if}
-          <button
-            type="button"
-            class="dropdown-item text-capitalize"
-            disabled={running || !!openTransfer}
-            onclick={() => transferModal?.open()}>
-            <i class="fa-solid fa-right-left me-2" aria-hidden="true"></i>
-            {$_('pages.settings.backups.transfer.title')}
-          </button>
-        </div>
       </div>
     </CardHeader>
 
