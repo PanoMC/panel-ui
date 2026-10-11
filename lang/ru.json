@@ -807,7 +807,7 @@
         "settings-title": "Настройки резервного копирования",
         "local-used": "Локальных копий: {count} · {size}",
         "restore-from-file": "Восстановить из файла",
-        "upload-now": "Сохранить в Pano Backup",
+        "upload-now": "Создать копию",
         "upload-confirm": {
           "title": "Создать копию в Pano Backup?",
           "description": "Будет создана резервная копия этого Pano и загружена в Pano Backup.",

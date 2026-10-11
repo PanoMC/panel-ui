@@ -807,7 +807,7 @@
         "settings-title": "Backup settings",
         "local-used": "{count, plural, one {# local backup} other {# local backups}} · {size}",
         "restore-from-file": "Restore from file",
-        "upload-now": "Back up to Pano Backup",
+        "upload-now": "Backup",
         "upload-confirm": {
           "title": "Back up to Pano Backup?",
           "description": "A backup of this Pano is created and uploaded to Pano Backup.",

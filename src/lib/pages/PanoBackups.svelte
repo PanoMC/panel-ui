@@ -145,7 +145,15 @@
         })}
       </div>
       <!-- Nothing to act on while panomc.com cannot be reached. -->
-      <div slot="right" class="dropdown">
+      <div slot="right" class="dropdown d-flex align-items-center gap-2">
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary text-capitalize"
+          disabled={running || busyAction === 'upload'}
+          onclick={() => uploadModal?.show()}>
+          <i class="fa-solid fa-cloud-arrow-up me-1" aria-hidden="true"></i>
+          {$_('pages.settings.backups.upload-now')}
+        </button>
         <button
           type="button"
           class="btn btn-sm btn-link"
@@ -167,14 +175,6 @@
               {$_('pages.settings.backups.passphrase-title')}
             </button>
           {/if}
-          <button
-            type="button"
-            class="dropdown-item text-capitalize"
-            disabled={running || busyAction === 'upload'}
-            onclick={() => uploadModal?.show()}>
-            <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
-            {$_('pages.settings.backups.upload-now')}
-          </button>
           <button
             type="button"
             class="dropdown-item text-capitalize"

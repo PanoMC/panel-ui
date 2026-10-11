@@ -807,7 +807,7 @@
         "settings-title": "Yedekleme ayarları",
         "local-used": "{count} yerel yedek · {size}",
         "restore-from-file": "Dosyadan geri yükle",
-        "upload-now": "Pano Backup'a yedekle",
+        "upload-now": "Yedekle",
         "upload-confirm": {
           "title": "Pano Backup'a yedeklensin mi?",
           "description": "Bu Pano'nun yedeği alınır ve Pano Backup'a yüklenir.",
