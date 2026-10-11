@@ -898,7 +898,9 @@
           "done-mc_upload": "Sunucu yedeği Pano Backup'a yüklendi.",
           "done-snapshot": "Kayıt noktası alındı.",
           "done-download": "Arşiv hazır. İndirme başlıyor.",
-          "phase-transfer_restoring": "Pano Host'ta geri yükleniyor…"
+          "phase-transfer_restoring": "Pano Host'ta geri yükleniyor…",
+          "bytes-of": "{done} / {total}",
+          "phase-exporting": "Pano Host'ta dışa aktarım hazırlanıyor…"
         },
         "restore": {
           "title": "Bu Pano geri yüklensin mi?",
@@ -923,7 +925,11 @@
           "target": "Pano Host örneği",
           "no-workloads": "Hesabınızda taşınabilecek bir Pano Host örneği yok.",
           "create-instance": "Yeni bir örnek oluştur",
-          "replace-note": "Seçilen örneğin içeriği bu Pano ile değiştirilecek."
+          "replace-note": "Seçilen örneğin içeriği bu Pano ile değiştirilecek.",
+          "code-title": "Kod gönderildi",
+          "code-sent": "{email} adresine bir kod gönderdik.",
+          "code-resend": "Tekrar gönder",
+          "code-label": "Doğrulama kodu"
         },
         "errors": {
           "generic": "Bir şeyler ters gitti ({code}).",
@@ -976,7 +982,10 @@
           "PAYMENT_REQUIRED_LAPSED": "Pano Backup planınızın ödemesi yapılmadı. Yeni yedekler duraklatıldı; plan ödenmezse saklanan yedekler {graceUntil} sonrasında silinir.",
           "QUOTA_EXCEEDED_TRANSFER": "Bu Pano seçilen örneğe sığmıyor ({max}).",
           "TRANSFER_FAILED": "Taşıma Pano Host'ta başarısız oldu.",
-          "TRANSFER_TIMEOUT": "Taşıma zamanında bitmedi. Örneği {website} üzerinde kontrol edin."
+          "TRANSFER_TIMEOUT": "Taşıma zamanında bitmedi. Örneği {website} üzerinde kontrol edin.",
+          "TRANSFER_CODE_INVALID": "Kod yanlış veya süresi dolmuş.",
+          "TRANSFER_CODE_REQUIRED": "Taşımayı başlatmak için bir doğrulama kodu gerekli.",
+          "TRANSFER_CODE_COOLDOWN": "Yeni bir kod istemeden önce {seconds} sn bekleyin."
         },
         "account": {
           "title": "Pano Backup",

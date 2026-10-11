@@ -84,6 +84,9 @@ export const KNOWN_ERRORS = Object.freeze([
   'WORKLOAD_NOT_FOUND',
   'TRANSFER_NOT_FOUND',
   'TRANSFER_FAILED',
+  'TRANSFER_CODE_INVALID',
+  'TRANSFER_CODE_REQUIRED',
+  'TRANSFER_CODE_COOLDOWN',
   'TRANSFER_TIMEOUT',
   'QUOTA_EXCEEDED_TRANSFER',
   'BACKUP_NOT_FOUND',
@@ -157,17 +160,69 @@ export function isJobRunning(job) {
 }
 
 /**
- * @param {{ bytesDone?: number, bytesTotal?: number } | null | undefined} job
- * @returns {number | null} 0–100 when the job reports bytes, else null (indeterminate bar).
+ * @param {{ bytesDone?: number, bytesTotal?: number, percent?: number | null } | null | undefined} job
+ * @returns {number | null} 0–100 when the job reports bytes (or a percent of the remote side), else null
+ *   (indeterminate bar).
  */
 export function jobPercent(job) {
   const total = Number(job?.bytesTotal) || 0;
 
   if (total <= 0) {
-    return null;
+    const remote = job?.percent;
+
+    return typeof remote === 'number' && Number.isFinite(remote)
+      ? Math.max(0, Math.min(100, Math.round(remote)))
+      : null;
   }
 
   return Math.max(0, Math.min(100, Math.floor(((Number(job?.bytesDone) || 0) / total) * 100)));
+}
+
+/** Speed is measured over the last ten seconds of samples, which also smooths the jumps of part-wise uploads. */
+export const SPEED_WINDOW_MS = 10_000;
+
+/**
+ * Adds one poll of a running job to its speed samples.
+ *
+ * @param {Array<{ at: number, bytes: number, phase: string | null }>} samples earlier samples of this job.
+ * @param {{ at: number, bytes: number, phase?: string | null }} sample epoch ms, `bytesDone`, `phase`.
+ * @returns {{ samples: Array<{ at: number, bytes: number, phase: string | null }>, bytesPerSecond: number | null }}
+ *   `bytesPerSecond` is null while nothing moved in the window (or there is only one sample).
+ */
+export function jobSpeed(samples, sample) {
+  const next = { at: sample.at, bytes: Number(sample.bytes) || 0, phase: sample.phase ?? null };
+  const last = samples[samples.length - 1];
+
+  // A new phase or counter restarted from zero measures from scratch.
+  let kept =
+    last && (last.phase !== next.phase || next.bytes < last.bytes || next.at <= last.at)
+      ? []
+      : samples.slice();
+
+  kept.push(next);
+
+  while (kept.length > 2 && kept[0].at < next.at - SPEED_WINDOW_MS) {
+    kept.shift();
+  }
+
+  const first = kept[0];
+  const seconds = (next.at - first.at) / 1000;
+  const moved = next.bytes - first.bytes;
+
+  return {
+    samples: kept,
+    bytesPerSecond: kept.length >= 2 && seconds > 0 && moved > 0 ? moved / seconds : null,
+  };
+}
+
+/**
+ * @param {number | null | undefined} bytesPerSecond
+ * @returns {string} e.g. `3.2 MB/s`, or an empty string when there is no speed.
+ */
+export function formatSpeed(bytesPerSecond) {
+  const value = Number(bytesPerSecond);
+
+  return Number.isFinite(value) && value > 0 ? `${formatBytes(value)}/s` : '';
 }
 
 /**
@@ -441,6 +496,7 @@ export function describeError(source, options = {}) {
     quota: details.quotaBytes != null ? formatBytes(Number(details.quotaBytes)) : '',
     used: details.usedBytes != null ? formatBytes(Number(details.usedBytes)) : '',
     max: details.maxBytes != null ? formatBytes(Number(details.maxBytes)) : '',
+    seconds: Number(details.retryAfterSeconds) || 0,
     minLength: Number(details.minLength) || MIN_PASSPHRASE_LENGTH,
     website: options.website || 'panomc.com',
   };
@@ -450,6 +506,24 @@ export function describeError(source, options = {}) {
     : 'pages.settings.backups.errors.generic';
 
   return { code, key, values };
+}
+
+/**
+ * @param {number | string | null | undefined} resendAfter when a new transfer code may be asked for (epoch
+ *   milliseconds; a value that small is taken as epoch seconds).
+ * @param {number} now epoch milliseconds.
+ * @returns {number} whole seconds left until then; 0 when it has passed or is unknown.
+ */
+export function resendWaitSeconds(resendAfter, now) {
+  const value = Number(resendAfter);
+
+  if (!Number.isFinite(value) || value <= 0) {
+    return 0;
+  }
+
+  const at = value < 1e11 ? value * 1000 : value;
+
+  return Math.max(0, Math.ceil((at - now) / 1000));
 }
 
 /**

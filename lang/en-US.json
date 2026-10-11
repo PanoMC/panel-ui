@@ -898,7 +898,9 @@
           "done-mc_upload": "Server backup uploaded to Pano Backup.",
           "done-snapshot": "Snapshot taken.",
           "done-download": "Archive ready. The download starts now.",
-          "phase-transfer_restoring": "Restoring on Pano Host…"
+          "phase-transfer_restoring": "Restoring on Pano Host…",
+          "bytes-of": "{done} of {total}",
+          "phase-exporting": "Preparing the export on Pano Host…"
         },
         "restore": {
           "title": "Restore this Pano?",
@@ -923,7 +925,11 @@
           "target": "Pano Host instance",
           "no-workloads": "Your account has no Pano Host instance to move into.",
           "create-instance": "Create a new instance",
-          "replace-note": "The selected instance's content will be replaced with this Pano."
+          "replace-note": "The selected instance's content will be replaced with this Pano.",
+          "code-title": "We sent a code",
+          "code-sent": "We sent a code to {email}.",
+          "code-resend": "Send again",
+          "code-label": "Confirmation code"
         },
         "errors": {
           "generic": "Something went wrong ({code}).",
@@ -976,7 +982,10 @@
           "PAYMENT_REQUIRED_LAPSED": "Your Pano Backup plan is unpaid. New backups are paused and the stored backups are deleted after {graceUntil} unless the plan is paid.",
           "QUOTA_EXCEEDED_TRANSFER": "This Pano does not fit on the selected instance ({max}).",
           "TRANSFER_FAILED": "The transfer failed on Pano Host.",
-          "TRANSFER_TIMEOUT": "The transfer did not finish in time. Check the instance on {website}."
+          "TRANSFER_TIMEOUT": "The transfer did not finish in time. Check the instance on {website}.",
+          "TRANSFER_CODE_INVALID": "The code is wrong or has expired.",
+          "TRANSFER_CODE_REQUIRED": "A confirmation code is needed to start the transfer.",
+          "TRANSFER_CODE_COOLDOWN": "Please wait {seconds} s before asking for another code."
         },
         "account": {
           "title": "Pano Backup",

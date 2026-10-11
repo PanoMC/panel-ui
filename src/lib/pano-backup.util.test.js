@@ -4,6 +4,9 @@ import { formatBytes } from './string.util.js';
 import {
   ENVELOPE_MAGIC,
   REMOTE_SCHEDULES,
+  formatSpeed,
+  jobSpeed,
+  resendWaitSeconds,
   accountUsage,
   canRestoreRemote,
   connectionState,
@@ -358,5 +361,47 @@ describe('snapshots', () => {
     expect(canDownloadSnapshot({ status: 'FAILED' })).toBe(false);
     expect(canDownloadSnapshot(null)).toBe(false);
     expect(snapshotDownloadUrl('a/b')).toBe('/api/v1/panel/pano-backups/remote/downloads/a%2Fb');
+  });
+});
+
+describe('job progress helpers', () => {
+  test('jobSpeed measures over a window, per phase, and is null when nothing moves', () => {
+    let state = jobSpeed([], { at: 0, bytes: 0, phase: 'UPLOADING' });
+
+    expect(state.bytesPerSecond).toBeNull();
+
+    state = jobSpeed(state.samples, { at: 2000, bytes: 2_000_000, phase: 'UPLOADING' });
+    expect(state.bytesPerSecond).toBe(1_000_000);
+
+    // A part boundary does not make it jump: the window still spans the earlier samples.
+    state = jobSpeed(state.samples, { at: 4000, bytes: 2_000_000, phase: 'UPLOADING' });
+    expect(state.bytesPerSecond).toBe(500_000);
+
+    // Old samples fall out of the ten second window; no movement left means no speed.
+    state = jobSpeed(state.samples, { at: 20_000, bytes: 2_000_000, phase: 'UPLOADING' });
+    state = jobSpeed(state.samples, { at: 22_000, bytes: 2_000_000, phase: 'UPLOADING' });
+    expect(state.bytesPerSecond).toBeNull();
+
+    // A new phase (or a counter that went back) starts over.
+    state = jobSpeed(state.samples, { at: 23_000, bytes: 0, phase: 'RESTORING' });
+    expect(state.samples).toHaveLength(1);
+    expect(state.bytesPerSecond).toBeNull();
+  });
+
+  test('formatSpeed and jobPercent', () => {
+    expect(formatSpeed(null)).toBe('');
+    expect(formatSpeed(0)).toBe('');
+    expect(formatSpeed(1_048_576)).toBe(`${formatBytes(1_048_576)}/s`);
+    expect(jobPercent({ bytesDone: 50, bytesTotal: 200 })).toBe(25);
+    expect(jobPercent({ bytesTotal: 0, percent: 40.4 })).toBe(40);
+    expect(jobPercent({ bytesTotal: 0, percent: null })).toBeNull();
+    expect(jobPercent({ bytesTotal: 0 })).toBeNull();
+  });
+
+  test('resendWaitSeconds counts down to the time the next code may be asked for', () => {
+    expect(resendWaitSeconds(1_800_000_060, 1_800_000_000_000)).toBe(60);
+    expect(resendWaitSeconds(1_800_000_060_000, 1_800_000_000_000)).toBe(60);
+    expect(resendWaitSeconds(1_800_000_060_000, 1_800_000_070_000)).toBe(0);
+    expect(resendWaitSeconds(null, 0)).toBe(0);
   });
 });

@@ -8,6 +8,7 @@
         {#if job.phase}
           <span class="text-body-secondary small">
             {$_(`pages.settings.backups.job.phase-${String(job.phase).toLowerCase()}`)}
+            {#if job.remotePhase}· {job.remotePhase}{/if}
           </span>
         {/if}
         {#if job.startedAt}
@@ -31,9 +32,21 @@
           {#if percent !== null}{percent}%{/if}
         </div>
       </div>
-      {#if percent !== null}
-        <div class="small text-body-secondary">
-          {formatBytes(job.bytesDone || 0)} / {formatBytes(job.bytesTotal || 0)}
+      {#if hasBytes || speedText}
+        <div class="small text-body-secondary d-flex flex-wrap gap-2">
+          {#if hasBytes}
+            <span>
+              {$_('pages.settings.backups.job.bytes-of', {
+                values: {
+                  done: formatBytes(job.bytesDone || 0),
+                  total: formatBytes(job.bytesTotal),
+                },
+              })}
+            </span>
+          {/if}
+          {#if speedText}
+            <span class="ms-auto">{speedText}</span>
+          {/if}
         </div>
       {/if}
       {#if job.type === 'RESTORE'}
@@ -83,7 +96,7 @@
 
   import ApiUtil from '$lib/api.util.js';
   import { formatBytes } from '$lib/string.util.js';
-  import { isJobRunning, jobPercent } from '$lib/pano-backup.util.js';
+  import { formatSpeed, isJobRunning, jobPercent, jobSpeed } from '$lib/pano-backup.util.js';
   import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
 
   import DateComponent from '$lib/components/Date.svelte';
@@ -98,6 +111,9 @@
    */
   let { job = null, restartRequired = false, onupdate, onfinish } = $props();
 
+  /** Smoothed bytes per second of the running job's current phase, or null while nothing moves. */
+  let speed = $state(null);
+
   /** The finished job whose alert the owner closed. */
   let dismissedId = $state(null);
 
@@ -108,11 +124,42 @@
   const running = $derived(isJobRunning(job));
   const jobId = $derived(job?.id);
   const percent = $derived(jobPercent(job));
+  const hasBytes = $derived((Number(job?.bytesTotal) || 0) > 0);
+  const speedText = $derived(formatSpeed(speed));
   const error = $derived(
     job?.status === 'FAILED'
       ? describeError(job, { context: job?.type === 'TRANSFER' ? 'transfer' : undefined })
       : null,
   );
+
+  // Speed from successive polls of the job (the card is re-fed with every poll answer).
+  /** @type {Array<{ at: number, bytes: number, phase: string | null }>} */
+  let samples = [];
+  let sampledJob = null;
+
+  $effect(() => {
+    if (!running || !job) {
+      samples = [];
+      sampledJob = null;
+      speed = null;
+
+      return;
+    }
+
+    if (sampledJob !== job.id) {
+      samples = [];
+      sampledJob = job.id;
+    }
+
+    const next = jobSpeed(samples, {
+      at: Date.now(),
+      bytes: /** @type {any} */ (job).bytesDone || 0,
+      phase: /** @type {any} */ (job).phase ?? null,
+    });
+
+    samples = next.samples;
+    speed = next.bytesPerSecond;
+  });
 
   $effect(() => {
     if (!running) {

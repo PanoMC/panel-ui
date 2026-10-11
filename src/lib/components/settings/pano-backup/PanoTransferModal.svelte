@@ -1,5 +1,5 @@
-<!-- Transfer this Pano to a Pano Host instance of the connected account: pick it, push a plain archive; the admin password confirms, Pano Host restores it at once. -->
-<BsModal bind:this={modal}>
+<!-- Transfer this Pano to a Pano Host instance of the connected account: pick it, Pano Host e-mails a code, the code (second modal) confirms, then a plain archive is pushed and restored at once. -->
+<BsModal bind:this={modal} onhidden={() => codeModal?.openIfPending()}>
   <div class="modal-body text-center vstack gap-3">
     <div>
       <div class="pb-3">
@@ -40,20 +40,6 @@
       </div>
 
       <div class="text-body-secondary">{$_('pages.settings.backups.transfer.replace-note')}</div>
-
-      <div class="form-floating text-start">
-        <input
-          id="pano-transfer-password"
-          class="form-control"
-          type="password"
-          placeholder=" "
-          autocomplete="current-password"
-          bind:value={currentPassword}
-          class:border-danger={error?.code === 'CURRENT_PASSWORD_NOT_CORRECT'} />
-        <label class="text-capitalize" for="pano-transfer-password">
-          {$_('pages.settings.backups.current-password')}
-        </label>
-      </div>
     {/if}
 
     {#if workloadList !== null && !workloadsError}
@@ -86,7 +72,7 @@
     <button
       type="button"
       class="btn btn-primary col-6 m-0"
-      disabled={!selectedWorkload || !currentPassword || disabled || starting}
+      disabled={!selectedWorkload || disabled || starting}
       onclick={() => void start()}>
       {#if starting}
         <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
@@ -95,6 +81,8 @@
     </button>
   </div>
 </BsModal>
+
+<PanoTransferCodeModal bind:this={codeModal} {onstarted} />
 
 <script>
   import { _ } from 'svelte-i18n';
@@ -106,10 +94,11 @@
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
   import BsModal from './BsModal.svelte';
+  import PanoTransferCodeModal from './PanoTransferCodeModal.svelte';
 
   /**
    * `remote` = `GET /api/v1/panel/pano-backups/remote`; `disabled` while another job runs;
-   * `onstarted(job)` puts the transfer job on the page.
+   * `onstarted(job)` puts the transfer job on the page (called by the code modal).
    *
    * @type {{ remote: any, disabled?: boolean, onstarted?: (job: any) => void }}
    */
@@ -117,12 +106,13 @@
 
   /** @type {BsModal | undefined} */
   let modal = $state();
+  /** @type {PanoTransferCodeModal | undefined} */
+  let codeModal = $state();
 
   /** `GET …/remote/workloads`, read on open; `null` while loading. */
   /** @type {any} */
   let workloadList = $state(null);
   let workloadId = $state('');
-  let currentPassword = $state('');
   let starting = $state(false);
   /** @type {ReturnType<typeof describeError>} */
   let error = $state(null);
@@ -158,7 +148,6 @@
 
   export function open() {
     error = null;
-    currentPassword = '';
     workloadList = null;
 
     modal?.show();
@@ -168,6 +157,7 @@
       .then((body) => (workloadList = body || { error: { code: 'NETWORK_ERROR' } }));
   }
 
+  /** Asks Pano Host to e-mail the code, then hands over to the code modal once this one is hidden. */
   async function start() {
     const target = selectedWorkload;
 
@@ -180,8 +170,8 @@
 
     try {
       const body = await ApiUtil.post({
-        path: '/panel/pano-backups/remote/transfers',
-        body: { workloadId: String(target.id), currentPassword },
+        path: '/panel/pano-backups/remote/transfers/code',
+        body: { workloadId: String(target.id) },
       }).catch(() => ({ error: { code: 'NETWORK_ERROR' } }));
 
       if (body?.error) {
@@ -190,9 +180,8 @@
         return;
       }
 
-      currentPassword = '';
+      codeModal?.prepare(String(target.id), body);
       modal?.hide();
-      onstarted?.(body?.job ?? null);
     } finally {
       starting = false;
     }

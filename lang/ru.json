@@ -898,7 +898,9 @@
           "done-mc_upload": "Копия сервера загружена в Pano Backup.",
           "done-snapshot": "Снимок создан.",
           "done-download": "Архив готов. Скачивание начинается.",
-          "phase-transfer_restoring": "Восстановление в Pano Host…"
+          "phase-transfer_restoring": "Восстановление в Pano Host…",
+          "bytes-of": "{done} из {total}",
+          "phase-exporting": "Подготовка экспорта в Pano Host…"
         },
         "restore": {
           "title": "Восстановить этот Pano?",
@@ -923,7 +925,11 @@
           "target": "Экземпляр Pano Host",
           "no-workloads": "В вашем аккаунте нет экземпляра Pano Host для переноса.",
           "create-instance": "Создать новый экземпляр",
-          "replace-note": "Содержимое выбранного экземпляра будет заменено этим Pano."
+          "replace-note": "Содержимое выбранного экземпляра будет заменено этим Pano.",
+          "code-title": "Код отправлен",
+          "code-sent": "Мы отправили код на {email}.",
+          "code-resend": "Отправить снова",
+          "code-label": "Код подтверждения"
         },
         "errors": {
           "generic": "Что-то пошло не так ({code}).",
@@ -976,7 +982,10 @@
           "PAYMENT_REQUIRED_LAPSED": "Тариф Pano Backup не оплачен. Новые копии приостановлены, а сохранённые будут удалены после {graceUntil}, если тариф не будет оплачен.",
           "QUOTA_EXCEEDED_TRANSFER": "Этот Pano не помещается в выбранный экземпляр ({max}).",
           "TRANSFER_FAILED": "Перенос не удался в Pano Host.",
-          "TRANSFER_TIMEOUT": "Перенос не завершился вовремя. Проверьте экземпляр на {website}."
+          "TRANSFER_TIMEOUT": "Перенос не завершился вовремя. Проверьте экземпляр на {website}.",
+          "TRANSFER_CODE_INVALID": "Код неверный или просрочен.",
+          "TRANSFER_CODE_REQUIRED": "Для начала переноса нужен код подтверждения.",
+          "TRANSFER_CODE_COOLDOWN": "Подождите {seconds} с, прежде чем запрашивать новый код."
         },
         "account": {
           "title": "Pano Backup",
