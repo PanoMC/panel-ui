@@ -929,7 +929,9 @@
           "code-title": "Kod gönderildi",
           "code-sent": "{email} adresine bir kod gönderdik.",
           "code-resend": "Tekrar gönder",
-          "code-label": "Doğrulama kodu"
+          "code-label": "Doğrulama kodu",
+          "estimate": "Bu Pano: yaklaşık {size}",
+          "estimating": "Bu Pano'nun boyutu hesaplanıyor…"
         },
         "errors": {
           "generic": "Bir şeyler ters gitti ({code}).",

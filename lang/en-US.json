@@ -929,7 +929,9 @@
           "code-title": "We sent a code",
           "code-sent": "We sent a code to {email}.",
           "code-resend": "Send again",
-          "code-label": "Confirmation code"
+          "code-label": "Confirmation code",
+          "estimate": "This Pano: about {size}",
+          "estimating": "Calculating the size of this Pano…"
         },
         "errors": {
           "generic": "Something went wrong ({code}).",

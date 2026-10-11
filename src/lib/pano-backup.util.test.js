@@ -7,6 +7,7 @@ import {
   formatSpeed,
   jobSpeed,
   resendWaitSeconds,
+  transferFits,
   accountUsage,
   canRestoreRemote,
   connectionState,
@@ -403,5 +404,17 @@ describe('job progress helpers', () => {
     expect(resendWaitSeconds(1_800_000_060_000, 1_800_000_000_000)).toBe(60);
     expect(resendWaitSeconds(1_800_000_060_000, 1_800_000_070_000)).toBe(0);
     expect(resendWaitSeconds(null, 0)).toBe(0);
+  });
+});
+
+describe('transferFits', () => {
+  test('only a known estimate above a known limit says no', () => {
+    expect(transferFits(500, 1000)).toBe(true);
+    expect(transferFits(1000, 1000)).toBe(true);
+    expect(transferFits(1001, 1000)).toBe(false);
+    expect(transferFits(null, 1000)).toBeNull();
+    expect(transferFits(500, null)).toBeNull();
+    expect(transferFits(500, 0)).toBeNull();
+    expect(transferFits(undefined, undefined)).toBeNull();
   });
 });

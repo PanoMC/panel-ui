@@ -929,7 +929,9 @@
           "code-title": "Код отправлен",
           "code-sent": "Мы отправили код на {email}.",
           "code-resend": "Отправить снова",
-          "code-label": "Код подтверждения"
+          "code-label": "Код подтверждения",
+          "estimate": "Этот Pano: около {size}",
+          "estimating": "Подсчёт размера этого Pano…"
         },
         "errors": {
           "generic": "Что-то пошло не так ({code}).",

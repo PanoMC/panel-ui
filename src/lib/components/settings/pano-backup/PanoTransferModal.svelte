@@ -1,5 +1,10 @@
 <!-- Transfer this Pano to a Pano Host instance of the connected account: pick it, Pano Host e-mails a code, the code (second modal) confirms, then a plain archive is pushed and restored at once. -->
-<BsModal bind:this={modal} onhidden={() => codeModal?.openIfPending()}>
+<BsModal
+  bind:this={modal}
+  onhidden={() => {
+    stopEstimate();
+    codeModal?.openIfPending();
+  }}>
   <div class="modal-body text-center vstack gap-3">
     <div>
       <div class="pb-3">
@@ -37,7 +42,31 @@
             })}
           </div>
         {/if}
+        <!-- An estimate of this Pano's content; it never blocks the select or the button while unknown. -->
+        {#if estimateBytes !== null}
+          <div>
+            {$_('pages.settings.backups.transfer.estimate', {
+              values: { size: formatBytes(estimateBytes) },
+            })}
+          </div>
+        {:else if estimating}
+          <div class="text-body-secondary">
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {$_('pages.settings.backups.transfer.estimating')}
+          </div>
+        {/if}
       </div>
+
+      {#if tooBig}
+        <div class="alert alert-danger mb-0 d-flex align-items-start text-start">
+          <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+          <div>
+            {$_('pages.settings.backups.errors.QUOTA_EXCEEDED_TRANSFER', {
+              values: { max: formatBytes(selectedWorkload.maxBytes) },
+            })}
+          </div>
+        </div>
+      {/if}
 
       <div class="text-body-secondary">{$_('pages.settings.backups.transfer.replace-note')}</div>
     {/if}
@@ -72,7 +101,7 @@
     <button
       type="button"
       class="btn btn-primary col-6 m-0"
-      disabled={!selectedWorkload || disabled || starting}
+      disabled={!selectedWorkload || disabled || starting || tooBig}
       onclick={() => void start()}>
       {#if starting}
         <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
@@ -89,7 +118,7 @@
 
   import ApiUtil from '$lib/api.util.js';
   import { formatBytes } from '$lib/string.util.js';
-  import { hostManageUrl } from '$lib/pano-backup.util.js';
+  import { hostManageUrl, transferFits } from '$lib/pano-backup.util.js';
   import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
@@ -117,6 +146,20 @@
   /** @type {ReturnType<typeof describeError>} */
   let error = $state(null);
 
+  /** Bytes of the finished estimate, or null while it is unknown (calculating, failed, not asked yet). */
+  /** @type {number | null} */
+  let estimateBytes = $state(null);
+  let estimating = $state(false);
+  /** Bumped on every open and close, so a late answer of an earlier round is dropped. */
+  let estimateRound = 0;
+  /** @type {ReturnType<typeof setTimeout> | null} */
+  let estimateTimer = null;
+
+  const ESTIMATE_POLL_MS = 2000;
+
+  const tooBig = $derived(
+    !!selectedWorkload && transferFits(estimateBytes, selectedWorkload.maxBytes) === false,
+  );
   const createUrl = $derived(hostManageUrl(PANO_WEBSITE_URL, 'new'));
   const workloadsError = $derived(workloadList?.error ? describeError(workloadList) : null);
   const workloads = $derived(
@@ -146,9 +189,51 @@
       : name;
   }
 
+  function stopEstimate() {
+    estimateRound++;
+    estimating = false;
+
+    if (estimateTimer) {
+      clearTimeout(estimateTimer);
+      estimateTimer = null;
+    }
+  }
+
+  /** Asks for the size of this Pano and asks again every couple of seconds while it is being calculated. */
+  function pollEstimate() {
+    const round = ++estimateRound;
+
+    estimateBytes = null;
+    estimating = true;
+
+    const ask = async () => {
+      const body = await ApiUtil.get({
+        path: '/panel/pano-backups/remote/transfers/estimate',
+      }).catch(() => null);
+
+      if (round !== estimateRound) {
+        return;
+      }
+
+      if (body?.status === 'DONE' && Number.isFinite(Number(body.bytes))) {
+        estimateBytes = Number(body.bytes);
+        estimating = false;
+      } else if (body?.status === 'CALCULATING') {
+        estimateTimer = setTimeout(() => void ask(), ESTIMATE_POLL_MS);
+      } else {
+        // Failed or unreachable: nothing is shown and nothing is blocked.
+        estimating = false;
+      }
+    };
+
+    void ask();
+  }
+
   export function open() {
     error = null;
     workloadList = null;
+    stopEstimate();
+    pollEstimate();
 
     modal?.show();
 

@@ -178,6 +178,29 @@ export function jobPercent(job) {
   return Math.max(0, Math.min(100, Math.floor(((Number(job?.bytesDone) || 0) / total) * 100)));
 }
 
+/**
+ * @param {number | null | undefined} estimateBytes the estimated size of this Pano, null while unknown.
+ * @param {number | string | null | undefined} maxBytes what the chosen instance can take, if it says.
+ * @returns {boolean | null} false when the estimate is known and larger than the instance's limit, true when it
+ *   fits, null when either is unknown (never block on that).
+ */
+export function transferFits(estimateBytes, maxBytes) {
+  const size = Number(estimateBytes);
+  const max = Number(maxBytes);
+
+  if (
+    estimateBytes == null ||
+    maxBytes == null ||
+    !Number.isFinite(size) ||
+    !Number.isFinite(max) ||
+    max <= 0
+  ) {
+    return null;
+  }
+
+  return size <= max;
+}
+
 /** Speed is measured over the last ten seconds of samples, which also smooths the jumps of part-wise uploads. */
 export const SPEED_WINDOW_MS = 10_000;
 
