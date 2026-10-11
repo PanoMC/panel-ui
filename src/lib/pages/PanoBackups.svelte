@@ -248,7 +248,7 @@
                         {$_('pages.settings.backups.pano-used', {
                           values: {
                             size: formatBytes(group.usedBytes),
-                            count: group.backups.length,
+                            count: group.count,
                           },
                         })}
                       </span>
@@ -265,7 +265,7 @@
                 {#each group.backups as backup (backup.id)}
                   <tr>
                     <th scope="row" class="align-middle text-center">
-                      {#if canRestoreRow(backup) || canDeleteRow(backup)}
+                      {#if canDownloadRow(backup) || canRestoreRow(backup) || canDeleteRow(backup)}
                         <div class="dropdown position-static">
                           <button
                             type="button"
@@ -276,6 +276,16 @@
                             <span class="fas fa-ellipsis-v"></span>
                           </button>
                           <div class="dropdown-menu dropdown-menu-start text-capitalize">
+                            {#if canDownloadRow(backup)}
+                              <button
+                                type="button"
+                                class="dropdown-item text-capitalize"
+                                disabled={running}
+                                onclick={() => void downloadSnapshot(backup)}>
+                                <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
+                                {$_('buttons.download')}
+                              </button>
+                            {/if}
                             {#if canRestoreRow(backup)}
                               <button
                                 type="button"
@@ -372,6 +382,15 @@
             {/each}
           </table>
         </div>
+        {#if pageCount(remoteList?.page) > 1}
+          <div class="card-footer">
+            <Pagination
+              page={remoteList.page}
+              on:firstPageClick={() => void goToRemotePage(1)}
+              on:lastPageClick={() => void goToRemotePage(pageCount(remoteList.page))}
+              on:pageLinkClick={(event) => void goToRemotePage(event.detail.page)} />
+          </div>
+        {/if}
       {/if}
     {/if}
   </div>
@@ -542,6 +561,9 @@
     return ApiUtil.get({ path, request: event }).catch(() => null);
   }
 
+  /** Rows of the Pano Backup list per page; the server cuts the pages. */
+  const REMOTE_PAGE_SIZE = 10;
+
   /**
    * @type {import('@sveltejs/kit').Load}
    */
@@ -563,16 +585,15 @@
       ),
     ]);
 
-    const [remoteList, transferList, snapshotList] =
+    const [remoteList, transferList] =
       connectionState(remote) !== 'not-connected'
         ? await Promise.all([
-            read('/panel/pano-backups/remote/backups', event),
+            read(`/panel/pano-backups/remote/list?pageSize=${REMOTE_PAGE_SIZE}`, event),
             read('/panel/pano-backups/remote/transfers', event),
-            read('/panel/pano-backups/remote/snapshots', event),
           ])
-        : [null, null, null];
+        : [null, null];
 
-    return { local, remote, remoteList, transferList, snapshotList };
+    return { local, remote, remoteList, transferList };
   }
 </script>
 
@@ -589,13 +610,15 @@
   import {
     backupPlanUrl,
     canDeleteSnapshot,
+    canDownloadSnapshot,
     canRestoreRemote,
     canRestoreSnapshot,
     formatSnapshotBytes,
     isJobRunning,
     isTransferOpen,
-    mergeRemoteList,
+    groupRemotePage,
     normaliseMode,
+    snapshotDownloadUrl,
     snapshotProblem,
     tagColour,
     waitForRestart,
@@ -609,7 +632,7 @@
   import CardFilters from '$lib/components/CardFilters.svelte';
   import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
-  import { pageOf } from '$lib/components/pagination.util.js';
+  import { pageCount, pageNumber, pageOf } from '$lib/components/pagination.util.js';
   import PageActions from '$lib/components/PageActions.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   import BsModal from '$lib/components/settings/pano-backup/BsModal.svelte';
@@ -648,7 +671,6 @@
   let remote = $derived(normaliseRemote(data?.remote));
   let remoteList = $derived(/** @type {any} */ (data?.remoteList ?? null));
   let transferList = $derived(/** @type {any} */ (data?.transferList ?? null));
-  let snapshotList = $derived(/** @type {any} */ (data?.snapshotList ?? null));
   let job = $derived(/** @type {any} */ (data?.remote?.job ?? data?.local?.job ?? null));
 
   const LOCAL_TAGS = ['MANUAL', 'SCHEDULED', 'PRE_RESTORE'];
@@ -719,8 +741,8 @@
   const hostUnavailable = $derived(connectionState(remote) === 'unavailable');
   const backupMode = $derived(normaliseMode(remote?.settings?.mode));
   const planUrl = $derived(backupPlanUrl(PANO_WEBSITE_URL, `${$page.url.origin}${base}/backups`));
-  const groups = $derived(mergeRemoteList(remoteList?.error ? null : remoteList, snapshotList));
-  const groupsHaveBackups = $derived(groups.some((group) => group.backups.length > 0));
+  const groups = $derived(groupRemotePage(remoteList?.error ? null : remoteList));
+  const groupsHaveBackups = $derived(Number(remoteList?.page?.totalItems) > 0);
   const remoteError = $derived(remoteList?.error ? describeError(remoteList) : null);
   const transfers = $derived(
     /** @type {any[]} */ (
@@ -740,6 +762,11 @@
 
     return () => clearInterval(timer);
   });
+
+  /** @param {any} row a remote list row (archive or snapshot). */
+  function canDownloadRow(row) {
+    return row.type === 'snapshot' && canDownloadSnapshot(row);
+  }
 
   /** @param {any} row a remote list row (archive or snapshot). */
   function canRestoreRow(row) {
@@ -763,14 +790,39 @@
     return body && !body.error ? body : { connected: false, passphraseSet: false };
   }
 
-  /** @param {{ local?: any, remote?: any, remoteList?: any, transferList?: any, snapshotList?: any }} source */
+  /** @param {{ local?: any, remote?: any, remoteList?: any, transferList?: any }} source */
   function apply(source) {
     local = normaliseLocal(source.local);
     remote = normaliseRemote(source.remote);
     remoteList = source.remoteList ?? null;
     transferList = source.transferList ?? null;
-    snapshotList = source.snapshotList ?? null;
     job = source.remote?.job ?? source.local?.job ?? job;
+  }
+
+  /**
+   * The Pano Backup list, one page, cut by the server. A page that is gone (the last row of the last page
+   * was deleted) falls back to the first.
+   *
+   * @param {number} number
+   * @returns {Promise<any>}
+   */
+  async function readRemotePage(number) {
+    const path = (/** @type {number} */ at) =>
+      `/panel/pano-backups/remote/list?page=${at}&pageSize=${REMOTE_PAGE_SIZE}`;
+    const body = await ApiUtil.get({ path: path(number) }).catch(() => null);
+
+    return body?.error?.code === 'PAGE_NOT_FOUND' && number > 1
+      ? ApiUtil.get({ path: path(1) }).catch(() => null)
+      : body;
+  }
+
+  /** @param {number} number */
+  async function goToRemotePage(number) {
+    const next = await readRemotePage(number);
+
+    if (next && !next.error) {
+      remoteList = next;
+    }
   }
 
   async function refresh() {
@@ -778,21 +830,19 @@
       ApiUtil.get({ path: '/panel/pano-backups' }).catch(() => null),
       ApiUtil.get({ path: '/panel/pano-backups/remote?fresh=true' }).catch(() => null),
     ]);
-    const [nextList, nextTransfers, nextSnapshots] =
+    const [nextList, nextTransfers] =
       connectionState(nextRemote) !== 'not-connected'
         ? await Promise.all([
-            ApiUtil.get({ path: '/panel/pano-backups/remote/backups' }).catch(() => null),
+            readRemotePage(pageNumber(remoteList?.page)),
             ApiUtil.get({ path: '/panel/pano-backups/remote/transfers' }).catch(() => null),
-            ApiUtil.get({ path: '/panel/pano-backups/remote/snapshots' }).catch(() => null),
           ])
-        : [null, null, null];
+        : [null, null];
 
     apply({
       local: nextLocal,
       remote: nextRemote,
       remoteList: nextList,
       transferList: nextTransfers,
-      snapshotList: nextSnapshots,
     });
   }
 
@@ -813,7 +863,22 @@
       return;
     }
 
+    if (finished.type === 'DOWNLOAD' && finished.status === 'DONE') {
+      fetchArchive(finished.id);
+    }
+
     await refresh();
+  }
+
+  /** Hands the browser the archive a finished download job built. */
+  function fetchArchive(/** @type {string} */ jobId) {
+    const link = document.createElement('a');
+
+    link.href = snapshotDownloadUrl(jobId);
+    link.download = '';
+    document.body.append(link);
+    link.click();
+    link.remove();
   }
 
   /**
@@ -995,6 +1060,19 @@
       await refresh();
     } finally {
       busyAction = null;
+    }
+  }
+
+  /** @param {any} snapshot */
+  async function downloadSnapshot(snapshot) {
+    const error = await startJob(
+      ApiUtil.post({
+        path: `/panel/pano-backups/remote/snapshots/${encodeURIComponent(snapshot.id)}/download`,
+      }),
+    );
+
+    if (error) {
+      void showError(error.key, error.values);
     }
   }
 

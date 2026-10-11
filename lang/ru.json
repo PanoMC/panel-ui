@@ -881,6 +881,8 @@
           "type-upload": "Копирование в Pano Backup",
           "type-transfer": "Перенос в Pano Host",
           "type-mc_upload": "Копия сервера Minecraft в Pano Backup",
+          "type-snapshot": "Снимок",
+          "type-download": "Скачивание снимка",
           "status-running": "Выполняется",
           "status-done": "Готово",
           "status-failed": "Ошибка",
@@ -897,7 +899,9 @@
           "done-restore": "Восстановление завершено. Pano перезапускается.",
           "done-upload": "Копия загружена в Pano Backup.",
           "done-transfer": "Перенос загружен. Подтвердите его на {website}.",
-          "done-mc_upload": "Копия сервера загружена в Pano Backup."
+          "done-mc_upload": "Копия сервера загружена в Pano Backup.",
+          "done-snapshot": "Снимок создан.",
+          "done-download": "Архив готов. Скачивание начинается."
         },
         "restore": {
           "title": "Восстановить этот Pano?",
@@ -4599,6 +4603,9 @@
     "CANT_UPDATE_PERM_GROUP_YOURSELF": "Вы не можете обновить свою собственную группу разрешений.",
     "CATEGORY_NOT_EXISTS": "Категория не существует.",
     "CURRENT_PASSWORD_NOT_CORRECT": "Текущий пароль неверен.",
+    "MAIL_DISABLED": "Отправка писем отключена, ничего не отправлено. Включите её в настройках платформы.",
+    "PANO_MAIL_UNAVAILABLE": "Pano Mail не отправил письмо. Возможно, лимит исчерпан или отправка приостановлена.",
+    "CONNECT_REQUIRED": "Этот Pano не подключён к аккаунту panomc.com.",
     "EMAIL_ALREADY_VERIFIED": "Email уже подтвержден.",
     "FAILED_TO_INSTALL_RESOURCE": "Не удалось установить ресурс.",
     "FAILED_TO_INSTALL_SYSTEM_RESOURCE": "Системные темы и плагины поставляются вместе с Pano; их нельзя установить или обновить через панель. Они обновляются только при обновлении Pano.",

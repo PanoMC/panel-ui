@@ -4,6 +4,7 @@
  * Svelte and `$lib` imports so `bun test` runs them as they are.
  */
 import { formatBytes } from './string.util.js';
+import { pageNumber } from './components/pagination.util.js';
 
 /** Local schedule (`PUT /api/v1/panel/pano-backups/settings`). */
 export const LOCAL_SCHEDULES = Object.freeze(['OFF', 'DAILY', 'WEEKLY']);
@@ -277,33 +278,34 @@ export function canRestoreRemote(backup) {
 }
 
 /**
- * Groups `GET …/remote/backups` for the page: this Pano first, then the account's other Panos
- * (newest activity first, as sent); lapsed/failed rows are left to the website.
+ * Puts one page of `GET …/remote/list` (rows already grouped, ordered and cut by the server) under the Pano each
+ * row belongs to. Only the Panos that have a row on this page get a group; this Pano is always shown on the first
+ * page, even without a backup, so the page can say it has none. A group's `count` and `usedBytes` are the server's,
+ * for all its backups, not only the page's.
  *
- * @param {Record<string, any> | null | undefined} list
+ * @param {Record<string, any> | null | undefined} list `GET …/remote/list`.
  * @returns {{ instanceId: string, instanceName: string, current: boolean, connected: boolean | null,
- *   usedBytes: number, lastBackupAt: number | null, backups: any[] }[]}
+ *   usedBytes: number, lastBackupAt: number | null, count: number, backups: any[] }[]}
  */
-export function groupRemoteBackups(list) {
-  const panos = Array.isArray(list?.panos) ? list.panos : [];
+export function groupRemotePage(list) {
+  const items = Array.isArray(list?.items) ? list.items : [];
+  const groups = Array.isArray(list?.groups) ? list.groups : [];
+  const first = pageNumber(list?.page) === 1;
 
-  return panos
-    .map((pano, index) => ({
-      index,
-      instanceId: String(pano?.instanceId ?? ''),
-      instanceName: String(pano?.instanceName || pano?.instanceId || ''),
-      current:
-        pano?.current === true || (!!list?.instanceId && pano?.instanceId === list.instanceId),
-      connected: typeof pano?.connected === 'boolean' ? pano.connected : null,
-      usedBytes: Number(pano?.usedBytes) || 0,
-      lastBackupAt: pano?.lastBackupAt ?? null,
-      backups: (Array.isArray(pano?.backups) ? pano.backups : []).filter(
-        (backup) => backup && (backup.status === 'DONE' || backup.status === 'UPLOADING'),
+  return groups
+    .map((group) => ({
+      instanceId: String(group?.instanceId ?? ''),
+      instanceName: String(group?.instanceName || group?.instanceId || ''),
+      current: group?.current === true,
+      connected: typeof group?.connected === 'boolean' ? group.connected : null,
+      usedBytes: Number(group?.usedBytes) || 0,
+      lastBackupAt: group?.lastBackupAt ?? null,
+      count: Number(group?.count) || 0,
+      backups: items.filter(
+        (row) => String(row?.instanceId ?? '') === String(group?.instanceId ?? ''),
       ),
     }))
-    .filter((pano) => pano.current || pano.backups.length > 0)
-    .sort((a, b) => Number(b.current) - Number(a.current) || a.index - b.index)
-    .map(({ index: _index, ...pano }) => pano);
+    .filter((group) => group.backups.length > 0 || (first && group.current && group.count === 0));
 }
 
 /**
@@ -316,15 +318,28 @@ export function formatSnapshotBytes(bytes) {
   return bytes == null || !Number.isFinite(value) || value < 0 ? '—' : formatBytes(value);
 }
 
-/** Snapshot statuses that are worth a row (a snapshot that is still being taken or failed too). */
-const SNAPSHOT_STATUSES = Object.freeze(['PENDING', 'RUNNING', 'DONE', 'FAILED']);
-
 /**
  * @param {Record<string, any> | null | undefined} snapshot
  * @returns {boolean} whether this Pano can restore it.
  */
 export function canRestoreSnapshot(snapshot) {
   return snapshot?.status === 'DONE';
+}
+
+/**
+ * @param {Record<string, any> | null | undefined} snapshot
+ * @returns {boolean} whether it can be downloaded as a `.panoarc` (any finished snapshot of the account).
+ */
+export function canDownloadSnapshot(snapshot) {
+  return snapshot?.status === 'DONE';
+}
+
+/**
+ * @param {string} jobId the finished `DOWNLOAD` job.
+ * @returns {string} where the archive that job built is fetched from.
+ */
+export function snapshotDownloadUrl(jobId) {
+  return `/api/v1/panel/pano-backups/remote/downloads/${encodeURIComponent(jobId)}`;
 }
 
 /**
@@ -364,55 +379,6 @@ export function snapshotProblem(snapshot) {
     values: described?.values ?? {},
     storageFull: false,
   };
-}
-
-/**
- * Puts the account's snapshots (`GET …/remote/snapshots`) into the groups of
- * {@link groupRemoteBackups}: every row gets a `type` (`archive` | `snapshot`), each Pano's rows are
- * mixed and sorted newest first, and a Pano that only has snapshots gets a group too. A group's
- * `usedBytes` grows by the space its snapshots use alone.
- *
- * @param {Record<string, any> | null | undefined} list `GET …/remote/backups`.
- * @param {Record<string, any> | null | undefined} snapshotList `GET …/remote/snapshots`.
- * @returns {ReturnType<typeof groupRemoteBackups>}
- */
-export function mergeRemoteList(list, snapshotList) {
-  const groups = groupRemoteBackups(list).map((group) => ({
-    ...group,
-    backups: group.backups.map((backup) => ({ ...backup, type: 'archive' })),
-  }));
-  const snapshots = (
-    snapshotList && !snapshotList.error && Array.isArray(snapshotList.snapshots)
-      ? snapshotList.snapshots
-      : []
-  ).filter((snapshot) => snapshot && SNAPSHOT_STATUSES.includes(snapshot.status));
-
-  for (const snapshot of snapshots) {
-    const instanceId = String(snapshot.instanceId ?? '');
-    let group = groups.find((candidate) => candidate.instanceId === instanceId);
-
-    if (!group) {
-      group = {
-        instanceId,
-        instanceName: String(snapshot.instanceName || instanceId),
-        current: snapshot.own === true || (!!list?.instanceId && instanceId === list.instanceId),
-        connected: null,
-        usedBytes: 0,
-        lastBackupAt: null,
-        backups: [],
-      };
-      groups.push(group);
-    }
-
-    group.usedBytes += Math.max(0, Number(snapshot.uniqueBytes) || 0);
-    group.backups.push({ ...snapshot, type: 'snapshot' });
-  }
-
-  for (const group of groups) {
-    group.backups.sort((a, b) => (Number(b.createdAt) || 0) - (Number(a.createdAt) || 0));
-  }
-
-  return groups.sort((a, b) => Number(b.current) - Number(a.current));
 }
 
 /**

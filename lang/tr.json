@@ -881,6 +881,8 @@
           "type-upload": "Pano Backup'a yedekleme",
           "type-transfer": "Pano Host'a taşıma",
           "type-mc_upload": "Minecraft sunucu yedeğini Pano Backup'a yükleme",
+          "type-snapshot": "Kayıt Noktası",
+          "type-download": "Kayıt noktası indirme",
           "status-running": "Çalışıyor",
           "status-done": "Tamamlandı",
           "status-failed": "Başarısız",
@@ -897,7 +899,9 @@
           "done-restore": "Geri yükleme tamamlandı. Pano yeniden başlıyor.",
           "done-upload": "Yedek Pano Backup'a yüklendi.",
           "done-transfer": "Taşıma yüklendi. {website} üzerinde onaylayın.",
-          "done-mc_upload": "Sunucu yedeği Pano Backup'a yüklendi."
+          "done-mc_upload": "Sunucu yedeği Pano Backup'a yüklendi.",
+          "done-snapshot": "Kayıt noktası alındı.",
+          "done-download": "Arşiv hazır. İndirme başlıyor."
         },
         "restore": {
           "title": "Bu Pano geri yüklensin mi?",
@@ -970,8 +974,8 @@
           "TRANSFER_NOT_FOUND": "Taşıma artık mevcut değil.",
           "BACKUP_NOT_FOUND": "Yedek artık mevcut değil.",
           "NOT_A_FULL_BACKUP": "Pano Backup'a yalnızca tam yedekler yüklenebilir.",
-          "SNAPSHOT_BUSY": "Bu Pano'nun bir anlık görüntüsü alınıyor. Biraz sonra tekrar deneyin.",
-          "SNAPSHOT_NOT_FOUND": "Anlık görüntü artık mevcut değil.",
+          "SNAPSHOT_BUSY": "Bu Pano'nun bir kayıt noktası alınıyor. Biraz sonra tekrar deneyin.",
+          "SNAPSHOT_NOT_FOUND": "Kayıt noktası artık mevcut değil.",
           "NETWORK_ERROR": "Pano'ya ulaşılamadı. Bağlantınızı kontrol edin.",
           "CONNECT_REQUIRED": "Bu Pano bir {website} hesabına bağlı değil. Platform ayarlarından bağlayın.",
           "STOPPED_REMOTELY": "Yedekleme {website} üzerinden durduruldu.",
@@ -1001,20 +1005,20 @@
         "remote-status-pending": "Bekliyor",
         "remote-status-running": "Sürüyor",
         "mode-title": "Yedek türü",
-        "mode-snapshot": "Anlık görüntü",
+        "mode-snapshot": "Kayıt Noktası",
         "mode-snapshot-description": "Her gün yalnızca değişenler gönderilir. Az yer kaplar.",
         "mode-full": "Tam arşiv",
         "mode-full-description": "Her seferinde sitenin tamamı. Daha çok yer kaplar. Kendi parolanızla korunabilir.",
-        "type-snapshot": "Anlık görüntü",
+        "type-snapshot": "Kayıt Noktası",
         "type-full": "Tam arşiv",
-        "delete-snapshot-description": "Bu anlık görüntü kalıcı olarak silinecek. Diğer yedekler olduğu gibi kalır.",
+        "delete-snapshot-description": "Bu kayıt noktası kalıcı olarak silinecek. Diğer yedekler olduğu gibi kalır.",
         "snapshot": {
           "site-size": "Site: {size}",
           "own-size": "Kaplanan: {size}",
           "own-size-hint": "Yalnızca bu yedeğin kapladığı alan",
           "storage-full": "Depolama alanı dolu.",
           "failed": "Yedekleme başarısız oldu.",
-          "upload-note": "Son anlık görüntüden bu yana yalnızca değişenler gönderilir."
+          "upload-note": "Son kayıt noktasından bu yana yalnızca değişenler gönderilir."
         }
       }
     },
@@ -4596,6 +4600,9 @@
     "CANT_UPDATE_PERM_GROUP_YOURSELF": "Kendi yetki grubunuzu güncelleyemezsiniz.",
     "CATEGORY_NOT_EXISTS": "Kategori mevcut değil.",
     "CURRENT_PASSWORD_NOT_CORRECT": "Mevcut şifre doğru değil.",
+    "MAIL_DISABLED": "E-posta kapalı olduğu için hiçbir şey gönderilmedi. Platform ayarlarından açın.",
+    "PANO_MAIL_UNAVAILABLE": "Pano Mail göndermedi. Limiti dolmuş olabilir ya da gönderim duraklatılmış olabilir.",
+    "CONNECT_REQUIRED": "Bu Pano bir panomc.com hesabına bağlı değil.",
     "EMAIL_ALREADY_VERIFIED": "E-posta zaten doğrulanmış.",
     "FAILED_TO_INSTALL_RESOURCE": "Kaynak yüklenemedi.",
     "FAILED_TO_INSTALL_SYSTEM_RESOURCE": "Sistem temaları ve eklentileri Pano ile birlikte gelir; panelden yüklenemez veya güncellenemez. Yalnızca Pano güncellendiğinde güncellenir.",

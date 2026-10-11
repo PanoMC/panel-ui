@@ -881,6 +881,8 @@
           "type-upload": "Backup to Pano Backup",
           "type-transfer": "Transfer to Pano Host",
           "type-mc_upload": "Minecraft server backup to Pano Backup",
+          "type-snapshot": "Snapshot",
+          "type-download": "Snapshot download",
           "status-running": "Running",
           "status-done": "Done",
           "status-failed": "Failed",
@@ -897,7 +899,9 @@
           "done-restore": "Restore finished. Pano is restarting.",
           "done-upload": "Backup uploaded to Pano Backup.",
           "done-transfer": "Transfer uploaded. Confirm it on {website}.",
-          "done-mc_upload": "Server backup uploaded to Pano Backup."
+          "done-mc_upload": "Server backup uploaded to Pano Backup.",
+          "done-snapshot": "Snapshot taken.",
+          "done-download": "Archive ready. The download starts now."
         },
         "restore": {
           "title": "Restore this Pano?",
@@ -4599,6 +4603,9 @@
     "CANT_UPDATE_PERM_GROUP_YOURSELF": "You can't update your own permission group.",
     "CATEGORY_NOT_EXISTS": "Category does not exist.",
     "CURRENT_PASSWORD_NOT_CORRECT": "Current password is not correct.",
+    "MAIL_DISABLED": "E-mail is turned off, so nothing was sent. Turn it on in the platform settings.",
+    "PANO_MAIL_UNAVAILABLE": "Pano Mail did not send it. Its limit may be used up or sending is paused.",
+    "CONNECT_REQUIRED": "This Pano is not connected to a panomc.com account.",
     "EMAIL_ALREADY_VERIFIED": "Email is already verified.",
     "FAILED_TO_INSTALL_RESOURCE": "Failed to install resource.",
     "FAILED_TO_INSTALL_SYSTEM_RESOURCE": "System themes and plugins ship with Pano and cannot be installed or updated from the panel. They are updated only when you update Pano.",
