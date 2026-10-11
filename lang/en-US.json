@@ -890,15 +890,15 @@
           "phase-fetching": "Fetching the server backup…",
           "restore-running": "Pano is in maintenance mode while the restore runs and restarts when it is done.",
           "rolled-back": "Nothing was changed: the state from before the restore was put back.",
-          "transfer-done": "Uploaded. Confirm the transfer on {website} to finish it.",
           "restart-required": "Pano must restart to finish the restore. If it does not restart by itself, restart it by hand.",
           "done-create": "Backup created.",
           "done-restore": "Restore finished. Pano is restarting.",
           "done-upload": "Backup uploaded to Pano Backup.",
-          "done-transfer": "Transfer uploaded. Confirm it on {website}.",
+          "done-transfer": "Pano was transferred to the instance.",
           "done-mc_upload": "Server backup uploaded to Pano Backup.",
           "done-snapshot": "Snapshot taken.",
-          "done-download": "Archive ready. The download starts now."
+          "done-download": "Archive ready. The download starts now.",
+          "phase-transfer_restoring": "Restoring on Pano Host…"
         },
         "restore": {
           "title": "Restore this Pano?",
@@ -919,12 +919,11 @@
           "title": "Transfer to Pano Host",
           "max-size": "Up to {size}",
           "start": "Start transfer",
-          "awaiting": "A transfer is waiting. Confirm or reject it on {website}.",
-          "confirm-until": "Confirm until",
           "step-pick": "Select an instance.",
           "target": "Pano Host instance",
           "no-workloads": "Your account has no Pano Host instance to move into.",
-          "create-instance": "Create a new instance"
+          "create-instance": "Create a new instance",
+          "replace-note": "The selected instance's content will be replaced with this Pano."
         },
         "errors": {
           "generic": "Something went wrong ({code}).",
@@ -974,7 +973,10 @@
           "CONNECT_REQUIRED": "This Pano is not connected to a {website} account. Connect it in the platform settings.",
           "STOPPED_REMOTELY": "The backup was stopped on {website}.",
           "PAYMENT_REQUIRED_NO_SUBSCRIPTION": "Your account has no Pano Backup plan. Pick one on {website}.",
-          "PAYMENT_REQUIRED_LAPSED": "Your Pano Backup plan is unpaid. New backups are paused and the stored backups are deleted after {graceUntil} unless the plan is paid."
+          "PAYMENT_REQUIRED_LAPSED": "Your Pano Backup plan is unpaid. New backups are paused and the stored backups are deleted after {graceUntil} unless the plan is paid.",
+          "QUOTA_EXCEEDED_TRANSFER": "This Pano does not fit on the selected instance ({max}).",
+          "TRANSFER_FAILED": "The transfer failed on Pano Host.",
+          "TRANSFER_TIMEOUT": "The transfer did not finish in time. Check the instance on {website}."
         },
         "account": {
           "title": "Pano Backup",

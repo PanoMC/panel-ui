@@ -161,7 +161,7 @@
         <button
           type="button"
           class="btn btn-sm btn-link"
-          disabled={running || !!openTransfer}
+          disabled={running}
           title={$_('pages.settings.backups.transfer.title')}
           aria-label={$_('pages.settings.backups.transfer.title')}
           onclick={() => transferModal?.open()}>
@@ -179,31 +179,6 @@
     </CardHeader>
 
     <PanoBackupAccountSummary {remote} />
-
-    <!-- A transfer to Pano Host waiting for the owner's confirmation on panomc.com. -->
-    {#if connected && openTransfer}
-      <div class="card-body pt-0">
-        <div class="alert alert-warning mb-0 d-flex flex-wrap align-items-center gap-2">
-          <i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>
-          <span>
-            {$_('pages.settings.backups.transfer.awaiting', {
-              values: { website: websiteDisplayHost() },
-            })}
-            {#if openTransfer.status === 'AWAITING_CONFIRMATION' && openTransfer.expiresAt}
-              · {$_('pages.settings.backups.transfer.confirm-until')}
-              <DateComponent time={openTransfer.expiresAt} relativeFormat />
-            {/if}
-          </span>
-          <button
-            type="button"
-            class="btn alert-btn ms-auto"
-            disabled={cancelling === openTransfer.id}
-            onclick={() => void cancelTransfer(openTransfer)}>
-            {$_('buttons.cancel')}
-          </button>
-        </div>
-      </div>
-    {/if}
 
     <!-- When panomc.com cannot be reached the summary above already says so; the list would only
          repeat it. -->
@@ -563,15 +538,12 @@
       ),
     ]);
 
-    const [remoteList, transferList] =
+    const remoteList =
       connectionState(remote) !== 'not-connected'
-        ? await Promise.all([
-            read(`/panel/pano-backups/remote/list?pageSize=${REMOTE_PAGE_SIZE}`, event),
-            read('/panel/pano-backups/remote/transfers', event),
-          ])
-        : [null, null];
+        ? await read(`/panel/pano-backups/remote/list?pageSize=${REMOTE_PAGE_SIZE}`, event)
+        : null;
 
-    return { local, remote, remoteList, transferList };
+    return { local, remote, remoteList };
   }
 </script>
 
@@ -581,7 +553,6 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { _ } from 'svelte-i18n';
-  import { websiteDisplayHost } from '$lib/website-display.util.js';
 
   import { formatBytes } from '$lib/string.util.js';
   import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
@@ -593,7 +564,6 @@
     canRestoreSnapshot,
     formatSnapshotBytes,
     isJobRunning,
-    isTransferOpen,
     normaliseMode,
     snapshotDownloadUrl,
     snapshotProblem,
@@ -647,7 +617,6 @@
   let local = $derived(normaliseLocal(data?.local));
   let remote = $derived(normaliseRemote(data?.remote));
   let remoteList = $derived(/** @type {any} */ (data?.remoteList ?? null));
-  let transferList = $derived(/** @type {any} */ (data?.transferList ?? null));
   let job = $derived(/** @type {any} */ (data?.remote?.job ?? data?.local?.job ?? null));
 
   const LOCAL_TAGS = ['MANUAL', 'SCHEDULED', 'PRE_RESTORE'];
@@ -696,12 +665,6 @@
   /** @type {PanoTransferModal | undefined} */
   let transferModal = $state();
 
-  /** @type {string | null} */
-  let cancelling = $state(null);
-
-  /** A pending transfer is re-read this often, so the owner's confirmation shows up here. */
-  const OPEN_TRANSFER_POLL_MS = 10_000;
-
   let createEncrypt = $state(true);
   let createPassphrase = $state('');
   let createPassphraseValid = $state(false);
@@ -726,25 +689,6 @@
   );
   const showRemoteStatus = $derived(remoteRows.some((row) => row.status !== 'DONE'));
   const remoteError = $derived(remoteList?.error ? describeError(remoteList) : null);
-  const transfers = $derived(
-    /** @type {any[]} */ (
-      transferList && !transferList.error && Array.isArray(transferList.transfers)
-        ? transferList.transfers
-        : []
-    ),
-  );
-  const openTransfer = $derived(transfers.find((transfer) => isTransferOpen(transfer.status)));
-
-  $effect(() => {
-    if (!openTransfer || running) {
-      return;
-    }
-
-    const timer = setInterval(() => void refresh(), OPEN_TRANSFER_POLL_MS);
-
-    return () => clearInterval(timer);
-  });
-
   /** @param {any} row a remote list row (archive or snapshot). */
   function canDownloadRow(row) {
     return row.type === 'snapshot' && canDownloadSnapshot(row);
@@ -772,12 +716,11 @@
     return body && !body.error ? body : { connected: false, passphraseSet: false };
   }
 
-  /** @param {{ local?: any, remote?: any, remoteList?: any, transferList?: any }} source */
+  /** @param {{ local?: any, remote?: any, remoteList?: any }} source */
   function apply(source) {
     local = normaliseLocal(source.local);
     remote = normaliseRemote(source.remote);
     remoteList = source.remoteList ?? null;
-    transferList = source.transferList ?? null;
     job = source.remote?.job ?? source.local?.job ?? job;
   }
 
@@ -816,19 +759,15 @@
       ApiUtil.get({ path: '/panel/pano-backups' }).catch(() => null),
       ApiUtil.get({ path: '/panel/pano-backups/remote?fresh=true' }).catch(() => null),
     ]);
-    const [nextList, nextTransfers] =
+    const nextList =
       connectionState(nextRemote) !== 'not-connected'
-        ? await Promise.all([
-            readRemotePage(pageNumber(remoteList?.page)),
-            ApiUtil.get({ path: '/panel/pano-backups/remote/transfers' }).catch(() => null),
-          ])
-        : [null, null];
+        ? await readRemotePage(pageNumber(remoteList?.page))
+        : null;
 
     apply({
       local: nextLocal,
       remote: nextRemote,
       remoteList: nextList,
-      transferList: nextTransfers,
     });
   }
 
@@ -1058,29 +997,6 @@
 
     if (error) {
       void showError(error.key, error.values);
-    }
-  }
-
-  /** @param {any} transfer */
-  async function cancelTransfer(transfer) {
-    cancelling = transfer.id;
-
-    try {
-      const body = await ApiUtil.delete({
-        path: `/panel/pano-backups/remote/transfers/${encodeURIComponent(transfer.id)}`,
-      }).catch(() => ({ error: { code: 'NETWORK_ERROR' } }));
-
-      if (body?.error) {
-        const error = describeError(body);
-
-        if (error) {
-          void showError(error.key, error.values);
-        }
-      }
-
-      await refresh();
-    } finally {
-      cancelling = null;
     }
   }
 </script>

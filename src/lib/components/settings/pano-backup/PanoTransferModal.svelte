@@ -1,4 +1,4 @@
-<!-- Transfer this Pano to a Pano Host instance of the connected account: pick it, push a plain archive, owner confirms. -->
+<!-- Transfer this Pano to a Pano Host instance of the connected account: pick it, push a plain archive; the admin password confirms, Pano Host restores it at once. -->
 <BsModal bind:this={modal}>
   <div class="modal-body text-center vstack gap-3">
     <div>
@@ -38,6 +38,22 @@
           </div>
         {/if}
       </div>
+
+      <div class="text-body-secondary">{$_('pages.settings.backups.transfer.replace-note')}</div>
+
+      <div class="form-floating text-start">
+        <input
+          id="pano-transfer-password"
+          class="form-control"
+          type="password"
+          placeholder=" "
+          autocomplete="current-password"
+          bind:value={currentPassword}
+          class:border-danger={error?.code === 'CURRENT_PASSWORD_NOT_CORRECT'} />
+        <label class="text-capitalize" for="pano-transfer-password">
+          {$_('pages.settings.backups.current-password')}
+        </label>
+      </div>
     {/if}
 
     {#if workloadList !== null && !workloadsError}
@@ -70,7 +86,7 @@
     <button
       type="button"
       class="btn btn-primary col-6 m-0"
-      disabled={!selectedWorkload || disabled || starting}
+      disabled={!selectedWorkload || !currentPassword || disabled || starting}
       onclick={() => void start()}>
       {#if starting}
         <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
@@ -106,6 +122,7 @@
   /** @type {any} */
   let workloadList = $state(null);
   let workloadId = $state('');
+  let currentPassword = $state('');
   let starting = $state(false);
   /** @type {ReturnType<typeof describeError>} */
   let error = $state(null);
@@ -141,6 +158,7 @@
 
   export function open() {
     error = null;
+    currentPassword = '';
     workloadList = null;
 
     modal?.show();
@@ -163,7 +181,7 @@
     try {
       const body = await ApiUtil.post({
         path: '/panel/pano-backups/remote/transfers',
-        body: { workloadId: String(target.id) },
+        body: { workloadId: String(target.id), currentPassword },
       }).catch(() => ({ error: { code: 'NETWORK_ERROR' } }));
 
       if (body?.error) {
@@ -172,6 +190,7 @@
         return;
       }
 
+      currentPassword = '';
       modal?.hide();
       onstarted?.(body?.job ?? null);
     } finally {

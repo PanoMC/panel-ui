@@ -83,6 +83,9 @@ export const KNOWN_ERRORS = Object.freeze([
   'NO_PERMISSION',
   'WORKLOAD_NOT_FOUND',
   'TRANSFER_NOT_FOUND',
+  'TRANSFER_FAILED',
+  'TRANSFER_TIMEOUT',
+  'QUOTA_EXCEEDED_TRANSFER',
   'BACKUP_NOT_FOUND',
   'NOT_A_FULL_BACKUP',
   'NETWORK_ERROR',
@@ -399,8 +402,9 @@ function formatTime(ms, locale) {
  * job (`{error, details?, rolledBack?}`); Pano Host errors are unwrapped from `PANO_HOST_ERROR`.
  *
  * @param {object | null | undefined} source
- * @param {{ locale?: string, website?: string }} [options] `website`: the Pano website's host
- *   (`{website}` in the texts), see `describeBackupError`.
+ * @param {{ locale?: string, website?: string, context?: 'transfer' }} [options] `website`: the Pano
+ *   website's host (`{website}` in the texts), see `describeBackupError`; `context: 'transfer'` words a
+ *   `QUOTA_EXCEEDED` for a transfer (the archive does not fit the instance).
  * @returns {{ code: string, key: string, values: Record<string, string | number> } | null}
  */
 export function describeError(source, options = {}) {
@@ -420,7 +424,10 @@ export function describeError(source, options = {}) {
     code = String(details.hostError || 'PANO_HOST_UNAVAILABLE');
   }
 
-  if ((code === 'QUOTA_EXCEEDED' || code === 'PAYMENT_REQUIRED') && details.reason) {
+  // The archive does not fit the chosen instance: not the Pano Backup limit.
+  if (code === 'QUOTA_EXCEEDED' && options.context === 'transfer') {
+    code = 'QUOTA_EXCEEDED_TRANSFER';
+  } else if ((code === 'QUOTA_EXCEEDED' || code === 'PAYMENT_REQUIRED') && details.reason) {
     const specific = `${code}_${String(details.reason).toUpperCase()}`;
 
     if (KNOWN_ERRORS.includes(specific)) {
@@ -450,45 +457,6 @@ export function describeError(source, options = {}) {
  */
 export function tagColour(tag) {
   return { MANUAL: 'primary', SCHEDULED: 'info', PRE_RESTORE: 'warning' }[tag || ''] || 'secondary';
-}
-
-/**
- * Transfer statuses of the control plane (host_transfer) and whether they are still moving.
- */
-export const TRANSFER_STATUSES = Object.freeze([
-  'UPLOADING',
-  'AWAITING_CONFIRMATION',
-  'RESTORING',
-  'DONE',
-  'FAILED',
-  'REJECTED',
-  'CANCELED',
-  'EXPIRED',
-]);
-
-/**
- * @param {string | null | undefined} status
- */
-export function isTransferOpen(status) {
-  return status === 'UPLOADING' || status === 'AWAITING_CONFIRMATION' || status === 'RESTORING';
-}
-
-/**
- * @param {string | null | undefined} status
- */
-export function transferColour(status) {
-  return (
-    {
-      UPLOADING: 'info',
-      AWAITING_CONFIRMATION: 'warning',
-      RESTORING: 'info',
-      DONE: 'success',
-      FAILED: 'danger',
-      REJECTED: 'danger',
-      CANCELED: 'secondary',
-      EXPIRED: 'secondary',
-    }[status || ''] || 'secondary'
-  );
 }
 
 /**

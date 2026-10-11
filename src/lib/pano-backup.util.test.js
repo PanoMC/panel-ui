@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'bun:test';
+import { formatBytes } from './string.util.js';
 
 import {
   ENVELOPE_MAGIC,
@@ -15,7 +16,6 @@ import {
   inspectArchiveFile,
   waitForRestart,
   inspectArchiveHeader,
-  isTransferOpen,
   jobPercent,
   passphraseProblem,
   toggleId,
@@ -83,6 +83,17 @@ describe('inspectArchiveHeader', () => {
 });
 
 describe('describeError', () => {
+  test('a quota refusal of a transfer says the Pano does not fit the instance', () => {
+    const result = describeError(
+      { error: 'QUOTA_EXCEEDED', details: { maxBytes: 1048576 } },
+      { context: 'transfer' },
+    );
+
+    expect(result?.key).toBe('pages.settings.backups.errors.QUOTA_EXCEEDED_TRANSFER');
+    expect(result?.values.max).toBe(formatBytes(1048576));
+    expect(describeError({ error: 'QUOTA_EXCEEDED' })?.code).toBe('QUOTA_EXCEEDED');
+  });
+
   test('unwraps PANO_HOST_ERROR and picks the payment reason with its grace end', () => {
     const at = Date.UTC(2026, 8, 26, 12, 0, 0);
     const result = describeError(
@@ -191,10 +202,8 @@ describe('small rules', () => {
     expect(toggleId([], 'x')).toEqual([]);
   });
 
-  test('schedules have no plan-paced option and isTransferOpen', () => {
+  test('schedules have no plan-paced option', () => {
     expect([...REMOTE_SCHEDULES]).toEqual(['OFF', 'DAILY', 'WEEKLY']);
-    expect(isTransferOpen('AWAITING_CONFIRMATION')).toBe(true);
-    expect(isTransferOpen('DONE')).toBe(false);
   });
 });
 

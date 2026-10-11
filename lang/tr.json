@@ -890,15 +890,15 @@
           "phase-fetching": "Sunucu yedeği alınıyor…",
           "restore-running": "Geri yükleme sürerken Pano bakım modundadır ve bittiğinde yeniden başlar.",
           "rolled-back": "Hiçbir şey değişmedi: geri yükleme öncesindeki durum geri getirildi.",
-          "transfer-done": "Yüklendi. Tamamlamak için taşımayı {website} üzerinde onaylayın.",
           "restart-required": "Geri yüklemeyi tamamlamak için Pano yeniden başlamalı. Kendiliğinden başlamazsa elle yeniden başlatın.",
           "done-create": "Yedek oluşturuldu.",
           "done-restore": "Geri yükleme tamamlandı. Pano yeniden başlıyor.",
           "done-upload": "Yedek Pano Backup'a yüklendi.",
-          "done-transfer": "Taşıma yüklendi. {website} üzerinde onaylayın.",
+          "done-transfer": "Pano örneğe aktarıldı.",
           "done-mc_upload": "Sunucu yedeği Pano Backup'a yüklendi.",
           "done-snapshot": "Kayıt noktası alındı.",
-          "done-download": "Arşiv hazır. İndirme başlıyor."
+          "done-download": "Arşiv hazır. İndirme başlıyor.",
+          "phase-transfer_restoring": "Pano Host'ta geri yükleniyor…"
         },
         "restore": {
           "title": "Bu Pano geri yüklensin mi?",
@@ -919,12 +919,11 @@
           "title": "Pano Host'a Aktar",
           "max-size": "En fazla {size}",
           "start": "Taşımayı başlat",
-          "awaiting": "Bekleyen bir taşıma var. {website} üzerinde onaylayın veya reddedin.",
-          "confirm-until": "Son onay:",
           "step-pick": "Bir örnek seçin.",
           "target": "Pano Host örneği",
           "no-workloads": "Hesabınızda taşınabilecek bir Pano Host örneği yok.",
-          "create-instance": "Yeni bir örnek oluştur"
+          "create-instance": "Yeni bir örnek oluştur",
+          "replace-note": "Seçilen örneğin içeriği bu Pano ile değiştirilecek."
         },
         "errors": {
           "generic": "Bir şeyler ters gitti ({code}).",
@@ -974,7 +973,10 @@
           "CONNECT_REQUIRED": "Bu Pano bir {website} hesabına bağlı değil. Platform ayarlarından bağlayın.",
           "STOPPED_REMOTELY": "Yedekleme {website} üzerinden durduruldu.",
           "PAYMENT_REQUIRED_NO_SUBSCRIPTION": "Hesabınızın Pano Backup planı yok. {website} üzerinden bir plan seçin.",
-          "PAYMENT_REQUIRED_LAPSED": "Pano Backup planınızın ödemesi yapılmadı. Yeni yedekler duraklatıldı; plan ödenmezse saklanan yedekler {graceUntil} sonrasında silinir."
+          "PAYMENT_REQUIRED_LAPSED": "Pano Backup planınızın ödemesi yapılmadı. Yeni yedekler duraklatıldı; plan ödenmezse saklanan yedekler {graceUntil} sonrasında silinir.",
+          "QUOTA_EXCEEDED_TRANSFER": "Bu Pano seçilen örneğe sığmıyor ({max}).",
+          "TRANSFER_FAILED": "Taşıma Pano Host'ta başarısız oldu.",
+          "TRANSFER_TIMEOUT": "Taşıma zamanında bitmedi. Örneği {website} üzerinde kontrol edin."
         },
         "account": {
           "title": "Pano Backup",

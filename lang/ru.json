@@ -890,15 +890,15 @@
           "phase-fetching": "Получение копии сервера…",
           "restore-running": "Во время восстановления Pano находится в режиме обслуживания и перезапустится по завершении.",
           "rolled-back": "Ничего не изменено: состояние до восстановления возвращено.",
-          "transfer-done": "Загружено. Подтвердите перенос на {website}, чтобы завершить его.",
           "restart-required": "Для завершения восстановления Pano нужно перезапустить. Если он не перезапустится сам, перезапустите его вручную.",
           "done-create": "Копия создана.",
           "done-restore": "Восстановление завершено. Pano перезапускается.",
           "done-upload": "Копия загружена в Pano Backup.",
-          "done-transfer": "Перенос загружен. Подтвердите его на {website}.",
+          "done-transfer": "Pano перенесён в экземпляр.",
           "done-mc_upload": "Копия сервера загружена в Pano Backup.",
           "done-snapshot": "Снимок создан.",
-          "done-download": "Архив готов. Скачивание начинается."
+          "done-download": "Архив готов. Скачивание начинается.",
+          "phase-transfer_restoring": "Восстановление в Pano Host…"
         },
         "restore": {
           "title": "Восстановить этот Pano?",
@@ -919,12 +919,11 @@
           "title": "Перенести в Pano Host",
           "max-size": "До {size}",
           "start": "Начать перенос",
-          "awaiting": "Перенос ожидает. Подтвердите или отклоните его на {website}.",
-          "confirm-until": "Подтвердить до",
           "step-pick": "Выберите экземпляр.",
           "target": "Экземпляр Pano Host",
           "no-workloads": "В вашем аккаунте нет экземпляра Pano Host для переноса.",
-          "create-instance": "Создать новый экземпляр"
+          "create-instance": "Создать новый экземпляр",
+          "replace-note": "Содержимое выбранного экземпляра будет заменено этим Pano."
         },
         "errors": {
           "generic": "Что-то пошло не так ({code}).",
@@ -974,7 +973,10 @@
           "CONNECT_REQUIRED": "Этот Pano не подключён к аккаунту {website}. Подключите его в настройках платформы.",
           "STOPPED_REMOTELY": "Резервное копирование было остановлено на {website}.",
           "PAYMENT_REQUIRED_NO_SUBSCRIPTION": "У вашего аккаунта нет тарифа Pano Backup. Выберите его на {website}.",
-          "PAYMENT_REQUIRED_LAPSED": "Тариф Pano Backup не оплачен. Новые копии приостановлены, а сохранённые будут удалены после {graceUntil}, если тариф не будет оплачен."
+          "PAYMENT_REQUIRED_LAPSED": "Тариф Pano Backup не оплачен. Новые копии приостановлены, а сохранённые будут удалены после {graceUntil}, если тариф не будет оплачен.",
+          "QUOTA_EXCEEDED_TRANSFER": "Этот Pano не помещается в выбранный экземпляр ({max}).",
+          "TRANSFER_FAILED": "Перенос не удался в Pano Host.",
+          "TRANSFER_TIMEOUT": "Перенос не завершился вовремя. Проверьте экземпляр на {website}."
         },
         "account": {
           "title": "Pano Backup",

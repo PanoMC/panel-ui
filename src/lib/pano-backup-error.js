@@ -6,7 +6,7 @@ import { websiteDisplayHost } from '$lib/website-display.util.js';
  * (siteInfo's website URL), so the texts never name panomc.com when another site runs Pano.
  *
  * @param {any} source
- * @param {{ locale?: string }} [options]
+ * @param {{ locale?: string, context?: 'transfer' }} [options]
  */
 export function describeBackupError(source, options = {}) {
   return describeError(source, { ...options, website: websiteDisplayHost() });

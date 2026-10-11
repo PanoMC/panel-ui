@@ -108,7 +108,11 @@
   const running = $derived(isJobRunning(job));
   const jobId = $derived(job?.id);
   const percent = $derived(jobPercent(job));
-  const error = $derived(job?.status === 'FAILED' ? describeError(job) : null);
+  const error = $derived(
+    job?.status === 'FAILED'
+      ? describeError(job, { context: job?.type === 'TRANSFER' ? 'transfer' : undefined })
+      : null,
+  );
 
   $effect(() => {
     if (!running) {
