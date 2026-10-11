@@ -212,6 +212,9 @@
                 <th class="align-middle text-nowrap" scope="col">
                   {$_('pages.settings.backups.column-size')}
                 </th>
+                <th class="align-middle text-nowrap" scope="col">
+                  {$_('pages.settings.backups.column-stored')}
+                </th>
                 {#if showRemoteStatus}
                   <th class="align-middle text-nowrap" scope="col">
                     {$_('pages.settings.backups.column-status')}
@@ -291,7 +294,7 @@
                     {#if backup.type !== 'snapshot'}
                       {formatBytes(backup.sizeBytes || 0)}
                     {:else if backup.status === 'DONE'}
-                      <div>{formatSnapshotBytes(backup.uniqueBytes)}</div>
+                      <div>{formatSnapshotBytes(backup.downloadBytes)}</div>
                       {#if backup.logicalBytes}
                         <div class="small text-body-secondary">
                           {$_('pages.settings.backups.snapshot.unpacked', {
@@ -299,6 +302,13 @@
                           })}
                         </div>
                       {/if}
+                    {/if}
+                  </td>
+                  <td class="align-middle">
+                    {#if backup.type !== 'snapshot'}
+                      {formatBytes(backup.sizeBytes || 0)}
+                    {:else if backup.status === 'DONE'}
+                      {formatSnapshotBytes(backup.uniqueBytes)}
                     {/if}
                   </td>
                   {#if showRemoteStatus}

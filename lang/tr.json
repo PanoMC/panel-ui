@@ -830,6 +830,7 @@
         "column-created": "Oluşturulma",
         "column-type": "Tür",
         "column-size": "Boyut",
+        "column-stored": "Depolanan boyut",
         "column-version": "Sürüm",
         "column-status": "Durum",
         "column-actions": "İşlemler",

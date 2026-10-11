@@ -830,6 +830,7 @@
         "column-created": "Создана",
         "column-type": "Тип",
         "column-size": "Размер",
+        "column-stored": "Занято в хранилище",
         "column-version": "Версия",
         "column-status": "Статус",
         "column-actions": "Действия",

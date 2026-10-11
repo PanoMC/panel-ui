@@ -830,6 +830,7 @@
         "column-created": "Created",
         "column-type": "Type",
         "column-size": "Size",
+        "column-stored": "Stored size",
         "column-version": "Version",
         "column-status": "Status",
         "column-actions": "Actions",
