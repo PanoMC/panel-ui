@@ -122,9 +122,6 @@
               </div>
             {/each}
           </div>
-          {#if !remote?.plan && !remote?.hostError}
-            <div>{$_('pages.settings.backups.schedule-needs-plan')}</div>
-          {/if}
           {#if remote?.lastUploadAt}
             <div>
               {$_('pages.settings.backups.last-upload')}

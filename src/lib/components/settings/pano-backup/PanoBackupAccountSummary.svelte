@@ -58,10 +58,7 @@
             {/if}
           </div>
         {:else}
-          <span class="small"
-            >{$_('pages.settings.backups.account.no-plan', {
-              values: { website: websiteDisplayHost() },
-            })}</span>
+          <span class="h5 mb-0">{$_('pages.settings.backups.account.free-plan')}</span>
         {/if}
       </div>
       <a class="btn btn-primary btn-sm ms-auto" href={planUrl}>
