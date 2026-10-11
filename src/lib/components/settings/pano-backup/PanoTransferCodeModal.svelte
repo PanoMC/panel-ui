@@ -5,8 +5,7 @@
       <div class="pb-3">
         <i class="fa-solid fa-envelope-open-text fa-3x d-block m-auto"></i>
       </div>
-      <h5 class="mb-2">{$_('pages.settings.backups.transfer.code-title')}</h5>
-      <div class="text-body-secondary">
+      <div>
         {$_('pages.settings.backups.transfer.code-sent', { values: { email: info?.email ?? '' } })}
       </div>
 
