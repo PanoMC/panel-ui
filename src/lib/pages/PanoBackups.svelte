@@ -291,7 +291,7 @@
                     {#if backup.type !== 'snapshot'}
                       {formatBytes(backup.sizeBytes || 0)}
                     {:else if backup.status === 'DONE'}
-                      <div>{formatSnapshotBytes(backup.downloadBytes)}</div>
+                      <div>{formatSnapshotBytes(backup.uniqueBytes)}</div>
                       {#if backup.logicalBytes}
                         <div class="small text-body-secondary">
                           {$_('pages.settings.backups.snapshot.unpacked', {
