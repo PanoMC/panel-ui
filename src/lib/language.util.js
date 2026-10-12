@@ -9,6 +9,7 @@ import {
 } from 'svelte-i18n';
 import { base } from '$app/paths';
 import ApiUtil from '$lib/api.util.js';
+import { customTranslations } from '$lib/language.translations.js';
 
 export const languageLoading = writable(false);
 export const currentLanguage = writable(null);
@@ -73,11 +74,17 @@ export async function loadLanguage(language, event) {
   ]);
 
   const languageFile = await localTranslationsResponse.json();
-  const customTranslations = translationsResponse?.error ? {} : translationsResponse.data;
+  // Not signed in yet (the sign-in page): the plugins' texts still come, from the public answer.
+  const custom = await customTranslations(translationsResponse, () =>
+    ApiUtil.get({
+      path: `/locales/${language.code}/translations/types/THEME`,
+      request: event,
+    }),
+  );
 
   const translations = unflattenObject({
     ...flattenObject(languageFile),
-    ...flattenObject(customTranslations),
+    ...flattenObject(custom),
   });
 
   register(language.code, async () => translations);
