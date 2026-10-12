@@ -162,12 +162,21 @@
         {/if}
       </span>
       <div class="d-flex flex-wrap align-items-center justify-content-center gap-2 mt-3">
-        <button
-          class="btn btn-sm btn-link text-decoration-none"
-          on:click={reloadPage}
-          type="button">
+        <button class="btn btn-sm btn-outline-secondary" on:click={reloadPage} type="button">
           {$_('components.splash.manual-refresh')}
         </button>
+        <!-- Trying again only helps a lost connection: a missing session or permission stays missing. -->
+        {#if !showNotLoggedIn && !showNoPermission}
+          <button
+            class="btn btn-sm btn-primary"
+            on:click={onRetryClick}
+            class:disabled={$retryingNetworkErrors}
+            type="button">
+            {$retryingNetworkErrors
+              ? $_('components.splash.refreshing')
+              : $_('components.splash.retry')}
+          </button>
+        {/if}
       </div>
     </div>
   {/if}
@@ -187,10 +196,15 @@
 
 <script>
   import { getContext, onDestroy, onMount } from 'svelte';
+  import { get } from 'svelte/store';
   import { fade } from 'svelte/transition';
   import { _ } from 'svelte-i18n';
 
-  import { networkErrorCallbacks } from '$lib/Store';
+  import {
+    networkErrorCallbacks,
+    resumeAfterNetworkError,
+    retryingNetworkErrors,
+  } from '$lib/Store';
   import { base } from '$app/paths';
   import { page } from '$app/stores';
 
@@ -237,5 +251,13 @@
 
   function reloadPage() {
     location.reload();
+  }
+
+  async function onRetryClick() {
+    if (get(retryingNetworkErrors)) {
+      return;
+    }
+
+    await resumeAfterNetworkError();
   }
 </script>
