@@ -34,7 +34,7 @@
       </p>
 
       {#if themeLoginHref}
-        <a class="btn btn-primary w-100" href={themeLoginHref}>
+        <a class="btn btn-lg btn-primary w-100" href={themeLoginHref}>
           {$_('pages.auth.login.link-code-open-site')}
           <i class="fa-solid fa-arrow-up-right-from-square ms-1 small" aria-hidden="true"></i>
         </a>
@@ -75,7 +75,7 @@
 
         <button
           type="submit"
-          class="btn btn-primary w-100 mt-3"
+          class="btn btn-lg btn-primary w-100 mt-3"
           disabled={loading || totpCode.length !== 6}>
           {#if loading}
             <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
@@ -117,33 +117,38 @@
             oninput={onIdentifierInput} />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" for="loginPassword">
-            {$_('pages.auth.login.password-label')}
-          </label>
-          <div class="input-group">
-            <input
-              id="loginPassword"
-              class="form-control"
-              type={passwordVisible ? 'text' : 'password'}
-              autocomplete="current-password"
-              maxlength="128"
-              disabled={loading}
-              bind:value={password} />
-            <button
-              class="btn btn-outline-secondary"
-              type="button"
-              aria-label={$_(
-                passwordVisible
-                  ? 'pages.auth.login.hide-password'
-                  : 'pages.auth.login.show-password',
-              )}
-              onclick={() => (passwordVisible = !passwordVisible)}>
-              <i class="fa-regular {passwordVisible ? 'fa-eye-slash' : 'fa-eye'}" aria-hidden="true"
-              ></i>
-            </button>
+        <!-- Like the theme's sign-in: the password is asked only once the platform wants one. -->
+        {#if passwordAsked}
+          <div class="mb-3">
+            <label class="form-label" for="loginPassword">
+              {$_('pages.auth.login.password-label')}
+            </label>
+            <div class="input-group">
+              <input
+                id="loginPassword"
+                class="form-control"
+                type={passwordVisible ? 'text' : 'password'}
+                autocomplete="current-password"
+                maxlength="128"
+                disabled={loading}
+                bind:this={passwordInput}
+                bind:value={password} />
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                aria-label={$_(
+                  passwordVisible
+                    ? 'pages.auth.login.hide-password'
+                    : 'pages.auth.login.show-password',
+                )}
+                onclick={() => (passwordVisible = !passwordVisible)}>
+                <i
+                  class="fa-regular {passwordVisible ? 'fa-eye-slash' : 'fa-eye'}"
+                  aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
-        </div>
+        {/if}
 
         {#if step === Steps.EMAIL_REQUIRED}
           <div class="mb-3">
@@ -208,7 +213,9 @@
             </label>
           </div>
 
-          {#if forgotHref}
+          {#if !passwordAsked}
+            <!-- nothing to have forgotten yet -->
+          {:else if forgotHref}
             <a class="small" href={forgotHref}>{$_('pages.auth.login.forgot')}</a>
           {:else if supportEmail}
             <a class="small" href="mailto:{supportEmail}">
@@ -221,7 +228,7 @@
           {/if}
         </div>
 
-        <button type="submit" class="btn btn-primary w-100" disabled={loading || !canSubmit}>
+        <button type="submit" class="btn btn-lg btn-primary w-100" disabled={loading || !canSubmit}>
           {#if loading}
             <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
           {/if}
@@ -305,12 +312,15 @@
    * does that with its own 2FA modal in the `login-content` slot; the step below is only the
    * fallback for an auth-guard that does not register itself on the panel yet.
    */
+  import { asksForPassword, canSubmitLogin } from './login.flow.js';
   import { getContext, onMount, tick } from 'svelte';
   import { _ } from 'svelte-i18n';
   import { format } from 'date-fns';
   import * as dateFnsLocales from 'date-fns/locale';
 
   import { browser } from '$app/environment';
+  import { plugins as activePlugins } from '$lib/PluginManager.js';
+  import { ensurePluginStyles, pluginIdsOf } from '$lib/pluginStyles.util.js';
   import { page } from '$app/stores';
 
   import { sendLogin } from '$lib/auth.api.js';
@@ -385,6 +395,19 @@
   const contentItems = panoApiClient.ui.auth.login.content.get();
   const altMethods = panoApiClient.ui.auth.login.alternativeMethods.get();
 
+  // The items plugins add to this form bring their own stylesheet; the panel loads it (a theme does
+  // that for its pages), else a button mounted in the browser comes as a bare `.btn`.
+  $effect(() => {
+    if (!browser) return;
+
+    const owners = pluginIdsOf(
+      [...$contentItems, ...($altMethods ?? [])],
+      Object.keys($activePlugins),
+    );
+
+    if (owners.length > 0) void ensurePluginStyles(owners, $activePlugins, base);
+  });
+
   const pluginHandlesTwoFactor = $derived(
     $contentItems.some((item) => item.id === PLUGIN_TWO_FACTOR_ITEM_ID && item.component),
   );
@@ -393,7 +416,10 @@
   let usernameOrEmail = $state('');
   let password = $state('');
   let rememberMe = $state(false);
+  /** The password field is shown as plain text (the eye button). */
   let passwordVisible = $state(false);
+  /** The password field is there: the platform asked for it, or the demo filled it in. */
+  let passwordAsked = $state(false);
   let registerEmail = $state('');
   let newUsername = $state('');
   let totpCode = $state('');
@@ -406,6 +432,7 @@
 
   let totpInput = $state();
   let registerEmailInput = $state();
+  let passwordInput = $state();
   let newUsernameInput = $state();
 
   const supportEmail = $derived(String($siteInfo?.supportEmail || '').trim());
@@ -422,10 +449,15 @@
   const themeLoginHref = $derived($usageMode === UsageModes.SERVERS ? '' : `${websiteUrl}/login`);
 
   const canSubmit = $derived(
-    usernameOrEmail.trim().length > 0 &&
-      password.length > 0 &&
-      (step !== Steps.EMAIL_REQUIRED || registerEmail.trim().length > 0) &&
-      (step !== Steps.USERNAME_REQUIRED || newUsername.trim().length > 0),
+    canSubmitLogin({
+      usernameOrEmail,
+      password,
+      passwordAsked,
+      emailRequired: step === Steps.EMAIL_REQUIRED,
+      registerEmail,
+      usernameRequired: step === Steps.USERNAME_REQUIRED,
+      newUsername,
+    }),
   );
 
   /** Identifier fields never contain whitespace — the backend strips it, so the UI does too. */
@@ -434,9 +466,20 @@
     clearError();
 
     // The public demo advertises its own credentials; filling them in saves a lookup.
-    if ($siteInfo?.isDemo && usernameOrEmail === 'demo' && !password) {
-      password = '123456';
-      passwordVisible = true;
+    if ($siteInfo?.isDemo && usernameOrEmail === 'demo') {
+      if (!password) {
+        password = '123456';
+        passwordVisible = true;
+      }
+      passwordAsked = true;
+
+      return;
+    }
+
+    // Another identifier is another account: it is asked again whether a password is needed.
+    if (step === Steps.CREDENTIALS && passwordAsked) {
+      passwordAsked = false;
+      password = '';
     }
   }
 
@@ -610,7 +653,7 @@
 
     if (code === 'REGISTER_EMAIL_REQUIRED') {
       step = Steps.EMAIL_REQUIRED;
-      passwordVisible = true;
+      passwordAsked = true;
       clearError();
 
       await tick();
@@ -633,6 +676,17 @@
       fail('pages.auth.login.errors.email-not-verified', {
         email: String(details.email || usernameOrEmail),
       });
+
+      return;
+    }
+
+    // The identifier went out alone and the account signs in with a password: ask for it.
+    if (asksForPassword(code, passwordAsked)) {
+      passwordAsked = true;
+      clearError();
+
+      await tick();
+      passwordInput?.focus();
 
       return;
     }
@@ -732,6 +786,8 @@
     if ($siteInfo?.isDemo && !usernameOrEmail) {
       usernameOrEmail = 'demo';
       password = '123456';
+      passwordAsked = true;
+      // the demo's credentials are public, so they are shown as they were
       passwordVisible = true;
     }
   });
