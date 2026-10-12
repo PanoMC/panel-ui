@@ -35,7 +35,7 @@ A site that is not a theme: it talks to Pano over the API and draws everything i
 ## Steps
 
 ```sh
-bun install && cp .env.example .env    # API_URL, PANO_FRONTEND_KEY (Panel -> Appearance -> Themes -> gear "Front-end settings" -> Front-end keys; keys work only when the mode is not Theme)
+bun install && cp .env.example .env    # API_URL, PANO_FRONTEND_KEY (a front-end key; in the panel Appearance -> Themes -> gear "Site display settings" -> "Site connection keys" -> Manage; the row is hidden while the choice is Theme)
 bun run pano:pull                      # against your running Pano
 bun run dev
 bun run check                          # svelte-check + pano-client check (exits 1 when the client is out of date)
