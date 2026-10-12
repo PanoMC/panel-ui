@@ -200,6 +200,8 @@
       }
     },
     "theme-detail": {
+      "incompatible-title": "Uyumsuz Tema",
+      "incompatible-description": "Bu tema uyumlu değil.",
       "title": "Tema Detayı",
       "screenshot": "Ekran Görüntüsü",
       "in-use": "Aktif",
@@ -2953,18 +2955,19 @@
       "manage": "Yönet"
     },
     "theme-compat": {
-      "title": "Bazı Tema Görünümleri Eklentinin Varsayılanını Gösteriyor",
-      "description": "Etkin temanın bu görünümleri eklentilerinin eski bir sürümü için yapılmış; bu yüzden eklentinin kendi görünümü gösteriliyor. Hiçbir şey bozuk değil ve eklenti güncellemeleri asla engellenmez; temayı güncelleyin ya da yapımcısından yeni sürüm isteyin.",
-      "badge-title": "{count, plural, one {Bu temanın # görünümü eklentinin varsayılan görünümünü gösteriyor} other {Bu temanın # görünümü eklentinin varsayılan görünümünü gösteriyor}}",
-      "toast-more": "{count, plural, one {# görünüm daha eklentinin varsayılan görünümünü gösteriyor. Görünüm, Temalar sayfasına bakın.} other {# görünüm daha eklentinin varsayılan görünümünü gösteriyor. Görünüm, Temalar sayfasına bakın.}}",
-      "issues": {
-        "CONTRACT_MISMATCH": "{plugin} eklentisinin {view} görünümü eklentinin varsayılan görünümünü gösteriyor: tema {themeContract}. sürüm için yapılmış, eklenti {currentContract}. sürümde",
-        "CONTROLLER_MISMATCH": "{plugin} eklentisinin {view} görünümü eklentinin varsayılan görünümünü gösteriyor: tema {controller} denetleyicisinin {themeVersion}. sürümünü kullanıyor, eklenti {currentVersion}. sürümde",
-        "VIEW_REMOVED": "{plugin} eklentisinin {view} görünümü artık eklentide yok (sürüm {pluginVersion}); temanın kopyası kullanılmıyor",
-        "ENGINE_MISMATCH": "Tema motorunun {view} görünümü motorun varsayılan görünümünü gösteriyor: tema {themeContract}. sürüm için yapılmış, motor {engineContract}. sürümde",
-        "NAMESPACE_CLASH": "{pluginId} eklentisi {namespace} kısa adını istiyor ama bu ad zaten {heldBy} tarafından kullanılıyor; eklentinin site sayfaları gösterilmiyor",
-        "UNKNOWN": "{view} görünümünde bu panelin henüz tanımadığı bir sorun var ({type})"
-      }
+      "title": "Tema Uyumsuzluğu",
+      "show-incompatibilities": "Uyumsuzlukları Göster",
+      "incompatibilities": "Uyumsuzluklar",
+      "table": {
+        "addon": "Eklenti",
+        "version": "Sürüm",
+        "views": "Uyumsuz Görünümler"
+      },
+      "engine": "Tema Motoru",
+      "copied": "Kopyalandı.",
+      "copy-failed": "Kopyalanamadı.",
+      "description": "Bazı eklentiler bu temayla uyumsuz olabilir. Temayı güncellemeyi deneyin ya da geliştiricisine ulaşın.",
+      "badge-title": "Bazı eklentiler bu temayla uyumsuz olabilir"
     },
     "webhooks": {
       "title": "Webhooklar",
@@ -3284,8 +3287,7 @@
       "translations": "Çeviriler",
       "backups": "Yedekler",
       "attention": {
-        "addons": "{count, plural, one {# eklenti dikkat istiyor} other {# eklenti dikkat istiyor}}",
-        "themes": "{count, plural, one {# tema dikkat istiyor} other {# tema dikkat istiyor}}"
+        "addons": "{count, plural, one {# eklenti dikkat istiyor} other {# eklenti dikkat istiyor}}"
       }
     },
     "navbar": {
@@ -4370,33 +4372,14 @@
       }
     },
     "compatibility-card": {
-      "verdict": {
-        "OK": "Uyumlu",
-        "TOO_OLD": "Çok Eski",
-        "TOO_NEW": "Çok Yeni",
-        "UNKNOWN": "Bilinmiyor"
-      },
+      "incompatible": "Uyumsuz",
       "level": "API seviyesi {level}",
-      "level-short": "API {level}",
-      "row-level": "API seviyesi {level} için yapılmış",
+      "level-short": "v{level}",
       "row-refused": "API seviyesi {level} için yapılmış. Bu Pano onu çalıştırmıyor.",
       "locked": "Bu Pano ile uyumlu değil (API seviyesi {level} için yapılmış). Güncellenene kadar kapalı kalır.",
       "locked-theme": "Bu Pano ile uyumlu değil (API seviyesi {level} için yapılmış). Güncellenene kadar etkinleştirilemez.",
       "held": "{name} gerekiyor ve o bu Pano ile uyumlu değil: {name} eklentisini güncelleyin. Bu eklenti ardından kendiliğinden başlar.",
-      "held-short": "{name} bekleniyor",
-      "urls": {
-        "title": "Pano Dışındaki Adresler Değişti",
-        "description": "Bu eklenti, giriş uygulaması ya da ödeme geçidi gibi başka hizmetlere bu adresleri kaydetmişti. Bir güncellemeyle değiştiler. Her birini kopyalayıp diğer hizmetin ayarlarına elle yapıştırın; yapana kadar bunu kullanan özellik çalışmaz."
-      },
-      "copied": "Adres kopyalandı.",
-      "copy-failed": "Kopyalanamadı. Adresi seçip elle kopyalayın.",
-      "problem": {
-        "too-old": "Bu Pano için çok eski: API seviyesi {level} için yapılmış, bu Pano {min} ile {current} arasını kabul ediyor. Güncelleyin.",
-        "too-new": "Bu Pano için çok yeni: API seviyesi {level} için yapılmış, bu Pano {min} ile {current} arasını kabul ediyor. Pano'yu güncelleyin ya da eskisini kurun.",
-        "too-old-plain": "Bu Pano için çok eski (API seviyesi {level} için yapılmış). Güncelleyin.",
-        "too-new-plain": "Bu Pano için çok yeni (API seviyesi {level} için yapılmış). Pano'yu güncelleyin ya da eskisini kurun.",
-        "urls": "Pano dışındaki adresleri değişti. Yenilerini sağlayıcıda girin; detay sayfasında yazıyor."
-      }
+      "held-short": "{name} bekleniyor"
     }
   },
   "page-error": {

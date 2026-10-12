@@ -1,8 +1,8 @@
 /**
  * Plain helpers of the compatibility icons (doc 04 section 7).
  *
- * `GET /panel/compatibility` says which plugins and themes the API level gate refused, which game
- * servers and nodes need their new jar placed by hand, and which addresses outside Pano changed.
+ * `GET /panel/compatibility` says which plugins and themes the API level gate refused and which game
+ * servers and nodes need their new jar placed by hand.
  * It is read defensively here: a field a newer or older backend leaves out becomes an empty list,
  * never a crash.
  */
@@ -50,9 +50,6 @@ export function normalizeCompatibility(body) {
       heldBy: normalizeHeldBy(row.heldBy),
     })),
     agents: list(body.agents).map(normalizeAgent),
-    externalUrls: list(body.externalUrls)
-      .map((row) => ({ pluginId: text(row.pluginId), label: text(row.label), url: text(row.url) }))
-      .filter((row) => row.url !== ''),
     reconcile: {
       running: reconcile.running === true,
       ranAt: whole(reconcile.ranAt),
@@ -117,23 +114,6 @@ export function safeDownloadPath(value) {
   return path.startsWith('/') && !path.startsWith('//') && !path.includes('\\') ? path : null;
 }
 
-/**
- * The lang key of a gate verdict's short name. The same words everywhere a row shows one (the card,
- * the addon list, the update plan).
- */
-export function verdictKey(verdict) {
-  switch (verdict) {
-    case Verdicts.OK:
-      return 'components.compatibility-card.verdict.OK';
-    case Verdicts.TOO_OLD:
-      return 'components.compatibility-card.verdict.TOO_OLD';
-    case Verdicts.TOO_NEW:
-      return 'components.compatibility-card.verdict.TOO_NEW';
-    default:
-      return 'components.compatibility-card.verdict.UNKNOWN';
-  }
-}
-
 /** True for a verdict that means the resource does not run (the gate refused it). */
 export function isRefused(verdict) {
   return verdict === Verdicts.TOO_OLD || verdict === Verdicts.TOO_NEW;
@@ -188,56 +168,35 @@ export function lockedReason(resource, translate, type = 'PLUGIN') {
 }
 
 /**
- * The text of the exclamation icon on a refused or held plugin or theme: why Pano keeps it off and
- * what to do. Empty for a resource the gate lets run.
+ * The text of the exclamation icon on a refused or held plugin or theme: one word for a refused one,
+ * the dependency to update for a held one. Empty for a resource the gate lets run.
  *
- * @param {{ verdict?: string | null, apiLevel?: number | null, heldBy?: any } | null | undefined} resource
- * @param {{ min?: number | null, current?: number | null } | null | undefined} range the levels this
- *   Pano accepts (`apiLevel` of the compatibility report); null when the report is not at hand.
+ * @param {{ verdict?: string | null, heldBy?: any } | null | undefined} resource
  * @param {(key: string, options?: any) => string} translate the `$_` of svelte-i18n
  */
-export function refusalProblem(resource, range, translate) {
+export function refusalProblem(resource, translate) {
   if (!isRefused(resource?.verdict)) {
     return heldReason(resource, translate);
   }
 
-  const old = resource.verdict === Verdicts.TOO_OLD;
-  const level = Number.isFinite(resource.apiLevel) ? resource.apiLevel : 0;
-  const ranged = Number.isFinite(range?.min) && Number.isFinite(range?.current);
-
-  return translate(
-    `components.compatibility-card.problem.${old ? 'too-old' : 'too-new'}${ranged ? '' : '-plain'}`,
-    { values: { level, min: range?.min, current: range?.current } },
-  );
-}
-
-/** The addresses outside Pano that changed for one plugin, from the compatibility report. */
-export function externalUrlsOf(report, pluginId) {
-  return (report?.externalUrls ?? []).filter((row) => row.pluginId === pluginId);
+  return translate('components.compatibility-card.incompatible');
 }
 
 /**
- * Every problem the list shows as an icon on a plugin card, as lines of one tooltip, and how loud
- * it is: `danger` while Pano keeps the plugin off, `warning` for addresses to re-enter.
+ * The problem the list shows as an icon on a plugin card, as the text of its tooltip: Pano keeps
+ * the plugin off.
  *
  * @param {any} plugin the row of `GET /panel/addons`
  * @param {ReturnType<typeof normalizeCompatibility> | null} report
  * @param {(key: string, options?: any) => string} translate
- * @returns {{ text: string, level: 'danger' | 'warning' } | null}
+ * @returns {{ text: string, level: 'danger' } | null}
  */
 export function pluginProblem(plugin, report, translate) {
-  const lines = [];
-  const refusal = refusalProblem(plugin, report?.apiLevel, translate);
+  const refusal = refusalProblem(plugin, translate);
 
-  if (refusal) lines.push(refusal);
+  if (!refusal) return null;
 
-  if (externalUrlsOf(report, plugin?.id).length > 0) {
-    lines.push(translate('components.compatibility-card.problem.urls'));
-  }
-
-  if (lines.length === 0) return null;
-
-  return { text: lines.join(' · '), level: refusal ? 'danger' : 'warning' };
+  return { text: refusal, level: 'danger' };
 }
 
 /**
@@ -252,9 +211,7 @@ export function pluginProblem(plugin, report, translate) {
  */
 export function themeProblem(theme, report, themeReport, translate) {
   const lines = [];
-  const refusal = isRefused(theme?.verdict)
-    ? refusalProblem(theme, report?.apiLevel, translate)
-    : '';
+  const refusal = isRefused(theme?.verdict) ? refusalProblem(theme, translate) : '';
 
   if (refusal) lines.push(refusal);
 
@@ -264,7 +221,7 @@ export function themeProblem(theme, report, themeReport, translate) {
       : 0;
 
   if (fallback > 0) {
-    lines.push(translate('pages.theme-compat.badge-title', { values: { count: fallback } }));
+    lines.push(translate('pages.theme-compat.badge-title'));
   }
 
   if (lines.length === 0) return null;
@@ -273,13 +230,11 @@ export function themeProblem(theme, report, themeReport, translate) {
 }
 
 /**
- * What the sidebar counts: plugins Pano keeps off or holds, plugins with changed addresses, themes
- * the gate refused, and the active theme when views fall back.
+ * What the sidebar counts beside "Addons": plugins Pano keeps off or holds.
  *
  * @param {ReturnType<typeof normalizeCompatibility> | null} report
- * @param {any} themeReport
  */
-export function attentionCounts(report, themeReport = null) {
+export function attentionCounts(report) {
   const rows = report?.resources ?? [];
   const plugins = new Set(
     rows
@@ -287,14 +242,5 @@ export function attentionCounts(report, themeReport = null) {
       .map((row) => row.id),
   );
 
-  for (const row of report?.externalUrls ?? []) {
-    if (row.pluginId) plugins.add(row.pluginId);
-  }
-
-  const themes = rows.filter((row) => row.type === 'THEME' && row.verdict !== Verdicts.OK).length;
-  const fallback =
-    themeReport?.status === 'OUTDATED' &&
-    (themeReport.issues ?? []).some((issue) => issue?.type !== 'NAMESPACE_CLASH');
-
-  return { addons: plugins.size, themes: themes + (fallback ? 1 : 0) };
+  return { addons: plugins.size };
 }

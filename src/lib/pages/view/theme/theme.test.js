@@ -1,20 +1,11 @@
-import { beforeAll, describe, expect, mock, test } from 'bun:test';
+import { beforeAll, describe, expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { IntlMessageFormat } from 'intl-messageformat';
 
 import { renderHtml, stubClient, textOf, useLocale } from '../frontend/testkit.js';
 import { createThemeApi } from './theme.api.js';
-import {
-  baselineOf,
-  createCompatWatcher,
-  describeIssue,
-  fallbackIssues,
-  memoryStorage,
-  newFallbackIssues,
-  normalizeReport,
-  rememberReport,
-} from './compat.util.js';
+import { fallbackIssues, incompatibilities, normalizeReport } from './compat.util.js';
 import {
   createHomeController,
   isConcretePath,
@@ -92,63 +83,53 @@ const recorder = () => {
   };
 };
 
-describe('issue sentences', () => {
-  test('a contract mismatch reads as the doc example', () => {
+describe('theme warning', () => {
+  test('the alert stays short; the details are in the dialog', () => {
     const html = renderHtml(ThemeCompatIssues, { report: normalizeReport(REPORT) });
+    const alert = html.slice(0, html.indexOf('class="modal'));
 
-    expect(textOf(html)).toContain(
-      "ProductCard of Market shows the plugin's default look: the theme was made for version 1, the plugin is on 2",
-    );
+    expect(textOf(alert)).toContain('Theme Incompatibility');
+    expect(textOf(alert)).toContain('Some of the addons may be incompatible with this theme');
+    expect(textOf(alert)).toContain('Show Incompatibilities');
+    expect(textOf(alert)).not.toContain('ProductCard');
   });
 
-  test('every issue of the payload gets one line, in order', () => {
-    const html = renderHtml(ThemeCompatIssues, { report: normalizeReport(REPORT) });
-
-    expect(html.match(/<li /g)).toHaveLength(3);
-    expect(html).toContain('data-issue="CONTRACT_MISMATCH"');
-    expect(html).toContain('data-issue="VIEW_REMOVED"');
-    expect(html).toContain('data-issue="NAMESPACE_CLASH"');
-    expect(textOf(html)).toContain(
-      'OldBadge of Market no longer exists in the plugin (version 1.1.0)',
-    );
-    expect(textOf(html)).toContain(
-      'The plugin market asks for the short name market, which pano-plugin-market already holds',
-    );
-  });
-
-  test('controller and engine mismatches have their own sentence', () => {
+  test('the dialog lists each plugin once with its version and views, the theme engine last', () => {
     const report = normalizeReport({
-      ...OK_REPORT,
-      status: 'OUTDATED',
+      ...REPORT,
       issues: [
-        {
-          type: 'CONTROLLER_MISMATCH',
-          view: 'market:ProductCard',
-          controller: 'market/cart',
-          themeVersion: 1,
-          currentVersion: 3,
-        },
-        { type: 'ENGINE_MISMATCH', view: 'Navbar', themeContract: 1, engineContract: 2 },
+        { type: 'ENGINE_MISMATCH', view: 'Navbar' },
+        ...REPORT.issues,
+        { type: 'X', view: 'my-shop:A' },
       ],
     });
-    const text = textOf(renderHtml(ThemeCompatIssues, { report }));
 
-    expect(text).toContain(
-      "ProductCard of Market shows the plugin's default look: the theme uses the market/cart controller at version 1, the plugin is on 3",
-    );
-    expect(text).toContain(
-      "Navbar of the theme engine shows the engine's default look: the theme was made for version 1, the engine is on 2",
+    expect(incompatibilities(report)).toEqual([
+      { name: 'Market', version: '1.1.0', views: ['ProductCard', 'OldBadge'] },
+      { name: 'My Shop', version: null, views: ['A'] },
+      { name: null, version: null, views: ['Navbar'] },
+    ]);
+
+    const html = renderHtml(ThemeCompatIssues, { report });
+
+    expect(html.match(/<tr>/g)).toHaveLength(4);
+    expect(textOf(html)).toContain('ProductCard, OldBadge');
+    expect(textOf(html)).toContain('Theme Engine');
+  });
+
+  test('a namespace clash alone is about plugins and shows no warning', () => {
+    const clash = {
+      ...OK_REPORT,
+      issues: REPORT.issues.filter((i) => i.type === 'NAMESPACE_CLASH'),
+    };
+
+    expect(fallbackIssues(normalizeReport(REPORT))).toHaveLength(2);
+    expect(renderHtml(ThemeCompatIssues, { report: normalizeReport(clash) })).not.toContain(
+      'data-compat-issues',
     );
   });
 
-  test('an unknown type from a newer backend is still listed', () => {
-    const line = describeIssue({ type: 'SOMETHING_NEW', view: 'market:X' });
-
-    expect(line.key).toBe('pages.theme-compat.issues.UNKNOWN');
-    expect(line.values).toEqual({ type: 'SOMETHING_NEW', view: 'X' });
-  });
-
-  test('no issue, no list', () => {
+  test('no issue, no warning', () => {
     expect(renderHtml(ThemeCompatIssues, { report: normalizeReport(OK_REPORT) })).not.toContain(
       'data-compat-issues',
     );
@@ -159,122 +140,6 @@ describe('issue sentences', () => {
     expect(normalizeReport(null)).toBeNull();
     expect(normalizeReport({ error: { code: 'NO_PERMISSION' } })).toBeNull();
     expect(normalizeReport({ status: 'WEIRD' }).status).toBe('UNKNOWN');
-  });
-});
-
-describe('toast after a plugin update', () => {
-  const grown = (extra = []) =>
-    normalizeReport({
-      ...REPORT,
-      counts: { ...REPORT.counts, fallback: 2 + extra.length },
-      issues: [...REPORT.issues, ...extra],
-    });
-
-  const before = normalizeReport({
-    ...REPORT,
-    counts: { ...REPORT.counts, fallback: 1 },
-    issues: [REPORT.issues[0], REPORT.issues[2]],
-  });
-
-  test('only a bigger fallback count has something new', () => {
-    const baseline = baselineOf(before);
-
-    expect(newFallbackIssues(baseline, grown()).map((i) => i.view)).toEqual(['market:OldBadge']);
-    expect(newFallbackIssues(baseline, before)).toEqual([]);
-    expect(newFallbackIssues(baselineOf(grown()), before)).toEqual([]);
-  });
-
-  test('a first look, another theme or UNKNOWN is never new', () => {
-    expect(newFallbackIssues(null, grown())).toEqual([]);
-    expect(newFallbackIssues({ ...baselineOf(before), theme: 'other' }, grown())).toEqual([]);
-    expect(
-      newFallbackIssues(baselineOf(before), normalizeReport({ ...REPORT, status: 'UNKNOWN' })),
-    ).toEqual([]);
-  });
-
-  test('check toasts the same line the list shows, once', async () => {
-    const storage = memoryStorage();
-    const notify = recorder();
-    const answers = [before, grown()];
-    const api = {
-      getCompatibility: async () => ({ ok: true, body: answers.shift() }),
-    };
-    const watcher = createCompatWatcher({ api, notify, storage });
-
-    await watcher.check();
-    expect(notify.toasts).toEqual([]);
-
-    await watcher.check();
-    expect(notify.toasts).toHaveLength(1);
-    expect(notify.toasts[0].key).toBe('pages.theme-compat.issues.VIEW_REMOVED');
-    expect(notify.toasts[0].values.view).toBe('OldBadge');
-
-    answers.push(grown());
-    await watcher.check();
-    expect(notify.toasts).toHaveLength(1);
-  });
-
-  test('more than three new lines are summed up in one toast', async () => {
-    const storage = memoryStorage();
-    const notify = recorder();
-    const extra = [1, 2, 3, 4, 5].map((n) => ({
-      type: 'CONTRACT_MISMATCH',
-      view: `market:V${n}`,
-      themeContract: 1,
-      currentContract: 2,
-    }));
-
-    rememberReport(before, storage);
-
-    await createCompatWatcher({
-      api: { getCompatibility: async () => ({ ok: true, body: grown(extra) }) },
-      notify,
-      storage,
-    }).check();
-
-    expect(notify.toasts).toHaveLength(4);
-    expect(notify.toasts[3]).toEqual({
-      key: 'pages.theme-compat.toast-more',
-      values: { count: 3 },
-    });
-  });
-
-  test('a failed read toasts nothing and keeps the baseline', async () => {
-    const storage = memoryStorage();
-    const notify = recorder();
-
-    rememberReport(before, storage);
-
-    const result = await createCompatWatcher({
-      api: { getCompatibility: async () => ({ ok: false, body: null }) },
-      notify,
-      storage,
-    }).check();
-
-    expect(result).toBeNull();
-    expect(notify.toasts).toEqual([]);
-    expect(JSON.parse(storage.getItem('pano.theme-compat.baseline')).fallback).toBe(1);
-  });
-
-  test('a blocked storage does not break the check', async () => {
-    const blocked = {
-      getItem: () => {
-        throw new Error('blocked');
-      },
-      setItem: () => {
-        throw new Error('blocked');
-      },
-    };
-    const notify = recorder();
-
-    const result = await createCompatWatcher({
-      api: { getCompatibility: async () => ({ ok: true, body: grown() }) },
-      notify,
-      storage: blocked,
-    }).check();
-
-    expect(result.fresh).toEqual([]);
-    expect(fallbackIssues(result.report)).toHaveLength(2);
   });
 });
 
@@ -484,7 +349,14 @@ describe('lang keys', () => {
     'pages.theme-compat.title',
     'pages.theme-compat.description',
     'pages.theme-compat.badge-title',
-    'pages.theme-compat.toast-more',
+    'pages.theme-compat.show-incompatibilities',
+    'pages.theme-compat.incompatibilities',
+    'pages.theme-compat.table.addon',
+    'pages.theme-compat.table.version',
+    'pages.theme-compat.table.views',
+    'pages.theme-compat.engine',
+    'pages.theme-compat.copied',
+    'pages.theme-compat.copy-failed',
     'pages.theme-settings.home.label',
     'pages.theme-settings.home.description',
     'pages.theme-settings.home.default',
@@ -497,14 +369,6 @@ describe('lang keys', () => {
     'pages.translations.source-theme',
     'pages.translations.source-theme-title',
     'errors.INVALID_HOME_PAGE',
-    ...[
-      'CONTRACT_MISMATCH',
-      'CONTROLLER_MISMATCH',
-      'VIEW_REMOVED',
-      'ENGINE_MISMATCH',
-      'NAMESPACE_CLASH',
-      'UNKNOWN',
-    ].map((type) => `pages.theme-compat.issues.${type}`),
   ];
 
   const VALUES = {

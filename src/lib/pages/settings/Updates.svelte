@@ -604,10 +604,6 @@
     show as showChangelogModal,
   } from '$lib/components/modals/ChangelogModal.svelte';
 
-  import { createCompatWatcher } from '$lib/pages/view/theme/compat.util.js';
-  import { createThemeApi } from '$lib/pages/view/theme/theme.api.js';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
-
   export let data;
 
   const pageTitle = getContext('pageTitle');
@@ -814,10 +810,6 @@
 
         await invalidateAll();
 
-        if (update.type === 'PLUGIN') {
-          await checkThemeCompat();
-        }
-
         if (!updatingAll) {
           confetti.default({
             particleCount: 100,
@@ -840,19 +832,6 @@
       resourceUpdateError = { ...update, error: errorCode(message) };
       console.error(message.error?.code, message.error?.message);
       inProgressResource = null;
-    }
-  }
-
-  // A finished plugin update may have left views of the theme on the plugin's default look: the
-  // watcher toasts the overrides that just fell back (a failed read only skips the toast).
-  async function checkThemeCompat() {
-    try {
-      await createCompatWatcher({
-        api: createThemeApi(ApiUtil),
-        notify: { warn: (key, values) => showToast(key, values) },
-      }).check();
-    } catch (error) {
-      console.error(error);
     }
   }
 

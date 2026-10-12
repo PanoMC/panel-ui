@@ -200,6 +200,8 @@
       }
     },
     "theme-detail": {
+      "incompatible-title": "Incompatible Theme",
+      "incompatible-description": "This theme is not compatible.",
       "title": "Theme Detail",
       "screenshot": "Screenshot",
       "in-use": "Active",
@@ -2955,18 +2957,19 @@
       "manage": "Manage"
     },
     "theme-compat": {
-      "title": "Some Theme Views Show The Plugin Default",
-      "description": "These views of the active theme were made for an older version of their plugin, so the plugin's own look shows instead. Nothing is broken and plugin updates are never blocked; update the theme or ask its author for a new version.",
-      "badge-title": "{count, plural, one {# view of this theme shows the plugin's default look} other {# views of this theme show the plugin's default look}}",
-      "toast-more": "{count, plural, one {# more view shows the plugin's default look. See Appearance, Themes.} other {# more views show the plugin's default look. See Appearance, Themes.}}",
-      "issues": {
-        "CONTRACT_MISMATCH": "{view} of {plugin} shows the plugin's default look: the theme was made for version {themeContract}, the plugin is on {currentContract}",
-        "CONTROLLER_MISMATCH": "{view} of {plugin} shows the plugin's default look: the theme uses the {controller} controller at version {themeVersion}, the plugin is on {currentVersion}",
-        "VIEW_REMOVED": "{view} of {plugin} no longer exists in the plugin (version {pluginVersion}), so the theme's copy of it is not used",
-        "ENGINE_MISMATCH": "{view} of the theme engine shows the engine's default look: the theme was made for version {themeContract}, the engine is on {engineContract}",
-        "NAMESPACE_CLASH": "The plugin {pluginId} asks for the short name {namespace}, which {heldBy} already holds, so its site pages are not shown",
-        "UNKNOWN": "{view} has an issue this panel does not know yet ({type})"
-      }
+      "title": "Theme Incompatibility",
+      "show-incompatibilities": "Show Incompatibilities",
+      "incompatibilities": "Incompatibilities",
+      "table": {
+        "addon": "Addon",
+        "version": "Version",
+        "views": "Incompatible Views"
+      },
+      "engine": "Theme Engine",
+      "copied": "Copied.",
+      "copy-failed": "Could not copy.",
+      "description": "Some of the addons may be incompatible with this theme. Try updating the theme or reach out to its developer.",
+      "badge-title": "Some of the addons may be incompatible with this theme"
     },
     "webhooks": {
       "title": "Webhooks",
@@ -3286,8 +3289,7 @@
       "translations": "Translations",
       "backups": "Backups",
       "attention": {
-        "addons": "{count, plural, one {# addon needs attention} other {# addons need attention}}",
-        "themes": "{count, plural, one {# theme needs attention} other {# themes need attention}}"
+        "addons": "{count, plural, one {# addon needs attention} other {# addons need attention}}"
       }
     },
     "navbar": {
@@ -4373,33 +4375,14 @@
       }
     },
     "compatibility-card": {
-      "verdict": {
-        "OK": "Compatible",
-        "TOO_OLD": "Too Old",
-        "TOO_NEW": "Too New",
-        "UNKNOWN": "Unknown"
-      },
+      "incompatible": "Incompatible",
       "level": "API level {level}",
-      "level-short": "API {level}",
-      "row-level": "Built for API level {level}",
+      "level-short": "v{level}",
       "row-refused": "Built for API level {level}. This Pano does not run it.",
       "locked": "Not compatible with this Pano (built for API level {level}). It stays off until you update it.",
       "locked-theme": "Not compatible with this Pano (built for API level {level}). It can not be activated until you update it.",
       "held": "Needs {name}, which is not compatible with this Pano: update {name}. This addon starts by itself afterwards.",
-      "held-short": "Waiting for {name}",
-      "urls": {
-        "title": "Addresses Outside Pano Changed",
-        "description": "This addon registered these addresses with other services, such as a sign-in app or a payment gateway. They changed with an update. Copy each one and paste it into the other service's settings by hand; until you do, the feature that uses it fails."
-      },
-      "copied": "Address copied.",
-      "copy-failed": "Could not copy. Select the address and copy it by hand.",
-      "problem": {
-        "too-old": "Too old for this Pano: built for API level {level}, this Pano accepts {min} to {current}. Update it.",
-        "too-new": "Too new for this Pano: built for API level {level}, this Pano accepts {min} to {current}. Update Pano or install an older version of it.",
-        "too-old-plain": "Too old for this Pano (built for API level {level}). Update it.",
-        "too-new-plain": "Too new for this Pano (built for API level {level}). Update Pano or install an older version of it.",
-        "urls": "Its addresses outside Pano changed. Enter the new ones at the provider; they are on its detail page."
-      }
+      "held-short": "Waiting for {name}"
     }
   },
   "page-error": {

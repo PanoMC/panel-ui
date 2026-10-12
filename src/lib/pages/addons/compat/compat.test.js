@@ -12,7 +12,6 @@ import {
 import { createCompatibilityApi } from './compat.api.js';
 import {
   attentionCounts,
-  externalUrlsOf,
   normalizeCompatibility,
   pluginProblem,
   refusalProblem,
@@ -22,7 +21,6 @@ import {
   isLocked,
   normalizeHeldBy,
   themeProblem,
-  verdictKey,
 } from './compat.util.js';
 
 // The card imports the panel's HTTP client and toasts; none of them is under test here.
@@ -91,13 +89,6 @@ const REPORT = {
       downloadPath: '/api/v1/node/pano-node.jar',
     },
   ],
-  externalUrls: [
-    {
-      pluginId: 'pano-plugin-premium-login',
-      label: 'Microsoft redirect URL',
-      url: 'https://example.com/api/plugins/pano-plugin-premium-login/callback',
-    },
-  ],
   reconcile: { running: false, ranAt: 1700000000000, storeReachable: false, installed: [] },
 };
 
@@ -134,7 +125,6 @@ describe('normalizeCompatibility', () => {
 
     expect(bare.resources).toEqual([]);
     expect(bare.agents).toEqual([]);
-    expect(bare.externalUrls).toEqual([]);
     expect(bare.apiLevel).toEqual({ min: null, current: null });
   });
 
@@ -160,12 +150,6 @@ describe('normalizeCompatibility', () => {
 
     expect(report.agents[0].downloadPath).toBeNull();
   });
-
-  test('an address without a url is left out', () => {
-    const report = normalizeCompatibility({ externalUrls: [{ pluginId: 'a', label: 'x' }] });
-
-    expect(report.externalUrls).toEqual([]);
-  });
 });
 
 const translate = (key, options) => key + JSON.stringify(options?.values ?? {});
@@ -174,43 +158,30 @@ describe('the problem texts', () => {
   const report = normalizeCompatibility(REPORT);
   const [market, blaze] = report.resources;
 
-  test('a refused plugin says why, its level against the accepted range, and to update', () => {
-    expect(refusalProblem(market, report.apiLevel, translate)).toBe(
-      'components.compatibility-card.problem.too-old{"level":0,"min":1,"current":2}',
+  test('a refused plugin or theme reads as one word', () => {
+    expect(refusalProblem(market, translate)).toBe('components.compatibility-card.incompatible{}');
+    expect(refusalProblem({ verdict: 'TOO_NEW', apiLevel: 9 }, translate)).toBe(
+      'components.compatibility-card.incompatible{}',
     );
-    expect(
-      refusalProblem({ verdict: 'TOO_NEW', apiLevel: 9 }, report.apiLevel, translate),
-    ).toContain('problem.too-new{');
-    // Without the report only the plain wording is possible.
-    expect(refusalProblem(market, null, translate)).toContain('problem.too-old-plain');
-    expect(refusalProblem({ verdict: 'OK' }, report.apiLevel, translate)).toBe('');
+    expect(refusalProblem({ verdict: 'OK' }, translate)).toBe('');
   });
 
   test('a held plugin names the dependency to update', () => {
     const held = { verdict: 'OK', heldBy: { pluginId: 'm', name: 'Market', verdict: 'TOO_OLD' } };
 
-    expect(refusalProblem(held, report.apiLevel, translate)).toBe(heldReason(held, translate));
+    expect(refusalProblem(held, translate)).toBe(heldReason(held, translate));
   });
 
-  test('pluginProblem is red for a refusal, amber for changed addresses, and joins both', () => {
+  test('pluginProblem is red for a refusal and silent about addresses outside Pano', () => {
     const premium = { id: 'pano-plugin-premium-login', verdict: 'OK' };
 
     expect(pluginProblem(market, report, translate).level).toBe('danger');
-    expect(pluginProblem(premium, report, translate)).toEqual({
-      text: 'components.compatibility-card.problem.urls{}',
-      level: 'warning',
-    });
+    expect(pluginProblem(premium, report, translate)).toBeNull();
     expect(
       pluginProblem({ ...market, id: 'pano-plugin-premium-login' }, report, translate).text,
-    ).toContain(' · ');
+    ).not.toContain(' · ');
     expect(pluginProblem({ id: 'fine', verdict: 'OK' }, report, translate)).toBeNull();
     expect(pluginProblem({ id: 'fine', verdict: 'OK' }, null, translate)).toBeNull();
-  });
-
-  test('externalUrlsOf keeps only the addresses of one plugin', () => {
-    expect(externalUrlsOf(report, 'pano-plugin-premium-login')).toHaveLength(1);
-    expect(externalUrlsOf(report, 'other')).toEqual([]);
-    expect(externalUrlsOf(null, 'other')).toEqual([]);
   });
 
   test('themeProblem: a refused theme, or the active theme whose views fall back', () => {
@@ -220,7 +191,7 @@ describe('the problem texts', () => {
       'danger',
     );
     expect(themeProblem({ active: true, verdict: 'OK' }, report, themeReport, translate)).toEqual({
-      text: 'pages.theme-compat.badge-title{"count":2}',
+      text: 'pages.theme-compat.badge-title{}',
       level: 'warning',
     });
     // Only the active theme falls back; a theme that is not active shows nothing.
@@ -230,17 +201,10 @@ describe('the problem texts', () => {
     expect(themeProblem({ active: true, verdict: 'OK' }, report, null, translate)).toBeNull();
   });
 
-  test('the sidebar counts plugins once and themes with fallbacks', () => {
-    expect(attentionCounts(report, { status: 'OUTDATED', issues: OUTDATED_THEME.issues })).toEqual({
-      addons: 2,
-      themes: 2,
-    });
-    expect(attentionCounts(null, null)).toEqual({ addons: 0, themes: 0 });
-    expect(attentionCounts(normalizeCompatibility({}), { status: 'OK', issues: [] })).toEqual({
-      addons: 0,
-      themes: 0,
-    });
-    expect(verdictKey('SOMETHING_NEW')).toBe('components.compatibility-card.verdict.UNKNOWN');
+  test('the sidebar counts refused plugins once and no themes', () => {
+    expect(attentionCounts(report)).toEqual({ addons: 1 });
+    expect(attentionCounts(null)).toEqual({ addons: 0 });
+    expect(attentionCounts(normalizeCompatibility({}))).toEqual({ addons: 0 });
     expect(blaze.type).toBe('THEME');
   });
 });
@@ -300,7 +264,7 @@ describe('CompatProblemIcon', () => {
     });
 
     expect(refused).toContain('data-compat-problem="danger"');
-    expect(refused).toContain('built for API level 0, this Pano accepts 1 to 2');
+    expect(refused).toContain('aria-label="Incompatible"');
     expect(refused).not.toContain('badge');
 
     const fine = renderHtml(AddonProblemIcon, {
@@ -311,7 +275,7 @@ describe('CompatProblemIcon', () => {
     expect(fine).not.toContain('data-compat-problem');
   });
 
-  test('the detail page lists the changed addresses of that plugin with copy buttons', () => {
+  test('the detail page does not list the addresses outside Pano', () => {
     const addon = {
       id: 'pano-plugin-premium-login',
       status: 'STARTED',
@@ -322,29 +286,19 @@ describe('CompatProblemIcon', () => {
       hash: 'x',
       size: 1,
     };
-    const html = renderHtml(AddonDetail, {
-      data: { addon, compatibility: normalizeCompatibility(REPORT) },
-    });
+    const html = renderHtml(AddonDetail, { data: { addon } });
 
-    expect(html).toContain('data-external-urls');
-    expect(html).toContain('callback');
-    expect(html).toContain('data-copy-url');
+    expect(html).not.toContain('callback');
     expect(html).not.toContain('class="alert');
-
-    const other = renderHtml(AddonDetail, {
-      data: { addon: { ...addon, id: 'other' }, compatibility: normalizeCompatibility(REPORT) },
-    });
-
-    expect(other).not.toContain('data-external-urls');
   });
 
-  test('changed addresses give the plugin card an amber icon', () => {
+  test('changed addresses give the plugin card no icon', () => {
     const html = renderHtml(AddonProblemIcon, {
       plugin: { id: 'pano-plugin-premium-login', status: 'STARTED', verdict: 'OK', apiLevel: 2 },
       report: normalizeCompatibility(REPORT),
     });
 
-    expect(html).toContain('data-compat-problem="warning"');
+    expect(html).not.toContain('data-compat-problem');
     expect(textOf(html)).not.toContain('example.com');
   });
 });
@@ -354,15 +308,16 @@ describe('AddonApiLevel', () => {
     const html = renderHtml(AddonApiLevel, { plugin: { apiLevel: 2, verdict: 'OK' } });
 
     expect(html).toContain('data-api-level');
-    expect(html).toContain('text-bg-secondary');
-    expect(textOf(html)).toContain('API 2');
+    expect(html).not.toContain('badge');
+    expect(textOf(html)).toContain('v2');
   });
 
-  test('shows the verdict of a refused addon in red', () => {
+  test('a refused addon reads Incompatible in red, without a badge', () => {
     const html = renderHtml(AddonApiLevel, { plugin: { apiLevel: 0, verdict: 'TOO_OLD' } });
 
-    expect(html).toContain('text-bg-danger');
-    expect(textOf(html)).toContain('Too Old');
+    expect(html).toContain('text-danger');
+    expect(html).not.toContain('badge');
+    expect(textOf(html)).toContain('Incompatible');
   });
 
   test('shows nothing when the backend sent neither', () => {
@@ -497,7 +452,7 @@ describe('a plugin held back by a refused required plugin', () => {
       ],
     });
 
-    expect(attentionCounts(report)).toEqual({ addons: 2, themes: 0 });
+    expect(attentionCounts(report)).toEqual({ addons: 2 });
   });
 
   test('every language has the held texts', () => {
@@ -546,23 +501,9 @@ describe('lang files', () => {
       expect(typeof lookup(messages, key)).toBe('string');
     }
 
-    // Keys built at run time: the verdicts, the types, the agent types.
-    for (const verdict of ['OK', 'TOO_OLD', 'TOO_NEW', 'UNKNOWN']) {
-      expect(typeof lookup(messages, verdictKey(verdict))).toBe('string');
-    }
-
-    // The problem texts are picked at run time.
-    for (const name of ['too-old', 'too-new', 'too-old-plain', 'too-new-plain', 'urls']) {
-      expect(typeof lookup(messages, `components.compatibility-card.problem.${name}`)).toBe(
-        'string',
-      );
-    }
-
-    for (const name of ['addons', 'themes']) {
-      expect(typeof lookup(messages, `components.site-navigation-menu.attention.${name}`)).toBe(
-        'string',
-      );
-    }
+    expect(typeof lookup(messages, 'components.site-navigation-menu.attention.addons')).toBe(
+      'string',
+    );
 
     expect(typeof messages.buttons.retry).toBe('string');
   });

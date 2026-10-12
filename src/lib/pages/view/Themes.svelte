@@ -244,8 +244,6 @@
   import { _ } from 'svelte-i18n';
 
   import { base } from '$app/paths';
-  import { browser } from '$app/environment';
-  import { refreshCompatAttention } from '$lib/compat-attention.store.js';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import { goto, invalidate } from '$app/navigation';
 
@@ -261,14 +259,10 @@
   import FailedLoginPanoStoreAlert from '$lib/components/FailedLoginPanoStoreAlert.svelte';
   import CompatProblemIcon from '$lib/components/CompatProblemIcon.svelte';
   import { themeProblem } from '../addons/compat/compat.util.js';
-  import { rememberReport } from './theme/compat.util.js';
   import FrontendModal from './frontend/FrontendModal.svelte';
   import { normalizeFrontendState, themeNotShown } from './frontend/frontend.util.js';
 
   export let data;
-
-  // The sidebar's exclamation icons follow what this list just loaded.
-  $: if (browser) void (data.compatibility, refreshCompatAttention());
 
   $: compat = data.compat ?? null;
   $: compatibility = data.compatibility ?? null;
@@ -305,9 +299,6 @@
 
   let installedId = '';
   onMount(() => {
-    // The admin sees the badge now, so a later plugin update only toasts what is new after this.
-    rememberReport(compat);
-
     const url = new URL(window.location.href);
     const id = url.searchParams.get('installed');
     if (id) {

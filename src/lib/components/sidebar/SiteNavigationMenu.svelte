@@ -90,7 +90,6 @@
       text: 'components.site-navigation-menu.view',
       startsWith: true,
       permission: Permissions.MANAGE_VIEW,
-      attention: 'themes',
       // Site-only section: a SERVERS install has no public website to manage.
       modes: [UsageModes.WEBSITE, UsageModes.BOTH],
     },
@@ -157,12 +156,12 @@
   const usageMode = getContext('usageMode');
 
   onMount(() => {
-    if (hasPermission(Permissions.MANAGE_ADDONS) || hasPermission(Permissions.MANAGE_VIEW)) {
+    if (hasPermission(Permissions.MANAGE_ADDONS)) {
       refreshCompatAttention();
     }
   });
 
-  /** How many things inside this entry need the admin: addons / themes, or a pending update. */
+  /** How many things inside this entry need the admin: addons, or a pending update. */
   function navCount(item, counts, sessionData) {
     if (item.attention) {
       return counts?.[item.attention] ?? 0;

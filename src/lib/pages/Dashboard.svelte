@@ -425,9 +425,6 @@
   import ApiUtil from '$lib/api.util.js';
   import { hasPermission, Permissions } from '$lib/auth.util';
 
-  import { normalizeReport } from './view/theme/compat.util.js';
-  import { createThemeApi } from './view/theme/theme.api.js';
-
   /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
@@ -437,10 +434,7 @@
     const canFetchAbout =
       layoutData?.user && hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS, layoutData.user);
 
-    const canReadTheme =
-      layoutData?.user && hasPermission(Permissions.MANAGE_VIEW, layoutData.user);
-
-    const [dashboardResult, activityLogsResult, aboutResult, themeCompat] = await Promise.all([
+    const [dashboardResult, activityLogsResult, aboutResult] = await Promise.all([
       ApiUtil.get({
         path: `/panel/dashboard`,
         request: event,
@@ -455,8 +449,6 @@
             request: event,
           }).catch(() => null)
         : Promise.resolve(null),
-      // Feeds the one-time toast while the active theme is OUTDATED; a failed read leaves it out.
-      canReadTheme ? createThemeApi(ApiUtil, event).getCompatibility() : Promise.resolve(null),
     ]);
 
     const dashboard = dashboardResult && !dashboardResult.error ? dashboardResult : {};
@@ -468,7 +460,6 @@
       ...dashboard,
       activityLogs,
       about,
-      themeCompat: themeCompat?.ok ? normalizeReport(themeCompat.body) : null,
     };
   }
 </script>
@@ -500,8 +491,6 @@
   import PlayerStatusBadge from '$lib/components/badges/PlayerStatusBadge.svelte';
   import PlayerPermissionBadge from '$lib/components/badges/PlayerPermissionBadge.svelte';
   import ViewAllLink from '$lib/components/ViewAllLink.svelte';
-  import { createCompatWatcher } from './view/theme/compat.util.js';
-  import { show as showToast } from '$lib/components/ToastContainer.svelte';
 
   export let data;
 
@@ -554,14 +543,6 @@
   }
 
   onMount(() => {
-    // A plugin update may have left views of the theme on the plugin's default look: say so once.
-    if (data.themeCompat) {
-      createCompatWatcher({
-        api: createThemeApi(ApiUtil),
-        notify: { warn: (key, values) => showToast(key, values) },
-      }).check();
-    }
-
     checkMobile();
 
     window.addEventListener('resize', checkMobile);

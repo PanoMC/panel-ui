@@ -63,6 +63,19 @@
   {/if}
 {/snippet}
 
+{#if isRefused(theme.verdict)}
+  <div
+    class="alert alert-danger d-flex align-items-start mb-3"
+    role="alert"
+    data-theme-incompatible>
+    <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+    <div>
+      <h5 class="alert-heading mb-2">{$_('pages.theme-detail.incompatible-title')}</h5>
+      <div>{$_('pages.theme-detail.incompatible-description')}</div>
+    </div>
+  </div>
+{/if}
+
 {#if compat}
   <div class="mb-3">
     <ThemeCompatIssues report={compat} />
@@ -264,7 +277,7 @@
 </script>
 
 <script>
-  import { getContext, onMount } from 'svelte';
+  import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
 
@@ -290,7 +303,6 @@
   import ThemeLicenseCard from '$lib/components/ThemeLicenseCard.svelte';
   import ThemeCompatIssues from './theme/ThemeCompatIssues.svelte';
   import ThemeActivateButton from './theme/ThemeActivateButton.svelte';
-  import { rememberReport } from './theme/compat.util.js';
   import ConfirmStopThemeModal, {
     show as showStopModal,
     passwordError,
@@ -306,9 +318,6 @@
     theme = data.theme;
     compat = data.compat ?? null;
   }
-
-  // The admin reads the list now, so a later plugin update only toasts what is new after this.
-  onMount(() => rememberReport(compat));
 
   const slots = getContext('layout-slots');
   Object.assign(slots, { left, right });

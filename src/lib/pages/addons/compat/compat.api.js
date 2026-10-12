@@ -20,7 +20,7 @@ export function createCompatibilityApi(client, request) {
   };
 
   return {
-    /** The refused resources, the agents on an old protocol and the changed addresses. */
+    /** The refused resources and the agents on an old protocol. */
     getCompatibility: () => call('get', { path: '/panel/compatibility' }),
   };
 }

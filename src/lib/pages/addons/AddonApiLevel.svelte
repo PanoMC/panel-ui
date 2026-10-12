@@ -5,25 +5,23 @@
       { values: { name: held.name } },
     )}
   </span>
-{:else if shown}
+{:else if refused}
   <span
-    class="badge {refused ? 'text-bg-danger' : 'text-bg-secondary'}"
-    title={refused
-      ? $_('components.compatibility-card.row-refused', { values: { level: plugin.apiLevel } })
-      : $_('components.compatibility-card.row-level', { values: { level: plugin.apiLevel } })}
+    class="text-danger"
+    title={$_('components.compatibility-card.row-refused', { values: { level: plugin.apiLevel } })}
     data-api-level>
-    {#if refused}
-      <i class="fa-solid fa-ban me-1" aria-hidden="true"></i>{$_(verdictKey(plugin.verdict))}
-    {:else}
-      {$_('components.compatibility-card.level-short', { values: { level: plugin.apiLevel } })}
-    {/if}
+    {$_('components.compatibility-card.incompatible')}
+  </span>
+{:else if shown}
+  <span data-api-level>
+    {$_('components.compatibility-card.level-short', { values: { level: plugin.apiLevel } })}
   </span>
 {/if}
 
 <script>
   import { _ } from 'svelte-i18n';
 
-  import { heldReason, isRefused, normalizeHeldBy, verdictKey } from './compat/compat.util.js';
+  import { heldReason, isRefused, normalizeHeldBy } from './compat/compat.util.js';
 
   /**
    * The API level an addon declares and the verdict of the gate.
