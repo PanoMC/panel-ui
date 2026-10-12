@@ -337,7 +337,13 @@
     <!-- Scrollable Menu Area -->
     <div class="sidebar-scroll-area px-2" on:scroll={handleScroll} bind:this={scrollArea}>
       <!-- Sidebar Site Navigation Menu || Sidebar Server Navigation Menu -->
-      <svelte:component this={menuComponent} />
+      <div
+        use:fadeChange={{
+          classes: $sidebarTabsState === 'game' ? 'panel-slide-in-right' : 'panel-slide-in-left',
+          key: $sidebarTabsState,
+        }}>
+        <svelte:component this={menuComponent} />
+      </div>
     </div>
 
     <!-- Fixed Bottom Area -->
@@ -352,6 +358,7 @@
   import { getContext, onDestroy, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
+  import { fadeChange } from '$lib/fadeChange.util.js';
 
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';

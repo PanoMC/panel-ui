@@ -626,6 +626,7 @@
     ? `${$_($pageTitle)}${$pageSubtitle ? ` \u00b7 ${$pageSubtitle}` : ''} \u2014 ${options.DEFAULT_PAGE_TITLE}`
     : options.DEFAULT_PAGE_TITLE;
 
+  // TEMPORARY: keeps the splash screen up so it can be looked at; set to false to hide it again.
   let showSplashAlways = false;
   let waitAnimation = false;
   let mounted = false;

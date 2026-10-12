@@ -1,31 +1,35 @@
 <!-- Server Settings Contents — no container of its own: `ServerDetailLayout` owns the one this
      sits in, so the settings nav and the page below it are spaced by the same `vstack gap-3`. -->
-<PageActions>
-  <div slot="left">
-    <PageNav>
-      {#if canManageServers}
-        <PageNavItem href="/servers/{$server.id}/settings">
-          {$_('components.server-settings-layout.server')}
-        </PageNavItem>
-      {/if}
-      {#if isManaged($server) && hasPermission(Permissions.MANAGE_SERVER_STARTUP)}
-        <PageNavItem href="/servers/{$server.id}/settings/startup" startsWith>
-          {$_('components.server-settings-layout.startup')}
-        </PageNavItem>
-        <PageNavItem href="/servers/{$server.id}/settings/properties" startsWith>
-          {$_('components.server-settings-layout.properties')}
-        </PageNavItem>
-      {/if}
-      {#if canManageServers}
-        <PageNavItem href="/servers/{$server.id}/settings/game-integration" startsWith>
-          {$_('components.server-settings-layout.game-integration')}
-        </PageNavItem>
-      {/if}
-    </PageNav>
-  </div>
-</PageActions>
+<div data-page-static>
+  <PageActions>
+    <div slot="left">
+      <PageNav>
+        {#if canManageServers}
+          <PageNavItem href="/servers/{$server.id}/settings">
+            {$_('components.server-settings-layout.server')}
+          </PageNavItem>
+        {/if}
+        {#if isManaged($server) && hasPermission(Permissions.MANAGE_SERVER_STARTUP)}
+          <PageNavItem href="/servers/{$server.id}/settings/startup" startsWith>
+            {$_('components.server-settings-layout.startup')}
+          </PageNavItem>
+          <PageNavItem href="/servers/{$server.id}/settings/properties" startsWith>
+            {$_('components.server-settings-layout.properties')}
+          </PageNavItem>
+        {/if}
+        {#if canManageServers}
+          <PageNavItem href="/servers/{$server.id}/settings/game-integration" startsWith>
+            {$_('components.server-settings-layout.game-integration')}
+          </PageNavItem>
+        {/if}
+      </PageNav>
+    </div>
+  </PageActions>
+</div>
 
-<slot />
+<PageSlot>
+  <slot />
+</PageSlot>
 
 <script>
   import { getContext } from 'svelte';
@@ -35,6 +39,7 @@
   import { isManaged } from '$lib/servers.util.js';
 
   import PageActions from '$lib/components/PageActions.svelte';
+  import PageSlot from '$lib/components/PageSlot.svelte';
   import PageNav from '$lib/components/PageNav.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';
 

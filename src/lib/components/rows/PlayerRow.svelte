@@ -1,4 +1,7 @@
-<tr class:table-active={player.selected}>
+<tr
+  class="row-action"
+  class:table-active={player.selected}
+  use:rowLink={`${base}/players/detail/${player.username}`}>
   <th scope="row" class="align-middle text-center">
     <div class="dropdown position-static">
       <button
@@ -108,6 +111,8 @@
 </tr>
 
 <script>
+  import { rowLink } from '$lib/rowLink.util.js';
+
   import { avatarVersion } from '$lib/Store';
   import { createEventDispatcher, getContext } from 'svelte';
   import { _ } from 'svelte-i18n';

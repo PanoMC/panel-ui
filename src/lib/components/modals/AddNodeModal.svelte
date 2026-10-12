@@ -47,30 +47,43 @@
       </div>
 
       <div class="modal-body">
-        <ul class="nav nav-tabs mb-3">
-          {#each TABS as entry (entry.id)}
-            <li class="nav-item">
-              <!-- A disabled button swallows pointer events, so the tooltip sits outside. -->
-              <span
-                class="d-inline-block"
-                use:tooltip={[tabDisabledReason(entry) ? $_(tabDisabledReason(entry)) : '']}>
-                <button
-                  type="button"
-                  class="nav-link"
-                  class:active={tab === entry.id}
-                  disabled={!!tabDisabledReason(entry)}
-                  onclick={() => selectTab(entry.id)}>
-                  <i class="{entry.icon} me-1" aria-hidden="true"></i>
-                  {$_(entry.label)}
-                </button>
-              </span>
-            </li>
-          {/each}
-        </ul>
+        <!-- The local daemon is one click, not a form: its own button in front of the tabs. -->
+        <div class="d-flex align-items-end gap-3 mb-3">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary mb-1 flex-shrink-0"
+            disabled={localSetupBusy || bootstrapRunning || phase !== Phases.FORM}
+            onclick={setupLocalNode}>
+            {#if localSetupBusy}
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {:else}
+              <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
+            {/if}
+            {$_('pages.servers.nodes.tab-local')}
+          </button>
+          <ul class="nav nav-tabs flex-grow-1">
+            {#each TABS as entry (entry.id)}
+              <li class="nav-item">
+                <!-- A disabled button swallows pointer events, so the tooltip sits outside. -->
+                <span
+                  class="d-inline-block"
+                  use:tooltip={[tabDisabledReason(entry) ? $_(tabDisabledReason(entry)) : '']}>
+                  <button
+                    type="button"
+                    class="nav-link"
+                    class:active={tab === entry.id}
+                    disabled={!!tabDisabledReason(entry)}
+                    onclick={() => selectTab(entry.id)}>
+                    <i class="{entry.icon} me-1" aria-hidden="true"></i>
+                    {$_(entry.label)}
+                  </button>
+                </span>
+              </li>
+            {/each}
+          </ul>
+        </div>
 
-        {#if tab === 'local'}
-          <!-- The local setup button in the footer is the whole screen. -->
-        {:else if tab === 'manual'}
+        {#if tab === 'manual'}
           {#if pairingUnavailable}
             <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
               <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
@@ -94,7 +107,7 @@
               {#each PLATFORMS as entry (entry.id)}
                 <button
                   type="button"
-                  class="btn btn-outline-secondary"
+                  class="btn btn-outline-primary"
                   class:active={platform === entry.id}
                   onclick={() => (platform = entry.id)}>
                   <i class="{entry.icon} me-1" aria-hidden="true"></i>
@@ -103,13 +116,11 @@
               {/each}
             </div>
 
-            <label class="form-label mt-2" for="addNodeCommand">
-              {$_('pages.servers.nodes.pairing-command')}
-            </label>
-            <div class="input-group">
+            <div class="input-group mt-3">
               <input
                 id="addNodeCommand"
                 type="text"
+                aria-label={$_('pages.servers.nodes.pairing-command')}
                 class="form-control font-monospace"
                 value={commandText}
                 readonly />
@@ -127,7 +138,6 @@
                 <i class="fa-regular fa-clipboard" aria-hidden="true"></i>
               </button>
             </div>
-            <div class="form-text">{$_('pages.servers.nodes.pairing-hint')}</div>
 
             <!-- A backend from before the ready-made commands (§2.4.10): what is shown is the
                  panel's own guess, so the address in it is worth a look. -->
@@ -252,7 +262,7 @@
                 {#each AUTH_TYPES as entry (entry.id)}
                   <button
                     type="button"
-                    class="btn btn-outline-secondary"
+                    class="btn btn-outline-primary"
                     class:active={sshAuthType === entry.id}
                     onclick={() => (sshAuthType = entry.id)}>
                     <i class="{entry.icon} me-1" aria-hidden="true"></i>
@@ -428,33 +438,18 @@
           </form>
         {/if}
       </div>
-      {#if phase === Phases.FORM && (tab === 'local' || tab === 'ssh' || tab === 'coolify')}
+      {#if phase === Phases.FORM && (tab === 'ssh' || tab === 'coolify')}
         <div class="modal-footer">
-          {#if tab === 'local'}
-            <button
-              type="button"
-              class="btn btn-primary w-100"
-              disabled={localSetupBusy}
-              onclick={setupLocalNode}>
-              {#if localSetupBusy}
-                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-              {:else}
-                <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
-              {/if}
-              {$_('pages.servers.create.setup-local-node')}
-            </button>
-          {:else}
-            <button
-              type="submit"
-              class="btn btn-primary w-100"
-              form={tab === 'ssh' ? 'addNodeSshForm' : 'addNodeCoolifyForm'}
-              disabled={submitting || (tab === 'ssh' ? !sshValid : !coolifyValid)}>
-              {#if submitting}
-                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-              {/if}
-              {$_('buttons.save')}
-            </button>
-          {/if}
+          <button
+            type="submit"
+            class="btn btn-primary w-100"
+            form={tab === 'ssh' ? 'addNodeSshForm' : 'addNodeCoolifyForm'}
+            disabled={submitting || (tab === 'ssh' ? !sshValid : !coolifyValid)}>
+            {#if submitting}
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {/if}
+            {$_('buttons.save')}
+          </button>
         </div>
       {/if}
     </div>
@@ -691,11 +686,6 @@
 
   const TABS = [
     {
-      id: 'local',
-      icon: 'fa-solid fa-house-laptop',
-      label: 'pages.servers.nodes.tab-local',
-    },
-    {
       id: 'manual',
       icon: 'fa-solid fa-terminal',
       label: 'pages.servers.nodes.tab-manual',
@@ -760,7 +750,7 @@
   let modalElement = $state();
   let modalInstance;
 
-  let tab = $state('local');
+  let tab = $state('manual');
   let localSetupBusy = $state(false);
 
   let code = $state('');
@@ -1567,7 +1557,7 @@
   }
 
   function resetAll() {
-    tab = 'local';
+    tab = 'manual';
     phase = Phases.FORM;
     platform = 'linux';
     submitting = false;

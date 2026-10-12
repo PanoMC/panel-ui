@@ -1,4 +1,4 @@
-<div class="container vstack gap-3">
+<div class="container vstack gap-3" data-page-static>
   <PageActions>
     <div slot="left">
       {#if slots.left}
@@ -89,7 +89,9 @@
 
   <div class="row g-3">
     <div class="col-lg-9 vstack gap-3">
-      {@render children()}
+      <PageSlot>
+        {@render children()}
+      </PageSlot>
     </div>
     <div class="col-lg-3">
       <div class="card">
@@ -253,6 +255,7 @@
   import { formatRelative } from 'date-fns';
 
   import PageActions from '$lib/components/PageActions.svelte';
+  import PageSlot from '$lib/components/PageSlot.svelte';
   import PageNav from '$lib/components/PageNav.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';
   import PlayerStatusBadge from '$lib/components/badges/PlayerStatusBadge.svelte';

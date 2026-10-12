@@ -250,7 +250,7 @@
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{$_('pages.servers.nodes.java.install-title')}</h5>
+        <h5 class="modal-title text-capitalize">{$_('pages.servers.nodes.java.install-title')}</h5>
         <button
           class="btn-close"
           aria-label={$_('buttons.close')}
@@ -259,9 +259,6 @@
         </button>
       </div>
       <div class="modal-body">
-        <p class="small text-body-secondary">
-          {$_('pages.servers.nodes.java.install-description')}
-        </p>
         {#if downloadable.length === 0}
           <div class="small text-body-secondary">
             {catalogError || $_('pages.servers.nodes.java.install-empty')}
@@ -271,21 +268,34 @@
             {#each downloadable as entry (entry.major)}
               {@const hint = javaMajorHint(entry.major)}
               {@const running = taskFor(entry.major)}
-              <div
-                class="list-group-item d-flex align-items-center gap-3"
-                class:opacity-50={!entry.available}>
-                <div class="flex-grow-1 min-w-0">
-                  <div class="fw-semibold">
-                    Java {entry.major}
-                    {#if entry.installedVersion && !entry.updateAvailable}
-                      <span class="badge text-bg-success ms-1"
-                        >{$_('pages.servers.nodes.java.installed')}</span>
-                    {:else if entry.updateAvailable}
-                      <span class="badge text-bg-warning ms-1"
-                        >{$_('pages.servers.nodes.java.update-available')}</span>
-                    {/if}
-                  </div>
-                  {#if entry.available}
+              {@const installed = !!entry.installedVersion && !entry.updateAvailable}
+              {#if entry.available}
+                <!-- The whole row is the action: pressing it installs (or updates) this Java. -->
+                <button
+                  type="button"
+                  class="list-group-item list-group-item-action d-flex align-items-center gap-3 text-start"
+                  disabled={!!running || !nodeOnline || installed}
+                  use:tooltip={[
+                    installed || running || !nodeOnline
+                      ? ''
+                      : $_(
+                          entry.updateAvailable
+                            ? 'pages.servers.nodes.java.update'
+                            : 'buttons.install',
+                        ),
+                  ]}
+                  onclick={() => install(entry.major, true)}>
+                  <div class="flex-grow-1 min-w-0">
+                    <div>
+                      Java {entry.major}
+                      {#if installed}
+                        <span class="badge text-bg-success ms-1"
+                          >{$_('pages.servers.nodes.java.installed')}</span>
+                      {:else if entry.updateAvailable}
+                        <span class="badge text-bg-warning ms-1"
+                          >{$_('pages.servers.nodes.java.update-available')}</span>
+                      {/if}
+                    </div>
                     <div class="small text-body-secondary text-break">
                       {[vendorLabel(entry.vendor), entry.version, javaDownloadSize(entry.size)]
                         .filter((part) => part && part !== '—')
@@ -294,37 +304,22 @@
                     {#if hint}
                       <div class="small text-body-secondary">{$_(hint)}</div>
                     {/if}
-                  {:else}
-                    <div class="small text-body-secondary">
-                      {$_('pages.servers.nodes.java.not-available', {
-                        values: { platform: platformLabel },
-                      })}
-                    </div>
+                  </div>
+                  {#if running}
+                    <span class="spinner-border spinner-border-sm flex-shrink-0" aria-hidden="true"
+                    ></span>
                   {/if}
+                </button>
+              {:else}
+                <div class="list-group-item opacity-50">
+                  <div>Java {entry.major}</div>
+                  <div class="small text-body-secondary">
+                    {$_('pages.servers.nodes.java.not-available', {
+                      values: { platform: platformLabel },
+                    })}
+                  </div>
                 </div>
-                {#if entry.available}
-                  <button
-                    type="button"
-                    class="btn btn-sm {entry.installedVersion && !entry.updateAvailable
-                      ? 'btn-outline-secondary'
-                      : 'btn-outline-primary'} flex-shrink-0"
-                    disabled={!!running ||
-                      !nodeOnline ||
-                      (!!entry.installedVersion && !entry.updateAvailable)}
-                    onclick={() => install(entry.major, true)}>
-                    {#if running}
-                      <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-                    {/if}
-                    {$_(
-                      entry.updateAvailable
-                        ? 'pages.servers.nodes.java.update'
-                        : entry.installedVersion
-                          ? 'pages.servers.nodes.java.installed'
-                          : 'pages.servers.nodes.java.install',
-                    )}
-                  </button>
-                {/if}
-              </div>
+              {/if}
             {/each}
           </div>
         {/if}

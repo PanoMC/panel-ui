@@ -20,7 +20,10 @@
   }
 </style>
 
-<tr class:table-active={selected}>
+<tr
+  class="row-action"
+  class:table-active={selected}
+  use:rowLink={`${base}/servers/nodes/${node.id}`}>
   <th scope="row" class="align-middle text-center">
     <div class="dropdown position-static">
       <button
@@ -31,7 +34,7 @@
         aria-label={$_('pages.servers.nodes.column-actions')}>
         <span class="fas fa-ellipsis-v"></span>
       </button>
-      <div class="dropdown-menu dropdown-menu-start">
+      <div class="dropdown-menu dropdown-menu-start text-capitalize">
         <a class="dropdown-item" href="{base}/servers/nodes/{node.id}" title={$_('buttons.view')}>
           <i class="fas fa-eye me-2"></i>
           {$_('buttons.view')}
@@ -169,6 +172,8 @@
 </tr>
 
 <script>
+  import { rowLink } from '$lib/rowLink.util.js';
+
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
 

@@ -1,4 +1,4 @@
-<tr class:table-active={locale.selected}>
+<tr class="row-action" class:table-active={locale.selected} use:rowLink={onEditClick}>
   <th scope="row" class="align-middle">
     {#if locale.definedBy !== 'SYSTEM'}
       <button
@@ -49,6 +49,8 @@
 </tr>
 
 <script>
+  import { rowLink } from '$lib/rowLink.util.js';
+
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
 

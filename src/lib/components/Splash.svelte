@@ -1,40 +1,40 @@
 <style>
-  .center-content {
+  .splash-logo-layer {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
 
-  .logo-wrapper {
+  .splash-pano-logo {
     border-radius: 12px;
     width: 64px;
     height: 64px;
   }
 
-  .mc-img-wrapper {
+  .splash-minecraft-logo {
     width: 80px;
     height: 80px;
   }
 
-  .hytale-img-wrapper {
+  .splash-hytale-logo {
     width: 80px;
     height: 80px;
   }
 
-  .pano-anim {
-    animation: logo-swap-pano 4.5s infinite ease-in-out;
+  .splash-cycle-pano {
+    animation: splash-logo-cycle-pano 4.5s infinite ease-in-out;
   }
 
-  .mc-anim {
-    animation: logo-swap-mc 4.5s infinite ease-in-out;
+  .splash-cycle-minecraft {
+    animation: splash-logo-cycle-minecraft 4.5s infinite ease-in-out;
   }
 
-  .hytale-anim {
-    animation: logo-swap-hytale 4.5s infinite ease-in-out;
+  .splash-cycle-hytale {
+    animation: splash-logo-cycle-hytale 4.5s infinite ease-in-out;
   }
 
-  @keyframes logo-swap-pano {
+  @keyframes splash-logo-cycle-pano {
     0%,
     28% {
       opacity: 1;
@@ -51,7 +51,7 @@
     }
   }
 
-  @keyframes logo-swap-mc {
+  @keyframes splash-logo-cycle-minecraft {
     0%,
     28% {
       opacity: 0;
@@ -69,7 +69,7 @@
     }
   }
 
-  @keyframes logo-swap-hytale {
+  @keyframes splash-logo-cycle-hytale {
     0%,
     61% {
       opacity: 0;
@@ -86,19 +86,19 @@
     }
   }
 
-  .stuck-ui {
+  .splash-stuck-help {
     opacity: 0;
     pointer-events: none;
-    animation: show-stuck 0.3s ease-in forwards;
+    animation: splash-stuck-help-reveal 0.3s ease-in forwards;
     animation-delay: 10s;
   }
 
-  .stuck-ui.stuck-hidden {
+  .splash-stuck-help.splash-stuck-help-hidden {
     display: none !important;
     animation: none;
   }
 
-  @keyframes show-stuck {
+  @keyframes splash-stuck-help-reveal {
     to {
       opacity: 1;
       pointer-events: auto;
@@ -107,7 +107,7 @@
 </style>
 
 <svelte:head>
-  {#if networkErrors}
+  {#if showErrors}
     <style>
       .show {
         display: none !important;
@@ -121,10 +121,10 @@
   role="status"
   in:fade
   out:fade>
-  <div class="loader-content position-relative" style="height: 100px; width: 100px;">
+  <div class="splash-logo-stage position-relative" style="height: 100px; width: 100px;">
     <!-- Pano Host wears the same mark on its own color (as the website's Pano Host brand). -->
     <div
-      class="logo-wrapper p-2 shadow-sm pano-anim center-content d-flex align-items-center justify-content-center"
+      class="splash-pano-logo p-2 shadow-sm splash-cycle-pano splash-logo-layer d-flex align-items-center justify-content-center"
       class:bg-primary={!$page.data.hosted}
       style:background-image={$page.data.hosted
         ? 'linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-info) 100%)'
@@ -135,14 +135,14 @@
         class="w-100 h-100 object-fit-contain" />
     </div>
     <div
-      class="mc-img-wrapper mc-anim center-content d-flex align-items-center justify-content-center">
+      class="splash-minecraft-logo splash-cycle-minecraft splash-logo-layer d-flex align-items-center justify-content-center">
       <img
         alt="Minecraft"
         src="{base}/assets/img/minecraft-icon.png"
         class="w-100 h-100 object-fit-contain" />
     </div>
     <div
-      class="hytale-img-wrapper hytale-anim center-content d-flex align-items-center justify-content-center">
+      class="splash-hytale-logo splash-cycle-hytale splash-logo-layer d-flex align-items-center justify-content-center">
       <img
         alt="Hytale"
         src="{base}/assets/img/hytale-icon.png"
@@ -150,39 +150,31 @@
     </div>
   </div>
 
-  {#if networkErrors}
+  {#if showErrors}
     <div class="mt-4 text-center">
-      {#if notLoggedIn}
-        <small>{$_('components.splash.errors.session')}</small>
-      {:else if noPermission}
-        {$_('components.splash.errors.permission')}
-      {:else}
-        {$_('components.splash.errors.connection')}
-      {/if}
-      <br />
+      <span class="badge rounded-pill text-bg-danger text-wrap fw-normal fs-6">
+        {#if showNotLoggedIn}
+          {$_('components.splash.errors.session')}
+        {:else if showNoPermission}
+          {$_('components.splash.errors.permission')}
+        {:else}
+          {$_('components.splash.errors.connection')}
+        {/if}
+      </span>
       <div class="d-flex flex-wrap align-items-center justify-content-center gap-2 mt-3">
         <button
-          class="btn btn-sm btn-outline-secondary"
-          on:click={onManualRefreshClick}
+          class="btn btn-sm btn-link text-decoration-none"
+          on:click={reloadPage}
           type="button">
           {$_('components.splash.manual-refresh')}
         </button>
-        {#if !notLoggedIn && !noPermission}
-          <button
-            class="btn btn-sm btn-primary"
-            on:click={onRetryClick}
-            class:disabled={$retryingNetworkErrors}
-            type="button">
-            {$retryingNetworkErrors
-              ? $_('components.splash.refreshing')
-              : $_('components.splash.retry')}
-          </button>
-        {/if}
       </div>
     </div>
   {/if}
 
-  <div class="mt-4 text-center stuck-ui" class:stuck-hidden={networkErrors || jsLoaded}>
+  <div
+    class="mt-4 text-center splash-stuck-help"
+    class:splash-stuck-help-hidden={showErrors || isHydrated}>
     <small class="d-block mb-3">
       {$_('components.splash.stuck-text')}
     </small>
@@ -195,20 +187,15 @@
 
 <script>
   import { getContext, onDestroy, onMount } from 'svelte';
-  import { get } from 'svelte/store';
   import { fade } from 'svelte/transition';
   import { _ } from 'svelte-i18n';
 
-  import {
-    networkErrorCallbacks,
-    resumeAfterNetworkError,
-    retryingNetworkErrors,
-  } from '$lib/Store';
+  import { networkErrorCallbacks } from '$lib/Store';
   import { base } from '$app/paths';
   import { page } from '$app/stores';
 
-  let networkErrors = false;
-  let jsLoaded = false;
+  let hasNetworkErrors = false;
+  let isHydrated = false;
 
   const session = getContext('session');
 
@@ -217,27 +204,38 @@
   $: notLoggedIn = basicData.error?.code === 'NOT_LOGGED_IN';
   $: noPermission = basicData.error?.code === 'NO_PERMISSION';
 
+  // TEMPORARY: while true the splash plays its three error messages (session, permission,
+  // connection) one after the other, so they can be looked at. Set to false for the real ones.
+  const DEMO_ERRORS = false;
+  const DEMO_KINDS = ['session', 'permission', 'connection'];
+  let demoIndex = 0;
+
+  $: demoKind = DEMO_ERRORS ? DEMO_KINDS[demoIndex % DEMO_KINDS.length] : null;
+  $: showErrors = hasNetworkErrors || demoKind !== null;
+  $: showNotLoggedIn = demoKind ? demoKind === 'session' : notLoggedIn;
+  $: showNoPermission = demoKind ? demoKind === 'permission' : noPermission;
+
   onMount(() => {
-    jsLoaded = true;
-  });
+    isHydrated = true;
 
-  onDestroy(() => {
-    if (unsubscribe) unsubscribe();
-  });
-
-  const unsubscribe = networkErrorCallbacks.subscribe((value) => {
-    networkErrors = value.length !== 0;
-  });
-
-  function onManualRefreshClick() {
-    location.reload();
-  }
-
-  async function onRetryClick() {
-    if (get(retryingNetworkErrors)) {
+    if (!DEMO_ERRORS) {
       return;
     }
 
-    await resumeAfterNetworkError();
+    const demoTimer = setInterval(() => (demoIndex += 1), 3500);
+
+    return () => clearInterval(demoTimer);
+  });
+
+  onDestroy(() => {
+    if (unsubscribeNetworkErrors) unsubscribeNetworkErrors();
+  });
+
+  const unsubscribeNetworkErrors = networkErrorCallbacks.subscribe((value) => {
+    hasNetworkErrors = value.length !== 0;
+  });
+
+  function reloadPage() {
+    location.reload();
   }
 </script>

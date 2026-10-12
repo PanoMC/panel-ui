@@ -5,12 +5,14 @@
 {#if visible}
   <button
     type="button"
-    class="btn {inAlert ? 'alert-btn' : 'btn-sm btn-outline-warning'} text-nowrap {className}"
+    class="btn {inAlert
+      ? 'alert-btn text-capitalize'
+      : 'btn-sm btn-outline-warning'} text-nowrap {className}"
     disabled={busy}
     onclick={() => void run()}>
     {#if busy}
       <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-    {:else}
+    {:else if !inAlert}
       <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
     {/if}
     {$_(label)}

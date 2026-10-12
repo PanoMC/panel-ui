@@ -1,4 +1,4 @@
-<tr class:table-active={category.selected}>
+<tr class="row-action" class:table-active={category.selected} use:rowLink={onEditClick}>
   <th scope="row" class="align-middle text-center">
     <button
       type="button"
@@ -69,6 +69,8 @@
 </tr>
 
 <script>
+  import { rowLink } from '$lib/rowLink.util.js';
+
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
   import { UI_URL } from '$lib/variables';

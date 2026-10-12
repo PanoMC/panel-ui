@@ -2,7 +2,7 @@
 <ConfirmRemoveAddonWillCauseMoreUnloadModal />
 <AddonStartupErrorModal />
 
-<div class="container vstack gap-3">
+<div class="container vstack gap-3" data-page-static>
   <PageActions>
     <div slot="left" class="hstack gap-3">
       <a href="{base}/addons" class="btn btn-link" role="button" aria-label={$_('buttons.addons')}>
@@ -143,7 +143,9 @@
     </div>
   </div>
 
-  {@render children()}
+  <PageSlot>
+    {@render children()}
+  </PageSlot>
 </div>
 
 <script module>
@@ -243,6 +245,7 @@
     show as showAddonStartupErrorModal,
   } from '$lib/components/modals/AddonStartupErrorModal.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
+  import PageSlot from '$lib/components/PageSlot.svelte';
   import PageNav from '$lib/components/PageNav.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';
   import {

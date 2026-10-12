@@ -1,4 +1,7 @@
-<tr class:table-active={post.selected}>
+<tr
+  class="row-action"
+  class:table-active={post.selected}
+  use:rowLink={base + '/posts/detail/' + post.id}>
   <th scope="row" class="align-middle text-center">
     <div class="dropdown position-static">
       <button
@@ -120,6 +123,8 @@
   import { avatarVersion } from '$lib/Store';
 
   import { base } from '$app/paths';
+
+  import { rowLink } from '$lib/rowLink.util.js';
 
   import Date from '$lib/components/Date.svelte';
   import CategoryBadge from '$lib/components/badges/CategoryBadge.svelte';

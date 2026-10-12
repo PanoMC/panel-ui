@@ -75,7 +75,7 @@
         </thead>
         <tbody>
           {#each schedules as schedule (schedule.id)}
-            <tr>
+            <tr use:rowLink={() => editor?.open(schedule)}>
               <th scope="row" class="fw-semibold text-break">
                 {schedule.name}
                 <span class="d-block fw-normal small text-body-secondary">
@@ -212,6 +212,7 @@
 </script>
 
 <script>
+  import { rowLink } from '$lib/rowLink.util.js';
   /**
    * SM-34 — list, run, toggle and delete the cron schedules of one server (§2.4.6).
    *

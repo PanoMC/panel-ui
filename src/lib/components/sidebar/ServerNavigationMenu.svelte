@@ -9,7 +9,6 @@
 
   .nav .nav-link.active {
     color: var(--bs-body-color) !important;
-    font-weight: 600;
   }
 </style>
 
@@ -24,7 +23,7 @@
         {#if isServerNavItemVisible(item, currentServer, $usageMode)}
           <li class="nav-item">
             <a
-              class="nav-link text-truncate"
+              class="nav-link fw-normal text-truncate"
               href={serverItemHref(item, currentServer.id)}
               class:active={matching(
                 $page.url.pathname,

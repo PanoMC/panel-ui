@@ -5,6 +5,7 @@ $pano-asset-path: '/panel/assets/';
 @import 'node_modules/animate.css/animate.min';
 @import 'workspace';
 @import 'alerts';
+@import 'row-action';
 $fa-font-path: '#{$pano-asset-path}webfonts';
 
 @import 'node_modules/tippy.js/dist/tippy';
@@ -42,11 +43,70 @@ details[open] summary .fa-chevron-right {
 }
 
 /* Panel transitions
-   animate.css fades over a second by default, which is a beat too long for moving between pages:
-   a change should be felt, not waited for. `fadeChange` (src/lib/fadeChange.util.js) replays the
-   animation on the two places whose content swaps under the admin — the page area and the sidebar
-   menu — so both are quick here. */
-.main-container.animate__fadeIn,
-.sidebar-scroll-area.animate__fadeIn {
-  animation-duration: 0.2s;
+   A page change is felt, not waited for: the page area fades in and settles up a few pixels in
+   well under 200 ms. `fadeChange` (src/lib/fadeChange.util.js) replays it whenever the route
+   changes. Admins who ask for less motion get none. */
+@keyframes panel-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.375rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// `PageSlot` (src/lib/components/PageSlot.svelte) has no box of its own. The page containers put
+// into it animate as they appear, so a new page plays it and one that is already there does not
+// replay; anything marked `data-page-static` (a layout's tab pills and header) is left alone.
+.page-slot {
+  display: contents;
+}
+
+.page-slot > :not([data-page-static]) {
+  animation: panel-page-in 0.16s ease-out;
+}
+
+// The sidebar menu changing workspace: the website menu comes in from the left, the servers menu
+// from the right.
+@keyframes panel-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-1rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes panel-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(1rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.panel-slide-in-left {
+  animation: panel-slide-in-left 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.panel-slide-in-right {
+  animation: panel-slide-in-right 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-slot > :not([data-page-static]),
+  .panel-slide-in-left,
+  .panel-slide-in-right {
+    animation: none;
+  }
 }

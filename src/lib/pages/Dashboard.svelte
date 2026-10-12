@@ -228,7 +228,7 @@
                 <table class="table table-hover mb-0">
                   {#each data.lastRegisters as player, index (player)}
                     <tbody>
-                      <tr>
+                      <tr use:rowLink={`${base}/players/detail/${player.username}`}>
                         <td class="align-middle text-nowrap d-flex align-items-center">
                           <a
                             class="focus-ring rounded-circle d-inline-block me-2"
@@ -287,7 +287,7 @@
                 <table class="table table-hover mb-0">
                   {#each data.tickets as ticket, index (ticket)}
                     <tbody>
-                      <tr>
+                      <tr use:rowLink={`${base}/tickets/detail/${ticket.id}`}>
                         <td class="align-middle text-nowrap d-flex align-items-center">
                           <a
                             class="focus-ring rounded-circle d-inline-block me-2"
@@ -474,6 +474,7 @@
 </script>
 
 <script>
+  import { rowLink } from '$lib/rowLink.util.js';
   import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
   import { writable } from 'svelte/store';

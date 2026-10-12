@@ -1,4 +1,4 @@
-<div class="container vstack gap-3">
+<div class="container vstack gap-3" data-page-static>
   <PageActions>
     <div slot="left">
       {#if slots.left}
@@ -23,7 +23,9 @@
     </div>
   </PageActions>
 
-  {@render children()}
+  <PageSlot>
+    {@render children()}
+  </PageSlot>
 </div>
 
 <ConfirmDeletePostModal />
@@ -67,6 +69,7 @@
   import { _ } from 'svelte-i18n';
   import { beforeNavigate } from '$app/navigation';
   import PageActions from '$lib/components/PageActions.svelte';
+  import PageSlot from '$lib/components/PageSlot.svelte';
   import PageNav from '$lib/components/PageNav.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';
   import ConfirmDeletePostModal from '$lib/components/modals/ConfirmDeletePostModal.svelte';

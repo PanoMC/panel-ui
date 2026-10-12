@@ -81,8 +81,7 @@
 <main
   class="main-container d-flex h-100 flex-grow-1 flex-column overflow-auto"
   data-bs-theme={$sidebarTabsState === 'game' ? 'dark' : undefined}
-  class:workspace-game={$sidebarTabsState === 'game'}
-  use:fadeChange>
+  class:workspace-game={$sidebarTabsState === 'game'}>
   {#if $siteInfo?.isDemo}
     <div class="alert alert-info fade show mb-0" role="alert">
       <div class="container-fluid d-flex align-items-center">
@@ -113,12 +112,15 @@
 
   <Navbar />
 
-  <slot />
+  <PageSlot>
+    <slot />
+  </PageSlot>
 </main>
 
 <script context="module">
   import Sidebar from '$lib/components/Sidebar.svelte';
   import Navbar from '$lib/components/Navbar.svelte';
+  import PageSlot from '$lib/components/PageSlot.svelte';
 </script>
 
 <script>
@@ -126,8 +128,6 @@
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
   import { invalidateAll } from '$app/navigation';
-
-  import { fadeChange } from '$lib/fadeChange.util.js';
 
   const showDevModeAlert = getContext('showDevModeAlert');
   const siteInfo = getContext('siteInfo');

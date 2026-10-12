@@ -9,7 +9,6 @@
 
   .nav .nav-link.active {
     color: var(--bs-body-color) !important;
-    font-weight: 600;
   }
 </style>
 
@@ -18,32 +17,18 @@
     {#if (!item.permission || hasPermission(item.permission)) && isNavItemVisible(item, $usageMode)}
       <li class="nav-item">
         <a
-          class="nav-link text-truncate"
+          class="nav-link fw-normal text-truncate"
           href={base + item.href}
           class:active={matching($page.url.pathname, base + item.href, item.startsWith)}>
-          {#if item.hasUpdate}
-            <span class="position-relative" class:pe-3={$session.basicData.hasUpdate}>
-              <i class="{item.icon} fa-fw me-2"></i>
-              {$_(item.text)}
-              {#if $session.basicData.hasUpdate}
-                <span class="position-absolute bg-warning rounded-circle p-1 top-0 end-0"> </span>
-              {/if}
-            </span>
-          {:else}
-            <i class="{item.icon} fa-fw me-2"></i>
-            {$_(item.text)}
-            {#if attentionText(item, $compatAttention)}
-              <!-- Something inside needs the admin: the same icon as on the card itself. -->
-              <span
-                class="text-warning ms-1"
-                role="img"
-                aria-label={attentionText(item, $compatAttention)}
-                data-nav-attention={item.attention}
-                use:tooltip={[attentionText(item, $compatAttention)]}>
-                <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-              </span>
-            {/if}
-          {/if}
+          <!-- Something inside needs the admin: how many, as a badge on the icon's corner. -->
+          <span class="position-relative d-inline-block me-2">
+            <i class="{item.icon} fa-fw"></i>
+            <NavBadge
+              count={navCount(item, $compatAttention, $session)}
+              label={navLabel(item, $compatAttention)}
+              data-nav-attention={item.attention ?? (item.hasUpdate ? 'updates' : undefined)} />
+          </span>
+          {$_(item.text)}
         </a>
       </li>
     {/if}
@@ -164,7 +149,7 @@
 
   import { hasPermission } from '$lib/auth.util.js';
   import { compatAttention, refreshCompatAttention } from '$lib/compat-attention.store.js';
-  import tooltip from '$lib/tooltip.util';
+  import NavBadge from '$lib/components/NavBadge.svelte';
   import { isNavItemVisible } from '$lib/navigation.util.js';
   import { siteNavigationItems } from '$lib/PluginAPI.js';
 
@@ -177,13 +162,33 @@
     }
   });
 
-  /** The tooltip of the exclamation icon beside a menu item, empty when nothing needs attention. */
-  function attentionText(item, counts) {
+  /** How many things inside this entry need the admin: addons / themes, or a pending update. */
+  function navCount(item, counts, sessionData) {
+    if (item.attention) {
+      return counts?.[item.attention] ?? 0;
+    }
+
+    if (item.hasUpdate) {
+      // The platform only tells whether an update is waiting, not how many.
+      const flag = sessionData?.basicData?.hasUpdate;
+
+      return typeof flag === 'number' ? flag : flag ? 1 : 0;
+    }
+
+    return 0;
+  }
+
+  /** The tooltip of the badge, empty when there is none to say. */
+  function navLabel(item, counts) {
     const count = item.attention ? (counts?.[item.attention] ?? 0) : 0;
 
-    return count > 0
-      ? $_(`components.site-navigation-menu.attention.${item.attention}`, { values: { count } })
-      : '';
+    if (count > 0) {
+      return $_(`components.site-navigation-menu.attention.${item.attention}`, {
+        values: { count },
+      });
+    }
+
+    return item.hasUpdate ? $_('components.settings-layout.updates') : '';
   }
 
   function matching(path, pathName, startsWith = false) {

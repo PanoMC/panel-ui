@@ -1,4 +1,4 @@
-<tr>
+<tr use:rowLink={showBannedPlayer ? `${base}/players/detail/${banHistory.username}` : null}>
   {#if showBannedPlayer}
     <td class="align-middle" style="max-width: 200px;">
       <div class="text-truncate d-flex align-items-center">
@@ -84,6 +84,8 @@
 </tr>
 
 <script>
+  import { rowLink } from '$lib/rowLink.util.js';
+
   import { _ } from 'svelte-i18n';
   import { avatarVersion } from '$lib/Store';
   import { format, formatDuration, intervalToDuration } from 'date-fns';

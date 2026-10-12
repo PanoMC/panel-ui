@@ -1062,7 +1062,7 @@
       "panel": {
         "luckperms-alert": "Bu sayfa LuckPerms ile uyumlu çalışacak şekilde tasarlanmıştır ve gelişmiş izin yönetimi özellikleri sunar.",
         "search": {
-          "placeholder": "Ara (grup, oyuncu, node)"
+          "placeholder": "Grup, oyuncu, düğüm bul..."
         },
         "actions": {
           "create-group": "Grup Oluştur",
@@ -1249,7 +1249,7 @@
         "legacy-plugin": "Eklenti güncellemesi gerekli"
       },
       "header": {
-        "copy-address": "Adresi kopyala",
+        "copy-address": "Kopyala",
         "protocol": "Protokol {version}",
         "plugin-version": "Eklenti {version}",
         "start": "Başlat",
@@ -1295,6 +1295,7 @@
         "icon-wrong-type": "Simge PNG, JPEG, GIF ya da WebP biçiminde olmalı.",
         "icon-updated": "Sunucu simgesi güncellendi.",
         "icon-updated-restart": "Sunucu simgesi güncellendi. Uygulanması için sunucuyu yeniden başlatın.",
+        "adopted-title": "Sunucu Devralındı",
         "adopted-alert": "Bu sunucu, düğümü yeniden başladığında zaten çalışıyordu; Pano onu olduğu gibi devraldı. Panelden bir kez yeniden başlatana kadar konsol girişi ve çökünce otomatik yeniden başlatma sınırlıdır.",
         "task-java-install": "Java indiriliyor",
         "task-java-remove": "Java kaldırılıyor",
@@ -1424,8 +1425,8 @@
           "plugin-up-to-date": "Güncel",
           "plugin-update-started": "Pano eklentisini {version} sürümüne güncelleme başladı. Yüklemek için sunucuyu yeniden başlat."
         },
-        "plugin-missing-title": "Bu Sunucuda Pano Eklentisi Yok",
-        "plugin-missing": "Sunucu çalışıyor ama ona bağlı bir Pano eklentisi yok: oyuncular, TPS ve oyun içi özellikler kullanılamıyor.",
+        "plugin-missing-title": "Pano Eklentisi Yok",
+        "plugin-missing": "Oyuncular, TPS ve oyun içi özellikler kullanılamıyor.",
         "plugin-java-too-old-title": "Pano Eklentisi Java 11 Veya Üstünü Gerektirir",
         "plugin-java-too-old": "Bu sunucu daha eski bir Java ile çalışıyor; bu yüzden Pano eklentisi kurulmadı ve sunucu bağlı değil: oyuncular, TPS ve oyun içi özellikler kullanılamıyor. Ayarlar → Başlangıç altından Java 11 veya daha yenisini seçin; Pano eklentiyi kurar ve sunucuyu bağlar.",
         "java-missing": "Son başlatma başarısız oldu: bu sunucunun ihtiyaç duyduğu Java {major} bu düğümde yok.",
@@ -1576,7 +1577,7 @@
         "list-failed": "Eklenti listesi yüklenemedi.",
         "linked-hint": "Pano bu listeyi yalnızca sunucudaki Pano eklentisinden okur. Dosya kurmak veya silmek için sunucuyu bir Pano düğümünde çalıştır.",
         "restart-required-title": "Yeniden Başlatma Gerekiyor",
-        "restart-required-description": "Sunucu eklentilerini son bildirdiğinden beri bu klasördeki dosyalar değişti. Değişikliklerin uygulanması için sunucuyu yeniden başlat.",
+        "restart-required-description": "Eklenti klasörü son bildirimden beri değişti. Değişiklikler yeniden başlatmada uygulanır.",
         "installed": {
           "column-file": "Dosya",
           "column-actions": "İşlemler",
@@ -1773,8 +1774,8 @@
         "filter-all": "Bütün türler",
         "empty": "Bu sunucuda henüz bir şey olmadı.",
         "empty-filtered": "Bu filtrelere uyan kayıt yok.",
-        "unavailable": "Pano'nun bu sürümü sunucu bazlı hareket kaydı tutmuyor. Burada görebilmek için Pano'yu güncelle.",
-        "load-failed": "Hareket kaydı yüklenemedi. Birazdan tekrar dene.",
+        "unavailable": "Bu Pano sürümü sunucu bazlı hareket kaydı tutmuyor. Güncelleme gerekir.",
+        "load-failed": "Hareket kaydı yüklenemedi.",
         "unknown-user": "Bilinmeyen kullanıcı",
         "system": "Sistem",
         "system-hint": "Bir kişi değil, Pano'nun kendisi yaptı",
@@ -1840,7 +1841,7 @@
         "auth-integration-description": "Pano'nun Fabric'daki kimlik doğrulama eklentilerine bağlanmasına izin ver.",
         "auth-require-verified": "E-Mail Doğrulama Gerekli",
         "auth-require-verified-description": "Giriş yapmadan önce oyuncunun email doğrulamasını kontrol eder.",
-        "auth-require-verified-disabled-warning": "Bu seçenek, global 'E-posta Doğrulaması' kapalı olduğu için devre dışıdır. Bunu Panel -> Ayarlar -> Platform -> Kimlik Doğrulama kısmından değiştirebilirsin.",
+        "auth-require-verified-disabled-warning": "Genel 'E-posta Doğrulaması' kapalı; Ayarlar -> Platform -> Kimlik Doğrulama'dan açılır.",
         "auth-kick-after-register": "Kayıt Sonrası At",
         "auth-kick-after-register-description": "Kayıt gerçekleştiği gibi oyuncu email doğrulaması için atılacaktır.",
         "ban-integration": "Yasaklama Entegrasyonu",
@@ -1881,7 +1882,7 @@
         "local-setup-started": "Yerel düğüm kuruluyor. Bağlanır bağlanmaz burada görünecek.",
         "local-setup-unavailable": "Pano’nun bu sürümü henüz yerel düğüm kuramıyor.",
         "add-unavailable": "Düğüm ekleme penceresi burada kullanılamıyor.",
-        "add-node": "Düğüm ekle",
+        "add-node": "Düğüm Ekle",
         "add-title": "Düğüm Ekle",
         "table-title": "{count} Düğüm",
         "tab-approved": "Onaylı",
@@ -2019,7 +2020,7 @@
         "unreachable": "Çok eski",
         "unreachable-hint": "Bu düğüm bu Pano'ya ulaşamayacak kadar eski. Jar'ını elle değiştir.",
         "unreachable-title": "Bu Düğümün Yeni Bir Jar'a İhtiyacı Var",
-        "unreachable-description": "Bu düğüm bu Pano'ya ulaşamayacak kadar eski. Durdur, jar'ını aşağıdakiyle değiştir ve yeniden başlat; kendiliğinden yeniden bağlanır.",
+        "unreachable-description": "Düğüm bu Pano'ya ulaşamayacak kadar eski. Jar değiştirilip yeniden başlatılınca kendiliğinden bağlanır.",
         "unreachable-download": "Düğüm Jar'ını İndir"
       },
       "create": {
@@ -3860,7 +3861,7 @@
         "software-installer": "Mod Yükleyici",
         "software-installer-hint": "Düğüm üzerinde yükleyicinin kendi kurulum programıyla kurulur. Bunun için Pano eklentisi yoktur: sunucu yönetilir, ancak oyuncular ve TPS gösterilmez.",
         "software-versions": "{count} sürüm",
-        "software-empty": "Yazılım kataloğu boş. Pano’nun internete erişebildiğinden emin ol.",
+        "software-empty": "Yazılım kataloğu boş; Pano'nun internet erişimi doğrulanmalı.",
         "software-unavailable": "Pano’nun bu sürümünde yazılım kataloğu yok.",
         "version-label": "Minecraft Sürümü",
         "version-latest-build": "Son derleme",
@@ -3914,8 +3915,8 @@
       },
       "file-editor": {
         "unsaved": "Kaydedilmedi",
-        "binary": "Bu ikili bir dosya. Üzerinde çalışmak için indir.",
-        "truncated": "Bu dosyanın yalnızca başı okundu, bu yüzden salt okunur. Tamamını görmek için indir.",
+        "binary": "İkili dosya; düzenlenemez, yalnızca indirilebilir.",
+        "truncated": "Dosyanın yalnızca başı okundu; salt okunur.",
         "save-hint": "Ctrl+S kaydeder.",
         "read-failed": "Dosya okunamadı.",
         "load-failed": "Düzenleyici yüklenemedi.",

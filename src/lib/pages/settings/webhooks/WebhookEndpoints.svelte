@@ -65,7 +65,7 @@
           {#each $visible as endpoint (endpoint.id)}
             {@const status = endpointStatus(endpoint)}
             {@const count = eventsCount(endpoint)}
-            <tr data-endpoint-row={endpoint.id}>
+            <tr data-endpoint-row={endpoint.id} use:rowLink={() => modal?.show(endpoint)}>
               <th scope="row" class="align-middle text-center">
                 <div class="dropdown position-static">
                   <button
@@ -183,6 +183,7 @@
 </div>
 
 <script>
+  import { rowLink } from '$lib/rowLink.util.js';
   import { _ } from 'svelte-i18n';
 
   import CardHeader from '$lib/components/CardHeader.svelte';

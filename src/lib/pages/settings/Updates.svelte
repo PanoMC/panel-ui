@@ -296,12 +296,13 @@
                   </div>
                 {/if}
               </th>
-              <td class="align-middle">
+              <td class="align-middle" style="max-width: 300px;">
                 <div class="d-flex flex-wrap align-items-center gap-2">
                   <a
                     href={`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}
                     target="_blank"
-                    class="text-decoration-none focus-ring rounded">
+                    title={update.resourceTitle || update.name || update.id}
+                    class="rounded focus-ring text-decoration-none d-block text-truncate">
                     {update.resourceTitle || update.name || update.id}
                     <i class="fas fa-external-link-alt fa-xs ms-1"></i>
                   </a>
@@ -331,7 +332,9 @@
                 <a
                   href={`${PANO_WEBSITE_URL}/users/${update.developer}`}
                   target="_blank"
-                  class="text-decoration-none">{update.developer}</a>
+                  title={update.developer}
+                  class="rounded focus-ring text-decoration-none d-block text-truncate"
+                  >{update.developer}</a>
               </td>
               <td class="align-middle text-nowrap">{formatBytes(update.size)}</td>
               <td class="align-middle text-nowrap"><DateTime time={update.createdAt} /></td>
@@ -397,7 +400,7 @@
 <ConfirmUpdateResourcesModal />
 <!-- Server management is off in a WEBSITE install, and so are the endpoints this card reads. -->
 {#if $usageMode !== UsageModes.WEBSITE && (hasPermission(Permissions.MANAGE_SERVERS) || hasPermission(Permissions.MANAGE_NODES))}
-  <div class="mt-3">
+  <div>
     <ServerUpdatesCard initial={data.serverUpdates} />
   </div>
 {/if}
@@ -435,7 +438,93 @@
           }).catch(() => null),
     ]);
 
-    return { ...settings, serverUpdates };
+    return { ...settings, serverUpdates: DEMO_UPDATES ? demoServerUpdates() : serverUpdates };
+  }
+
+  /**
+   * TEMPORARY: shows made-up updates on this page (platform, resources, nodes, agents, plugins) so
+   * its design can be worked on without waiting for real ones. Set to false to show real data.
+   */
+  export const DEMO_UPDATES = false;
+
+  /** What `/panel/updates/servers` answers, made up for the demo. */
+  function demoServerUpdates() {
+    return {
+      nodeAutoUpdate: true,
+      nodes: [
+        {
+          kind: 'node',
+          id: 1,
+          name: 'Local Node',
+          online: true,
+          current: '1.0.0-alpha.540',
+          latest: '1.0.0-alpha.547',
+          updateAvailable: true,
+        },
+        {
+          kind: 'node',
+          id: 2,
+          name: 'Frankfurt',
+          online: false,
+          current: '1.0.0-alpha.538',
+          latest: '1.0.0-alpha.547',
+          updateAvailable: true,
+          reason: 'NODE_OFFLINE',
+        },
+        {
+          kind: 'agent',
+          id: 3,
+          serverId: 5,
+          name: 'Survival Agent',
+          online: true,
+          current: '1.0.0-alpha.547',
+          latest: '1.0.0-alpha.547',
+          updateAvailable: false,
+        },
+      ],
+      servers: [
+        {
+          kind: 'pano-plugin',
+          id: 5,
+          name: 'Survival',
+          serverType: 'PAPER',
+          online: true,
+          current: '1.0.0-beta.6',
+          latest: '1.0.0-beta.7',
+          updateAvailable: true,
+        },
+        {
+          kind: 'pano-plugin',
+          id: 6,
+          name: 'Creative',
+          serverType: 'PAPER',
+          online: true,
+          current: '0.9.0',
+          latest: '1.0.0-beta.7',
+          manual: true,
+          reason: 'PLUGIN_TOO_OLD',
+        },
+        {
+          kind: 'pano-plugin',
+          id: 7,
+          name: 'Lobby',
+          serverType: 'VELOCITY',
+          online: true,
+          current: '1.0.0-beta.7',
+          latest: '1.0.0-beta.7',
+          updateAvailable: false,
+        },
+        {
+          kind: 'pano-plugin',
+          id: 8,
+          name: 'Modded',
+          serverType: 'FORGE',
+          online: true,
+          current: null,
+          reason: 'NO_PLUGIN_MODULE',
+        },
+      ],
+    };
   }
 </script>
 
@@ -507,7 +596,7 @@
   let currentPlatformProgress = 0;
   let currentResourceProgress = 0;
 
-  let demoMode = false;
+  let demoMode = DEMO_UPDATES;
   const demoUpdates = [
     {
       id: 'pano-plugin-demo',
@@ -538,6 +627,32 @@
       hash: 'demo-hash-456',
       incompatible: true,
       requiredPanoVersion: '1.2.0',
+    },
+    {
+      id: 'pano-plugin-market-demo',
+      type: 'PLUGIN',
+      resourceTitle: 'Market',
+      verified: true,
+      oldVersion: '1.0.0-dev.17',
+      version: '1.0.0-dev.18',
+      developer: 'PanoMC',
+      size: 1024 * 1024 * 3.2,
+      createdAt: new Date().toISOString(),
+      changelog: '### Bug Fixes\n\n* **cart:** totals follow the selected currency',
+      hash: 'demo-hash-789',
+    },
+    {
+      id: 'pano-theme-vanilla-demo',
+      type: 'THEME',
+      resourceTitle: 'Vanilla',
+      verified: true,
+      oldVersion: '1.4.0',
+      version: '1.5.1',
+      developer: 'PanoMC',
+      size: 1024 * 1024 * 1.8,
+      createdAt: new Date().toISOString(),
+      changelog: '### Features\n\n* new footer layout',
+      hash: 'demo-hash-012',
     },
   ];
 

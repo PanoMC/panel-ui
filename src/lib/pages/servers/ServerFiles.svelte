@@ -384,7 +384,7 @@
           </thead>
           <tbody>
             {#if path}
-              <tr>
+              <tr use:rowLink={goUp}>
                 <td></td>
                 <td colspan="4">
                   <button type="button" class="file-name-button" onclick={goUp}>
@@ -397,6 +397,7 @@
 
             {#each visibleEntries as entry (entry.name)}
               <tr
+                use:rowLink={() => openEntry(entry)}
                 class:table-active={selectedNames.includes(entry.name)}
                 class:drop-row={dragging && dropFolder === entry.name}
                 data-drop-folder={isDirectory(entry) ? entry.name : undefined}>
@@ -668,6 +669,7 @@
 </script>
 
 <script>
+  import { rowLink } from '$lib/rowLink.util.js';
   /**
    * SM-31 — the file manager (§2.4.4).
    *

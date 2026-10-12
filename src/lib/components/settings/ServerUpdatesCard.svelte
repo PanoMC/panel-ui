@@ -119,8 +119,8 @@
                   </div>
                 {/if}
               </th>
-              <td class="align-middle text-break">
-                <span class="d-inline-flex align-items-center gap-2">
+              <td class="align-middle" style="max-width: 300px;">
+                <span class="d-flex align-items-center gap-2">
                   <span
                     class="rounded-circle d-inline-block"
                     style="width: 0.5rem; height: 0.5rem;"
@@ -128,7 +128,11 @@
                     class:bg-secondary={!row.online}
                     aria-hidden="true"></span>
                   {#if row.href}
-                    <a href={row.href}>{row.name}</a>
+                    <a
+                      href={row.href}
+                      title={row.name}
+                      class="rounded focus-ring text-decoration-none d-block text-truncate"
+                      >{row.name}</a>
                   {:else}
                     {row.name}
                   {/if}

@@ -1,4 +1,7 @@
-<tr class:table-active={ticket.selected}>
+<tr
+  class="row-action"
+  class:table-active={ticket.selected}
+  use:rowLink={`${base}/tickets/detail/${ticket.id}`}>
   <th scope="row" class="align-middle">
     <div class="form-check d-flex justify-content-center align-items-center">
       <input
@@ -54,6 +57,8 @@
 </tr>
 
 <script>
+  import { rowLink } from '$lib/rowLink.util.js';
+
   import tooltip from '$lib/tooltip.util';
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';

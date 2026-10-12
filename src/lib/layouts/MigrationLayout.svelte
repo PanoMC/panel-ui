@@ -1,5 +1,5 @@
 <!-- Migration Contents -->
-<div class="container vstack gap-3">
+<div class="container vstack gap-3" data-page-static>
   <PageActions>
     <div slot="left">
       <PageNav>
@@ -11,7 +11,9 @@
       </PageNav>
     </div>
   </PageActions>
-  <slot />
+  <PageSlot>
+    <slot />
+  </PageSlot>
 </div>
 
 <script context="module">
@@ -40,6 +42,7 @@
   import { _ } from 'svelte-i18n';
 
   import PageActions from '$lib/components/PageActions.svelte';
+  import PageSlot from '$lib/components/PageSlot.svelte';
   import PageNav from '$lib/components/PageNav.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';
 

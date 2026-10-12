@@ -77,9 +77,12 @@
               {@const ram = resolveMemory(sample, server)}
               {@const software = server.software || server.type}
               {@const task = getActiveTask(server)}
-              <tr>
-                <td class="align-middle text-nowrap">
-                  <a class="text-decoration-none" href="{base}/servers/{server.id}">
+              <tr use:rowLink={`${base}/servers/${server.id}`}>
+                <td class="align-middle" style="max-width: 300px;">
+                  <a
+                    href="{base}/servers/{server.id}"
+                    title={getServerDisplayName(server) || `#${server.id}`}
+                    class="rounded focus-ring text-decoration-none d-block text-truncate">
                     {getServerDisplayName(server) || `#${server.id}`}
                   </a>
                 </td>
@@ -183,6 +186,7 @@
 {/snippet}
 
 <script>
+  import { rowLink } from '$lib/rowLink.util.js';
   import { onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
 

@@ -98,7 +98,7 @@
   }
 </style>
 
-<div class="container vstack gap-3">
+<div class="container vstack gap-3" data-page-static>
   <!-- The power controls as the page's own action row, the way every other section's layout puts
        them (Posts, Players, Addons, View): the actions on the right, nothing on the left — this
        workspace's sections are navigated from the sidebar, so there is no page nav to show. -->
@@ -308,47 +308,6 @@
              the plugin; a server a node runs offers neither here (the node is updated on the
              Nodes page, its plugin under Settings → Updates and on the Overview). Hidden while
              that very update is running: its bar above says so instead. -->
-        <!-- A plugin, node or Pano Agent too old to reach this Pano at all: it cannot connect or
-             update itself, so the jar is replaced by hand. The same steps and download as the
-             manual plugin update; the Nodes page carries a node's own. -->
-        {#if pluginUnreachable}
-          <div class="d-flex flex-wrap align-items-center gap-2 mt-2" data-server-unreachable>
-            <span class="badge text-bg-danger text-wrap text-start">
-              <i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>
-              {$_('pages.servers.header.plugin-unreachable')}
-            </span>
-            <PanoPluginUpdateButton
-              server={$server}
-              latestVersion={pluginUpdate?.latestVersion ?? null}
-              label="pages.servers.header.download"
-              class="py-0" />
-          </div>
-        {/if}
-        {#if daemonUnreachable}
-          <div class="d-flex flex-wrap align-items-center gap-2 mt-2" data-server-unreachable>
-            <span class="badge text-bg-danger text-wrap text-start">
-              <i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>
-              {$_(
-                daemonUnreachable.agent
-                  ? 'pages.servers.header.agent-unreachable'
-                  : 'pages.servers.header.node-unreachable',
-              )}
-            </span>
-            {#if daemonUnreachable.agent && daemonUnreachable.downloadPath}
-              <a
-                class="btn btn-sm btn-outline-danger py-0"
-                href={daemonUnreachable.downloadPath}
-                download>
-                <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
-                {$_('pages.servers.header.download-agent')}
-              </a>
-            {:else}
-              <a class="btn btn-sm btn-outline-danger py-0" href="{base}/servers/nodes">
-                {$_('pages.servers.header.open-nodes')}
-              </a>
-            {/if}
-          </div>
-        {/if}
         {#if agentNeedsUpdate}
           <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
             <span class="badge text-bg-warning">
@@ -387,6 +346,66 @@
     </div>
   </div>
 
+  <!-- A plugin, node or Pano Agent too old to reach this Pano at all: it cannot connect or update
+       itself, so the jar is replaced by hand. The same steps and download as the manual plugin
+       update; the Nodes page carries a node's own. Under the card, as an error alert. -->
+  {#if pluginUnreachable}
+    <div
+      class="alert alert-danger d-flex align-items-start mb-0"
+      role="alert"
+      data-server-unreachable>
+      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div class="flex-grow-1 min-w-0">
+        <h5 class="alert-heading mb-2">
+          {$_('pages.settings.updates.servers.kind-pano-plugin')}
+        </h5>
+        <div>{$_('pages.servers.header.plugin-unreachable')}</div>
+        <div class="mt-2">
+          <PanoPluginUpdateButton
+            server={$server}
+            latestVersion={pluginUpdate?.latestVersion ?? null}
+            label="pages.servers.header.download"
+            inAlert />
+        </div>
+      </div>
+    </div>
+  {/if}
+  {#if daemonUnreachable}
+    <div
+      class="alert alert-danger d-flex align-items-start mb-0"
+      role="alert"
+      data-server-unreachable>
+      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div class="flex-grow-1 min-w-0">
+        <h5 class="alert-heading mb-2">
+          {$_(
+            daemonUnreachable.agent
+              ? 'pages.settings.updates.servers.kind-agent'
+              : 'pages.settings.updates.servers.kind-node',
+          )}
+        </h5>
+        <div>
+          {$_(
+            daemonUnreachable.agent
+              ? 'pages.servers.header.agent-unreachable'
+              : 'pages.servers.header.node-unreachable',
+          )}
+        </div>
+        <div class="mt-2">
+          {#if daemonUnreachable.agent && daemonUnreachable.downloadPath}
+            <a class="btn alert-btn text-capitalize" href={daemonUnreachable.downloadPath} download>
+              {$_('pages.servers.header.download-agent')}
+            </a>
+          {:else}
+            <a class="btn alert-btn text-capitalize" href="{base}/servers/nodes">
+              {$_('pages.servers.header.open-nodes')}
+            </a>
+          {/if}
+        </div>
+      </div>
+    </div>
+  {/if}
+
   <!-- An install or import that failed leaves a server its node never set up: nothing to start
        until it is reinstalled. The reason stays on the server (`installError`), so it is still
        here after the task's red bar is gone, with the way out beside it. Hidden while a task is
@@ -397,22 +416,20 @@
     <div class="alert alert-danger d-flex align-items-start mb-0" role="alert">
       <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
       <div class="flex-grow-1 min-w-0">
-        <b>{$_('pages.servers.header.install-failed-title')}</b>
-        <pre class="install-error mt-2 mb-0">{installError}</pre>
+        <h5 class="alert-heading mb-2">{$_('pages.servers.header.install-failed-title')}</h5>
+        <pre class="install-error mb-0">{installError}</pre>
         {#if canReinstall}
           <div class="d-flex flex-wrap gap-2 mt-2">
             <button
               type="button"
-              class="btn alert-btn"
+              class="btn alert-btn text-capitalize"
               on:click={() => showChangeSoftwareModal({ server: $server, lockSoftware: true })}>
-              <i class="fa-solid fa-rotate me-1" aria-hidden="true"></i>
               {$_('buttons.reinstall')}
             </button>
             <button
               type="button"
-              class="btn alert-btn"
+              class="btn alert-btn text-capitalize"
               on:click={() => showChangeSoftwareModal({ server: $server })}>
-              <i class="fa-solid fa-shuffle me-1" aria-hidden="true"></i>
               {$_('pages.servers.settings.change-software-button')}
             </button>
           </div>
@@ -429,6 +446,7 @@
     <div class="alert alert-warning alert-dismissible d-flex align-items-start" role="alert">
       <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
       <div class="flex-grow-1">
+        <h5 class="alert-heading mb-2">{$_('pages.servers.header.adopted-title')}</h5>
         <div class="mb-2">{$_('pages.servers.header.adopted-alert')}</div>
         <!-- The header's own Restart, with its tooltip and disabled rules. -->
         <span
@@ -436,13 +454,11 @@
           use:tooltip={[restartAction?.tooltip || '', { ...HEADER_TOOLTIP, placement: 'bottom' }]}>
           <button
             type="button"
-            class="btn alert-btn"
+            class="btn alert-btn text-capitalize"
             disabled={!restartAction || restartAction.disabled}
             on:click={() => restartAction && askPower(restartAction)}>
             {#if powerBusy === 'RESTART'}
               <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-            {:else}
-              <i class="fa-solid fa-rotate-right me-1" aria-hidden="true"></i>
             {/if}
             {$_('pages.servers.header.restart')}
           </button>
@@ -459,7 +475,9 @@
   <!-- The page itself, inside this container like every other section's layout: the `vstack gap-3`
        above is what spaces these blocks from the header, so a page brings its own cards and never
        its own container. -->
-  <slot />
+  <PageSlot>
+    <slot />
+  </PageSlot>
 </div>
 
 <!-- Changing the software (or reinstalling it) lays the server down again, so the dialog takes
@@ -622,6 +640,7 @@
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
+  import PageSlot from '$lib/components/PageSlot.svelte';
   import SoftwareLogo from '$lib/components/servers/SoftwareLogo.svelte';
   import PanoPluginUpdateButton from '$lib/components/servers/PanoPluginUpdateButton.svelte';
   import DaemonUpdateProgress from '$lib/components/servers/DaemonUpdateProgress.svelte';

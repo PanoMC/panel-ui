@@ -1,4 +1,7 @@
-<tr class:table-active={permissionGroup.selected}>
+<tr
+  class="row-action"
+  class:table-active={permissionGroup.selected}
+  use:rowLink={`${base}/players/permissions/detail/${permissionGroup.id}`}>
   <th scope="row" class="align-middle text-center">
     {#if permissionGroup.name !== 'admin'}
       <button
@@ -29,6 +32,8 @@
 </tr>
 
 <script>
+  import { rowLink } from '$lib/rowLink.util.js';
+
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
 

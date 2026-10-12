@@ -10,55 +10,38 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="panoPluginUpdateTitle">
-          <i class="fa-solid fa-puzzle-piece me-2" aria-hidden="true"></i>
+        <h5 class="modal-title text-capitalize" id="panoPluginUpdateTitle">
           {$_('components.modals.pano-plugin-update.title')}
         </h5>
         <button type="button" class="btn-close" aria-label={$_('buttons.close')} onclick={hide}
         ></button>
       </div>
 
-      <div class="modal-body vstack gap-3">
-        <p class="text-body-secondary small mb-0">
-          {$_(whyKey, { values: { name: serverName } })}
-        </p>
-
-        <div class="d-flex gap-2 align-items-start">
-          <span class="badge rounded-pill text-bg-secondary mt-1">1</span>
-          <div class="vstack gap-2">
-            <span>{$_('components.modals.pano-plugin-update.step-download')}</span>
-            <div>
-              <a class="btn btn-primary btn-sm" href={jarUrl} download>
-                <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
-                {latestVersion
-                  ? $_('components.modals.pano-plugin-update.download-version', {
-                      values: { version: latestVersion },
-                    })
-                  : $_('components.modals.pano-plugin-update.download')}
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="d-flex gap-2 align-items-start">
-          <span class="badge rounded-pill text-bg-secondary mt-1">2</span>
-          <span>
+      <div class="modal-body">
+        <ol class="list-group list-group-numbered">
+          <li class="list-group-item">
+            {$_('components.modals.pano-plugin-update.step-download')}
+          </li>
+          <li class="list-group-item">
             {$_('components.modals.pano-plugin-update.step-replace', {
               values: { folder: pluginFolder },
             })}
-          </span>
-        </div>
-
-        <div class="d-flex gap-2 align-items-start">
-          <span class="badge rounded-pill text-bg-secondary mt-1">3</span>
-          <span>{$_('components.modals.pano-plugin-update.step-start')}</span>
-        </div>
+          </li>
+          <li class="list-group-item">
+            {$_('components.modals.pano-plugin-update.step-start')}
+          </li>
+        </ol>
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-link m-0" onclick={hide}>
-          {$_('buttons.close')}
-        </button>
+        <a class="btn btn-primary w-100 text-capitalize" href={jarUrl} download>
+          <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
+          {latestVersion
+            ? $_('components.modals.pano-plugin-update.download-version', {
+                values: { version: latestVersion },
+              })
+            : $_('components.modals.pano-plugin-update.download')}
+        </a>
       </div>
     </div>
   </div>
@@ -134,18 +117,10 @@
   let modalElement = $state();
   let server = $state(/** @type {Record<string, any> | null} */ (null));
   let latestVersion = $state(/** @type {string | null} */ (null));
-  let reason = $state(/** @type {string | null} */ (null));
 
   let modal;
 
   const serverName = $derived(server ? getServerDisplayName(server) : '');
-  const whyKey = $derived(
-    reason === 'PLUGIN_UNREACHABLE'
-      ? 'components.modals.pano-plugin-update.why-unreachable'
-      : reason === 'SERVER_OFFLINE'
-        ? 'components.modals.pano-plugin-update.why-offline'
-        : 'components.modals.pano-plugin-update.why-too-old',
-  );
   const jarUrl = $derived(server ? `/api/v1/panel/servers/${server.id}/pano-plugin/jar` : '#');
   const pluginFolder = $derived(
     MOD_LOADERS.includes(String(server?.type || '').toUpperCase()) ? 'mods' : 'plugins',
@@ -163,7 +138,6 @@
     openModal = (target, options) => {
       server = target;
       latestVersion = options?.latestVersion ?? null;
-      reason = options?.reason ?? null;
       modal?.show();
     };
   });

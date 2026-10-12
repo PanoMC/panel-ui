@@ -1,0 +1,11 @@
+// Clickable table rows (`use:rowLink`, src/lib/rowLink.util.js): the whole row opens its page and
+// reads like one `list-group-item-action`: a pointer, a hover background and a darker pressed one.
+.table > tbody > tr.row-action {
+  --bs-table-hover-bg: var(--bs-tertiary-bg);
+  --bs-table-hover-color: var(--bs-body-color);
+  cursor: pointer;
+}
+
+.table > tbody > tr.row-action:active > * {
+  --bs-table-bg-state: var(--bs-secondary-bg);
+}

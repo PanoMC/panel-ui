@@ -604,6 +604,22 @@
     stopServerMetrics();
   });
 
+  /**
+   * Below `lg` the sidebar is an offcanvas laid over the page: once a server is picked the admin
+   * is going to that server's page, so the sidebar goes too (like after any sidebar link).
+   */
+  function closeSidebarOnPhone() {
+    if (window.innerWidth >= 992) {
+      return;
+    }
+
+    const sidebar = document.getElementById('sidebar');
+
+    if (sidebar) {
+      window.bootstrap?.Offcanvas?.getInstance(sidebar)?.hide();
+    }
+  }
+
   function onSelect(server) {
     selectingServer.set(server.id);
 
@@ -611,6 +627,7 @@
       void goto(`${base}/servers/${server.id}`, { invalidateAll: true }).finally(() => {
         selectingServer.set(null);
         hide();
+        closeSidebarOnPhone();
       });
 
       return;
@@ -627,6 +644,7 @@
           await goto(`${base}/servers/${server.id}`, { invalidateAll: true });
           selectingServer.set(null);
           hide();
+          closeSidebarOnPhone();
           await showSuccessToast('components.toasts.server-selected', {
             name: server.customName || server.name,
           });

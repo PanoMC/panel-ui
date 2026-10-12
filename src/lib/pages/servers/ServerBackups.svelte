@@ -233,15 +233,7 @@
                         aria-label={$_('pages.servers.backups.pinned')}></i>
                     {/if}
                     {backup.name}
-                    <span
-                      class="badge fw-normal {backup.mode === 'SNAPSHOT'
-                        ? 'text-bg-info'
-                        : 'text-bg-secondary'}">
-                      <i
-                        class="fa-solid {backup.mode === 'SNAPSHOT'
-                          ? 'fa-layer-group'
-                          : 'fa-file-zipper'} me-1"
-                        aria-hidden="true"></i>
+                    <span class="badge fw-normal text-bg-primary">
                       {$_(`components.backup-options.mode-${backup.mode.toLowerCase()}`)}
                     </span>
                     {#if backup.scope !== 'ALL'}
