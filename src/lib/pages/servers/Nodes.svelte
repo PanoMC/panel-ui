@@ -95,7 +95,9 @@
         icon="fa-solid fa-plug-circle-xmark fa-3x"
         text={$_('pages.servers.nodes.unavailable')} />
     {:else if approvedNodes.length === 0}
-      <NoContent icon="fa-solid fa-circle-nodes fa-3x" text={$_('pages.servers.nodes.empty-description')}>
+      <NoContent
+        icon="fa-solid fa-circle-nodes fa-3x"
+        text={$_('pages.servers.nodes.empty-description')}>
         <div class="d-flex flex-wrap justify-content-center gap-2 pb-3">
           <button
             type="button"
