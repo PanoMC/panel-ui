@@ -39,3 +39,6 @@ ds-bundle/
 .design-sync/learnings/
 .design-sync/node_modules
 .design-sync/bridge-pkg/
+
+# Written by `theme-core sync` / `contracts pull`; only themes keep it.
+plugin-contracts/
