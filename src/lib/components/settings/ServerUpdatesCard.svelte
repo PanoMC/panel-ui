@@ -7,35 +7,24 @@
       {#if availableCount}{availableCount}{/if}
       {$_('pages.settings.updates.servers.title')}
     </div>
-    <div slot="right">
-      <div class="dropdown">
-        <button
-          type="button"
-          class="btn btn-sm btn-link"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          aria-label={$_('pages.servers.nodes.column-actions')}>
-          <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
-        </button>
-        <div class="dropdown-menu dropdown-menu-end">
-          <button
-            type="button"
-            class="dropdown-item text-capitalize"
-            disabled={loading}
-            onclick={() => void load()}>
-            <i class="fa-solid fa-rotate-right me-2" class:fa-spin={loading} aria-hidden="true"></i>
-            {$_('buttons.refresh')}
-          </button>
-          <button
-            type="button"
-            class="dropdown-item text-capitalize"
-            disabled={busyAll || !pluginUpdatesAvailable}
-            onclick={() => void updateAllPlugins()}>
-            <i class="fas fa-download me-2" aria-hidden="true"></i>
-            {$_('pages.settings.updates.servers.update-all-plugins')}
-          </button>
-        </div>
-      </div>
+    <div slot="right" class="hstack gap-2">
+      <button
+        type="button"
+        class="btn btn-sm btn-link"
+        disabled={loading}
+        title={$_('buttons.refresh')}
+        aria-label={$_('buttons.refresh')}
+        onclick={() => void load()}>
+        <i class="fa-solid fa-rotate-right" class:fa-spin={loading} aria-hidden="true"></i>
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-primary text-capitalize"
+        disabled={busyAll || !pluginUpdatesAvailable}
+        onclick={() => void updateAllPlugins()}>
+        <i class="fas fa-download me-1" aria-hidden="true"></i>
+        {$_('buttons.update-all')}
+      </button>
     </div>
   </CardHeader>
 

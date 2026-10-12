@@ -1,3 +1,16 @@
+<style>
+  @media (max-width: 767.98px) {
+    .mobile-absolute-actions {
+      position: absolute !important;
+      top: 0;
+      right: 0;
+    }
+    .mobile-info-padding {
+      padding-right: 110px !important;
+    }
+  }
+</style>
+
 <!-- Updates Sub Page -->
 
 <!-- Action Menu -->
@@ -36,105 +49,97 @@
   {#if !data.platformUpdate}
     <NoContent icon="fas fa-check fa-3x" text={$_('pages.settings.updates.using-latest-pano')} />
   {:else}
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th class="align-middle" scope="col"></th>
-            <th class="align-middle text-nowrap" scope="col">
-              {$_('pages.settings.updates.table.name')}
-            </th>
-            <th class="align-middle text-nowrap" scope="col">
-              {$_('pages.settings.updates.table.version')}
-            </th>
-            <th class="align-middle text-nowrap" scope="col">
-              {$_('pages.settings.updates.table.channel')}
-            </th>
-            <th class="align-middle text-nowrap" scope="col">
-              {$_('pages.settings.updates.table.size')}
-            </th>
-            <th class="align-middle text-nowrap" scope="col">
-              {$_('pages.settings.updates.table.date')}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row" class="align-middle text-center">
-              {#if $platformUpdating}
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
-                ></span>
-              {:else}
-                <div class="dropdown position-static">
-                  <button
-                    type="button"
-                    class="btn btn-link"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    title={$_('pages.servers.nodes.column-actions')}
-                    aria-label={$_('pages.servers.nodes.column-actions')}>
-                    <span class="fas fa-ellipsis-v"></span>
-                  </button>
-                  <div class="dropdown-menu dropdown-menu-start">
-                    <button
-                      type="button"
-                      class="dropdown-item text-capitalize"
-                      data-update-platform
-                      disabled={loading || inProgressResource || updatingAll}
-                      on:click={onUpdatePlatformClick}>
-                      <i class="fas fa-download me-2"></i>
-                      {$_('buttons.update')}
-                    </button>
-                    <button
-                      type="button"
-                      class="dropdown-item text-capitalize"
-                      disabled={loading || inProgressResource || updatingAll}
-                      on:click={() => showChangelogModal(data.platformUpdate.changelog)}>
-                      <i class="fa-regular fa-file-lines me-2"></i>
-                      {$_('pages.settings.updates.changelog')}
-                    </button>
-                    <button
-                      type="button"
-                      class="dropdown-item text-capitalize"
-                      disabled={loading || inProgressResource || updatingAll}
-                      on:click={() => copyHashToClipboard(data.platformUpdate.hash)}>
-                      <i class="fa-solid fa-hashtag me-2"></i>
-                      {$_('pages.settings.updates.copy-hash')}
-                    </button>
+    <div class="card-body">
+      <ul class="list-group">
+        <li
+          class="list-group-item list-group-item-action"
+          class:disabled={loading || $platformUpdating || inProgressResource || updatingAll}
+          style="cursor: pointer;"
+          role="button"
+          tabindex="0"
+          data-update-platform
+          use:tooltip={[$_('buttons.update')]}
+          on:click={onUpdatePlatformClick}
+          on:keydown={(e) =>
+            e.key === 'Enter' && e.target === e.currentTarget && onUpdatePlatformClick()}>
+          <div class="d-flex gap-3 flex-wrap position-relative">
+            <div class="flex-shrink-0">
+              <!-- Logo -->
+              <div
+                class="d-inline-flex rounded justify-content-center align-items-center bg-primary"
+                style="width: 64px; height: 64px;">
+                <i class="fas fa-box fa-2x text-white" title="Pano"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 min-w-0 mobile-info-padding">
+              <div class="d-flex justify-content-between align-items-start gap-3">
+                <!-- Left: Info -->
+                <div class="vstack gap-2">
+                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <h5 class="mb-0">Pano</h5>
+                    <i
+                      class="fa-regular fa-circle-check text-success"
+                      use:tooltip={[$_('pages.settings.updates.verified')]}></i>
+
+                    <span class="badge text-bg-secondary">
+                      {data.platformUpdate.channel.capitalize()}
+                    </span>
+                    <span class="badge text-bg-primary"
+                      >{data.platformUpdate.oldVersion}
+                      <i class="fas fa-arrow-right fa-xs"></i>
+                      {data.platformUpdate.version}</span>
+                  </div>
+
+                  <div class="d-flex flex-wrap gap-2 small mb-0">
+                    <div>
+                      <i class="fas fa-database me-1"></i>
+                      {formatBytes(data.platformUpdate.size)}
+                    </div>
+                    <div>
+                      <i class="fas fa-calendar me-1"></i>
+                      <DateTime time={data.platformUpdate.releaseDate} />
+                    </div>
                   </div>
                 </div>
-              {/if}
-            </th>
-            <td class="align-middle">
-              Pano
-              <i
-                class="fa-regular fa-circle-check text-success ms-1"
-                use:tooltip={[$_('pages.settings.updates.verified')]}></i>
-            </td>
-            <td class="align-middle text-nowrap">
-              <span class="badge text-bg-primary">
-                {data.platformUpdate.oldVersion}
-                <i class="fas fa-arrow-right fa-xs"></i>
-                {data.platformUpdate.version}
-              </span>
-            </td>
-            <td class="align-middle text-nowrap">
-              <span class="badge text-bg-secondary">
-                {data.platformUpdate.channel.capitalize()}
-              </span>
-            </td>
-            <td class="align-middle text-nowrap">{formatBytes(data.platformUpdate.size)}</td>
-            <td class="align-middle text-nowrap">
-              <DateTime time={data.platformUpdate.releaseDate} />
-            </td>
-          </tr>
+                <!-- Right: Actions -->
+                <div class="d-flex align-items-center gap-1 flex-shrink-0 mobile-absolute-actions">
+                  <button
+                    class="btn btn-sm btn-link"
+                    use:tooltip={[$_('pages.settings.updates.changelog')]}
+                    aria-label={$_('pages.settings.updates.changelog')}
+                    class:disabled={loading ||
+                      $platformUpdating ||
+                      inProgressResource ||
+                      updatingAll}
+                    on:click|stopPropagation={() =>
+                      showChangelogModal(data.platformUpdate.changelog)}>
+                    <i class="fa-regular fa-file-lines fa-lg"></i>
+                  </button>
 
-          <!-- Progress -->
-          {#if $platformUpdating || platformUpdateError}
-            <tr>
-              <td colspan="6">
+                  <button
+                    class="btn btn-sm btn-link"
+                    aria-label={$_('pages.settings.updates.copy-hash')}
+                    use:tooltip={[$_('pages.settings.updates.copy-hash')]}
+                    class:disabled={loading ||
+                      $platformUpdating ||
+                      inProgressResource ||
+                      updatingAll}
+                    on:click|stopPropagation={() => copyHashToClipboard(data.platformUpdate.hash)}>
+                    <i class="fa-solid fa-hashtag fa-lg"></i>
+                  </button>
+                  {#if $platformUpdating}
+                    <span
+                      class="spinner-border spinner-border-sm mx-2"
+                      role="status"
+                      aria-hidden="true"></span>
+                  {/if}
+                </div>
+              </div>
+
+              <!-- Progress -->
+              {#if $platformUpdating || platformUpdateError}
                 <div
-                  class="progress mb-2"
+                  class="progress my-3"
                   role="progressbar"
                   aria-valuenow={platformUpdatingStep}
                   aria-valuemin="0"
@@ -175,11 +180,11 @@
                     <i class="me-2 fas fa-arrows-rotate fa-spin"></i>
                   {/if}
                 </p>
-              </td>
-            </tr>
-          {/if}
-        </tbody>
-      </table>
+              {/if}
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
   {/if}
 </div>
@@ -223,129 +228,154 @@
   {:else if data.resourceUpdates.length === 0}
     <NoContent icon="fas fa-sync fa-3x" text={$_('pages.settings.updates.no-update-found')} />
   {:else}
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th class="align-middle" scope="col"></th>
-            <th class="align-middle text-nowrap" scope="col">
-              {$_('pages.settings.updates.table.name')}
-            </th>
-            <th class="align-middle text-nowrap" scope="col">
-              {$_('pages.settings.updates.table.version')}
-            </th>
-            <th class="align-middle text-nowrap" scope="col">
-              {$_('pages.settings.updates.table.developer')}
-            </th>
-            <th class="align-middle text-nowrap" scope="col">
-              {$_('pages.settings.updates.table.size')}
-            </th>
-            <th class="align-middle text-nowrap" scope="col">
-              {$_('pages.settings.updates.table.date')}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {#each data.resourceUpdates as update, index (update)}
-            <tr>
-              <th scope="row" class="align-middle text-center">
-                {#if inProgressResource?.id === update.id && !resourceUpdateError}
-                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
-                  ></span>
-                {:else}
-                  <div class="dropdown position-static">
-                    <button
-                      type="button"
-                      class="btn btn-link"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                      title={$_('pages.servers.nodes.column-actions')}
-                      aria-label={$_('pages.servers.nodes.column-actions')}>
-                      <span class="fas fa-ellipsis-v"></span>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-start">
-                      <button
-                        type="button"
-                        class="dropdown-item text-capitalize"
-                        disabled={loading ||
-                          $platformUpdating ||
-                          inProgressResource ||
-                          updatingAll ||
-                          update.incompatible}
-                        on:click={() => onUpdateResourceClick(update)}>
-                        <i class="fas fa-download me-2"></i>
-                        {$_('buttons.install')}
-                      </button>
-                      <button
-                        type="button"
-                        class="dropdown-item text-capitalize"
-                        disabled={loading || $platformUpdating || inProgressResource || updatingAll}
-                        on:click={() => showChangelogModal(update.changelog)}>
-                        <i class="fa-regular fa-file-lines me-2"></i>
-                        {$_('pages.settings.updates.changelog')}
-                      </button>
-                      <button
-                        type="button"
-                        class="dropdown-item text-capitalize"
-                        disabled={loading || $platformUpdating || inProgressResource || updatingAll}
-                        on:click={() => copyHashToClipboard(`sha256:${update.hash}`)}>
-                        <i class="fa-solid fa-hashtag me-2"></i>
-                        {$_('pages.settings.updates.copy-hash')}
-                      </button>
+    <div class="card-body">
+      <ul class="list-group">
+        {#each data.resourceUpdates as update, index (update)}
+          {@const resourceDisabled = isResourceDisabled(
+            update,
+            loading,
+            $platformUpdating,
+            inProgressResource,
+            updatingAll,
+          )}
+          <li
+            class="list-group-item list-group-item-action"
+            class:disabled={resourceDisabled}
+            style="cursor: pointer;"
+            role="button"
+            tabindex="0"
+            use:tooltip={[$_('buttons.install')]}
+            on:click={() => onUpdateResourceClick(update)}
+            on:keydown={(e) =>
+              e.key === 'Enter' && e.target === e.currentTarget && onUpdateResourceClick(update)}>
+            <div class="d-flex gap-3 flex-wrap position-relative">
+              <div class="flex-shrink-0">
+                <!-- Logo -->
+                <svelte:element
+                  this={resourceDisabled ? 'span' : 'a'}
+                  href={resourceDisabled
+                    ? undefined
+                    : `${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}
+                  target={resourceDisabled ? undefined : '_blank'}>
+                  {#if update.iconFileName}
+                    <img
+                      width="64"
+                      height="64"
+                      class="rounded object-fit-cover"
+                      src={`/api/v1/panel/updates/icon/${update.iconFileName}?type=${update.type}`}
+                      alt={update.name || update.id} />
+                  {:else}
+                    <div
+                      class="rounded text-body overflow-hidden position-relative"
+                      style="width: 64px; height: 64px;">
+                      <i
+                        class="fas fa-{update.type === 'THEME'
+                          ? 'palette'
+                          : 'puzzle-piece'} position-absolute"
+                        style="font-size: 100px; bottom: -35px; right: -30px; opacity: 0.15;"></i>
+                    </div>
+                  {/if}
+                </svelte:element>
+              </div>
+
+              <div class="flex-grow-1 min-w-0 mobile-info-padding">
+                <div class="d-flex justify-content-between align-items-start gap-3">
+                  <!-- Left: Info -->
+                  <div class="vstack gap-1 min-w-0">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                      <svelte:element
+                        this={resourceDisabled ? 'span' : 'a'}
+                        href={resourceDisabled
+                          ? undefined
+                          : `${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}
+                        target={resourceDisabled ? undefined : '_blank'}
+                        class="text-decoration-none focus-ring rounded d-inline-flex align-items-center gap-2">
+                        <h5 class="text-truncate mb-0">
+                          {update.resourceTitle || update.name || update.id}
+                          <i class="fas fa-external-link-alt fa-xs ms-1"></i>
+                        </h5>
+                        <VerifiedStatus status={getVerifiedStatus(update.verified)} />
+                      </svelte:element>
+                      <span class="badge text-bg-primary">
+                        {update.oldVersion}
+                        <i class="fas fa-arrow-right fa-xs"></i>
+                        {update.version}
+                      </span>
+                    </div>
+                    <div class="small font-monospace d-flex align-items-center gap-2">
+                      {update.id}
+                      {#if update.incompatible}
+                        <span class="text-danger small hstack gap-1">
+                          <i class="fas fa-triangle-exclamation"></i>
+                          {$_('pages.settings.updates.incompatible-version', {
+                            default: 'Pano version incompatible',
+                          })}
+                          {#if update.requiredPanoVersion}
+                            ({update.requiredPanoVersion}+)
+                          {/if}
+                        </span>
+                      {/if}
+                    </div>
+                    <div class="hstack gap-3 small flex-wrap">
+                      <span>
+                        {$_('pages.settings.updates.by')}
+                        <svelte:element
+                          this={resourceDisabled ? 'span' : 'a'}
+                          href={resourceDisabled
+                            ? undefined
+                            : `${PANO_WEBSITE_URL}/users/${update.developer}`}
+                          target={resourceDisabled ? undefined : '_blank'}
+                          class="text-decoration-none">{update.developer}</svelte:element>
+                      </span>
+                      <span>
+                        <i class="fas fa-database me-2"></i>{formatBytes(update.size)}
+                      </span>
+                      <span>
+                        <i class="fa-regular fa-calendar me-2"></i><DateTime
+                          time={update.createdAt} />
+                      </span>
                     </div>
                   </div>
-                {/if}
-              </th>
-              <td class="align-middle" style="max-width: 300px;">
-                <div class="d-flex flex-wrap align-items-center gap-2">
-                  <a
-                    href={`${PANO_WEBSITE_URL}/${update.type === 'PLUGIN' ? 'addons' : 'themes'}/${update.id}`}
-                    target="_blank"
-                    title={update.resourceTitle || update.name || update.id}
-                    class="rounded focus-ring text-decoration-none d-block text-truncate">
-                    {update.resourceTitle || update.name || update.id}
-                    <i class="fas fa-external-link-alt fa-xs ms-1"></i>
-                  </a>
-                  <VerifiedStatus status={getVerifiedStatus(update.verified)} />
-                  {#if update.incompatible}
-                    <span class="text-danger small hstack gap-1">
-                      <i class="fas fa-triangle-exclamation"></i>
-                      {$_('pages.settings.updates.incompatible-version', {
-                        default: 'Pano version incompatible',
-                      })}
-                      {#if update.requiredPanoVersion}
-                        ({update.requiredPanoVersion}+)
-                      {/if}
-                    </span>
-                  {/if}
-                </div>
-                <div class="small font-monospace">{update.id}</div>
-              </td>
-              <td class="align-middle text-nowrap">
-                <span class="badge text-bg-primary">
-                  {update.oldVersion}
-                  <i class="fas fa-arrow-right fa-xs"></i>
-                  {update.version}
-                </span>
-              </td>
-              <td class="align-middle text-nowrap">
-                <a
-                  href={`${PANO_WEBSITE_URL}/users/${update.developer}`}
-                  target="_blank"
-                  title={update.developer}
-                  class="rounded focus-ring text-decoration-none d-block text-truncate"
-                  >{update.developer}</a>
-              </td>
-              <td class="align-middle text-nowrap">{formatBytes(update.size)}</td>
-              <td class="align-middle text-nowrap"><DateTime time={update.createdAt} /></td>
-            </tr>
 
-            <!-- Progress -->
-            {#if inProgressResource?.id === update.id || resourceUpdateError?.id === update.id}
-              <tr>
-                <td colspan="6">
+                  <!-- Right: Actions -->
                   <div
-                    class="progress mb-2"
+                    class="d-flex align-items-center gap-1 flex-shrink-0 mobile-absolute-actions">
+                    <button
+                      class="btn btn-sm btn-link"
+                      use:tooltip={[$_('pages.settings.updates.changelog')]}
+                      aria-label={$_('pages.settings.updates.changelog')}
+                      class:disabled={loading ||
+                        $platformUpdating ||
+                        inProgressResource ||
+                        updatingAll}
+                      on:click|stopPropagation={() => showChangelogModal(update.changelog)}>
+                      <i class="fa-regular fa-file-lines fa-lg"></i>
+                    </button>
+
+                    <button
+                      class="btn btn-sm btn-link"
+                      aria-label={$_('pages.settings.updates.copy-hash')}
+                      use:tooltip={[$_('pages.settings.updates.copy-hash')]}
+                      class:disabled={loading ||
+                        $platformUpdating ||
+                        inProgressResource ||
+                        updatingAll}
+                      on:click|stopPropagation={() => copyHashToClipboard(`sha256:${update.hash}`)}>
+                      <i class="fa-solid fa-hashtag fa-lg"></i>
+                    </button>
+                    {#if inProgressResource?.id === update.id && !resourceUpdateError}
+                      <span
+                        class="spinner-border spinner-border-sm mx-2"
+                        role="status"
+                        aria-hidden="true"></span>
+                    {/if}
+                  </div>
+                </div>
+
+                <!-- Progress -->
+                {#if inProgressResource?.id === update.id || resourceUpdateError?.id === update.id}
+                  <div
+                    class="progress mt-3"
                     role="progressbar"
                     aria-valuenow={resourceUpdateStep}
                     aria-valuemin="0"
@@ -368,7 +398,7 @@
                     </div>
                   </div>
 
-                  <p class="small mb-0" in:fade out:fade>
+                  <p class="small mb-0 mt-2" in:fade out:fade>
                     {#if resourceUpdateError}
                       <span class="text-danger"
                         >{$_('components.modals.installing-resource.error-text', {
@@ -385,12 +415,12 @@
                       {$_('pages.settings.updates.install-complete')}
                     {/if}
                   </p>
-                </td>
-              </tr>
-            {/if}
-          {/each}
-        </tbody>
-      </table>
+                {/if}
+              </div>
+            </div>
+          </li>
+        {/each}
+      </ul>
     </div>
   {/if}
 </div>
@@ -962,6 +992,10 @@
   String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
   };
+
+  function isResourceDisabled(update, loading, platformUpdating, inProgress, updatingAll) {
+    return !!(loading || platformUpdating || inProgress || updatingAll || update.incompatible);
+  }
 
   function getVerifiedStatus(status) {
     if (typeof status === 'undefined') {
