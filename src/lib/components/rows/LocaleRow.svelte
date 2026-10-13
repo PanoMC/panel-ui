@@ -1,5 +1,5 @@
 <tr class="row-action" class:table-active={locale.selected} use:rowLink={onEditClick}>
-  <th scope="row" class="align-middle">
+  <th scope="row" class="align-middle text-center">
     {#if locale.definedBy !== 'SYSTEM'}
       <button
         type="button"
@@ -12,17 +12,17 @@
     {/if}
   </th>
   <td class="align-middle" style="max-width: 250px;">
-    <div class="text-truncate">
-      {#if locale.definedBy !== 'SYSTEM'}
-        <button
-          class="btn btn-link p-0 text-start text-decoration-none w-100 text-truncate"
-          type="button"
-          on:click={onEditClick}
-          title={locale.name}>
-          {locale.name}
-        </button>
-      {:else}
-        <span title={locale.name}>{locale.name}</span>
+    <!-- A language Pano ships opens the same dialog: there only whether it is on can change. -->
+    <div class="d-flex align-items-center gap-2">
+      <button
+        class="btn btn-link p-0 text-start text-decoration-none text-truncate"
+        type="button"
+        on:click={onEditClick}
+        title={locale.name}>
+        {locale.name}
+      </button>
+      {#if locale.enabled === false}
+        <span class="badge text-bg-secondary flex-shrink-0">{$_('buttons.disabled')}</span>
       {/if}
     </div>
   </td>

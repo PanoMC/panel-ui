@@ -31,6 +31,7 @@
                 id="name"
                 type="text"
                 bind:value={$locale.name}
+                disabled={isSystem}
                 on:input={onNameChange}
                 class:is-invalid={$error === 'INVALID_LOCALE_NAME'} />
             </div>
@@ -41,6 +42,7 @@
                 id="code"
                 type="text"
                 bind:value={$locale.code}
+                disabled={isSystem}
                 class:is-invalid={$error === 'INVALID_LOCALE_CODE'} />
               <div class="form-text">
                 {$_('components.modals.add-edit-language.inputs.code-helper')}
@@ -62,6 +64,7 @@
                 class="form-control"
                 id="dateFnsCode"
                 bind:value={$locale.dateFnsCode}
+                disabled={isSystem}
                 class:is-invalid={$error === 'INVALID_DATE_FNS_CODE'}>
                 <option value="">{$_('buttons.select-option')}</option>
                 {#each Object.keys(dateLocales).sort() as dateLocaleKey}
@@ -86,6 +89,7 @@
                 type="text"
                 name="derivative"
                 bind:value={$derivative}
+                disabled={isSystem}
                 on:input={onDerivativeChange}
                 on:keydown={(e) => {
                   if (e.key === 'Enter') {
@@ -103,7 +107,8 @@
                       type="button"
                       class="btn btn-link p-0 d-inline-block mt-2 text-decoration-none"
                       aria-label={$_('buttons.remove')}
-                      title={$_('buttons.remove')}
+                      title={isSystem ? undefined : $_('buttons.remove')}
+                      disabled={isSystem}
                       on:click={() => removeKeyWord(index)}>
                       <span class="badge text-bg-primary">
                         {derivative}
@@ -113,6 +118,35 @@
                 </div>
               {/if}
             </div>
+
+            <!-- Whether visitors are offered the language. English is what a missing text falls
+                 back to and the website's own language is what visitors get, so both stay on. -->
+            {#if $mode === 'edit'}
+              <div class="col-12">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="languageEnabled"
+                    autocomplete="off"
+                    checked={$locale.enabled !== false}
+                    disabled={alwaysOn}
+                    on:change={(event) => ($locale.enabled = event.currentTarget.checked)} />
+                  <label class="form-check-label" for="languageEnabled">
+                    {$_('components.modals.add-edit-language.inputs.enabled')}
+                  </label>
+                </div>
+                {#if alwaysOn}
+                  <div class="form-text">
+                    {$_(
+                      'components.modals.add-edit-language.inputs.' +
+                        (isEnglish ? 'enabled-english' : 'enabled-website-language'),
+                    )}
+                  </div>
+                {/if}
+              </div>
+            {/if}
           </div>
         </div>
         <div class="modal-footer">
@@ -186,6 +220,7 @@
 
 <script>
   import * as dateLocales from 'date-fns/locale';
+  import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
 
   import ApiUtil from '$lib/api.util';
@@ -195,12 +230,18 @@
     limitTitle,
   } from '$lib/components/ToastContainer.svelte';
 
+  const siteInfo = getContext('siteInfo');
+
   let loading = false;
+  // A language Pano ships: its name, codes and derivatives are fixed, only the switch is open.
+  $: isSystem = $mode === 'edit' && $locale.definedBy === 'SYSTEM';
+  $: isEnglish = $locale.code === 'en-US';
+  $: alwaysOn = isEnglish || $locale.code === $siteInfo?.platformLocale;
   $: buttonDisabled = !$locale.name || !$locale.code || !$locale.dateFnsCode;
 
   /** Puts the caret in the name field once Bootstrap reports the dialog as shown. */
   function focusName() {
-    get(modalElement)?.querySelector('#name')?.focus();
+    get(modalElement)?.querySelector('#name:not(:disabled)')?.focus();
   }
 
   function onSubmit() {
