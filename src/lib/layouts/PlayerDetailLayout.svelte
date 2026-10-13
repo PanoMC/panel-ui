@@ -63,15 +63,16 @@
               </button>
             {/if}
 
-            <a
-              href="{base}/permissions"
+            <button
+              type="button"
               aria-label={$_('pages.player-detail.authorize')}
               class="btn btn-link"
               title={$_('pages.player-detail.authorize')}
               class:disabled={$user.username === data.player.username ||
-                (data.player.permissionGroup === 'admin' && !$user.admin)}>
+                (data.player.permissionGroup === 'admin' && !$user.admin)}
+              on:click={() => showAuthorizePlayerModal(data.player)}>
               <i class="fas fa-user-circle"></i>
-            </a>
+            </button>
           {/if}
           {#if hasPermission(Permissions.MANAGE_PLAYERS) || $user.username === data.player.username}
             <button
@@ -282,6 +283,7 @@
     setCallback as setUnbanPlayerModalCallback,
   } from '$lib/components/modals/UnbanPlayerModal.svelte';
   import { show as showConfirmDeletePlayerModal } from '$lib/components/modals/ConfirmDeletePlayerModal.svelte';
+  import { show as showAuthorizePlayerModal } from '$lib/components/modals/AuthorizePlayerModal.svelte';
   import { show as showConfirmSendVerificationEmailModal } from '$lib/components/modals/ConfirmSendVerificationEmailModal.svelte';
 
   let { data, children } = $props();

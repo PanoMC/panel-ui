@@ -16,14 +16,15 @@
       </button>
       <div class="dropdown-menu dropdown-menu-start">
         {#if !hideStatus && hasPermission(Permissions.MANAGE_PERMISSION_GROUPS)}
-          <a
-            href="{base}/permissions"
+          <button
+            type="button"
             class="dropdown-item"
             class:disabled={$user.username === player.username ||
-              (player.permissionGroup === 'admin' && !$user.admin)}>
+              (player.permissionGroup === 'admin' && !$user.admin)}
+            on:click={() => showAuthorizePlayerModal(player)}>
             <i class="fas fa-user-circle me-2"></i>
             {$_('components.player-row.authorize')}
-          </a>
+          </button>
         {/if}
         <button
           type="button"
@@ -118,6 +119,8 @@
   import { _ } from 'svelte-i18n';
 
   import { base } from '$app/paths';
+
+  import { show as showAuthorizePlayerModal } from '$lib/components/modals/AuthorizePlayerModal.svelte';
 
   import Date from '$lib/components/Date.svelte';
   import PlayerStatusBadge from '$lib/components/badges/PlayerStatusBadge.svelte';

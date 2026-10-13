@@ -1,6 +1,8 @@
 <slot />
 
 <EditPlayerModal />
+<CreatePlayerModal />
+<AuthorizePlayerModal />
 <ConfirmBanPlayerModal />
 <ConfirmBanIpModal />
 <SearchPlayerModal />
@@ -35,6 +37,8 @@
 
 <script>
   import EditPlayerModal from '$lib/components/modals/EditPlayerModal.svelte';
+  import CreatePlayerModal from '$lib/components/modals/CreatePlayerModal.svelte';
+  import AuthorizePlayerModal from '$lib/components/modals/AuthorizePlayerModal.svelte';
   import SearchPlayerModal from '$lib/components/modals/SearchPlayerModal.svelte';
   import ConfirmBanPlayerModal from '$lib/components/modals/ConfirmBanPlayerModal.svelte';
   import ConfirmBanIpModal from '$lib/components/modals/ConfirmBanIpModal.svelte';

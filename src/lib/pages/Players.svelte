@@ -15,6 +15,15 @@
           <i class="fa fa-file-import"></i>
           <span class="d-lg-inline d-none ms-2">{$_('buttons.import')}</span>
         </a>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          title={$_('components.modals.create-player.title')}
+          aria-label={$_('components.modals.create-player.title')}
+          on:click={() => showCreatePlayerModal()}>
+          <i class="fas fa-plus"></i>
+          <span class="d-lg-inline d-none ms-2">{$_('components.modals.create-player.title')}</span>
+        </button>
       {/if}
       {#if data.view === Views.BANS}
         <button
@@ -373,6 +382,10 @@
 
   import NoContent from '$lib/components/NoContent.svelte';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
+  import {
+    show as showCreatePlayerModal,
+    setCallback as setCreatePlayerModalCallback,
+  } from '$lib/components/modals/CreatePlayerModal.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
   import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
@@ -509,6 +522,11 @@
 
     showUnbanPlayerModal(player);
   }
+
+  // A new player is the newest row: back to the first page so it is on screen.
+  setCreatePlayerModalCallback(() => {
+    void refreshData(1);
+  });
 
   setEditPlayerModalCallback(async (newPlayer) => {
     await refreshData();
