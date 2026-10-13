@@ -41,6 +41,20 @@
             type="text"
             rows="5"
             bind:value={$category.description}></textarea>
+          <!-- Off: the category and its tickets stay, no new ticket can be opened in it. -->
+          <div class="form-check form-switch mt-3">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="ticketCategoryEnabled"
+              autocomplete="off"
+              checked={$category.enabled !== false}
+              on:change={(event) => ($category.enabled = event.currentTarget.checked)} />
+            <label class="form-check-label" for="ticketCategoryEnabled">
+              {$_('components.modals.add-edit-ticket-category.inputs.enabled')}
+            </label>
+          </div>
         </div>
         <div class="modal-footer">
           <button
@@ -69,7 +83,10 @@
   let hideCallback = (category) => {};
   let modal;
 
-  export function show(newMode, newCategory = { id: -1, title: '', description: '' }) {
+  export function show(
+    newMode,
+    newCategory = { id: -1, title: '', description: '', enabled: true },
+  ) {
     mode.set(newMode);
 
     if (newCategory.description === null) newCategory.description = '';

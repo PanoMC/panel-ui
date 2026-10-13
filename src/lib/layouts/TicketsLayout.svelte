@@ -1,6 +1,7 @@
 <slot />
 
 <ConfirmCloseTicketModal />
+<TicketSettingsModal />
 <ConfirmDeleteTicketModal />
 
 <script context="module">
@@ -30,5 +31,6 @@
 
 <script>
   import ConfirmCloseTicketModal from '$lib/components/modals/ConfirmCloseTicketModal.svelte';
+  import TicketSettingsModal from '$lib/components/modals/TicketSettingsModal.svelte';
   import ConfirmDeleteTicketModal from '$lib/components/modals/ConfirmDeleteTicketModal.svelte';
 </script>

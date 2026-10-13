@@ -10,14 +10,17 @@
     </button>
   </th>
   <td class="align-middle" style="max-width: 200px;">
-    <div class="text-truncate">
+    <div class="d-flex align-items-center gap-2">
       <button
         type="button"
-        class="btn btn-link p-0 text-start text-decoration-none w-100 text-truncate"
+        class="btn btn-link p-0 text-start text-decoration-none text-truncate"
         title={category.title}
         on:click={onEditClick}>
         {category.title}
       </button>
+      {#if category.enabled === false}
+        <span class="badge text-bg-secondary flex-shrink-0">{$_('buttons.disabled')}</span>
+      {/if}
     </div>
   </td>
   <td class="align-middle" style="max-width: 300px;">

@@ -11,7 +11,7 @@
     </PageActions>
   {:else}
     <!-- Action Menu -->
-    <PageActions rightClasses={checkedItems.length > 0 ? '' : null}>
+    <PageActions>
       <!-- Submenu -->
       <PageNav slot="left">
         {#if !data.categoryUrl}
@@ -20,7 +20,7 @@
         {/if}
       </PageNav>
 
-      <div slot="right">
+      <div slot="right" class="hstack gap-2">
         {#if checkedItems.length > 0}
           <div class:d-none={firstLoad} class="hstack gap-2">
             <button
@@ -41,6 +41,15 @@
             </button>
           </div>
         {/if}
+        <!-- Always the last thing on the right: what applies to tickets as a whole. -->
+        <button
+          type="button"
+          class="btn btn-link"
+          title={$_('components.modals.ticket-settings.title')}
+          aria-label={$_('components.modals.ticket-settings.title')}
+          on:click={() => showTicketSettingsModal()}>
+          <i class="fas fa-cog"></i>
+        </button>
       </div>
     </PageActions>
   {/if}
@@ -238,6 +247,7 @@
     show as showCloseTicketModal,
     onHide as onConfirmCloseTicketModalHide,
   } from '$lib/components/modals/ConfirmCloseTicketModal.svelte';
+  import { show as showTicketSettingsModal } from '$lib/components/modals/TicketSettingsModal.svelte';
   import {
     setCallback as setDeleteTicketModalCallback,
     show as showDeleteTicketModal,
