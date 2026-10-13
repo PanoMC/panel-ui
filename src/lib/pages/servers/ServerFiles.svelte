@@ -86,15 +86,25 @@
         <span slot="left">
           <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
           {$_('pages.servers.files.uploads-title')}
+          <span class="text-body-secondary fw-normal ms-1 font-monospace">
+            {uploadsFinished} / {uploads.length}
+          </span>
         </span>
         <span slot="right">
+          {#if uploadsQueued > 0}
+            <button type="button" class="btn btn-sm btn-link" onclick={cancelQueuedUploads}>
+              {$_('pages.servers.files.uploads-cancel-queued')}
+            </button>
+          {/if}
           <button type="button" class="btn btn-sm btn-link" onclick={clearFinishedUploads}>
             {$_('pages.servers.files.uploads-clear')}
           </button>
         </span>
       </CardHeader>
+      <!-- A dropped folder can queue thousands of files: the list shows the head of the queue
+           (what is going up, what failed, what is next) and counts the rest. -->
       <ul class="list-group list-group-flush">
-        {#each uploads as upload (upload.id)}
+        {#each uploadsShown as upload (upload.id)}
           <li class="list-group-item">
             <div class="d-flex align-items-center gap-2 small">
               <span class="text-break flex-grow-1 font-monospace">{upload.name}</span>
@@ -102,6 +112,9 @@
                 <span class="badge text-bg-success">{$_('pages.servers.files.upload-done')}</span>
               {:else if upload.status === 'failed'}
                 <span class="badge text-bg-danger">{$_('pages.servers.files.upload-failed')}</span>
+              {:else if upload.status === 'queued'}
+                <span class="badge text-bg-secondary"
+                  >{$_('pages.servers.files.upload-queued')}</span>
               {:else}
                 <span class="font-monospace">{upload.percent}%</span>
               {/if}
@@ -119,6 +132,13 @@
             {/if}
           </li>
         {/each}
+        {#if uploads.length > uploadsShown.length}
+          <li class="list-group-item small text-body-secondary">
+            {$_('pages.servers.files.uploads-more', {
+              values: { count: uploads.length - uploadsShown.length },
+            })}
+          </li>
+        {/if}
       </ul>
     </div>
   {/if}
@@ -707,6 +727,7 @@
   // `hasFeature` is already imported by the module script above, whose scope this shares.
   import {
     isEndpointUnavailable,
+    isRateLimitError,
     showServerActionError,
     showServerLoadError,
   } from '$lib/servers.util.js';
@@ -1336,6 +1357,9 @@
     }
   }
 
+  /** How often one file is sent again after "too many requests" before it counts as failed. */
+  const UPLOAD_RATE_LIMIT_RETRIES = 20;
+
   /**
    * @param {number} id
    * @param {object} patch
@@ -1344,9 +1368,30 @@
     uploads = uploads.map((upload) => (upload.id === id ? { ...upload, ...patch } : upload));
   }
 
+  /** What each queued row uploads; kept beside the list so the files themselves stay out of state. */
+  const uploadJobs = new Map();
+  let uploadsRunning = false;
+
+  /** How many rows of the queue are drawn; the rest is counted. */
+  const UPLOADS_SHOWN = 30;
+  const UPLOAD_ORDER = { uploading: 0, failed: 1, queued: 2, done: 3 };
+
+  let uploadsQueued = $derived(uploads.filter((upload) => upload.status === 'queued').length);
+  let uploadsFinished = $derived(
+    uploads.filter((upload) => upload.status === 'done' || upload.status === 'failed').length,
+  );
+  let uploadsShown = $derived(
+    uploads.length <= UPLOADS_SHOWN
+      ? uploads
+      : [...uploads]
+          .sort((a, b) => UPLOAD_ORDER[a.status] - UPLOAD_ORDER[b.status] || a.id - b.id)
+          .slice(0, UPLOADS_SHOWN),
+  );
+
   /**
-   * Uploads one file per request (multipart, §2.4.4) so the progress list can show a bar per
-   * file; the backend spools each one and pushes it to the node over a transfer ticket.
+   * Puts the files in the upload queue. They go up one per request (multipart, §2.4.4), one after
+   * the other, so the list can show a bar per file and a big drop cannot flood Pano; the backend
+   * spools each one and pushes it to the node over a transfer ticket.
    *
    * @param {FileList | Array<File | { file: File, dir: string }> | null} list
    * @param {string} [into] the folder to upload into; the one on screen by default.
@@ -1361,10 +1406,9 @@
       return;
     }
 
-    const shown = path;
+    const queued = [];
 
     for (const { file, dir } of items) {
-      const id = ++uploadSeq;
       const target = joinPath(into, dir);
 
       if (!isPathSafe(joinPath(target, file.name))) {
@@ -1373,21 +1417,69 @@
         continue;
       }
 
-      uploads = [
-        ...uploads,
-        { id, name: joinPath(target, file.name), percent: 0, status: 'uploading' },
-      ];
+      const id = ++uploadSeq;
 
-      const form = new FormData();
+      uploadJobs.set(id, { file, target, serverId });
+      queued.push({ id, name: joinPath(target, file.name), percent: 0, status: 'queued' });
+    }
 
-      form.append('file', file, file.name);
+    uploads = [...uploads, ...queued];
 
-      /** @type {any} */
-      let response = null;
+    await drainUploads();
+  }
 
+  /** Works the queue off, one file at a time. A second call while it runs only added to the queue. */
+  async function drainUploads() {
+    if (uploadsRunning) {
+      return;
+    }
+
+    uploadsRunning = true;
+
+    try {
+      for (;;) {
+        const next = uploads.find((upload) => upload.status === 'queued');
+
+        if (!next) {
+          break;
+        }
+
+        const job = uploadJobs.get(next.id);
+
+        uploadJobs.delete(next.id);
+        patchUpload(next.id, { status: 'uploading' });
+
+        const failed = job ? await uploadOne(next.id, job) : true;
+
+        patchUpload(next.id, { status: failed ? 'failed' : 'done', percent: 100 });
+      }
+    } finally {
+      uploadsRunning = false;
+    }
+
+    // A drop into a sub-folder still changes this listing when that folder was new.
+    await refresh();
+  }
+
+  /**
+   * @param {number} id
+   * @param {{ file: File, target: string, serverId: number | string }} job
+   * @returns {Promise<boolean>} whether the upload failed.
+   */
+  async function uploadOne(id, { file, target, serverId: jobServerId }) {
+    const form = new FormData();
+
+    form.append('file', file, file.name);
+
+    /** @type {any} */
+    let response = null;
+
+    // Many small files go out faster than the panel's request budget refills. A refusal for that
+    // reason is not a failed upload: the same file waits for the time Pano names and goes again.
+    for (let attempt = 0; attempt <= UPLOAD_RATE_LIMIT_RETRIES; attempt++) {
       try {
         response = await ApiUtil.post({
-          path: `/panel/servers/${serverId}/files/upload?path=${encodeURIComponent(target)}`,
+          path: `/panel/servers/${jobServerId}/files/upload?path=${encodeURIComponent(target)}`,
           body: form,
           onUploadProgress: (progress) => {
             patchUpload(id, { percent: Math.min(100, Math.round(Number(progress) * 100)) });
@@ -1399,34 +1491,52 @@
         response = null;
       }
 
-      if (!response || isEndpointUnavailable(response) || response.error) {
-        patchUpload(id, { status: 'failed', percent: 100 });
-
-        if (response?.error) {
-          showServerActionError(response.error, response, {
-            server: $server,
-            feature: 'files.source',
-          });
-        } else if (response && isEndpointUnavailable(response)) {
-          void showError('pages.servers.errors.unavailable');
-        } else {
-          void showError('pages.servers.files.upload-failed-toast', { name: file.name });
-        }
-
-        continue;
+      if (!response?.error || !isRateLimitError(response.error)) {
+        break;
       }
 
-      patchUpload(id, { status: 'done', percent: 100 });
+      const seconds = Number(response.error.details?.retryAfter) || 1;
+
+      patchUpload(id, { percent: 0 });
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.min(Math.max(seconds, 1), 30) * 1000 + 500),
+      );
     }
 
-    // A drop into a sub-folder still changes this listing when that folder was new.
-    if (shown === path) {
-      await refresh();
+    if (!response || isEndpointUnavailable(response) || response.error) {
+      if (response?.error) {
+        showServerActionError(response.error, response, {
+          server: $server,
+          feature: 'files.source',
+        });
+      } else if (response && isEndpointUnavailable(response)) {
+        void showError('pages.servers.errors.unavailable');
+      } else {
+        void showError('pages.servers.files.upload-failed-toast', { name: file.name });
+      }
+
+      return true;
     }
+
+    return false;
+  }
+
+  /** Drops what has not started yet; the file that is going up finishes. */
+  function cancelQueuedUploads() {
+    for (const upload of uploads) {
+      if (upload.status === 'queued') {
+        uploadJobs.delete(upload.id);
+      }
+    }
+
+    uploads = uploads.filter((upload) => upload.status !== 'queued');
   }
 
   function clearFinishedUploads() {
-    uploads = uploads.filter((upload) => upload.status === 'uploading');
+    uploads = uploads.filter(
+      (upload) => upload.status === 'uploading' || upload.status === 'queued',
+    );
   }
 
   /**
