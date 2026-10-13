@@ -186,6 +186,23 @@ describe('the page', () => {
     expect(textOf(html)).toContain('market.order.paid');
   });
 
+  test('the create button sits in the page header: on the endpoints tab only, disabled at the limit', () => {
+    const html = render();
+
+    // Before the first pane, i.e. in the header row with the tabs.
+    expect(html.indexOf('data-create-endpoint')).toBeGreaterThan(-1);
+    expect(html.indexOf('data-create-endpoint')).toBeLessThan(
+      html.indexOf('id="webhooks-pane-endpoints"'),
+    );
+    expect(html).not.toMatch(/<button[^>]*disabled[^>]*data-create-endpoint/);
+
+    expect(render({ endpoints: { items: ENDPOINTS.items, limit: 2 } })).toMatch(
+      /<button[^>]*disabled[^>]*data-create-endpoint/,
+    );
+    expect(render({ tab: 'deliveries' })).not.toContain('data-create-endpoint');
+    expect(render({ endpoints: null })).not.toContain('data-create-endpoint');
+  });
+
   test('opens on the deliveries tab for ?endpointId= or ?tab=deliveries', () => {
     const html = render({ tab: 'deliveries' });
 
@@ -259,18 +276,18 @@ describe('Endpoints tab', () => {
     expect(menu).toMatch(/dropdown-item link-danger"[^>]*data-action="delete"/);
   });
 
-  test('the create button is disabled at the limit; no data shows only NoContent', () => {
+  test('the count shows the limit; no data shows only NoContent', () => {
     const full = endpointsController({}, { endpoints: { items: ENDPOINTS.items, limit: 2 } });
 
     expect(textOf(render(full))).toContain('2/2 Webhooks');
-    expect(render(full)).toMatch(/<button[^>]*disabled[^>]*data-create-endpoint/);
+    // The create button is the page's (in its header), not the card's.
+    expect(render(full)).not.toContain('data-create-endpoint');
 
     const empty = endpointsController({}, { endpoints: { items: [], limit: 50 } });
     const html = render(empty);
 
     expect(html).not.toContain('<table');
     expect(textOf(html)).toContain('Here is empty.');
-    expect(html).not.toMatch(/<button[^>]*disabled[^>]*data-create-endpoint/);
   });
 
   test('the source filter narrows the rows to endpoints that subscribe to that source', () => {

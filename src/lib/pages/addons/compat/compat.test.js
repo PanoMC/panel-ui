@@ -201,10 +201,37 @@ describe('the problem texts', () => {
     expect(themeProblem({ active: true, verdict: 'OK' }, report, null, translate)).toBeNull();
   });
 
-  test('the sidebar counts refused plugins once and no themes', () => {
-    expect(attentionCounts(report)).toEqual({ addons: 1 });
-    expect(attentionCounts(null)).toEqual({ addons: 0 });
-    expect(attentionCounts(normalizeCompatibility({}))).toEqual({ addons: 0 });
+  test('the sidebar counts refused plugins and refused themes once each', () => {
+    expect(attentionCounts(report)).toEqual({ addons: 1, themes: 1 });
+    expect(attentionCounts(null)).toEqual({ addons: 0, themes: 0 });
+    expect(attentionCounts(normalizeCompatibility({}))).toEqual({ addons: 0, themes: 0 });
+  });
+
+  test('the sidebar also counts failed addons and premium addons or themes without a usable licence', () => {
+    const lists = {
+      plugins: [
+        { id: 'crashed', status: 'FAILED' },
+        { id: 'unpaid', status: 'STOPPED', premium: true, licenseStatus: 'NO_PURCHASE' },
+        { id: 'blocked', status: 'FAILED', startupBlockedByLicense: true },
+        { id: 'fine', status: 'STARTED', premium: true, licenseStatus: 'LICENSED' },
+        { id: 'free', status: 'STARTED', premium: false, licenseStatus: 'NOT_PREMIUM' },
+        // Free addon whose status field happens to read like an issue: only premium ones count.
+        { id: 'free-odd', status: 'STARTED', premium: false, licenseStatus: 'MISSING' },
+      ],
+      themes: [
+        { id: 'paid-theme', premium: true, licenseStatus: 'EXPIRED' },
+        { id: 'ok-theme', premium: true, licenseStatus: 'LICENSED' },
+        { id: 'free-theme', premium: false },
+      ],
+    };
+
+    expect(attentionCounts(null, lists)).toEqual({ addons: 3, themes: 1 });
+    // On top of the gate's own refusals, each resource once.
+    expect(attentionCounts(report, lists)).toEqual({ addons: 4, themes: 2 });
+    expect(attentionCounts(null, { plugins: null, themes: 'nope' })).toEqual({
+      addons: 0,
+      themes: 0,
+    });
     expect(blaze.type).toBe('THEME');
   });
 });
@@ -452,7 +479,7 @@ describe('a plugin held back by a refused required plugin', () => {
       ],
     });
 
-    expect(attentionCounts(report)).toEqual({ addons: 2 });
+    expect(attentionCounts(report)).toEqual({ addons: 2, themes: 0 });
   });
 
   test('every language has the held texts', () => {

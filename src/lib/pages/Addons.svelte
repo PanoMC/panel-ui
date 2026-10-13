@@ -297,7 +297,7 @@
 
   export let data;
 
-  // The sidebar's exclamation icons follow what this list just loaded.
+  // The sidebar's dot follows what this list just loaded.
   $: if (browser) void (data.compatibility, refreshCompatAttention());
   let search = '';
   let isSearching = false;

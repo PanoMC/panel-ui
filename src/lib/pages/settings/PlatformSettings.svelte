@@ -173,34 +173,23 @@
         </div>
       </div>
     </div>
-    {#if showNodeAutoUpdate && nodeAutoUpdate !== null}
-      <!-- The daemon updates itself without stopping the servers it runs, so this is on by
-           default; the Pano plugin needs a restart and is never automatic. Saved on its own, the
-           moment it is switched. -->
-      <div class="row mb-3">
-        <label class="col-md-6" for="platformNodeAutoUpdate">
-          {$_('pages.settings.updates.servers.auto-update')}
-        </label>
-        <div class="col">
-          <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              role="switch"
-              id="platformNodeAutoUpdate"
-              autocomplete="off"
-              checked={nodeAutoUpdate}
-              disabled={savingNodeAutoUpdate}
-              on:change={(event) => saveNodeAutoUpdate(event.currentTarget.checked)} />
-          </div>
-          <div class="form-text">{$_('pages.settings.updates.servers.auto-update-hint')}</div>
-        </div>
-      </div>
-    {/if}
+    <!-- Belongs to Development Mode: shown right under it, with the same child marker as the
+         maintenance card's custom login address. -->
     {#if data.developmentMode && data.frontendSupported}
       <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="platformThemeDevServer">
-          {$_('pages.settings.platform.theme-dev-server')}
+        <label class="col-md-6 col-form-label position-relative" for="platformThemeDevServer">
+          <span
+            class="position-absolute start-0 top-0 bottom-0 border-start border-2 border-secondary"
+            style="width: 2px;"></span>
+          <span class="ps-3 d-block">
+            {$_('pages.settings.platform.theme-dev-server')}
+            <small class="d-block text-muted">
+              {$_('pages.settings.platform.theme-dev-server-hint')}
+              {#if data.frontendMode !== 'THEME'}
+                {$_('pages.settings.platform.theme-dev-server-inactive')}
+              {/if}
+            </small>
+          </span>
         </label>
         <div class="col-md-6">
           <input
@@ -211,11 +200,31 @@
             autocomplete="off"
             placeholder="http://localhost:3000"
             bind:value={data.devUrl} />
-          <div class="form-text">
-            {$_('pages.settings.platform.theme-dev-server-hint')}
-            {#if data.frontendMode !== 'THEME'}
-              {$_('pages.settings.platform.theme-dev-server-inactive')}
-            {/if}
+        </div>
+      </div>
+    {/if}
+    {#if showNodeAutoUpdate && nodeAutoUpdate !== null}
+      <!-- The daemon updates itself without stopping the servers it runs, so this is on by
+           default; the Pano plugin needs a restart and is never automatic. Saved on its own, the
+           moment it is switched. -->
+      <div class="row mb-3">
+        <label class="col-md-6" for="platformNodeAutoUpdate">
+          {$_('pages.settings.updates.servers.auto-update')}
+          <small class="d-block">
+            {$_('pages.settings.updates.servers.auto-update-hint')}
+          </small>
+        </label>
+        <div class="col d-flex align-items-center">
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="platformNodeAutoUpdate"
+              autocomplete="off"
+              checked={nodeAutoUpdate}
+              disabled={savingNodeAutoUpdate}
+              on:change={(event) => saveNodeAutoUpdate(event.currentTarget.checked)} />
           </div>
         </div>
       </div>
@@ -433,8 +442,7 @@
         autocomplete="off"
         title={$_('pages.settings.platform.maintenance.enabled')}
         bind:checked={data.maintenance.enabled}
-        on:change={onToggleMaintenance}
-        disabled={toggleMaintenanceLoading} />
+        disabled={saveMaintenanceLoading} />
       <label class="form-check-label mb-0" for="maintenanceToggle">
         {$_('pages.settings.platform.maintenance.title')}
         <small class="d-block text-muted">
@@ -442,13 +450,10 @@
         </small>
       </label>
     </div>
-
-    {#if toggleMaintenanceLoading}
-      <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
-    {/if}
   </div>
   <div class="card-body" class:opacity-50={maintenanceDisabled}>
-    {#if !maintenanceDisabled}
+    <!-- Only once it is saved: the switch alone changes nothing for visitors. -->
+    {#if maintenanceActive}
       <div class="alert alert-danger d-flex align-items-start mb-3" role="alert">
         <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
         <div>{$_('pages.settings.platform.maintenance.active-warning')}</div>
@@ -560,19 +565,21 @@
     </div>
 
     <div class="hstack gap-3 flex-wrap mb-3">
-      <!-- Deliberately live while maintenance is off: writing the page you will show is exactly
-           the thing you want to do before you take the site down, and the modal previews it. -->
+      <!-- Everything in the card is off while maintenance mode is off (owner, 2026-10-13). -->
       <button
         type="button"
         class="btn btn-link p-0 text-decoration-none"
+        disabled={maintenanceDisabled}
         on:click={onEditMaintenancePageClick}>
         <i class="fas fa-pencil me-1"></i>
         {$_('pages.settings.platform.maintenance.edit-page')}
       </button>
-      <!-- Exiting first drops the bypass cookie, so the maintenance page is what actually renders. -->
+      <!-- The real page on the site, in a new tab. It is rendered for an admin whether or not
+           maintenance mode is on, so the page can be looked at before it is switched on (the
+           switch above is only a draft until it is saved). -->
       <a
         class="btn btn-link p-0 text-decoration-none"
-        href="/api/v1/maintenance/exit"
+        href="/api/v1/panel/maintenance/preview-page"
         target="_blank"
         rel="noopener noreferrer"
         class:disabled={maintenanceDisabled}
@@ -580,6 +587,18 @@
         <i class="fas fa-external-link me-1"></i>
         {$_('pages.settings.platform.maintenance.preview-page')}
       </a>
+      <button
+        type="button"
+        class="btn btn-link p-0 text-decoration-none"
+        title={$_('pages.settings.platform.maintenance.banned-ips.sub')}
+        disabled={maintenanceDisabled}
+        on:click={onOpenBannedIpsClick}>
+        <i class="fa-solid fa-ban me-1"></i>
+        {$_('pages.settings.platform.maintenance.banned-ips.title')}
+        {#if bannedIpCount > 0}
+          <span class="badge text-bg-danger ms-1">{bannedIpCount}</span>
+        {/if}
+      </button>
     </div>
 
     <button
@@ -592,26 +611,6 @@
       {/if}
     </button>
   </div>
-
-  <!-- Bans outlive maintenance mode, so this stays usable while the card body is greyed out. -->
-  <div class="card-footer">
-    <button
-      type="button"
-      class="btn btn-link text-decoration-none p-0 text-start w-100 d-flex align-items-center justify-content-between gap-2"
-      on:click={onOpenBannedIpsClick}>
-      <span>
-        <i class="fa-solid fa-ban me-2 opacity-75"></i>
-        {$_('pages.settings.platform.maintenance.banned-ips.title')}
-        {#if bannedIpCount > 0}
-          <span class="badge text-bg-danger ms-2">{bannedIpCount}</span>
-        {/if}
-        <small class="d-block text-muted">
-          {$_('pages.settings.platform.maintenance.banned-ips.sub')}
-        </small>
-      </span>
-      <i class="fa-solid fa-chevron-right"></i>
-    </button>
-  </div>
 </div>
 
 <!-- SM-35 — which alerts Pano raises, and whether each one is also sent by e-mail (§2.4.7).
@@ -621,10 +620,11 @@
   <div class="card">
     <div class="card-header">
       {$_('pages.settings.platform.alerts.title')}
+      <small class="d-block text-muted">
+        {$_('pages.settings.platform.alerts.description')}
+      </small>
     </div>
     <div class="card-body">
-      <div class="text-muted mb-3">{$_('pages.settings.platform.alerts.description')}</div>
-
       {#if !alertsSupported}
         <div class="alert alert-secondary mb-0 d-flex align-items-start" role="alert">
           <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
@@ -699,7 +699,7 @@
         <button
           class="btn btn-secondary mt-3"
           on:click={onSaveAlertsClick}
-          disabled={saveAlertsLoading}>
+          disabled={saveAlertsLoading || alertsSaveDisabled}>
           {$_('buttons.save')}
           {#if saveAlertsLoading}
             <span class="spinner-border spinner-border-sm text-primary ms-2" role="status"></span>
@@ -727,16 +727,23 @@
 
 <div class="card">
   <div class="card-header">
-    <div class="form-check form-switch">
+    <!-- Laid out like the maintenance card's header: the switch centred next to a title with a
+         description under it. -->
+    <div class="form-switch ps-0 d-flex align-items-center gap-2">
       <input
-        class="form-check-input"
+        class="form-check-input mt-0 ms-0 flex-shrink-0"
         type="checkbox"
+        role="switch"
         id="smtpToggle"
-        bind:checked={$siteInfo.emailEnabled}
+        bind:checked={smtpEnabled}
         on:change={onToggleSmtp}
         disabled={toggleSmtpLoading} />
-      <label class="form-check-label" for="smtpToggle"
-        >{$_('pages.settings.platform.smtp-settings')}</label>
+      <label class="form-check-label mb-0" for="smtpToggle">
+        {$_('pages.settings.platform.smtp-settings')}
+        <small class="d-block text-muted">
+          {$_('pages.settings.platform.smtp-settings-sub')}
+        </small>
+      </label>
     </div>
   </div>
   <div class="card-body" class:opacity-50={smtpDisabled}>
@@ -747,504 +754,528 @@
       </div>
     {/if}
 
-    {#if panoMailStatus}
-      <div
-        class="btn-group w-100 mb-3"
-        role="group"
-        aria-label={$_('pages.settings.platform.smtp.pano-mail.choice')}>
-        <button
-          type="button"
-          class="btn"
-          class:btn-primary={mailChoice === 'pano'}
-          class:btn-outline-primary={mailChoice !== 'pano'}
-          aria-pressed={mailChoice === 'pano'}
-          title={$_('pages.settings.platform.smtp.pano-mail.pano')}
-          aria-label={$_('pages.settings.platform.smtp.pano-mail.pano')}
-          on:click={() => (mailChoice = 'pano')}
-          disabled={saveEmailLoading || panoMailBusy}
-          >{$_('pages.settings.platform.smtp.pano-mail.pano')}</button>
-        <button
-          type="button"
-          class="btn"
-          class:btn-primary={mailChoice === 'own'}
-          class:btn-outline-primary={mailChoice !== 'own'}
-          aria-pressed={mailChoice === 'own'}
-          title={$_('pages.settings.platform.smtp.pano-mail.own')}
-          aria-label={$_('pages.settings.platform.smtp.pano-mail.own')}
-          on:click={() => (mailChoice = 'own')}
-          disabled={saveEmailLoading || panoMailBusy}
-          >{$_('pages.settings.platform.smtp.pano-mail.own')}</button>
-      </div>
-    {/if}
-
-    {#if showPanoMail}
-      {#if panoMailPhase === 'connect'}
-        <div class="d-flex align-items-center gap-2 mb-1">
-          <b>{$_('pages.settings.platform.smtp.pano-mail.pano')}</b>
-          {#if panoMailOffered?.free}
-            <span class="badge text-bg-success"
-              >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
-          {:else if panoMailOffered?.name}
-            <span class="badge text-bg-secondary">{panoMailOffered.name}</span>
-          {/if}
+    <!-- Everything below is off with the switch: a fieldset disables every control in it at once
+         (the single `disabled` flags further down missed the Pano Mail choice and its buttons). -->
+    <fieldset disabled={smtpDisabled} class="border-0 p-0 m-0" style="min-width: 0;">
+      {#if panoMailStatus}
+        <div
+          class="btn-group w-100 mb-3"
+          role="group"
+          aria-label={$_('pages.settings.platform.smtp.pano-mail.choice')}>
+          <button
+            type="button"
+            class="btn"
+            class:btn-primary={mailChoice === 'pano'}
+            class:btn-outline-primary={mailChoice !== 'pano'}
+            aria-pressed={mailChoice === 'pano'}
+            title={$_('pages.settings.platform.smtp.pano-mail.pano')}
+            aria-label={$_('pages.settings.platform.smtp.pano-mail.pano')}
+            on:click={() => (mailChoice = 'pano')}
+            disabled={saveEmailLoading || panoMailBusy}
+            >{$_('pages.settings.platform.smtp.pano-mail.pano')}</button>
+          <button
+            type="button"
+            class="btn"
+            class:btn-primary={mailChoice === 'own'}
+            class:btn-outline-primary={mailChoice !== 'own'}
+            aria-pressed={mailChoice === 'own'}
+            title={$_('pages.settings.platform.smtp.pano-mail.own')}
+            aria-label={$_('pages.settings.platform.smtp.pano-mail.own')}
+            on:click={() => (mailChoice = 'own')}
+            disabled={saveEmailLoading || panoMailBusy}
+            >{$_('pages.settings.platform.smtp.pano-mail.own')}</button>
         </div>
-        {#if panoMailOffered}
-          <div>
-            {$_('pages.settings.platform.smtp.pano-mail.allowance', {
-              values: {
-                month: panoMailOffered.mailsPerMonth.toLocaleString($currentLanguage.code),
-                day: panoMailOffered.mailsPerDay.toLocaleString($currentLanguage.code),
-              },
-            })}
-          </div>
-        {/if}
-        <div class="mb-3">{$_('pages.settings.platform.smtp.pano-mail.no-setup')}</div>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          title={$_('pages.settings.platform.smtp.pano-mail.connect')}
-          aria-label={$_('pages.settings.platform.smtp.pano-mail.connect')}
-          on:click={onConnectClick}
-          disabled={connecting}>
-          {$_('pages.settings.platform.smtp.pano-mail.connect')}
-          {#if connecting}
-            <span class="spinner-border spinner-border-sm" role="status"></span>
-          {/if}
-        </button>
-      {:else if panoMailPhase === 'activate'}
-        <div class="d-flex align-items-center gap-2 mb-1">
-          <b>{$_('pages.settings.platform.smtp.pano-mail.pano')}</b>
-          {#if panoMailOffered?.free}
-            <span class="badge text-bg-success"
-              >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
-          {:else if panoMailOffered?.name}
-            <span class="badge text-bg-secondary">{panoMailOffered.name}</span>
-          {/if}
-        </div>
-        {#if panoMailOffered}
-          <div>
-            {$_('pages.settings.platform.smtp.pano-mail.allowance', {
-              values: {
-                month: panoMailOffered.mailsPerMonth.toLocaleString($currentLanguage.code),
-                day: panoMailOffered.mailsPerDay.toLocaleString($currentLanguage.code),
-              },
-            })}
-          </div>
-        {/if}
-        <div class="mb-3">{$_('pages.settings.platform.smtp.pano-mail.no-setup')}</div>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          title={$_('pages.settings.platform.smtp.pano-mail.use')}
-          aria-label={$_('pages.settings.platform.smtp.pano-mail.use')}
-          on:click={onUsePanoMailClick}
-          disabled={panoMailBusy}>
-          {$_('pages.settings.platform.smtp.pano-mail.use')}
-          {#if panoMailBusy}
-            <span class="spinner-border spinner-border-sm" role="status"></span>
-          {/if}
-        </button>
-      {:else if panoMailPhase === 'unreadable'}
-        <div class="alert alert-warning d-flex align-items-start mb-0" role="alert">
-          <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
-          <div>
-            <div>{$_('pages.settings.platform.smtp.pano-mail.unreadable')}</div>
-            <button
-              type="button"
-              class="btn alert-btn mt-2"
-              title={$_('buttons.retry')}
-              aria-label={$_('buttons.retry')}
-              on:click={onPanoMailRetryClick}
-              disabled={panoMailBusy}>{$_('buttons.retry')}</button>
-          </div>
-        </div>
-      {:else}
-        {#if panoMailStatus.held}
-          <div class="alert alert-danger d-flex align-items-start" role="alert">
-            <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
-            <div>
-              <h5 class="alert-heading mb-2">
-                {$_('pages.settings.platform.smtp.pano-mail.held-title')}
-              </h5>
-              <div>{$_('pages.settings.platform.smtp.pano-mail.held')}</div>
-            </div>
-          </div>
-        {/if}
+      {/if}
 
-        {#if panoMailPreparing}
-          <div class="alert alert-info d-flex align-items-start" role="alert">
-            <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
-            <div>{$_('pages.settings.platform.smtp.pano-mail.preparing')}</div>
-          </div>
-        {/if}
-
-        {#if panoMailUsageAlert}
-          <div class="alert alert-{panoMailUsageAlert.level} d-flex align-items-start" role="alert">
-            <i
-              class="fa-solid {panoMailUsageAlert.level === 'danger'
-                ? 'fa-circle-exclamation'
-                : 'fa-triangle-exclamation'} me-3 mt-1"
-              aria-hidden="true"></i>
-            <div>
-              {#if panoMailUsageAlert.level === 'danger'}
-                <h5 class="alert-heading mb-2">
-                  {$_('pages.settings.platform.smtp.pano-mail.limit-title')}
-                </h5>
-                <div>
-                  {$_(`pages.settings.platform.smtp.pano-mail.limit-${panoMailUsageAlert.period}`, {
-                    values: {
-                      date: formatReset(panoMailUsageAlert.resetsAt, $currentLanguage.code),
-                    },
-                  })}
-                </div>
-              {:else}
-                <h5 class="alert-heading mb-2">
-                  {$_('pages.settings.platform.smtp.pano-mail.near-title')}
-                </h5>
-                <div>
-                  {$_(`pages.settings.platform.smtp.pano-mail.near-${panoMailUsageAlert.period}`, {
-                    values: { percent: panoMailUsageAlert.percent },
-                  })}
-                </div>
-              {/if}
-              {#if panoMailStatus.manageUrl}
-                <a
-                  class="alert-link d-inline-block mt-2"
-                  href={panoMailStatus.manageUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  >{$_('pages.settings.platform.smtp.pano-mail.bigger-plan')}</a>
-              {/if}
-            </div>
-          </div>
-        {/if}
-
-        {#each [['month', panoMailStatus.usage.month], ['day', panoMailStatus.usage.day]] as [period, usage] (period)}
-          <div class="mb-3">
-            <div class="d-flex justify-content-between">
-              <span>{$_(`pages.settings.platform.smtp.pano-mail.${period}`)}</span>
-              <span
-                >{usage.used.toLocaleString($currentLanguage.code)} / {usage.limit.toLocaleString(
-                  $currentLanguage.code,
-                )}</span>
-            </div>
-            <div
-              class="progress"
-              style="height: 6px;"
-              role="progressbar"
-              aria-label={$_(`pages.settings.platform.smtp.pano-mail.${period}`)}
-              aria-valuemin="0"
-              aria-valuemax="100"
-              aria-valuenow={percentUsed(usage)}>
-              <div
-                class="progress-bar"
-                class:bg-warning={usageLevel(usage) === 'warning'}
-                class:bg-danger={usageLevel(usage) === 'danger'}
-                style="width: {percentUsed(usage)}%;">
-              </div>
-            </div>
-            {#if usage.resetsAt}
-              <div class="form-text">
-                {$_('pages.settings.platform.smtp.pano-mail.resets', {
-                  values: { date: formatReset(usage.resetsAt, $currentLanguage.code) },
-                })}
-              </div>
-            {/if}
-          </div>
-        {/each}
-
-        <div class="row mb-3">
-          <div class="col-md-6">{$_('pages.settings.platform.smtp.pano-mail.plan')}</div>
-          <div class="col-md-6 d-flex align-items-center gap-2 flex-wrap">
-            <b>{panoMailStatus.plan.name}</b>
-            {#if panoMailStatus.plan.free}
+      {#if showPanoMail}
+        {#if panoMailPhase === 'connect'}
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <b>{$_('pages.settings.platform.smtp.pano-mail.pano')}</b>
+            {#if panoMailOffered?.free}
               <span class="badge text-bg-success"
                 >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
-            {/if}
-            {#if panoMailStatus.manageUrl}
-              <a href={panoMailStatus.manageUrl} target="_blank" rel="noopener noreferrer"
-                >{$_('pages.settings.platform.smtp.pano-mail.bigger-plan')}</a>
+            {:else if panoMailOffered?.name}
+              <span class="badge text-bg-secondary">{panoMailOffered.name}</span>
             {/if}
           </div>
-        </div>
-
-        {#if panoMailStatus.senders.length > 0}
-          <div class="row mb-3">
-            <label class="col-md-6 col-form-label" for="panoMailFromName"
-              >{$_('pages.settings.platform.smtp.pano-mail.from')}</label>
-            <div class="col-md-6">
-              <div class="input-group">
-                <input
-                  id="panoMailFromName"
-                  type="text"
-                  class="form-control"
-                  class:is-invalid={panoMailFromLocal !== '' && !validLocalPart(panoMailFromLocal)}
-                  maxlength="64"
-                  autocomplete="off"
-                  aria-label={$_('pages.settings.platform.smtp.pano-mail.from-name')}
-                  bind:value={panoMailFromLocal}
-                  disabled={panoMailBusy} />
-                <span class="input-group-text">@</span>
-                <select
-                  class="form-select"
-                  aria-label={$_('pages.settings.platform.smtp.pano-mail.from-domain')}
-                  bind:value={panoMailFromDomain}
-                  disabled={panoMailBusy || panoMailStatus.senders.length < 2}>
-                  {#each panoMailStatus.senders as domain (domain)}
-                    <option value={domain}>{domain}</option>
-                  {/each}
-                </select>
-              </div>
+          {#if panoMailOffered}
+            <div>
+              {$_('pages.settings.platform.smtp.pano-mail.allowance', {
+                values: {
+                  month: panoMailOffered.mailsPerMonth.toLocaleString($currentLanguage.code),
+                  day: panoMailOffered.mailsPerDay.toLocaleString($currentLanguage.code),
+                },
+              })}
             </div>
-          </div>
-
+          {/if}
+          <div class="mb-3">{$_('pages.settings.platform.smtp.pano-mail.no-setup')}</div>
           <button
             type="button"
             class="btn btn-secondary"
-            on:click={onPanoMailSenderSaveClick}
-            disabled={panoMailBusy || !panoMailSenderChanged || !validLocalPart(panoMailFromLocal)}>
-            {$_('buttons.save')}
+            title={$_('pages.settings.platform.smtp.pano-mail.connect')}
+            aria-label={$_('pages.settings.platform.smtp.pano-mail.connect')}
+            on:click={onConnectClick}
+            disabled={connecting}>
+            {$_('pages.settings.platform.smtp.pano-mail.connect')}
+            {#if connecting}
+              <span class="spinner-border spinner-border-sm" role="status"></span>
+            {/if}
+          </button>
+        {:else if panoMailPhase === 'activate'}
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <b>{$_('pages.settings.platform.smtp.pano-mail.pano')}</b>
+            {#if panoMailOffered?.free}
+              <span class="badge text-bg-success"
+                >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
+            {:else if panoMailOffered?.name}
+              <span class="badge text-bg-secondary">{panoMailOffered.name}</span>
+            {/if}
+          </div>
+          {#if panoMailOffered}
+            <div>
+              {$_('pages.settings.platform.smtp.pano-mail.allowance', {
+                values: {
+                  month: panoMailOffered.mailsPerMonth.toLocaleString($currentLanguage.code),
+                  day: panoMailOffered.mailsPerDay.toLocaleString($currentLanguage.code),
+                },
+              })}
+            </div>
+          {/if}
+          <div class="mb-3">{$_('pages.settings.platform.smtp.pano-mail.no-setup')}</div>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            title={$_('pages.settings.platform.smtp.pano-mail.use')}
+            aria-label={$_('pages.settings.platform.smtp.pano-mail.use')}
+            on:click={onUsePanoMailClick}
+            disabled={panoMailBusy}>
+            {$_('pages.settings.platform.smtp.pano-mail.use')}
             {#if panoMailBusy}
               <span class="spinner-border spinner-border-sm" role="status"></span>
             {/if}
           </button>
-        {:else if panoMailStatus.from}
-          <div class="row mb-3">
-            <label class="col-md-6 col-form-label" for="panoMailFrom"
-              >{$_('pages.settings.platform.smtp.pano-mail.from')}</label>
-            <div class="col-md-6">
-              <input
-                id="panoMailFrom"
-                type="text"
-                class="form-control"
-                value={panoMailStatus.from}
-                readonly />
+        {:else if panoMailPhase === 'unreadable'}
+          <div class="alert alert-warning d-flex align-items-start mb-0" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>
+              <div>{$_('pages.settings.platform.smtp.pano-mail.unreadable')}</div>
+              <button
+                type="button"
+                class="btn alert-btn mt-2"
+                title={$_('buttons.retry')}
+                aria-label={$_('buttons.retry')}
+                on:click={onPanoMailRetryClick}
+                disabled={panoMailBusy}>{$_('buttons.retry')}</button>
             </div>
           </div>
-        {/if}
-      {/if}
-    {/if}
-
-    {#if !showPanoMail}
-      {#if data.email.hostMailAvailable}
-        <!-- Pano Host: its package mail or the customer's own SMTP. Picking one only changes the form;
-           Save switches (after a confirmation), and each side keeps its settings. -->
-        <div class="btn-group w-100 mb-3" role="group">
-          <button
-            type="button"
-            class="btn"
-            class:btn-primary={mailMode === 'host'}
-            class:btn-outline-primary={mailMode !== 'host'}
-            aria-pressed={mailMode === 'host'}
-            on:click={() => requestMailMode('host')}
-            disabled={smtpDisabled || saveEmailLoading}
-            >{$_('pages.settings.platform.smtp.host-mail')}</button>
-          <button
-            type="button"
-            class="btn"
-            class:btn-primary={mailMode === 'own'}
-            class:btn-outline-primary={mailMode !== 'own'}
-            aria-pressed={mailMode === 'own'}
-            on:click={() => requestMailMode('own')}
-            disabled={smtpDisabled || saveEmailLoading}
-            >{$_('pages.settings.platform.smtp.own-mail')}</button>
-        </div>
-
-        {#if mailMode === 'host'}
-          <p class="text-muted mb-3">
-            {$_('pages.settings.platform.smtp.host-mail-description', {
-              values: { website: websiteDisplayHost() },
-            })}
-          </p>
-        {/if}
-      {/if}
-
-      <!-- Pano Host mail: the same form, filled with the relay's settings and locked except the
-         sender (the rest is written from the host's env on every boot). -->
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="mailUsername"
-          >{$_('pages.settings.platform.smtp.username')}</label>
-        <div class="col-md-6">
-          <input
-            class="form-control"
-            id="mailUsername"
-            type="text"
-            placeholder="no-reply"
-            bind:value={data.email.username}
-            disabled={smtpDisabled || hostMailLocked} />
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="mailUserPassword"
-          >{$_('pages.settings.platform.smtp.password')}</label>
-        <div class="col-md-6">
-          <input
-            class="form-control"
-            id="mailUserPassword"
-            placeholder="****************"
-            bind:value={data.email.password}
-            type="password"
-            disabled={smtpDisabled || hostMailLocked} />
-          {#if !hostMailLocked && hasStoredPassword && !data.email.password}
-            <div class="form-text">{$_('pages.settings.platform.smtp.password-kept')}</div>
+        {:else}
+          {#if panoMailStatus.held}
+            <div class="alert alert-danger d-flex align-items-start" role="alert">
+              <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>
+                <h5 class="alert-heading mb-2">
+                  {$_('pages.settings.platform.smtp.pano-mail.held-title')}
+                </h5>
+                <div>{$_('pages.settings.platform.smtp.pano-mail.held')}</div>
+              </div>
+            </div>
           {/if}
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="useSSLCheck">
-          {$_('pages.settings.platform.smtp.ssl')}
-        </label>
-        <div class="col-md-6">
-          <div class="form-check">
+
+          {#if panoMailPreparing}
+            <div class="alert alert-info d-flex align-items-start" role="alert">
+              <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+              <div>{$_('pages.settings.platform.smtp.pano-mail.preparing')}</div>
+            </div>
+          {/if}
+
+          {#if panoMailUsageAlert}
+            <div
+              class="alert alert-{panoMailUsageAlert.level} d-flex align-items-start"
+              role="alert">
+              <i
+                class="fa-solid {panoMailUsageAlert.level === 'danger'
+                  ? 'fa-circle-exclamation'
+                  : 'fa-triangle-exclamation'} me-3 mt-1"
+                aria-hidden="true"></i>
+              <div>
+                {#if panoMailUsageAlert.level === 'danger'}
+                  <h5 class="alert-heading mb-2">
+                    {$_('pages.settings.platform.smtp.pano-mail.limit-title')}
+                  </h5>
+                  <div>
+                    {$_(
+                      `pages.settings.platform.smtp.pano-mail.limit-${panoMailUsageAlert.period}`,
+                      {
+                        values: {
+                          date: formatReset(panoMailUsageAlert.resetsAt, $currentLanguage.code),
+                        },
+                      },
+                    )}
+                  </div>
+                {:else}
+                  <h5 class="alert-heading mb-2">
+                    {$_('pages.settings.platform.smtp.pano-mail.near-title')}
+                  </h5>
+                  <div>
+                    {$_(
+                      `pages.settings.platform.smtp.pano-mail.near-${panoMailUsageAlert.period}`,
+                      {
+                        values: { percent: panoMailUsageAlert.percent },
+                      },
+                    )}
+                  </div>
+                {/if}
+                {#if panoMailStatus.manageUrl}
+                  <a
+                    class="alert-link d-inline-block mt-2"
+                    href={panoMailStatus.manageUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class:pe-none={smtpDisabled}
+                    aria-disabled={smtpDisabled}
+                    tabindex={smtpDisabled ? -1 : undefined}
+                    >{$_('pages.settings.platform.smtp.pano-mail.bigger-plan')}</a>
+                {/if}
+              </div>
+            </div>
+          {/if}
+
+          {#each [['month', panoMailStatus.usage.month], ['day', panoMailStatus.usage.day]] as [period, usage] (period)}
+            <div class="mb-3">
+              <div class="d-flex justify-content-between">
+                <span>{$_(`pages.settings.platform.smtp.pano-mail.${period}`)}</span>
+                <span
+                  >{usage.used.toLocaleString($currentLanguage.code)} / {usage.limit.toLocaleString(
+                    $currentLanguage.code,
+                  )}</span>
+              </div>
+              <div
+                class="progress"
+                style="height: 6px;"
+                role="progressbar"
+                aria-label={$_(`pages.settings.platform.smtp.pano-mail.${period}`)}
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow={percentUsed(usage)}>
+                <div
+                  class="progress-bar"
+                  class:bg-warning={usageLevel(usage) === 'warning'}
+                  class:bg-danger={usageLevel(usage) === 'danger'}
+                  style="width: {percentUsed(usage)}%;">
+                </div>
+              </div>
+              {#if usage.resetsAt}
+                <div class="form-text">
+                  {$_('pages.settings.platform.smtp.pano-mail.resets', {
+                    values: { date: formatReset(usage.resetsAt, $currentLanguage.code) },
+                  })}
+                </div>
+              {/if}
+            </div>
+          {/each}
+
+          <div class="row mb-3">
+            <div class="col-md-6">{$_('pages.settings.platform.smtp.pano-mail.plan')}</div>
+            <div class="col-md-6 d-flex align-items-center gap-2 flex-wrap">
+              <b>{panoMailStatus.plan.name}</b>
+              {#if panoMailStatus.plan.free}
+                <span class="badge text-bg-success"
+                  >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
+              {/if}
+              {#if panoMailStatus.manageUrl}
+                <a
+                  href={panoMailStatus.manageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class:pe-none={smtpDisabled}
+                  aria-disabled={smtpDisabled}
+                  tabindex={smtpDisabled ? -1 : undefined}
+                  >{$_('pages.settings.platform.smtp.pano-mail.bigger-plan')}</a>
+              {/if}
+            </div>
+          </div>
+
+          {#if panoMailStatus.senders.length > 0}
+            <div class="row mb-3">
+              <label class="col-md-6 col-form-label" for="panoMailFromName"
+                >{$_('pages.settings.platform.smtp.pano-mail.from')}</label>
+              <div class="col-md-6">
+                <div class="input-group">
+                  <input
+                    id="panoMailFromName"
+                    type="text"
+                    class="form-control"
+                    class:is-invalid={panoMailFromLocal !== '' &&
+                      !validLocalPart(panoMailFromLocal)}
+                    maxlength="64"
+                    autocomplete="off"
+                    aria-label={$_('pages.settings.platform.smtp.pano-mail.from-name')}
+                    bind:value={panoMailFromLocal}
+                    disabled={panoMailBusy} />
+                  <span class="input-group-text">@</span>
+                  <select
+                    class="form-select"
+                    aria-label={$_('pages.settings.platform.smtp.pano-mail.from-domain')}
+                    bind:value={panoMailFromDomain}
+                    disabled={panoMailBusy || panoMailStatus.senders.length < 2}>
+                    {#each panoMailStatus.senders as domain (domain)}
+                      <option value={domain}>{domain}</option>
+                    {/each}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-secondary"
+              on:click={onPanoMailSenderSaveClick}
+              disabled={panoMailBusy ||
+                !panoMailSenderChanged ||
+                !validLocalPart(panoMailFromLocal)}>
+              {$_('buttons.save')}
+              {#if panoMailBusy}
+                <span class="spinner-border spinner-border-sm" role="status"></span>
+              {/if}
+            </button>
+          {:else if panoMailStatus.from}
+            <div class="row mb-3">
+              <label class="col-md-6 col-form-label" for="panoMailFrom"
+                >{$_('pages.settings.platform.smtp.pano-mail.from')}</label>
+              <div class="col-md-6">
+                <input
+                  id="panoMailFrom"
+                  type="text"
+                  class="form-control"
+                  value={panoMailStatus.from}
+                  readonly />
+              </div>
+            </div>
+          {/if}
+        {/if}
+      {/if}
+
+      {#if !showPanoMail}
+        {#if data.email.hostMailAvailable}
+          <!-- Pano Host: its package mail or the customer's own SMTP. Picking one only changes the form;
+           Save switches (after a confirmation), and each side keeps its settings. -->
+          <div class="btn-group w-100 mb-3" role="group">
+            <button
+              type="button"
+              class="btn"
+              class:btn-primary={mailMode === 'host'}
+              class:btn-outline-primary={mailMode !== 'host'}
+              aria-pressed={mailMode === 'host'}
+              on:click={() => requestMailMode('host')}
+              disabled={smtpDisabled || saveEmailLoading}
+              >{$_('pages.settings.platform.smtp.host-mail')}</button>
+            <button
+              type="button"
+              class="btn"
+              class:btn-primary={mailMode === 'own'}
+              class:btn-outline-primary={mailMode !== 'own'}
+              aria-pressed={mailMode === 'own'}
+              on:click={() => requestMailMode('own')}
+              disabled={smtpDisabled || saveEmailLoading}
+              >{$_('pages.settings.platform.smtp.own-mail')}</button>
+          </div>
+
+          {#if mailMode === 'host'}
+            <p class="text-muted mb-3">
+              {$_('pages.settings.platform.smtp.host-mail-description', {
+                values: { website: websiteDisplayHost() },
+              })}
+            </p>
+          {/if}
+        {/if}
+
+        <!-- Pano Host mail: the same form, filled with the relay's settings and locked except the
+         sender (the rest is written from the host's env on every boot). -->
+        <div class="row mb-3">
+          <label class="col-md-6 col-form-label" for="mailUsername"
+            >{$_('pages.settings.platform.smtp.username')}</label>
+          <div class="col-md-6">
             <input
-              class="form-check-input"
-              type="checkbox"
-              name="useSSLCheck"
-              id="useSSLCheck"
-              aria-checked={data.email.ssl}
-              bind:checked={data.email.ssl}
+              class="form-control"
+              id="mailUsername"
+              type="text"
+              placeholder="no-reply"
+              bind:value={data.email.username}
               disabled={smtpDisabled || hostMailLocked} />
           </div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="port"
-          >{$_('pages.settings.platform.smtp.tls-setting')}</label>
-        <div class="col-md-6">
-          <select
-            class="form-select"
-            id="port"
-            bind:value={data.email.starttls}
-            disabled={smtpDisabled || hostMailLocked}>
-            <option value="REQUIRED">REQUIRED</option>
-            <option value="OPTIONAL">OPTIONAL</option>
-            <option value="DISABLED">DISABLED</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="senderAddress"
-          >{$_('pages.settings.platform.smtp.sender-address')}</label>
-        <div class="col-md-6">
-          <!-- Pano Host mail: only the name before `@` is the customer's; the domain is the host's. -->
-          <div class="input-group" class:has-validation={hostMailLocked && hostSenderInvalid}>
-            {#if hostMailLocked && hostDefaultDomain}
-              <input
-                class="form-control"
-                class:is-invalid={hostSenderInvalid}
-                id="senderAddress"
-                type="text"
-                placeholder="noreply"
-                maxlength="64"
-                value={hostSenderLocal}
-                on:input={onHostSenderLocalInput}
-                disabled={smtpDisabled} />
-              <span class="input-group-text">@{hostDefaultDomain}</span>
-            {:else}
-              <input
-                class="form-control"
-                id="senderAddress"
-                type="text"
-                placeholder="no-reply@forexample.com"
-                bind:value={data.email.sender}
-                disabled={smtpDisabled} />
-            {/if}
-            <!-- Only once the sender differs from the default: nothing to reset otherwise. -->
-            {#if hostMailLocked && hostSenderCustomized}
-              <button
-                class="btn btn-outline-secondary"
-                type="button"
-                title={$_('pages.settings.platform.smtp.reset-sender')}
-                aria-label={$_('pages.settings.platform.smtp.reset-sender')}
-                on:click={onResetHostSenderClick}
-                disabled={smtpDisabled}>
-                <i class="fa-solid fa-rotate-left"></i>
-              </button>
+        <div class="row mb-3">
+          <label class="col-md-6 col-form-label" for="mailUserPassword"
+            >{$_('pages.settings.platform.smtp.password')}</label>
+          <div class="col-md-6">
+            <input
+              class="form-control"
+              id="mailUserPassword"
+              placeholder="****************"
+              bind:value={data.email.password}
+              type="password"
+              disabled={smtpDisabled || hostMailLocked} />
+            {#if !hostMailLocked && hasStoredPassword && !data.email.password}
+              <div class="form-text">{$_('pages.settings.platform.smtp.password-kept')}</div>
             {/if}
           </div>
-          {#if hostMailLocked && hostSenderInvalid}
-            <div class="invalid-feedback d-block">
-              {$_('pages.settings.platform.smtp.sender-local-invalid')}
+        </div>
+        <div class="row mb-3">
+          <label class="col-md-6 col-form-label" for="useSSLCheck">
+            {$_('pages.settings.platform.smtp.ssl')}
+          </label>
+          <div class="col-md-6">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="useSSLCheck"
+                id="useSSLCheck"
+                aria-checked={data.email.ssl}
+                bind:checked={data.email.ssl}
+                disabled={smtpDisabled || hostMailLocked} />
             </div>
-          {/if}
+          </div>
         </div>
-      </div>
+        <div class="row mb-3">
+          <label class="col-md-6 col-form-label" for="port"
+            >{$_('pages.settings.platform.smtp.tls-setting')}</label>
+          <div class="col-md-6">
+            <select
+              class="form-select"
+              id="port"
+              bind:value={data.email.starttls}
+              disabled={smtpDisabled || hostMailLocked}>
+              <option value="REQUIRED">REQUIRED</option>
+              <option value="OPTIONAL">OPTIONAL</option>
+              <option value="DISABLED">DISABLED</option>
+            </select>
+          </div>
+        </div>
 
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="hostAddress"
-          >{$_('pages.settings.platform.smtp.hostname')}</label>
-        <div class="col-md-6">
-          <input
-            class="form-control"
-            id="hostAddress"
-            type="text"
-            placeholder="smtp.forexample.com"
-            bind:value={data.email.hostname}
-            disabled={smtpDisabled || hostMailLocked} />
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="port"
-          >{$_('pages.settings.platform.smtp.port')}</label>
-        <div class="col-md-6">
-          <input
-            class="form-control"
-            id="port"
-            placeholder="465"
-            type="number"
-            bind:value={data.email.port}
-            disabled={smtpDisabled || hostMailLocked} />
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <label class="col-md-6 col-form-label" for="authMethods"
-          >{$_('pages.settings.platform.smtp.auth-methods')}</label>
-        <div class="col-md-6">
-          <select
-            class="form-select"
-            id="authMethods"
-            bind:value={data.email.authMethods}
-            disabled={smtpDisabled || hostMailLocked}>
-            <option value="PLAIN">PLAIN</option>
-            <option value=""></option>
-          </select>
-        </div>
-      </div>
-
-      {#if hostMailLocked}
-        <button
-          class="btn btn-secondary"
-          on:click={onSaveHostMailClick}
-          disabled={saveEmailLoading ||
-            smtpDisabled ||
-            !hostMailChanged ||
-            !data.email.sender ||
-            hostSenderInvalid}
-          >{$_(hostMailActivating ? 'buttons.activate' : 'buttons.save')}
-        </button>
-      {:else}
-        <button
-          class="btn btn-secondary"
-          on:click={onSaveSmtpClick}
-          disabled={saveEmailLoading || !mailValidated || smtpDisabled}
-          >{$_(customActivating ? 'buttons.activate' : 'buttons.save')}
-        </button>
-        <!-- Turning the custom SMTP on always validates first, even when its form is unchanged. -->
-        {#if !mailValidated && (customActivating ? customPasswordKnown : !emailSaveDisabled)}
-          <button
-            class="btn btn-outline-primary"
-            on:click={onValidateEmailClick}
-            disabled={saveEmailLoading || smtpDisabled}
-            >{$_('buttons.validate')}
-            {#if saveEmailLoading}
-              <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+        <div class="row mb-3">
+          <label class="col-md-6 col-form-label" for="senderAddress"
+            >{$_('pages.settings.platform.smtp.sender-address')}</label>
+          <div class="col-md-6">
+            <!-- Pano Host mail: only the name before `@` is the customer's; the domain is the host's. -->
+            <div class="input-group" class:has-validation={hostMailLocked && hostSenderInvalid}>
+              {#if hostMailLocked && hostDefaultDomain}
+                <input
+                  class="form-control"
+                  class:is-invalid={hostSenderInvalid}
+                  id="senderAddress"
+                  type="text"
+                  placeholder="noreply"
+                  maxlength="64"
+                  value={hostSenderLocal}
+                  on:input={onHostSenderLocalInput}
+                  disabled={smtpDisabled} />
+                <span class="input-group-text">@{hostDefaultDomain}</span>
+              {:else}
+                <input
+                  class="form-control"
+                  id="senderAddress"
+                  type="text"
+                  placeholder="no-reply@forexample.com"
+                  bind:value={data.email.sender}
+                  disabled={smtpDisabled} />
+              {/if}
+              <!-- Only once the sender differs from the default: nothing to reset otherwise. -->
+              {#if hostMailLocked && hostSenderCustomized}
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  title={$_('pages.settings.platform.smtp.reset-sender')}
+                  aria-label={$_('pages.settings.platform.smtp.reset-sender')}
+                  on:click={onResetHostSenderClick}
+                  disabled={smtpDisabled}>
+                  <i class="fa-solid fa-rotate-left"></i>
+                </button>
+              {/if}
+            </div>
+            {#if hostMailLocked && hostSenderInvalid}
+              <div class="invalid-feedback d-block">
+                {$_('pages.settings.platform.smtp.sender-local-invalid')}
+              </div>
             {/if}
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="col-md-6 col-form-label" for="hostAddress"
+            >{$_('pages.settings.platform.smtp.hostname')}</label>
+          <div class="col-md-6">
+            <input
+              class="form-control"
+              id="hostAddress"
+              type="text"
+              placeholder="smtp.forexample.com"
+              bind:value={data.email.hostname}
+              disabled={smtpDisabled || hostMailLocked} />
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label class="col-md-6 col-form-label" for="port"
+            >{$_('pages.settings.platform.smtp.port')}</label>
+          <div class="col-md-6">
+            <input
+              class="form-control"
+              id="port"
+              placeholder="465"
+              type="number"
+              bind:value={data.email.port}
+              disabled={smtpDisabled || hostMailLocked} />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="col-md-6 col-form-label" for="authMethods"
+            >{$_('pages.settings.platform.smtp.auth-methods')}</label>
+          <div class="col-md-6">
+            <select
+              class="form-select"
+              id="authMethods"
+              bind:value={data.email.authMethods}
+              disabled={smtpDisabled || hostMailLocked}>
+              <option value="PLAIN">PLAIN</option>
+              <option value=""></option>
+            </select>
+          </div>
+        </div>
+
+        {#if hostMailLocked}
+          <button
+            class="btn btn-secondary"
+            on:click={onSaveHostMailClick}
+            disabled={saveEmailLoading ||
+              smtpDisabled ||
+              !hostMailChanged ||
+              !data.email.sender ||
+              hostSenderInvalid}
+            >{$_(hostMailActivating ? 'buttons.activate' : 'buttons.save')}
           </button>
+        {:else}
+          <button
+            class="btn btn-secondary"
+            on:click={onSaveSmtpClick}
+            disabled={saveEmailLoading || !mailValidated || smtpDisabled}
+            >{$_(customActivating ? 'buttons.activate' : 'buttons.save')}
+          </button>
+          <!-- Turning the custom SMTP on always validates first, even when its form is unchanged. -->
+          {#if !mailValidated && (customActivating ? customPasswordKnown : !emailSaveDisabled)}
+            <button
+              class="btn btn-outline-primary"
+              on:click={onValidateEmailClick}
+              disabled={saveEmailLoading || smtpDisabled}
+              >{$_('buttons.validate')}
+              {#if saveEmailLoading}
+                <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+              {/if}
+            </button>
+          {/if}
         {/if}
       {/if}
-    {/if}
+    </fieldset>
   </div>
 </div>
 
@@ -1405,7 +1436,7 @@
 </script>
 
 <script>
-  import { getContext, onMount } from 'svelte';
+  import { getContext, onMount, tick } from 'svelte';
   import { _ } from 'svelte-i18n';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
 
@@ -1473,11 +1504,18 @@
 
   const canManageAlerts = hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS);
 
-  let smtpDisabled;
+  // The mail switch is a draft of this page: it starts from what the server has and is only written
+  // by a save. (It used to be bound to the shared site info, so an unsaved "on" stayed on for the
+  // whole panel and came back as "enabled" on the next visit.)
+  let smtpSaved = !!data.oldSettings?.email?.enabled;
+  let smtpEnabled = smtpSaved;
 
-  $: {
-    smtpDisabled = !$siteInfo.emailEnabled;
+  $: if (!!data.oldSettings?.email?.enabled !== smtpSaved) {
+    smtpSaved = !!data.oldSettings?.email?.enabled;
+    smtpEnabled = smtpSaved;
   }
+
+  $: smtpDisabled = !smtpEnabled;
 
   let showAlert = false;
 
@@ -1536,7 +1574,60 @@
     }
   }
 
+  /** The plain settings a control on this page edits as a draft until its card is saved. */
+  const DRAFT_KEYS = [
+    'developmentMode',
+    'devUrl',
+    'allowUserLocaleSelection',
+    'telemetryEnabled',
+    'requireEmailVerification',
+    'passwordHashAlgorithm',
+    'locale',
+    'updatePeriod',
+    'releaseChannel',
+    'usageMode',
+  ];
+
+  /**
+   * Puts every draft back to what the server has. A reload can bring back what the switches and
+   * fields showed before it (the browser restores form controls, and the bindings then take that
+   * for an edit), so an unsaved "on" looked saved after a refresh. The page always starts from the
+   * saved settings.
+   */
+  function restoreSavedDrafts() {
+    const saved = data.oldSettings;
+
+    if (!saved) {
+      return;
+    }
+
+    for (const key of DRAFT_KEYS) {
+      if (key in saved && data[key] !== saved[key]) {
+        data[key] = saved[key];
+      }
+    }
+
+    if (
+      saved.maintenance &&
+      JSON.stringify(data.maintenance) !== JSON.stringify(saved.maintenance)
+    ) {
+      data.maintenance = structuredClone(saved.maintenance);
+    }
+
+    if (smtpEnabled !== smtpSaved) {
+      smtpEnabled = smtpSaved;
+    }
+
+    if (JSON.stringify(alertSettings) !== savedAlertSettings) {
+      alertSettings = JSON.parse(savedAlertSettings);
+    }
+  }
+
   onMount(() => {
+    restoreSavedDrafts();
+    // Once more after the bindings have settled: they adopt a restored control on their first run.
+    void tick().then(restoreSavedDrafts);
+
     void loadNodeAutoUpdate();
 
     if (browser) {
@@ -1617,6 +1708,8 @@
   // The switch grid is edited locally and written as a whole map, so it is snapshotted once
   // instead of following `data` — nothing else on the page touches it.
   let alertSettings = readAlertSettings(data.alerts);
+  /** What the server last confirmed: "Save" is off while the switches still match it. */
+  let savedAlertSettings = JSON.stringify(alertSettings);
   let alertsEmailAvailable = data.alertsEmailAvailable === true;
   let alertsSupported = data.alertsSupported !== false;
   // The one time the snapshot is retaken: the alerts were not loaded (WEBSITE mode asks for
@@ -1625,9 +1718,11 @@
   $: if (data.alertsSupported !== alertsLoaded) {
     alertsLoaded = data.alertsSupported;
     alertSettings = readAlertSettings(data.alerts);
+    savedAlertSettings = JSON.stringify(alertSettings);
     alertsEmailAvailable = data.alertsEmailAvailable === true;
     alertsSupported = data.alertsSupported !== false;
   }
+  $: alertsSaveDisabled = JSON.stringify(alertSettings) === savedAlertSettings;
   let saveEmailLoading;
   let connecting = !data.panoAccount && data.state && data.encodedData;
   let disconnecting;
@@ -1641,7 +1736,6 @@
   let mailError;
   let toggleSmtpLoading;
   let saveMaintenanceLoading;
-  let toggleMaintenanceLoading;
 
   // Null until the modal reports a fresher figure; the loaded settings own the badge until then.
   let bannedIpsCount = null;
@@ -1694,6 +1788,8 @@
   }
 
   $: maintenanceDisabled = !data.maintenance.enabled;
+  /** Maintenance mode as the server has it (the switch above is only a draft until it is saved). */
+  $: maintenanceActive = !!data.oldSettings?.maintenance?.enabled;
 
   $: customLoginUrlDisabled = maintenanceDisabled || data.maintenance.showLoginButton;
 
@@ -1707,10 +1803,11 @@
     false,
   );
 
+  // Nothing changed, or a field the platform would refuse. Switching maintenance off is never held
+  // back by a field: that is the save that brings the website back up.
   $: maintenanceSaveDisabled =
     JSON.stringify(data.oldSettings.maintenance) === JSON.stringify(data.maintenance) ||
-    !!customLoginUrlError ||
-    !!bypassPermissionNodeError;
+    (!!data.maintenance.enabled && (!!customLoginUrlError || !!bypassPermissionNodeError));
 
   $: bannedIpCount = bannedIpsCount ?? data.maintenanceBannedIpCount ?? 0;
 
@@ -1902,7 +1999,13 @@
    * cards on this page write their own block.
    */
   function onSaveAlertsClick() {
+    if (alertsSaveDisabled) {
+      return;
+    }
+
     saveAlertsLoading = true;
+
+    const sent = JSON.stringify(alertSettings);
 
     ApiUtil.put({
       path: '/panel/settings/alerts',
@@ -1915,6 +2018,8 @@
 
           return;
         }
+
+        savedAlertSettings = sent;
 
         await showSuccessToast('components.toasts.settings-save-success');
       },
@@ -2347,7 +2452,8 @@
           return obj;
         }, {});
 
-        const enabled = $siteInfo.emailEnabled;
+        // Mail was already on before this save: it is a plain settings save, not a switch-on.
+        const enabled = smtpSaved;
 
         await invalidateAll();
 
@@ -2378,7 +2484,7 @@
     // Mail was never turned on (only switched on here, unsaved): switching it off again just drops
     // the unsaved edits, nothing to confirm or save.
     if (!event.target.checked && !storedEmail.enabled) {
-      $siteInfo.emailEnabled = false;
+      smtpEnabled = false;
       data.email = structuredClone(data.oldSettings.email);
       mailError = null;
       mailStateFor = null;
@@ -2388,7 +2494,8 @@
     }
 
     if (!event.target.checked) {
-      $siteInfo.emailEnabled = true;
+      // Stays on until the confirmation is accepted and the server has switched it off.
+      smtpEnabled = true;
       showConfirmDisableEmailModal(() => {
         toggleSmtpLoading = true;
 
@@ -2426,17 +2533,13 @@
             }
 
             saveEmailLoading = false;
+            smtpEnabled = false;
 
             await invalidateAll();
 
-            if (smtpDisabled) {
-              await showSuccessToast('components.toasts.smtp-disabled-success');
-            } else {
-              await showSuccessToast('components.toasts.smtp-enabled-success');
-            }
+            await showSuccessToast('components.toasts.smtp-disabled-success');
 
             toggleSmtpLoading = false;
-            smtpDisabled = !event.target.checked;
           },
         });
       });
@@ -2499,49 +2602,71 @@
     });
   }
 
-  /** i18n key of the first saved maintenance value the platform would refuse, if any. */
-  function maintenanceSnapshotError() {
-    const snapshot = maintenanceSnapshot();
+  /**
+   * What "Save" sends. With maintenance being switched off, a field the platform would refuse is
+   * emptied instead of failing the request: both are inert while maintenance is off.
+   */
+  function maintenanceSettingsToSave() {
+    const settings = currentMaintenanceSettings();
 
-    return (
-      validateCustomLoginUrl(snapshot.customLoginUrl) ||
-      validateBypassPermissionNode(snapshot.bypassPermissionNode)
-    );
-  }
+    if (!settings.enabled) {
+      if (validateCustomLoginUrl(settings.customLoginUrl)) {
+        settings.customLoginUrl = '';
+      }
 
-  // The master switch is a one-field write: everything else comes from the last saved state, so
-  // unsaved edits in the card are never committed (and never rejected) behind the operator's back.
-  function maintenanceToggleSettings(enabled) {
-    const snapshot = maintenanceSnapshot();
-
-    // Only a hand-edited config.conf can leave a value here that the platform refuses on save.
-    // Sending it would fail the whole request, and this is the switch that brings the website
-    // back up, so it is dropped instead — both fields are inert while maintenance is off, and
-    // turning maintenance on is stopped earlier (onToggleMaintenance).
-    if (validateCustomLoginUrl(snapshot.customLoginUrl)) {
-      snapshot.customLoginUrl = '';
+      if (validateBypassPermissionNode(settings.bypassPermissionNode)) {
+        settings.bypassPermissionNode = '';
+      }
     }
 
-    if (validateBypassPermissionNode(snapshot.bypassPermissionNode)) {
-      snapshot.bypassPermissionNode = '';
-    }
-
-    return { ...snapshot, enabled };
+    return settings;
   }
 
+  /**
+   * The switch in the header only changes the card; "Save" writes it. Switching maintenance on or
+   * off is re-authenticated, so that save asks for the password first; a save that leaves the
+   * switch as it was goes straight through.
+   */
   function onSaveMaintenanceClick() {
     if (maintenanceSaveDisabled) {
       return;
     }
 
+    if (!!data.maintenance.enabled !== !!maintenanceSnapshot().enabled) {
+      showConfirmSaveCriticalSettingsModal((password) => saveMaintenance(password));
+
+      return;
+    }
+
+    saveMaintenance();
+  }
+
+  function saveMaintenance(password) {
+    const confirmed = password != null;
+
     saveMaintenanceLoading = true;
+
+    if (confirmed) {
+      setSaveCriticalSettingsLoading(true);
+    }
 
     ApiUtil.put({
       path: '/panel/settings',
-      body: buildMaintenanceFormData(currentMaintenanceSettings()),
+      body: buildMaintenanceFormData(maintenanceSettingsToSave(), password),
       handler: async (body, reject) => {
+        saveMaintenanceLoading = false;
+
         if (body.error) {
-          saveMaintenanceLoading = false;
+          // Wrong password: keep the modal open with the field marked so it can be retyped.
+          if (confirmed && body.error?.code === 'NO_PERMISSION') {
+            setSaveCriticalSettingsError(true);
+
+            return;
+          }
+
+          if (confirmed) {
+            hideSaveCriticalSettingsModal();
+          }
 
           // A value this card sent was refused: that is not a connection problem, and the
           // network splash would hide the very form the operator has to correct.
@@ -2556,87 +2681,15 @@
           return;
         }
 
-        saveMaintenanceLoading = false;
+        if (confirmed) {
+          hideSaveCriticalSettingsModal();
+        }
 
         data.oldSettings.maintenance = structuredClone(data.maintenance);
 
         await invalidateAll();
 
         await showSuccessToast('components.toasts.maintenance-save-success');
-      },
-    });
-  }
-
-  function onToggleMaintenance(event) {
-    const enabled = event.target.checked;
-
-    // Both directions are re-authenticated, so the switch goes back to the saved state until the
-    // password is accepted — a cancelled modal must not leave it showing something the server
-    // never stored.
-    data.maintenance.enabled = !enabled;
-
-    if (enabled) {
-      // The switch writes the saved settings, so a saved value the platform refuses has to be
-      // repaired on the card first. Turning maintenance off is never blocked this way.
-      const savedError = maintenanceSnapshotError();
-
-      if (savedError) {
-        showErrorToast(savedError);
-
-        return;
-      }
-    }
-
-    showConfirmSaveCriticalSettingsModal((password) => commitMaintenanceToggle(enabled, password));
-  }
-
-  function commitMaintenanceToggle(enabled, password) {
-    toggleMaintenanceLoading = true;
-    setSaveCriticalSettingsLoading(true);
-
-    ApiUtil.put({
-      path: '/panel/settings',
-      body: buildMaintenanceFormData(maintenanceToggleSettings(enabled), password),
-      handler: async (body, reject) => {
-        if (body.error) {
-          data.maintenance.enabled = !enabled;
-          toggleMaintenanceLoading = false;
-
-          // Wrong password: keep the modal open with the field marked so it can be retyped.
-          if (body.error?.code === 'NO_PERMISSION') {
-            setSaveCriticalSettingsError(true);
-
-            return;
-          }
-
-          hideSaveCriticalSettingsModal();
-
-          // See onSaveMaintenanceClick: a refused value is reported as such, not as a lost
-          // connection with a Retry button that can only be refused again.
-          if (body.error?.code === 'BAD_REQUEST') {
-            await showErrorToast('errors.BAD_REQUEST');
-
-            return;
-          }
-
-          reject();
-
-          return;
-        }
-
-        hideSaveCriticalSettingsModal();
-
-        data.maintenance.enabled = enabled;
-
-        // Only `enabled` was written: restamping the whole snapshot here would mark unsaved
-        // edits as saved and disable the Save button. invalidateAll() resyncs the rest.
-        data.oldSettings.maintenance = { ...maintenanceSnapshot(), enabled };
-
-        await invalidateAll();
-
-        await showSuccessToast('components.toasts.maintenance-save-success');
-
-        toggleMaintenanceLoading = false;
       },
     });
   }

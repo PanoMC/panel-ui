@@ -42,17 +42,6 @@
         <h5 class="modal-title">
           {$_('pages.settings.platform.maintenance.modal.title')}
         </h5>
-        <div class="ms-auto d-flex align-items-center gap-1">
-          <button
-            type="button"
-            class="btn btn-link link-danger"
-            title={$_('pages.settings.platform.maintenance.modal.reset-page')}
-            aria-label={$_('pages.settings.platform.maintenance.modal.reset-page')}
-            disabled={$busy}
-            onclick={onResetClick}>
-            <i class="fa-regular fa-arrow-rotate-left" aria-hidden="true"></i>
-          </button>
-        </div>
         <button
           aria-label={$_('buttons.close')}
           type="button"
@@ -78,6 +67,22 @@
                 </button>
               </li>
             {/each}
+            <!-- Only while a block differs from the design Pano ships. It changes the drafts only:
+                 nothing is written until "Save". -->
+            {#if $changedFromDefault}
+              <li class="nav-item ms-auto">
+                <button
+                  type="button"
+                  class="btn btn-link text-body text-decoration-none"
+                  title={$_('pages.settings.platform.maintenance.modal.reset-page')}
+                  aria-label={$_('pages.settings.platform.maintenance.modal.reset-page')}
+                  disabled={$busy}
+                  data-maintenance-reset
+                  onclick={onResetClick}>
+                  <i class="fa-regular fa-arrow-rotate-left" aria-hidden="true"></i>
+                </button>
+              </li>
+            {/if}
           </ul>
 
           <textarea
@@ -123,7 +128,7 @@
 <svelte:options runes={true} />
 
 <script module>
-  import { get, writable } from 'svelte/store';
+  import { derived, get, writable } from 'svelte/store';
 
   import ApiUtil from '$lib/api.util.js';
   import {
@@ -168,6 +173,14 @@
 
   const modalElement = writable();
   const templates = writable({});
+  /** Every block as Pano ships it (`defaults` of the page read); empty when the server does not say. */
+  const defaults = writable({});
+  /** True while a draft differs from its default: only then is there something to reset. */
+  const changedFromDefault = derived([templates, defaults], ([$templates, $defaults]) =>
+    Object.keys($defaults).some(
+      (key) => $templates[key] !== undefined && $templates[key] !== $defaults[key],
+    ),
+  );
   const activeTab = writable(TABS[0].key);
   const previewHtml = writable('');
   const previewLoading = writable(false);
@@ -191,6 +204,7 @@
     showSiteLogo = current?.showSiteLogo !== false;
 
     templates.set({});
+    defaults.set({});
     previewHtml.set('');
     activeTab.set(TABS[0].key);
     busy.set(false);
@@ -223,6 +237,7 @@
         }
 
         templates.set(body.templates || {});
+        defaults.set(body.defaults || {});
 
         refreshPreview(get(templates));
       },
@@ -287,26 +302,9 @@
     });
   }
 
+  /** Puts the shipped design back into the drafts; "Save" writes it like any other edit. */
   function onResetClick() {
-    busy.set(true);
-
-    ApiUtil.post({
-      path: '/panel/maintenance/page/reset',
-      body: {},
-      handler: async (body, reject) => {
-        busy.set(false);
-
-        if (body.error) {
-          reject();
-
-          return;
-        }
-
-        templates.set(body.templates || {});
-
-        await showSuccessToast('components.toasts.maintenance-page-reset');
-      },
-    });
+    templates.update((current) => ({ ...current, ...get(defaults) }));
   }
 </script>
 

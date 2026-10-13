@@ -9,11 +9,15 @@
             >{$_('components.settings-layout.platform')}</PageNavItem>
           <PageNavItem href={WEBHOOKS_SETTINGS_ITEM.href} startsWith
             >{$_(WEBHOOKS_SETTINGS_ITEM.text)}</PageNavItem>
-          <PageNavItem href="/settings/updates" startsWith>
-            <span class="position-relative d-inline-block">
-              {$_('components.settings-layout.updates')}
-              <NavBadge count={updateCount} label={$_('components.settings-layout.updates')} />
-            </span>
+          <PageNavItem href="/settings/updates" classes="position-relative" startsWith
+            >{$_('components.settings-layout.updates')}
+            {#if data.session.basicData.hasUpdate}
+              <!-- An update is waiting: a dot at the top right of the tab. -->
+              <span
+                class="position-absolute bg-secondary rounded-circle p-1"
+                style="top: 7px; right: 6px;">
+              </span>
+            {/if}
           </PageNavItem>
           <PageNavItem href="/settings/about" startsWith
             >{$_('components.settings-layout.about')}</PageNavItem>
@@ -58,7 +62,6 @@
   import { _ } from 'svelte-i18n';
 
   import { WEBHOOKS_SETTINGS_ITEM } from '$lib/navigation.util.js';
-  import NavBadge from '$lib/components/NavBadge.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
   import PageSlot from '$lib/components/PageSlot.svelte';
   import PageNav from '$lib/components/PageNav.svelte';
@@ -67,6 +70,4 @@
   export let data;
 
   $: canManageSettings = hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS, data.user);
-  // The platform only tells whether an update is waiting, not how many.
-  $: updateCount = data.session.basicData.hasUpdate ? 1 : 0;
 </script>

@@ -21,15 +21,6 @@
           {/each}
         </select>
       {/if}
-      <button
-        type="button"
-        class="btn btn-sm btn-primary text-nowrap"
-        disabled={$full}
-        data-create-endpoint
-        onclick={() => modal?.show()}>
-        <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
-        {$_('pages.webhooks.endpoints.create')}
-      </button>
     </div>
   </CardHeader>
 
@@ -202,9 +193,14 @@
 
   // The controller is fixed for the life of the page.
   // svelte-ignore state_referenced_locally
-  const { visible, limit, full, busy, source, catalogue } = controller;
+  const { visible, limit, busy, source, catalogue } = controller;
 
   let modal = $state();
+
+  /** Opens the create dialog (the page's "create" button, which sits in the page header). */
+  export function create() {
+    modal?.show();
+  }
 
   const sources = $derived(sourceOptions($catalogue, $source));
 </script>

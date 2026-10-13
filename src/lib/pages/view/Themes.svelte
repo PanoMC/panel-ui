@@ -261,8 +261,13 @@
   import { themeProblem } from '../addons/compat/compat.util.js';
   import FrontendModal from './frontend/FrontendModal.svelte';
   import { normalizeFrontendState, themeNotShown } from './frontend/frontend.util.js';
+  import { browser } from '$app/environment';
+  import { refreshCompatAttention } from '$lib/compat-attention.store.js';
 
   export let data;
+
+  // The sidebar's dot follows what this list just loaded.
+  $: if (browser) void (data.themes, refreshCompatAttention());
 
   $: compat = data.compat ?? null;
   $: compatibility = data.compatibility ?? null;

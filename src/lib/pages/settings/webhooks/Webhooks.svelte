@@ -1,22 +1,40 @@
 <div class="vstack gap-3">
-  <ul class="nav nav-pills gap-1" role="tablist">
-    {#each tabs as item (item.id)}
-      <li class="nav-item" role="presentation">
+  <!-- The tabs on the left, the page's own action on the right, like the other panel pages. -->
+  <PageActions>
+    <div slot="left">
+      <ul class="nav nav-pills gap-1" role="tablist">
+        {#each tabs as item (item.id)}
+          <li class="nav-item" role="presentation">
+            <button
+              type="button"
+              class="nav-link"
+              class:active={tab === item.id}
+              id="webhooks-tab-{item.id}"
+              role="tab"
+              aria-selected={tab === item.id}
+              aria-controls="webhooks-pane-{item.id}"
+              data-tab={item.id}
+              onclick={() => selectTab(item.id)}>
+              {$_(item.titleKey)}
+            </button>
+          </li>
+        {/each}
+      </ul>
+    </div>
+    <div slot="right" class="hstack gap-2">
+      {#if endpointsController && tab === 'endpoints'}
         <button
           type="button"
-          class="nav-link"
-          class:active={tab === item.id}
-          id="webhooks-tab-{item.id}"
-          role="tab"
-          aria-selected={tab === item.id}
-          aria-controls="webhooks-pane-{item.id}"
-          data-tab={item.id}
-          onclick={() => selectTab(item.id)}>
-          {$_(item.titleKey)}
+          class="btn btn-secondary text-nowrap"
+          disabled={$endpointsFull}
+          data-create-endpoint
+          onclick={() => endpointsView?.create()}>
+          <i class="fas fa-plus" aria-hidden="true"></i>
+          <span class="d-lg-inline d-none ms-2">{$_('pages.webhooks.endpoints.create')}</span>
         </button>
-      </li>
-    {/each}
-  </ul>
+      {/if}
+    </div>
+  </PageActions>
 
   <div
     id="webhooks-pane-endpoints"
@@ -25,6 +43,7 @@
     hidden={tab !== 'endpoints'}>
     {#if endpointsController}
       <WebhookEndpoints
+        bind:this={endpointsView}
         controller={endpointsController}
         {notify}
         onShowDeliveries={showDeliveriesOf} />
@@ -99,10 +118,11 @@
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import { derived } from 'svelte/store';
+  import { derived, readable } from 'svelte/store';
 
   import { invalidateAll } from '$app/navigation';
 
+  import PageActions from '$lib/components/PageActions.svelte';
   import { show as showConfirm } from '$lib/components/modals/ConfirmActionModal.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
 
@@ -152,6 +172,11 @@
         },
       })
     : null;
+
+  /** The endpoints card: the page's "create" button opens its dialog. */
+  let endpointsView = $state();
+  /** True at the endpoint limit: nothing more can be created. */
+  const endpointsFull = endpointsController?.full ?? readable(false);
 
   const names = endpointsController
     ? derived(endpointsController.items, (items) =>

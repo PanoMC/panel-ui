@@ -15,20 +15,26 @@
 <ul class="nav flex-column" data-bs-theme="dark">
   {#each $siteNavigationItems as item}
     {#if (!item.permission || hasPermission(item.permission)) && isNavItemVisible(item, $usageMode)}
+      {@const count = navCount(item, $compatAttention, $session)}
       <li class="nav-item">
         <a
           class="nav-link fw-normal text-truncate"
           href={base + item.href}
           class:active={matching($page.url.pathname, base + item.href, item.startsWith)}>
-          <!-- Something inside needs the admin: how many, as a badge on the icon's corner. -->
-          <span class="position-relative d-inline-block me-2">
-            <i class="{item.icon} fa-fw"></i>
-            <NavBadge
-              count={navCount(item, $compatAttention, $session)}
-              label={navLabel(item, $compatAttention)}
-              data-nav-attention={item.attention ?? (item.hasUpdate ? 'updates' : undefined)} />
+          <!-- Something inside needs the admin (a pending update, an addon or theme Pano keeps off, a
+               missing licence): a dot at the top right of the entry. -->
+          <span class="position-relative" class:pe-3={count > 0}>
+            <i class="{item.icon} fa-fw me-2"></i>
+            {$_(item.text)}
+            {#if count > 0}
+              <span
+                class="position-absolute bg-secondary rounded-circle p-1 top-0 end-0"
+                role="img"
+                aria-label={navLabel(item, $compatAttention)}
+                data-nav-attention={item.attention ?? 'updates'}>
+              </span>
+            {/if}
           </span>
-          {$_(item.text)}
         </a>
       </li>
     {/if}
@@ -92,6 +98,7 @@
       permission: Permissions.MANAGE_VIEW,
       // Site-only section: a SERVERS install has no public website to manage.
       modes: [UsageModes.WEBSITE, UsageModes.BOTH],
+      attention: 'themes',
     },
     {
       href: '/translations',
@@ -148,7 +155,6 @@
 
   import { hasPermission } from '$lib/auth.util.js';
   import { compatAttention, refreshCompatAttention } from '$lib/compat-attention.store.js';
-  import NavBadge from '$lib/components/NavBadge.svelte';
   import { isNavItemVisible } from '$lib/navigation.util.js';
   import { siteNavigationItems } from '$lib/PluginAPI.js';
 

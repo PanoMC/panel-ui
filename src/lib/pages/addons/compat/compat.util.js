@@ -229,18 +229,55 @@ export function themeProblem(theme, report, themeReport, translate) {
   return { text: lines.join(' · '), level: refusal ? 'danger' : 'warning' };
 }
 
+/** `licenseStatus` values of a premium addon or theme that needs a licence it does not have (see `addon-license-issue.util.js`). */
+const LICENSE_ISSUES = new Set([
+  'MISSING',
+  'NO_PURCHASE',
+  'EXPIRED',
+  'NETWORK_ERROR',
+  'NOT_CONNECTED',
+  'NEEDS_REFRESH',
+  'JAR_TAMPERED',
+  'SIGNATURE_INVALID',
+  'VERSION_MISMATCH',
+  'AUDIENCE_MISMATCH',
+  'PLATFORM_MISMATCH',
+  'UNKNOWN',
+]);
+
+const hasLicenseIssue = (row) =>
+  row?.startupBlockedByLicense === true ||
+  (row?.premium === true && LICENSE_ISSUES.has(row.licenseStatus));
+
 /**
- * What the sidebar counts beside "Addons": plugins Pano keeps off or holds.
+ * What the sidebar marks beside "Addons" and "Themes": how many need the admin. An addon counts when Pano
+ * keeps it off or holds it (API level gate), when it failed to start, or when it is premium without a
+ * usable licence; a theme when the gate refuses it or it is premium without a usable licence. Each is
+ * counted once. `lists` are the rows of `GET /panel/addons` and `GET /panel/themes`; without them only the
+ * gate is counted.
  *
  * @param {ReturnType<typeof normalizeCompatibility> | null} report
+ * @param {{ plugins?: Array<any> | null, themes?: Array<any> | null }} [lists]
+ * @returns {{ addons: number, themes: number }}
  */
-export function attentionCounts(report) {
+export function attentionCounts(report, lists = {}) {
   const rows = report?.resources ?? [];
   const plugins = new Set(
     rows
       .filter((row) => row.type === 'PLUGIN' && (row.verdict !== Verdicts.OK || isHeld(row)))
       .map((row) => row.id),
   );
+  const themes = new Set(
+    rows.filter((row) => row.type === 'THEME' && row.verdict !== Verdicts.OK).map((row) => row.id),
+  );
 
-  return { addons: plugins.size };
+  for (const plugin of list(lists.plugins)) {
+    if (plugin.status === 'FAILED' || hasLicenseIssue(plugin)) plugins.add(plugin.id);
+  }
+
+  for (const theme of list(lists.themes)) {
+    if (hasLicenseIssue(theme)) themes.add(theme.id);
+  }
+
+  return { addons: plugins.size, themes: themes.size };
 }
