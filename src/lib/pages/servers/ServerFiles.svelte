@@ -91,6 +91,12 @@
           </span>
         </span>
         <span slot="right">
+          {#if uploadsFailed > 0}
+            <button type="button" class="btn btn-sm btn-link" onclick={retryFailedUploads}>
+              <i class="fa-solid fa-rotate-right me-1" aria-hidden="true"></i>
+              {$_('pages.servers.files.uploads-retry-failed', { values: { count: uploadsFailed } })}
+            </button>
+          {/if}
           {#if uploadsQueued > 0}
             <button type="button" class="btn btn-sm btn-link" onclick={cancelQueuedUploads}>
               {$_('pages.servers.files.uploads-cancel-queued')}
@@ -644,6 +650,7 @@
   {serverId}
   ondownload={(filePath) => download([filePath], { base: parentPath(filePath) })} />
 <ServerFileUploadModal />
+<ServerUploadConflictModal />
 
 <!-- Downloads are a plain navigation to the streaming endpoint (§2.4.4), so the browser's own
      download UI handles a multi-gigabyte world folder instead of the page buffering it. -->
@@ -717,6 +724,7 @@
     isModeValid,
     isNameSafe,
     isPathSafe,
+    filesFromDataTransfer,
     joinPath,
     normalizePath,
     parentPath,
@@ -736,6 +744,9 @@
   import DateComponent from '$lib/components/Date.svelte';
   import FileEditorModal from '$lib/components/servers/FileEditorModal.svelte';
   import FilePreviewModal from '$lib/components/servers/FilePreviewModal.svelte';
+  import ServerUploadConflictModal, {
+    ask as askUploadConflict,
+  } from '$lib/components/servers/ServerUploadConflictModal.svelte';
   import ServerFileUploadModal, {
     show as showUploadModal,
   } from '$lib/components/servers/ServerFileUploadModal.svelte';
@@ -1368,15 +1379,19 @@
     uploads = uploads.map((upload) => (upload.id === id ? { ...upload, ...patch } : upload));
   }
 
-  /** What each queued row uploads; kept beside the list so the files themselves stay out of state. */
+  /** What each row uploads; kept beside the list so the files themselves stay out of state. A row
+   *  keeps its job until it is done, so one that failed can be sent again. */
   const uploadJobs = new Map();
-  let uploadsRunning = false;
+  let uploadWorkers = 0;
 
+  /** How many files go up at the same time. */
+  const UPLOAD_PARALLEL = 4;
   /** How many rows of the queue are drawn; the rest is counted. */
   const UPLOADS_SHOWN = 30;
   const UPLOAD_ORDER = { uploading: 0, failed: 1, queued: 2, done: 3 };
 
   let uploadsQueued = $derived(uploads.filter((upload) => upload.status === 'queued').length);
+  let uploadsFailed = $derived(uploads.filter((upload) => upload.status === 'failed').length);
   let uploadsFinished = $derived(
     uploads.filter((upload) => upload.status === 'done' || upload.status === 'failed').length,
   );
@@ -1389,16 +1404,77 @@
   );
 
   /**
-   * Puts the files in the upload queue. They go up one per request (multipart, §2.4.4), one after
-   * the other, so the list can show a bar per file and a big drop cannot flood Pano; the backend
-   * spools each one and pushes it to the node over a transfer ticket.
+   * Which of the files are already on the server. A folder is only listed when the listing of the
+   * folder above it shows that it exists, so a dropped tree that is new here costs one request.
    *
-   * @param {FileList | Array<File | { file: File, dir: string }> | null} list
+   * @param {Array<{ file: File | null, dir: string }>} items
+   * @param {string} into
+   * @returns {Promise<Set<string>>} the full paths that exist as files.
+   */
+  async function existingUploadTargets(items, into) {
+    /** @type {Map<string, Map<string, boolean> | null>} folder -> name -> is a folder; null = not there */
+    const listings = new Map();
+
+    /** @param {string} folder */
+    async function listing(folder) {
+      if (listings.has(folder)) {
+        return listings.get(folder);
+      }
+
+      let known = null;
+
+      if (folder !== into) {
+        const above = await listing(parentPath(folder));
+        const name = folder.slice(folder.lastIndexOf('/') + 1);
+
+        if (!above || above.get(name) !== true) {
+          listings.set(folder, null);
+
+          return null;
+        }
+      }
+
+      const result = await fetchServerFiles(serverId, folder);
+
+      if (result.status === 'ok') {
+        known = new Map(result.entries.map((entry) => [entry.name, isDirectory(entry)]));
+      }
+
+      listings.set(folder, known);
+
+      return known;
+    }
+
+    const existing = new Set();
+
+    for (const { file, dir } of items) {
+      if (!file) {
+        continue;
+      }
+
+      const folder = joinPath(into, dir);
+      const known = await listing(folder);
+
+      if (known?.get(file.name) === false) {
+        existing.add(joinPath(folder, file.name));
+      }
+    }
+
+    return existing;
+  }
+
+  /**
+   * Puts the files in the upload queue. They go up one per request (multipart, §2.4.4), a few at a
+   * time, so the list can show a bar per file; the backend spools each one and pushes it to the
+   * node over a transfer ticket. Files that are already there are asked about first, once for the
+   * whole drop. A folder with nothing in it is created as a folder.
+   *
+   * @param {FileList | Array<File | { file: File | null, dir: string }> | null} list
    * @param {string} [into] the folder to upload into; the one on screen by default.
    */
   async function uploadFiles(list, into = path) {
     // Plain files land in `into`; files from a dropped folder carry the folder they were in.
-    const items = Array.from(list || []).map((item) =>
+    let items = Array.from(list || []).map((item) =>
       item instanceof File ? { file: item, dir: '' } : item,
     );
 
@@ -1406,21 +1482,47 @@
       return;
     }
 
+    items = items.filter(({ file, dir }) => {
+      const safe = isPathSafe(
+        file ? joinPath(joinPath(into, dir), file.name) : joinPath(into, dir),
+      );
+
+      if (!safe) {
+        void showError('pages.servers.files.upload-failed-toast', { name: file?.name || dir });
+      }
+
+      return safe;
+    });
+
+    const existing = await existingUploadTargets(items, into);
+
+    if (existing.size) {
+      const choice = await askUploadConflict([...existing]);
+
+      if (choice === 'cancel') {
+        return;
+      }
+
+      if (choice === 'skip') {
+        items = items.filter(
+          ({ file, dir }) => !file || !existing.has(joinPath(joinPath(into, dir), file.name)),
+        );
+      }
+    }
+
     const queued = [];
 
     for (const { file, dir } of items) {
       const target = joinPath(into, dir);
-
-      if (!isPathSafe(joinPath(target, file.name))) {
-        void showError('pages.servers.files.upload-failed-toast', { name: file.name });
-
-        continue;
-      }
-
       const id = ++uploadSeq;
 
       uploadJobs.set(id, { file, target, serverId });
-      queued.push({ id, name: joinPath(target, file.name), percent: 0, status: 'queued' });
+      queued.push({
+        id,
+        name: file ? joinPath(target, file.name) : target + '/',
+        percent: 0,
+        status: 'queued',
+      });
     }
 
     uploads = [...uploads, ...queued];
@@ -1428,64 +1530,96 @@
     await drainUploads();
   }
 
-  /** Works the queue off, one file at a time. A second call while it runs only added to the queue. */
+  /**
+   * Works the queue off, a few files at a time. Every call adds workers up to the limit, so files
+   * queued while uploads run are picked up by the workers that are already there.
+   */
   async function drainUploads() {
-    if (uploadsRunning) {
+    const workers = [];
+
+    while (uploadWorkers < UPLOAD_PARALLEL) {
+      uploadWorkers += 1;
+      workers.push(uploadWorker());
+    }
+
+    if (!workers.length) {
       return;
     }
 
-    uploadsRunning = true;
+    await Promise.all(workers);
 
+    // The last worker out refreshes: a drop into a sub-folder still changes this listing when that
+    // folder was new.
+    if (uploadWorkers === 0) {
+      await refresh();
+    }
+  }
+
+  async function uploadWorker() {
     try {
       for (;;) {
+        // Taken and marked in one go, before the first await: no two workers get the same row.
         const next = uploads.find((upload) => upload.status === 'queued');
 
         if (!next) {
           break;
         }
 
+        patchUpload(next.id, { status: 'uploading', percent: 0 });
+
         const job = uploadJobs.get(next.id);
-
-        uploadJobs.delete(next.id);
-        patchUpload(next.id, { status: 'uploading' });
-
         const failed = job ? await uploadOne(next.id, job) : true;
+
+        if (!failed) {
+          uploadJobs.delete(next.id);
+        }
 
         patchUpload(next.id, { status: failed ? 'failed' : 'done', percent: 100 });
       }
     } finally {
-      uploadsRunning = false;
+      uploadWorkers -= 1;
     }
-
-    // A drop into a sub-folder still changes this listing when that folder was new.
-    await refresh();
   }
 
   /**
    * @param {number} id
-   * @param {{ file: File, target: string, serverId: number | string }} job
-   * @returns {Promise<boolean>} whether the upload failed.
+   * @param {{ file: File | null, target: string, serverId: number | string }} job
+   * @returns {Promise<boolean>} whether it failed.
    */
   async function uploadOne(id, { file, target, serverId: jobServerId }) {
-    const form = new FormData();
-
-    form.append('file', file, file.name);
-
     /** @type {any} */
     let response = null;
 
-    // Many small files go out faster than the panel's request budget refills. A refusal for that
-    // reason is not a failed upload: the same file waits for the time Pano names and goes again.
+    // Many small files go out faster than the request budget refills. A refusal for that reason is
+    // not a failure: the same file waits for the time Pano names and goes again.
     for (let attempt = 0; attempt <= UPLOAD_RATE_LIMIT_RETRIES; attempt++) {
       try {
-        response = await ApiUtil.post({
-          path: `/panel/servers/${jobServerId}/files/upload?path=${encodeURIComponent(target)}`,
-          body: form,
-          onUploadProgress: (progress) => {
-            patchUpload(id, { percent: Math.min(100, Math.round(Number(progress) * 100)) });
-          },
-          handler: (result) => result,
-        });
+        if (file) {
+          const form = new FormData();
+
+          form.append('file', file, file.name);
+
+          response = await ApiUtil.post({
+            path: `/panel/servers/${jobServerId}/files/upload?path=${encodeURIComponent(target)}`,
+            body: form,
+            onUploadProgress: (progress) => {
+              patchUpload(id, { percent: Math.min(100, Math.round(Number(progress) * 100)) });
+            },
+            handler: (result) => result,
+          });
+        } else {
+          // A folder with nothing in it: there is no file to carry it over, so it is made.
+          response = await ApiUtil.post({
+            path: `/panel/servers/${jobServerId}/files/mkdir`,
+            body: { path: target },
+            handler: (result) => result,
+          });
+
+          // It being there already is what was asked for.
+          if (response?.error && /EXIST/i.test(String(response.error.code || ''))) {
+            response = {};
+          }
+        }
       } catch (error) {
         console.error('Upload failed', error);
         response = null;
@@ -1500,20 +1634,25 @@
       patchUpload(id, { percent: 0 });
 
       await new Promise((resolve) =>
-        setTimeout(resolve, Math.min(Math.max(seconds, 1), 30) * 1000 + 500),
+        setTimeout(resolve, Math.min(Math.max(seconds, 1), 60) * 1000 + 500),
       );
     }
 
     if (!response || isEndpointUnavailable(response) || response.error) {
-      if (response?.error) {
-        showServerActionError(response.error, response, {
-          server: $server,
-          feature: 'files.source',
-        });
-      } else if (response && isEndpointUnavailable(response)) {
-        void showError('pages.servers.errors.unavailable');
-      } else {
-        void showError('pages.servers.files.upload-failed-toast', { name: file.name });
+      // One toast for the first failure of a run, not one per file: the list names every one.
+      if (!uploads.some((upload) => upload.status === 'failed')) {
+        if (response?.error) {
+          showServerActionError(response.error, response, {
+            server: $server,
+            feature: 'files.source',
+          });
+        } else if (response && isEndpointUnavailable(response)) {
+          void showError('pages.servers.errors.unavailable');
+        } else {
+          void showError('pages.servers.files.upload-failed-toast', {
+            name: file?.name || target,
+          });
+        }
       }
 
       return true;
@@ -1522,7 +1661,18 @@
     return false;
   }
 
-  /** Drops what has not started yet; the file that is going up finishes. */
+  /** Sends everything that failed again. */
+  function retryFailedUploads() {
+    uploads = uploads.map((upload) =>
+      upload.status === 'failed' && uploadJobs.has(upload.id)
+        ? { ...upload, status: 'queued', percent: 0 }
+        : upload,
+    );
+
+    void drainUploads();
+  }
+
+  /** Drops what has not started yet; the files that are going up finish. */
   function cancelQueuedUploads() {
     for (const upload of uploads) {
       if (upload.status === 'queued') {
@@ -1534,6 +1684,12 @@
   }
 
   function clearFinishedUploads() {
+    for (const upload of uploads) {
+      if (upload.status === 'done' || upload.status === 'failed') {
+        uploadJobs.delete(upload.id);
+      }
+    }
+
     uploads = uploads.filter(
       (upload) => upload.status === 'uploading' || upload.status === 'queued',
     );
@@ -1602,82 +1758,9 @@
 
     event.preventDefault();
 
-    const picked = await filesFromDrop(event.dataTransfer);
+    const picked = await filesFromDataTransfer(event.dataTransfer);
 
     void uploadFiles(picked, into);
-  }
-
-  /**
-   * Everything a drop carries, folders included: a dropped folder is walked and its files keep
-   * their place inside it, so dragging `plugins/` from the desktop recreates `plugins/` here.
-   *
-   * The entry API has to be read synchronously inside the drop handler, which is why the items
-   * are turned into entries before the first `await`.
-   *
-   * @param {DataTransfer | null} transfer
-   * @returns {Promise<Array<{ file: File, dir: string }>>}
-   */
-  async function filesFromDrop(transfer) {
-    if (!transfer) {
-      return [];
-    }
-
-    const entries = Array.from(transfer.items || [])
-      .filter((item) => item.kind === 'file')
-      .map((item) => item.webkitGetAsEntry?.())
-      .filter(Boolean);
-
-    // No entry API (or nothing it could read): the flat file list is still something.
-    if (!entries.length) {
-      return Array.from(transfer.files || []).map((file) => ({ file, dir: '' }));
-    }
-
-    /** @type {Array<{ file: File, dir: string }>} */
-    const collected = [];
-
-    /**
-     * @param {any} entry
-     * @param {string} dir
-     */
-    async function walk(entry, dir) {
-      if (entry.isFile) {
-        const file = await new Promise((resolve, reject) => entry.file(resolve, reject));
-
-        collected.push({ file, dir });
-
-        return;
-      }
-
-      if (!entry.isDirectory) {
-        return;
-      }
-
-      const reader = entry.createReader();
-      const inside = joinPath(dir, entry.name);
-
-      // readEntries hands the listing over in batches until it answers with an empty one.
-      for (;;) {
-        const batch = await new Promise((resolve, reject) => reader.readEntries(resolve, reject));
-
-        if (!batch.length) {
-          break;
-        }
-
-        for (const child of batch) {
-          await walk(child, inside);
-        }
-      }
-    }
-
-    for (const entry of entries) {
-      try {
-        await walk(entry, '');
-      } catch (error) {
-        console.error('Could not read a dropped item', error);
-      }
-    }
-
-    return collected;
   }
 
   /**

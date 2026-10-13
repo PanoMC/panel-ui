@@ -1721,7 +1721,8 @@
         "download-as-zip": "Zip olarak indir",
         "download-zip-hint": "Klasörler ve birden fazla öğe indirilirken tek bir zip içine paketlenir; sunucuda hiçbir şey oluşturulmaz.",
         "action-preview": "Önizle",
-        "drop-into": "{path} klasörüne yüklemek için bırakın"
+        "drop-into": "{path} klasörüne yüklemek için bırakın",
+        "uploads-retry-failed": "{count} başarısızı tekrar dene"
       },
       "backups": {
         "title": "Yedekler",
@@ -4136,8 +4137,9 @@
       "server-file-upload": {
         "title": "Dosya yükle",
         "destination": "Yüklenecek klasör",
-        "drag-here": "Dosyaları buraya sürükleyin ya da seçmek için tıklayın",
-        "hint": "Aynı anda birden fazla dosya yükleyebilirsiniz; her birinin kendi ilerleme çubuğu olur."
+        "drag-here": "Dosyaları ya da klasörleri buraya sürükleyin veya dosya seçmek için tıklayın",
+        "hint": "Birden fazlası sorun değil; her dosyanın kendi ilerleme çubuğu olur.",
+        "choose-folder": "Klasör seç"
       },
       "file-preview": {
         "failed": "Bu dosya burada gösterilemedi."
@@ -4233,6 +4235,12 @@
         "load-failed": "Ayarlar yüklenemedi.",
         "save-failed": "Ayarlar kaydedilemedi.",
         "saved": "Destek talebi ayarları kaydedildi."
+      },
+      "server-upload-conflict": {
+        "title": "{count, plural, one {# dosya zaten var} other {# dosya zaten var}}",
+        "description": "Yüklerseniz bunların yerini bıraktığınız dosyalar alır.",
+        "overwrite": "Üzerine Yaz",
+        "skip": "Yalnızca yeni dosyaları yükle"
       }
     },
     "editor": {

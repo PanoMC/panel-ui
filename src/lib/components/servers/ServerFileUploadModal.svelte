@@ -12,7 +12,9 @@
         ></button>
       </div>
       <div class="modal-body vstack gap-3">
-        <div style="height: 250px;">
+        <!-- A drop is read here, before the zone gets it: the zone only knows the flat file list,
+             in which a dropped folder is one entry that cannot be uploaded. -->
+        <div style="height: 250px;" on:drop|capture={onZoneDrop}>
           <DragAndDropZone
             multiple
             style="cursor: pointer;"
@@ -20,6 +22,21 @@
             title={$_('components.modals.server-file-upload.drag-here')}
             subtitle={$_('components.modals.server-file-upload.hint')}
             on:drop={(event) => pick(event.detail)} />
+        </div>
+        <!-- The file chooser of a browser picks files or a folder, never both: the folder has
+             its own button. -->
+        <div class="text-center">
+          <button type="button" class="btn btn-link btn-sm" on:click={() => folderInput?.click()}>
+            <i class="fa-solid fa-folder-open me-1" aria-hidden="true"></i>
+            {$_('components.modals.server-file-upload.choose-folder')}
+          </button>
+          <input
+            type="file"
+            class="d-none"
+            webkitdirectory
+            multiple
+            bind:this={folderInput}
+            on:change={onFolderPicked} />
         </div>
       </div>
     </div>
@@ -57,9 +74,33 @@
   import { _ } from 'svelte-i18n';
 
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
+  import { filesFromDataTransfer, filesFromFolderInput } from '$lib/files.util.js';
+
+  /** @type {HTMLInputElement | undefined} */
+  let folderInput;
 
   /**
-   * @param {File | File[]} picked
+   * @param {DragEvent} event
+   */
+  async function onZoneDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    pick(await filesFromDataTransfer(event.dataTransfer));
+  }
+
+  /**
+   * @param {Event} event
+   */
+  function onFolderPicked(event) {
+    const input = /** @type {HTMLInputElement} */ (event.currentTarget);
+
+    pick(filesFromFolderInput(input.files));
+    input.value = '';
+  }
+
+  /**
+   * @param {File | Array<File | { file: File, dir: string }>} picked
    */
   function pick(picked) {
     const files = Array.isArray(picked) ? picked : [picked];

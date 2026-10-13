@@ -476,3 +476,101 @@ export async function fetchServerFiles(serverId, path, request) {
 
   return { status: 'ok', path: target, entries: normalizeEntries(body.entries) };
 }
+
+/**
+ * Everything a drop carries, folders included: a dropped folder is walked and its files keep
+ * their place inside it, so dragging `plugins/` from the desktop recreates `plugins/` here.
+ *
+ * The entry API has to be read synchronously inside the drop handler, which is why the items
+ * are turned into entries before the first `await`: call this straight from the handler.
+ *
+ * A folder with nothing in it comes back as `{ file: null, dir }`: it has no file to carry it over,
+ * so it is created on its own.
+ *
+ * @param {DataTransfer | null} transfer
+ * @returns {Promise<Array<{ file: File | null, dir: string }>>}
+ */
+export async function filesFromDataTransfer(transfer) {
+  if (!transfer) {
+    return [];
+  }
+
+  const entries = Array.from(transfer.items || [])
+    .filter((item) => item.kind === 'file')
+    .map((item) => item.webkitGetAsEntry?.())
+    .filter(Boolean);
+
+  // No entry API (or nothing it could read): the flat file list is still something.
+  if (!entries.length) {
+    return Array.from(transfer.files || []).map((file) => ({ file, dir: '' }));
+  }
+
+  /** @type {Array<{ file: File | null, dir: string }>} */
+  const collected = [];
+
+  /**
+   * @param {any} entry
+   * @param {string} dir
+   */
+  async function walk(entry, dir) {
+    if (entry.isFile) {
+      const file = await new Promise((resolve, reject) => entry.file(resolve, reject));
+
+      collected.push({ file, dir });
+
+      return;
+    }
+
+    if (!entry.isDirectory) {
+      return;
+    }
+
+    const reader = entry.createReader();
+    const inside = joinPath(dir, entry.name);
+
+    let children = 0;
+
+    // readEntries hands the listing over in batches until it answers with an empty one.
+    for (;;) {
+      const batch = await new Promise((resolve, reject) => reader.readEntries(resolve, reject));
+
+      if (!batch.length) {
+        break;
+      }
+
+      children += batch.length;
+
+      for (const child of batch) {
+        await walk(child, inside);
+      }
+    }
+
+    if (children === 0) {
+      collected.push({ file: null, dir: inside });
+    }
+  }
+
+  for (const entry of entries) {
+    try {
+      await walk(entry, '');
+    } catch (error) {
+      console.error('Could not read a dropped item', error);
+    }
+  }
+
+  return collected;
+}
+
+/**
+ * The files of a folder picked with a folder input (`webkitdirectory`): each file names its place
+ * in `webkitRelativePath` ("plugins/Essentials/config.yml"), which becomes the folder it goes into.
+ *
+ * @param {FileList | File[] | null} files
+ * @returns {Array<{ file: File, dir: string }>}
+ */
+export function filesFromFolderInput(files) {
+  return Array.from(files || []).map((file) => ({
+    file,
+    dir: parentPath(normalizePath(file.webkitRelativePath || '')),
+  }));
+}
