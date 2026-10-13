@@ -243,6 +243,7 @@
 
 <script>
   import { onMount, onDestroy } from 'svelte';
+  import { browser } from '$app/environment';
   import { _ } from 'svelte-i18n';
 
   import { Editor } from '@tiptap/core';
@@ -274,7 +275,11 @@
     // Seeded from the incoming value, not from an empty document: `onCreate` writes `getHTML()`
     // straight back into `content`, so starting empty overwrote whatever the caller passed in
     // before the effect below ever had a chance to restore it.
-    content: content || { type: 'doc', content: [{ type: 'paragraph', content: [] }] },
+    //
+    // Only in the browser: turning an HTML string into a document needs `window`, and on the server
+    // TipTap throws for it, which answered 500 for every direct load of a post that has text. The
+    // server renders the toolbar around an empty document; the browser builds the real one.
+    content: (browser && content) || { type: 'doc', content: [{ type: 'paragraph', content: [] }] },
     extensions: [
       StarterKit,
       Image,

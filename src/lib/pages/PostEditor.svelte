@@ -44,15 +44,21 @@
       <i class="fa-solid fa-sheet-plastic"></i>
     </button>
   {/if}
-  <a
+  <!-- What is on screen now, saved or not: the draft goes to Pano for a short while and the
+       theme renders it (a new post that was never saved can be looked at the same way). -->
+  <button
     class="btn btn-link"
-    role="button"
+    type="button"
     aria-label={$_('buttons.view')}
     title={$_('buttons.view')}
-    target="_blank"
-    href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{post.id}">
-    <i class="fas fa-eye"></i>
-  </a>
+    disabled={previewing}
+    on:click={onPreviewClick}>
+    {#if previewing}
+      <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+    {:else}
+      <i class="fas fa-eye"></i>
+    {/if}
+  </button>
   {#if post.status !== StatusTypes.PUBLISHED}
     <button
       title={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
@@ -306,6 +312,7 @@
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
 
   import {
+    showError as showErrorToast,
     showSuccess as showSuccessToast,
     limitTitle,
   } from '$lib/components/ToastContainer.svelte';
@@ -325,6 +332,69 @@
 
   let isEditorEmpty = $state(true);
   let loading = $state(false);
+  let previewing = $state(false);
+
+  /**
+   * Opens the theme's preview of the post as it stands in the editor, without saving it. The tab is
+   * opened at once (a tab opened after the request would be a blocked pop-up) and sent to the
+   * preview when Pano has the draft; if that fails it is closed again and the error is said.
+   */
+  async function onPreviewClick() {
+    if (previewing) {
+      return;
+    }
+
+    const tab = window.open('', '_blank');
+
+    previewing = true;
+
+    const send = (withCover) =>
+      ApiUtil.post({
+        path: '/panel/posts/previews',
+        body: {
+          ...(post.id > 0 ? { id: post.id } : {}),
+          title: post.title ?? '',
+          text: post.text ?? '',
+          categoryId: Number(post.category) || -1,
+          thumbnailUrl: isThumbnailRemoved
+            ? ''
+            : withCover && thumbnail
+              ? thumbnail
+              : (post.thumbnailUrl ?? ''),
+        },
+        handler: (response) => response,
+      }).catch(() => null);
+
+    // A cover picked just now exists only in this browser (as a `data:` image). If it makes the
+    // draft too large, the preview is still shown, with the saved cover instead.
+    let body = await send(true);
+
+    if ((!body || body.error) && thumbnail) {
+      body = await send(false);
+    }
+
+    previewing = false;
+
+    if (!body || body.error || !body.token) {
+      tab?.close();
+
+      await showErrorToast(
+        body?.error?.code === 'NO_PERMISSION'
+          ? 'errors.NO_PERMISSION'
+          : 'pages.frontend.errors.UNKNOWN',
+      );
+
+      return;
+    }
+
+    const url = `${UI_URL === '/' ? '' : UI_URL}/preview/post/${body.token}`;
+
+    if (tab) {
+      tab.location.href = url;
+    } else {
+      window.open(url, '_blank');
+    }
+  }
 
   let titleInput = $state();
 

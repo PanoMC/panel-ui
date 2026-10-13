@@ -2129,8 +2129,13 @@ export function serverProblems(server) {
   }
 
   if (isPluginUnreachable(server)) {
-    // Connected or not, the jar is too old to reach this Pano: it must be replaced by hand.
-    problems.push({ key: 'components.modals.servers.problems.plugin-unreachable' });
+    // Connected or not, the jar is too old to reach this Pano. A managed server's node can replace
+    // it (`mode`), so that is an ordinary update; otherwise it must be replaced by hand.
+    problems.push({
+      key: server.panoPluginUpdate?.mode
+        ? 'components.modals.servers.problems.plugin-outdated'
+        : 'components.modals.servers.problems.plugin-unreachable',
+    });
   } else if (server.panoPluginUpdate?.outdatedProtocol === true) {
     problems.push({ key: 'components.modals.servers.problems.plugin-outdated' });
   }

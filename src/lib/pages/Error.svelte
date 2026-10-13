@@ -9,7 +9,13 @@
 
       <div class="alert alert-danger d-flex align-items-start" role="alert">
         <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
-        <div>{$_('page-error.' + $page.status) || $page.error.message}</div>
+        <!-- A status with its own text says that; every other one gets the general sentence (a
+             missing key used to print the key itself: "page-error.500"). -->
+        <div>
+          {$_('page-error.' + $page.status, {
+            default: $_('page-error.default', { values: { status: $page.status } }),
+          })}
+        </div>
       </div>
     </div>
   </div>

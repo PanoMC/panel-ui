@@ -60,10 +60,15 @@
   </th>
   <Hook name="panel:posts:table:row:start" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle">
+    <!-- Like the rest of the row: the post's page, in this tab. The preview is the menu's "View".
+         `target` is null, not "_self": SvelteKit treats a link with any `target` as an outside
+         link and loads the whole page instead of navigating inside the panel. -->
     <TableThumbnail
       src={post.thumbnailUrl}
       alt={post.title}
-      href="{UI_URL === '/' ? '' : UI_URL}/preview/post/{post.id}" />
+      href={base + '/posts/detail/' + post.id}
+      target={null}
+      tooltipText={post.title} />
   </td>
   <Hook
     name="panel:posts:table:row:after-thumbnail"
@@ -94,17 +99,23 @@
   <td class="align-middle text-nowrap">{post.views}</td>
   <Hook name="panel:posts:table:row:after-views" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle">
-    <a
-      href="{base}/players/detail/{post.writer.username}"
-      class="d-inline-block focus-ring rounded-circle"
-      title={post.writer.username}>
-      <img
-        alt={post.writer.username}
-        class="rounded-circle"
-        width="32"
-        height="32"
-        src="/api/v1/profile/picture/{post.writer.username}?{$avatarVersion}" />
-    </a>
+    {#if hasWriter}
+      <a
+        href="{base}/players/detail/{post.writer.username}"
+        class="d-inline-block focus-ring rounded-circle"
+        title={post.writer.username}>
+        <img
+          alt={post.writer.username}
+          class="rounded-circle"
+          width="32"
+          height="32"
+          src="/api/v1/profile/picture/{post.writer.username}?{$avatarVersion}" />
+      </a>
+    {:else}
+      <!-- No author (the account is gone): Pano answers "-" for the name. Nothing to link to and
+           no picture to ask for. -->
+      <span class="text-body-secondary">—</span>
+    {/if}
   </td>
   <Hook
     name="panel:posts:table:row:after-author"
@@ -135,6 +146,9 @@
   import { PageTypes } from '$lib/pages/Posts.svelte';
 
   export let post;
+
+  /** Pano answers `-` as the writer's name when the post has no author any more. */
+  $: hasWriter = !!post?.writer?.username && post.writer.username !== '-';
   export let pageType;
   export let buttonsLoading;
 

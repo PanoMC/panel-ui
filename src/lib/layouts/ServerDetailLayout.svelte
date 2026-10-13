@@ -30,12 +30,19 @@
   }
 
   .server-detail-header {
-    position: sticky;
-    top: 0;
-    z-index: 3;
     /* The server icon is sized from the card, not baked into the component: it stands as tall as
        the card's own type is deep and as wide as the picture needs, so nothing is cropped. */
     --server-icon-height: 4rem;
+  }
+
+  /* The card follows the page down on a wide screen only. On a phone it is tall (the controls wrap
+     under the name) and a card stuck to the top would keep a large part of a small screen. */
+  @media (min-width: 992px) {
+    .server-detail-header {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+    }
   }
 
   .server-favicon {
@@ -347,8 +354,9 @@
   </div>
 
   <!-- A plugin, node or Pano Agent too old to reach this Pano at all: it cannot connect or update
-       itself, so the jar is replaced by hand. The same steps and download as the manual plugin
-       update; the Nodes page carries a node's own. Under the card, as an error alert. -->
+       itself. On a managed server the node replaces the plugin jar (one click, "Update"); elsewhere
+       the jar is replaced by hand, with the same steps and download as the manual plugin update.
+       The Nodes page carries a node's own. Under the card, as an error alert. -->
   {#if pluginUnreachable}
     <div
       class="alert alert-danger d-flex align-items-start mb-0"
@@ -364,7 +372,9 @@
           <PanoPluginUpdateButton
             server={$server}
             latestVersion={pluginUpdate?.latestVersion ?? null}
-            label="pages.servers.header.download"
+            label={$server?.panoPluginUpdate?.mode
+              ? 'buttons.update'
+              : 'pages.servers.header.download'}
             inAlert />
         </div>
       </div>

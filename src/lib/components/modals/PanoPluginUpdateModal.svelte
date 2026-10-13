@@ -99,10 +99,8 @@
       return false;
     }
 
-    void showSuccess('pages.servers.overview.info.plugin-update-started', {
-      version: body.toVersion ?? options.latestVersion ?? '',
-    });
-
+    // Nothing is said yet: the update shows as the server's running task, and "updated" is said
+    // once it has really finished (the task listener below).
     return true;
   }
 </script>
@@ -110,6 +108,8 @@
 <script>
   import { onDestroy, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
+
+  import { onTaskProgress } from '$lib/panelRealtime.js';
 
   /** Software that loads the Pano plugin from `mods/` rather than `plugins/`. */
   const MOD_LOADERS = ['FABRIC', 'QUILT'];
@@ -142,7 +142,22 @@
     };
   });
 
+  // A finished Pano plugin update is said once, wherever in the panel the admin is by then.
+  /** @type {Set<string>} */
+  const announced = new Set();
+
+  const stopTaskListener = onTaskProgress((task) => {
+    if (task?.panoPluginUpdate !== true || task.status !== 'DONE' || announced.has(task.taskId)) {
+      return;
+    }
+
+    announced.add(task.taskId);
+
+    void showSuccess('components.modals.pano-plugin-update.updated');
+  });
+
   onDestroy(() => {
     openModal = null;
+    stopTaskListener();
   });
 </script>

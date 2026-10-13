@@ -12,7 +12,7 @@
     "enable": "Enable",
     "validate": "Validate",
     "import": "Import",
-    "players": "Players",
+    "players": "Users",
     "posts": "Posts",
     "tickets": "Tickets",
     "panel": "Panel",
@@ -311,7 +311,7 @@
         "publish-your-first-post": "Publish First Post",
         "change-theme": "Change Theme Appearance",
         "manage-addons": "Manage Addons",
-        "manage-players": "Manage Players",
+        "manage-players": "Manage Users",
         "get-themes-and-extensions": "Get Themes & Extensions",
         "get-extensions": "Get Extensions",
         "documentations": "Documentation",
@@ -320,7 +320,7 @@
       },
       "last-tickets": {
         "title": "Last Tickets",
-        "player-name": "Player Name",
+        "player-name": "User Name",
         "filter": "Filter",
         "no-category": "No Category"
       },
@@ -335,7 +335,7 @@
       "title": "Statistics",
       "online-player-text": "{onlinePlayerCount} Online",
       "new-register-text": "{newRegisterCount} New Registration",
-      "total-player-text": "{totalPlayerCount} Total Players",
+      "total-player-text": "{totalPlayerCount} Total Users",
       "online-player-card": {
         "title": "Online Players"
       },
@@ -343,7 +343,7 @@
         "title": "New Registrations"
       },
       "total-player-card": {
-        "title": "Total Players"
+        "title": "Total Users"
       },
       "period-label": {
         "week": "This week",
@@ -357,7 +357,7 @@
       "total-statistics": {
         "title": "Statistics",
         "posts": "Posts",
-        "players": "Players",
+        "players": "Users",
         "admins": "Admins",
         "tickets": "Tickets",
         "connected-servers": "Servers",
@@ -374,9 +374,9 @@
       "authorized": "Authorized",
       "banned": "Banned",
       "permissions": "Permissions",
-      "table-title": "{playerCount} {pageType} Player",
+      "table-title": "{playerCount} {pageType} User",
       "all": "All",
-      "player": "Player",
+      "player": "User",
       "table": {
         "name": "Username",
         "perm-group": "Permission Group",
@@ -420,7 +420,7 @@
       "table": {
         "id": "ID",
         "title": "Title",
-        "player": "Player",
+        "player": "User",
         "category": "Category",
         "status": "Status",
         "last-reply": "Last Reply"
@@ -546,7 +546,7 @@
           "label": "Usage mode",
           "website": {
             "title": "Website",
-            "description": "Website only: posts, tickets, themes, player registration."
+            "description": "Website only: posts, tickets, themes, user registration."
           },
           "servers": {
             "title": "Server management",
@@ -645,7 +645,8 @@
           "confirm-switch-own-description": "Pano Host mail is no longer used for this website's e-mails.",
           "sender-local-invalid": "Use letters, digits and . _ + - only (up to 64)."
         },
-        "smtp-settings": "SMTP",
+        "smtp-settings": "Email",
+        "smtp-settings-sub": "How Pano sends e-mail: verification, password reset and notifications.",
         "toggle-smtp": "Toggle SMTP",
         "auth": {
           "require-email-verification": "Require Email Verification",
@@ -741,7 +742,7 @@
           }
         },
         "theme-dev-server": "Theme Dev Server",
-        "theme-dev-server-hint": "While Development Mode is on, Pano shows this address instead of the theme, for example http://localhost:3000. The panel, setup and plugin UIs keep working. Leave it empty to use the installed theme.",
+        "theme-dev-server-hint": "Shown instead of the theme while Development Mode is on. Empty = the installed theme.",
         "theme-dev-server-inactive": "It only applies while the site mode is “Theme”.",
         "theme-dev-server-saved": "The theme dev server was saved."
       },
@@ -788,7 +789,7 @@
           "title": "Nodes, Agents And The Pano Plugin",
           "update-all-plugins": "Update all Pano plugins",
           "auto-update": "Update Nodes And Agents Automatically",
-          "auto-update-hint": "When Pano has a newer node, every node and agent updates itself as soon as it connects. Running servers keep running; the Pano plugin is never updated without you.",
+          "auto-update-hint": "Pano Server Agents and Pano Server Nodes update automatically.",
           "unavailable": "This build of Pano cannot list node and plugin updates yet.",
           "empty": "No nodes, agents or servers with the Pano plugin yet.",
           "column-name": "Name",
@@ -1076,12 +1077,12 @@
       "panel": {
         "luckperms-alert": "This page is designed to be compatible with LuckPerms and offers advanced permission management features.",
         "search": {
-          "placeholder": "Search (group, player, node)"
+          "placeholder": "Search (group, user, node)"
         },
         "actions": {
           "create-group": "Create Group",
           "create-track": "Create Track",
-          "add-player": "Add Player",
+          "add-player": "Add User",
           "go-to-group": "Go to group: {name}",
           "go-to-parent-group": "Go to parent group: {name}",
           "confirm-reset-title": "Reset all unsaved changes?",
@@ -1090,7 +1091,7 @@
         "accordions": {
           "tracks": "Tracks",
           "groups": "Groups",
-          "users": "Players"
+          "users": "Users"
         },
         "group": {
           "parents": "Parents",
@@ -1104,16 +1105,16 @@
           "pano-only-alert": "This permission node will only work in Pano and will not be reflected in the game.",
           "game-only-alert": "This permission node will only work in the game and will not be reflected in Pano.",
           "pano-only-alert-link": "Read Documentation",
-          "admin-group-delete-warning": "This is an administrator group with full permissions (*). Deleting it may cause players in this group to lose their access.",
+          "admin-group-delete-warning": "This is an administrator group with full permissions (*). Deleting it may cause users in this group to lose their access.",
           "admin-group-last-warning": "ATTENTION: This is the LAST administrator group in the system. If you delete this group, there may be no one left with full permissions on the platform!"
         },
         "user": {
           "groups": "Groups",
-          "delete": "Delete player"
+          "delete": "Delete user"
         },
         "empty": {
           "no-nodes": "No nodes.",
-          "select-something": "Select a group, player or track."
+          "select-something": "Select a group, user or track."
         },
         "editor": {
           "title": "Permission Nodes",
@@ -1157,13 +1158,13 @@
       "card-title": "{count} Permission Group",
       "name": "Name",
       "permission-amount": "Permission Amount",
-      "player-amount": "Player Amount",
+      "player-amount": "User Amount",
       "groups": "Permission Groups",
       "search": {
         "placeholder": "Search..."
       },
       "permissions": "Permission",
-      "players": "Player",
+      "players": "User",
       "users": "Users",
       "no-groups-found": "No groups found",
       "permissions-assigned": "Assigned Permission",
@@ -1436,8 +1437,7 @@
           "plugin-version": "Plugin version",
           "protocol": "Protocol",
           "plugin-update-available": "Update available: {version}",
-          "plugin-up-to-date": "Up to date",
-          "plugin-update-started": "The Pano plugin update to {version} started. Restart the server to load it."
+          "plugin-up-to-date": "Up to date"
         },
         "plugin-missing-title": "No Pano Plugin",
         "plugin-missing": "Players, TPS and in-game features are unavailable.",
@@ -1684,6 +1684,9 @@
         "uploads-clear": "Clear finished",
         "upload-done": "Uploaded",
         "upload-failed": "Failed",
+        "upload-queued": "Queued",
+        "uploads-cancel-queued": "Cancel queued",
+        "uploads-more": "and {count} more",
         "upload-failed-toast": "{name} could not be uploaded.",
         "selected": "{count, plural, one {1 File Selected} other {# Files Selected}}",
         "column-name": "Name",
@@ -2484,7 +2487,7 @@
           "placeholder": "Name"
         },
         "player": {
-          "placeholder": "Add player..."
+          "placeholder": "Add user..."
         }
       }
     },
@@ -2496,10 +2499,10 @@
       "last-entrance": "Last Entrance",
       "expire-date": "Expire Date",
       "current-session": "Current Session",
-      "players": "Players",
+      "players": "Users",
       "un-ban": "Remove Ban",
       "ban": "Ban",
-      "send-verification-mail": "Send a verification link to player email",
+      "send-verification-mail": "Send a verification link to user email",
       "authorize": "Authorize",
       "in-game": "In Game",
       "in-website": "In Website",
@@ -2556,8 +2559,8 @@
         "db-connect-info": "backend detected. Pano will connect using the credentials below. You can edit them if needed before uploading.",
         "password-info": "Passwords will be preserved and automatically updated on first login.",
         "no-password-warning": "Some users have no password. They will need to reset it to log in.",
-        "pano-only-title": "{count} Players Not Found in AuthMe",
-        "pano-only-warning": "These players will be permanently deleted from Pano.",
+        "pano-only-title": "{count} Users Not Found in AuthMe",
+        "pano-only-warning": "These users will be permanently deleted from Pano.",
         "password-strategy-title": "Password Handling",
         "password-strategy-desc": "Some user passwords have incompatible formats. Please choose how to proceed:",
         "strategy-hash": "Migrate Passwords (Recommended)",
@@ -2616,8 +2619,8 @@
       "banned-players": {
         "supported-info-title": "Import Server Bans:",
         "supported-format": "Upload your server's banned-players.json file (vanilla, Spigot, Paper).",
-        "matching-info": "Each entry is matched against Pano players by Minecraft UUID first, then by username.",
-        "unmatched-note": "Players that do not exist in Pano cannot be banned and will be skipped.",
+        "matching-info": "Each entry is matched against Pano users by Minecraft UUID first, then by username.",
+        "unmatched-note": "Users that do not exist in Pano cannot be banned and will be skipped.",
         "upload-label": "Upload banned-players.json",
         "total-entries": "{count} Total Entries",
         "matched": "{count} Matched",
@@ -2634,7 +2637,7 @@
         "skip-expired": "Skip Expired Bans",
         "skip-expired-desc": "Do not import entries whose ban has already expired ({count} affected).",
         "override-already-banned": "Re-apply to Already Banned",
-        "override-already-banned-desc": "Override ban reason and duration for players that are already banned in Pano ({count} affected).",
+        "override-already-banned-desc": "Override ban reason and duration for users that are already banned in Pano ({count} affected).",
         "unmatched-warning": "{count} entries could not be matched to a Pano user and will be skipped.",
         "importing-status": "Importing {count} bans...",
         "result-title": "Ban Migration Completed",
@@ -3301,7 +3304,8 @@
       "translations": "Translations",
       "backups": "Backups",
       "attention": {
-        "addons": "{count, plural, one {# addon needs attention} other {# addons need attention}}"
+        "addons": "{count, plural, one {# addon needs attention} other {# addons need attention}}",
+        "themes": "{count, plural, one {# theme needs attention} other {# themes need attention}}"
       }
     },
     "navbar": {
@@ -3362,7 +3366,7 @@
       "select": "Select",
       "filter": "Filter",
       "no-category": "No Category",
-      "player-name": "Player Name"
+      "player-name": "User Name"
     },
     "player-row": {
       "actions": "Actions",
@@ -3383,7 +3387,7 @@
     },
     "player-permission-badge": {
       "filter": "Filter",
-      "player": "Player"
+      "player": "User"
     },
     "bottom": {
       "documentation": "Documentation",
@@ -3471,7 +3475,7 @@
       },
       "confirm-disable-email": {
         "title": "Disable e-mail?",
-        "description": "E-mail functions such as registration and password reset will stop working."
+        "description": "Pano will not be able to send e-mail. E-mail verification at registration, password reset and e-mail notifications will stop working."
       },
       "confirm-update-platform": {
         "title": "Update the platform?",
@@ -3556,7 +3560,8 @@
           },
           "description": {
             "placeholder": "Description"
-          }
+          },
+          "enabled": "Active"
         }
       },
       "add-edit-language": {
@@ -3571,25 +3576,33 @@
           "date-fns-code": "Date-fns Code",
           "date-fns-code-helper": "Used for formatting dates and times in your language.",
           "derivatives": "Press Enter to insert",
-          "derivatives-helper": "Alternative codes that should use this language (e.g., en, en-GB)."
+          "derivatives-helper": "Alternative codes that should use this language (e.g., en, en-GB).",
+          "enabled": "Active",
+          "enabled-english": "English is always active.",
+          "enabled-website-language": "This is the website's language. Pick another one in the settings to turn it off."
         }
       },
       "confirm-send-verification-email": {
         "title": "Send a verification e-mail?",
-        "description": "A verification e-mail is sent to this player's e-mail address."
+        "description": "A verification e-mail is sent to this user's e-mail address."
       },
       "authorize-player": {
-        "title": "Authorize Player",
-        "player": "Player",
+        "title": "Authorize User",
+        "player": "User",
         "permission-group-label": "Permission Group",
         "select-group": "Select permission group",
-        "permissions-label": "Permissions"
+        "permissions-label": "Permissions",
+        "node-placeholder": "Add a permission, e.g. essentials.fly",
+        "scoped": "Limited",
+        "scoped-hint": "Limited to servers or to a time on the permissions page. It is kept as it is.",
+        "load-failed": "The permissions could not be loaded.",
+        "save-failed": "The permissions could not be saved."
       },
       "confirm-ban-player": {
         "title": "Ban {username}",
         "notify-with-email": "Notify by email",
         "ban-message": "Reason",
-        "ban-message-placeholder": "Enter the ban message to show to the player",
+        "ban-message-placeholder": "Enter the ban message to show to the user",
         "ban-duration": "Ban Duration",
         "permanent-ban": "Permanent",
         "custom-duration": "Duration",
@@ -3613,10 +3626,10 @@
       "confirm-ban-ip": {
         "title": "Ban IP",
         "ban-message-placeholder": "Reason (optional)",
-        "find-player": "Find Player (Register IP)",
+        "find-player": "Find User (Register IP)",
         "toast-banned": "IP {ip} is banned.",
-        "toast-no-registered-ip": "This player has no register IP to use.",
-        "toast-ip-required": "Enter an IP address or pick a player."
+        "toast-no-registered-ip": "This user has no register IP to use.",
+        "toast-ip-required": "Enter an IP address or pick a user."
       },
       "confirm-close-ticket": {
         "title-single": "Close this ticket?",
@@ -3626,11 +3639,11 @@
       },
       "confirm-delete-permission-group": {
         "title": "Are you sure you want to permanently delete this authorization group?",
-        "description": "The following users in the authorization group will be changed to Player:"
+        "description": "The following users in the authorization group will be changed to User:"
       },
       "confirm-delete-player": {
-        "title": "Delete this player?",
-        "description": "The player's account is deleted from Pano. Enter your account password to confirm.",
+        "title": "Delete this user?",
+        "description": "The user's account is deleted from Pano. Enter your account password to confirm.",
         "inputs": {
           "password": {
             "placeholder": "Password"
@@ -3669,10 +3682,10 @@
       },
       "confirm-remove-perm-user": {
         "title": "Remove \"{username}\" from the list?",
-        "description": "The player and their own permissions are removed from the list. The change takes effect when you save."
+        "description": "The user and their own permissions are removed from the list. The change takes effect when you save."
       },
       "search-player": {
-        "title": "Search Player",
+        "title": "Search User",
         "states": {
           "loading": "Searching...",
           "start-typing": "Start typing to search.",
@@ -4032,30 +4045,43 @@
           "crashed": "This server crashed.",
           "crashed-exit": "This server crashed (exit code {code}).",
           "crash-reason": "Reason: {reason}",
-          "plugin-outdated": "The Pano plugin on this server is outdated and not fully compatible with this Pano. Update it from the server's page.",
-          "node-outdated": "The node running this server is outdated and not fully compatible with this Pano. Update it from the Nodes page.",
-          "agent-outdated": "The Pano Agent running this server is outdated and not fully compatible with this Pano. Update it from the server's page.",
-          "plugin-unreachable": "The Pano plugin on this server is too old to reach this Pano. Download the new jar, stop the server, replace the old jar and start it again.",
-          "node-unreachable": "The node running this server is too old to reach this Pano. Replace its jar by hand; open the Nodes page for the download.",
-          "agent-unreachable": "The Pano Agent running this server is too old to reach this Pano. Replace its jar by hand: stop the server, put in the new agent jar and start it again."
+          "plugin-outdated": "The Pano plugin is outdated. Update required.",
+          "node-outdated": "The node is outdated. Update required.",
+          "agent-outdated": "The Pano Agent is outdated. Update required.",
+          "plugin-unreachable": "The Pano plugin is too old. Manual update required.",
+          "node-unreachable": "The node is too old. Manual update required.",
+          "agent-unreachable": "The Pano Agent is too old. Manual update required."
         }
       },
       "unban-player": {
-        "title": "Unban this player?",
-        "description": "The player's ban is lifted right away."
+        "title": "Unban this user?",
+        "description": "The user's ban is lifted right away."
       },
       "unban-ip": {
         "title": "Remove the IP ban for {ip}?",
         "description": "The ban on this address is lifted right away."
       },
+      "create-player": {
+        "title": "Create User",
+        "inputs": {
+          "password": "Password",
+          "password-repeat": "Password (Again)",
+          "email-verified": "E-Mail verified"
+        },
+        "errors": {
+          "password": "The password must have a minimum of 6 and a maximum of 128 characters",
+          "password-repeat": "The passwords do not match",
+          "failed": "The user could not be created."
+        }
+      },
       "edit-player": {
-        "title": "Edit Player Information",
+        "title": "Edit User Information",
         "inputs": {
           "username": {
             "placeholder": "Username",
             "errors": {
               "invalid": "Username is not valid",
-              "exists": "This username is used by another player"
+              "exists": "This username is used by another user"
             }
           },
           "email": {
@@ -4063,7 +4089,7 @@
             "empty-login-notice": "If left empty, the user will be asked to add an email address the next time they sign in.",
             "errors": {
               "invalid": "E-Mail is not valid",
-              "exists": "This E-Mail address is used by another player"
+              "exists": "This E-Mail address is used by another user"
             }
           },
           "new-password": {
@@ -4075,7 +4101,7 @@
           },
           "clear-password": {
             "label": "Remove website email/password and unlink Minecraft",
-            "help": "The account's website email, password, and Minecraft link will be cleared. The player must use the in-game account link flow again to add an email and set a new password. Until they do, they cannot sign in to the site with a password; use this when you need a full in-game re-registration."
+            "help": "The account's website email, password, and Minecraft link will be cleared. The user must use the in-game account link flow again to add an email and set a new password. Until they do, they cannot sign in to the site with a password; use this when you need a full in-game re-registration."
           },
           "new-password-repeat": {
             "title": "New Password Repeat",
@@ -4086,7 +4112,7 @@
           "locale": {
             "label": "Display Language",
             "default": "Platform Default ({defaultLocaleName})",
-            "mismatch-warning": "This player is not using the platform's default language."
+            "mismatch-warning": "This user is not using the platform's default language."
           },
           "can-open-ticket": "Can create ticket",
           "email-verified": "E-Mail is verified"
@@ -4192,6 +4218,7 @@
         "node-body": "It updates itself and reconnects; its servers keep running."
       },
       "pano-plugin-update": {
+        "updated": "The Pano plugin was updated.",
         "title": "Update the Pano plugin by hand",
         "why-too-old": "The Pano plugin on {name} is too old to update itself. Update it by hand this once; after that, updates are one click from Pano.",
         "why-offline": "{name} is not connected to Pano, so Pano cannot reach its plugin. You can update it by hand.",
@@ -4201,6 +4228,14 @@
         "step-replace": "Stop the server. In its {folder} folder, delete the old Pano jar (pano.jar or pano-…jar) and put the downloaded one there.",
         "step-start": "Start the server. It connects with the new plugin, and the next update is one click.",
         "why-unreachable": "The Pano plugin on {name} is too old to reach this Pano, so it cannot connect or update itself. Replace the jar by hand this once; after that, updates are one click from Pano."
+      },
+      "ticket-settings": {
+        "title": "Ticket Settings",
+        "allow-no-category": "Allow tickets without a category",
+        "allow-no-category-hint": "Users can open a ticket without picking a category.",
+        "load-failed": "The settings could not be loaded.",
+        "save-failed": "The settings could not be saved.",
+        "saved": "Ticket settings saved."
       }
     },
     "editor": {
@@ -4251,14 +4286,15 @@
         "saved": "saved."
       },
       "permission-group-save-error": "Failed to save permission group! Error: {errorCode}",
-      "player-authorized-success": "Updated player permission group.",
+      "player-authorized-success": "Updated user permission group.",
       "player-ban": {
         "the-player": "\"{username}\" user {event}",
         "banned": "banned.",
         "could-not-ban": "couldn't ban, error: {error}"
       },
-      "player-deleted-success": "Deleted player \"{username}\".",
-      "player-info-saved-success": "Updated player information.",
+      "player-created-success": "User \"{name}\" was created.",
+      "player-deleted-success": "Deleted user \"{username}\".",
+      "player-info-saved-success": "Updated user information.",
       "player-unban": {
         "the-player": "\"{username}\" user's {event}",
         "removed-ban": "ban removed.",
@@ -4398,12 +4434,14 @@
     }
   },
   "page-error": {
-    "404": "Enderman blocked this page from loading."
+    "404": "Enderman blocked this page from loading.",
+    "500": "Internal server error. Please report the error shown in your browser console.",
+    "default": "Something went wrong (error {status})."
   },
   "permissions": {
     "ACCESS_PANEL": {
       "title": "Access Panel",
-      "description": "Allows access to panel interface. Useful for making VIP player type of permissions without any access."
+      "description": "Allows access to panel interface. Useful for making VIP user type of permissions without any access."
     },
     "MANAGE_SERVERS": {
       "title": "Manage Servers",
@@ -4458,8 +4496,8 @@
       "description": "Can reply, delete, close a ticket and manage ticket categories."
     },
     "MANAGE_PLAYERS": {
-      "title": "Manage Players",
-      "description": "Can view, verify, delete, manage players. This does not include player's permissions!"
+      "title": "Manage Users",
+      "description": "Can view, verify, delete, manage users. This does not include user's permissions!"
     },
     "MANAGE_VIEW": {
       "title": "Manage View",
@@ -4479,7 +4517,7 @@
     },
     "MANAGE_PERMISSION_GROUPS": {
       "title": "Manage Permission Groups",
-      "description": "Can add, edit, delete a permission group. This permission also allows for change permission of a player with \"manage players\" permission."
+      "description": "Can add, edit, delete a permission group. This permission also allows for change permission of a user with \"manage users\" permission."
     },
     "ACCESS_ACTIVITY_LOGS": {
       "title": "Access Activity Logs",
@@ -4491,14 +4529,15 @@
     }
   },
   "activity-logs": {
-    "BANNED_PLAYER": "**{username}** banned player {player}.",
+    "BANNED_PLAYER": "**{username}** banned user {player}.",
     "BANNED_IP": "**{username}** banned IP {ip}.",
     "CLOSED_TICKETS": "**{username}** closed some tickets ({ticketIds}).",
     "CREATED_PERMISSION_GROUP": "**{username}** created \"{permissionGroupName}\" permission group.",
     "CREATED_POST_CATEGORY": "**{username}** created \"{title}\" post category.",
     "CREATED_TICKET_CATEGORY": "**{username}** created \"{title}\" ticket category.",
     "DELETED_PERMISSION_GROUP": "**{username}** deleted \"{permissionGroupName}\" permission group.",
-    "DELETED_PLAYER": "**{username}** deleted player {player}.",
+    "CREATED_PLAYER": "**{username}** created user {player}.",
+    "DELETED_PLAYER": "**{username}** deleted user {player}.",
     "DELETED_POST_CATEGORY": "**{username}** deleted \"{title}\" post category.",
     "DELETED_POST": "**{username}** deleted \"{title}\" post.",
     "DELETED_TICKET_CATEGORY": "**{username}** deleted \"{title}\" ticket category.",
@@ -4509,12 +4548,12 @@
     "PUBLISHED_POST": "**{username}** published a post.",
     "REPLIED_TICKET": "**{username}** replied to a ticket #{ticketId}.",
     "SENT_MANUAL_VALIDATION_EMAIL": "**{username}** sent manual validation e-mail to {email}.",
-    "UNBANNED_PLAYER": "**{username}** unbanned player {player}.",
+    "UNBANNED_PLAYER": "**{username}** unbanned user {player}.",
     "UNBANNED_IP": "**{username}** removed the IP ban for {ip}.",
     "UPDATED_PERMISSION_GROUP": "**{username}** made changes in \"{permissionGroupName}\" permission group.",
     "UPDATED_PERMISSION_GROUP_PERM": "**{username}** made changes in \"{permissionGroupName}\" permission group perm.",
-    "UPDATED_PLAYER": "**{username}** made changes in player \"{player}\".",
-    "UPDATED_PLAYER_PERMISSION_GROUP": "**{username}** made changes in player \"{player}\" permission group to \"{permissionGroupName}\".",
+    "UPDATED_PLAYER": "**{username}** made changes in user \"{player}\".",
+    "UPDATED_PLAYER_PERMISSION_GROUP": "**{username}** made changes in user \"{player}\" permission group to \"{permissionGroupName}\".",
     "UPDATED_POST_CATEGORY": "**{username}** made changes in \"{title}\" post category.",
     "UPDATED_POST": "**{username}** made changes in \"{title}\" post.",
     "UPDATED_POST_STATUS": "**{username}** made changes in \"{title}\" post status to {status}.",
@@ -4627,6 +4666,7 @@
     "INVALID_IP_ADDRESS": "Invalid IP address.",
     "INVALID_LINK": "Invalid link.",
     "INVALID_LOCALE_CODE": "Invalid locale code.",
+    "LOCALE_CANNOT_BE_DISABLED": "This language cannot be turned off.",
     "INVALID_LOCALE_DERIVATIVE": "Invalid locale derivative.",
     "INVALID_LOCALE_NAME": "Invalid locale name.",
     "INVALID_PLATFORM_CODE": "Invalid platform code.",
@@ -4686,7 +4726,8 @@
     "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Website logo has an invalid content type.",
     "KEEP_INCOMPATIBLE": "That can’t be kept when switching to this software. Check the “What to keep” choices.",
     "NETWORK_ROLE_CONFLICT": "This server is part of a network. Remove it from the network before switching between a proxy and a game server.",
-    "INVALID_HOME_PAGE": "This is not a home page option of the active theme."
+    "INVALID_HOME_PAGE": "This is not a home page option of the active theme.",
+    "TICKET_CATEGORY_REQUIRED": "Pick a category to open a ticket."
   },
   "panel-themes": {
     "light": "Light",

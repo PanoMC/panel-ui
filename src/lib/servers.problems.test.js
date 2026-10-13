@@ -43,6 +43,20 @@ describe('serverProblems', () => {
     ).toEqual([`${P}plugin-unreachable`]);
   });
 
+  test('a too old plugin the node can replace is an ordinary update, not a manual one', () => {
+    const managed = {
+      status: 'OFFLINE',
+      panoPluginUpdate: { outdatedProtocol: false, unreachableProtocol: true, mode: 'NODE' },
+    };
+
+    expect(isPluginUnreachable(managed)).toBe(true);
+    expect(keys(managed)).toEqual([`${P}plugin-outdated`]);
+    // Nobody can do it (no mode): the hand-made replacement stays.
+    expect(
+      keys({ panoPluginUpdate: { unreachableProtocol: true, mode: null, manual: true } }),
+    ).toEqual([`${P}plugin-unreachable`]);
+  });
+
   test('a node or agent too old to reach this Pano replaces the partly compatible sentence', () => {
     expect(
       keys({

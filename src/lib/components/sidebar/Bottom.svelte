@@ -1,7 +1,7 @@
 <nav class="nav justify-content-around w-100 py-1 align-items-center">
   <a
     class="nav-link text-light p-2"
-    href="{PANO_WEBSITE_URL}/docs"
+    href={docsUrl}
     target="_blank"
     title={$_('components.bottom.documentation')}
     aria-label={$_('components.bottom.documentation')}>
@@ -40,9 +40,22 @@
 <script>
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import { currentLanguage } from '$lib/language.util.js';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
   const session = getContext('session');
   const panelTheme = getContext('panelTheme');
   const siteInfo = getContext('siteInfo');
+
+  // The docs exist in English (the root), Turkish and Russian. The panel's language picks its
+  // own, by the language part of the code ("tr", "tr-TR"); every other language gets English.
+  const DOCS_LOCALES = { tr: 'tr/', ru: 'ru/' };
+
+  $: docsUrl =
+    `${PANO_WEBSITE_URL}/docs/` +
+    (DOCS_LOCALES[
+      String($currentLanguage?.code || '')
+        .split('-')[0]
+        .toLowerCase()
+    ] || '');
 </script>

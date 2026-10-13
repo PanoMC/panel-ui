@@ -63,9 +63,11 @@
     const plan = server.panoPluginUpdate ?? null;
     const latest = latestVersion ?? plan?.latestVersion ?? null;
 
-    // Too old to reach this Pano at all: nothing can be asked of the plugin, so the hand-made
-    // replacement steps open straight away, with the download.
-    if (plan?.unreachableProtocol === true) {
+    // Too old to reach this Pano at all: nothing can be asked of the plugin. On a managed server
+    // the node replaces the jar itself (`mode` says who can do it), so that goes through the
+    // normal one-click update below; only when nobody can do it do the hand-made replacement
+    // steps open, with the download.
+    if (plan?.unreachableProtocol === true && !plan.mode) {
       showPanoPluginUpdateModal(server, { latestVersion: latest, reason: 'PLUGIN_UNREACHABLE' });
 
       return;

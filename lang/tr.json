@@ -12,7 +12,7 @@
     "enable": "Aktifleştir",
     "validate": "Doğrula",
     "import": "İçe Aktar",
-    "players": "Oyuncular",
+    "players": "Kullanıcılar",
     "posts": "Yazılar",
     "tickets": "Talepler",
     "panel": "Panel",
@@ -311,7 +311,7 @@
         "publish-your-first-post": "İlk Yazıyı Yayımla",
         "change-theme": "Tema Görünümünü Değiştir",
         "manage-addons": "Eklentleri Yönet",
-        "manage-players": "Oyuncuları Yönet",
+        "manage-players": "Kullanıcıları Yönet",
         "get-themes-and-extensions": "Tema Ve Eklenti Al",
         "get-extensions": "Eklenti Al",
         "documentations": "Dokümantasyon",
@@ -320,7 +320,7 @@
       },
       "last-tickets": {
         "title": "Son Talepler",
-        "player-name": "Oyuncu Adı",
+        "player-name": "Kullanıcı Adı",
         "filter": "Filtrele",
         "no-category": "Kategorisiz"
       },
@@ -335,7 +335,7 @@
       "title": "İstatistikler",
       "online-player-text": "{onlinePlayerCount} Çevrimiçi",
       "new-register-text": "{newRegisterCount} Yeni Kayıt",
-      "total-player-text": "{totalPlayerCount} Toplam Oyuncu",
+      "total-player-text": "{totalPlayerCount} Toplam Kullanıcı",
       "online-player-card": {
         "title": "Çevrimiçi Oyuncu"
       },
@@ -343,7 +343,7 @@
         "title": "Yeni Kayıt"
       },
       "total-player-card": {
-        "title": "Toplam Oyuncu"
+        "title": "Toplam Kullanıcı"
       },
       "period-label": {
         "week": "Bu hafta",
@@ -357,7 +357,7 @@
       "total-statistics": {
         "title": "İstatistik",
         "posts": "Yazılar",
-        "players": "Oyuncular",
+        "players": "Kullanıcılar",
         "admins": "Yöneticiler",
         "tickets": "Talepler",
         "connected-servers": "Sunucular",
@@ -374,9 +374,9 @@
       "authorized": "Yetkili",
       "banned": "Yasaklı",
       "permissions": "Yetkiler",
-      "table-title": "{playerCount} {pageType} Oyuncu",
+      "table-title": "{playerCount} {pageType} Kullanıcı",
       "all": "Tümü",
-      "player": "Oyuncu",
+      "player": "Kullanıcı",
       "table": {
         "name": "İsim",
         "perm-group": "Yetki Grubu",
@@ -420,7 +420,7 @@
       "table": {
         "id": "ID",
         "title": "Başlık",
-        "player": "Oyuncu",
+        "player": "Kullanıcı",
         "category": "Kategori",
         "status": "Durum",
         "last-reply": "Son Yanıt"
@@ -546,7 +546,7 @@
           "label": "Kullanım Modu",
           "website": {
             "title": "Web Site",
-            "description": "Sadece web site: yazılar, talepler, temalar, oyuncu kaydı."
+            "description": "Sadece web site: yazılar, talepler, temalar, kullanıcı kaydı."
           },
           "servers": {
             "title": "Sunucu Yönetimi",
@@ -645,7 +645,8 @@
           "confirm-switch-own-description": "Bu sitenin e-postaları için artık Pano Host e-postası kullanılmaz.",
           "sender-local-invalid": "Yalnızca harf, rakam ve . _ + - kullanın (en fazla 64)."
         },
-        "smtp-settings": "SMTP",
+        "smtp-settings": "E-posta",
+        "smtp-settings-sub": "Pano'nun e-posta gönderme ayarları: doğrulama, şifre sıfırlama ve bildirimler.",
         "toggle-smtp": "SMTP'yi Değiştir",
         "auth": {
           "require-email-verification": "E-posta Doğrulaması Gereksin",
@@ -741,7 +742,7 @@
           }
         },
         "theme-dev-server": "Tema Geliştirme Sunucusu",
-        "theme-dev-server-hint": "Geliştirici Modu açıkken Pano, tema yerine bu adresi gösterir, örneğin http://localhost:3000. Panel, kurulum ve eklenti arayüzleri çalışmaya devam eder. Yüklü temayı kullanmak için boş bırakın.",
+        "theme-dev-server-hint": "Geliştirici Modu açıkken tema yerine gösterilir. Boşsa yüklü tema kullanılır.",
         "theme-dev-server-inactive": "Yalnızca site modu “Tema” iken geçerlidir.",
         "theme-dev-server-saved": "Tema geliştirme sunucusu kaydedildi."
       },
@@ -788,7 +789,7 @@
           "title": "Düğümler, Agent'lar Ve Pano Eklentisi",
           "update-all-plugins": "Tüm Pano eklentilerini güncelle",
           "auto-update": "Düğüm Ve Agent'ları Otomatik Güncelle",
-          "auto-update-hint": "Pano'da daha yeni bir düğüm sürümü varsa her düğüm ve agent bağlanır bağlanmaz kendini günceller. Çalışan sunucular çalışmaya devam eder; Pano eklentisi senden habersiz asla güncellenmez.",
+          "auto-update-hint": "Pano Server Agent ve Pano Server Node'lar otomatik güncellenir.",
           "unavailable": "Bu Pano sürümü düğüm ve eklenti güncellemelerini henüz listeleyemiyor.",
           "empty": "Henüz düğüm, agent ya da Pano eklentili sunucu yok.",
           "column-name": "Ad",
@@ -1076,12 +1077,12 @@
       "panel": {
         "luckperms-alert": "Bu sayfa LuckPerms ile uyumlu çalışacak şekilde tasarlanmıştır ve gelişmiş izin yönetimi özellikleri sunar.",
         "search": {
-          "placeholder": "Grup, oyuncu, düğüm bul..."
+          "placeholder": "Grup, kullanıcı, düğüm bul..."
         },
         "actions": {
           "create-group": "Grup Oluştur",
           "create-track": "Track Oluştur",
-          "add-player": "Oyuncu Ekle",
+          "add-player": "Kullanıcı Ekle",
           "go-to-group": "Gruba git: {name}",
           "go-to-parent-group": "Üst gruba git: {name}",
           "confirm-reset-title": "Kaydedilmemiş tüm değişiklikler sıfırlansın mı?",
@@ -1090,7 +1091,7 @@
         "accordions": {
           "tracks": "Trackler",
           "groups": "Gruplar",
-          "users": "Oyuncular"
+          "users": "Kullanıcılar"
         },
         "group": {
           "parents": "Üst Gruplar",
@@ -1104,16 +1105,16 @@
           "pano-only-alert": "Bu permission node sadece Pano'da çalışacak ve oyuna yansımayacak.",
           "game-only-alert": "Bu permission node sadece oyunda çalışacak ama Pano'da çalışmayacak.",
           "pano-only-alert-link": "Dokümantasyonu Oku",
-          "admin-group-delete-warning": "Bu grup tam yetkiye (*) sahip bir yönetici grubudur. Silmeniz durumunda bu gruptaki oyuncular yetkilerini kaybedebilir.",
+          "admin-group-delete-warning": "Bu grup tam yetkiye (*) sahip bir yönetici grubudur. Silmeniz durumunda bu gruptaki kullanıcılar yetkilerini kaybedebilir.",
           "admin-group-last-warning": "DİKKAT: Bu, sistemdeki SON yönetici grubudur. Bu grubu silerseniz platformda tam yetkili hiç kimse kalmayabilir!"
         },
         "user": {
           "groups": "Gruplar",
-          "delete": "Oyuncuyu Sil"
+          "delete": "Kullanıcıyı Sil"
         },
         "empty": {
           "no-nodes": "Node yok.",
-          "select-something": "Grup, oyuncu veya track seçin."
+          "select-something": "Grup, kullanıcı veya track seçin."
         },
         "editor": {
           "title": "Yetki Node'ları",
@@ -1157,14 +1158,14 @@
       "card-title": "{count} Yetki Grubu",
       "name": "İsim",
       "permission-amount": "Yetki Adeti",
-      "player-amount": "Oyuncu Adeti",
+      "player-amount": "Kullanıcı Adeti",
       "groups": "Yetki Grupları",
       "search": {
         "placeholder": "Ara..."
       },
       "permissions": "Yetki",
-      "players": "Oyuncu",
-      "users": "Oyuncular",
+      "players": "Kullanıcı",
+      "users": "Kullanıcılar",
       "no-groups-found": "Grup bulunamadı",
       "permissions-assigned": "Atanan Yetki",
       "select-group-title": "Bir Grup Seçin",
@@ -1436,8 +1437,7 @@
           "plugin-version": "Eklenti sürümü",
           "protocol": "Protokol",
           "plugin-update-available": "Güncelleme var: {version}",
-          "plugin-up-to-date": "Güncel",
-          "plugin-update-started": "Pano eklentisini {version} sürümüne güncelleme başladı. Yüklemek için sunucuyu yeniden başlat."
+          "plugin-up-to-date": "Güncel"
         },
         "plugin-missing-title": "Pano Eklentisi Yok",
         "plugin-missing": "Oyuncular, TPS ve oyun içi özellikler kullanılamıyor.",
@@ -1683,6 +1683,9 @@
         "uploads-clear": "Bitenleri temizle",
         "upload-done": "Yüklendi",
         "upload-failed": "Başarısız",
+        "upload-queued": "Sırada",
+        "uploads-cancel-queued": "Sıradakileri iptal et",
+        "uploads-more": "ve {count} dosya daha",
         "upload-failed-toast": "{name} yüklenemedi.",
         "selected": "{count, plural, one {1 Dosya Seçili} other {# Dosya Seçili}}",
         "column-name": "Ad",
@@ -2482,7 +2485,7 @@
           "placeholder": "İsim"
         },
         "player": {
-          "placeholder": "Oyuncu ekle..."
+          "placeholder": "Kullanıcı ekle..."
         }
       }
     },
@@ -2494,10 +2497,10 @@
       "last-entrance": "Son Giriş",
       "expire-date": "Bitiş Tarihi",
       "current-session": "Şu Anki Oturum",
-      "players": "Oyuncular",
+      "players": "Kullanıcılar",
       "un-ban": "Yasağı Kaldır",
       "ban": "Yasakla",
-      "send-verification-mail": "Oyuncu e-postasına bir doğrulama bağlantısı gönder",
+      "send-verification-mail": "Kullanıcı e-postasına bir doğrulama bağlantısı gönder",
       "authorize": "Yetkilendir",
       "in-game": "Oyunda",
       "in-website": "Sitede",
@@ -2554,8 +2557,8 @@
         "db-connect-info": "veritabanı algılandı. Pano aşağıdaki bilgilerle bağlanacaktır. Yüklemeden önce gerekirse düzenleyebilirsiniz.",
         "password-info": "Mevcut şifreler korunacak ve ilk girişte otomatik olarak güncellenecektir.",
         "no-password-warning": "Bazı kullanıcıların şifresi yok. Giriş yapabilmeleri için şifre sıfırlama yapmaları gerekecektir.",
-        "pano-only-title": "AuthMe'de Bulunmayan {count} Oyuncu",
-        "pano-only-warning": "Seçilen oyuncular Pano'dan kalıcı olarak silinecek.",
+        "pano-only-title": "AuthMe'de Bulunmayan {count} Kullanıcı",
+        "pano-only-warning": "Seçilen kullanıcılar Pano'dan kalıcı olarak silinecek.",
         "password-strategy-title": "Şifre İşleme",
         "password-strategy-desc": "Bazı kullanıcıların şifre formatı uyumsuz veya desteklenmiyor. Lütfen bir işlem seçin:",
         "strategy-hash": "Şifreleri Aktar (Önerilen)",
@@ -2614,8 +2617,8 @@
       "banned-players": {
         "supported-info-title": "Sunucu Yasaklarını İçe Aktar:",
         "supported-format": "Sunucunuzun banned-players.json dosyasını yükleyin (Vanilla, Spigot, Paper).",
-        "matching-info": "Her kayıt önce Minecraft UUID ile, ardından kullanıcı adı ile Pano oyuncularıyla eşleştirilir.",
-        "unmatched-note": "Pano'da bulunmayan oyuncular yasaklanamaz ve atlanacaktır.",
+        "matching-info": "Her kayıt önce Minecraft UUID ile, ardından kullanıcı adı ile Pano kullanıcılarıyla eşleştirilir.",
+        "unmatched-note": "Pano'da bulunmayan kullanıcılar yasaklanamaz ve atlanacaktır.",
         "upload-label": "banned-players.json Yükle",
         "total-entries": "{count} Toplam Kayıt",
         "matched": "{count} Eşleşen",
@@ -2632,7 +2635,7 @@
         "skip-expired": "Süresi Dolmuş Yasakları Atla",
         "skip-expired-desc": "Süresi zaten dolmuş kayıtları içe aktarma ({count} kayıt etkilenir).",
         "override-already-banned": "Zaten Yasaklılara Yeniden Uygula",
-        "override-already-banned-desc": "Pano'da zaten yasaklı olan oyuncuların yasak sebebini ve süresini güncelle ({count} kayıt etkilenir).",
+        "override-already-banned-desc": "Pano'da zaten yasaklı olan kullanıcıların yasak sebebini ve süresini güncelle ({count} kayıt etkilenir).",
         "unmatched-warning": "{count} kayıt bir Pano kullanıcısıyla eşleştirilemedi ve atlanacak.",
         "importing-status": "{count} yasak içe aktarılıyor...",
         "result-title": "Yasak İçe Aktarma İşlemi Tamamlandı",
@@ -3299,7 +3302,8 @@
       "translations": "Çeviriler",
       "backups": "Yedekler",
       "attention": {
-        "addons": "{count, plural, one {# eklenti dikkat istiyor} other {# eklenti dikkat istiyor}}"
+        "addons": "{count, plural, one {# eklenti dikkat istiyor} other {# eklenti dikkat istiyor}}",
+        "themes": "{count, plural, one {# tema dikkat istiyor} other {# tema dikkat istiyor}}"
       }
     },
     "navbar": {
@@ -3360,7 +3364,7 @@
       "select": "Seç",
       "filter": "Filtrele",
       "no-category": "Kategorisiz",
-      "player-name": "Oyuncu Adı"
+      "player-name": "Kullanıcı Adı"
     },
     "player-row": {
       "actions": "İşlemler",
@@ -3381,7 +3385,7 @@
     },
     "player-permission-badge": {
       "filter": "Filtrele",
-      "player": "Oyuncu"
+      "player": "Kullanıcı"
     },
     "bottom": {
       "documentation": "Dokümantasyon",
@@ -3469,7 +3473,7 @@
       },
       "confirm-disable-email": {
         "title": "E-posta devre dışı bırakılsın mı?",
-        "description": "Kayıt ve şifre sıfırlama gibi e-posta işlevleri çalışmaz."
+        "description": "Pano e-posta gönderemez. Kayıtta e-posta doğrulama, şifre sıfırlama ve e-posta bildirimleri çalışmaz."
       },
       "confirm-update-platform": {
         "title": "Platform güncellensin mi?",
@@ -3554,7 +3558,8 @@
           },
           "description": {
             "placeholder": "Açıklama"
-          }
+          },
+          "enabled": "Aktif"
         }
       },
       "add-edit-language": {
@@ -3569,25 +3574,33 @@
           "date-fns-code": "Date-fns Kodu",
           "date-fns-code-helper": "Tarih ve saatlerin dilinize göre formatlanması için kullanılır.",
           "derivatives": "Eklemek için Enter'a basın",
-          "derivatives-helper": "Bu dili kullanması gereken alternatif kodlar (örneğin: en, en-GB)."
+          "derivatives-helper": "Bu dili kullanması gereken alternatif kodlar (örneğin: en, en-GB).",
+          "enabled": "Aktif",
+          "enabled-english": "İngilizce her zaman aktiftir.",
+          "enabled-website-language": "Bu, web sitesinin dili. Kapatmak için önce ayarlardan başka bir dil seçin."
         }
       },
       "confirm-send-verification-email": {
         "title": "Doğrulama e-postası gönderilsin mi?",
-        "description": "Bu oyuncunun e-posta adresine bir doğrulama e-postası gönderilir."
+        "description": "Bu kullanıcının e-posta adresine bir doğrulama e-postası gönderilir."
       },
       "authorize-player": {
-        "title": "Oyuncuyu Yetkilendir",
-        "player": "Oyuncu",
+        "title": "Kullanıcıyı Yetkilendir",
+        "player": "Kullanıcı",
         "permission-group-label": "Yetki Grubu",
         "select-group": "Yetki grubu seçin",
-        "permissions-label": "Yetkiler"
+        "permissions-label": "Yetkiler",
+        "node-placeholder": "Yetki ekle, örn. essentials.fly",
+        "scoped": "Sınırlı",
+        "scoped-hint": "Yetkiler sayfasında belirli sunuculara veya bir süreye sınırlanmış. Olduğu gibi korunur.",
+        "load-failed": "Yetkiler yüklenemedi.",
+        "save-failed": "Yetkiler kaydedilemedi."
       },
       "confirm-ban-player": {
         "title": "{username} Yasakla",
         "notify-with-email": "E-posta ile bilgilendir",
         "ban-message": "Sebep",
-        "ban-message-placeholder": "Oyuncuya gösterilecek ban mesajını girin",
+        "ban-message-placeholder": "Kullanıcıya gösterilecek ban mesajını girin",
         "ban-duration": "Ban Süresi",
         "permanent-ban": "Kalıcı",
         "custom-duration": "Süre",
@@ -3611,10 +3624,10 @@
       "confirm-ban-ip": {
         "title": "IP Yasakla",
         "ban-message-placeholder": "Sebep (isteğe bağlı)",
-        "find-player": "Oyuncu Bul (Kayıt IP)",
+        "find-player": "Kullanıcı Bul (Kayıt IP)",
         "toast-banned": "{ip} IP adresi yasaklandı.",
-        "toast-no-registered-ip": "Bu oyuncunun kullanılacak bir kayıt IP adresi yok.",
-        "toast-ip-required": "Bir IP girin veya bir oyuncu seçin."
+        "toast-no-registered-ip": "Bu kullanıcının kullanılacak bir kayıt IP adresi yok.",
+        "toast-ip-required": "Bir IP girin veya bir kullanıcı seçin."
       },
       "confirm-close-ticket": {
         "title-single": "Bu talep kapatılsın mı?",
@@ -3624,11 +3637,11 @@
       },
       "confirm-delete-permission-group": {
         "title": "Bu yetki grubunu kalıcı olarak silmek istediğinizden emin misiniz?",
-        "description": "Yetki grubu içerisindeki şu kullanıcılar Oyuncu olarak değişecek:"
+        "description": "Yetki grubu içerisindeki şu kullanıcılar Kullanıcı olarak değişecek:"
       },
       "confirm-delete-player": {
-        "title": "Bu oyuncu silinsin mi?",
-        "description": "Oyuncunun hesabı Pano'dan silinir. Onaylamak için hesap şifrenizi girin.",
+        "title": "Bu kullanıcı silinsin mi?",
+        "description": "Kullanıcının hesabı Pano'dan silinir. Onaylamak için hesap şifrenizi girin.",
         "inputs": {
           "password": {
             "placeholder": "Şifre"
@@ -3666,11 +3679,11 @@
         "description": "Grup ve izinleri kaldırılır. Değişiklik, kaydettiğinizde geçerli olur."
       },
       "confirm-remove-perm-user": {
-        "title": "\"{username}\" oyuncusu listeden kaldırılsın mı?",
-        "description": "Oyuncu ve kendi izinleri listeden kaldırılır. Değişiklik, kaydettiğinizde geçerli olur."
+        "title": "\"{username}\" kullanıcısı listeden kaldırılsın mı?",
+        "description": "Kullanıcı ve kendi izinleri listeden kaldırılır. Değişiklik, kaydettiğinizde geçerli olur."
       },
       "search-player": {
-        "title": "Oyuncu Ara",
+        "title": "Kullanıcı Ara",
         "states": {
           "loading": "Aranıyor...",
           "start-typing": "Aramak için yazmaya başlayın.",
@@ -4030,30 +4043,43 @@
           "crashed": "Bu sunucu çöktü.",
           "crashed-exit": "Bu sunucu çöktü (çıkış kodu {code}).",
           "crash-reason": "Sebep: {reason}",
-          "plugin-outdated": "Bu sunucudaki Pano eklentisi eski ve bu Pano ile tam uyumlu değil. Sunucunun sayfasından güncelle.",
-          "node-outdated": "Bu sunucuyu çalıştıran düğüm eski ve bu Pano ile tam uyumlu değil. Düğümler sayfasından güncelle.",
-          "agent-outdated": "Bu sunucuyu çalıştıran Pano Agent eski ve bu Pano ile tam uyumlu değil. Sunucunun sayfasından güncelle.",
-          "plugin-unreachable": "Bu sunucudaki Pano eklentisi bu Pano'ya ulaşamayacak kadar eski. Yeni jar'ı indir, sunucuyu durdur, eski jar'ı değiştir ve sunucuyu yeniden başlat.",
-          "node-unreachable": "Bu sunucuyu çalıştıran düğüm bu Pano'ya ulaşamayacak kadar eski. Jar'ını elle değiştir; indirme için Düğümler sayfasını aç.",
-          "agent-unreachable": "Bu sunucuyu çalıştıran Pano Agent bu Pano'ya ulaşamayacak kadar eski. Jar'ını elle değiştir: sunucuyu durdur, yeni agent jar'ını koy ve yeniden başlat."
+          "plugin-outdated": "Pano eklentisi eski. Güncelleme gerekli.",
+          "node-outdated": "Düğüm eski. Güncelleme gerekli.",
+          "agent-outdated": "Pano Agent eski. Güncelleme gerekli.",
+          "plugin-unreachable": "Pano eklentisi çok eski. Elle güncelleme gerekli.",
+          "node-unreachable": "Düğüm çok eski. Elle güncelleme gerekli.",
+          "agent-unreachable": "Pano Agent çok eski. Elle güncelleme gerekli."
         }
       },
       "unban-player": {
-        "title": "Bu oyuncunun yasağı kaldırılsın mı?",
-        "description": "Oyuncunun yasağı hemen kaldırılır."
+        "title": "Bu kullanıcının yasağı kaldırılsın mı?",
+        "description": "Kullanıcının yasağı hemen kaldırılır."
       },
       "unban-ip": {
         "title": "{ip} için IP yasağı kaldırılsın mı?",
         "description": "Bu adresin yasağı hemen kaldırılır."
       },
+      "create-player": {
+        "title": "Kullanıcı Oluştur",
+        "inputs": {
+          "password": "Şifre",
+          "password-repeat": "Şifre (Tekrar)",
+          "email-verified": "E-posta doğrulanmış"
+        },
+        "errors": {
+          "password": "Şifre en az 6, en fazla 128 karakter olmalı",
+          "password-repeat": "Şifreler eşleşmiyor",
+          "failed": "Kullanıcı oluşturulamadı."
+        }
+      },
       "edit-player": {
-        "title": "Oyuncu Bilgilerini Düzenle",
+        "title": "Kullanıcı Bilgilerini Düzenle",
         "inputs": {
           "username": {
             "placeholder": "Kullanıcı Adı",
             "errors": {
               "invalid": "Kullanıcı Adı geçerli değil.",
-              "exists": "Bu kullanıcı adı başka bir oyuncu tarafından kullanılıyor."
+              "exists": "Bu kullanıcı adı başka bir kullanıcı tarafından kullanılıyor."
             }
           },
           "email": {
@@ -4061,7 +4087,7 @@
             "empty-login-notice": "Boş bırakılırsa, bir sonraki girişte bu kullanıcıdan yeni e-posta adresi eklemesi istenir.",
             "errors": {
               "invalid": "E-Posta geçerli değil",
-              "exists": "Bu E-Posta adresi başka bir oyuncu tarafından kullanılıyor"
+              "exists": "Bu E-Posta adresi başka bir kullanıcı tarafından kullanılıyor"
             }
           },
           "new-password": {
@@ -4073,7 +4099,7 @@
           },
           "clear-password": {
             "label": "Web sitesi e-postasını/şifresini kaldır ve Minecraft bağlantısını sil",
-            "help": "Hesabın web sitesi e-postası, şifresi ve oyun içi (Minecraft) eşleştirmesi temizlenir. Oyuncu e-posta eklemek, yeni şifre belirlemek ve hesabı yeniden bağlamak için sunucudaki hesap eşleştirme akışını tekrar kullanmalıdır. Bu yapılmadan siteye parola ile giriş olmaz; yalnızca tam oyun içi yeniden tanımlama gerekirse bu seçeneği kullanın."
+            "help": "Hesabın web sitesi e-postası, şifresi ve oyun içi (Minecraft) eşleştirmesi temizlenir. Kullanıcı e-posta eklemek, yeni şifre belirlemek ve hesabı yeniden bağlamak için sunucudaki hesap eşleştirme akışını tekrar kullanmalıdır. Bu yapılmadan siteye parola ile giriş olmaz; yalnızca tam oyun içi yeniden tanımlama gerekirse bu seçeneği kullanın."
           },
           "new-password-repeat": {
             "title": "Yeni Şifre Tekrarı",
@@ -4084,7 +4110,7 @@
           "locale": {
             "label": "Görüntüleme Dili",
             "default": "Platform Varsayılanı ({defaultLocaleName})",
-            "mismatch-warning": "Bu oyuncu platformun varsayılan dilini kullanmıyor."
+            "mismatch-warning": "Bu kullanıcı platformun varsayılan dilini kullanmıyor."
           },
           "can-open-ticket": "Talep oluşturabilir",
           "email-verified": "E-Postası doğrulandı"
@@ -4189,6 +4215,7 @@
         "node-body": "Kendini günceller ve yeniden bağlanır; sunucuları çalışmaya devam eder."
       },
       "pano-plugin-update": {
+        "updated": "Pano eklentisi güncellendi.",
         "title": "Pano eklentisini elle güncelle",
         "why-too-old": "{name} üzerindeki Pano eklentisi kendini güncelleyemeyecek kadar eski. Bu seferlik elle güncelle; sonraki güncellemeler Pano’dan tek tık.",
         "why-offline": "{name} Pano’ya bağlı değil, bu yüzden Pano eklentisine ulaşamıyor. Elle güncelleyebilirsin.",
@@ -4198,6 +4225,14 @@
         "step-replace": "Sunucuyu durdur. {folder} klasöründeki eski Pano jar’ını (pano.jar ya da pano-…jar) sil ve indirdiğini oraya koy.",
         "step-start": "Sunucuyu başlat. Yeni eklentiyle bağlanır; sonraki güncelleme tek tık.",
         "why-unreachable": "{name} üzerindeki Pano eklentisi bu Pano'ya ulaşamayacak kadar eski, bu yüzden bağlanamıyor ve kendini güncelleyemiyor. Jar'ı bu seferlik elle değiştir; sonraki güncellemeler Pano’dan tek tık."
+      },
+      "ticket-settings": {
+        "title": "Destek Talebi Ayarları",
+        "allow-no-category": "Kategorisiz destek talebine izin ver",
+        "allow-no-category-hint": "Kullanıcılar kategori seçmeden destek talebi açabilir.",
+        "load-failed": "Ayarlar yüklenemedi.",
+        "save-failed": "Ayarlar kaydedilemedi.",
+        "saved": "Destek talebi ayarları kaydedildi."
       }
     },
     "editor": {
@@ -4248,14 +4283,15 @@
         "saved": "kaydedildi."
       },
       "permission-group-save-error": "Yetki grubu kaydedilemedi! Hata: {errorCode}",
-      "player-authorized-success": "Oyuncu yetkisi güncellendi.",
+      "player-authorized-success": "Kullanıcı yetkisi güncellendi.",
       "player-ban": {
         "the-player": "\"{username}\" kullanıcısı {event}",
         "banned": "yasaklandı.",
         "could-not-ban": "yasaklanamadı, hata: {error}"
       },
-      "player-deleted-success": "Oyuncu \"{username}\" silindi.",
-      "player-info-saved-success": "Oyuncu bilgileri güncellendi.",
+      "player-created-success": "\"{name}\" adlı kullanıcı oluşturuldu.",
+      "player-deleted-success": "Kullanıcı \"{username}\" silindi.",
+      "player-info-saved-success": "Kullanıcı bilgileri güncellendi.",
       "player-unban": {
         "the-player": "\"{username}\" kullanıcısının {event}",
         "removed-ban": "yasağı kaldırıldı.",
@@ -4395,12 +4431,14 @@
     }
   },
   "page-error": {
-    "404": "Enderman bu sayfanın yüklenmesini engelledi."
+    "404": "Enderman bu sayfanın yüklenmesini engelledi.",
+    "500": "Sunucu hatası oluştu. Lütfen tarayıcı konsolundaki hatayı bildirin.",
+    "default": "Bir sorun oluştu (hata {status})."
   },
   "permissions": {
     "ACCESS_PANEL": {
       "title": "Panel'e Erişim",
-      "description": "Panel arayüzüne erişim sağlar. Herhangi bir erişim olmadan VIP oyuncu türü yetkiler oluşturmak için kullanışlıdır."
+      "description": "Panel arayüzüne erişim sağlar. Herhangi bir erişim olmadan VIP kullanıcı türü yetkiler oluşturmak için kullanışlıdır."
     },
     "MANAGE_SERVERS": {
       "title": "Sunucuları Yönet",
@@ -4455,8 +4493,8 @@
       "description": "Destek taleplerine yanıt verebilir, silebilir, kapatabilir ve destek kategorilerini yönetebilir."
     },
     "MANAGE_PLAYERS": {
-      "title": "Oyuncuları Yönet",
-      "description": "Oyuncuları görüntüleyebilir, doğrulayabilir, silebilir ve yönetebilir. Bu, oyuncunun yetkilerini içermez!"
+      "title": "Kullanıcıları Yönet",
+      "description": "Kullanıcıları görüntüleyebilir, doğrulayabilir, silebilir ve yönetebilir. Bu, kullanıcının yetkilerini içermez!"
     },
     "MANAGE_VIEW": {
       "title": "Görünümü Yönet",
@@ -4476,7 +4514,7 @@
     },
     "MANAGE_PERMISSION_GROUPS": {
       "title": "Yetki Gruplarını Yönet",
-      "description": "Bir yetki grubunu ekleyebilir, düzenleyebilir ve silebilir. Bu yetki, \"oyuncuları yönet\" yetkisiyle birlikte bir oyuncunun yetkilerini değiştirmeye de olanak tanır."
+      "description": "Bir yetki grubunu ekleyebilir, düzenleyebilir ve silebilir. Bu yetki, \"kullanıcıları yönet\" yetkisiyle birlikte bir kullanıcının yetkilerini değiştirmeye de olanak tanır."
     },
     "ACCESS_ACTIVITY_LOGS": {
       "title": "Aktivite Kayıtlarına Erişim",
@@ -4488,14 +4526,15 @@
     }
   },
   "activity-logs": {
-    "BANNED_PLAYER": "**{username}** {player} adlı oyuncuyu banladı.",
+    "BANNED_PLAYER": "**{username}** {player} adlı kullanıcıyı banladı.",
     "BANNED_IP": "**{username}** {ip} IP adresine yasak uyguladı.",
     "CLOSED_TICKETS": "**{username}** bazı destek taleplerini kapattı ({ticketIds}).",
     "CREATED_PERMISSION_GROUP": "**{username}** \"{permissionGroupName}\" adlı yetki grubunu oluşturdu.",
     "CREATED_POST_CATEGORY": "**{username}** \"{title}\" adlı gönderi kategorisini oluşturdu.",
     "CREATED_TICKET_CATEGORY": "**{username}** \"{title}\" adlı destek kategorisini oluşturdu.",
     "DELETED_PERMISSION_GROUP": "**{username}** \"{permissionGroupName}\" adlı yetki grubunu sildi.",
-    "DELETED_PLAYER": "**{username}** {player} adlı oyuncuyu sildi.",
+    "CREATED_PLAYER": "**{username}** {player} adlı kullanıcıyı oluşturdu.",
+    "DELETED_PLAYER": "**{username}** {player} adlı kullanıcıyı sildi.",
     "DELETED_POST_CATEGORY": "**{username}** \"{title}\" adlı gönderi kategorisini sildi.",
     "DELETED_POST": "**{username}** \"{title}\" adlı gönderiyi sildi.",
     "DELETED_TICKET_CATEGORY": "**{username}** \"{title}\" adlı destek kategorisini sildi.",
@@ -4506,12 +4545,12 @@
     "PUBLISHED_POST": "**{username}** bir gönderi yayımladı.",
     "REPLIED_TICKET": "**{username}** #{ticketId} numaralı destek talebine yanıt verdi.",
     "SENT_MANUAL_VALIDATION_EMAIL": "**{username}** {email} adresine manuel doğrulama e-postası gönderdi.",
-    "UNBANNED_PLAYER": "**{username}** {player} adlı oyuncunun banını kaldırdı.",
+    "UNBANNED_PLAYER": "**{username}** {player} adlı kullanıcının banını kaldırdı.",
     "UNBANNED_IP": "**{username}** {ip} IP yasağını kaldırdı.",
     "UPDATED_PERMISSION_GROUP": "**{username}** \"{permissionGroupName}\" adlı yetki grubunda değişiklik yaptı.",
     "UPDATED_PERMISSION_GROUP_PERM": "**{username}** \"{permissionGroupName}\" yetki grubunun izinlerinde değişiklik yaptı.",
-    "UPDATED_PLAYER": "**{username}** \"{player}\" adlı oyuncuda değişiklik yaptı.",
-    "UPDATED_PLAYER_PERMISSION_GROUP": "**{username}** \"{player}\" adlı oyuncunun yetki grubunu \"{permissionGroupName}\" olarak değiştirdi.",
+    "UPDATED_PLAYER": "**{username}** \"{player}\" adlı kullanıcıda değişiklik yaptı.",
+    "UPDATED_PLAYER_PERMISSION_GROUP": "**{username}** \"{player}\" adlı kullanıcının yetki grubunu \"{permissionGroupName}\" olarak değiştirdi.",
     "UPDATED_POST_CATEGORY": "**{username}** \"{title}\" adlı gönderi kategorisinde değişiklik yaptı.",
     "UPDATED_POST": "**{username}** \"{title}\" adlı gönderide değişiklik yaptı.",
     "UPDATED_POST_STATUS": "**{username}** \"{title}\" adlı gönderinin durumunu \"{status}\" olarak değiştirdi.",
@@ -4624,6 +4663,7 @@
     "INVALID_IP_ADDRESS": "Geçersiz IP adresi.",
     "INVALID_LINK": "Geçersiz bağlantı.",
     "INVALID_LOCALE_CODE": "Geçersiz dil kodu.",
+    "LOCALE_CANNOT_BE_DISABLED": "Bu dil kapatılamaz.",
     "INVALID_LOCALE_DERIVATIVE": "Geçersiz dil türevi.",
     "INVALID_LOCALE_NAME": "Geçersiz dil adı.",
     "INVALID_PLATFORM_CODE": "Geçersiz platform kodu.",
@@ -4683,7 +4723,8 @@
     "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Web sitesi logosu geçersiz içerik türüne sahip.",
     "KEEP_INCOMPATIBLE": "Bu yazılıma geçerken bu seçenek korunamaz. “Neler korunsun” seçimlerini kontrol et.",
     "NETWORK_ROLE_CONFLICT": "Bu sunucu bir ağın parçası. Proxy ile oyun sunucusu arasında geçiş yapmadan önce onu ağdan çıkar.",
-    "INVALID_HOME_PAGE": "Bu, etkin temanın bir ana sayfa seçeneği değil."
+    "INVALID_HOME_PAGE": "Bu, etkin temanın bir ana sayfa seçeneği değil.",
+    "TICKET_CATEGORY_REQUIRED": "Destek talebi açmak için bir kategori seçin."
   },
   "panel-themes": {
     "light": "Açık",
