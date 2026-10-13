@@ -301,7 +301,7 @@
 
       <!-- Why restore is off limits is on the row's own Restore item, which is what the admin
            clicked; a line under the table repeated it once per page of rows. -->
-      {#if lastPage > 1}
+      {#if visibleBackups.length > 0}
         <div class="card-footer">
           <Pagination
             page={pageOf(currentPage, visibleBackups.length, BACKUPS_PAGE_SIZE)}

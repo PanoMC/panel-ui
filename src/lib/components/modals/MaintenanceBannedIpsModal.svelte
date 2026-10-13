@@ -89,7 +89,7 @@
             </table>
           </div>
 
-          {#if pageCount($page) > 1}
+          {#if Number($page?.totalItems) > 0}
             <div class="mt-3">
               <Pagination
                 page={$page}

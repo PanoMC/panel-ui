@@ -234,7 +234,7 @@
         {/each}
       </div>
 
-      {#if reachedPages > 1}
+      {#if reachedPages >= 1}
         <div class="card-footer">
           <Pagination
             page={pageOf(page + 1, reachedPages * PAGE_SIZE, PAGE_SIZE)}

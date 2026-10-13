@@ -241,7 +241,7 @@
       </div>
     </div>
 
-    {#if lastPage > 1}
+    {#if filteredItems.length > 0}
       <div class="card-footer">
         <Pagination
           page={pageOf(currentPage, filteredItems.length, itemsPerPage)}
