@@ -473,7 +473,10 @@
                 {#if consoleHydratedId !== viewId}
                   <!-- A few lines' worth of placeholder in the dark box, as tall as the view. -->
                   <!-- `text-light` only so the placeholders show on the dark ground. -->
-                  <div class="text-light px-3 py-2" style="height: 320px;" aria-busy="true">
+                  <div
+                    class="text-light px-3 py-2 flex-grow-1"
+                    style="min-height: 320px;"
+                    aria-busy="true">
                     {#each [7, 5, 9, 6, 4, 8, 5] as width, index (index)}
                       <div class="placeholder-glow">
                         <span class="placeholder col-{width}"></span>
@@ -486,6 +489,7 @@
                     showTimestamps={false}
                     wrap
                     flush
+                    fill
                     height="320px"
                     showReachedStart={false}
                     bind:following={consoleFollowing}

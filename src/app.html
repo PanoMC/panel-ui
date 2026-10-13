@@ -52,6 +52,15 @@
         document.documentElement.setAttribute('data-bs-theme', theme);
       })();
     </script>
+    <script>
+      // Which workspace this address belongs to, told to the document before anything is painted:
+      // a servers page starts on the servers workspace's surface (the splash, the page behind it)
+      // instead of flashing the website panel's colours first. AppLayout keeps it current afterwards.
+      (function () {
+        var servers = /^(\/[^/]+)?\/servers(\/|$)/.test(location.pathname);
+        document.documentElement.setAttribute('data-workspace', servers ? 'game' : 'website');
+      })();
+    </script>
   </head>
   <body>
     <div>%sveltekit.body%</div>

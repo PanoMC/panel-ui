@@ -13,7 +13,8 @@ $workspace-game-foreground: $body-color-dark;
 $workspace-game-border: rgba($body-color-dark, 0.12);
 $workspace-game-glow: rgba($primary, 0.08);
 
-.main-container.workspace-game {
+// The colours every surface of the workspace is built from (cards, dialogs, inputs, borders).
+@mixin workspace-game-surface {
   --#{$prefix}body-bg: #{$workspace-card-background};
   --#{$prefix}body-bg-rgb: #{to-rgb($workspace-card-background)};
   --#{$prefix}body-color: #{$workspace-game-foreground};
@@ -32,6 +33,92 @@ $workspace-game-glow: rgba($primary, 0.08);
   --#{$prefix}card-border-color: var(--#{$prefix}border-color-translucent);
   --#{$prefix}card-cap-bg: #{$workspace-card-cap-background};
   --#{$prefix}card-box-shadow: 0 0.25rem 0.75rem #{rgba($black, 0.18)};
+}
+
+// The accent of the workspace: the green of the sidebar's servers button (Bootstrap's success), in
+// place of the website panel's primary. Primary buttons become that very button (`@extend`, so they
+// can never drift from it); everything else that paints with the primary colour follows the variables.
+$workspace-game-accent: $success;
+$workspace-game-accent-emphasis: tint-color($workspace-game-accent, 40%);
+$workspace-game-on-accent: color-contrast($workspace-game-accent);
+
+@mixin workspace-game-accent {
+  --#{$prefix}primary: #{$workspace-game-accent};
+  --#{$prefix}primary-rgb: #{to-rgb($workspace-game-accent)};
+  --#{$prefix}primary-text-emphasis: #{$workspace-game-accent-emphasis};
+  --#{$prefix}primary-bg-subtle: #{shade-color($workspace-game-accent, 80%)};
+  --#{$prefix}primary-border-subtle: #{shade-color($workspace-game-accent, 40%)};
+  --#{$prefix}link-color: #{$workspace-game-accent-emphasis};
+  --#{$prefix}link-color-rgb: #{to-rgb($workspace-game-accent-emphasis)};
+  --#{$prefix}link-hover-color: #{tint-color($workspace-game-accent, 60%)};
+  --#{$prefix}link-hover-color-rgb: #{to-rgb(tint-color($workspace-game-accent, 60%))};
+  --#{$prefix}focus-ring-color: #{rgba($workspace-game-accent, 0.25)};
+
+  .btn-primary {
+    @extend .btn-success;
+  }
+
+  .btn-outline-primary {
+    @extend .btn-outline-success;
+  }
+
+  // Text on the accent is the servers button's own text colour (dark on this light green), not the
+  // white these components put on the website panel's dark primary.
+  .nav-pills {
+    --#{$prefix}nav-pills-link-active-bg: #{$workspace-game-accent};
+    --#{$prefix}nav-pills-link-active-color: #{$workspace-game-on-accent};
+  }
+
+  .pagination {
+    --#{$prefix}pagination-active-bg: #{$workspace-game-accent};
+    --#{$prefix}pagination-active-border-color: #{$workspace-game-accent};
+    --#{$prefix}pagination-active-color: #{$workspace-game-on-accent};
+  }
+
+  .dropdown-menu {
+    --#{$prefix}dropdown-link-active-bg: #{$workspace-game-accent};
+    --#{$prefix}dropdown-link-active-color: #{$workspace-game-on-accent};
+  }
+
+  .list-group {
+    --#{$prefix}list-group-active-bg: #{$workspace-game-accent};
+    --#{$prefix}list-group-active-border-color: #{$workspace-game-accent};
+    --#{$prefix}list-group-active-color: #{$workspace-game-on-accent};
+  }
+
+  .progress,
+  .progress-stacked {
+    --#{$prefix}progress-bar-color: #{$workspace-game-on-accent};
+  }
+
+  .progress,
+  .progress-stacked {
+    --#{$prefix}progress-bar-bg: #{$workspace-game-accent};
+  }
+
+  // The shared stylesheet paints primary badges with a fixed colour (not the variable).
+  .badge.text-bg-primary,
+  .badge.text-bg-primary-subtle {
+    color: $workspace-game-on-accent !important;
+    background-color: $workspace-game-accent !important;
+  }
+
+  .form-check-input:checked {
+    background-color: $workspace-game-accent;
+    border-color: $workspace-game-accent;
+  }
+
+  .form-control:focus,
+  .form-select:focus,
+  .form-check-input:focus {
+    border-color: tint-color($workspace-game-accent, 50%);
+    box-shadow: 0 0 0 $input-btn-focus-width rgba($workspace-game-accent, 0.25);
+  }
+}
+
+.main-container.workspace-game {
+  @include workspace-game-surface;
+  @include workspace-game-accent;
 
   color: $workspace-game-foreground !important;
   background-color: $workspace-game-background !important;
@@ -43,8 +130,14 @@ $workspace-game-glow: rgba($primary, 0.08);
 
 [data-bs-theme] #sidebar.workspace-game {
   color: $workspace-game-foreground !important;
-  background-color: $workspace-game-background !important;
+  // The surface of the workspace's cards: the sidebar reads as one more panel on the page.
+  background-color: $workspace-card-background !important;
   background-image: none !important;
+  // The sidebar and the page share one background here, so the colour no longer tells them apart
+  // (the website workspace has the primary sidebar next to the body colour): a hairline on the
+  // sidebar's right edge does. Drawn as an inset shadow, not a border: it takes no room, so the
+  // sidebar's content keeps its width and nothing is left behind when the sidebar is collapsed.
+  box-shadow: inset (-$border-width) 0 0 $workspace-game-border !important;
 }
 
 [data-bs-theme] #sidebar.workspace-game .sidebar-header-container,
@@ -62,9 +155,45 @@ $workspace-game-glow: rgba($primary, 0.08);
 }
 
 [data-bs-theme] #sidebar.workspace-game .sidebar-top-fade-overlay {
-  background: linear-gradient(to bottom, $workspace-game-background, transparent) !important;
+  background: linear-gradient(to bottom, $workspace-card-background, transparent) !important;
 }
 
 [data-bs-theme] #sidebar.workspace-game .sidebar-bottom-fade-overlay {
-  background: linear-gradient(to top, $workspace-game-background, transparent) !important;
+  background: linear-gradient(to top, $workspace-card-background, transparent) !important;
+}
+
+// The sidebar keeps its rounded right corners here too. What shows through them is the row the
+// sidebar and the page sit in, which wore the website panel's body colour: two notches of the wrong
+// colour beside the workspace. That row takes the workspace's page surface, so the corners open
+// onto the same colour as the page next to them.
+.panel-shell.workspace-game {
+  background-color: $workspace-game-background;
+}
+
+// A servers page from its very first paint: the document is told the workspace by an inline script
+// in app.html, before any component has run, so neither the page behind the splash nor the splash
+// itself starts in the website panel's colours.
+html[data-workspace='game'] body {
+  background-color: $workspace-game-background;
+}
+
+// The splash before a servers page: the workspace's own surface, not the website panel's.
+html[data-workspace='game'] .splash-screen,
+.splash-screen.workspace-game {
+  --splash-bg: #{$workspace-game-background};
+
+  color: $workspace-game-foreground;
+  background-color: $workspace-game-background;
+  background-image: radial-gradient(circle at 50% 0, $workspace-game-glow, transparent 36rem);
+}
+
+// Dialogs: one surface for all of them. A dialog written in a page sits inside the workspace and
+// had these colours already; one mounted by the sidebar or the app shell (server list, add node,
+// confirmations) sits outside it and wore the website panel's. `data-workspace` is set on the
+// document by AppLayout, so a dialog gets the workspace's colours wherever it is mounted.
+html[data-workspace='game'] .modal {
+  @include workspace-game-surface;
+  @include workspace-game-accent;
+
+  color: $workspace-game-foreground;
 }

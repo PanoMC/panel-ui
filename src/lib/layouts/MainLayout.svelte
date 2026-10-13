@@ -7,9 +7,11 @@
   /*
    * Room under every page, so scrolling to the end doesn't leave the last card glued to the
    * window's bottom edge. Only page containers get it: full-height pages (error, store loading)
-   * centre themselves with `flex-grow-1` and would gain a scrollbar.
+   * centre themselves with `flex-grow-1` and would gain a scrollbar. The page sits inside `PageSlot`
+   * (a wrapper with no box of its own), so the container is matched through it as well.
    */
-  .main-container > :global(.container) {
+  .main-container > :global(.container),
+  .main-container > :global(.page-slot) > :global(.container) {
     padding-bottom: 3rem;
   }
 

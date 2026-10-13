@@ -110,3 +110,19 @@ details[open] summary .fa-chevron-right {
     animation: none;
   }
 }
+
+// A table that fills a card sits flush on what follows it, the way a list group does: no gap under
+// the last row, and one line (the row's own) between it and the pager footer.
+.card .table-responsive > .table {
+  margin-bottom: 0;
+}
+
+.card > .table-responsive + .card-footer {
+  border-top: 0;
+}
+
+// The control column (the row's action button, no title) is only as wide as its button. Unsized
+// it took an equal share of the spare width wherever the other columns were short.
+.table > thead > tr > th:first-child:empty {
+  width: 1%;
+}

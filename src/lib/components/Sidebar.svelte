@@ -76,7 +76,8 @@
     border-top-right-radius: 1rem !important;
     border-bottom-right-radius: 1rem !important;
     border: none !important;
-    transition: none !important;
+    /* Vertical scrolling stays the browser's; a sideways drag is ours (swipe to close, below). */
+    touch-action: pan-y;
   }
 
   /* --- Copper Theme Specific Adjustments --- */
@@ -128,27 +129,63 @@
     transition: none;
   }
 
-  /* Desktop: collapse in-flow — keep .offcanvas-lg so base .offcanvas never applies fixed overlay */
+  /* Desktop: collapse in-flow — keep .offcanvas-lg so base .offcanvas never applies fixed overlay.
+     Below this width the sidebar is a plain Bootstrap offcanvas and slides in from the left with
+     Bootstrap's own transition. Here it takes room in the page instead, so the same slide is made
+     by growing its width (same 0.3s ease-in-out) while its content keeps its full width and stays
+     pinned to the sidebar's right edge: the menu comes in from the left as on mobile, and the page
+     makes room at the same pace. No fade, as Bootstrap has none. */
   @media (min-width: 992px) {
-    /* Expanding: shown immediately — nothing in the sidebar animates. */
+    #sidebar {
+      /* The panel stylesheet sizes the desktop sidebar with a flex basis of 256px, which wins over
+         every `width` here; a basis cannot be animated to the collapsed state, so the size is put
+         on `width` instead (same 256px) and the basis is left to follow it. */
+      --sidebar-width: 256px;
+      flex: 0 0 auto !important;
+      width: var(--sidebar-width) !important;
+      max-width: none;
+      /* Column flex (see .offcanvas-lg above): the cross axis is horizontal, so this pins the
+         content to the right edge and lets it overflow to the left while the sidebar is narrower. */
+      align-items: flex-end;
+      transition:
+        width 0.3s ease-in-out,
+        visibility 0s linear 0s;
+    }
+
+    #sidebar > .offcanvas-body {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      flex-shrink: 0;
+    }
+
+    /* Expanding: visible at once, so the slide is seen. */
     #sidebar:not(.sidebar-desktop-collapsed) {
       visibility: visible !important;
     }
 
-    /* Collapsing: hidden outright (!important beats main.scss .offcanvas-lg) */
+    /* Collapsing: hidden only once the slide has finished (!important beats main.scss
+       .offcanvas-lg). The width goes to 0 while the flex basis stays `auto`: a basis of 0 or a
+       max-width of 0 cannot be animated from the open state and would snap shut. */
     #sidebar.sidebar-desktop-collapsed {
-      flex: 0 0 0 !important;
+      flex: 0 0 auto !important;
       width: 0 !important;
       min-width: 0 !important;
-      max-width: 0 !important;
       overflow: hidden !important;
-      opacity: 0;
       pointer-events: none;
       border: none !important;
       padding: 0 !important;
       margin: 0 !important;
       visibility: hidden !important;
-      border-radius: 0 !important;
+      transition:
+        width 0.3s ease-in-out,
+        visibility 0s linear 0.3s;
+    }
+  }
+
+  @media (min-width: 992px) and (prefers-reduced-motion: reduce) {
+    #sidebar,
+    #sidebar.sidebar-desktop-collapsed {
+      transition: none;
     }
   }
 </style>
@@ -230,12 +267,16 @@
             <span class="fw-normal text-white" style="font-size: 1.25rem; letter-spacing: -0.5px;"
               >Host</span>
           {:else}
+            <!-- On the website workspace the mark sits on the sidebar's primary colour. The servers
+                 workspace has a dark sidebar, so there the mark carries that colour as its own tile
+                 and looks the same in both. -->
             <img
               alt="Pano"
               title={'Pano'}
               src={base + '/assets/img/logo.svg'}
               width="42"
               class="border rounded"
+              class:bg-primary={$sidebarTabsState === 'game'}
               style="padding: 0.375rem;" />
           {/if}
           {#if isAlpha}
@@ -545,6 +586,82 @@
     };
     sidebar.addEventListener('hidden.bs.offcanvas', onOffcanvasHidden);
 
+    // Mobile: the open menu can be dragged shut. It follows the finger and closes when let go
+    // past a third of its width (or flicked); otherwise it slides back. Only a mostly sideways
+    // drag counts, so scrolling the menu up and down is left alone.
+    const SWIPE_START_PX = 10;
+    const FLICK_PX_PER_MS = 0.5;
+    /** @type {{ x: number, y: number, at: number, dragging: boolean, dx: number } | null} */
+    let swipe = null;
+
+    const onTouchStart = (event) => {
+      if (
+        window.innerWidth >= 992 ||
+        event.touches.length !== 1 ||
+        !sidebar.classList.contains('show')
+      ) {
+        swipe = null;
+
+        return;
+      }
+
+      const touch = event.touches[0];
+
+      swipe = { x: touch.clientX, y: touch.clientY, at: Date.now(), dragging: false, dx: 0 };
+    };
+
+    const onTouchMove = (event) => {
+      if (!swipe) return;
+
+      const touch = event.touches[0];
+      const dx = touch.clientX - swipe.x;
+      const dy = touch.clientY - swipe.y;
+
+      if (!swipe.dragging) {
+        if (Math.abs(dx) < SWIPE_START_PX && Math.abs(dy) < SWIPE_START_PX) return;
+
+        // Mostly up or down: that is a scroll, not ours.
+        if (Math.abs(dy) > Math.abs(dx)) {
+          swipe = null;
+
+          return;
+        }
+
+        swipe.dragging = true;
+        sidebar.style.transition = 'none';
+      }
+
+      swipe.dx = Math.min(0, dx);
+      sidebar.style.transform = `translateX(${swipe.dx}px)`;
+    };
+
+    const onTouchEnd = () => {
+      if (!swipe) return;
+
+      const { dragging, dx, at } = swipe;
+
+      swipe = null;
+
+      if (!dragging) return;
+
+      const flicked = -dx / Math.max(1, Date.now() - at) > FLICK_PX_PER_MS;
+      const close = -dx > sidebar.offsetWidth / 3 || flicked;
+
+      // Back under Bootstrap's own transition, from where the finger left it.
+      sidebar.style.transition = '';
+
+      if (close) {
+        off.hide();
+      }
+
+      sidebar.style.transform = '';
+    };
+
+    sidebar.addEventListener('touchstart', onTouchStart, { passive: true });
+    sidebar.addEventListener('touchmove', onTouchMove, { passive: true });
+    sidebar.addEventListener('touchend', onTouchEnd);
+    sidebar.addEventListener('touchcancel', onTouchEnd);
+
     const onResize = () => {
       windowWidth = window.innerWidth;
     };
@@ -553,6 +670,10 @@
 
     return () => {
       sidebar.removeEventListener('hidden.bs.offcanvas', onOffcanvasHidden);
+      sidebar.removeEventListener('touchstart', onTouchStart);
+      sidebar.removeEventListener('touchmove', onTouchMove);
+      sidebar.removeEventListener('touchend', onTouchEnd);
+      sidebar.removeEventListener('touchcancel', onTouchEnd);
       window.removeEventListener('resize', onResize);
     };
   });

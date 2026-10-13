@@ -35,7 +35,10 @@
       <HostedBanner />
     {/if}
 
-    <div class="d-flex flex-grow-1 overflow-hidden" style="min-height: 0;">
+    <div
+      class="panel-shell d-flex flex-grow-1 overflow-hidden"
+      class:workspace-game={$sidebarTabsState === 'game'}
+      style="min-height: 0;">
       <!-- The login form shown in place of a page (`requireSignedIn`) is chrome-free like the
            auth pages, decided from `$page` rather than `resetLayout`: the store is set by a load
            the browser never runs when it hydrates an error page. -->
@@ -688,6 +691,43 @@
   $: if (currentSidebarState !== $sidebarTabsState) {
     sidebarTabsState.set(currentSidebarState);
   }
+
+  // Told to the document, so dialogs mounted outside the page (by the sidebar, by this layout) can
+  // take the servers workspace's colours too (src/styles/_workspace.scss).
+  $: if (browser) {
+    document.documentElement.dataset.workspace = $sidebarTabsState === 'game' ? 'game' : 'website';
+  }
+
+  /**
+   * The servers workspace is dark whatever the panel theme is. A dialog inside the page inherits
+   * that; one mounted outside it would keep the panel theme's controls (close button, inputs), so
+   * it is given the dark theme for as long as it is opened from that workspace.
+   *
+   * @param {Event} event `show.bs.modal`
+   */
+  function themeWorkspaceDialog(event) {
+    const dialog = event.target;
+
+    if (!(dialog instanceof HTMLElement)) {
+      return;
+    }
+
+    if ($sidebarTabsState === 'game') {
+      if (!dialog.hasAttribute('data-bs-theme')) {
+        dialog.setAttribute('data-bs-theme', 'dark');
+        dialog.dataset.workspaceTheme = 'true';
+      }
+    } else if (dialog.dataset.workspaceTheme) {
+      dialog.removeAttribute('data-bs-theme');
+      delete dialog.dataset.workspaceTheme;
+    }
+  }
+
+  onMount(() => {
+    document.addEventListener('show.bs.modal', themeWorkspaceDialog);
+
+    return () => document.removeEventListener('show.bs.modal', themeWorkspaceDialog);
+  });
 
   setTimeout(function () {
     waitAnimation = false;

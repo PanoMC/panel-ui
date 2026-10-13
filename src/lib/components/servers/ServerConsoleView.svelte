@@ -20,6 +20,20 @@
     font-family: var(--bs-font-monospace);
   }
 
+  /* Fill: the view takes whatever height its flex column parent has left, never less than
+     `height`. For a card that is stretched to its neighbour's height, where a fixed height left
+     the lines in the top part of the card and an empty band under them. */
+  .console-shell.fill {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .console-shell.fill .console-view {
+    flex: 1 1 0;
+  }
+
   /* Flush: the view is the whole card body, so the card's own edge is its frame. */
   .console-view.flush {
     border: 0;
@@ -113,7 +127,7 @@
   }
 </style>
 
-<div class="console-shell">
+<div class="console-shell" class:fill>
   <!-- Older lines load on their own when the view nears the top; this is what says so. -->
   {#if loadingOlder}
     <small class="console-older" role="status" transition:fly={{ y: -12, duration: 180 }}>
@@ -134,7 +148,7 @@
     class="console-view small"
     class:flush
     class:wrap
-    style="height: {height};"
+    style={fill ? `min-height: ${height};` : `height: ${height};`}
     role="log"
     aria-label={ariaLabel}
     aria-live="off"
@@ -220,8 +234,10 @@
     /** Current filter text; matches are highlighted inside the rendered rows. */
     query = '',
     showTimestamps = true,
-    /** Any CSS length. */
+    /** Any CSS length. With `fill` it is the least the view may be. */
     height = '60vh',
+    /** Grow to the height the flex column around the view has left (see `.console-shell.fill`). */
+    fill = false,
     /** Already-translated text shown when the buffer is empty. */
     emptyText = '',
     /** The mini console on the overview has no room for the "paused" pill. */

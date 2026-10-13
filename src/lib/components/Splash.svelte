@@ -86,6 +86,31 @@
     }
   }
 
+  /* The splash lies over the page instead of standing in front of it in the flow. While it fades
+     out it is still in the document; as a block it kept its full-height place at the top for that
+     moment and the page appeared under it, then jumped up when it was gone (an empty band at the
+     top that came and went). As a cover it takes no room, and the page shows through the fade. */
+  .splash-cover {
+    position: fixed;
+    inset: 0;
+    /* Over the navbar and the sidebar, under the dialogs that say why Pano is away (restarting,
+       a restore in progress). */
+    z-index: 1050;
+    /* The servers workspace names its own surface (`--splash-bg`, src/styles/_workspace.scss). */
+    background-color: var(--splash-bg, var(--bs-body-bg));
+  }
+
+  /* An error is on screen and nothing is being tried: no loading animation, just the Pano mark. */
+  .splash-logo-stage.splash-logo-still .splash-logo-layer {
+    animation: none;
+    opacity: 0;
+  }
+
+  .splash-logo-stage.splash-logo-still .splash-cycle-pano {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
   .splash-stuck-help {
     opacity: 0;
     pointer-events: none;
@@ -116,12 +141,18 @@
   {/if}
 </svelte:head>
 
+<!-- Opened for a servers page it wears that workspace's surface (src/styles/_workspace.scss). -->
 <div
-  class="d-flex align-items-center justify-content-center vh-100 w-100 flex-column"
+  class="splash-screen splash-cover d-flex align-items-center justify-content-center vh-100 w-100 flex-column"
+  class:workspace-game={serversSplash}
+  data-bs-theme={serversSplash ? 'dark' : undefined}
   role="status"
   in:fade
   out:fade>
-  <div class="splash-logo-stage position-relative" style="height: 100px; width: 100px;">
+  <div
+    class="splash-logo-stage position-relative"
+    class:splash-logo-still={logoStill}
+    style="height: 100px; width: 100px;">
     <!-- Pano Host wears the same mark on its own color (as the website's Pano Host brand). -->
     <div
       class="splash-pano-logo p-2 shadow-sm splash-cycle-pano splash-logo-layer d-flex align-items-center justify-content-center"
@@ -170,11 +201,9 @@
           <button
             class="btn btn-sm btn-primary"
             on:click={onRetryClick}
-            class:disabled={$retryingNetworkErrors}
+            disabled={retrying}
             type="button">
-            {$retryingNetworkErrors
-              ? $_('components.splash.refreshing')
-              : $_('components.splash.retry')}
+            {retrying ? $_('components.splash.refreshing') : $_('components.splash.retry')}
           </button>
         {/if}
       </div>
@@ -206,12 +235,20 @@
     retryingNetworkErrors,
   } from '$lib/Store';
   import { base } from '$app/paths';
+  import { sidebarTabForPath } from '$lib/navigation.util.js';
   import { page } from '$app/stores';
 
   let hasNetworkErrors = false;
   let isHydrated = false;
 
   const session = getContext('session');
+  const sidebarTabsState = getContext('sidebarTabsState');
+
+  // A servers page is told by its address, not by the sidebar's workspace alone: that one waits for
+  // the session (it answers "website" until the permission to manage servers is known), and the
+  // splash is exactly what is on screen while the session loads.
+  $: serversSplash =
+    sidebarTabForPath($page.url.pathname, base) === 'game' || $sidebarTabsState === 'game';
 
   $: basicData = $session.basicData;
 
@@ -228,6 +265,10 @@
   $: showErrors = hasNetworkErrors || demoKind !== null;
   $: showNotLoggedIn = demoKind ? demoKind === 'session' : notLoggedIn;
   $: showNoPermission = demoKind ? demoKind === 'permission' : noPermission;
+  // The logos cycle while something is loading. With an error on screen nothing is, so the cycle
+  // stops on the Pano mark; "try again" starts it again for as long as the retry runs. The "stuck
+  // here?" help is not an error: the page is still loading under it.
+  $: logoStill = showErrors && !retrying;
 
   onMount(() => {
     isHydrated = true;
@@ -253,11 +294,28 @@
     location.reload();
   }
 
+  /** A retry is shown for at least this long: a refused connection answers at once, and a button
+   *  that flickers back gives no sign that anything was tried. */
+  const MIN_RETRY_MS = 1000;
+  let retryHeld = false;
+
+  $: retrying = retryHeld || $retryingNetworkErrors;
+
   async function onRetryClick() {
-    if (get(retryingNetworkErrors)) {
+    if (retryHeld || get(retryingNetworkErrors)) {
       return;
     }
 
-    await resumeAfterNetworkError();
+    retryHeld = true;
+
+    const shownFor = new Promise((resolve) => setTimeout(resolve, MIN_RETRY_MS));
+
+    try {
+      await resumeAfterNetworkError();
+    } finally {
+      await shownFor;
+
+      retryHeld = false;
+    }
   }
 </script>
