@@ -65,6 +65,7 @@
   {/if}
 
   <RestartingModal />
+  <RestoreProgressModal {signedIn} />
   <ConfirmActionModal />
   <WhatsNewModal />
 </App>
@@ -471,6 +472,7 @@
   import MainLayout from '$lib/layouts/MainLayout.svelte';
   import ToastContainer from '$lib/components/ToastContainer.svelte';
   import RestartingModal from '$lib/components/modals/RestartingModal.svelte';
+  import RestoreProgressModal from '$lib/components/modals/RestoreProgressModal.svelte';
   import ConfirmActionModal from '$lib/components/modals/ConfirmActionModal.svelte';
   import WhatsNewModal, {
     show as showWhatsNewModal,

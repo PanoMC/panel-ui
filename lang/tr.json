@@ -849,6 +849,7 @@
         "column-actions": "İşlemler",
         "tag-manual": "Elle",
         "tag-scheduled": "Zamanlanmış",
+        "trigger-automatic": "Otomatik",
         "tag-pre_restore": "Geri yükleme öncesi",
         "kind-mc-server": "Minecraft sunucusu",
         "remote-status-uploading": "Yükleniyor",
@@ -899,9 +900,11 @@
           "phase-downloading": "İndiriliyor…",
           "phase-restoring": "Geri yükleniyor…",
           "phase-fetching": "Sunucu yedeği alınıyor…",
+          "phase-verifying": "Yedek okunuyor ve doğrulanıyor…",
+          "phase-safety_backup": "Mevcut durumun güvenlik yedeği alınıyor…",
+          "phase-applying": "Veritabanı ve dosyalar değiştiriliyor…",
           "restore-running": "Geri yükleme sürerken Pano bakım modundadır ve bittiğinde yeniden başlar.",
           "rolled-back": "Hiçbir şey değişmedi: geri yükleme öncesindeki durum geri getirildi.",
-          "restart-required": "Geri yüklemeyi tamamlamak için Pano yeniden başlamalı. Kendiliğinden başlamazsa elle yeniden başlatın.",
           "done-create": "Yedek oluşturuldu.",
           "done-restore": "Geri yükleme tamamlandı. Pano yeniden başlıyor.",
           "done-upload": "Yedek Pano Backup'a yüklendi.",
@@ -912,6 +915,14 @@
           "phase-transfer_restoring": "Pano Host'ta geri yükleniyor…",
           "bytes-of": "{done} / {total}",
           "phase-exporting": "Pano Host'ta dışa aktarım hazırlanıyor…"
+        },
+        "restore-lock": {
+          "title": "Geri yükleme sürüyor",
+          "description": "Bu sayfayı kapatmayın. Pano bakım modunda; geri yükleme bitince yeniden başlar.",
+          "leave-warning": "Geri yükleme hâlâ sürüyor. Bitene kadar bu sayfadan ayrılamazsınız.",
+          "restarting": "Geri yükleme tamamlandı. Pano yeniden başlatılıyor…",
+          "restarting-hint": "Pano tekrar yanıt verince bu sayfa kendiliğinden yenilenir.",
+          "failed-title": "Geri yükleme başarısız oldu"
         },
         "restore": {
           "title": "Bu Pano geri yüklensin mi?",

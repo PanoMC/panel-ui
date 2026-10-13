@@ -76,13 +76,6 @@
   </div>
 {/if}
 
-{#if restartRequired}
-  <div class="alert alert-warning d-flex align-items-center gap-2 mb-0">
-    <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-    <div>{$_('pages.settings.backups.job.restart-required')}</div>
-  </div>
-{/if}
-
 <script>
   import { _ } from 'svelte-i18n';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
@@ -98,12 +91,11 @@
   /**
    * @type {{
    *   job?: object | null,
-   *   restartRequired?: boolean,
    *   onupdate?: (job: object) => void,
    *   onfinish?: (job: object) => void,
    * }}
    */
-  let { job = null, restartRequired = false, onupdate, onfinish } = $props();
+  let { job = null, onupdate, onfinish } = $props();
 
   /** Smoothed bytes per second of the running job's current phase, or null while nothing moves. */
   let speed = $state(null);

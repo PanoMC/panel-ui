@@ -849,6 +849,7 @@
         "column-actions": "Actions",
         "tag-manual": "Manual",
         "tag-scheduled": "Scheduled",
+        "trigger-automatic": "Automatic",
         "tag-pre_restore": "Before restore",
         "kind-mc-server": "Minecraft server",
         "remote-status-uploading": "Uploading",
@@ -899,9 +900,11 @@
           "phase-downloading": "Downloading…",
           "phase-restoring": "Restoring…",
           "phase-fetching": "Fetching the server backup…",
+          "phase-verifying": "Reading and checking the backup…",
+          "phase-safety_backup": "Taking a safety backup of the current state…",
+          "phase-applying": "Replacing the database and files…",
           "restore-running": "Pano is in maintenance mode while the restore runs and restarts when it is done.",
           "rolled-back": "Nothing was changed: the state from before the restore was put back.",
-          "restart-required": "Pano must restart to finish the restore. If it does not restart by itself, restart it by hand.",
           "done-create": "Backup created.",
           "done-restore": "Restore finished. Pano is restarting.",
           "done-upload": "Backup uploaded to Pano Backup.",
@@ -912,6 +915,14 @@
           "phase-transfer_restoring": "Restoring on Pano Host…",
           "bytes-of": "{done} of {total}",
           "phase-exporting": "Preparing the export on Pano Host…"
+        },
+        "restore-lock": {
+          "title": "Restore in progress",
+          "description": "Do not close this page. Pano is in maintenance mode and restarts when the restore is done.",
+          "leave-warning": "The restore is still running. You cannot leave this page until it is finished.",
+          "restarting": "The restore is done. Pano is restarting…",
+          "restarting-hint": "This page reloads by itself once Pano answers again.",
+          "failed-title": "Restore failed"
         },
         "restore": {
           "title": "Restore this Pano?",

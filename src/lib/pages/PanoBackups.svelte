@@ -26,10 +26,10 @@
     </div>
   </PageActions>
 
+  <!-- A running restore is shown by the panel-wide lock dialog (`RestoreProgressModal`), not here. -->
   <PanoBackupJobCard
-    {job}
+    job={restoring ? null : job}
     onupdate={(next) => (job = next)}
-    restartRequired={local.restartRequired}
     onfinish={(finished) => void onJobFinished(finished)} />
 
   <!-- Local backups -->
@@ -59,6 +59,7 @@
               <th scope="col"></th>
               <th>{$_('pages.settings.backups.column-created')}</th>
               <th>{$_('pages.settings.backups.column-type')}</th>
+              <th>{$_('pages.settings.backups.column-trigger')}</th>
               <th>{$_('pages.settings.backups.column-size')}</th>
               <th class="d-none d-md-table-cell">{$_('pages.settings.backups.column-version')}</th>
             </tr>
@@ -118,6 +119,15 @@
                       title={$_('pages.settings.backups.encrypted')}
                       aria-label={$_('pages.settings.backups.encrypted')}></i>
                   {/if}
+                </td>
+                <td class="text-nowrap">
+                  {$_(
+                    backup.tag === 'MANUAL'
+                      ? 'pages.settings.backups.tag-manual'
+                      : backup.tag === 'SCHEDULED'
+                        ? 'pages.settings.backups.tag-scheduled'
+                        : 'pages.settings.backups.trigger-automatic',
+                  )}
                 </td>
                 <td>{formatBytes(backup.sizeBytes || 0)}</td>
                 <td class="d-none d-md-table-cell small">{backup.panoVersion || '—'}</td>
@@ -349,7 +359,7 @@
             </tbody>
           </table>
         </div>
-        {#if pageCount(remoteList?.page) > 1}
+        {#if Number(remoteList?.page?.totalItems) > 0}
           <div class="card-footer">
             <Pagination
               page={remoteList.page}
@@ -600,6 +610,7 @@
   import PanoBackupAccountSummary from '$lib/components/settings/pano-backup/PanoBackupAccountSummary.svelte';
   import PassphraseFields from '$lib/components/settings/pano-backup/PassphraseFields.svelte';
   import RestorePanoBackupModal from '$lib/components/settings/pano-backup/RestorePanoBackupModal.svelte';
+  import { isRunningRestore, restoreJob } from '$lib/pano-restore.store.js';
   import PanoBackupSettingsModal from '$lib/components/settings/pano-backup/PanoBackupSettingsModal.svelte';
   import PanoBackupPassphraseModal from '$lib/components/settings/pano-backup/PanoBackupPassphraseModal.svelte';
   import PanoTransferModal from '$lib/components/settings/pano-backup/PanoTransferModal.svelte';
@@ -691,6 +702,14 @@
   let restoreTarget = $state(null);
 
   const running = $derived(isJobRunning(job));
+  const restoring = $derived(isRunningRestore(job));
+
+  // Hands a running restore to the lock dialog, which follows it to the restart and the reload.
+  $effect(() => {
+    if (restoring) {
+      restoreJob.set(job);
+    }
+  });
   const connected = $derived(connectionState(remote) !== 'not-connected');
   const hostUnavailable = $derived(connectionState(remote) === 'unavailable');
   const backupMode = $derived(normaliseMode(remote?.settings?.mode));
