@@ -210,6 +210,9 @@
                   {$_('pages.settings.backups.column-type')}
                 </th>
                 <th class="align-middle text-nowrap" scope="col">
+                  {$_('pages.settings.backups.column-trigger')}
+                </th>
+                <th class="align-middle text-nowrap" scope="col">
                   {$_('pages.settings.backups.column-size')}
                 </th>
                 <th class="align-middle text-nowrap" scope="col">
@@ -288,6 +291,13 @@
                     </span>
                     {#if backup.subject}
                       <div class="small text-body-secondary">{backup.subject}</div>
+                    {/if}
+                  </td>
+                  <td class="align-middle text-nowrap">
+                    {#if backup.trigger === 'SCHEDULED' || backup.trigger === 'MANUAL'}
+                      {$_(`pages.settings.backups.tag-${backup.trigger.toLowerCase()}`)}
+                    {:else}
+                      <span class="text-body-secondary">—</span>
                     {/if}
                   </td>
                   <td class="align-middle">
