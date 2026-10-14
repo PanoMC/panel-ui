@@ -50,13 +50,12 @@
 </div>
 
 {#snippet item(variable, label, field = false)}
-  {@const picked = variable.type === 'list' ? listLoop(variable) : variable}
   <button
     type="button"
     class="dropdown-item"
     class:list-field={field}
     onmousedown={(event) => event.preventDefault()}
-    onclick={() => onpick?.(picked)}>
+    onclick={() => onpick?.(variable)}>
     <div class="d-flex align-items-center gap-2">
       <span class="flex-grow-1 text-truncate">{label}</span>
       <span class="badge text-bg-secondary">
@@ -77,16 +76,4 @@
   import { SYSTEM_VARIABLES, variableToken } from './mail-templates.api.js';
 
   let { variables = [], disabled = false, onpick } = $props();
-
-  /**
-   * What a pick of a list variable hands to `onpick`: the form inserts `variableToken(variable)`,
-   * which wraps a plain variable's name in `{{ }}`, so the name carries the rest of the loop and the
-   * insert becomes `{{#each name}}` + an empty line + `{{/each}}`.
-   *
-   * @param {{ name: string }} variable
-   * @returns {{ name: string, type: string }}
-   */
-  function listLoop(variable) {
-    return { name: `#each ${variable.name}}}\n\n{{/each`, type: 'text' };
-  }
 </script>
