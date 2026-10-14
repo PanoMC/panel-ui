@@ -3231,7 +3231,8 @@
         "width": "Önizleme genişliği",
         "desktop": "Masaüstü",
         "mobile": "Mobil",
-        "invalid": "Şablonda bir hata var, bu yüzden önizleme çalışan son sürümü gösteriyor."
+        "invalid": "Şablonda bir hata var, bu yüzden önizleme çalışan son sürümü gösteriyor.",
+        "open-new-window": "Yeni pencerede aç"
       },
       "send-test": "Test e-postası gönder",
       "reset": {

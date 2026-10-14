@@ -3233,7 +3233,8 @@
         "width": "Preview width",
         "desktop": "Desktop",
         "mobile": "Mobile",
-        "invalid": "The template has an error, so the preview shows the last version that worked."
+        "invalid": "The template has an error, so the preview shows the last version that worked.",
+        "open-new-window": "Open in new window"
       },
       "send-test": "Send test mail",
       "reset": {
