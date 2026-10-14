@@ -4726,7 +4726,11 @@
     "CREATED_WEBHOOK": "**{username}** \"{name}\" webhook'unu oluşturdu.",
     "UPDATED_WEBHOOK": "**{username}** \"{name}\" webhook'unu güncelledi.",
     "DELETED_WEBHOOK": "**{username}** \"{name}\" webhook'unu sildi.",
-    "REDELIVERED_WEBHOOK": "**{username}** \"{name}\" webhook'unun bir olayını yeniden gönderdi."
+    "REDELIVERED_WEBHOOK": "**{username}** \"{name}\" webhook'unun bir olayını yeniden gönderdi.",
+    "UPDATED_MAIL_TEMPLATE": "**{username}** \"{mailKey}\" e-posta şablonunu düzenledi ({variant}, {localeCode}).",
+    "RESET_MAIL_TEMPLATE": "**{username}** \"{mailKey}\" e-posta şablonunu varsayılana sıfırladı ({variant}, {localeCode}).",
+    "UPDATED_MAIL_LAYOUT": "**{username}** e-posta düzenini düzenledi.",
+    "RESET_MAIL_LAYOUT": "**{username}** e-posta düzenini varsayılana sıfırladı."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> destek talebinde mesaj gönderdi (<b>#{id}</b>).",

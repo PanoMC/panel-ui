@@ -4729,7 +4729,11 @@
     "CREATED_WEBHOOK": "**{username}** создал(а) вебхук \"{name}\".",
     "UPDATED_WEBHOOK": "**{username}** обновил(а) вебхук \"{name}\".",
     "DELETED_WEBHOOK": "**{username}** удалил(а) вебхук \"{name}\".",
-    "REDELIVERED_WEBHOOK": "**{username}** повторно отправил(а) событие вебхука \"{name}\"."
+    "REDELIVERED_WEBHOOK": "**{username}** повторно отправил(а) событие вебхука \"{name}\".",
+    "UPDATED_MAIL_TEMPLATE": "**{username}** изменил(а) шаблон письма \"{mailKey}\" ({variant}, {localeCode}).",
+    "RESET_MAIL_TEMPLATE": "**{username}** сбросил(а) шаблон письма \"{mailKey}\" к стандартному ({variant}, {localeCode}).",
+    "UPDATED_MAIL_LAYOUT": "**{username}** изменил(а) макет писем.",
+    "RESET_MAIL_LAYOUT": "**{username}** сбросил(а) макет писем к стандартному."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> отправил сообщение в тикете (<b>#{id}</b>).",

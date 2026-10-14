@@ -4729,7 +4729,11 @@
     "CREATED_WEBHOOK": "**{username}** created the \"{name}\" webhook.",
     "UPDATED_WEBHOOK": "**{username}** updated the \"{name}\" webhook.",
     "DELETED_WEBHOOK": "**{username}** deleted the \"{name}\" webhook.",
-    "REDELIVERED_WEBHOOK": "**{username}** redelivered an event of the \"{name}\" webhook."
+    "REDELIVERED_WEBHOOK": "**{username}** redelivered an event of the \"{name}\" webhook.",
+    "UPDATED_MAIL_TEMPLATE": "**{username}** edited the \"{mailKey}\" mail template ({variant}, {localeCode}).",
+    "RESET_MAIL_TEMPLATE": "**{username}** reset the \"{mailKey}\" mail template to default ({variant}, {localeCode}).",
+    "UPDATED_MAIL_LAYOUT": "**{username}** edited the mail layout.",
+    "RESET_MAIL_LAYOUT": "**{username}** reset the mail layout to default."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> sent a message in ticket (<b>#{id}</b>).",
