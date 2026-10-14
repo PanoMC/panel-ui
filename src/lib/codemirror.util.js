@@ -25,9 +25,10 @@ function loadBundle() {
       import('@codemirror/lang-yaml'),
       import('@codemirror/legacy-modes/mode/properties'),
       import('@codemirror/legacy-modes/mode/toml'),
+      import('@codemirror/legacy-modes/mode/xml'),
       import('@codemirror/theme-one-dark'),
       import('codemirror'),
-    ]).then(([state, view, language, json, yaml, properties, toml, oneDark, codemirror]) => ({
+    ]).then(([state, view, language, json, yaml, properties, toml, xml, oneDark, codemirror]) => ({
       state,
       view,
       language,
@@ -35,6 +36,7 @@ function loadBundle() {
       yaml,
       properties,
       toml,
+      xml,
       oneDark,
       codemirror,
     }));
@@ -60,6 +62,8 @@ function languageExtension(bundle, language) {
       return StreamLanguage.define(bundle.properties.properties);
     case EditorLanguages.TOML:
       return StreamLanguage.define(bundle.toml.toml);
+    case EditorLanguages.HTML:
+      return StreamLanguage.define(bundle.xml.html);
     default:
       return [];
   }
@@ -87,6 +91,7 @@ function languageExtension(bundle, language) {
  *   setLanguage: (language: string) => void,
  *   setDark: (dark: boolean) => void,
  *   setReadOnly: (readOnly: boolean) => void,
+ *   insert: (text: string) => void,
  *   focus: () => void,
  *   destroy: () => void,
  * }>}
@@ -174,6 +179,18 @@ export async function createFileEditor({
           EditorView.editable.of(!next),
         ]),
       });
+    },
+    /** Replaces the selection (or inserts at the caret) with `text` and puts the caret after it. */
+    insert(text) {
+      const { from, to } = view.state.selection.main;
+      const value = String(text ?? '');
+
+      view.dispatch({
+        changes: { from, to, insert: value },
+        selection: { anchor: from + value.length },
+        scrollIntoView: true,
+      });
+      view.focus();
     },
     focus: () => view.focus(),
     destroy: () => view.destroy(),

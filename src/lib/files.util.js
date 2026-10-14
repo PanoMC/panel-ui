@@ -378,6 +378,7 @@ export const EditorLanguages = Object.freeze({
   YAML: 'yaml',
   PROPERTIES: 'properties',
   TOML: 'toml',
+  HTML: 'html',
   TEXT: 'text',
 });
 
