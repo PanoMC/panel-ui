@@ -13,7 +13,7 @@
 
   <div class="vh-100 overflow-hidden flex-column" class:d-flex={!$showSplash} hidden={$showSplash}>
     <!-- Kept outside <main> (which is overflow-auto) so it can't be scrolled away. -->
-    {#if $maintenanceMode}
+    {#if $maintenanceMode && !standalone}
       <div class="alert alert-danger fade show mb-0 rounded-0 flex-shrink-0" role="alert">
         <div class="container-fluid d-flex align-items-center">
           <i class="fa-solid fa-screwdriver-wrench me-3" aria-hidden="true"></i>
@@ -54,16 +54,17 @@
 
   <!-- Only with a session: it polls /notifications/quick, and a 401 from that on the login page
        would raise the "Session error" splash over the very form that fixes it. -->
-  {#if signedIn}
+  <!-- A page in a window of its own (the mail template preview) shows none of the panel's pop-ups. -->
+  {#if signedIn && !standalone}
     <NotificationContainer />
   {/if}
   <ToastContainer />
   <!-- `signedIn &&` makes these re-evaluate when a sign-in happens in place (no reload). -->
-  {#if signedIn && hasPermission(Permissions.MANAGE_SERVERS)}
+  {#if signedIn && !standalone && hasPermission(Permissions.MANAGE_SERVERS)}
     <ServerRequestModal />
   {/if}
 
-  {#if signedIn && (hasPermission(Permissions.MANAGE_VIEW) || hasPermission(Permissions.MANAGE_ADDONS))}
+  {#if signedIn && !standalone && (hasPermission(Permissions.MANAGE_VIEW) || hasPermission(Permissions.MANAGE_ADDONS))}
     <InstallingResourceModal />
   {/if}
 
@@ -890,7 +891,10 @@
 
   $: inlineLogin = isInlineLogin($page);
 
-  $: if (signedIn && !$showSplash && !whatsNewShown) {
+  /** Routes of the `(preview)` group open in a window of their own, without the panel's pop-ups. */
+  $: standalone = $page.route?.id?.startsWith('/(preview)') ?? false;
+
+  $: if (signedIn && !standalone && !$showSplash && !whatsNewShown) {
     const backendDismissedVersion = data.session.basicData.dismissedWhatsNewVersion;
 
     if (backendDismissedVersion === WHATS_NEW_VERSION) {
