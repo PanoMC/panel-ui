@@ -2,6 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
 
 import { logClasses, PENDING, typeOf } from '../../scripts/refresh-activity-log-types.js';
+import { getActivityLogTranslation } from './activity-log.util.js';
 
 const types = JSON.parse(readFileSync(new URL('./activityLogTypes.json', import.meta.url)));
 
@@ -44,5 +45,25 @@ open class PluginActivityLog(userId: Long) : PanelActivityLog(userId = userId)
 `;
 
     expect(logClasses(source)).toEqual(['ALog', 'BLog']);
+  });
+
+  test('mail layout entries from before several layouts name the main layout', () => {
+    const translate = (key, options) =>
+      key === 'pages.mail-templates.layouts.main'
+        ? 'Main layout'
+        : `${key}:${options?.values?.layoutName}`;
+
+    expect(
+      getActivityLogTranslation(
+        { type: 'UPDATED_MAIL_LAYOUT', details: { username: 'a' } },
+        translate,
+      ),
+    ).toBe('activity-logs.UPDATED_MAIL_LAYOUT:Main layout');
+    expect(
+      getActivityLogTranslation(
+        { type: 'DELETED_MAIL_LAYOUT', details: { layoutId: 'custom:news', layoutName: 'News' } },
+        translate,
+      ),
+    ).toBe('activity-logs.DELETED_MAIL_LAYOUT:News');
   });
 });
