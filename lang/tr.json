@@ -3157,6 +3157,7 @@
       "core": "Pano",
       "group-title": "{name} · {count} e-posta",
       "customized": "Özelleştirildi",
+      "customized-hint": "Bu dil senin düzenlediğin sürümü kullanıyor; Varsayılana sıfırla, Pano'nun yerleşik şablonunu geri getirir.",
       "customized-short": "özelleştirildi",
       "default": "Varsayılan",
       "table": {
@@ -3177,7 +3178,8 @@
         "sample-subject": "Örnek konu",
         "sample-preheader": "Örnek önizleme metni",
         "sample-button": "Aç",
-        "sample-footer": "Bu e-postayı bu sitede bir hesabın olduğu için alıyorsun."
+        "sample-footer": "Bu e-postayı bu sitede bir hesabın olduğu için alıyorsun.",
+        "customized-hint": "Düzenlediğin e-posta düzenini kullanıyorsun; Varsayılana sıfırla, Pano'nun yerleşik düzenini geri getirir."
       },
       "variant": "Tür",
       "language": "Dil",

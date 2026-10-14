@@ -56,7 +56,19 @@
       </div>
     </PageActions>
 
-    <h4 class="mb-0">{$_('pages.mail-templates.layout.name')}</h4>
+    <h4 class="mb-0 d-flex flex-wrap align-items-center gap-2">
+      {$_('pages.mail-templates.layout.name')}
+      {#if customized}
+        <span
+          class="badge text-bg-primary fs-6 fw-normal"
+          aria-label="{$_('pages.mail-templates.customized')}: {$_(
+            'pages.mail-templates.layout.customized-hint',
+          )}"
+          use:tooltip={[$_('pages.mail-templates.layout.customized-hint')]}>
+          {$_('pages.mail-templates.customized')}
+        </span>
+      {/if}
+    </h4>
 
     <div class="small text-body-secondary">
       {$_('pages.mail-templates.layout.hint', { values: { slot: LAYOUT_CONTENT_SLOT } })}
@@ -67,11 +79,6 @@
         <div class="card">
           <div class="card-header py-3 d-flex align-items-center gap-2">
             <span class="flex-grow-1">{$_('pages.mail-templates.fields.html')}</span>
-            {#if customized}
-              <span class="badge text-bg-primary">{$_('pages.mail-templates.customized')}</span>
-            {:else}
-              <span class="badge text-bg-secondary">{$_('pages.mail-templates.default')}</span>
-            {/if}
           </div>
           <div class="card-body">
             {#key editorVersion}
@@ -133,6 +140,7 @@
   import { beforeNavigate, goto, invalidateAll } from '$app/navigation';
   import { base } from '$app/paths';
 
+  import tooltip from '$lib/tooltip.util';
   import CodeEditor from '$lib/components/CodeEditor.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
   import { show as showConfirm } from '$lib/components/modals/ConfirmActionModal.svelte';

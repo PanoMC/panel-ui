@@ -55,7 +55,19 @@
 </PageActions>
 
 <div>
-  <h4 class="mb-1">{mail.name || mail.key}</h4>
+  <h4 class="mb-1 d-flex flex-wrap align-items-center gap-2">
+    {mail.name || mail.key}
+    {#if customized}
+      <span
+        class="badge text-bg-primary fs-6 fw-normal"
+        aria-label="{$_('pages.mail-templates.customized')}: {$_(
+          'pages.mail-templates.customized-hint',
+        )}"
+        use:tooltip={[$_('pages.mail-templates.customized-hint')]}>
+        {$_('pages.mail-templates.customized')}
+      </span>
+    {/if}
+  </h4>
   {#if mail.description}
     <div class="text-body-secondary small">{mail.description}</div>
   {/if}
@@ -95,13 +107,6 @@
         </option>
       {/each}
     </select>
-  </div>
-  <div class="col-12 col-lg-auto">
-    {#if customized}
-      <span class="badge text-bg-primary">{$_('pages.mail-templates.customized')}</span>
-    {:else}
-      <span class="badge text-bg-secondary">{$_('pages.mail-templates.default')}</span>
-    {/if}
   </div>
 </div>
 
@@ -293,6 +298,7 @@
   import { base } from '$app/paths';
 
   import ApiUtil from '$lib/api.util';
+  import tooltip from '$lib/tooltip.util';
   import CodeEditor from '$lib/components/CodeEditor.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
   import { show as showConfirm } from '$lib/components/modals/ConfirmActionModal.svelte';

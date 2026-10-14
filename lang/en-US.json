@@ -3159,6 +3159,7 @@
       "core": "Pano",
       "group-title": "{name} · {count, plural, one {# mail} other {# mails}}",
       "customized": "Customized",
+      "customized-hint": "This language uses your edited version; Reset to default brings back Pano's built-in one.",
       "customized-short": "customized",
       "default": "Default",
       "table": {
@@ -3179,7 +3180,8 @@
         "sample-subject": "Sample subject",
         "sample-preheader": "Sample preview text",
         "sample-button": "Open",
-        "sample-footer": "You receive this e-mail because you have an account on this website."
+        "sample-footer": "You receive this e-mail because you have an account on this website.",
+        "customized-hint": "You use your edited layout; Reset to default brings back Pano's built-in one."
       },
       "variant": "Variant",
       "language": "Language",
