@@ -3283,7 +3283,9 @@
         "UNCLOSED_COMMENT": "yorum kapatılmamış.",
         "UNTERMINATED_TAG": "{name} etiketi tamamlanmamış (\">\" ya da bir tırnak eksik).",
         "BRANCH_TAGS_DIFFER": "\"{name}\" bloğunun dalları farklı etiketleri açık bırakıyor."
-      }
+      },
+      "variable-list": "Liste",
+      "variable-list-fields": "Her satırın alanları (döngünün içinde kullanın)"
     }
   },
   "components": {

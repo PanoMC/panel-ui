@@ -3285,7 +3285,9 @@
         "UNCLOSED_COMMENT": "комментарий не закрыт.",
         "UNTERMINATED_TAG": "тег {name} не завершён (нет \">\" или кавычки).",
         "BRANCH_TAGS_DIFFER": "ветки блока \"{name}\" оставляют открытыми разные теги."
-      }
+      },
+      "variable-list": "Список",
+      "variable-list-fields": "Поля каждой строки (используйте внутри цикла)"
     }
   },
   "components": {

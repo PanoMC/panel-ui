@@ -3285,7 +3285,9 @@
         "UNCLOSED_COMMENT": "the comment is not closed.",
         "UNTERMINATED_TAG": "the {name} tag is not finished (missing \">\" or a quote).",
         "BRANCH_TAGS_DIFFER": "the branches of the \"{name}\" block leave different tags open."
-      }
+      },
+      "variable-list": "List",
+      "variable-list-fields": "Fields of each row (use inside the loop)"
     }
   },
   "components": {
