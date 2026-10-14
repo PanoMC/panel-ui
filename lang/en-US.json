@@ -3199,11 +3199,6 @@
         "footer": "Footer",
         "html": "HTML"
       },
-      "view": {
-        "visual": "Visual",
-        "source": "Source"
-      },
-      "visual-disabled": "This body uses Handlebars blocks ({examples}), which the visual editor would break. Edit it in source.",
       "variables": {
         "insert": "Insert variable",
         "mail": "Mail variables",

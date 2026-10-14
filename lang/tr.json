@@ -3197,11 +3197,6 @@
         "footer": "Alt bilgi",
         "html": "HTML"
       },
-      "view": {
-        "visual": "Görsel",
-        "source": "Kaynak"
-      },
-      "visual-disabled": "Bu içerik, görsel düzenleyicinin bozacağı Handlebars blokları ({examples}) kullanıyor. Kaynakta düzenle.",
       "variables": {
         "insert": "Değişken ekle",
         "mail": "E-posta değişkenleri",

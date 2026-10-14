@@ -139,17 +139,6 @@ export function variableToken(variable) {
 }
 
 /**
- * Whether a body uses Handlebars block helpers (`{{#if}}`, `{{/each}}`, `{{else}}`…). The visual
- * editor would wrap them in paragraphs and break them, so such a body opens in the source editor.
- *
- * @param {string} body
- * @returns {boolean}
- */
-export function hasBlockHelpers(body) {
-  return /\{\{~?\s*[#/^]|\{\{~?\s*else\b/.test(String(body ?? ''));
-}
-
-/**
  * The mails grouped by owner: Pano core first, then each plugin by its name.
  *
  * @param {Array<{ owner: string, pluginName?: string | null, pluginId?: string | null }>} items

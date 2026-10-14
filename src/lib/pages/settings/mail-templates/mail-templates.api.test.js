@@ -4,7 +4,6 @@ import {
   createMailTemplatesApi,
   fieldErrorsOf,
   groupByOwner,
-  hasBlockHelpers,
   pickLocale,
   renderLayoutSample,
   toResult,
@@ -15,11 +14,6 @@ describe('mail template helpers', () => {
   test('html variables are inserted with triple braces', () => {
     expect(variableToken({ name: 'items', type: 'html' })).toBe('{{{items}}}');
     expect(variableToken({ name: 'username', type: 'text' })).toBe('{{username}}');
-  });
-
-  test('block helpers are detected', () => {
-    expect(hasBlockHelpers('<p>{{#if x}}a{{/if}}</p>')).toBe(true);
-    expect(hasBlockHelpers('<p>{{username}}</p>')).toBe(false);
   });
 
   test('core comes first, plugins by name', () => {

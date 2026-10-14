@@ -161,51 +161,16 @@
           {@render textField('preheader', 'input')}
 
           <div>
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
-              <span class="form-label mb-0">{$_('pages.mail-templates.fields.body')}</span>
-              <div class="btn-group btn-group-sm" role="group">
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary"
-                  class:active={bodyView === 'visual'}
-                  aria-pressed={bodyView === 'visual'}
-                  disabled={bodyHasBlocks}
-                  title={bodyHasBlocks
-                    ? $_('pages.mail-templates.visual-disabled', {
-                        values: { examples: '{{#if}}, {{#each}}' },
-                      })
-                    : ''}
-                  onclick={() => setBodyView('visual')}>
-                  {$_('pages.mail-templates.view.visual')}
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary"
-                  class:active={bodyView === 'source'}
-                  aria-pressed={bodyView === 'source'}
-                  onclick={() => setBodyView('source')}>
-                  {$_('pages.mail-templates.view.source')}
-                </button>
-              </div>
-            </div>
-            {#key `${bodyView}|${editorVersion}`}
-              {#if bodyView === 'visual'}
-                <MailBodyEditor
-                  bind:this={visualEditor}
-                  value={bodies.FIELDS}
-                  invalid={!!fieldErrors.body}
-                  onfocus={() => (focused = 'body')}
-                  onchange={(value) => setBody(Modes.FIELDS, value)} />
-              {:else}
-                <CodeEditor
-                  bind:this={sourceEditor}
-                  value={bodies.FIELDS}
-                  language={EditorLanguages.HTML}
-                  label={$_('pages.mail-templates.fields.body')}
-                  invalid={!!fieldErrors.body || !!shownSyntax}
-                  onfocus={() => (focused = 'body')}
-                  onchange={(value) => setBody(Modes.FIELDS, value)} />
-              {/if}
+            <span class="form-label d-block">{$_('pages.mail-templates.fields.body')}</span>
+            {#key editorVersion}
+              <CodeEditor
+                bind:this={bodyEditor}
+                value={bodies.FIELDS}
+                language={EditorLanguages.HTML}
+                label={$_('pages.mail-templates.fields.body')}
+                invalid={!!fieldErrors.body || !!shownSyntax}
+                onfocus={() => (focused = 'body')}
+                onchange={(value) => setBody(Modes.FIELDS, value)} />
             {/key}
             {@render syntaxError()}
             {@render fieldError('body')}
@@ -327,12 +292,10 @@
   import {
     createMailTemplatesApi,
     fieldErrorsOf,
-    hasBlockHelpers,
     Modes,
     normalizeTemplate,
     variableToken,
   } from './mail-templates.api.js';
-  import MailBodyEditor from './MailBodyEditor.svelte';
   import { checkTemplateSyntax, minifyTemplate, prettifyTemplate } from './mail-template-source.js';
   import HandlebarsHint from './HandlebarsHint.svelte';
   import MailPreview from './MailPreview.svelte';
@@ -377,15 +340,13 @@
         ? fallback.body
         : '';
 
-  const initialBodyView = hasBlockHelpers(initialFieldsBody) ? 'source' : 'visual';
-
   let template = $state(initial);
   /**
    * The body of each mode, so a look at the other tab does not lose this one. Code views show it
    * pretty-printed; it is minified when saved.
    */
   let bodies = $state({
-    FIELDS: initialBodyView === 'source' ? prettifyTemplate(initialFieldsBody) : initialFieldsBody,
+    FIELDS: prettifyTemplate(initialFieldsBody),
     HTML: initial.mode === Modes.HTML ? prettifyTemplate(initial.body) : '',
   });
   /**
@@ -405,7 +366,6 @@
   let leaving = false;
   /** Bumped to re-create the editors after their content was replaced (reset). */
   let editorVersion = $state(0);
-  let bodyView = $state(initialBodyView);
   /** @type {string} the field a picked variable goes to */
   let focused = $state('');
   /** @type {Record<string, { code: string, message: string }>} */
@@ -414,8 +374,7 @@
 
   /** @type {Record<string, HTMLInputElement | HTMLTextAreaElement>} */
   const inputs = $state({});
-  let visualEditor = $state();
-  let sourceEditor = $state();
+  let bodyEditor = $state();
   let htmlEditor = $state();
 
   const busy = $derived(saving || testing);
@@ -424,7 +383,6 @@
     entry.variables ?? variants.find((item) => item.key === variant)?.variables ?? [],
   );
   const defaultLocale = $derived(entry.defaultLocale ?? '');
-  const bodyHasBlocks = $derived(hasBlockHelpers(bodies.FIELDS));
   const payload = $derived({ ...template, body: bodies[template.mode] });
   /**
    * What counts for unsaved changes: a look at the advanced tab whose HTML was only prefilled is not
@@ -436,12 +394,8 @@
       : payload,
   );
   const dirty = $derived(contentKey(effective) !== savedKey);
-  /** The HTML a code view shows (source view of the body, advanced tab), for the syntax check. */
-  const codeSource = $derived(
-    template.mode === Modes.HTML ? bodies.HTML : bodyView === 'source' ? bodies.FIELDS : null,
-  );
-  /** First syntax error of that HTML: blocks saving at once, shown once typing pauses. */
-  const syntax = $derived(codeSource == null ? null : checkTemplateSyntax(codeSource));
+  /** First syntax error of the body the code editor shows: blocks saving at once, shown once typing pauses. */
+  const syntax = $derived(checkTemplateSyntax(bodies[template.mode]));
   let shownSyntax = $state(null);
 
   $effect(() => {
@@ -532,13 +486,6 @@
     }
   }
 
-  /** The visual body editor ↔ its source: the source view shows the HTML pretty-printed. */
-  function setBodyView(view) {
-    if (view === 'source' && bodyView !== 'source') bodies.FIELDS = prettifyTemplate(bodies.FIELDS);
-
-    bodyView = view;
-  }
-
   /** Re-reads the saved mail's complete HTML after a save, for the advanced tab's next look. */
   async function refreshSavedHtml() {
     const result = await api.get(owner, mailKey, variant, locale);
@@ -560,7 +507,7 @@
     }
 
     if (target === 'body') {
-      (bodyView === 'visual' ? visualEditor : sourceEditor)?.insert(token);
+      bodyEditor?.insert(token);
 
       return;
     }
@@ -737,9 +684,8 @@
         const fieldsBody = fallback.mode === Modes.FIELDS ? fallback.body : bodies.FIELDS;
 
         savedHtml = String(entry.defaultHtml ?? '');
-        bodyView = hasBlockHelpers(fieldsBody) ? 'source' : 'visual';
         bodies = {
-          FIELDS: bodyView === 'source' ? prettifyTemplate(fieldsBody) : fieldsBody,
+          FIELDS: prettifyTemplate(fieldsBody),
           HTML: prettifyTemplate(fallback.mode === Modes.HTML ? fallback.body : savedHtml),
         };
         htmlEdited = fallback.mode === Modes.HTML;
