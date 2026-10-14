@@ -3159,7 +3159,7 @@
       "core": "Pano",
       "group-title": "{name} · {count, plural, one {# mail} other {# mails}}",
       "customized": "Customized",
-      "customized-hint": "This language uses your edited version; Reset to default brings back Pano's built-in one.",
+      "customized-hint": "This mail has your own edits: a language of one of its variants, or its layout. The language list marks the edited languages; Reset to default works per language.",
       "customized-short": "customized",
       "table": {
         "mail": "Mail",

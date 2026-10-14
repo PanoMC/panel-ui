@@ -57,7 +57,7 @@
 <div>
   <h4 class="mb-1 d-flex flex-wrap align-items-center gap-2">
     {mail.name || mail.key}
-    {#if customized}
+    {#if mailCustomized}
       <span
         class="badge text-bg-primary fs-6 fw-normal"
         aria-label="{$_('pages.mail-templates.customized')}: {$_(
@@ -443,6 +443,21 @@
   );
   const contentDirty = $derived(contentKey(effective) !== savedKey);
   const layoutDirty = $derived(layoutChoice !== savedLayoutChoice);
+
+  /** Other variants of this mail with an edited language. */
+  const otherVariantsCustomized = $derived(
+    (mail.variants ?? []).some(
+      (item) => item.key !== variant && (item.customizedLocales ?? []).length > 0,
+    ),
+  );
+
+  /**
+   * The title's badge: anything of this mail differs from Pano's — a language of any variant or the
+   * chosen layout. Which languages are edited shows in the language select.
+   */
+  const mailCustomized = $derived(
+    otherVariantsCustomized || customizedLocales.length > 0 || savedLayoutChoice !== '',
+  );
   const dirty = $derived(contentDirty || layoutDirty);
   /** The layout the mail renders with (the select's choice, or the mail's default). */
   const layout = $derived(effectiveLayout(layoutChoice, layoutDefault));

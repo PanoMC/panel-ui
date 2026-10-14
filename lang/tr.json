@@ -3157,7 +3157,7 @@
       "core": "Pano",
       "group-title": "{name} · {count} e-posta",
       "customized": "Özelleştirildi",
-      "customized-hint": "Bu dil senin düzenlediğin sürümü kullanıyor; Varsayılana sıfırla, Pano'nun yerleşik şablonunu geri getirir.",
+      "customized-hint": "Bu e-postada senin değişikliklerin var: türlerinden birinin bir dili ya da düzeni. Düzenlenen diller dil listesinde işaretli; Varsayılana sıfırla dil bazında çalışır.",
       "customized-short": "özelleştirildi",
       "table": {
         "mail": "E-posta",
