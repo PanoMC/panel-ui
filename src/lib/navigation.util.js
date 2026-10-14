@@ -155,3 +155,13 @@ export const WEBHOOKS_SETTINGS_ITEM = Object.freeze({
   href: '/settings/webhooks',
   text: 'components.settings-layout.webhooks',
 });
+
+/**
+ * The Mail Templates entry of the Settings navigation. Unlike the rest of Settings it has its own
+ * permission (`MANAGE_MAIL_TEMPLATES`), so an admin may see only this entry of Settings.
+ */
+export const MAIL_TEMPLATES_SETTINGS_ITEM = Object.freeze({
+  id: 'mail-templates',
+  href: '/settings/mail-templates',
+  text: 'components.settings-layout.mail-templates',
+});

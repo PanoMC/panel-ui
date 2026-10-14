@@ -9,6 +9,12 @@
             >{$_('components.settings-layout.platform')}</PageNavItem>
           <PageNavItem href={WEBHOOKS_SETTINGS_ITEM.href} startsWith
             >{$_(WEBHOOKS_SETTINGS_ITEM.text)}</PageNavItem>
+        {/if}
+        {#if canManageMailTemplates}
+          <PageNavItem href={MAIL_TEMPLATES_SETTINGS_ITEM.href} startsWith
+            >{$_(MAIL_TEMPLATES_SETTINGS_ITEM.text)}</PageNavItem>
+        {/if}
+        {#if canManageSettings}
           <PageNavItem href="/settings/updates" classes="position-relative" startsWith
             >{$_('components.settings-layout.updates')}
             {#if data.session.basicData.hasUpdate}
@@ -50,7 +56,21 @@
       url.pathname === `${base}/settings/backups` ||
       url.pathname.startsWith(`${base}/settings/backups/`);
 
+    // Mail templates have their own permission; an admin with only that one lands on them.
+    const mailTemplatesPage =
+      url.pathname === `${base}/settings/mail-templates` ||
+      url.pathname.startsWith(`${base}/settings/mail-templates/`);
+    const canManageMailTemplates = hasPermission(Permissions.MANAGE_MAIL_TEMPLATES, user);
+
+    if (mailTemplatesPage && canManageMailTemplates) {
+      return parentData;
+    }
+
     if (!backupsPage && !hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS, user)) {
+      if (canManageMailTemplates) {
+        throw redirect(302, `${base}/settings/mail-templates`);
+      }
+
       throw redirect(302, base);
     }
 
@@ -61,7 +81,7 @@
 <script>
   import { _ } from 'svelte-i18n';
 
-  import { WEBHOOKS_SETTINGS_ITEM } from '$lib/navigation.util.js';
+  import { MAIL_TEMPLATES_SETTINGS_ITEM, WEBHOOKS_SETTINGS_ITEM } from '$lib/navigation.util.js';
   import PageActions from '$lib/components/PageActions.svelte';
   import PageSlot from '$lib/components/PageSlot.svelte';
   import PageNav from '$lib/components/PageNav.svelte';
@@ -70,4 +90,5 @@
   export let data;
 
   $: canManageSettings = hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS, data.user);
+  $: canManageMailTemplates = hasPermission(Permissions.MANAGE_MAIL_TEMPLATES, data.user);
 </script>

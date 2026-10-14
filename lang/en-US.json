@@ -3152,6 +3152,107 @@
         "DNS": "That host name does not resolve.",
         "PRIVATE_ADDRESS": "That address is on a private network, which Pano does not send to."
       }
+    },
+    "mail-templates": {
+      "title": "Mail templates",
+      "load-failed": "Mail templates could not be loaded.",
+      "core": "Pano",
+      "group-title": "{name} · {count, plural, one {# mail} other {# mails}}",
+      "customized": "Customized",
+      "customized-short": "customized",
+      "default": "Default",
+      "table": {
+        "actions": "Actions",
+        "mail": "Mail",
+        "variants": "Variants",
+        "customized-languages": "Customized Languages"
+      },
+      "layout": {
+        "title": "Layout",
+        "name": "Mail layout",
+        "description": "The shared frame of every mail: logo, card, button and footer.",
+        "edit": "Edit layout",
+        "hint": "The layout wraps every mail written with fields. It must keep {slot}, where the mail's text goes. The preview here fills it with sample text.",
+        "reset-title": "Reset the layout to default?",
+        "reset-description": "Your layout is deleted and every mail uses the layout Pano ships with again.",
+        "sample-content": "This is where the text of each mail appears.",
+        "sample-subject": "Sample subject",
+        "sample-preheader": "Sample preview text",
+        "sample-button": "Open",
+        "sample-footer": "You receive this e-mail because you have an account on this website."
+      },
+      "variant": "Variant",
+      "language": "Language",
+      "fallback-default": "There is no {language} template for this mail yet, so the default below comes from {defaultLanguage}. Save to give {language} its own.",
+      "fallback-customized": "Resetting this template brings back the {defaultLanguage} default, because Pano has no {language} one for this mail.",
+      "tabs": {
+        "fields": "Fields",
+        "html": "Advanced"
+      },
+      "html-mode-hint": "In advanced mode the mail is sent exactly as written below, as a complete HTML document without the shared layout. Saving here saves the mail in this mode.",
+      "fields": {
+        "subject": "Subject",
+        "preheader": "Preview text",
+        "body": "Body",
+        "buttonLabel": "Button label",
+        "buttonUrl": "Button URL",
+        "footer": "Footer",
+        "html": "HTML"
+      },
+      "view": {
+        "visual": "Visual",
+        "source": "Source"
+      },
+      "visual-disabled": "This body uses Handlebars blocks ({examples}), which the visual editor would break. Edit it in source.",
+      "variables": {
+        "insert": "Insert variable",
+        "mail": "Mail variables",
+        "system": "System variables",
+        "system-names": {
+          "websiteName": "Website name",
+          "websiteUrl": "Website URL",
+          "year": "Current year"
+        },
+        "types": {
+          "text": "Text",
+          "url": "URL",
+          "number": "Number",
+          "boolean": "Yes/No",
+          "html": "HTML"
+        }
+      },
+      "field-errors": {
+        "REQUIRED": "This field is required.",
+        "TOO_LONG": "This is too long (at most 255 characters).",
+        "TEMPLATE_ERROR": "This template has an error:",
+        "INVALID": "This value is not valid.",
+        "MISSING_CONTENT": "The layout must contain {slot}, where the mail's text goes."
+      },
+      "preview": {
+        "title": "Preview",
+        "width": "Preview width",
+        "desktop": "Desktop",
+        "mobile": "Mobile",
+        "invalid": "The template has an error, so the preview shows the last version that worked."
+      },
+      "send-test": "Send test mail",
+      "reset": {
+        "button": "Reset to default",
+        "title": "Reset this template to default?",
+        "description": "Your {language} version of this mail is deleted and the default text is used again."
+      },
+      "unsaved": {
+        "title": "Discard your changes?",
+        "description": "This template has changes that are not saved. They are lost if you continue."
+      },
+      "toasts": {
+        "saved": "Template saved.",
+        "reset": "Template reset to default.",
+        "test-sent": "Test mail sent to your e-mail address.",
+        "invalid": "The template has errors. Fix the marked fields and try again.",
+        "missing-content": "The layout must contain {slot}.",
+        "failed": "Something went wrong. Please try again."
+      }
     }
   },
   "components": {
@@ -3405,7 +3506,8 @@
       "webhooks": "Webhooks",
       "migration": "Migration",
       "updates": "Updates",
-      "about": "About"
+      "about": "About",
+      "mail-templates": "Mail templates"
     },
     "server-settings-layout": {
       "server": "Server",
@@ -4534,6 +4636,10 @@
     "MANAGE_TRANSLATIONS": {
       "title": "Manage Translations",
       "description": "Can add, edit, delete translations and languages."
+    },
+    "MANAGE_MAIL_TEMPLATES": {
+      "title": "Manage Mail Templates",
+      "description": "Can edit the e-mails Pano and its addons send, in every language, and the shared mail layout."
     }
   },
   "activity-logs": {

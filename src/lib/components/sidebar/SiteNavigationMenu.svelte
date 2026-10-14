@@ -140,7 +140,8 @@
       icon: 'fas fa-cog',
       text: 'components.site-navigation-menu.settings',
       startsWith: true,
-      permission: Permissions.MANAGE_PLATFORM_SETTINGS,
+      // Mail templates live in Settings with their own permission.
+      permission: [Permissions.MANAGE_PLATFORM_SETTINGS, Permissions.MANAGE_MAIL_TEMPLATES],
       hasUpdate: true,
     },
   ];

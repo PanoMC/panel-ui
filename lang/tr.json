@@ -3150,6 +3150,107 @@
         "DNS": "Bu alan adı çözümlenemiyor.",
         "PRIVATE_ADDRESS": "Bu adres özel bir ağda; Pano oraya göndermez."
       }
+    },
+    "mail-templates": {
+      "title": "E-posta şablonları",
+      "load-failed": "E-posta şablonları yüklenemedi.",
+      "core": "Pano",
+      "group-title": "{name} · {count} e-posta",
+      "customized": "Özelleştirildi",
+      "customized-short": "özelleştirildi",
+      "default": "Varsayılan",
+      "table": {
+        "actions": "İşlemler",
+        "mail": "E-posta",
+        "variants": "Türler",
+        "customized-languages": "Özelleştirilen Diller"
+      },
+      "layout": {
+        "title": "Düzen",
+        "name": "E-posta düzeni",
+        "description": "Her e-postanın ortak çerçevesi: logo, kart, buton ve alt bilgi.",
+        "edit": "Düzeni düzenle",
+        "hint": "Düzen, alanlarla yazılan her e-postayı sarar. E-postanın metninin yerleştiği {slot} içinde kalmalıdır. Buradaki önizleme onu örnek bir metinle doldurur.",
+        "reset-title": "Düzen varsayılana sıfırlansın mı?",
+        "reset-description": "Senin düzenin silinir ve tüm e-postalar yeniden Pano ile gelen düzeni kullanır.",
+        "sample-content": "Her e-postanın metni burada görünür.",
+        "sample-subject": "Örnek konu",
+        "sample-preheader": "Örnek önizleme metni",
+        "sample-button": "Aç",
+        "sample-footer": "Bu e-postayı bu sitede bir hesabın olduğu için alıyorsun."
+      },
+      "variant": "Tür",
+      "language": "Dil",
+      "fallback-default": "Bu e-posta için henüz {language} şablonu yok, bu yüzden aşağıdaki varsayılan {defaultLanguage} dilinden geliyor. {language} için kendi şablonunu oluşturmak için kaydet.",
+      "fallback-customized": "Pano'da bu e-posta için {language} şablonu olmadığından, sıfırlamak {defaultLanguage} varsayılanını geri getirir.",
+      "tabs": {
+        "fields": "Alanlar",
+        "html": "Gelişmiş"
+      },
+      "html-mode-hint": "Gelişmiş modda e-posta, aşağıda yazıldığı gibi, ortak düzen olmadan tam bir HTML belgesi olarak gönderilir. Burada kaydetmek e-postayı bu modda kaydeder.",
+      "fields": {
+        "subject": "Konu",
+        "preheader": "Önizleme metni",
+        "body": "İçerik",
+        "buttonLabel": "Buton metni",
+        "buttonUrl": "Buton bağlantısı",
+        "footer": "Alt bilgi",
+        "html": "HTML"
+      },
+      "view": {
+        "visual": "Görsel",
+        "source": "Kaynak"
+      },
+      "visual-disabled": "Bu içerik, görsel düzenleyicinin bozacağı Handlebars blokları ({examples}) kullanıyor. Kaynakta düzenle.",
+      "variables": {
+        "insert": "Değişken ekle",
+        "mail": "E-posta değişkenleri",
+        "system": "Sistem değişkenleri",
+        "system-names": {
+          "websiteName": "Site adı",
+          "websiteUrl": "Site adresi",
+          "year": "Bu yıl"
+        },
+        "types": {
+          "text": "Metin",
+          "url": "Bağlantı",
+          "number": "Sayı",
+          "boolean": "Evet/Hayır",
+          "html": "HTML"
+        }
+      },
+      "field-errors": {
+        "REQUIRED": "Bu alan zorunlu.",
+        "TOO_LONG": "Bu çok uzun (en fazla 255 karakter).",
+        "TEMPLATE_ERROR": "Bu şablonda bir hata var:",
+        "INVALID": "Bu değer geçerli değil.",
+        "MISSING_CONTENT": "Düzen, e-postanın metninin yerleştiği {slot} içermeli."
+      },
+      "preview": {
+        "title": "Önizleme",
+        "width": "Önizleme genişliği",
+        "desktop": "Masaüstü",
+        "mobile": "Mobil",
+        "invalid": "Şablonda bir hata var, bu yüzden önizleme çalışan son sürümü gösteriyor."
+      },
+      "send-test": "Test e-postası gönder",
+      "reset": {
+        "button": "Varsayılana sıfırla",
+        "title": "Bu şablon varsayılana sıfırlansın mı?",
+        "description": "Bu e-postanın {language} sürümün silinir ve yeniden varsayılan metin kullanılır."
+      },
+      "unsaved": {
+        "title": "Değişiklikler silinsin mi?",
+        "description": "Bu şablonda kaydedilmemiş değişiklikler var. Devam edersen kaybolurlar."
+      },
+      "toasts": {
+        "saved": "Şablon kaydedildi.",
+        "reset": "Şablon varsayılana sıfırlandı.",
+        "test-sent": "Test e-postası e-posta adresine gönderildi.",
+        "invalid": "Şablonda hatalar var. İşaretli alanları düzeltip tekrar dene.",
+        "missing-content": "Düzen {slot} içermeli.",
+        "failed": "Bir şeyler ters gitti. Lütfen tekrar dene."
+      }
     }
   },
   "components": {
@@ -3403,7 +3504,8 @@
       "webhooks": "Webhooklar",
       "migration": "İçe Aktar",
       "updates": "Güncellemeler",
-      "about": "Hakkında"
+      "about": "Hakkında",
+      "mail-templates": "E-posta şablonları"
     },
     "server-settings-layout": {
       "server": "Sunucu",
@@ -4531,6 +4633,10 @@
     "MANAGE_TRANSLATIONS": {
       "title": "Çevirileri Yönet",
       "description": "Çevirileri ve dilleri ekleyebilir, düzenleyebilir ve silebilir."
+    },
+    "MANAGE_MAIL_TEMPLATES": {
+      "title": "E-posta Şablonlarını Yönet",
+      "description": "Pano ve eklentilerinin gönderdiği e-postaları her dilde ve ortak e-posta düzenini düzenleyebilir."
     }
   },
   "activity-logs": {

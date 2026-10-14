@@ -1,0 +1,57 @@
+<style>
+  .variable-menu {
+    max-height: 360px;
+    overflow-y: auto;
+    min-width: 260px;
+  }
+</style>
+
+<!-- "Insert variable": the mail's own variables and the system ones. A pick goes to the field the
+     admin was last typing in (`onpick`). -->
+<div class="dropdown">
+  <button
+    type="button"
+    class="btn btn-sm btn-link text-decoration-none"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+    {disabled}>
+    <i class="fas fa-code me-2" aria-hidden="true"></i>
+    {$_('pages.mail-templates.variables.insert')}
+  </button>
+  <div class="dropdown-menu dropdown-menu-end variable-menu">
+    {#if variables.length > 0}
+      <h6 class="dropdown-header">{$_('pages.mail-templates.variables.mail')}</h6>
+      {#each variables as variable (variable.name)}
+        {@render item(variable, variable.label || variable.name)}
+      {/each}
+    {/if}
+    <h6 class="dropdown-header">{$_('pages.mail-templates.variables.system')}</h6>
+    {#each SYSTEM_VARIABLES as variable (variable.name)}
+      {@render item(variable, $_(`pages.mail-templates.variables.system-names.${variable.name}`))}
+    {/each}
+  </div>
+</div>
+
+{#snippet item(variable, label)}
+  <button
+    type="button"
+    class="dropdown-item"
+    onmousedown={(event) => event.preventDefault()}
+    onclick={() => onpick?.(variable)}>
+    <div class="d-flex align-items-center gap-2">
+      <span class="flex-grow-1 text-truncate">{label}</span>
+      <span class="badge text-bg-secondary">
+        {$_(`pages.mail-templates.variables.types.${variable.type || 'text'}`)}
+      </span>
+    </div>
+    <code class="small">{variableToken(variable)}</code>
+  </button>
+{/snippet}
+
+<script>
+  import { _ } from 'svelte-i18n';
+
+  import { SYSTEM_VARIABLES, variableToken } from './mail-templates.api.js';
+
+  let { variables = [], disabled = false, onpick } = $props();
+</script>
