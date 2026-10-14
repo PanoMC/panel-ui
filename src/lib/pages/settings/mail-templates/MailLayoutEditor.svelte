@@ -26,7 +26,7 @@
       <div slot="left">
         <a href="{base}/settings/mail-templates" class="btn btn-link" role="button">
           <i class="fas fa-arrow-left" aria-hidden="true"></i>
-          <span class="ms-2">{$_('pages.mail-templates.layout.name')}</span>
+          <span class="ms-2">{$_('buttons.back')}</span>
         </a>
       </div>
       <div slot="right" class="hstack gap-2">
@@ -55,6 +55,8 @@
         </button>
       </div>
     </PageActions>
+
+    <h4 class="mb-0">{$_('pages.mail-templates.layout.name')}</h4>
 
     <div class="small text-body-secondary">
       {$_('pages.mail-templates.layout.hint', { values: { slot: LAYOUT_CONTENT_SLOT } })}

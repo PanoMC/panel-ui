@@ -11,7 +11,7 @@
   <div slot="left">
     <a href="{base}/settings/mail-templates" class="btn btn-link" role="button">
       <i class="fas fa-arrow-left" aria-hidden="true"></i>
-      <span class="ms-2">{mail.name || mail.key}</span>
+      <span class="ms-2">{$_('buttons.back')}</span>
     </a>
   </div>
   <div slot="right" class="hstack gap-2">
@@ -53,6 +53,13 @@
     </button>
   </div>
 </PageActions>
+
+<div>
+  <h4 class="mb-1">{mail.name || mail.key}</h4>
+  {#if mail.description}
+    <div class="text-body-secondary small">{mail.description}</div>
+  {/if}
+</div>
 
 <div class="row g-3 align-items-end">
   {#if variants.length > 1}
