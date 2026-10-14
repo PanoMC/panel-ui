@@ -3161,7 +3161,6 @@
       "customized": "Customized",
       "customized-hint": "This language uses your edited version; Reset to default brings back Pano's built-in one.",
       "customized-short": "customized",
-      "default": "Default",
       "table": {
         "mail": "Mail",
         "variants": "Variants",
@@ -3190,7 +3189,7 @@
         "fields": "Fields",
         "html": "Advanced"
       },
-      "html-mode-hint": "In advanced mode the mail is sent exactly as written below, as a complete HTML document without the shared layout. Saving here saves the mail in this mode.",
+      "html-mode-hint": "Advanced mode shows the whole mail as one HTML template: the shared layout with the fields filled in. Saving here stores this full HTML, and the mail then no longer follows the shared layout. The Fields tab keeps the fields as they were.",
       "fields": {
         "subject": "Subject",
         "preheader": "Preview text",
@@ -3269,6 +3268,28 @@
           "desktop": "Desktop",
           "full": "Full width"
         }
+      },
+      "handlebars": {
+        "intro": "You can use Handlebars:",
+        "variable": "for a variable",
+        "html": "for HTML blocks",
+        "helpers": "Only the built-in helpers are available: if, unless, each, with and lookup.",
+        "guide": "Handlebars guide"
+      },
+      "syntax": {
+        "at": "Line {line}, column {column}: {message}",
+        "UNCLOSED_MUSTACHE": "a Handlebars expression is not closed (closing braces missing).",
+        "STRAY_MUSTACHE_CLOSE": "closing braces without an opening.",
+        "UNCLOSED_BLOCK": "the \"{name}\" block is not closed.",
+        "UNMATCHED_BLOCK_CLOSE": "the \"{name}\" block is closed but was never opened.",
+        "MISMATCHED_BLOCK_CLOSE": "\"{name}\" is closed, but the open block is \"{expected}\".",
+        "ELSE_OUTSIDE_BLOCK": "\"else\" outside a block.",
+        "UNCLOSED_TAG": "the {name} tag is not closed.",
+        "UNMATCHED_CLOSE_TAG": "closing {name} tag without an opening one.",
+        "VOID_CLOSE_TAG": "the {name} tag has no closing tag.",
+        "UNCLOSED_COMMENT": "the comment is not closed.",
+        "UNTERMINATED_TAG": "the {name} tag is not finished (missing \">\" or a quote).",
+        "BRANCH_TAGS_DIFFER": "the branches of the \"{name}\" block leave different tags open."
       }
     }
   },

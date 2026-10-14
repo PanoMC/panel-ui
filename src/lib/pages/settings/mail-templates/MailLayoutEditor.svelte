@@ -44,7 +44,7 @@
         <button
           type="button"
           class="btn btn-secondary text-nowrap"
-          disabled={saving || !dirty || missingContent}
+          disabled={saving || !dirty || missingContent || !!syntax}
           onclick={onSaveClick}>
           {#if saving}
             <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
@@ -73,6 +73,7 @@
     <div class="small text-body-secondary">
       {$_('pages.mail-templates.layout.hint', { values: { slot: LAYOUT_CONTENT_SLOT } })}
     </div>
+    <HandlebarsHint />
 
     <div class="row g-3">
       <div class="col-12 col-xl-7">
@@ -87,9 +88,22 @@
                 language={EditorLanguages.HTML}
                 height="600px"
                 label={$_('pages.mail-templates.fields.html')}
-                invalid={missingContent}
+                invalid={missingContent || !!shownSyntax}
                 onchange={onChange} />
             {/key}
+            {#if shownSyntax}
+              <div class="small text-danger mt-1" role="alert">
+                {$_('pages.mail-templates.syntax.at', {
+                  values: {
+                    line: shownSyntax.line,
+                    column: shownSyntax.column,
+                    message: $_(`pages.mail-templates.syntax.${shownSyntax.code}`, {
+                      values: shownSyntax.values ?? {},
+                    }),
+                  },
+                })}
+              </div>
+            {/if}
             {#if missingContent}
               <div class="small text-danger mt-1">
                 {$_('pages.mail-templates.field-errors.MISSING_CONTENT', {
@@ -147,6 +161,8 @@
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   import { EditorLanguages } from '$lib/files.util.js';
 
+  import { checkTemplateSyntax, minifyTemplate, prettifyTemplate } from './mail-template-source.js';
+  import HandlebarsHint from './HandlebarsHint.svelte';
   import MailPreview from './MailPreview.svelte';
   import {
     LAYOUT_CONTENT_SLOT,
@@ -161,7 +177,8 @@
   // failed load); between those only a save or a reset replaces it.
   let body = $state('');
   let customized = $state(false);
-  let dirty = $state(false);
+  /** The saved layout, minified: a layout that was only pretty-printed is not a change. */
+  let savedKey = $state('');
   let editorVersion = $state(0);
   /** @type {any} */
   let loadedLayout;
@@ -172,15 +189,33 @@
     if (layout === loadedLayout) return;
 
     loadedLayout = layout;
-    body = String(layout?.body ?? '');
+    body = prettifyTemplate(String(layout?.body ?? ''));
+    savedKey = minifyTemplate(layout?.body ?? '');
     customized = !!layout?.customized;
-    dirty = false;
     untrack(() => (editorVersion += 1));
   });
   let saving = $state(false);
   let leaving = false;
 
   const missingContent = $derived(!body.includes(LAYOUT_CONTENT_SLOT));
+  const dirty = $derived(minifyTemplate(body) !== savedKey);
+  /** First syntax error of the layout: blocks saving at once, shown once typing pauses. */
+  const syntax = $derived(checkTemplateSyntax(body));
+  let shownSyntax = $state(null);
+
+  $effect(() => {
+    const error = syntax;
+
+    if (!error) {
+      shownSyntax = null;
+
+      return;
+    }
+
+    const timer = setTimeout(() => (shownSyntax = error), 400);
+
+    return () => clearTimeout(timer);
+  });
   const previewHtml = $derived(renderLayoutSample(body, layoutSampleValues($_)));
 
   // The preview window follows the unsaved layout (it renders it on its own, like this page).
@@ -194,13 +229,13 @@
   /** @param {string} value */
   function onChange(value) {
     body = value;
-    dirty = true;
   }
 
   async function onSaveClick() {
     saving = true;
 
-    const result = await api.saveLayout(body);
+    const saved = minifyTemplate(body);
+    const result = await api.saveLayout(saved);
 
     saving = false;
 
@@ -215,7 +250,7 @@
       return;
     }
 
-    dirty = false;
+    savedKey = saved;
     customized = true;
     showSuccess('pages.mail-templates.toasts.saved');
   }
@@ -241,9 +276,9 @@
           return;
         }
 
-        body = String(data.layout?.default ?? '');
+        body = prettifyTemplate(String(data.layout?.default ?? ''));
+        savedKey = minifyTemplate(data.layout?.default ?? '');
         customized = false;
-        dirty = false;
         editorVersion += 1;
         showSuccess('pages.mail-templates.toasts.reset');
       },

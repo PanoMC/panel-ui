@@ -42,7 +42,7 @@
     <button
       type="button"
       class="btn btn-secondary text-nowrap"
-      disabled={busy || !dirty}
+      disabled={busy || !canSave || !!syntax}
       onclick={onSaveClick}>
       {#if saving}
         <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
@@ -150,6 +150,7 @@
         <VariableMenu {variables} onpick={insertVariable} />
       </div>
       <div class="card-body vstack gap-3">
+        <HandlebarsHint />
         {#if template.mode === Modes.HTML}
           <div class="small text-body-secondary">{$_('pages.mail-templates.html-mode-hint')}</div>
         {/if}
@@ -174,7 +175,7 @@
                         values: { examples: '{{#if}}, {{#each}}' },
                       })
                     : ''}
-                  onclick={() => (bodyView = 'visual')}>
+                  onclick={() => setBodyView('visual')}>
                   {$_('pages.mail-templates.view.visual')}
                 </button>
                 <button
@@ -182,7 +183,7 @@
                   class="btn btn-outline-secondary"
                   class:active={bodyView === 'source'}
                   aria-pressed={bodyView === 'source'}
-                  onclick={() => (bodyView = 'source')}>
+                  onclick={() => setBodyView('source')}>
                   {$_('pages.mail-templates.view.source')}
                 </button>
               </div>
@@ -201,11 +202,12 @@
                   value={bodies.FIELDS}
                   language={EditorLanguages.HTML}
                   label={$_('pages.mail-templates.fields.body')}
-                  invalid={!!fieldErrors.body}
+                  invalid={!!fieldErrors.body || !!shownSyntax}
                   onfocus={() => (focused = 'body')}
                   onchange={(value) => setBody(Modes.FIELDS, value)} />
               {/if}
             {/key}
+            {@render syntaxError()}
             {@render fieldError('body')}
           </div>
 
@@ -225,10 +227,11 @@
                 language={EditorLanguages.HTML}
                 height="560px"
                 label={$_('pages.mail-templates.fields.html')}
-                invalid={!!fieldErrors.body}
+                invalid={!!fieldErrors.body || !!shownSyntax}
                 onfocus={() => (focused = 'html')}
                 onchange={(value) => setBody(Modes.HTML, value)} />
             {/key}
+            {@render syntaxError()}
             {@render fieldError('body')}
           </div>
         {/if}
@@ -278,6 +281,22 @@
   </div>
 {/snippet}
 
+{#snippet syntaxError()}
+  {#if shownSyntax}
+    <div class="small text-danger mt-1" role="alert">
+      {$_('pages.mail-templates.syntax.at', {
+        values: {
+          line: shownSyntax.line,
+          column: shownSyntax.column,
+          message: $_(`pages.mail-templates.syntax.${shownSyntax.code}`, {
+            values: shownSyntax.values ?? {},
+          }),
+        },
+      })}
+    </div>
+  {/if}
+{/snippet}
+
 {#snippet fieldError(field)}
   {#if fieldErrors[field]}
     <div class="small text-danger mt-1">
@@ -314,6 +333,8 @@
     variableToken,
   } from './mail-templates.api.js';
   import MailBodyEditor from './MailBodyEditor.svelte';
+  import { checkTemplateSyntax, minifyTemplate, prettifyTemplate } from './mail-template-source.js';
+  import HandlebarsHint from './HandlebarsHint.svelte';
   import MailPreview from './MailPreview.svelte';
   import { previewWindowHref, publishPreview, sampleVariables } from './mail-preview-window.js';
   import VariableMenu from './VariableMenu.svelte';
@@ -356,21 +377,35 @@
         ? fallback.body
         : '';
 
+  const initialBodyView = hasBlockHelpers(initialFieldsBody) ? 'source' : 'visual';
+
   let template = $state(initial);
-  /** The body of each mode, so a look at the other tab does not lose this one. */
+  /**
+   * The body of each mode, so a look at the other tab does not lose this one. Code views show it
+   * pretty-printed; it is minified when saved.
+   */
   let bodies = $state({
-    FIELDS: initialFieldsBody,
-    HTML: initial.mode === Modes.HTML ? initial.body : '',
+    FIELDS: initialBodyView === 'source' ? prettifyTemplate(initialFieldsBody) : initialFieldsBody,
+    HTML: initial.mode === Modes.HTML ? prettifyTemplate(initial.body) : '',
   });
+  /**
+   * The saved mail as one complete HTML template (the backend's `templateHtml`): what the advanced
+   * tab starts from while the mail is saved in fields mode.
+   */
+  let savedHtml = untrack(() => String(entry.templateHtml ?? ''));
+  /** Whether the advanced tab's HTML was edited in this session (else it follows `savedHtml`). */
+  let htmlEdited = $state(initial.mode === Modes.HTML);
+  /** The saved state: its mode and its content key (minified), for the unsaved-changes check. */
+  let savedMode = $state(initial.mode);
+  let savedKey = $state(contentKey(initial));
   let customized = $state(loaded.customized);
   let customizedLocales = $state([...loaded.customizedLocales]);
-  let dirty = $state(false);
   let saving = $state(false);
   let testing = $state(false);
   let leaving = false;
   /** Bumped to re-create the editors after their content was replaced (reset). */
   let editorVersion = $state(0);
-  let bodyView = $state(hasBlockHelpers(initialFieldsBody) ? 'source' : 'visual');
+  let bodyView = $state(initialBodyView);
   /** @type {string} the field a picked variable goes to */
   let focused = $state('');
   /** @type {Record<string, { code: string, message: string }>} */
@@ -378,7 +413,7 @@
   let preview = $state({ subject: null, html: '', loading: false, error: '' });
 
   /** @type {Record<string, HTMLInputElement | HTMLTextAreaElement>} */
-  const inputs = {};
+  const inputs = $state({});
   let visualEditor = $state();
   let sourceEditor = $state();
   let htmlEditor = $state();
@@ -391,6 +426,40 @@
   const defaultLocale = $derived(entry.defaultLocale ?? '');
   const bodyHasBlocks = $derived(hasBlockHelpers(bodies.FIELDS));
   const payload = $derived({ ...template, body: bodies[template.mode] });
+  /**
+   * What counts for unsaved changes: a look at the advanced tab whose HTML was only prefilled is not
+   * a change, and neither is a body that was only pretty-printed.
+   */
+  const effective = $derived(
+    template.mode === Modes.HTML && savedMode !== Modes.HTML && !htmlEdited
+      ? { ...template, mode: savedMode, body: bodies.FIELDS }
+      : payload,
+  );
+  const dirty = $derived(contentKey(effective) !== savedKey);
+  /** The HTML a code view shows (source view of the body, advanced tab), for the syntax check. */
+  const codeSource = $derived(
+    template.mode === Modes.HTML ? bodies.HTML : bodyView === 'source' ? bodies.FIELDS : null,
+  );
+  /** First syntax error of that HTML: blocks saving at once, shown once typing pauses. */
+  const syntax = $derived(codeSource == null ? null : checkTemplateSyntax(codeSource));
+  let shownSyntax = $state(null);
+
+  $effect(() => {
+    const error = syntax;
+
+    if (!error) {
+      shownSyntax = null;
+
+      return;
+    }
+
+    const timer = setTimeout(() => (shownSyntax = error), 400);
+
+    return () => clearTimeout(timer);
+  });
+
+  /** Saving in another mode than the saved one is allowed even without an edit. */
+  const canSave = $derived(dirty || template.mode !== savedMode);
   /** What the preview renders with; only the preview window lets them be changed. */
   const samples = $derived(sampleVariables(variables));
 
@@ -410,12 +479,27 @@
   }
 
   /**
+   * The comparable form of a template: every field, the body minified.
+   *
+   * @param {Record<string, string>} value
+   */
+  function contentKey(value) {
+    const normalized = normalizeTemplate(value);
+
+    return JSON.stringify({ ...normalized, body: minifyTemplate(normalized.body) });
+  }
+
+  /** @param {Record<string, string>} value the template as it is sent: its body minified */
+  function minified(value) {
+    return { ...value, body: minifyTemplate(value.body) };
+  }
+
+  /**
    * @param {string} field
    * @param {string} value
    */
   function setField(field, value) {
     template[field] = value;
-    dirty = true;
   }
 
   /**
@@ -423,8 +507,11 @@
    * @param {string} value
    */
   function setBody(mode, value) {
+    if (bodies[mode] === value) return;
+
     bodies[mode] = value;
-    dirty = true;
+
+    if (mode === Modes.HTML) htmlEdited = true;
   }
 
   /** @param {string} mode */
@@ -433,11 +520,31 @@
 
     template.mode = mode;
     focused = '';
-    dirty = true;
 
-    // A first look at the advanced tab starts from the fields' body in a bare document.
-    if (mode === Modes.HTML && !bodies.HTML.trim()) {
-      bodies.HTML = `<!doctype html>\n<html lang="{{locale}}">\n<head>\n<meta charset="utf-8">\n<title>{{websiteName}}</title>\n</head>\n<body>\n${bodies.FIELDS}\n</body>\n</html>\n`;
+    // The advanced tab starts from the whole saved mail (layout + fields) until its HTML is edited.
+    // Going back to the fields keeps them as they were.
+    if (mode === Modes.HTML && !htmlEdited) {
+      bodies.HTML = prettifyTemplate(
+        savedHtml ||
+          `<!doctype html><html lang="{{locale}}"><head><meta charset="utf-8"><title>{{subject}}</title></head><body>${bodies.FIELDS}</body></html>`,
+      );
+      editorVersion += 1;
+    }
+  }
+
+  /** The visual body editor ↔ its source: the source view shows the HTML pretty-printed. */
+  function setBodyView(view) {
+    if (view === 'source' && bodyView !== 'source') bodies.FIELDS = prettifyTemplate(bodies.FIELDS);
+
+    bodyView = view;
+  }
+
+  /** Re-reads the saved mail's complete HTML after a save, for the advanced tab's next look. */
+  async function refreshSavedHtml() {
+    const result = await api.get(owner, mailKey, variant, locale);
+
+    if (result.ok && typeof result.body.templateHtml === 'string') {
+      savedHtml = result.body.templateHtml;
     }
   }
 
@@ -497,7 +604,7 @@
   }
 
   function request() {
-    return { owner, key: mailKey, variant, locale, template: payload };
+    return { owner, key: mailKey, variant, locale, template: minified(payload) };
   }
 
   // Live preview: the unsaved content, rendered by the backend half a second after the last edit.
@@ -551,7 +658,8 @@
   async function onSaveClick() {
     saving = true;
 
-    const result = await api.save(owner, mailKey, variant, locale, $state.snapshot(payload));
+    const saved = minified($state.snapshot(payload));
+    const result = await api.save(owner, mailKey, variant, locale, saved);
 
     saving = false;
 
@@ -567,8 +675,15 @@
     }
 
     fieldErrors = {};
-    dirty = false;
+    savedKey = contentKey(saved);
+    savedMode = saved.mode;
     customized = true;
+
+    if (saved.mode === Modes.HTML) {
+      htmlEdited = true;
+    } else {
+      refreshSavedHtml();
+    }
 
     if (!customizedLocales.includes(locale)) customizedLocales.push(locale);
 
@@ -617,17 +732,24 @@
           return;
         }
 
-        template = { ...fallback };
+        // The advanced tab stays open on the default's complete HTML; the fields show the default's.
+        const tab = template.mode;
+        const fieldsBody = fallback.mode === Modes.FIELDS ? fallback.body : bodies.FIELDS;
+
+        savedHtml = String(entry.defaultHtml ?? '');
+        bodyView = hasBlockHelpers(fieldsBody) ? 'source' : 'visual';
         bodies = {
-          FIELDS: fallback.mode === Modes.FIELDS ? fallback.body : bodies.FIELDS,
-          HTML: fallback.mode === Modes.HTML ? fallback.body : '',
+          FIELDS: bodyView === 'source' ? prettifyTemplate(fieldsBody) : fieldsBody,
+          HTML: prettifyTemplate(fallback.mode === Modes.HTML ? fallback.body : savedHtml),
         };
-        bodyView = hasBlockHelpers(bodies.FIELDS) ? 'source' : 'visual';
+        htmlEdited = fallback.mode === Modes.HTML;
+        template = { ...fallback, mode: tab === Modes.HTML ? Modes.HTML : fallback.mode };
+        savedMode = fallback.mode;
+        savedKey = contentKey(fallback);
         customized = false;
         customizedLocales = customizedLocales.filter((code) => code !== locale);
         fieldErrors = {};
         focused = '';
-        dirty = false;
         editorVersion += 1;
 
         showSuccess('pages.mail-templates.toasts.reset');

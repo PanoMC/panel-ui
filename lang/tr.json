@@ -3159,7 +3159,6 @@
       "customized": "Özelleştirildi",
       "customized-hint": "Bu dil senin düzenlediğin sürümü kullanıyor; Varsayılana sıfırla, Pano'nun yerleşik şablonunu geri getirir.",
       "customized-short": "özelleştirildi",
-      "default": "Varsayılan",
       "table": {
         "mail": "E-posta",
         "variants": "Türler",
@@ -3188,7 +3187,7 @@
         "fields": "Alanlar",
         "html": "Gelişmiş"
       },
-      "html-mode-hint": "Gelişmiş modda e-posta, aşağıda yazıldığı gibi, ortak düzen olmadan tam bir HTML belgesi olarak gönderilir. Burada kaydetmek e-postayı bu modda kaydeder.",
+      "html-mode-hint": "Gelişmiş mod, e-postanın tamamını tek bir HTML şablonu olarak gösterir: alanları doldurulmuş ortak düzen. Burada kaydedersen bu tam HTML saklanır ve e-posta artık ortak düzeni izlemez. Alanlar sekmesi alanları olduğu gibi tutar.",
       "fields": {
         "subject": "Konu",
         "preheader": "Önizleme metni",
@@ -3267,6 +3266,28 @@
           "desktop": "Masaüstü",
           "full": "Tam genişlik"
         }
+      },
+      "handlebars": {
+        "intro": "Handlebars kullanabilirsin:",
+        "variable": "bir değişken için",
+        "html": "HTML blokları için",
+        "helpers": "Yalnızca yerleşik yardımcılar kullanılabilir: if, unless, each, with ve lookup.",
+        "guide": "Handlebars rehberi"
+      },
+      "syntax": {
+        "at": "Satır {line}, sütun {column}: {message}",
+        "UNCLOSED_MUSTACHE": "bir Handlebars ifadesi kapatılmamış (kapanış süslü parantezleri eksik).",
+        "STRAY_MUSTACHE_CLOSE": "açılışı olmayan kapanış süslü parantezleri.",
+        "UNCLOSED_BLOCK": "\"{name}\" bloğu kapatılmamış.",
+        "UNMATCHED_BLOCK_CLOSE": "\"{name}\" bloğu kapatılıyor ama hiç açılmamış.",
+        "MISMATCHED_BLOCK_CLOSE": "\"{name}\" kapatılıyor, ama açık olan blok \"{expected}\".",
+        "ELSE_OUTSIDE_BLOCK": "blok dışında \"else\".",
+        "UNCLOSED_TAG": "{name} etiketi kapatılmamış.",
+        "UNMATCHED_CLOSE_TAG": "açılışı olmayan {name} kapanış etiketi.",
+        "VOID_CLOSE_TAG": "{name} etiketinin kapanış etiketi olmaz.",
+        "UNCLOSED_COMMENT": "yorum kapatılmamış.",
+        "UNTERMINATED_TAG": "{name} etiketi tamamlanmamış (\">\" ya da bir tırnak eksik).",
+        "BRANCH_TAGS_DIFFER": "\"{name}\" bloğunun dalları farklı etiketleri açık bırakıyor."
       }
     }
   },
