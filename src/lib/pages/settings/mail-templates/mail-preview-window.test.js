@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'bun:test';
 
 import {
-  LAYOUT_PREVIEW,
   PREVIEW_WIDTHS,
   isDataObject,
-  isLayoutPreview,
+  layoutPreviewHref,
+  layoutPreviewTarget,
   previewKey,
   previewWindowHref,
   publishPreview,
@@ -27,7 +27,7 @@ describe('mail preview window', () => {
     expect(previewKey('core', 'activation', 'default')).toBe(
       'pano-panel-mail-preview:core:activation:default',
     );
-    expect(previewKey('core', '_layout', null)).toBe('pano-panel-mail-preview:core:_layout:');
+    expect(previewKey('core', 'activation', null)).toBe('pano-panel-mail-preview:core:activation:');
     expect(previewWindowHref('/panel', 'core', 'activation', 'default')).toBe(
       '/panel/mail-templates/preview?owner=core&key=activation&variant=default',
     );
@@ -36,11 +36,19 @@ describe('mail preview window', () => {
     );
   });
 
-  test('the layout has its own fixed target', () => {
-    expect(isLayoutPreview(LAYOUT_PREVIEW)).toBe(true);
-    expect(isLayoutPreview({ owner: 'core', key: '_layout', variant: 'x' })).toBe(true);
-    expect(isLayoutPreview({ owner: 'core', key: 'activation' })).toBe(false);
-    expect(isLayoutPreview(null)).toBe(false);
+  test('a layout is addressed by its id', () => {
+    expect(layoutPreviewHref('/panel', 'core:default')).toBe(
+      '/panel/mail-templates/preview?layout=core%3Adefault',
+    );
+
+    const storage = memory();
+    const { owner, key, variant } = layoutPreviewTarget('custom:news');
+
+    publishPreview(storage, owner, key, variant, { layout: '<p>{{{content}}}</p>' });
+
+    expect(readPreview(storage, owner, key, variant).layout).toBe('<p>{{{content}}}</p>');
+    expect(readPreview(storage, 'custom', 'news', '')).toBeNull();
+    expect(layoutPreviewTarget('core:default').owner).not.toBe('core');
   });
 
   test('a published draft is read back per mail and variant', () => {

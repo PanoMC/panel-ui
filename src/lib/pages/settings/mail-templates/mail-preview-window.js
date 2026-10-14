@@ -1,23 +1,35 @@
 /**
  * The mail template editor ↔ its preview window (`/panel/mail-templates/preview?owner=&key=&variant=`):
  * the editor publishes what it renders (the unsaved draft: locale, template, sample variables) to
- * localStorage, the window reads it and follows every change through the `storage` event. The
- * layout editor publishes under {@link LAYOUT_PREVIEW} and the window renders it locally.
+ * localStorage, the window reads it and follows every change through the `storage` event. A layout
+ * editor's window is `?layout=<id>`: it publishes under {@link layoutPreviewTarget} and the window
+ * renders it locally.
  *
  * Browser only; no `$lib` / `$app` imports (unit-tested with bun).
  */
 
 const PREFIX = 'pano-panel-mail-preview:';
 
-/** Where the layout editor's draft goes: owner `core`, key `_layout`. */
-export const LAYOUT_PREVIEW = Object.freeze({ owner: 'core', key: '_layout', variant: '' });
+/** The owner a layout draft is stored under (no mail has it: mail owners are `core` or a plugin). */
+const LAYOUT_OWNER = '#layout';
 
 /**
- * @param {{ owner?: string | null, key?: string | null, variant?: string | null }} target
- * @returns {boolean}
+ * Where a layout editor's draft goes, as the `owner`, `key`, `variant` the other helpers take.
+ *
+ * @param {string} id the layout id
  */
-export function isLayoutPreview(target) {
-  return target?.owner === LAYOUT_PREVIEW.owner && target?.key === LAYOUT_PREVIEW.key;
+export function layoutPreviewTarget(id) {
+  return { owner: LAYOUT_OWNER, key: id, variant: '' };
+}
+
+/**
+ * The window's URL for a layout.
+ *
+ * @param {string} base the app's base path (`/panel`)
+ * @param {string} id the layout id
+ */
+export function layoutPreviewHref(base, id) {
+  return `${base}/mail-templates/preview?${new URLSearchParams({ layout: id })}`;
 }
 
 /**

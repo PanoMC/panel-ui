@@ -108,6 +108,35 @@
       {/each}
     </select>
   </div>
+  <div class="col-12 col-md-6 col-lg-4">
+    <label class="form-label" for="mail-template-layout">
+      {$_('pages.mail-templates.layout-select.label')}
+    </label>
+    <select
+      id="mail-template-layout"
+      class="form-select"
+      aria-describedby="mail-template-layout-hint"
+      value={layoutChoice}
+      onchange={(event) => onLayoutChange(event.currentTarget.value)}>
+      <option value="">
+        {$_('pages.mail-templates.layout-select.default', {
+          values: { name: layoutName(layoutDefault) },
+        })}
+      </option>
+      {#each layouts as item (item.id)}
+        <option value={item.id}>{item.name || item.id}</option>
+      {/each}
+      <option value={NO_LAYOUT}>{$_('pages.mail-templates.layout-select.none')}</option>
+    </select>
+  </div>
+</div>
+
+<div id="mail-template-layout-hint" class="small text-body-secondary">
+  {$_(
+    template.mode === Modes.HTML
+      ? 'pages.mail-templates.layout-select.hint-html'
+      : 'pages.mail-templates.layout-select.hint',
+  )}
 </div>
 
 {#if defaultLocale && defaultLocale !== locale}
@@ -291,8 +320,13 @@
 
   import {
     createMailTemplatesApi,
+    effectiveLayout,
     fieldErrorsOf,
+    layoutRequestValue,
+    layoutSelection,
+    MAIN_LAYOUT,
     Modes,
+    NO_LAYOUT,
     normalizeTemplate,
     variableToken,
   } from './mail-templates.api.js';
@@ -319,6 +353,7 @@
     variant,
     locale,
     locales,
+    layouts = [],
     entry,
     api = createMailTemplatesApi(ApiUtil),
   } = $props();
@@ -331,8 +366,10 @@
     customized: !!entry.customized,
     customizedLocales:
       (mail.variants ?? []).find((item) => item.key === variant)?.customizedLocales ?? [],
+    layout: String(entry.layout ?? mail.layout ?? ''),
+    layoutDefault: String(entry.layoutDefault ?? mail.layoutDefault ?? MAIN_LAYOUT),
   }));
-  const { initial, fallback } = loaded;
+  const { initial, fallback, layoutDefault } = loaded;
   const initialFieldsBody =
     initial.mode === Modes.FIELDS
       ? initial.body
@@ -361,6 +398,12 @@
   let savedKey = $state(contentKey(initial));
   let customized = $state(loaded.customized);
   let customizedLocales = $state([...loaded.customizedLocales]);
+  /**
+   * The layout select (`''` = the mail's default) and the saved choice. It is the whole mail's
+   * (every variant and language), saved with the template's Save.
+   */
+  let layoutChoice = $state(layoutSelection(loaded.layout, layoutDefault));
+  let savedLayoutChoice = $state(layoutSelection(loaded.layout, layoutDefault));
   let saving = $state(false);
   let testing = $state(false);
   let leaving = false;
@@ -371,6 +414,11 @@
   /** @type {Record<string, { code: string, message: string }>} */
   let fieldErrors = $state({});
   let preview = $state({ subject: null, html: '', loading: false, error: '' });
+  /**
+   * The latest preview's `templateHtml` (its fields composed with its layout) and the request it
+   * answered, so the advanced tab can start from the unsaved fields.
+   */
+  let composed = { request: '', html: '' };
 
   /** @type {Record<string, HTMLInputElement | HTMLTextAreaElement>} */
   const inputs = $state({});
@@ -393,7 +441,11 @@
       ? { ...template, mode: savedMode, body: bodies.FIELDS }
       : payload,
   );
-  const dirty = $derived(contentKey(effective) !== savedKey);
+  const contentDirty = $derived(contentKey(effective) !== savedKey);
+  const layoutDirty = $derived(layoutChoice !== savedLayoutChoice);
+  const dirty = $derived(contentDirty || layoutDirty);
+  /** The layout the mail renders with (the select's choice, or the mail's default). */
+  const layout = $derived(effectiveLayout(layoutChoice, layoutDefault));
   /** First syntax error of the body the code editor shows: blocks saving at once, shown once typing pauses. */
   const syntax = $derived(checkTemplateSyntax(bodies[template.mode]));
   let shownSyntax = $state(null);
@@ -416,6 +468,13 @@
   const canSave = $derived(dirty || template.mode !== savedMode);
   /** What the preview renders with; only the preview window lets them be changed. */
   const samples = $derived(sampleVariables(variables));
+
+  /** @param {string} id a layout id or `none` */
+  function layoutName(id) {
+    if (id === NO_LAYOUT) return get(_)('pages.mail-templates.layout-select.none');
+
+    return layouts.find((item) => item.id === id)?.name || id;
+  }
 
   /** @param {string} code */
   function localeName(code) {
@@ -475,15 +534,53 @@
     template.mode = mode;
     focused = '';
 
-    // The advanced tab starts from the whole saved mail (layout + fields) until its HTML is edited.
-    // Going back to the fields keeps them as they were.
-    if (mode === Modes.HTML && !htmlEdited) {
-      bodies.HTML = prettifyTemplate(
-        savedHtml ||
-          `<!doctype html><html lang="{{locale}}"><head><meta charset="utf-8"><title>{{subject}}</title></head><body>${bodies.FIELDS}</body></html>`,
-      );
-      editorVersion += 1;
+    // The advanced tab starts from the whole unsaved mail (layout + fields) until its HTML is
+    // edited. Going back to the fields keeps them as they were.
+    if (mode === Modes.HTML && !htmlEdited) prefillHtml(fieldsPreviewRequest());
+  }
+
+  /**
+   * Fills the advanced tab with the fields composed with the chosen layout: the latest preview's
+   * when it answered these fields, else a fresh one (the saved mail's HTML meanwhile).
+   *
+   * @param {Record<string, any>} fieldsRequest a preview request in fields mode
+   */
+  async function prefillHtml(fieldsRequest) {
+    const key = JSON.stringify(fieldsRequest);
+
+    if (composed.request === key && composed.html) {
+      setPrefilledHtml(composed.html);
+
+      return;
     }
+
+    setPrefilledHtml(
+      savedHtml ||
+        `<!doctype html><html lang="{{locale}}"><head><meta charset="utf-8"><title>{{subject}}</title></head><body>${bodies.FIELDS}</body></html>`,
+    );
+
+    const result = await api.preview(fieldsRequest);
+
+    if (!result.ok || typeof result.body.templateHtml !== 'string') return;
+
+    composed = { request: key, html: result.body.templateHtml };
+
+    // The admin may have edited the HTML or gone back to the fields while it loaded.
+    if (template.mode === Modes.HTML && !htmlEdited) setPrefilledHtml(result.body.templateHtml);
+  }
+
+  /** @param {string} html */
+  function setPrefilledHtml(html) {
+    bodies.HTML = prettifyTemplate(html);
+    editorVersion += 1;
+  }
+
+  /** @param {string} value the layout select's value */
+  function onLayoutChange(value) {
+    layoutChoice = value;
+
+    // An advanced tab that only shows the prefilled HTML follows the new layout.
+    if (template.mode === Modes.HTML && !htmlEdited) prefillHtml(fieldsPreviewRequest());
   }
 
   /** Re-reads the saved mail's complete HTML after a save, for the advanced tab's next look. */
@@ -497,8 +594,8 @@
 
   /** @param {{ name: string, type?: string }} variable */
   async function insertVariable(variable) {
-    const token = variableToken(variable);
     const target = focused || (template.mode === Modes.HTML ? 'html' : 'body');
+    const token = variableToken(variable, { inline: target !== 'html' && target !== 'body' });
 
     if (target === 'html') {
       htmlEditor?.insert(token);
@@ -550,8 +647,16 @@
     return { ...request(), variables: samples };
   }
 
+  /** The preview request of the fields (whatever tab is open): what the advanced tab starts from. */
+  function fieldsPreviewRequest() {
+    return $state.snapshot({
+      ...previewRequest(),
+      template: minified({ ...template, mode: Modes.FIELDS, body: bodies.FIELDS }),
+    });
+  }
+
   function request() {
-    return { owner, key: mailKey, variant, locale, template: minified(payload) };
+    return { owner, key: mailKey, variant, locale, layout, template: minified(payload) };
   }
 
   // Live preview: the unsaved content, rendered by the backend half a second after the last edit.
@@ -570,6 +675,10 @@
     preview.loading = false;
 
     if (result.ok) {
+      if (body.template?.mode === Modes.FIELDS && typeof result.body.templateHtml === 'string') {
+        composed = { request: JSON.stringify(body), html: result.body.templateHtml };
+      }
+
       preview.subject = String(result.body.subject ?? '');
       preview.html = String(result.body.html ?? '');
       preview.error = '';
@@ -605,12 +714,13 @@
   async function onSaveClick() {
     saving = true;
 
+    // The template only when it changed (or moves to the other mode), the layout only when it did.
+    const saveTemplate = contentDirty || template.mode !== savedMode;
     const saved = minified($state.snapshot(payload));
-    const result = await api.save(owner, mailKey, variant, locale, saved);
+    const result = saveTemplate ? await api.save(owner, mailKey, variant, locale, saved) : null;
 
-    saving = false;
-
-    if (!result.ok) {
+    if (result && !result.ok) {
+      saving = false;
       fieldErrors = fieldErrorsOf(result.error);
       showError(
         result.error.code === 'INVALID_FIELDS'
@@ -621,18 +731,42 @@
       return;
     }
 
-    fieldErrors = {};
-    savedKey = contentKey(saved);
-    savedMode = saved.mode;
-    customized = true;
+    if (result) {
+      fieldErrors = {};
+      savedKey = contentKey(saved);
+      savedMode = saved.mode;
+      customized = true;
 
-    if (saved.mode === Modes.HTML) {
-      htmlEdited = true;
-    } else {
-      refreshSavedHtml();
+      if (saved.mode === Modes.HTML) htmlEdited = true;
+      if (!customizedLocales.includes(locale)) customizedLocales.push(locale);
     }
 
-    if (!customizedLocales.includes(locale)) customizedLocales.push(locale);
+    const choice = layoutChoice;
+    const layoutResult = layoutDirty
+      ? await api.setLayout(owner, mailKey, layoutRequestValue(choice))
+      : null;
+
+    saving = false;
+
+    if (layoutResult && !layoutResult.ok) {
+      showError(
+        layoutResult.error.code === 'INVALID_FIELDS'
+          ? 'pages.mail-templates.toasts.layout-missing'
+          : errorKey(layoutResult.error.code),
+      );
+
+      return;
+    }
+
+    if (layoutResult) {
+      savedLayoutChoice = layoutSelection(
+        String(layoutResult.body.layout ?? effectiveLayout(choice, layoutDefault)),
+        layoutDefault,
+      );
+      if (layoutChoice === choice) layoutChoice = savedLayoutChoice;
+    }
+
+    if (template.mode !== Modes.HTML || !htmlEdited) refreshSavedHtml();
 
     showSuccess('pages.mail-templates.toasts.saved');
   }
@@ -697,6 +831,10 @@
         fieldErrors = {};
         focused = '';
         editorVersion += 1;
+
+        // The default's HTML came with the layout the page loaded with; the chosen one may differ.
+        if (tab === Modes.HTML && !htmlEdited) prefillHtml(fieldsPreviewRequest());
+        refreshSavedHtml();
 
         showSuccess('pages.mail-templates.toasts.reset');
       },

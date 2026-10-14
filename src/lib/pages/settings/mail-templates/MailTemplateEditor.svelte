@@ -21,6 +21,7 @@
         variant={data.variant}
         locale={data.locale}
         locales={data.locales}
+        layouts={data.layouts}
         entry={data.entry} />
     {/key}
   {/if}
@@ -70,7 +71,17 @@
       return { failed: true };
     }
 
-    return { failed: false, owner, key, mail, variant, locale, locales, entry: entry.body };
+    return {
+      failed: false,
+      owner,
+      key,
+      mail,
+      variant,
+      locale,
+      locales,
+      layouts: list.body.layouts ?? [],
+      entry: entry.body,
+    };
   }
 </script>
 

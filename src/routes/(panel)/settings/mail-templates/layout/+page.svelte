@@ -1,7 +1,1 @@
-<MailLayoutEditor {data} />
-
-<script>
-  import MailLayoutEditor from '$lib/pages/settings/mail-templates/MailLayoutEditor.svelte';
-
-  let { data } = $props();
-</script>
+<!-- The load redirects to the main layout's editor; this route has nothing to draw. -->

@@ -11,6 +11,13 @@
             {$_($descriptionValue, { values: $titleValues })}
           </div>
         {/if}
+        {#if $itemsValue.length > 0}
+          <ul class="text-start mt-3 mb-0">
+            {#each $itemsValue as item, index (index)}
+              <li>{item}</li>
+            {/each}
+          </ul>
+        {/if}
       </div>
       <div class="modal-footer flex-nowrap">
         <button class="btn btn-link text-decoration-none col-6 m-0" type="button" on:click={hide}>
@@ -40,6 +47,8 @@
   const descriptionValue = writable('');
   const confirmLabelValue = writable('buttons.confirm');
   const variantValue = writable('danger');
+  /** @type {import('svelte/store').Writable<string[]>} */
+  const itemsValue = writable([]);
   let callback = () => {};
   let modal;
 
@@ -51,14 +60,16 @@
    * Opens the shared confirmation dialog.
    *
    * [newTitle] is either the title's lang key, or an object that also carries the rest of the
-   * dialog: `{ title, description, confirmLabel, variant }`. `description` and `confirmLabel` are
-   * lang keys (the label defaults to `buttons.confirm`), `variant` is `'primary'` for a
-   * constructive action and `'danger'` (the default) for a destructive one.
+   * dialog: `{ title, description, confirmLabel, variant, items }`. `description` and
+   * `confirmLabel` are lang keys (the label defaults to `buttons.confirm`), `variant` is
+   * `'primary'` for a constructive action and `'danger'` (the default) for a destructive one,
+   * `items` an optional short list of what the action touches (plain texts, shown under the
+   * description).
    *
    * Interpolation values are optional and may be passed either before or after the callback; the
    * title and the description share them.
    *
-   * @param {string | { title: string, description?: string, confirmLabel?: string, variant?: 'primary' | 'danger' }} newTitle
+   * @param {string | { title: string, description?: string, confirmLabel?: string, variant?: 'primary' | 'danger', items?: string[] }} newTitle
    * @param {(() => void) | Record<string, unknown>} [newCallbackOrValues]
    * @param {(() => void) | Record<string, unknown>} [newValuesOrCallback]
    */
@@ -72,6 +83,7 @@
     descriptionValue.set(options.description || '');
     confirmLabelValue.set(options.confirmLabel || 'buttons.confirm');
     variantValue.set(options.variant === 'primary' ? 'primary' : 'danger');
+    itemsValue.set(Array.isArray(options.items) ? options.items.map(String) : []);
     titleValues.set(newValues || {});
     callback = newCallback || (() => {});
 

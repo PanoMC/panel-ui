@@ -2,8 +2,8 @@
   `/panel/mail-templates/preview?owner=&key=&variant=`: the mail template editor's preview in its own
   window. It shows the editor's unsaved draft (published to localStorage, followed live) at a device
   width, with test data of its own (JSON, never saved). Mails render through
-  `POST /panel/mail-templates/preview`; the layout (owner `core`, key `_layout`) renders here, like
-  its editor does, and has no data panel.
+  `POST /panel/mail-templates/preview`; a layout (`?layout=<id>`) renders here, like its editor does,
+  and has no data panel.
 -->
 <div class="d-flex flex-column flex-grow-1 w-100 bg-body-tertiary" style="min-height: 0;">
   <div class="d-flex flex-wrap align-items-center gap-2 px-3 py-2 border-bottom bg-body">
@@ -112,7 +112,8 @@
 
 <script module>
   /**
-   * The mail from `?owner=&key=&variant=`. The permission is checked by the `(preview)` layout.
+   * The mail from `?owner=&key=&variant=`, or the layout from `?layout=`. The permission is checked
+   * by the `(preview)` layout.
    *
    * @type {import('@sveltejs/kit').PageLoad}
    */
@@ -125,6 +126,7 @@
       owner: params.get('owner') ?? '',
       mailKey: params.get('key') ?? '',
       variant: params.get('variant') ?? '',
+      layoutId: params.get('layout') ?? '',
     };
   }
 </script>
@@ -143,7 +145,7 @@
   } from './mail-templates.api.js';
   import {
     isDataObject,
-    isLayoutPreview,
+    layoutPreviewTarget,
     PREVIEW_WIDTHS,
     previewKey,
     readPreview,
@@ -168,8 +170,8 @@
   let loading = $state(false);
   let error = $state('');
 
-  const layout = $derived(isLayoutPreview({ owner: data.owner, key: data.mailKey }));
-  const title = $derived(draft?.title || data.mailKey);
+  const layout = $derived(!!data.layoutId);
+  const title = $derived(draft?.title || data.mailKey || data.layoutId);
   const locale = $derived(layout ? '' : (draft?.body?.locale ?? ''));
   const layoutSamples = $derived(layoutSampleValues($_, draft?.site));
   const html = $derived(
@@ -200,7 +202,13 @@
   });
 
   onMount(() => {
-    const { owner, mailKey, variant } = data;
+    const {
+      owner,
+      key: mailKey,
+      variant,
+    } = data.layoutId
+      ? layoutPreviewTarget(data.layoutId)
+      : { owner: data.owner, key: data.mailKey, variant: data.variant };
     const key = previewKey(owner, mailKey, variant);
 
     draft = readPreview(localStorage, owner, mailKey, variant);

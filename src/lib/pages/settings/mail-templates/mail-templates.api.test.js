@@ -2,8 +2,13 @@ import { describe, expect, test } from 'bun:test';
 
 import {
   createMailTemplatesApi,
+  effectiveLayout,
   fieldErrorsOf,
   groupByOwner,
+  layoutEditHref,
+  layoutRequestValue,
+  layoutSelection,
+  layoutSource,
   pickLocale,
   renderLayoutSample,
   toResult,
@@ -14,6 +19,35 @@ describe('mail template helpers', () => {
   test('html variables are inserted with triple braces', () => {
     expect(variableToken({ name: 'items', type: 'html' })).toBe('{{{items}}}');
     expect(variableToken({ name: 'username', type: 'text' })).toBe('{{username}}');
+  });
+
+  test('list variables are inserted as a loop, on one line in a one-line input', () => {
+    expect(variableToken({ name: 'items', type: 'list' })).toBe('{{#each items}}\n\n{{/each}}');
+    expect(variableToken({ name: 'items', type: 'list' }, { inline: true })).toBe(
+      '{{#each items}}{{/each}}',
+    );
+    expect(variableToken({ name: 'username' }, { inline: true })).toBe('{{username}}');
+  });
+
+  test('the layout select keeps the default apart from an own choice', () => {
+    expect(layoutSelection('core:default', 'core:default')).toBe('');
+    expect(layoutSelection('none', 'core:default')).toBe('none');
+    expect(layoutSelection('custom:news', 'none')).toBe('custom:news');
+    expect(effectiveLayout('', 'none')).toBe('none');
+    expect(effectiveLayout('custom:news', 'core:default')).toBe('custom:news');
+    expect(layoutRequestValue('')).toBeNull();
+    expect(layoutRequestValue('none')).toBe('none');
+  });
+
+  test('a layout comes from Pano, a plugin or the admin', () => {
+    expect(layoutSource({ owner: 'core' })).toBe('core');
+    expect(layoutSource({ owner: 'custom' })).toBe('custom');
+    expect(layoutSource({ owner: 'pano-plugin-market', pluginId: 'pano-plugin-market' })).toBe(
+      'plugin',
+    );
+    expect(layoutEditHref('/panel', 'core:default')).toBe(
+      '/panel/settings/mail-templates/layouts/core%3Adefault',
+    );
   });
 
   test('core comes first, plugins by name', () => {
@@ -63,5 +97,36 @@ describe('mail template helpers', () => {
     await createMailTemplatesApi(client).get('core', 'activation', 'default', 'en-US');
 
     expect(calls).toEqual(['/panel/mail-templates/core/activation/default/en-US']);
+  });
+
+  test('layout calls address the layout by its encoded id', async () => {
+    const calls = [];
+    const record = (method) => async (options) => (
+      calls.push([method, options.path, options.body]),
+      {}
+    );
+    const client = {
+      get: record('get'),
+      post: record('post'),
+      put: record('put'),
+      delete: record('delete'),
+    };
+    const api = createMailTemplatesApi(client);
+
+    await api.getLayout('custom:news');
+    await api.saveLayout('core:default', '<p>{{{content}}}</p>');
+    await api.saveLayout('custom:news', 'x', 'News');
+    await api.deleteLayout('custom:news');
+    await api.createLayout({ name: 'News', copyFrom: 'core:default' });
+    await api.setLayout('core', 'activation', null);
+
+    expect(calls).toEqual([
+      ['get', '/panel/mail-templates/layouts/custom%3Anews', undefined],
+      ['put', '/panel/mail-templates/layouts/core%3Adefault', { body: '<p>{{{content}}}</p>' }],
+      ['put', '/panel/mail-templates/layouts/custom%3Anews', { body: 'x', name: 'News' }],
+      ['delete', '/panel/mail-templates/layouts/custom%3Anews', undefined],
+      ['post', '/panel/mail-templates/layouts', { name: 'News', copyFrom: 'core:default' }],
+      ['put', '/panel/mail-templates/core/activation/layout', { layout: null }],
+    ]);
   });
 });

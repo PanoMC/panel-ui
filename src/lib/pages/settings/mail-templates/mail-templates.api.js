@@ -12,6 +12,15 @@ export const CORE_OWNER = 'core';
 /** The variant of a mail without sub-kinds. */
 export const DEFAULT_VARIANT = 'default';
 
+/** The id of the main layout: always there, never deletable. */
+export const MAIN_LAYOUT = 'core:default';
+
+/** A mail's layout choice for "no layout": the rendered body is the whole mail. */
+export const NO_LAYOUT = 'none';
+
+/** The owner of the layouts the admin made. */
+export const CUSTOM_OWNER = 'custom';
+
 /** `template.mode`: the shared layout with fields, or one complete HTML document. */
 export const Modes = Object.freeze({ FIELDS: 'FIELDS', HTML: 'HTML' });
 
@@ -76,6 +85,21 @@ function templatePath(owner, key, variant, locale) {
   return `/panel/mail-templates/${[owner, key, variant, locale].map(encodeURIComponent).join('/')}`;
 }
 
+/** @param {string} id a layout id (`<owner>:<key>`) */
+function layoutPath(id) {
+  return `/panel/mail-templates/layouts/${encodeURIComponent(id)}`;
+}
+
+/**
+ * The editor page of a layout.
+ *
+ * @param {string} base the app's base path (`/panel`)
+ * @param {string} id
+ */
+export function layoutEditHref(base, id) {
+  return `${base}/settings/mail-templates/layouts/${encodeURIComponent(id)}`;
+}
+
 /**
  * @param {{ get: Function, post: Function, put: Function, delete: Function }} client
  * @param {any} [request] the SvelteKit load event, for a call made while loading
@@ -84,10 +108,10 @@ export function createMailTemplatesApi(client, request) {
   const call = async (method, options) => toResult(await client[method]({ request, ...options }));
 
   return {
-    /** `{ items, locales, layoutCustomized }` */
+    /** `{ items, locales, layouts }`; every item carries `layout` and `layoutDefault`. */
     list: () => call('get', { path: '/panel/mail-templates' }),
 
-    /** `{ template, default, customized, defaultLocale, variables }` */
+    /** `{ template, default, customized, defaultLocale, variables, layout, layoutDefault, templateHtml, defaultHtml }` */
     get: (owner, key, variant, locale) =>
       call('get', { path: templatePath(owner, key, variant, locale) }),
 
@@ -97,18 +121,40 @@ export function createMailTemplatesApi(client, request) {
     reset: (owner, key, variant, locale) =>
       call('delete', { path: templatePath(owner, key, variant, locale) }),
 
-    /** `{ subject, html, text }` rendered with the sample variables. */
+    /**
+     * `{ subject, html, text, templateHtml }` rendered with the sample variables; `templateHtml` is
+     * the unsaved template composed with the layout (`body.layout`, else the mail's own).
+     */
     preview: (body) => call('post', { path: '/panel/mail-templates/preview', body }),
 
     /** Sends the rendered, unsaved mail to the signed-in admin. */
     test: (body) => call('post', { path: '/panel/mail-templates/test', body }),
 
-    /** `{ body, default, customized }` */
-    getLayout: () => call('get', { path: '/panel/mail-templates/layout' }),
+    /**
+     * The layout a mail uses, for all its variants and languages: a layout id, `none`, or null for
+     * the mail's own default. Answers `{ layout, layoutDefault }`.
+     */
+    setLayout: (owner, key, layout) =>
+      call('put', {
+        path: `/panel/mail-templates/${[owner, key].map(encodeURIComponent).join('/')}/layout`,
+        body: { layout },
+      }),
 
-    saveLayout: (body) => call('put', { path: '/panel/mail-templates/layout', body: { body } }),
+    /** A new custom layout `{ name, copyFrom? }`; answers the layout as `getLayout` does. */
+    createLayout: (body) => call('post', { path: '/panel/mail-templates/layouts', body }),
 
-    resetLayout: () => call('delete', { path: '/panel/mail-templates/layout' }),
+    /** `{ id, owner, key, name, body, default, customized, builtIn, deletable, usedBy, websiteLogo, websiteName }` */
+    getLayout: (id) => call('get', { path: layoutPath(id) }),
+
+    /** `name` is only kept for a custom layout. */
+    saveLayout: (id, body, name) =>
+      call('put', { path: layoutPath(id), body: name == null ? { body } : { body, name } }),
+
+    /**
+     * A custom layout is deleted (`{ deleted: true, movedMails }`), a built-in one reset
+     * (`{ deleted: false, ...layout }`).
+     */
+    deleteLayout: (id) => call('delete', { path: layoutPath(id) }),
   };
 }
 
@@ -128,14 +174,69 @@ export function normalizeTemplate(template) {
 }
 
 /**
- * What the "Insert variable" menu inserts: `{{{name}}}` for a pre-rendered HTML block, `{{name}}`
- * (escaped) for everything else.
+ * What the "Insert variable" menu inserts: `{{{name}}}` for a pre-rendered HTML block, a
+ * `{{#each name}}` loop for a list (with an empty line inside, or on one line for a one-line
+ * input), `{{name}}` (escaped) for everything else.
  *
  * @param {{ name: string, type?: string }} variable
+ * @param {{ inline?: boolean }} [options]
  * @returns {string}
  */
-export function variableToken(variable) {
-  return variable.type === 'html' ? `{{{${variable.name}}}}` : `{{${variable.name}}}`;
+export function variableToken(variable, { inline = false } = {}) {
+  if (variable.type === 'html') return `{{{${variable.name}}}}`;
+  if (variable.type === 'list') {
+    return inline
+      ? `{{#each ${variable.name}}}{{/each}}`
+      : `{{#each ${variable.name}}}\n\n{{/each}}`;
+  }
+
+  return `{{${variable.name}}}`;
+}
+
+/**
+ * Where a layout comes from: `core` (Pano), `plugin` or `custom` (made by the admin).
+ *
+ * @param {{ owner?: string, pluginId?: string | null }} layout
+ * @returns {'core' | 'plugin' | 'custom'}
+ */
+export function layoutSource(layout) {
+  if (layout?.owner === CORE_OWNER) return 'core';
+  if (layout?.owner === CUSTOM_OWNER) return 'custom';
+
+  return 'plugin';
+}
+
+/**
+ * The value of a mail's layout select: `''` while the mail uses its own default, else the chosen
+ * layout id or `none`.
+ *
+ * @param {string | null | undefined} layout the effective layout
+ * @param {string | null | undefined} layoutDefault the mail's own default
+ * @returns {string}
+ */
+export function layoutSelection(layout, layoutDefault) {
+  return !layout || layout === layoutDefault ? '' : layout;
+}
+
+/**
+ * The layout a select value renders with (`''` → the mail's default).
+ *
+ * @param {string} selection
+ * @param {string | null | undefined} layoutDefault
+ * @returns {string}
+ */
+export function effectiveLayout(selection, layoutDefault) {
+  return selection || layoutDefault || MAIN_LAYOUT;
+}
+
+/**
+ * What `setLayout` sends for a select value: null for the mail's default.
+ *
+ * @param {string} selection
+ * @returns {string | null}
+ */
+export function layoutRequestValue(selection) {
+  return selection || null;
 }
 
 /**
@@ -251,7 +352,7 @@ export function renderLayoutSample(layout, samples) {
  * window's).
  *
  * @param {(key: string) => string} t the translate function (`$_`)
- * @param {Record<string, string>} [site] the site's own values from `GET /mail-templates/layout`
+ * @param {Record<string, string>} [site] the site's own values from `GET /mail-templates/layouts/:id`
  *   (`websiteLogo` as a data URI, `websiteName`); they replace the placeholders when given
  * @returns {Record<string, string>}
  */

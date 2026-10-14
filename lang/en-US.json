@@ -3167,19 +3167,51 @@
         "customized-languages": "Customized Languages"
       },
       "layout": {
-        "title": "Layout",
-        "name": "Mail layout",
-        "description": "The shared frame of every mail: logo, card, button and footer.",
-        "edit": "Edit layout",
-        "hint": "The layout wraps every mail written with fields. It must keep {slot}, where the mail's text goes. The preview here fills it with sample text.",
+        "hint": "This layout wraps the mails that use it, when they are written with fields. It must keep {slot}, where the mail's text goes. The preview here fills it with sample text.",
         "reset-title": "Reset the layout to default?",
-        "reset-description": "Your layout is deleted and every mail uses the layout Pano ships with again.",
+        "reset-description": "Your changes are deleted and this layout is the built-in one again.",
         "sample-content": "This is where the text of each mail appears.",
         "sample-subject": "Sample subject",
         "sample-preheader": "Sample preview text",
         "sample-button": "Open",
         "sample-footer": "You receive this e-mail because you have an account on this website.",
-        "customized-hint": "You use your edited layout; Reset to default brings back Pano's built-in one."
+        "customized-hint": "You use your edited version of this layout; Reset to default brings back the built-in one.",
+        "name-label": "Name",
+        "delete": "Delete layout",
+        "delete-title": "Delete this layout?",
+        "delete-description": "The layout \"{name}\" is deleted. No mail uses it.",
+        "delete-description-used": "The layout \"{name}\" is deleted. {count, plural, one {This mail uses it and switches} other {These mails use it and switch}} to the main layout:"
+      },
+      "layouts": {
+        "title": "{count, plural, one {# Layout} other {# Layouts}}",
+        "new": "New layout",
+        "main": "Main layout",
+        "table": {
+          "name": "Name",
+          "source": "Source",
+          "used-by": "Used By"
+        },
+        "used-by": "{count, plural, =0 {No mails} one {# mail} other {# mails}}",
+        "source": {
+          "core": "Pano",
+          "custom": "Custom"
+        },
+        "create": {
+          "title": "New layout",
+          "name": "Layout name",
+          "copy-from": "Start from a copy of"
+        },
+        "errors": {
+          "REQUIRED": "Give the layout a name.",
+          "TOO_LONG": "The name is too long (at most 100 characters)."
+        }
+      },
+      "layout-select": {
+        "label": "Layout",
+        "default": "{name} (default)",
+        "none": "None",
+        "hint": "The layout applies to every variant and language of this mail. With None, the body is the whole mail.",
+        "hint-html": "The layout applies to every variant and language of this mail. A template saved in Advanced mode is a whole mail and does not use it."
       },
       "variant": "Variant",
       "language": "Language",
@@ -3189,7 +3221,7 @@
         "fields": "Fields",
         "html": "Advanced"
       },
-      "html-mode-hint": "Advanced mode shows the whole mail as one HTML template: the shared layout with the fields filled in. Saving here stores this full HTML, and the mail then no longer follows the shared layout. The Fields tab keeps the fields as they were.",
+      "html-mode-hint": "Advanced mode shows the whole mail as one HTML template: the chosen layout with the fields filled in. Saving here stores this full HTML, and the mail then no longer follows the layout. The Fields tab keeps the fields as they were.",
       "fields": {
         "subject": "Subject",
         "preheader": "Preview text",
@@ -3246,7 +3278,12 @@
         "test-sent": "Test mail sent to your e-mail address.",
         "invalid": "The template has errors. Fix the marked fields and try again.",
         "missing-content": "The layout must contain {slot}.",
-        "failed": "Something went wrong. Please try again."
+        "failed": "Something went wrong. Please try again.",
+        "layout-saved": "Layout saved.",
+        "layout-reset": "Layout reset to default.",
+        "layout-deleted": "Layout deleted.",
+        "layout-missing": "That layout no longer exists. Pick another one.",
+        "layout-name-invalid": "Check the layout's name."
       },
       "window": {
         "open": "Open in new window",
@@ -4768,8 +4805,11 @@
     "REDELIVERED_WEBHOOK": "**{username}** redelivered an event of the \"{name}\" webhook.",
     "UPDATED_MAIL_TEMPLATE": "**{username}** edited the \"{mailKey}\" mail template ({variant}, {localeCode}).",
     "RESET_MAIL_TEMPLATE": "**{username}** reset the \"{mailKey}\" mail template to default ({variant}, {localeCode}).",
-    "UPDATED_MAIL_LAYOUT": "**{username}** edited the mail layout.",
-    "RESET_MAIL_LAYOUT": "**{username}** reset the mail layout to default."
+    "UPDATED_MAIL_LAYOUT": "**{username}** edited the mail layout \"{layoutName}\".",
+    "RESET_MAIL_LAYOUT": "**{username}** reset the mail layout \"{layoutName}\" to default.",
+    "CREATED_MAIL_LAYOUT": "**{username}** created the mail layout \"{layoutName}\".",
+    "DELETED_MAIL_LAYOUT": "**{username}** deleted the mail layout \"{layoutName}\".",
+    "CHANGED_MAIL_TEMPLATE_LAYOUT": "**{username}** set the layout of the \"{mailKey}\" mail to {layout, select, none {none} other {\"{layout}\"}}."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> sent a message in ticket (<b>#{id}</b>).",

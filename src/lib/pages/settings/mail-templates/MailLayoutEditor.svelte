@@ -30,7 +30,7 @@
         </a>
       </div>
       <div slot="right" class="hstack gap-2">
-        {#if customized}
+        {#if builtIn && customized}
           <button
             type="button"
             class="btn btn-link"
@@ -41,10 +41,21 @@
             <i class="fas fa-rotate-left" aria-hidden="true"></i>
           </button>
         {/if}
+        {#if deletable}
+          <button
+            type="button"
+            class="btn btn-link link-danger"
+            title={$_('pages.mail-templates.layout.delete')}
+            aria-label={$_('pages.mail-templates.layout.delete')}
+            disabled={saving}
+            onclick={onDeleteClick}>
+            <i class="fas fa-trash" aria-hidden="true"></i>
+          </button>
+        {/if}
         <button
           type="button"
           class="btn btn-secondary text-nowrap"
-          disabled={saving || !dirty || missingContent || !!syntax}
+          disabled={saving || !dirty || missingContent || !!syntax || nameMissing}
           onclick={onSaveClick}>
           {#if saving}
             <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
@@ -56,19 +67,52 @@
       </div>
     </PageActions>
 
-    <h4 class="mb-0 d-flex flex-wrap align-items-center gap-2">
-      {$_('pages.mail-templates.layout.name')}
-      {#if customized}
-        <span
-          class="badge text-bg-primary fs-6 fw-normal"
-          aria-label="{$_('pages.mail-templates.customized')}: {$_(
-            'pages.mail-templates.layout.customized-hint',
-          )}"
-          use:tooltip={[$_('pages.mail-templates.layout.customized-hint')]}>
-          {$_('pages.mail-templates.customized')}
-        </span>
-      {/if}
-    </h4>
+    <div>
+      <h4 class="mb-1 d-flex flex-wrap align-items-center gap-2">
+        {title}
+        {#if builtIn && customized}
+          <span
+            class="badge text-bg-primary fs-6 fw-normal"
+            aria-label="{$_('pages.mail-templates.customized')}: {$_(
+              'pages.mail-templates.layout.customized-hint',
+            )}"
+            use:tooltip={[$_('pages.mail-templates.layout.customized-hint')]}>
+            {$_('pages.mail-templates.customized')}
+          </span>
+        {/if}
+      </h4>
+      <div class="small text-body-secondary">
+        {sourceName} · {$_('pages.mail-templates.layouts.used-by', {
+          values: { count: usedBy.length },
+        })}
+      </div>
+    </div>
+
+    {#if !builtIn}
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-4">
+          <label class="form-label" for="mail-layout-name">
+            {$_('pages.mail-templates.layout.name-label')}
+          </label>
+          <input
+            id="mail-layout-name"
+            type="text"
+            class="form-control"
+            class:is-invalid={nameMissing || !!nameError}
+            maxlength={NAME_MAX_LENGTH}
+            bind:value={name} />
+          {#if nameMissing || nameError}
+            <div class="invalid-feedback d-block">
+              {$_(
+                nameError === 'TOO_LONG'
+                  ? 'pages.mail-templates.layouts.errors.TOO_LONG'
+                  : 'pages.mail-templates.layouts.errors.REQUIRED',
+              )}
+            </div>
+          {/if}
+        </div>
+      </div>
+    {/if}
 
     <div class="small text-body-secondary">
       {$_('pages.mail-templates.layout.hint', { values: { slot: LAYOUT_CONTENT_SLOT } })}
@@ -116,14 +160,7 @@
       </div>
       <div class="col-12 col-xl-5">
         <div class="mail-preview-column">
-          <MailPreview
-            html={previewHtml}
-            windowHref={previewWindowHref(
-              base,
-              LAYOUT_PREVIEW.owner,
-              LAYOUT_PREVIEW.key,
-              LAYOUT_PREVIEW.variant,
-            )} />
+          <MailPreview html={previewHtml} windowHref={layoutPreviewHref(base, layoutId)} />
         </div>
       </div>
     </div>
@@ -131,6 +168,8 @@
 </div>
 
 <script module>
+  import { error } from '@sveltejs/kit';
+
   import ApiUtil from '$lib/api.util';
 
   import { createMailTemplatesApi } from './mail-templates.api.js';
@@ -141,7 +180,9 @@
   export async function load(event) {
     await event.parent();
 
-    const result = await createMailTemplatesApi(ApiUtil, event).getLayout();
+    const result = await createMailTemplatesApi(ApiUtil, event).getLayout(event.params.id);
+
+    if (!result.ok && result.error.code === 'NOT_EXISTS') throw error(404);
 
     return result.ok ? { failed: false, layout: result.body } : { failed: true };
   }
@@ -165,18 +206,30 @@
   import HandlebarsHint from './HandlebarsHint.svelte';
   import MailPreview from './MailPreview.svelte';
   import {
+    fieldErrorsOf,
     LAYOUT_CONTENT_SLOT,
     layoutSampleValues,
+    layoutSource,
     renderLayoutSample,
   } from './mail-templates.api.js';
-  import { LAYOUT_PREVIEW, previewWindowHref, publishPreview } from './mail-preview-window.js';
+  import { layoutPreviewHref, layoutPreviewTarget, publishPreview } from './mail-preview-window.js';
+
+  /** The longest name a custom layout may have (the backend's limit). */
+  const NAME_MAX_LENGTH = 100;
 
   let { data, api = createMailTemplatesApi(ApiUtil) } = $props();
 
   // The loaded layout is copied in, and again only when a load brings another one (a retry after a
   // failed load); between those only a save or a reset replaces it.
   let body = $state('');
+  let name = $state('');
+  /** The saved name (custom layouts only). */
+  let savedName = $state('');
   let customized = $state(false);
+  /** @type {Array<{ owner: string, key: string, name?: string }>} */
+  let usedBy = $state([]);
+  /** @type {string} the backend's code for the name (`REQUIRED`, `TOO_LONG`) after a failed save */
+  let nameError = $state('');
   /** The saved layout, minified: a layout that was only pretty-printed is not a change. */
   let savedKey = $state('');
   let editorVersion = $state(0);
@@ -189,16 +242,46 @@
     if (layout === loadedLayout) return;
 
     loadedLayout = layout;
+    untrack(() => {
+      applyLayout(layout);
+      editorVersion += 1;
+    });
+  });
+
+  /**
+   * Shows a layout as the backend answered it (load, save, reset).
+   *
+   * @param {any} layout
+   */
+  function applyLayout(layout) {
     body = prettifyTemplate(String(layout?.body ?? ''));
     savedKey = minifyTemplate(layout?.body ?? '');
+    name = String(layout?.name ?? '');
+    savedName = name;
     customized = !!layout?.customized;
-    untrack(() => (editorVersion += 1));
+    usedBy = layout?.usedBy ?? [];
+    nameError = '';
+  }
+
+  const layoutId = $derived(String(data.layout?.id ?? ''));
+  const builtIn = $derived(!!data.layout?.builtIn);
+  const deletable = $derived(!!data.layout?.deletable);
+  const title = $derived(savedName || layoutId);
+  const sourceName = $derived.by(() => {
+    const source = layoutSource(data.layout);
+
+    return source === 'plugin'
+      ? data.layout?.pluginName || data.layout?.pluginId || data.layout?.owner
+      : $_(`pages.mail-templates.layouts.source.${source}`);
   });
   let saving = $state(false);
   let leaving = false;
 
   const missingContent = $derived(!body.includes(LAYOUT_CONTENT_SLOT));
-  const dirty = $derived(minifyTemplate(body) !== savedKey);
+  const nameMissing = $derived(!builtIn && !name.trim());
+  const dirty = $derived(
+    minifyTemplate(body) !== savedKey || (!builtIn && name.trim() !== savedName),
+  );
   /** First syntax error of the layout: blocks saving at once, shown once typing pauses. */
   const syntax = $derived(checkTemplateSyntax(body));
   let shownSyntax = $state(null);
@@ -225,11 +308,9 @@
 
   // The preview window follows the unsaved layout (it renders it on its own, like this page).
   $effect(() => {
-    publishPreview(localStorage, LAYOUT_PREVIEW.owner, LAYOUT_PREVIEW.key, LAYOUT_PREVIEW.variant, {
-      layout: body,
-      site,
-      title: $_('pages.mail-templates.layout.name'),
-    });
+    const { owner, key, variant } = layoutPreviewTarget(layoutId);
+
+    publishPreview(localStorage, owner, key, variant, { layout: body, site, title });
   });
 
   /** @param {string} value */
@@ -241,24 +322,36 @@
     saving = true;
 
     const saved = minifyTemplate(body);
-    const result = await api.saveLayout(saved);
+    const result = await api.saveLayout(layoutId, saved, builtIn ? undefined : name.trim());
 
     saving = false;
 
     if (!result.ok) {
+      const fields = fieldErrorsOf(result.error);
+
+      nameError = fields.name?.code ?? '';
       showError(
-        result.error.fields?.body === 'MISSING_CONTENT'
+        fields.body?.code === 'MISSING_CONTENT'
           ? 'pages.mail-templates.toasts.missing-content'
-          : 'pages.mail-templates.toasts.failed',
+          : fields.body?.code === 'TEMPLATE_ERROR'
+            ? 'pages.mail-templates.toasts.invalid'
+            : fields.name
+              ? 'pages.mail-templates.toasts.layout-name-invalid'
+              : 'pages.mail-templates.toasts.failed',
         { slot: LAYOUT_CONTENT_SLOT },
       );
 
       return;
     }
 
+    // The editor keeps the admin's formatting; only the saved state follows the answer.
     savedKey = saved;
-    customized = true;
-    showSuccess('pages.mail-templates.toasts.saved');
+    savedName = String(result.body?.name ?? name.trim());
+    name = savedName;
+    customized = !!result.body?.customized;
+    usedBy = result.body?.usedBy ?? usedBy;
+    nameError = '';
+    showSuccess('pages.mail-templates.toasts.layout-saved');
   }
 
   function onResetClick() {
@@ -272,7 +365,7 @@
       async () => {
         saving = true;
 
-        const result = await api.resetLayout();
+        const result = await api.deleteLayout(layoutId);
 
         saving = false;
 
@@ -282,12 +375,47 @@
           return;
         }
 
-        body = prettifyTemplate(String(data.layout?.default ?? ''));
-        savedKey = minifyTemplate(data.layout?.default ?? '');
-        customized = false;
+        applyLayout(
+          typeof result.body?.body === 'string'
+            ? result.body
+            : { ...data.layout, body: data.layout?.default ?? '', customized: false },
+        );
         editorVersion += 1;
-        showSuccess('pages.mail-templates.toasts.reset');
+        showSuccess('pages.mail-templates.toasts.layout-reset');
       },
+    );
+  }
+
+  function onDeleteClick() {
+    showConfirm(
+      {
+        title: 'pages.mail-templates.layout.delete-title',
+        description:
+          usedBy.length > 0
+            ? 'pages.mail-templates.layout.delete-description-used'
+            : 'pages.mail-templates.layout.delete-description',
+        confirmLabel: 'buttons.delete',
+        variant: 'danger',
+        items: usedBy.map((mail) => mail.name || mail.key),
+      },
+      async () => {
+        saving = true;
+
+        const result = await api.deleteLayout(layoutId);
+
+        saving = false;
+
+        if (!result.ok) {
+          showError('pages.mail-templates.toasts.failed');
+
+          return;
+        }
+
+        showSuccess('pages.mail-templates.toasts.layout-deleted');
+        leaving = true;
+        goto(`${base}/settings/mail-templates`);
+      },
+      { name: title, count: usedBy.length },
     );
   }
 
