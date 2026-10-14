@@ -237,7 +237,8 @@
         html={preview.html}
         subject={preview.subject}
         loading={preview.loading}
-        error={preview.error} />
+        error={preview.error}
+        windowHref={previewWindowHref(base, owner, mailKey, variant)} />
     </div>
   </div>
 </div>
@@ -308,6 +309,7 @@
   } from './mail-templates.api.js';
   import MailBodyEditor from './MailBodyEditor.svelte';
   import MailPreview from './MailPreview.svelte';
+  import { previewWindowHref, publishPreview, sampleVariables } from './mail-preview-window.js';
   import VariableMenu from './VariableMenu.svelte';
 
   /** Error codes that have their own text under `errors.*`. */
@@ -383,6 +385,8 @@
   const defaultLocale = $derived(entry.defaultLocale ?? '');
   const bodyHasBlocks = $derived(hasBlockHelpers(bodies.FIELDS));
   const payload = $derived({ ...template, body: bodies[template.mode] });
+  /** What the preview renders with; only the preview window lets them be changed. */
+  const samples = $derived(sampleVariables(variables));
 
   /** @param {string} code */
   function localeName(code) {
@@ -481,6 +485,11 @@
     goto(`?${params}`, { noScroll: true, keepFocus: true });
   }
 
+  /** The preview request: the draft and the variables it renders with. */
+  function previewRequest() {
+    return { ...request(), variables: samples };
+  }
+
   function request() {
     return { owner, key: mailKey, variant, locale, template: payload };
   }
@@ -517,12 +526,20 @@
   }
 
   $effect(() => {
-    const body = $state.snapshot(request());
+    const body = $state.snapshot(previewRequest());
 
     clearTimeout(previewTimer);
     previewTimer = setTimeout(() => renderPreview(body), PREVIEW_DELAY_MS);
 
     return () => clearTimeout(previewTimer);
+  });
+
+  // The preview window follows the unsaved mail at once (it debounces on its own).
+  $effect(() => {
+    publishPreview(localStorage, owner, mailKey, variant, {
+      body: $state.snapshot(previewRequest()),
+      title: mail.name || mail.key,
+    });
   });
 
   async function onSaveClick() {

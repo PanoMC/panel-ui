@@ -157,6 +157,17 @@
     return normalizeUsageMode(siteInfo?.usageMode) !== UsageModes.SERVERS;
   }
 
+  /**
+   * The `(preview)` route group — pages opened in a window of their own (the mail template
+   * preview). They need a session like any panel page but render without the sidebar and navbar.
+   *
+   * @param {string | null | undefined} routeId
+   * @returns {boolean}
+   */
+  export function isPreviewRoute(routeId) {
+    return String(routeId || '').startsWith('/(preview)');
+  }
+
   /** Alert kinds that belong to one server (§2.4.7). */
   const SERVER_ALERT_TYPES = ['SERVER_CRASHED', 'BACKUP_FAILED', 'TPS_LOW', 'SCHEDULE_FAILED'];
 
@@ -557,7 +568,7 @@
     panelTheme.set(data.session.basicData.panelTheme || 'dark');
 
     // Auto-Reset Layout State: If we navigate to a non-plugin route, force resetLayout to false.
-    // The auth pages are chrome-free too, so they keep the flag their layout load set — and so
+    // The auth and preview pages are chrome-free too, so they keep the flag their layout load set — and so
     // does the login form the root error page shows in place of a page (`requireSignedIn`).
     if (
       browser &&
@@ -565,6 +576,7 @@
       p.route.id &&
       !p.route.id.includes('(plugin-ui)') &&
       !isAuthRoute(p.route.id) &&
+      !isPreviewRoute(p.route.id) &&
       !isInlineLogin(p)
     ) {
       resetLayout.set(false);

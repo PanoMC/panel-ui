@@ -3231,8 +3231,7 @@
         "width": "Önizleme genişliği",
         "desktop": "Masaüstü",
         "mobile": "Mobil",
-        "invalid": "Şablonda bir hata var, bu yüzden önizleme çalışan son sürümü gösteriyor.",
-        "open-new-window": "Yeni pencerede aç"
+        "invalid": "Şablonda bir hata var, bu yüzden önizleme çalışan son sürümü gösteriyor."
       },
       "send-test": "Test e-postası gönder",
       "reset": {
@@ -3251,6 +3250,22 @@
         "invalid": "Şablonda hatalar var. İşaretli alanları düzeltip tekrar dene.",
         "missing-content": "Düzen {slot} içermeli.",
         "failed": "Bir şeyler ters gitti. Lütfen tekrar dene."
+      },
+      "window": {
+        "open": "Yeni pencerede aç",
+        "title": "E-posta önizlemesi",
+        "width": "Genişlik",
+        "no-draft": "Bu pencereyi e-posta şablonu düzenleyicisinden aç.",
+        "data": "Örnek veri",
+        "data-hint": "Bu önizlemenin kullandığı değerler. Şablonu denemek için değiştir; burada hiçbir şey kaydedilmez.",
+        "data-invalid": "Geçerli JSON değil: düzeltilene kadar önizleme düzenleyicideki veriyi kullanır.",
+        "data-from-editor": "Düzenleyicideki veriyi kullan",
+        "widths": {
+          "mobile": "Telefon",
+          "tablet": "Tablet",
+          "desktop": "Masaüstü",
+          "full": "Tam genişlik"
+        }
       }
     }
   },
@@ -4542,6 +4557,7 @@
     }
   },
   "page-error": {
+    "403": "Bu sayfayı açma iznin yok.",
     "404": "Enderman bu sayfanın yüklenmesini engelledi.",
     "500": "Sunucu hatası oluştu. Lütfen tarayıcı konsolundaki hatayı bildirin.",
     "default": "Bir sorun oluştu (hata {status})."

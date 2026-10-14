@@ -3233,8 +3233,7 @@
         "width": "Preview width",
         "desktop": "Desktop",
         "mobile": "Mobile",
-        "invalid": "The template has an error, so the preview shows the last version that worked.",
-        "open-new-window": "Open in new window"
+        "invalid": "The template has an error, so the preview shows the last version that worked."
       },
       "send-test": "Send test mail",
       "reset": {
@@ -3253,6 +3252,22 @@
         "invalid": "The template has errors. Fix the marked fields and try again.",
         "missing-content": "The layout must contain {slot}.",
         "failed": "Something went wrong. Please try again."
+      },
+      "window": {
+        "open": "Open in new window",
+        "title": "Mail preview",
+        "width": "Width",
+        "no-draft": "Open this window from the mail template editor.",
+        "data": "Sample data",
+        "data-hint": "Values this preview uses. Change them to try the template; nothing here is saved.",
+        "data-invalid": "Not valid JSON: the preview uses the editor's data until it is fixed.",
+        "data-from-editor": "Use the editor's data",
+        "widths": {
+          "mobile": "Phone",
+          "tablet": "Tablet",
+          "desktop": "Desktop",
+          "full": "Full width"
+        }
       }
     }
   },
@@ -4545,6 +4560,7 @@
     }
   },
   "page-error": {
+    "403": "You do not have permission to open this page.",
     "404": "Enderman blocked this page from loading.",
     "500": "Internal server error. Please report the error shown in your browser console.",
     "default": "Something went wrong (error {status})."

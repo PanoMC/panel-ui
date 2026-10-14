@@ -95,7 +95,14 @@
       </div>
       <div class="col-12 col-xl-5">
         <div class="mail-preview-column">
-          <MailPreview html={previewHtml} />
+          <MailPreview
+            html={previewHtml}
+            windowHref={previewWindowHref(
+              base,
+              LAYOUT_PREVIEW.owner,
+              LAYOUT_PREVIEW.key,
+              LAYOUT_PREVIEW.variant,
+            )} />
         </div>
       </div>
     </div>
@@ -133,7 +140,12 @@
   import { EditorLanguages } from '$lib/files.util.js';
 
   import MailPreview from './MailPreview.svelte';
-  import { LAYOUT_CONTENT_SLOT, renderLayoutSample } from './mail-templates.api.js';
+  import {
+    LAYOUT_CONTENT_SLOT,
+    layoutSampleValues,
+    renderLayoutSample,
+  } from './mail-templates.api.js';
+  import { LAYOUT_PREVIEW, previewWindowHref, publishPreview } from './mail-preview-window.js';
 
   let { data, api = createMailTemplatesApi(ApiUtil) } = $props();
 
@@ -161,21 +173,15 @@
   let leaving = false;
 
   const missingContent = $derived(!body.includes(LAYOUT_CONTENT_SLOT));
-  const previewHtml = $derived(
-    renderLayoutSample(body, {
-      content: `<p>${$_('pages.mail-templates.layout.sample-content')}</p>`,
-      subject: $_('pages.mail-templates.layout.sample-subject'),
-      preheader: $_('pages.mail-templates.layout.sample-preheader'),
-      buttonLabel: $_('pages.mail-templates.layout.sample-button'),
-      buttonUrl: '#',
-      footer: $_('pages.mail-templates.layout.sample-footer'),
-      websiteName: 'Pano',
-      websiteUrl: '#',
-      websiteLogo: '',
-      year: String(new Date().getFullYear()),
-      locale: 'en',
-    }),
-  );
+  const previewHtml = $derived(renderLayoutSample(body, layoutSampleValues($_)));
+
+  // The preview window follows the unsaved layout (it renders it on its own, like this page).
+  $effect(() => {
+    publishPreview(localStorage, LAYOUT_PREVIEW.owner, LAYOUT_PREVIEW.key, LAYOUT_PREVIEW.variant, {
+      layout: body,
+      title: $_('pages.mail-templates.layout.name'),
+    });
+  });
 
   /** @param {string} value */
   function onChange(value) {

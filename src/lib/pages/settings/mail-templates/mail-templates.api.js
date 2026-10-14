@@ -257,6 +257,29 @@ export function renderLayoutSample(layout, samples) {
   );
 }
 
+/**
+ * The sample values the layout preview fills the layout with (the editor's and the preview
+ * window's).
+ *
+ * @param {(key: string) => string} t the translate function (`$_`)
+ * @returns {Record<string, string>}
+ */
+export function layoutSampleValues(t) {
+  return {
+    content: `<p>${t('pages.mail-templates.layout.sample-content')}</p>`,
+    subject: t('pages.mail-templates.layout.sample-subject'),
+    preheader: t('pages.mail-templates.layout.sample-preheader'),
+    buttonLabel: t('pages.mail-templates.layout.sample-button'),
+    buttonUrl: '#',
+    footer: t('pages.mail-templates.layout.sample-footer'),
+    websiteName: 'Pano',
+    websiteUrl: '#',
+    websiteLogo: '',
+    year: String(new Date().getFullYear()),
+    locale: 'en',
+  };
+}
+
 /** @param {string} value */
 function escapeHtml(value) {
   return String(value ?? '')
