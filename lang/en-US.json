@@ -3163,7 +3163,6 @@
       "customized-short": "customized",
       "default": "Default",
       "table": {
-        "actions": "Actions",
         "mail": "Mail",
         "variants": "Variants",
         "customized-languages": "Customized Languages"

@@ -34,15 +34,6 @@
         <table class="table table-hover mb-0">
           <tbody>
             <tr use:rowLink={`${base}/settings/mail-templates/layout`}>
-              <th scope="row" class="align-middle text-center" style="width: 1%;">
-                <a
-                  class="btn btn-link"
-                  href="{base}/settings/mail-templates/layout"
-                  title={$_('buttons.edit')}
-                  aria-label={$_('buttons.edit')}>
-                  <i class="fas fa-pen" aria-hidden="true"></i>
-                </a>
-              </th>
               <td class="align-middle">
                 <div>{$_('pages.mail-templates.layout.name')}</div>
                 <div class="small text-body-secondary">
@@ -52,8 +43,6 @@
               <td class="align-middle text-end text-nowrap">
                 {#if data.list.layoutCustomized}
                   <span class="badge text-bg-primary">{$_('pages.mail-templates.customized')}</span>
-                {:else}
-                  <span class="badge text-bg-secondary">{$_('pages.mail-templates.default')}</span>
                 {/if}
               </td>
             </tr>
@@ -81,7 +70,6 @@
             <table class="table table-hover mb-0">
               <thead>
                 <tr>
-                  <th scope="col"></th>
                   <th class="align-middle text-nowrap" scope="col">
                     {$_('pages.mail-templates.table.mail')}
                   </th>
@@ -98,25 +86,6 @@
                   {@const href = editHref(mail)}
                   {@const customized = customizedLocalesOf(mail)}
                   <tr use:rowLink={href}>
-                    <th scope="row" class="align-middle text-center" style="width: 1%;">
-                      <div class="dropdown position-static">
-                        <button
-                          type="button"
-                          class="btn btn-link"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                          title={$_('pages.mail-templates.table.actions')}
-                          aria-label={$_('pages.mail-templates.table.actions')}>
-                          <span class="fas fa-ellipsis-v"></span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-start">
-                          <a class="dropdown-item" {href}>
-                            <i class="fas fa-pen me-2" aria-hidden="true"></i>
-                            {$_('buttons.edit')}
-                          </a>
-                        </div>
-                      </div>
-                    </th>
                     <td class="align-middle">
                       <a class="text-reset text-decoration-none" {href}>{mail.name || mail.key}</a>
                       {#if mail.description}
@@ -128,8 +97,7 @@
                     </td>
                     <td class="align-middle">
                       {#if customized.length === 0}
-                        <span class="text-body-secondary"
-                          >{$_('pages.mail-templates.default')}</span>
+                        <span class="text-body-secondary">—</span>
                       {:else}
                         <div class="d-flex flex-wrap gap-1">
                           {#each customized as code (code)}
