@@ -171,7 +171,7 @@
   const layout = $derived(isLayoutPreview({ owner: data.owner, key: data.mailKey }));
   const title = $derived(draft?.title || data.mailKey);
   const locale = $derived(layout ? '' : (draft?.body?.locale ?? ''));
-  const layoutSamples = $derived(layoutSampleValues($_));
+  const layoutSamples = $derived(layoutSampleValues($_, draft?.site));
   const html = $derived(
     layout ? renderLayoutSample(String(draft?.layout ?? ''), layoutSamples) : rendered.html,
   );

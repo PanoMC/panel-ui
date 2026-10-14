@@ -251,9 +251,13 @@ export function renderLayoutSample(layout, samples) {
  * window's).
  *
  * @param {(key: string) => string} t the translate function (`$_`)
+ * @param {Record<string, string>} [site] the site's own values from `GET /mail-templates/layout`
+ *   (`websiteLogo` as a data URI, `websiteName`); they replace the placeholders when given
  * @returns {Record<string, string>}
  */
-export function layoutSampleValues(t) {
+export function layoutSampleValues(t, site = {}) {
+  const own = Object.fromEntries(Object.entries(site ?? {}).filter(([, value]) => value));
+
   return {
     content: `<p>${t('pages.mail-templates.layout.sample-content')}</p>`,
     subject: t('pages.mail-templates.layout.sample-subject'),
@@ -266,6 +270,7 @@ export function layoutSampleValues(t) {
     websiteLogo: '',
     year: String(new Date().getFullYear()),
     locale: 'en',
+    ...own,
   };
 }
 

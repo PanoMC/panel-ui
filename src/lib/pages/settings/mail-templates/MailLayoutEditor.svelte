@@ -216,12 +216,18 @@
 
     return () => clearTimeout(timer);
   });
-  const previewHtml = $derived(renderLayoutSample(body, layoutSampleValues($_)));
+  /** The site's logo and name, so the layout preview looks like a real mail. */
+  const site = $derived({
+    websiteLogo: data.layout?.websiteLogo ?? '',
+    websiteName: data.layout?.websiteName ?? '',
+  });
+  const previewHtml = $derived(renderLayoutSample(body, layoutSampleValues($_, site)));
 
   // The preview window follows the unsaved layout (it renders it on its own, like this page).
   $effect(() => {
     publishPreview(localStorage, LAYOUT_PREVIEW.owner, LAYOUT_PREVIEW.key, LAYOUT_PREVIEW.variant, {
       layout: body,
+      site,
       title: $_('pages.mail-templates.layout.name'),
     });
   });
