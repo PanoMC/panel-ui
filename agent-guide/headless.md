@@ -1,7 +1,7 @@
 # A headless front-end
 
 A site that is not a theme: it talks to Pano over the API and draws everything itself. The official start is
-`pano-starter-sveltekit` (SvelteKit 2, Svelte 5, `adapter-node`, Bun, JavaScript with JSDoc; no Bootstrap, no theme-core).
+`pano-starter-sveltekit` (SvelteKit 3, Svelte 5, `adapter-node`, Bun, JavaScript with JSDoc; no Bootstrap, no theme-core).
 
 ## Decide
 
