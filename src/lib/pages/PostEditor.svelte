@@ -225,6 +225,32 @@
   export const DefaultMode = Modes.CREATE;
 
   /**
+   * Every post category for the editor's select. The list endpoint is paged (`{ items, page }`), so the
+   * pages are read one after another at the largest page size.
+   *
+   * @param {any} [request] the load event, so the server side sends the visitor's cookies
+   * @returns {Promise<{ categories: any[], categoryCount: number }>}
+   */
+  export async function loadAllPostCategories(request) {
+    const categories = [];
+    let totalPages = 1;
+
+    for (let page = 1; page <= totalPages; page++) {
+      const body = await ApiUtil.get({
+        path: `/panel/post/categories?page=${page}&pageSize=100`,
+        request,
+      });
+
+      if (body.error || !Array.isArray(body.items)) break;
+
+      categories.push(...body.items);
+      totalPages = body.page?.totalPages ?? 1;
+    }
+
+    return { categories, categoryCount: categories.length };
+  }
+
+  /**
    * @type {import('@sveltejs/kit').PageLoad}
    */
   export async function load(event, mode = DefaultMode) {
@@ -269,12 +295,7 @@
       data.post = postBody.post;
     }
 
-    const categoriesBody = await ApiUtil.get({
-      path: '/panel/post/categories',
-      request: event,
-    });
-
-    data = { ...data, ...categoriesBody };
+    data = { ...data, ...(await loadAllPostCategories(event)) };
 
     data.hookProps['panel:post-editor:content:bottom'] = await executeHookLoad(
       'panel:post-editor:content:bottom',
@@ -570,21 +591,12 @@
   //   showAddEditPostCategoryModal("create");
   // }
 
-  setCallbackForAddEditPostCategoryModal((routeFirstPage, category) => {
-    ApiUtil.get({
-      path: '/panel/post/categories',
-      handler: (body, reject) => {
-        if (body.error) {
-          reject();
+  setCallbackForAddEditPostCategoryModal(async (routeFirstPage, category) => {
+    const loaded = await loadAllPostCategories();
 
-          return;
-        }
-
-        data.categories = body.categories;
-        data.categoryCount = body.categoryCount;
-        post.category = category.id;
-      },
-    });
+    data.categories = loaded.categories;
+    data.categoryCount = loaded.categoryCount;
+    post.category = category.id;
   });
 
   setDeletePostModalCallback((deletedPost) => {
