@@ -54,3 +54,18 @@ export function parseUserAgent(userAgent) {
 
   return `${browser} (${os})`;
 }
+
+/**
+ * The lowest Pano a plugin or theme declares, as `v1.0.0+`. A value that is not a version (`local-build` of a
+ * development build) is shown as it is.
+ *
+ * @param {string | null | undefined} version
+ * @returns {string}
+ */
+export function formatMinPanoVersion(version) {
+  if (!version) return '-';
+
+  const plain = version.replace(/^v/i, '');
+
+  return /^\d+\.\d+\.\d+/.test(plain) ? `v${plain}+` : version;
+}

@@ -161,7 +161,7 @@
               <span
                 use:tooltip={[$_('pages.theme-detail.pano-version')]}
                 class="user-select-all font-monospace">
-                {theme.panoVersion}
+                {formatMinPanoVersion(theme.panoVersion)}
               </span>
             </div>
 
@@ -284,7 +284,7 @@
   import { goto, invalidate } from '$app/navigation';
   import { base } from '@panomc/sdk/core/js/basePath.js';
 
-  import { formatBytes } from '$lib/string.util';
+  import { formatBytes, formatMinPanoVersion } from '$lib/string.util';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
 

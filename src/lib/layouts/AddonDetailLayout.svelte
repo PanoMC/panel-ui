@@ -122,7 +122,7 @@
             <span
               use:tooltip={[$_('pages.addon-detail.pano-version')]}
               class="user-select-all font-monospace">
-              {data.addon.panoVersion}
+              {formatMinPanoVersion(data.addon.panoVersion)}
             </span>
             <span class="vr"></span>
             <span
@@ -208,7 +208,7 @@
   import { goto, invalidateAll } from '$app/navigation';
   import { base } from '@panomc/sdk/core/js/basePath.js';
 
-  import { formatBytes } from '$lib/string.util';
+  import { formatBytes, formatMinPanoVersion } from '$lib/string.util';
   import { PANO_WEBSITE_URL } from '$lib/variables';
 
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
