@@ -48,6 +48,9 @@ bun update @panomc/theme-core && bunx @panomc/theme-core sync && bunx @panomc/th
 `sync` prints the plugin views whose contract changed. Update each overridden one: `eject-view <id>` (writes
 `<file>.new`), merge, `accept <id>`. A theme entry of the old function form keeps working (contract 1).
 
+An engine on SvelteKit 3 (after one on SvelteKit 2) also needs the theme's toolchain bumped and `svelte.config.js`
+deleted; `docs/MIGRATION.md` (theme-core repo) lists the steps.
+
 The official themes take the engine as a git submodule (`theme-core/`) with `file:` dependencies: the update there is a
 submodule bump followed by the same `sync`, `check`, `build`.
 
