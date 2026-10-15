@@ -15,8 +15,17 @@
     height: 100%;
   }
 
+  /* The track is close to the card's own background, so it carries an outline: a gauge with no data
+     yet is only its track, and without the outline it would not be seen at all. */
   .gauge-track {
     fill: var(--bs-secondary-bg);
+    stroke: var(--bs-border-color);
+    stroke-width: 1;
+  }
+
+  /* No figure to show (no sample yet): a dashed outline says "nothing here" rather than "0%". */
+  .gauge-track.is-empty {
+    stroke-dasharray: 2 2;
   }
 
   /* The slice colour lives here rather than in a `fill` attribute: browsers do not resolve
@@ -50,7 +59,12 @@
   use:tooltip={[detail || label, { placement: 'bottom', appendTo: TOOLTIP_HOST }]}>
   <div class="gauge-ring">
     <svg viewBox="0 0 36 36" aria-hidden="true">
-      <circle class="gauge-track" cx={CENTRE} cy={CENTRE} r={RADIUS} />
+      <circle
+        class="gauge-track"
+        class:is-empty={percent == null}
+        cx={CENTRE}
+        cy={CENTRE}
+        r={RADIUS} />
       {#if solid}
         <circle class="gauge-arc" class:is-danger={danger} cx={CENTRE} cy={CENTRE} r={RADIUS} />
       {:else if wedge}
