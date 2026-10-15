@@ -47,21 +47,8 @@
       </div>
 
       <div class="modal-body">
-        <!-- The local daemon is one click, not a form: its own button in front of the tabs. -->
-        <div class="d-flex align-items-end gap-3 mb-3">
-          <button
-            type="button"
-            class="btn btn-sm btn-primary mb-1 flex-shrink-0"
-            disabled={localSetupBusy || bootstrapRunning || phase !== Phases.FORM}
-            onclick={setupLocalNode}>
-            {#if localSetupBusy}
-              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-            {:else}
-              <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
-            {/if}
-            {$_('pages.servers.nodes.tab-local')}
-          </button>
-          <ul class="nav nav-tabs flex-grow-1">
+        <div class="mb-3">
+          <ul class="nav nav-tabs">
             {#each TABS as entry (entry.id)}
               <li class="nav-item">
                 <!-- A disabled button swallows pointer events, so the tooltip sits outside. -->
@@ -205,6 +192,11 @@
               {$_('buttons.cancel')}
             </button>
           </div>
+        {:else if tab === 'local'}
+          <!-- The local daemon is one click, not a form: Pano starts it next to itself. -->
+          <p class="mb-0 text-body-secondary">
+            {$_('components.modals.add-node.local-description')}
+          </p>
         {:else if tab === 'ssh'}
           <form id="addNodeSshForm" class="row g-3" onsubmit={onSubmitSsh}>
             <div class="col-md-8">
@@ -438,6 +430,20 @@
           </form>
         {/if}
       </div>
+      {#if phase === Phases.FORM && tab === 'local'}
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-primary w-100"
+            disabled={localSetupBusy || bootstrapRunning || !!tabDisabledReason(TABS[0])}
+            onclick={setupLocalNode}>
+            {#if localSetupBusy}
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {/if}
+            {$_('components.modals.add-node.local-submit')}
+          </button>
+        </div>
+      {/if}
       {#if phase === Phases.FORM && (tab === 'ssh' || tab === 'coolify')}
         <div class="modal-footer">
           <button
@@ -686,6 +692,12 @@
 
   const TABS = [
     {
+      id: 'local',
+      icon: 'fa-solid fa-house-laptop',
+      label: 'pages.servers.nodes.tab-local',
+      requiresManageNodes: true,
+    },
+    {
       id: 'manual',
       icon: 'fa-solid fa-terminal',
       label: 'pages.servers.nodes.tab-manual',
@@ -752,6 +764,8 @@
 
   let tab = $state('manual');
   let localSetupBusy = $state(false);
+  /** A local node is already paired: there is only one, so its tab stays closed. */
+  let localNodeExists = $state(false);
 
   let code = $state('');
   let command = $state('');
@@ -909,6 +923,10 @@
 
     if (entry.requiresManageNodes && !canManageNodes) {
       return 'components.modals.add-node.no-permission';
+    }
+
+    if (entry.id === 'local' && localNodeExists) {
+      return 'components.modals.add-node.local-exists';
     }
 
     return '';
@@ -1590,8 +1608,16 @@
         })
       : null;
 
-    openModal = () => {
+    openModal = async () => {
       resetAll();
+
+      // The local tab opens first while there is no local node yet; with one it is closed and the
+      // manual tab opens instead. Asked before showing, so the dialog does not jump between tabs.
+      const status = canManageNodes ? await fetchLocalNodeStatus() : null;
+
+      localNodeExists = status?.status === 'ok' && status.local?.nodeId != null;
+      tab = canManageNodes && !localNodeExists ? 'local' : 'manual';
+
       modalInstance?.show();
     };
 

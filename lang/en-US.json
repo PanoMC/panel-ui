@@ -3927,6 +3927,9 @@
         "description": "The language is permanently deleted. This cannot be undone."
       },
       "add-node": {
+        "local-description": "Pano starts a node on this machine, next to itself, and connects it. Nothing to install by hand.",
+        "local-submit": "Set up the local node",
+        "local-exists": "A local node is already set up",
         "no-permission": "You need the \"manage nodes\" permission for this.",
         "busy": "Wait for the machine that is being set up.",
         "unavailable": "This build of Pano cannot set up remote nodes yet.",

@@ -3927,6 +3927,9 @@
         "description": "Dil kalıcı olarak silinir. Bu işlem geri alınamaz."
       },
       "add-node": {
+        "local-description": "Pano bu makinede, kendi yanında bir node başlatır ve bağlar. Elle bir şey kurmanız gerekmez.",
+        "local-submit": "Lokal node'u kur",
+        "local-exists": "Zaten bir lokal node kurulu",
         "no-permission": "Bunun için \"düğümleri yönet\" iznine ihtiyacın var.",
         "busy": "Kurulmakta olan makinenin bitmesini bekle.",
         "unavailable": "Pano'nun bu sürümü henüz uzak düğüm kuramıyor.",
