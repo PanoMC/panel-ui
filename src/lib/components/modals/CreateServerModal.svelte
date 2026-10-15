@@ -425,7 +425,8 @@
                   min="512"
                   step="512"
                   placeholder=" "
-                  bind:value={memoryMb} />
+                  bind:value={memoryMb}
+                  oninput={() => (memoryEdited = true)} />
                 <label for="createServerMemory">
                   {$_('pages.servers.create.memory-label')} (MB)
                 </label>
@@ -436,7 +437,10 @@
                     type="button"
                     class="btn btn-outline-primary"
                     class:active={Number(memoryMb) === preset}
-                    onclick={() => (memoryMb = preset)}>
+                    onclick={() => {
+                      memoryMb = preset;
+                      memoryEdited = true;
+                    }}>
                     {preset / 1024} GB
                   </button>
                 {/each}
@@ -673,6 +677,10 @@
   /** Proxies: no `server.properties`, so no whitelist switch to offer. */
   const PROXY_SOFTWARE = ['VELOCITY', 'BUNGEECORD', 'WATERFALL'];
 
+  /** The suggested memory: a proxy holds no world and does well with 1 GB, a game server gets 2 GB. */
+  const DEFAULT_MEMORY_MB = 2048;
+  const PROXY_MEMORY_MB = 1024;
+
   /** Software ids Pano can only build through BuildTools, so Paper is promoted instead (§2.3). */
   const BUILD_TOOLS_SOFTWARE = ['SPIGOT', 'CRAFTBUKKIT', 'BUKKIT'];
 
@@ -854,7 +862,9 @@
   let modpackVersionsSeq = 0;
 
   let name = $state('');
-  let memoryMb = $state(2048);
+  let memoryMb = $state(DEFAULT_MEMORY_MB);
+  /** Chosen by hand: picking another software no longer changes it. */
+  let memoryEdited = $state(false);
   let port = $state(DEFAULT_GAME_PORT);
   /** Whether the admin typed a port; one Pano suggested follows the node, a typed one stays. */
   let portEdited = $state(false);
@@ -1209,6 +1219,13 @@
    */
   function selectSoftware(item) {
     softwareId = item.id;
+
+    if (!memoryEdited) {
+      memoryMb = PROXY_SOFTWARE.includes(String(item.id || '').toUpperCase())
+        ? PROXY_MEMORY_MB
+        : DEFAULT_MEMORY_MB;
+    }
+
     // Prefer the backend's recommended (newest stable) version over the raw list head, which may be a snapshot.
     version = item.recommendedVersion || versionsOf(item)[0] || '';
   }
@@ -1510,7 +1527,8 @@
     modpackResults = [];
     modpackError = '';
     name = '';
-    memoryMb = 2048;
+    memoryMb = DEFAULT_MEMORY_MB;
+    memoryEdited = false;
     port = DEFAULT_GAME_PORT;
     portEdited = false;
     javaMajor = '';
