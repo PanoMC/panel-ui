@@ -456,6 +456,7 @@
 
 <script>
   import { onDestroy, onMount, setContext } from 'svelte';
+  import { captureRequestState } from '@panomc/sdk/core/js/appStores.js';
   import { get } from 'svelte/store';
   import {
     invalidateAll as runInvalidateAll,
@@ -494,6 +495,9 @@
   } from '$lib/components/modals/WhatsNewModal.svelte';
 
   export let data;
+
+  // SSR: plugin components read `$page` with their own Svelte runtime; they get this request's page (appStores.js).
+  captureRequestState();
 
   const session = writable(data.session);
   const user = writable(data.user);
