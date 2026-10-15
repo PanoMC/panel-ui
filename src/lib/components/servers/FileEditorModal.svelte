@@ -44,6 +44,12 @@
             </span>
           {/if}
         </h5>
+        <!-- Not data-bs-dismiss: it goes through the unsaved-changes guard, like Escape. -->
+        <button
+          type="button"
+          class="btn-close"
+          aria-label={$_('buttons.close')}
+          onclick={requestClose}></button>
       </div>
 
       <form
@@ -224,9 +230,9 @@
   }
 
   /**
-   * With the header's close button gone, Escape is the way out — and it goes through the same
-   * unsaved-changes guard. CodeMirror marks the events it handled itself (Escape closes its own
-   * popups), so an already-prevented event is left to it.
+   * Escape closes like the header's close button, through the same unsaved-changes guard.
+   * CodeMirror marks the events it handled itself (Escape closes its own popups), so an
+   * already-prevented event is left to it.
    */
   function onModalKeydown(event) {
     if (event.key === 'Escape' && !event.defaultPrevented) {
