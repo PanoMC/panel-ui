@@ -476,7 +476,7 @@
             "small-note": "Metni Düzenle üzerinden ayarlayın. Editörde kapattığınızda veya boş bıraktığınızda kayıtta sözleşme onayı istenmez.",
             "apply": "Uygula",
             "has-content": "Tanımlı",
-            "empty": "Yok",
+            "empty": "Belirlenmedi",
             "require-label": "Kayıt formunda sözleşme onayı istensin"
           },
           "game-server-ip-address": {

@@ -135,7 +135,7 @@
               class="btn btn-link p-0 text-decoration-none text-body-secondary"
               on:click={openRegisterAgreementModal}>
               <i class="fas fa-pencil me-1"></i>
-              Belirlenmedi
+              {$_('pages.settings.site-settings.inputs.register-agreement.empty')}
             </button>
           {/if}
         </div>
