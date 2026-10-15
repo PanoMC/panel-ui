@@ -59,15 +59,18 @@
       <i class="fas fa-eye"></i>
     {/if}
   </button>
-  {#if post.status !== StatusTypes.PUBLISHED}
+  <!-- Saves without publishing: a new post becomes a draft, a draft stays one. No confirmation,
+       nothing goes live. -->
+  {#if data.mode === Modes.CREATE || post.status === StatusTypes.DRAFT}
     <button
-      title={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
-      aria-label={$_(data.mode === Modes.CREATE ? 'buttons.save' : 'buttons.update')}
+      title={$_('pages.post-editor.save-draft')}
+      aria-label={$_('pages.post-editor.save-draft')}
       class="btn btn-link"
       type="button"
       class:disabled={loading || isEditorEmpty || post.title.length === 0}
       on:click={() => submit(false)}>
-      <i class="fas fa-save"></i>
+      <i class="fas fa-file-pen"></i>
+      <span class="d-lg-inline d-none ms-2">{$_('pages.post-editor.save-draft')}</span>
     </button>
   {/if}
   <button
@@ -474,7 +477,10 @@
   }
 
   function submit(publish) {
-    showPublishPostModal(() => {
+    // Only publishing asks first; a draft save puts nothing on the site.
+    const confirm = publish ? showPublishPostModal : (/** @type {() => void} */ run) => run();
+
+    confirm(() => {
       loading = true;
 
       const bodyHandler = (body, reject) => {
