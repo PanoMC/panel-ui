@@ -437,6 +437,25 @@
     };
   });
 
+  // The box can change height without a line arriving: on the overview it grows to match the card
+  // next to it once that one has loaded. While following, the newest line stays in view through it.
+  $effect(() => {
+    if (!container) {
+      return;
+    }
+
+    const element = container;
+    const observer = new ResizeObserver(() => {
+      if (following) {
+        element.scrollTop = element.scrollHeight;
+      }
+    });
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  });
+
   const visible = $derived.by(() => {
     const total = entries.length;
 

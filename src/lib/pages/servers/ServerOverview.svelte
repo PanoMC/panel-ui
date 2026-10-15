@@ -2240,6 +2240,8 @@
 
     consoleHydratedId = id;
     consoleHistoryLoadedFor = String(id);
+    // A server's overview always opens on the newest line, whatever the reader did on the last one.
+    consoleFollowing = true;
     // Whatever went wrong — the page never toasts for the mini console; the console page is
     // where an admin goes to find out.
     consoleEntries =
