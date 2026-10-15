@@ -1517,6 +1517,7 @@
         "description": "Şu anda bu sunucuda kimler var ve onlarla neler yapabilirsin.",
         "online-count": "{online}/{max} Oyuncu",
         "empty": "Şu anda çevrimiçi kimse yok.",
+        "empty-offline": "Sunucu kapalı, bu yüzden çevrimiçi kimse yok.",
         "no-matches": "Aramayla eşleşen oyuncu yok.",
         "column-actions": "İşlemler",
         "column-player": "Oyuncu",
@@ -2126,6 +2127,7 @@
       },
       "properties": {
         "title": "server.properties",
+        "description": "Dosyanın tüm ayarları, gruplanmış halde. Değiştirdiğin her şey düğümdeki dosyaya yazılır; dosyadaki başka hiçbir şeye dokunulmaz.",
         "applies-next-start": "Değişiklikler sunucunun bir sonraki başlatılışında geçerli olur.",
         "source-file": "Düğümdeki dosyadan okundu",
         "source-stored": "Düğüme ulaşılamıyor — Pano'nun kaydettiği değerler gösteriliyor",
@@ -4351,6 +4353,7 @@
         "no-backup-warning": "Korunmayan her şey silinir.",
         "start-after": "Ardından sunucuyu başlat",
         "start-after-running": "Şu an açık; önce durdurulacak.",
+        "start-after-stopped": "Şu an kapalı.",
         "password-label": "Hesap parolası",
         "summary-running": "{from} → {to}",
         "summary-stopped": "{from} → {to}",

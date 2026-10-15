@@ -1580,7 +1580,7 @@
         "empty-offline": "The server is offline, so Pano has no plugin list for it.",
         "no-matches": "No plugin matches your search.",
         "state-unsupported": "This server's Pano plugin does not report the installed plugins. Update pano-mc-plugin to use this page.",
-        "restart-hint": "Not every plugin survives being enabled or disabled while the server runs. Restart the server afterwards if something misbehaves.",
+        "restart-hint": "Not every plugin survives being enabled or disabled while the server runs. Restart the server afterward if something misbehaves.",
         "file-toggle-hint": "Switching a plugin on or off takes effect when the server restarts.",
         "toggle-disabled-offline": "The server is offline, so plugins cannot be switched on or off.",
         "enabled-badge": "Enabled",
@@ -2310,7 +2310,7 @@
           },
           "use-native-transport": {
             "label": "Native transport",
-            "help": "Linux packet optimisations; leave on."
+            "help": "Linux packet optimizations; leave on."
           },
           "region-file-compression": {
             "label": "Region compression",
@@ -4351,7 +4351,7 @@
         "backup-first-hint": "Nothing changes if the backup fails.",
         "backup-first-hint-size": "About {size}. Nothing changes if it fails.",
         "no-backup-warning": "Anything not kept is lost.",
-        "start-after": "Start the server afterwards",
+        "start-after": "Start the server afterward",
         "start-after-running": "Running now; it will be stopped first.",
         "start-after-stopped": "Stopped now.",
         "password-label": "Account password",
@@ -4611,7 +4611,7 @@
       "row-refused": "Built for API level {level}. This Pano does not run it.",
       "locked": "Not compatible with this Pano (built for API level {level}). It stays off until you update it.",
       "locked-theme": "Not compatible with this Pano (built for API level {level}). It can not be activated until you update it.",
-      "held": "Needs {name}, which is not compatible with this Pano: update {name}. This addon starts by itself afterwards.",
+      "held": "Needs {name}, which is not compatible with this Pano: update {name}. This addon starts by itself afterward.",
       "held-short": "Waiting for {name}"
     }
   },
@@ -4787,7 +4787,7 @@
     "SERVER_SCHEDULE_ACTION": "**{username}** {action, select, CREATE {created schedule {name}} UPDATE {edited schedule {name}} DELETE {deleted schedule {name}} TOGGLE {switched schedule {name} on or off} RUN {ran schedule {name}} other {changed schedule {name}}} on {serverName}.",
     "SERVER_SCHEDULE_RUN": "Schedule {name} on {serverName} {ok, select, true {ran} other {failed}}.",
     "UPDATED_SERVER_STARTUP": "**{username}** changed the startup settings of {serverName}.",
-    "PANO_BACKUP_ACTION": "**{username}** {action, select, CREATE {created a Pano backup} DELETE {deleted a Pano backup} DOWNLOAD {downloaded a Pano backup} RESTORE {restored Pano from a backup} RESTORE_FILE {restored Pano from an uploaded file} RESTORE_REMOTE {restored Pano from Pano Backup} SETTINGS {changed the Pano backup schedule} UPLOAD {backed Pano up to Pano Backup} DELETE_REMOTE {deleted a Pano Backup} REMOTE_SETTINGS {changed the Pano Backup schedule} PASSPHRASE {set the Pano Backup encryption passphrase} TRANSFER {started a transfer to Pano Host} TRANSFER_CANCEL {cancelled a transfer to Pano Host} other {changed the Pano backups}}.",
+    "PANO_BACKUP_ACTION": "**{username}** {action, select, CREATE {created a Pano backup} DELETE {deleted a Pano backup} DOWNLOAD {downloaded a Pano backup} RESTORE {restored Pano from a backup} RESTORE_FILE {restored Pano from an uploaded file} RESTORE_REMOTE {restored Pano from Pano Backup} SETTINGS {changed the Pano backup schedule} UPLOAD {backed Pano up to Pano Backup} DELETE_REMOTE {deleted a Pano Backup} REMOTE_SETTINGS {changed the Pano Backup schedule} PASSPHRASE {set the Pano Backup encryption passphrase} TRANSFER {started a transfer to Pano Host} TRANSFER_CANCEL {canceled a transfer to Pano Host} other {changed the Pano backups}}.",
     "PANO_BACKUP_SYSTEM": "{action, select, SCHEDULED {The scheduled Pano backup {ok, select, true {was taken} other {failed}}} SCHEDULED_UPLOAD {The scheduled upload to Pano Backup {ok, select, true {finished} other {failed}}} RETENTION {{count, plural, one {# old Pano backup was} other {# old Pano backups were}} removed by retention} other {The Pano backups changed}}.",
     "SERVER_BACKUP_SYSTEM": "{action, select, SCHEDULED {A schedule took backup {name}} RETENTION {Retention removed backup {name}} other {Backup {name} changed}} on {serverName}.",
     "CREATED_FRONTEND_KEY": "**{username}** created the \"{name}\" site connection key.",
