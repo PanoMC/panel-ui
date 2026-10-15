@@ -19,12 +19,6 @@
     width: 40%;
   }
 
-  /* A selected row sits on the primary colour: its secondary text takes the row's own text colour
-     (the one the primary buttons use) so it stays readable; only the title is bold. */
-  .list-group-item.active :global(.text-body-secondary) {
-    color: inherit !important;
-  }
-
   .modpack-results {
     max-height: 18rem;
     overflow-y: auto;

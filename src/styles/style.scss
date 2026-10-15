@@ -16,6 +16,14 @@ $fa-font-path: '#{$pano-asset-path}webfonts';
 
 // Panel UI Styles
 
+/* A selected list row sits on the primary colour: its secondary text (a description under a title)
+   takes the row's own text colour, the one primary buttons use, so it stays readable. Only the title
+   is bold. Every choice list in the panel (create server, backups, software, ...) uses this. */
+.list-group-item.active .text-body-secondary,
+.list-group-item.active .text-muted {
+  color: inherit !important;
+}
+
 /* Hover effect */
 .drop-zone:hover {
   background-color: var(--pano-light, $light);
