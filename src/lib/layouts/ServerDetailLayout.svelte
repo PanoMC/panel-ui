@@ -380,6 +380,26 @@
       </div>
     </div>
   {/if}
+  <!-- A managed server that has run without a Pano plugin ever connecting: nothing is broken, it
+       just offers fewer features, so this is a warning with an install button, not an error. -->
+  {#if pluginMissing}
+    <div class="alert alert-warning d-flex align-items-start mb-0" role="alert" data-plugin-missing>
+      <i class="fa-solid fa-puzzle-piece me-3 mt-1" aria-hidden="true"></i>
+      <div class="flex-grow-1 min-w-0">
+        <h5 class="alert-heading mb-2">
+          {$_('pages.settings.updates.servers.kind-pano-plugin')}
+        </h5>
+        <div>{$_('pages.servers.header.plugin-missing')}</div>
+        <div class="mt-2">
+          <PanoPluginUpdateButton
+            server={$server}
+            latestVersion={pluginUpdate?.latestVersion ?? null}
+            label="buttons.install"
+            inAlert />
+        </div>
+      </div>
+    </div>
+  {/if}
   {#if daemonUnreachable}
     <div
       class="alert alert-danger d-flex align-items-start mb-0"
@@ -881,6 +901,7 @@
     (pluginUpdate.available === true || pluginUpdate.outdatedProtocol === true) &&
     (!!pluginUpdate.mode || pluginUpdate.manual === true);
   $: pluginUnreachable = isPluginUnreachable($server);
+  $: pluginMissing = !pluginUnreachable && $server?.panoPluginUpdate?.missing === true;
   $: daemonUnreachable = unreachableDaemon($server);
   $: agentOutdated = agent && $server?.agentInfo?.updateAvailable === true;
   // With auto-update on this clears itself within seconds of connecting; the button is for an

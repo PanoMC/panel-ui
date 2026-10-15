@@ -1233,6 +1233,7 @@
       "go-back": "Geri Git"
     },
     "post-editor": {
+      "save-draft": "Taslak olarak kaydet",
       "posts": "Yazılar",
       "trash": "Çöp",
       "move-to-drafts": "Taslaklara Taşı",
@@ -1325,6 +1326,7 @@
         "install-failed-title": "Kurulum Başarısız Oldu",
         "install-failed-body": "Düğüm bu sunucuyu kuramadı, bu yüzden henüz başlatılacak bir şey yok. Sebep düğüm tarafındaysa aşağıdakini düzeltin, sonra yeniden yükleyin.",
         "plugin-unreachable": "Pano eklentisi bu Pano'ya ulaşamayacak kadar eski",
+        "plugin-missing": "Bu sunucuda Pano eklentisi kurulu değil. Konsol, oyuncular, beyaz liste ve daha fazla özellik için kurun.",
         "node-unreachable": "Düğüm bu Pano'ya ulaşamayacak kadar eski",
         "agent-unreachable": "Pano Agent bu Pano'ya ulaşamayacak kadar eski",
         "download": "Jar'ı Değiştir",

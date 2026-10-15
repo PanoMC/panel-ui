@@ -1233,6 +1233,7 @@
       "go-back": "Go Back"
     },
     "post-editor": {
+      "save-draft": "Save as Draft",
       "posts": "Posts",
       "trash": "Trash",
       "move-to-drafts": "Move to Drafts",
@@ -1325,6 +1326,7 @@
         "install-failed-title": "The Install Failed",
         "install-failed-body": "The node could not set this server up, so there is nothing to start yet. Fix the cause below if it is on the node's side, then reinstall.",
         "plugin-unreachable": "The Pano plugin is too old to reach this Pano",
+        "plugin-missing": "The Pano plugin is not installed on this server. Install it for the console, players, whitelist and more features.",
         "node-unreachable": "The node is too old to reach this Pano",
         "agent-unreachable": "The Pano Agent is too old to reach this Pano",
         "download": "Replace Jar",
