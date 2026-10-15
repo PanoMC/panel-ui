@@ -80,6 +80,7 @@
             </span>
           {:else if !isFinished($installingStep)}
             {$_($processes[$installingStep - 1])}
+            <DownloadStats stats={$downloadStats} />
           {:else}
             🎉 {$_('components.modals.installing-resource.install-complete')}
           {/if}
@@ -112,6 +113,7 @@
 </div>
 
 <script context="module">
+  import { createDownloadTracker, trackDownload } from '$lib/downloadStats.util.js';
   import { errorCode, errorDetails } from '$lib/apiError.util.js';
   import { writable, get } from 'svelte/store';
 
@@ -131,6 +133,9 @@
 
   const installingStep = writable(1);
   const currentProgress = writable(0);
+  /** Size, speed and time left of the download step, null outside it. */
+  const downloadStats = writable(null);
+  const downloadTracker = createDownloadTracker();
   const installError = writable();
   /** Set when install failed on license check ([LicenseDeniedReason.publicId]). */
   const installLicenseDeniedReason = writable(null);
@@ -247,6 +252,10 @@
     }
 
     currentProgress.set(0);
+
+    downloadStats.set(null);
+
+    downloadTracker.reset();
     installingStep.set(get(installingStep) + 1);
 
     return uploadResponse.data.fileName;
@@ -261,10 +270,15 @@
     if (!message.error) {
       if (message.status === 'progress') {
         currentProgress.set(message.progress);
+        downloadStats.set(trackDownload(downloadTracker, message));
         return;
       }
 
       currentProgress.set(0);
+
+      downloadStats.set(null);
+
+      downloadTracker.reset();
       installingStep.set(get(installingStep) + 1);
 
       if (get(installingStep) === get(processes).length + 1) {
@@ -338,6 +352,8 @@
   ) {
     installingStep.set(1);
     currentProgress.set(0);
+    downloadStats.set(null);
+    downloadTracker.reset();
     versionId.set(newVersionId);
     installError.set(null);
     installLicenseDeniedReason.set(null);
@@ -399,6 +415,7 @@
 
 <script>
   import { _ } from 'svelte-i18n';
+  import DownloadStats from '$lib/components/DownloadStats.svelte';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
   import { fade } from 'svelte/transition';
 

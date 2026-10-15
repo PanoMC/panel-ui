@@ -3330,6 +3330,11 @@
     }
   },
   "components": {
+    "download-stats": {
+      "speed": "{speed}/sn",
+      "seconds-left": "~{seconds} sn kaldı",
+      "minutes-left": "~{minutes} dk {seconds} sn kaldı"
+    },
     "whats-new": {
       "title": "Ne yeni?",
       "description": "Pano Beta artık yayında!",

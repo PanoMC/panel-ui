@@ -3330,6 +3330,11 @@
     }
   },
   "components": {
+    "download-stats": {
+      "speed": "{speed}/с",
+      "seconds-left": "осталось ~{seconds} с",
+      "minutes-left": "осталось ~{minutes} мин {seconds} с"
+    },
     "whats-new": {
       "title": "Что нового?",
       "description": "Pano Beta уже запущена! 🚀 Мы представили несколько ключевых функций для улучшения вашего опыта управления сервером.",

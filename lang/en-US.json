@@ -3330,6 +3330,11 @@
     }
   },
   "components": {
+    "download-stats": {
+      "speed": "{speed}/s",
+      "seconds-left": "~{seconds} s left",
+      "minutes-left": "~{minutes} min {seconds} s left"
+    },
     "whats-new": {
       "title": "What's New?",
       "description": "Pano Beta is now live! 🚀 We've introduced several key features to enhance your server management experience.",

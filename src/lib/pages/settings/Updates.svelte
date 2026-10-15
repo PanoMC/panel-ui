@@ -175,6 +175,7 @@
                       'pages.settings.updates.platform-update-steps.' +
                         platformUpdateProcesses[platformUpdatingStep - 1],
                     )}
+                    <DownloadStats stats={platformDownload} />
                   {:else}
                     {$_('pages.settings.updates.install-complete-restarting')}
                     <i class="me-2 fas fa-arrows-rotate fa-spin"></i>
@@ -411,6 +412,7 @@
                         'pages.settings.updates.resource-update-steps.' +
                           resourceUpdateProcesses[resourceUpdateStep - 1],
                       )}
+                      <DownloadStats stats={resourceDownload} />
                     {:else}
                       {$_('pages.settings.updates.install-complete')}
                     {/if}
@@ -569,6 +571,8 @@
   import { browser } from '$app/env';
 
   import { formatBytes } from '$lib/string.util';
+  import { createDownloadTracker, trackDownload } from '$lib/downloadStats.util.js';
+  import DownloadStats from '$lib/components/DownloadStats.svelte';
   import { PANO_WEBSITE_URL } from '$lib/variables';
 
   import tooltip from '$lib/tooltip.util';
@@ -621,6 +625,11 @@
   let platformUpdateFinished;
   let currentPlatformProgress = 0;
   let currentResourceProgress = 0;
+  /** Size, speed and time left of the download step, null outside it. */
+  let platformDownload = null;
+  let resourceDownload = null;
+  const platformTracker = createDownloadTracker();
+  const resourceTracker = createDownloadTracker();
 
   let demoMode = DEMO_UPDATES;
   const demoUpdates = [
@@ -758,10 +767,13 @@
     if (!message.error) {
       if (message.status === 'progress') {
         currentPlatformProgress = message.progress;
+        platformDownload = trackDownload(platformTracker, message);
         return;
       }
 
       currentPlatformProgress = 0;
+      platformDownload = null;
+      platformTracker.reset();
       platformUpdatingStep++;
 
       if (platformUpdatingStep === platformUpdateProcesses.length + 1) {
@@ -797,10 +809,13 @@
     if (!message.error) {
       if (message.status === 'progress') {
         currentResourceProgress = message.progress;
+        resourceDownload = trackDownload(resourceTracker, message);
         return;
       }
 
       currentResourceProgress = 0;
+      resourceDownload = null;
+      resourceTracker.reset();
       resourceUpdateStep++;
 
       if (resourceUpdateStep === resourceUpdateProcesses.length + 1) {
@@ -868,6 +883,8 @@
     currentPlatformProgress = 0;
     $platformUpdating = true;
     platformUpdateError = null;
+    platformDownload = null;
+    platformTracker.reset();
 
     await delay(500);
 
@@ -886,6 +903,8 @@
 
   async function updateResource(update) {
     resourceUpdateError = null;
+    resourceDownload = null;
+    resourceTracker.reset();
     inProgressResource = update;
     resourceUpdateStep = 1;
     currentResourceProgress = 0;
