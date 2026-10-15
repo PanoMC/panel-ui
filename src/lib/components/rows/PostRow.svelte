@@ -88,6 +88,7 @@
     <CategoryBadge
       category={post.category}
       pageType="posts"
+      query={{ pageType: post.status === 'PUBLISHED' ? undefined : post.status }}
       filterTitle={$_('components.post-row.filter')}
       noCategoryText={$_('components.post-row.no-category')} />
   </td>

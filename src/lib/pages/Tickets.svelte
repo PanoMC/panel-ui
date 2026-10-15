@@ -88,21 +88,19 @@
 
       <!-- Filters -->
       <CardFilters slot="right">
-        {#if !data.categoryUrl}
-          <CardFiltersItem href="/tickets" active={data.pageType === PageTypes.ALL}>
-            {$_('pages.tickets.all')}
-          </CardFiltersItem>
-          <CardFiltersItem
-            href="/tickets?pageType=WAITING_REPLY"
-            active={data.pageType === PageTypes.WAITING_REPLY}>
-            {$_('pages.tickets.waiting-reply')}
-          </CardFiltersItem>
-          <CardFiltersItem
-            href="/tickets?pageType=CLOSED"
-            active={data.pageType === PageTypes.CLOSED}>
-            {$_('pages.tickets.closed')}
-          </CardFiltersItem>
-        {/if}
+        <CardFiltersItem href={tabHref(PageTypes.ALL)} active={data.pageType === PageTypes.ALL}>
+          {$_('pages.tickets.all')}
+        </CardFiltersItem>
+        <CardFiltersItem
+          href={tabHref(PageTypes.WAITING_REPLY)}
+          active={data.pageType === PageTypes.WAITING_REPLY}>
+          {$_('pages.tickets.waiting-reply')}
+        </CardFiltersItem>
+        <CardFiltersItem
+          href={tabHref(PageTypes.CLOSED)}
+          active={data.pageType === PageTypes.CLOSED}>
+          {$_('pages.tickets.closed')}
+        </CardFiltersItem>
       </CardFilters>
     </CardHeader>
 
@@ -265,6 +263,14 @@
   import SearchInput from '$lib/components/SearchInput.svelte';
 
   export let data;
+
+  /** A status tab; a filtered category stays filtered. */
+  $: tabHref = (pageType) =>
+    '/tickets' +
+    buildQueryParams({
+      pageType: pageType === DefaultPageType ? undefined : pageType,
+      categoryUrl: data.categoryUrl,
+    });
 
   const pageTitle = getContext('pageTitle');
 

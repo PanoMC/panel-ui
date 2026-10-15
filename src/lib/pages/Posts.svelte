@@ -38,17 +38,17 @@
 
     <!-- Filters -->
     <CardFilters slot="right">
-      {#if !data.categoryUrl}
-        <CardFiltersItem href="/posts" active={data.pageType === PageTypes.PUBLISHED}>
-          {$_('pages.posts.published')}
-        </CardFiltersItem>
-        <CardFiltersItem href="/posts?pageType=DRAFT" active={data.pageType === PageTypes.DRAFT}>
-          {$_('pages.posts.draft')}
-        </CardFiltersItem>
-        <CardFiltersItem href="/posts?pageType=TRASH" active={data.pageType === PageTypes.TRASH}>
-          {$_('pages.posts.trash')}
-        </CardFiltersItem>
-      {/if}
+      <CardFiltersItem
+        href={tabHref(PageTypes.PUBLISHED)}
+        active={data.pageType === PageTypes.PUBLISHED}>
+        {$_('pages.posts.published')}
+      </CardFiltersItem>
+      <CardFiltersItem href={tabHref(PageTypes.DRAFT)} active={data.pageType === PageTypes.DRAFT}>
+        {$_('pages.posts.draft')}
+      </CardFiltersItem>
+      <CardFiltersItem href={tabHref(PageTypes.TRASH)} active={data.pageType === PageTypes.TRASH}>
+        {$_('pages.posts.trash')}
+      </CardFiltersItem>
     </CardFilters>
   </CardHeader>
   <!-- No Posts -->
@@ -265,6 +265,14 @@
   import SearchInput from '$lib/components/SearchInput.svelte';
 
   const { data = $bindable() } = $props();
+
+  /** A status tab; a filtered category stays filtered. */
+  const tabHref = (pageType) =>
+    '/posts' +
+    buildQueryParams({
+      pageType: pageType === DefaultPageType ? undefined : pageType,
+      categoryUrl: data.categoryUrl,
+    });
 
   const pageTitle = getContext('pageTitle');
   const slots = getContext('layout-slots');
