@@ -9,7 +9,7 @@ name: Pano Panel-UI Release
 
 on:
   push:
-    branches: ['dev']
+    branches: ['dev', 'master']
 
 permissions:
   contents: read
@@ -75,11 +75,15 @@ jobs:
       - name: Install
         run: bun install --backend=copyfile
 
-      - name: Create .env.local if branch is dev
+      - name: Create .env.local for the branch
         run: |
           if [[ "${{ steps.extract_branch.outputs.branch }}" == "dev" ]]; then
             echo "VITE_PANO_WEBSITE_URL=https://dev.panomc.com" > .env.local
             echo "VITE_PRERELEASE=true" >> .env.local
+          else
+            echo "VITE_PANO_WEBSITE_URL=https://panomc.com" > .env.local
+            echo "VITE_PANO_WEBSITE_API_URL=https://api.panomc.com" >> .env.local
+            echo "VITE_PRERELEASE=" >> .env.local
           fi
 
           cat .env.local
@@ -93,6 +97,16 @@ jobs:
 
       - name: Zip Build
         run: cd build && zip -r ../panel-ui-v${{ needs.get-next-version.outputs.new_tag_version }}.zip . && cd ..
+
+      # The first stable release would list every dev commit, past GitHub's 125,000 character limit for release notes.
+      - name: Short notes for the first stable release
+        if: ${{ steps.extract_branch.outputs.branch == 'master' }}
+        run: |
+          if ! git tag -l 'v*' | grep -qv -e '-'; then
+            jq '.plugins |= map(if . == "@semantic-release/release-notes-generator" then [., {"writerOpts": {"mainTemplate": "## {{version}} ({{date}})\n\nFirst stable release. The change history is in the v1.0.0-dev prereleases.\n"}}] else . end)' .releaserc.json > .releaserc.tmp
+            mv .releaserc.tmp .releaserc.json
+            cat .releaserc.json
+          fi
 
       - name: Release
         env:
