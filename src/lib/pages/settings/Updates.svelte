@@ -564,9 +564,9 @@
   import { _ } from 'svelte-i18n';
   import copy from 'copy-to-clipboard';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import { beforeNavigate, invalidateAll } from '$app/navigation';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   import { formatBytes } from '$lib/string.util';
   import { PANO_WEBSITE_URL } from '$lib/variables';

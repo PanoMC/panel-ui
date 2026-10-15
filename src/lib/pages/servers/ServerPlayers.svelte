@@ -402,8 +402,8 @@
   import { _ } from 'svelte-i18n';
   import copy from 'copy-to-clipboard';
 
-  import { browser } from '$app/environment';
-  import { base } from '$app/paths';
+  import { browser } from '$app/env';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import ApiUtil from '$lib/api.util.js';
   import CardHeader from '$lib/components/CardHeader.svelte';

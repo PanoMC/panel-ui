@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 
-import { base } from '$app/paths';
+import { base } from '@panomc/sdk/core/js/basePath.js';
 
 /**
  * The single layout's old address: it is the main layout now, one of several.

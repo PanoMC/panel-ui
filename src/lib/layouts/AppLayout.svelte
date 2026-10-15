@@ -81,13 +81,13 @@
   import copy from 'copy-to-clipboard';
 
   import { goto, invalidate, invalidateAll } from '$app/navigation';
-  import { page } from '$app/stores';
-  import { base } from '$app/paths';
-  import { browser } from '$app/environment';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
+  import { browser } from '$app/env';
   import { error, redirect } from '@sveltejs/kit';
   import { hostedMocked } from '$lib/hosted-mock.util.js';
 
-  import { navigating } from '$app/stores';
+  import { navigating } from '@panomc/sdk/core/js/appStores.js';
 
   import PageActions from '$lib/components/PageActions.svelte';
   import HostedBanner from '$lib/components/HostedBanner.svelte';
@@ -191,7 +191,7 @@
         details: { id },
       } = notification;
 
-      goto(base + '/tickets/detail/' + id, { invalidateAll: true });
+      goto(base + '/tickets/detail/' + id, { refreshAll: true });
     });
 
     addListener('NEW_TICKET_MESSAGE', (notification) => {
@@ -199,7 +199,7 @@
         details: { id },
       } = notification;
 
-      goto(base + '/tickets/detail/' + id, { invalidateAll: true });
+      goto(base + '/tickets/detail/' + id, { refreshAll: true });
     });
 
     addListener('TICKET_CLOSED_BY_USER', (notification) => {
@@ -207,7 +207,7 @@
         details: { id },
       } = notification;
 
-      goto(base + '/tickets/detail/' + id, { invalidateAll: true });
+      goto(base + '/tickets/detail/' + id, { refreshAll: true });
     });
 
     addListener('SERVER_CONNECT_REQUEST', (notification) => {
@@ -238,7 +238,7 @@
     });
 
     addListener('PANO_UPDATE_FOUND', () => {
-      goto(base + '/settings/updates', { invalidateAll: true });
+      goto(base + '/settings/updates', { refreshAll: true });
     });
 
     // SM-35 (§2.4.7) — an alert is about one server or about a node, so clicking it lands on
@@ -249,14 +249,14 @@
         const serverId = notification?.details?.serverId ?? notification?.details?.id ?? null;
 
         goto(base + (serverId == null ? '/' : `/servers/${serverId}`), {
-          invalidateAll: true,
+          refreshAll: true,
         });
       });
     });
 
     NODE_ALERT_TYPES.forEach((type) => {
       addListener(type, () => {
-        goto(base + '/servers/nodes', { invalidateAll: true });
+        goto(base + '/servers/nodes', { refreshAll: true });
       });
     });
 
@@ -266,7 +266,7 @@
       const serverId = notification?.details?.serverId ?? notification?.details?.id ?? null;
 
       goto(base + (serverId == null ? '/' : `/servers/${serverId}/plugins`), {
-        invalidateAll: true,
+        refreshAll: true,
       });
     });
   }
@@ -805,7 +805,7 @@
     }
 
     await goto(base + (serverId == null ? '/servers/nodes' : `/servers/${serverId}`), {
-      replaceState: true,
+      replace: true,
     });
   }
 

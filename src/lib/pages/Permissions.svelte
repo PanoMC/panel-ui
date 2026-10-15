@@ -666,7 +666,7 @@
 
 <script>
   import { getContext, onMount } from 'svelte';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
   import { beforeNavigate } from '$app/navigation';
   import { _ } from 'svelte-i18n';
 

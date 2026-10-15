@@ -199,7 +199,7 @@
 <script>
   import { _ } from 'svelte-i18n';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import { goto } from '$app/navigation';
 
   import ApiUtil from '$lib/api.util';
@@ -236,7 +236,7 @@
         callback($server);
         hide();
         await showSuccessToast('components.toasts.server-deleted-success', { name: $server.name });
-        await goto(base + '/', { replaceState: true, invalidateAll: true });
+        await goto(base + '/', { replace: true, refreshAll: true });
         $loading = false;
       },
     });

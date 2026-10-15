@@ -1,7 +1,7 @@
 import { get, writable } from 'svelte/store';
 
-import { base } from '$app/paths';
-import { page } from '$app/stores';
+import { base } from '@panomc/sdk/core/js/basePath.js';
+import { page } from '@panomc/sdk/core/js/appStores.js';
 
 import { PanelSidebarStorageUtil } from '$lib/storage.util';
 import ApiUtil from '$lib/api.util';

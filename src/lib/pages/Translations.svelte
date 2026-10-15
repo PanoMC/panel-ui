@@ -277,7 +277,7 @@
   import { getContext, onDestroy, onMount, tick } from 'svelte';
 
   import { beforeNavigate, goto } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { loadLanguage } from '$lib/language.util.js';
 
@@ -293,8 +293,8 @@
   import UnnecessaryTranslationsAlert from '$lib/components/UnnecessaryTranslationsAlert.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
-  import { browser } from '$app/environment';
-  import { navigating } from '$app/stores';
+  import { browser } from '$app/env';
+  import { navigating } from '@panomc/sdk/core/js/appStores.js';
 
   export let data;
   let refreshing;

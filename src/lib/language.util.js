@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { get, writable } from 'svelte/store';
 import {
   getLocaleFromNavigator,
@@ -7,7 +7,7 @@ import {
   register,
   waitLocale,
 } from 'svelte-i18n';
-import { base } from '$app/paths';
+import { base } from '@panomc/sdk/core/js/basePath.js';
 import ApiUtil from '$lib/api.util.js';
 import { customTranslations } from '$lib/language.translations.js';
 

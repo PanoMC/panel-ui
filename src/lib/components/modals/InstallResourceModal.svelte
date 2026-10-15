@@ -47,7 +47,7 @@
 
 <script context="module">
   import { writable, get } from 'svelte/store';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   const modalElement = writable();
   const loading = writable(false);

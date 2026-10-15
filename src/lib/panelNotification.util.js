@@ -1,6 +1,6 @@
 import { get, writable } from 'svelte/store';
 
-import { base } from '$app/paths';
+import { base } from '@panomc/sdk/core/js/basePath.js';
 
 /**
  * panel-ui quick + full list; because the API / theme may return a different shape.

@@ -243,7 +243,7 @@
 
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
   import { _ } from 'svelte-i18n';
 
   import { Editor } from '@tiptap/core';

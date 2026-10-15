@@ -3,7 +3,7 @@
 <script context="module">
   import { redirect } from '@sveltejs/kit';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { canAccessServers } from '$lib/auth.util.js';
   import { requireServerSection } from '$lib/navigation.util.js';

@@ -661,7 +661,7 @@
 <script context="module">
   import { redirect } from '@sveltejs/kit';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { fetchServerFiles } from '$lib/files.util.js';
@@ -707,9 +707,9 @@
   import { getContext, onDestroy, onMount, tick, untrack } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { browser } from '$app/environment';
-  import { replaceState } from '$app/navigation';
-  import { page } from '$app/stores';
+  import { browser } from '$app/env';
+  import { goto } from '$app/navigation';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
 
   import ApiUtil from '$lib/api.util.js';
   import tooltip from '$lib/tooltip.util';
@@ -1072,7 +1072,7 @@
         url.searchParams.delete('path');
       }
 
-      replaceState(url, {});
+      void goto(url, { shallow: true, replace: true, state: {} }).catch(() => {});
     } catch {
       // The router is not ready yet (or this is an external navigation) — the directory is
       // component state either way, so there is nothing to recover.

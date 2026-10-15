@@ -212,8 +212,8 @@
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { base } from '$app/paths';
-  import { page } from '$app/stores';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
 
   import { activeServer } from '$lib/servers.util.js';
   import { serverNavigationItems } from '$lib/PluginAPI.js';

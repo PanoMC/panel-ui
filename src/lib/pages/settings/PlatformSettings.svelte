@@ -1289,7 +1289,7 @@
 <UsageDataModal />
 
 <script context="module">
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
   import { isEndpointUnavailable, showServerActionError } from '$lib/servers.util.js';
   import { hostedMocked, mockHostMail } from '$lib/hosted-mock.util.js';
@@ -1440,9 +1440,9 @@
   import { _ } from 'svelte-i18n';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
 
-  import { page } from '$app/stores';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
   import { goto, invalidateAll } from '$app/navigation';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
   import { currentLanguage } from '$lib/language.util.js';
@@ -1822,21 +1822,21 @@
         handler: async (body, reject) => {
           if (body.error) {
             if (body.error?.code === 'ALREADY_CONNECTED_TO_PANO') {
-              await goto($page.url.pathname, { invalidateAll: true });
+              await goto($page.url.pathname, { refreshAll: true });
               connecting = false;
               return;
             }
 
             const queryParameters = buildQueryParams({ failed: true });
             await goto($page.url.pathname + queryParameters, {
-              invalidateAll: true,
+              refreshAll: true,
             });
             connecting = false;
 
             return;
           }
 
-          await goto($page.url.pathname, { invalidateAll: true });
+          await goto($page.url.pathname, { refreshAll: true });
           await showSuccessToast('components.toasts.pano-account-connect-success');
 
           connecting = false;

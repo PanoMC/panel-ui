@@ -157,7 +157,7 @@
 
   import { currentLanguage } from '$lib/language.util.js';
   import { onPanelNotificationRefresh } from '$lib/panelRealtime.js';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import { goto } from '$app/navigation';
   import {
     imageFallback,

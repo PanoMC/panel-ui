@@ -289,7 +289,7 @@
   import { getContext, onMount, tick } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import { goto } from '$app/navigation';
 
   import { UI_URL } from '$lib/variables';

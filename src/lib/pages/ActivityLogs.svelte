@@ -166,7 +166,7 @@
       locale: search ? $currentLanguage?.code || undefined : undefined,
     });
 
-    await goto(queryParams || '?', { invalidateAll: true, keepFocus: true });
+    await goto(queryParams || '?', { refreshAll: true, reset: false });
 
     isSearching = false;
   }

@@ -4,7 +4,7 @@
 
 <script>
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
   import { markAppBooted } from '$pano/kit/hooks-client.js';
   import AppLayout from '$lib/layouts/AppLayout.svelte';
 

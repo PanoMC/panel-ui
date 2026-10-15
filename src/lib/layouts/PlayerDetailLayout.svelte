@@ -249,7 +249,7 @@
 
 <script>
   import { _ } from 'svelte-i18n';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import { beforeNavigate, goto, invalidate } from '$app/navigation';
   import { onMount, onDestroy, getContext } from 'svelte';
   import * as locales from 'date-fns/locale';

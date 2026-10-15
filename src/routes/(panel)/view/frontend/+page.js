@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 
-import { base } from '$app/paths';
+import { base } from '@panomc/sdk/core/js/basePath.js';
 
 /**
  * The Front-end settings are a dialog on the Themes page now; the old address (and the links the

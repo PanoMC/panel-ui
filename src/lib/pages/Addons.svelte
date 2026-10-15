@@ -250,8 +250,8 @@
   import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { base } from '$app/paths';
-  import { browser } from '$app/environment';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
+  import { browser } from '$app/env';
   import { refreshCompatAttention } from '$lib/compat-attention.store.js';
 
   import { websiteDisplayHost } from '$lib/website-display.util.js';
@@ -371,7 +371,7 @@
       search: search || undefined,
     });
 
-    await goto(`${base}/addons${queryParams}`, { invalidateAll: true, keepFocus: true });
+    await goto(`${base}/addons${queryParams}`, { refreshAll: true, reset: false });
     isSearching = false;
   }
 

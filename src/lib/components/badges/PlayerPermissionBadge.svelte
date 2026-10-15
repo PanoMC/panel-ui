@@ -14,7 +14,7 @@
 <script>
   import { _ } from 'svelte-i18n';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   export let permissionGroup;
 

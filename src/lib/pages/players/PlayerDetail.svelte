@@ -95,7 +95,7 @@
   import { _ } from 'svelte-i18n';
 
   import { goto } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { buildQueryParams } from '$lib/api.util';

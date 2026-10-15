@@ -169,7 +169,7 @@
   import copy from 'copy-to-clipboard';
   import { _ } from 'svelte-i18n';
 
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   import ApiUtil from '$lib/api.util';
   import tooltip from '$lib/tooltip.util';

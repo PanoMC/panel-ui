@@ -144,7 +144,7 @@
 <script context="module">
   import { redirect } from '@sveltejs/kit';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { fetchServerActivity, SERVER_ACTIVITY_PAGE_SIZE } from '$lib/serverActivity.util.js';
@@ -185,7 +185,7 @@
   import { getContext, onMount, tick } from 'svelte';
   import { _, locale } from 'svelte-i18n';
 
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   import CardHeader from '$lib/components/CardHeader.svelte';
   import NoContent from '$lib/components/NoContent.svelte';

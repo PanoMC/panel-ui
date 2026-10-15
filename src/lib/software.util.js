@@ -13,7 +13,7 @@
  * time. `SOFTWARE-LOGOS.md` in the repo root records where each file came from.
  */
 
-import { base } from '$app/paths';
+import { base } from '@panomc/sdk/core/js/basePath.js';
 
 /** Where the bundled marks live, relative to the panel's base path. */
 const LOGO_DIR = 'assets/img/software';

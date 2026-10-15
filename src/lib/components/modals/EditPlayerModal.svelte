@@ -378,7 +378,7 @@
 
   import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
-  import { page } from '$app/stores';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
   import ViewComponent from '$lib/components/ViewComponent.svelte';
 
   /** Puts the caret in the username field once Bootstrap reports the dialog as shown. */

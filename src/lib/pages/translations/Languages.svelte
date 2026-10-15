@@ -142,7 +142,7 @@
       page: data.page.number,
     });
 
-    await goto(queryParams, { invalidateAll: true });
+    await goto(queryParams, { refreshAll: true });
   }
 
   async function onPageClick(page) {

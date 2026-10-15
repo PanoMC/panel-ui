@@ -1,7 +1,7 @@
 import { describe, expect, mock, test } from 'bun:test';
 
 // auth.util.js reads the signed-in user off the SvelteKit page store when none is passed.
-mock.module('$app/stores', () => ({
+mock.module('@panomc/sdk/core/js/appStores.js', () => ({
   page: {
     subscribe(run) {
       run({ data: { user: { permissions: ['pano.panel.manage.market'] } } });

@@ -487,7 +487,7 @@
   import { errorCode } from '$lib/apiError.util.js';
   import { redirect } from '@sveltejs/kit';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { fetchServerPlugins } from '$lib/servers.util.js';
@@ -534,8 +534,8 @@
   import { getContext, onDestroy, onMount, untrack } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { browser } from '$app/environment';
-  import { page } from '$app/stores';
+  import { browser } from '$app/env';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
 
   import ApiUtil from '$lib/api.util.js';
   import tooltip from '$lib/tooltip.util';

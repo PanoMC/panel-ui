@@ -177,7 +177,7 @@
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import DateComponent from '$lib/components/Date.svelte';
   import DaemonUpdateProgress from '$lib/components/servers/DaemonUpdateProgress.svelte';

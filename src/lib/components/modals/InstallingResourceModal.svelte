@@ -83,7 +83,7 @@
             type="button"
             on:click={() =>
               goto(`${base}/${$type === 'PLUGIN' ? 'addons' : 'view'}/store`, {
-                invalidateAll: true,
+                refreshAll: true,
               }) && callback()}>
             {$_('buttons.go-to-store')}
           </button>
@@ -91,7 +91,7 @@
             class="btn btn-primary col-6 m-0"
             data-bs-dismiss="modal"
             type="button"
-            on:click={() => goto(buildPostInstallUrl(), { invalidateAll: true })}>
+            on:click={() => goto(buildPostInstallUrl(), { refreshAll: true })}>
             <i class="fas fa-arrow-left me-2"></i>
             {$_('buttons.' + ($type === 'PLUGIN' ? 'addons' : 'themes'))}
           </button>
@@ -105,9 +105,9 @@
   import { errorCode, errorDetails } from '$lib/apiError.util.js';
   import { writable, get } from 'svelte/store';
 
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
   import { goto as gotoNavigate } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import ApiUtil from '$lib/api.util';
 
@@ -192,7 +192,7 @@
       return;
     }
     hideCallback();
-    gotoNavigate(buildPostInstallUrl(), { invalidateAll: true });
+    gotoNavigate(buildPostInstallUrl(), { refreshAll: true });
     modal?.hide();
   }
 

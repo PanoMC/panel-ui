@@ -1,5 +1,5 @@
-import { browser } from '$app/environment';
-import { base } from '$app/paths';
+import { browser } from '$app/env';
+import { base } from '@panomc/sdk/core/js/basePath.js';
 
 import { sendLogout } from '$lib/auth.api.js';
 import { teardownPanelRealtime } from '$lib/panelRealtime.js';

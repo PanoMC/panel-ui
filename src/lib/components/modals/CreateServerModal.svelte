@@ -697,7 +697,7 @@
   import { onMount, untrack } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import { goto } from '$app/navigation';
 
   import ApiUtil from '$lib/api.util.js';
@@ -1710,7 +1710,7 @@
 
     hide(() => {
       void goto(createdId == null ? `${base}/` : `${base}/servers/${createdId}`, {
-        invalidateAll: true,
+        refreshAll: true,
       });
     });
   }

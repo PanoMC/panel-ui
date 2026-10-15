@@ -27,7 +27,7 @@
 
 <script>
   import { panoApiClient } from '$lib/PluginAPI.js';
-  import { page } from '$app/stores';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
   import { hasPermission } from '$lib/auth.util.js';
 
   let { name, tag = 'div', ...rest } = $props();

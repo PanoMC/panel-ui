@@ -689,7 +689,7 @@
 <ViewActivityLogModal />
 
 <script context="module">
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
@@ -798,8 +798,8 @@
   import { getContext, onDestroy, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { base } from '$app/paths';
-  import { navigating, page } from '$app/stores';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
+  import { navigating, page } from '@panomc/sdk/core/js/appStores.js';
 
   // `browser`, `ApiUtil`, `hasPermission`, `Permissions` and `PANEL_SERVER_LIVE_LOAD_KEY`
   // already come from the module script.

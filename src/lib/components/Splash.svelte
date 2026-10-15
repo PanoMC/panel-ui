@@ -234,9 +234,9 @@
     resumeAfterNetworkError,
     retryingNetworkErrors,
   } from '$lib/Store';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import { sidebarTabForPath } from '$lib/navigation.util.js';
-  import { page } from '$app/stores';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
 
   let hasNetworkErrors = false;
   let isHydrated = false;

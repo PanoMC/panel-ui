@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 
-import { base } from '$app/paths';
+import { base } from '@panomc/sdk/core/js/basePath.js';
 
 /**
  * The backups used to live under Settings (with sub-pages for Pano Backup and the transfer);

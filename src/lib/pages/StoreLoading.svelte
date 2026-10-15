@@ -164,7 +164,7 @@
   import { errorCode } from '$lib/apiError.util.js';
   import { redirect } from '@sveltejs/kit';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   export const PageTypes = Object.freeze({
     ADDON: 'ADDON',
@@ -220,7 +220,7 @@
 
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
   import ApiUtil from '$lib/api.util.js';

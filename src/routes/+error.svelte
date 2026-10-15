@@ -12,7 +12,7 @@
    * read about: the login form renders right here, at the address the visitor asked for, and a
    * successful sign-in reloads that same address. Everything else is the usual error page.
    */
-  import { page } from '$app/stores';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
 
   import AuthShell from '$lib/layouts/AuthShell.svelte';
   import Error from '$lib/pages/Error.svelte';

@@ -172,7 +172,7 @@
   import { _ } from 'svelte-i18n';
 
   import { goto, invalidateAll } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import CardHeader from '$lib/components/CardHeader.svelte';
   import NoContent from '$lib/components/NoContent.svelte';

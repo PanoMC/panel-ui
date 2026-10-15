@@ -3,7 +3,7 @@ import { expect, mock, test } from 'bun:test';
 import { stubClient } from './pages/view/frontend/testkit.js';
 
 // files.util pulls the SvelteKit environment, the HTTP client and the toasts; none is under test.
-mock.module('$app/environment', () => ({ browser: false, dev: false, building: false }));
+mock.module('$app/env', () => ({ browser: false, dev: false, building: false }));
 mock.module('$lib/api.util', () => ({ default: stubClient(), buildQueryParams: () => '' }));
 mock.module('$lib/api.util.js', () => ({ default: stubClient(), buildQueryParams: () => '' }));
 mock.module('$lib/components/ToastContainer.svelte', () => ({

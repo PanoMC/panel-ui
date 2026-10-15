@@ -524,7 +524,7 @@
 <script module>
   import { redirect } from '@sveltejs/kit';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import ApiUtil from '$lib/api.util.js';
   import { hasPermission, Permissions } from '$lib/auth.util.js';
@@ -575,7 +575,7 @@
   import { getContext, onMount } from 'svelte';
 
   import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
   import { _ } from 'svelte-i18n';
 
   import { formatBytes } from '$lib/string.util.js';
@@ -632,7 +632,7 @@
       void showSuccess('pages.settings.backups.account.plan-updated');
     }
 
-    void goto(`${base}/backups`, { replaceState: true, noScroll: true, keepFocus: true });
+    void goto(`${base}/backups`, { replace: true, reset: false });
   });
 
   const EMPTY_LOCAL = { backups: [], usedBytes: 0, job: null, restartRequired: false };

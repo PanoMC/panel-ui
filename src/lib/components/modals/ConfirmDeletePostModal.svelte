@@ -84,7 +84,7 @@
     showSuccess as showSuccessToast,
     limitTitle,
   } from '$lib/components/ToastContainer.svelte';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   let loading = false;
 

@@ -1,6 +1,6 @@
 import { baseAPI, pageAPI } from '@panomc/sdk/core/js/PluginAPI';
 import { derived, get, writable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { plugins } from '$lib/PluginManager.js';
 import { originalSiteNavItems } from '$lib/components/sidebar/SiteNavigationMenu.svelte';
 import { originalServerNavItems } from '$lib/components/sidebar/ServerNavigationMenu.svelte';

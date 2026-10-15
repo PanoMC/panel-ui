@@ -18,7 +18,9 @@ function generateLicensesPlugin() {
     configResolved() {
       outDir = path.resolve(process.cwd(), 'build');
     },
-    async closeBundle() {
+    // SvelteKit 3 runs the adapter in a post `buildApp` hook, after every closeBundle, and adapter-node empties
+    // build/ first: licenses.json must be written after it (this plugin comes after sveltekit() in the list).
+    buildApp: { order: 'post', async handler() {
       // Don't regenerate if file already exists (SSR and client build run in separate processes)
       const licensesPath = path.join(outDir, 'licenses.json');
       if (fs.existsSync(licensesPath)) {
@@ -41,7 +43,7 @@ function generateLicensesPlugin() {
           // Don't fail the build, just warn
         }
       }
-    },
+    } },
   };
 }
 

@@ -5,7 +5,7 @@
 <script>
   import { sanitize } from '@jill64/universal-sanitizer';
   import { marked } from 'marked';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   export let content;
 

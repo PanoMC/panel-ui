@@ -15,8 +15,8 @@
 </li>
 
 <script>
-  import { page } from '$app/stores';
-  import { base } from '$app/paths';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   let { href, startsWith, disabled, active, button, onclick, classes, liClazz, children } =
     $props();

@@ -93,7 +93,7 @@
   import { format, formatDuration, intervalToDuration } from 'date-fns';
   import * as locales from 'date-fns/locale';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { currentLanguage } from '$lib/language.util.js';
   import tooltip from '$lib/tooltip.util';

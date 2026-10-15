@@ -342,7 +342,7 @@
   import { _ } from 'svelte-i18n';
 
   import { goto } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import Pagination from '$lib/components/Pagination.svelte';
   import { pageCount } from '$lib/components/pagination.util.js';
@@ -489,7 +489,7 @@
       ipBanStatus: data.view === 'IP_BANS' ? data.ipBanStatus || DefaultIpBanStatus : undefined,
     });
 
-    await goto(queryParams, { invalidateAll: true, keepFocus: true });
+    await goto(queryParams, { refreshAll: true, reset: false });
     isSearching = false;
   }
 

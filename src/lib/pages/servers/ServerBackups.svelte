@@ -591,7 +591,7 @@
 <script context="module">
   import { redirect } from '@sveltejs/kit';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { featureSource, fetchServerBackups, hasFeature } from '$lib/servers.util.js';
@@ -659,7 +659,7 @@
   import { _ } from 'svelte-i18n';
   import copy from 'copy-to-clipboard';
 
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   import ApiUtil from '$lib/api.util.js';
   import tooltip from '$lib/tooltip.util';

@@ -25,8 +25,8 @@
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { page } from '$app/stores';
-  import { base } from '$app/paths';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   const pageTitle = getContext('pageTitle');
 

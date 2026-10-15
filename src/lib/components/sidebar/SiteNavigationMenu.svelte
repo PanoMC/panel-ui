@@ -151,8 +151,8 @@
   import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { base } from '$app/paths';
-  import { page } from '$app/stores';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
 
   import { hasPermission } from '$lib/auth.util.js';
   import { compatAttention, refreshCompatAttention } from '$lib/compat-attention.store.js';

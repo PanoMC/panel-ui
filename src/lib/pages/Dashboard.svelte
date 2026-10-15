@@ -470,7 +470,7 @@
   import { _ } from 'svelte-i18n';
   import { writable } from 'svelte/store';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 

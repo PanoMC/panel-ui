@@ -653,7 +653,7 @@
   import { _ } from 'svelte-i18n';
   import copy from 'copy-to-clipboard';
 
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   import ApiUtil from '$lib/api.util.js';
   import tooltip from '$lib/tooltip.util';

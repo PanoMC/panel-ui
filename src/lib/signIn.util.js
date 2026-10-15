@@ -1,8 +1,8 @@
 import { get } from 'svelte/store';
 
-import { base } from '$app/paths';
+import { base } from '@panomc/sdk/core/js/basePath.js';
 import { goto } from '$app/navigation';
-import { page } from '$app/stores';
+import { page } from '@panomc/sdk/core/js/appStores.js';
 
 import { getCredentials, safeNextPath, sendLogout } from '$lib/auth.api.js';
 import { showSuccess } from '$lib/components/ToastContainer.svelte';
@@ -37,10 +37,10 @@ export async function completeSignIn(csrfToken, { target } = {}) {
 
   // No document reload: every load runs again with the new cookies (the root server load
   // re-reads `basicData` through hooks) and the root layout wires the realtime hub the moment
-  // `signedIn` turns true. `replaceState` keeps the signed-out view out of the history.
+  // `signedIn` turns true. `replace` keeps the signed-out view out of the history.
   await goto(target || safeNextPath(url.searchParams.get('next'), base) || base || '/', {
-    invalidateAll: true,
-    replaceState: true,
+    refreshAll: true,
+    replace: true,
   });
 
   return 'ok';

@@ -243,7 +243,7 @@
   import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import { goto, invalidate } from '$app/navigation';
 
@@ -261,7 +261,7 @@
   import { themeProblem } from '../addons/compat/compat.util.js';
   import FrontendModal from './frontend/FrontendModal.svelte';
   import { normalizeFrontendState, themeNotShown } from './frontend/frontend.util.js';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
   import { refreshCompatAttention } from '$lib/compat-attention.store.js';
 
   export let data;
@@ -292,7 +292,7 @@
       search: search || undefined,
     });
 
-    await goto(`${base}/view${queryParams}`, { invalidateAll: true, keepFocus: true });
+    await goto(`${base}/view${queryParams}`, { refreshAll: true, reset: false });
     isSearching = false;
   }
 

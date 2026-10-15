@@ -23,7 +23,7 @@
 <script>
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
-  import { navigating } from '$app/stores';
+  import { navigating } from '@panomc/sdk/core/js/appStores.js';
 
   const progress = tweened(0, { easing: cubicOut });
   const opacity = tweened(1, { easing: cubicOut });

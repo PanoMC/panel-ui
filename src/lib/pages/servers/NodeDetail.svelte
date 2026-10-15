@@ -186,7 +186,7 @@
 <script module>
   import { error, redirect } from '@sveltejs/kit';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { fetchNode } from '$lib/nodes.util.js';
@@ -476,7 +476,7 @@
   /** The node this page shows is gone — back to the list, which re-reads the nodes. */
   function leaveDeletedNode() {
     forgetNode(data.node?.id);
-    void goto(`${base}/servers/nodes`, { replaceState: true, invalidateAll: true });
+    void goto(`${base}/servers/nodes`, { replace: true, refreshAll: true });
   }
 
   onMount(() => {

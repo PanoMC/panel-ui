@@ -151,7 +151,7 @@
 <script>
   import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import ApiUtil from '$lib/api.util.js';
   import { UsageModes } from '$lib/navigation.util.js';
 

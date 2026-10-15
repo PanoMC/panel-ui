@@ -46,8 +46,8 @@
   import { getContext } from 'svelte';
   import { _ } from 'svelte-i18n';
   import { fade } from 'svelte/transition';
-  import { base } from '$app/paths';
-  import { browser } from '$app/environment';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
+  import { browser } from '$app/env';
   import {
     show as showToast,
     showError as showErrorToast,

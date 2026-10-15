@@ -282,7 +282,7 @@
   import tooltip from '$lib/tooltip.util';
 
   import { goto, invalidate } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { formatBytes } from '$lib/string.util';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';

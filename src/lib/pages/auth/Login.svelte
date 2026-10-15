@@ -261,7 +261,7 @@
   import { errorCode, errorDetails } from '$lib/apiError.util.js';
   import { redirect } from '@sveltejs/kit';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { isSignedIn, safeNextPath } from '$lib/auth.api.js';
   import { UsageModes } from '$lib/navigation.util.js';
@@ -318,10 +318,10 @@
   import { format } from 'date-fns';
   import * as dateFnsLocales from 'date-fns/locale';
 
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
   import { plugins as activePlugins } from '$lib/PluginManager.js';
   import { ensurePluginStyles, pluginIdsOf } from '$lib/pluginStyles.util.js';
-  import { page } from '$app/stores';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
 
   import { sendLogin } from '$lib/auth.api.js';
   import { completeSignIn } from '$lib/signIn.util.js';

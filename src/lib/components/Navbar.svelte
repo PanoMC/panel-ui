@@ -214,9 +214,9 @@
   import { sanitize } from '@jill64/universal-sanitizer';
   import { sanitizeImageSrc } from '$lib/security.util.js';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
 
   import ApiUtil from '$lib/api.util';
   import {
@@ -229,7 +229,7 @@
   } from '$lib/Store';
 
   import { currentLanguage } from '$lib/language.util';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   import { notificationTextKey, onNotificationClick } from '$lib/NotificationManager.js';
 

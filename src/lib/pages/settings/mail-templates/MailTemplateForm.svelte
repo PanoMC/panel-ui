@@ -308,7 +308,7 @@
   import { _ } from 'svelte-i18n';
 
   import { beforeNavigate, goto } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import ApiUtil from '$lib/api.util';
   import tooltip from '$lib/tooltip.util';
@@ -654,7 +654,7 @@
     });
 
     select.value = next.variant ? variant : locale;
-    goto(`?${params}`, { noScroll: true, keepFocus: true });
+    goto(`?${params}`, { reset: false });
   }
 
   /** The preview request: the draft and the variables it renders with. */

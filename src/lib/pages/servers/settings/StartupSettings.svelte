@@ -175,8 +175,8 @@
 <script context="module">
   import { redirect } from '@sveltejs/kit';
 
-  import { browser } from '$app/environment';
-  import { base } from '$app/paths';
+  import { browser } from '$app/env';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { fetchNode, getCachedNode } from '$lib/nodes.util.js';

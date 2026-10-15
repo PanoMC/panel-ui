@@ -205,7 +205,7 @@
   import { sanitizeImageSrc } from '$lib/security.util.js';
 
   import { goto } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { hideBootstrapModalAndWait } from '$lib/modal.util.js';
 
@@ -238,7 +238,7 @@
           await hideBootstrapModalAndWait(getServerRequestModalEl());
           // Accepting a request is the one moment the admin certainly wants that server: open
           // its page instead of only refreshing whatever they were looking at.
-          await goto(`${base}/servers/${$server.id}`, { invalidateAll: true });
+          await goto(`${base}/servers/${$server.id}`, { refreshAll: true });
 
           await showSuccessToast('components.toasts.server-selected', {
             name: customNamePayload ?? $server.name,

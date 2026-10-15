@@ -9,8 +9,8 @@
 <slot />
 
 <script>
-  import { browser, dev } from '$app/environment';
-  import { page } from '$app/stores';
+  import { browser, dev } from '$app/env';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
   import { onDestroy } from 'svelte';
   import PageLoader from '$lib/components/PageLoader.svelte';
   import '@theme-style';

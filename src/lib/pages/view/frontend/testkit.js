@@ -31,14 +31,15 @@ plugin({
 });
 
 mock.module('$app/paths', () => ({ base: '', assets: '' }));
-mock.module('$app/environment', () => ({ browser: false, dev: false, building: false }));
+mock.module('$app/env', () => ({ browser: false, dev: false, building: false }));
 mock.module('$app/navigation', () => ({
   goto: async () => {},
   invalidate: async () => {},
   invalidateAll: async () => {},
+  refreshAll: async () => {},
   beforeNavigate: () => {},
 }));
-mock.module('$app/stores', () => ({
+mock.module('@panomc/sdk/core/js/appStores.js', () => ({
   page: writable({ url: new URL('http://localhost/panel/view/frontend'), data: {} }),
   navigating: writable(null),
 }));

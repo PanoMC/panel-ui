@@ -64,7 +64,7 @@
   import { _ } from 'svelte-i18n';
   import { avatarVersion } from '$lib/Store';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import Date from '$lib/components/Date.svelte';
   import CategoryBadge from '$lib/components/badges/CategoryBadge.svelte';

@@ -226,7 +226,7 @@
   import { getContext, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import SoftwareLogo from '$lib/components/servers/SoftwareLogo.svelte';
   import VitalsGauge from '$lib/components/servers/VitalsGauge.svelte';
   import { sanitizeImageSrc } from '$lib/security.util.js';

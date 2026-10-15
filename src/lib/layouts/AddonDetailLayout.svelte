@@ -206,7 +206,7 @@
   import { isLocked } from '$lib/pages/addons/compat/compat.util.js';
 
   import { goto, invalidateAll } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { formatBytes } from '$lib/string.util';
   import { PANO_WEBSITE_URL } from '$lib/variables';
@@ -306,7 +306,7 @@
           return;
         }
 
-        await goto(base + '/addons', { invalidateAll: true });
+        await goto(base + '/addons', { refreshAll: true });
 
         await showSuccessToast('components.toasts.remove-addon-success');
 

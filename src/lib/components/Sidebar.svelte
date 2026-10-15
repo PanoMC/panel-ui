@@ -402,7 +402,7 @@
   import { fadeChange } from '$lib/fadeChange.util.js';
 
   import { goto } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { toggleSidebar } from '$lib/Store';
   import { PanelSidebarStorageUtil } from '$lib/storage.util';
@@ -413,7 +413,7 @@
   import ServerNavigationMenu from './sidebar/ServerNavigationMenu.svelte';
 
   import ServersModal, { show as showServersModal } from './modals/ServersModal.svelte';
-  import { page } from '$app/stores';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
   import { activeServer, getServerDisplayName } from '$lib/servers.util.js';
   import AddNodeModal from './modals/AddNodeModal.svelte';
   import AddServerModal from './modals/AddServerModal.svelte';
@@ -426,7 +426,7 @@
 
   import { canAccessServers, hasPermission, Permissions } from '$lib/auth.util.js';
   import { sidebarTabForPath, UsageModes } from '$lib/navigation.util.js';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   let menuComponent = SiteNavigationMenu;
 

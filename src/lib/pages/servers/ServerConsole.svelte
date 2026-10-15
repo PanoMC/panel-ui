@@ -253,7 +253,7 @@
   import { _ } from 'svelte-i18n';
   import copy from 'copy-to-clipboard';
 
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   import CardHeader from '$lib/components/CardHeader.svelte';
   import ServerCapabilityNotice from '$lib/components/servers/ServerCapabilityNotice.svelte';

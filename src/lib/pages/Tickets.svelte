@@ -235,7 +235,7 @@
   import { _ } from 'svelte-i18n';
 
   import { goto } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import tooltip from '$lib/tooltip.util';
 
@@ -315,7 +315,7 @@
       search: search || undefined,
     });
 
-    await goto(queryParams, { invalidateAll: true, keepFocus: true });
+    await goto(queryParams, { refreshAll: true, reset: false });
     isSearching = false;
   }
 

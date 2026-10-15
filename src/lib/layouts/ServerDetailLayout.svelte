@@ -538,7 +538,7 @@
 <script context="module">
   import { redirect } from '@sveltejs/kit';
 
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import ApiUtil from '$lib/api.util.js';
 
@@ -581,9 +581,9 @@
   import { _ } from 'svelte-i18n';
   import copy from 'copy-to-clipboard';
 
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
   import { goto, invalidate } from '$app/navigation';
-  import { page } from '$app/stores';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
 
   import { sanitizeImageSrc } from '$lib/security.util.js';
   import tooltip from '$lib/tooltip.util';
@@ -1576,7 +1576,7 @@
         return;
       }
 
-      void goto(base + '/', { invalidateAll: true });
+      void goto(base + '/', { refreshAll: true });
     });
 
     // §2.4.3 — the node pushes a state change on every transition; merge it so the pill and

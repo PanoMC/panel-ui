@@ -217,9 +217,9 @@
   import { get as getStore } from 'svelte/store';
   import { _ } from 'svelte-i18n';
 
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
   import { goto } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import {
     showSuccess as showSuccessToast,
@@ -624,7 +624,7 @@
     selectingServer.set(server.id);
 
     if (!canAddServers) {
-      void goto(`${base}/servers/${server.id}`, { invalidateAll: true }).finally(() => {
+      void goto(`${base}/servers/${server.id}`, { refreshAll: true }).finally(() => {
         selectingServer.set(null);
         hide();
         closeSidebarOnPhone();
@@ -641,7 +641,7 @@
       handler: async (body, reject) => {
         if (!body.error) {
           $selectedServer = server;
-          await goto(`${base}/servers/${server.id}`, { invalidateAll: true });
+          await goto(`${base}/servers/${server.id}`, { refreshAll: true });
           selectingServer.set(null);
           hide();
           closeSidebarOnPhone();

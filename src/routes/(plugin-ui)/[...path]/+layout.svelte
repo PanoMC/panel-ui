@@ -45,7 +45,7 @@
 <script context="module">
   import { error } from '@sveltejs/kit';
   import { registeredPages, findMatch } from '$lib/PluginManager.js';
-  import { base } from '$app/paths';
+  import { base } from '@panomc/sdk/core/js/basePath.js';
   import { hasPermission } from '$lib/auth.util.js';
 
   const layouts = import.meta.glob('$lib/layouts/*.svelte', { eager: true });
@@ -120,7 +120,7 @@
 
 <script>
   import { mount, unmount, getAllContexts } from 'svelte';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   let { data } = $props();
   const contexts = getAllContexts();

@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this is
 
 `panel-ui` is the **admin/management dashboard** for the Pano platform — the web UI a site owner
-uses to manage news, users, plugins, themes, and settings (~56 routes). It is a **SvelteKit 2 +
+uses to manage news, users, plugins, themes, and settings (~56 routes). It is a **SvelteKit 3 +
 Svelte 5** app built with **Vite** and shipped via **`@sveltejs/adapter-node`**, and is **not served
 on its own in production**: the `pano-web-platform` backend launches it as a Node/Bun upstream and
 reverse-proxies to it (see the ecosystem overview in `../CLAUDE.md` and the backend's
@@ -29,7 +29,7 @@ bun run format              # prettier --write
 ## Key things to know
 
 - **API base is `/api/v1/panel`**, proxied in dev to the backend via `VITE_API_URL=<origin>/api` in `.env`. The app
-  is mounted under the `/panel` base path (see `svelte.config.js`). To run it against a local
+  is mounted under the `/panel` base path (the `base` option in `vite.config.js`; SvelteKit 3 has no `svelte.config.js`). To run it against a local
   backend, set `init-ui = true` in the platform's `config.conf` and start both.
 - The HTTP/data layer comes from `@panomc/sdk`, resolved from the **`theme-core` submodule**
   (`file:./theme-core/packages/sdk`, pinned per the parent commit) into `node_modules` by
