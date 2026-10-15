@@ -51,7 +51,17 @@
         <p class="small mb-0" in:fade out:fade>
           {#if $installError}
             <span class="text-danger">
-              {#if $installLicenseDeniedReason}
+              {#if $installIncompatible}
+                <!-- The API level gate refused it: say so in words, not "failed to install". -->
+                {$_(`components.modals.installing-resource.incompatible-${$installIncompatible}`, {
+                  values: {
+                    kind: $_(
+                      'components.modals.install-resource.' +
+                        ($type === 'PLUGIN' ? 'addon' : 'theme'),
+                    ).toLowerCase(),
+                  },
+                })}
+              {:else if $installLicenseDeniedReason}
                 {$_(
                   'components.modals.installing-resource.license-denied.' +
                     $installLicenseDeniedReason,
@@ -124,6 +134,8 @@
   const installError = writable();
   /** Set when install failed on license check ([LicenseDeniedReason.publicId]). */
   const installLicenseDeniedReason = writable(null);
+  /** `too-old` / `too-new` when the API level gate refused the file, else null. */
+  const installIncompatible = writable(null);
   /** ResourceId of the addon/theme being installed (when known up-front, e.g. store install). */
   const installedResourceId = writable(null);
 
@@ -227,6 +239,7 @@
 
     if (uploadResponse.error) {
       installLicenseDeniedReason.set(null);
+      installIncompatible.set(null);
       installError.set(errorCode(uploadResponse));
       installing = false;
 
@@ -267,6 +280,12 @@
     } else {
       installing = false;
       const licenseDeniedReason = errorDetails(message).licenseDeniedReason;
+      const verdict = errorDetails(message).verdict;
+
+      // The API level gate (doc 04 section 7): built for an older Pano, or for a newer one.
+      installIncompatible.set(
+        verdict === 'TOO_OLD' ? 'too-old' : verdict === 'TOO_NEW' ? 'too-new' : null,
+      );
 
       installLicenseDeniedReason.set(
         typeof licenseDeniedReason === 'string' ? licenseDeniedReason : null,
@@ -289,6 +308,7 @@
       if (installing) {
         installing = false;
         installLicenseDeniedReason.set(null);
+        installIncompatible.set(null);
         installError.set('NETWORK_ERROR');
       }
     };
@@ -321,6 +341,7 @@
     versionId.set(newVersionId);
     installError.set(null);
     installLicenseDeniedReason.set(null);
+    installIncompatible.set(null);
     installedResourceId.set(resourceId);
     type.set(newType);
     callback = storeCallback;

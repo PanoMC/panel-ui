@@ -3609,6 +3609,8 @@
         "install-from-pano-store": "Install From Pano Store"
       },
       "installing-resource": {
+        "incompatible-too-old": "This {kind} is not compatible with this Pano: it was made for an older Pano. Install a newer version of it.",
+        "incompatible-too-new": "This {kind} is not compatible with this Pano: it needs a newer Pano. Update Pano first, then install it.",
         "error": "Error!",
         "installing": "Installing...",
         "completed": "Completed!",

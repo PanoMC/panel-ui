@@ -3609,6 +3609,8 @@
         "install-from-pano-store": "Установить из Pano Store"
       },
       "installing-resource": {
+        "incompatible-too-old": "Этот {kind} несовместим с этой версией Pano: он сделан для более старой Pano. Установите его новую версию.",
+        "incompatible-too-new": "Этот {kind} несовместим с этой версией Pano: ему нужна более новая Pano. Сначала обновите Pano, затем установите его.",
         "error": "Ошибка!",
         "installing": "Установка...",
         "completed": "Завершено!",

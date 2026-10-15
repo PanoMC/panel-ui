@@ -3609,6 +3609,8 @@
         "install-from-pano-store": "Pano Mağazası'ndan Kur"
       },
       "installing-resource": {
+        "incompatible-too-old": "Bu {kind} bu Pano ile uyumlu değil: daha eski bir Pano için yapılmış. Yeni bir sürümünü kurun.",
+        "incompatible-too-new": "Bu {kind} bu Pano ile uyumlu değil: daha yeni bir Pano gerektiriyor. Önce Pano'yu güncelleyin, sonra kurun.",
         "error": "Hata!",
         "installing": "Kuruluyor...",
         "completed": "Tamamlandı!",
