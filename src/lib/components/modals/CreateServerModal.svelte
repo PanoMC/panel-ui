@@ -116,18 +116,6 @@
               <div class="d-flex flex-wrap justify-content-center gap-2 pb-3">
                 <button
                   type="button"
-                  class="btn btn-primary btn-sm"
-                  disabled={localSetupBusy}
-                  onclick={setupLocalNode}>
-                  {#if localSetupBusy}
-                    <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-                  {:else}
-                    <i class="fa-solid fa-circle-nodes me-1" aria-hidden="true"></i>
-                  {/if}
-                  {$_('pages.servers.create.setup-local-node')}
-                </button>
-                <button
-                  type="button"
                   class="btn btn-link text-primary text-decoration-none btn-sm text-capitalize"
                   onclick={addNode}>
                   <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>

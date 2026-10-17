@@ -51,17 +51,7 @@
   {:else}
     <div class="card-body">
       <ul class="list-group">
-        <li
-          class="list-group-item list-group-item-action"
-          class:disabled={loading || $platformUpdating || inProgressResource || updatingAll}
-          style="cursor: pointer;"
-          role="button"
-          tabindex="0"
-          data-update-platform
-          use:tooltip={[$_('buttons.update')]}
-          on:click={onUpdatePlatformClick}
-          on:keydown={(e) =>
-            e.key === 'Enter' && e.target === e.currentTarget && onUpdatePlatformClick()}>
+        <li class="list-group-item">
           <div class="d-flex gap-3 flex-wrap position-relative">
             <div class="flex-shrink-0">
               <!-- Logo -->
@@ -133,6 +123,17 @@
                       role="status"
                       aria-hidden="true"></span>
                   {/if}
+                  <button
+                    class="btn btn-sm btn-primary text-capitalize ms-1"
+                    data-update-platform
+                    class:disabled={loading ||
+                      $platformUpdating ||
+                      inProgressResource ||
+                      updatingAll}
+                    on:click={onUpdatePlatformClick}>
+                    <i class="fas fa-download me-1"></i>
+                    {$_('buttons.update')}
+                  </button>
                 </div>
               </div>
 
@@ -479,6 +480,9 @@
    */
   export const DEMO_UPDATES = false;
 
+  /** TEMPORARY: shows only a made-up platform update, so the card can be seen. */
+  export const DEMO_PLATFORM_UPDATE = false;
+
   /** What `/panel/updates/servers` answers, made up for the demo. */
   function demoServerUpdates() {
     return {
@@ -695,7 +699,9 @@
     if (data.resourceUpdates && !data.resourceUpdates.find((u) => u.id.endsWith('-demo'))) {
       data.resourceUpdates = [...demoUpdates, ...data.resourceUpdates];
     }
+  }
 
+  $: if ((demoMode || DEMO_PLATFORM_UPDATE) && data) {
     if (!data.platformUpdate) {
       data.platformUpdate = {
         channel: 'stable',
@@ -708,10 +714,10 @@
         state: 'demo',
       };
     }
+  }
 
-    if (!data.panoAccount) {
-      data.panoAccount = { username: 'demo' };
-    }
+  $: if (demoMode && data && !data.panoAccount) {
+    data.panoAccount = { username: 'demo' };
   }
 
   const platformUpdating = getContext('platformUpdating');

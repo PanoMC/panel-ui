@@ -95,28 +95,7 @@
         icon="fa-solid fa-plug-circle-xmark fa-3x"
         text={$_('pages.servers.nodes.unavailable')} />
     {:else if approvedNodes.length === 0}
-      <NoContent
-        icon="fa-solid fa-circle-nodes fa-3x"
-        text={$_('pages.servers.nodes.empty-description')}>
-        <div class="d-flex flex-wrap justify-content-center gap-2 pb-3">
-          <button
-            type="button"
-            class="btn btn-primary btn-sm"
-            disabled={localSetupBusy}
-            onclick={setupLocalNode}>
-            {#if localSetupBusy}
-              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-            {:else}
-              <i class="fa-solid fa-circle-nodes me-1" aria-hidden="true"></i>
-            {/if}
-            {$_('pages.servers.create.setup-local-node')}
-          </button>
-          <button type="button" class="btn btn-outline-secondary btn-sm" onclick={openAddNode}>
-            <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
-            {$_('pages.servers.nodes.add-node')}
-          </button>
-        </div>
-      </NoContent>
+      <NoContent />
     {:else}
       <div class="table-responsive">
         <table class="table table-sm table-hover align-middle mb-0">

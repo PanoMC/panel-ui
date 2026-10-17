@@ -70,7 +70,6 @@
       class:disabled={loading || isEditorEmpty || post.title.length === 0}
       on:click={() => submit(false)}>
       <i class="fas fa-file-pen"></i>
-      <span class="d-lg-inline d-none ms-2">{$_('pages.post-editor.save-draft')}</span>
     </button>
   {/if}
   <button
