@@ -7,7 +7,7 @@
       role="switch"
       checked={form.allEvents}
       onchange={(event) => (form = { ...form, allEvents: event.currentTarget.checked })} />
-    <label class="form-check-label" for="webhookAllEvents">
+    <label class="form-check-label text-capitalize" for="webhookAllEvents">
       {$_('pages.webhooks.form.all-events')}
     </label>
   </div>
@@ -25,7 +25,7 @@
             checked={whole}
             onchange={(event) =>
               (form = withSource(form, group.source, event.currentTarget.checked))} />
-          <label class="form-check-label" for="webhookSource-{group.source}">
+          <label class="form-check-label text-capitalize" for="webhookSource-{group.source}">
             {$_('pages.webhooks.form.source-all', { values: { source: group.title } })}
           </label>
         </div>
@@ -52,7 +52,9 @@
 
     {#if unlisted.length > 0}
       <div class="border rounded p-2" data-event-unlisted>
-        <div class="text-body-secondary mb-1">{$_('pages.webhooks.form.unlisted')}</div>
+        <div class="text-body-secondary text-capitalize mb-1">
+          {$_('pages.webhooks.form.unlisted')}
+        </div>
         {#each unlisted as name (name)}
           <div class="form-check">
             <input

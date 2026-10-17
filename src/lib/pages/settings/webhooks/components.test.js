@@ -287,7 +287,7 @@ describe('Endpoints tab', () => {
     const html = render(empty);
 
     expect(html).not.toContain('<table');
-    expect(textOf(html)).toContain('Here is empty.');
+    expect(html).toContain('opacity-25');
   });
 
   test('the source filter narrows the rows to endpoints that subscribe to that source', () => {
@@ -323,7 +323,7 @@ describe('endpoint dialog', () => {
     expect(text).toContain('Create a webhook');
     expect(text).toContain('All events');
     expect(text).toContain('HMAC SHA-256');
-    expect(html).toMatch(/<button class="btn btn-primary w-100" type="submit"/);
+    expect(html).toMatch(/<button class="btn w-100 btn-secondary" type="submit"/);
     // Form modals have no Cancel button (design/modals-form.md).
     expect(html).not.toContain('buttons.cancel');
     expect(text).not.toContain('Cancel');
@@ -422,7 +422,7 @@ describe('Deliveries tab', () => {
     );
 
     expect(empty).not.toContain('<table');
-    expect(textOf(empty)).toContain('Here is empty.');
+    expect(empty).toContain('opacity-25');
 
     const controller = deliveriesController({}, { initial: null });
 

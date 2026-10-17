@@ -147,7 +147,7 @@
                   <span class="badge text-bg-success"
                     >{$_('pages.webhooks.endpoints.enabled')}</span>
                 {:else}
-                  <span class="badge text-bg-secondary">
+                  <span class="badge text-bg-danger">
                     {$_('pages.webhooks.endpoints.disabled')}
                   </span>
                   {#if status.auto}

@@ -1,9 +1,9 @@
 <!-- Create or edit a webhook endpoint. After a save that made a signing secret the same dialog shows it once. -->
 <div class="modal fade" bind:this={element} role="dialog" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">
+        <h5 class="modal-title text-capitalize">
           {#if secret}
             {$_('pages.webhooks.secret.title')}
           {:else if editing !== null}
@@ -43,7 +43,10 @@
               </div>
 
               <div>
-                <div class="btn-group" role="group" aria-label={$_('pages.webhooks.form.format')}>
+                <div
+                  class="btn-group w-100"
+                  role="group"
+                  aria-label={$_('pages.webhooks.form.format')}>
                   {#each WEBHOOK_FORMATS as format (format)}
                     <input
                       type="radio"
@@ -53,7 +56,9 @@
                       autocomplete="off"
                       checked={form.format === format}
                       onchange={() => (form = withFormat(form, format))} />
-                    <label class="btn btn-outline-secondary" for="webhookFormat{format}">
+                    <label
+                      class="btn btn-outline-primary text-capitalize"
+                      for="webhookFormat{format}">
                       {#if format === 'DISCORD'}
                         <i class="fa-brands fa-discord me-1" aria-hidden="true"></i>
                       {/if}
@@ -79,46 +84,44 @@
 
               <WebhookEvents bind:form {catalogue} {initialEvents} error={shown.events ?? ''} />
 
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label" for="webhookSigning">
-                    {$_('pages.webhooks.form.signing')}
-                  </label>
-                  <select
-                    id="webhookSigning"
-                    class="form-select"
-                    disabled={discord}
-                    value={form.signing}
-                    onchange={(event) => (form = { ...form, signing: event.currentTarget.value })}>
-                    {#each WEBHOOK_SIGNINGS as signing (signing)}
-                      <option value={signing}>{$_(`pages.webhooks.signing.${signing}`)}</option>
-                    {/each}
-                  </select>
-                  {#if discord}
-                    <div class="form-text">{$_('pages.webhooks.form.signing-discord')}</div>
-                  {:else if form.signing === 'HMAC_SHA256'}
-                    <div class="form-text">{$_('pages.webhooks.form.signing-hint')}</div>
-                  {/if}
+              <div>
+                <div class="input-group">
+                  <div class="form-floating">
+                    <select
+                      id="webhookSigning"
+                      class="form-select"
+                      disabled={discord}
+                      value={form.signing}
+                      onchange={(event) =>
+                        (form = { ...form, signing: event.currentTarget.value })}>
+                      {#each WEBHOOK_SIGNINGS as signing (signing)}
+                        <option value={signing}>{$_(`pages.webhooks.signing.${signing}`)}</option>
+                      {/each}
+                    </select>
+                    <label class="text-capitalize" for="webhookSigning">
+                      {$_('pages.webhooks.form.signing')}
+                    </label>
+                  </div>
+                  <div class="form-floating">
+                    <input
+                      id="webhookMaxAttempts"
+                      class="form-control"
+                      class:is-invalid={shown.maxAttempts}
+                      type="text"
+                      inputmode="numeric"
+                      autocomplete="off"
+                      data-field="maxAttempts"
+                      placeholder={$_('pages.webhooks.form.max-attempts')}
+                      bind:value={form.maxAttempts} />
+                    <label class="text-capitalize" for="webhookMaxAttempts">
+                      {$_('pages.webhooks.form.max-attempts')}
+                    </label>
+                  </div>
                 </div>
-                <div class="col-md-6">
-                  <label class="form-label" for="webhookMaxAttempts">
-                    {$_('pages.webhooks.form.max-attempts')}
-                  </label>
-                  <input
-                    id="webhookMaxAttempts"
-                    class="form-control"
-                    class:is-invalid={shown.maxAttempts}
-                    type="text"
-                    inputmode="numeric"
-                    autocomplete="off"
-                    data-field="maxAttempts"
-                    bind:value={form.maxAttempts} />
-                  {@render problem(shown.maxAttempts)}
-                </div>
+                {@render problem(shown.maxAttempts)}
               </div>
 
               <div>
-                <div class="mb-1">{$_('pages.webhooks.form.headers')}</div>
                 <div class="vstack gap-2" data-headers>
                   {#each form.headers as row, index (index)}
                     <div>
@@ -140,7 +143,7 @@
                           placeholder={$_('pages.webhooks.form.header-value')}
                           bind:value={row.value} />
                         <button
-                          class="btn btn-secondary"
+                          class="btn btn-primary"
                           type="button"
                           title={$_('buttons.remove')}
                           aria-label={$_('buttons.remove')}
@@ -156,7 +159,7 @@
                   {/if}
                   <div>
                     <button
-                      class="btn btn-sm btn-link px-0"
+                      class="btn btn-sm btn-link text-capitalize px-0"
                       type="button"
                       data-add-header
                       disabled={form.headers.length >= MAX_HEADERS}
@@ -210,7 +213,12 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-primary w-100" type="submit" disabled={$saving}>
+            <button
+              class="btn w-100"
+              class:btn-primary={editing !== null}
+              class:btn-secondary={editing === null}
+              type="submit"
+              disabled={$saving}>
               {#if $saving}
                 <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
               {/if}
