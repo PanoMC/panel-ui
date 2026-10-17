@@ -116,7 +116,7 @@
               <div class="d-flex flex-wrap justify-content-center gap-2 pb-3">
                 <button
                   type="button"
-                  class="btn btn-link text-primary text-decoration-none btn-sm text-capitalize"
+                  class="btn btn-primary btn-sm text-capitalize"
                   onclick={addNode}>
                   <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
                   {$_('components.modals.create-server.add-node')}

@@ -434,7 +434,7 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-primary w-100"
+            class="btn btn-primary w-100 text-capitalize"
             disabled={localSetupBusy || bootstrapRunning || !!tabDisabledReason(TABS[0])}
             onclick={setupLocalNode}>
             {#if localSetupBusy}
