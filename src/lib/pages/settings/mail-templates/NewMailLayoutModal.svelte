@@ -3,7 +3,9 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{$_('pages.mail-templates.layouts.create.title')}</h5>
+        <h5 class="modal-title text-capitalize">
+          {$_('pages.mail-templates.layouts.create.title')}
+        </h5>
         <button
           type="button"
           class="btn-close"

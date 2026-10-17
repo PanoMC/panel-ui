@@ -1233,7 +1233,7 @@
       "go-back": "Geri Git"
     },
     "post-editor": {
-      "save-draft": "Taslak olarak kaydet",
+      "save-draft": "Taslak Olarak Kaydet",
       "posts": "Yazılar",
       "trash": "Çöp",
       "move-to-drafts": "Taslaklara Taşı",
@@ -3051,7 +3051,7 @@
         "create": "Webhook Oluştur",
         "empty": "Henüz webhook yok.",
         "actions": "Webhook işlemleri",
-        "send-test": "Test Gönder",
+        "send-test": "Test e-postası gönder",
         "deliveries": "Gönderimler",
         "disable": "Devre Dışı Bırak",
         "enable": "Etkinleştir",
@@ -3159,7 +3159,7 @@
       "title": "E-posta şablonları",
       "load-failed": "E-posta şablonları yüklenemedi.",
       "core": "Pano",
-      "group-title": "{name} · {count} e-posta",
+      "group-title": "{name} · {count} E-posta",
       "customized": "Özelleştirildi",
       "customized-hint": "Bu e-postada senin değişikliklerin var: türlerinden birinin bir dili ya da düzeni. Düzenlenen diller dil listesinde işaretli; Varsayılana sıfırla dil bazında çalışır.",
       "customized-short": "özelleştirildi",
@@ -3186,7 +3186,7 @@
       },
       "layouts": {
         "title": "{count, plural, one {# Düzen} other {# Düzen}}",
-        "new": "Yeni düzen",
+        "new": "Yeni Düzen",
         "main": "Ana düzen",
         "table": {
           "name": "Ad",
@@ -3264,7 +3264,7 @@
         "mobile": "Mobil",
         "invalid": "Şablonda bir hata var, bu yüzden önizleme çalışan son sürümü gösteriyor."
       },
-      "send-test": "Test e-postası gönder",
+      "send-test": "Test E-postası Gönder",
       "reset": {
         "button": "Varsayılana sıfırla",
         "title": "Bu şablon varsayılana sıfırlansın mı?",
@@ -3288,12 +3288,12 @@
         "layout-name-invalid": "Düzenin adını kontrol et."
       },
       "window": {
-        "open": "Yeni pencerede aç",
+        "open": "Yeni Pencerede Aç",
         "title": "E-posta önizlemesi",
         "width": "Genişlik",
         "no-draft": "Bu pencereyi e-posta şablonu düzenleyicisinden aç.",
         "data": "Örnek veri",
-        "data-hint": "Bu önizlemenin kullandığı değerler. Şablonu denemek için değiştir; burada hiçbir şey kaydedilmez.",
+        "data-hint": "Önizleme değerleri. Kaydedilmez.",
         "data-invalid": "Geçerli JSON değil: düzeltilene kadar önizleme düzenleyicideki veriyi kullanır.",
         "data-from-editor": "Düzenleyicideki veriyi kullan",
         "widths": {
@@ -3586,7 +3586,7 @@
       "migration": "İçe Aktar",
       "updates": "Güncellemeler",
       "about": "Hakkında",
-      "mail-templates": "E-posta şablonları"
+      "mail-templates": "E-posta Şablonları"
     },
     "server-settings-layout": {
       "server": "Sunucu",

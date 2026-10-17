@@ -1,261 +1,245 @@
-<style>
-  @media (min-width: 1200px) {
-    .mail-preview-column {
-      position: sticky;
-      top: 1rem;
-    }
-  }
-</style>
-
-<PageActions>
-  <div slot="left">
-    <a href="{base}/settings/mail-templates" class="btn btn-link" role="button">
-      <i class="fas fa-arrow-left" aria-hidden="true"></i>
-      <span class="ms-2">{$_('buttons.back')}</span>
-    </a>
-  </div>
-  <div slot="right" class="hstack gap-2">
-    {#if customized}
+<form class="d-flex flex-column overflow-hidden" onsubmit={onSubmit}>
+  <div class="modal-header">
+    <h5 class="modal-title text-capitalize d-flex flex-wrap align-items-center gap-2">
+      {mail.name || mail.key}
+      {#if mailCustomized}
+        <span
+          class="badge text-bg-primary fw-normal"
+          aria-label="{$_('pages.mail-templates.customized')}: {$_(
+            'pages.mail-templates.customized-hint',
+          )}"
+          use:tooltip={[$_('pages.mail-templates.customized-hint')]}>
+          {$_('pages.mail-templates.customized')}
+        </span>
+      {/if}
+    </h5>
+    <div class="ms-auto d-flex align-items-center gap-1">
+      {#if customized}
+        <button
+          type="button"
+          class="btn btn-link"
+          title={$_('pages.mail-templates.reset.button')}
+          aria-label={$_('pages.mail-templates.reset.button')}
+          disabled={busy}
+          onclick={onResetClick}>
+          <i class="fas fa-rotate-left" aria-hidden="true"></i>
+        </button>
+      {/if}
       <button
         type="button"
         class="btn btn-link"
-        title={$_('pages.mail-templates.reset.button')}
-        aria-label={$_('pages.mail-templates.reset.button')}
+        title={$_('pages.mail-templates.send-test')}
+        aria-label={$_('pages.mail-templates.send-test')}
         disabled={busy}
-        onclick={onResetClick}>
-        <i class="fas fa-rotate-left" aria-hidden="true"></i>
-      </button>
-    {/if}
-    <button
-      type="button"
-      class="btn btn-link"
-      title={$_('pages.mail-templates.send-test')}
-      aria-label={$_('pages.mail-templates.send-test')}
-      disabled={busy}
-      onclick={onTestClick}>
-      {#if testing}
-        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-      {:else}
-        <i class="fas fa-paper-plane" aria-hidden="true"></i>
-      {/if}
-    </button>
-    <button
-      type="button"
-      class="btn btn-secondary text-nowrap"
-      disabled={busy || !canSave || !!syntax}
-      onclick={onSaveClick}>
-      {#if saving}
-        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-      {:else}
-        <i class="fas fa-save" aria-hidden="true"></i>
-      {/if}
-      <span class="d-lg-inline d-none ms-2">{$_('buttons.save')}</span>
-    </button>
-  </div>
-</PageActions>
-
-<div>
-  <h4 class="mb-1 d-flex flex-wrap align-items-center gap-2">
-    {mail.name || mail.key}
-    {#if mailCustomized}
-      <span
-        class="badge text-bg-primary fs-6 fw-normal"
-        aria-label="{$_('pages.mail-templates.customized')}: {$_(
-          'pages.mail-templates.customized-hint',
-        )}"
-        use:tooltip={[$_('pages.mail-templates.customized-hint')]}>
-        {$_('pages.mail-templates.customized')}
-      </span>
-    {/if}
-  </h4>
-  {#if mail.description}
-    <div class="text-body-secondary small">{mail.description}</div>
-  {/if}
-</div>
-
-<div class="row g-3 align-items-end">
-  {#if variants.length > 1}
-    <div class="col-12 col-md-6 col-lg-4">
-      <label class="form-label" for="mail-template-variant">
-        {$_('pages.mail-templates.variant')}
-      </label>
-      <select
-        id="mail-template-variant"
-        class="form-select"
-        value={variant}
-        onchange={(event) => switchTo(event, { variant: event.currentTarget.value })}>
-        {#each variants as item (item.key)}
-          <option value={item.key}>{item.name || item.key}</option>
-        {/each}
-      </select>
-    </div>
-  {/if}
-  <div class="col-12 col-md-6 col-lg-4">
-    <label class="form-label" for="mail-template-locale">
-      {$_('pages.mail-templates.language')}
-    </label>
-    <select
-      id="mail-template-locale"
-      class="form-select"
-      value={locale}
-      onchange={(event) => switchTo(event, { locale: event.currentTarget.value })}>
-      {#each locales as item (item.code)}
-        <option value={item.code}>
-          {item.name || item.code}{customizedLocales.includes(item.code)
-            ? ` (${$_('pages.mail-templates.customized-short')})`
-            : ''}
-        </option>
-      {/each}
-    </select>
-  </div>
-  <div class="col-12 col-md-6 col-lg-4">
-    <label class="form-label" for="mail-template-layout">
-      {$_('pages.mail-templates.layout-select.label')}
-    </label>
-    <select
-      id="mail-template-layout"
-      class="form-select"
-      aria-describedby="mail-template-layout-hint"
-      value={layoutChoice}
-      onchange={(event) => onLayoutChange(event.currentTarget.value)}>
-      <option value="">
-        {$_('pages.mail-templates.layout-select.default', {
-          values: { name: layoutName(layoutDefault) },
-        })}
-      </option>
-      {#each layouts as item (item.id)}
-        <option value={item.id}>{item.name || item.id}</option>
-      {/each}
-      <option value={NO_LAYOUT}>{$_('pages.mail-templates.layout-select.none')}</option>
-    </select>
-  </div>
-</div>
-
-<div id="mail-template-layout-hint" class="small text-body-secondary">
-  {$_(
-    template.mode === Modes.HTML
-      ? 'pages.mail-templates.layout-select.hint-html'
-      : 'pages.mail-templates.layout-select.hint',
-  )}
-</div>
-
-{#if defaultLocale && defaultLocale !== locale}
-  <div class="alert alert-info d-flex align-items-center mb-0" role="status">
-    <i class="fa-solid fa-circle-info me-3" aria-hidden="true"></i>
-    <div class="flex-grow-1">
-      {$_(
-        customized
-          ? 'pages.mail-templates.fallback-customized'
-          : 'pages.mail-templates.fallback-default',
-        { values: { language: localeName(locale), defaultLanguage: localeName(defaultLocale) } },
-      )}
-    </div>
-  </div>
-{/if}
-
-<div class="row g-3">
-  <div class="col-12 col-xl-7">
-    <div class="card">
-      <div class="card-header d-flex flex-wrap align-items-center gap-2">
-        <ul class="nav nav-pills gap-1 flex-grow-1" role="tablist">
-          {#each [Modes.FIELDS, Modes.HTML] as mode (mode)}
-            <li class="nav-item" role="presentation">
-              <button
-                type="button"
-                class="nav-link"
-                class:active={template.mode === mode}
-                role="tab"
-                aria-selected={template.mode === mode}
-                onclick={() => setMode(mode)}>
-                {$_(
-                  mode === Modes.FIELDS
-                    ? 'pages.mail-templates.tabs.fields'
-                    : 'pages.mail-templates.tabs.html',
-                )}
-              </button>
-            </li>
-          {/each}
-        </ul>
-        <VariableMenu {variables} onpick={insertVariable} />
-      </div>
-      <div class="card-body vstack gap-3">
-        <HandlebarsHint />
-        {#if template.mode === Modes.HTML}
-          <div class="small text-body-secondary">{$_('pages.mail-templates.html-mode-hint')}</div>
-        {/if}
-
-        {@render textField('subject', 'input')}
-
-        {#if template.mode === Modes.FIELDS}
-          {@render textField('preheader', 'input')}
-
-          <div>
-            <span class="form-label d-block">{$_('pages.mail-templates.fields.body')}</span>
-            {#key editorVersion}
-              <CodeEditor
-                bind:this={bodyEditor}
-                value={bodies.FIELDS}
-                language={EditorLanguages.HTML}
-                label={$_('pages.mail-templates.fields.body')}
-                invalid={!!fieldErrors.body || !!shownSyntax}
-                onfocus={() => (focused = 'body')}
-                onchange={(value) => setBody(Modes.FIELDS, value)} />
-            {/key}
-            {@render syntaxError()}
-            {@render fieldError('body')}
-          </div>
-
-          <div class="row g-3">
-            <div class="col-12 col-md-5">{@render textField('buttonLabel', 'input')}</div>
-            <div class="col-12 col-md-7">{@render textField('buttonUrl', 'input')}</div>
-          </div>
-
-          {@render textField('footer', 'textarea')}
+        onclick={onTestClick}>
+        {#if testing}
+          <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
         {:else}
-          <div>
-            <span class="form-label d-block">{$_('pages.mail-templates.fields.html')}</span>
-            {#key editorVersion}
-              <CodeEditor
-                bind:this={htmlEditor}
-                value={bodies.HTML}
-                language={EditorLanguages.HTML}
-                height="560px"
-                label={$_('pages.mail-templates.fields.html')}
-                invalid={!!fieldErrors.body || !!shownSyntax}
-                onfocus={() => (focused = 'html')}
-                onchange={(value) => setBody(Modes.HTML, value)} />
-            {/key}
-            {@render syntaxError()}
-            {@render fieldError('body')}
-          </div>
+          <i class="fas fa-paper-plane" aria-hidden="true"></i>
         {/if}
+      </button>
+    </div>
+    <button
+      type="button"
+      class="btn-close ms-0"
+      data-bs-dismiss="modal"
+      aria-label={$_('buttons.close')}></button>
+  </div>
+
+  <div class="modal-body vstack gap-3">
+    <div class="input-group">
+      {#if variants.length > 1}
+        <div class="form-floating">
+          <select
+            id="mail-template-variant"
+            class="form-select"
+            value={variant}
+            onchange={(event) => switchTo(event, { variant: event.currentTarget.value })}>
+            {#each variants as item (item.key)}
+              <option value={item.key}>{item.name || item.key}</option>
+            {/each}
+          </select>
+          <label for="mail-template-variant" class="text-capitalize">
+            {$_('pages.mail-templates.variant')}
+          </label>
+        </div>
+      {/if}
+      <div class="form-floating">
+        <select
+          id="mail-template-locale"
+          class="form-select"
+          value={locale}
+          onchange={(event) => switchTo(event, { locale: event.currentTarget.value })}>
+          {#each locales as item (item.code)}
+            <option value={item.code}>
+              {item.name || item.code}{customizedLocales.includes(item.code)
+                ? ` (${$_('pages.mail-templates.customized-short')})`
+                : ''}
+            </option>
+          {/each}
+        </select>
+        <label for="mail-template-locale" class="text-capitalize">
+          {$_('pages.mail-templates.language')}
+        </label>
+      </div>
+      <div class="form-floating">
+        <select
+          id="mail-template-layout"
+          class="form-select"
+          value={layoutChoice}
+          onchange={(event) => onLayoutChange(event.currentTarget.value)}>
+          <option value="">
+            {$_('pages.mail-templates.layout-select.default', {
+              values: { name: layoutName(layoutDefault) },
+            })}
+          </option>
+          {#each layouts as item (item.id)}
+            <option value={item.id}>{item.name || item.id}</option>
+          {/each}
+          <option value={NO_LAYOUT}>{$_('pages.mail-templates.layout-select.none')}</option>
+        </select>
+        <label for="mail-template-layout" class="text-capitalize">
+          {$_('pages.mail-templates.layout-select.label')}
+        </label>
+      </div>
+    </div>
+
+    {#if defaultLocale && defaultLocale !== locale}
+      <div class="alert alert-info d-flex align-items-center mb-0" role="status">
+        <i class="fa-solid fa-circle-info me-3" aria-hidden="true"></i>
+        <div class="flex-grow-1">
+          {$_(
+            customized
+              ? 'pages.mail-templates.fallback-customized'
+              : 'pages.mail-templates.fallback-default',
+            {
+              values: { language: localeName(locale), defaultLanguage: localeName(defaultLocale) },
+            },
+          )}
+        </div>
+      </div>
+    {/if}
+
+    <div class="row g-3">
+      <div class="col-12 col-xl-7">
+        <div class="card h-100">
+          <div class="card-header d-flex flex-wrap align-items-center gap-2">
+            <ul class="nav nav-pills gap-1 flex-grow-1" role="tablist">
+              {#each [Modes.FIELDS, Modes.HTML] as mode (mode)}
+                <li class="nav-item" role="presentation">
+                  <button
+                    type="button"
+                    class="nav-link"
+                    class:active={template.mode === mode}
+                    role="tab"
+                    aria-selected={template.mode === mode}
+                    onclick={() => setMode(mode)}>
+                    {$_(
+                      mode === Modes.FIELDS
+                        ? 'pages.mail-templates.tabs.fields'
+                        : 'pages.mail-templates.tabs.html',
+                    )}
+                  </button>
+                </li>
+              {/each}
+            </ul>
+            <VariableMenu {variables} onpick={insertVariable} />
+          </div>
+          <div class="card-body vstack gap-3">
+            {#if template.mode === Modes.FIELDS}
+              <div>
+                <div class="input-group">
+                  {@render floatingField('subject', 'input')}
+                  {@render floatingField('preheader', 'input')}
+                </div>
+                {@render fieldError('subject')}
+                {@render fieldError('preheader')}
+              </div>
+
+              <div>
+                <span class="form-label d-block text-capitalize"
+                  >{$_('pages.mail-templates.fields.body')}</span>
+                {#key editorVersion}
+                  <CodeEditor
+                    bind:this={bodyEditor}
+                    value={bodies.FIELDS}
+                    language={EditorLanguages.HTML}
+                    label={$_('pages.mail-templates.fields.body')}
+                    invalid={!!fieldErrors.body || !!shownSyntax}
+                    onfocus={() => (focused = 'body')}
+                    onchange={(value) => setBody(Modes.FIELDS, value)} />
+                {/key}
+                {@render syntaxError()}
+                {@render fieldError('body')}
+              </div>
+
+              <div>
+                <div class="input-group">
+                  {@render floatingField('buttonLabel', 'input')}
+                  {@render floatingField('buttonUrl', 'input')}
+                </div>
+                {@render fieldError('buttonLabel')}
+                {@render fieldError('buttonUrl')}
+              </div>
+
+              {@render textField('footer', 'textarea')}
+            {:else}
+              {@render textField('subject', 'input')}
+              <div>
+                <span class="form-label d-block text-capitalize"
+                  >{$_('pages.mail-templates.fields.html')}</span>
+                {#key editorVersion}
+                  <CodeEditor
+                    bind:this={htmlEditor}
+                    value={bodies.HTML}
+                    language={EditorLanguages.HTML}
+                    height="560px"
+                    label={$_('pages.mail-templates.fields.html')}
+                    invalid={!!fieldErrors.body || !!shownSyntax}
+                    onfocus={() => (focused = 'html')}
+                    onchange={(value) => setBody(Modes.HTML, value)} />
+                {/key}
+                {@render syntaxError()}
+                {@render fieldError('body')}
+              </div>
+            {/if}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-xl-5">
+        <div class="h-100">
+          <MailPreview
+            html={preview.html}
+            subject={preview.subject}
+            loading={preview.loading}
+            error={preview.error}
+            windowHref={previewWindowHref(base, owner, mailKey, variant)} />
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="col-12 col-xl-5">
-    <div class="mail-preview-column">
-      <MailPreview
-        html={preview.html}
-        subject={preview.subject}
-        loading={preview.loading}
-        error={preview.error}
-        windowHref={previewWindowHref(base, owner, mailKey, variant)} />
-    </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary w-100" disabled={busy || !canSave || !!syntax}>
+      {#if saving}
+        <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+      {/if}
+      {$_('buttons.save')}
+    </button>
   </div>
-</div>
+</form>
 
-{#snippet textField(field, kind)}
-  <div>
-    <label class="form-label" for="mail-template-{field}">
-      {$_(`pages.mail-templates.fields.${field}`)}
-    </label>
+{#snippet floatingField(field, kind)}
+  <div class="form-floating">
     {#if kind === 'textarea'}
       <textarea
         id="mail-template-{field}"
         class="form-control"
         class:is-invalid={!!fieldErrors[field]}
-        rows="2"
+        placeholder={$_(`pages.mail-templates.fields.${field}`)}
+        style="min-height: 6rem; overflow: hidden;"
+        use:autosize={template[field]}
         bind:this={inputs[field]}
         value={template[field]}
         onfocus={() => (focused = field)}
@@ -266,11 +250,20 @@
         type="text"
         class="form-control"
         class:is-invalid={!!fieldErrors[field]}
+        placeholder={$_(`pages.mail-templates.fields.${field}`)}
         bind:this={inputs[field]}
         value={template[field]}
         onfocus={() => (focused = field)}
         oninput={(event) => setField(field, event.currentTarget.value)} />
     {/if}
+    <label for="mail-template-{field}" class="text-capitalize"
+      >{$_(`pages.mail-templates.fields.${field}`)}</label>
+  </div>
+{/snippet}
+
+{#snippet textField(field, kind)}
+  <div>
+    {@render floatingField(field, kind)}
     {@render fieldError(field)}
   </div>
 {/snippet}
@@ -313,7 +306,6 @@
   import ApiUtil from '$lib/api.util';
   import tooltip from '$lib/tooltip.util';
   import CodeEditor from '$lib/components/CodeEditor.svelte';
-  import PageActions from '$lib/components/PageActions.svelte';
   import { show as showConfirm } from '$lib/components/modals/ConfirmActionModal.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   import { EditorLanguages } from '$lib/files.util.js';
@@ -331,10 +323,25 @@
     variableToken,
   } from './mail-templates.api.js';
   import { checkTemplateSyntax, minifyTemplate, prettifyTemplate } from './mail-template-source.js';
-  import HandlebarsHint from './HandlebarsHint.svelte';
   import MailPreview from './MailPreview.svelte';
   import { previewWindowHref, publishPreview, sampleVariables } from './mail-preview-window.js';
   import VariableMenu from './VariableMenu.svelte';
+
+  /**
+   * Grows a textarea with its text, so all of it shows without scrolling.
+   *
+   * @param {HTMLTextAreaElement} node
+   */
+  function autosize(node) {
+    const fit = () => {
+      node.style.height = 'auto';
+      node.style.height = `${node.scrollHeight + 2}px`;
+    };
+
+    fit();
+
+    return { update: fit };
+  }
 
   /** Error codes that have their own text under `errors.*`. */
   const KNOWN_ERRORS = [
@@ -356,6 +363,9 @@
     layouts = [],
     entry,
     api = createMailTemplatesApi(ApiUtil),
+    onswitch,
+    onchanged,
+    registerDirty,
   } = $props();
 
   // Everything below starts from the loaded entry; the page re-creates this component for another
@@ -640,21 +650,33 @@
   }
 
   /**
-   * Opens another variant or language. The select shows the current one until the page actually
-   * moves, since the unsaved-changes guard may hold it.
+   * Opens another variant or language. The select shows the current one until the switch is made,
+   * since the unsaved-changes question may hold it.
    *
    * @param {Event & { currentTarget: HTMLSelectElement }} event
    * @param {{ variant?: string, locale?: string }} next
    */
   function switchTo(event, next) {
     const select = event.currentTarget;
-    const params = new URLSearchParams({
-      variant: next.variant ?? variant,
-      locale: next.locale ?? locale,
-    });
+    const target = { variant: next.variant ?? variant, locale: next.locale ?? locale };
 
     select.value = next.variant ? variant : locale;
-    goto(`?${params}`, { reset: false });
+
+    if (!dirty) {
+      onswitch?.(target);
+
+      return;
+    }
+
+    showConfirm(
+      {
+        title: 'pages.mail-templates.unsaved.title',
+        description: 'pages.mail-templates.unsaved.description',
+        confirmLabel: 'buttons.discard',
+        variant: 'danger',
+      },
+      () => onswitch?.(target),
+    );
   }
 
   /** The preview request: the draft and the variables it renders with. */
@@ -726,6 +748,13 @@
     });
   });
 
+  /** @param {SubmitEvent} event */
+  function onSubmit(event) {
+    event.preventDefault();
+
+    if (!busy && canSave && !syntax) onSaveClick();
+  }
+
   async function onSaveClick() {
     saving = true;
 
@@ -783,6 +812,7 @@
 
     if (template.mode !== Modes.HTML || !htmlEdited) refreshSavedHtml();
 
+    onchanged?.();
     showSuccess('pages.mail-templates.toasts.saved');
   }
 
@@ -851,6 +881,7 @@
         if (tab === Modes.HTML && !htmlEdited) prefillHtml(fieldsPreviewRequest());
         refreshSavedHtml();
 
+        onchanged?.();
         showSuccess('pages.mail-templates.toasts.reset');
       },
       { language: localeName(locale) },
@@ -888,6 +919,9 @@
       },
     );
   });
+
+  // The modal asks before it closes on unsaved changes.
+  untrack(() => registerDirty?.(() => dirty));
 
   onMount(() => () => clearTimeout(previewTimer));
 </script>

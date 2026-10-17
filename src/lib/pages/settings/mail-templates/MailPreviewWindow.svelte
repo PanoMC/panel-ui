@@ -25,7 +25,7 @@
       {#each PREVIEW_WIDTHS as option (option.id)}
         <button
           type="button"
-          class="btn btn-outline-secondary"
+          class="btn btn-outline-primary text-capitalize"
           class:active={width === option.id}
           aria-pressed={width === option.id}
           title={$_(`pages.mail-templates.window.widths.${option.id}`)}
@@ -42,9 +42,9 @@
     {#if !layout}
       <button
         type="button"
-        class="btn btn-sm"
-        class:btn-secondary={showData}
-        class:btn-outline-secondary={!showData}
+        class="btn btn-sm text-capitalize"
+        class:btn-primary={showData}
+        class:btn-outline-primary={!showData}
         aria-pressed={showData}
         onclick={() => (showData = !showData)}>
         <i class="fa-solid fa-code me-1" aria-hidden="true"></i>
@@ -101,7 +101,7 @@
         {/if}
         <button
           type="button"
-          class="btn btn-sm btn-link px-0 align-self-start"
+          class="btn btn-sm btn-primary text-capitalize w-100"
           onclick={() => (dataText = editorDataText)}>
           {$_('pages.mail-templates.window.data-from-editor')}
         </button>

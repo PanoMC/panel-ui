@@ -16,7 +16,7 @@
 <div class="dropdown">
   <button
     type="button"
-    class="btn btn-sm btn-link text-decoration-none"
+    class="btn btn-sm btn-primary text-capitalize"
     data-bs-toggle="dropdown"
     aria-expanded="false"
     {disabled}>
@@ -25,7 +25,6 @@
   </button>
   <div class="dropdown-menu dropdown-menu-end variable-menu">
     {#if variables.length > 0}
-      <h6 class="dropdown-header">{$_('pages.mail-templates.variables.mail')}</h6>
       {#each variables as variable (variable.name)}
         {#if variable.type === 'list'}
           {@render item(variable, variable.label || variable.name)}
@@ -42,7 +41,7 @@
         {/if}
       {/each}
     {/if}
-    <h6 class="dropdown-header">{$_('pages.mail-templates.variables.system')}</h6>
+    <h6 class="dropdown-header text-capitalize">{$_('pages.mail-templates.variables.system')}</h6>
     {#each SYSTEM_VARIABLES as variable (variable.name)}
       {@render item(variable, $_(`pages.mail-templates.variables.system-names.${variable.name}`))}
     {/each}
@@ -58,7 +57,7 @@
     onclick={() => onpick?.(variable)}>
     <div class="d-flex align-items-center gap-2">
       <span class="flex-grow-1 text-truncate">{label}</span>
-      <span class="badge text-bg-secondary">
+      <span class="badge text-bg-primary">
         {variable.type === 'list'
           ? $_('pages.mail-templates.variable-list')
           : $_(`pages.mail-templates.variables.types.${variable.type || 'text'}`)}

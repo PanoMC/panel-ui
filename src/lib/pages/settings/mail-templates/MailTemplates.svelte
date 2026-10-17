@@ -1,32 +1,35 @@
 <div class="vstack gap-3">
   {#if !data.list}
-    <div class="alert alert-danger d-flex align-items-center mb-0" role="alert">
-      <i class="fa-solid fa-circle-exclamation me-3" aria-hidden="true"></i>
-      <div class="flex-grow-1">{$_('pages.mail-templates.load-failed')}</div>
-      <button
-        type="button"
-        title={$_('buttons.try-again')}
-        aria-label={$_('buttons.try-again')}
-        class="btn alert-btn ms-3"
-        onclick={() => invalidateAll()}>
-        <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
-      </button>
+    <div class="alert alert-danger d-flex align-items-start mb-0" role="alert">
+      <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+      <div>
+        <div>{$_('pages.mail-templates.load-failed')}</div>
+        <button
+          type="button"
+          class="btn alert-btn text-capitalize mt-2"
+          onclick={() => invalidateAll()}>
+          {$_('buttons.try-again')}
+        </button>
+      </div>
     </div>
   {:else}
-    <PageActions>
-      <div slot="middle" style="width: 250px;">
+    <div class="d-flex justify-content-center">
+      <div style="width: 250px;">
         <SearchInput autofocus showSpinner={false} onchange={(value) => (search = value)} />
       </div>
-    </PageActions>
+    </div>
 
     <!-- The frames the mails are wrapped in: Pano's main one, plugins' and the admin's own. -->
     <div class="card">
       <CardHeader>
-        <div slot="left">
+        <div slot="left" class="text-capitalize">
           {$_('pages.mail-templates.layouts.title', { values: { count: layouts.length } })}
         </div>
         <div slot="right">
-          <button type="button" class="btn btn-sm btn-link" onclick={() => newLayoutModal?.show()}>
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            onclick={() => newLayoutModal?.show()}>
             <i class="fas fa-plus me-2" aria-hidden="true"></i>
             {$_('pages.mail-templates.layouts.new')}
           </button>
@@ -36,9 +39,10 @@
         <NoContent icon="" />
       {:else}
         <div class="table-responsive">
-          <table class="table table-hover mb-0">
+          <table class="table table-hover">
             <thead>
               <tr>
+                <th class="align-middle" scope="col"></th>
                 <th class="align-middle text-nowrap" scope="col">
                   {$_('pages.mail-templates.layouts.table.name')}
                 </th>
@@ -52,18 +56,44 @@
             </thead>
             <tbody>
               {#each layouts as layout (layout.id)}
-                {@const href = layoutEditHref(base, layout.id)}
-                <tr use:rowLink={href}>
+                <tr use:rowLink={() => editor?.showLayout(layout.id)}>
+                  <th scope="row" class="align-middle text-center">
+                    <div class="dropdown position-static">
+                      <button
+                        type="button"
+                        class="btn btn-link"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        title={$_('pages.servers.nodes.column-actions')}
+                        aria-label={$_('pages.servers.nodes.column-actions')}>
+                        <span class="fas fa-ellipsis-v"></span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-start">
+                        <button
+                          type="button"
+                          class="dropdown-item text-capitalize"
+                          onclick={() => editor?.showLayout(layout.id)}>
+                          <i class="fas fa-pen me-2"></i>
+                          {$_('buttons.edit')}
+                        </button>
+                      </div>
+                    </div>
+                  </th>
                   <td class="align-middle">
-                    <a class="text-reset text-decoration-none" {href}>{layout.name || layout.id}</a>
+                    <button
+                      type="button"
+                      class="btn btn-link p-0 text-reset text-decoration-none text-start align-baseline text-capitalize"
+                      onclick={() => editor?.showLayout(layout.id)}>
+                      {layout.name || layout.id}
+                    </button>
                     {#if layout.customized}
-                      <span class="badge text-bg-primary ms-1">
+                      <span class="badge text-bg-primary text-capitalize ms-1">
                         {$_('pages.mail-templates.customized')}
                       </span>
                     {/if}
                   </td>
-                  <td class="align-middle text-nowrap">{sourceName(layout)}</td>
-                  <td class="align-middle text-nowrap">
+                  <td class="align-middle text-nowrap text-capitalize">{sourceName(layout)}</td>
+                  <td class="align-middle text-nowrap text-capitalize">
                     {$_('pages.mail-templates.layouts.used-by', {
                       values: { count: (layout.usedBy ?? []).length },
                     })}
@@ -76,15 +106,14 @@
       {/if}
     </div>
 
-    <NewMailLayoutModal
-      bind:this={newLayoutModal}
-      {layouts}
-      oncreated={(layout) => goto(layoutEditHref(base, layout.id))} />
+    <NewMailLayoutModal bind:this={newLayoutModal} {layouts} oncreated={onLayoutCreated} />
+
+    <MailEditorModal bind:this={editor} />
 
     {#each groups as group (group.owner)}
       <div class="card">
         <CardHeader>
-          <div slot="left">
+          <div slot="left" class="text-capitalize">
             {$_('pages.mail-templates.group-title', {
               values: {
                 name: group.pluginName ?? $_('pages.mail-templates.core'),
@@ -97,9 +126,10 @@
           <NoContent icon="" />
         {:else}
           <div class="table-responsive">
-            <table class="table table-hover mb-0">
+            <table class="table table-hover">
               <thead>
                 <tr>
+                  <th class="align-middle" scope="col"></th>
                   <th class="align-middle text-nowrap" scope="col">
                     {$_('pages.mail-templates.table.mail')}
                   </th>
@@ -113,11 +143,37 @@
               </thead>
               <tbody>
                 {#each group.items as mail (mail.key)}
-                  {@const href = editHref(mail)}
                   {@const customized = customizedLocalesOf(mail)}
-                  <tr use:rowLink={href}>
+                  <tr use:rowLink={() => editor?.showMail(mail)}>
+                    <th scope="row" class="align-middle text-center">
+                      <div class="dropdown position-static">
+                        <button
+                          type="button"
+                          class="btn btn-link"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                          title={$_('pages.servers.nodes.column-actions')}
+                          aria-label={$_('pages.servers.nodes.column-actions')}>
+                          <span class="fas fa-ellipsis-v"></span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-start">
+                          <button
+                            type="button"
+                            class="dropdown-item text-capitalize"
+                            onclick={() => editor?.showMail(mail)}>
+                            <i class="fas fa-pen me-2"></i>
+                            {$_('buttons.edit')}
+                          </button>
+                        </div>
+                      </div>
+                    </th>
                     <td class="align-middle">
-                      <a class="text-reset text-decoration-none" {href}>{mail.name || mail.key}</a>
+                      <button
+                        type="button"
+                        class="btn btn-link p-0 text-reset text-decoration-none text-start align-baseline text-capitalize"
+                        onclick={() => editor?.showMail(mail)}>
+                        {mail.name || mail.key}
+                      </button>
                       {#if mail.description}
                         <div class="small text-body-secondary">{mail.description}</div>
                       {/if}
@@ -131,7 +187,8 @@
                       {:else}
                         <div class="d-flex flex-wrap gap-1">
                           {#each customized as code (code)}
-                            <span class="badge text-bg-primary">{localeName(code)}</span>
+                            <span class="badge text-bg-primary text-capitalize"
+                              >{localeName(code)}</span>
                           {/each}
                         </div>
                       {/if}
@@ -171,21 +228,15 @@
 <script>
   import { _ } from 'svelte-i18n';
 
-  import { goto, invalidateAll } from '$app/navigation';
-  import { base } from '@panomc/sdk/core/js/basePath.js';
+  import { invalidateAll } from '$app/navigation';
 
   import CardHeader from '$lib/components/CardHeader.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
-  import PageActions from '$lib/components/PageActions.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import { rowLink } from '$lib/rowLink.util.js';
 
-  import {
-    customizedLocalesOf,
-    groupByOwner,
-    layoutEditHref,
-    layoutSource,
-  } from './mail-templates.api.js';
+  import { customizedLocalesOf, groupByOwner, layoutSource } from './mail-templates.api.js';
+  import MailEditorModal from './MailEditorModal.svelte';
   import NewMailLayoutModal from './NewMailLayoutModal.svelte';
 
   let { data } = $props();
@@ -229,8 +280,17 @@
     return localeNames[code] ?? code;
   }
 
-  /** @param {{ owner: string, key: string }} mail */
-  function editHref(mail) {
-    return `${base}/settings/mail-templates/${encodeURIComponent(mail.owner)}/${encodeURIComponent(mail.key)}`;
+  /** @type {any} */
+  let editor = $state();
+
+  /**
+   * A new layout opens in the editor once the dialog that made it has faded out (two modals do not
+   * fade at the same time), and the table learns about it.
+   *
+   * @param {{ id: string }} layout
+   */
+  function onLayoutCreated(layout) {
+    invalidateAll();
+    setTimeout(() => editor?.showLayout(layout.id), 350);
   }
 </script>

@@ -2,7 +2,7 @@
   .mail-preview-frame {
     display: block;
     width: 100%;
-    height: 640px;
+    min-height: 640px;
     margin: 0 auto;
     border: 0;
     background: #fff;
@@ -19,12 +19,12 @@
 </style>
 
 <!-- The rendered mail in a sandboxed frame: no scripts, no same origin, no forms or popups. -->
-<div class="card">
+<div class="card h-100">
   <div class="card-header py-3 d-flex align-items-center gap-2">
     <div class="flex-grow-1 min-w-0 text-truncate">
       {$_('pages.mail-templates.preview.title')}
       {#if loading}
-        <span class="spinner-border spinner-border-sm ms-2" aria-hidden="true"></span>
+        <span class="spinner-border spinner-border-sm text-primary ms-2" aria-hidden="true"></span>
       {/if}
     </div>
     <div
@@ -33,7 +33,7 @@
       aria-label={$_('pages.mail-templates.preview.width')}>
       <button
         type="button"
-        class="btn btn-outline-secondary"
+        class="btn btn-outline-primary"
         class:active={!mobile}
         aria-pressed={!mobile}
         title={$_('pages.mail-templates.preview.desktop')}
@@ -43,7 +43,7 @@
       </button>
       <button
         type="button"
-        class="btn btn-outline-secondary"
+        class="btn btn-outline-primary"
         class:active={mobile}
         aria-pressed={mobile}
         title={$_('pages.mail-templates.preview.mobile')}
@@ -55,7 +55,7 @@
     {#if windowHref}
       <!-- The preview window: follows this editor's unsaved draft, with device widths and its own test data. -->
       <a
-        class="btn btn-sm btn-outline-secondary"
+        class="btn btn-sm btn-primary"
         href={windowHref}
         target="_blank"
         rel="noopener"
@@ -77,7 +77,7 @@
       {error}
     </div>
   {/if}
-  <div class="card-body p-2 bg-body-tertiary">
+  <div class="card-body p-2 bg-body-tertiary d-flex flex-grow-1">
     <iframe
       class="mail-preview-frame rounded"
       class:mobile

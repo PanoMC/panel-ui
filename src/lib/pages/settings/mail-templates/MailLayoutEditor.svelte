@@ -1,103 +1,59 @@
-<style>
-  @media (min-width: 1200px) {
-    .mail-preview-column {
-      position: sticky;
-      top: 1rem;
-    }
-  }
-</style>
-
-<div class="vstack gap-3">
-  {#if data.failed}
-    <div class="alert alert-danger d-flex align-items-center mb-0" role="alert">
-      <i class="fa-solid fa-circle-exclamation me-3" aria-hidden="true"></i>
-      <div class="flex-grow-1">{$_('pages.mail-templates.load-failed')}</div>
-      <button
-        type="button"
-        title={$_('buttons.try-again')}
-        aria-label={$_('buttons.try-again')}
-        class="btn alert-btn ms-3"
-        onclick={() => invalidateAll()}>
-        <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
-      </button>
-    </div>
-  {:else}
-    <PageActions>
-      <div slot="left">
-        <a href="{base}/settings/mail-templates" class="btn btn-link" role="button">
-          <i class="fas fa-arrow-left" aria-hidden="true"></i>
-          <span class="ms-2">{$_('buttons.back')}</span>
-        </a>
-      </div>
-      <div slot="right" class="hstack gap-2">
-        {#if builtIn && customized}
-          <button
-            type="button"
-            class="btn btn-link"
-            title={$_('pages.mail-templates.reset.button')}
-            aria-label={$_('pages.mail-templates.reset.button')}
-            disabled={saving}
-            onclick={onResetClick}>
-            <i class="fas fa-rotate-left" aria-hidden="true"></i>
-          </button>
-        {/if}
-        {#if deletable}
-          <button
-            type="button"
-            class="btn btn-link link-danger"
-            title={$_('pages.mail-templates.layout.delete')}
-            aria-label={$_('pages.mail-templates.layout.delete')}
-            disabled={saving}
-            onclick={onDeleteClick}>
-            <i class="fas fa-trash" aria-hidden="true"></i>
-          </button>
-        {/if}
+<form class="d-flex flex-column overflow-hidden" onsubmit={onSubmit}>
+  <div class="modal-header">
+    <h5 class="modal-title text-capitalize d-flex flex-wrap align-items-center gap-2">
+      {title}
+      {#if builtIn && customized}
+        <span
+          class="badge text-bg-primary fw-normal"
+          aria-label="{$_('pages.mail-templates.customized')}: {$_(
+            'pages.mail-templates.layout.customized-hint',
+          )}"
+          use:tooltip={[$_('pages.mail-templates.layout.customized-hint')]}>
+          {$_('pages.mail-templates.customized')}
+        </span>
+      {/if}
+    </h5>
+    <div class="ms-auto d-flex align-items-center gap-1">
+      {#if builtIn && customized}
         <button
           type="button"
-          class="btn btn-secondary text-nowrap"
-          disabled={saving || !dirty || missingContent || !!syntax || nameMissing}
-          onclick={onSaveClick}>
-          {#if saving}
-            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-          {:else}
-            <i class="fas fa-save" aria-hidden="true"></i>
-          {/if}
-          <span class="d-lg-inline d-none ms-2">{$_('buttons.save')}</span>
+          class="btn btn-link"
+          title={$_('pages.mail-templates.reset.button')}
+          aria-label={$_('pages.mail-templates.reset.button')}
+          disabled={saving}
+          onclick={onResetClick}>
+          <i class="fas fa-rotate-left" aria-hidden="true"></i>
         </button>
-      </div>
-    </PageActions>
-
-    <div>
-      <h4 class="mb-1 d-flex flex-wrap align-items-center gap-2">
-        {title}
-        {#if builtIn && customized}
-          <span
-            class="badge text-bg-primary fs-6 fw-normal"
-            aria-label="{$_('pages.mail-templates.customized')}: {$_(
-              'pages.mail-templates.layout.customized-hint',
-            )}"
-            use:tooltip={[$_('pages.mail-templates.layout.customized-hint')]}>
-            {$_('pages.mail-templates.customized')}
-          </span>
-        {/if}
-      </h4>
-      <div class="small text-body-secondary">
-        {sourceName} · {$_('pages.mail-templates.layouts.used-by', {
-          values: { count: usedBy.length },
-        })}
-      </div>
+      {/if}
+      {#if deletable}
+        <button
+          type="button"
+          class="btn btn-link link-danger"
+          title={$_('pages.mail-templates.layout.delete')}
+          aria-label={$_('pages.mail-templates.layout.delete')}
+          disabled={saving}
+          onclick={onDeleteClick}>
+          <i class="fas fa-trash" aria-hidden="true"></i>
+        </button>
+      {/if}
     </div>
+    <button
+      type="button"
+      class="btn-close ms-0"
+      data-bs-dismiss="modal"
+      aria-label={$_('buttons.close')}></button>
+  </div>
 
+  <div class="modal-body vstack gap-3">
     {#if !builtIn}
       <div class="row">
         <div class="col-12 col-md-6 col-lg-4">
-          <label class="form-label" for="mail-layout-name">
-            {$_('pages.mail-templates.layout.name-label')}
-          </label>
           <input
             id="mail-layout-name"
             type="text"
             class="form-control"
+            placeholder={$_('pages.mail-templates.layout.name-label')}
+            aria-label={$_('pages.mail-templates.layout.name-label')}
             class:is-invalid={nameMissing || !!nameError}
             maxlength={NAME_MAX_LENGTH}
             bind:value={name} />
@@ -114,14 +70,9 @@
       </div>
     {/if}
 
-    <div class="small text-body-secondary">
-      {$_('pages.mail-templates.layout.hint', { values: { slot: LAYOUT_CONTENT_SLOT } })}
-    </div>
-    <HandlebarsHint />
-
     <div class="row g-3">
       <div class="col-12 col-xl-7">
-        <div class="card">
+        <div class="card h-100">
           <div class="card-header py-3 d-flex align-items-center gap-2">
             <span class="flex-grow-1">{$_('pages.mail-templates.fields.html')}</span>
           </div>
@@ -159,57 +110,47 @@
         </div>
       </div>
       <div class="col-12 col-xl-5">
-        <div class="mail-preview-column">
+        <div class="h-100">
           <MailPreview html={previewHtml} windowHref={layoutPreviewHref(base, layoutId)} />
         </div>
       </div>
     </div>
-  {/if}
-</div>
+  </div>
 
-<script module>
-  import { error } from '@sveltejs/kit';
-
-  import ApiUtil from '$lib/api.util';
-
-  import { createMailTemplatesApi } from './mail-templates.api.js';
-
-  /**
-   * @type {import('@sveltejs/kit').PageLoad}
-   */
-  export async function load(event) {
-    await event.parent();
-
-    const result = await createMailTemplatesApi(ApiUtil, event).getLayout(event.params.id);
-
-    if (!result.ok && result.error.code === 'NOT_EXISTS') throw error(404);
-
-    return result.ok ? { failed: false, layout: result.body } : { failed: true };
-  }
-</script>
+  <div class="modal-footer">
+    <button
+      type="submit"
+      class="btn btn-primary w-100"
+      disabled={saving || !dirty || missingContent || !!syntax || nameMissing}>
+      {#if saving}
+        <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+      {/if}
+      {$_('buttons.save')}
+    </button>
+  </div>
+</form>
 
 <script>
   import { untrack } from 'svelte';
   import { _ } from 'svelte-i18n';
 
-  import { beforeNavigate, goto, invalidateAll } from '$app/navigation';
+  import { beforeNavigate, goto } from '$app/navigation';
   import { base } from '@panomc/sdk/core/js/basePath.js';
 
+  import ApiUtil from '$lib/api.util';
   import tooltip from '$lib/tooltip.util';
   import CodeEditor from '$lib/components/CodeEditor.svelte';
-  import PageActions from '$lib/components/PageActions.svelte';
   import { show as showConfirm } from '$lib/components/modals/ConfirmActionModal.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   import { EditorLanguages } from '$lib/files.util.js';
 
   import { checkTemplateSyntax, minifyTemplate, prettifyTemplate } from './mail-template-source.js';
-  import HandlebarsHint from './HandlebarsHint.svelte';
   import MailPreview from './MailPreview.svelte';
   import {
+    createMailTemplatesApi,
     fieldErrorsOf,
     LAYOUT_CONTENT_SLOT,
     layoutSampleValues,
-    layoutSource,
     renderLayoutSample,
   } from './mail-templates.api.js';
   import { layoutPreviewHref, layoutPreviewTarget, publishPreview } from './mail-preview-window.js';
@@ -217,7 +158,7 @@
   /** The longest name a custom layout may have (the backend's limit). */
   const NAME_MAX_LENGTH = 100;
 
-  let { data, api = createMailTemplatesApi(ApiUtil) } = $props();
+  let { data, api = createMailTemplatesApi(ApiUtil), onchanged, onclose, registerDirty } = $props();
 
   // The loaded layout is copied in, and again only when a load brings another one (a retry after a
   // failed load); between those only a save or a reset replaces it.
@@ -267,13 +208,6 @@
   const builtIn = $derived(!!data.layout?.builtIn);
   const deletable = $derived(!!data.layout?.deletable);
   const title = $derived(savedName || layoutId);
-  const sourceName = $derived.by(() => {
-    const source = layoutSource(data.layout);
-
-    return source === 'plugin'
-      ? data.layout?.pluginName || data.layout?.pluginId || data.layout?.owner
-      : $_(`pages.mail-templates.layouts.source.${source}`);
-  });
   let saving = $state(false);
   let leaving = false;
 
@@ -318,6 +252,13 @@
     body = value;
   }
 
+  /** @param {SubmitEvent} event */
+  function onSubmit(event) {
+    event.preventDefault();
+
+    if (!saving && dirty && !missingContent && !syntax && !nameMissing) onSaveClick();
+  }
+
   async function onSaveClick() {
     saving = true;
 
@@ -351,6 +292,7 @@
     customized = !!result.body?.customized;
     usedBy = result.body?.usedBy ?? usedBy;
     nameError = '';
+    onchanged?.();
     showSuccess('pages.mail-templates.toasts.layout-saved');
   }
 
@@ -381,6 +323,7 @@
             : { ...data.layout, body: data.layout?.default ?? '', customized: false },
         );
         editorVersion += 1;
+        onchanged?.();
         showSuccess('pages.mail-templates.toasts.layout-reset');
       },
     );
@@ -412,12 +355,15 @@
         }
 
         showSuccess('pages.mail-templates.toasts.layout-deleted');
-        leaving = true;
-        goto(`${base}/settings/mail-templates`);
+        onchanged?.();
+        onclose?.();
       },
       { name: title, count: usedBy.length },
     );
   }
+
+  // The modal asks before it closes on unsaved changes.
+  untrack(() => registerDirty?.(() => dirty));
 
   beforeNavigate((navigation) => {
     if (!dirty || leaving) return;

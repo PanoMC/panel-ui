@@ -1233,7 +1233,7 @@
       "go-back": "Go Back"
     },
     "post-editor": {
-      "save-draft": "Save as Draft",
+      "save-draft": "Save As Draft",
       "posts": "Posts",
       "trash": "Trash",
       "move-to-drafts": "Move to Drafts",
@@ -3051,7 +3051,7 @@
         "create": "Create Webhook",
         "empty": "No webhooks yet.",
         "actions": "Webhook actions",
-        "send-test": "Send Test",
+        "send-test": "Send test mail",
         "deliveries": "Deliveries",
         "disable": "Disable",
         "enable": "Enable",
@@ -3159,7 +3159,7 @@
       "title": "Mail templates",
       "load-failed": "Mail templates could not be loaded.",
       "core": "Pano",
-      "group-title": "{name} · {count, plural, one {# mail} other {# mails}}",
+      "group-title": "{name} · {count, plural, one {# Mail} other {# Mails}}",
       "customized": "Customized",
       "customized-hint": "This mail has your own edits: a language of one of its variants, or its layout. The language list marks the edited languages; Reset to default works per language.",
       "customized-short": "customized",
@@ -3186,7 +3186,7 @@
       },
       "layouts": {
         "title": "{count, plural, one {# Layout} other {# Layouts}}",
-        "new": "New layout",
+        "new": "New Layout",
         "main": "Main layout",
         "table": {
           "name": "Name",
@@ -3264,7 +3264,7 @@
         "mobile": "Mobile",
         "invalid": "The template has an error, so the preview shows the last version that worked."
       },
-      "send-test": "Send test mail",
+      "send-test": "Send Test",
       "reset": {
         "button": "Reset to default",
         "title": "Reset this template to default?",
@@ -3288,12 +3288,12 @@
         "layout-name-invalid": "Check the layout's name."
       },
       "window": {
-        "open": "Open in new window",
+        "open": "Open In New Window",
         "title": "Mail preview",
         "width": "Width",
         "no-draft": "Open this window from the mail template editor.",
         "data": "Sample data",
-        "data-hint": "Values this preview uses. Change them to try the template; nothing here is saved.",
+        "data-hint": "Preview values. Not saved.",
         "data-invalid": "Not valid JSON: the preview uses the editor's data until it is fixed.",
         "data-from-editor": "Use the editor's data",
         "widths": {
@@ -3586,7 +3586,7 @@
       "migration": "Migration",
       "updates": "Updates",
       "about": "About",
-      "mail-templates": "Mail templates"
+      "mail-templates": "Mail Templates"
     },
     "server-settings-layout": {
       "server": "Server",
