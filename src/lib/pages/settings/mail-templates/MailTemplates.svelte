@@ -175,7 +175,12 @@
                         {mail.name || mail.key}
                       </button>
                       {#if mail.description}
-                        <div class="small text-body-secondary">{mail.description}</div>
+                        <div
+                          class="small text-body-secondary text-truncate"
+                          style="max-width: 360px;"
+                          title={mail.description}>
+                          {mail.description}
+                        </div>
                       {/if}
                     </td>
                     <td class="align-middle text-nowrap">

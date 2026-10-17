@@ -110,7 +110,7 @@
                   {/if}
                 </td>
                 <td>
-                  <span class="badge text-bg-{tagColour(backup.tag)}">
+                  <span class="badge text-capitalize text-bg-{tagColour(backup.tag)}">
                     {$_(`pages.settings.backups.tag-${String(backup.tag).toLowerCase()}`)}
                   </span>
                   {#if backup.encrypted}
@@ -292,7 +292,10 @@
                     <DateComponent time={backup.createdAt} relativeFormat />
                   </td>
                   <td class="align-middle">
-                    <span class="badge text-bg-{backup.type === 'snapshot' ? 'info' : 'secondary'}">
+                    <span
+                      class="badge text-capitalize text-bg-{backup.type === 'snapshot'
+                        ? 'info'
+                        : 'secondary'}">
                       {backup.type === 'snapshot'
                         ? $_('pages.settings.backups.type-snapshot')
                         : backup.kind === 'mc-server'
@@ -335,7 +338,7 @@
                     <td class="align-middle">
                       {#if backup.status !== 'DONE'}
                         <span
-                          class="badge text-bg-{backup.status === 'FAILED'
+                          class="badge text-capitalize text-bg-{backup.status === 'FAILED'
                             ? 'danger'
                             : 'secondary'}">
                           {$_(

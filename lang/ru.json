@@ -645,7 +645,7 @@
           "confirm-switch-own-description": "Почта Pano Host больше не будет использоваться для писем этого сайта.",
           "sender-local-invalid": "Только буквы, цифры и . _ + - (до 64 символов)."
         },
-        "smtp-settings": "Электронная почта",
+        "smtp-settings": "Электронная почта (SMTP)",
         "smtp-settings-sub": "Как Pano отправляет письма: подтверждение, сброс пароля и уведомления.",
         "toggle-smtp": "Переключить SMTP",
         "auth": {

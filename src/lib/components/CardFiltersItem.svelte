@@ -5,14 +5,14 @@
     class:disabled
     {disabled}
     aria-disabled={disabled}
-    class="btn btn-sm btn-outline-primary text-truncate"
+    class="btn btn-sm btn-outline-primary text-truncate text-capitalize"
     {onclick}>
     {@render children?.()}
   </button>
 {:else}
   <a
     class:active
-    class="btn btn-sm btn-outline-primary text-truncate"
+    class="btn btn-sm btn-outline-primary text-truncate text-capitalize"
     role="button"
     href={href ? (href.startsWith('http') ? href : base + href) : 'javascript:void(0)'}
     {onclick}>

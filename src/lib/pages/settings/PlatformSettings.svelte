@@ -145,7 +145,7 @@
               type="button"
               role="radio"
               aria-checked={data.usageMode === option.value}
-              class="list-group-item list-group-item-action flex-fill text-start"
+              class="list-group-item list-group-item-action d-flex flex-column justify-content-start flex-fill text-start"
               class:active={data.usageMode === option.value}
               on:click={() => (data.usageMode = option.value)}>
               <span class="d-block fw-semibold">
@@ -624,80 +624,84 @@
         {$_('pages.settings.platform.alerts.description')}
       </small>
     </div>
-    <div class="card-body">
-      {#if !alertsSupported}
+    {#if !alertsSupported}
+      <div class="card-body">
         <div class="alert alert-secondary mb-0 d-flex align-items-start" role="alert">
           <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
           <div>{$_('pages.settings.platform.alerts.unavailable')}</div>
         </div>
-      {:else}
-        {#if !alertsEmailAvailable}
-          <div class="alert alert-warning d-flex align-items-start" role="alert">
+      </div>
+    {:else}
+      {#if !alertsEmailAvailable}
+        <div class="card-body pb-0">
+          <div class="alert alert-warning d-flex align-items-start mb-0" role="alert">
             <i class="fa-solid fa-envelope-circle-check me-3 mt-1" aria-hidden="true"></i>
             <div>{$_('pages.settings.platform.alerts.email-unavailable')}</div>
           </div>
-        {/if}
-
-        <div class="table-responsive">
-          <table class="table align-middle mb-0">
-            <thead>
-              <tr>
-                <th scope="col">{$_('pages.settings.platform.alerts.column-kind')}</th>
-                <th scope="col" class="text-end">
-                  {$_('pages.settings.platform.alerts.column-enabled')}
-                </th>
-                <th scope="col" class="text-end">
-                  {$_('pages.settings.platform.alerts.column-email')}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each ALERT_KINDS as kind (kind)}
-                <tr>
-                  <td>
-                    <span class="fw-semibold">
-                      {$_(`pages.settings.platform.alerts.kinds.${kind.toLowerCase()}`)}
-                    </span>
-                    <small class="d-block text-muted">
-                      {$_(`pages.settings.platform.alerts.hints.${kind.toLowerCase()}`)}
-                    </small>
-                  </td>
-                  <td class="text-end">
-                    <div class="form-check form-switch d-inline-block m-0">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="alertEnabled-{kind}"
-                        autocomplete="off"
-                        aria-label={$_('pages.settings.platform.alerts.column-enabled')}
-                        bind:checked={alertSettings[kind].enabled} />
-                    </div>
-                  </td>
-                  <td class="text-end">
-                    <div class="form-check form-switch d-inline-block m-0">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="alertEmail-{kind}"
-                        autocomplete="off"
-                        aria-label={$_('pages.settings.platform.alerts.column-email')}
-                        title={alertsEmailAvailable
-                          ? ''
-                          : $_('pages.settings.platform.alerts.email-unavailable')}
-                        disabled={!alertsEmailAvailable}
-                        bind:checked={alertSettings[kind].email} />
-                    </div>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
         </div>
+      {/if}
 
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th scope="col">{$_('pages.settings.platform.alerts.column-kind')}</th>
+              <th scope="col" class="text-end">
+                {$_('pages.settings.platform.alerts.column-enabled')}
+              </th>
+              <th scope="col" class="text-end">
+                {$_('pages.settings.platform.alerts.column-email')}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each ALERT_KINDS as kind (kind)}
+              <tr>
+                <td>
+                  <span class="fw-semibold">
+                    {$_(`pages.settings.platform.alerts.kinds.${kind.toLowerCase()}`)}
+                  </span>
+                  <small class="d-block text-muted">
+                    {$_(`pages.settings.platform.alerts.hints.${kind.toLowerCase()}`)}
+                  </small>
+                </td>
+                <td class="text-end">
+                  <div class="form-check form-switch d-inline-block m-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="alertEnabled-{kind}"
+                      autocomplete="off"
+                      aria-label={$_('pages.settings.platform.alerts.column-enabled')}
+                      bind:checked={alertSettings[kind].enabled} />
+                  </div>
+                </td>
+                <td class="text-end">
+                  <div class="form-check form-switch d-inline-block m-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="alertEmail-{kind}"
+                      autocomplete="off"
+                      aria-label={$_('pages.settings.platform.alerts.column-email')}
+                      title={alertsEmailAvailable
+                        ? ''
+                        : $_('pages.settings.platform.alerts.email-unavailable')}
+                      disabled={!alertsEmailAvailable}
+                      bind:checked={alertSettings[kind].email} />
+                  </div>
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-body">
         <button
-          class="btn btn-secondary mt-3"
+          class="btn btn-secondary"
           on:click={onSaveAlertsClick}
           disabled={saveAlertsLoading || alertsSaveDisabled}>
           {$_('buttons.save')}
@@ -705,8 +709,8 @@
             <span class="spinner-border spinner-border-sm text-primary ms-2" role="status"></span>
           {/if}
         </button>
-      {/if}
-    </div>
+      </div>
+    {/if}
   </div>
 {/if}
 
@@ -739,7 +743,7 @@
         on:change={onToggleSmtp}
         disabled={toggleSmtpLoading} />
       <label class="form-check-label mb-0" for="smtpToggle">
-        {$_('pages.settings.platform.smtp-settings')}
+        <span class="text-capitalize">{$_('pages.settings.platform.smtp-settings')}</span>
         <small class="d-block text-muted">
           {$_('pages.settings.platform.smtp-settings-sub')}
         </small>
@@ -764,7 +768,7 @@
           aria-label={$_('pages.settings.platform.smtp.pano-mail.choice')}>
           <button
             type="button"
-            class="btn"
+            class="btn text-capitalize"
             class:btn-primary={mailChoice === 'pano'}
             class:btn-outline-primary={mailChoice !== 'pano'}
             aria-pressed={mailChoice === 'pano'}
@@ -775,7 +779,7 @@
             >{$_('pages.settings.platform.smtp.pano-mail.pano')}</button>
           <button
             type="button"
-            class="btn"
+            class="btn text-capitalize"
             class:btn-primary={mailChoice === 'own'}
             class:btn-outline-primary={mailChoice !== 'own'}
             aria-pressed={mailChoice === 'own'}
@@ -934,7 +938,10 @@
                     class:pe-none={smtpDisabled}
                     aria-disabled={smtpDisabled}
                     tabindex={smtpDisabled ? -1 : undefined}
-                    >{$_('pages.settings.platform.smtp.pano-mail.bigger-plan')}</a>
+                    >{$_('pages.settings.platform.smtp.pano-mail.bigger-plan')}<i
+                      class="fa-solid fa-up-right-from-square ms-1"
+                      aria-hidden="true"></i
+                    ></a>
                 {/if}
               </div>
             </div>
@@ -990,14 +997,17 @@
                   class:pe-none={smtpDisabled}
                   aria-disabled={smtpDisabled}
                   tabindex={smtpDisabled ? -1 : undefined}
-                  >{$_('pages.settings.platform.smtp.pano-mail.bigger-plan')}</a>
+                  >{$_('pages.settings.platform.smtp.pano-mail.bigger-plan')}<i
+                    class="fa-solid fa-up-right-from-square ms-1"
+                    aria-hidden="true"></i
+                  ></a>
               {/if}
             </div>
           </div>
 
           {#if panoMailStatus.senders.length > 0}
             <div class="row mb-3">
-              <label class="col-md-6 col-form-label" for="panoMailFromName"
+              <label class="col-md-6 col-form-label text-capitalize" for="panoMailFromName"
                 >{$_('pages.settings.platform.smtp.pano-mail.from')}</label>
               <div class="col-md-6">
                 <div class="input-group">
@@ -1040,7 +1050,7 @@
             </button>
           {:else if panoMailStatus.from}
             <div class="row mb-3">
-              <label class="col-md-6 col-form-label" for="panoMailFrom"
+              <label class="col-md-6 col-form-label text-capitalize" for="panoMailFrom"
                 >{$_('pages.settings.platform.smtp.pano-mail.from')}</label>
               <div class="col-md-6">
                 <input
@@ -1062,7 +1072,7 @@
           <div class="btn-group w-100 mb-3" role="group">
             <button
               type="button"
-              class="btn"
+              class="btn text-capitalize"
               class:btn-primary={mailMode === 'host'}
               class:btn-outline-primary={mailMode !== 'host'}
               aria-pressed={mailMode === 'host'}
@@ -1071,7 +1081,7 @@
               >{$_('pages.settings.platform.smtp.host-mail')}</button>
             <button
               type="button"
-              class="btn"
+              class="btn text-capitalize"
               class:btn-primary={mailMode === 'own'}
               class:btn-outline-primary={mailMode !== 'own'}
               aria-pressed={mailMode === 'own'}
@@ -1092,7 +1102,7 @@
         <!-- Pano Host mail: the same form, filled with the relay's settings and locked except the
          sender (the rest is written from the host's env on every boot). -->
         <div class="row mb-3">
-          <label class="col-md-6 col-form-label" for="mailUsername"
+          <label class="col-md-6 col-form-label text-capitalize" for="mailUsername"
             >{$_('pages.settings.platform.smtp.username')}</label>
           <div class="col-md-6">
             <input
@@ -1105,7 +1115,7 @@
           </div>
         </div>
         <div class="row mb-3">
-          <label class="col-md-6 col-form-label" for="mailUserPassword"
+          <label class="col-md-6 col-form-label text-capitalize" for="mailUserPassword"
             >{$_('pages.settings.platform.smtp.password')}</label>
           <div class="col-md-6">
             <input
@@ -1121,7 +1131,7 @@
           </div>
         </div>
         <div class="row mb-3">
-          <label class="col-md-6 col-form-label" for="useSSLCheck">
+          <label class="col-md-6 col-form-label text-capitalize" for="useSSLCheck">
             {$_('pages.settings.platform.smtp.ssl')}
           </label>
           <div class="col-md-6">
@@ -1138,7 +1148,7 @@
           </div>
         </div>
         <div class="row mb-3">
-          <label class="col-md-6 col-form-label" for="port"
+          <label class="col-md-6 col-form-label text-capitalize" for="port"
             >{$_('pages.settings.platform.smtp.tls-setting')}</label>
           <div class="col-md-6">
             <select
@@ -1154,7 +1164,7 @@
         </div>
 
         <div class="row mb-3">
-          <label class="col-md-6 col-form-label" for="senderAddress"
+          <label class="col-md-6 col-form-label text-capitalize" for="senderAddress"
             >{$_('pages.settings.platform.smtp.sender-address')}</label>
           <div class="col-md-6">
             <!-- Pano Host mail: only the name before `@` is the customer's; the domain is the host's. -->
@@ -1202,7 +1212,7 @@
         </div>
 
         <div class="row mb-3">
-          <label class="col-md-6 col-form-label" for="hostAddress"
+          <label class="col-md-6 col-form-label text-capitalize" for="hostAddress"
             >{$_('pages.settings.platform.smtp.hostname')}</label>
           <div class="col-md-6">
             <input
@@ -1215,7 +1225,7 @@
           </div>
         </div>
         <div class="row mb-3">
-          <label class="col-md-6 col-form-label" for="port"
+          <label class="col-md-6 col-form-label text-capitalize" for="port"
             >{$_('pages.settings.platform.smtp.port')}</label>
           <div class="col-md-6">
             <input
@@ -1229,7 +1239,7 @@
         </div>
 
         <div class="row mb-3">
-          <label class="col-md-6 col-form-label" for="authMethods"
+          <label class="col-md-6 col-form-label text-capitalize" for="authMethods"
             >{$_('pages.settings.platform.smtp.auth-methods')}</label>
           <div class="col-md-6">
             <select

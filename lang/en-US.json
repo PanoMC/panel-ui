@@ -645,7 +645,7 @@
           "confirm-switch-own-description": "Pano Host mail is no longer used for this website's e-mails.",
           "sender-local-invalid": "Use letters, digits and . _ + - only (up to 64)."
         },
-        "smtp-settings": "Email",
+        "smtp-settings": "Email (SMTP)",
         "smtp-settings-sub": "How Pano sends e-mail: verification, password reset and notifications.",
         "toggle-smtp": "Toggle SMTP",
         "auth": {
@@ -3051,7 +3051,7 @@
         "create": "Create Webhook",
         "empty": "No webhooks yet.",
         "actions": "Webhook actions",
-        "send-test": "Send test mail",
+        "send-test": "Send Test",
         "deliveries": "Deliveries",
         "disable": "Disable",
         "enable": "Enable",
