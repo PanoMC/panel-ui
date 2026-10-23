@@ -13,7 +13,28 @@ Three slots, always in this order:
 - **`left` — title with the count.** Plain text: no color class, no size class, no heading tag, no
   bold. It names the content and its amount: `12 Tickets`, `0/20 Players`.
 - **`middle` — `SearchInput`**, 250px wide. It is focused when the page opens: pass `autofocus`.
-- **`right` — filters**: `CardFilters` with `CardFiltersItem`s.
+- **`right` — filters**: `CardFilters` with `CardFiltersItem`s for up to three choices; a filter
+  with more choices, or one that is a selection (status, source, type…), is a **filter dropdown**
+  (see below).
+
+### Filter dropdown
+
+A filter that picks one value out of a list is a dropdown in the `right` slot — never a native
+`<select>` and never an icon-only button. The trigger shows **the filter icon and the label of the
+selected option**, so the active filter is readable without opening the menu:
+
+- trigger `btn btn-link text-decoration-none dropdown-toggle`: `<i class="fas fa-filter me-2">` +
+  `<span>` with the selected option's label. One icon per filter (`fa-filter` for the main one,
+  e.g. `fa-layer-group` for a source / group) — the icon tells filters apart when there are two.
+- menu `dropdown-menu`: one `dropdown-item` per option, the selected one `active` with a trailing
+  `fa-check`. Picking an option closes the menu and applies it at once (no apply button).
+- the first option is the unfiltered one (`All`) and is the initial selection; its label shows in
+  the trigger too.
+- several filters sit side by side in the slot (`d-flex gap-2`), most general first.
+- the trigger needs an `aria-label` with the filter's name (`Status`, `Source`).
+
+Reference: `FilterPopover` in the website (`src/lib/components/FilterPopover.svelte`) — the
+instance list and the billing invoices card.
 
 ## Body
 
@@ -111,6 +132,7 @@ Then:
 
 ## Don't
 
+- A filter dropdown that shows only an icon, or a native `<select>` in the header.
 - A colored, bold, resized or `<h5>` header title, or a title without the count.
 - Search missing, not in the middle, or not focused on load.
 - Action buttons in a row, an actions column on the right, or a titled actions column.
