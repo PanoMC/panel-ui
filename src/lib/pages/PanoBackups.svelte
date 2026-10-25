@@ -313,12 +313,19 @@
                           : $_('pages.settings.backups.type-full')}
                     </span>
                     {#if backup.subject}
-                      <div class="small text-body-secondary">{backup.subject}</div>
+                      <!-- SM-PB — the server by its name; its id is a hover away. -->
+                      <div
+                        class="small text-body-secondary"
+                        use:tooltip={[backup.subject, { placement: 'bottom' }]}>
+                        {serverNameOf(backup)}
+                      </div>
                     {/if}
                   </td>
                   <td class="align-middle text-nowrap">
                     {#if backup.trigger === 'SCHEDULED' || backup.trigger === 'MANUAL'}
                       {$_(`pages.settings.backups.tag-${backup.trigger.toLowerCase()}`)}
+                    {:else if backup.trigger === 'AUTOMATIC'}
+                      {$_('pages.settings.backups.trigger-automatic')}
                     {:else}
                       <span class="text-body-secondary">—</span>
                     {/if}
@@ -593,6 +600,8 @@
   import { _ } from 'svelte-i18n';
 
   import { formatBytes } from '$lib/string.util.js';
+  import tooltip from '$lib/tooltip.util';
+  import { fetchServersList } from '$lib/servers.util.js';
   import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
   import {
     backupPlanUrl,
@@ -650,6 +659,36 @@
 
     void goto(`${base}/backups`, { replace: true, reset: false });
   });
+
+  /** Server uuid → name, for the `mc-server` copies; read once there is one to name. */
+  let serverNames = $state(/** @type {Map<string, string>} */ (new Map()));
+  let serverNamesAsked = false;
+
+  $effect(() => {
+    if (serverNamesAsked || !remoteRows.some((row) => row.subject)) {
+      return;
+    }
+
+    serverNamesAsked = true;
+
+    void fetchServersList().then((servers) => {
+      serverNames = new Map(
+        servers
+          .filter((server) => server?.uuid && server?.name)
+          .map((server) => [String(server.uuid), String(server.name)]),
+      );
+    });
+  });
+
+  /**
+   * The name of the server a copy is of: as this Pano calls it now, else as the copy recorded it (a server removed
+   * since), else its uuid.
+   *
+   * @param {any} row
+   */
+  function serverNameOf(row) {
+    return serverNames.get(row.subject) || row.manifest?.serverName || row.subject;
+  }
 
   const EMPTY_LOCAL = { backups: [], usedBytes: 0, job: null, restartRequired: false };
 
