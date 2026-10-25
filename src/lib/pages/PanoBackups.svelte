@@ -782,6 +782,9 @@
   const remoteRows = $derived(
     /** @type {any[]} */ (
       !remoteList?.error && Array.isArray(remoteList?.items) ? remoteList.items : []
+    ).filter(
+      // SM-PB — a server copy still on its way is no backup yet: its job box says so (the server's page too).
+      (row) => row.kind !== 'mc-server' || row.status === 'DONE',
     ),
   );
   const showRemoteStatus = $derived(remoteRows.some((row) => row.status !== 'DONE'));
