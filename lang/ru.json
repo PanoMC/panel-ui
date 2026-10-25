@@ -920,7 +920,8 @@
           "phase-importing": "Копия передаётся серверу…",
           "done-mc_import": "Копия теперь среди копий сервера. Восстановите её оттуда.",
           "type-mc_restore": "Восстановление сервера из Pano Backup",
-          "done-mc_restore": "Восстановление сервера из копии Pano Backup запущено."
+          "done-mc_restore": "Восстановление сервера из копии Pano Backup запущено.",
+          "phase-processing": "Обработка…"
         },
         "restore-lock": {
           "title": "Идёт восстановление",

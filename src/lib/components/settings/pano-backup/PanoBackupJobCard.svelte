@@ -5,7 +5,11 @@
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
         <strong>{$_(`pages.settings.backups.job.type-${jobKind(job)}`)}</strong>
-        {#if job.phase}
+        {#if processing}
+          <span class="text-body-secondary small">
+            {$_('pages.settings.backups.job.phase-processing')}
+          </span>
+        {:else if job.phase}
           <span class="text-body-secondary small">
             {$_(`pages.settings.backups.job.phase-${String(job.phase).toLowerCase()}`)}
             {#if job.remotePhase}· {job.remotePhase}{/if}
@@ -23,16 +27,16 @@
         role="progressbar"
         aria-valuemin="0"
         aria-valuemax="100"
-        aria-valuenow={percent ?? undefined}>
+        aria-valuenow={shownPercent ?? undefined}>
         <div
           class="progress-bar"
-          class:progress-bar-striped={percent === null}
-          class:progress-bar-animated={percent === null}
-          style="width: {percent ?? 100}%">
-          {#if percent !== null}{percent}%{/if}
+          class:progress-bar-striped={shownPercent === null}
+          class:progress-bar-animated={shownPercent === null}
+          style="width: {shownPercent ?? 100}%">
+          {#if shownPercent !== null}{shownPercent}%{/if}
         </div>
       </div>
-      {#if hasBytes || speedText}
+      {#if !processing && (hasBytes || speedText)}
         <div class="small text-body-secondary d-flex flex-wrap gap-2">
           {#if hasBytes}
             <span>
@@ -136,6 +140,12 @@
   const running = $derived(isJobRunning(job));
   const jobId = $derived(job?.id);
   const percent = $derived(jobPercent(job));
+  /**
+   * Every byte of the phase is through but the job still runs (Pano Backup checks and settles what it got, the old
+   * copies are pruned): said as "Processing…" without a percent, which would only sit at 100 %.
+   */
+  const processing = $derived(running && percent === 100);
+  const shownPercent = $derived(processing ? null : percent);
   const hasBytes = $derived((Number(job?.bytesTotal) || 0) > 0);
   const speedText = $derived(formatSpeed(speed));
   const error = $derived(

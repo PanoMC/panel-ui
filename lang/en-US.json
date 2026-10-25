@@ -920,7 +920,8 @@
           "phase-importing": "Handing the backup to the server…",
           "done-mc_import": "The backup is now in the server's backups. Restore it from there.",
           "type-mc_restore": "Server restore from Pano Backup",
-          "done-mc_restore": "The server restore was started from the Pano Backup copy."
+          "done-mc_restore": "The server restore was started from the Pano Backup copy.",
+          "phase-processing": "Processing…"
         },
         "restore-lock": {
           "title": "Restore in progress",

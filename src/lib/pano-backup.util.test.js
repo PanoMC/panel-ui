@@ -479,3 +479,13 @@ describe('mergeWithCopies', () => {
     );
   });
 });
+
+test('a copy still uploading never becomes a row of its own', () => {
+  const rows = mergeWithCopies(
+    [{ id: 1, uuid: 'b-1', name: 'Uploading one', createdAt: 100, panoBackupId: null }],
+    [{ id: 'arc-1', type: 'archive', status: 'UPLOADING', createdAt: 200 }],
+  );
+
+  expect(rows.map((row) => row.name)).toEqual(['Uploading one']);
+  expect(rows[0].cloud).toBeNull();
+});

@@ -643,7 +643,8 @@ export function mergeWithCopies(local, remote) {
   });
 
   for (const copy of remote) {
-    if (claimed.has(String(copy.id))) {
+    // A copy still uploading (or one that failed) is not a backup of its own: the row being uploaded says so.
+    if (claimed.has(String(copy.id)) || copy.status !== 'DONE') {
       continue;
     }
 

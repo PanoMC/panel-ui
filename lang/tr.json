@@ -920,7 +920,8 @@
           "phase-importing": "Yedek sunucuya aktarılıyor…",
           "done-mc_import": "Yedek artık sunucunun yedeklerinde. Oradan geri yükleyebilirsiniz.",
           "type-mc_restore": "Pano Backup'tan sunucu geri yükleme",
-          "done-mc_restore": "Sunucunun geri yüklemesi Pano Backup kopyasından başlatıldı."
+          "done-mc_restore": "Sunucunun geri yüklemesi Pano Backup kopyasından başlatıldı.",
+          "phase-processing": "İşleniyor…"
         },
         "restore-lock": {
           "title": "Geri yükleme sürüyor",

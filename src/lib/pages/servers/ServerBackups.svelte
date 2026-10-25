@@ -363,6 +363,11 @@
                         { default: String(backup.status || '—') },
                       )}
                     </span>
+                  {:else if uploadingBackupId && backup.uuid === uploadingBackupId}
+                    <!-- SM-PB — the backup going to Pano Backup right now. -->
+                    <span class="badge rounded-pill text-bg-info">
+                      {$_('pages.servers.backups.pano-backup.status-uploading')}
+                    </span>
                   {:else}
                     <span class="badge rounded-pill text-bg-{statusColour(backup.status)}">
                       {statusLabel(backup.status)}
@@ -892,6 +897,12 @@
         : `${$_('pages.servers.backups.pano-backup.title')} · ${$_('pages.servers.backups.pano-backup.off')}`,
   );
   const panoBackupJobRunning = $derived(isJobRunning(panoBackupJob));
+  /** The uuid of this server's backup being uploaded to Pano Backup now, if any. */
+  const uploadingBackupId = $derived(
+    panoBackupJobRunning && panoBackupJob?.type === 'MC_UPLOAD'
+      ? (panoBackupJob.details?.backupId ?? null)
+      : null,
+  );
 
   // The list arrives whole (there is no page on the endpoint), so the pages are cut here.
   const BACKUPS_PAGE_SIZE = 10;
