@@ -4,7 +4,7 @@
     <div class="card-body vstack gap-2">
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
-        <strong>{$_(`pages.settings.backups.job.type-${String(job.type).toLowerCase()}`)}</strong>
+        <strong>{$_(`pages.settings.backups.job.type-${jobKind(job)}`)}</strong>
         {#if job.phase}
           <span class="text-body-secondary small">
             {$_(`pages.settings.backups.job.phase-${String(job.phase).toLowerCase()}`)}
@@ -97,6 +97,17 @@
    */
   let { job = null, onupdate, onfinish } = $props();
 
+  /**
+   * The job's kind for its labels: its type, or `mc_restore` for a server copy brought in to restore the server.
+   *
+   * @param {any} subject
+   */
+  function jobKind(subject) {
+    return subject?.type === 'MC_IMPORT' && subject?.details?.restore === true
+      ? 'mc_restore'
+      : String(subject?.type).toLowerCase();
+  }
+
   /** Smoothed bytes per second of the running job's current phase, or null while nothing moves. */
   let speed = $state(null);
 
@@ -110,7 +121,7 @@
    */
   function finished(ended) {
     if (ended?.status === 'DONE') {
-      void showSuccess(`pages.settings.backups.job.done-${String(ended.type).toLowerCase()}`, {
+      void showSuccess(`pages.settings.backups.job.done-${jobKind(ended)}`, {
         website: websiteDisplayHost(),
       });
     }

@@ -256,7 +256,10 @@
                               type="button"
                               class="dropdown-item text-capitalize"
                               disabled={running}
-                              onclick={() => void downloadSnapshot(backup)}>
+                              onclick={() =>
+                                void (backup.kind === 'mc-server'
+                                  ? downloadServerCopy(backup)
+                                  : downloadSnapshot(backup))}>
                               <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
                               {$_('buttons.download')}
                             </button>
@@ -266,9 +269,9 @@
                               type="button"
                               class="dropdown-item text-capitalize"
                               disabled={running}
-                              onclick={() => importModal?.open(backup)}>
-                              <i class="fa-solid fa-cloud-arrow-down me-2" aria-hidden="true"></i>
-                              {$_('pages.servers.backups.pano-backup.import-into-server')}
+                              onclick={() => restoreServerModal?.open(backup)}>
+                              <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"></i>
+                              {$_('pages.settings.backups.restore.submit')}
                             </button>
                           {/if}
                           {#if canRestoreRow(backup)}
@@ -540,7 +543,10 @@
 </BsModal>
 
 <RestorePanoBackupModal bind:this={restoreModal} onsubmit={submitRestore} />
-<ImportServerBackupModal bind:this={importModal} onstarted={(next) => (job = next)} />
+<RestoreServerBackupModal
+  bind:this={restoreServerModal}
+  passphraseSet={remote.passphraseSet}
+  onstarted={(next) => (job = next)} />
 
 <script module>
   import { redirect } from '@sveltejs/kit';
@@ -634,7 +640,7 @@
   import PanoBackupAccountSummary from '$lib/components/settings/pano-backup/PanoBackupAccountSummary.svelte';
   import PassphraseFields from '$lib/components/settings/pano-backup/PassphraseFields.svelte';
   import RestorePanoBackupModal from '$lib/components/settings/pano-backup/RestorePanoBackupModal.svelte';
-  import ImportServerBackupModal from '$lib/components/settings/pano-backup/ImportServerBackupModal.svelte';
+  import RestoreServerBackupModal from '$lib/components/settings/pano-backup/RestoreServerBackupModal.svelte';
   import { isRunningRestore, restoreJob } from '$lib/pano-restore.store.js';
   import PanoBackupSettingsModal from '$lib/components/settings/pano-backup/PanoBackupSettingsModal.svelte';
   import PanoBackupPassphraseModal from '$lib/components/settings/pano-backup/PanoBackupPassphraseModal.svelte';
@@ -737,8 +743,8 @@
   let uploadModal = $state();
   /** @type {RestorePanoBackupModal | undefined} */
   let restoreModal = $state();
-  /** @type {ImportServerBackupModal | undefined} */
-  let importModal = $state();
+  /** @type {RestoreServerBackupModal | undefined} */
+  let restoreServerModal = $state();
   /** A server backup can be brought into a managed server by whoever may manage that server's backups. */
   const canImportServer = hasPermission(Permissions.MANAGE_SERVER_BACKUPS);
   /** @type {PanoBackupSettingsModal | undefined} */
@@ -782,6 +788,11 @@
   const remoteError = $derived(remoteList?.error ? describeError(remoteList) : null);
   /** @param {any} row a remote list row (archive or snapshot). */
   function canDownloadRow(row) {
+    // A managed server's copy downloads as the zip its node had.
+    if (row.kind === 'mc-server') {
+      return row.status === 'DONE';
+    }
+
     return row.type === 'snapshot' && canDownloadSnapshot(row);
   }
 
@@ -1075,6 +1086,20 @@
       await refresh();
     } finally {
       busyAction = null;
+    }
+  }
+
+  /** @param {any} copy a managed server's copy (`mc-server`): an archive or a snapshot. */
+  async function downloadServerCopy(copy) {
+    const error = await startJob(
+      ApiUtil.post({
+        path: `/panel/pano-backups/remote/mc/${encodeURIComponent(copy.id)}/download`,
+        body: { type: copy.type === 'snapshot' ? 'snapshot' : 'archive' },
+      }),
+    );
+
+    if (error) {
+      void showError(error.key, error.values);
     }
   }
 

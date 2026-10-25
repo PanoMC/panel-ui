@@ -918,7 +918,9 @@
           "phase-exporting": "Pano Host'ta dışa aktarım hazırlanıyor…",
           "type-mc_import": "Pano Backup'tan sunucu yedeği",
           "phase-importing": "Yedek sunucuya aktarılıyor…",
-          "done-mc_import": "Yedek artık sunucunun yedeklerinde. Oradan geri yükleyebilirsiniz."
+          "done-mc_import": "Yedek artık sunucunun yedeklerinde. Oradan geri yükleyebilirsiniz.",
+          "type-mc_restore": "Pano Backup'tan sunucu geri yükleme",
+          "done-mc_restore": "Sunucunun geri yüklemesi Pano Backup kopyasından başlatıldı."
         },
         "restore-lock": {
           "title": "Geri yükleme sürüyor",
@@ -1016,7 +1018,8 @@
           "SERVER_BACKUP_IMPORT_UNSUPPORTED": "Bu sunucunun yedeklerini bir node tutmuyor, bu yüzden içine yedek getirilemez.",
           "SERVER_BACKUP_IMPORT_FAILED": "Sunucunun node'u yedeği alamadı.",
           "NODE_TOO_OLD": "Yedek getirebilmek için bu sunucunun node'unu güncelleyin.",
-          "SERVER_BACKUP_FETCH_FAILED": "Sunucunun yedeği node'undan alınamadı."
+          "SERVER_BACKUP_FETCH_FAILED": "Sunucunun yedeği node'undan alınamadı.",
+          "SERVER_NOT_STOPPED": "Geri yüklemeden önce sunucuyu durdurun."
         },
         "account": {
           "title": "Pano Backup",
@@ -1819,7 +1822,6 @@
           "not-connected": "Bu sunucunun yedeklerini Pano Backup'ta tutmak için Pano hesabınızı bağlayın.",
           "connect": "Pano Hesabını Bağla",
           "import": "Bu sunucuya getir",
-          "import-into-server": "Sunucuya getir",
           "import-title": "Yedeği sunucuya getir",
           "import-target": "Sunucu",
           "import-origin": "alındığı sunucu",
@@ -1850,7 +1852,13 @@
           "type-snapshot": "Anlık görüntü",
           "in-cloud": "Pano Backup'ta",
           "cloud-only": "Yalnızca Pano Backup'ta",
-          "delete-remote": "Pano Backup'tan sil"
+          "delete-remote": "Pano Backup'tan sil",
+          "restore-title": "Sunucuyu Pano Backup'tan geri yükle",
+          "restore-description": "Yedek seçilen sunucunun yedeklerine getirilir, ardından sunucu bu yedekten geri yüklenir: önce mevcut durumun bir güvenlik yedeği alınır, sonra dosyaları değiştirilir.",
+          "restore-started": "Geri yükleme başlatıldı. Önce yedek indirilir, sonra sunucu geri yüklenir.",
+          "deleted": "Yedek Pano Backup'tan silindi.",
+          "upload-title": "Bu yedek Pano Backup'a yüklensin mi?",
+          "upload-description": "{name} Pano Backup depolamanıza gönderilir ve orada yer kaplar."
         }
       },
       "activity": {

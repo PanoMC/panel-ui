@@ -918,7 +918,9 @@
           "phase-exporting": "Подготовка экспорта в Pano Host…",
           "type-mc_import": "Копия сервера из Pano Backup",
           "phase-importing": "Копия передаётся серверу…",
-          "done-mc_import": "Копия теперь среди копий сервера. Восстановите её оттуда."
+          "done-mc_import": "Копия теперь среди копий сервера. Восстановите её оттуда.",
+          "type-mc_restore": "Восстановление сервера из Pano Backup",
+          "done-mc_restore": "Восстановление сервера из копии Pano Backup запущено."
         },
         "restore-lock": {
           "title": "Идёт восстановление",
@@ -1016,7 +1018,8 @@
           "SERVER_BACKUP_IMPORT_UNSUPPORTED": "Копии этого сервера хранит не узел, поэтому перенести копию нельзя.",
           "SERVER_BACKUP_IMPORT_FAILED": "Узел сервера не смог принять копию.",
           "NODE_TOO_OLD": "Обновите узел этого сервера, чтобы переносить на него копии.",
-          "SERVER_BACKUP_FETCH_FAILED": "Не удалось получить копию сервера с узла."
+          "SERVER_BACKUP_FETCH_FAILED": "Не удалось получить копию сервера с узла.",
+          "SERVER_NOT_STOPPED": "Остановите сервер перед восстановлением."
         },
         "account": {
           "title": "Pano Backup",
@@ -1819,7 +1822,6 @@
           "not-connected": "Подключите аккаунт Pano, чтобы хранить копии этого сервера в Pano Backup.",
           "connect": "Подключить аккаунт Pano",
           "import": "Перенести на этот сервер",
-          "import-into-server": "Перенести на сервер",
           "import-title": "Перенести копию на сервер",
           "import-target": "Сервер",
           "import-origin": "снята с него",
@@ -1850,7 +1852,13 @@
           "type-snapshot": "Снимок",
           "in-cloud": "В Pano Backup",
           "cloud-only": "Только в Pano Backup",
-          "delete-remote": "Удалить из Pano Backup"
+          "delete-remote": "Удалить из Pano Backup",
+          "restore-title": "Восстановить сервер из Pano Backup",
+          "restore-description": "Копия переносится в резервные копии выбранного сервера, затем сервер восстанавливается из неё: сначала создаётся страховочная копия текущего состояния, потом файлы заменяются.",
+          "restore-started": "Восстановление запущено. Сначала копия скачивается, затем сервер восстанавливается.",
+          "deleted": "Копия удалена из Pano Backup.",
+          "upload-title": "Загрузить эту копию в Pano Backup?",
+          "upload-description": "{name} будет отправлена в ваше хранилище Pano Backup и займёт там место."
         }
       },
       "activity": {

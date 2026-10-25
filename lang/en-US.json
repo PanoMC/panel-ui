@@ -918,7 +918,9 @@
           "phase-exporting": "Preparing the export on Pano Host…",
           "type-mc_import": "Server backup from Pano Backup",
           "phase-importing": "Handing the backup to the server…",
-          "done-mc_import": "The backup is now in the server's backups. Restore it from there."
+          "done-mc_import": "The backup is now in the server's backups. Restore it from there.",
+          "type-mc_restore": "Server restore from Pano Backup",
+          "done-mc_restore": "The server restore was started from the Pano Backup copy."
         },
         "restore-lock": {
           "title": "Restore in progress",
@@ -1016,7 +1018,8 @@
           "SERVER_BACKUP_IMPORT_UNSUPPORTED": "This server's backups are not kept by a node, so a backup cannot be brought into it.",
           "SERVER_BACKUP_IMPORT_FAILED": "The server's node could not take the backup.",
           "NODE_TOO_OLD": "Update this server's node to bring backups into it.",
-          "SERVER_BACKUP_FETCH_FAILED": "The server's backup could not be fetched from its node."
+          "SERVER_BACKUP_FETCH_FAILED": "The server's backup could not be fetched from its node.",
+          "SERVER_NOT_STOPPED": "Stop the server before restoring it."
         },
         "account": {
           "title": "Pano Backup",
@@ -1819,7 +1822,6 @@
           "not-connected": "Connect your Pano account to keep this server's backups in Pano Backup.",
           "connect": "Connect Pano Account",
           "import": "Bring to this server",
-          "import-into-server": "Bring into a server",
           "import-title": "Bring a backup into a server",
           "import-target": "Server",
           "import-origin": "taken from this one",
@@ -1850,7 +1852,13 @@
           "type-snapshot": "Snapshot",
           "in-cloud": "In Pano Backup",
           "cloud-only": "Only in Pano Backup",
-          "delete-remote": "Delete from Pano Backup"
+          "delete-remote": "Delete from Pano Backup",
+          "restore-title": "Restore a server from Pano Backup",
+          "restore-description": "The backup is brought into the chosen server's backups, then the server is restored from it: a safety backup of the current state is taken first, then its files are replaced.",
+          "restore-started": "The restore was started. The backup is downloaded first, then the server is restored.",
+          "deleted": "The backup was deleted from Pano Backup.",
+          "upload-title": "Upload this backup to Pano Backup?",
+          "upload-description": "{name} is sent to your Pano Backup storage and takes space there."
         }
       },
       "activity": {

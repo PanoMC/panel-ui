@@ -255,14 +255,6 @@
                             {$_('pages.servers.backups.restore')}
                           </button>
 
-                          <button
-                            type="button"
-                            class="dropdown-item text-danger text-capitalize"
-                            onclick={() => askDelete(backup)}>
-                            <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
-                            {$_('buttons.delete')}
-                          </button>
-
                           {#if backup.cloud}
                             <button
                               type="button"
@@ -272,6 +264,14 @@
                               {$_('pages.servers.backups.pano-backup.delete-remote')}
                             </button>
                           {/if}
+
+                          <button
+                            type="button"
+                            class="dropdown-item text-danger text-capitalize"
+                            onclick={() => askDelete(backup)}>
+                            <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
+                            {$_('buttons.delete')}
+                          </button>
                         {/if}
                       {/if}
                     </div>
@@ -801,6 +801,7 @@
   import PanoBackupJobCard from '$lib/components/settings/pano-backup/PanoBackupJobCard.svelte';
   import { isJobRunning, mergeWithCopies } from '$lib/pano-backup.util.js';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
+  import { show as showConfirmActionModal } from '$lib/components/modals/ConfirmActionModal.svelte';
 
   let { data } = $props();
 
@@ -821,6 +822,7 @@
   let panoBackupOverview = $state(emptyOverview());
   let panoBackupJob = $state(/** @type {any} */ (null));
   let panoBackupBusyId = $state(/** @type {string | null} */ (null));
+  let followTimeout;
   /** What the card's find field holds; the list below is what it leaves of `backups`. */
   let query = $state('');
   /** Only ever true for a *re*-read: the first list comes in with the page (`load`). */
@@ -1077,9 +1079,45 @@
     loading = false;
     applyBackups(result);
     void panoBackup?.reload();
+    void followRunningPanoBackupJob();
 
     if (result.status === 'error') {
       showServerLoadError(result.error, serverId);
+    }
+  }
+
+  /**
+   * A Pano Backup job of this server that is running now (an automatic upload, one started elsewhere), so it is
+   * followed above the table as well. An automatic upload starts a moment after its backup is done, so with uploads on
+   * it is looked for a few more times.
+   *
+   * @param {number} [attempts]
+   */
+  async function followRunningPanoBackupJob(attempts = 3) {
+    if (!canUploadToPanoBackup || panoBackupJob || serverId == null) {
+      return;
+    }
+
+    const body = await ApiUtil.get({
+      path: '/panel/pano-backups/job',
+      handler: (response) => response,
+    }).catch(() => null);
+    const running = body && !body.error ? body.job : null;
+
+    if (
+      !panoBackupJob &&
+      isJobRunning(running) &&
+      (running.type === 'MC_UPLOAD' || running.type === 'MC_IMPORT') &&
+      Number(running.details?.serverId) === Number(serverId)
+    ) {
+      panoBackupJob = running;
+
+      return;
+    }
+
+    if (attempts > 1 && !panoBackupJob && panoBackupOn) {
+      clearTimeout(followTimeout);
+      followTimeout = setTimeout(() => void followRunningPanoBackupJob(attempts - 1), 1500);
     }
   }
 
@@ -1228,8 +1266,26 @@
    *
    * @param {object} backup
    */
-  async function uploadToPanoBackup(backup) {
+  function uploadToPanoBackup(backup) {
     if (!canUploadToPanoBackup || serverId == null || busyId) {
+      return;
+    }
+
+    showConfirmActionModal(
+      {
+        title: 'pages.servers.backups.pano-backup.upload-title',
+        description: 'pages.servers.backups.pano-backup.upload-description',
+        confirmLabel: 'pages.servers.backups.pano-backup-upload',
+        variant: 'primary',
+      },
+      () => void startUploadToPanoBackup(backup),
+      { name: backup.name },
+    );
+  }
+
+  /** @param {any} backup */
+  async function startUploadToPanoBackup(backup) {
+    if (busyId) {
       return;
     }
 
@@ -1447,6 +1503,8 @@
   }
 
   onMount(() => {
+    void followRunningPanoBackupJob(1);
+
     restoreModal = window.bootstrap?.Modal
       ? window.bootstrap.Modal.getOrCreateInstance(restoreModalElement, {
           backdrop: 'static',
@@ -1520,6 +1578,7 @@
   });
 
   onDestroy(() => {
+    clearTimeout(followTimeout);
     listSeq += 1;
     clearTimeout(copiedTimeout);
     restoreModal?.hide();

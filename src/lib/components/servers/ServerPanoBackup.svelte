@@ -398,6 +398,7 @@
           return;
         }
 
+        void showSuccess('pages.servers.backups.pano-backup.deleted');
         await reload();
       },
     );
