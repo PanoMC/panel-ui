@@ -19,6 +19,16 @@
 <!-- §2.4.35 — while nothing can take a backup the notice above is the whole page: the list
        comes from the same side, so its "could not be loaded" state would only repeat it. -->
 {#if available}
+  <!-- SM-PB — a Pano Backup job of this server (upload, restore from there), above the backups it is about. -->
+  {#if panoBackupJob}
+    <div class="mb-3">
+      <PanoBackupJobCard
+        job={panoBackupJob}
+        onupdate={(next) => (panoBackupJob = next)}
+        onfinish={onPanoBackupJobFinished} />
+    </div>
+  {/if}
+
   <div class="card">
     <CardHeader>
       <!-- The count is the card's subject: how many backups there are says what the card is
@@ -83,15 +93,6 @@
         </button>
       </span>
     </CardHeader>
-
-    {#if panoBackupJob}
-      <div class="card-body pb-0">
-        <PanoBackupJobCard
-          job={panoBackupJob}
-          onupdate={(next) => (panoBackupJob = next)}
-          onfinish={onPanoBackupJobFinished} />
-      </div>
-    {/if}
 
     <!-- Only a running task says anything between the header and the rows. -->
     {#if activeTask}
