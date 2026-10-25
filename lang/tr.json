@@ -1809,19 +1809,15 @@
         "stored-hint": "Bu kayıt noktasının diske eklediği yeni veri; geri kalanı diğer kayıt noktalarıyla paylaşılıyor.",
         "restore-worlds-replaced": "Yedekteki dünya klasörleri mevcutların yerini tamamen alır; diğer dosyalar olanların üzerine yazılır.",
         "pano-backup-upload": "Pano Backup'a yükle",
-        "pano-backup-started": "Pano Backup'a yükleniyor. Yedekler sayfasından takip edin.",
+        "pano-backup-started": "Pano Backup'a yükleniyor. Yüklenince satırda bulut görünür.",
         "pano-backup": {
           "title": "Pano Backup",
-          "count": "Pano Backup'ta {count} Yedek",
           "off": "Kapalı",
           "mode-full": "Tam yedekler",
           "mode-snapshot": "Anlık görüntüler",
           "settings-title": "Pano Backup Ayarları",
-          "load-failed": "Pano Backup okunamadı.",
           "not-connected": "Bu sunucunun yedeklerini Pano Backup'ta tutmak için Pano hesabınızı bağlayın.",
           "connect": "Pano Hesabını Bağla",
-          "empty-on": "Pano Backup'ta henüz bir şey yok. Bu sunucunun bir sonraki yedeği oraya gider.",
-          "empty-off": "Bu sunucunun yedekleri Pano Backup'a gitmiyor. Dişliden açabilirsiniz.",
           "import": "Bu sunucuya getir",
           "import-into-server": "Sunucuya getir",
           "import-title": "Yedeği sunucuya getir",
@@ -1851,7 +1847,10 @@
           "delete-title": "Bu yedek Pano Backup'tan silinsin mi?",
           "delete-description": "Pano Backup depolamanızdan kalıcı olarak silinir.",
           "type-archive": "Tam",
-          "type-snapshot": "Anlık görüntü"
+          "type-snapshot": "Anlık görüntü",
+          "in-cloud": "Pano Backup'ta",
+          "cloud-only": "Yalnızca Pano Backup'ta",
+          "delete-remote": "Pano Backup'tan sil"
         }
       },
       "activity": {

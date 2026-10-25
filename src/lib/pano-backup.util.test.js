@@ -3,6 +3,7 @@ import { formatBytes } from './string.util.js';
 
 import {
   ENVELOPE_MAGIC,
+  mergeWithCopies,
   REMOTE_SCHEDULES,
   formatSpeed,
   jobSpeed,
@@ -416,5 +417,65 @@ describe('transferFits', () => {
     expect(transferFits(500, null)).toBeNull();
     expect(transferFits(500, 0)).toBeNull();
     expect(transferFits(undefined, undefined)).toBeNull();
+  });
+});
+
+describe('mergeWithCopies', () => {
+  const local = [
+    { id: 1, uuid: 'b-1', name: 'Uploaded', createdAt: 300, panoBackupId: 'snap-1' },
+    { id: 2, uuid: 'b-2', name: 'Old archive', createdAt: 200, panoBackupId: null },
+    { id: 3, uuid: 'b-3', name: 'Local only', createdAt: 100, panoBackupId: 'gone' },
+  ];
+  const remote = [
+    {
+      id: 'snap-1',
+      type: 'snapshot',
+      name: 'Uploaded',
+      status: 'DONE',
+      createdAt: 310,
+      downloadBytes: 9,
+    },
+    {
+      id: 'arc-2',
+      type: 'archive',
+      manifest: { backupId: 'b-2', backupName: 'Old archive' },
+      status: 'DONE',
+      createdAt: 210,
+    },
+    {
+      id: 'arc-9',
+      type: 'archive',
+      manifest: { backupId: 'deleted', backupName: 'Deleted here', encrypted: true },
+      status: 'DONE',
+      createdAt: 400,
+      sizeBytes: 5,
+    },
+  ];
+
+  test('marks the backups whose copy is still there and adds the copies nothing here points at', () => {
+    const rows = mergeWithCopies(local, remote);
+
+    expect(rows.map((row) => row.name)).toEqual([
+      'Deleted here',
+      'Uploaded',
+      'Old archive',
+      'Local only',
+    ]);
+    expect(rows[1].cloud.id).toBe('snap-1');
+    expect(rows[2].cloud.id).toBe('arc-2');
+    expect(rows[3].cloud).toBeNull();
+    expect(rows[0]).toMatchObject({
+      cloudOnly: true,
+      id: 'pano-backup:arc-9',
+      mode: 'FULL',
+      sizeBytes: 5,
+    });
+    expect(rows.filter((row) => row.cloudOnly)).toHaveLength(1);
+  });
+
+  test('without copies the list is the server backups as they were', () => {
+    expect(mergeWithCopies(local, []).every((row) => row.cloud === null && !row.cloudOnly)).toBe(
+      true,
+    );
   });
 });

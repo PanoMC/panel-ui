@@ -1603,6 +1603,8 @@ function normalizeBackups(list) {
       fileCount: backup?.fileCount == null ? null : Number(backup.fileCount),
       storedBytes: backup?.storedBytes == null ? null : Number(backup.storedBytes),
       include: Array.isArray(backup?.include) ? backup.include.map(String) : [],
+      // SM-PB — the id of its copy at Pano Backup, when it was uploaded or brought in from there.
+      panoBackupId: backup?.panoBackupId ? String(backup.panoBackupId) : null,
     }))
     .filter((backup) => backup.id !== '');
 }

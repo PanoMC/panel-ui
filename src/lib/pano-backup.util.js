@@ -603,3 +603,67 @@ export async function waitForRestart({
 
   return false;
 }
+
+// SM-PB — a managed server's copies at Pano Backup, shown in its Backups table.
+
+/** @param {any} backup a copy at Pano Backup: an archive or a snapshot (`type`). */
+export function isSnapshotCopy(backup) {
+  return backup?.type === 'snapshot';
+}
+
+/**
+ * The server's backups and its Pano Backup copies as one list, newest first. A backup whose copy is still there
+ * gets `cloud` (that copy); a copy no backup of this server points at any more (deleted here, or the node is gone)
+ * becomes a row of its own (`cloudOnly`). An archive made before backups remembered their copy is matched by the
+ * backup id it carries.
+ *
+ * @param {any[]} local
+ * @param {any[]} remote
+ */
+export function mergeWithCopies(local, remote) {
+  const byId = new Map(remote.map((copy) => [String(copy.id), copy]));
+  const claimed = new Set();
+  const rows = local.map((backup) => {
+    const copy =
+      (backup.panoBackupId && byId.get(backup.panoBackupId)) ||
+      remote.find(
+        (entry) =>
+          !isSnapshotCopy(entry) &&
+          entry.manifest?.backupId &&
+          entry.manifest.backupId === backup.uuid,
+      ) ||
+      null;
+
+    if (copy) {
+      claimed.add(String(copy.id));
+    }
+
+    return { ...backup, cloud: copy };
+  });
+
+  for (const copy of remote) {
+    if (claimed.has(String(copy.id))) {
+      continue;
+    }
+
+    rows.push({
+      id: `pano-backup:${copy.id}`,
+      uuid: null,
+      name: (isSnapshotCopy(copy) ? copy.name : copy.manifest?.backupName) || '',
+      sizeBytes: Number(isSnapshotCopy(copy) ? copy.downloadBytes : copy.sizeBytes) || 0,
+      sha256: '',
+      status: copy.status,
+      createdByUsername: '',
+      createdAt: copy.createdAt ?? null,
+      mode: isSnapshotCopy(copy) ? 'SNAPSHOT' : 'FULL',
+      scope: 'ALL',
+      include: [],
+      pinned: false,
+      storedBytes: null,
+      cloud: copy,
+      cloudOnly: true,
+    });
+  }
+
+  return rows.sort((a, b) => (Number(b.createdAt) || 0) - (Number(a.createdAt) || 0));
+}

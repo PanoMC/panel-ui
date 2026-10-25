@@ -37,6 +37,22 @@
       </div>
 
       <span slot="right" class="d-flex align-items-center gap-2">
+        <!-- SM-PB — Pano Backup: the cloud says whether this server's backups go there and opens how. -->
+        {#if canUploadToPanoBackup && canManage}
+          <button
+            type="button"
+            class="btn btn-sm btn-link p-0"
+            aria-label={$_('pages.servers.backups.pano-backup.settings-title')}
+            onclick={() => panoBackup?.openSettings()}
+            use:tooltip={[panoBackupTip, { placement: 'bottom' }]}>
+            <i
+              class="fa-solid fa-cloud"
+              class:pano-backup-cloud={panoBackupOn}
+              class:text-body-secondary={!panoBackupOn}
+              aria-hidden="true"></i>
+          </button>
+        {/if}
+
         <!-- Retention rules live in their own dialog now, so the header only says that they
              exist. Hidden rather than disabled when this build cannot keep a setting: a gear
              that opens onto "not available" is a dead end. -->
@@ -67,6 +83,15 @@
         </button>
       </span>
     </CardHeader>
+
+    {#if panoBackupJob}
+      <div class="card-body pb-0">
+        <PanoBackupJobCard
+          job={panoBackupJob}
+          onupdate={(next) => (panoBackupJob = next)}
+          onfinish={onPanoBackupJobFinished} />
+      </div>
+    {/if}
 
     <!-- Only a running task says anything between the header and the rows. -->
     {#if activeTask}
@@ -161,60 +186,93 @@
                       aria-expanded="false"
                       aria-haspopup="true"
                       data-bs-toggle="dropdown"
-                      disabled={busyId === backup.id}
+                      disabled={busyId === backup.id || panoBackupBusyId === backup.id}
                       aria-label={$_('pages.servers.backups.column-actions')}>
-                      {#if busyId === backup.id}
+                      {#if busyId === backup.id || panoBackupBusyId === backup.id}
                         <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                       {:else}
                         <span class="fas fa-ellipsis-v"></span>
                       {/if}
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
-                      <button
-                        type="button"
-                        class="dropdown-item text-capitalize"
-                        onclick={() => download(backup)}>
-                        <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
-                        {$_('buttons.download')}
-                      </button>
-
-                      {#if canUploadToPanoBackup && String(backup.status || '').toUpperCase() === 'READY'}
+                      {#if backup.cloudOnly}
+                        <!-- Only Pano Backup has it: brought back first, then it is an ordinary backup. -->
                         <button
                           type="button"
                           class="dropdown-item text-capitalize"
-                          disabled={!!busyId}
-                          onclick={() => void uploadToPanoBackup(backup)}>
-                          <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
-                          {$_('pages.servers.backups.pano-backup-upload')}
+                          disabled={!canManage ||
+                            backup.cloud.status !== 'DONE' ||
+                            panoBackupJobRunning}
+                          onclick={() => panoBackup?.askImport(backup.cloud, backup.id)}>
+                          <i class="fa-solid fa-cloud-arrow-down me-2" aria-hidden="true"></i>
+                          {$_('pages.servers.backups.pano-backup.import')}
                         </button>
-                      {/if}
-
-                      {#if canManage}
+                        {#if canManage}
+                          <button
+                            type="button"
+                            class="dropdown-item text-danger text-capitalize"
+                            onclick={() => panoBackup?.askDelete(backup.cloud)}>
+                            <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
+                            {$_('pages.servers.backups.pano-backup.delete-remote')}
+                          </button>
+                        {/if}
+                      {:else}
                         <button
                           type="button"
                           class="dropdown-item text-capitalize"
-                          onclick={() => void togglePin(backup)}>
-                          <i class="fa-solid fa-thumbtack me-2" aria-hidden="true"></i>
-                          {backup.pinned
-                            ? $_('pages.servers.backups.unpin')
-                            : $_('pages.servers.backups.pin')}
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown-item text-capitalize"
-                          disabled={!!restoreBlockedReason || !!runningTask}
-                          onclick={() => askRestore(backup)}>
-                          <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"></i>
-                          {$_('pages.servers.backups.restore')}
+                          onclick={() => download(backup)}>
+                          <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
+                          {$_('buttons.download')}
                         </button>
 
-                        <button
-                          type="button"
-                          class="dropdown-item text-danger text-capitalize"
-                          onclick={() => askDelete(backup)}>
-                          <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
-                          {$_('buttons.delete')}
-                        </button>
+                        {#if canUploadToPanoBackup && !backup.cloud && String(backup.status || '').toUpperCase() === 'READY'}
+                          <button
+                            type="button"
+                            class="dropdown-item text-capitalize"
+                            disabled={!!busyId}
+                            onclick={() => void uploadToPanoBackup(backup)}>
+                            <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
+                            {$_('pages.servers.backups.pano-backup-upload')}
+                          </button>
+                        {/if}
+
+                        {#if canManage}
+                          <button
+                            type="button"
+                            class="dropdown-item text-capitalize"
+                            onclick={() => void togglePin(backup)}>
+                            <i class="fa-solid fa-thumbtack me-2" aria-hidden="true"></i>
+                            {backup.pinned
+                              ? $_('pages.servers.backups.unpin')
+                              : $_('pages.servers.backups.pin')}
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown-item text-capitalize"
+                            disabled={!!restoreBlockedReason || !!runningTask}
+                            onclick={() => askRestore(backup)}>
+                            <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"></i>
+                            {$_('pages.servers.backups.restore')}
+                          </button>
+
+                          <button
+                            type="button"
+                            class="dropdown-item text-danger text-capitalize"
+                            onclick={() => askDelete(backup)}>
+                            <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
+                            {$_('buttons.delete')}
+                          </button>
+
+                          {#if backup.cloud}
+                            <button
+                              type="button"
+                              class="dropdown-item text-danger text-capitalize"
+                              onclick={() => panoBackup?.askDelete(backup.cloud)}>
+                              <i class="fa-solid fa-cloud me-2" aria-hidden="true"></i>
+                              {$_('pages.servers.backups.pano-backup.delete-remote')}
+                            </button>
+                          {/if}
+                        {/if}
                       {/if}
                     </div>
                   </span>
@@ -229,7 +287,36 @@
                         role="img"
                         aria-label={$_('pages.servers.backups.pinned')}></i>
                     {/if}
-                    {backup.name}
+                    {#if backup.cloud}
+                      <!-- SM-PB — a copy is in Pano Backup; alone on a row whose backup is only there. -->
+                      <i
+                        class="fa-solid fa-cloud pano-backup-cloud me-1"
+                        role="img"
+                        aria-label={$_(
+                          backup.cloudOnly
+                            ? 'pages.servers.backups.pano-backup.cloud-only'
+                            : 'pages.servers.backups.pano-backup.in-cloud',
+                        )}
+                        use:tooltip={[
+                          $_(
+                            backup.cloudOnly
+                              ? 'pages.servers.backups.pano-backup.cloud-only'
+                              : 'pages.servers.backups.pano-backup.in-cloud',
+                          ),
+                          { placement: 'top' },
+                        ]}></i>
+                    {/if}
+                    {backup.name || $_('pages.servers.backups.pano-backup.unnamed')}
+                    {#if backup.cloud?.manifest?.encrypted}
+                      <i
+                        class="fa-solid fa-lock text-body-secondary"
+                        role="img"
+                        aria-label={$_('pages.servers.backups.pano-backup.encrypted')}
+                        use:tooltip={[
+                          $_('pages.servers.backups.pano-backup.encrypted'),
+                          { placement: 'top' },
+                        ]}></i>
+                    {/if}
                     <span class="badge fw-normal text-bg-primary">
                       {$_(`components.backup-options.mode-${backup.mode.toLowerCase()}`)}
                     </span>
@@ -266,9 +353,21 @@
                   {backup.createdByUsername || '—'}
                 </td>
                 <td>
-                  <span class="badge rounded-pill text-bg-{statusColour(backup.status)}">
-                    {statusLabel(backup.status)}
-                  </span>
+                  {#if backup.cloudOnly}
+                    <span
+                      class="badge rounded-pill text-bg-{backup.status === 'DONE'
+                        ? 'success'
+                        : 'secondary'}">
+                      {$_(
+                        `pages.servers.backups.pano-backup.status-${String(backup.status).toLowerCase()}`,
+                        { default: String(backup.status || '—') },
+                      )}
+                    </span>
+                  {:else}
+                    <span class="badge rounded-pill text-bg-{statusColour(backup.status)}">
+                      {statusLabel(backup.status)}
+                    </span>
+                  {/if}
                 </td>
                 <td>
                   {#if backup.sha256}
@@ -309,12 +408,15 @@
       {/if}
     {/if}
   </div>
+{/if}
 
-  {#if canUploadToPanoBackup}
-    <div class="mt-3">
-      <ServerPanoBackupCard {serverId} {canManage} />
-    </div>
-  {/if}
+{#if canUploadToPanoBackup}
+  <ServerPanoBackup
+    bind:this={panoBackup}
+    {serverId}
+    bind:overview={panoBackupOverview}
+    bind:job={panoBackupJob}
+    bind:busyId={panoBackupBusyId} />
 {/if}
 
 <div class="modal fade" tabindex="-1" aria-hidden="true" bind:this={createModalElement}>
@@ -695,7 +797,9 @@
   import { pageOf } from '$lib/components/pagination.util.js';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import ServerCapabilityNotice from '$lib/components/servers/ServerCapabilityNotice.svelte';
-  import ServerPanoBackupCard from '$lib/components/servers/ServerPanoBackupCard.svelte';
+  import ServerPanoBackup, { emptyOverview } from '$lib/components/servers/ServerPanoBackup.svelte';
+  import PanoBackupJobCard from '$lib/components/settings/pano-backup/PanoBackupJobCard.svelte';
+  import { isJobRunning, mergeWithCopies } from '$lib/pano-backup.util.js';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
 
   let { data } = $props();
@@ -710,8 +814,13 @@
   const canUploadToPanoBackup =
     hasPermissionToManage && hasPermission(Permissions.MANAGE_PANO_BACKUPS);
 
-  /** @type {Array<object>} */
+  /** @type {Array<any>} */
   let backups = $state([]);
+  /** SM-PB — this server's side of Pano Backup: its settings and copies, the import it runs. */
+  let panoBackup = $state();
+  let panoBackupOverview = $state(emptyOverview());
+  let panoBackupJob = $state(/** @type {any} */ (null));
+  let panoBackupBusyId = $state(/** @type {string | null} */ (null));
   /** What the card's find field holds; the list below is what it leaves of `backups`. */
   let query = $state('');
   /** Only ever true for a *re*-read: the first list comes in with the page (`load`). */
@@ -758,14 +867,29 @@
   let copiedTimeout;
 
   const serverId = $derived($server?.id ?? null);
+  /** The server's backups, with the copies only Pano Backup still has among them. */
+  const rows = $derived(
+    canUploadToPanoBackup ? mergeWithCopies(backups, panoBackupOverview.backups) : backups,
+  );
   /** The rows the find field left standing: a backup is found by its name and nothing else. */
   const visibleBackups = $derived.by(() => {
     const needle = query.trim().toLowerCase();
 
-    return needle
-      ? backups.filter((backup) => backup.name.toLowerCase().includes(needle))
-      : backups;
+    return needle ? rows.filter((backup) => backup.name.toLowerCase().includes(needle)) : rows;
   });
+  const panoBackupOn = $derived(
+    panoBackupOverview.connected && panoBackupOverview.settings.enabled,
+  );
+  const panoBackupTip = $derived(
+    !panoBackupOverview.loaded || !panoBackupOverview.connected
+      ? $_('pages.servers.backups.pano-backup.settings-title')
+      : panoBackupOn
+        ? `${$_('pages.servers.backups.pano-backup.title')} · ${$_(
+            `pages.servers.backups.pano-backup.mode-${panoBackupOverview.settings.mode.toLowerCase()}`,
+          )}`
+        : `${$_('pages.servers.backups.pano-backup.title')} · ${$_('pages.servers.backups.pano-backup.off')}`,
+  );
+  const panoBackupJobRunning = $derived(isJobRunning(panoBackupJob));
 
   // The list arrives whole (there is no page on the endpoint), so the pages are cut here.
   const BACKUPS_PAGE_SIZE = 10;
@@ -952,10 +1076,17 @@
 
     loading = false;
     applyBackups(result);
+    void panoBackup?.reload();
 
     if (result.status === 'error') {
       showServerLoadError(result.error, serverId);
     }
+  }
+
+  /** @param {any} ended */
+  function onPanoBackupJobFinished(ended) {
+    panoBackupJob = ended?.status === 'DONE' ? null : ended;
+    void loadBackups();
   }
 
   function openCreate() {

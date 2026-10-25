@@ -1809,19 +1809,15 @@
         "stored-hint": "Новые данные, которые этот снимок добавил на диск; остальное общее с другими снимками.",
         "restore-worlds-replaced": "Папки миров из бэкапа полностью заменяют текущие; остальные файлы записываются поверх.",
         "pano-backup-upload": "Загрузить в Pano Backup",
-        "pano-backup-started": "Идёт загрузка в Pano Backup. Следите за ней на странице резервных копий.",
+        "pano-backup-started": "Загрузка в Pano Backup. Когда копия будет там, в строке появится облако.",
         "pano-backup": {
           "title": "Pano Backup",
-          "count": "{count} копий в Pano Backup",
           "off": "Выключено",
           "mode-full": "Полные копии",
           "mode-snapshot": "Снимки",
           "settings-title": "Настройки Pano Backup",
-          "load-failed": "Не удалось прочитать Pano Backup.",
           "not-connected": "Подключите аккаунт Pano, чтобы хранить копии этого сервера в Pano Backup.",
           "connect": "Подключить аккаунт Pano",
-          "empty-on": "В Pano Backup пока ничего нет. Следующая копия этого сервера попадёт туда.",
-          "empty-off": "Копии этого сервера не отправляются в Pano Backup. Включите это через шестерёнку.",
           "import": "Перенести на этот сервер",
           "import-into-server": "Перенести на сервер",
           "import-title": "Перенести копию на сервер",
@@ -1851,7 +1847,10 @@
           "delete-title": "Удалить эту копию из Pano Backup?",
           "delete-description": "Она будет удалена из хранилища Pano Backup навсегда.",
           "type-archive": "Полная",
-          "type-snapshot": "Снимок"
+          "type-snapshot": "Снимок",
+          "in-cloud": "В Pano Backup",
+          "cloud-only": "Только в Pano Backup",
+          "delete-remote": "Удалить из Pano Backup"
         }
       },
       "activity": {

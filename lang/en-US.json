@@ -1809,19 +1809,15 @@
         "stored-hint": "New data this snapshot added to disk; everything else is shared with other snapshots.",
         "restore-worlds-replaced": "World folders in the backup replace the current ones completely; other files are written over what is there.",
         "pano-backup-upload": "Upload to Pano Backup",
-        "pano-backup-started": "Uploading to Pano Backup. Follow it on the Backups page.",
+        "pano-backup-started": "Uploading to Pano Backup. A cloud shows on the row once it is there.",
         "pano-backup": {
           "title": "Pano Backup",
-          "count": "{count} Backups in Pano Backup",
           "off": "Off",
           "mode-full": "Full backups",
           "mode-snapshot": "Snapshots",
           "settings-title": "Pano Backup Settings",
-          "load-failed": "Pano Backup could not be read.",
           "not-connected": "Connect your Pano account to keep this server's backups in Pano Backup.",
           "connect": "Connect Pano Account",
-          "empty-on": "Nothing in Pano Backup yet. The next backup of this server goes there.",
-          "empty-off": "This server's backups do not go to Pano Backup. Turn it on from the gear.",
           "import": "Bring to this server",
           "import-into-server": "Bring into a server",
           "import-title": "Bring a backup into a server",
@@ -1851,7 +1847,10 @@
           "delete-title": "Delete this backup from Pano Backup?",
           "delete-description": "It is deleted from your Pano Backup storage for good.",
           "type-archive": "Full",
-          "type-snapshot": "Snapshot"
+          "type-snapshot": "Snapshot",
+          "in-cloud": "In Pano Backup",
+          "cloud-only": "Only in Pano Backup",
+          "delete-remote": "Delete from Pano Backup"
         }
       },
       "activity": {
