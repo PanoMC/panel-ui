@@ -1223,8 +1223,8 @@
   }
 
   /**
-   * Sends one FULL backup to Pano Backup; the platform runs it as a Pano backup job (progress on
-   * the Backups page).
+   * Sends one backup (full or snapshot) to Pano Backup; the platform runs it as a Pano backup job, followed above
+   * the table.
    *
    * @param {object} backup
    */
@@ -1249,6 +1249,8 @@
         return;
       }
 
+      // Followed above the table like an import; the row gets its cloud once the copy is there.
+      panoBackupJob = body.job ?? null;
       void showSuccess('pages.servers.backups.pano-backup-started');
     } finally {
       busyId = null;
