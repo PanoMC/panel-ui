@@ -1254,7 +1254,18 @@
       "published": "Published",
       "thumbnail-not-determined": "Drag or click<br />to add preview",
       "created-at": "Created At:",
-      "updated-at": "Updated At:"
+      "updated-at": "Updated At:",
+      "unsaved-changes": "There are unsaved changes",
+      "autosave-saving": "Saving…",
+      "autosave-failed": "Autosave failed",
+      "autosave-saved": "Saved {time}",
+      "just-now": "just now",
+      "last-edited": "Last edited {time}",
+      "leave-unsaved": {
+        "title": "Leave without saving?",
+        "description": "Some changes are not saved automatically yet and may be lost if you leave now.",
+        "confirm": "Leave"
+      }
     },
     "servers": {
       "card": {
@@ -3541,7 +3552,9 @@
       "publish": "Publish",
       "move-to-trash": "Move To Trash",
       "no-category": "No Category",
-      "filter": "Filter"
+      "filter": "Filter",
+      "unsaved-changes": "This post has unsaved changes",
+      "untitled": "Untitled"
     },
     "ticket-row": {
       "select": "Select",

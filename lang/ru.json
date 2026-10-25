@@ -1254,7 +1254,18 @@
       "published": "Опубликовано",
       "thumbnail-not-determined": "Перетащите или нажмите,<br />чтобы добавить превью",
       "created-at": "Создано:",
-      "updated-at": "Обновлено:"
+      "updated-at": "Обновлено:",
+      "unsaved-changes": "Есть несохранённые изменения",
+      "autosave-saving": "Сохранение…",
+      "autosave-failed": "Автосохранение не удалось",
+      "autosave-saved": "Сохранено {time}",
+      "just-now": "только что",
+      "last-edited": "Изменено {time}",
+      "leave-unsaved": {
+        "title": "Уйти без сохранения?",
+        "description": "Некоторые изменения ещё не сохранены автоматически и могут быть потеряны, если вы уйдёте сейчас.",
+        "confirm": "Уйти"
+      }
     },
     "servers": {
       "card": {
@@ -3541,7 +3552,9 @@
       "publish": "Опубликовать",
       "move-to-trash": "В корзину",
       "no-category": "Без категории",
-      "filter": "Фильтр"
+      "filter": "Фильтр",
+      "unsaved-changes": "У этой записи есть несохранённые изменения",
+      "untitled": "Без названия"
     },
     "ticket-row": {
       "select": "Выбрать",

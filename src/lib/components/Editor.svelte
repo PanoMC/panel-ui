@@ -241,15 +241,60 @@
   {/if}
 </div>
 
+<script module>
+  import { generateHTML, generateJSON } from '@tiptap/core';
+  import StarterKit from '@tiptap/starter-kit';
+  import Image from '@tiptap/extension-image';
+  import { TextStyleKit } from '@tiptap/extension-text-style';
+
+  function createExtensions() {
+    return [
+      StarterKit,
+      Image,
+      TextStyleKit.configure({
+        backgroundColor: {
+          types: ['textStyle'],
+        },
+        color: {
+          types: ['textStyle'],
+        },
+        fontFamily: {
+          types: ['textStyle'],
+        },
+        fontSize: {
+          types: ['textStyle'],
+        },
+        lineHeight: {
+          types: ['textStyle'],
+        },
+      }),
+    ];
+  }
+
+  /**
+   * [html] the way the editor writes it back once loaded (TipTap rewrites what it reads), so a caller can
+   * tell a real change from that rewrite. Browser only; an empty text answers the empty editor's HTML.
+   *
+   * @param {string} html
+   * @returns {string}
+   */
+  export function normalizeHtml(html) {
+    const extensions = createExtensions();
+
+    try {
+      return generateHTML(generateJSON(html || '<p></p>', extensions), extensions);
+    } catch {
+      return html;
+    }
+  }
+</script>
+
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/env';
   import { _ } from 'svelte-i18n';
 
   import { Editor } from '@tiptap/core';
-  import StarterKit from '@tiptap/starter-kit';
-  import Image from '@tiptap/extension-image';
-  import { TextStyleKit } from '@tiptap/extension-text-style';
 
   let element = $state();
   let colorPickerElement = $state();
@@ -280,27 +325,7 @@
     // TipTap throws for it, which answered 500 for every direct load of a post that has text. The
     // server renders the toolbar around an empty document; the browser builds the real one.
     content: (browser && content) || { type: 'doc', content: [{ type: 'paragraph', content: [] }] },
-    extensions: [
-      StarterKit,
-      Image,
-      TextStyleKit.configure({
-        backgroundColor: {
-          types: ['textStyle'],
-        },
-        color: {
-          types: ['textStyle'],
-        },
-        fontFamily: {
-          types: ['textStyle'],
-        },
-        fontSize: {
-          types: ['textStyle'],
-        },
-        lineHeight: {
-          types: ['textStyle'],
-        },
-      }),
-    ],
+    extensions: createExtensions(),
     onTransaction: () => {
       // force re-render so `editor.isActive` works as expected
       editor = editor;

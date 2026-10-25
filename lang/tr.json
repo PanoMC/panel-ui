@@ -1254,7 +1254,18 @@
       "published": "Yayımlanmış",
       "thumbnail-not-determined": "Önizleme'yi sürükleyin<br />veya tıklayın",
       "created-at": "Yayımlandı:",
-      "updated-at": "Güncellendi:"
+      "updated-at": "Güncellendi:",
+      "unsaved-changes": "Kaydedilmemiş değişiklikler var",
+      "autosave-saving": "Kaydediliyor…",
+      "autosave-failed": "Otomatik kayıt başarısız",
+      "autosave-saved": "{time} kaydedildi",
+      "just-now": "az önce",
+      "last-edited": "{time} düzenlendi",
+      "leave-unsaved": {
+        "title": "Kaydetmeden çıkılsın mı?",
+        "description": "Bazı değişiklikler henüz otomatik kaydedilmedi; şimdi çıkarsan kaybolabilirler.",
+        "confirm": "Çık"
+      }
     },
     "servers": {
       "card": {
@@ -3541,7 +3552,9 @@
       "publish": "Yayımla",
       "move-to-trash": "Çöp Kutusuna Taşı",
       "no-category": "Kategorisiz",
-      "filter": "Filtrele"
+      "filter": "Filtrele",
+      "unsaved-changes": "Bu gönderide kaydedilmemiş değişiklikler var",
+      "untitled": "Başlıksız"
     },
     "ticket-row": {
       "select": "Seç",
