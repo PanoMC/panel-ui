@@ -349,6 +349,22 @@
     }
   });
 
+  /**
+   * Puts [value] (text or HTML) where the caret is, as typing it would. Callers reach it through
+   * `bind:this`: a ready reply, a template variable.
+   *
+   * @param {string} value
+   */
+  export function insertContent(value) {
+    if (isHtmlView || !editor) {
+      content = (content ?? '') + value;
+
+      return;
+    }
+
+    editor.chain().focus().insertContent(value).run();
+  }
+
   function openColorPicker() {
     colorPickerElement.click();
   }

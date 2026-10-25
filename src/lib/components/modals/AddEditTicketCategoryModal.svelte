@@ -55,6 +55,24 @@
               {$_('components.modals.add-edit-ticket-category.inputs.enabled')}
             </label>
           </div>
+          <!-- The ready reply sent by itself as the first answer of a new ticket in this category; none
+               chosen, the default auto-reply of the ticket settings is sent. -->
+          <label class="form-label mt-3 mb-1" for="ticketCategoryAutoReply">
+            {$_('components.modals.add-edit-ticket-category.inputs.auto-reply')}
+          </label>
+          <select
+            class="form-select"
+            id="ticketCategoryAutoReply"
+            class:border-danger={$errors.autoReplyTemplateId}
+            value={$category.autoReplyTemplateId ?? -1}
+            on:change={(event) =>
+              ($category.autoReplyTemplateId = Number(event.currentTarget.value))}>
+            <option value={-1}
+              >{$_('components.modals.add-edit-ticket-category.inputs.no-auto-reply')}</option>
+            {#each $templates as template (template.id)}
+              <option value={template.id}>{template.title}</option>
+            {/each}
+          </select>
         </div>
         <div class="modal-footer">
           <button
@@ -74,10 +92,15 @@
 <script context="module">
   import { writable, get } from 'svelte/store';
 
+  import ApiUtil from '$lib/api.util';
+  import { loadAllTicketTemplates } from '$lib/ticketTemplates.util.js';
+
   const modalElement = writable();
   const mode = writable('create');
   const category = writable({});
   const errors = writable([]);
+  /** The ready replies a category may send as its auto-reply. */
+  const templates = writable([]);
 
   let callback = (routeFirstPage) => {};
   let hideCallback = (category) => {};
@@ -85,8 +108,10 @@
 
   export function show(
     newMode,
-    newCategory = { id: -1, title: '', description: '', enabled: true },
+    newCategory = { id: -1, title: '', description: '', enabled: true, autoReplyTemplateId: -1 },
   ) {
+    void loadAllTicketTemplates().then((items) => templates.set(items));
+
     mode.set(newMode);
 
     if (newCategory.description === null) newCategory.description = '';
@@ -119,8 +144,6 @@
 <script>
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
-
-  import ApiUtil from '$lib/api.util';
 
   let loading = false;
   $: buttonDisabled = !$category.title;

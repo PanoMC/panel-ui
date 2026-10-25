@@ -104,19 +104,33 @@
                   </div>
                 </div>
                 <small class="text-body-secondary mt-1">
+                  {#if message.system}
+                    {$_('pages.ticket-detail.auto-reply')} ·
+                  {/if}
                   <Date time={message.date} relativeFormat={true} />
                 </small>
               </div>
               <div class="col-auto">
-                <a href="{base}/players/detail/{message.username}" class="rounded focus-ring">
+                {#if message.system}
+                  <!-- Sent by the site itself (the category's auto-reply): the site's icon, no profile. -->
                   <img
-                    src="/api/v1/profile/picture/{message.username}?{$avatarVersion}"
+                    src="/api/v1/favicon"
                     alt={message.username}
                     class="rounded-circle"
-                    use:tooltip={[message.username, { placement: 'bottom' }]}
+                    use:tooltip={[message.username || $_('pages.ticket-detail.auto-reply')]}
                     width="48"
                     height="48" />
-                </a>
+                {:else}
+                  <a href="{base}/players/detail/{message.username}" class="rounded focus-ring">
+                    <img
+                      src="/api/v1/profile/picture/{message.username}?{$avatarVersion}"
+                      alt={message.username}
+                      class="rounded-circle"
+                      use:tooltip={[message.username, { placement: 'bottom' }]}
+                      width="48"
+                      height="48" />
+                  </a>
+                {/if}
               </div>
             </div>
           {:else}
@@ -148,8 +162,65 @@
       </div>
     </div>
     <div class="card-footer" class:d-none={data.ticket.status === TicketStatuses.CLOSED}>
+      <!-- Ready replies: a click fills the template in for this ticket and puts it where the caret
+           is. The first few are at hand; the rest are searched under "All". -->
+      {#if data.templates.length > 0}
+        <div class="d-flex flex-wrap align-items-center gap-1 mb-2">
+          <span class="form-text mt-0 me-1">{$_('pages.ticket-detail.templates')}</span>
+          {#each data.templates.slice(0, VISIBLE_TEMPLATES) as template (template.id)}
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary py-0"
+              disabled={templateLoading}
+              title={plainText(template.body)}
+              on:mousedown|preventDefault
+              on:click={() => insertTemplate(template)}>
+              {template.title}
+            </button>
+          {/each}
+          {#if data.templates.length > VISIBLE_TEMPLATES}
+            <div class="dropdown" bind:this={allTemplatesDropdown}>
+              <button
+                type="button"
+                class="btn btn-sm btn-link py-0 dropdown-toggle"
+                data-bs-toggle="dropdown"
+                data-bs-auto-close="outside"
+                aria-expanded="false"
+                disabled={templateLoading}>
+                {$_('pages.ticket-detail.all-templates')}
+              </button>
+              <div class="dropdown-menu p-2" style="min-width: 280px;">
+                <input
+                  class="form-control form-control-sm mb-2"
+                  type="search"
+                  placeholder={$_('pages.ticket-detail.search-templates')}
+                  bind:value={templateSearch} />
+                <div class="overflow-auto" style="max-height: 240px;">
+                  {#each filteredTemplates as template (template.id)}
+                    <button
+                      type="button"
+                      class="dropdown-item rounded"
+                      title={plainText(template.body)}
+                      on:click={() => insertTemplate(template)}>
+                      {template.title}
+                    </button>
+                  {:else}
+                    <span class="dropdown-item-text text-body-secondary">
+                      {$_('pages.ticket-detail.no-templates-found')}
+                    </span>
+                  {/each}
+                </div>
+              </div>
+            </div>
+          {/if}
+          {#if templateLoading}
+            <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+          {/if}
+        </div>
+      {/if}
+
       <!-- Send Message Section -->
-      <Editor bind:content={messageText} bind:isEmpty={isEditorEmpty}>
+      <Editor bind:this={editor} bind:content={messageText} bind:isEmpty={isEditorEmpty}>
         <button
           class="btn btn-secondary"
           on:click={sendMessage}
@@ -171,6 +242,7 @@
 
   import { TicketStatuses } from '$lib/components/badges/TicketStatusBadge.svelte';
   import Editor from '$lib/components/Editor.svelte';
+  import { loadAllTicketTemplates } from '$lib/ticketTemplates.util.js';
   import { error } from '@sveltejs/kit';
 
   /**
@@ -182,10 +254,13 @@
 
     const id = event.params.id;
 
-    const body = await ApiUtil.get({
-      path: `/panel/tickets/${id}`,
-      request: event,
-    });
+    const [body, templates] = await Promise.all([
+      ApiUtil.get({
+        path: `/panel/tickets/${id}`,
+        request: event,
+      }),
+      loadAllTicketTemplates(event),
+    ]);
 
     if (body.error) {
       if (body.error?.code === 'NOT_EXISTS' || body.error?.code === 'PAGE_NOT_FOUND') {
@@ -196,6 +271,7 @@
     }
 
     body.ticket.id = parseInt(id);
+    body.templates = templates;
 
     return body;
   }
@@ -223,6 +299,7 @@
   import TicketStatusBadge from '$lib/components/badges/TicketStatusBadge.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
   import { avatarVersion } from '$lib/Store';
+  import { showError as showErrorToast } from '$lib/components/ToastContainer.svelte';
 
   export let data;
 
@@ -236,6 +313,52 @@
 
   let messageText = '';
   let isEditorEmpty = true;
+
+  let editor;
+  let templateLoading = false;
+
+  /** How many ready replies sit above the editor; the rest are under "All". */
+  const VISIBLE_TEMPLATES = 4;
+
+  let allTemplatesDropdown;
+  let templateSearch = '';
+
+  $: filteredTemplates = data.templates.filter((template) =>
+    template.title.toLocaleLowerCase().includes(templateSearch.trim().toLocaleLowerCase()),
+  );
+
+  /** The template's text without its markup, shown as a hint on its button. */
+  function plainText(html) {
+    return (html ?? '')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  /** Fills [template] in for this ticket (the asking admin as `{{staff}}`) and puts it in the reply. */
+  async function insertTemplate(template) {
+    window.bootstrap?.Dropdown.getInstance(
+      allTemplatesDropdown?.querySelector('[data-bs-toggle="dropdown"]'),
+    )?.hide();
+
+    templateSearch = '';
+    templateLoading = true;
+
+    const body = await ApiUtil.post({
+      path: `/panel/tickets/${data.ticket.id}/templates/${template.id}/render`,
+    }).catch(() => null);
+
+    templateLoading = false;
+
+    if (!body || body.error || typeof body.message !== 'string') {
+      await showErrorToast('pages.frontend.errors.UNKNOWN');
+
+      return;
+    }
+
+    editor?.insertContent(body.message);
+  }
 
   let shouldScroll = true;
 

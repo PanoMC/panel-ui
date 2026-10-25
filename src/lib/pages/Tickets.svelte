@@ -17,6 +17,7 @@
         {#if !data.categoryUrl}
           <PageNavItem href="/tickets">{$_('pages.ticket-categories.tickets')}</PageNavItem>
           <PageNavItem href="/tickets/categories">{$_('buttons.categories')}</PageNavItem>
+          <PageNavItem href="/tickets/templates">{$_('pages.ticket-templates.nav')}</PageNavItem>
         {/if}
       </PageNav>
 
