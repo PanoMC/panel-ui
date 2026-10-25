@@ -91,6 +91,10 @@ export const KNOWN_ERRORS = Object.freeze([
   'QUOTA_EXCEEDED_TRANSFER',
   'BACKUP_NOT_FOUND',
   'NOT_A_FULL_BACKUP',
+  'SERVER_BACKUP_IMPORT_UNSUPPORTED',
+  'SERVER_BACKUP_IMPORT_FAILED',
+  'SERVER_BACKUP_FETCH_FAILED',
+  'NODE_TOO_OLD',
   'NETWORK_ERROR',
   'SNAPSHOT_BUSY',
   'SNAPSHOT_NOT_FOUND',
@@ -372,7 +376,8 @@ export function formatSnapshotBytes(bytes) {
  * @returns {boolean} whether this Pano can restore it.
  */
 export function canRestoreSnapshot(snapshot) {
-  return snapshot?.status === 'DONE';
+  // A server's snapshot is brought into a server, never restored over (or downloaded as) this Pano.
+  return snapshot?.status === 'DONE' && snapshot?.kind !== 'mc-server';
 }
 
 /**
@@ -380,7 +385,8 @@ export function canRestoreSnapshot(snapshot) {
  * @returns {boolean} whether it can be downloaded as a `.panoarc` (any finished snapshot of the account).
  */
 export function canDownloadSnapshot(snapshot) {
-  return snapshot?.status === 'DONE';
+  // A server's snapshot is brought into a server, never restored over (or downloaded as) this Pano.
+  return snapshot?.status === 'DONE' && snapshot?.kind !== 'mc-server';
 }
 
 /**

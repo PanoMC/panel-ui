@@ -187,9 +187,6 @@
   let remoteSchedule = $state('OFF');
   let remoteHour = $state(3);
   let remoteMode = $state('SNAPSHOT');
-  /** Kept as saved and sent back unchanged: MC server uploads have no setting here yet. */
-  /** @type {number[]} */
-  let mcServerIds = $state([]);
 
   let saving = $state(false);
   /** @type {ReturnType<typeof describeError>} */
@@ -207,7 +204,6 @@
       : 'OFF';
     remoteHour = Number(remote?.settings?.hour ?? 3);
     remoteMode = normaliseMode(remote?.settings?.mode);
-    mcServerIds = (remote?.settings?.mcServerIds || []).map(Number);
     error = null;
 
     modal?.show();
@@ -241,7 +237,6 @@
           schedule: remoteSchedule,
           hour: Number(remoteHour),
           mode: remoteMode,
-          mcServerIds,
         });
       }
 

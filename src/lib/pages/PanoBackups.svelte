@@ -261,6 +261,16 @@
                               {$_('buttons.download')}
                             </button>
                           {/if}
+                          {#if backup.kind === 'mc-server' && backup.status === 'DONE' && canImportServer}
+                            <button
+                              type="button"
+                              class="dropdown-item text-capitalize"
+                              disabled={running}
+                              onclick={() => importModal?.open(backup)}>
+                              <i class="fa-solid fa-cloud-arrow-down me-2" aria-hidden="true"></i>
+                              {$_('pages.servers.backups.pano-backup.import-into-server')}
+                            </button>
+                          {/if}
                           {#if canRestoreRow(backup)}
                             <button
                               type="button"
@@ -523,6 +533,7 @@
 </BsModal>
 
 <RestorePanoBackupModal bind:this={restoreModal} onsubmit={submitRestore} />
+<ImportServerBackupModal bind:this={importModal} onstarted={(next) => (job = next)} />
 
 <script module>
   import { redirect } from '@sveltejs/kit';
@@ -614,6 +625,7 @@
   import PanoBackupAccountSummary from '$lib/components/settings/pano-backup/PanoBackupAccountSummary.svelte';
   import PassphraseFields from '$lib/components/settings/pano-backup/PassphraseFields.svelte';
   import RestorePanoBackupModal from '$lib/components/settings/pano-backup/RestorePanoBackupModal.svelte';
+  import ImportServerBackupModal from '$lib/components/settings/pano-backup/ImportServerBackupModal.svelte';
   import { isRunningRestore, restoreJob } from '$lib/pano-restore.store.js';
   import PanoBackupSettingsModal from '$lib/components/settings/pano-backup/PanoBackupSettingsModal.svelte';
   import PanoBackupPassphraseModal from '$lib/components/settings/pano-backup/PanoBackupPassphraseModal.svelte';
@@ -686,6 +698,10 @@
   let uploadModal = $state();
   /** @type {RestorePanoBackupModal | undefined} */
   let restoreModal = $state();
+  /** @type {ImportServerBackupModal | undefined} */
+  let importModal = $state();
+  /** A server backup can be brought into a managed server by whoever may manage that server's backups. */
+  const canImportServer = hasPermission(Permissions.MANAGE_SERVER_BACKUPS);
   /** @type {PanoBackupSettingsModal | undefined} */
   let settingsModal = $state();
   /** @type {PanoBackupPassphraseModal | undefined} */

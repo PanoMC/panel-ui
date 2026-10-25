@@ -178,17 +178,14 @@
                         {$_('buttons.download')}
                       </button>
 
-                      {#if canUploadToPanoBackup && backup.mode !== 'SNAPSHOT' && String(backup.status || '').toUpperCase() === 'READY'}
-                        <!-- Not offered yet: shown as coming soon, never clickable. -->
+                      {#if canUploadToPanoBackup && String(backup.status || '').toUpperCase() === 'READY'}
                         <button
                           type="button"
-                          class="dropdown-item text-capitalize d-flex align-items-center"
-                          disabled>
+                          class="dropdown-item text-capitalize"
+                          disabled={!!busyId}
+                          onclick={() => void uploadToPanoBackup(backup)}>
                           <i class="fa-solid fa-cloud-arrow-up me-2" aria-hidden="true"></i>
                           {$_('pages.servers.backups.pano-backup-upload')}
-                          <span class="badge text-bg-secondary text-uppercase ms-2">
-                            {$_('pages.servers.backups.coming-soon')}
-                          </span>
                         </button>
                       {/if}
 
@@ -312,6 +309,12 @@
       {/if}
     {/if}
   </div>
+
+  {#if canUploadToPanoBackup}
+    <div class="mt-3">
+      <ServerPanoBackupCard {serverId} {canManage} />
+    </div>
+  {/if}
 {/if}
 
 <div class="modal fade" tabindex="-1" aria-hidden="true" bind:this={createModalElement}>
@@ -692,6 +695,7 @@
   import { pageOf } from '$lib/components/pagination.util.js';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import ServerCapabilityNotice from '$lib/components/servers/ServerCapabilityNotice.svelte';
+  import ServerPanoBackupCard from '$lib/components/servers/ServerPanoBackupCard.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
 
   let { data } = $props();
@@ -1089,7 +1093,7 @@
 
   /**
    * Sends one FULL backup to Pano Backup; the platform runs it as a Pano backup job (progress on
-   * the Backups page). Not wired to the menu while the feature is marked "coming soon".
+   * the Backups page).
    *
    * @param {object} backup
    */
