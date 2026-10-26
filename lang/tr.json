@@ -1853,12 +1853,12 @@
           "type-snapshot": "Anlık görüntü",
           "in-cloud": "Pano Backup'ta",
           "cloud-only": "Yalnızca Pano Backup'ta",
-          "delete-remote": "Pano Backup'tan sil",
           "restore-title": "Sunucuyu Pano Backup'tan geri yükle",
           "restore-started": "Geri yükleme başlatıldı. Önce yedek indirilir, sonra sunucu geri yüklenir.",
           "deleted": "Yedek Pano Backup'tan silindi.",
           "upload-title": "Bu yedek Pano Backup'a yüklensin mi?",
-          "upload-description": "{name} Pano Backup depolamanıza gönderilir ve orada yer kaplar."
+          "upload-description": "{name} Pano Backup depolamanıza gönderilir ve orada yer kaplar.",
+          "delete-copy-too": "Pano Backup'taki kopyasını da sil"
         }
       },
       "activity": {

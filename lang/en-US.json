@@ -1853,12 +1853,12 @@
           "type-snapshot": "Snapshot",
           "in-cloud": "In Pano Backup",
           "cloud-only": "Only in Pano Backup",
-          "delete-remote": "Delete from Pano Backup",
           "restore-title": "Restore a server from Pano Backup",
           "restore-started": "The restore was started. The backup is downloaded first, then the server is restored.",
           "deleted": "The backup was deleted from Pano Backup.",
           "upload-title": "Upload this backup to Pano Backup?",
-          "upload-description": "{name} is sent to your Pano Backup storage and takes space there."
+          "upload-description": "{name} is sent to your Pano Backup storage and takes space there.",
+          "delete-copy-too": "Also delete its copy from Pano Backup"
         }
       },
       "activity": {

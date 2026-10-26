@@ -214,7 +214,7 @@
                             class="dropdown-item text-danger text-capitalize"
                             onclick={() => panoBackup?.askDelete(backup.cloud)}>
                             <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
-                            {$_('pages.servers.backups.pano-backup.delete-remote')}
+                            {$_('buttons.delete')}
                           </button>
                         {/if}
                       {:else}
@@ -255,16 +255,6 @@
                             <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"></i>
                             {$_('pages.servers.backups.restore')}
                           </button>
-
-                          {#if backup.cloud}
-                            <button
-                              type="button"
-                              class="dropdown-item text-danger text-capitalize"
-                              onclick={() => panoBackup?.askDelete(backup.cloud)}>
-                              <i class="fa-solid fa-cloud me-2" aria-hidden="true"></i>
-                              {$_('pages.servers.backups.pano-backup.delete-remote')}
-                            </button>
-                          {/if}
 
                           <button
                             type="button"
@@ -675,6 +665,19 @@
               class:border-danger={passwordError} />
             <label for="deletePassword">{$_('pages.servers.backups.password-placeholder')}</label>
           </div>
+          {#if targetBackup?.cloud}
+            <!-- SM-PB — its copy at Pano Backup goes too only when asked: it is what is left if this server is lost. -->
+            <div class="form-check text-start mt-3">
+              <input
+                id="deleteCloudCopy"
+                class="form-check-input"
+                type="checkbox"
+                bind:checked={deleteCloudCopy} />
+              <label class="form-check-label" for="deleteCloudCopy">
+                {$_('pages.servers.backups.pano-backup.delete-copy-too')}
+              </label>
+            </div>
+          {/if}
         </div>
         <div class="modal-footer flex-nowrap">
           <button
@@ -866,6 +869,8 @@
   let deleteModalElement = $state();
   let restorePasswordInput = $state();
   let deletePasswordInput = $state();
+  /** Whether the backup's copy at Pano Backup is deleted with it (asked in the delete dialog). */
+  let deleteCloudCopy = $state(false);
   let downloadAnchor = $state();
 
   let restoreModal;
@@ -1362,6 +1367,7 @@
     targetBackup = backup;
     currentPassword = '';
     passwordError = false;
+    deleteCloudCopy = false;
     deleteModal?.show();
   }
 
@@ -1437,6 +1443,7 @@
   }
 
   async function confirmDelete() {
+    const copy = deleteCloudCopy ? targetBackup?.cloud : null;
     const body = await postOnBackup('delete');
 
     if (!body) {
@@ -1445,6 +1452,12 @@
 
     deleteModal?.hide();
     void showSuccess('pages.servers.backups.deleted', { name: targetBackup?.name || '' });
+
+    // The backup is gone either way; a copy that could not be deleted stays as a row of its own and says why.
+    if (copy) {
+      await panoBackup?.deleteCopy(copy);
+    }
+
     await loadBackups();
   }
 

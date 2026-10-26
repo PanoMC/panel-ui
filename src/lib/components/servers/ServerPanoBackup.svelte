@@ -384,24 +384,34 @@
         description: 'pages.servers.backups.pano-backup.delete-description',
         confirmLabel: 'buttons.delete',
       },
-      async () => {
-        const body = await ApiUtil.delete({
-          path: `/panel/pano-backups/remote/${isSnapshotCopy(copy) ? 'snapshots' : 'backups'}/${encodeURIComponent(copy.id)}`,
-          handler: (response) => response,
-        }).catch(() => null);
-
-        if (!body || body.error) {
-          const error = describeError(body || { error: { code: 'NETWORK_ERROR' } });
-
-          void showError(error.key, error.values);
-
-          return;
-        }
-
-        void showSuccess('pages.servers.backups.pano-backup.deleted');
-        await reload();
-      },
+      () => deleteCopy(copy),
     );
+  }
+
+  /**
+   * Deletes [copy] from Pano Backup without asking (the caller asked already) and says how it went.
+   *
+   * @param {any} copy
+   * @returns {Promise<boolean>}
+   */
+  export async function deleteCopy(copy) {
+    const body = await ApiUtil.delete({
+      path: `/panel/pano-backups/remote/${isSnapshotCopy(copy) ? 'snapshots' : 'backups'}/${encodeURIComponent(copy.id)}`,
+      handler: (response) => response,
+    }).catch(() => null);
+
+    if (!body || body.error) {
+      const error = describeError(body || { error: { code: 'NETWORK_ERROR' } });
+
+      void showError(error.key, error.values);
+
+      return false;
+    }
+
+    void showSuccess('pages.servers.backups.pano-backup.deleted');
+    await reload();
+
+    return true;
   }
 
   onMount(() => {

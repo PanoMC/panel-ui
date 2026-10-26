@@ -1853,12 +1853,12 @@
           "type-snapshot": "Снимок",
           "in-cloud": "В Pano Backup",
           "cloud-only": "Только в Pano Backup",
-          "delete-remote": "Удалить из Pano Backup",
           "restore-title": "Восстановить сервер из Pano Backup",
           "restore-started": "Восстановление запущено. Сначала копия скачивается, затем сервер восстанавливается.",
           "deleted": "Копия удалена из Pano Backup.",
           "upload-title": "Загрузить эту копию в Pano Backup?",
-          "upload-description": "{name} будет отправлена в ваше хранилище Pano Backup и займёт там место."
+          "upload-description": "{name} будет отправлена в ваше хранилище Pano Backup и займёт там место.",
+          "delete-copy-too": "Удалить и копию из Pano Backup"
         }
       },
       "activity": {
