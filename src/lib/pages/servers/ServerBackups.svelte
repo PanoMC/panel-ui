@@ -294,7 +294,7 @@
                               ? 'pages.servers.backups.pano-backup.cloud-only'
                               : 'pages.servers.backups.pano-backup.in-cloud',
                           ),
-                          { placement: 'top' },
+                          { placement: 'bottom' },
                         ]}></i>
                     {/if}
                     {backup.name || $_('pages.servers.backups.pano-backup.unnamed')}
