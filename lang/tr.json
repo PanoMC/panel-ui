@@ -1855,7 +1855,6 @@
           "cloud-only": "Yalnızca Pano Backup'ta",
           "delete-remote": "Pano Backup'tan sil",
           "restore-title": "Sunucuyu Pano Backup'tan geri yükle",
-          "restore-description": "Yedek seçilen sunucunun yedeklerine getirilir, ardından sunucu bu yedekten geri yüklenir: önce mevcut durumun bir güvenlik yedeği alınır, sonra dosyaları değiştirilir.",
           "restore-started": "Geri yükleme başlatıldı. Önce yedek indirilir, sonra sunucu geri yüklenir.",
           "deleted": "Yedek Pano Backup'tan silindi.",
           "upload-title": "Bu yedek Pano Backup'a yüklensin mi?",

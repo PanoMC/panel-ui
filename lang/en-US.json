@@ -1855,7 +1855,6 @@
           "cloud-only": "Only in Pano Backup",
           "delete-remote": "Delete from Pano Backup",
           "restore-title": "Restore a server from Pano Backup",
-          "restore-description": "The backup is brought into the chosen server's backups, then the server is restored from it: a safety backup of the current state is taken first, then its files are replaced.",
           "restore-started": "The restore was started. The backup is downloaded first, then the server is restored.",
           "deleted": "The backup was deleted from Pano Backup.",
           "upload-title": "Upload this backup to Pano Backup?",

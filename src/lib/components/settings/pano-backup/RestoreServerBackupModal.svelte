@@ -38,10 +38,6 @@
               </select>
             </div>
 
-            <div class="text-body-secondary small">
-              {$_('pages.servers.backups.pano-backup.restore-description')}
-            </div>
-
             {#if selected && !canStart(selected)}
               <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
                 <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
