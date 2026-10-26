@@ -1819,7 +1819,6 @@
           "off": "Kapalı",
           "mode-full": "Tam yedekler",
           "mode-snapshot": "Anlık görüntüler",
-          "settings-title": "Pano Backup Ayarları",
           "not-connected": "Bu sunucunun yedeklerini Pano Backup'ta tutmak için Pano hesabınızı bağlayın.",
           "connect": "Pano Hesabını Bağla",
           "import": "Bu sunucuya getir",

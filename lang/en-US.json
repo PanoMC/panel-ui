@@ -1819,7 +1819,6 @@
           "off": "Off",
           "mode-full": "Full backups",
           "mode-snapshot": "Snapshots",
-          "settings-title": "Pano Backup Settings",
           "not-connected": "Connect your Pano account to keep this server's backups in Pano Backup.",
           "connect": "Connect Pano Account",
           "import": "Bring to this server",

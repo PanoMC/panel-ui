@@ -669,3 +669,24 @@ export function mergeWithCopies(local, remote) {
 
   return rows.sort((a, b) => (Number(b.createdAt) || 0) - (Number(a.createdAt) || 0));
 }
+
+/** The largest "keep the last N" / "keep X days" a server's Pano Backup retention takes. */
+export const PANO_BACKUP_MAX_KEEP_LAST = 500;
+export const PANO_BACKUP_MAX_KEEP_DAYS = 3650;
+
+/**
+ * Whether a server's Pano Backup settings form can be saved: the number its retention uses is in range.
+ *
+ * @param {{ retention: string, keepLast: unknown, keepDays: unknown }} form
+ */
+export function panoBackupSettingsValid(form) {
+  if (form.retention === 'COUNT') {
+    return Number(form.keepLast) >= 1 && Number(form.keepLast) <= PANO_BACKUP_MAX_KEEP_LAST;
+  }
+
+  if (form.retention === 'DAYS') {
+    return Number(form.keepDays) >= 1 && Number(form.keepDays) <= PANO_BACKUP_MAX_KEEP_DAYS;
+  }
+
+  return true;
+}

@@ -1,128 +1,6 @@
 <!-- SM-PB — one server's side of Pano Backup, without a card of its own: the Backups table shows the copies (a cloud
      on the rows that are there, the rows only Pano Backup still has), this holds what it reads and the dialogs behind
-     them — whether and how the server's backups go there, the passphrase of an encrypted copy. -->
-<!-- Whether and how this server's backups go to Pano Backup. -->
-<div class="modal fade" tabindex="-1" aria-hidden="true" bind:this={settingsModalElement}>
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{$_('pages.servers.backups.pano-backup.settings-title')}</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label={$_('buttons.close')}></button>
-      </div>
-      {#if !overview.connected}
-        <div class="modal-body text-center vstack gap-3 py-4">
-          <div>
-            <i class="fa-solid fa-cloud fa-3x pano-backup-cloud" aria-hidden="true"></i>
-          </div>
-          <div class="text-body-secondary">
-            {$_('pages.servers.backups.pano-backup.not-connected')}
-          </div>
-          <div>
-            <a class="btn btn-sm btn-primary" href="{base}{CONNECT_PATH}">
-              {$_('pages.servers.backups.pano-backup.connect')}
-            </a>
-          </div>
-        </div>
-      {:else}
-        <form onsubmit={saveSettings}>
-          <div class="modal-body vstack gap-3">
-            <div class="form-check form-switch">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="serverPanoBackupEnabled"
-                bind:checked={form.enabled} />
-              <label class="form-check-label" for="serverPanoBackupEnabled">
-                {$_('pages.servers.backups.pano-backup.enabled')}
-              </label>
-            </div>
-
-            <div>
-              <label class="form-label mb-1" for="serverPanoBackupMode">
-                {$_('pages.servers.backups.pano-backup.mode')}
-              </label>
-              <select
-                class="form-select"
-                id="serverPanoBackupMode"
-                disabled={!form.enabled}
-                bind:value={form.mode}>
-                <option value="FULL">{$_('pages.servers.backups.pano-backup.mode-full')}</option>
-                <option value="SNAPSHOT">
-                  {$_('pages.servers.backups.pano-backup.mode-snapshot')}
-                </option>
-              </select>
-              <div class="form-text">
-                {$_(`pages.servers.backups.pano-backup.mode-${form.mode.toLowerCase()}-hint`)}
-              </div>
-            </div>
-
-            <div>
-              <label class="form-label mb-1" for="serverPanoBackupRetention">
-                {$_('pages.servers.backups.pano-backup.retention')}
-              </label>
-              <div class="input-group">
-                <select
-                  class="form-select"
-                  id="serverPanoBackupRetention"
-                  disabled={!form.enabled}
-                  bind:value={form.retention}>
-                  <option value="NONE">
-                    {$_('pages.servers.backups.pano-backup.retention-none')}
-                  </option>
-                  <option value="COUNT">
-                    {$_('pages.servers.backups.pano-backup.retention-count')}
-                  </option>
-                  <option value="DAYS">
-                    {$_('pages.servers.backups.pano-backup.retention-days')}
-                  </option>
-                </select>
-                {#if form.retention === 'COUNT'}
-                  <input
-                    class="form-control"
-                    type="number"
-                    min="1"
-                    max={MAX_KEEP_LAST}
-                    aria-label={$_('pages.servers.backups.pano-backup.retention-count')}
-                    disabled={!form.enabled}
-                    bind:value={form.keepLast} />
-                  <span class="input-group-text">
-                    {$_('pages.servers.backups.pano-backup.unit-backups')}
-                  </span>
-                {:else if form.retention === 'DAYS'}
-                  <input
-                    class="form-control"
-                    type="number"
-                    min="1"
-                    max={MAX_KEEP_DAYS}
-                    aria-label={$_('pages.servers.backups.pano-backup.retention-days')}
-                    disabled={!form.enabled}
-                    bind:value={form.keepDays} />
-                  <span class="input-group-text">
-                    {$_('pages.servers.backups.pano-backup.unit-days')}
-                  </span>
-                {/if}
-              </div>
-              <div class="form-text">
-                {$_('pages.servers.backups.pano-backup.retention-hint')}
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-primary w-100" type="submit" disabled={saving || !formValid}>
-              {$_('buttons.save')}
-            </button>
-          </div>
-        </form>
-      {/if}
-    </div>
-  </div>
-</div>
-
+     them — the passphrase of an encrypted copy. Its settings are in the backups settings dialog. -->
 <!-- An encrypted copy and no passphrase saved on this Pano: the one it was made with is asked for. -->
 <div class="modal fade" tabindex="-1" aria-hidden="true" bind:this={passphraseModalElement}>
   <div class="modal-dialog modal-dialog-centered">
@@ -207,26 +85,10 @@
     busyId = $bindable(null),
   } = $props();
 
-  const MAX_KEEP_LAST = 500;
-  const MAX_KEEP_DAYS = 3650;
-
-  let form = $state({ ...DEFAULT_SETTINGS });
-  let saving = $state(false);
-  let settingsModalElement = $state();
-  let settingsModal;
-
   let passphrase = $state('');
   let passphraseTarget = $state(/** @type {any} */ (null));
   let passphraseModalElement = $state();
   let passphraseModal;
-
-  const formValid = $derived(
-    form.retention === 'COUNT'
-      ? Number(form.keepLast) >= 1 && Number(form.keepLast) <= MAX_KEEP_LAST
-      : form.retention === 'DAYS'
-        ? Number(form.keepDays) >= 1 && Number(form.keepDays) <= MAX_KEEP_DAYS
-        : true,
-  );
 
   // Read again whenever the route moves to another server.
   $effect(() => {
@@ -265,47 +127,40 @@
     };
   }
 
-  export function openSettings() {
-    form = { ...overview.settings };
-    settingsModal?.show();
-  }
-
-  /** @param {SubmitEvent} event */
-  async function saveSettings(event) {
-    event.preventDefault();
-
-    if (saving || !formValid || serverId == null) {
-      return;
+  /**
+   * Saves [next] as this server's Pano Backup settings (the backups settings dialog does it with its own rules).
+   *
+   * @param {any} next
+   * @returns {Promise<boolean>} whether they were saved; a failure is said in a toast.
+   */
+  export async function saveSettings(next) {
+    if (serverId == null) {
+      return false;
     }
-
-    saving = true;
 
     const body = await ApiUtil.put({
       path: `/panel/servers/${serverId}/backups/pano-backup`,
       body: {
-        enabled: form.enabled,
-        mode: form.mode,
-        retention: form.retention,
-        keepLast: Number(form.keepLast),
-        keepDays: Number(form.keepDays),
+        enabled: next.enabled,
+        mode: next.mode,
+        retention: next.retention,
+        keepLast: Number(next.keepLast),
+        keepDays: Number(next.keepDays),
       },
       handler: (response) => response,
     }).catch(() => null);
-
-    saving = false;
 
     if (!body || body.error) {
       const error = describeError(body || { error: { code: 'NETWORK_ERROR' } });
 
       void showError(error.key, error.values);
 
-      return;
+      return false;
     }
 
     overview = { ...overview, settings: { ...DEFAULT_SETTINGS, ...(body.settings || {}) } };
-    settingsModal?.hide();
 
-    void showSuccess('pages.servers.backups.pano-backup.saved');
+    return true;
   }
 
   /**
@@ -415,15 +270,11 @@
   }
 
   onMount(() => {
-    settingsModal = window.bootstrap?.Modal
-      ? window.bootstrap.Modal.getOrCreateInstance(settingsModalElement)
-      : null;
     passphraseModal = window.bootstrap?.Modal
       ? window.bootstrap.Modal.getOrCreateInstance(passphraseModalElement)
       : null;
 
     return () => {
-      settingsModal?.hide();
       passphraseModal?.hide();
     };
   });

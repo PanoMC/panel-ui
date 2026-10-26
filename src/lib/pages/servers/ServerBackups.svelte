@@ -47,26 +47,10 @@
       </div>
 
       <span slot="right" class="d-flex align-items-center gap-2">
-        <!-- SM-PB — Pano Backup: the cloud says whether this server's backups go there and opens how. -->
-        {#if canUploadToPanoBackup && canManage}
-          <button
-            type="button"
-            class="btn btn-sm btn-link p-0"
-            aria-label={$_('pages.servers.backups.pano-backup.settings-title')}
-            onclick={() => panoBackup?.openSettings()}
-            use:tooltip={[panoBackupTip, { placement: 'bottom' }]}>
-            <i
-              class="fa-solid fa-cloud"
-              class:pano-backup-cloud={panoBackupOn}
-              class:text-body-secondary={!panoBackupOn}
-              aria-hidden="true"></i>
-          </button>
-        {/if}
-
         <!-- Retention rules live in their own dialog now, so the header only says that they
              exist. Hidden rather than disabled when this build cannot keep a setting: a gear
              that opens onto "not available" is a dead end. -->
-        {#if canManage && retentionSupported}
+        {#if canManage && (retentionSupported || canUploadToPanoBackup)}
           <button
             type="button"
             class="btn btn-sm btn-link p-0"
@@ -543,12 +527,22 @@
             <div>{$_('pages.servers.backups.retention-unavailable')}</div>
           </div>
         {/if}
+
+        {#if canUploadToPanoBackup}
+          <!-- SM-PB — the same dialog says whether and how this server's backups go to Pano Backup. -->
+          <hr class="my-4" />
+          <h6 class="mb-3">{$_('pages.servers.backups.pano-backup.title')}</h6>
+          <ServerPanoBackupSettings
+            bind:form={panoBackupForm}
+            connected={panoBackupOverview.connected} />
+        {/if}
       </div>
       <div class="modal-footer">
         <button
           type="button"
           class="btn btn-primary w-100"
-          disabled={savingRetention}
+          disabled={savingRetention ||
+            (panoBackupEditable && !panoBackupSettingsValid(panoBackupForm))}
           onclick={() => void saveRetention()}>
           {#if savingRetention}
             <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
@@ -808,7 +802,8 @@
   import ServerCapabilityNotice from '$lib/components/servers/ServerCapabilityNotice.svelte';
   import ServerPanoBackup, { emptyOverview } from '$lib/components/servers/ServerPanoBackup.svelte';
   import PanoBackupJobCard from '$lib/components/settings/pano-backup/PanoBackupJobCard.svelte';
-  import { isJobRunning, mergeWithCopies } from '$lib/pano-backup.util.js';
+  import { isJobRunning, mergeWithCopies, panoBackupSettingsValid } from '$lib/pano-backup.util.js';
+  import ServerPanoBackupSettings from '$lib/components/servers/ServerPanoBackupSettings.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   import { show as showConfirmActionModal } from '$lib/components/modals/ConfirmActionModal.svelte';
 
@@ -829,6 +824,8 @@
   /** SM-PB — this server's side of Pano Backup: its settings and copies, the import it runs. */
   let panoBackup = $state();
   let panoBackupOverview = $state(emptyOverview());
+  /** The Pano Backup part of the settings dialog, copied from the overview when it opens. */
+  let panoBackupForm = $state({ ...emptyOverview().settings });
   let panoBackupJob = $state(/** @type {any} */ (null));
   let panoBackupBusyId = $state(/** @type {string | null} */ (null));
   let followTimeout;
@@ -893,16 +890,9 @@
   const panoBackupOn = $derived(
     panoBackupOverview.connected && panoBackupOverview.settings.enabled,
   );
-  const panoBackupTip = $derived(
-    !panoBackupOverview.loaded || !panoBackupOverview.connected
-      ? $_('pages.servers.backups.pano-backup.settings-title')
-      : panoBackupOn
-        ? `${$_('pages.servers.backups.pano-backup.title')} · ${$_(
-            `pages.servers.backups.pano-backup.mode-${panoBackupOverview.settings.mode.toLowerCase()}`,
-          )}`
-        : `${$_('pages.servers.backups.pano-backup.title')} · ${$_('pages.servers.backups.pano-backup.off')}`,
-  );
   const panoBackupJobRunning = $derived(isJobRunning(panoBackupJob));
+  /** Whether the settings dialog saves Pano Backup settings too (a connected account to save them for). */
+  const panoBackupEditable = $derived(canUploadToPanoBackup && panoBackupOverview.connected);
   /** The uuid of this server's backup being uploaded to Pano Backup now, if any. */
   const uploadingBackupId = $derived(
     panoBackupJobRunning && panoBackupJob?.type === 'MC_UPLOAD'
@@ -1161,6 +1151,7 @@
    * page already read — so this is a plain show.
    */
   function openSettings() {
+    panoBackupForm = { ...panoBackupOverview.settings };
     settingsModal?.show();
   }
 
@@ -1473,6 +1464,15 @@
     savingRetention = true;
 
     try {
+      if (!retentionSupported) {
+        if (panoBackupEditable && (await panoBackup?.saveSettings(panoBackupForm))) {
+          void showSuccess('pages.servers.backups.retention-saved');
+          settingsModal?.hide();
+        }
+
+        return;
+      }
+
       const body = await ApiUtil.put({
         path: `/panel/servers/${serverId}/backups/settings`,
         body: {
@@ -1499,6 +1499,11 @@
       if (body.error) {
         showServerActionError(body.error, body, { server: $server, feature: 'backups.create' });
 
+        return;
+      }
+
+      // The Pano Backup part of the dialog is saved with it; a failure there is said in its own toast.
+      if (panoBackupEditable && !(await panoBackup?.saveSettings(panoBackupForm))) {
         return;
       }
 

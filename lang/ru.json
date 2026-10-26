@@ -1819,7 +1819,6 @@
           "off": "Выключено",
           "mode-full": "Полные копии",
           "mode-snapshot": "Снимки",
-          "settings-title": "Настройки Pano Backup",
           "not-connected": "Подключите аккаунт Pano, чтобы хранить копии этого сервера в Pano Backup.",
           "connect": "Подключить аккаунт Pano",
           "import": "Перенести на этот сервер",
