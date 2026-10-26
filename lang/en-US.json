@@ -1052,7 +1052,12 @@
       "opened-in-category": "opened in {category} category.",
       "no-category": "-",
       "previous-messages": "{count} Previous Messages",
-      "send-button": "Send"
+      "send-button": "Send",
+      "auto-reply": "Automatic reply",
+      "templates": "Templates:",
+      "all-templates": "All",
+      "search-templates": "Search templates",
+      "no-templates-found": "No template found"
     },
     "post-categories": {
       "title": "Post Categories",
@@ -1254,7 +1259,18 @@
       "published": "Published",
       "thumbnail-not-determined": "Drag or click<br />to add preview",
       "created-at": "Created At:",
-      "updated-at": "Updated At:"
+      "updated-at": "Updated At:",
+      "unsaved-changes": "There are unsaved changes",
+      "autosave-saving": "Saving…",
+      "autosave-failed": "Autosave failed",
+      "autosave-saved": "Saved {time}",
+      "just-now": "just now",
+      "last-edited": "Last edited {time}",
+      "leave-unsaved": {
+        "title": "Leave without saving?",
+        "description": "Some changes are not saved automatically yet and may be lost if you leave now.",
+        "confirm": "Leave"
+      }
     },
     "servers": {
       "card": {
@@ -3327,6 +3343,22 @@
       },
       "variable-list": "List",
       "variable-list-fields": "Fields of each row (use inside the loop)"
+    },
+    "ticket-templates": {
+      "nav": "Templates",
+      "title": "Ticket Templates",
+      "create-button": "Create Template",
+      "card-title": "{count} Templates",
+      "actions": "Actions",
+      "table": {
+        "title": "Title",
+        "content": "Content",
+        "last-update": "Last Update"
+      },
+      "delete": {
+        "title": "Delete “{title}”?",
+        "description": "Categories that send it as their auto-reply stop sending one. This cannot be undone."
+      }
     }
   },
   "components": {
@@ -3541,7 +3573,9 @@
       "publish": "Publish",
       "move-to-trash": "Move To Trash",
       "no-category": "No Category",
-      "filter": "Filter"
+      "filter": "Filter",
+      "unsaved-changes": "This post has unsaved changes",
+      "untitled": "Untitled"
     },
     "ticket-row": {
       "select": "Select",
@@ -3745,7 +3779,9 @@
           "description": {
             "placeholder": "Description"
           },
-          "enabled": "Active"
+          "enabled": "Active",
+          "auto-reply": "Auto-reply",
+          "no-auto-reply": "Use the default auto-reply"
         }
       },
       "add-edit-language": {
@@ -4423,13 +4459,37 @@
         "allow-no-category-hint": "Users can open a ticket without picking a category.",
         "load-failed": "The settings could not be loaded.",
         "save-failed": "The settings could not be saved.",
-        "saved": "Ticket settings saved."
+        "saved": "Ticket settings saved.",
+        "no-category-auto-reply": "Auto-reply for tickets without a category",
+        "use-default-auto-reply": "Use the default auto-reply",
+        "default-auto-reply": "Default auto-reply",
+        "default-auto-reply-hint": "Sent to every new ticket. A category, or tickets without a category, with an auto-reply of their own send that one instead.",
+        "no-auto-reply": "No auto-reply"
       },
       "server-upload-conflict": {
         "title": "{count, plural, one {# file is already there} other {# files are already there}}",
         "description": "Uploading replaces them with the files you dropped.",
         "overwrite": "Overwrite",
         "skip": "Upload only the new files"
+      },
+      "add-edit-ticket-template": {
+        "create-template": "Create Template",
+        "edit-template": "Edit Template",
+        "inputs": {
+          "title": {
+            "placeholder": "Template title"
+          }
+        },
+        "variables": "Variables:",
+        "variable-hints": {
+          "username": "Who opened the ticket",
+          "ticketId": "Ticket number",
+          "ticketTitle": "Ticket title",
+          "category": "Ticket category",
+          "staff": "The staff member replying (the website name in an auto-reply)",
+          "website": "Website name",
+          "date": "Today's date"
+        }
       }
     },
     "editor": {

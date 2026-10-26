@@ -1052,7 +1052,12 @@
       "opened-in-category": "открыто в категории {category}.",
       "no-category": "-",
       "previous-messages": "{count} Предыдущие сообщения",
-      "send-button": "Отправить"
+      "send-button": "Отправить",
+      "auto-reply": "Автоматический ответ",
+      "templates": "Шаблоны:",
+      "all-templates": "Все",
+      "search-templates": "Поиск шаблонов",
+      "no-templates-found": "Шаблоны не найдены"
     },
     "post-categories": {
       "title": "Категории постов",
@@ -1254,7 +1259,18 @@
       "published": "Опубликовано",
       "thumbnail-not-determined": "Перетащите или нажмите,<br />чтобы добавить превью",
       "created-at": "Создано:",
-      "updated-at": "Обновлено:"
+      "updated-at": "Обновлено:",
+      "unsaved-changes": "Есть несохранённые изменения",
+      "autosave-saving": "Сохранение…",
+      "autosave-failed": "Автосохранение не удалось",
+      "autosave-saved": "Сохранено {time}",
+      "just-now": "только что",
+      "last-edited": "Изменено {time}",
+      "leave-unsaved": {
+        "title": "Уйти без сохранения?",
+        "description": "Некоторые изменения ещё не сохранены автоматически и могут быть потеряны, если вы уйдёте сейчас.",
+        "confirm": "Уйти"
+      }
     },
     "servers": {
       "card": {
@@ -3327,6 +3343,22 @@
       },
       "variable-list": "Список",
       "variable-list-fields": "Поля каждой строки (используйте внутри цикла)"
+    },
+    "ticket-templates": {
+      "nav": "Шаблоны",
+      "title": "Шаблоны тикетов",
+      "create-button": "Создать шаблон",
+      "card-title": "Шаблонов: {count}",
+      "actions": "Действия",
+      "table": {
+        "title": "Название",
+        "content": "Содержимое",
+        "last-update": "Последнее обновление"
+      },
+      "delete": {
+        "title": "Удалить «{title}»?",
+        "description": "Категории, которые отправляют его как автоответ, перестанут отправлять автоответ. Это действие нельзя отменить."
+      }
     }
   },
   "components": {
@@ -3541,7 +3573,9 @@
       "publish": "Опубликовать",
       "move-to-trash": "В корзину",
       "no-category": "Без категории",
-      "filter": "Фильтр"
+      "filter": "Фильтр",
+      "unsaved-changes": "У этой записи есть несохранённые изменения",
+      "untitled": "Без названия"
     },
     "ticket-row": {
       "select": "Выбрать",
@@ -3745,7 +3779,9 @@
           "description": {
             "placeholder": "Описание"
           },
-          "enabled": "Активна"
+          "enabled": "Активна",
+          "auto-reply": "Автоответ",
+          "no-auto-reply": "Использовать автоответ по умолчанию"
         }
       },
       "add-edit-language": {
@@ -4423,13 +4459,37 @@
         "allow-no-category-hint": "Пользователи могут создавать тикеты без выбора категории.",
         "load-failed": "Не удалось загрузить настройки.",
         "save-failed": "Не удалось сохранить настройки.",
-        "saved": "Настройки тикетов сохранены."
+        "saved": "Настройки тикетов сохранены.",
+        "no-category-auto-reply": "Автоответ для тикетов без категории",
+        "use-default-auto-reply": "Использовать автоответ по умолчанию",
+        "default-auto-reply": "Автоответ по умолчанию",
+        "default-auto-reply-hint": "Отправляется на каждый новый тикет. Категории и тикеты без категории со своим автоответом отправляют свой.",
+        "no-auto-reply": "Без автоответа"
       },
       "server-upload-conflict": {
         "title": "{count, plural, one {# файл уже существует} few {# файла уже существуют} other {# файлов уже существуют}}",
         "description": "При загрузке они будут заменены вашими файлами.",
         "overwrite": "Перезаписать",
         "skip": "Загрузить только новые файлы"
+      },
+      "add-edit-ticket-template": {
+        "create-template": "Создать шаблон",
+        "edit-template": "Изменить шаблон",
+        "inputs": {
+          "title": {
+            "placeholder": "Название шаблона"
+          }
+        },
+        "variables": "Переменные:",
+        "variable-hints": {
+          "username": "Кто открыл тикет",
+          "ticketId": "Номер тикета",
+          "ticketTitle": "Заголовок тикета",
+          "category": "Категория тикета",
+          "staff": "Отвечающий сотрудник (в автоответе — название сайта)",
+          "website": "Название сайта",
+          "date": "Сегодняшняя дата"
+        }
       }
     },
     "editor": {

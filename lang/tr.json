@@ -1052,7 +1052,12 @@
       "opened-in-category": "{category} kategorisinde açıldı.",
       "no-category": "-",
       "previous-messages": "{count} Önceki Mesaj",
-      "send-button": "Gönder"
+      "send-button": "Gönder",
+      "auto-reply": "Otomatik yanıt",
+      "templates": "Hazır kalıplar:",
+      "all-templates": "Tümü",
+      "search-templates": "Kalıp ara",
+      "no-templates-found": "Kalıp bulunamadı"
     },
     "post-categories": {
       "title": "Yazı Kategorileri",
@@ -1254,7 +1259,18 @@
       "published": "Yayımlanmış",
       "thumbnail-not-determined": "Önizleme'yi sürükleyin<br />veya tıklayın",
       "created-at": "Yayımlandı:",
-      "updated-at": "Güncellendi:"
+      "updated-at": "Güncellendi:",
+      "unsaved-changes": "Kaydedilmemiş değişiklikler var",
+      "autosave-saving": "Kaydediliyor…",
+      "autosave-failed": "Otomatik kayıt başarısız",
+      "autosave-saved": "{time} kaydedildi",
+      "just-now": "az önce",
+      "last-edited": "{time} düzenlendi",
+      "leave-unsaved": {
+        "title": "Kaydetmeden çıkılsın mı?",
+        "description": "Bazı değişiklikler henüz otomatik kaydedilmedi; şimdi çıkarsan kaybolabilirler.",
+        "confirm": "Çık"
+      }
     },
     "servers": {
       "card": {
@@ -3327,6 +3343,22 @@
       },
       "variable-list": "Liste",
       "variable-list-fields": "Her satırın alanları (döngünün içinde kullanın)"
+    },
+    "ticket-templates": {
+      "nav": "Hazır Kalıplar",
+      "title": "Ticket Kalıpları",
+      "create-button": "Kalıp Oluştur",
+      "card-title": "{count} Kalıp",
+      "actions": "İşlemler",
+      "table": {
+        "title": "Başlık",
+        "content": "İçerik",
+        "last-update": "Son Güncelleme"
+      },
+      "delete": {
+        "title": "“{title}” silinsin mi?",
+        "description": "Bu kalıbı otomatik yanıt olarak gönderen kategoriler artık yanıt göndermez. Bu işlem geri alınamaz."
+      }
     }
   },
   "components": {
@@ -3541,7 +3573,9 @@
       "publish": "Yayımla",
       "move-to-trash": "Çöp Kutusuna Taşı",
       "no-category": "Kategorisiz",
-      "filter": "Filtrele"
+      "filter": "Filtrele",
+      "unsaved-changes": "Bu gönderide kaydedilmemiş değişiklikler var",
+      "untitled": "Başlıksız"
     },
     "ticket-row": {
       "select": "Seç",
@@ -3745,7 +3779,9 @@
           "description": {
             "placeholder": "Açıklama"
           },
-          "enabled": "Aktif"
+          "enabled": "Aktif",
+          "auto-reply": "Otomatik yanıt",
+          "no-auto-reply": "Varsayılan otomatik yanıtı kullan"
         }
       },
       "add-edit-language": {
@@ -4423,13 +4459,37 @@
         "allow-no-category-hint": "Kullanıcılar kategori seçmeden destek talebi açabilir.",
         "load-failed": "Ayarlar yüklenemedi.",
         "save-failed": "Ayarlar kaydedilemedi.",
-        "saved": "Destek talebi ayarları kaydedildi."
+        "saved": "Destek talebi ayarları kaydedildi.",
+        "no-category-auto-reply": "Kategorisiz ticket'lar için otomatik yanıt",
+        "use-default-auto-reply": "Varsayılan otomatik yanıtı kullan",
+        "default-auto-reply": "Varsayılan otomatik yanıt",
+        "default-auto-reply-hint": "Her yeni ticket'a gönderilir. Kendi otomatik yanıtı seçili kategoriler ve kategorisiz ticket'lar onu gönderir.",
+        "no-auto-reply": "Otomatik yanıt yok"
       },
       "server-upload-conflict": {
         "title": "{count, plural, one {# dosya zaten var} other {# dosya zaten var}}",
         "description": "Yüklerseniz bunların yerini bıraktığınız dosyalar alır.",
         "overwrite": "Üzerine Yaz",
         "skip": "Yalnızca yeni dosyaları yükle"
+      },
+      "add-edit-ticket-template": {
+        "create-template": "Kalıp Oluştur",
+        "edit-template": "Kalıbı Düzenle",
+        "inputs": {
+          "title": {
+            "placeholder": "Kalıp başlığı"
+          }
+        },
+        "variables": "Değişkenler:",
+        "variable-hints": {
+          "username": "Ticket'ı açan kişi",
+          "ticketId": "Ticket numarası",
+          "ticketTitle": "Ticket başlığı",
+          "category": "Ticket kategorisi",
+          "staff": "Yanıtlayan yetkili (otomatik yanıtta site adı)",
+          "website": "Site adı",
+          "date": "Bugünün tarihi"
+        }
       }
     },
     "editor": {

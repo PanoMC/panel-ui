@@ -6,6 +6,7 @@
     <PageNav slot="left">
       <PageNavItem href="/tickets">{$_('pages.ticket-categories.tickets')}</PageNavItem>
       <PageNavItem href="/tickets/categories">{$_('buttons.categories')}</PageNavItem>
+      <PageNavItem href="/tickets/templates">{$_('pages.ticket-templates.nav')}</PageNavItem>
     </PageNav>
 
     <button class="btn btn-secondary" type="button" on:click={onCreateCategoryClick} slot="right">

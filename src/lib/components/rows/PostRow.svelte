@@ -76,12 +76,21 @@
     tag="td"
     class="align-middle text-nowrap" />
   <td class="align-middle" style="max-width: 300px;">
-    <a
-      href={base + '/posts/detail/' + post.id}
-      title={post.title}
-      class="rounded focus-ring text-decoration-none d-block text-truncate">
-      {post.title}
-    </a>
+    <div class="d-flex align-items-center gap-2">
+      <a
+        href={base + '/posts/detail/' + post.id}
+        title={post.title}
+        class="rounded focus-ring text-decoration-none d-block text-truncate">
+        {post.title || $_('components.post-row.untitled')}
+      </a>
+      <!-- The editor kept changes of this post that are not saved or published yet. -->
+      {#if post.hasUnsavedChanges}
+        <i
+          class="fa-solid fa-triangle-exclamation text-warning flex-shrink-0"
+          aria-label={$_('components.post-row.unsaved-changes')}
+          use:tooltip={[$_('components.post-row.unsaved-changes')]}></i>
+      {/if}
+    </div>
   </td>
   <Hook name="panel:posts:table:row:after-title" {post} tag="td" class="align-middle text-nowrap" />
   <td class="align-middle text-nowrap">
@@ -137,6 +146,7 @@
   import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import { rowLink } from '$lib/rowLink.util.js';
+  import tooltip from '$lib/tooltip.util';
 
   import Date from '$lib/components/Date.svelte';
   import CategoryBadge from '$lib/components/badges/CategoryBadge.svelte';

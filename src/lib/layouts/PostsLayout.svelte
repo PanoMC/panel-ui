@@ -70,7 +70,7 @@
 
 <script>
   import { _ } from 'svelte-i18n';
-  import { beforeNavigate } from '$app/navigation';
+  import { onNavigate } from '$app/navigation';
   import { page } from '@panomc/sdk/core/js/appStores.js';
   import PageActions from '$lib/components/PageActions.svelte';
   import PageSlot from '$lib/components/PageSlot.svelte';
@@ -92,7 +92,9 @@
       $page.url.pathname.startsWith(base + '/posts/create-post')
   );
 
-  beforeNavigate(({ from, to }) => {
+  // `onNavigate`, not `beforeNavigate`: a page may still cancel the navigation (the post editor
+  // asks first when changes are not autosaved yet), and its actions must stay then.
+  onNavigate(({ from, to }) => {
     if (from?.route.id !== to?.route.id) {
       Object.assign(slots, { right: null, left: null });
     }

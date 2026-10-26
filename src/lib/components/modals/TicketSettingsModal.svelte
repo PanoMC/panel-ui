@@ -37,6 +37,43 @@
             <div class="form-text">
               {$_('components.modals.ticket-settings.allow-no-category-hint')}
             </div>
+            <!-- The ready reply of tickets opened without a category; off while such tickets are not
+                 allowed. None chosen, the default auto-reply below is sent. -->
+            <label class="form-label mt-3 mb-1" for="ticketNoCategoryAutoReply">
+              {$_('components.modals.ticket-settings.no-category-auto-reply')}
+            </label>
+            <select
+              class="form-select"
+              id="ticketNoCategoryAutoReply"
+              disabled={!$settings.allowNoCategory}
+              value={$settings.noCategoryAutoReplyTemplateId}
+              on:change={(event) =>
+                ($settings.noCategoryAutoReplyTemplateId = Number(event.currentTarget.value))}>
+              <option value={-1}
+                >{$_('components.modals.ticket-settings.use-default-auto-reply')}</option>
+              {#each $templates as template (template.id)}
+                <option value={template.id}>{template.title}</option>
+              {/each}
+            </select>
+            <!-- The ready reply sent by itself to every new ticket; a category with its own auto-reply
+                 sends that one instead. -->
+            <label class="form-label mt-3 mb-1" for="ticketDefaultAutoReply">
+              {$_('components.modals.ticket-settings.default-auto-reply')}
+            </label>
+            <select
+              class="form-select"
+              id="ticketDefaultAutoReply"
+              value={$settings.defaultAutoReplyTemplateId}
+              on:change={(event) =>
+                ($settings.defaultAutoReplyTemplateId = Number(event.currentTarget.value))}>
+              <option value={-1}>{$_('components.modals.ticket-settings.no-auto-reply')}</option>
+              {#each $templates as template (template.id)}
+                <option value={template.id}>{template.title}</option>
+              {/each}
+            </select>
+            <div class="form-text">
+              {$_('components.modals.ticket-settings.default-auto-reply-hint')}
+            </div>
           {/if}
         </div>
         <div class="modal-footer">
@@ -56,11 +93,22 @@
   import { writable, get } from 'svelte/store';
 
   import ApiUtil from '$lib/api.util';
+  import { loadAllTicketTemplates } from '$lib/ticketTemplates.util.js';
 
   const modalElement = writable();
-  const settings = writable({ allowNoCategory: true });
+  const settings = writable({
+    allowNoCategory: true,
+    defaultAutoReplyTemplateId: -1,
+    noCategoryAutoReplyTemplateId: -1,
+  });
   /** What the server holds: Save is only on when the dialog differs from it. */
-  const saved = writable({ allowNoCategory: true });
+  const saved = writable({
+    allowNoCategory: true,
+    defaultAutoReplyTemplateId: -1,
+    noCategoryAutoReplyTemplateId: -1,
+  });
+  /** The ready replies new tickets may get as their auto-reply. */
+  const templates = writable([]);
   const loading = writable(true);
   const loadFailed = writable(false);
 
@@ -84,12 +132,21 @@
     loading.set(true);
     loadFailed.set(false);
 
-    const body = await ApiUtil.get({ path: '/panel/ticket/settings' }).catch(() => null);
+    const [body, templateItems] = await Promise.all([
+      ApiUtil.get({ path: '/panel/ticket/settings' }).catch(() => null),
+      loadAllTicketTemplates(),
+    ]);
+
+    templates.set(templateItems);
 
     if (!body || body.error) {
       loadFailed.set(true);
     } else {
-      settings.set({ allowNoCategory: body.allowNoCategory !== false });
+      settings.set({
+        allowNoCategory: body.allowNoCategory !== false,
+        defaultAutoReplyTemplateId: body.defaultAutoReplyTemplateId ?? -1,
+        noCategoryAutoReplyTemplateId: body.noCategoryAutoReplyTemplateId ?? -1,
+      });
       saved.set({ ...get(settings) });
     }
 
@@ -107,7 +164,10 @@
 
   let saving = false;
 
-  $: changed = $settings.allowNoCategory !== $saved.allowNoCategory;
+  $: changed =
+    $settings.allowNoCategory !== $saved.allowNoCategory ||
+    $settings.defaultAutoReplyTemplateId !== $saved.defaultAutoReplyTemplateId ||
+    $settings.noCategoryAutoReplyTemplateId !== $saved.noCategoryAutoReplyTemplateId;
 
   async function onSubmit() {
     if (saving || !changed) {
@@ -118,7 +178,11 @@
 
     const body = await ApiUtil.put({
       path: '/panel/ticket/settings',
-      body: { allowNoCategory: get(settings).allowNoCategory },
+      body: {
+        allowNoCategory: get(settings).allowNoCategory,
+        defaultAutoReplyTemplateId: get(settings).defaultAutoReplyTemplateId,
+        noCategoryAutoReplyTemplateId: get(settings).noCategoryAutoReplyTemplateId,
+      },
       handler: (result) => result,
     }).catch(() => null);
 
