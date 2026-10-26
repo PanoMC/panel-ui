@@ -348,7 +348,7 @@
     {#if hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS)}
       <div class="ratio ratio-1x1">
         <div class="card mb-3">
-          <CardHeader>
+          <CardHeader truncateLeftSlot={false}>
             <svelte:fragment slot="left">{$_('pages.settings.about.info')}</svelte:fragment>
             <svelte:fragment slot="right">
               <ViewAllLink href="{base}/settings/about" />
@@ -383,14 +383,12 @@
                 </label>
                 <div class="col-6 col-form-label">
                   <a
-                    class="btn btn-sm btn-link px-0"
+                    class="btn btn-sm btn-link px-0 text-decoration-none"
                     aria-describedby="panoWebsite"
-                    aria-label={$_('pages.settings.about.website')}
                     href={PANO_WEBSITE_URL}
                     id="panoWebsite"
-                    title={$_('pages.settings.about.website')}
                     target="_blank">
-                    <i class="fa-solid fa-up-right-from-square"></i>
+                    panomc.com
                   </a>
                 </div>
               </div>

@@ -11,9 +11,13 @@
     </PageNav>
     <div slot="right" class="hstack gap-2">
       {#if data.view === Views.PLAYERS}
-        <a href="{base}/migration" class="btn btn-secondary">
+        <a
+          href="{base}/migration"
+          class="btn btn-link"
+          style="--bs-btn-color: var(--bs-body-color); --bs-btn-hover-color: var(--bs-body-color); --bs-btn-active-color: var(--bs-body-color);"
+          aria-label={$_('buttons.import')}
+          use:tooltip={[$_('buttons.import'), { placement: 'bottom' }]}>
           <i class="fa fa-file-import"></i>
-          <span class="d-lg-inline d-none ms-2">{$_('buttons.import')}</span>
         </a>
         <button
           type="button"
@@ -28,7 +32,7 @@
       {#if data.view === Views.BANS}
         <button
           type="button"
-          class="btn btn-danger"
+          class="btn btn-secondary"
           title={$_('pages.player-detail.ban')}
           aria-label={$_('pages.player-detail.ban')}
           on:click={openBanWithPlayerSearch}>
@@ -38,7 +42,7 @@
       {:else if data.view === Views.IP_BANS}
         <button
           type="button"
-          class="btn btn-danger"
+          class="btn btn-secondary"
           title={$_('pages.ip-bans.add-ban')}
           aria-label={$_('pages.ip-bans.add-ban')}
           on:click={() => showConfirmBanIpModal()}>
@@ -386,6 +390,7 @@
     show as showCreatePlayerModal,
     setCallback as setCreatePlayerModalCallback,
   } from '$lib/components/modals/CreatePlayerModal.svelte';
+  import tooltip from '$lib/tooltip.util.js';
   import PageActions from '$lib/components/PageActions.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
   import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';

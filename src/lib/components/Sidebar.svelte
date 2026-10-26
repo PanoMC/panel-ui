@@ -318,7 +318,7 @@
           <div class="hstack gap-1">
             {#if canManageNodes}
               <a
-                class="btn btn-sm btn-success shadow flex-shrink-0"
+                class="btn btn-sm btn-outline-success flex-shrink-0"
                 class:active={onNodesPage}
                 href="{base}/servers/nodes"
                 aria-current={onNodesPage ? 'page' : undefined}

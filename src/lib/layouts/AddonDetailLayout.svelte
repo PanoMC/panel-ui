@@ -77,7 +77,7 @@
     <div class="card-body">
       <div class="row g-3">
         <div
-          class="col-auto d-flex justify-content-center align-items-start rounded-start rounded-top">
+          class="col-12 col-sm-auto d-flex justify-content-center align-items-start rounded-start rounded-top">
           <img
             src="/api/v1/panel/addons/{data.addon.id}/logo"
             class="img-fluid rounded"
@@ -86,7 +86,7 @@
             width="86" />
         </div>
 
-        <div class="col">
+        <div class="col-12 col-sm">
           <h5
             class="card-title d-inline-flex align-items-center gap-2 mb-2 flex-wrap"
             class:text-danger={data.addon.status === 'FAILED' &&
@@ -110,21 +110,29 @@
             {/if}
           </h5>
 
-          <div class="small mb-2 hstack gap-2">
-            <span use:tooltip={['ID']} class="user-select-all font-monospace">{data.addon.id}</span>
-            <span class="vr"></span>
-            <span
-              use:tooltip={[$_('pages.addon-detail.version')]}
-              class="user-select-all font-monospace">
-              {data.addon.version}
-            </span>
-            <span class="vr"></span>
-            <span
-              use:tooltip={[$_('pages.addon-detail.pano-version')]}
-              class="user-select-all font-monospace">
-              {formatMinPanoVersion(data.addon.panoVersion)}
-            </span>
-            <span class="vr"></span>
+          <div class="small d-flex flex-wrap align-items-center column-gap-4 row-gap-1 mb-2">
+            <dl class="d-flex flex-wrap column-gap-4 row-gap-1 mb-0">
+              <div>
+                <dt class="d-inline fw-normal text-body-secondary me-1">ID</dt>
+                <dd class="d-inline mb-0 user-select-all font-monospace text-break">
+                  {data.addon.id}
+                </dd>
+              </div>
+              <div>
+                <dt class="d-inline fw-normal text-body-secondary me-1">
+                  {$_('pages.addon-detail.version')}
+                </dt>
+                <dd class="d-inline mb-0 user-select-all font-monospace">{data.addon.version}</dd>
+              </div>
+              <div>
+                <dt class="d-inline fw-normal text-body-secondary me-1">
+                  {$_('pages.addon-detail.pano-version')}
+                </dt>
+                <dd class="d-inline mb-0 user-select-all font-monospace">
+                  {formatMinPanoVersion(data.addon.panoVersion)}
+                </dd>
+              </div>
+            </dl>
             <span
               class="badge {data.addon.status === 'STARTED'
                 ? 'text-bg-success'
@@ -136,7 +144,7 @@
           </div>
 
           {#if data.addon.description}
-            {data.addon.description}
+            <div class="text-break">{data.addon.description}</div>
           {/if}
         </div>
       </div>
@@ -201,7 +209,6 @@
 <script>
   import { getContext, onDestroy } from 'svelte';
   import { _ } from 'svelte-i18n';
-  import tooltip from '$lib/tooltip.util';
   import AddonToggle from '$lib/pages/addons/AddonToggle.svelte';
   import { isLocked } from '$lib/pages/addons/compat/compat.util.js';
 

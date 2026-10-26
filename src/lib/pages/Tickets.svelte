@@ -2,12 +2,10 @@
 <article class="container vstack gap-3">
   {#if data.categoryUrl}
     <PageActions middleClasses="d-none" rightClasses="d-none">
-      <div slot="left">
-        <a class="btn btn-link" role="button" href="{base}/tickets">
-          <i class="fas fa-arrow-left me-2"></i>
-          {$_('buttons.tickets')}
-        </a>
-      </div>
+      <PageNav slot="left">
+        <PageNavItem href="/tickets" active={true}>{$_('pages.ticket-categories.tickets')}</PageNavItem>
+        <PageNavItem href="/tickets/categories">{$_('buttons.categories')}</PageNavItem>
+      </PageNav>
     </PageActions>
   {:else}
     <!-- Action Menu -->

@@ -26,8 +26,8 @@
             alt={$page.data.hosted ? 'Pano Host' : 'Pano'}
             class="w-100 h-100 object-fit-contain" />
         </span>
-        <div class="h6 mt-3 mb-0 text-break">{websiteName}</div>
-        <div class="small text-body-secondary">{$_('pages.auth.panel-name')}</div>
+        <div class="h5 mt-3 mb-0 text-break">{websiteName}</div>
+        <div class="text-body-secondary">{$_('pages.auth.panel-name')}</div>
       </div>
 
       {@render children?.()}

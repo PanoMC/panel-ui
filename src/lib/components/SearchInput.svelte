@@ -1,16 +1,12 @@
 <div class="input-group">
-  <input
-    type="text"
-    id={inputId}
-    bind:this={inputElement}
-    class="form-control focus-ring {small ? 'form-control-sm' : ''} {String(value || '').trim()
-      ? 'border-secondary'
-      : ''}"
-    placeholder={$_(placeholderKey)}
-    aria-label={$_(ariaLabelKey)}
-    aria-describedby="find-addon"
-    {value}
-    oninput={onInput} />
+  {#if floating}
+    <div class="form-floating">
+      {@render field()}
+      <label for={inputId}>{$_(placeholderKey)}</label>
+    </div>
+  {:else}
+    {@render field()}
+  {/if}
 
   {#if showSpinner && (searching || pending)}
     <span class="input-group-text" aria-label={$_('components.search-input.searching')}>
@@ -18,6 +14,21 @@
     </span>
   {/if}
 </div>
+
+{#snippet field()}
+  <input
+    type="text"
+    id={inputId}
+    bind:this={inputElement}
+    class="form-control focus-ring {small ? 'form-control-sm' : ''} {large
+      ? 'form-control-lg'
+      : ''} {String(value || '').trim() ? 'border-secondary' : ''}"
+    placeholder={$_(placeholderKey)}
+    aria-label={$_(ariaLabelKey)}
+    aria-describedby="find-addon"
+    {value}
+    oninput={onInput} />
+{/snippet}
 
 <script>
   import { onDestroy, onMount } from 'svelte';
@@ -35,6 +46,9 @@
     inputId = undefined,
     small = true,
     autofocus = false,
+    // Opt-in: a floating label instead of a bare placeholder, and the large control size.
+    floating = false,
+    large = false,
   } = $props();
 
   let value = $state('');

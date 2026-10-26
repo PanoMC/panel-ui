@@ -12,10 +12,10 @@
       </div>
       <div class="text-capitalize">{$_('pages.settings.backups.transfer.title')}</div>
     </div>
-    <div>{$_('pages.settings.backups.transfer.step-pick')}</div>
+    <div>{$_('pages.settings.backups.transfer.replace-note')}</div>
 
     {#if workloadList === null}
-      <div class="spinner-border spinner-border-sm text-body-secondary" role="status"></div>
+      <div class="spinner-border spinner-border-sm text-body-secondary mx-auto" role="status"></div>
     {:else if workloadsError}
       <div class="alert alert-danger mb-0 d-flex align-items-start">
         <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
@@ -36,7 +36,7 @@
           </label>
         </div>
         {#if selectedWorkload?.maxBytes}
-          <div class="mt-1">
+          <div class="mt-1 small text-body-secondary">
             {$_('pages.settings.backups.transfer.max-size', {
               values: { size: formatBytes(selectedWorkload.maxBytes) },
             })}
@@ -44,13 +44,13 @@
         {/if}
         <!-- An estimate of this Pano's content; it never blocks the select or the button while unknown. -->
         {#if estimateBytes !== null}
-          <div>
+          <div class="small text-body-secondary">
             {$_('pages.settings.backups.transfer.estimate', {
               values: { size: formatBytes(estimateBytes) },
             })}
           </div>
         {:else if estimating}
-          <div class="text-body-secondary">
+          <div class="small text-body-secondary">
             <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
             {$_('pages.settings.backups.transfer.estimating')}
           </div>
@@ -67,21 +67,6 @@
           </div>
         </div>
       {/if}
-
-      <div class="text-body-secondary">{$_('pages.settings.backups.transfer.replace-note')}</div>
-    {/if}
-
-    {#if workloadList !== null && !workloadsError}
-      <div>
-        <a
-          class="btn btn-link text-decoration-none"
-          href={createUrl}
-          target="_blank"
-          rel="noopener noreferrer">
-          <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
-          {$_('pages.settings.backups.transfer.create-instance')}
-        </a>
-      </div>
     {/if}
 
     {#if error}
@@ -100,7 +85,7 @@
     </button>
     <button
       type="button"
-      class="btn btn-primary col-6 m-0"
+      class="btn btn-secondary text-capitalize col-6 m-0"
       disabled={!selectedWorkload || disabled || starting || tooBig}
       onclick={() => void start()}>
       {#if starting}
@@ -118,9 +103,8 @@
 
   import ApiUtil from '$lib/api.util.js';
   import { formatBytes } from '$lib/string.util.js';
-  import { hostManageUrl, transferFits } from '$lib/pano-backup.util.js';
+  import { transferFits } from '$lib/pano-backup.util.js';
   import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
-  import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
   import BsModal from './BsModal.svelte';
   import PanoTransferCodeModal from './PanoTransferCodeModal.svelte';
@@ -160,7 +144,6 @@
   const tooBig = $derived(
     !!selectedWorkload && transferFits(estimateBytes, selectedWorkload.maxBytes) === false,
   );
-  const createUrl = $derived(hostManageUrl(PANO_WEBSITE_URL, 'new'));
   const workloadsError = $derived(workloadList?.error ? describeError(workloadList) : null);
   const workloads = $derived(
     /** @type {any[]} */ (

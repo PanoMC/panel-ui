@@ -7,21 +7,16 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <a
-      class="btn btn-link"
-      title={$_('pages.ticket-detail.tickets')}
-      aria-label={$_('pages.ticket-detail.tickets')}
-      role="button"
-      href="{base}/tickets"
-      slot="left">
-      <i class="fas fa-arrow-left"></i>
-    </a>
+    <PageNav slot="left">
+      <PageNavItem href="/tickets" active={true}>{$_('pages.ticket-categories.tickets')}</PageNavItem>
+      <PageNavItem href="/tickets/categories">{$_('buttons.categories')}</PageNavItem>
+    </PageNav>
 
     <div class="hstack gap-2" slot="right">
       <button
         title={$_('buttons.delete')}
         aria-label={$_('buttons.delete')}
-        class="btn btn-link"
+        class="btn btn-link link-danger"
         type="button"
         on:click={() => showDeleteTicketModal([data.ticket.id])}>
         <i class="fas fa-trash"></i>
@@ -222,6 +217,8 @@
   import Date from '$lib/components/Date.svelte';
   import TicketStatusBadge from '$lib/components/badges/TicketStatusBadge.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
   import { avatarVersion } from '$lib/Store';
 
   export let data;

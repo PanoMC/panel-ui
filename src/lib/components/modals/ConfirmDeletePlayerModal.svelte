@@ -12,14 +12,20 @@
             {$_('components.modals.confirm-delete-player.description')}
           </div>
 
-          <input
-            class="form-control d-inline-block text-center mt-3"
-            placeholder={$_('components.modals.confirm-delete-player.inputs.password.placeholder')}
-            type="password"
-            id="currentPasswordInput"
-            bind:value={$currentPassword}
-            bind:this={$passwordInput}
-            class:border-danger={$passwordError} />
+          <div class="form-floating text-start mt-3">
+            <input
+              id="currentPasswordInput"
+              class="form-control form-control-lg"
+              placeholder=" "
+              type="password"
+              autocomplete="current-password"
+              bind:value={$currentPassword}
+              bind:this={$passwordInput}
+              class:border-danger={$passwordError} />
+            <label for="currentPasswordInput">
+              {$_('components.modals.confirm-delete-player.inputs.password.placeholder')}
+            </label>
+          </div>
         </div>
 
         <div class="modal-footer flex-nowrap">

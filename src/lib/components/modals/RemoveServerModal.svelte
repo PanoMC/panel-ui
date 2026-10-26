@@ -59,7 +59,7 @@
                it. `mt-3` rather than the `zmt-3` this used to carry, which was never defined. -->
           <div class="form-floating text-start mt-3">
             <input
-              class="form-control"
+              class="form-control form-control-lg"
               id="removeServerPassword"
               placeholder=" "
               type="password"

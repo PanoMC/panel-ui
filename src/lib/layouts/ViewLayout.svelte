@@ -10,7 +10,12 @@
           <PageNav>
             {#each $themeMenuItems as item}
               {#if !item.permission || hasPermission(item.permission)}
-                <PageNavItem href={item.href}>{$_(item.text)}</PageNavItem>
+                <PageNavItem
+                  href={item.href}
+                  active={$page.url.pathname.startsWith(`${base}/view/detail`) &&
+                  item.href === '/view'
+                    ? true
+                    : undefined}>{$_(item.text)}</PageNavItem>
               {/if}
             {/each}
           </PageNav>

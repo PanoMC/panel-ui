@@ -111,18 +111,12 @@
         <option value={range}>{$_(`pages.servers.overview.range-${range}`)}</option>
       {/each}
     </select>
-    <label class="small text-body-secondary mb-0" for="vitalsInterval">
-      {$_('pages.servers.overview.refresh-interval')}
-    </label>
-    <select
-      id="vitalsInterval"
-      class="form-select form-select-sm w-auto"
-      bind:value={vitalsInterval}
-      on:change={onVitalsIntervalChange}>
-      {#each METRIC_REFRESH_INTERVALS as interval (interval)}
-        <option value={interval}>{metricRefreshIntervalLabel(interval, $_)}</option>
-      {/each}
-    </select>
+    <RefreshIntervalDropdown
+      value={vitalsInterval}
+      onselect={(interval) => {
+        vitalsInterval = interval;
+        onVitalsIntervalChange();
+      }} />
     <!-- A disabled switch swallows pointer events, so the tooltip lives on the wrapper. -->
     <div
       class="form-check form-switch m-0"
@@ -839,6 +833,7 @@
     subscribeServerMetrics,
   } from '$lib/panelRealtime.js';
   import tooltip from '$lib/tooltip.util';
+  import RefreshIntervalDropdown from '$lib/components/servers/RefreshIntervalDropdown.svelte';
   import copy from 'copy-to-clipboard';
   import ServerCapabilityChips from '$lib/components/servers/ServerCapabilityChips.svelte';
 
@@ -860,8 +855,6 @@
     isValidTimeZone,
     loadMetricRefreshInterval,
     METRIC_REFRESH_INTERVAL_DEFAULT,
-    METRIC_REFRESH_INTERVALS,
-    metricRefreshIntervalLabel,
     metricRequestInterval,
     storeMetricRefreshInterval,
     createLatestThrottle,

@@ -218,15 +218,16 @@
                   bind:value={confirmName}
                   bind:this={nameInput} />
               </div>
-              <div>
+              <div class="form-floating">
                 <input
-                  class="form-control"
+                  id="deleteNodePassword"
+                  class="form-control form-control-lg"
                   type="password"
                   autocomplete="current-password"
-                  aria-label={$_('pages.servers.nodes.delete-password')}
-                  placeholder={$_('pages.servers.nodes.delete-password')}
+                  placeholder=" "
                   bind:value={currentPassword}
                   class:is-invalid={passwordError} />
+                <label for="deleteNodePassword">{$_('pages.servers.nodes.delete-password')}</label>
                 {#if passwordError}
                   <div class="invalid-feedback">{$_('pages.servers.errors.wrong-password')}</div>
                 {/if}

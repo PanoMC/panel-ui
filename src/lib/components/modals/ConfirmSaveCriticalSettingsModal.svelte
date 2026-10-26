@@ -12,13 +12,18 @@
             {$_('components.modals.confirm-save-critical-settings.description')}
           </div>
 
-          <input
-            class="form-control mt-3"
-            placeholder={$_('components.modals.confirm-save-critical-settings.account-password')}
-            type="password"
-            bind:value={$password}
-            bind:this={$passwordInput}
-            class:border-danger={$passwordError} />
+          <div class="form-floating text-start mt-3">
+            <input
+              id="saveCriticalPassword"
+              class="form-control form-control-lg"
+              placeholder=" "
+              type="password"
+              autocomplete="current-password"
+              bind:value={$password}
+              bind:this={$passwordInput}
+              class:border-danger={$passwordError} />
+            <label for="saveCriticalPassword">{$_('components.modals.confirm-save-critical-settings.account-password')}</label>
+          </div>
         </div>
 
         <div class="modal-footer flex-nowrap">

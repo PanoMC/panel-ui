@@ -7,7 +7,10 @@
         <PageNav>
           {#each $postMenuItems as item}
             {#if !item.permission || hasPermission(item.permission)}
-              <PageNavItem href={item.href} startsWith={item.startsWith}
+              <PageNavItem
+                href={item.href}
+                startsWith={item.startsWith}
+                active={editorOpen && item.href === '/posts' ? true : undefined}
                 >{$_(item.text)}</PageNavItem>
             {/if}
           {/each}
@@ -68,6 +71,7 @@
 <script>
   import { _ } from 'svelte-i18n';
   import { beforeNavigate } from '$app/navigation';
+  import { page } from '@panomc/sdk/core/js/appStores.js';
   import PageActions from '$lib/components/PageActions.svelte';
   import PageSlot from '$lib/components/PageSlot.svelte';
   import PageNav from '$lib/components/PageNav.svelte';
@@ -81,6 +85,12 @@
 
   const { data, children } = $props();
   const slots = initSlots();
+
+  // The editor belongs to the Posts tab, so its pill stays lit there.
+  const editorOpen = $derived(
+    $page.url.pathname.startsWith(base + '/posts/detail') ||
+      $page.url.pathname.startsWith(base + '/posts/create-post')
+  );
 
   beforeNavigate(({ from, to }) => {
     if (from?.route.id !== to?.route.id) {

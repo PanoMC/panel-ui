@@ -1,6 +1,12 @@
 <style>
   .login-card {
     max-width: 26rem;
+    border: 0;
+  }
+
+  .login-card .form-floating > label,
+  .login-card .btn {
+    text-transform: capitalize;
   }
 
   .alt-methods-divider {
@@ -16,6 +22,35 @@
     content: '';
     flex: 1;
     border-top: 1px solid var(--bs-border-color);
+  }
+
+  /* Username and password as one block: the floating fields share a single border, so only the
+     outer corners stay round and the seam is one line. A focused field rises above its neighbour
+     so its focus ring is not cut off (raised as a whole, or the input would paint over its own label). */
+  .login-stack .form-floating:focus-within,
+  .login-stack .input-group:focus-within {
+    position: relative;
+    z-index: 3;
+  }
+
+  .login-stack > .form-floating:has(+ .input-group) > .form-control {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .login-stack > .input-group {
+    margin-top: -1px;
+  }
+
+  .login-stack > .input-group > .form-floating > .form-control {
+    border-top-left-radius: 0;
+  }
+
+  .login-stack > .input-group > .btn {
+    border-top-right-radius: 0;
+    --bs-btn-color: var(--bs-body-color);
+    --bs-btn-hover-color: var(--bs-body-color);
+    --bs-btn-active-color: var(--bs-body-color);
   }
 
   .totp-input {
@@ -88,9 +123,6 @@
         {$_('pages.auth.login.back-to-sign-in')}
       </button>
     {:else}
-      <h1 class="h5 mb-1">{$_('pages.auth.login.title')}</h1>
-      <p class="text-body-secondary small mb-3">{$_('pages.auth.login.subtitle')}</p>
-
       {#if errorKey}
         <div class="alert alert-danger d-flex align-items-start" role="alert">
           <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
@@ -99,40 +131,39 @@
       {/if}
 
       <form onsubmit={onSubmit}>
-        <div class="mb-3">
-          <label class="form-label" for="loginUsernameOrEmail">
-            {$_('pages.auth.login.username-label')}
-          </label>
-          <input
-            id="loginUsernameOrEmail"
-            class="form-control"
-            type="text"
-            autocomplete="username"
-            autocapitalize="none"
-            spellcheck="false"
-            maxlength="128"
-            placeholder={$_('pages.auth.login.username-placeholder')}
-            disabled={loading}
-            bind:value={usernameOrEmail}
-            oninput={onIdentifierInput} />
-        </div>
+        <div class="login-stack mb-3">
+          <div class="form-floating">
+            <input
+              id="loginUsernameOrEmail"
+              class="form-control"
+              type="text"
+              autocomplete="username"
+              autocapitalize="none"
+              spellcheck="false"
+              maxlength="128"
+              placeholder={$_('pages.auth.login.username-label')}
+              disabled={loading}
+              bind:value={usernameOrEmail}
+              oninput={onIdentifierInput} />
+            <label for="loginUsernameOrEmail">{$_('pages.auth.login.username-label')}</label>
+          </div>
 
-        <!-- Like the theme's sign-in: the password is asked only once the platform wants one. -->
-        {#if passwordAsked}
-          <div class="mb-3">
-            <label class="form-label" for="loginPassword">
-              {$_('pages.auth.login.password-label')}
-            </label>
+          <!-- Like the theme's sign-in: the password is asked only once the platform wants one. -->
+          {#if passwordAsked}
             <div class="input-group">
-              <input
-                id="loginPassword"
-                class="form-control"
-                type={passwordVisible ? 'text' : 'password'}
-                autocomplete="current-password"
-                maxlength="128"
-                disabled={loading}
-                bind:this={passwordInput}
-                bind:value={password} />
+              <div class="form-floating">
+                <input
+                  id="loginPassword"
+                  class="form-control"
+                  type={passwordVisible ? 'text' : 'password'}
+                  autocomplete="current-password"
+                  maxlength="128"
+                  placeholder={$_('pages.auth.login.password-label')}
+                  disabled={loading}
+                  bind:this={passwordInput}
+                  bind:value={password} />
+                <label for="loginPassword">{$_('pages.auth.login.password-label')}</label>
+              </div>
               <button
                 class="btn btn-outline-secondary"
                 type="button"
@@ -147,14 +178,12 @@
                   aria-hidden="true"></i>
               </button>
             </div>
-          </div>
-        {/if}
+          {/if}
+        </div>
 
         {#if step === Steps.EMAIL_REQUIRED}
           <div class="mb-3">
-            <label class="form-label" for="loginRegisterEmail">
-              {$_('pages.auth.login.email-required-label')}
-            </label>
+            <div class="form-floating">
             <input
               id="loginRegisterEmail"
               class="form-control"
@@ -163,18 +192,19 @@
               autocapitalize="none"
               spellcheck="false"
               maxlength="128"
+              placeholder={$_('pages.auth.login.email-required-label')}
               disabled={loading}
               bind:this={registerEmailInput}
               bind:value={registerEmail} />
+            <label for="loginRegisterEmail">{$_('pages.auth.login.email-required-label')}</label>
+          </div>
             <div class="form-text">{$_('pages.auth.login.email-required-hint')}</div>
           </div>
         {/if}
 
         {#if step === Steps.USERNAME_REQUIRED}
           <div class="mb-3">
-            <label class="form-label" for="loginNewUsername">
-              {$_('pages.auth.login.username-required-label')}
-            </label>
+            <div class="form-floating">
             <input
               id="loginNewUsername"
               class="form-control"
@@ -183,9 +213,12 @@
               autocapitalize="none"
               spellcheck="false"
               maxlength="16"
+              placeholder={$_('pages.auth.login.username-required-label')}
               disabled={loading}
               bind:this={newUsernameInput}
               bind:value={newUsername} />
+            <label for="loginNewUsername">{$_('pages.auth.login.username-required-label')}</label>
+          </div>
             <div class="form-text">{$_('pages.auth.login.username-required-hint')}</div>
           </div>
         {/if}

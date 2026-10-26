@@ -51,10 +51,15 @@
           <ul class="nav nav-tabs">
             {#each TABS as entry (entry.id)}
               <li class="nav-item">
-                <!-- A disabled button swallows pointer events, so the tooltip sits outside. -->
+                <!-- A disabled button swallows pointer events, so the tooltip sits outside. While a node is being
+                     set up the other tabs are closed without a tooltip. -->
                 <span
                   class="d-inline-block"
-                  use:tooltip={[tabDisabledReason(entry) ? $_(tabDisabledReason(entry)) : '']}>
+                  use:tooltip={[
+                    !bootstrapRunning && tabDisabledReason(entry)
+                      ? $_(tabDisabledReason(entry))
+                      : '',
+                  ]}>
                   <button
                     type="button"
                     class="nav-link"
@@ -90,7 +95,7 @@
               {/if}
             </div>
 
-            <div class="btn-group btn-group-sm mt-3" role="group">
+            <div class="btn-group btn-group-sm w-100 mt-3" role="group">
               {#each PLATFORMS as entry (entry.id)}
                 <button
                   type="button"
@@ -154,16 +159,6 @@
               </div>
             </div>
           {/if}
-
-          {#if bootstrapStatus === 'FAILED'}
-            <button
-              type="button"
-              class="btn btn-outline-secondary btn-sm mt-3"
-              onclick={backToForm}>
-              <i class="fa-solid fa-arrow-left me-1" aria-hidden="true"></i>
-              {$_('components.modals.add-node.back')}
-            </button>
-          {/if}
         {:else if phase === Phases.FINGERPRINT}
           <div class="alert alert-warning d-flex align-items-start" role="alert">
             <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
@@ -194,9 +189,6 @@
           </div>
         {:else if tab === 'local'}
           <!-- The local daemon is one click, not a form: Pano starts it next to itself. -->
-          <p class="mb-0 text-body-secondary">
-            {$_('components.modals.add-node.local-description')}
-          </p>
         {:else if tab === 'ssh'}
           <form id="addNodeSshForm" class="row g-3" onsubmit={onSubmitSsh}>
             <div class="col-md-8">
@@ -247,17 +239,16 @@
             </div>
 
             <div class="col-12">
-              <span class="form-label d-block">
+              <span class="form-label d-block text-capitalize">
                 {$_('components.modals.add-node.auth-label')}
               </span>
-              <div class="btn-group btn-group-sm" role="group">
+              <div class="btn-group btn-group-sm w-100" role="group">
                 {#each AUTH_TYPES as entry (entry.id)}
                   <button
                     type="button"
-                    class="btn btn-outline-primary"
+                    class="btn btn-outline-primary text-capitalize"
                     class:active={sshAuthType === entry.id}
                     onclick={() => (sshAuthType = entry.id)}>
-                    <i class="{entry.icon} me-1" aria-hidden="true"></i>
                     {$_(entry.label)}
                   </button>
                 {/each}
@@ -434,7 +425,7 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-primary w-100 text-capitalize"
+            class="btn btn-secondary w-100 text-capitalize"
             disabled={localSetupBusy || bootstrapRunning || !!tabDisabledReason(TABS[0])}
             onclick={setupLocalNode}>
             {#if localSetupBusy}
@@ -464,14 +455,16 @@
 
 {#snippet currentPasswordField(id)}
   <div class="col-12">
-    <input
-      aria-label={$_('components.modals.add-node.current-password-label')}
-      placeholder={$_('components.modals.add-node.current-password-label')}
-      {id}
-      type="password"
-      class="form-control"
-      autocomplete="current-password"
-      bind:value={currentPassword} />
+    <div class="form-floating">
+      <input
+        {id}
+        type="password"
+        class="form-control form-control-lg"
+        autocomplete="current-password"
+        placeholder=" "
+        bind:value={currentPassword} />
+      <label for={id}>{$_('components.modals.add-node.current-password-label')}</label>
+    </div>
   </div>
 {/snippet}
 
@@ -724,10 +717,9 @@
   const AUTH_TYPES = [
     {
       id: 'password',
-      icon: 'fa-solid fa-lock',
       label: 'components.modals.add-node.auth-password',
     },
-    { id: 'key', icon: 'fa-solid fa-key', label: 'components.modals.add-node.auth-key' },
+    { id: 'key', label: 'components.modals.add-node.auth-key' },
   ];
 
   /** Where an SSH or Coolify bootstrap currently stands. */

@@ -10,19 +10,14 @@
 </style>
 
 <div class="vstack gap-2">
-  <div class="d-flex justify-content-between align-items-center small">
-    <span class="d-flex align-items-center gap-2">
-      {#if running}
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      {/if}
+  {#if !running}
+    <div class="small">
       <span class="badge rounded-pill text-bg-{statusColour}">{$_(statusLabel)}</span>
-    </span>
-    <span class="font-monospace text-body-secondary">{safePercent}%</span>
-  </div>
+    </div>
+  {/if}
 
   <div
     class="progress"
-    style="height: 6px;"
     role="progressbar"
     aria-label={$_('components.modals.add-node.progress-label')}
     aria-valuenow={safePercent}

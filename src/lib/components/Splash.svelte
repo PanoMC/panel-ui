@@ -1,4 +1,9 @@
 <style>
+  .splash-error {
+    max-width: 28rem;
+    padding: 0 1rem;
+  }
+
   .splash-logo-layer {
     position: absolute;
     top: 50%;
@@ -182,24 +187,25 @@
   </div>
 
   {#if showErrors}
-    <div class="mt-4 text-center">
-      <span class="badge rounded-pill text-bg-danger text-wrap fw-normal fs-6">
-        {#if showNotLoggedIn}
-          {$_('components.splash.errors.session')}
-        {:else if showNoPermission}
-          {$_('components.splash.errors.permission')}
-        {:else}
-          {$_('components.splash.errors.connection')}
-        {/if}
-      </span>
+    <div class="mt-4 text-center splash-error">
+      <div class="alert alert-danger d-flex align-items-start text-start mx-auto mb-0" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+        <div>
+          <h5 class="alert-heading mb-2">{$_(`components.splash.errors.${errorKind}`)}</h5>
+          <div>{$_(`components.splash.errors.${errorKind}-description`)}</div>
+        </div>
+      </div>
       <div class="d-flex flex-wrap align-items-center justify-content-center gap-2 mt-3">
-        <button class="btn btn-sm btn-outline-secondary" on:click={reloadPage} type="button">
+        <button
+          class="btn btn-sm btn-link text-decoration-none"
+          on:click={reloadPage}
+          type="button">
           {$_('components.splash.manual-refresh')}
         </button>
         <!-- Trying again only helps a lost connection: a missing session or permission stays missing. -->
         {#if !showNotLoggedIn && !showNoPermission}
           <button
-            class="btn btn-sm btn-primary"
+            class="btn btn-sm btn-secondary"
             on:click={onRetryClick}
             disabled={retrying}
             type="button">
@@ -216,7 +222,7 @@
     <small class="d-block mb-3">
       {$_('components.splash.stuck-text')}
     </small>
-    <a href="." class="btn btn-outline-secondary btn-sm">
+    <a href="." class="btn btn-link btn-sm text-decoration-none">
       <i class="fas fa-sync-alt me-2"></i>
       {$_('components.splash.manual-refresh')}
     </a>
@@ -265,6 +271,7 @@
   $: showErrors = hasNetworkErrors || demoKind !== null;
   $: showNotLoggedIn = demoKind ? demoKind === 'session' : notLoggedIn;
   $: showNoPermission = demoKind ? demoKind === 'permission' : noPermission;
+  $: errorKind = showNotLoggedIn ? 'session' : showNoPermission ? 'permission' : 'connection';
   // The logos cycle while something is loading. With an error on screen nothing is, so the cycle
   // stops on the Pano mark; "try again" starts it again for as long as the retry runs. The "stuck
   // here?" help is not an error: the page is still loading under it.

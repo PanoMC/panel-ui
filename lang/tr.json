@@ -116,7 +116,7 @@
   },
   "pages": {
     "auth": {
-      "panel-name": "Yönetim paneli",
+      "panel-name": "Panel",
       "login": {
         "title": "Giriş yap",
         "subtitle": "Yönetim panelini açmak için Pano hesabını kullan.",
@@ -146,15 +146,15 @@
         "link-code-open-site": "Site girişini aç",
         "errors": {
           "invalid": "Kullanıcı adı veya şifre hatalı.",
-          "two-factor-invalid": "Bu kod geçerli değil. Doğrulama uygulamanı kontrol edip tekrar dene.",
-          "email-not-verified": "Giriş yapmadan önce {email} adresini doğrula. Yeni bir doğrulama e-postası gönderildi.",
+          "two-factor-invalid": "Doğrulama kodu geçersiz. Kod kontrol edilip işlem yeniden denenmeli.",
+          "email-not-verified": "Giriş için {email} adresinin doğrulanması gerekiyor. Yeni bir doğrulama e-postası gönderildi.",
           "banned": "Hesabın yasaklı.",
           "banned-permanent": "Hesabın kalıcı olarak yasaklandı.",
           "banned-permanent-reason": "Hesabın kalıcı olarak yasaklandı. Sebep: {reason}",
           "banned-until": "Hesabın {until} tarihine kadar yasaklı.",
           "banned-until-reason": "Hesabın {until} tarihine kadar yasaklı. Sebep: {reason}",
           "ip-banned": "Bu IP adresi yasaklı.",
-          "captcha": "Captcha doğrulanamadı. Captcha'yı tamamlayıp tekrar dene.",
+          "captcha": "Captcha doğrulaması başarısız. Captcha tamamlanıp işlem yeniden denenmeli.",
           "denied": "Bir eklenti bu girişi reddetti.",
           "no-panel-access": "Bu hesabın panele erişim yetkisi yok.",
           "invalid-email": "Bu e-posta adresi geçerli değil.",
@@ -165,7 +165,7 @@
           "username-too-long": "Kullanıcı adı en fazla 16 karakter olabilir.",
           "installation-required": "Pano henüz kurulmadı. Önce kurulumu tamamla.",
           "maintenance": "Pano şu anda bakım modunda.",
-          "network": "Pano'ya ulaşılamadı. Bağlantını kontrol edip tekrar dene.",
+          "network": "Pano'ya ulaşılamadı. Ağ bağlantısı kontrol edilip işlem yeniden denenmeli.",
           "generic": "Giriş başarısız ({code})."
         }
       },
@@ -1021,9 +1021,9 @@
           "canceling": "Dönem sonunda bitiyor",
           "free-plan": "Ücretsiz plan",
           "used": "{size} kullanıldı",
-          "usage-of": "{quota} alanın {used} kadarı kullanıldı",
+          "usage-of": "{used} / {quota}",
           "shared-hint": "Depolama alanı bu hesaba bağlı tüm Pano'lar arasında paylaşılır.",
-          "manage-plan": "Yedekleme Planını Yönet",
+          "manage-plan": "Planı Yönet",
           "plan-updated": "Pano Backup planınız güncellendi."
         },
         "remote-status-canceled": "Durduruldu",
@@ -1632,7 +1632,7 @@
         "browse": {
           "search-placeholder": "Eklenti veya mod ara...",
           "search-hint": "Seçili kaynakta aramak için yazmaya başla.",
-          "search-failed": "Arama başarısız oldu. Birazdan tekrar dene.",
+          "search-failed": "Arama başarısız oldu. İşlem daha sonra yeniden denenmeli.",
           "sources-failed": "Kaynaklar yüklenemedi.",
           "source-off": "Bu kaynak kapalı.",
           "no-sources": "Kullanılabilir kaynak yok. CurseForge için platform ayarlarında bir API anahtarı gerekir.",
@@ -1767,7 +1767,7 @@
         "delete-title": "Bu yedek silinsin mi?",
         "delete-description": "{name} düğümden kalıcı olarak silinecek.",
         "deleted": "{name} silindi.",
-        "password-placeholder": "Hesap şifreniz",
+        "password-placeholder": "Hesap Parolası",
         "status-pending": "Sırada",
         "status-running": "Çalışıyor",
         "status-ready": "Hazır",
@@ -1871,22 +1871,22 @@
         "permission-integration-description": "Pano'nun Fabric'daki yetki eklentilerine bağlanmasına izin ver."
       },
       "errors": {
-        "capability-missing": "Bu sunucunun Pano eklentisi bunu yapamıyor. pano-mc-plugin'i güncelle ya da özelliği eklenti ayarlarından aç.",
+        "capability-missing": "Sunucudaki Pano eklentisi bu işlemi desteklemiyor. pano-mc-plugin güncellenmeli ya da özellik eklenti ayarlarından etkinleştirilmeli.",
         "feature-unavailable": "Bu sunucu şu anda bunu yapamıyor.",
-        "command-denied": "Bu komut bir yetki kuralıyla sana kapatılmış (kalıp: \"{pattern}\").",
-        "offline": "Sunucu şu anda çevrimdışı. Yeniden bağlandığında tekrar dene.",
+        "command-denied": "Bu komut bir yetki kuralı tarafından engellendi (kalıp: \"{pattern}\").",
+        "offline": "Sunucu şu anda çevrimdışı. Bağlantı yeniden kurulduğunda işlem tekrar denenmeli.",
         "install-failed": "Bu sunucunun kurulumu başarısız oldu; önce yeniden yükleyin.",
-        "rate-limited": "Yavaşla — arka arkaya çok fazla istek gönderdin. Yaklaşık {seconds} saniye bekleyip tekrar dene.",
+        "rate-limited": "İstek sınırı aşıldı. Yaklaşık {seconds} saniye sonra işlem yeniden denenmeli.",
         "generic": "İşlem başarısız oldu. ({error})",
-        "node-offline": "Bu sunucunun çalıştığı düğüm çevrimdışı. Yeniden bağlandığında tekrar dene.",
-        "node-not-exists": "O düğüm artık yok — sayfayı yenile.",
+        "node-offline": "Sunucunun çalıştığı düğüm çevrimdışı. Bağlantı yeniden kurulduğunda işlem tekrar denenmeli.",
+        "node-not-exists": "Düğüm artık mevcut değil. Sayfa yenilenmeli.",
         "not-managed": "Bu yalnızca Pano’nun kendi çalıştırdığı sunucularda çalışır.",
         "wrong-password": "Parola doğru değil.",
         "unavailable": "Pano’nun bu sürümünde bu özellik henüz yok.",
         "path-denied": "Bu yola izin verilmiyor.",
         "file-too-large": "Bu dosya çok büyük.",
-        "transfer-expired": "Aktarımın süresi doldu. Yeniden başlat.",
-        "no-stdin": "Düğüm yeniden başlarken bu sunucunun konsol girişini kaybetti; komutu iletebilecek Pano eklentisi de bağlı değil. Sunucuyu panelden yeniden başlat."
+        "transfer-expired": "Aktarımın süresi doldu. Aktarım yeniden başlatılmalı.",
+        "no-stdin": "Düğüm yeniden başlatılırken sunucunun konsol girişi kayboldu; komutu iletebilecek Pano eklentisi de bağlı değil. Sunucu panelden yeniden başlatılmalı."
       },
       "process-state": {
         "stopped": "Durduruldu",
@@ -1934,7 +1934,7 @@
         "rename-label": "Düğüm adı",
         "renamed": "Düğümün adı {name} olarak değiştirildi.",
         "delete-title": "Bu düğüm silinsin mi?",
-        "delete-password": "Hesap parolası",
+        "delete-password": "Hesap Parolası",
         "deleted": "{name} silindi.",
         "tab-local": "Yerel",
         "tab-manual": "Elle",
@@ -2039,7 +2039,7 @@
         "column-network": "Ağ",
         "network-rate": "↓ {rx} · ↑ {tx}",
         "unreachable": "Çok eski",
-        "unreachable-hint": "Bu düğüm bu Pano'ya ulaşamayacak kadar eski. Jar'ını elle değiştir.",
+        "unreachable-hint": "Bu düğüm, bu Pano'ya bağlanamayacak kadar eski sürümde. Jar dosyası elle değiştirilmeli.",
         "unreachable-title": "Bu Düğümün Yeni Bir Jar'a İhtiyacı Var",
         "unreachable-description": "Düğüm bu Pano'ya ulaşamayacak kadar eski. Jar değiştirilip yeniden başlatılınca kendiliğinden bağlanır.",
         "unreachable-download": "Düğüm Jar'ını İndir"
@@ -3204,7 +3204,7 @@
           "copy-from": "Şunun kopyasıyla başla"
         },
         "errors": {
-          "REQUIRED": "Düzene bir ad ver.",
+          "REQUIRED": "Düzen adı gerekli.",
           "TOO_LONG": "Ad çok uzun (en fazla 100 karakter)."
         }
       },
@@ -3278,14 +3278,14 @@
         "saved": "Şablon kaydedildi.",
         "reset": "Şablon varsayılana sıfırlandı.",
         "test-sent": "Test e-postası e-posta adresine gönderildi.",
-        "invalid": "Şablonda hatalar var. İşaretli alanları düzeltip tekrar dene.",
+        "invalid": "Şablonda hatalar var. İşaretli alanlar düzeltilip işlem yeniden denenmeli.",
         "missing-content": "Düzen {slot} içermeli.",
-        "failed": "Bir şeyler ters gitti. Lütfen tekrar dene.",
+        "failed": "İşlem başarısız oldu. Yeniden denenmeli.",
         "layout-saved": "Düzen kaydedildi.",
         "layout-reset": "Düzen varsayılana sıfırlandı.",
         "layout-deleted": "Düzen silindi.",
-        "layout-missing": "Bu düzen artık yok. Başka birini seç.",
-        "layout-name-invalid": "Düzenin adını kontrol et."
+        "layout-missing": "Bu düzen artık mevcut değil. Başka bir düzen seçilmeli.",
+        "layout-name-invalid": "Düzen adı geçersiz."
       },
       "window": {
         "open": "Yeni Pencerede Aç",
@@ -3678,17 +3678,17 @@
       "confirm-stop-theme": {
         "title": "Etkin tema durdurulsun mu?",
         "description": "Tema yeniden başlatılana kadar site erişilemez olur.",
-        "account-password": "Hesap Şifresi"
+        "account-password": "Hesap Parolası"
       },
       "confirm-stop-pano": {
         "title": "Pano durdurulsun mu?",
         "description": "Pano yeniden başlatılana kadar site erişilemez olur.",
-        "account-password": "Hesap Şifresi"
+        "account-password": "Hesap Parolası"
       },
       "confirm-restart-pano": {
         "title": "Pano yeniden başlatılsın mı?",
         "description": "Pano yeniden başlarken site geçici olarak erişilemez olur.",
-        "account-password": "Hesap Şifresi",
+        "account-password": "Hesap Parolası",
         "terminal-mode-warning": "Pano şu anda bir terminale bağlı çalışıyor. Terminal'den bağımsız arkaplanda çalışma moduna geçsin mi?",
         "restart-in-background": "Pano'yu arka plan modunda yeniden başlat"
       },
@@ -3703,7 +3703,7 @@
       "confirm-save-critical-settings": {
         "title": "Kritik ayarlar kaydedilsin mi?",
         "description": "Bu değişiklikler sunucunun yeniden başlatılmasını gerektirebilir ve sitenizin erişilebilirliğini etkileyebilir. Onaylamak için hesap şifrenizi girin.",
-        "account-password": "Hesap Şifresi"
+        "account-password": "Hesap Parolası"
       },
       "confirm-reset-tab": {
         "title": "Bu sekmedeki ayarları sıfırlamak istediğinize emin misiniz?"
@@ -3830,7 +3830,7 @@
         "description": "Kullanıcının hesabı Pano'dan silinir. Onaylamak için hesap şifrenizi girin.",
         "inputs": {
           "password": {
-            "placeholder": "Şifre"
+            "placeholder": "Hesap Parolası"
           }
         }
       },
@@ -3937,26 +3937,26 @@
       },
       "add-node": {
         "local-description": "Pano bu makinede, kendi yanında bir node başlatır ve bağlar. Elle bir şey kurmanız gerekmez.",
-        "local-submit": "Lokal node'u kur",
+        "local-submit": "Yerel Düğüm Kur",
         "local-exists": "Zaten bir lokal node kurulu",
         "no-permission": "Bunun için \"düğümleri yönet\" iznine ihtiyacın var.",
         "busy": "Kurulmakta olan makinenin bitmesini bekle.",
         "unavailable": "Pano'nun bu sürümü henüz uzak düğüm kuramıyor.",
-        "current-password-label": "Hesap şifren",
+        "current-password-label": "Hesap Parolası",
         "current-password-hint": "Makine kurmak hassas bir işlem, bu yüzden Pano önce şifreni ister.",
-        "name-label": "Düğüm adı",
+        "name-label": "Düğüm Adı",
         "name-placeholder": "eu-west-1",
         "host-label": "Adres",
-        "port-label": "SSH portu",
-        "username-label": "SSH kullanıcısı",
-        "auth-label": "Kimlik doğrulama",
+        "port-label": "SSH Portu",
+        "username-label": "SSH Kullanıcısı",
+        "auth-label": "Kimlik Doğrulama",
         "auth-password": "Şifre",
         "auth-key": "Özel anahtar",
-        "ssh-password-label": "SSH şifresi",
-        "private-key-label": "Özel anahtar",
+        "ssh-password-label": "SSH Şifresi",
+        "private-key-label": "Özel Anahtar",
         "private-key-hint": "BEGIN ve END satırları dahil anahtarın tamamını yapıştır. Bir kez kullanılır, hiçbir yere kaydedilmez.",
-        "passphrase-label": "Anahtar parolası (isteğe bağlı)",
-        "sudo-label": "sudo kullan",
+        "passphrase-label": "Anahtar Parolası (İsteğe Bağlı)",
+        "sudo-label": "Sudo Kullan",
         "sudo-hint": "SSH kullanıcısı zaten root değilse açık bırak.",
         "ssh-submit": "Bağlan ve kur",
         "fingerprint-label": "Sunucu Anahtarı Parmak İzi",
@@ -3970,7 +3970,7 @@
         "coolify-environment-label": "Ortam",
         "coolify-volume-label": "Veri birimi",
         "coolify-ports-label": "Port aralığı",
-        "coolify-ports-invalid": "25565-25600 gibi bir aralık gir.",
+        "coolify-ports-invalid": "Port aralığı geçersiz. Beklenen biçim: 25565-25600.",
         "coolify-image-label": "İmaj",
         "coolify-image-invalid": "Küçük harflerden oluşan, etiketsiz bir registry adresi yaz.",
         "coolify-image-tag-label": "Etiket",
@@ -3988,7 +3988,7 @@
         "node-ready": "{name} bağlandı ve hazır.",
         "coolify-refused": "Coolify Dağıtımı Reddetti:",
         "local-failed": "Yerel Düğüm Başlatılamadı:",
-        "local-failed-generic": "Daemon bağlanamadan kapandı. Pano'nun yanındaki logs/pano-node.log dosyasına bak.",
+        "local-failed-generic": "Daemon bağlantı kurulamadan sonlandı. Ayrıntılar Pano dizinindeki logs/pano-node.log dosyasında.",
         "local-starting": "Yerel düğüm başlatılıyor…",
         "local-java": "Java {major} ({path})",
         "local-daemon-started": "Daemon başlatıldı (pid {pid}).",
@@ -3999,7 +3999,7 @@
           "advanced": "Gelişmiş",
           "label": "Düğümün ulaşabileceği Pano adresi",
           "hint": "Boş bırakırsan site adresin kullanılır. Makine Pano'ya oradan ulaşamıyorsa doldur — NAT arkasında, SSH tüneliyle ya da kendi DNS'i olan bir test ağında. Düğüm bu adrese bağlanır ve dosyaları buradan indirir.",
-          "invalid": "http:// veya https:// ile başlayan tam bir adres gir.",
+          "invalid": "Adres, http:// veya https:// ile başlayan tam bir URL olmalı.",
           "unsupported": "Pano'nun bu sürümü hazır bir kurulum komutu vermiyor, yukarıdaki komut burada oluşturuldu ve adres düğümden erişilebilir olmayabilir. Komutu çalıştırmadan önce kontrol et."
         }
       },
@@ -4117,7 +4117,7 @@
           "upload-wrong-type": "Yalnızca .zip arşivleri içe aktarılabilir.",
           "upload-unavailable": "Pano'nun bu sürümü henüz sunucu yüklemesi kabul edemiyor.",
           "modpack-search-placeholder": "Modrinth'de Ara",
-          "modpack-search-failed": "Modpack araması başarısız oldu. Birazdan tekrar dene.",
+          "modpack-search-failed": "Modpack araması başarısız oldu. İşlem daha sonra yeniden denenmeli.",
           "modpack-unavailable": "Pano'nun bu sürümü henüz modpack listeleyemiyor.",
           "modpack-version-label": "Paket Sürümü",
           "modpack-no-versions": "Bu modpack'in Pano'nun sunucuya kurabileceği bir sürümü yok.",
@@ -4152,7 +4152,7 @@
         "in-place-info": "Dosyaları klasöründe kalır; yalnızca Pano’nun kendi dosyaları çıkarılır.",
         "agent-info": "Pano Agent kendi .pano-agent klasörünü siler ve durur. pano-agent.jar kalır: onu sil ve sunucuyu yine doğrudan kendi jar’ıyla başlat.",
         "in-place-backups": "Pano’nun aldığı yedekleri silinir.",
-        "account-password": "Hesap Şifresi",
+        "account-password": "Hesap Parolası",
         "backups-loading": "Yedekleri kontrol ediliyor…",
         "backups-all": "Dosyaları ve tüm yedekleri de düğümden silinecek.",
         "no-backups": "Dosyaları düğümden silinecek. Hiç yedeği yok.",
@@ -4175,7 +4175,7 @@
         "preview-failed": "Önizleme yüklenemedi.",
         "tasks-label": "İşlemler",
         "tasks-hint": "Yukarıdan aşağıya, sırayla çalışırlar.",
-        "tasks-empty": "En az bir işlem ekle.",
+        "tasks-empty": "En az bir işlem tanımlanmalı.",
         "task-kind": "İşlem türü",
         "task-action": "Güç işlemi",
         "task-command": "Komut",
@@ -4187,10 +4187,10 @@
         "move-down": "Aşağı taşı",
         "backup-unavailable": "Yedekleme işlemleri için bu sunucuyu yedekleyebilen bir düğüm ya da Pano eklentisi gerekir.",
         "enabled-label": "Bu görev çalışsın",
-        "error-name": "Göreve bir ad ver.",
-        "error-cron": "Bir cron ifadesi gir.",
+        "error-name": "Görev adı gerekli.",
+        "error-cron": "Cron ifadesi gerekli.",
         "error-cron-invalid": "Pano bu cron ifadesini okuyamıyor.",
-        "error-tasks": "En az bir işlem ekle.",
+        "error-tasks": "En az bir işlem tanımlanmalı.",
         "error-command": "Komut işlemi için bir komut gerekir.",
         "save-failed": "Görev kaydedilemedi.",
         "error-backup-include": "Özel bir yedek için dahil edilecek en az bir yol gerekir."
@@ -4366,7 +4366,7 @@
         "start-after": "Ardından sunucuyu başlat",
         "start-after-running": "Şu an açık; önce durdurulacak.",
         "start-after-stopped": "Şu an kapalı.",
-        "password-label": "Hesap parolası",
+        "password-label": "Hesap Parolası",
         "summary-running": "{from} → {to}",
         "summary-stopped": "{from} → {to}",
         "submit": "Yazılımı Değiştir",
@@ -4419,7 +4419,7 @@
       },
       "ticket-settings": {
         "title": "Destek Talebi Ayarları",
-        "allow-no-category": "Kategorisiz destek talebine izin ver",
+        "allow-no-category": "Kategorisiz Destek Talebine İzin Ver",
         "allow-no-category-hint": "Kullanıcılar kategori seçmeden destek talebi açabilir.",
         "load-failed": "Ayarlar yüklenemedi.",
         "save-failed": "Ayarlar kaydedilemedi.",
@@ -4456,9 +4456,12 @@
     },
     "splash": {
       "errors": {
-        "session": "Oturum hatası",
-        "permission": "Yetki hatası",
-        "connection": "Bağlantı hatası"
+        "session": "Oturum Hatası",
+        "session-description": "Oturum doğrulanamadı veya süresi doldu. Panele erişmek için yeniden giriş yapılmalı.",
+        "permission": "Yetki Hatası",
+        "permission-description": "Bu hesabın panele erişim yetkisi bulunmuyor. Erişim için bir yöneticiyle iletişime geçilmeli.",
+        "connection": "Bağlantı Hatası",
+        "connection-description": "Pano sunucusuna ulaşılamadı. Ağ bağlantısı ve sunucu durumu kontrol edilip işlem yeniden denenmeli."
       },
       "stuck-text": "Burada mı takıldın? Manuel olarak yenilemeyi dene.",
       "manual-refresh": "Manuel Yenile",
@@ -4930,7 +4933,7 @@
     "UNAUTHORIZED": "Bu kaynağa erişim yetkiniz yok.",
     "WEBSITE_LOGO_EXCEEDS_SIZE": "Web sitesi logosu izin verilen maksimum boyutu aşıyor.",
     "WEBSITE_LOGO_WRONG_CONTENT_TYPE": "Web sitesi logosu geçersiz içerik türüne sahip.",
-    "KEEP_INCOMPATIBLE": "Bu yazılıma geçerken bu seçenek korunamaz. “Neler korunsun” seçimlerini kontrol et.",
+    "KEEP_INCOMPATIBLE": "Bu yazılıma geçilirken bu seçenek korunamaz. “Neler korunsun” seçimleri kontrol edilmeli.",
     "NETWORK_ROLE_CONFLICT": "Bu sunucu bir ağın parçası. Proxy ile oyun sunucusu arasında geçiş yapmadan önce onu ağdan çıkar.",
     "INVALID_HOME_PAGE": "Bu, etkin temanın bir ana sayfa seçeneği değil.",
     "TICKET_CATEGORY_REQUIRED": "Destek talebi açmak için bir kategori seçin."

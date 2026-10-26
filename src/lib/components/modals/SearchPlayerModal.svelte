@@ -1,6 +1,6 @@
 <!-- Search Player Modal -->
 <div class="modal fade" bind:this={$modalElement} tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{$_('components.modals.search-player.title')}</h5>
@@ -22,6 +22,9 @@
               placeholderKey="buttons.find"
               ariaLabelKey="buttons.find"
               debounceMs={0}
+              small={false}
+              large
+              floating
               showSpinner={false}
               initialValue={$query}
               onchange={(value) => query.set(value)} />
@@ -36,15 +39,15 @@
             {/if}
           </div>
 
-          <small>
-            {#if $loading}
-              {$_('components.modals.search-player.states.loading')}
-            {:else if $query.trim().length === 0}
-              {$_('components.modals.search-player.states.start-typing')}
-            {:else}
-              {$_('components.modals.search-player.states.max-results')}
-            {/if}
-          </small>
+          {#if $loading || $query.trim().length > 0}
+            <small>
+              {#if $loading}
+                {$_('components.modals.search-player.states.loading')}
+              {:else}
+                {$_('components.modals.search-player.states.max-results')}
+              {/if}
+            </small>
+          {/if}
         </div>
 
         {#if $errorText}
@@ -76,11 +79,11 @@
                     <small class="d-block text-truncate">{formatGroups(u) || '-'}</small>
                   </div>
                 </div>
-                <span class="badge text-bg-primary">
-                  {$selectOnlyBadge || isExisting(u)
-                    ? $_('components.modals.search-player.badges.select')
-                    : $_('components.modals.search-player.badges.add')}
-                </span>
+                {#if !$selectOnlyBadge && !isExisting(u)}
+                  <span class="badge text-bg-primary">
+                    {$_('components.modals.search-player.badges.add')}
+                  </span>
+                {/if}
               </button>
             {/each}
           </div>

@@ -6,7 +6,7 @@
         type="button"
         class="btn btn-link"
         disabled={running}
-        title={$_('pages.settings.backups.restore-from-file')}
+        use:tooltip={[$_('pages.settings.backups.restore-from-file'), { placement: 'bottom' }]}
         aria-label={$_('pages.settings.backups.restore-from-file')}
         onclick={() => restoreModal?.open({ source: 'file' })}>
         <i class="fa-solid fa-file-arrow-up" aria-hidden="true"></i>
@@ -14,7 +14,7 @@
       <button
         type="button"
         class="btn btn-link"
-        title={$_('buttons.settings')}
+        use:tooltip={[$_('buttons.settings'), { placement: 'bottom' }]}
         aria-label={$_('buttons.settings')}
         onclick={() => settingsModal?.open()}>
         <i class="fa-solid fa-gear" aria-hidden="true"></i>
@@ -116,7 +116,7 @@
                   {#if backup.encrypted}
                     <i
                       class="fa-solid fa-lock ms-1 text-body-secondary"
-                      title={$_('pages.settings.backups.encrypted')}
+                      use:tooltip={[$_('pages.settings.backups.encrypted'), { placement: 'bottom' }]}
                       aria-label={$_('pages.settings.backups.encrypted')}></i>
                   {/if}
                 </td>
@@ -160,7 +160,7 @@
           <button
             type="button"
             class="btn btn-sm btn-link"
-            title={$_('pages.settings.backups.passphrase-title')}
+            use:tooltip={[$_('pages.settings.backups.passphrase-title'), { placement: 'bottom' }]}
             aria-label={$_('pages.settings.backups.passphrase-title')}
             onclick={() => passphraseModal?.open()}>
             <i
@@ -172,14 +172,14 @@
           type="button"
           class="btn btn-sm btn-link"
           disabled={running}
-          title={$_('pages.settings.backups.transfer.title')}
+          use:tooltip={[$_('pages.settings.backups.transfer.title'), { placement: 'bottom' }]}
           aria-label={$_('pages.settings.backups.transfer.title')}
           onclick={() => transferModal?.open()}>
           <i class="fa-solid fa-right-left" aria-hidden="true"></i>
         </button>
         <button
           type="button"
-          class="btn btn-sm btn-secondary text-capitalize"
+          class="btn btn-sm btn-primary text-capitalize"
           disabled={running || busyAction === 'upload'}
           onclick={() => uploadModal?.show()}>
           <i class="fa-solid fa-cloud-arrow-up me-1" aria-hidden="true"></i>
@@ -246,7 +246,7 @@
                           class="btn btn-link"
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
-                          title={$_('pages.settings.backups.column-actions')}
+                          use:tooltip={[$_('pages.settings.backups.column-actions'), { placement: 'bottom' }]}
                           aria-label={$_('pages.settings.backups.column-actions')}>
                           <span class="fas fa-ellipsis-v"></span>
                         </button>
@@ -606,6 +606,7 @@
   import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
   import { pageCount, pageNumber, pageOf } from '$lib/components/pagination.util.js';
+  import tooltip from '$lib/tooltip.util.js';
   import PageActions from '$lib/components/PageActions.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   import BsModal from '$lib/components/settings/pano-backup/BsModal.svelte';

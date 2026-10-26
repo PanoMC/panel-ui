@@ -772,7 +772,6 @@
             class:btn-primary={mailChoice === 'pano'}
             class:btn-outline-primary={mailChoice !== 'pano'}
             aria-pressed={mailChoice === 'pano'}
-            title={$_('pages.settings.platform.smtp.pano-mail.pano')}
             aria-label={$_('pages.settings.platform.smtp.pano-mail.pano')}
             on:click={() => (mailChoice = 'pano')}
             disabled={saveEmailLoading || panoMailBusy}
@@ -783,7 +782,6 @@
             class:btn-primary={mailChoice === 'own'}
             class:btn-outline-primary={mailChoice !== 'own'}
             aria-pressed={mailChoice === 'own'}
-            title={$_('pages.settings.platform.smtp.pano-mail.own')}
             aria-label={$_('pages.settings.platform.smtp.pano-mail.own')}
             on:click={() => (mailChoice = 'own')}
             disabled={saveEmailLoading || panoMailBusy}
@@ -947,62 +945,20 @@
             </div>
           {/if}
 
-          {#each [['month', panoMailStatus.usage.month], ['day', panoMailStatus.usage.day]] as [period, usage] (period)}
-            <div class="mb-3">
-              <div class="d-flex justify-content-between">
-                <span>{$_(`pages.settings.platform.smtp.pano-mail.${period}`)}</span>
-                <span
-                  >{usage.used.toLocaleString($currentLanguage.code)} / {usage.limit.toLocaleString(
-                    $currentLanguage.code,
-                  )}</span>
-              </div>
-              <div
-                class="progress"
-                style="height: 6px;"
-                role="progressbar"
-                aria-label={$_(`pages.settings.platform.smtp.pano-mail.${period}`)}
-                aria-valuemin="0"
-                aria-valuemax="100"
-                aria-valuenow={percentUsed(usage)}>
-                <div
-                  class="progress-bar"
-                  class:bg-warning={usageLevel(usage) === 'warning'}
-                  class:bg-danger={usageLevel(usage) === 'danger'}
-                  style="width: {percentUsed(usage)}%;">
-                </div>
-              </div>
-              {#if usage.resetsAt}
-                <div class="form-text">
-                  {$_('pages.settings.platform.smtp.pano-mail.resets', {
-                    values: { date: formatReset(usage.resetsAt, $currentLanguage.code) },
-                  })}
-                </div>
-              {/if}
-            </div>
-          {/each}
-
-          <div class="row mb-3">
-            <div class="col-md-6">{$_('pages.settings.platform.smtp.pano-mail.plan')}</div>
-            <div class="col-md-6 d-flex align-items-center gap-2 flex-wrap">
-              <b>{panoMailStatus.plan.name}</b>
-              {#if panoMailStatus.plan.free}
-                <span class="badge text-bg-success"
-                  >{$_('pages.settings.platform.smtp.pano-mail.free')}</span>
-              {/if}
-              {#if panoMailStatus.manageUrl}
-                <a
-                  href={panoMailStatus.manageUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class:pe-none={smtpDisabled}
-                  aria-disabled={smtpDisabled}
-                  tabindex={smtpDisabled ? -1 : undefined}
-                  >{$_('pages.settings.platform.smtp.pano-mail.bigger-plan')}<i
-                    class="fa-solid fa-up-right-from-square ms-1"
-                    aria-hidden="true"></i
-                  ></a>
-              {/if}
-            </div>
+          <div class="mb-3">
+            <PlanCard
+              label={$_('pages.settings.platform.smtp.pano-mail.plan')}
+              name={panoMailStatus.plan.name}
+              badge={panoMailStatus.plan.free
+                ? { text: $_('pages.settings.platform.smtp.pano-mail.free'), variant: 'success' }
+                : null}
+              usages={panoMailPlanUsages}>
+              {#snippet action()}
+                {#if panoMailStatus.manageUrl}
+                  <ManagePlanButton href={panoMailStatus.manageUrl} disabled={smtpDisabled} />
+                {/if}
+              {/snippet}
+            </PlanCard>
           </div>
 
           {#if panoMailStatus.senders.length > 0}
@@ -1315,7 +1271,6 @@
     panoMailView,
     percentUsed,
     usageAlert,
-    usageLevel,
   } from './pano-mail.js';
 
   /** Pano Host mail sender name (before `@`); mirrors `HostedEnvConfig.SENDER_LOCAL`. */
@@ -1494,6 +1449,8 @@
   // Mounted once globally in AppLayout, so only the opener is imported here.
   import { show as showConfirmActionModal } from '$lib/components/modals/ConfirmActionModal.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
+  import ManagePlanButton from '$lib/components/settings/pano-backup/ManagePlanButton.svelte';
+  import PlanCard from '$lib/components/settings/pano-backup/PlanCard.svelte';
   import PermissionNodeInput from '$lib/components/PermissionNodeInput.svelte';
 
   import {
@@ -2126,6 +2083,27 @@
   $: showPanoMail = !!panoMailStatus && mailChoice === 'pano';
   $: panoMailPhase = panoMailStatus ? panoMailView(panoMailStatus) : null;
   $: panoMailUsageAlert = panoMailPhase === 'active' ? usageAlert(panoMailStatus.usage) : null;
+
+  /** The month's and the day's mails as the plan card's bars: "This month  120 / 1,000". */
+  $: panoMailPlanUsages =
+    panoMailPhase === 'active' && panoMailStatus
+      ? [
+          ['month', panoMailStatus.usage.month],
+          ['day', panoMailStatus.usage.day],
+        ].map(([period, usage]) => ({
+          id: period,
+          label: `${$_(`pages.settings.platform.smtp.pano-mail.${period}`)}: ${usage.used.toLocaleString(
+            $currentLanguage.code,
+          )} / ${usage.limit.toLocaleString($currentLanguage.code)}`,
+          percent: percentUsed(usage),
+          ariaLabel: $_(`pages.settings.platform.smtp.pano-mail.${period}`),
+          note: usage.resetsAt
+            ? $_('pages.settings.platform.smtp.pano-mail.resets', {
+                values: { date: formatReset(usage.resetsAt, $currentLanguage.code) },
+              })
+            : '',
+        }))
+      : [];
   $: panoMailPreparing =
     panoMailPhase === 'active' && panoMailStatus.enabled && !panoMailStatus.ready;
   $: panoMailOffered = panoMailStatus ? offeredPlan(panoMailStatus) : null;

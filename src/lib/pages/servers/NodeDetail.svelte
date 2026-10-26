@@ -45,15 +45,12 @@
       </span>
       <span slot="right" class="d-flex flex-wrap align-items-center justify-content-end gap-2">
         <!-- §2.4.30: how often the usage rows below move. -->
-        <select
-          class="form-select form-select-sm w-auto"
-          aria-label={$_('pages.servers.overview.refresh-interval')}
-          bind:value={refreshInterval}
-          onchange={onRefreshIntervalChange}>
-          {#each METRIC_REFRESH_INTERVALS as interval (interval)}
-            <option value={interval}>{metricRefreshIntervalLabel(interval, $_)}</option>
-          {/each}
-        </select>
+        <RefreshIntervalDropdown
+          value={refreshInterval}
+          onselect={(interval) => {
+            refreshInterval = interval;
+            onRefreshIntervalChange();
+          }} />
         <button
           type="button"
           class="btn btn-sm btn-primary"
@@ -252,13 +249,12 @@
     createKeyedLatestThrottle,
     loadMetricRefreshInterval,
     METRIC_REFRESH_INTERVAL_DEFAULT,
-    METRIC_REFRESH_INTERVALS,
-    metricRefreshIntervalLabel,
     metricRequestInterval,
     storeMetricRefreshInterval,
   } from '$lib/metricsSeries.util.js';
   import { formatBytes } from '$lib/string.util.js';
   import tooltip from '$lib/tooltip.util';
+  import RefreshIntervalDropdown from '$lib/components/servers/RefreshIntervalDropdown.svelte';
   import { goto } from '$app/navigation';
 
   import CardHeader from '$lib/components/CardHeader.svelte';

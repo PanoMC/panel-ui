@@ -1,10 +1,3 @@
-{#snippet left()}
-  <a href="{base}/view" class="btn btn-link">
-    <i class="fas fa-arrow-left"></i>
-    <span class="d-lg-inline d-none ms-2"> {$_('buttons.themes')}</span>
-  </a>
-{/snippet}
-
 {#snippet right()}
   {#if theme.installedBy !== 'SYSTEM'}
     <button
@@ -320,7 +313,7 @@
   }
 
   const slots = getContext('layout-slots');
-  Object.assign(slots, { left, right });
+  Object.assign(slots, { right });
 
   let activating, removing, stoping, starting;
 

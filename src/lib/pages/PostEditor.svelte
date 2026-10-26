@@ -8,20 +8,6 @@
   }
 </style>
 
-{#snippet left()}
-  <a
-    href="{base}/posts{post.status === StatusTypes.TRASH
-      ? '?pageType=TRASH'
-      : post.status === StatusTypes.DRAFT
-        ? '?pageType=DRAFT'
-        : ''}"
-    class="btn btn-link"
-    role="button">
-    <i class="fas fa-arrow-left"></i>
-    <span class="d-lg-inline d-none ms-2"> {$_('pages.post-editor.posts')}</span>
-  </a>
-{/snippet}
-
 {#snippet right()}
   {#if data.mode === Modes.EDIT}
     <button
@@ -439,7 +425,7 @@
 
   const pageTitle = getContext('pageTitle');
   const slots = getContext('layout-slots');
-  Object.assign(slots, { left, right });
+  Object.assign(slots, { right });
 
   pageTitle.set(
     data.mode === Modes.EDIT ? 'pages.post-editor.title-edit' : 'pages.post-editor.title-create',

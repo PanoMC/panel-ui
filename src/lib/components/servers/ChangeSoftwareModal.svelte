@@ -414,7 +414,7 @@
                 <div class="form-floating">
                   <input
                     id="changeSoftwarePassword"
-                    class="form-control"
+                    class="form-control form-control-lg"
                     type="password"
                     autocomplete="current-password"
                     placeholder=" "

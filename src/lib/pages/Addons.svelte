@@ -80,103 +80,99 @@
           >{$_('buttons.license-issues')}</CardFiltersItem>
       </CardFilters>
     </CardHeader>
-    <div class="card-body">
-      {#if data.plugins.length === 0}
-        <NoContent />
-      {/if}
-      <div class="row row-cols-xl-2 row-cols-1 g-3">
+    {#if data.plugins.length === 0}
+      <NoContent />
+    {:else}
+      <div class="list-group list-group-flush">
         {#each sortedPlugins as plugin (plugin.id)}
-          <div class="col">
-            <div class="card h-100 position-relative {cardBorderClass(plugin, installedId)}">
-              <!-- STATUS ACTIONS -->
-              <div class="position-absolute top-0 end-0 m-2 d-flex align-items-center gap-2">
-                {#if plugin.status === 'FAILED' && !isAddonLicenseStartupBlocked(plugin)}
+          <div
+            class="list-group-item list-group-item-action d-flex align-items-start gap-3 {itemStateClass(
+              plugin,
+              installedId,
+            )}"
+            style="cursor: pointer;"
+            use:rowLink={`${base}/addons/detail/${plugin.id}`}>
+            <img
+              src="/api/v1/panel/addons/{plugin.id}/logo"
+              class="rounded flex-shrink-0"
+              width="48"
+              height="48"
+              alt={plugin.name} />
+
+            <div class="flex-grow-1" style="min-width: 0;">
+              <a
+                href="{base}/addons/detail/{plugin.id}"
+                class="text-decoration-none text-reset focus-ring rounded d-inline-flex align-items-center gap-2 mb-1 flex-wrap">
+                <h5 class="text-truncate mb-0">
+                  {plugin.name}
+                </h5>
+
+                <VerifiedStatus status={plugin.verifyStatus} />
+                {#if plugin.premium}
+                  <LicenseStatusBadge status={plugin.licenseStatus} />
+                {/if}
+                {#if plugin.freemium}
+                  <FreemiumBadge />
+                {/if}
+              </a>
+
+              <small class="d-block mb-1"> {@html plugin.description}</small>
+
+              <small class="font-monospace user-select-all">
+                {plugin.version}
+              </small>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+              {#if plugin.status === 'FAILED' && !isAddonLicenseStartupBlocked(plugin)}
+                <button
+                  type="button"
+                  aria-label={$_('buttons.error-log')}
+                  class="btn btn-link link-danger"
+                  on:click={() => showAddonStartupErrorModal(plugin.error)}>
+                  <i class="fa-solid fa-circle-exclamation"></i>
+                </button>
+              {/if}
+              {#if isAddonLicenseStartupBlocked(plugin) && plugin.purchaseUrl}
+                <a
+                  href={plugin.purchaseUrl}
+                  target="_blank"
+                  rel="noopener"
+                  class="btn btn-sm btn-warning"
+                  title={buyAddonOnMarketLabel}
+                  aria-label={buyAddonOnMarketLabel}>
+                  <i class="fa-solid fa-store"></i>
+                </a>
+              {/if}
+
+              {#if plugin.loading}
+                <i class="fa-solid fa-spinner fa-spin me-2"></i>
+              {:else}
+                {#if plugin.updateVersion}
                   <button
                     type="button"
-                    aria-label={$_('buttons.error-log')}
-                    class="btn btn-link link-danger"
-                    on:click={() => showAddonStartupErrorModal(plugin.error)}>
-                    <i class="fa-solid fa-circle-exclamation"></i>
+                    class="btn btn-link"
+                    title={$_('pages.addons.update-available') + ' (v' + plugin.updateVersion + ')'}
+                    aria-label={$_('pages.addons.update-available')}
+                    on:click={(e) => {
+                      e.preventDefault();
+                      goto(`${base}/settings/updates`);
+                    }}>
+                    <i class="fas fa-sync"></i>
                   </button>
                 {/if}
-                {#if isAddonLicenseStartupBlocked(plugin) && plugin.purchaseUrl}
-                  <a
-                    href={plugin.purchaseUrl}
-                    target="_blank"
-                    rel="noopener"
-                    class="btn btn-sm btn-warning"
-                    title={buyAddonOnMarketLabel}
-                    aria-label={buyAddonOnMarketLabel}>
-                    <i class="fa-solid fa-store"></i>
-                  </a>
-                {/if}
-
-                {#if plugin.loading}
-                  <i class="fa-solid fa-spinner fa-spin me-2"></i>
-                {:else}
-                  {#if plugin.updateVersion}
-                    <button
-                      type="button"
-                      class="btn btn-link"
-                      title={$_('pages.addons.update-available') +
-                        ' (v' +
-                        plugin.updateVersion +
-                        ')'}
-                      aria-label={$_('pages.addons.update-available')}
-                      on:click={(e) => {
-                        e.preventDefault();
-                        goto(`${base}/settings/updates`);
-                      }}>
-                      <i class="fas fa-sync"></i>
-                    </button>
-                  {/if}
-                  <AddonSettingsButton {plugin} report={data.compatibility} />
-                  <AddonToggle
-                    {plugin}
-                    disabled={plugin.loading ||
-                      (plugin.status !== 'STARTED' && isPremiumAddonEnableBlockedByLicense(plugin))}
-                    onToggle={() => onTogglePluginStateClick(plugin)} />
-                {/if}
-              </div>
-
-              <div class="card-body">
-                <a
-                  href="{base}/addons/detail/{plugin.id}"
-                  class="text-decoration-none rounded focus-ring mb-2">
-                  <img
-                    src="/api/v1/panel/addons/{plugin.id}/logo"
-                    class="rounded mb-2"
-                    width="64"
-                    height="64"
-                    alt={plugin.name} />
-                </a>
-                <a
-                  href="{base}/addons/detail/{plugin.id}"
-                  class="text-decoration-none focus-ring rounded d-flex align-items-center gap-2 mb-2 flex-wrap">
-                  <h5 class="text-truncate mb-0">
-                    {plugin.name}
-                  </h5>
-
-                  <VerifiedStatus status={plugin.verifyStatus} />
-                  {#if plugin.premium}
-                    <LicenseStatusBadge status={plugin.licenseStatus} />
-                  {/if}
-                  {#if plugin.freemium}
-                    <FreemiumBadge />
-                  {/if}
-                </a>
-
-                <small class="d-block mb-2"> {@html plugin.description}</small>
-
-                <small class="font-monospace user-select-all">
-                  {plugin.version}
-                </small>
-              </div>
+                <AddonSettingsButton {plugin} report={data.compatibility} />
+                <AddonToggle
+                  {plugin}
+                  disabled={plugin.loading ||
+                    (plugin.status !== 'STARTED' && isPremiumAddonEnableBlockedByLicense(plugin))}
+                  onToggle={() => onTogglePluginStateClick(plugin)} />
+              {/if}
             </div>
           </div>
         {/each}
       </div>
-    </div>
+    {/if}
   </div>
 </div>
 
@@ -289,6 +285,7 @@
     isPremiumAddonEnableBlockedByLicense,
   } from '$lib/addon-license-issue.util.js';
 
+  import { rowLink } from '$lib/rowLink.util.js';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import { goto, invalidateAll } from '$app/navigation';
   import { panoApiClient } from '$lib/PluginAPI.js';
@@ -307,25 +304,25 @@
   });
 
   /**
-   * Strong borders only for real failures / integrity issues.
+   * Strong states only for real failures / integrity issues.
    * Missing or unverified commercial license is conveyed via the key badge + store link, not card chrome.
    * `justInstalledId` wins so a fresh install reads as a green confirmation regardless of license state.
    */
-  function cardBorderClass(plugin, justInstalledId) {
+  function itemStateClass(plugin, justInstalledId) {
     if (justInstalledId && plugin.id === justInstalledId) {
-      return 'border-success border-2';
+      return 'list-group-item-success';
     }
 
     const failedNonLicense = plugin.status === 'FAILED' && !isAddonLicenseStartupBlocked(plugin);
     if (!plugin.premium) {
-      return failedNonLicense ? 'border-danger border-2' : '';
+      return failedNonLicense ? 'list-group-item-danger' : '';
     }
 
     switch (plugin.licenseStatus) {
       case 'VERSION_MISMATCH':
       case 'AUDIENCE_MISMATCH':
       case 'PLATFORM_MISMATCH':
-        return 'border-danger border-2';
+        return 'list-group-item-danger';
       case 'NO_PURCHASE':
       case 'MISSING':
       case 'JAR_TAMPERED':
@@ -334,9 +331,9 @@
       case 'NOT_CONNECTED':
       case 'NEEDS_REFRESH':
       case 'NETWORK_ERROR':
-        return failedNonLicense ? 'border-danger border-2' : '';
+        return failedNonLicense ? 'list-group-item-danger' : '';
       default:
-        return failedNonLicense ? 'border-danger border-2' : '';
+        return failedNonLicense ? 'list-group-item-danger' : '';
     }
   }
 

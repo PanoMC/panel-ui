@@ -495,14 +495,18 @@
               <div>{$_(restoreBlockedReason, { values: { section: $_(SECTION_KEY) } })}</div>
             </div>
           {/if}
-          <input
-            class="form-control text-start mt-3"
-            type="password"
-            autocomplete="current-password"
-            placeholder={$_('pages.servers.backups.password-placeholder')}
-            bind:value={currentPassword}
-            bind:this={restorePasswordInput}
-            class:border-danger={passwordError} />
+          <div class="form-floating text-start mt-3">
+            <input
+              id="restorePassword"
+              class="form-control form-control-lg"
+              type="password"
+              autocomplete="current-password"
+              placeholder=" "
+              bind:value={currentPassword}
+              bind:this={restorePasswordInput}
+              class:border-danger={passwordError} />
+            <label for="restorePassword">{$_('pages.servers.backups.password-placeholder')}</label>
+          </div>
         </div>
         <div class="modal-footer flex-nowrap">
           <button
@@ -551,7 +555,7 @@
           <div class="form-floating text-start mt-3">
             <input
               id="deletePassword"
-              class="form-control"
+              class="form-control form-control-lg"
               type="password"
               autocomplete="current-password"
               placeholder=" "

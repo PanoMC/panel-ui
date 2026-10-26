@@ -5,17 +5,16 @@
       event.preventDefault();
       void save();
     }}>
+    <div class="modal-header">
+      <h5 class="modal-title text-capitalize">{$_('pages.settings.backups.settings-title')}</h5>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label={$_('buttons.close')}></button>
+    </div>
     <div class="modal-body text-center vstack gap-4">
-      <div>
-        <div class="pb-3">
-          <i class="fas fa-gear fa-3x d-block m-auto text-gray"></i>
-        </div>
-        <div class="text-capitalize">{$_('pages.settings.backups.settings-title')}</div>
-      </div>
-
       <div class="vstack gap-3 text-start">
-        <div class="text-capitalize">{$_('pages.settings.backups.local-schedule-title')}</div>
-        <div>{$_('pages.settings.backups.local-schedule-description')}</div>
         <div class="row g-2">
           <div class="col-sm-5">
             <div class="form-floating">
@@ -138,16 +137,10 @@
         </div>
       {/if}
     </div>
-    <div class="modal-footer flex-nowrap text-capitalize">
-      <button
-        type="button"
-        class="btn btn-link text-decoration-none col-6 m-0"
-        data-bs-dismiss="modal">
-        {$_('buttons.cancel')}
-      </button>
+    <div class="modal-footer">
       <button
         type="submit"
-        class="btn btn-primary col-6 m-0"
+        class="btn btn-primary text-capitalize w-100"
         disabled={saving || !(localKeep >= 1 && localKeep <= 50)}>
         {#if saving}
           <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>

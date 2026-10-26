@@ -43,74 +43,17 @@
     </div>
   {:else}
     <!-- Only while panomc.com answers: when it cannot be reached nothing about the account is shown. -->
-    <div class="d-flex flex-wrap align-items-center gap-2 small">
-      <i class="fa-solid fa-user opacity-75" aria-hidden="true"></i>
-      <span class="fw-semibold">{remote?.account?.username || '—'}</span>
-    </div>
-
-    <div class="d-flex flex-wrap align-items-center gap-2">
-      <div class="vstack min-w-0">
-        <span class="small opacity-75">{$_('pages.settings.backups.account.plan')}</span>
-        {#if plan}
-          <div class="d-flex align-items-center gap-2">
-            <span class="h5 mb-0">{plan.tier?.name || '—'}</span>
-            {#if plan.subscription?.cancelAtPeriodEnd}
-              <span class="badge text-bg-warning">
-                {$_('pages.settings.backups.account.canceling')}
-              </span>
-            {/if}
-          </div>
-        {:else}
-          <span class="h5 mb-0">{$_('pages.settings.backups.account.free-plan')}</span>
-        {/if}
-      </div>
-      <a class="btn btn-light btn-sm ms-auto" href={planUrl}>
-        <!-- The Pano Host mark: the plan is managed on Pano Host (same tab, it comes back here). -->
-        <span
-          class="d-inline-flex rounded justify-content-center align-items-center bg-info me-1 align-text-bottom"
-          style="width: 18px; height: 18px;">
-          <img src="{base}/assets/img/logo.svg" width="11" height="11" alt="" />
-        </span>
-        {$_('pages.settings.backups.account.manage-plan')}
-      </a>
-    </div>
-
-    <!-- Storage of the whole account, as one horizontal bar: used (incl. running uploads) of the plan's quota. -->
-    <div>
-      <div class="d-flex small mb-1 gap-2">
-        <span>
-          {#if usage?.quota}
-            {$_('pages.settings.backups.account.usage-of', {
-              values: {
-                used: formatBytes((usage?.used || 0) + (usage?.reserved || 0)),
-                quota: formatBytes(usage.quota),
-              },
-            })}
-          {:else}
-            {$_('pages.settings.backups.account.used', {
-              values: { size: formatBytes((usage?.used || 0) + (usage?.reserved || 0)) },
-            })}
-          {/if}
-        </span>
-        {#if usage?.percent != null}
-          <span class="ms-auto opacity-75">{usage.percent}%</span>
-        {/if}
-      </div>
-      <div
-        class="progress"
-        style="height: 10px;"
-        role="progressbar"
-        aria-label={$_('pages.settings.backups.usage')}
-        aria-valuemin="0"
-        aria-valuemax="100"
-        aria-valuenow={usage?.percent ?? 0}>
-        <div
-          class="progress-bar bg-{usageColour(usage?.percent)}"
-          style="width: {usage?.percent ?? 0}%">
-        </div>
-      </div>
-      <div class="form-text">{$_('pages.settings.backups.account.shared-hint')}</div>
-    </div>
+    <PlanCard
+      label={$_('pages.settings.backups.account.plan')}
+      name={plan ? plan.tier?.name || '—' : $_('pages.settings.backups.account.free-plan')}
+      badge={plan?.subscription?.cancelAtPeriodEnd
+        ? { text: $_('pages.settings.backups.account.canceling'), variant: 'warning' }
+        : null}
+      usages={[usageEntry]}>
+      {#snippet action()}
+        <ManagePlanButton />
+      {/snippet}
+    </PlanCard>
   {/if}
 </div>
 
@@ -119,18 +62,12 @@
   import { websiteDisplayHost } from '$lib/website-display.util.js';
 
   import { base } from '@panomc/sdk/core/js/basePath.js';
-  import { page } from '@panomc/sdk/core/js/appStores.js';
-
-  import { PANO_WEBSITE_URL } from '$lib/variables.js';
 
   import { formatBytes } from '$lib/string.util.js';
-  import {
-    CONNECT_PATH,
-    accountUsage,
-    backupPlanUrl,
-    connectionState,
-    usageColour,
-  } from '$lib/pano-backup.util.js';
+
+  import ManagePlanButton from './ManagePlanButton.svelte';
+  import PlanCard from './PlanCard.svelte';
+  import { CONNECT_PATH, accountUsage, connectionState } from '$lib/pano-backup.util.js';
 
   /** @type {{ remote: Record<string, any> | null }} */
   let { remote } = $props();
@@ -141,5 +78,20 @@
   );
   const plan = $derived(remote?.plan ?? null);
   const usage = $derived(accountUsage(remote?.usage));
-  const planUrl = $derived(backupPlanUrl(PANO_WEBSITE_URL, `${$page.url.origin}${base}/backups`));
+  /** Storage of the whole account: used (incl. running uploads) of the plan's quota. */
+  const usageEntry = $derived.by(() => {
+    const used = formatBytes((usage?.used || 0) + (usage?.reserved || 0));
+
+    return {
+      id: 'storage',
+      label: usage?.quota
+        ? $_('pages.settings.backups.account.usage-of', {
+            values: { used, quota: formatBytes(usage.quota) },
+          })
+        : $_('pages.settings.backups.account.used', { values: { size: used } }),
+      percent: usage?.percent,
+      ariaLabel: $_('pages.settings.backups.usage'),
+      note: $_('pages.settings.backups.account.shared-hint'),
+    };
+  });
 </script>
