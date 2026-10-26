@@ -103,10 +103,8 @@
             <tr>
               <th scope="col"></th>
               <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-name')}</th>
-              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-kind')}</th>
-              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-bootstrap')}</th>
-              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-runtime')}</th>
               <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-status')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-kind')}</th>
               <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-version')}</th>
               <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-system')}</th>
               <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-servers')}</th>
@@ -114,6 +112,8 @@
               <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-memory')}</th>
               <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-disk')}</th>
               <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-last-seen')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-bootstrap')}</th>
+              <th scope="col" class="text-nowrap">{$_('pages.servers.nodes.column-runtime')}</th>
             </tr>
           </thead>
           <tbody>

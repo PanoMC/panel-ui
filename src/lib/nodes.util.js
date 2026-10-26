@@ -39,7 +39,7 @@ export const NodeBootstraps = Object.freeze({
 
 /** Bootstrap badge colour + label key. An older node row has no `bootstrap` at all. */
 const BOOTSTRAP_BADGES = Object.freeze({
-  [NodeBootstraps.LOCAL]: { colour: 'secondary', label: 'pages.servers.nodes.bootstrap-local' },
+  [NodeBootstraps.LOCAL]: { colour: 'primary', label: 'pages.servers.nodes.bootstrap-local' },
   [NodeBootstraps.MANUAL]: { colour: 'secondary', label: 'pages.servers.nodes.bootstrap-manual' },
   [NodeBootstraps.SSH]: { colour: 'info', label: 'pages.servers.nodes.bootstrap-ssh' },
   [NodeBootstraps.COOLIFY]: { colour: 'primary', label: 'pages.servers.nodes.bootstrap-coolify' },

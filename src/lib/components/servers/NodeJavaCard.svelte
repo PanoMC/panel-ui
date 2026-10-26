@@ -206,19 +206,6 @@
   </div>
 {/if}
 
-{#if autoDownload !== null}
-  <div class="small text-body-secondary">
-    <i
-      class="fa-solid {autoDownload ? 'fa-wand-magic-sparkles' : 'fa-hand'} me-1"
-      aria-hidden="true"></i>
-    {$_(
-      autoDownload
-        ? 'pages.servers.nodes.java.auto-download-on'
-        : 'pages.servers.nodes.java.auto-download-off',
-    )}
-  </div>
-{/if}
-
 {#snippet progress(task)}
   <div class="d-inline-flex flex-column align-items-end gap-1">
     <span class="small text-body-secondary text-nowrap">
@@ -460,7 +447,6 @@
         : '',
   );
   /** Known from the last hello even while the node is offline; an older node has no such thing. */
-  const autoDownload = $derived(catalog?.supported ? (catalog.autoDownload ?? null) : null);
   const platformLabel = $derived(
     [catalog?.os || node?.resources?.os, catalog?.arch || node?.resources?.arch]
       .filter(Boolean)

@@ -1,12 +1,4 @@
 <style>
-  .status-dot {
-    width: 0.6rem;
-    height: 0.6rem;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-  }
-
   /* L19 — thirteen columns have to fit beside the sidebar at 1440 px, so the usage cells take
      only what the gauge and its figure need ("used /" over "total" when room is short) and the
      name keeps a width of its own instead of being squeezed to a letter per line. */
@@ -67,23 +59,10 @@
       {getNodeDisplayName(node)}
     </a>
   </td>
+  <td class="align-middle text-nowrap">
+    <span class="badge text-bg-{nodeStatusColour(node)}">{$_(nodeStatusLabel(node))}</span>
+  </td>
   <td class="align-middle text-nowrap">{kindLabel(node)}</td>
-  <td class="align-middle text-nowrap">
-    {#if nodeBootstrapBadge(node)}
-      <span class="badge text-bg-{nodeBootstrapBadge(node).colour}">
-        {$_(nodeBootstrapBadge(node).label)}
-      </span>
-    {:else}
-      <span class="text-body-secondary">—</span>
-    {/if}
-  </td>
-  <td class="align-middle text-nowrap">{node.runtime || NodeRuntimes.PROCESS}</td>
-  <td class="align-middle text-nowrap">
-    <span class="d-inline-flex align-items-center gap-2">
-      <span class="status-dot bg-{nodeStatusColour(node)}"></span>
-      {$_(nodeStatusLabel(node))}
-    </span>
-  </td>
   <td class="align-middle text-break">
     {node.version || '—'}
     {#if node.updateAvailable && !updateUnderway}
@@ -169,6 +148,16 @@
       <span class="text-body-secondary">{$_('pages.servers.nodes.never-seen')}</span>
     {/if}
   </td>
+  <td class="align-middle text-nowrap">
+    {#if nodeBootstrapBadge(node)}
+      <span class="badge text-bg-{nodeBootstrapBadge(node).colour}">
+        {$_(nodeBootstrapBadge(node).label)}
+      </span>
+    {:else}
+      <span class="text-body-secondary">—</span>
+    {/if}
+  </td>
+  <td class="align-middle text-nowrap">{node.runtime || NodeRuntimes.PROCESS}</td>
 </tr>
 
 <script>

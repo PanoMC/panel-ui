@@ -1,9 +1,4 @@
 <style>
-  .delete-node-servers {
-    max-height: 9rem;
-    overflow-y: auto;
-  }
-
   .delete-node-progress {
     height: 6px;
   }
@@ -120,58 +115,12 @@
                   {$_('pages.servers.nodes.remove.preview-loading')}
                 </div>
               {:else}
-                <ul class="list-group small">
-                  <li class="list-group-item">
-                    <i class="fa-solid fa-server fa-fw me-2 text-danger" aria-hidden="true"></i>
-                    {#if serverCount === 0}
-                      {$_('pages.servers.nodes.remove.no-servers')}
-                    {:else}
-                      {$_('pages.servers.nodes.remove.servers', { values: { count: serverCount } })}
-                      {#if servers.length > 0}
-                        <ul class="delete-node-servers mb-0 mt-1 ps-4">
-                          {#each servers as server (server.id)}
-                            <li class="text-break">{server.name || `#${server.id}`}</li>
-                          {/each}
-                        </ul>
-                      {/if}
-                    {/if}
-                  </li>
-                  {#if preview}
-                    <li class="list-group-item">
-                      <i class="fa-solid fa-box-archive fa-fw me-2 text-danger" aria-hidden="true"
-                      ></i>
-                      {#if preview.backupCount === 0}
-                        {$_('pages.servers.nodes.remove.no-backups')}
-                      {:else if preview.backupBytes}
-                        {$_('pages.servers.nodes.remove.backups-size', {
-                          values: {
-                            count: preview.backupCount,
-                            size: formatBytes(preview.backupBytes, 1),
-                          },
-                        })}
-                      {:else}
-                        {$_('pages.servers.nodes.remove.backups', {
-                          values: { count: preview.backupCount },
-                        })}
-                      {/if}
-                    </li>
-                    {#if canUninstall}
-                      <li class="list-group-item">
-                        <i class="fa-brands fa-java fa-fw me-2 text-danger" aria-hidden="true"></i>
-                        {$_('pages.servers.nodes.remove.java', {
-                          values: { count: preview.javaRuntimes },
-                        })}
-                      </li>
-                    {/if}
-                  {/if}
-                  {#if canUninstall}
-                    <li class="list-group-item">
-                      <i class="fa-solid fa-hard-drive fa-fw me-2 text-danger" aria-hidden="true"
-                      ></i>
-                      {$_('pages.servers.nodes.remove.data')}
-                    </li>
-                  {/if}
-                </ul>
+                {#if canUninstall}
+                  <div class="alert alert-warning mb-0 d-flex align-items-start" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+                    <div>{$_('pages.servers.nodes.remove.warning')}</div>
+                  </div>
+                {/if}
 
                 {#if refusal}
                   <div class="alert alert-danger d-flex align-items-start mb-0" role="alert">
@@ -205,32 +154,37 @@
               {/if}
 
               <div>
-                <label class="form-label small" for="deleteNodeConfirmName">
-                  {$_('pages.servers.nodes.remove.type-name', { values: { name: nodeName } })}
-                </label>
-                <input
-                  id="deleteNodeConfirmName"
-                  class="form-control"
-                  type="text"
-                  autocomplete="off"
-                  spellcheck="false"
-                  placeholder={nodeName}
-                  bind:value={confirmName}
-                  bind:this={nameInput} />
-              </div>
-              <div class="form-floating">
-                <input
-                  id="deleteNodePassword"
-                  class="form-control form-control-lg"
-                  type="password"
-                  autocomplete="current-password"
-                  placeholder=" "
-                  bind:value={currentPassword}
-                  class:is-invalid={passwordError} />
-                <label for="deleteNodePassword">{$_('pages.servers.nodes.delete-password')}</label>
-                {#if passwordError}
-                  <div class="invalid-feedback">{$_('pages.servers.errors.wrong-password')}</div>
-                {/if}
+                <div class="form-floating">
+                  <input
+                    id="deleteNodeConfirmName"
+                    class="form-control form-control-lg rounded-bottom-0"
+                    type="text"
+                    autocomplete="off"
+                    spellcheck="false"
+                    placeholder=" "
+                    bind:value={confirmName}
+                    bind:this={nameInput} />
+                  <label for="deleteNodeConfirmName">
+                    {$_('pages.servers.nodes.remove.type-name')}
+                  </label>
+                </div>
+                <div class="form-floating">
+                  <input
+                    id="deleteNodePassword"
+                    class="form-control form-control-lg rounded-top-0"
+                    style="margin-top: -1px;"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder=" "
+                    bind:value={currentPassword}
+                    class:is-invalid={passwordError} />
+                  <label for="deleteNodePassword">
+                    {$_('pages.servers.nodes.delete-password')}
+                  </label>
+                  {#if passwordError}
+                    <div class="invalid-feedback">{$_('pages.servers.errors.wrong-password')}</div>
+                  {/if}
+                </div>
               </div>
             </div>
           </div>
@@ -265,7 +219,6 @@
   } from '$lib/nodes.util.js';
   import { onTaskProgress } from '$lib/panelRealtime.js';
   import { showServerActionError } from '$lib/servers.util.js';
-  import { formatBytes } from '$lib/string.util.js';
 
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
 
@@ -312,14 +265,6 @@
   /** Whether the node can be asked to remove its own files; otherwise Pano can only forget it. */
   const canUninstall = $derived(online && uninstallSupported && !refusal);
   const needsForce = $derived(!canUninstall);
-  const servers = $derived(preview?.servers ?? []);
-  const serverCount = $derived(
-    preview
-      ? servers.length
-      : Number.isFinite(Number(node?.serverCount))
-        ? Number(node.serverCount)
-        : 0,
-  );
   const warningKey = $derived(
     !online
       ? isLocal

@@ -2,10 +2,11 @@
 <div class="container vstack gap-3">
   <PageActions middleClasses="d-none">
     <div slot="left">
-      <a class="btn btn-sm btn-link" href="{base}/servers/nodes">
-        <i class="fa-solid fa-arrow-left me-1" aria-hidden="true"></i>
-        {$_('pages.servers.nodes.title')}
-      </a>
+      <PageNav>
+        <PageNavItem href="/servers/nodes" active>
+          {$_('pages.servers.nodes.title')}
+        </PageNavItem>
+      </PageNav>
     </div>
     <div slot="right">
       <button
@@ -260,6 +261,8 @@
   import CardHeader from '$lib/components/CardHeader.svelte';
   import DateComponent from '$lib/components/Date.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
   import NodeJavaCard from '$lib/components/servers/NodeJavaCard.svelte';
   import NodeServersCard from '$lib/components/servers/NodeServersCard.svelte';
   import DeleteNodeModal from '$lib/components/servers/DeleteNodeModal.svelte';
