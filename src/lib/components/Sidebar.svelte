@@ -124,6 +124,14 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
+  .navbar-toggler {
+    width: 2.5rem;
+    aspect-ratio: 1 / 1;
+    padding: 0;
+    line-height: 1;
+    text-align: center;
+  }
+
   .sidebar-header-container .navbar-brand,
   .navbar-toggler i {
     transition: none;

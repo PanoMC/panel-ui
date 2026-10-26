@@ -1,4 +1,12 @@
 <style>
+  .navbar-toggler {
+    width: 2.5rem;
+    aspect-ratio: 1 / 1;
+    padding: 0;
+    line-height: 1;
+    text-align: center;
+  }
+
   .navbar-toggler i {
     transition: transform 0.2s ease;
   }
@@ -12,8 +20,8 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand navbar-light py-3">
   <div class="container">
-    <!-- On a phone the left column only holds the menu button, so the title gets its room. -->
-    <div class="col-2 col-lg-4 d-flex justify-content-start">
+    <!-- Three equal columns keep the title centered on every width. -->
+    <div class="col-4 d-flex justify-content-start">
       <!-- Navbar Toggler -->
       <div class="navbar-nav">
         <button
@@ -30,13 +38,13 @@
           data-bs-toggle={windowWidth < 992 ? 'offcanvas' : undefined}
           data-bs-target={windowWidth < 992 ? '#sidebar' : undefined}
           aria-controls="sidebar">
-          <i class="fa-solid fa-bars"></i>
+          <i class="fa-solid fa-table-columns"></i>
         </button>
 
         <!-- The website link and the server switcher live in the sidebar, above its tabs. -->
       </div>
     </div>
-    <div class="col-6 col-lg-4 d-flex justify-content-center">
+    <div class="col-4 d-flex justify-content-center" style="min-width: 0;">
       <!-- Page Title -->
       <h5 class="text-truncate mb-0">
         {$pageTitle ? $_($pageTitle) : options.DEFAULT_PAGE_TITLE}
