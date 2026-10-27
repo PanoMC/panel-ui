@@ -606,7 +606,6 @@
   import { _ } from 'svelte-i18n';
 
   import { formatBytes } from '$lib/string.util.js';
-  import tooltip from '$lib/tooltip.util';
   import { fetchServersList } from '$lib/servers.util.js';
   import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
   import {
