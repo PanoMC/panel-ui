@@ -1,11 +1,7 @@
 <!-- Ticket Templates Page: ready replies, with variables, for answering tickets and for auto-replies. -->
 <article class="container vstack gap-3">
   <PageActions>
-    <PageNav slot="left">
-      <PageNavItem href="/tickets">{$_('pages.ticket-categories.tickets')}</PageNavItem>
-      <PageNavItem href="/tickets/categories">{$_('buttons.categories')}</PageNavItem>
-      <PageNavItem href="/tickets/templates">{$_('pages.ticket-templates.nav')}</PageNavItem>
-    </PageNav>
+    <TicketsNav slot="left" active="templates" />
 
     <button class="btn btn-secondary" type="button" onclick={onCreateClick} slot="right">
       <i class="fas fa-plus"></i>
@@ -174,8 +170,7 @@
   import { pageCount } from '$lib/components/pagination.util.js';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
-  import PageNav from '$lib/components/PageNav.svelte';
-  import PageNavItem from '$lib/components/PageNavItem.svelte';
+  import TicketsNav from '$lib/components/tickets/TicketsNav.svelte';
 
   const { data } = $props();
 

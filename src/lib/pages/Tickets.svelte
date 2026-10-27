@@ -2,22 +2,13 @@
 <article class="container vstack gap-3">
   {#if data.categoryUrl}
     <PageActions middleClasses="d-none" rightClasses="d-none">
-      <PageNav slot="left">
-        <PageNavItem href="/tickets" active={true}>{$_('pages.ticket-categories.tickets')}</PageNavItem>
-        <PageNavItem href="/tickets/categories">{$_('buttons.categories')}</PageNavItem>
-      </PageNav>
+      <TicketsNav slot="left" active="tickets" />
     </PageActions>
   {:else}
     <!-- Action Menu -->
     <PageActions>
       <!-- Submenu -->
-      <PageNav slot="left">
-        {#if !data.categoryUrl}
-          <PageNavItem href="/tickets">{$_('pages.ticket-categories.tickets')}</PageNavItem>
-          <PageNavItem href="/tickets/categories">{$_('buttons.categories')}</PageNavItem>
-          <PageNavItem href="/tickets/templates">{$_('pages.ticket-templates.nav')}</PageNavItem>
-        {/if}
-      </PageNav>
+      <TicketsNav slot="left" active="tickets" />
 
       <div slot="right" class="hstack gap-2">
         {#if checkedItems.length > 0}
@@ -257,8 +248,7 @@
   import CardHeader from '$lib/components/CardHeader.svelte';
   import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
   import CardFilters from '$lib/components/CardFilters.svelte';
-  import PageNav from '$lib/components/PageNav.svelte';
-  import PageNavItem from '$lib/components/PageNavItem.svelte';
+  import TicketsNav from '$lib/components/tickets/TicketsNav.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
 
   export let data;

@@ -7,10 +7,7 @@
 <div class="container vstack gap-3">
   <!-- Action Menu -->
   <PageActions>
-    <PageNav slot="left">
-      <PageNavItem href="/tickets" active={true}>{$_('pages.ticket-categories.tickets')}</PageNavItem>
-      <PageNavItem href="/tickets/categories">{$_('buttons.categories')}</PageNavItem>
-    </PageNav>
+    <TicketsNav slot="left" active="tickets" />
 
     <div class="hstack gap-2" slot="right">
       <button
@@ -293,8 +290,7 @@
   import Date from '$lib/components/Date.svelte';
   import TicketStatusBadge from '$lib/components/badges/TicketStatusBadge.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
-  import PageNav from '$lib/components/PageNav.svelte';
-  import PageNavItem from '$lib/components/PageNavItem.svelte';
+  import TicketsNav from '$lib/components/tickets/TicketsNav.svelte';
   import { avatarVersion } from '$lib/Store';
   import { showError as showErrorToast } from '$lib/components/ToastContainer.svelte';
 

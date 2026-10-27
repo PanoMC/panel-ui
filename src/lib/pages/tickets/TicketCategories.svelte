@@ -3,11 +3,7 @@
   <!-- Action Menu -->
   <PageActions>
     <!-- Submenu -->
-    <PageNav slot="left">
-      <PageNavItem href="/tickets">{$_('pages.ticket-categories.tickets')}</PageNavItem>
-      <PageNavItem href="/tickets/categories">{$_('buttons.categories')}</PageNavItem>
-      <PageNavItem href="/tickets/templates">{$_('pages.ticket-templates.nav')}</PageNavItem>
-    </PageNav>
+    <TicketsNav slot="left" active="categories" />
 
     <button class="btn btn-secondary" type="button" on:click={onCreateCategoryClick} slot="right">
       <i class="fas fa-plus"></i>
@@ -155,8 +151,7 @@
   import TicketCategoryRow from '$lib/components/rows/TicketCategoryRow.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
-  import PageNav from '$lib/components/PageNav.svelte';
-  import PageNavItem from '$lib/components/PageNavItem.svelte';
+  import TicketsNav from '$lib/components/tickets/TicketsNav.svelte';
 
   import SearchInput from '$lib/components/SearchInput.svelte';
 
