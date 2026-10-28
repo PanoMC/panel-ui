@@ -162,7 +162,7 @@
                 class="alert-link focus-ring rounded"
                 href="{PANO_WEBSITE_URL}/addons"
                 target="_blank">
-                <i class="fa-solid fa-bag-shopping me-2"></i>
+                <i class="fa-solid fa-puzzle-piece me-2"></i>
                 {$usageMode === UsageModes.SERVERS
                   ? $_('pages.dashboard.welcome-card.get-extensions')
                   : $_('pages.dashboard.welcome-card.get-themes-and-extensions')}

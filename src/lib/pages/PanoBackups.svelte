@@ -1,28 +1,81 @@
 <!-- Pano backups on one page: local backups, Pano Backup (panomc.com) and the transfer to Pano Host; settings, passphrase and transfer open in modals. -->
 <div class="container vstack gap-3">
   <PageActions rightClasses="ms-lg-auto">
+    <PageNav slot="left">
+      <PageNavItem button active={tab === 'local'} onclick={() => setTab('local')}>
+        {$_('pages.settings.backups.tab-local')}
+      </PageNavItem>
+      <PageNavItem button active={tab === 'pano'} onclick={() => setTab('pano')}>
+        {$_('pages.settings.backups.tab-pano')}
+      </PageNavItem>
+    </PageNav>
     <div slot="right" class="hstack gap-2 flex-wrap justify-content-center">
-      <button
-        type="button"
-        class="btn btn-link"
-        disabled={running}
-        use:tooltip={[$_('pages.settings.backups.restore-from-file'), { placement: 'bottom' }]}
-        aria-label={$_('pages.settings.backups.restore-from-file')}
-        onclick={() => restoreModal?.open({ source: 'file' })}>
-        <i class="fa-solid fa-file-arrow-up" aria-hidden="true"></i>
-      </button>
-      <button
-        type="button"
-        class="btn btn-link"
-        use:tooltip={[$_('buttons.settings'), { placement: 'bottom' }]}
-        aria-label={$_('buttons.settings')}
-        onclick={() => settingsModal?.open()}>
-        <i class="fa-solid fa-gear" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-secondary" disabled={running} onclick={openCreate}>
-        <i class="fa-solid fa-plus" aria-hidden="true"></i>
-        <span class="d-lg-inline d-none ms-2">{$_('pages.settings.backups.create-short')}</span>
-      </button>
+      {#if tab === 'local'}
+        <button
+          type="button"
+          class="btn btn-link"
+          disabled={running}
+          use:tooltip={[$_('pages.settings.backups.restore-from-file'), { placement: 'bottom' }]}
+          aria-label={$_('pages.settings.backups.restore-from-file')}
+          onclick={() => restoreModal?.open({ source: 'file' })}>
+          <i class="fa-solid fa-file-arrow-up" aria-hidden="true"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-link"
+          use:tooltip={[$_('buttons.settings'), { placement: 'bottom' }]}
+          aria-label={$_('buttons.settings')}
+          onclick={() => settingsModal?.open()}>
+          <i class="fa-solid fa-gear" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn btn-secondary" disabled={running} onclick={openCreate}>
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          <span class="d-lg-inline d-none ms-2">{$_('pages.settings.backups.create-short')}</span>
+        </button>
+      {:else}
+        <!-- Nothing to act on while panomc.com cannot be reached. -->
+        {#if connected && !hostUnavailable}
+          {#if backupMode === 'FULL'}
+            <button
+              type="button"
+              class="btn btn-link"
+              use:tooltip={[$_('pages.settings.backups.passphrase-title'), { placement: 'bottom' }]}
+              aria-label={$_('pages.settings.backups.passphrase-title')}
+              onclick={() => passphraseModal?.open()}>
+              <i
+                class="fa-solid {remote.passphraseSet ? 'fa-lock' : 'fa-lock-open'}"
+                aria-hidden="true"></i>
+            </button>
+          {/if}
+          <button
+            type="button"
+            class="btn btn-link"
+            disabled={running}
+            use:tooltip={[$_('pages.settings.backups.transfer.title'), { placement: 'bottom' }]}
+            aria-label={$_('pages.settings.backups.transfer.title')}
+            onclick={() => transferModal?.open()}>
+            <i class="fa-solid fa-right-left" aria-hidden="true"></i>
+          </button>
+        {/if}
+        <button
+          type="button"
+          class="btn btn-link"
+          use:tooltip={[$_('buttons.settings'), { placement: 'bottom' }]}
+          aria-label={$_('buttons.settings')}
+          onclick={() => settingsModal?.open()}>
+          <i class="fa-solid fa-gear" aria-hidden="true"></i>
+        </button>
+        {#if connected && !hostUnavailable}
+          <button
+            type="button"
+            class="btn btn-secondary"
+            disabled={running || busyAction === 'upload'}
+            onclick={() => uploadModal?.show()}>
+            <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+            <span class="d-lg-inline d-none ms-2">{$_('pages.settings.backups.upload-now')}</span>
+          </button>
+        {/if}
+      {/if}
     </div>
   </PageActions>
 
@@ -33,367 +86,347 @@
     onfinish={(finished) => void onJobFinished(finished)} />
 
   <!-- Local backups -->
-  <div class="card">
-    <CardHeader>
-      <div slot="left">
-        {$_('pages.settings.backups.local-count', { values: { count: filteredLocal.length } })}
-      </div>
-      <CardFilters slot="right" clazz="btn-group col-sm-auto col text-capitalize">
-        <CardFiltersItem button active={localTag === 'ALL'} onclick={() => setLocalTag('ALL')}>
-          {$_('buttons.all')}
-        </CardFiltersItem>
-        {#each LOCAL_TAGS as tag}
-          <CardFiltersItem button active={localTag === tag} onclick={() => setLocalTag(tag)}>
-            {$_(`pages.settings.backups.tag-${tag.toLowerCase()}`)}
+  {#if tab === 'local'}
+    <div class="card">
+      <CardHeader>
+        <div slot="left">
+          {$_('pages.settings.backups.local-count', { values: { count: filteredLocal.length } })}
+        </div>
+        <CardFilters slot="right" clazz="btn-group col-sm-auto col text-capitalize">
+          <CardFiltersItem button active={localTag === 'ALL'} onclick={() => setLocalTag('ALL')}>
+            {$_('buttons.all')}
           </CardFiltersItem>
-        {/each}
-      </CardFilters>
-    </CardHeader>
-    {#if filteredLocal.length === 0}
-      <NoContent />
-    {:else}
-      <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th>{$_('pages.settings.backups.column-created')}</th>
-              <th>{$_('pages.settings.backups.column-type')}</th>
-              <th>{$_('pages.settings.backups.column-trigger')}</th>
-              <th>{$_('pages.settings.backups.column-size')}</th>
-              <th class="d-none d-md-table-cell">{$_('pages.settings.backups.column-version')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each pagedLocal as backup (backup.id)}
-              <tr class:table-active={selectedId === backup.id}>
-                <th scope="row" class="align-middle text-center">
-                  <div class="dropdown position-static">
-                    <button
-                      type="button"
-                      class="btn btn-link"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                      aria-label={$_('pages.settings.backups.column-actions')}>
-                      <span class="fas fa-ellipsis-v"></span>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-start text-capitalize">
-                      <a
-                        class="dropdown-item text-capitalize"
-                        href="/api/v1/panel/pano-backups/{encodeURIComponent(backup.id)}/download"
-                        download="pano-backup-{backup.id}.panoarc">
-                        <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
-                        {$_('buttons.download')}
-                      </a>
-                      <button
-                        type="button"
-                        class="dropdown-item text-capitalize"
-                        disabled={running}
-                        onclick={() => askRestoreLocal(backup)}>
-                        <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"></i>
-                        {$_('pages.settings.backups.restore.submit')}
-                      </button>
-                      <button
-                        type="button"
-                        class="dropdown-item text-danger text-capitalize"
-                        onclick={() => askDelete('local', backup)}>
-                        <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
-                        {$_('buttons.delete')}
-                      </button>
-                    </div>
-                  </div>
-                </th>
-                <td>
-                  <DateComponent time={backup.createdAt} relativeFormat />
-                  {#if backup.createdBy}
-                    <div class="small text-body-secondary">{backup.createdBy}</div>
-                  {/if}
-                </td>
-                <td>
-                  <span class="badge text-capitalize text-bg-{tagColour(backup.tag)}">
-                    {$_(`pages.settings.backups.tag-${String(backup.tag).toLowerCase()}`)}
-                  </span>
-                  {#if backup.encrypted}
-                    <i
-                      class="fa-solid fa-lock ms-1 text-body-secondary"
-                      use:tooltip={[$_('pages.settings.backups.encrypted'), { placement: 'bottom' }]}
-                      aria-label={$_('pages.settings.backups.encrypted')}></i>
-                  {/if}
-                </td>
-                <td class="text-nowrap">
-                  {$_(
-                    backup.tag === 'MANUAL'
-                      ? 'pages.settings.backups.tag-manual'
-                      : backup.tag === 'SCHEDULED'
-                        ? 'pages.settings.backups.tag-scheduled'
-                        : 'pages.settings.backups.trigger-automatic',
-                  )}
-                </td>
-                <td>{formatBytes(backup.sizeBytes || 0)}</td>
-                <td class="d-none d-md-table-cell small">{backup.panoVersion || '—'}</td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
-      <div class="card-footer">
-        <Pagination
-          page={pageOf(localPage, filteredLocal.length, LOCAL_PAGE_SIZE)}
-          on:firstPageClick={() => (localPage = 1)}
-          on:lastPageClick={() => (localPage = localLastPage)}
-          on:pageLinkClick={(event) => (localPage = event.detail.page)} />
-      </div>
-    {/if}
-  </div>
-
-  <!-- Pano Backup: the account, its plan and storage, then this Pano's backups -->
-  <div class="card">
-    <CardHeader showRight={connected && !hostUnavailable}>
-      <div slot="left">
-        {$_('pages.settings.backups.remote-count', {
-          values: { count: Number(remoteList?.page?.totalItems) || 0 },
-        })}
-      </div>
-      <!-- Nothing to act on while panomc.com cannot be reached. -->
-      <div slot="right" class="d-flex align-items-center gap-2">
-        {#if backupMode === 'FULL'}
-          <button
-            type="button"
-            class="btn btn-sm btn-link"
-            use:tooltip={[$_('pages.settings.backups.passphrase-title'), { placement: 'bottom' }]}
-            aria-label={$_('pages.settings.backups.passphrase-title')}
-            onclick={() => passphraseModal?.open()}>
-            <i
-              class="fa-solid {remote.passphraseSet ? 'fa-lock' : 'fa-lock-open'}"
-              aria-hidden="true"></i>
-          </button>
-        {/if}
-        <button
-          type="button"
-          class="btn btn-sm btn-link"
-          disabled={running}
-          use:tooltip={[$_('pages.settings.backups.transfer.title'), { placement: 'bottom' }]}
-          aria-label={$_('pages.settings.backups.transfer.title')}
-          onclick={() => transferModal?.open()}>
-          <i class="fa-solid fa-right-left" aria-hidden="true"></i>
-        </button>
-        <button
-          type="button"
-          class="btn btn-sm btn-primary text-capitalize"
-          disabled={running || busyAction === 'upload'}
-          onclick={() => uploadModal?.show()}>
-          <i class="fa-solid fa-cloud-arrow-up me-1" aria-hidden="true"></i>
-          {$_('pages.settings.backups.upload-now')}
-        </button>
-      </div>
-    </CardHeader>
-
-    <PanoBackupAccountSummary {remote} />
-
-    <!-- When panomc.com cannot be reached the summary above already says so; the list would only
-         repeat it. -->
-    {#if connected && !hostUnavailable}
-      <div class="border-top"></div>
-      {#if remoteError}
-        <div class="card-body">
-          <div class="alert alert-danger mb-0 d-flex align-items-start">
-            <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
-            <div>{$_(remoteError.key, { values: remoteError.values })}</div>
-          </div>
-        </div>
-      {:else if remoteLoading}
-        <div class="card-body d-flex justify-content-center py-5">
-          <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
-        </div>
-      {:else if remoteRows.length === 0}
+          {#each LOCAL_TAGS as tag}
+            <CardFiltersItem button active={localTag === tag} onclick={() => setLocalTag(tag)}>
+              {$_(`pages.settings.backups.tag-${tag.toLowerCase()}`)}
+            </CardFiltersItem>
+          {/each}
+        </CardFilters>
+      </CardHeader>
+      {#if filteredLocal.length === 0}
         <NoContent />
       {:else}
         <div class="table-responsive">
-          <table class="table table-hover mb-0">
+          <table class="table table-hover mb-0 align-middle">
             <thead>
               <tr>
                 <th scope="col"></th>
-                <th class="align-middle text-nowrap" scope="col">
-                  {$_('pages.settings.backups.column-created')}
-                </th>
-                <th class="align-middle text-nowrap" scope="col">
-                  {$_('pages.settings.backups.column-type')}
-                </th>
-                <th class="align-middle text-nowrap" scope="col">
-                  {$_('pages.settings.backups.column-trigger')}
-                </th>
-                <th class="align-middle text-nowrap" scope="col">
-                  {$_('pages.settings.backups.column-size')}
-                </th>
-                <th class="align-middle text-nowrap" scope="col">
-                  {$_('pages.settings.backups.column-stored')}
-                </th>
-                {#if showRemoteStatus}
-                  <th class="align-middle text-nowrap" scope="col">
-                    {$_('pages.settings.backups.column-status')}
-                  </th>
-                {/if}
+                <th>{$_('pages.settings.backups.column-created')}</th>
+                <th>{$_('pages.settings.backups.column-type')}</th>
+                <th>{$_('pages.settings.backups.column-trigger')}</th>
+                <th>{$_('pages.settings.backups.column-size')}</th>
+                <th class="d-none d-md-table-cell"
+                  >{$_('pages.settings.backups.column-version')}</th>
               </tr>
             </thead>
             <tbody>
-              {#each remoteRows as backup (backup.id)}
-                <tr>
+              {#each pagedLocal as backup (backup.id)}
+                <tr class:table-active={selectedId === backup.id}>
                   <th scope="row" class="align-middle text-center">
-                    {#if canDownloadRow(backup) || canRestoreRow(backup) || canDeleteRow(backup)}
-                      <div class="dropdown position-static">
+                    <div class="dropdown position-static">
+                      <button
+                        type="button"
+                        class="btn btn-link"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label={$_('pages.settings.backups.column-actions')}>
+                        <span class="fas fa-ellipsis-v"></span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-start text-capitalize">
+                        <a
+                          class="dropdown-item text-capitalize"
+                          href="/api/v1/panel/pano-backups/{encodeURIComponent(backup.id)}/download"
+                          download="pano-backup-{backup.id}.panoarc">
+                          <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
+                          {$_('buttons.download')}
+                        </a>
                         <button
                           type="button"
-                          class="btn btn-link"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                          use:tooltip={[$_('pages.settings.backups.column-actions'), { placement: 'bottom' }]}
-                          aria-label={$_('pages.settings.backups.column-actions')}>
-                          <span class="fas fa-ellipsis-v"></span>
+                          class="dropdown-item text-capitalize"
+                          disabled={running}
+                          onclick={() => askRestoreLocal(backup)}>
+                          <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"></i>
+                          {$_('pages.settings.backups.restore.submit')}
                         </button>
-                        <div class="dropdown-menu dropdown-menu-start">
-                          {#if canDownloadRow(backup)}
-                            <button
-                              type="button"
-                              class="dropdown-item text-capitalize"
-                              disabled={running}
-                              onclick={() =>
-                                void (backup.kind === 'mc-server'
-                                  ? downloadServerCopy(backup)
-                                  : downloadSnapshot(backup))}>
-                              <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
-                              {$_('buttons.download')}
-                            </button>
-                          {/if}
-                          {#if backup.kind === 'mc-server' && backup.status === 'DONE' && canImportServer}
-                            <button
-                              type="button"
-                              class="dropdown-item text-capitalize"
-                              disabled={running}
-                              onclick={() => restoreServerModal?.open(backup)}>
-                              <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"></i>
-                              {$_('pages.settings.backups.restore.submit')}
-                            </button>
-                          {/if}
-                          {#if canRestoreRow(backup)}
-                            <button
-                              type="button"
-                              class="dropdown-item text-capitalize"
-                              disabled={running}
-                              onclick={() => askRestoreRemote(backup)}>
-                              <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"></i>
-                              {$_('pages.settings.backups.restore.submit')}
-                            </button>
-                          {/if}
-                          {#if canDeleteRow(backup)}
-                            <button
-                              type="button"
-                              class="dropdown-item link-danger text-capitalize"
-                              onclick={() =>
-                                askDelete(
-                                  backup.type === 'snapshot' ? 'snapshot' : 'remote',
-                                  backup,
-                                )}>
-                              <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
-                              {$_('buttons.delete')}
-                            </button>
-                          {/if}
-                        </div>
+                        <button
+                          type="button"
+                          class="dropdown-item text-danger text-capitalize"
+                          onclick={() => askDelete('local', backup)}>
+                          <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
+                          {$_('buttons.delete')}
+                        </button>
                       </div>
-                    {/if}
+                    </div>
                   </th>
-                  <td class="align-middle">
+                  <td>
                     <DateComponent time={backup.createdAt} relativeFormat />
+                    {#if backup.createdBy}
+                      <div class="small text-body-secondary">{backup.createdBy}</div>
+                    {/if}
                   </td>
-                  <td class="align-middle">
-                    <span
-                      class="badge text-capitalize text-bg-{backup.type === 'snapshot'
-                        ? 'info'
-                        : 'secondary'}">
-                      {backup.type === 'snapshot'
-                        ? $_('pages.settings.backups.type-snapshot')
-                        : backup.kind === 'mc-server'
-                          ? $_('pages.settings.backups.kind-mc-server')
-                          : $_('pages.settings.backups.type-full')}
+                  <td>
+                    <span class="badge text-capitalize text-bg-{tagColour(backup.tag)}">
+                      {$_(`pages.settings.backups.tag-${String(backup.tag).toLowerCase()}`)}
                     </span>
-                    {#if backup.subject}
-                      <!-- SM-PB — the server by its name; its id is a hover away. -->
-                      <div
-                        class="small text-body-secondary"
-                        use:tooltip={[backup.subject, { placement: 'bottom' }]}>
-                        {serverNameOf(backup)}
-                      </div>
+                    {#if backup.encrypted}
+                      <i
+                        class="fa-solid fa-lock ms-1 text-body-secondary"
+                        use:tooltip={[
+                          $_('pages.settings.backups.encrypted'),
+                          { placement: 'bottom' },
+                        ]}
+                        aria-label={$_('pages.settings.backups.encrypted')}></i>
                     {/if}
                   </td>
-                  <td class="align-middle text-nowrap">
-                    {#if backup.trigger === 'SCHEDULED' || backup.trigger === 'MANUAL'}
-                      {$_(`pages.settings.backups.tag-${backup.trigger.toLowerCase()}`)}
-                    {:else if backup.trigger === 'AUTOMATIC'}
-                      {$_('pages.settings.backups.trigger-automatic')}
-                    {:else}
-                      <span class="text-body-secondary">—</span>
-                    {/if}
+                  <td class="text-nowrap">
+                    {$_(
+                      backup.tag === 'MANUAL'
+                        ? 'pages.settings.backups.tag-manual'
+                        : backup.tag === 'SCHEDULED'
+                          ? 'pages.settings.backups.tag-scheduled'
+                          : 'pages.settings.backups.trigger-automatic',
+                    )}
                   </td>
-                  <td class="align-middle">
-                    {#if backup.type !== 'snapshot'}
-                      {formatBytes(backup.sizeBytes || 0)}
-                    {:else if backup.status === 'DONE'}
-                      <div>{formatSnapshotBytes(backup.downloadBytes)}</div>
-                      {#if backup.logicalBytes}
-                        <div class="small text-body-secondary">
-                          {$_('pages.settings.backups.snapshot.unpacked', {
-                            values: { size: formatSnapshotBytes(backup.logicalBytes) },
-                          })}
-                        </div>
-                      {/if}
-                    {/if}
-                  </td>
-                  <td class="align-middle">
-                    {#if backup.type !== 'snapshot'}
-                      {formatBytes(backup.sizeBytes || 0)}
-                    {:else if backup.status === 'DONE'}
-                      {formatSnapshotBytes(backup.storedBytes ?? backup.uniqueBytes)}
-                    {/if}
-                  </td>
-                  {#if showRemoteStatus}
-                    <td class="align-middle">
-                      {#if backup.status !== 'DONE'}
-                        <span
-                          class="badge text-capitalize text-bg-{backup.status === 'FAILED'
-                            ? 'danger'
-                            : 'secondary'}">
-                          {$_(
-                            `pages.settings.backups.remote-status-${String(backup.status).toLowerCase()}`,
-                          )}
-                        </span>
-                      {/if}
-                      {#if snapshotProblem(backup)}
-                        {@const problem = snapshotProblem(backup)}
-                        <div class="small text-danger">
-                          {$_(problem.key, { values: problem.values })}
-                          {#if problem.storageFull}
-                            <a href={planUrl}>{$_('pages.settings.backups.account.manage-plan')}</a>
-                          {/if}
-                        </div>
-                      {/if}
-                    </td>
-                  {/if}
+                  <td>{formatBytes(backup.sizeBytes || 0)}</td>
+                  <td class="d-none d-md-table-cell small">{backup.panoVersion || '—'}</td>
                 </tr>
               {/each}
             </tbody>
           </table>
         </div>
-        {#if Number(remoteList?.page?.totalItems) > 0}
-          <div class="card-footer">
-            <Pagination
-              page={remoteList.page}
-              on:firstPageClick={() => void goToRemotePage(1)}
-              on:lastPageClick={() => void goToRemotePage(pageCount(remoteList.page))}
-              on:pageLinkClick={(event) => void goToRemotePage(event.detail.page)} />
-          </div>
-        {/if}
+        <div class="card-footer">
+          <Pagination
+            page={pageOf(localPage, filteredLocal.length, LOCAL_PAGE_SIZE)}
+            on:firstPageClick={() => (localPage = 1)}
+            on:lastPageClick={() => (localPage = localLastPage)}
+            on:pageLinkClick={(event) => (localPage = event.detail.page)} />
+        </div>
       {/if}
+    </div>
+  {/if}
+
+  <!-- Pano Backup: the account, its plan and storage, then this Pano's backups -->
+  {#if tab === 'pano'}
+    <PanoBackupAccountSummary {remote} />
+
+    <!-- When panomc.com cannot be reached the summary above already says so; the list would only
+         repeat it. -->
+    {#if connected && !hostUnavailable}
+      <div class="card">
+        <CardHeader showRight={false}>
+          <div slot="left">
+            {$_('pages.settings.backups.remote-count', {
+              values: { count: Number(remoteList?.page?.totalItems) || 0 },
+            })}
+          </div>
+        </CardHeader>
+        {#if remoteError}
+          <div class="card-body">
+            <div class="alert alert-danger mb-0 d-flex align-items-start">
+              <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>{$_(remoteError.key, { values: remoteError.values })}</div>
+            </div>
+          </div>
+        {:else if remoteLoading}
+          <div class="card-body d-flex justify-content-center py-5">
+            <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+          </div>
+        {:else if remoteRows.length === 0}
+          <NoContent />
+        {:else}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th class="align-middle text-nowrap" scope="col">
+                    {$_('pages.settings.backups.column-created')}
+                  </th>
+                  <th class="align-middle text-nowrap" scope="col">
+                    {$_('pages.settings.backups.column-type')}
+                  </th>
+                  <th class="align-middle text-nowrap" scope="col">
+                    {$_('pages.settings.backups.column-trigger')}
+                  </th>
+                  <th class="align-middle text-nowrap" scope="col">
+                    {$_('pages.settings.backups.column-size')}
+                  </th>
+                  <th class="align-middle text-nowrap" scope="col">
+                    {$_('pages.settings.backups.column-stored')}
+                  </th>
+                  {#if showRemoteStatus}
+                    <th class="align-middle text-nowrap" scope="col">
+                      {$_('pages.settings.backups.column-status')}
+                    </th>
+                  {/if}
+                </tr>
+              </thead>
+              <tbody>
+                {#each remoteRows as backup (backup.id)}
+                  <tr>
+                    <th scope="row" class="align-middle text-center">
+                      {#if canDownloadRow(backup) || canRestoreRow(backup) || canDeleteRow(backup)}
+                        <div class="dropdown position-static">
+                          <button
+                            type="button"
+                            class="btn btn-link"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            use:tooltip={[
+                              $_('pages.settings.backups.column-actions'),
+                              { placement: 'bottom' },
+                            ]}
+                            aria-label={$_('pages.settings.backups.column-actions')}>
+                            <span class="fas fa-ellipsis-v"></span>
+                          </button>
+                          <div class="dropdown-menu dropdown-menu-start">
+                            {#if canDownloadRow(backup)}
+                              <button
+                                type="button"
+                                class="dropdown-item text-capitalize"
+                                disabled={running}
+                                onclick={() =>
+                                  void (backup.kind === 'mc-server'
+                                    ? downloadServerCopy(backup)
+                                    : downloadSnapshot(backup))}>
+                                <i class="fa-solid fa-download me-2" aria-hidden="true"></i>
+                                {$_('buttons.download')}
+                              </button>
+                            {/if}
+                            {#if backup.kind === 'mc-server' && backup.status === 'DONE' && canImportServer}
+                              <button
+                                type="button"
+                                class="dropdown-item text-capitalize"
+                                disabled={running}
+                                onclick={() => restoreServerModal?.open(backup)}>
+                                <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"
+                                ></i>
+                                {$_('pages.settings.backups.restore.submit')}
+                              </button>
+                            {/if}
+                            {#if canRestoreRow(backup)}
+                              <button
+                                type="button"
+                                class="dropdown-item text-capitalize"
+                                disabled={running}
+                                onclick={() => askRestoreRemote(backup)}>
+                                <i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"
+                                ></i>
+                                {$_('pages.settings.backups.restore.submit')}
+                              </button>
+                            {/if}
+                            {#if canDeleteRow(backup)}
+                              <button
+                                type="button"
+                                class="dropdown-item link-danger text-capitalize"
+                                onclick={() =>
+                                  askDelete(
+                                    backup.type === 'snapshot' ? 'snapshot' : 'remote',
+                                    backup,
+                                  )}>
+                                <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
+                                {$_('buttons.delete')}
+                              </button>
+                            {/if}
+                          </div>
+                        </div>
+                      {/if}
+                    </th>
+                    <td class="align-middle">
+                      <DateComponent time={backup.createdAt} relativeFormat />
+                    </td>
+                    <td class="align-middle">
+                      <span
+                        class="badge text-capitalize text-bg-{backup.type === 'snapshot'
+                          ? 'info'
+                          : 'secondary'}">
+                        {backup.type === 'snapshot'
+                          ? $_('pages.settings.backups.type-snapshot')
+                          : backup.kind === 'mc-server'
+                            ? $_('pages.settings.backups.kind-mc-server')
+                            : $_('pages.settings.backups.type-full')}
+                      </span>
+                      {#if backup.subject}
+                        <!-- SM-PB — the server by its name; its id is a hover away. -->
+                        <div
+                          class="small text-body-secondary"
+                          use:tooltip={[backup.subject, { placement: 'bottom' }]}>
+                          {serverNameOf(backup)}
+                        </div>
+                      {/if}
+                    </td>
+                    <td class="align-middle text-nowrap">
+                      {#if backup.trigger === 'SCHEDULED' || backup.trigger === 'MANUAL'}
+                        {$_(`pages.settings.backups.tag-${backup.trigger.toLowerCase()}`)}
+                      {:else if backup.trigger === 'AUTOMATIC'}
+                        {$_('pages.settings.backups.trigger-automatic')}
+                      {:else}
+                        <span class="text-body-secondary">—</span>
+                      {/if}
+                    </td>
+                    <td class="align-middle">
+                      {#if backup.type !== 'snapshot'}
+                        {formatBytes(backup.sizeBytes || 0)}
+                      {:else if backup.status === 'DONE'}
+                        <div>{formatSnapshotBytes(backup.downloadBytes)}</div>
+                        {#if backup.logicalBytes}
+                          <div class="small text-body-secondary">
+                            {$_('pages.settings.backups.snapshot.unpacked', {
+                              values: { size: formatSnapshotBytes(backup.logicalBytes) },
+                            })}
+                          </div>
+                        {/if}
+                      {/if}
+                    </td>
+                    <td class="align-middle">
+                      {#if backup.type !== 'snapshot'}
+                        {formatBytes(backup.sizeBytes || 0)}
+                      {:else if backup.status === 'DONE'}
+                        {formatSnapshotBytes(backup.storedBytes ?? backup.uniqueBytes)}
+                      {/if}
+                    </td>
+                    {#if showRemoteStatus}
+                      <td class="align-middle">
+                        {#if backup.status !== 'DONE'}
+                          <span
+                            class="badge text-capitalize text-bg-{backup.status === 'FAILED'
+                              ? 'danger'
+                              : 'secondary'}">
+                            {$_(
+                              `pages.settings.backups.remote-status-${String(backup.status).toLowerCase()}`,
+                            )}
+                          </span>
+                        {/if}
+                        {#if snapshotProblem(backup)}
+                          {@const problem = snapshotProblem(backup)}
+                          <div class="small text-danger">
+                            {$_(problem.key, { values: problem.values })}
+                            {#if problem.storageFull}
+                              <a href={planUrl}
+                                >{$_('pages.settings.backups.account.manage-plan')}</a>
+                            {/if}
+                          </div>
+                        {/if}
+                      </td>
+                    {/if}
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+          {#if Number(remoteList?.page?.totalItems) > 0}
+            <div class="card-footer">
+              <Pagination
+                page={remoteList.page}
+                on:firstPageClick={() => void goToRemotePage(1)}
+                on:lastPageClick={() => void goToRemotePage(pageCount(remoteList.page))}
+                on:pageLinkClick={(event) => void goToRemotePage(event.detail.page)} />
+            </div>
+          {/if}
+        {/if}
+      </div>
     {/if}
-  </div>
+  {/if}
 </div>
 
 <PanoBackupSettingsModal
@@ -633,6 +666,8 @@
   import { pageCount, pageNumber, pageOf } from '$lib/components/pagination.util.js';
   import tooltip from '$lib/tooltip.util.js';
   import PageActions from '$lib/components/PageActions.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import PageNavItem from '$lib/components/PageNavItem.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
   import BsModal from '$lib/components/settings/pano-backup/BsModal.svelte';
   import PanoBackupJobCard from '$lib/components/settings/pano-backup/PanoBackupJobCard.svelte';
@@ -742,6 +777,21 @@
   let uploadModal = $state();
   /** @type {RestorePanoBackupModal | undefined} */
   let restoreModal = $state();
+  /** The page's two sections as tabs; the choice is kept in `?tab=` so a reload stays on it. */
+  let tab = $state(
+    typeof window !== 'undefined' &&
+      new URL(window.location.href).searchParams.get('tab') === 'pano'
+      ? 'pano'
+      : 'local',
+  );
+  /** @param {'local' | 'pano'} next */
+  function setTab(next) {
+    tab = next;
+    const url = new URL(window.location.href);
+    if (next === 'pano') url.searchParams.set('tab', next);
+    else url.searchParams.delete('tab');
+    window.history.replaceState(window.history.state, '', url.toString());
+  }
   /** @type {RestoreServerBackupModal | undefined} */
   let restoreServerModal = $state();
   /** A server backup can be brought into a managed server by whoever may manage that server's backups. */

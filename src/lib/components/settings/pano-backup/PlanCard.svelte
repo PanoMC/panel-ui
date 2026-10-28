@@ -2,7 +2,9 @@
   <div class="card-body pb-5">
     <div class="d-flex flex-wrap align-items-center gap-2">
       <div class="vstack min-w-0">
-        <span class="small opacity-75">{label}</span>
+        {#if label}
+          <span class="small opacity-75">{label}</span>
+        {/if}
         <div class="d-flex align-items-center gap-2">
           <span class="h5 mb-0">{name}</span>
           {#if badge}
@@ -51,12 +53,12 @@
 
   /**
    * @type {{
-   *   label: string,
+   *   label?: string,
    *   name: string,
    *   badge?: { text: string, variant: string } | null,
    *   usages?: Array<{ id: string, label: string, percent?: number | null, note?: string, ariaLabel?: string }>,
    *   action?: import('svelte').Snippet,
    * }}
    */
-  let { label, name, badge = null, usages = [], action } = $props();
+  let { label = '', name, badge = null, usages = [], action } = $props();
 </script>
