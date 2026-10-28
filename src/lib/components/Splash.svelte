@@ -197,7 +197,7 @@
       </div>
       <div class="d-flex flex-wrap align-items-center justify-content-center gap-2 mt-3">
         <button
-          class="btn btn-sm btn-link text-decoration-none"
+          class="btn btn-link text-decoration-none"
           on:click={reloadPage}
           type="button">
           {$_('components.splash.manual-refresh')}
@@ -205,7 +205,7 @@
         <!-- Trying again only helps a lost connection: a missing session or permission stays missing. -->
         {#if !showNotLoggedIn && !showNoPermission}
           <button
-            class="btn btn-sm btn-secondary"
+            class="btn btn-secondary"
             on:click={onRetryClick}
             disabled={retrying}
             type="button">
@@ -222,7 +222,7 @@
     <small class="d-block mb-3">
       {$_('components.splash.stuck-text')}
     </small>
-    <a href="." class="btn btn-link btn-sm text-decoration-none">
+    <a href="." class="btn btn-link text-decoration-none">
       <i class="fas fa-sync-alt me-2"></i>
       {$_('components.splash.manual-refresh')}
     </a>

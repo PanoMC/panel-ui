@@ -4526,7 +4526,7 @@
         "edit-template": "Kalıbı Düzenle",
         "inputs": {
           "title": {
-            "placeholder": "Kalıp başlığı"
+            "placeholder": "Kalıp Başlığı"
           }
         },
         "variables": "Değişkenler:",

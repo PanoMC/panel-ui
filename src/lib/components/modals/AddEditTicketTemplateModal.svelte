@@ -1,6 +1,6 @@
 <!-- Add / Edit Ticket Template Modal -->
 <div class="modal fade" bind:this={$modalElement} role="dialog" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
@@ -41,7 +41,7 @@
             {#each $variables as variable (variable)}
               <button
                 type="button"
-                class="btn btn-sm btn-outline-secondary py-0"
+                class="badge text-bg-primary border-0"
                 title={$_(`components.modals.add-edit-ticket-template.variable-hints.${variable}`)}
                 onmousedown={(event) => event.preventDefault()}
                 onclick={() => editor?.insertContent(`{{${variable}}}`)}>

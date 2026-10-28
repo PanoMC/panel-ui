@@ -157,57 +157,60 @@
       <!-- Ready replies: a click fills the template in for this ticket and puts it where the caret
            is. The first few are at hand; the rest are searched under "All". -->
       {#if data.templates.length > 0}
-        <div class="d-flex flex-wrap align-items-center gap-1 mb-2">
-          <span class="form-text mt-0 me-1">{$_('pages.ticket-detail.templates')}</span>
-          {#each data.templates.slice(0, VISIBLE_TEMPLATES) as template (template.id)}
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary py-0"
-              disabled={templateLoading}
-              title={plainText(template.body)}
-              on:mousedown|preventDefault
-              on:click={() => insertTemplate(template)}>
-              {template.title}
-            </button>
-          {/each}
-          {#if data.templates.length > VISIBLE_TEMPLATES}
-            <div class="dropdown" bind:this={allTemplatesDropdown}>
+        <div class="card mb-2">
+          <div class="card-body d-flex flex-wrap align-items-center gap-1 py-2 px-3">
+            <span class="form-text mt-0 me-1">{$_('pages.ticket-detail.templates')}</span>
+            {#each data.templates.slice(0, VISIBLE_TEMPLATES) as template (template.id)}
               <button
                 type="button"
-                class="btn btn-sm btn-link py-0 dropdown-toggle"
-                data-bs-toggle="dropdown"
-                data-bs-auto-close="outside"
-                aria-expanded="false"
-                disabled={templateLoading}>
-                {$_('pages.ticket-detail.all-templates')}
+                class="badge text-bg-primary border-0"
+                class:opacity-50={templateLoading}
+                disabled={templateLoading}
+                title={plainText(template.body)}
+                on:mousedown|preventDefault
+                on:click={() => insertTemplate(template)}>
+                {template.title}
               </button>
-              <div class="dropdown-menu p-2" style="min-width: 280px;">
-                <input
-                  class="form-control form-control-sm mb-2"
-                  type="search"
-                  placeholder={$_('pages.ticket-detail.search-templates')}
-                  bind:value={templateSearch} />
-                <div class="overflow-auto" style="max-height: 240px;">
-                  {#each filteredTemplates as template (template.id)}
-                    <button
-                      type="button"
-                      class="dropdown-item rounded"
-                      title={plainText(template.body)}
-                      on:click={() => insertTemplate(template)}>
-                      {template.title}
-                    </button>
-                  {:else}
-                    <span class="dropdown-item-text text-body-secondary">
-                      {$_('pages.ticket-detail.no-templates-found')}
-                    </span>
-                  {/each}
+            {/each}
+            {#if data.templates.length > VISIBLE_TEMPLATES}
+              <div class="dropdown" bind:this={allTemplatesDropdown}>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-link py-0 dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  data-bs-auto-close="outside"
+                  aria-expanded="false"
+                  disabled={templateLoading}>
+                  {$_('pages.ticket-detail.all-templates')}
+                </button>
+                <div class="dropdown-menu p-2" style="min-width: 280px;">
+                  <input
+                    class="form-control form-control-sm mb-2"
+                    type="search"
+                    placeholder={$_('pages.ticket-detail.search-templates')}
+                    bind:value={templateSearch} />
+                  <div class="overflow-auto" style="max-height: 240px;">
+                    {#each filteredTemplates as template (template.id)}
+                      <button
+                        type="button"
+                        class="dropdown-item rounded"
+                        title={plainText(template.body)}
+                        on:click={() => insertTemplate(template)}>
+                        {template.title}
+                      </button>
+                    {:else}
+                      <span class="dropdown-item-text text-body-secondary">
+                        {$_('pages.ticket-detail.no-templates-found')}
+                      </span>
+                    {/each}
+                  </div>
                 </div>
               </div>
-            </div>
-          {/if}
-          {#if templateLoading}
-            <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
-          {/if}
+            {/if}
+            {#if templateLoading}
+              <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+            {/if}
+          </div>
         </div>
       {/if}
 
