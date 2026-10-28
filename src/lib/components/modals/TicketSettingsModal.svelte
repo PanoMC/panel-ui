@@ -34,45 +34,43 @@
                 {$_('components.modals.ticket-settings.allow-no-category')}
               </label>
             </div>
-            <div class="form-text">
-              {$_('components.modals.ticket-settings.allow-no-category-hint')}
-            </div>
             <!-- The ready reply of tickets opened without a category; off while such tickets are not
                  allowed. None chosen, the default auto-reply below is sent. -->
-            <label class="form-label mt-3 mb-1" for="ticketNoCategoryAutoReply">
-              {$_('components.modals.ticket-settings.no-category-auto-reply')}
-            </label>
-            <select
-              class="form-select"
-              id="ticketNoCategoryAutoReply"
-              disabled={!$settings.allowNoCategory}
-              value={$settings.noCategoryAutoReplyTemplateId}
-              on:change={(event) =>
-                ($settings.noCategoryAutoReplyTemplateId = Number(event.currentTarget.value))}>
-              <option value={-1}
-                >{$_('components.modals.ticket-settings.use-default-auto-reply')}</option>
-              {#each $templates as template (template.id)}
-                <option value={template.id}>{template.title}</option>
-              {/each}
-            </select>
+            <div class="form-floating mt-3">
+              <select
+                class="form-select"
+                id="ticketNoCategoryAutoReply"
+                disabled={!$settings.allowNoCategory}
+                value={$settings.noCategoryAutoReplyTemplateId}
+                on:change={(event) =>
+                  ($settings.noCategoryAutoReplyTemplateId = Number(event.currentTarget.value))}>
+                <option value={-1}
+                  >{$_('components.modals.ticket-settings.use-default-auto-reply')}</option>
+                {#each $templates as template (template.id)}
+                  <option value={template.id}>{template.title}</option>
+                {/each}
+              </select>
+              <label for="ticketNoCategoryAutoReply">
+                {$_('components.modals.ticket-settings.no-category-auto-reply')}
+              </label>
+            </div>
             <!-- The ready reply sent by itself to every new ticket; a category with its own auto-reply
                  sends that one instead. -->
-            <label class="form-label mt-3 mb-1" for="ticketDefaultAutoReply">
-              {$_('components.modals.ticket-settings.default-auto-reply')}
-            </label>
-            <select
-              class="form-select"
-              id="ticketDefaultAutoReply"
-              value={$settings.defaultAutoReplyTemplateId}
-              on:change={(event) =>
-                ($settings.defaultAutoReplyTemplateId = Number(event.currentTarget.value))}>
-              <option value={-1}>{$_('components.modals.ticket-settings.no-auto-reply')}</option>
-              {#each $templates as template (template.id)}
-                <option value={template.id}>{template.title}</option>
-              {/each}
-            </select>
-            <div class="form-text">
-              {$_('components.modals.ticket-settings.default-auto-reply-hint')}
+            <div class="form-floating mt-3">
+              <select
+                class="form-select"
+                id="ticketDefaultAutoReply"
+                value={$settings.defaultAutoReplyTemplateId}
+                on:change={(event) =>
+                  ($settings.defaultAutoReplyTemplateId = Number(event.currentTarget.value))}>
+                <option value={-1}>{$_('components.modals.ticket-settings.no-auto-reply')}</option>
+                {#each $templates as template (template.id)}
+                  <option value={template.id}>{template.title}</option>
+                {/each}
+              </select>
+              <label for="ticketDefaultAutoReply">
+                {$_('components.modals.ticket-settings.default-auto-reply')}
+              </label>
             </div>
           {/if}
         </div>

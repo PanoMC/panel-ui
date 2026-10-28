@@ -4412,7 +4412,6 @@
       "ticket-settings": {
         "title": "チケット設定",
         "allow-no-category": "カテゴリのないチケットを許可する",
-        "allow-no-category-hint": "ユーザーはカテゴリを選択せず​​にチケットを開くことができます。",
         "load-failed": "設定を読み込めませんでした。",
         "save-failed": "設定を保存できませんでした。",
         "saved": "チケット設定が保存されました。"

@@ -4505,14 +4505,12 @@
       "ticket-settings": {
         "title": "Destek Talebi Ayarları",
         "allow-no-category": "Kategorisiz Destek Talebine İzin Ver",
-        "allow-no-category-hint": "Kullanıcılar kategori seçmeden destek talebi açabilir.",
         "load-failed": "Ayarlar yüklenemedi.",
         "save-failed": "Ayarlar kaydedilemedi.",
         "saved": "Destek talebi ayarları kaydedildi.",
-        "no-category-auto-reply": "Kategorisiz ticket'lar için otomatik yanıt",
+        "no-category-auto-reply": "Kategorisiz Talepler İçin Otomatik Yanıt",
         "use-default-auto-reply": "Varsayılan otomatik yanıtı kullan",
-        "default-auto-reply": "Varsayılan otomatik yanıt",
-        "default-auto-reply-hint": "Her yeni ticket'a gönderilir. Kendi otomatik yanıtı seçili kategoriler ve kategorisiz ticket'lar onu gönderir.",
+        "default-auto-reply": "Varsayılan Otomatik Yanıt",
         "no-auto-reply": "Otomatik yanıt yok"
       },
       "server-upload-conflict": {

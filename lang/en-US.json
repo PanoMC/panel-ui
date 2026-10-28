@@ -4503,14 +4503,12 @@
       "ticket-settings": {
         "title": "Ticket Settings",
         "allow-no-category": "Allow tickets without a category",
-        "allow-no-category-hint": "Users can open a ticket without picking a category.",
         "load-failed": "The settings could not be loaded.",
         "save-failed": "The settings could not be saved.",
         "saved": "Ticket settings saved.",
         "no-category-auto-reply": "Auto-reply for tickets without a category",
         "use-default-auto-reply": "Use the default auto-reply",
         "default-auto-reply": "Default auto-reply",
-        "default-auto-reply-hint": "Sent to every new ticket. A category, or tickets without a category, with an auto-reply of their own send that one instead.",
         "no-auto-reply": "No auto-reply"
       },
       "server-upload-conflict": {

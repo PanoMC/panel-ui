@@ -11,12 +11,21 @@
       <TicketsNav slot="left" active="tickets" />
 
       <div slot="right" class="hstack gap-2">
+        <!-- What applies to tickets as a whole; the actions for the selected tickets follow it. -->
+        <button
+          type="button"
+          class="btn btn-link"
+          title={$_('components.modals.ticket-settings.title')}
+          aria-label={$_('components.modals.ticket-settings.title')}
+          on:click={() => showTicketSettingsModal()}>
+          <i class="fas fa-cog"></i>
+        </button>
         {#if checkedItems.length > 0}
           <div class:d-none={firstLoad} class="hstack gap-2">
             <button
               title={$_('buttons.delete')}
               aria-label={$_('buttons.delete')}
-              class="btn btn-link"
+              class="btn btn-link link-danger"
               class:disabled={getListOfChecked($checkedList).length === 0}
               type="button"
               on:click={onShowDeleteTicketsModalClick}>
@@ -31,15 +40,6 @@
             </button>
           </div>
         {/if}
-        <!-- Always the last thing on the right: what applies to tickets as a whole. -->
-        <button
-          type="button"
-          class="btn btn-link"
-          title={$_('components.modals.ticket-settings.title')}
-          aria-label={$_('components.modals.ticket-settings.title')}
-          on:click={() => showTicketSettingsModal()}>
-          <i class="fas fa-cog"></i>
-        </button>
       </div>
     </PageActions>
   {/if}
