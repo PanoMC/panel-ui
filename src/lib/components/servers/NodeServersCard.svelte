@@ -45,7 +45,7 @@
         <span class="placeholder col-4"></span>
       </div>
     {:else if nodeServers.length === 0}
-      <NoContent icon="" text={$_('pages.servers.nodes.servers-empty')} />
+      <NoContent />
     {:else}
       <div class="table-responsive">
         <table class="table table-hover">

@@ -4186,7 +4186,7 @@
         "review-whitelist": "Beyaz liste",
         "review-auto-update-check": "Otomatik güncelleme denetimi",
         "review-none": "Yok",
-        "create-button": "Sunucuyu Oluştur",
+        "create-button": "Sunucu Oluştur",
         "created": "{name} kuruluyor.",
         "create-unavailable": "Pano’nun bu sürümü henüz sunucu oluşturamıyor.",
         "import": {

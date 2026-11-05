@@ -157,7 +157,7 @@
         <div class="card-body">
           <p class="text-truncate m-0">{$_('pages.servers.nodes.column-network')}</p>
           <div class="d-flex align-items-baseline gap-2">
-            <span class="fs-2 lh-1">
+            <span class="fs-2 lh-1 text-nowrap flex-shrink-0">
               <i class="fa-solid fa-arrow-down fs-6 me-1" aria-hidden="true"></i>{rateText(
                 metrics.netRxBps,
               )}
