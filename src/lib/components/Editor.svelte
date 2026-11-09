@@ -231,7 +231,7 @@
       {#if previewContent}
         {@render previewContent()}
       {:else}
-        {@html content}
+        {@html sanitizeRichText(content)}
       {/if}
     </div>
   {/if}
@@ -242,6 +242,7 @@
 </div>
 
 <script module>
+  import { sanitizeRichText } from '$lib/html-sanitize.util.js';
   import { generateHTML, generateJSON } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';
   import Image from '@tiptap/extension-image';
