@@ -36,6 +36,13 @@ const RICH_TEXT_TAGS = [
   'span',
   'a',
   'img',
+  'del',
+  'table',
+  'thead',
+  'tbody',
+  'tr',
+  'th',
+  'td',
 ];
 
 const TRANSLATION_TAGS = ['a', 'b', 'strong', 'i', 'em', 'u', 's', 'br', 'span', 'small', 'code'];

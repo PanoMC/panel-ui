@@ -1,20 +1,21 @@
-{#await removeFirstPTag(marked.parse(sanitize(content))) then content}
+{#await removeFirstPTag(sanitizeRichText(marked.parse(String(content ?? '')))) then content}
   {@html content}
 {/await}
 
 <script>
-  import { sanitize } from '@jill64/universal-sanitizer';
   import { marked } from 'marked';
+  import { escapeHtml } from '@panomc/sdk/core/js/html.util.js';
+  import { safeHref, sanitizeRichText } from '$lib/html-sanitize.util.js';
   import { browser } from '$app/env';
 
   export let content;
 
   // Add target="_blank" to links in Markdown
   const renderer = {
-    link({ href, title, text }) {
-      const safeHref = sanitize(href);
-      const titleAttr = title ? ` title="${title}"` : '';
-      return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer"${titleAttr}>${text}</a>`;
+    link({ href, title, tokens }) {
+      const text = this.parser.parseInline(tokens);
+      const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
+      return `<a href="${escapeHtml(safeHref(href))}" target="_blank" rel="noopener noreferrer"${titleAttr}>${text}</a>`;
     },
   };
 
