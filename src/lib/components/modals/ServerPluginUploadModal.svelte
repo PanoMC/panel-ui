@@ -33,7 +33,7 @@
           {#each $errors as error, index (index)}
             <div class="alert alert-danger mb-0 d-flex align-items-start" role="alert">
               <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
-              <div>{@html $_(error.key, { values: error.values })}</div>
+              <div>{@html $_(error.key, { values: escapeValues(error.values) })}</div>
             </div>
           {/each}
 
@@ -86,6 +86,7 @@
 </div>
 
 <script context="module">
+  import { escapeValues } from '@panomc/sdk/core/js/html.util.js';
   import { errorCode } from '$lib/apiError.util.js';
   import { get, writable } from 'svelte/store';
 
