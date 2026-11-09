@@ -4993,6 +4993,7 @@
     "LOCALE_CANNOT_BE_DISABLED": "Bu dil kapatılamaz.",
     "INVALID_LOCALE_DERIVATIVE": "Geçersiz dil türevi.",
     "INVALID_LOCALE_NAME": "Geçersiz dil adı.",
+    "LOCALE_ALREADY_EXISTS": "Bu koda sahip bir dil zaten var.",
     "INVALID_PLATFORM_CODE": "Geçersiz platform kodu.",
     "INVALID_PLATFORM_UPDATE_FILE": "Geçersiz platform güncelleme dosyası.",
     "INVALID_RESOURCE_FILE": "Geçersiz kaynak dosyası.",

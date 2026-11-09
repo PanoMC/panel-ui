@@ -4877,6 +4877,7 @@
     "LOCALE_CANNOT_BE_DISABLED": "この言語はオフにすることはできません。",
     "INVALID_LOCALE_DERIVATIVE": "無効なロケール派生です。",
     "INVALID_LOCALE_NAME": "無効なロケール名です。",
+    "LOCALE_ALREADY_EXISTS": "このコードの言語はすでに存在します。",
     "INVALID_PLATFORM_CODE": "無効なプラットフォーム コードです。",
     "INVALID_PLATFORM_UPDATE_FILE": "プラットフォーム更新ファイルが無効です。",
     "INVALID_RESOURCE_FILE": "無効なリソース ファイルです。",

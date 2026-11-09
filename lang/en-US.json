@@ -4991,6 +4991,7 @@
     "LOCALE_CANNOT_BE_DISABLED": "This language cannot be turned off.",
     "INVALID_LOCALE_DERIVATIVE": "Invalid locale derivative.",
     "INVALID_LOCALE_NAME": "Invalid locale name.",
+    "LOCALE_ALREADY_EXISTS": "A language with this code already exists.",
     "INVALID_PLATFORM_CODE": "Invalid platform code.",
     "INVALID_PLATFORM_UPDATE_FILE": "Invalid platform update file.",
     "INVALID_RESOURCE_FILE": "Invalid resource file.",

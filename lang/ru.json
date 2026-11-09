@@ -4991,6 +4991,7 @@
     "LOCALE_CANNOT_BE_DISABLED": "Этот язык нельзя отключить.",
     "INVALID_LOCALE_DERIVATIVE": "Неверная производная локали.",
     "INVALID_LOCALE_NAME": "Неверное имя локали.",
+    "LOCALE_ALREADY_EXISTS": "Язык с таким кодом уже существует.",
     "INVALID_PLATFORM_CODE": "Неверный код платформы.",
     "INVALID_PLATFORM_UPDATE_FILE": "Неверный файл обновления платформы.",
     "INVALID_RESOURCE_FILE": "Неверный файл ресурса.",

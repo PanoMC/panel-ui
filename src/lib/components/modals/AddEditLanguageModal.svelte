@@ -43,7 +43,11 @@
                 type="text"
                 bind:value={$locale.code}
                 disabled={isSystem}
-                class:is-invalid={$error === 'INVALID_LOCALE_CODE'} />
+                class:is-invalid={$error === 'INVALID_LOCALE_CODE' ||
+                  $error === 'LOCALE_ALREADY_EXISTS'} />
+              {#if $error === 'LOCALE_ALREADY_EXISTS'}
+                <div class="invalid-feedback">{$_('errors.LOCALE_ALREADY_EXISTS')}</div>
+              {/if}
               <div class="form-text">
                 {$_('components.modals.add-edit-language.inputs.code-helper')}
                 <a
