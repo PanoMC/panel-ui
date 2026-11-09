@@ -10,6 +10,7 @@ import {
 import { base } from '@panomc/sdk/core/js/basePath.js';
 import ApiUtil from '$lib/api.util.js';
 import { customTranslations } from '$lib/language.translations.js';
+import { sanitizeTranslations } from '$lib/html-sanitize.util.js';
 
 export const languageLoading = writable(false);
 export const currentLanguage = writable(null);
@@ -82,9 +83,14 @@ export async function loadLanguage(language, event) {
     }),
   );
 
+  // Overrides are written by panel users and many texts are rendered with {@html}: clean them.
+  const customFlat = Object.fromEntries(
+    Object.entries(flattenObject(custom)).map(([key, value]) => [key, sanitizeTranslations(value)]),
+  );
+
   const translations = unflattenObject({
     ...flattenObject(languageFile),
-    ...flattenObject(custom),
+    ...customFlat,
   });
 
   register(language.code, async () => translations);
