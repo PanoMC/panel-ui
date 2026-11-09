@@ -27,7 +27,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 'latest'
+          node-version: 'lts/*'
 
       - name: Dry run to get next release version
         id: get-next-version
@@ -70,7 +70,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 'latest'
+          node-version: 'lts/*'
 
       - name: Install
         run: bun install --backend=copyfile
