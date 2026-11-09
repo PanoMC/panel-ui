@@ -42,18 +42,18 @@
           <small class="mb-0">
             {@html $_('pages.ticket-detail.by-who', {
               values: {
-                username: `<a class="rounded focus-ring" href="${base}/players/detail/${data.ticket.username}"
-          >${data.ticket.username}</a>`,
+                username: `<a class="rounded focus-ring" href="${base}/players/detail/${escapeHtml(encodeURIComponent(data.ticket.username))}"
+          >${escapeHtml(data.ticket.username)}</a>`,
               },
             })}
             <Date time={data.ticket.date} />,
             {@html $_('pages.ticket-detail.opened-in-category', {
               values: {
-                category: `<a href="${base}/tickets?categoryUrl=${data.ticket.category.url}"
+                category: `<a href="${base}/tickets?categoryUrl=${escapeHtml(encodeURIComponent(data.ticket.category.url))}"
           >${
             data.ticket.category.title === '-'
-              ? $_('pages.ticket-detail.no-category')
-              : data.ticket.category.title
+              ? escapeHtml($_('pages.ticket-detail.no-category'))
+              : escapeHtml(data.ticket.category.title)
           }</a>`,
               },
             })}
@@ -92,7 +92,7 @@
               <div class="col vstack align-items-end">
                 <div class="card rounded-5 bg-transparent border shadow-sm">
                   <div class="card-body answer px-3">
-                    {@html message.message}
+                    {@html sanitizeRichText(message.message)}
                   </div>
                 </div>
                 <small class="text-body-secondary mt-1">
@@ -278,6 +278,8 @@
 
   import { goto } from '$app/navigation';
   import { base } from '@panomc/sdk/core/js/basePath.js';
+  import { escapeHtml } from '@panomc/sdk/core/js/html.util.js';
+  import { sanitizeRichText } from '$lib/html-sanitize.util.js';
 
   import tooltip from '$lib/tooltip.util.js';
 
