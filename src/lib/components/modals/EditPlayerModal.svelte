@@ -543,7 +543,7 @@
         } else if (
           editingSelf &&
           payloadPlayer.newPassword &&
-          (body.error?.code === 'NO_PERMISSION' || body.error?.code === 'INVALID_PASSWORD')
+          body.error?.code === 'CURRENT_PASSWORD_NOT_CORRECT'
         ) {
           // Wrong current password: mark the field so it can be retyped.
           loading = false;
