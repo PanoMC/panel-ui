@@ -37,24 +37,65 @@ export const { handle, handleError } = createThemeHooks({
   },
 });
 
+/**
+ * The visitor's address: the single `X-Forwarded-For` value Pano's UI proxy writes, then the
+ * socket peer when the server is reached directly (same rule as theme-core's handleFetch).
+ * @param {import('@sveltejs/kit').RequestEvent} event
+ * @returns {string | null}
+ */
+function getVisitorAddress(event) {
+  const forwardedFor = event.request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
+
+  if (forwardedFor) return forwardedFor;
+
+  try {
+    return event.getClientAddress() || null;
+  } catch {
+    return null;
+  }
+}
+
 /** @type {import('@sveltejs/kit').HandleFetch} */
 export async function handleFetch({ event, request, fetch }) {
   // Kept panel-local (NOT the core factory's handleFetch): the request path already carries
   // `/api/v1/...`, so the panel only needs the backend ORIGIN of API_URL (`<origin>/api`),
-  // and `new URL(API_URL).origin` gives exactly that.
+  // and `new URL(API_URL).origin` gives exactly that. The headers follow theme-core's
+  // handleFetch: the visitor's cookie, plus `X-Pano-Frontend-Key` and `X-Pano-Client-Ip` when
+  // Pano gave this UI its key, so the backend sees the visitor instead of this server. No
+  // `Origin` header is made up.
   //
   // Rewrite relative /api/ requests to the backend URL during SSR.
   // Load functions now use relative paths for consistent SSR↔CSR fetch dedup.
+  let toBackend = false;
+
   if (request.url.startsWith(event.url.origin + '/api/')) {
     const apiPath = new URL(request.url).pathname + new URL(request.url).search;
     const backendUrl = new URL(API_URL).origin + apiPath;
     request = new Request(backendUrl, request);
-    request.headers.set('cookie', event.request.headers.get('cookie') || '');
-    request.headers.set('Origin', API_URL);
+    toBackend = true;
   } else if (request.url.startsWith(API_URL)) {
-    request.headers.set('cookie', event.request.headers.get('cookie') || '');
-    request.headers.set('Origin', API_URL);
+    toBackend = true;
   }
 
-  return fetch(request);
+  if (toBackend) {
+    request.headers.set('cookie', event.request.headers.get('cookie') || '');
+    request.headers.delete('origin');
+
+    // noinspection JSUnresolvedReference
+    const key = process.env.PANO_FRONTEND_KEY?.trim();
+
+    if (key) {
+      request.headers.set('X-Pano-Frontend-Key', key);
+
+      const clientIp = getVisitorAddress(event);
+
+      if (clientIp) {
+        request.headers.set('X-Pano-Client-Ip', clientIp);
+      }
+    }
+  }
+
+  // Backend calls use the runtime's own fetch: on a direct install the site origin can equal the
+  // API_URL origin, and SvelteKit's fetch would route that "same-origin" request into this app.
+  return toBackend ? globalThis.fetch(request) : fetch(request);
 }
