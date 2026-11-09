@@ -3695,6 +3695,7 @@
       "confirm-save-critical-settings": {
         "title": "重要な設定を保存しますか?",
         "description": "これらの変更にはサーバーの再起動が必要になる場合があり、Web サイトのアクセシビリティに影響を与える可能性があります。 確認のためにアカウントのパスワードを入力します。",
+        "description-security": "この変更はアカウントのセキュリティに影響します。確認のため、アカウントのパスワードを入力してください。",
         "account-password": "アカウントのパスワード"
       },
       "confirm-reset-tab": {

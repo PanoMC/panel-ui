@@ -9,7 +9,7 @@
           </div>
           <h5 class="mb-2">{$_('components.modals.confirm-save-critical-settings.title')}</h5>
           <div class="text-body-secondary">
-            {$_('components.modals.confirm-save-critical-settings.description')}
+            {$_($description)}
           </div>
 
           <div class="form-floating text-start mt-3">
@@ -22,7 +22,8 @@
               bind:value={$password}
               bind:this={$passwordInput}
               class:border-danger={$passwordError} />
-            <label for="saveCriticalPassword">{$_('components.modals.confirm-save-critical-settings.account-password')}</label>
+            <label for="saveCriticalPassword"
+              >{$_('components.modals.confirm-save-critical-settings.account-password')}</label>
           </div>
         </div>
 
@@ -61,14 +62,21 @@
   const passwordError = writable(false);
   const password = writable('');
   const passwordInput = writable();
+  const DEFAULT_DESCRIPTION = 'components.modals.confirm-save-critical-settings.description';
+  const description = writable(DEFAULT_DESCRIPTION);
 
-  export function show(newCallback) {
+  /**
+   * @param {(password: string) => void} newCallback
+   * @param {{ description?: string }} [options] another description key for the dialog
+   */
+  export function show(newCallback, options = {}) {
     modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: 'static',
       keyboard: false,
     });
 
     callback = newCallback;
+    description.set(options.description || DEFAULT_DESCRIPTION);
     loading.set(false);
     passwordError.set(false);
     password.set('');

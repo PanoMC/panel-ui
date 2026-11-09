@@ -3786,6 +3786,7 @@
       "confirm-save-critical-settings": {
         "title": "Kritik ayarlar kaydedilsin mi?",
         "description": "Bu değişiklikler sunucunun yeniden başlatılmasını gerektirebilir ve sitenizin erişilebilirliğini etkileyebilir. Onaylamak için hesap şifrenizi girin.",
+        "description-security": "Bu değişiklik hesaplarınızın güvenliğini etkiler. Onaylamak için hesap şifrenizi girin.",
         "account-password": "Hesap Parolası"
       },
       "confirm-reset-tab": {

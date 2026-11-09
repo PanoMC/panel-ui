@@ -1993,17 +1993,63 @@
     });
   }
 
+  /**
+   * Saves that touch account security (the mail server, the password hash) ask for the account
+   * password first; it goes to the backend as `currentPassword`.
+   * @param {(currentPassword: string) => void} save
+   */
+  function askCurrentPassword(save) {
+    showConfirmSaveCriticalSettingsModal((currentPassword) => save(currentPassword), {
+      description: 'components.modals.confirm-save-critical-settings.description-security',
+    });
+  }
+
+  /**
+   * The shared answer handling of a save that sent `currentPassword`: a wrong password keeps the
+   * dialog open with the field marked, anything else closes it. Returns true when the save
+   * should stop here.
+   */
+  function handleCurrentPasswordAnswer(body, currentPassword) {
+    if (currentPassword == null) return false;
+
+    if (body.error?.code === 'NO_PERMISSION') {
+      setSaveCriticalSettingsError(true);
+
+      return true;
+    }
+
+    hideSaveCriticalSettingsModal();
+
+    return false;
+  }
+
   function onSaveAuthClick() {
+    if (data.oldSettings.passwordHashAlgorithm !== data.passwordHashAlgorithm) {
+      askCurrentPassword(saveAuth);
+
+      return;
+    }
+
+    saveAuth();
+  }
+
+  function saveAuth(currentPassword = null) {
     saveAuthLoading = true;
 
     const formData = new FormData();
     formData.append('requireEmailVerification', data.requireEmailVerification);
     formData.append('passwordHashAlgorithm', data.passwordHashAlgorithm);
+    if (currentPassword != null) formData.append('currentPassword', currentPassword);
 
     ApiUtil.put({
       path: '/panel/settings',
       body: formData,
       handler: async (body, reject) => {
+        if (handleCurrentPasswordAnswer(body, currentPassword)) {
+          saveAuthLoading = false;
+          return;
+        }
+
         if (body.error) {
           reject();
           return;
@@ -2341,16 +2387,16 @@
           confirmLabel: 'buttons.switch',
           variant: 'primary',
         },
-        saveHostMail,
+        () => askCurrentPassword(saveHostMail),
       );
 
       return;
     }
 
-    saveHostMail();
+    askCurrentPassword(saveHostMail);
   }
 
-  function saveHostMail() {
+  function saveHostMail(currentPassword = null) {
     saveEmailLoading = true;
 
     const formData = new FormData();
@@ -2370,12 +2416,15 @@
         authMethods: '',
       }),
     );
+    if (currentPassword != null) formData.append('currentPassword', currentPassword);
 
     ApiUtil.put({
       path: '/panel/settings',
       body: formData,
       handler: async (body, reject) => {
         saveEmailLoading = false;
+
+        if (handleCurrentPasswordAnswer(body, currentPassword)) return;
 
         if (body.error) {
           reject();
@@ -2398,16 +2447,16 @@
           confirmLabel: 'buttons.switch',
           variant: 'primary',
         },
-        saveSmtp,
+        () => askCurrentPassword(saveSmtp),
       );
 
       return;
     }
 
-    saveSmtp();
+    askCurrentPassword(saveSmtp);
   }
 
-  function saveSmtp() {
+  function saveSmtp(currentPassword = null) {
     saveEmailLoading = true;
 
     const formData = new FormData();
@@ -2421,11 +2470,18 @@
         ...(data.email.hostMailAvailable ? { hostManaged: false } : {}),
       }),
     );
+    if (currentPassword != null) formData.append('currentPassword', currentPassword);
 
     ApiUtil.put({
       path: '/panel/settings',
       body: formData,
       handler: async (body, reject) => {
+        if (handleCurrentPasswordAnswer(body, currentPassword)) {
+          saveEmailLoading = false;
+
+          return;
+        }
+
         if (body.error) {
           reject();
 

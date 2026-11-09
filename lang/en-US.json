@@ -3784,6 +3784,7 @@
       "confirm-save-critical-settings": {
         "title": "Save critical settings?",
         "description": "These changes might require a server restart and could affect your website's accessibility. Enter your account password to confirm.",
+        "description-security": "This change affects the security of your accounts. Enter your account password to confirm.",
         "account-password": "Account Password"
       },
       "confirm-reset-tab": {
