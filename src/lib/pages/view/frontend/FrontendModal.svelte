@@ -14,7 +14,7 @@
           </div>
         {:else if data}
           {#key epoch}
-            <FrontendContent {data} {api} {onmodesaved} onretry={load} />
+            <FrontendContent {data} {api} {onmodesaved} {canUpload} onretry={load} />
           {/key}
         {/if}
       </div>
@@ -39,7 +39,7 @@
    * the saved mode, so the page can tell whether visitors still see the active theme.
    * @type {{ api?: any, onmodesaved?: (mode: string) => void }}
    */
-  let { api = createFrontendApi(ApiUtil), onmodesaved = undefined } = $props();
+  let { api = createFrontendApi(ApiUtil), onmodesaved = undefined, canUpload = true } = $props();
 
   let element = $state();
   let loading = $state(false);

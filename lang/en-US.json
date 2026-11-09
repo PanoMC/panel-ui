@@ -4809,7 +4809,7 @@
     },
     "MANAGE_ADDONS": {
       "title": "Manage Addons",
-      "description": "Can install, uninstall, change and manage an addon. This permission also allows for changing settings of an addon."
+      "description": "Can install, uninstall, change and manage an addon. This permission also allows for changing settings of an addon. It also allows uploading themes, plugins and custom sites from files, which can run code on the server: give it only to people you fully trust."
     },
     "MANAGE_PLATFORM_SETTINGS": {
       "title": "Manage Platform Settings",

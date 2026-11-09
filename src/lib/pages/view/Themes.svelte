@@ -32,7 +32,10 @@
 
 <!-- Theme Settings -->
 <InstallResourceModal />
-<FrontendModal bind:this={frontendModal} onmodesaved={(mode) => (frontendMode = mode)} />
+<FrontendModal
+  bind:this={frontendModal}
+  canUpload={hasPermission(Permissions.MANAGE_ADDONS)}
+  onmodesaved={(mode) => (frontendMode = mode)} />
 
 {#if data.failedLogin}
   <FailedLoginPanoStoreAlert />
@@ -242,6 +245,7 @@
 
 <script>
   import { getContext, onMount } from 'svelte';
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
   import { _ } from 'svelte-i18n';
 
   import { base } from '@panomc/sdk/core/js/basePath.js';

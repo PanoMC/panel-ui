@@ -125,28 +125,31 @@
             </div>
           {/if}
 
-          <div class="d-flex align-items-center gap-2 mt-3">
-            <input
-              bind:this={fileInput}
-              class="d-none"
-              type="file"
-              accept=".zip,application/zip"
-              data-upload-input
-              onchange={onFileChosen} />
-            <button
-              type="button"
-              class="btn btn-secondary"
-              disabled={$uploading}
-              data-upload-app
-              onclick={() => fileInput?.click()}>
-              {#if $uploading}
-                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-              {:else}
-                <i class="fa-solid fa-upload me-1" aria-hidden="true"></i>
-              {/if}
-              {$_('pages.frontend.custom-apps.upload')}
-            </button>
-          </div>
+          <!-- An uploaded site can run code on the server: only with the add-ons permission. -->
+          {#if canUpload}
+            <div class="d-flex align-items-center gap-2 mt-3">
+              <input
+                bind:this={fileInput}
+                class="d-none"
+                type="file"
+                accept=".zip,application/zip"
+                data-upload-input
+                onchange={onFileChosen} />
+              <button
+                type="button"
+                class="btn btn-secondary"
+                disabled={$uploading}
+                data-upload-app
+                onclick={() => fileInput?.click()}>
+                {#if $uploading}
+                  <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                {:else}
+                  <i class="fa-solid fa-upload me-1" aria-hidden="true"></i>
+                {/if}
+                {$_('pages.frontend.custom-apps.upload')}
+              </button>
+            </div>
+          {/if}
         </div>
       {/if}
 
@@ -236,9 +239,10 @@
   /**
    * The Mode tab: THEME / CUSTOM_APP / EXTERNAL / NONE with the fields of each, the custom-app
    * upload and delete, and the message of the last refused call. All state lives in the controller.
-   * @type {{ controller: ReturnType<typeof import('./mode.controller.js').createModeController> }}
+   * `canUpload` shows the custom-app upload (it needs the add-ons permission).
+   * @type {{ controller: ReturnType<typeof import('./mode.controller.js').createModeController>, canUpload?: boolean }}
    */
-  let { controller } = $props();
+  let { controller, canUpload = true } = $props();
 
   // The controller is fixed for the life of the page.
   // svelte-ignore state_referenced_locally

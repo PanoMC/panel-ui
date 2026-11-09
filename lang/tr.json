@@ -4811,7 +4811,7 @@
     },
     "MANAGE_ADDONS": {
       "title": "Eklentileri Yönet",
-      "description": "Bir eklentiyi yükleyebilir, kaldırabilir, değiştirebilir ve yönetebilir. Bu yetki ayrıca eklentinin ayarlarını değiştirmeye de izin verir."
+      "description": "Bir eklentiyi yükleyebilir, kaldırabilir, değiştirebilir ve yönetebilir. Bu yetki ayrıca eklentinin ayarlarını değiştirmeye de izin verir. Ayrıca tema, eklenti ve özel siteleri dosyadan yüklemeye izin verir; bunlar sunucuda kod çalıştırabilir: yalnızca tamamen güvendiğiniz kişilere verin."
     },
     "MANAGE_PLATFORM_SETTINGS": {
       "title": "Platform Ayarlarını Yönet",

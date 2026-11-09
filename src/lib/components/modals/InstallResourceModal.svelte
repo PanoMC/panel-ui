@@ -21,15 +21,18 @@
       </div>
       <div class="modal-body">
         <div class="list-group list-group-horizontal w-100" style="height: 250px;">
-          <DragAndDropZone
-            class="list-group-item rounded-end-0 h-100"
-            style="cursor: pointer; flex: 1;"
-            icon="fas fa-upload fa-2x"
-            title={$_('components.modals.install-resource.drag-here')}
-            accept={$type === 'THEME'
-              ? ['.zip', 'application/zip']
-              : ['.jar', 'application/java-archive']}
-            on:drop={(e) => handleFileUpload(e.detail)} />
+          <!-- A file upload can run code on the server: only with the add-ons permission. -->
+          {#if $canUploadFile}
+            <DragAndDropZone
+              class="list-group-item rounded-end-0 h-100"
+              style="cursor: pointer; flex: 1;"
+              icon="fas fa-upload fa-2x"
+              title={$_('components.modals.install-resource.drag-here')}
+              accept={$type === 'THEME'
+                ? ['.zip', 'application/zip']
+                : ['.jar', 'application/java-archive']}
+              on:drop={(e) => handleFileUpload(e.detail)} />
+          {/if}
 
           <a
             href="{base}/{$type === 'PLUGIN' ? 'addons' : 'view'}/store"
@@ -48,6 +51,7 @@
 <script context="module">
   import { writable, get } from 'svelte/store';
   import { base } from '@panomc/sdk/core/js/basePath.js';
+  import { hasPermission, Permissions } from '$lib/auth.util.js';
 
   const modalElement = writable();
   const loading = writable(false);
@@ -55,6 +59,7 @@
   const errors = writable(defaultErrors);
   const submitLoading = writable(false);
   const type = writable('PLUGIN');
+  const canUploadFile = writable(false);
 
   let callback = () => {};
   let hideCallback = () => {};
@@ -62,6 +67,7 @@
 
   export function show(newType) {
     type.set(newType);
+    canUploadFile.set(hasPermission(Permissions.MANAGE_ADDONS));
     errors.set(defaultErrors);
     submitLoading.set(false);
 

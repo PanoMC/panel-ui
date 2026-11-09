@@ -2,7 +2,7 @@
   <ProxyBanner status={data.proxyStatus} {notify} />
 
   {#if modeController}
-    <FrontendMode controller={modeController} />
+    <FrontendMode controller={modeController} {canUpload} />
   {:else}
     {@render loadFailed()}
   {/if}
@@ -98,7 +98,7 @@
    * switch (other websites). `api`, `notify` and `confirm` default to the panel's own; they are props
    * so a test can pass stubs. `onmodesaved` gets the saved mode;
    * `onretry` runs when a failed read's retry button is pressed.
-   * @type {{ data: { keys: any, frontend: any, proxyStatus: any, origins?: any, urls?: any }, api?: any, notify?: any, confirm?: any, onmodesaved?: (mode: string) => void, onretry?: () => void }}
+   * @type {{ data: { keys: any, frontend: any, proxyStatus: any, origins?: any, urls?: any }, api?: any, notify?: any, confirm?: any, onmodesaved?: (mode: string) => void, onretry?: () => void, canUpload?: boolean }}
    */
   let {
     data,
@@ -110,6 +110,7 @@
       error: (key, values) => showError(key, values),
     },
     confirm = showConfirm,
+    canUpload = true,
   } = $props();
 
   // The controllers hold the state from here on; `data` only seeds them.
