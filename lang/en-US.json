@@ -4374,6 +4374,13 @@
             "label": "Remove website email/password and unlink Minecraft",
             "help": "The account's website email, password, and Minecraft link will be cleared. The user must use the in-game account link flow again to add an email and set a new password. Until they do, they cannot sign in to the site with a password; use this when you need a full in-game re-registration."
           },
+          "current-password": {
+            "title": "Current Password",
+            "help": "Enter your current password to change it",
+            "errors": {
+              "invalid": "The current password is wrong"
+            }
+          },
           "new-password-repeat": {
             "title": "New Password Repeat",
             "errors": {

@@ -4376,6 +4376,13 @@
             "label": "Web sitesi e-postasını/şifresini kaldır ve Minecraft bağlantısını sil",
             "help": "Hesabın web sitesi e-postası, şifresi ve oyun içi (Minecraft) eşleştirmesi temizlenir. Kullanıcı e-posta eklemek, yeni şifre belirlemek ve hesabı yeniden bağlamak için sunucudaki hesap eşleştirme akışını tekrar kullanmalıdır. Bu yapılmadan siteye parola ile giriş olmaz; yalnızca tam oyun içi yeniden tanımlama gerekirse bu seçeneği kullanın."
           },
+          "current-password": {
+            "title": "Mevcut Şifre",
+            "help": "Şifrenizi değiştirmek için mevcut şifrenizi girin",
+            "errors": {
+              "invalid": "Mevcut şifre yanlış"
+            }
+          },
           "new-password-repeat": {
             "title": "Yeni Şifre Tekrarı",
             "errors": {

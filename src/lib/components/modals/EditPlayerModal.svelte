@@ -175,6 +175,27 @@
                     >{$_('components.modals.edit-player.inputs.new-password-repeat.title')}</label>
                 </div>
               </div>
+              {#if editingSelf && $player.newPassword && !$player.clearPassword}
+                <div class="form-floating mt-2">
+                  <input
+                    class="form-control"
+                    id="currentPasswordInEditPlayerModal"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="••••••••"
+                    bind:value={$player.currentPassword}
+                    class:is-invalid={!!$errors.currentPassword}
+                    aria-describedby="validationEditCurrentPasswordInModal" />
+                  <label for="currentPasswordInEditPlayerModal"
+                    >{$_('components.modals.edit-player.inputs.current-password.title')}</label>
+                  <div id="validationEditCurrentPasswordInModal" class="invalid-feedback">
+                    {$_('components.modals.edit-player.inputs.current-password.errors.invalid')}
+                  </div>
+                  <div class="form-text">
+                    {$_('components.modals.edit-player.inputs.current-password.help')}
+                  </div>
+                </div>
+              {/if}
               {#if hasPermission(Permissions.MANAGE_PLAYERS, $page.data.user)}
                 <div class="form-check form-switch mt-2">
                   <input
@@ -298,6 +319,7 @@
     'email': '',
     'newPassword': '',
     'newPasswordRepeat': '',
+    'currentPassword': '',
   };
   const errors = writable(defaultErrors);
 
@@ -316,6 +338,7 @@
     player.update((player) => {
       player.newPassword = '';
       player.newPasswordRepeat = '';
+      player.currentPassword = '';
       player.clearPassword = false;
 
       return player;
@@ -414,6 +437,9 @@
 
   const user = getContext('user');
 
+  // Changing your own password asks for the current one (sent as `currentPassword`).
+  $: editingSelf = !!$playerBackup.username && $playerBackup.username === $user?.username;
+
   function onClearPasswordToggle(e) {
     const checked = e.currentTarget.checked;
     player.update((p) => {
@@ -473,6 +499,9 @@
         canCreateTicket: !!payloadPlayer.canCreateTicket,
         localeCode: payloadPlayer.localeCode || '',
         clearPassword: !!payloadPlayer.clearPassword,
+        ...(editingSelf && payloadPlayer.newPassword
+          ? { currentPassword: payloadPlayer.currentPassword ?? '' }
+          : {}),
       },
       handler: async (body, reject) => {
         if (!body.error) {
@@ -496,6 +525,7 @@
           player.update((player) => {
             player.newPassword = '';
             player.newPasswordRepeat = '';
+            player.currentPassword = '';
             player.clearPassword = false;
 
             return player;
@@ -508,6 +538,16 @@
           return;
         } else if (body.error?.code === 'NOT_EXISTS') {
           refreshBrowserPage();
+
+          return;
+        } else if (
+          editingSelf &&
+          payloadPlayer.newPassword &&
+          (body.error?.code === 'NO_PERMISSION' || body.error?.code === 'INVALID_PASSWORD')
+        ) {
+          // Wrong current password: mark the field so it can be retyped.
+          loading = false;
+          errors.set({ ...defaultErrors, currentPassword: 'INVALID' });
 
           return;
         } else if (body.error?.fields) {
