@@ -116,7 +116,7 @@
 
                 <small class="mb-2 text-truncate opacity-75">
                   {@html $_('pages.themes.by', {
-                    values: { author: theme.author },
+                    values: escapeValues({ author: theme.author }),
                   })}
                 </small>
 
@@ -163,6 +163,7 @@
 </div>
 
 <script context="module">
+  import { escapeValues } from '@panomc/sdk/core/js/html.util.js';
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
   import { error } from '@sveltejs/kit';
 
