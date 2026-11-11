@@ -15,7 +15,7 @@
         <button type="button" class="btn-close" aria-label={$_('buttons.close')} on:click={hide}
         ></button>
       </div>
-      <form on:submit|preventDefault={() => void uploadPending()}>
+      <div>
         <div class="modal-body vstack gap-3">
           <div style="height: 200px;">
             <DragAndDropZone
@@ -75,12 +75,7 @@
             </ul>
           {/if}
         </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary w-100" disabled={!hasPending || uploading}>
-            {$_('pages.servers.plugins.upload.button')}
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>
@@ -202,17 +197,15 @@
     }
   }
 
-  let uploading = false;
-
-  $: hasPending = $uploads.some((item) => item.status === 'pending');
-
   /**
-   * Picking or dropping jars only lists them; nothing is sent until the Upload button is pressed.
+   * Picking or dropping jars starts the upload right away: files are listed as they go and a
+   * failure names the file it belongs to.
    *
    * @param {File[] | File} dropped
    */
   function stage(dropped) {
     const files = Array.isArray(dropped) ? dropped : [dropped];
+    let added = 0;
 
     errors.set([]);
 
@@ -231,67 +224,86 @@
         ...list,
         { id: ++nextId, name: file.name, file, percent: 0, status: 'pending' },
       ]);
+      added++;
+    }
+
+    if (added) {
+      void uploadPending();
     }
   }
 
+  /** Guards re-entry: while a drain is running, `stage()` only queues new files. */
+  let uploading = false;
+
   /**
    * One request per jar, in order: the node writes them one at a time anyway, and a failure then
-   * names the file it belongs to.
+   * names the file it belongs to. Jars dropped while a batch is running are picked up by the next
+   * drain, so nothing waits for another interaction.
    */
   async function uploadPending() {
-    const serverId = get(serverIdStore);
-    const queue = get(uploads).filter((item) => item.status === 'pending');
-    let uploaded = 0;
+    if (uploading) {
+      return;
+    }
 
     uploading = true;
+    let uploaded = 0;
     errors.set([]);
 
-    for (const { id, file } of queue) {
-      patch(id, { status: 'uploading' });
+    for (;;) {
+      const serverId = get(serverIdStore);
+      const queue = get(uploads).filter((item) => item.status === 'pending');
 
-      const form = new FormData();
-
-      form.append('file', file, file.name);
-
-      /** @type {any} */
-      let response = null;
-
-      try {
-        response = await ApiUtil.post({
-          path: `/panel/servers/${serverId}/plugins/upload`,
-          body: form,
-          onUploadProgress: (progress) => {
-            patch(id, { percent: Math.min(100, Math.round(Number(progress) * 100)) });
-          },
-          handler: (result) => result,
-        });
-      } catch (error) {
-        console.error('Plugin upload failed', error);
-        response = null;
+      if (!queue.length) {
+        break;
       }
 
-      if (!response || isEndpointUnavailable(response) || response.error) {
-        patch(id, { status: 'failed', percent: 100 });
+      for (const { id, file } of queue) {
+        patch(id, { status: 'uploading' });
 
-        if (response?.error?.code === 'INVALID_DATA') {
-          addError('pages.servers.plugins.upload.invalid-type');
-        } else if (response?.error) {
-          addServerError(errorCode(response), response);
-        } else if (response && isEndpointUnavailable(response)) {
-          addError('pages.servers.errors.unavailable');
-        } else {
-          addError('pages.servers.plugins.upload.failed', { name: file.name });
+        const form = new FormData();
+
+        form.append('file', file, file.name);
+
+        /** @type {any} */
+        let response = null;
+
+        try {
+          response = await ApiUtil.post({
+            path: `/panel/servers/${serverId}/plugins/upload`,
+            body: form,
+            onUploadProgress: (progress) => {
+              patch(id, { percent: Math.min(100, Math.round(Number(progress) * 100)) });
+            },
+            handler: (result) => result,
+          });
+        } catch (error) {
+          console.error('Plugin upload failed', error);
+          response = null;
         }
 
-        continue;
+        if (!response || isEndpointUnavailable(response) || response.error) {
+          patch(id, { status: 'failed', percent: 100 });
+
+          if (response?.error?.code === 'INVALID_DATA') {
+            addError('pages.servers.plugins.upload.invalid-type');
+          } else if (response?.error) {
+            addServerError(errorCode(response), response);
+          } else if (response && isEndpointUnavailable(response)) {
+            addError('pages.servers.errors.unavailable');
+          } else {
+            addError('pages.servers.plugins.upload.failed', { name: file.name });
+          }
+
+          continue;
+        }
+
+        patch(id, { status: 'done', percent: 100 });
+        uploaded++;
+
+        void showSuccess('pages.servers.plugins.upload.done', {
+          name: response.filename || file.name,
+        });
       }
-
-      patch(id, { status: 'done', percent: 100 });
-      uploaded++;
-
-      void showSuccess('pages.servers.plugins.upload.done', {
-        name: response.filename || file.name,
-      });
     }
 
     uploading = false;

@@ -32,15 +32,11 @@
   aria-hidden="true"
   aria-labelledby="filePreviewTitle"
   bind:this={modalElement}>
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title text-break d-flex align-items-center gap-2" id="filePreviewTitle">
-          <i class={KIND_ICONS[kind] ?? 'fa-solid fa-file'} aria-hidden="true"></i>
           <span class="font-monospace">{path}</span>
-          {#if sizeText}
-            <span class="badge text-bg-primary fw-normal">{sizeText}</span>
-          {/if}
         </h5>
         <button
           type="button"
@@ -96,36 +92,25 @@
   import { _ } from 'svelte-i18n';
 
   import { fileDownloadUrl, previewKind } from '$lib/files.util.js';
-  import { formatBytes } from '$lib/string.util.js';
 
   let { serverId = null, ondownload = undefined } = $props();
 
-  const KIND_ICONS = {
-    image: 'fa-regular fa-image',
-    video: 'fa-solid fa-film',
-    audio: 'fa-solid fa-music',
-  };
-
   let modalElement = $state();
   let path = $state('');
-  let size = $state(0);
   /** Emptied on close, so a playing video stops instead of carrying on behind the page. */
   let src = $state('');
   let failed = $state(false);
   let upscaled = $state(false);
 
   const kind = $derived(previewKind(path));
-  const sizeText = $derived(size > 0 ? formatBytes(size, 1) : '');
 
   let modal;
 
   /**
    * @param {string} filePath the path relative to the server directory.
-   * @param {number} [fileSize] bytes, as the listing reported them.
    */
-  export function open(filePath, fileSize = 0) {
+  export function open(filePath) {
     path = String(filePath);
-    size = Number(fileSize) || 0;
     failed = false;
     upscaled = false;
     src = fileDownloadUrl(serverId, [path], { inline: true });

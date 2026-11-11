@@ -297,30 +297,10 @@
                 {/if}
                 <td class="text-break">
                   {row.name}
-                  {#if !row.loaded && row.fileEnabled}
-                    <span
-                      class="badge rounded-pill text-bg-warning ms-1 align-middle"
-                      use:tooltip={[
-                        $_('pages.servers.plugins.installed.not-loaded-hint'),
-                        { placement: 'top' },
-                      ]}>
-                      {$_('pages.servers.plugins.installed.not-loaded')}
-                    </span>
-                  {/if}
-                  {#if row.sourceName}
+                    {#if row.sourceName}
                     <!-- SM-48 — where the jar came from, as Pano recorded it on install or
                            worked out from the file's hash. -->
-                    <span
-                      class="badge rounded-pill text-bg-light border fw-normal ms-1 align-middle"
-                      use:tooltip={[
-                        $_(
-                          row.identified
-                            ? 'pages.servers.plugins.updates.source-identified-hint'
-                            : 'pages.servers.plugins.updates.source-hint',
-                          { values: { source: row.sourceName } },
-                        ),
-                        { placement: 'top' },
-                      ]}>
+                    <span class="badge rounded-pill text-bg-primary fw-normal ms-1 align-middle">
                       {row.sourceName}
                     </span>
                   {/if}
@@ -427,14 +407,10 @@
             {$_('pages.servers.plugins.linked-hint')}
           </span>
         {/if}
-        {#if canToggle}
+        {#if canToggle && !fileToggle}
           <span>
             <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
-            {$_(
-              fileToggle
-                ? 'pages.servers.plugins.file-toggle-hint'
-                : 'pages.servers.plugins.restart-hint',
-            )}
+            {$_('pages.servers.plugins.restart-hint')}
           </span>
         {/if}
       </div>

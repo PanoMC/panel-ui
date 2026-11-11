@@ -1612,7 +1612,6 @@
         "no-matches": "Aramayla eşleşen eklenti yok.",
         "state-unsupported": "Bu sunucunun Pano eklentisi kurulu eklentileri bildirmiyor. Bu sayfayı kullanmak için pano-mc-plugin'i güncelle.",
         "restart-hint": "Her eklenti sunucu çalışırken açılıp kapanmaya uygun değildir. Bir şeyler ters giderse sunucuyu yeniden başlat.",
-        "file-toggle-hint": "Eklentiyi açıp kapatmak sunucu yeniden başladığında geçerli olur.",
         "toggle-disabled-offline": "Sunucu çevrimdışı olduğu için eklentiler açılıp kapatılamıyor.",
         "enabled-badge": "Açık",
         "disabled-badge": "Kapalı",

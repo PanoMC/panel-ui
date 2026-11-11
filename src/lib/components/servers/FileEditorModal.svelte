@@ -21,23 +21,11 @@
   aria-labelledby="fileEditorTitle"
   onkeydown={onModalKeydown}
   bind:this={modalElement}>
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title text-break" id="fileEditorTitle">
-          <i class="fa-solid fa-file-pen me-2" aria-hidden="true"></i>
           <span class="font-monospace">{path || ''}</span>
-          {#if !loading && !loadError}
-            <!-- What the file weighs now, following the edits; the size on disk beside it once
-                 the two differ. -->
-            <span class="badge text-bg-primary fw-normal ms-2">
-              {liveSize !== size && !binary
-                ? $_('components.modals.file-editor.size-changed', {
-                    values: { size: liveSizeText, delta: deltaText },
-                  })
-                : sizeText}
-            </span>
-          {/if}
           {#if dirty}
             <span class="badge text-bg-warning ms-2">
               {$_('components.modals.file-editor.unsaved')}
@@ -135,7 +123,6 @@
   import ApiUtil from '$lib/api.util.js';
   import { createFileEditor, isPanelDark, onPanelThemeChange } from '$lib/codemirror.util.js';
   import { editorLanguageFor, isPathSafe } from '$lib/files.util.js';
-  import { formatBytes } from '$lib/string.util.js';
   import { isEndpointUnavailable, showServerActionError } from '$lib/servers.util.js';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
 
@@ -149,9 +136,6 @@
   let dirty = $state(false);
   let binary = $state(false);
   let truncated = $state(false);
-  let size = $state(0);
-  /** Bytes of the document as it is in the editor, UTF-8, like the file it will be saved as. */
-  let liveSize = $state(0);
   let loadError = $state('');
   let confirmDiscard = $state(false);
 
@@ -164,27 +148,6 @@
   let currentContent = '';
   let stopThemeWatch;
 
-  const sizeText = $derived(formatBytes(Number(size) || 0, 1));
-  const liveSizeText = $derived(formatBytes(Number(liveSize) || 0, 1));
-  /** How far the edits moved the size, signed, so a few bytes do not vanish into rounding. */
-  const deltaText = $derived(
-    `${liveSize >= size ? '+' : '−'}${formatBytes(Math.abs(liveSize - size), 1)}`,
-  );
-  const encoder = new TextEncoder();
-  /** One measurement per frame at most: a held-down key would otherwise encode per keystroke. */
-  let measureFrame = 0;
-
-  function measure() {
-    if (measureFrame) {
-      return;
-    }
-
-    measureFrame = requestAnimationFrame(() => {
-      measureFrame = 0;
-      liveSize = encoder.encode(currentContent).length;
-    });
-  }
-  /** Binary, cut short or unreadable: nothing here can be saved, so the footer offers the file. */
   const cannotEdit = $derived(!loading && (binary || truncated || !!loadError));
   const canSave = $derived(!loading && !saving && !binary && !truncated && dirty && !loadError);
 
@@ -206,8 +169,6 @@
     binary = false;
     truncated = false;
     dirty = false;
-    size = 0;
-    liveSize = 0;
     modal?.show();
 
     void read(path);
@@ -283,8 +244,6 @@
 
     binary = body.binary === true;
     truncated = body.truncated === true;
-    size = Number(body.size) || 0;
-    liveSize = size;
     savedContent = binary ? '' : String(body.content ?? '');
     currentContent = savedContent;
     dirty = false;
@@ -325,7 +284,6 @@
         onChange: (value) => {
           currentContent = value;
           dirty = value !== savedContent;
-          measure();
         },
         onSave: () => void save(),
       });
@@ -370,8 +328,6 @@
 
       savedContent = currentContent;
       dirty = false;
-      size = encoder.encode(savedContent).length;
-      liveSize = size;
       void showSuccess('pages.servers.files.saved', { name: path });
       onsaved?.(path);
     } finally {
@@ -400,10 +356,6 @@
 
   onDestroy(() => {
     readSeq += 1;
-    // onDestroy also runs during SSR, where there is no animation frame to cancel.
-    if (measureFrame) {
-      cancelAnimationFrame(measureFrame);
-    }
     stopThemeWatch?.();
     editor?.destroy();
     editor = null;

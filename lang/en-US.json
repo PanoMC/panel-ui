@@ -1610,7 +1610,6 @@
         "no-matches": "No plugin matches your search.",
         "state-unsupported": "This server's Pano plugin does not report the installed plugins. Update pano-mc-plugin to use this page.",
         "restart-hint": "Not every plugin survives being enabled or disabled while the server runs. Restart the server afterward if something misbehaves.",
-        "file-toggle-hint": "Switching a plugin on or off takes effect when the server restarts.",
         "toggle-disabled-offline": "The server is offline, so plugins cannot be switched on or off.",
         "enabled-badge": "Enabled",
         "disabled-badge": "Disabled",

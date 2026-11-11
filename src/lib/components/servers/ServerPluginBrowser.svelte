@@ -272,9 +272,24 @@
             icon="fa-solid fa-puzzle-piece fa-3x"
             text={$_('pages.servers.plugins.browse.no-versions')} />
         {:else}
-          <div class="vstack gap-2">
+          <div class="list-group">
             {#each sortedVersions as version (version.id)}
-              <div class="border rounded p-3 vstack gap-2">
+              <div
+                role="button"
+                tabindex="0"
+                class="list-group-item list-group-item-action vstack gap-2 text-start"
+                class:opacity-50={!canInstall || !version.files.length || !!installingVersionId}
+                aria-disabled={!canInstall || !version.files.length || !!installingVersionId}
+                title={!canInstall
+                  ? $_('pages.servers.plugins.browse.install-no-permission')
+                  : $_('pages.servers.plugins.browse.install')}
+                onclick={() => void install(version)}
+                onkeydown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    void install(version);
+                  }
+                }}>
                 <div class="d-flex flex-wrap align-items-center gap-2">
                   <span class="fw-semibold text-break"
                     >{version.name || version.versionNumber}</span>
@@ -288,7 +303,7 @@
                       {$_('pages.servers.plugins.browse.compatible')}
                     </span>
                   {:else}
-                    <span class="badge rounded-pill text-bg-danger">
+                    <span class="badge rounded-pill text-bg-warning">
                       {$_('pages.servers.plugins.browse.incompatible')}
                     </span>
                   {/if}
@@ -296,7 +311,7 @@
                     <span class="badge rounded-pill text-bg-primary">{version.channel}</span>
                   {/if}
                   {#if version.publishedAt}
-                    <span class="small text-body-secondary ms-auto">
+                    <span class="small text-body-secondary">
                       <DateComponent time={version.publishedAt} relativeFormat />
                     </span>
                   {/if}
@@ -311,11 +326,7 @@
                     </span>
                   {/if}
                   {#if version.loaders.length}
-                    <span>
-                      {$_('pages.servers.plugins.browse.loaders', {
-                        values: { loaders: version.loaders.join(', ') },
-                      })}
-                    </span>
+                    <span>{version.loaders.join(', ')}</span>
                   {/if}
                 </div>
 
@@ -325,6 +336,8 @@
                       class="form-select form-select-sm version-file-select"
                       aria-label={$_('pages.servers.plugins.browse.file-label')}
                       value={fileChoice[version.id] ?? version.primaryIndex}
+                      onclick={(event) => event.stopPropagation()}
+                      onkeydown={(event) => event.stopPropagation()}
                       onchange={(event) => onFileChange(version, event)}>
                       {#each version.files as file, index (file.filename + index)}
                         <option value={index}>
@@ -341,22 +354,12 @@
                     </span>
                   {/if}
 
-                  <button
-                    type="button"
-                    class="btn btn-secondary ms-auto"
-                    disabled={!canInstall || !version.files.length || !!installingVersionId}
-                    use:tooltip={[
-                      canInstall ? '' : $_('pages.servers.plugins.browse.install-no-permission'),
-                      { placement: 'top' },
-                    ]}
-                    onclick={() => void install(version)}>
-                    {#if installingVersionId === version.id}
+                  {#if installingVersionId === version.id}
+                    <span class="ms-auto small text-body-secondary">
                       <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-                    {:else}
-                      <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
-                    {/if}
-                    {$_('pages.servers.plugins.browse.install')}
-                  </button>
+                      {$_('pages.servers.plugins.browse.install')}
+                    </span>
+                  {/if}
                 </div>
               </div>
             {/each}
