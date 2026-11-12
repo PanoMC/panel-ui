@@ -219,10 +219,12 @@
 </script>
 
 <script>
-  import { getContext } from 'svelte';
-  import { _ } from 'svelte-i18n';
+  import { getContext, onMount } from 'svelte';
+  import { _, locale } from 'svelte-i18n';
+  import { localized } from '$lib/contentI18n.util.js';
 
-  import { goto } from '$app/navigation';
+  import { goto, invalidateAll } from '$app/navigation';
+  import { onTicketChanged } from '$lib/panelRealtime.js';
   import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import tooltip from '$lib/tooltip.util';
@@ -271,7 +273,7 @@
               category:
                 (data.category?.title || '-') === '-'
                   ? $_('pages.tickets.no-category')
-                  : data.category?.title || '-',
+                  : localized(data.category?.title, data.category?.i18n, $locale, 'title') || '-',
             },
           })
         : $_('pages.tickets.title', {
@@ -300,6 +302,24 @@
 
     refreshData(1);
   }
+
+  /** A burst of changes (several tickets closed at once) is read once. */
+  const LIVE_REFRESH_DELAY_MS = 300;
+
+  onMount(() => {
+    let timer;
+
+    // a new ticket or a player's reply shows up in the list without a reload
+    const stop = onTicketChanged(null, () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => invalidateAll(), LIVE_REFRESH_DELAY_MS);
+    });
+
+    return () => {
+      clearTimeout(timer);
+      stop();
+    };
+  });
 
   async function refreshData(pageNumber = data.page.number) {
     isSearching = true;

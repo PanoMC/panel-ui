@@ -58,6 +58,11 @@ const serverStateListeners = new Set();
 const taskProgressListeners = new Set();
 const platformKeyListeners = new Set();
 const nodePairingCodeListeners = new Set();
+/**
+ * Ticket watchers: `{ ticketId, fn }`, `ticketId` null for the ticket list (every ticket).
+ * @type {Set<{ ticketId: number | null, fn: (ticketId: number) => void }>}
+ */
+const ticketListeners = new Set();
 
 /** How many tasks the servers overview's "recent tasks" list keeps. */
 const RECENT_TASK_LIMIT = 10;
@@ -437,6 +442,7 @@ function shouldKeepWebSocket() {
     wantNodes ||
     wantServerId != null ||
     wantNotifications ||
+    ticketListeners.size > 0 ||
     platformKeySubscribers.size > 0 ||
     nodePairingCodeSubscribers.size > 0 ||
     consoleFeed.current() != null ||
@@ -531,6 +537,10 @@ function sendConfig() {
       subscribePlatformKey: platformKeySubscribers.size > 0,
       subscribeNodePairingCode: nodePairingCodeSubscribers.size > 0,
       nodePairingPanoUrl: currentNodePairingPanoUrl(),
+      // the tickets list / a ticket page is open: `ticket` nudges (the newest page wins)
+      subscribeTickets: [...ticketListeners].some((entry) => entry.ticketId === null),
+      subscribeTicketId:
+        [...ticketListeners].reverse().find((entry) => entry.ticketId !== null)?.ticketId ?? null,
     }),
   );
 }
@@ -592,6 +602,19 @@ function connect() {
     }
     if (msg.type === 'ready') {
       sendConfig();
+      return;
+    }
+    if (msg.type === 'ticket' && msg.ticketId != null) {
+      const ticketId = Number(msg.ticketId);
+
+      ticketListeners.forEach((entry) => {
+        if (entry.ticketId !== null && entry.ticketId !== ticketId) return;
+        try {
+          entry.fn(ticketId);
+        } catch {
+          /* ignore */
+        }
+      });
       return;
     }
     if (msg.type === 'notificationRefresh' || msg.type === 'panelNotificationRefresh') {
@@ -1016,6 +1039,30 @@ export function subscribeNodePairingCode(panoUrl = null) {
       token.panoUrl = nextPanoUrl || null;
       updateConnection();
     },
+  };
+}
+
+/**
+ * Calls `fn(ticketId)` whenever a ticket changes on the server (a new message, closed, created,
+ * deleted): a ticket page passes its id, the tickets list `null`. The frame carries only the id;
+ * read the ticket again through the API.
+ *
+ * @param {number | null} ticketId
+ * @param {(ticketId: number) => void} fn
+ * @returns {() => void} unsubscribe
+ */
+export function onTicketChanged(ticketId, fn) {
+  const entry = {
+    ticketId: ticketId === null || ticketId === undefined ? null : Number(ticketId),
+    fn,
+  };
+
+  ticketListeners.add(entry);
+  updateConnection();
+
+  return () => {
+    ticketListeners.delete(entry);
+    updateConnection();
   };
 }
 
