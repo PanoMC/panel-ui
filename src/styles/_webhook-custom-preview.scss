@@ -1,0 +1,55 @@
+// The Custom JSON preview of the webhook template editor: the finished body as pretty JSON, in a
+// fixed dark code look whatever the panel theme is.
+.custom-json-preview {
+  --custom-json-bg: #1e1f22;
+  --custom-json-text: #d4d4d4;
+  --custom-json-muted: #8b8f98;
+  --custom-json-key: #9cdcfe;
+  --custom-json-string: #ce9178;
+  --custom-json-number: #b5cea8;
+  --custom-json-literal: #569cd6;
+
+  background: var(--custom-json-bg);
+  color: var(--custom-json-text);
+  border-radius: $border-radius;
+  padding: 1rem;
+  min-height: 8rem;
+}
+
+.custom-json-code {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: inherit;
+
+  code {
+    color: inherit;
+  }
+}
+
+.custom-json-key {
+  color: var(--custom-json-key);
+}
+
+.custom-json-string {
+  color: var(--custom-json-string);
+}
+
+.custom-json-number {
+  color: var(--custom-json-number);
+}
+
+.custom-json-literal {
+  color: var(--custom-json-literal);
+}
+
+.custom-json-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 6rem;
+  color: var(--custom-json-muted);
+  font-size: 1.5rem;
+}
