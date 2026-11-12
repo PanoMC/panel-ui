@@ -908,9 +908,27 @@
     return '';
   }
 
+  // One row per key: the list is keyed by it, and a repeated permission or group (a plugin registered twice, a
+  // group synced twice) must not take the page down with each_key_duplicate.
   $: suggestions = showNodeSuggestions
-    ? [...(panelNodes.length > 0 ? panelNodes : fallbackPanelNodes), ...pluginNodes, ...groupNodes]
+    ? uniqueByKey([
+        ...(panelNodes.length > 0 ? panelNodes : fallbackPanelNodes),
+        ...pluginNodes,
+        ...groupNodes,
+      ])
     : [];
+
+  function uniqueByKey(items) {
+    const seen = new Set();
+
+    return items.filter((item) => {
+      if (seen.has(item.key)) return false;
+
+      seen.add(item.key);
+
+      return true;
+    });
+  }
 
   $: filteredPanelNodes = suggestions
     .filter((s) => {
