@@ -144,8 +144,9 @@
                 {count === null ? $_('pages.webhooks.endpoints.all-events') : count}
               </td>
               <td class="align-middle text-nowrap">
-                <i class="{FORMAT_ICONS[endpoint.format] ?? FORMAT_ICONS.JSON} me-1" aria-hidden="true"
-                ></i>
+                <i
+                  class="{FORMAT_ICONS[endpoint.format] ?? FORMAT_ICONS.JSON} me-1"
+                  aria-hidden="true"></i>
                 {$_(
                   `pages.webhooks.format.${WEBHOOK_FORMATS.includes(endpoint.format) ? endpoint.format : 'JSON'}`,
                 )}

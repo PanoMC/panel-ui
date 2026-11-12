@@ -165,9 +165,15 @@ const TELEGRAM_TOKEN = /^\d+:[A-Za-z0-9_-]+$/;
 /** The bot token and chat of a Telegram `sendMessage` URL (empty texts when it is none). */
 export function telegramParts(text) {
   const url = parseHttpUrl(text);
-  const match = url && url.hostname === 'api.telegram.org' ? /^\/bot([^/]+)\/sendMessage$/.exec(url.pathname) : null;
+  const match =
+    url && url.hostname === 'api.telegram.org'
+      ? /^\/bot([^/]+)\/sendMessage$/.exec(url.pathname)
+      : null;
 
-  return { token: match ? decodeURIComponent(match[1]) : '', chat: url?.searchParams.get('chat_id') ?? '' };
+  return {
+    token: match ? decodeURIComponent(match[1]) : '',
+    chat: url?.searchParams.get('chat_id') ?? '',
+  };
 }
 
 /** The `sendMessage` URL of a bot token and a chat id (or `@channel`). */
@@ -332,7 +338,8 @@ export function formFromEndpoint(endpoint) {
     format,
     allEvents: events.includes(WILDCARD),
     events: events.filter((name) => name !== WILDCARD),
-    signing: isUnsignedFormat(format) || endpoint?.signing !== 'HMAC_SHA256' ? 'NONE' : 'HMAC_SHA256',
+    signing:
+      isUnsignedFormat(format) || endpoint?.signing !== 'HMAC_SHA256' ? 'NONE' : 'HMAC_SHA256',
     headers: headerRows(endpoint?.headers),
     templates: isTemplatedFormat(format) ? templates : {},
     maxAttempts: String(endpoint?.maxAttempts ?? DEFAULT_MAX_ATTEMPTS),

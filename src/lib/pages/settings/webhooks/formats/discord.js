@@ -208,4 +208,3 @@ export function modelToTemplate(model) {
 
   return JSON.stringify(root, null, 2);
 }
-
