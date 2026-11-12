@@ -14,9 +14,9 @@
       <button
         type="button"
         class="btn btn-link p-0 text-start text-decoration-none text-truncate"
-        title={category.title}
+        title={localized(category.title, category.i18n, $locale, 'title')}
         on:click={onEditClick}>
-        {category.title}
+        {localized(category.title, category.i18n, $locale, 'title')}
       </button>
       {#if category.enabled === false}
         <span class="badge text-bg-secondary flex-shrink-0">{$_('buttons.disabled')}</span>
@@ -24,8 +24,10 @@
     </div>
   </td>
   <td class="align-middle" style="max-width: 300px;">
-    <div class="text-truncate" title={category.description}>
-      {category.description}
+    <div
+      class="text-truncate"
+      title={localized(category.description, category.i18n, $locale, 'description')}>
+      {localized(category.description, category.i18n, $locale, 'description')}
     </div>
   </td>
 </tr>
@@ -34,7 +36,9 @@
   import { rowLink } from '$lib/rowLink.util.js';
 
   import { createEventDispatcher } from 'svelte';
-  import { _ } from 'svelte-i18n';
+  import { _, locale } from 'svelte-i18n';
+
+  import { localized } from '$lib/contentI18n.util.js';
 
   export let category;
   export let index;

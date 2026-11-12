@@ -65,10 +65,10 @@
          link and loads the whole page instead of navigating inside the panel. -->
     <TableThumbnail
       src={post.thumbnailUrl}
-      alt={post.title}
+      alt={title}
       href={base + '/posts/detail/' + post.id}
       target={null}
-      tooltipText={post.title} />
+      tooltipText={title} />
   </td>
   <Hook
     name="panel:posts:table:row:after-thumbnail"
@@ -79,9 +79,9 @@
     <div class="d-flex align-items-center gap-2">
       <a
         href={base + '/posts/detail/' + post.id}
-        title={post.title}
+        {title}
         class="rounded focus-ring text-decoration-none d-block text-truncate">
-        {post.title || $_('components.post-row.untitled')}
+        {title || $_('components.post-row.untitled')}
       </a>
       <!-- The editor kept changes of this post that are not saved or published yet. -->
       {#if post.hasUnsavedChanges}
@@ -140,7 +140,8 @@
 
 <script>
   import { createEventDispatcher } from 'svelte';
-  import { _ } from 'svelte-i18n';
+  import { _, locale } from 'svelte-i18n';
+  import { localized } from '$lib/contentI18n.util.js';
   import { avatarVersion } from '$lib/Store';
 
   import { base } from '@panomc/sdk/core/js/basePath.js';
@@ -157,6 +158,9 @@
   import { PageTypes } from '$lib/pages/Posts.svelte';
 
   export let post;
+
+  /** The title in the panel's language (the default title when it has no translation). */
+  $: title = localized(post.title, post.i18n, $locale, 'title');
 
   /** Pano answers `-` as the writer's name when the post has no author any more. */
   $: hasWriter = !!post?.writer?.username && post.writer.username !== '-';

@@ -112,7 +112,8 @@
     "close-ticket": "Talebi Kapat",
     "close-tickets": "Talepleri Kapat",
     "set-as-main": "Ana Sunucu Yap",
-    "retry": "Yeniden Dene"
+    "retry": "Yeniden Dene",
+    "content": "İçerik"
   },
   "pages": {
     "auth": {
@@ -1070,7 +1071,11 @@
       "templates": "Hazır kalıplar:",
       "all-templates": "Tümü",
       "search-templates": "Kalıp ara",
-      "no-templates-found": "Kalıp bulunamadı"
+      "no-templates-found": "Kalıp bulunamadı",
+      "fields": {
+        "title": "Alanlar",
+        "edit": "Alanları düzenle"
+      }
     },
     "post-categories": {
       "title": "Yazı Kategorileri",
@@ -1251,6 +1256,12 @@
       "go-back": "Geri Git"
     },
     "post-editor": {
+      "language": {
+        "label": "Dil",
+        "default": "Varsayılan ({language})",
+        "translated": "Çevirisi var",
+        "text-hint": "Boş bırakılırsa bu dilde varsayılan metin gösterilir."
+      },
       "save-draft": "Taslak Olarak Kaydet",
       "posts": "Yazılar",
       "trash": "Çöp",
@@ -3070,7 +3081,11 @@
       },
       "format": {
         "JSON": "JSON",
-        "DISCORD": "Discord"
+        "DISCORD": "Discord",
+        "SLACK": "Slack",
+        "TELEGRAM": "Telegram",
+        "TEAMS": "Teams",
+        "CUSTOM": "Özel JSON"
       },
       "signing": {
         "NONE": "İmzasız",
@@ -3108,7 +3123,14 @@
         "add-header": "Başlık ekle",
         "custom-template": "Kendi mesajımı yazacağım",
         "template": "JSON olarak mesaj",
-        "enabled": "Etkin"
+        "enabled": "Etkin",
+        "url-JSON": "Alıcı URL, örneğin https://example.com/hook",
+        "url-DISCORD": "Discord webhook URL'si (Kanal ayarları → Entegrasyonlar)",
+        "url-SLACK": "Slack gelen webhook URL'si (Mattermost, Rocket.Chat da olur)",
+        "url-TEAMS": "Teams Workflows webhook URL'si",
+        "url-CUSTOM": "Alıcı URL, örneğin bir n8n veya Zapier webhook'u",
+        "telegram-token": "@BotFather'dan alınan bot token'ı",
+        "telegram-chat": "Sohbet id'si veya @kanal"
       },
       "endpoints": {
         "table-title": "{count}/{max} Webhook",
@@ -3216,7 +3238,91 @@
         "PORT": "Bu bağlantı noktası kullanılamaz.",
         "DISCORD_URL": "Bir Discord webhook adresi girin, https://discord.com/api/webhooks/...",
         "DNS": "Bu alan adı çözümlenemiyor.",
-        "PRIVATE_ADDRESS": "Bu adres özel bir ağda; Pano oraya göndermez."
+        "PRIVATE_ADDRESS": "Bu adres özel bir ağda; Pano oraya göndermez.",
+        "EMPTY": "Mesajda ne metin ne de embed var.",
+        "INVALID_EVENT": "Bilinmeyen event.",
+        "TELEGRAM_URL": "Bir bot token'ı (@BotFather'dan) ve bir sohbet id'si girin."
+      },
+      "template": {
+        "title": "Mesaj Görünümü",
+        "list": "Event başına mesaj",
+        "every-event": "Tüm event'ler (eski şablon)",
+        "state": {
+          "custom": "Özel",
+          "inherited": "Ortak",
+          "default": "Varsayılan"
+        },
+        "mode": "Düzenleyici",
+        "visual": "Görsel",
+        "json": "JSON",
+        "visual-unavailable": "Bu şablonda görsel düzenleyicinin karşılığı olmayan bir şey var. JSON olarak düzenleyin.",
+        "username": "Bot adı, örneğin Pano",
+        "avatar-url": "Bot avatarı URL'si",
+        "content": "Embed'in üstündeki mesaj metni",
+        "embed": "Embed göster",
+        "author-name": "Yazar",
+        "author-icon": "Yazar ikonu URL'si",
+        "embed-title": "Başlık",
+        "color": "Renk",
+        "title-url": "Başlık bağlantısı",
+        "description": "Açıklama",
+        "field-name": "Alan adı",
+        "field-value": "Alan değeri",
+        "field-inline": "Yan yana",
+        "add-field": "Alan ekle",
+        "thumbnail": "Küçük görsel URL'si (sağ üst)",
+        "image": "Büyük görsel URL'si",
+        "footer": "Alt bilgi metni",
+        "footer-icon": "Alt bilgi ikonu URL'si",
+        "timestamp": "Event'in zamanını göster",
+        "tokens": "Kullanabileceğin değerler (eklemek için tıkla)",
+        "reset": "Varsayılana dön",
+        "apply": "Bu mesajı kullan",
+        "preview-fallback": "Bu şablon geçerli bir Discord mesajı vermiyor, bu yüzden yerine varsayılan mesaj gönderilir.",
+        "custom": {
+          "key": "Anahtar (site.name)",
+          "value": "Değer",
+          "raw-value": "JSON değeri veya token",
+          "raw": "Ham JSON değeri",
+          "add-row": "Değer ekle"
+        },
+        "slack": {
+          "text": "Bildirim metni (uyarılarda görünür)",
+          "username": "Bot adı (çalışma alanı izin veriyorsa)",
+          "icon-url": "Bot ikonu URL'si",
+          "header": "Mesaj başlığı",
+          "body": "Mesaj metni (Slack biçimlendirmesi)",
+          "button-text": "Buton yazısı",
+          "button-url": "Buton bağlantısı"
+        },
+        "teams": {
+          "title": "Başlık",
+          "color": "Başlık rengi",
+          "color-default": "Varsayılan",
+          "color-accent": "Vurgu",
+          "color-good": "Yeşil",
+          "color-warning": "Sarı",
+          "color-attention": "Kırmızı",
+          "text": "Metin",
+          "code": "Eş aralıklı blok",
+          "button-title": "Buton yazısı",
+          "button-url": "Buton bağlantısı",
+          "add-button": "Buton ekle"
+        },
+        "telegram": {
+          "text": "Mesaj (HTML)",
+          "format": "Biçimlendirme",
+          "bold": "Kalın",
+          "italic": "İtalik",
+          "underline": "Altı çizili",
+          "code": "Kod",
+          "link": "Bağlantı",
+          "button-text": "Buton metni",
+          "button-url": "Buton bağlantısı",
+          "add-button": "Buton ekle",
+          "disable-preview": "Bağlantı önizlemelerini gizle",
+          "silent": "Sessiz gönder"
+        }
       }
     },
     "mail-templates": {
@@ -3831,7 +3937,75 @@
           "enabled": "Aktif",
           "auto-reply": "Otomatik yanıt",
           "no-auto-reply": "Varsayılan otomatik yanıtı kullan"
+        },
+        "fields": {
+          "title": "Alanlar",
+          "empty": "Alan yok. Oyuncular yalnızca başlığı ve mesajı doldurur.",
+          "add": "Alan ekle",
+          "untitled": "Adsız alan",
+          "required": "Zorunlu",
+          "conditional": "Koşullu",
+          "edit": "Alanı düzenle",
+          "remove": "Alanı kaldır",
+          "inputs": {
+            "label": "Etiket",
+            "key": "Anahtar",
+            "type": "Tür",
+            "required": "Zorunlu",
+            "placeholder": "Yer tutucu",
+            "help": "Alanın altında görünen yardım metni",
+            "min-value": "En küçük değer",
+            "max-value": "En büyük değer",
+            "min-length": "En az uzunluk",
+            "max-length": "En çok uzunluk",
+            "options": "Seçenekler",
+            "option-value": "Değer",
+            "option-label": "Etiket",
+            "add-option": "Seçenek ekle",
+            "conditions": "Yalnızca koşullara göre göster",
+            "match-all": "Tüm kurallar sağlanınca",
+            "match-any": "Herhangi bir kural sağlanınca",
+            "add-rule": "Kural ekle",
+            "choose-field": "Bir alan seçin",
+            "choose-option": "Bir seçenek seçin",
+            "value": "Değer",
+            "checked": "İşaretli",
+            "unchecked": "İşaretsiz"
+          },
+          "types": {
+            "TEXT": "Kısa metin",
+            "TEXTAREA": "Uzun metin",
+            "NUMBER": "Sayı",
+            "EMAIL": "E-posta",
+            "URL": "Bağlantı",
+            "DATE": "Tarih",
+            "SELECT": "Açılır liste",
+            "MULTISELECT": "Çoklu seçim",
+            "CHECKBOX": "Onay kutusu"
+          },
+          "operators": {
+            "EQUALS": "eşittir",
+            "NOT_EQUALS": "eşit değildir",
+            "CONTAINS": "içerir",
+            "FILLED": "dolu",
+            "EMPTY": "boş"
+          },
+          "errors": {
+            "REQUIRED": "Zorunlu.",
+            "INVALID": "Geçersiz değer.",
+            "TOO_SHORT": "Çok kısa.",
+            "TOO_LONG": "Çok uzun.",
+            "DUPLICATE": "Zaten kullanılıyor.",
+            "TOO_MANY": "Çok fazla.",
+            "UNKNOWN_FIELD": "Daha önceki bir alan seçin.",
+            "OUT_OF_RANGE": "Aralığın dışında.",
+            "UNKNOWN_OPTION": "Seçeneklerden biri değil."
+          }
         }
+      },
+      "edit-ticket-fields": {
+        "title": "Alanları Düzenle",
+        "choose-option": "Bir seçenek seçin"
       },
       "add-edit-language": {
         "create-language": "Dil Oluştur",
@@ -4344,6 +4518,19 @@
           "password": "Şifre en az 6, en fazla 128 karakter olmalı",
           "password-repeat": "Şifreler eşleşmiyor",
           "failed": "Kullanıcı oluşturulamadı."
+        },
+        "password-tools": {
+          "show": "Şifreyi göster",
+          "hide": "Şifreyi gizle",
+          "generate": "Şifre oluştur",
+          "generated": "Oluşturulan şifre",
+          "length": "Uzunluk: {length}",
+          "digits": "Rakamlar",
+          "symbols": "Semboller",
+          "regenerate": "Yeniden oluştur",
+          "copy": "Kopyala",
+          "copied": "Kopyalandı",
+          "use": "Bu şifreyi kullan"
         }
       },
       "edit-player": {
@@ -4742,6 +4929,16 @@
       "locked-theme": "Bu Pano ile uyumlu değil (API seviyesi {level} için yapılmış). Güncellenene kadar etkinleştirilemez.",
       "held": "{name} gerekiyor ve o bu Pano ile uyumlu değil: {name} eklentisini güncelleyin. Bu eklenti ardından kendiliğinden başlar.",
       "held-short": "{name} bekleniyor"
+    },
+    "translations-button": {
+      "title": "Çeviriler",
+      "hint": "Her dil için bir metin. Boş bırakılan dilde varsayılan metin gösterilir.",
+      "loading": "Diller yükleniyor...",
+      "no-locales": "Başka dil yok. Diller sayfasından bir dil ekleyin.",
+      "errors": {
+        "TOO_LONG": "Çok uzun.",
+        "INVALID": "Geçersiz değer."
+      }
     }
   },
   "page-error": {
@@ -4938,7 +5135,8 @@
     "RESET_MAIL_LAYOUT": "**{username}** \"{layoutName}\" e-posta düzenini varsayılana sıfırladı.",
     "CREATED_MAIL_LAYOUT": "**{username}** \"{layoutName}\" e-posta düzenini oluşturdu.",
     "DELETED_MAIL_LAYOUT": "**{username}** \"{layoutName}\" e-posta düzenini sildi.",
-    "CHANGED_MAIL_TEMPLATE_LAYOUT": "**{username}** \"{mailKey}\" e-postasının düzenini {layout, select, none {yok} other {\"{layout}\"}} olarak ayarladı."
+    "CHANGED_MAIL_TEMPLATE_LAYOUT": "**{username}** \"{mailKey}\" e-postasının düzenini {layout, select, none {yok} other {\"{layout}\"}} olarak ayarladı.",
+    "EDITED_TICKET_FIELDS": "**{username}** #{ticketId} numaralı destek talebinin alanlarını düzenledi."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> destek talebinde mesaj gönderdi (<b>#{id}</b>).",

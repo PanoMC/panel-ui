@@ -4,11 +4,14 @@
     : 'text-bg-secondary'}"
   title={filterTitle}
   href="{base}/{pageType}{buildQueryParams({ categoryUrl: category.url, ...query })}">
-  {category.title === '-' ? noCategoryText : category.title}
+  {category.title === '-'
+    ? noCategoryText
+    : localized(category.title, category.i18n, $locale, 'title')}
 </a>
 
 <script>
-  import { _ } from 'svelte-i18n';
+  import { _, locale } from 'svelte-i18n';
+  import { localized } from '$lib/contentI18n.util.js';
   import { base } from '@panomc/sdk/core/js/basePath.js';
   import { buildQueryParams } from '$lib/api.util.js';
 

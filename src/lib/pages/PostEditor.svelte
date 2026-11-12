@@ -80,7 +80,7 @@
   <button
     class="btn btn-secondary"
     type="button"
-    title={isDirty ? $_('pages.post-editor.unsaved-changes') : undefined}
+    title={isDirty || isI18nDirty ? $_('pages.post-editor.unsaved-changes') : undefined}
     class:disabled={loading || isEditorEmpty || post.title.length === 0}
     on:click={() => submit(true)}>
     <i class="fas fa-save"></i>
@@ -88,7 +88,7 @@
       {post.status === StatusTypes.PUBLISHED
         ? $_('buttons.update')
         : $_('pages.post-editor.publish')}</span
-    >{#if isDirty}<span class="ms-1" aria-hidden="true">*</span>{/if}
+    >{#if isDirty || isI18nDirty}<span class="ms-1" aria-hidden="true">*</span>{/if}
   </button>
   <Hook name="panel:post-editor:actions:right" {post} />
 {/snippet}
@@ -99,19 +99,112 @@
   <div class="col-lg-9">
     <div class="card h-100 w-100">
       <div class="card-body d-flex flex-column gap-3">
-        <input
-          id="postTitle"
-          class="form-control form-control-lg"
-          type="text"
-          placeholder={$_('pages.post-editor.inputs.title.placeholder')}
-          bind:this={titleInput}
-          bind:value={post.title} />
+        <!-- The language being written: the default (the platform's language, the text the site
+             shows when a language has none of its own) or a translation. Every language's edits
+             stay in memory and are saved together; the mark says a language has a title or text. -->
+        {#if otherLocales.length > 0}
+          <div
+            class="d-flex flex-wrap align-items-center gap-1"
+            role="group"
+            aria-label={$_('pages.post-editor.language.label')}>
+            <i class="fa-solid fa-language text-body-secondary me-1" aria-hidden="true"></i>
+            <button
+              type="button"
+              class="btn btn-sm"
+              class:btn-secondary={activeLocale === null}
+              class:btn-outline-secondary={activeLocale !== null}
+              aria-pressed={activeLocale === null}
+              on:click={() => switchLocale(null)}>
+              {$_('pages.post-editor.language.default', {
+                values: { language: platformLanguageName },
+              })}
+            </button>
+            {#each otherLocales as item (item.code)}
+              {@const invalid = i18nErrorLocales.includes(item.code)}
+              <button
+                type="button"
+                class="btn btn-sm"
+                class:btn-secondary={activeLocale === item.code && !invalid}
+                class:btn-danger={activeLocale === item.code && invalid}
+                class:btn-outline-secondary={activeLocale !== item.code && !invalid}
+                class:btn-outline-danger={activeLocale !== item.code && invalid}
+                aria-pressed={activeLocale === item.code}
+                on:click={() => switchLocale(item.code)}>
+                {item.name}
+                {#if translatedLocales.includes(item.code)}
+                  <i
+                    class="fa-solid fa-circle ms-1 align-middle"
+                    style="font-size: 0.45em;"
+                    title={$_('pages.post-editor.language.translated')}
+                    aria-label={$_('pages.post-editor.language.translated')}></i>
+                {/if}
+              </button>
+            {/each}
+          </div>
+        {/if}
 
-        <div class="w-100 flex-grow-1 d-flex flex-column">
+        {#if activeLocale === null}
+          <input
+            id="postTitle"
+            class="form-control form-control-lg"
+            type="text"
+            placeholder={$_('pages.post-editor.inputs.title.placeholder')}
+            bind:this={titleInput}
+            bind:value={post.title} />
+        {:else}
+          {@const titleError = i18nErrors[`i18n.${activeLocale}.title`]}
+          <div>
+            <input
+              id="postTitle"
+              class="form-control form-control-lg"
+              class:is-invalid={!!titleError}
+              type="text"
+              maxlength="255"
+              placeholder={post.title || $_('pages.post-editor.inputs.title.placeholder')}
+              bind:this={titleInput}
+              value={i18n[activeLocale]?.title ?? ''}
+              on:input={(event) =>
+                setTranslation(activeLocale, 'title', event.currentTarget.value)} />
+            {#if titleError}
+              <div class="invalid-feedback">
+                {$_('components.translations-button.errors.' + titleError, {
+                  default: titleError,
+                })}
+              </div>
+            {/if}
+          </div>
+        {/if}
+
+        <!-- The default text's editor stays mounted (hidden) while a translation is written, so its
+             content, its emptiness and the autosave never see the translation. -->
+        <div class="w-100 flex-grow-1 d-flex flex-column" class:d-none={activeLocale !== null}>
           <!-- Editor -->
           <Editor bind:content={post.text} bind:isEmpty={isEditorEmpty} />
           <!-- Editor End -->
         </div>
+        {#if activeLocale !== null}
+          {@const textError = i18nErrors[`i18n.${activeLocale}.text`]}
+          <div class="w-100 flex-grow-1 d-flex flex-column gap-2">
+            <div class="small text-body-secondary">
+              {$_('pages.post-editor.language.text-hint')}
+            </div>
+            <!-- One editor per language: a keyed block of one, so switching builds a new editor
+                 bound to that language only. -->
+            {#each [activeLocale] as code (code)}
+              <Editor
+                bind:content={
+                  () => i18n[code]?.text ?? '', (value) => setTranslation(code, 'text', value)
+                } />
+            {/each}
+            {#if textError}
+              <div class="small text-danger">
+                {$_('components.translations-button.errors.' + textError, {
+                  default: textError,
+                })}
+              </div>
+            {/if}
+          </div>
+        {/if}
       </div>
     </div>
   </div>
@@ -164,7 +257,8 @@
                     >{$_('pages.post-editor.no-category')}</option>
 
                   {#each data.categories as category, index (category)}
-                    <option value={category.id}>{category.title}</option>
+                    <option value={category.id}
+                      >{localized(category.title, category.i18n, $locale, 'title')}</option>
                   {/each}
                 </select>
               </form>
@@ -329,11 +423,14 @@
 
 <script>
   import { getContext, onDestroy, onMount, tick } from 'svelte';
-  import { _ } from 'svelte-i18n';
+  import { _, locale } from 'svelte-i18n';
   import { formatDistanceToNowStrict } from 'date-fns';
   import * as dateLocales from 'date-fns/locale';
 
-  import { currentLanguage } from '$lib/language.util.js';
+  import { currentLanguage, Languages } from '$lib/language.util.js';
+  import { errorFields } from '$lib/apiError.util.js';
+  import { errorLocales, localized, prunePostI18n } from '$lib/contentI18n.util.js';
+  import { loadContentLocales } from '$lib/components/TranslationsButton.svelte';
 
   import { base } from '@panomc/sdk/core/js/basePath.js';
   import { beforeNavigate, goto, replaceState } from '$app/navigation';
@@ -386,6 +483,66 @@
   /** The post as Pano has it (`data.post` follows the editor below), to go back to on a discard. */
   let savedPost = { ...data.post };
 
+  // ---- Translations ---------------------------------------------------------------------------
+
+  /**
+   * The post's translations, locale code → { title, text }. Only the normal save sends them (the
+   * autosave keeps the default text alone), so they live here, apart from `post`.
+   *
+   * @type {Record<string, { title?: string, text?: string }>}
+   */
+  let i18n = $state(structuredClone(data.post.i18n ?? {}));
+  /** The language being written; null is the default text. */
+  let activeLocale = $state(/** @type {string | null} */ (null));
+  /** @type {{ code: string, name: string }[]} */
+  let contentLocales = $state([]);
+  /** `i18n.<code>.title|text` errors of the last save. */
+  let i18nErrors = $state(/** @type {Record<string, string>} */ ({}));
+  /** The translations as saved, to tell whether some are not saved yet. */
+  let savedI18nKey = $state(JSON.stringify(prunePostI18n(data.post.i18n)));
+
+  const siteInfo = getContext('siteInfo');
+
+  const platformLocale = $derived($siteInfo?.platformLocale);
+  const otherLocales = $derived(contentLocales.filter((item) => item.code !== platformLocale));
+  const platformLanguageName = $derived(
+    contentLocales.find((item) => item.code === platformLocale)?.name ??
+      $Languages?.[platformLocale]?.name ??
+      platformLocale ??
+      '',
+  );
+  const prunedI18n = $derived(prunePostI18n(i18n));
+  const translatedLocales = $derived(Object.keys(prunedI18n));
+  const isI18nDirty = $derived(JSON.stringify(prunedI18n) !== savedI18nKey);
+  const i18nErrorLocales = $derived(errorLocales(i18nErrors));
+
+  onMount(async () => {
+    // The texts the way the editor writes them, so opening a language is not a change.
+    for (const [code, texts] of Object.entries(i18n)) {
+      if (texts?.text) i18n[code] = { ...texts, text: normalizeHtml(texts.text) };
+    }
+
+    savedI18nKey = JSON.stringify(prunePostI18n(i18n));
+
+    contentLocales = await loadContentLocales();
+  });
+
+  function setTranslation(code, prop, text) {
+    if ((i18n[code]?.[prop] ?? '') === text) return;
+
+    i18n[code] = { ...(i18n[code] ?? {}), [prop]: text };
+  }
+
+  async function switchLocale(code) {
+    if (activeLocale === code) return;
+
+    activeLocale = code;
+
+    await tick();
+
+    titleInput?.focus();
+  }
+
   /** Create until the first autosave (or save) makes the post; edit from then on. */
   let mode = $state(data.mode);
 
@@ -420,6 +577,7 @@
           title: post.title ?? '',
           text: post.text ?? '',
           categoryId: Number(post.category) || -1,
+          i18n: prunePostI18n(i18n),
           thumbnailUrl: isThumbnailRemoved
             ? ''
             : withCover && thumbnail
@@ -730,8 +888,12 @@
   beforeNavigate((navigation) => {
     // Changes the autosave already holds come back when the post is opened again: only what it has
     // not got yet (waiting, on its way, or failed) is worth asking about.
+    // Translations are never autosaved: unsaved ones would be lost on leaving.
     const hasChangesNotAutosaved =
-      !!autosaveTimer || !!autosaveRun || (autosaveState === AutosaveStates.FAILED && isDirty);
+      !!autosaveTimer ||
+      !!autosaveRun ||
+      (autosaveState === AutosaveStates.FAILED && isDirty) ||
+      isI18nDirty;
 
     // What waits for the autosave is sent right away, whatever happens next.
     if (autosaveTimer) {
@@ -836,6 +998,9 @@
 
       loading = true;
 
+      // All translations, as one JSON string form field; the sent set replaces the saved ones.
+      const sentI18n = prunePostI18n(i18n);
+
       const bodyHandler = (body, reject) => {
         if (!body.error) {
           loading = false;
@@ -857,6 +1022,8 @@
             category: Number(post.category),
           };
           savedPost = { ...$state.snapshot(post) };
+          savedI18nKey = JSON.stringify(sentI18n);
+          i18nErrors = {};
           isCoverChanged = false;
           isCoverRemovalPending = false;
           hasServerAutosave = false;
@@ -888,6 +1055,17 @@
 
           data.error = errorCode(body);
 
+          // A translation the server refused: its language is marked and opened.
+          i18nErrors = Object.fromEntries(
+            Object.entries(errorFields(body)).filter(([key]) => key.startsWith('i18n.')),
+          );
+
+          const refused = errorLocales(i18nErrors);
+
+          if (refused.length > 0 && !refused.includes(activeLocale)) {
+            switchLocale(refused[0]);
+          }
+
           return;
         }
 
@@ -900,6 +1078,7 @@
       body.append('title', post.title);
       body.append('category', post.category);
       body.append('text', post.text);
+      body.append('i18n', JSON.stringify(sentI18n));
 
       if (isThumbnailRemoved) {
         body.append('removeThumbnail', true);

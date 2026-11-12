@@ -19,9 +19,9 @@
       <button
         class="btn btn-link p-0 text-start text-decoration-none w-100 text-truncate"
         type="button"
-        title={category.title}
+        title={localized(category.title, category.i18n, $locale, 'title')}
         on:click={onEditClick}>
-        {category.title}
+        {localized(category.title, category.i18n, $locale, 'title')}
       </button>
     </div>
   </td>
@@ -31,8 +31,10 @@
     tag="td"
     class="align-middle text-nowrap" />
   <td class="align-middle" style="max-width: 300px;">
-    <div class="text-truncate" title={category.description}>
-      {category.description}
+    <div
+      class="text-truncate"
+      title={localized(category.description, category.i18n, $locale, 'description')}>
+      {localized(category.description, category.i18n, $locale, 'description')}
     </div>
   </td>
   <Hook
@@ -72,7 +74,8 @@
   import { rowLink } from '$lib/rowLink.util.js';
 
   import { createEventDispatcher } from 'svelte';
-  import { _ } from 'svelte-i18n';
+  import { _, locale } from 'svelte-i18n';
+  import { localized } from '$lib/contentI18n.util.js';
   import { UI_URL } from '$lib/variables';
   import Hook from '$lib/components/Hook.svelte';
 

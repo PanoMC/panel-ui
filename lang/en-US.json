@@ -112,7 +112,8 @@
     "close-ticket": "Close Ticket",
     "close-tickets": "Close Tickets",
     "set-as-main": "Set As Main",
-    "retry": "Retry"
+    "retry": "Retry",
+    "content": "Content"
   },
   "pages": {
     "auth": {
@@ -1068,7 +1069,11 @@
       "templates": "Templates:",
       "all-templates": "All",
       "search-templates": "Search templates",
-      "no-templates-found": "No template found"
+      "no-templates-found": "No template found",
+      "fields": {
+        "title": "Fields",
+        "edit": "Edit fields"
+      }
     },
     "post-categories": {
       "title": "Post Categories",
@@ -1249,6 +1254,12 @@
       "go-back": "Go Back"
     },
     "post-editor": {
+      "language": {
+        "label": "Language",
+        "default": "Default ({language})",
+        "translated": "Has a translation",
+        "text-hint": "Left empty, this language shows the default text."
+      },
       "save-draft": "Save As Draft",
       "posts": "Posts",
       "trash": "Trash",
@@ -3068,7 +3079,11 @@
       },
       "format": {
         "JSON": "JSON",
-        "DISCORD": "Discord"
+        "DISCORD": "Discord",
+        "SLACK": "Slack",
+        "TELEGRAM": "Telegram",
+        "TEAMS": "Teams",
+        "CUSTOM": "Custom JSON"
       },
       "signing": {
         "NONE": "No signature",
@@ -3106,7 +3121,14 @@
         "add-header": "Add header",
         "custom-template": "Write my own message",
         "template": "Message as JSON",
-        "enabled": "Active"
+        "enabled": "Active",
+        "url-JSON": "Receiving URL, for example https://example.com/hook",
+        "url-DISCORD": "Discord webhook URL (Channel settings → Integrations)",
+        "url-SLACK": "Slack incoming webhook URL (also Mattermost, Rocket.Chat)",
+        "url-TEAMS": "Teams Workflows webhook URL",
+        "url-CUSTOM": "Receiving URL, for example an n8n or Zapier webhook",
+        "telegram-token": "Bot token from @BotFather",
+        "telegram-chat": "Chat id or @channel"
       },
       "endpoints": {
         "table-title": "{count}/{max} Webhooks",
@@ -3214,7 +3236,91 @@
         "PORT": "That port cannot be used.",
         "DISCORD_URL": "Enter a Discord webhook address, https://discord.com/api/webhooks/...",
         "DNS": "That host name does not resolve.",
-        "PRIVATE_ADDRESS": "That address is on a private network, which Pano does not send to."
+        "PRIVATE_ADDRESS": "That address is on a private network, which Pano does not send to.",
+        "EMPTY": "The message has no text and no embed.",
+        "INVALID_EVENT": "Unknown event.",
+        "TELEGRAM_URL": "Enter a bot token (from @BotFather) and a chat id."
+      },
+      "template": {
+        "title": "Message Look",
+        "list": "Message per event",
+        "every-event": "Every event (older template)",
+        "state": {
+          "custom": "Custom",
+          "inherited": "Shared",
+          "default": "Default"
+        },
+        "mode": "Editor",
+        "visual": "Visual",
+        "json": "JSON",
+        "visual-unavailable": "This template uses something the visual editor has no input for. Edit it as JSON.",
+        "username": "Bot name, for example Pano",
+        "avatar-url": "Bot avatar URL",
+        "content": "Message text above the embed",
+        "embed": "Show an embed",
+        "author-name": "Author",
+        "author-icon": "Author icon URL",
+        "embed-title": "Title",
+        "color": "Color",
+        "title-url": "Title link",
+        "description": "Description",
+        "field-name": "Field name",
+        "field-value": "Field value",
+        "field-inline": "Side by side",
+        "add-field": "Add field",
+        "thumbnail": "Small image URL (top right)",
+        "image": "Large image URL",
+        "footer": "Footer text",
+        "footer-icon": "Footer icon URL",
+        "timestamp": "Show the time of the event",
+        "tokens": "Values you can use (click to insert)",
+        "reset": "Back to default",
+        "apply": "Use this message",
+        "preview-fallback": "This template does not give a valid Discord message, so the default message is sent instead.",
+        "custom": {
+          "key": "Key (site.name)",
+          "value": "Value",
+          "raw-value": "JSON value or token",
+          "raw": "Raw JSON value",
+          "add-row": "Add value"
+        },
+        "slack": {
+          "text": "Notification text (shown in alerts)",
+          "username": "Bot name (if the workspace allows it)",
+          "icon-url": "Bot icon URL",
+          "header": "Message title",
+          "body": "Message text (Slack formatting)",
+          "button-text": "Button label",
+          "button-url": "Button link"
+        },
+        "teams": {
+          "title": "Title",
+          "color": "Title colour",
+          "color-default": "Default",
+          "color-accent": "Accent",
+          "color-good": "Green",
+          "color-warning": "Yellow",
+          "color-attention": "Red",
+          "text": "Text",
+          "code": "Monospace block",
+          "button-title": "Button text",
+          "button-url": "Button link",
+          "add-button": "Add button"
+        },
+        "telegram": {
+          "text": "Message (HTML)",
+          "format": "Formatting",
+          "bold": "Bold",
+          "italic": "Italic",
+          "underline": "Underline",
+          "code": "Code",
+          "link": "Link",
+          "button-text": "Button text",
+          "button-url": "Button link",
+          "add-button": "Add button",
+          "disable-preview": "Hide link previews",
+          "silent": "Send silently"
+        }
       }
     },
     "mail-templates": {
@@ -3829,7 +3935,75 @@
           "enabled": "Active",
           "auto-reply": "Auto-reply",
           "no-auto-reply": "Use the default auto-reply"
+        },
+        "fields": {
+          "title": "Fields",
+          "empty": "No fields. Players only fill in the title and the message.",
+          "add": "Add field",
+          "untitled": "Untitled field",
+          "required": "Required",
+          "conditional": "Conditional",
+          "edit": "Edit field",
+          "remove": "Remove field",
+          "inputs": {
+            "label": "Label",
+            "key": "Key",
+            "type": "Type",
+            "required": "Required",
+            "placeholder": "Placeholder",
+            "help": "Help text shown under the input",
+            "min-value": "Minimum value",
+            "max-value": "Maximum value",
+            "min-length": "Minimum length",
+            "max-length": "Maximum length",
+            "options": "Options",
+            "option-value": "Value",
+            "option-label": "Label",
+            "add-option": "Add option",
+            "conditions": "Show only under conditions",
+            "match-all": "When all rules match",
+            "match-any": "When any rule matches",
+            "add-rule": "Add rule",
+            "choose-field": "Choose a field",
+            "choose-option": "Choose an option",
+            "value": "Value",
+            "checked": "Ticked",
+            "unchecked": "Not ticked"
+          },
+          "types": {
+            "TEXT": "Short text",
+            "TEXTAREA": "Long text",
+            "NUMBER": "Number",
+            "EMAIL": "E-mail",
+            "URL": "Link",
+            "DATE": "Date",
+            "SELECT": "Dropdown",
+            "MULTISELECT": "Multiple choice",
+            "CHECKBOX": "Checkbox"
+          },
+          "operators": {
+            "EQUALS": "is",
+            "NOT_EQUALS": "is not",
+            "CONTAINS": "contains",
+            "FILLED": "is filled",
+            "EMPTY": "is empty"
+          },
+          "errors": {
+            "REQUIRED": "Required.",
+            "INVALID": "Invalid value.",
+            "TOO_SHORT": "Too short.",
+            "TOO_LONG": "Too long.",
+            "DUPLICATE": "Already used.",
+            "TOO_MANY": "Too many.",
+            "UNKNOWN_FIELD": "Choose an earlier field.",
+            "OUT_OF_RANGE": "Out of range.",
+            "UNKNOWN_OPTION": "Not one of the options."
+          }
         }
+      },
+      "edit-ticket-fields": {
+        "title": "Edit Fields",
+        "choose-option": "Choose an option"
       },
       "add-edit-language": {
         "create-language": "Create Language",
@@ -4342,6 +4516,19 @@
           "password": "The password must have a minimum of 6 and a maximum of 128 characters",
           "password-repeat": "The passwords do not match",
           "failed": "The user could not be created."
+        },
+        "password-tools": {
+          "show": "Show password",
+          "hide": "Hide password",
+          "generate": "Generate password",
+          "generated": "Generated password",
+          "length": "Length: {length}",
+          "digits": "Digits",
+          "symbols": "Symbols",
+          "regenerate": "Generate again",
+          "copy": "Copy",
+          "copied": "Copied",
+          "use": "Use password"
         }
       },
       "edit-player": {
@@ -4740,6 +4927,16 @@
       "locked-theme": "Not compatible with this Pano (built for API level {level}). It can not be activated until you update it.",
       "held": "Needs {name}, which is not compatible with this Pano: update {name}. This addon starts by itself afterward.",
       "held-short": "Waiting for {name}"
+    },
+    "translations-button": {
+      "title": "Translations",
+      "hint": "One text per language. Leave a language empty to show the default text.",
+      "loading": "Loading languages...",
+      "no-locales": "There is no other language. Add one on the Languages page.",
+      "errors": {
+        "TOO_LONG": "Too long.",
+        "INVALID": "Invalid value."
+      }
     }
   },
   "page-error": {
@@ -4936,7 +5133,8 @@
     "RESET_MAIL_LAYOUT": "**{username}** reset the mail layout \"{layoutName}\" to default.",
     "CREATED_MAIL_LAYOUT": "**{username}** created the mail layout \"{layoutName}\".",
     "DELETED_MAIL_LAYOUT": "**{username}** deleted the mail layout \"{layoutName}\".",
-    "CHANGED_MAIL_TEMPLATE_LAYOUT": "**{username}** set the layout of the \"{mailKey}\" mail to {layout, select, none {none} other {\"{layout}\"}}."
+    "CHANGED_MAIL_TEMPLATE_LAYOUT": "**{username}** set the layout of the \"{mailKey}\" mail to {layout, select, none {none} other {\"{layout}\"}}.",
+    "EDITED_TICKET_FIELDS": "**{username}** edited the fields of ticket #{ticketId}."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> sent a message in ticket (<b>#{id}</b>).",

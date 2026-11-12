@@ -128,6 +128,17 @@
               <i class="fas fa-pencil me-1"></i>
               {$_('buttons.edit')}
             </button>
+            <!-- The agreement above is the default (the platform's language); its translations here. -->
+            <span class="ms-3">
+              <TranslationsButton
+                bind:i18n={data.registerAgreementI18nEdit}
+                prop="html"
+                multiline
+                group={false}
+                btnClass="btn-sm"
+                errors={agreementErrors}
+                errorKey={(code) => `registerAgreementI18n.${code}`} />
+            </span>
           {:else}
             <button
               type="button"
@@ -485,6 +496,7 @@
 
 <script context="module">
   import ApiUtil, { buildQueryParams } from '$lib/api.util.js';
+  import { flattenTranslations, nestTranslations } from '$lib/contentI18n.util.js';
 
   /**
    * @type {import("@sveltejs/kit").Load}
@@ -501,6 +513,9 @@
       path: '/panel/settings' + queryParams,
       request: event,
     });
+
+    // The agreement's translations, in the shape the translations button edits (code → { html }).
+    body.registerAgreementI18nEdit = nestTranslations(body.registerAgreementI18n, 'html');
 
     body.oldSettings = { ...body };
     body.oldSettings.keywords = [...body.keywords];
@@ -521,6 +536,7 @@
     show as showEditRegisterAgreementModal,
   } from '$lib/components/modals/EditRegisterAgreementModal.svelte';
   import { normalizeRegisterAgreement } from '$lib/register-agreement.util.js';
+  import TranslationsButton from '$lib/components/TranslationsButton.svelte';
 
   import { websiteLogoSrc } from '$lib/Store.js';
   import { UsageModes } from '$lib/navigation.util.js';
@@ -569,6 +585,19 @@
 
   let keyword;
   let saveButtonLoading = false;
+  /** Server errors of the agreement's translations (`registerAgreementI18n.<code>`). */
+  let agreementErrors = {};
+
+  /** The agreement's translations as sent: none once the agreement itself is empty. */
+  function agreementTranslations(registerAgreement, nested) {
+    if (!normalizeRegisterAgreement(registerAgreement)) return {};
+
+    return Object.fromEntries(
+      Object.entries(flattenTranslations(nested, 'html')).filter(
+        ([, html]) => normalizeRegisterAgreement(html) !== '',
+      ),
+    );
+  }
 
   function openRegisterAgreementModal() {
     showEditRegisterAgreementModal(data.registerAgreement, (html) => {
@@ -582,6 +611,15 @@
       data.oldSettings.websiteUrl === data.websiteUrl &&
       normalizeRegisterAgreement(data.oldSettings.registerAgreement) ===
         normalizeRegisterAgreement(data.registerAgreement) &&
+      JSON.stringify(
+        agreementTranslations(
+          data.oldSettings.registerAgreement,
+          data.oldSettings.registerAgreementI18nEdit,
+        ),
+      ) ===
+        JSON.stringify(
+          agreementTranslations(data.registerAgreement, data.registerAgreementI18nEdit),
+        ) &&
       data.oldSettings.supportEmail === data.supportEmail &&
       data.oldSettings.serverIpAddress === data.serverIpAddress &&
       data.oldSettings.serverGameVersion === data.serverGameVersion &&
@@ -719,6 +757,11 @@
     formData.append('websiteDescription', data.websiteDescription);
     formData.append('websiteUrl', data.websiteUrl);
     formData.append('registerAgreement', normalizeRegisterAgreement(data.registerAgreement));
+    // A form field holds text only: the translations (locale code → html) go as JSON.
+    formData.append(
+      'registerAgreementI18n',
+      JSON.stringify(agreementTranslations(data.registerAgreement, data.registerAgreementI18nEdit)),
+    );
     formData.append('supportEmail', data.supportEmail);
     formData.append('serverIpAddress', data.serverIpAddress);
     formData.append('serverGameVersion', data.serverGameVersion);
@@ -762,6 +805,8 @@
           setSaveCriticalSettingsError(true);
           return;
         }
+
+        agreementErrors = body.error?.fields ?? {};
 
         if (body.error) {
           if (password) hideSaveCriticalSettingsModal();

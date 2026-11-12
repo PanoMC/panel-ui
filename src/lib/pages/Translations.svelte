@@ -169,6 +169,8 @@
     PLUGIN: 'PLUGIN',
     PLATFORM: 'PLATFORM',
     MC_PLUGIN: 'MC_PLUGIN',
+    // Admin-written texts (ticket categories and fields, the registration agreement).
+    CONTENT: 'CONTENT',
   });
   export const DefaultPageType = PageTypes.PANEL;
 

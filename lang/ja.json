@@ -112,7 +112,8 @@
     "close-ticket": "チケットを閉じる",
     "close-tickets": "チケットを閉じる",
     "set-as-main": "メインとして設定",
-    "retry": "リトライ"
+    "retry": "リトライ",
+    "content": "コンテンツ"
   },
   "pages": {
     "auth": {
@@ -1052,7 +1053,11 @@
       "opened-in-category": "opened in {category} category.",
       "no-category": "-",
       "previous-messages": "{count} Previous Messages",
-      "send-button": "送信"
+      "send-button": "送信",
+      "fields": {
+        "title": "フィールド",
+        "edit": "フィールドを編集"
+      }
     },
     "post-categories": {
       "title": "投稿カテゴリー",
@@ -1233,6 +1238,12 @@
       "go-back": "戻る"
     },
     "post-editor": {
+      "language": {
+        "label": "言語",
+        "default": "デフォルト ({language})",
+        "translated": "翻訳あり",
+        "text-hint": "空のままにすると、この言語ではデフォルトのテキストが表示されます。"
+      },
       "save-draft": "ドラフトとして保存",
       "posts": "投稿",
       "trash": "ごみ",
@@ -2997,7 +3008,11 @@
       },
       "format": {
         "JSON": "JSON",
-        "DISCORD": "不和"
+        "DISCORD": "Discord",
+        "SLACK": "Slack",
+        "TELEGRAM": "Telegram",
+        "TEAMS": "Teams",
+        "CUSTOM": "カスタム JSON"
       },
       "signing": {
         "NONE": "署名なし",
@@ -3035,7 +3050,14 @@
         "add-header": "ヘッダーの追加",
         "custom-template": "自分のメッセージを書く",
         "template": "JSON としてのメッセージ",
-        "enabled": "アクティブ"
+        "enabled": "アクティブ",
+        "url-JSON": "受信 URL (例: https://example.com/hook)",
+        "url-DISCORD": "Discord の Webhook URL (チャンネル設定 → 連携サービス)",
+        "url-SLACK": "Slack の Incoming Webhook URL (Mattermost、Rocket.Chat も可)",
+        "url-TEAMS": "Teams Workflows の Webhook URL",
+        "url-CUSTOM": "受信 URL (例: n8n や Zapier の Webhook)",
+        "telegram-token": "@BotFather で取得したボットトークン",
+        "telegram-chat": "チャット ID または @チャンネル"
       },
       "endpoints": {
         "table-title": "{count}/{max} Webhooks",
@@ -3143,7 +3165,91 @@
         "PORT": "そのポートは使用できません。",
         "DISCORD_URL": "Enter a Discord webhook address, https://discord.com/api/webhooks/...",
         "DNS": "そのホスト名は解決されません。",
-        "PRIVATE_ADDRESS": "そのアドレスはプライベート ネットワーク上にあり、Pano はそこに送信しません。"
+        "PRIVATE_ADDRESS": "そのアドレスはプライベート ネットワーク上にあり、Pano はそこに送信しません。",
+        "EMPTY": "メッセージにテキストも埋め込みもありません。",
+        "INVALID_EVENT": "不明なイベントです。",
+        "TELEGRAM_URL": "ボットトークン (@BotFather から) とチャット ID を入力してください。"
+      },
+      "template": {
+        "title": "メッセージの見た目",
+        "list": "イベントごとのメッセージ",
+        "every-event": "すべてのイベント (以前のテンプレート)",
+        "state": {
+          "custom": "カスタム",
+          "inherited": "共通",
+          "default": "デフォルト"
+        },
+        "mode": "エディター",
+        "visual": "ビジュアル",
+        "json": "JSON",
+        "visual-unavailable": "このテンプレートにはビジュアルエディターで扱えない内容があります。JSON で編集してください。",
+        "username": "ボット名 (例: Pano)",
+        "avatar-url": "ボットのアバター URL",
+        "content": "埋め込みの上のメッセージ",
+        "embed": "埋め込みを表示",
+        "author-name": "作成者",
+        "author-icon": "作成者アイコンの URL",
+        "embed-title": "タイトル",
+        "color": "色",
+        "title-url": "タイトルのリンク",
+        "description": "説明",
+        "field-name": "フィールド名",
+        "field-value": "フィールドの値",
+        "field-inline": "横に並べる",
+        "add-field": "フィールドを追加",
+        "thumbnail": "小さい画像の URL (右上)",
+        "image": "大きい画像の URL",
+        "footer": "フッターのテキスト",
+        "footer-icon": "フッターアイコンの URL",
+        "timestamp": "イベントの時刻を表示",
+        "tokens": "使える値 (クリックで挿入)",
+        "reset": "デフォルトに戻す",
+        "apply": "このメッセージを使う",
+        "preview-fallback": "このテンプレートは有効な Discord メッセージにならないため、代わりにデフォルトのメッセージが送信されます。",
+        "custom": {
+          "key": "キー (site.name)",
+          "value": "値",
+          "raw-value": "JSON 値またはトークン",
+          "raw": "そのままの JSON 値",
+          "add-row": "値を追加"
+        },
+        "slack": {
+          "text": "通知テキスト (アラートに表示)",
+          "username": "ボット名 (ワークスペースが許可する場合)",
+          "icon-url": "ボットアイコンの URL",
+          "header": "メッセージのタイトル",
+          "body": "メッセージ本文 (Slack の書式)",
+          "button-text": "ボタンのラベル",
+          "button-url": "ボタンのリンク"
+        },
+        "teams": {
+          "title": "タイトル",
+          "color": "タイトルの色",
+          "color-default": "デフォルト",
+          "color-accent": "アクセント",
+          "color-good": "緑",
+          "color-warning": "黄",
+          "color-attention": "赤",
+          "text": "テキスト",
+          "code": "等幅ブロック",
+          "button-title": "ボタンのテキスト",
+          "button-url": "ボタンのリンク",
+          "add-button": "ボタンを追加"
+        },
+        "telegram": {
+          "text": "メッセージ (HTML)",
+          "format": "書式",
+          "bold": "太字",
+          "italic": "斜体",
+          "underline": "下線",
+          "code": "コード",
+          "link": "リンク",
+          "button-text": "ボタンのテキスト",
+          "button-url": "ボタンのリンク",
+          "add-button": "ボタンを追加",
+          "disable-preview": "リンクのプレビューを隠す",
+          "silent": "通知なしで送信"
+        }
       }
     },
     "mail-templates": {
@@ -3738,7 +3844,75 @@
             "placeholder": "説明"
           },
           "enabled": "アクティブ"
+        },
+        "fields": {
+          "title": "フィールド",
+          "empty": "フィールドはありません。プレイヤーはタイトルとメッセージのみ入力します。",
+          "add": "フィールドを追加",
+          "untitled": "無題のフィールド",
+          "required": "必須",
+          "conditional": "条件付き",
+          "edit": "フィールドを編集",
+          "remove": "フィールドを削除",
+          "inputs": {
+            "label": "ラベル",
+            "key": "キー",
+            "type": "種類",
+            "required": "必須",
+            "placeholder": "プレースホルダー",
+            "help": "入力欄の下に表示するヘルプ",
+            "min-value": "最小値",
+            "max-value": "最大値",
+            "min-length": "最小文字数",
+            "max-length": "最大文字数",
+            "options": "選択肢",
+            "option-value": "値",
+            "option-label": "ラベル",
+            "add-option": "選択肢を追加",
+            "conditions": "条件を満たすときだけ表示",
+            "match-all": "すべてのルールに一致したとき",
+            "match-any": "いずれかのルールに一致したとき",
+            "add-rule": "ルールを追加",
+            "choose-field": "フィールドを選択",
+            "choose-option": "選択肢を選択",
+            "value": "値",
+            "checked": "チェックあり",
+            "unchecked": "チェックなし"
+          },
+          "types": {
+            "TEXT": "短いテキスト",
+            "TEXTAREA": "長いテキスト",
+            "NUMBER": "数値",
+            "EMAIL": "メールアドレス",
+            "URL": "リンク",
+            "DATE": "日付",
+            "SELECT": "ドロップダウン",
+            "MULTISELECT": "複数選択",
+            "CHECKBOX": "チェックボックス"
+          },
+          "operators": {
+            "EQUALS": "と等しい",
+            "NOT_EQUALS": "と等しくない",
+            "CONTAINS": "を含む",
+            "FILLED": "入力あり",
+            "EMPTY": "空"
+          },
+          "errors": {
+            "REQUIRED": "必須です。",
+            "INVALID": "無効な値です。",
+            "TOO_SHORT": "短すぎます。",
+            "TOO_LONG": "長すぎます。",
+            "DUPLICATE": "すでに使われています。",
+            "TOO_MANY": "多すぎます。",
+            "UNKNOWN_FIELD": "これより前のフィールドを選択してください。",
+            "OUT_OF_RANGE": "範囲外です。",
+            "UNKNOWN_OPTION": "選択肢にありません。"
+          }
         }
+      },
+      "edit-ticket-fields": {
+        "title": "フィールドを編集",
+        "choose-option": "選択肢を選択"
       },
       "add-edit-language": {
         "create-language": "言語の作成",
@@ -4251,6 +4425,19 @@
           "password": "パスワードは最小 6 文字、最大 128 文字である必要があります。",
           "password-repeat": "パスワードが一致しません",
           "failed": "ユーザーを作成できませんでした。"
+        },
+        "password-tools": {
+          "show": "パスワードを表示",
+          "hide": "パスワードを隠す",
+          "generate": "パスワードを生成",
+          "generated": "生成されたパスワード",
+          "length": "長さ: {length}",
+          "digits": "数字",
+          "symbols": "記号",
+          "regenerate": "再生成",
+          "copy": "コピー",
+          "copied": "コピーしました",
+          "use": "このパスワードを使う"
         }
       },
       "edit-player": {
@@ -4626,6 +4813,16 @@
       "locked-theme": "Not compatible with this Pano (built for API level {level}). It can not be activated until you update it.",
       "held": "Needs {name}, which is not compatible with this Pano: update {name}. This addon starts by itself afterward.",
       "held-short": "Waiting for {name}"
+    },
+    "translations-button": {
+      "title": "翻訳",
+      "hint": "言語ごとに1つのテキストを入力します。空欄の言語には既定のテキストが表示されます。",
+      "loading": "言語を読み込み中...",
+      "no-locales": "ほかの言語がありません。「言語」ページで追加してください。",
+      "errors": {
+        "TOO_LONG": "長すぎます。",
+        "INVALID": "無効な値です。"
+      }
     }
   },
   "page-error": {
@@ -4822,7 +5019,8 @@
     "RESET_MAIL_LAYOUT": "**{username}** reset the mail layout \"{layoutName}\" to default.",
     "CREATED_MAIL_LAYOUT": "**{username}** created the mail layout \"{layoutName}\".",
     "DELETED_MAIL_LAYOUT": "**{username}** deleted the mail layout \"{layoutName}\".",
-    "CHANGED_MAIL_TEMPLATE_LAYOUT": "**{username}** set the layout of the \"{mailKey}\" mail to {layout, select, none {none} other {\"{layout}\"}}."
+    "CHANGED_MAIL_TEMPLATE_LAYOUT": "**{username}** set the layout of the \"{mailKey}\" mail to {layout, select, none {none} other {\"{layout}\"}}.",
+    "EDITED_TICKET_FIELDS": "**{username}** がチケット #{ticketId} の項目を編集しました。"
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> sent a message in ticket (<b>#{id}</b>).",

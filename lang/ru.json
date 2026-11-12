@@ -112,7 +112,8 @@
     "close-ticket": "Закрыть Тикет",
     "close-tickets": "Закрыть Тикеты",
     "set-as-main": "Сделать Главным",
-    "retry": "Повторить"
+    "retry": "Повторить",
+    "content": "Контент"
   },
   "pages": {
     "auth": {
@@ -1068,7 +1069,11 @@
       "templates": "Шаблоны:",
       "all-templates": "Все",
       "search-templates": "Поиск шаблонов",
-      "no-templates-found": "Шаблоны не найдены"
+      "no-templates-found": "Шаблоны не найдены",
+      "fields": {
+        "title": "Поля",
+        "edit": "Изменить поля"
+      }
     },
     "post-categories": {
       "title": "Категории постов",
@@ -1249,6 +1254,12 @@
       "go-back": "Назад"
     },
     "post-editor": {
+      "language": {
+        "label": "Язык",
+        "default": "По умолчанию ({language})",
+        "translated": "Есть перевод",
+        "text-hint": "Если оставить пустым, на этом языке показывается текст по умолчанию."
+      },
       "save-draft": "Сохранить как черновик",
       "posts": "Посты",
       "trash": "Корзина",
@@ -3068,7 +3079,11 @@
       },
       "format": {
         "JSON": "JSON",
-        "DISCORD": "Discord"
+        "DISCORD": "Discord",
+        "SLACK": "Slack",
+        "TELEGRAM": "Telegram",
+        "TEAMS": "Teams",
+        "CUSTOM": "Свой JSON"
       },
       "signing": {
         "NONE": "Без подписи",
@@ -3106,7 +3121,14 @@
         "add-header": "Добавить заголовок",
         "custom-template": "Написать своё сообщение",
         "template": "Сообщение в формате JSON",
-        "enabled": "Включён"
+        "enabled": "Включён",
+        "url-JSON": "URL получателя, например https://example.com/hook",
+        "url-DISCORD": "URL вебхука Discord (Настройки канала → Интеграция)",
+        "url-SLACK": "URL входящего вебхука Slack (подходят и Mattermost, Rocket.Chat)",
+        "url-TEAMS": "URL вебхука Teams Workflows",
+        "url-CUSTOM": "URL получателя, например вебхук n8n или Zapier",
+        "telegram-token": "Токен бота от @BotFather",
+        "telegram-chat": "ID чата или @канал"
       },
       "endpoints": {
         "table-title": "{count}/{max} вебхуков",
@@ -3214,7 +3236,91 @@
         "PORT": "Этот порт использовать нельзя.",
         "DISCORD_URL": "Введите адрес вебхука Discord, https://discord.com/api/webhooks/...",
         "DNS": "Это имя хоста не разрешается.",
-        "PRIVATE_ADDRESS": "Этот адрес находится в частной сети, туда Pano не отправляет."
+        "PRIVATE_ADDRESS": "Этот адрес находится в частной сети, туда Pano не отправляет.",
+        "EMPTY": "В сообщении нет ни текста, ни embed.",
+        "INVALID_EVENT": "Неизвестное событие.",
+        "TELEGRAM_URL": "Введите токен бота (от @BotFather) и ID чата."
+      },
+      "template": {
+        "title": "Вид Сообщения",
+        "list": "Сообщение для каждого события",
+        "every-event": "Все события (старый шаблон)",
+        "state": {
+          "custom": "Свой",
+          "inherited": "Общий",
+          "default": "По умолчанию"
+        },
+        "mode": "Редактор",
+        "visual": "Визуально",
+        "json": "JSON",
+        "visual-unavailable": "В этом шаблоне есть то, чего нет в визуальном редакторе. Редактируйте его как JSON.",
+        "username": "Имя бота, например Pano",
+        "avatar-url": "URL аватара бота",
+        "content": "Текст сообщения над embed",
+        "embed": "Показывать embed",
+        "author-name": "Автор",
+        "author-icon": "URL иконки автора",
+        "embed-title": "Заголовок",
+        "color": "Цвет",
+        "title-url": "Ссылка заголовка",
+        "description": "Описание",
+        "field-name": "Название поля",
+        "field-value": "Значение поля",
+        "field-inline": "В строку",
+        "add-field": "Добавить поле",
+        "thumbnail": "URL маленького изображения (справа сверху)",
+        "image": "URL большого изображения",
+        "footer": "Текст подвала",
+        "footer-icon": "URL иконки подвала",
+        "timestamp": "Показывать время события",
+        "tokens": "Доступные значения (нажмите, чтобы вставить)",
+        "reset": "Вернуть по умолчанию",
+        "apply": "Использовать это сообщение",
+        "preview-fallback": "Этот шаблон не даёт правильного сообщения Discord, поэтому вместо него отправляется сообщение по умолчанию.",
+        "custom": {
+          "key": "Ключ (site.name)",
+          "value": "Значение",
+          "raw-value": "JSON-значение или токен",
+          "raw": "Сырое JSON-значение",
+          "add-row": "Добавить значение"
+        },
+        "slack": {
+          "text": "Текст уведомления (виден в оповещениях)",
+          "username": "Имя бота (если рабочее пространство разрешает)",
+          "icon-url": "URL иконки бота",
+          "header": "Заголовок сообщения",
+          "body": "Текст сообщения (форматирование Slack)",
+          "button-text": "Надпись кнопки",
+          "button-url": "Ссылка кнопки"
+        },
+        "teams": {
+          "title": "Заголовок",
+          "color": "Цвет заголовка",
+          "color-default": "По умолчанию",
+          "color-accent": "Акцент",
+          "color-good": "Зелёный",
+          "color-warning": "Жёлтый",
+          "color-attention": "Красный",
+          "text": "Текст",
+          "code": "Моноширинный блок",
+          "button-title": "Текст кнопки",
+          "button-url": "Ссылка кнопки",
+          "add-button": "Добавить кнопку"
+        },
+        "telegram": {
+          "text": "Сообщение (HTML)",
+          "format": "Форматирование",
+          "bold": "Жирный",
+          "italic": "Курсив",
+          "underline": "Подчёркнутый",
+          "code": "Код",
+          "link": "Ссылка",
+          "button-text": "Текст кнопки",
+          "button-url": "Ссылка кнопки",
+          "add-button": "Добавить кнопку",
+          "disable-preview": "Скрыть превью ссылок",
+          "silent": "Отправить без звука"
+        }
       }
     },
     "mail-templates": {
@@ -3829,7 +3935,75 @@
           "enabled": "Активна",
           "auto-reply": "Автоответ",
           "no-auto-reply": "Использовать автоответ по умолчанию"
+        },
+        "fields": {
+          "title": "Поля",
+          "empty": "Полей нет. Игроки заполняют только заголовок и сообщение.",
+          "add": "Добавить поле",
+          "untitled": "Поле без названия",
+          "required": "Обязательное",
+          "conditional": "С условием",
+          "edit": "Изменить поле",
+          "remove": "Удалить поле",
+          "inputs": {
+            "label": "Название",
+            "key": "Ключ",
+            "type": "Тип",
+            "required": "Обязательное",
+            "placeholder": "Подсказка в поле",
+            "help": "Пояснение под полем",
+            "min-value": "Минимальное значение",
+            "max-value": "Максимальное значение",
+            "min-length": "Минимальная длина",
+            "max-length": "Максимальная длина",
+            "options": "Варианты",
+            "option-value": "Значение",
+            "option-label": "Название",
+            "add-option": "Добавить вариант",
+            "conditions": "Показывать только по условиям",
+            "match-all": "Если выполнены все правила",
+            "match-any": "Если выполнено любое правило",
+            "add-rule": "Добавить правило",
+            "choose-field": "Выберите поле",
+            "choose-option": "Выберите вариант",
+            "value": "Значение",
+            "checked": "Отмечено",
+            "unchecked": "Не отмечено"
+          },
+          "types": {
+            "TEXT": "Короткий текст",
+            "TEXTAREA": "Длинный текст",
+            "NUMBER": "Число",
+            "EMAIL": "E-mail",
+            "URL": "Ссылка",
+            "DATE": "Дата",
+            "SELECT": "Выпадающий список",
+            "MULTISELECT": "Несколько вариантов",
+            "CHECKBOX": "Флажок"
+          },
+          "operators": {
+            "EQUALS": "равно",
+            "NOT_EQUALS": "не равно",
+            "CONTAINS": "содержит",
+            "FILLED": "заполнено",
+            "EMPTY": "пусто"
+          },
+          "errors": {
+            "REQUIRED": "Обязательно.",
+            "INVALID": "Недопустимое значение.",
+            "TOO_SHORT": "Слишком коротко.",
+            "TOO_LONG": "Слишком длинно.",
+            "DUPLICATE": "Уже используется.",
+            "TOO_MANY": "Слишком много.",
+            "UNKNOWN_FIELD": "Выберите поле выше.",
+            "OUT_OF_RANGE": "Вне допустимого диапазона.",
+            "UNKNOWN_OPTION": "Нет среди вариантов."
+          }
         }
+      },
+      "edit-ticket-fields": {
+        "title": "Изменить поля",
+        "choose-option": "Выберите вариант"
       },
       "add-edit-language": {
         "create-language": "Создать язык",
@@ -4342,6 +4516,19 @@
           "password": "Пароль должен содержать от 6 до 128 символов",
           "password-repeat": "Пароли не совпадают",
           "failed": "Не удалось создать пользователя."
+        },
+        "password-tools": {
+          "show": "Показать пароль",
+          "hide": "Скрыть пароль",
+          "generate": "Сгенерировать пароль",
+          "generated": "Сгенерированный пароль",
+          "length": "Длина: {length}",
+          "digits": "Цифры",
+          "symbols": "Символы",
+          "regenerate": "Сгенерировать заново",
+          "copy": "Копировать",
+          "copied": "Скопировано",
+          "use": "Использовать пароль"
         }
       },
       "edit-player": {
@@ -4740,6 +4927,16 @@
       "locked-theme": "Несовместимо с этим Pano (собрано для уровня API {level}). Его нельзя активировать, пока вы не обновите его.",
       "held": "Требуется {name}, но он несовместим с этим Pano: обновите {name}. После этого аддон запустится сам.",
       "held-short": "Ожидает {name}"
+    },
+    "translations-button": {
+      "title": "Переводы",
+      "hint": "Один текст на каждый язык. Если язык оставить пустым, будет показан текст по умолчанию.",
+      "loading": "Загрузка языков...",
+      "no-locales": "Других языков нет. Добавьте язык на странице «Языки».",
+      "errors": {
+        "TOO_LONG": "Слишком длинно.",
+        "INVALID": "Недопустимое значение."
+      }
     }
   },
   "page-error": {
@@ -4936,7 +5133,8 @@
     "RESET_MAIL_LAYOUT": "**{username}** сбросил(а) макет писем «{layoutName}» к стандартному.",
     "CREATED_MAIL_LAYOUT": "**{username}** создал(а) макет писем «{layoutName}».",
     "DELETED_MAIL_LAYOUT": "**{username}** удалил(а) макет писем «{layoutName}».",
-    "CHANGED_MAIL_TEMPLATE_LAYOUT": "**{username}** выбрал(а) для письма \"{mailKey}\" {layout, select, none {вариант без макета} other {макет «{layout}»}}."
+    "CHANGED_MAIL_TEMPLATE_LAYOUT": "**{username}** выбрал(а) для письма \"{mailKey}\" {layout, select, none {вариант без макета} other {макет «{layout}»}}.",
+    "EDITED_TICKET_FIELDS": "**{username}** изменил поля тикета #{ticketId}."
   },
   "notifications": {
     "NEW_TICKET_MESSAGE": "<b>{username}</b> отправил сообщение в тикете (<b>#{id}</b>).",
