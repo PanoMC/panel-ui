@@ -44,7 +44,7 @@ export function createWebhooksApi(client, request) {
     /** `{ items: [endpoint], limit }`; the secret and every header value read `********`. */
     listEndpoints: () => call('get', { path: '/panel/webhooks' }),
 
-    /** `{ items: [{ source, title, events: [{ name, subscribable, sample }] }] }` */
+    /** `{ items: [{ source, title, events: [{ name, subscribable, sample, discord }] }] }` */
     listEvents: () => call('get', { path: '/panel/webhooks/events' }),
 
     /** `{ id, secret? }` - the secret is in this answer only. */
@@ -54,6 +54,9 @@ export function createWebhooksApi(client, request) {
     updateEndpoint: (id, body) => call('put', { path: `/panel/webhooks/${id}`, body }),
 
     deleteEndpoint: (id) => call('delete', { path: `/panel/webhooks/${id}` }),
+
+    /** `{ body, warning }`: the Discord body of `template` with the event's sample data; nothing is sent. */
+    previewTemplate: (body) => call('post', { path: '/panel/webhooks/preview', body }),
 
     /** `{ statusCode, durationMs, error }` */
     testEndpoint: (id) => call('post', { path: `/panel/webhooks/${id}/test`, body: {} }),

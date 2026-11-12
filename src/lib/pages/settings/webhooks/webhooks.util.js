@@ -4,7 +4,23 @@
  * codes turned into lang keys. No Svelte and no HTTP client in here.
  */
 
-export const WEBHOOK_FORMATS = ['JSON', 'DISCORD'];
+export const WEBHOOK_FORMATS = ['JSON', 'DISCORD', 'SLACK', 'TELEGRAM', 'TEAMS', 'CUSTOM'];
+/** The formats that take a message template per event (`JSON` is the plain envelope). */
+export const TEMPLATED_FORMATS = ['DISCORD', 'SLACK', 'TELEGRAM', 'TEAMS', 'CUSTOM'];
+/** The chat services never check a signature: their endpoints are sent unsigned. */
+export const UNSIGNED_FORMATS = ['DISCORD', 'SLACK', 'TELEGRAM', 'TEAMS'];
+/** The icon of each format in the form and the list. */
+export const FORMAT_ICONS = {
+  JSON: 'fa-solid fa-code',
+  DISCORD: 'fa-brands fa-discord',
+  SLACK: 'fa-brands fa-slack',
+  TELEGRAM: 'fa-brands fa-telegram',
+  TEAMS: 'fa-brands fa-microsoft',
+  CUSTOM: 'fa-solid fa-sliders',
+};
+
+export const isTemplatedFormat = (format) => TEMPLATED_FORMATS.includes(format);
+export const isUnsignedFormat = (format) => UNSIGNED_FORMATS.includes(format);
 export const WEBHOOK_SIGNINGS = ['NONE', 'HMAC_SHA256'];
 /** The value a stored secret or header value reads back as; sending it back keeps the stored one. */
 export const MASK = '********';
@@ -64,6 +80,7 @@ export function normalizeCatalogue(body) {
           name: String(event.name),
           subscribable: true,
           sample: event.sample ?? null,
+          discord: event.discord ?? null,
         })),
     }))
     .filter((item) => item.source !== '' && item.events.length > 0)
@@ -143,7 +160,34 @@ export function isDiscordUrl(text) {
   return hostOk && url.pathname.startsWith('/api/webhooks/');
 }
 
-/** Error code of the URL input or null: REQUIRED, TOO_LONG, INVALID_URL, DISCORD_URL. */
+const TELEGRAM_TOKEN = /^\d+:[A-Za-z0-9_-]+$/;
+
+/** The bot token and chat of a Telegram `sendMessage` URL (empty texts when it is none). */
+export function telegramParts(text) {
+  const url = parseHttpUrl(text);
+  const match = url && url.hostname === 'api.telegram.org' ? /^\/bot([^/]+)\/sendMessage$/.exec(url.pathname) : null;
+
+  return { token: match ? decodeURIComponent(match[1]) : '', chat: url?.searchParams.get('chat_id') ?? '' };
+}
+
+/** The `sendMessage` URL of a bot token and a chat id (or `@channel`). */
+export function telegramUrl(token, chat) {
+  const bot = String(token ?? '').trim();
+  const id = String(chat ?? '').trim();
+
+  if (bot === '' && id === '') return '';
+
+  return `https://api.telegram.org/bot${bot}/sendMessage?chat_id=${encodeURIComponent(id)}`;
+}
+
+/** A Telegram `sendMessage` address with a bot token and a chat. */
+export function isTelegramUrl(text) {
+  const { token, chat } = telegramParts(text);
+
+  return parseHttpUrl(text)?.protocol === 'https:' && TELEGRAM_TOKEN.test(token) && chat !== '';
+}
+
+/** Error code of the URL input or null: REQUIRED, TOO_LONG, INVALID_URL, DISCORD_URL, TELEGRAM_URL. */
 export function validateUrl(text, format) {
   const value = String(text ?? '').trim();
 
@@ -151,6 +195,7 @@ export function validateUrl(text, format) {
   if (value.length > MAX_URL_LENGTH) return 'TOO_LONG';
   if (!parseHttpUrl(value)) return 'INVALID_URL';
   if (format === 'DISCORD' && !isDiscordUrl(value)) return 'DISCORD_URL';
+  if (format === 'TELEGRAM' && !isTelegramUrl(value)) return 'TELEGRAM_URL';
 
   return null;
 }
@@ -239,7 +284,7 @@ export function headersBody(rows) {
 // Template
 // ---------------------------------------------------------------------------------------------
 
-/** Error code of a custom Discord template or null: REQUIRED, TOO_LONG, INVALID_JSON. */
+/** Error code of a Discord template text or null: REQUIRED, TOO_LONG, INVALID_JSON. */
 export function templateError(text) {
   const value = String(text ?? '');
 
@@ -269,8 +314,7 @@ export function blankForm() {
     events: [],
     signing: 'HMAC_SHA256',
     headers: [],
-    customTemplate: false,
-    template: '',
+    templates: {},
     maxAttempts: String(DEFAULT_MAX_ATTEMPTS),
     enabled: true,
   };
@@ -280,7 +324,7 @@ export function blankForm() {
 export function formFromEndpoint(endpoint) {
   const events = Array.isArray(endpoint?.events) ? endpoint.events : [];
   const format = WEBHOOK_FORMATS.includes(endpoint?.format) ? endpoint.format : 'JSON';
-  const template = typeof endpoint?.template === 'string' ? endpoint.template : '';
+  const templates = storedTemplates(endpoint);
 
   return {
     name: endpoint?.name ?? '',
@@ -288,23 +332,49 @@ export function formFromEndpoint(endpoint) {
     format,
     allEvents: events.includes(WILDCARD),
     events: events.filter((name) => name !== WILDCARD),
-    signing: format === 'DISCORD' || endpoint?.signing !== 'HMAC_SHA256' ? 'NONE' : 'HMAC_SHA256',
+    signing: isUnsignedFormat(format) || endpoint?.signing !== 'HMAC_SHA256' ? 'NONE' : 'HMAC_SHA256',
     headers: headerRows(endpoint?.headers),
-    customTemplate: format === 'DISCORD' && template !== '',
-    template,
+    templates: isTemplatedFormat(format) ? templates : {},
     maxAttempts: String(endpoint?.maxAttempts ?? DEFAULT_MAX_ATTEMPTS),
     enabled: endpoint?.enabled !== false,
   };
 }
 
-/** Format change: Discord never signs, and only Discord has a template. */
+/**
+ * The templates of a stored endpoint by event pattern. An endpoint saved before templates per event
+ * only has `template`: it is the template of every event (`*`).
+ */
+export function storedTemplates(endpoint) {
+  const out = {};
+  const templates = endpoint?.templates;
+
+  if (templates && typeof templates === 'object' && !Array.isArray(templates)) {
+    for (const [key, value] of Object.entries(templates)) {
+      if (typeof value === 'string' && value.trim() !== '') out[key] = value;
+    }
+  } else if (typeof endpoint?.template === 'string' && endpoint.template.trim() !== '') {
+    out[WILDCARD] = endpoint.template;
+  }
+
+  return out;
+}
+
+/**
+ * Format change: a chat service never signs, and a template belongs to its format. The templates
+ * of the format being left are kept aside (`stash`) and come back when it is chosen again, so a
+ * look at another format loses nothing; only the chosen format's templates are saved.
+ */
 export function withFormat(form, format) {
   const next = { ...form, format };
 
-  if (format === 'DISCORD') {
-    next.signing = 'NONE';
-  } else {
-    next.customTemplate = false;
+  if (isUnsignedFormat(format)) next.signing = 'NONE';
+
+  if (format !== form.format) {
+    const stash = { ...(form.stash ?? {}), [form.format]: form.templates ?? {} };
+
+    next.templates = stash[format] ?? {};
+    delete stash[format];
+    next.stash = stash;
   }
 
   return next;
@@ -354,8 +424,8 @@ export function buildBody(form) {
 
   if (!WEBHOOK_FORMATS.includes(form.format)) errors.format = 'INVALID';
 
-  const discord = form.format === 'DISCORD';
-  const signing = discord ? 'NONE' : form.signing;
+  const templated = isTemplatedFormat(form.format);
+  const signing = isUnsignedFormat(form.format) ? 'NONE' : form.signing;
 
   if (!WEBHOOK_SIGNINGS.includes(signing)) errors.signing = 'INVALID';
 
@@ -368,12 +438,18 @@ export function buildBody(form) {
 
   if (Object.keys(rowErrors.byIndex).length > 0 || rowErrors.tooMany) errors.headers = rowErrors;
 
-  const customTemplate = discord && form.customTemplate === true;
+  const templates = {};
 
-  if (customTemplate) {
-    const problem = templateError(form.template);
+  if (templated) {
+    for (const [key, value] of Object.entries(form.templates ?? {})) {
+      if (typeof value !== 'string' || value.trim() === '') continue;
 
-    if (problem) errors.template = problem;
+      if (value.length > MAX_TEMPLATE_LENGTH) {
+        errors.templates = { ...errors.templates, [key]: 'TOO_LONG' };
+      } else {
+        templates[key] = value;
+      }
+    }
   }
 
   const attempts = parseMaxAttempts(form.maxAttempts);
@@ -390,7 +466,7 @@ export function buildBody(form) {
       format: form.format,
       signing,
       headers: headersBody(form.headers),
-      template: customTemplate ? form.template : null,
+      templates: templated ? templates : null,
       enabled: form.enabled !== false,
       maxAttempts: attempts,
     },
@@ -411,6 +487,11 @@ export function serverFieldErrors(error) {
   for (const [field, value] of Object.entries(fields)) {
     if (field.startsWith('headers.')) {
       byName[field.slice('headers.'.length)] = String(value);
+    } else if (field.startsWith('templates.') || field === 'template') {
+      // `template` is the older single template, stored as the one of every event
+      const key = field === 'template' ? WILDCARD : field.slice('templates.'.length);
+
+      out.templates = { ...out.templates, [key]: String(value) };
     } else if (field === 'headers') {
       out.headers = { byName, tooMany: String(value) === 'TOO_MANY' };
     } else {
@@ -583,6 +664,8 @@ const FIELD_CODES = new Set([
   'DUPLICATE',
   'OUT_OF_RANGE',
   'NOT_ALLOWED',
+  'INVALID_EVENT',
+  'EMPTY',
   'UNKNOWN_EVENT',
   'MALFORMED',
   'SCHEME',
@@ -590,6 +673,7 @@ const FIELD_CODES = new Set([
   'HOST',
   'PORT',
   'DISCORD_URL',
+  'TELEGRAM_URL',
   'DNS',
   'PRIVATE_ADDRESS',
 ]);

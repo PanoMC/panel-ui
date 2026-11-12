@@ -1,10 +1,26 @@
 <!-- Create or edit a webhook endpoint. After a save that made a signing secret the same dialog shows it once. -->
 <div class="modal fade" bind:this={element} role="dialog" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    class:modal-xl={templateEvent !== null}
+    role="document">
     <div class="modal-content">
       <div class="modal-header">
+        {#if templateEvent !== null && !secret}
+          <button
+            class="btn btn-link px-1 me-2"
+            type="button"
+            data-template-back
+            title={$_('buttons.back')}
+            aria-label={$_('buttons.back')}
+            onclick={closeTemplate}>
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+          </button>
+        {/if}
         <h5 class="modal-title text-capitalize">
-          {#if secret}
+          {#if templateEvent !== null && !secret}
+            {$_('pages.webhooks.template.title')}
+          {:else if secret}
             {$_('pages.webhooks.secret.title')}
           {:else if editing !== null}
             {$_('pages.webhooks.form.title-edit')}
@@ -25,6 +41,28 @@
             {$_('pages.webhooks.secret.done')}
           </button>
         </div>
+      {:else if templateEvent !== null}
+        <div class="modal-body">
+          {#key templateEvent}
+            <WebhookTemplateEditor
+              event={templateEvent}
+              format={form.format}
+              info={templateInfoFor(templateInfo[templateEvent], form.format)}
+              bind:text={templateText}
+              error={shown.templates?.[templateEvent] ?? ''}
+              webhookName={form.name}
+              previewTemplate={controller.previewTemplate} />
+          {/key}
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-primary w-100"
+            type="button"
+            data-template-apply
+            onclick={applyTemplate}>
+            {$_('pages.webhooks.template.apply')}
+          </button>
+        </div>
       {:else}
         <form onsubmit={submit} novalidate>
           <div class="modal-body">
@@ -42,12 +80,12 @@
                 {@render problem(shown.name)}
               </div>
 
-              <div>
-                <div
-                  class="btn-group w-100"
-                  role="group"
-                  aria-label={$_('pages.webhooks.form.format')}>
-                  {#each WEBHOOK_FORMATS as format (format)}
+              <div
+                class="row row-cols-2 row-cols-sm-3 g-2"
+                role="radiogroup"
+                aria-label={$_('pages.webhooks.form.format')}>
+                {#each WEBHOOK_FORMATS as format (format)}
+                  <div class="col">
                     <input
                       type="radio"
                       class="btn-check"
@@ -55,32 +93,60 @@
                       id="webhookFormat{format}"
                       autocomplete="off"
                       checked={form.format === format}
-                      onchange={() => (form = withFormat(form, format))} />
+                      onchange={() => changeFormat(format)} />
                     <label
-                      class="btn btn-outline-primary text-capitalize"
+                      class="btn btn-outline-primary text-capitalize w-100 text-nowrap"
                       for="webhookFormat{format}">
-                      {#if format === 'DISCORD'}
-                        <i class="fa-brands fa-discord me-1" aria-hidden="true"></i>
-                      {/if}
+                      <i class="{FORMAT_ICONS[format]} me-1" aria-hidden="true"></i>
                       {$_(`pages.webhooks.format.${format}`)}
                     </label>
-                  {/each}
-                </div>
+                  </div>
+                {/each}
               </div>
 
-              <div>
-                <input
-                  class="form-control"
-                  class:is-invalid={shown.url}
-                  type="text"
-                  inputmode="url"
-                  maxlength="1024"
-                  autocomplete="off"
-                  data-field="url"
-                  placeholder={$_('pages.webhooks.form.url')}
-                  bind:value={form.url} />
-                {@render problem(shown.url)}
-              </div>
+              {#if form.format === 'TELEGRAM'}
+                <div>
+                  <div class="input-group">
+                    <input
+                      class="form-control"
+                      class:is-invalid={shown.url}
+                      type="text"
+                      autocomplete="off"
+                      spellcheck="false"
+                      data-field="telegramToken"
+                      aria-label={$_('pages.webhooks.form.telegram-token')}
+                      placeholder={$_('pages.webhooks.form.telegram-token')}
+                      value={telegram.token}
+                      oninput={(event) => setTelegram({ token: event.currentTarget.value })} />
+                    <input
+                      class="form-control"
+                      class:is-invalid={shown.url}
+                      type="text"
+                      autocomplete="off"
+                      spellcheck="false"
+                      data-field="telegramChat"
+                      aria-label={$_('pages.webhooks.form.telegram-chat')}
+                      placeholder={$_('pages.webhooks.form.telegram-chat')}
+                      value={telegram.chat}
+                      oninput={(event) => setTelegram({ chat: event.currentTarget.value })} />
+                  </div>
+                  {@render problem(shown.url)}
+                </div>
+              {:else}
+                <div>
+                  <input
+                    class="form-control"
+                    class:is-invalid={shown.url}
+                    type="text"
+                    inputmode="url"
+                    maxlength="1024"
+                    autocomplete="off"
+                    data-field="url"
+                    placeholder={$_(`pages.webhooks.form.url-${form.format}`)}
+                    bind:value={form.url} />
+                  {@render problem(shown.url)}
+                </div>
+              {/if}
 
               <WebhookEvents bind:form {catalogue} {initialEvents} error={shown.events ?? ''} />
 
@@ -90,7 +156,7 @@
                     <select
                       id="webhookSigning"
                       class="form-select"
-                      disabled={discord}
+                      disabled={unsigned}
                       value={form.signing}
                       onchange={(event) =>
                         (form = { ...form, signing: event.currentTarget.value })}>
@@ -171,31 +237,58 @@
                 </div>
               </div>
 
-              {#if discord}
-                <div>
-                  <div class="form-check form-switch mb-2">
-                    <input
-                      id="webhookCustomTemplate"
-                      class="form-check-input"
-                      type="checkbox"
-                      role="switch"
-                      bind:checked={form.customTemplate} />
-                    <label class="form-check-label" for="webhookCustomTemplate">
-                      {$_('pages.webhooks.form.custom-template')}
-                    </label>
+              {#if templated}
+                <div data-templates>
+                  <div class="small text-muted mb-1 text-capitalize">
+                    {$_('pages.webhooks.template.list')}
                   </div>
-                  {#if form.customTemplate}
-                    <textarea
-                      class="form-control font-monospace"
-                      class:is-invalid={shown.template}
-                      rows="8"
-                      spellcheck="false"
-                      data-field="template"
-                      aria-label={$_('pages.webhooks.form.template')}
-                      placeholder={$_('pages.webhooks.form.template')}
-                      bind:value={form.template}></textarea>
-                    {@render problem(shown.template)}
-                  {/if}
+                  <div class="list-group">
+                    {#each templateRows as row (row.key)}
+                      <div
+                        class="list-group-item d-flex align-items-center gap-2"
+                        class:border-danger={shown.templates?.[row.key]}
+                        data-template-row={row.key}>
+                        <div class="me-auto text-truncate">
+                          {#if row.key === WILDCARD}
+                            {$_('pages.webhooks.template.every-event')}
+                          {:else}
+                            <code>{row.key}</code>
+                          {/if}
+                          <span
+                            class="badge ms-1"
+                            class:text-bg-primary={row.state === 'custom'}
+                            class:text-bg-secondary={row.state !== 'custom'}>
+                            {$_(`pages.webhooks.template.state.${row.state}`)}
+                          </span>
+                          {#if shown.templates?.[row.key]}
+                            <div class="invalid-feedback d-block">
+                              {$_(fieldErrorKey(shown.templates[row.key]))}
+                            </div>
+                          {/if}
+                        </div>
+                        <button
+                          class="btn btn-sm btn-link"
+                          type="button"
+                          data-template-edit={row.key}
+                          title={$_('buttons.edit')}
+                          aria-label={$_('buttons.edit')}
+                          onclick={() => openTemplate(row.key)}>
+                          <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                        </button>
+                        {#if row.state === 'custom'}
+                          <button
+                            class="btn btn-sm btn-link text-danger"
+                            type="button"
+                            data-template-remove={row.key}
+                            title={$_('pages.webhooks.template.reset')}
+                            aria-label={$_('pages.webhooks.template.reset')}
+                            onclick={() => removeTemplate(row.key)}>
+                            <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+                          </button>
+                        {/if}
+                      </div>
+                    {/each}
+                  </div>
                 </div>
               {/if}
 
@@ -242,10 +335,18 @@
 
   import WebhookEvents from './WebhookEvents.svelte';
   import WebhookSecretReveal from './WebhookSecretReveal.svelte';
+  import WebhookTemplateEditor from './WebhookTemplateEditor.svelte';
+  import { coveredEvents, templateInfoFor } from './discord.util.js';
   import {
+    FORMAT_ICONS,
     MAX_HEADERS,
     WEBHOOK_FORMATS,
     WEBHOOK_SIGNINGS,
+    WILDCARD,
+    isTemplatedFormat,
+    isUnsignedFormat,
+    telegramParts,
+    telegramUrl,
     blankForm,
     buildBody,
     fieldErrorKey,
@@ -260,7 +361,12 @@
 
   // The controller is fixed for the life of the page.
   // svelte-ignore state_referenced_locally
-  const { saving, serverErrors, catalogue: catalogueStore } = controller;
+  const {
+    saving,
+    serverErrors,
+    catalogue: catalogueStore,
+    templateInfo: templateInfoStore,
+  } = controller;
 
   let element = $state();
   let form = $state(blankForm());
@@ -270,10 +376,47 @@
   let submitted = $state(false);
   /** The signing secret just made; the dialog shows it instead of the form while it is set. */
   let secret = $state('');
+  /** The event whose Discord message is being edited (the dialog shows the editor), or null. */
+  let templateEvent = $state(/** @type {string | null} */ (null));
+  let templateText = $state('');
   let modal;
 
   const catalogue = $derived($catalogueStore);
-  const discord = $derived(form.format === 'DISCORD');
+  const templateInfo = $derived($templateInfoStore ?? {});
+
+  /**
+   * One row per event the endpoint covers, plus the older single template of every event while it
+   * is there. `custom`: its own template; `inherited`: the `source.*` or `*` one; `default`: built in.
+   */
+  const templateRows = $derived.by(() => {
+    const templates = form.templates ?? {};
+    const rows = [];
+
+    if (templates[WILDCARD]) rows.push({ key: WILDCARD, state: 'custom' });
+
+    for (const name of coveredEvents(form, catalogue)) {
+      const own = templates[name];
+      const inherited = templates[`${name.split('.')[0]}.*`] ?? templates[WILDCARD];
+
+      rows.push({ key: name, state: own ? 'custom' : inherited ? 'inherited' : 'default' });
+    }
+
+    return rows;
+  });
+  const templated = $derived(isTemplatedFormat(form.format));
+  const unsigned = $derived(isUnsignedFormat(form.format));
+  /** The bot token and chat of a Telegram endpoint: the URL is made from them. */
+  const telegram = $derived(telegramParts(form.url));
+
+  function setTelegram(change) {
+    const next = { ...telegram, ...change };
+
+    form.url = telegramUrl(next.token, next.chat);
+  }
+
+  function changeFormat(format) {
+    form = withFormat(form, format);
+  }
   const local = $derived(submitted ? (buildBody(form).errors ?? {}) : {});
   const shown = $derived({ ...local, ...$serverErrors });
 
@@ -295,6 +438,7 @@
   /** @param {any} [endpoint] the endpoint to edit, or nothing to create one */
   export function show(endpoint = null) {
     secret = '';
+    templateEvent = null;
     submitted = false;
     controller.serverErrors.set({});
     editing = endpoint ? endpoint.id : null;
@@ -311,8 +455,60 @@
 
   export function hide() {
     modal?.hide();
+    templateEvent = null;
     // The secret must not outlive the dialog: it is shown once.
     secret = '';
+  }
+
+  /** The template an event uses now: its own, else the inherited one, else '' (the built-in one). */
+  function templateOf(key) {
+    const templates = form.templates ?? {};
+
+    if (key === WILDCARD) return templates[WILDCARD] ?? '';
+
+    return templates[key] ?? templates[`${key.split('.')[0]}.*`] ?? templates[WILDCARD] ?? '';
+  }
+
+  function openTemplate(key) {
+    templateText = templateOf(key);
+    templateEvent = key;
+  }
+
+  function closeTemplate() {
+    templateEvent = null;
+  }
+
+  /** Keeps the edited text as the event's own template; the built-in text unchanged keeps none. */
+  function applyTemplate() {
+    const key = templateEvent;
+
+    if (key === null) return;
+
+    const builtIn = templateInfoFor(templateInfo[key], form.format)?.defaultTemplate ?? null;
+    const next = { ...(form.templates ?? {}) };
+
+    if (key !== WILDCARD && (templateText.trim() === '' || templateText === builtIn)) {
+      delete next[key];
+    } else {
+      next[key] = templateText;
+    }
+
+    form.templates = next;
+
+    // a fixed template no longer shows the server's complaint
+    if ($serverErrors.templates?.[key]) {
+      const { [key]: _fixed, ...rest } = $serverErrors.templates;
+
+      controller.serverErrors.set({ ...$serverErrors, templates: rest });
+    }
+
+    templateEvent = null;
+  }
+
+  function removeTemplate(key) {
+    const { [key]: _removed, ...rest } = form.templates ?? {};
+
+    form.templates = rest;
   }
 
   function addHeader() {

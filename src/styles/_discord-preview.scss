@@ -1,0 +1,235 @@
+// The Discord message preview of the webhook template editor. Discord's own dark colours on purpose:
+// the owner sees the message the way the channel shows it, whatever the panel theme is.
+.discord-preview {
+  --discord-bg: #313338;
+  --discord-embed-bg: #2b2d31;
+  --discord-text: #dbdee1;
+  --discord-muted: #949ba4;
+  --discord-header: #f2f3f5;
+  --discord-link: #00a8fc;
+  --discord-code: #1e1f22;
+
+  background: var(--discord-bg);
+  color: var(--discord-text);
+  border-radius: $border-radius;
+  padding: 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.375;
+  min-height: 8rem;
+  overflow-wrap: anywhere;
+
+  a {
+    color: var(--discord-link);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  strong {
+    font-weight: 700;
+  }
+}
+
+.discord-message {
+  display: flex;
+  gap: 1rem;
+}
+
+.discord-avatar {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.discord-avatar-default {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #5865f2;
+  color: #fff;
+  font-size: 1.25rem;
+}
+
+.discord-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.discord-header {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.125rem;
+}
+
+.discord-username {
+  color: var(--discord-header);
+  font-weight: 500;
+}
+
+.discord-app {
+  background: #5865f2;
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 600;
+  border-radius: 0.1875rem;
+  padding: 0 0.275rem;
+  line-height: 1rem;
+}
+
+.discord-content {
+  margin-bottom: 0.25rem;
+}
+
+.discord-embed {
+  background: var(--discord-embed-bg);
+  border-left: 4px solid #4e5058;
+  border-radius: 4px;
+  max-width: 520px;
+  padding: 0.5rem 1rem 1rem 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.discord-embed-grid {
+  display: flex;
+  gap: 1rem;
+}
+
+.discord-embed-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.discord-embed-author,
+.discord-embed-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+
+  img {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
+
+.discord-embed-author {
+  color: var(--discord-header);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.discord-embed-footer {
+  color: var(--discord-muted);
+  font-size: 0.75rem;
+}
+
+.discord-embed-title {
+  color: var(--discord-header);
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.discord-embed-description {
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.discord-embed-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.discord-embed-field {
+  flex: 1 1 100%;
+  font-size: 0.875rem;
+}
+
+.discord-embed-field-inline {
+  flex: 1 1 calc(33% - 1rem);
+  min-width: 7rem;
+}
+
+.discord-embed-field-name {
+  color: var(--discord-header);
+  font-weight: 600;
+  margin-bottom: 0.125rem;
+}
+
+.discord-embed-image {
+  display: block;
+  max-width: 100%;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+.discord-embed-thumbnail {
+  flex: 0 0 80px;
+  width: 80px;
+  height: 80px;
+  border-radius: 4px;
+  object-fit: cover;
+  margin-top: 0.5rem;
+}
+
+.discord-code {
+  background: var(--discord-code);
+  border-radius: 3px;
+  padding: 0 0.2em;
+  font-size: 0.85em;
+  color: inherit;
+}
+
+.discord-code-block {
+  background: var(--discord-code);
+  border: 1px solid #1a1b1e;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin: 0.375rem 0;
+  font-size: 0.8125rem;
+  white-space: pre-wrap;
+  color: inherit;
+}
+
+.discord-quote {
+  display: block;
+  border-left: 4px solid #4e5058;
+  padding-left: 0.75rem;
+}
+
+.discord-h1,
+.discord-h2,
+.discord-h3 {
+  display: block;
+  color: var(--discord-header);
+  font-weight: 700;
+}
+
+.discord-h1 {
+  font-size: 1.5rem;
+}
+
+.discord-h2 {
+  font-size: 1.25rem;
+}
+
+.discord-h3 {
+  font-size: 1rem;
+}
+
+.discord-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 6rem;
+  color: var(--discord-muted);
+  font-size: 1.5rem;
+}

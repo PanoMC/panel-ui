@@ -6,6 +6,11 @@ $pano-asset-path: '/panel/assets/';
 @import 'workspace';
 @import 'alerts';
 @import 'row-action';
+@import 'discord-preview';
+@import 'webhook-slack-preview';
+@import 'webhook-telegram-preview';
+@import 'webhook-teams-preview';
+@import 'webhook-custom-preview';
 $fa-font-path: '#{$pano-asset-path}webfonts';
 
 @import 'node_modules/tippy.js/dist/tippy';

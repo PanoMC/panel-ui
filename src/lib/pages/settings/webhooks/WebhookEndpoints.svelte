@@ -130,17 +130,25 @@
                 </div>
               </th>
               <td class="align-middle text-break">{endpoint.name}</td>
-              <td class="align-middle text-nowrap" title={endpoint.url}>
-                {shortUrl(endpoint.url)}
-              </td>
+              {#if endpoint.format === 'TELEGRAM'}
+                <!-- the bot token is a secret: only the chat is shown -->
+                <td class="align-middle text-nowrap">
+                  api.telegram.org · {telegramParts(endpoint.url).chat}
+                </td>
+              {:else}
+                <td class="align-middle text-nowrap" title={endpoint.url}>
+                  {shortUrl(endpoint.url)}
+                </td>
+              {/if}
               <td class="align-middle text-nowrap">
                 {count === null ? $_('pages.webhooks.endpoints.all-events') : count}
               </td>
               <td class="align-middle text-nowrap">
-                {#if endpoint.format === 'DISCORD'}
-                  <i class="fa-brands fa-discord me-1" aria-hidden="true"></i>
-                {/if}
-                {$_(`pages.webhooks.format.${endpoint.format === 'DISCORD' ? 'DISCORD' : 'JSON'}`)}
+                <i class="{FORMAT_ICONS[endpoint.format] ?? FORMAT_ICONS.JSON} me-1" aria-hidden="true"
+                ></i>
+                {$_(
+                  `pages.webhooks.format.${WEBHOOK_FORMATS.includes(endpoint.format) ? endpoint.format : 'JSON'}`,
+                )}
               </td>
               <td class="align-middle text-nowrap">
                 {#if status.kind === 'enabled'}
@@ -182,7 +190,15 @@
   import NoContent from '$lib/components/NoContent.svelte';
 
   import WebhookModal from './WebhookModal.svelte';
-  import { endpointStatus, eventsCount, shortUrl, sourceOptions } from './webhooks.util.js';
+  import {
+    FORMAT_ICONS,
+    WEBHOOK_FORMATS,
+    endpointStatus,
+    eventsCount,
+    shortUrl,
+    sourceOptions,
+    telegramParts,
+  } from './webhooks.util.js';
 
   /**
    * The Endpoints tab: the webhook endpoints with their menu (edit, test, deliveries, regenerate

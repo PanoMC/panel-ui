@@ -174,7 +174,7 @@ describe('request body', () => {
       format: 'JSON',
       signing: 'HMAC_SHA256',
       headers: {},
-      template: null,
+      templates: null,
       enabled: true,
       maxAttempts: 8,
     });
@@ -190,23 +190,54 @@ describe('request body', () => {
     expect(built.body.events).toEqual(['core.user.registered', 'market.*']);
   });
 
-  test('Discord is sent unsigned, with the template only when customized', () => {
-    const discord = withFormat(
-      filled({ url: 'https://discord.com/api/webhooks/1/a', template: '{"content":"hi"}' }),
-      'DISCORD',
-    );
+  test('Discord is sent unsigned, with one template per event', () => {
+    const discord = withFormat(filled({ url: 'https://discord.com/api/webhooks/1/a' }), 'DISCORD');
 
     expect(buildBody(discord).body).toMatchObject({
       format: 'DISCORD',
       signing: 'NONE',
-      template: null,
+      templates: {},
     });
-    expect(buildBody({ ...discord, customTemplate: true }).body.template).toBe('{"content":"hi"}');
-    expect(buildBody({ ...discord, customTemplate: true, template: '{nope' }).errors.template).toBe(
-      'INVALID_JSON',
-    );
-    // Switching back to JSON drops the template switch.
-    expect(withFormat({ ...discord, customTemplate: true }, 'JSON').customTemplate).toBe(false);
+
+    const custom = {
+      ...discord,
+      templates: { 'core.ticket.created': '{"content":"hi"}', 'core.user.registered': ' ' },
+    };
+
+    expect(buildBody(custom).body.templates).toEqual({ 'core.ticket.created': '{"content":"hi"}' });
+    expect(
+      buildBody({ ...discord, templates: { '*': 'x'.repeat(20001) } }).errors.templates['*'],
+    ).toBe('TOO_LONG');
+    // Another format sends none of them, but they come back with a switch back.
+    const json = withFormat(custom, 'JSON');
+
+    expect(buildBody(json).body.templates).toBeNull();
+    expect(withFormat(withFormat(custom, 'SLACK'), 'DISCORD').templates).toEqual(custom.templates);
+    expect(withFormat(custom, 'SLACK').templates).toEqual({});
+  });
+
+  test('an endpoint from before templates per event keeps its template for every event', () => {
+    const form = formFromEndpoint({
+      format: 'DISCORD',
+      events: ['*'],
+      template: '{"content":"old"}',
+    });
+
+    expect(form.templates).toEqual({ '*': '{"content":"old"}' });
+    expect(
+      formFromEndpoint({
+        format: 'DISCORD',
+        events: ['*'],
+        templates: { 'core.*': 'a' },
+        template: null,
+      }).templates,
+    ).toEqual({ 'core.*': 'a' });
+    expect(
+      serverFieldErrors({
+        code: 'INVALID_FIELDS',
+        fields: { 'templates.core.ticket.created': 'INVALID_JSON' },
+      }),
+    ).toEqual({ templates: { 'core.ticket.created': 'INVALID_JSON' } });
   });
 
   test('every rule names its field', () => {
@@ -260,7 +291,7 @@ describe('request body', () => {
       format: 'JSON',
       signing: 'HMAC_SHA256',
       headers: { 'X-Token': MASK },
-      template: null,
+      templates: null,
       enabled: false,
       maxAttempts: 5,
     });

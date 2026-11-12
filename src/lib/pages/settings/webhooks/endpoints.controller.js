@@ -9,6 +9,7 @@ import {
   subscribesToSource,
   testOutcome,
 } from './webhooks.util.js';
+import { templateCatalogue } from './discord.util.js';
 
 /**
  * The state and the actions of the Endpoints tab. The page renders the stores; the tests drive the
@@ -24,6 +25,8 @@ export function createEndpointsController({ api, notify, confirm, initial = {} }
   const items = writable(/** @type {any[]} */ (initial.endpoints?.items ?? []));
   const limit = writable(initial.endpoints?.limit ?? DEFAULT_ENDPOINT_LIMIT);
   const catalogue = writable(normalizeCatalogue(initial.events));
+  /** The template editor data of every event, by full name (the test ping included). */
+  const templateInfo = writable(templateCatalogue(initial.events));
   /** The source the list is narrowed to ('' = all). */
   const source = writable(initial.source ?? '');
   const saving = writable(false);
@@ -54,7 +57,10 @@ export function createEndpointsController({ api, notify, confirm, initial = {} }
     }
 
     // The catalogue is only for the form; a failed read keeps the one that is there.
-    if (events.ok) catalogue.set(normalizeCatalogue(events.body));
+    if (events.ok) {
+      catalogue.set(normalizeCatalogue(events.body));
+      templateInfo.set(templateCatalogue(events.body));
+    }
 
     return list.ok;
   }
@@ -247,6 +253,7 @@ export function createEndpointsController({ api, notify, confirm, initial = {} }
     limit,
     full,
     catalogue,
+    templateInfo,
     source,
     saving,
     busy,
@@ -260,5 +267,8 @@ export function createEndpointsController({ api, notify, confirm, initial = {} }
     regenerateSecret,
     requestRegenerate,
     count: () => get(items).length,
+    /** The preview of the template editor: `{ ok, body: { body, warning } }`. */
+    previewTemplate: (event, template, format = 'DISCORD') =>
+      api.previewTemplate({ event, template, format }),
   };
 }
