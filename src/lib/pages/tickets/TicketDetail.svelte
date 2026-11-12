@@ -32,6 +32,50 @@
     </div>
   </PageActions>
 
+  <!-- The category's custom fields as they were filled in when the ticket was opened; staff can
+       change the values with the pencil. Tickets without fields show nothing here. -->
+  {#if ticketFields.length > 0}
+    <div class="card">
+      <div class="card-body py-2 px-3">
+        <div class="d-flex align-items-center mb-1">
+          <h6 class="mb-0">{$_('pages.ticket-detail.fields.title')}</h6>
+          <button
+            type="button"
+            class="btn btn-sm btn-link ms-auto"
+            title={$_('pages.ticket-detail.fields.edit')}
+            aria-label={$_('pages.ticket-detail.fields.edit')}
+            on:click={() => showEditTicketFieldsModal(data.ticket.id, ticketFields)}>
+            <i class="fas fa-pencil-alt"></i>
+          </button>
+        </div>
+        <dl class="row mb-0 small">
+          {#each ticketFields as entry (entry.key)}
+            {@const text = OPTION_TYPES.has(entry.type)
+              ? localizedDisplay(entry, $locale)
+              : displayValue(entry, $_, $locale)}
+            {@const link = text ? fieldLink(entry) : null}
+            {@const label = localized(entry.label, entry.i18n, $locale, 'label')}
+            <dt class="col-sm-4 text-body-secondary fw-normal text-truncate" title={label}>
+              {label}
+            </dt>
+            <dd class="col-sm-8 mb-1 text-break" style="white-space: pre-line;">
+              {#if !text}
+                <span class="text-body-secondary">—</span>
+              {:else if link}
+                <a
+                  href={link}
+                  target={entry.type === 'URL' ? '_blank' : undefined}
+                  rel={entry.type === 'URL' ? 'noopener noreferrer nofollow' : undefined}>{text}</a>
+              {:else}
+                {text}
+              {/if}
+            </dd>
+          {/each}
+        </dl>
+      </div>
+    </div>
+  {/if}
+
   <div class="card">
     <div class="card-header">
       <div class="row">
@@ -53,7 +97,14 @@
           >${
             data.ticket.category.title === '-'
               ? escapeHtml($_('pages.ticket-detail.no-category'))
-              : escapeHtml(data.ticket.category.title)
+              : escapeHtml(
+                  localized(
+                    data.ticket.category.title,
+                    data.ticket.category.i18n,
+                    $locale,
+                    'title',
+                  ),
+                )
           }</a>`,
               },
             })}
@@ -230,6 +281,8 @@
   </div>
 </div>
 
+<EditTicketFieldsModal />
+
 <script context="module">
   import { writable } from 'svelte/store';
 
@@ -274,14 +327,17 @@
 
 <script>
   import { afterUpdate, getContext, onMount } from 'svelte';
-  import { _ } from 'svelte-i18n';
+  import { _, locale } from 'svelte-i18n';
 
   import { goto } from '$app/navigation';
+  import { onTicketChanged } from '$lib/panelRealtime.js';
   import { base } from '@panomc/sdk/core/js/basePath.js';
   import { escapeHtml } from '@panomc/sdk/core/js/html.util.js';
   import { sanitizeRichText } from '$lib/html-sanitize.util.js';
 
   import tooltip from '$lib/tooltip.util.js';
+  import { OPTION_TYPES, displayValue, fieldLink } from '$lib/ticketFields.util.js';
+  import { localized, localizedDisplay } from '$lib/contentI18n.util.js';
 
   import {
     setCallback as setCloseTicketModalCallback,
@@ -295,6 +351,10 @@
   import Date from '$lib/components/Date.svelte';
   import TicketStatusBadge from '$lib/components/badges/TicketStatusBadge.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
+  import EditTicketFieldsModal, {
+    setCallback as setEditTicketFieldsModalCallback,
+    show as showEditTicketFieldsModal,
+  } from '$lib/components/modals/EditTicketFieldsModal.svelte';
   import TicketsNav from '$lib/components/tickets/TicketsNav.svelte';
   import { avatarVersion } from '$lib/Store';
   import { showError as showErrorToast } from '$lib/components/ToastContainer.svelte';
@@ -434,6 +494,13 @@
     return text;
   }
 
+  /** The ticket's field snapshot; tickets from before custom fields have none. */
+  $: ticketFields = Array.isArray(data.ticket.fields) ? data.ticket.fields : [];
+
+  setEditTicketFieldsModalCallback((fields) => {
+    data.ticket.fields = fields;
+  });
+
   setCloseTicketModalCallback(() => {
     data.ticket.status = TicketStatuses.CLOSED;
   });
@@ -450,7 +517,36 @@
     }
   });
 
+  /**
+   * The ticket changed on the server (the player answered, it was closed): reads it again and puts
+   * the new messages after the ones on the page, keeping older ones loaded with "previous messages".
+   */
+  async function refreshTicket() {
+    const body = await ApiUtil.get({ path: `/panel/tickets/${data.ticket.id}` }).catch(() => null);
+
+    if (!body || body.error || !body.ticket) return;
+
+    const known = new Map(data.ticket.messages.map((message) => [message.id, message]));
+    let added = false;
+
+    for (const message of body.ticket.messages ?? []) {
+      if (!known.has(message.id)) added = true;
+
+      known.set(message.id, message);
+    }
+
+    data.ticket = {
+      ...body.ticket,
+      id: data.ticket.id,
+      messages: [...known.values()].sort((a, b) => a.id - b.id),
+    };
+
+    if (added) shouldScroll = true;
+  }
+
   onMount(() => {
     shouldScroll = true;
+
+    return onTicketChanged(data.ticket.id, refreshTicket);
   });
 </script>

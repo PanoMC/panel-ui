@@ -7,7 +7,8 @@
   role="dialog"
   tabindex="-1"
   on:shown.bs.modal={focusTitle}>
-  <div class="modal-dialog modal-dialog-centered" role="dialog">
+  <!-- Wide and scrolling: the fields editor below can grow long. -->
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
@@ -22,25 +23,51 @@
           data-bs-dismiss="modal"
           on:click={hide}></button>
       </div>
-      <form on:submit|preventDefault={onSubmit}>
+      <!-- The form sits between modal-content and modal-body, so it passes the flex column on for the
+           body to scroll. -->
+      <form class="d-flex flex-column overflow-hidden" on:submit|preventDefault={onSubmit}>
         <div class="modal-body">
-          <input
-            class="form-control form-control-lg mb-3"
-            placeholder={$_('components.modals.add-edit-ticket-category.inputs.title.placeholder')}
-            id="category"
-            type="text"
-            bind:value={$category.title}
-            class:border-danger={$errors.title} />
-          <textarea
-            class="form-control"
-            class:border-danger={$errors.description}
-            placeholder={$_(
-              'components.modals.add-edit-ticket-category.inputs.description.placeholder',
-            )}
-            id="categoryDescription"
-            type="text"
-            rows="5"
-            bind:value={$category.description}></textarea>
+          <!-- The typed texts are the default (the platform's language); the globe next to each holds
+               their translations. -->
+          <div class="input-group input-group-lg mb-3">
+            <input
+              class="form-control"
+              placeholder={$_(
+                'components.modals.add-edit-ticket-category.inputs.title.placeholder',
+              )}
+              id="category"
+              type="text"
+              maxlength="32"
+              bind:value={$category.title}
+              class:border-danger={$errors.title} />
+            <TranslationsButton
+              bind:i18n={$category.i18n}
+              prop="title"
+              defaultText={$category.title}
+              maxlength={32}
+              errors={$errors}
+              errorKey={(code) => `i18n.${code}.title`} />
+          </div>
+          <div class="input-group">
+            <textarea
+              class="form-control"
+              class:border-danger={$errors.description}
+              placeholder={$_(
+                'components.modals.add-edit-ticket-category.inputs.description.placeholder',
+              )}
+              id="categoryDescription"
+              type="text"
+              rows="5"
+              bind:value={$category.description}></textarea>
+            <TranslationsButton
+              bind:i18n={$category.i18n}
+              prop="description"
+              defaultText={$category.description}
+              multiline
+              maxlength={2000}
+              errors={$errors}
+              errorKey={(code) => `i18n.${code}.description`} />
+          </div>
           <!-- Off: the category and its tickets stay, no new ticket can be opened in it. -->
           <div class="form-check form-switch mt-3">
             <input
@@ -73,6 +100,9 @@
               <option value={template.id}>{template.title}</option>
             {/each}
           </select>
+          <!-- What a player fills in under the ticket's title when opening a ticket in this category. -->
+          <hr />
+          <TicketCategoryFieldsEditor bind:fields={$category.fields} bind:errors={$errors} />
         </div>
         <div class="modal-footer">
           <button
@@ -94,11 +124,13 @@
 
   import ApiUtil from '$lib/api.util';
   import { loadAllTicketTemplates } from '$lib/ticketTemplates.util.js';
+  import { newField, normalizeDefinitions, validateDefinitions } from '$lib/ticketFields.util.js';
+  import { fieldI18nForSave, pruneI18n, toEditableField } from '$lib/contentI18n.util.js';
 
   const modalElement = writable();
   const mode = writable('create');
   const category = writable({});
-  const errors = writable([]);
+  const errors = writable({});
   /** The ready replies a category may send as its auto-reply. */
   const templates = writable([]);
 
@@ -116,8 +148,20 @@
 
     if (newCategory.description === null) newCategory.description = '';
 
-    category.set({ ...newCategory });
-    errors.set([]);
+    // The fields are edited in place, so the editor gets its own copy, not the list row's.
+    // Option translations move onto their options while editing, so renaming a value keeps them.
+    category.set({
+      ...newCategory,
+      i18n: structuredClone(newCategory.i18n ?? {}),
+      fields: (newCategory.fields ?? []).map((field) =>
+        toEditableField({
+          ...newField(field.key),
+          ...structuredClone(field),
+          options: structuredClone(field.options ?? []),
+        }),
+      ),
+    });
+    errors.set({});
 
     modal = new window.bootstrap.Modal(get(modalElement), {
       backdrop: 'static',
@@ -144,6 +188,8 @@
 <script>
   import { _ } from 'svelte-i18n';
   import tooltip from '$lib/tooltip.util';
+  import TicketCategoryFieldsEditor from '$lib/components/tickets/TicketCategoryFieldsEditor.svelte';
+  import TranslationsButton from '$lib/components/TranslationsButton.svelte';
 
   let loading = false;
   $: buttonDisabled = !$category.title;
@@ -154,6 +200,27 @@
   }
 
   function onSubmit() {
+    const edited = get(category).fields ?? [];
+    const fields = normalizeDefinitions(edited);
+    const fieldErrors = validateDefinitions(fields);
+
+    // The server checks the same; marking the inputs here spares a round trip.
+    if (Object.keys(fieldErrors).length > 0) {
+      errors.set(fieldErrors);
+
+      return;
+    }
+
+    // The saved set replaces every translation of the category: blank ones are left out.
+    const body = {
+      ...get(category),
+      i18n: pruneI18n(get(category).i18n, ['title', 'description']),
+      fields: fields.map((field, index) => ({
+        ...field,
+        i18n: fieldI18nForSave(edited[index], field),
+      })),
+    };
+
     loading = true;
 
     const bodyHandler = (body, reject) => {
@@ -179,7 +246,7 @@
     if (get(mode) === 'edit') {
       ApiUtil.put({
         path: `/panel/ticket/categories/${get(category).id}`,
-        body: get(category),
+        body,
         handler: bodyHandler,
       });
 
@@ -188,7 +255,7 @@
 
     ApiUtil.post({
       path: '/panel/ticket/category',
-      body: get(category),
+      body,
       handler: bodyHandler,
     });
   }
