@@ -2913,7 +2913,7 @@
       },
       "origins": {
         "title": "この Pano にアクセスできる Web サイト",
-        "switch": "他の Web サイトがこの Pano にアクセスできるようにする",
+        "switch": "他サイトからのアクセス",
         "helper": "他の Web サイト (Pano ウィジェットを埋め込む Web サイトなど) は、訪問者のブラウザでこの Pano からデータを読み取ることができます。",
         "count": "{count, plural, one {# website} other {# websites}}",
         "done": "終わり",

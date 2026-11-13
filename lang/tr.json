@@ -2986,7 +2986,7 @@
       },
       "origins": {
         "title": "Bu Pano'ya erişebilecek web siteleri",
-        "switch": "Başka web sitelerinin bu Pano'ya erişmesine izin ver",
+        "switch": "Diğer Site Erişimi",
         "helper": "Diğer web siteleriniz (örneğin bir Pano bileşeni gömen site), ziyaretçinin tarayıcısında bu Pano'dan veri okuyabilir.",
         "count": "{count} web sitesi",
         "done": "Tamam",

@@ -2984,7 +2984,7 @@
       },
       "origins": {
         "title": "Websites that may access this Pano",
-        "switch": "Allow other websites to access this Pano",
+        "switch": "Other Site Access",
         "helper": "Your other websites (for example one that embeds a Pano widget) can read data from this Pano in the visitor's browser.",
         "count": "{count, plural, one {# website} other {# websites}}",
         "done": "Done",

@@ -419,7 +419,7 @@ describe('Front-end settings', () => {
     expect(html).toContain('data-other-sites');
     expect(html).toContain('data-row="urls"');
     expect(text).toContain('Site connection keys');
-    expect(text).toContain('Allow other websites to access this Pano');
+    expect(text).toContain('Other Site Access');
     expect(text).toContain('Pages Pano links to');
     expect(text).not.toMatch(/origin/i);
   });
@@ -448,6 +448,7 @@ describe('Front-end settings', () => {
       const html = content(dataFor(mode));
 
       expect(tagWith(html, 'data-other-sites-switch')).not.toContain('disabled');
+      expect(tagWith(html, 'for="frontendOtherSites"')).toContain('text-capitalize');
       expect(tagWith(html, 'data-open-urls')).not.toContain('disabled');
     }
   });
@@ -616,7 +617,7 @@ describe('Allow other websites switch', () => {
     expect(tagWith(html, 'data-other-sites-switch')).not.toContain('checked');
     expect(html).not.toContain('data-sites-count');
     expect(html).not.toContain('data-edit-sites');
-    expect(textOf(html)).toContain('Allow other websites to access this Pano');
+    expect(textOf(html)).toContain('Other Site Access');
     expect(textOf(html)).toContain('read data from this Pano in the visitor');
   });
 

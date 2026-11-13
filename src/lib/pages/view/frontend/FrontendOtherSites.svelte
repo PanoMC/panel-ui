@@ -12,7 +12,7 @@
         disabled={$disabling}
         data-other-sites-switch
         onchange={toggle} />
-      <label class="form-check-label fw-semibold" for="frontendOtherSites">
+      <label class="form-check-label fw-semibold text-capitalize" for="frontendOtherSites">
         {$_('pages.frontend.origins.switch')}
       </label>
       <div class="text-body-secondary">{$_('pages.frontend.origins.helper')}</div>
@@ -43,7 +43,7 @@
   import FrontendOriginsModal from './FrontendOriginsModal.svelte';
 
   /**
-   * The "Allow other websites to access this Pano" switch. On means the saved list has a site; turning
+   * The "Other Site Access" switch. On means the saved list has a site; turning
    * it on opens the list editor, turning it off asks first and saves an empty list.
    * @type {{ controller: ReturnType<typeof import('./origins.controller.js').createOriginsController> }}
    */
