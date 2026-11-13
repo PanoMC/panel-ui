@@ -9,18 +9,36 @@
     {:else}
       <div class="table-responsive">
         <table class="table table-hover">
-          {#each data.tickets.items as ticket, index (ticket)}
-            <tbody>
+          <thead>
+            <tr>
+              <th class="align-middle text-nowrap" scope="col">{$_('pages.tickets.table.id')}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_('pages.tickets.table.title')}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_('pages.tickets.table.category')}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_('pages.tickets.table.status')}</th>
+              <th class="align-middle text-nowrap" scope="col"
+                >{$_('pages.tickets.table.last-reply')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each data.tickets.items as ticket (ticket.id)}
               <tr>
                 <td class="align-middle text-nowrap">
                   <code>#{ticket.id}</code>
                 </td>
-                <td class="align-middle text-nowrap">
-                  <a href="{base}/tickets/detail/{ticket.id}" title={$_('buttons.view')}
-                    >{ticket.title}</a>
+                <td class="align-middle" style="max-width: 300px;">
+                  <a
+                    class="rounded focus-ring text-decoration-none d-block text-truncate"
+                    href="{base}/tickets/detail/{ticket.id}"
+                    title={ticket.title}>
+                    {ticket.title}
+                  </a>
                 </td>
                 <td class="align-middle text-nowrap">
                   <a
+                    class="rounded focus-ring text-decoration-none d-block text-truncate"
                     title={$_('pages.player-detail.filter')}
                     href="{base}/tickets?categoryUrl={ticket.category.url}">
                     {ticket.category.title === '-'
@@ -31,11 +49,10 @@
                 <td class="align-middle text-nowrap">
                   <TicketStatusBadge status={ticket.status} />
                 </td>
-                <td class="align-middle text-nowrap"
-                  ><span><DateComponent time={ticket.lastUpdate} /></span></td>
+                <td class="align-middle text-nowrap"><DateComponent time={ticket.lastUpdate} /></td>
               </tr>
-            </tbody>
-          {/each}
+            {/each}
+          </tbody>
         </table>
       </div>
       <div class="card-footer">
