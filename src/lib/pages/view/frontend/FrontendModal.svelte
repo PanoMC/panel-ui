@@ -1,6 +1,6 @@
 <!-- The Front-end settings (mode, site connection keys, other websites, link targets), opened from the Themes page. -->
 <div class="modal fade" bind:this={element} role="dialog" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{$_('pages.frontend.title')}</h5>

@@ -99,50 +99,6 @@
   <div class="col-lg-9">
     <div class="card h-100 w-100">
       <div class="card-body d-flex flex-column gap-3">
-        <!-- The language being written: the default (the platform's language, the text the site
-             shows when a language has none of its own) or a translation. Every language's edits
-             stay in memory and are saved together; the mark says a language has a title or text. -->
-        {#if otherLocales.length > 0}
-          <div
-            class="d-flex flex-wrap align-items-center gap-1"
-            role="group"
-            aria-label={$_('pages.post-editor.language.label')}>
-            <i class="fa-solid fa-language text-body-secondary me-1" aria-hidden="true"></i>
-            <button
-              type="button"
-              class="btn btn-sm"
-              class:btn-secondary={activeLocale === null}
-              class:btn-outline-secondary={activeLocale !== null}
-              aria-pressed={activeLocale === null}
-              on:click={() => switchLocale(null)}>
-              {$_('pages.post-editor.language.default', {
-                values: { language: platformLanguageName },
-              })}
-            </button>
-            {#each otherLocales as item (item.code)}
-              {@const invalid = i18nErrorLocales.includes(item.code)}
-              <button
-                type="button"
-                class="btn btn-sm"
-                class:btn-secondary={activeLocale === item.code && !invalid}
-                class:btn-danger={activeLocale === item.code && invalid}
-                class:btn-outline-secondary={activeLocale !== item.code && !invalid}
-                class:btn-outline-danger={activeLocale !== item.code && invalid}
-                aria-pressed={activeLocale === item.code}
-                on:click={() => switchLocale(item.code)}>
-                {item.name}
-                {#if translatedLocales.includes(item.code)}
-                  <i
-                    class="fa-solid fa-circle ms-1 align-middle"
-                    style="font-size: 0.45em;"
-                    title={$_('pages.post-editor.language.translated')}
-                    aria-label={$_('pages.post-editor.language.translated')}></i>
-                {/if}
-              </button>
-            {/each}
-          </div>
-        {/if}
-
         {#if activeLocale === null}
           <input
             id="postTitle"
@@ -229,6 +185,35 @@
               <div>{mode === Modes.CREATE ? '0' : post.views}</div>
             </div>
           </li>
+          {#if otherLocales.length > 0}
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between align-items-center gap-2">
+                <label class="mb-0 flex-shrink-0" for="postEditorLanguage">
+                  {$_('pages.post-editor.language.label')}
+                </label>
+                <select
+                  id="postEditorLanguage"
+                  class="form-select form-select-sm w-50"
+                  class:is-invalid={activeLocale !== null &&
+                    i18nErrorLocales.includes(activeLocale)}
+                  value={activeLocale ?? ''}
+                  on:change={(event) => switchLocale(event.currentTarget.value || null)}>
+                  <option value="">
+                    {$_('pages.post-editor.language.default', {
+                      values: { language: displayLanguageName(platformLanguageName) },
+                    })}
+                  </option>
+                  {#each otherLocales as item (item.code)}
+                    <option value={item.code}>
+                      {displayLanguageName(item.name)}{translatedLocales.includes(item.code)
+                        ? ` — ${$_('pages.post-editor.language.translated')}`
+                        : ''}
+                    </option>
+                  {/each}
+                </select>
+              </div>
+            </li>
+          {/if}
           {#if post.status === StatusTypes.PUBLISHED}
             <li class="list-group-item">
               <div class="d-flex justify-content-between align-items-center">
@@ -541,6 +526,10 @@
     await tick();
 
     titleInput?.focus();
+  }
+
+  function displayLanguageName(name) {
+    return name.replace(/\s*\((?:[a-z]{2,3}-)?[A-Z]{2}\)$/, '');
   }
 
   /** Create until the first autosave (or save) makes the post; edit from then on. */

@@ -1,6 +1,6 @@
 <!-- Add Resource Modal -->
-<div role="dialog" class="modal modal-lg fade" bind:this={$modalElement} aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+<div role="dialog" class="modal fade" bind:this={$modalElement} aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 1280px;">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
@@ -20,12 +20,12 @@
           on:click={hide}></button>
       </div>
       <div class="modal-body">
-        <div class="list-group list-group-horizontal w-100" style="height: 250px;">
+        <div class="d-flex gap-2 w-100">
           <!-- A file upload can run code on the server: only with the add-ons permission. -->
           {#if $canUploadFile}
             <DragAndDropZone
-              class="list-group-item rounded-end-0 h-100"
-              style="cursor: pointer; flex: 1;"
+              class="list-group-item rounded"
+              style="cursor: pointer; flex: 1; aspect-ratio: 1 / 1;"
               icon="fas fa-upload fa-2x"
               title={$_('components.modals.install-resource.drag-here')}
               accept={$type === 'THEME'
@@ -36,8 +36,8 @@
 
           <a
             href="{base}/{$type === 'PLUGIN' ? 'addons' : 'view'}/store"
-            class="list-group-item d-flex flex-column align-items-center justify-content-center text-center h-100 text-decoration-none"
-            style="flex: 1;"
+            class="list-group-item d-flex flex-column align-items-center justify-content-center text-center text-decoration-none rounded"
+            style="flex: 1; aspect-ratio: 1 / 1;"
             on:click={hide}>
             <i class="fas fa-store fa-2x mb-2"></i>
             {$_('components.modals.install-resource.install-from-pano-store')}

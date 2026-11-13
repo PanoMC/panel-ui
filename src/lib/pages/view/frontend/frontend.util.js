@@ -15,30 +15,26 @@ export const FrontendModes = Object.freeze({
 
 /**
  * The modes in the order the page lists them, with their lang keys and icon.
- * @type {ReadonlyArray<{ value: FrontendModeName, icon: string, titleKey: string, descriptionKey: string }>}
+ * @type {ReadonlyArray<{ value: FrontendModeName, titleKey: string, descriptionKey: string }>}
  */
 export const frontendModeOptions = Object.freeze([
   {
     value: FrontendModes.THEME,
-    icon: 'fa-solid fa-palette',
     titleKey: 'pages.frontend.mode.theme.title',
     descriptionKey: 'pages.frontend.mode.theme.description',
   },
   {
     value: FrontendModes.CUSTOM_APP,
-    icon: 'fa-solid fa-box-open',
     titleKey: 'pages.frontend.mode.custom-app.title',
     descriptionKey: 'pages.frontend.mode.custom-app.description',
   },
   {
     value: FrontendModes.EXTERNAL,
-    icon: 'fa-solid fa-arrow-right-arrow-left',
     titleKey: 'pages.frontend.mode.external.title',
     descriptionKey: 'pages.frontend.mode.external.description',
   },
   {
     value: FrontendModes.NONE,
-    icon: 'fa-solid fa-ban',
     titleKey: 'pages.frontend.mode.none.title',
     descriptionKey: 'pages.frontend.mode.none.description',
   },

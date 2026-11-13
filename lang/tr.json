@@ -1259,6 +1259,7 @@
       "language": {
         "label": "Dil",
         "default": "Varsayılan ({language})",
+        "default-tab": "{language} (Varsayılan)",
         "translated": "Çevirisi var",
         "text-hint": "Boş bırakılırsa bu dilde varsayılan metin gösterilir."
       },
@@ -2858,7 +2859,7 @@
       }
     },
     "frontend": {
-      "title": "Ziyaretçiler ne görsün?",
+      "title": "Site Arayüz Modu",
       "settings-button": "Site gösterim ayarları",
       "not-shown": "Ziyaretçilere gösterilmiyor: site şu an “{mode}” olarak ayarlı.",
       "load-failed": "Site ayarları yüklenemedi.",
@@ -2985,7 +2986,7 @@
         "FRONTEND_SETTING_INVALID": "\"{key}\" değeri kabul edilmedi ({reason})."
       },
       "origins": {
-        "title": "Bu Pano'ya erişebilecek web siteleri",
+        "title": "Origin İzin Listesi",
         "switch": "Diğer Site Erişimi",
         "helper": "Diğer web siteleriniz (örneğin bir Pano bileşeni gömen site), ziyaretçinin tarayıcısında bu Pano'dan veri okuyabilir.",
         "count": "{count} web sitesi",
@@ -3045,7 +3046,8 @@
           "title": "{target} için özel adres",
           "placeholder": "/shop veya https://example.com/shop"
         },
-        "title": "Pano'nun bağlantı verdiği sayfalar"
+        "title": "Pano URL Yönlendirme Haritası",
+        "settings-button": "URL yönlendirme haritası"
       },
       "manage": "Yönet"
     },

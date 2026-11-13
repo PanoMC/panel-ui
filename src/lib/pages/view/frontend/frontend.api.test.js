@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 
-import { createFrontendApi, toResult } from './frontend.api.js';
+import { createFrontendApi, loadFrontendData, toResult } from './frontend.api.js';
 import { stubClient } from './testkit.js';
 
 describe('toResult', () => {
@@ -95,5 +95,18 @@ describe('createFrontendApi', () => {
     await createFrontendApi(/** @type {any} */ (client), { fetch: 'event' }).getFrontend();
 
     expect(seen).toEqual({ fetch: 'event' });
+  });
+
+  test('front-end settings do not load URL targets managed by their separate modal', async () => {
+    const client = stubClient();
+    const data = await loadFrontendData(createFrontendApi(client));
+
+    expect(client.calls.map((call) => call.path)).toEqual([
+      '/panel/frontend/keys',
+      '/panel/frontend',
+      '/panel/access/proxy-status',
+      '/panel/frontend/origins',
+    ]);
+    expect(data).not.toHaveProperty('urls');
   });
 });

@@ -1,5 +1,3 @@
-<FrontendOriginModal bind:this={addModal} {controller} />
-
 <!-- The list of websites that may access this Pano: add a site address, remove one. -->
 <div hidden data-modal-host>
   <div
@@ -24,19 +22,43 @@
                 values: { count: $items.length, max: $max },
               })}
             </div>
-            <button
-              type="button"
-              class="btn btn-sm btn-link"
-              disabled={$full}
-              data-add-origin
-              onclick={() => addModal?.show()}>
-              <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
-              {$_('pages.frontend.origins.add.button')}
-            </button>
           </div>
 
+          <form onsubmit={submit} data-origin-form>
+            <div class="input-group">
+              <input
+                class="form-control"
+                class:is-invalid={$addError}
+                type="text"
+                inputmode="url"
+                autocomplete="off"
+                maxlength="253"
+                disabled={$full || $adding}
+                data-origin-input
+                placeholder={$_('pages.frontend.origins.add.placeholder')}
+                bind:value={origin} />
+              <button
+                type="submit"
+                class="btn btn-primary"
+                disabled={$full || $adding}
+                aria-label={$_('pages.frontend.origins.add.button')}
+                data-add-origin>
+                {#if $adding}
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                {:else}
+                  <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                {/if}
+              </button>
+            </div>
+            {#if $addError}
+              <div class="invalid-feedback d-block" data-origin-error={$addError.code}>
+                {$_($addError.key, { values: $addError.values })}
+              </div>
+            {/if}
+          </form>
+
           {#if $items.length === 0}
-            <NoContent icon="" text={$_('pages.frontend.origins.empty')} />
+            <NoContent />
           {:else}
             <div class="table-responsive">
               <table class="table table-hover mb-0">
@@ -98,8 +120,6 @@
   import NoContent from '$lib/components/NoContent.svelte';
   import { portal, showStacked } from '$lib/modal-stack.util.js';
 
-  import FrontendOriginModal from './FrontendOriginModal.svelte';
-
   /**
    * The list editor of the "Allow other websites" switch. Closing it with no site on the list turns
    * the switch back off. All state lives in the controller.
@@ -109,10 +129,10 @@
 
   // The controller is fixed for the life of the page.
   // svelte-ignore state_referenced_locally
-  const { items, max, full, removing } = controller;
+  const { items, max, full, adding, addError, removing } = controller;
 
   let element = $state();
-  let addModal = $state();
+  let origin = $state('');
   let modal;
 
   export function show() {
@@ -123,5 +143,13 @@
 
   export function hide() {
     modal?.hide();
+  }
+
+  async function submit(event) {
+    event.preventDefault();
+
+    if (await controller.add(origin)) {
+      origin = '';
+    }
   }
 </script>

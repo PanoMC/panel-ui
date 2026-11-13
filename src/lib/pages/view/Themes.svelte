@@ -36,6 +36,7 @@
   bind:this={frontendModal}
   canUpload={hasPermission(Permissions.MANAGE_ADDONS)}
   onmodesaved={(mode) => (frontendMode = mode)} />
+<FrontendUrls bind:this={urlsModal} />
 
 {#if data.failedLogin}
   <FailedLoginPanoStoreAlert />
@@ -59,6 +60,15 @@
     aria-label={$_('pages.frontend.settings-button')}
     onclick={() => frontendModal?.show()}>
     <i class="fa-solid fa-gear" aria-hidden="true"></i>
+  </button>
+  <button
+    type="button"
+    class="btn btn-link"
+    data-frontend-urls
+    title={$_('pages.frontend.urls.settings-button')}
+    aria-label={$_('pages.frontend.urls.settings-button')}
+    onclick={() => urlsModal?.show()}>
+    <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
   </button>
   <button type="button" class="btn btn-secondary" onclick={() => showInstallResourceModal('THEME')}>
     <i class="fas fa-plus"></i>
@@ -265,6 +275,7 @@
   import CompatProblemIcon from '$lib/components/CompatProblemIcon.svelte';
   import { themeProblem } from '../addons/compat/compat.util.js';
   import FrontendModal from './frontend/FrontendModal.svelte';
+  import FrontendUrls from './frontend/FrontendUrls.svelte';
   import { normalizeFrontendState, themeNotShown } from './frontend/frontend.util.js';
   import { browser } from '$app/env';
   import { refreshCompatAttention } from '$lib/compat-attention.store.js';
@@ -278,6 +289,7 @@
   $: compatibility = data.compatibility ?? null;
 
   let frontendModal;
+  let urlsModal;
   // The saved mode; the settings dialog updates it when a mode is saved there.
   let frontendMode = null;
   $: frontendMode = data.frontendMode ?? null;

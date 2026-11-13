@@ -229,16 +229,20 @@ describe('Mode tab', () => {
     expect(html).toMatch(
       /aria-checked="true"[^>]*data-mode="NONE"|data-mode="NONE"[^>]*aria-checked="true"/,
     );
+    expect(html).not.toMatch(/fa-(?:palette|box-open|arrow-right-arrow-left|ban)/);
     expect(html).toContain('data-section="site-url"');
     expect(html).toContain('data-section="descriptor-url"');
     expect(html).not.toContain('data-section="external"');
   });
 
-  test('THEME has no fields; the save button is disabled until something changes', () => {
+  test('THEME has no fields; its full-width primary save button is disabled until something changes', () => {
     const html = renderHtml(FrontendMode, { controller: modeController(STATE) });
+    const saveButton = tagWith(html, 'data-save-mode');
 
     expect(html).not.toContain('data-section=');
-    expect(tagWith(html, 'data-save-mode')).toContain('disabled');
+    expect(saveButton).toContain('disabled');
+    expect(saveButton).toContain('btn-primary');
+    expect(saveButton).toContain('w-100');
   });
 
   test('EXTERNAL shows the upstream, site and descriptor fields with their values', () => {
@@ -252,6 +256,9 @@ describe('Mode tab', () => {
     });
 
     expect(html).toContain('data-section="external"');
+    expect(html.match(/class="form-floating"/g)).toHaveLength(3);
+    expect(html.match(/<label class="text-capitalize"/g)).toHaveLength(3);
+    expect(html).toContain('fw-semibold text-capitalize');
     expect(html).toContain('value="http://127.0.0.1:4000"');
     expect(html).toContain('value="https://example.com"');
     expect(html).toContain('data-section="descriptor-url"');
@@ -277,17 +284,18 @@ describe('Mode tab', () => {
     expect(html).toMatch(/data-delete-app="blog"/);
     expect(tagWith(html, 'data-delete-app="blog"')).toContain('disabled');
     expect(tagWith(html, 'data-delete-app="shop"')).not.toContain('disabled');
-    expect(html).toContain('data-upload-input');
+    expect(html).toContain('data-upload-zone');
     expect(text).toContain('Upload Site (.zip)');
   });
 
-  test('CUSTOM_APP without any app shows the empty state next to the upload button', () => {
+  test('CUSTOM_APP without any app shows the empty state and file drop zone', () => {
     const html = renderHtml(FrontendMode, {
       controller: modeController({ ...STATE, mode: 'CUSTOM_APP' }),
     });
 
     expect(textOf(html)).toContain('No site uploaded yet.');
-    expect(html).toContain('data-upload-app');
+    expect(html).toContain('data-upload-zone');
+    expect(html).not.toContain('data-upload-app');
   });
 
   test('an active theme dev server is announced', () => {
@@ -396,10 +404,9 @@ describe('Front-end settings', () => {
     frontend: { ...STATE, mode },
     proxyStatus: null,
     origins: ORIGINS,
-    urls: URLS,
   });
 
-  test('has no tabs: the mode choice, then the keys, other websites and link targets rows', () => {
+  test('has no tabs: the mode choice, then the keys and other websites rows', () => {
     const html = content({
       ...dataFor('CUSTOM_APP'),
       frontend: { ...STATE, mode: 'CUSTOM_APP', customAppId: 'shop', customApps: APPS },
@@ -417,11 +424,10 @@ describe('Front-end settings', () => {
     expect(html).toContain('data-section="custom-app"');
     expect(html).toContain('data-row="keys"');
     expect(html).toContain('data-other-sites');
-    expect(html).toContain('data-row="urls"');
+    expect(html).not.toContain('data-row="urls"');
+    expect(html).not.toContain('data-urls-modal');
     expect(text).toContain('Site connection keys');
     expect(text).toContain('Other Site Access');
-    expect(text).toContain('Pages Pano links to');
-    expect(text).not.toMatch(/origin/i);
   });
 
   test('the keys row is enabled while the saved mode is Custom app, External or None', () => {
@@ -443,20 +449,14 @@ describe('Front-end settings', () => {
     expect(textOf(html)).not.toContain('Site connection keys');
   });
 
-  test('the other-websites switch and the link targets row work in every mode', () => {
+  test('the other-websites switch works in every mode; link targets are managed separately', () => {
     for (const mode of ['THEME', 'CUSTOM_APP', 'EXTERNAL', 'NONE']) {
       const html = content(dataFor(mode));
 
       expect(tagWith(html, 'data-other-sites-switch')).not.toContain('disabled');
       expect(tagWith(html, 'for="frontendOtherSites"')).toContain('text-capitalize');
-      expect(tagWith(html, 'data-open-urls')).not.toContain('disabled');
+      expect(html).not.toContain('data-open-urls');
     }
-  });
-
-  test('the rows mark the link targets from the keys the keys modal holds', () => {
-    const html = content(dataFor('EXTERNAL'));
-
-    expect(html.match(/data-needed-for-server/g)).toHaveLength(1);
   });
 
   test('a failed keys read disables the row; a failed websites read is reported in its row', () => {
@@ -476,16 +476,20 @@ describe('Websites list modal', () => {
     expect(html.match(/data-origin-row=/g)).toHaveLength(2);
     expect(text).toContain('https://play.example.com');
     expect(text).toContain('Remove');
-    expect(text).toContain('Add Website');
+    expect(text).not.toContain('Add Website');
   });
 
-  test('an empty list shows the empty state and no table', () => {
+  test('an empty list shows the default icon without text or a table', () => {
     const html = renderHtml(FrontendOriginsModal, {
       controller: originsController({ origins: [], max: 20 }),
     });
 
-    expect(textOf(html)).toContain('No websites yet.');
+    expect(textOf(html)).not.toContain('No websites yet.');
+    expect(html).toContain('fa-regular fa-square fa-3x');
     expect(html).not.toContain('<table');
+    expect(html).toContain('data-origin-form');
+    expect(html).toContain('data-origin-input');
+    expect(html.match(/data-origin-input/g)).toHaveLength(1);
   });
 
   test('the add button is disabled at the limit', () => {
@@ -494,15 +498,23 @@ describe('Websites list modal', () => {
     });
 
     expect(tagWith(html, 'data-add-origin')).toContain('disabled');
+    expect(tagWith(html, 'data-add-origin')).toContain('btn-primary');
+    expect(tagWith(html, 'data-add-origin')).not.toContain('btn-link');
+    expect(tagWith(html, 'data-origin-input')).toContain('disabled');
   });
 
-  test('the add dialog is one field and one full-width button', () => {
+  test('the inline add form has one URL field and no nested modal', () => {
     const html = renderHtml(FrontendOriginsModal, { controller: originsController() });
-    const dialog = html.slice(html.indexOf('modal fade'));
+    const addButton = tagWith(html, 'data-add-origin');
 
-    expect(textOf(dialog)).toContain('Add a website');
-    expect(dialog).toContain('placeholder="https://play.example.com"');
-    expect(dialog).toMatch(/<button[^>]*class="btn btn-primary w-100"[^>]*type="submit"/);
+    expect(html).toContain('data-origin-form');
+    expect(html).toContain('data-origin-input');
+    expect(html).toContain('placeholder="https://play.example.com"');
+    expect(addButton).toContain('type="submit"');
+    expect(addButton).toContain('aria-label="Add Website"');
+    expect(html).toContain('<i class="fa-solid fa-plus" aria-hidden="true"></i>');
+    expect(textOf(html)).not.toContain('Add Website');
+    expect(html.match(/data-origin-input/g)).toHaveLength(1);
   });
 
   test('a refused origin is explained under the field, with the different-domain wording', async () => {
@@ -521,6 +533,7 @@ describe('Websites list modal', () => {
 
     expect(html).toContain('data-origin-error="ORIGIN_DIFFERENT_SITE"');
     expect(textOf(html).toLowerCase()).toContain('a different domain uses a site connection key');
+    expect(tagWith(html, 'data-origin-input')).toContain('is-invalid');
   });
 });
 
@@ -530,6 +543,7 @@ describe('Link targets modal', () => {
     const text = textOf(html);
 
     expect(text).toContain('3 Pages');
+    expect(text).toContain('Pano URL Routing Map');
     expect(html.match(/data-target-row=/g)).toHaveLength(3);
     expect(html).toContain('data-source="OVERRIDE"');
     expect(html).toContain('data-source="FALLBACK"');
@@ -545,10 +559,13 @@ describe('Link targets modal', () => {
   test('only a row with an override offers to remove it', () => {
     const html = renderHtml(FrontendUrls, { controller: urlsController() });
     const rows = html.split('data-target-row=').slice(1);
+    const header = html.slice(html.indexOf('<thead'), html.indexOf('</thead>'));
 
     expect(rows[0]).toContain('Back to Default');
     expect(rows[1]).not.toContain('Back to Default');
     expect(rows[1]).toContain('Change Address');
+    expect(header.match(/text-capitalize/g)).toHaveLength(5);
+    expect(html.match(/dropdown-item(?: link-danger)? text-capitalize/g)).toHaveLength(4);
   });
 
   test('session-creating rows are marked "needed for a site that runs on your own server" only while a key is stored', () => {
@@ -566,26 +583,6 @@ describe('Link targets modal', () => {
       .find((row) => row.includes('data-needed-for-server'));
 
     expect(marked).toContain('market.order');
-  });
-
-  test('the page marks the rows from the keys the keys modal holds', () => {
-    const html = renderHtml(Frontend, {
-      data: {
-        keys: {
-          items: [{ id: 1, name: 'site', hint: 'ab12', createdAt: 1, lastUsedAt: null }],
-          max: 20,
-        },
-        frontend: { ...STATE },
-        proxyStatus: null,
-        origins: ORIGINS,
-        urls: URLS,
-      },
-      api: createFrontendApi(stubClient()),
-      notify: recordingNotify(),
-      confirm: () => {},
-    });
-
-    expect(html.match(/data-needed-for-server/g)).toHaveLength(1);
   });
 
   test('the override dialog is one field and one full-width button', () => {
@@ -674,12 +671,13 @@ describe('Allow other websites switch', () => {
 });
 
 describe('Front-end settings modal', () => {
-  test('is a scrollable modal with the title and a close button, and no data until opened', () => {
+  test('is a scrollable default-size modal with the title and a close button', () => {
     const html = renderHtml(FrontendModal, { api: createFrontendApi(stubClient()) });
 
     expect(html).toContain('modal-dialog-scrollable');
+    expect(html).not.toContain('modal-xl');
     expect(html).toContain('btn-close');
-    expect(textOf(html)).toContain('What should visitors see?');
+    expect(textOf(html)).toContain('Front-end Mode');
     expect(html).not.toContain('data-tab=');
   });
 });

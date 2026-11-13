@@ -1257,6 +1257,7 @@
       "language": {
         "label": "Language",
         "default": "Default ({language})",
+        "default-tab": "{language} (Default)",
         "translated": "Has a translation",
         "text-hint": "Left empty, this language shows the default text."
       },
@@ -2856,7 +2857,7 @@
       }
     },
     "frontend": {
-      "title": "What should visitors see?",
+      "title": "Front-end Mode",
       "settings-button": "Site display settings",
       "not-shown": "Not shown to visitors: the site is currently set to “{mode}”.",
       "load-failed": "The site settings could not be loaded.",
@@ -2983,7 +2984,7 @@
         "FRONTEND_SETTING_INVALID": "The value of \"{key}\" is not accepted ({reason})."
       },
       "origins": {
-        "title": "Websites that may access this Pano",
+        "title": "Allowed Origins",
         "switch": "Other Site Access",
         "helper": "Your other websites (for example one that embeds a Pano widget) can read data from this Pano in the visitor's browser.",
         "count": "{count, plural, one {# website} other {# websites}}",
@@ -3043,7 +3044,8 @@
           "title": "Custom address for {target}",
           "placeholder": "/shop or https://example.com/shop"
         },
-        "title": "Pages Pano links to"
+        "title": "Pano URL Routing Map",
+        "settings-button": "URL routing map"
       },
       "manage": "Manage"
     },

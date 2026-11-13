@@ -28,7 +28,7 @@
   <div class="card">
     <div class="card-body vstack gap-3">
       <div role="radiogroup" aria-label={$_('pages.frontend.mode.label')}>
-        <div class="list-group list-group-horizontal-md">
+        <div class="list-group">
           {#each frontendModeOptions as option (option.value)}
             <button
               type="button"
@@ -38,8 +38,8 @@
               class:active={$draft.mode === option.value}
               data-mode={option.value}
               onclick={() => controller.setMode(option.value)}>
-              <span class="d-block fw-semibold">
-                <i class="{option.icon} me-2" aria-hidden="true"></i>{$_(option.titleKey)}
+              <span class="d-block fw-semibold text-capitalize">
+                {$_(option.titleKey)}
               </span>
               <small class="d-block">{$_(option.descriptionKey)}</small>
             </button>
@@ -59,12 +59,6 @@
                     <th class="align-middle text-nowrap" scope="col"></th>
                     <th class="align-middle text-nowrap" scope="col">
                       {$_('pages.frontend.custom-apps.table.name')}
-                    </th>
-                    <th class="align-middle text-nowrap" scope="col">
-                      {$_('pages.frontend.custom-apps.table.version')}
-                    </th>
-                    <th class="align-middle text-nowrap" scope="col">
-                      {$_('pages.frontend.custom-apps.table.author')}
                     </th>
                   </tr>
                 </thead>
@@ -115,9 +109,12 @@
                             {/if}
                           </label>
                         </div>
+                        <small class="d-block text-body-secondary ms-4">
+                          {$_('pages.frontend.custom-apps.table.version')}: {app.version}
+                          &middot;
+                          {$_('pages.frontend.custom-apps.table.author')}: {app.author}
+                        </small>
                       </td>
-                      <td class="align-middle text-nowrap font-monospace">{app.version}</td>
-                      <td class="align-middle text-nowrap">{app.author}</td>
                     </tr>
                   {/each}
                 </tbody>
@@ -127,38 +124,24 @@
 
           <!-- An uploaded site can run code on the server: only with the add-ons permission. -->
           {#if canUpload}
-            <div class="d-flex align-items-center gap-2 mt-3">
-              <input
-                bind:this={fileInput}
-                class="d-none"
-                type="file"
-                accept=".zip,application/zip"
-                data-upload-input
-                onchange={onFileChosen} />
-              <button
-                type="button"
-                class="btn btn-secondary"
+            <div class="mt-3" data-upload-zone>
+              <DragAndDropZone
+                class="w-100"
+                style="min-height: 10rem;"
                 disabled={$uploading}
-                data-upload-app
-                onclick={() => fileInput?.click()}>
-                {#if $uploading}
-                  <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-                {:else}
-                  <i class="fa-solid fa-upload me-1" aria-hidden="true"></i>
-                {/if}
-                {$_('pages.frontend.custom-apps.upload')}
-              </button>
+                icon="fa-solid fa-upload fa-2x"
+                title={$_('pages.frontend.custom-apps.upload')}
+                accept={['.zip', 'application/zip']}
+                on:drop={(event) => controller.upload(event.detail)}
+                on:error={(event) => controller.upload(event.detail.file)} />
             </div>
           {/if}
         </div>
       {/if}
 
       {#if $draft.mode === FrontendModes.EXTERNAL}
-        <div class="row" data-section="external">
-          <label class="col-md-4 col-form-label" for="frontendUpstreamUrl">
-            {$_('pages.frontend.mode.fields.upstream-url')}
-          </label>
-          <div class="col-md-8">
+        <div class="vstack gap-1" data-section="external">
+          <div class="form-floating">
             <input
               id="frontendUpstreamUrl"
               class="form-control font-monospace"
@@ -168,17 +151,17 @@
               placeholder="http://127.0.0.1:4000"
               value={$draft.upstreamUrl}
               oninput={(event) => setField('upstreamUrl', event.currentTarget.value)} />
-            <div class="form-text">{$_('pages.frontend.mode.fields.upstream-url-hint')}</div>
+            <label class="text-capitalize" for="frontendUpstreamUrl">
+              {$_('pages.frontend.mode.fields.upstream-url')}
+            </label>
           </div>
+          <div class="form-text">{$_('pages.frontend.mode.fields.upstream-url-hint')}</div>
         </div>
       {/if}
 
       {#if $draft.mode !== FrontendModes.THEME}
-        <div class="row" data-section="site-url">
-          <label class="col-md-4 col-form-label" for="frontendSiteUrl">
-            {$_('pages.frontend.mode.fields.site-url')}
-          </label>
-          <div class="col-md-8">
+        <div class="vstack gap-1" data-section="site-url">
+          <div class="form-floating">
             <input
               id="frontendSiteUrl"
               class="form-control font-monospace"
@@ -188,27 +171,31 @@
               placeholder="https://example.com"
               value={$draft.siteUrl}
               oninput={(event) => setField('siteUrl', event.currentTarget.value)} />
-            <div class="form-text">{$_('pages.frontend.mode.fields.site-url-hint')}</div>
+            <label class="text-capitalize" for="frontendSiteUrl">
+              {$_('pages.frontend.mode.fields.site-url')}
+            </label>
           </div>
+          <div class="form-text">{$_('pages.frontend.mode.fields.site-url-hint')}</div>
         </div>
       {/if}
 
       {#if $draft.mode === FrontendModes.EXTERNAL || $draft.mode === FrontendModes.NONE}
-        <div class="row" data-section="descriptor-url">
-          <label class="col-md-4 col-form-label" for="frontendDescriptorUrl">
-            {$_('pages.frontend.mode.fields.descriptor-url')}
-          </label>
-          <div class="col-md-8">
+        <div class="vstack gap-1" data-section="descriptor-url">
+          <div class="form-floating">
             <input
               id="frontendDescriptorUrl"
               class="form-control font-monospace"
               class:is-invalid={$fieldErrors.descriptorUrl}
               type="url"
               autocomplete="off"
+              placeholder=" "
               value={$draft.descriptorUrl}
               oninput={(event) => setField('descriptorUrl', event.currentTarget.value)} />
-            <div class="form-text">{$_('pages.frontend.mode.fields.descriptor-url-hint')}</div>
+            <label class="text-capitalize" for="frontendDescriptorUrl">
+              {$_('pages.frontend.mode.fields.descriptor-url')}
+            </label>
           </div>
+          <div class="form-text">{$_('pages.frontend.mode.fields.descriptor-url-hint')}</div>
         </div>
       {/if}
     </div>
@@ -216,7 +203,7 @@
     <div class="card-footer">
       <button
         type="button"
-        class="btn btn-secondary"
+        class="btn btn-primary w-100"
         disabled={$saving || !dirty}
         data-save-mode
         onclick={() => controller.save()}>
@@ -232,6 +219,7 @@
 <script>
   import { _ } from 'svelte-i18n';
 
+  import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
 
   import { frontendModeOptions, FrontendModes, isModeDirty } from './frontend.util.js';
@@ -248,22 +236,10 @@
   // svelte-ignore state_referenced_locally
   const { saved, draft, saving, uploading, deleting, error, fieldErrors, canForce } = controller;
 
-  let fileInput = $state();
-
   const dirty = $derived(isModeDirty($saved, $draft));
 
   /** @param {'upstreamUrl' | 'siteUrl' | 'descriptorUrl'} name */
   function setField(name, value) {
     draft.update((d) => ({ ...d, [name]: value }));
-  }
-
-  async function onFileChosen(event) {
-    const input = event.currentTarget;
-    const file = input.files?.[0];
-
-    await controller.upload(file);
-
-    // The same file can be picked again after a refusal.
-    input.value = '';
   }
 </script>

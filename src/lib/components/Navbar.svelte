@@ -90,7 +90,7 @@
                       class="text-start border-0 bg-transparent p-0 d-flex align-items-center gap-3">
                       <div class="d-flex align-items-center">
                         {#if notification.details.faIcon}
-                          <i class="{notification.details.faIcon} fa-lg fa-fw text-primary"></i>
+                          <i class="{notification.details.faIcon} fa-lg fa-fw text-primary-emphasis"></i>
                         {:else if notification.details.image || notification.details.username}
                           <img
                             src={sanitizeImageSrc(
@@ -112,7 +112,7 @@
                             height="18"
                             class="rounded-circle" />
                         {:else}
-                          <i class="fa fa-bolt fa-lg fa-fw text-primary"></i>
+                          <i class="fa fa-bolt fa-lg fa-fw text-primary-emphasis"></i>
                         {/if}
                       </div>
 

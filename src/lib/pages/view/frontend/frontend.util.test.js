@@ -209,6 +209,7 @@ describe('lang files', () => {
   used.add('pages.frontend.keys.title');
   used.add('pages.frontend.keys.block-title');
   used.add('pages.frontend.urls.title');
+  used.add('pages.frontend.urls.settings-button');
   used.add('pages.frontend.mode.label');
   used.add('pages.frontend.not-shown');
 

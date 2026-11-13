@@ -1241,6 +1241,7 @@
       "language": {
         "label": "言語",
         "default": "デフォルト ({language})",
+        "default-tab": "{language} (デフォルト)",
         "translated": "翻訳あり",
         "text-hint": "空のままにすると、この言語ではデフォルトのテキストが表示されます。"
       },
@@ -2785,7 +2786,7 @@
       }
     },
     "frontend": {
-      "title": "訪問者は何を見るべきですか?",
+      "title": "サイトのフロントエンドモード",
       "settings-button": "サイト表示設定",
       "not-shown": "Not shown to visitors: the site is currently set to “{mode}”.",
       "load-failed": "サイト設定を読み込めませんでした。",
@@ -2912,7 +2913,7 @@
         "FRONTEND_SETTING_INVALID": "The value of \"{key}\" is not accepted ({reason})."
       },
       "origins": {
-        "title": "この Pano にアクセスできる Web サイト",
+        "title": "許可済みオリジン",
         "switch": "他サイトからのアクセス",
         "helper": "他の Web サイト (Pano ウィジェットを埋め込む Web サイトなど) は、訪問者のブラウザでこの Pano からデータを読み取ることができます。",
         "count": "{count, plural, one {# website} other {# websites}}",
@@ -2972,7 +2973,8 @@
           "title": "Custom address for {target}",
           "placeholder": "/shop or https://example.com/shop"
         },
-        "title": "Pano のリンク先ページ"
+        "title": "Pano URL ルーティングマップ",
+        "settings-button": "URL ルーティングマップ"
       },
       "manage": "管理"
     },
