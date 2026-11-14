@@ -97,7 +97,7 @@ describe('createFrontendApi', () => {
     expect(seen).toEqual({ fetch: 'event' });
   });
 
-  test('front-end settings do not load URL targets managed by their separate modal', async () => {
+  test('front-end settings only load their own keys, mode and proxy status', async () => {
     const client = stubClient();
     const data = await loadFrontendData(createFrontendApi(client));
 
@@ -105,8 +105,8 @@ describe('createFrontendApi', () => {
       '/panel/frontend/keys',
       '/panel/frontend',
       '/panel/access/proxy-status',
-      '/panel/frontend/origins',
     ]);
+    expect(data).not.toHaveProperty('origins');
     expect(data).not.toHaveProperty('urls');
   });
 });

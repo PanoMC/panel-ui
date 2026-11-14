@@ -2860,7 +2860,7 @@
     },
     "frontend": {
       "title": "Site Arayüz Modu",
-      "settings-button": "Site gösterim ayarları",
+      "settings-button": "Site Gösterim Ayarları",
       "not-shown": "Ziyaretçilere gösterilmiyor: site şu an “{mode}” olarak ayarlı.",
       "load-failed": "Site ayarları yüklenemedi.",
       "copied": "Panoya kopyalandı.",
@@ -3047,7 +3047,7 @@
           "placeholder": "/shop veya https://example.com/shop"
         },
         "title": "Pano URL Yönlendirme Haritası",
-        "settings-button": "URL yönlendirme haritası"
+        "settings-button": "URL Yönlendirme Haritası"
       },
       "manage": "Yönet"
     },

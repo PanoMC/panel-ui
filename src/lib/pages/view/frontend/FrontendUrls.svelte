@@ -104,7 +104,7 @@
                               </div>
                             </div>
                           </th>
-                          <td class="align-middle text-break">
+                          <td class="align-middle text-nowrap">
                             <span class="font-monospace">{row.id}</span>
                             {#if row.neededForServerSide}
                               <span class="badge text-bg-warning ms-2" data-needed-for-server>
@@ -120,12 +120,12 @@
                           <td class="align-middle text-nowrap" data-source={row.source ?? 'NONE'}>
                             {$_(sourceKey(row.source))}
                           </td>
-                          <td class="align-middle text-break font-monospace">
+                          <td class="align-middle text-nowrap font-monospace">
                             {#if row.path !== null}{row.path}{:else}<span
                                 class="text-body-secondary">-</span
                               >{/if}
                           </td>
-                          <td class="align-middle text-break font-monospace">
+                          <td class="align-middle text-nowrap font-monospace">
                             {#if row.override !== null}{row.override}{:else}<span
                                 class="text-body-secondary">-</span
                               >{/if}

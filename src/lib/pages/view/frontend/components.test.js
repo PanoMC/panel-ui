@@ -403,10 +403,9 @@ describe('Front-end settings', () => {
     keys: KEYS,
     frontend: { ...STATE, mode },
     proxyStatus: null,
-    origins: ORIGINS,
   });
 
-  test('has no tabs: the mode choice, then the keys and other websites rows', () => {
+  test('has no tabs: mode choice and keys without the other-sites row card', () => {
     const html = content({
       ...dataFor('CUSTOM_APP'),
       frontend: { ...STATE, mode: 'CUSTOM_APP', customAppId: 'shop', customApps: APPS },
@@ -423,11 +422,11 @@ describe('Front-end settings', () => {
     expect(html).not.toContain('role="tablist"');
     expect(html).toContain('data-section="custom-app"');
     expect(html).toContain('data-row="keys"');
-    expect(html).toContain('data-other-sites');
+    expect(html).not.toContain('data-other-sites');
+    expect(html).not.toContain('list-group list-group-flush');
     expect(html).not.toContain('data-row="urls"');
     expect(html).not.toContain('data-urls-modal');
     expect(text).toContain('Site connection keys');
-    expect(text).toContain('Other Site Access');
   });
 
   test('the keys row is enabled while the saved mode is Custom app, External or None', () => {
@@ -449,25 +448,33 @@ describe('Front-end settings', () => {
     expect(textOf(html)).not.toContain('Site connection keys');
   });
 
-  test('the other-websites switch works in every mode; link targets are managed separately', () => {
+  test('other-site access is managed outside the settings modal', () => {
     for (const mode of ['THEME', 'CUSTOM_APP', 'EXTERNAL', 'NONE']) {
       const html = content(dataFor(mode));
 
-      expect(tagWith(html, 'data-other-sites-switch')).not.toContain('disabled');
-      expect(tagWith(html, 'for="frontendOtherSites"')).toContain('text-capitalize');
+      expect(html).not.toContain('data-other-sites-switch');
       expect(html).not.toContain('data-open-urls');
     }
   });
 
-  test('a failed keys read disables the row; a failed websites read is reported in its row', () => {
-    const html = content({ ...dataFor('EXTERNAL'), keys: null, origins: null });
+  test('a failed keys read is reported in its row', () => {
+    const html = content({ ...dataFor('EXTERNAL'), keys: null });
 
-    expect(tagWith(html, 'data-open-keys')).toContain('disabled');
+    expect(html).not.toContain('data-open-keys');
     expect(html.match(/data-load-failed/g)).toHaveLength(1);
   });
 });
 
 describe('Websites list modal', () => {
+  test('the Themes page access manager mounts independently from front-end settings', () => {
+    const html = renderHtml(FrontendOtherSites, {
+      api: createFrontendApi(stubClient()),
+    });
+
+    expect(html).toContain('data-sites-modal');
+    expect(html).toContain('data-other-sites-switch');
+  });
+
   test('lists the origins with the count and a remove action each', () => {
     const html = renderHtml(FrontendOriginsModal, { controller: originsController() });
     const text = textOf(html);
@@ -479,13 +486,13 @@ describe('Websites list modal', () => {
     expect(text).not.toContain('Add Website');
   });
 
-  test('an empty list shows the default icon without text or a table', () => {
+  test('an empty list shows the add form without NoContent or a table', () => {
     const html = renderHtml(FrontendOriginsModal, {
       controller: originsController({ origins: [], max: 20 }),
     });
 
     expect(textOf(html)).not.toContain('No websites yet.');
-    expect(html).toContain('fa-regular fa-square fa-3x');
+    expect(html).not.toContain('fa-regular fa-square fa-3x');
     expect(html).not.toContain('<table');
     expect(html).toContain('data-origin-form');
     expect(html).toContain('data-origin-input');
@@ -609,22 +616,22 @@ describe('Allow other websites switch', () => {
 
   test('is off with an empty list: no count, no edit button', () => {
     const { controller } = sites({ origins: [], max: 20 });
-    const html = renderHtml(FrontendOtherSites, { controller });
+    const html = renderHtml(FrontendOriginsModal, { controller });
 
     expect(tagWith(html, 'data-other-sites-switch')).not.toContain('checked');
     expect(html).not.toContain('data-sites-count');
     expect(html).not.toContain('data-edit-sites');
+    expect(html).toContain('data-other-sites');
     expect(textOf(html)).toContain('Other Site Access');
     expect(textOf(html)).toContain('read data from this Pano in the visitor');
   });
 
-  test('is on with a saved site and shows the count and an Edit button', () => {
+  test('is on with a saved site and shows the website count', () => {
     const { controller } = sites(ORIGINS);
-    const html = renderHtml(FrontendOtherSites, { controller });
+    const html = renderHtml(FrontendOriginsModal, { controller });
 
     expect(tagWith(html, 'data-other-sites-switch')).toContain('checked');
-    expect(textOf(html)).toContain('2 websites');
-    expect(tagWith(html, 'data-edit-sites')).toContain('title="Edit"');
+    expect(textOf(html)).toContain('2/20 Websites');
   });
 
   test('turning it off asks first, then saves an empty list', async () => {

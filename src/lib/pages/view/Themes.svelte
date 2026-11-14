@@ -36,6 +36,7 @@
   bind:this={frontendModal}
   canUpload={hasPermission(Permissions.MANAGE_ADDONS)}
   onmodesaved={(mode) => (frontendMode = mode)} />
+<FrontendOtherSites bind:this={otherSites} />
 <FrontendUrls bind:this={urlsModal} />
 
 {#if data.failedLogin}
@@ -60,6 +61,15 @@
     aria-label={$_('pages.frontend.settings-button')}
     onclick={() => frontendModal?.show()}>
     <i class="fa-solid fa-gear" aria-hidden="true"></i>
+  </button>
+  <button
+    type="button"
+    class="btn btn-link"
+    data-frontend-origins
+    title={$_('pages.frontend.origins.switch')}
+    aria-label={$_('pages.frontend.origins.switch')}
+    onclick={() => otherSites?.show()}>
+    <i class="fa-solid fa-globe" aria-hidden="true"></i>
   </button>
   <button
     type="button"
@@ -275,6 +285,7 @@
   import CompatProblemIcon from '$lib/components/CompatProblemIcon.svelte';
   import { themeProblem } from '../addons/compat/compat.util.js';
   import FrontendModal from './frontend/FrontendModal.svelte';
+  import FrontendOtherSites from './frontend/FrontendOtherSites.svelte';
   import FrontendUrls from './frontend/FrontendUrls.svelte';
   import { normalizeFrontendState, themeNotShown } from './frontend/frontend.util.js';
   import { browser } from '$app/env';
@@ -289,6 +300,7 @@
   $: compatibility = data.compatibility ?? null;
 
   let frontendModal;
+  let otherSites;
   let urlsModal;
   // The saved mode; the settings dialog updates it when a mode is saved there.
   let frontendMode = null;

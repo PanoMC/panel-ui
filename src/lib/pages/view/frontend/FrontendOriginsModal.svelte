@@ -16,6 +16,24 @@
           ></button>
         </div>
         <div class="modal-body vstack gap-3">
+          <div class="form-check form-switch" data-other-sites>
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="frontendOtherSites"
+              checked={$enabled}
+              disabled={$disabling}
+              data-other-sites-switch
+              onchange={toggle} />
+            <label
+              class="form-check-label fw-semibold text-capitalize"
+              for="frontendOtherSites">
+              {$_('pages.frontend.origins.switch')}
+            </label>
+            <div class="text-body-secondary">{$_('pages.frontend.origins.helper')}</div>
+          </div>
+
           <div class="d-flex align-items-center justify-content-between">
             <div>
               {$_('pages.frontend.origins.table-title', {
@@ -57,9 +75,7 @@
             {/if}
           </form>
 
-          {#if $items.length === 0}
-            <NoContent />
-          {:else}
+          {#if $items.length > 0}
             <div class="table-responsive">
               <table class="table table-hover mb-0">
                 <thead>
@@ -117,7 +133,6 @@
 <script>
   import { _ } from 'svelte-i18n';
 
-  import NoContent from '$lib/components/NoContent.svelte';
   import { portal, showStacked } from '$lib/modal-stack.util.js';
 
   /**
@@ -129,7 +144,7 @@
 
   // The controller is fixed for the life of the page.
   // svelte-ignore state_referenced_locally
-  const { items, max, full, adding, addError, removing } = controller;
+  const { enabled, disabling, items, max, full, adding, addError, removing } = controller;
 
   let element = $state();
   let origin = $state('');
@@ -143,6 +158,17 @@
 
   export function hide() {
     modal?.hide();
+  }
+
+  function toggle(event) {
+    const input = event.currentTarget;
+
+    if (input.checked) {
+      controller.enable();
+    } else {
+      input.checked = true;
+      controller.requestDisable();
+    }
   }
 
   async function submit(event) {

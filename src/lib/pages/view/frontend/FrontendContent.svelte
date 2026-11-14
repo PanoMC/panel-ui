@@ -7,32 +7,25 @@
     {@render loadFailed()}
   {/if}
 
-  <div class="card">
-    <div class="list-group list-group-flush">
-      {#if keysUsable}
-        <div class="list-group-item d-flex align-items-center gap-3" data-row="keys">
-          <div class="flex-grow-1">
-            <div class="fw-semibold">{$_('pages.frontend.keys.title')}</div>
-            <div class="text-body-secondary">{$_('pages.frontend.keys.block-title')}</div>
-          </div>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            disabled={!keysController}
-            data-open-keys
-            onclick={() => keysModal?.show()}>
-            {$_('pages.frontend.manage')}
-          </button>
+  {#if keysUsable}
+    {#if keysController}
+      <div class="d-flex align-items-center gap-3" data-row="keys">
+        <div class="flex-grow-1">
+          <div class="fw-semibold">{$_('pages.frontend.keys.title')}</div>
+          <div class="text-body-secondary">{$_('pages.frontend.keys.block-title')}</div>
         </div>
-      {/if}
-
-      {#if originsController}
-        <FrontendOtherSites controller={originsController} />
-      {:else}
-        <div class="list-group-item">{@render loadFailed()}</div>
-      {/if}
-    </div>
-  </div>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-open-keys
+          onclick={() => keysModal?.show()}>
+          {$_('pages.frontend.manage')}
+        </button>
+      </div>
+    {:else}
+      <div data-row="keys">{@render loadFailed()}</div>
+    {/if}
+  {/if}
 </div>
 
 {#if keysController && keysUsable}
@@ -64,20 +57,18 @@
 
   import FrontendKeys from './FrontendKeys.svelte';
   import FrontendMode from './FrontendMode.svelte';
-  import FrontendOtherSites from './FrontendOtherSites.svelte';
   import { createFrontendApi } from './frontend.api.js';
   import { FrontendModes } from './frontend.util.js';
   import { createKeysController } from './keys.controller.js';
   import { createModeController } from './mode.controller.js';
-  import { createOriginsController } from './origins.controller.js';
   import ProxyBanner from './ProxyBanner.svelte';
 
   /**
-   * The body of the Front-end settings modal (Themes page): the proxy banner, the mode choice and a
-   * short list of rows for site connection keys and other websites. `api`, `notify` and `confirm` default to the panel's own; they are props
-   * so a test can pass stubs. `onmodesaved` gets the saved mode;
-   * `onretry` runs when a failed read's retry button is pressed.
-   * @type {{ data: { keys: any, frontend: any, proxyStatus: any, origins?: any }, api?: any, notify?: any, confirm?: any, onmodesaved?: (mode: string) => void, onretry?: () => void, canUpload?: boolean }}
+   * The body of the Front-end settings modal (Themes page): the proxy banner, mode choice and site
+   * connection keys. `api`, `notify` and `confirm` default to the panel's own; they are props so a
+   * test can pass stubs. `onmodesaved` gets the saved mode; `onretry` runs when a failed read's
+   * retry button is pressed.
+   * @type {{ data: { keys: any, frontend: any, proxyStatus: any }, api?: any, notify?: any, confirm?: any, onmodesaved?: (mode: string) => void, onretry?: () => void, canUpload?: boolean }}
    */
   let {
     data,
@@ -100,11 +91,6 @@
   // svelte-ignore state_referenced_locally
   const modeController = data.frontend
     ? createModeController({ api, notify, confirm, initial: data.frontend })
-    : null;
-
-  // svelte-ignore state_referenced_locally
-  const originsController = data.origins
-    ? createOriginsController({ api, notify, confirm, initial: data.origins })
     : null;
 
   // The saved mode, not the form: headless access follows what is stored.
