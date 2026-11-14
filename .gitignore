@@ -43,3 +43,4 @@ ds-bundle/
 
 # Written by `theme-core sync` / `contracts pull`; only themes keep it.
 plugin-contracts/
+/.lib-bundle-output/
