@@ -31,7 +31,7 @@
 {/snippet}
 
 <script>
-  import { onDestroy, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
 
@@ -59,6 +59,9 @@
 
   $effect(() => {
     value = initialValue;
+    return () => {
+      if (t) clearTimeout(t);
+    };
   });
 
   // A hidden field cannot take focus, so this is a no-op for the instances that live inside a
@@ -89,8 +92,4 @@
     if (t) clearTimeout(t);
     t = setTimeout(() => emitNow(value), debounceMs);
   }
-
-  onDestroy(() => {
-    if (t) clearTimeout(t);
-  });
 </script>

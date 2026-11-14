@@ -23,9 +23,11 @@ A filter that picks one value out of a list is a dropdown in the `right` slot �
 `<select>` and never an icon-only button. The trigger shows **the filter icon and the label of the
 selected option**, so the active filter is readable without opening the menu:
 
-- trigger `btn btn-link text-decoration-none dropdown-toggle`: `<i class="fas fa-filter me-2">` +
-  `<span>` with the selected option's label. One icon per filter (`fa-filter` for the main one,
-  e.g. `fa-layer-group` for a source / group) — the icon tells filters apart when there are two.
+- trigger `btn btn-link text-decoration-none` with `data-bs-toggle="dropdown"`: `<i class="fas fa-filter me-2">` +
+  `<span>` with the selected option's label. Do not add Bootstrap's `dropdown-toggle` class; it
+  renders a down arrow, which filter dropdown triggers omit. One icon per filter (`fa-filter` for
+  the main one, e.g. `fa-layer-group` for a source / group) — the icon tells filters apart when
+  there are two.
 - menu `dropdown-menu`: one `dropdown-item` per option, the selected one `active` with a trailing
   `fa-check`. Picking an option closes the menu and applies it at once (no apply button).
 - the first option is the unfiltered one (`All`) and is the initial selection; its label shows in

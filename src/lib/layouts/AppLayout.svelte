@@ -1,4 +1,5 @@
 <svelte:head>
+  <!-- Capture page state during rendering for plugin components with their own Svelte runtime. -->
   <link href="/api/v1/favicon?hash={data.siteInfo.faviconHash}" rel="icon" />
 
   <title>{title}</title>
@@ -31,7 +32,7 @@
     {/if}
 
     <!-- Pano Host: control-plane notices; nothing on a self-hosted Pano. -->
-    {#if signedIn && !$resetLayout && !inlineLogin}
+    {#if signedIn && !$resetLayout && !isInlineLogin(kitPage)}
       <HostedBanner />
     {/if}
 
@@ -40,9 +41,9 @@
       class:workspace-game={$sidebarTabsState === 'game'}
       style="min-height: 0;">
       <!-- The login form shown in place of a page (`requireSignedIn`) is chrome-free like the
-           auth pages, decided from `$page` rather than `resetLayout`: the store is set by a load
+           auth pages, decided from the current page rather than `resetLayout`: the store is set by a load
            the browser never runs when it hydrates an error page. -->
-      {#if $resetLayout || inlineLogin}
+      {#if $resetLayout || isInlineLogin(kitPage)}
         <slot />
       {:else}
         <MainLayout>
@@ -440,6 +441,8 @@
       // Which parts of the panel exist at all. An install that predates the setting sends
       // nothing, which resolves to BOTH — today's behaviour.
       usageMode: normalizeUsageMode(siteInfo?.usageMode),
+      panelCurrentPathname: event.url.pathname,
+      panelRouteId: event.route?.id ?? null,
       resetLayout: browser
         ? clientResetLayout || (clientResetLayout = writable(false))
         : writable(false),
@@ -457,6 +460,7 @@
 <script>
   import { onDestroy, onMount, setContext } from 'svelte';
   import { captureRequestState } from '@panomc/sdk/core/js/appStores.js';
+  import { page as kitPage } from '$app/state';
   import { get } from 'svelte/store';
   import {
     invalidateAll as runInvalidateAll,
@@ -496,7 +500,6 @@
 
   export let data;
 
-  // SSR: plugin components read `$page` with their own Svelte runtime; they get this request's page (appStores.js).
   captureRequestState();
 
   const session = writable(data.session);
@@ -541,7 +544,7 @@
   $: setContext('resetLayout', resetLayout);
   $: setContext('pageTitle', pageTitle);
 
-  const sidebarTabsState = writable(getCurrentSidebarState());
+  const sidebarTabsState = writable(getCurrentSidebarState(data.panelCurrentPathname));
   const isSidebarOpen = writable(
     PanelSidebarStorageUtil.isThereSideBarOpenStatus()
       ? PanelSidebarStorageUtil.getSidebarOpenStatus()
@@ -693,18 +696,15 @@
   function getCurrentSidebarState(pathname) {
     return resolveSidebarTab({
       usageMode: data.usageMode,
-      canManageServers: canAccessServers(),
+      canManageServers: canAccessServers(data.user),
       // The page decides, not a remembered pill: a site page must not be shown with the servers
       // menu beside it, and the answer has to be the same on the server and in the browser.
       getStoredTab: () => sidebarTabForPath(pathname, base),
     });
   }
 
-  // The workspace follows the page, and this runs once both halves of that answer are current: the
-  // new page data and the new path. Deriving it inside the `page` subscription read the outgoing
-  // page's `usageMode` beside the incoming path, so the sidebar could settle on one tab and then
-  // move to the other — a second flicker on every navigation.
-  $: currentSidebarState = getCurrentSidebarState($page.url.pathname);
+  // The workspace follows the page, using the usage mode and path from the same layout load.
+  $: currentSidebarState = getCurrentSidebarState(data.panelCurrentPathname);
   $: if (currentSidebarState !== $sidebarTabsState) {
     sidebarTabsState.set(currentSidebarState);
   }
@@ -893,10 +893,8 @@
     rememberServerIcon($mainServer);
   }
 
-  $: inlineLogin = isInlineLogin($page);
-
   /** Routes of the `(preview)` group open in a window of their own, without the panel's pop-ups. */
-  $: standalone = $page.route?.id?.startsWith('/(preview)') ?? false;
+  $: standalone = data.panelRouteId?.startsWith('/(preview)') ?? false;
 
   $: if (signedIn && !standalone && !$showSplash && !whatsNewShown) {
     const backendDismissedVersion = data.session.basicData.dismissedWhatsNewVersion;
