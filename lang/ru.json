@@ -4705,7 +4705,9 @@
         "no-category-auto-reply": "Автоответ для тикетов без категории",
         "use-default-auto-reply": "Использовать автоответ по умолчанию",
         "default-auto-reply": "Автоответ по умолчанию",
-        "no-auto-reply": "Без автоответа"
+        "no-auto-reply": "Без автоответа",
+        "category-enabled": "Игроки могут выбирать категорию",
+        "no-category-form": "Форма тикетов без категории"
       },
       "server-upload-conflict": {
         "title": "{count, plural, one {# файл уже существует} few {# файла уже существуют} other {# файлов уже существуют}}",
@@ -4938,6 +4940,14 @@
       "errors": {
         "TOO_LONG": "Слишком длинно.",
         "INVALID": "Недопустимое значение."
+      }
+    },
+    "tickets": {
+      "form-editor": {
+        "title": "Спрашивать заголовок",
+        "title-placeholder": "Подсказка заголовка (пусто: по умолчанию)",
+        "description": "Спрашивать описание",
+        "description-placeholder": "Подсказка описания (пусто: по умолчанию)"
       }
     }
   },

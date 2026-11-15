@@ -4610,7 +4610,9 @@
         "allow-no-category": "カテゴリのないチケットを許可する",
         "load-failed": "設定を読み込めませんでした。",
         "save-failed": "設定を保存できませんでした。",
-        "saved": "チケット設定が保存されました。"
+        "saved": "チケット設定が保存されました。",
+        "category-enabled": "プレイヤーがカテゴリを選択できる",
+        "no-category-form": "カテゴリなしのチケットのフォーム"
       },
       "server-upload-conflict": {
         "title": "{count, plural, one {# file is already there} other {# files are already there}}",
@@ -4824,6 +4826,14 @@
       "errors": {
         "TOO_LONG": "長すぎます。",
         "INVALID": "無効な値です。"
+      }
+    },
+    "tickets": {
+      "form-editor": {
+        "title": "タイトルを入力させる",
+        "title-placeholder": "タイトルのプレースホルダー（空欄: デフォルト）",
+        "description": "説明を入力させる",
+        "description-placeholder": "説明のプレースホルダー（空欄: デフォルト）"
       }
     }
   },

@@ -4707,7 +4707,9 @@
         "no-category-auto-reply": "Kategorisiz Talepler İçin Otomatik Yanıt",
         "use-default-auto-reply": "Varsayılan otomatik yanıtı kullan",
         "default-auto-reply": "Varsayılan Otomatik Yanıt",
-        "no-auto-reply": "Otomatik yanıt yok"
+        "no-auto-reply": "Otomatik yanıt yok",
+        "category-enabled": "Oyuncular kategori seçebilsin",
+        "no-category-form": "Kategorisiz taleplerin formu"
       },
       "server-upload-conflict": {
         "title": "{count, plural, one {# dosya zaten var} other {# dosya zaten var}}",
@@ -4940,6 +4942,14 @@
       "errors": {
         "TOO_LONG": "Çok uzun.",
         "INVALID": "Geçersiz değer."
+      }
+    },
+    "tickets": {
+      "form-editor": {
+        "title": "Başlık sorulsun",
+        "title-placeholder": "Başlık ipucu metni (boş: varsayılan)",
+        "description": "Açıklama sorulsun",
+        "description-placeholder": "Açıklama ipucu metni (boş: varsayılan)"
       }
     }
   },

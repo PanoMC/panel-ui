@@ -100,6 +100,14 @@
               <option value={template.id}>{template.title}</option>
             {/each}
           </select>
+          <!-- Whether the "new ticket" form of this category asks for a title and a description, and
+               the hint inside each. -->
+          <hr />
+          <TicketFormEditor
+            bind:form={$category.form}
+            bind:i18n={$category.i18n}
+            errors={$errors}
+            idPrefix="ticketCategoryForm" />
           <!-- What a player fills in under the ticket's title when opening a ticket in this category. -->
           <hr />
           <TicketCategoryFieldsEditor bind:fields={$category.fields} bind:errors={$errors} />
@@ -126,6 +134,10 @@
   import { loadAllTicketTemplates } from '$lib/ticketTemplates.util.js';
   import { newField, normalizeDefinitions, validateDefinitions } from '$lib/ticketFields.util.js';
   import { fieldI18nForSave, pruneI18n, toEditableField } from '$lib/contentI18n.util.js';
+  import {
+    defaultTicketForm,
+    FORM_TEXT_PROPS,
+  } from '$lib/components/tickets/TicketFormEditor.svelte';
 
   const modalElement = writable();
   const mode = writable('create');
@@ -152,6 +164,7 @@
     // Option translations move onto their options while editing, so renaming a value keeps them.
     category.set({
       ...newCategory,
+      form: { ...defaultTicketForm(), ...(newCategory.form ?? {}) },
       i18n: structuredClone(newCategory.i18n ?? {}),
       fields: (newCategory.fields ?? []).map((field) =>
         toEditableField({
@@ -190,6 +203,7 @@
   import tooltip from '$lib/tooltip.util';
   import TicketCategoryFieldsEditor from '$lib/components/tickets/TicketCategoryFieldsEditor.svelte';
   import TranslationsButton from '$lib/components/TranslationsButton.svelte';
+  import TicketFormEditor from '$lib/components/tickets/TicketFormEditor.svelte';
 
   let loading = false;
   $: buttonDisabled = !$category.title;
@@ -214,7 +228,7 @@
     // The saved set replaces every translation of the category: blank ones are left out.
     const body = {
       ...get(category),
-      i18n: pruneI18n(get(category).i18n, ['title', 'description']),
+      i18n: pruneI18n(get(category).i18n, ['title', 'description', ...FORM_TEXT_PROPS]),
       fields: fields.map((field, index) => ({
         ...field,
         i18n: fieldI18nForSave(edited[index], field),

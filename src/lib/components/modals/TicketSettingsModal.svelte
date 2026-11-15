@@ -22,6 +22,19 @@
               {$_('components.modals.ticket-settings.load-failed')}
             </div>
           {:else}
+            <!-- Off: the "new ticket" form has no category choice, every ticket goes without one. -->
+            <div class="form-check form-switch mb-2">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="ticketCategoryEnabled"
+                autocomplete="off"
+                bind:checked={$settings.categoryEnabled} />
+              <label class="form-check-label" for="ticketCategoryEnabled">
+                {$_('components.modals.ticket-settings.category-enabled')}
+              </label>
+            </div>
             <div class="form-check form-switch">
               <input
                 class="form-check-input"
@@ -29,7 +42,9 @@
                 role="switch"
                 id="ticketAllowNoCategory"
                 autocomplete="off"
-                bind:checked={$settings.allowNoCategory} />
+                disabled={!$settings.categoryEnabled}
+                checked={$settings.allowNoCategory || !$settings.categoryEnabled}
+                on:change={(event) => ($settings.allowNoCategory = event.currentTarget.checked)} />
               <label class="form-check-label" for="ticketAllowNoCategory">
                 {$_('components.modals.ticket-settings.allow-no-category')}
               </label>
@@ -40,7 +55,7 @@
               <select
                 class="form-select"
                 id="ticketNoCategoryAutoReply"
-                disabled={!$settings.allowNoCategory}
+                disabled={!$settings.allowNoCategory && $settings.categoryEnabled}
                 value={$settings.noCategoryAutoReplyTemplateId}
                 on:change={(event) =>
                   ($settings.noCategoryAutoReplyTemplateId = Number(event.currentTarget.value))}>
@@ -72,6 +87,14 @@
                 {$_('components.modals.ticket-settings.default-auto-reply')}
               </label>
             </div>
+            <!-- The form of a ticket without a category (a category sets its own). -->
+            <hr />
+            <div class="form-label mb-2">
+              {$_('components.modals.ticket-settings.no-category-form')}
+            </div>
+            <TicketFormEditor
+              bind:form={$settings.noCategoryForm}
+              idPrefix="ticketNoCategoryForm" />
           {/if}
         </div>
         <div class="modal-footer">
@@ -92,18 +115,23 @@
 
   import ApiUtil from '$lib/api.util';
   import { loadAllTicketTemplates } from '$lib/ticketTemplates.util.js';
+  import { defaultTicketForm } from '$lib/components/tickets/TicketFormEditor.svelte';
 
   const modalElement = writable();
   const settings = writable({
     allowNoCategory: true,
     defaultAutoReplyTemplateId: -1,
     noCategoryAutoReplyTemplateId: -1,
+    categoryEnabled: true,
+    noCategoryForm: defaultTicketForm(),
   });
   /** What the server holds: Save is only on when the dialog differs from it. */
   const saved = writable({
     allowNoCategory: true,
     defaultAutoReplyTemplateId: -1,
     noCategoryAutoReplyTemplateId: -1,
+    categoryEnabled: true,
+    noCategoryForm: defaultTicketForm(),
   });
   /** The ready replies new tickets may get as their auto-reply. */
   const templates = writable([]);
@@ -144,8 +172,10 @@
         allowNoCategory: body.allowNoCategory !== false,
         defaultAutoReplyTemplateId: body.defaultAutoReplyTemplateId ?? -1,
         noCategoryAutoReplyTemplateId: body.noCategoryAutoReplyTemplateId ?? -1,
+        categoryEnabled: body.categoryEnabled !== false,
+        noCategoryForm: { ...defaultTicketForm(), ...(body.noCategoryForm ?? {}) },
       });
-      saved.set({ ...get(settings) });
+      saved.set(structuredClone(get(settings)));
     }
 
     loading.set(false);
@@ -155,6 +185,8 @@
 <script>
   import { _ } from 'svelte-i18n';
 
+  import TicketFormEditor from '$lib/components/tickets/TicketFormEditor.svelte';
+
   import {
     showError as showErrorToast,
     showSuccess as showSuccessToast,
@@ -162,10 +194,7 @@
 
   let saving = false;
 
-  $: changed =
-    $settings.allowNoCategory !== $saved.allowNoCategory ||
-    $settings.defaultAutoReplyTemplateId !== $saved.defaultAutoReplyTemplateId ||
-    $settings.noCategoryAutoReplyTemplateId !== $saved.noCategoryAutoReplyTemplateId;
+  $: changed = JSON.stringify($settings) !== JSON.stringify($saved);
 
   async function onSubmit() {
     if (saving || !changed) {
@@ -180,6 +209,8 @@
         allowNoCategory: get(settings).allowNoCategory,
         defaultAutoReplyTemplateId: get(settings).defaultAutoReplyTemplateId,
         noCategoryAutoReplyTemplateId: get(settings).noCategoryAutoReplyTemplateId,
+        categoryEnabled: get(settings).categoryEnabled,
+        noCategoryForm: get(settings).noCategoryForm,
       },
       handler: (result) => result,
     }).catch(() => null);

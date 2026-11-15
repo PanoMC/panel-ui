@@ -4705,7 +4705,9 @@
         "no-category-auto-reply": "Auto-reply for tickets without a category",
         "use-default-auto-reply": "Use the default auto-reply",
         "default-auto-reply": "Default auto-reply",
-        "no-auto-reply": "No auto-reply"
+        "no-auto-reply": "No auto-reply",
+        "category-enabled": "Let players choose a category",
+        "no-category-form": "Form of tickets without a category"
       },
       "server-upload-conflict": {
         "title": "{count, plural, one {# file is already there} other {# files are already there}}",
@@ -4938,6 +4940,14 @@
       "errors": {
         "TOO_LONG": "Too long.",
         "INVALID": "Invalid value."
+      }
+    },
+    "tickets": {
+      "form-editor": {
+        "title": "Ask for a title",
+        "title-placeholder": "Title placeholder (empty: default)",
+        "description": "Ask for a description",
+        "description-placeholder": "Description placeholder (empty: default)"
       }
     }
   },
