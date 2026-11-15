@@ -1004,6 +1004,10 @@
             post.status = StatusTypes.PUBLISHED;
           }
 
+          // The dates the server gave the post (a draft made by an autosave had none yet).
+          if (body.date) post.date = body.date;
+          if (body.moveDate) post.moveDate = body.moveDate;
+
           // Saved: the editor matches the post now and the kept changes are gone.
           saved = {
             title: post.title ?? '',
