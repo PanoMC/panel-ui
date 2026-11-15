@@ -50,6 +50,9 @@ otherwise take.
 4. A list answers `{ items }`; a paged list adds `{ page }`. Every error answers `{ error: { code, ... } }`.
 5. Commits are one conventional line (`feat: ...`, `fix: ...`). Never bump a version by hand: CI does it.
 6. Front-end repos use Bun; JVM repos use `./gradlew`.
+7. Before every commit run the repo's check and build (plugin: `bunx pano-plugin check` and `bun run build`; theme:
+   `bunx @panomc/theme-core check` and `bun run build`; see `testing.md`) and fix what they report. After a push, CI
+   on `dev` must be green; while it is red, fix it before you push anything else.
 
 ## Longer documents for people
 

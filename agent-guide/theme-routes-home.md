@@ -28,7 +28,8 @@ home: {
 ```
 
 The admin chooses from these options in the panel; no choice means `default`. A choice that cannot be shown (plugin
-removed) falls back to `default`, then to the posts feed. The posts feed is always served at `/posts`. 2. Routes:
+removed) falls back to `default`, then to the posts feed. The posts feed is always served at `/posts`. A path that is a
+page of the theme itself (`/rules`, `/support`, a `routes.add` page) is not rendered at `/`: `/` redirects (302) to it. 2. Routes:
 
 ```js
 routes: {
