@@ -188,7 +188,6 @@
         {#if showPreview}
           <button
             class="btn btn-link btn-sm text-decoration-none"
-            class:text-primary={isPreview}
             onclick={() => (isPreview = !isPreview)}>
             <i class="fas fa-eye"></i>
             {isPreview ? 'Edit' : 'Preview'}

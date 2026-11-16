@@ -138,7 +138,7 @@
                   href={plugin.purchaseUrl}
                   target="_blank"
                   rel="noopener"
-                  class="btn btn-sm btn-warning"
+                  class="                  btn btn-sm btn-primary"
                   title={buyAddonOnMarketLabel}
                   aria-label={buyAddonOnMarketLabel}>
                   <i class="fa-solid fa-store"></i>
