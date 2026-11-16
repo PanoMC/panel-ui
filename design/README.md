@@ -20,5 +20,6 @@ building. Do not load every file.
 | A data table: columns, header row, row controls    | `tables.md`              |
 | A colored statistic card, with or without a chart  | `cards-colored.md`       |
 | Tooltips                                           | `tooltips.md`            |
+| A filter dropdown in a card header                 | `filter-dropdown.md`     |
 
 If no topic file covers the element, follow the closest existing screen in `panel-ui`.

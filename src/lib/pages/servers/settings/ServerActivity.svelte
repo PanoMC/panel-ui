@@ -36,37 +36,34 @@
     </div>
 
     <span slot="right" class="d-flex flex-wrap align-items-center justify-content-end gap-2">
-      <label class="visually-hidden" for="serverActivityUser">
-        {$_('pages.servers.activity.filter-user-label')}
-      </label>
-      <select
-        id="serverActivityUser"
-        class="form-select form-select-sm w-auto"
-        bind:value={userFilter}>
-        <option value="">
-          {capitalize($_('pages.servers.activity.filter-user-all'), $locale)}</option>
-        {#if hasSystemEntries}
-          <option value={SYSTEM_ACTIVITY_USER}
-            >{capitalize($_('pages.servers.activity.system'), $locale)}</option>
-        {/if}
-        <!-- A username is left exactly as it is: it is a name, not a label, and capitalising or
-             translating it would break the copy the admin recognises. -->
-        {#each userOptions as option (option)}
-          <option value={option}>{option}</option>
-        {/each}
-      </select>
-      <label class="visually-hidden" for="serverActivityType">
-        {$_('pages.servers.activity.filter-label')}
-      </label>
-      <select
-        id="serverActivityType"
-        class="form-select form-select-sm w-auto"
-        bind:value={typeFilter}>
-        <option value="">{capitalize($_('pages.servers.activity.filter-all'), $locale)}</option>
-        {#each typeOptions as option (option)}
-          <option value={option}>{capitalize(activityTypeLabel(option, $_), $locale)}</option>
-        {/each}
-      </select>
+      <FilterDropdown
+        label={$_('pages.servers.activity.filter-user-label')}
+        current={userFilter}
+        options={[
+          { key: '', label: capitalize($_('pages.servers.activity.filter-user-all'), $locale) },
+          ...(hasSystemEntries
+            ? [
+                {
+                  key: SYSTEM_ACTIVITY_USER,
+                  label: capitalize($_('pages.servers.activity.system'), $locale),
+                },
+              ]
+            : []),
+          // A username is left exactly as it is: it is a name, not a label.
+          ...userOptions.map((option) => ({ key: option, label: option })),
+        ]}
+        onSelect={(option) => (userFilter = option.key)} />
+      <FilterDropdown
+        label={$_('pages.servers.activity.filter-label')}
+        current={typeFilter}
+        options={[
+          { key: '', label: capitalize($_('pages.servers.activity.filter-all'), $locale) },
+          ...typeOptions.map((option) => ({
+            key: option,
+            label: capitalize(activityTypeLabel(option, $_), $locale),
+          })),
+        ]}
+        onSelect={(option) => (typeFilter = option.key)} />
     </span>
   </CardHeader>
 
@@ -188,6 +185,7 @@
   import { browser } from '$app/env';
 
   import CardHeader from '$lib/components/CardHeader.svelte';
+  import FilterDropdown from '$lib/components/FilterDropdown.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import ServerActivityEntry from '$lib/components/servers/ServerActivityEntry.svelte';

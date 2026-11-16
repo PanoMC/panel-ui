@@ -1,20 +1,16 @@
 <!-- The visual editor of a Discord message: bot name and avatar, text, one embed. -->
-<div class="row g-2">
-  <div class="col-sm-6">
-    <input
-      class="form-control"
-      type="text"
-      maxlength="80"
-      placeholder={$_('pages.webhooks.template.username')}
-      bind:value={model.username} />
-  </div>
-  <div class="col-sm-6">
-    <input
-      class="form-control"
-      type="text"
-      placeholder={$_('pages.webhooks.template.avatar-url')}
-      bind:value={model.avatarUrl} />
-  </div>
+<div class="input-group">
+  <input
+    class="form-control"
+    type="text"
+    maxlength="80"
+    placeholder={$_('pages.webhooks.template.username')}
+    bind:value={model.username} />
+  <input
+    class="form-control"
+    type="text"
+    placeholder={$_('pages.webhooks.template.avatar-url')}
+    bind:value={model.avatarUrl} />
 </div>
 
 <textarea
@@ -38,22 +34,18 @@
 
 {#if model.hasEmbed}
   <div class="vstack gap-2 border-start border-4 ps-3" style:border-color|important={model.color}>
-    <div class="row g-2">
-      <div class="col-sm-6">
-        <input
-          class="form-control"
-          type="text"
-          maxlength="256"
-          placeholder={$_('pages.webhooks.template.author-name')}
-          bind:value={model.authorName} />
-      </div>
-      <div class="col-sm-6">
-        <input
-          class="form-control"
-          type="text"
-          placeholder={$_('pages.webhooks.template.author-icon')}
-          bind:value={model.authorIcon} />
-      </div>
+    <div class="input-group">
+      <input
+        class="form-control"
+        type="text"
+        maxlength="256"
+        placeholder={$_('pages.webhooks.template.author-name')}
+        bind:value={model.authorName} />
+      <input
+        class="form-control"
+        type="text"
+        placeholder={$_('pages.webhooks.template.author-icon')}
+        bind:value={model.authorIcon} />
     </div>
 
     <div class="input-group">
@@ -86,7 +78,8 @@
 
     <div class="vstack gap-2" data-template-fields>
       {#each model.fields as field, index (index)}
-        <div class="input-group">
+        <div class="d-flex align-items-center gap-2">
+          <div class="input-group flex-grow-1">
           <input
             class="form-control"
             type="text"
@@ -109,19 +102,18 @@
               aria-label={$_('pages.webhooks.template.field-inline')}
               bind:checked={field.inline} />
           </div>
+          </div>
           <button
-            class="btn btn-primary"
+            class="btn-close"
             type="button"
             title={$_('buttons.remove')}
             aria-label={$_('buttons.remove')}
-            onclick={() => removeField(index)}>
-            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-          </button>
+            onclick={() => removeField(index)}></button>
         </div>
       {/each}
       <div>
         <button
-          class="btn btn-sm btn-link text-capitalize px-0"
+          class="btn btn-sm btn-link text-capitalize text-decoration-none px-0"
           type="button"
           data-add-field
           disabled={model.fields.length >= MAX_FIELDS}
@@ -132,39 +124,31 @@
       </div>
     </div>
 
-    <div class="row g-2">
-      <div class="col-sm-6">
-        <input
-          class="form-control"
-          type="text"
-          placeholder={$_('pages.webhooks.template.thumbnail')}
-          bind:value={model.thumbnail} />
-      </div>
-      <div class="col-sm-6">
-        <input
-          class="form-control"
-          type="text"
-          placeholder={$_('pages.webhooks.template.image')}
-          bind:value={model.image} />
-      </div>
+    <div class="input-group">
+      <input
+        class="form-control"
+        type="text"
+        placeholder={$_('pages.webhooks.template.thumbnail')}
+        bind:value={model.thumbnail} />
+      <input
+        class="form-control"
+        type="text"
+        placeholder={$_('pages.webhooks.template.image')}
+        bind:value={model.image} />
     </div>
 
-    <div class="row g-2">
-      <div class="col-sm-6">
-        <input
-          class="form-control"
-          type="text"
-          maxlength="2048"
-          placeholder={$_('pages.webhooks.template.footer')}
-          bind:value={model.footerText} />
-      </div>
-      <div class="col-sm-6">
-        <input
-          class="form-control"
-          type="text"
-          placeholder={$_('pages.webhooks.template.footer-icon')}
-          bind:value={model.footerIcon} />
-      </div>
+    <div class="input-group">
+      <input
+        class="form-control"
+        type="text"
+        maxlength="2048"
+        placeholder={$_('pages.webhooks.template.footer')}
+        bind:value={model.footerText} />
+      <input
+        class="form-control"
+        type="text"
+        placeholder={$_('pages.webhooks.template.footer-icon')}
+        bind:value={model.footerIcon} />
     </div>
 
     <div class="form-check form-switch m-0">

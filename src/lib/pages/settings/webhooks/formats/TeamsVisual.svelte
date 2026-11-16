@@ -1,23 +1,19 @@
 <!-- The visual editor of a Teams message: one Adaptive Card. -->
-<div class="row g-2">
-  <div class="col-sm-8">
-    <input
-      class="form-control"
-      type="text"
-      placeholder={$_('pages.webhooks.template.teams.title')}
-      bind:value={model.title} />
-  </div>
-  <div class="col-sm-4">
-    <div class="form-floating">
-      <select id="teamsTitleColor" class="form-select" bind:value={model.color}>
-        {#each COLORS as color (color)}
-          <option value={color}>
-            {$_(`pages.webhooks.template.teams.color-${color.toLowerCase()}`)}
-          </option>
-        {/each}
-      </select>
-      <label for="teamsTitleColor">{$_('pages.webhooks.template.teams.color')}</label>
-    </div>
+<div class="input-group">
+  <input
+    class="form-control"
+    type="text"
+    placeholder={$_('pages.webhooks.template.teams.title')}
+    bind:value={model.title} />
+  <div class="form-floating flex-grow-0">
+    <select id="teamsTitleColor" class="form-select" bind:value={model.color}>
+      {#each COLORS as color (color)}
+        <option value={color}>
+          {$_(`pages.webhooks.template.teams.color-${color.toLowerCase()}`)}
+        </option>
+      {/each}
+    </select>
+    <label for="teamsTitleColor">{$_('pages.webhooks.template.teams.color')}</label>
   </div>
 </div>
 
@@ -43,7 +39,8 @@
 
 <div class="vstack gap-2" data-template-facts>
   {#each model.facts as fact, index (index)}
-    <div class="input-group">
+    <div class="d-flex align-items-center gap-2">
+      <div class="input-group flex-grow-1">
       <input
         class="form-control"
         type="text"
@@ -56,19 +53,18 @@
         aria-label={$_('pages.webhooks.template.field-value')}
         placeholder={$_('pages.webhooks.template.field-value')}
         bind:value={fact.value} />
+      </div>
       <button
-        class="btn btn-primary"
+        class="btn-close"
         type="button"
         title={$_('buttons.remove')}
         aria-label={$_('buttons.remove')}
-        onclick={() => removeFact(index)}>
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-      </button>
+        onclick={() => removeFact(index)}></button>
     </div>
   {/each}
   <div>
     <button
-      class="btn btn-sm btn-link text-capitalize px-0"
+      class="btn btn-sm btn-link text-capitalize text-decoration-none px-0"
       type="button"
       data-add-fact
       disabled={model.facts.length >= MAX_FACTS}
@@ -87,7 +83,8 @@
 
 <div class="vstack gap-2" data-template-buttons>
   {#each model.buttons as button, index (index)}
-    <div class="input-group">
+    <div class="d-flex align-items-center gap-2">
+      <div class="input-group flex-grow-1">
       <input
         class="form-control"
         type="text"
@@ -100,19 +97,18 @@
         aria-label={$_('pages.webhooks.template.teams.button-url')}
         placeholder={$_('pages.webhooks.template.teams.button-url')}
         bind:value={button.url} />
+      </div>
       <button
-        class="btn btn-primary"
+        class="btn-close"
         type="button"
         title={$_('buttons.remove')}
         aria-label={$_('buttons.remove')}
-        onclick={() => removeButton(index)}>
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-      </button>
+        onclick={() => removeButton(index)}></button>
     </div>
   {/each}
   <div>
     <button
-      class="btn btn-sm btn-link text-capitalize px-0"
+      class="btn btn-sm btn-link text-capitalize text-decoration-none px-0"
       type="button"
       data-add-button
       disabled={model.buttons.length >= MAX_BUTTONS}

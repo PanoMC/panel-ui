@@ -28,14 +28,16 @@
               {$_(`pages.mail-templates.layouts.errors.${nameError}`)}
             </div>
           {/if}
-          <label class="form-label" for="new-mail-layout-copy-from">
-            {$_('pages.mail-templates.layouts.create.copy-from')}
-          </label>
-          <select id="new-mail-layout-copy-from" class="form-select" bind:value={copyFrom}>
-            {#each layouts as layout (layout.id)}
-              <option value={layout.id}>{layout.name || layout.id}</option>
-            {/each}
-          </select>
+          <div class="form-floating">
+            <select id="new-mail-layout-copy-from" class="form-select" bind:value={copyFrom}>
+              {#each layouts as layout (layout.id)}
+                <option value={layout.id}>{layout.name || layout.id}</option>
+              {/each}
+            </select>
+            <label for="new-mail-layout-copy-from">
+              {$_('pages.mail-templates.layouts.create.copy-from')}
+            </label>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-primary w-100" type="submit" disabled={loading || !name.trim()}>

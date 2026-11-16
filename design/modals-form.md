@@ -21,6 +21,9 @@ A modal with inputs that creates, saves or edits something. Reference:
 - Add a label or helper line only when the field cannot be understood from its placeholder (a
   checkbox / switch, a select, a value with a required format).
 - Mark an invalid field on the input itself (`is-invalid` / `border-danger`).
+- **Titles are short, technical and concise.** Input labels, placeholders, switch / select labels
+  and item titles in a modal are a few words, **capitalized** (every word starts with an uppercase letter: "Default Auto-Reply", not "The auto-reply
+  sent by default to every new ticket"). No sentences, no trailing period, no filler words.
 
 ## Footer
 

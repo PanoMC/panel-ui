@@ -56,11 +56,11 @@
         </div>
         <div class="modal-footer">
           <button
-            class="btn btn-primary w-100"
+            class="btn btn-primary w-100 text-capitalize"
             type="button"
             data-template-apply
             onclick={applyTemplate}>
-            {$_('pages.webhooks.template.apply')}
+            {$_('buttons.save')}
           </button>
         </div>
       {:else}
@@ -80,29 +80,24 @@
                 {@render problem(shown.name)}
               </div>
 
-              <div
-                class="row row-cols-2 row-cols-sm-3 g-2"
-                role="radiogroup"
+              <ul
+                class="nav nav-pills gap-1"
+                role="tablist"
                 aria-label={$_('pages.webhooks.form.format')}>
                 {#each WEBHOOK_FORMATS as format (format)}
-                  <div class="col">
-                    <input
-                      type="radio"
-                      class="btn-check"
-                      name="webhookFormat"
-                      id="webhookFormat{format}"
-                      autocomplete="off"
-                      checked={form.format === format}
-                      onchange={() => changeFormat(format)} />
-                    <label
-                      class="btn btn-outline-primary text-capitalize w-100 text-nowrap"
-                      for="webhookFormat{format}">
-                      <i class="{FORMAT_ICONS[format]} me-1" aria-hidden="true"></i>
+                  <li class="nav-item" role="presentation">
+                    <button
+                      class="nav-link text-capitalize"
+                      class:active={form.format === format}
+                      type="button"
+                      role="tab"
+                      aria-selected={form.format === format}
+                      onclick={() => changeFormat(format)}>
                       {$_(`pages.webhooks.format.${format}`)}
-                    </label>
-                  </div>
+                    </button>
+                  </li>
                 {/each}
-              </div>
+              </ul>
 
               {#if form.format === 'TELEGRAM'}
                 <div>
@@ -134,16 +129,20 @@
                 </div>
               {:else}
                 <div>
-                  <input
-                    class="form-control"
-                    class:is-invalid={shown.url}
-                    type="text"
-                    inputmode="url"
-                    maxlength="1024"
-                    autocomplete="off"
-                    data-field="url"
-                    placeholder={$_(`pages.webhooks.form.url-${form.format}`)}
-                    bind:value={form.url} />
+                  <div class="form-floating">
+                    <input
+                      id="webhookUrl"
+                      class="form-control"
+                      class:is-invalid={shown.url}
+                      type="text"
+                      inputmode="url"
+                      maxlength="1024"
+                      autocomplete="off"
+                      data-field="url"
+                      placeholder={$_(`pages.webhooks.form.url-${form.format}`)}
+                      bind:value={form.url} />
+                    <label for="webhookUrl">{$_(`pages.webhooks.form.url-${form.format}`)}</label>
+                  </div>
                   {@render problem(shown.url)}
                 </div>
               {/if}
@@ -191,7 +190,8 @@
                 <div class="vstack gap-2" data-headers>
                   {#each form.headers as row, index (index)}
                     <div>
-                      <div class="input-group">
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="input-group flex-grow-1">
                         <input
                           class="form-control"
                           class:is-invalid={headerProblem(index, row)}
@@ -208,14 +208,13 @@
                           aria-label={$_('pages.webhooks.form.header-value')}
                           placeholder={$_('pages.webhooks.form.header-value')}
                           bind:value={row.value} />
+                        </div>
                         <button
-                          class="btn btn-primary"
+                          class="btn-close"
                           type="button"
                           title={$_('buttons.remove')}
                           aria-label={$_('buttons.remove')}
-                          onclick={() => removeHeader(index)}>
-                          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-                        </button>
+                          onclick={() => removeHeader(index)}></button>
                       </div>
                       {@render problem(headerProblem(index, row))}
                     </div>
@@ -225,7 +224,7 @@
                   {/if}
                   <div>
                     <button
-                      class="btn btn-sm btn-link text-capitalize px-0"
+                      class="btn btn-sm btn-link text-capitalize text-decoration-none px-0"
                       type="button"
                       data-add-header
                       disabled={form.headers.length >= MAX_HEADERS}
@@ -239,25 +238,34 @@
 
               {#if templated}
                 <div data-templates>
-                  <div class="small text-muted mb-1 text-capitalize">
+                  <div class="mb-1 text-capitalize">
                     {$_('pages.webhooks.template.list')}
                   </div>
                   <div class="list-group">
                     {#each templateRows as row (row.key)}
                       <div
-                        class="list-group-item d-flex align-items-center gap-2"
+                        class="list-group-item list-group-item-action d-flex align-items-center gap-2"
                         class:border-danger={shown.templates?.[row.key]}
-                        data-template-row={row.key}>
+                        role="button"
+                        tabindex="0"
+                        style="cursor: pointer;"
+                        title={$_('buttons.edit')}
+                        data-template-row={row.key}
+                        data-template-edit={row.key}
+                        onclick={() => openTemplate(row.key)}
+                        onkeydown={(event) => {
+                          if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            openTemplate(row.key);
+                          }
+                        }}>
                         <div class="me-auto text-truncate">
                           {#if row.key === WILDCARD}
                             {$_('pages.webhooks.template.every-event')}
                           {:else}
                             <code>{row.key}</code>
                           {/if}
-                          <span
-                            class="badge ms-1"
-                            class:text-bg-primary={row.state === 'custom'}
-                            class:text-bg-secondary={row.state !== 'custom'}>
+                          <span class="badge ms-1 text-bg-primary">
                             {$_(`pages.webhooks.template.state.${row.state}`)}
                           </span>
                           {#if shown.templates?.[row.key]}
@@ -266,15 +274,6 @@
                             </div>
                           {/if}
                         </div>
-                        <button
-                          class="btn btn-sm btn-link"
-                          type="button"
-                          data-template-edit={row.key}
-                          title={$_('buttons.edit')}
-                          aria-label={$_('buttons.edit')}
-                          onclick={() => openTemplate(row.key)}>
-                          <i class="fa-solid fa-pen" aria-hidden="true"></i>
-                        </button>
                         {#if row.state === 'custom'}
                           <button
                             class="btn btn-sm btn-link text-danger"
@@ -282,7 +281,11 @@
                             data-template-remove={row.key}
                             title={$_('pages.webhooks.template.reset')}
                             aria-label={$_('pages.webhooks.template.reset')}
-                            onclick={() => removeTemplate(row.key)}>
+                            onclick={(event) => {
+                              event.stopPropagation();
+                              removeTemplate(row.key);
+                            }}
+                            onkeydown={(event) => event.stopPropagation()}>
                             <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
                           </button>
                         {/if}
@@ -306,12 +309,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button
-              class="btn w-100"
-              class:btn-primary={editing !== null}
-              class:btn-secondary={editing === null}
-              type="submit"
-              disabled={$saving}>
+            <button class="btn btn-primary w-100" type="submit" disabled={$saving}>
               {#if $saving}
                 <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
               {/if}
@@ -338,7 +336,6 @@
   import WebhookTemplateEditor from './WebhookTemplateEditor.svelte';
   import { coveredEvents, templateInfoFor } from './discord.util.js';
   import {
-    FORMAT_ICONS,
     MAX_HEADERS,
     WEBHOOK_FORMATS,
     WEBHOOK_SIGNINGS,

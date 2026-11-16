@@ -28,7 +28,8 @@
 
 <div class="vstack gap-2" data-template-buttons>
   {#each model.buttons as button, index (index)}
-    <div class="input-group">
+    <div class="d-flex align-items-center gap-2">
+      <div class="input-group flex-grow-1">
       <input
         class="form-control"
         type="text"
@@ -42,19 +43,18 @@
         aria-label={$_('pages.webhooks.template.telegram.button-url')}
         placeholder={$_('pages.webhooks.template.telegram.button-url')}
         bind:value={button.url} />
+      </div>
       <button
-        class="btn btn-primary"
+        class="btn-close"
         type="button"
         title={$_('buttons.remove')}
         aria-label={$_('buttons.remove')}
-        onclick={() => removeButton(index)}>
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-      </button>
+        onclick={() => removeButton(index)}></button>
     </div>
   {/each}
   <div>
     <button
-      class="btn btn-sm btn-link text-capitalize px-0"
+      class="btn btn-sm btn-link text-capitalize text-decoration-none px-0"
       type="button"
       data-add-button
       disabled={model.buttons.length >= MAX_BUTTONS}

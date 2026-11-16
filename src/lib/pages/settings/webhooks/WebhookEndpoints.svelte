@@ -9,17 +9,14 @@
     </div>
     <div slot="right" class="d-flex align-items-center gap-2">
       {#if sources.length > 0}
-        <select
-          class="form-select form-select-sm"
-          data-source-filter
-          aria-label={$_('pages.webhooks.filters.source')}
-          value={$source}
-          onchange={(event) => source.set(event.currentTarget.value)}>
-          <option value="">{$_('pages.webhooks.filters.all-sources')}</option>
-          {#each sources as item (item.value)}
-            <option value={item.value}>{item.title}</option>
-          {/each}
-        </select>
+        <FilterDropdown
+          label={$_('pages.webhooks.filters.source')}
+          current={$source}
+          options={[
+            { key: '', label: $_('pages.webhooks.filters.all-sources') },
+            ...sources.map((item) => ({ key: item.value, label: item.title })),
+          ]}
+          onSelect={(option) => source.set(option.key)} />
       {/if}
     </div>
   </CardHeader>
@@ -188,6 +185,7 @@
 
   import CardHeader from '$lib/components/CardHeader.svelte';
   import DateText from '$lib/components/Date.svelte';
+  import FilterDropdown from '$lib/components/FilterDropdown.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
 
   import WebhookModal from './WebhookModal.svelte';

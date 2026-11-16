@@ -6,22 +6,18 @@
   placeholder={$_('pages.webhooks.template.slack.text')}
   bind:value={model.text} />
 
-<div class="row g-2">
-  <div class="col-sm-6">
-    <input
-      class="form-control"
-      type="text"
-      maxlength="80"
-      placeholder={$_('pages.webhooks.template.slack.username')}
-      bind:value={model.username} />
-  </div>
-  <div class="col-sm-6">
-    <input
-      class="form-control"
-      type="text"
-      placeholder={$_('pages.webhooks.template.slack.icon-url')}
-      bind:value={model.iconUrl} />
-  </div>
+<div class="input-group">
+  <input
+    class="form-control"
+    type="text"
+    maxlength="80"
+    placeholder={$_('pages.webhooks.template.slack.username')}
+    bind:value={model.username} />
+  <input
+    class="form-control"
+    type="text"
+    placeholder={$_('pages.webhooks.template.slack.icon-url')}
+    bind:value={model.iconUrl} />
 </div>
 
 <div class="vstack gap-2 border-start border-4 ps-3">
@@ -41,7 +37,8 @@
 
   <div class="vstack gap-2" data-template-fields>
     {#each model.fields as field, index (index)}
-      <div class="input-group">
+      <div class="d-flex align-items-center gap-2">
+        <div class="input-group flex-grow-1">
         <input
           class="form-control"
           type="text"
@@ -55,19 +52,18 @@
           aria-label={$_('pages.webhooks.template.field-value')}
           placeholder={$_('pages.webhooks.template.field-value')}
           bind:value={field.value} />
+        </div>
         <button
-          class="btn btn-primary"
+          class="btn-close"
           type="button"
           title={$_('buttons.remove')}
           aria-label={$_('buttons.remove')}
-          onclick={() => removeField(index)}>
-          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-        </button>
+          onclick={() => removeField(index)}></button>
       </div>
     {/each}
     <div>
       <button
-        class="btn btn-sm btn-link text-capitalize px-0"
+        class="btn btn-sm btn-link text-capitalize text-decoration-none px-0"
         type="button"
         data-add-field
         disabled={model.fields.length >= MAX_FIELDS}
@@ -84,22 +80,18 @@
     placeholder={$_('pages.webhooks.template.image')}
     bind:value={model.image} />
 
-  <div class="row g-2">
-    <div class="col-sm-6">
-      <input
-        class="form-control"
-        type="text"
-        maxlength="75"
-        placeholder={$_('pages.webhooks.template.slack.button-text')}
-        bind:value={model.buttonText} />
-    </div>
-    <div class="col-sm-6">
-      <input
-        class="form-control"
-        type="text"
-        placeholder={$_('pages.webhooks.template.slack.button-url')}
-        bind:value={model.buttonUrl} />
-    </div>
+  <div class="input-group">
+    <input
+      class="form-control"
+      type="text"
+      maxlength="75"
+      placeholder={$_('pages.webhooks.template.slack.button-text')}
+      bind:value={model.buttonText} />
+    <input
+      class="form-control"
+      type="text"
+      placeholder={$_('pages.webhooks.template.slack.button-url')}
+      bind:value={model.buttonUrl} />
   </div>
 
   <input

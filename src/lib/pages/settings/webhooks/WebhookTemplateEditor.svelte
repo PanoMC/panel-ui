@@ -1,104 +1,103 @@
 <!-- The message of one event in one format: a visual editor or the JSON text, the tokens, and a live preview. -->
 <div class="row g-3" data-template-editor={event}>
-  <div class="col-lg-7">
-    <div class="vstack gap-3" bind:this={editorElement} onfocusin={rememberFocus}>
-      <div class="d-flex flex-wrap align-items-center gap-2">
-        <code class="me-auto">{event}</code>
-        <div
-          class="btn-group btn-group-sm"
-          role="group"
+  <div class="col-12 col-xl-7">
+    <div class="card h-100" bind:this={editorElement} onfocusin={rememberFocus}>
+      <div class="card-header d-flex flex-wrap align-items-center gap-2">
+        <ul
+          class="nav nav-pills gap-1 flex-grow-1"
+          role="tablist"
           aria-label={$_('pages.webhooks.template.mode')}>
-          <input
-            type="radio"
-            class="btn-check"
-            name="templateMode"
-            id="templateModeVisual"
-            autocomplete="off"
-            checked={mode === 'visual'}
-            onchange={() => switchMode('visual')} />
-          <label class="btn btn-outline-primary text-capitalize" for="templateModeVisual">
-            <i class="fa-solid fa-pen-to-square me-1" aria-hidden="true"></i>
-            {$_('pages.webhooks.template.visual')}
-          </label>
-          <input
-            type="radio"
-            class="btn-check"
-            name="templateMode"
-            id="templateModeJson"
-            autocomplete="off"
-            checked={mode === 'json'}
-            onchange={() => switchMode('json')} />
-          <label class="btn btn-outline-primary text-capitalize" for="templateModeJson">
-            <i class="fa-solid fa-code me-1" aria-hidden="true"></i>
-            {$_('pages.webhooks.template.json')}
-          </label>
-        </div>
-      </div>
-
-      {#if visualRefused}
-        <div
-          class="alert alert-warning d-flex align-items-start mb-0"
-          role="alert"
-          data-visual-refused>
-          <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
-          <div>{$_('pages.webhooks.template.visual-unavailable')}</div>
-        </div>
-      {/if}
-
-      {#if mode === 'visual' && model}
-        <adapter.Visual bind:model />
-      {:else}
-        <textarea
-          class="form-control font-monospace"
-          class:is-invalid={error}
-          rows="16"
-          spellcheck="false"
-          data-field="template"
-          aria-label={$_('pages.webhooks.form.template')}
-          placeholder={$_('pages.webhooks.form.template')}
-          bind:value={text}></textarea>
-      {/if}
-
-      {#if error}
-        <div class="invalid-feedback d-block" data-problem={error}>{$_(fieldErrorKey(error))}</div>
-      {/if}
-
-      {#if tokens.length > 0}
-        <div>
-          <div class="small text-muted mb-1 text-capitalize">
-            {$_('pages.webhooks.template.tokens')}
-          </div>
-          <div class="d-flex flex-wrap gap-1" data-template-tokens>
-            {#each tokens as token (token.name)}
+          {#each ['visual', 'json'] as item (item)}
+            <li class="nav-item" role="presentation">
               <button
-                class="btn btn-sm btn-outline-secondary font-monospace"
                 type="button"
-                title={token.sample}
-                onmousedown={(event) => event.preventDefault()}
-                onclick={() => insertToken(token.name)}>
-                {`{${token.name}}`}
+                class="nav-link text-capitalize"
+                class:active={mode === item}
+                role="tab"
+                aria-selected={mode === item}
+                data-template-mode={item}
+                onclick={() => switchMode(item)}>
+                {$_(`pages.webhooks.template.${item}`)}
               </button>
-            {/each}
-          </div>
-        </div>
-      {/if}
-
-      <div>
+            </li>
+          {/each}
+        </ul>
         <button
-          class="btn btn-sm btn-link text-capitalize px-0"
+          class="btn btn-link"
           type="button"
           data-template-reset
+          title={$_('pages.webhooks.template.reset')}
+          aria-label={$_('pages.webhooks.template.reset')}
           disabled={!info?.defaultTemplate}
           onclick={reset}>
-          <i class="fa-solid fa-rotate-left me-1" aria-hidden="true"></i>
-          {$_('pages.webhooks.template.reset')}
+          <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
         </button>
+        {#if tokens.length > 0}
+          <div class="dropdown" data-template-tokens>
+            <button
+              class="btn btn-link text-decoration-none text-capitalize"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+              {$_('pages.webhooks.template.insert')}
+            </button>
+            <div class="dropdown-menu dropdown-menu-end" style="max-height: 360px; overflow-y: auto;">
+              <h6 class="dropdown-header text-capitalize">
+                {$_('pages.webhooks.template.tokens')}
+              </h6>
+              {#each tokens as token (token.name)}
+                <button
+                  class="dropdown-item"
+                  type="button"
+                  title={token.sample}
+                  onmousedown={(event) => event.preventDefault()}
+                  onclick={() => insertToken(token.name)}>
+                  <code>{`{${token.name}}`}</code>
+                </button>
+              {/each}
+            </div>
+          </div>
+        {/if}
+      </div>
+
+      <div class="card-body vstack gap-3">
+        <code>{event}</code>
+
+        {#if visualRefused}
+          <div
+            class="alert alert-warning d-flex align-items-start mb-0"
+            role="alert"
+            data-visual-refused>
+            <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
+            <div>{$_('pages.webhooks.template.visual-unavailable')}</div>
+          </div>
+        {/if}
+
+        {#if mode === 'visual' && model}
+          <adapter.Visual bind:model />
+        {:else}
+          <textarea
+            class="form-control font-monospace"
+            class:is-invalid={error}
+            rows="16"
+            spellcheck="false"
+            data-field="template"
+            aria-label={$_('pages.webhooks.form.template')}
+            placeholder={$_('pages.webhooks.form.template')}
+            bind:value={text}></textarea>
+        {/if}
+
+        {#if error}
+          <div class="invalid-feedback d-block" data-problem={error}>
+            {$_(fieldErrorKey(error))}
+          </div>
+        {/if}
       </div>
     </div>
   </div>
 
-  <div class="col-lg-5">
-    <div class="position-sticky top-0">
+  <div class="col-12 col-xl-5">
+    <div class="h-100">
       <adapter.Preview body={preview} name={webhookName} loading={previewing} />
       {#if warning}
         <div

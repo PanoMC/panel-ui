@@ -24,28 +24,25 @@
       {/if}
     </div>
     <div slot="right" class="d-flex align-items-center gap-2">
-      <select
-        class="form-select form-select-sm"
-        data-source-filter
-        aria-label={$_('pages.webhooks.filters.source')}
-        value={$source}
-        onchange={(event) => controller.setSource(event.currentTarget.value)}>
-        <option value="">{$_('pages.webhooks.filters.all-sources')}</option>
-        {#each sources as item (item.value)}
-          <option value={item.value}>{item.title}</option>
-        {/each}
-      </select>
-      <select
-        class="form-select form-select-sm"
-        data-status-filter
-        aria-label={$_('pages.webhooks.filters.status')}
-        value={$status}
-        onchange={(event) => controller.setStatus(event.currentTarget.value)}>
-        <option value="">{$_('pages.webhooks.filters.all-statuses')}</option>
-        {#each DELIVERY_STATUSES as item (item)}
-          <option value={item}>{$_(`pages.webhooks.status.${item}`)}</option>
-        {/each}
-      </select>
+      <FilterDropdown
+        label={$_('pages.webhooks.filters.source')}
+        current={$source}
+        options={[
+          { key: '', label: $_('pages.webhooks.filters.all-sources') },
+          ...sources.map((item) => ({ key: item.value, label: item.title })),
+        ]}
+        onSelect={(option) => controller.setSource(option.key)} />
+      <FilterDropdown
+        label={$_('pages.webhooks.filters.status')}
+        current={$status}
+        options={[
+          { key: '', label: $_('pages.webhooks.filters.all-statuses') },
+          ...DELIVERY_STATUSES.map((item) => ({
+            key: item,
+            label: $_(`pages.webhooks.status.${item}`),
+          })),
+        ]}
+        onSelect={(option) => controller.setStatus(option.key)} />
     </div>
   </CardHeader>
 
@@ -185,6 +182,7 @@
 
   import CardHeader from '$lib/components/CardHeader.svelte';
   import DateText from '$lib/components/Date.svelte';
+  import FilterDropdown from '$lib/components/FilterDropdown.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
   import { pageCount } from '$lib/components/pagination.util.js';

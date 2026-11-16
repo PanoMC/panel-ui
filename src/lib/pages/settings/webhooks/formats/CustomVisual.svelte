@@ -1,7 +1,8 @@
 <!-- The visual editor of a Custom JSON body: a key / value row per value, nested by dot paths. -->
 <div class="vstack gap-2" data-template-rows>
   {#each model.rows as row, index (index)}
-    <div class="input-group">
+    <div class="d-flex align-items-center gap-2">
+      <div class="input-group flex-grow-1">
       <input
         class="form-control font-monospace flex-grow-0 w-auto"
         class:is-invalid={problems.has(index)}
@@ -30,19 +31,18 @@
           aria-label={$_('pages.webhooks.template.custom.raw')}
           bind:checked={row.raw} />
       </div>
+      </div>
       <button
-        class="btn btn-primary"
+        class="btn-close"
         type="button"
         title={$_('buttons.remove')}
         aria-label={$_('buttons.remove')}
-        onclick={() => removeRow(index)}>
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-      </button>
+        onclick={() => removeRow(index)}></button>
     </div>
   {/each}
   <div>
     <button
-      class="btn btn-sm btn-link text-capitalize px-0"
+      class="btn btn-sm btn-link text-capitalize text-decoration-none px-0"
       type="button"
       data-add-row
       disabled={model.rows.length >= MAX_ROWS}

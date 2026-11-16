@@ -13,24 +13,57 @@
   </div>
 
   {#if !form.allEvents}
-    {#each catalogue as group (group.source)}
-      {@const wildcard = sourceWildcard(group.source)}
+    {#if catalogue.length > 0 || unlisted.length > 0}
+      <ul class="nav nav-pills gap-1" role="tablist">
+        {#each catalogue as group (group.source)}
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              class:active={current?.source === group.source}
+              type="button"
+              role="tab"
+              aria-selected={current?.source === group.source}
+              data-event-tab={group.source}
+              onclick={() => (tab = group.source)}>
+              {group.title}
+            </button>
+          </li>
+        {/each}
+        {#if unlisted.length > 0}
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              class:active={current === null}
+              type="button"
+              role="tab"
+              aria-selected={current === null}
+              data-event-tab="unlisted"
+              onclick={() => (tab = UNLISTED)}>
+              {$_('pages.webhooks.form.unlisted-tab')}
+            </button>
+          </li>
+        {/if}
+      </ul>
+    {/if}
+
+    {#if current}
+      {@const wildcard = sourceWildcard(current.source)}
       {@const whole = form.events.includes(wildcard)}
-      <div class="border rounded p-2" data-event-source={group.source}>
+      <div data-event-source={current.source}>
         <div class="form-check">
           <input
-            id="webhookSource-{group.source}"
+            id="webhookSource-{current.source}"
             class="form-check-input"
             type="checkbox"
             checked={whole}
             onchange={(event) =>
-              (form = withSource(form, group.source, event.currentTarget.checked))} />
-          <label class="form-check-label text-capitalize" for="webhookSource-{group.source}">
-            {$_('pages.webhooks.form.source-all', { values: { source: group.title } })}
+              (form = withSource(form, current.source, event.currentTarget.checked))} />
+          <label class="form-check-label text-capitalize" for="webhookSource-{current.source}">
+            {$_('pages.webhooks.form.source-all', { values: { source: current.title } })}
           </label>
         </div>
-        <div class="row row-cols-1 row-cols-md-2 g-1 mt-0 ms-2">
-          {#each group.events as event (event.name)}
+        <div class="row row-cols-1 g-1 mt-0 ms-2">
+          {#each current.events as event (event.name)}
             <div class="col">
               <div class="form-check">
                 <input
@@ -48,11 +81,9 @@
           {/each}
         </div>
       </div>
-    {/each}
-
-    {#if unlisted.length > 0}
-      <div class="border rounded p-2" data-event-unlisted>
-        <div class="text-body-secondary text-capitalize mb-1">
+    {:else if unlisted.length > 0}
+      <div data-event-unlisted>
+        <div class="mb-1">
           {$_('pages.webhooks.form.unlisted')}
         </div>
         {#each unlisted as name (name)}
@@ -99,4 +130,13 @@
   // Computed from the events the form was opened with, so unchecking an unlisted name does not
   // make it vanish before the person has saved.
   const unlisted = $derived(unlistedEvents([...initialEvents, ...form.events], catalogue));
+
+  const UNLISTED = '\u0000unlisted';
+  let tab = $state('');
+  // null selects the "unlisted" tab; otherwise the chosen source, falling back to the first one.
+  const current = $derived(
+    tab === UNLISTED && unlisted.length > 0
+      ? null
+      : (catalogue.find((group) => group.source === tab) ?? catalogue[0] ?? null),
+  );
 </script>
