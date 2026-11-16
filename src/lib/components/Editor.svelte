@@ -187,7 +187,7 @@
       <div class="d-flex gap-2">
         {#if showPreview}
           <button
-            class="btn btn-link btn-sm"
+            class="btn btn-link btn-sm text-decoration-none"
             class:text-primary={isPreview}
             onclick={() => (isPreview = !isPreview)}>
             <i class="fas fa-eye"></i>
@@ -197,8 +197,7 @@
 
         {#if showHtml}
           <button
-            class="btn btn-link btn-sm"
-            class:text-primary={isHtmlView}
+            class="btn btn-link btn-sm text-decoration-none"
             onclick={() => (isHtmlView = !isHtmlView)}>
             <i class="fas fa-code"></i>
             {isHtmlView ? 'Rich Text' : 'HTML'}

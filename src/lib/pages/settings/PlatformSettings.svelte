@@ -236,7 +236,8 @@
       <div class="col-md-6">
         <select class="form-control" id="platformLanguage" bind:value={data.locale}>
           {#each Object.keys($Languages) as language, index (language)}
-            <option value={$Languages[language].code}>{$Languages[language].name}</option>
+            <option value={$Languages[language].code}
+              >{getLanguageDisplayName($Languages[language].name)}</option>
           {/each}
         </select>
 
@@ -1416,7 +1417,12 @@
     showSuccess as showSuccessToast,
     showError as showErrorToast,
   } from '$lib/components/ToastContainer.svelte';
-  import { changeLanguage, getLanguageByLocale, Languages } from '$lib/language.util';
+  import {
+    changeLanguage,
+    getLanguageByLocale,
+    getLanguageDisplayName,
+    Languages,
+  } from '$lib/language.util';
 
   import ConfirmRemovePanoAccountModal, {
     show as showConfirmRemovePanoAccountModal,

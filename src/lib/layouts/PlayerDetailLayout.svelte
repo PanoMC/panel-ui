@@ -105,8 +105,8 @@
           <img
             alt={data.player.username}
             class="img-thumbnail rounded"
-            width="128"
-            height="128"
+            width="112"
+            height="112"
             class:border={isOnline || data.player.isBanned}
             class:border-3={isOnline || data.player.isBanned}
             class:border-success={!data.player.isBanned && isOnline}

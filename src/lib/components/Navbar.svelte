@@ -38,7 +38,7 @@
           data-bs-toggle={windowWidth < 992 ? 'offcanvas' : undefined}
           data-bs-target={windowWidth < 992 ? '#sidebar' : undefined}
           aria-controls="sidebar">
-          <i class="fa-solid fa-table-columns"></i>
+          <i class="fa-solid fa-bars"></i>
         </button>
 
         <!-- The website link and the server switcher live in the sidebar, above its tabs. -->

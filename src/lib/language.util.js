@@ -16,6 +16,10 @@ export const languageLoading = writable(false);
 export const currentLanguage = writable(null);
 export const Languages = writable({});
 
+export function getLanguageDisplayName(name) {
+  return name.replace(/\s+\([A-Z]{2}\)$/, '');
+}
+
 async function fetchLanguages(event) {
   const response = await ApiUtil.get({
     path: `/locales`,

@@ -1,4 +1,12 @@
 <style>
+  .identity-fields > .form-floating + .form-floating {
+    margin-top: -1px;
+  }
+
+  .identity-fields > .form-floating:focus-within {
+    z-index: 3;
+  }
+
   .merged-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -92,20 +100,37 @@
             {/if}
           {/each}
           <div class="row">
-            <div class="col-12">
-              <div class="form-floating mb-3">
-                <input
-                  class="form-control"
-                  id="username"
-                  placeholder={$_('components.modals.edit-player.inputs.username.placeholder')}
-                  type="text"
-                  bind:value={$player.username}
-                  class:is-invalid={!!$errors.username}
-                  aria-describedby="validationEditUsernameInModal" />
-                <label for="username"
-                  >{$_('components.modals.edit-player.inputs.username.placeholder')}</label>
+            <div class="col-12 mb-3">
+              <div class="identity-fields">
+                <div class="form-floating">
+                  <input
+                    class="form-control rounded-bottom-0"
+                    id="username"
+                    placeholder={$_('components.modals.edit-player.inputs.username.placeholder')}
+                    type="text"
+                    bind:value={$player.username}
+                    class:is-invalid={!!$errors.username}
+                    aria-describedby="validationEditUsernameInModal" />
+                  <label for="username"
+                    >{$_('components.modals.edit-player.inputs.username.placeholder')}</label>
+                </div>
+                <div class="form-floating">
+                  <input
+                    class="form-control rounded-top-0"
+                    id="email"
+                    type="text"
+                    placeholder="email@example.com"
+                    bind:value={$player.email}
+                    disabled={$player.clearPassword}
+                    class:is-invalid={!!$errors.email}
+                    aria-describedby="validationEditEmailInModal" />
+                  <label for="email">{$_('components.modals.edit-player.inputs.email.title')}</label>
+                </div>
               </div>
-              <div id="validationEditUsernameInModal" class="invalid-feedback">
+              <div
+                id="validationEditUsernameInModal"
+                class="invalid-feedback"
+                class:d-block={!!$errors.username}>
                 {#if !!$errors['username']}
                   {#if $errors['username'] === 'INVALID'}
                     {$_('components.modals.edit-player.inputs.username.errors.invalid')}
@@ -115,21 +140,10 @@
                   {/if}
                 {/if}
               </div>
-            </div>
-            <div class="col-12 mb-3">
-              <div class="form-floating">
-                <input
-                  class="form-control"
-                  id="email"
-                  type="text"
-                  placeholder="email@example.com"
-                  bind:value={$player.email}
-                  disabled={$player.clearPassword}
-                  class:is-invalid={!!$errors.email}
-                  aria-describedby="validationEditEmailInModal" />
-                <label for="email">{$_('components.modals.edit-player.inputs.email.title')}</label>
-              </div>
-              <div id="validationEditEmailInModal" class="invalid-feedback">
+              <div
+                id="validationEditEmailInModal"
+                class="invalid-feedback"
+                class:d-block={!!$errors.email}>
                 {#if !!$errors['email']}
                   {#if $errors['email'] === 'INVALID'}
                     {$_('components.modals.edit-player.inputs.email.errors.invalid')}
@@ -246,10 +260,15 @@
                   bind:value={$player.localeCode}>
                   <option value={null}
                     >{$_('components.modals.edit-player.inputs.locale.default', {
-                      values: { defaultLocaleName: $Languages[$siteInfo.platformLocale].name },
+                      values: {
+                        defaultLocaleName: getLanguageDisplayName(
+                          $Languages[$siteInfo.platformLocale].name,
+                        ),
+                      },
                     })}</option>
                   {#each Object.keys($Languages) as language, index (language)}
-                    <option value={$Languages[language].code}>{$Languages[language].name}</option>
+                    <option value={$Languages[language].code}
+                      >{getLanguageDisplayName($Languages[language].name)}</option>
                   {/each}
                 </select>
                 <label for="userLocaleCode">
@@ -418,7 +437,12 @@
     }
   }
 
-  import { changeLanguage, getLanguageByLocale, Languages } from '$lib/language.util';
+  import {
+    changeLanguage,
+    getLanguageByLocale,
+    getLanguageDisplayName,
+    Languages,
+  } from '$lib/language.util';
 
   const siteInfo = getContext('siteInfo');
 
