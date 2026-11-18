@@ -1482,6 +1482,8 @@
         },
         "plugin-missing-title": "No Pano Plugin",
         "plugin-missing": "Players, TPS and in-game features are unavailable.",
+        "paused-title": "Server Paused",
+        "paused": "No one is online, so the server is paused and TPS looks low. It resumes as soon as a player joins.",
         "plugin-java-too-old-title": "Pano Plugin Needs Java 11 Or Newer",
         "plugin-java-too-old": "This server runs on an older Java, so the Pano plugin was not installed and the server is not linked: players, TPS and in-game features are unavailable. Pick Java 11 or newer under Settings → Startup and Pano installs the plugin and links the server.",
         "java-missing": "The last start failed: this node has no Java {major}, which this server needs.",

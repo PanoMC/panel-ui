@@ -95,6 +95,18 @@
     </div>
   {/if}
 
+  <!-- The game stops ticking while nobody is online (`pause-when-empty-seconds`), which is why the
+       TPS reads low; the Pano plugin reports it as `paused` on the live sample. -->
+  {#if serverPaused}
+    <div class="alert alert-info d-flex align-items-start mb-0" role="status">
+      <i class="fa-solid fa-circle-info me-3 mt-1" aria-hidden="true"></i>
+      <div>
+        <h5 class="alert-heading mb-2">{$_('pages.servers.overview.paused-title')}</h5>
+        <div>{$_('pages.servers.overview.paused')}</div>
+      </div>
+    </div>
+  {/if}
+
   <!-- §2.4.22 — the server's vitals in the Statistics page's stat-card look: the big value is
          the live sample, the sparkline the last hour (hover for a point). §2.4.23 — the toolbar
          picks how often the sources report while this page is open. -->
@@ -1169,6 +1181,7 @@
     !isPluginConnected(view) &&
     getProcessState(view) === ProcessStates.RUNNING &&
     (uptimeStart <= 0 || uptimeNow - uptimeStart > PLUGIN_LINK_GRACE_MS);
+  $: serverPaused = isServerOnline(view) && metricsSample?.paused === true;
 
   $: vitalSeries = buildVitalSeries($_, vitalsSeries, vitalsSample);
 

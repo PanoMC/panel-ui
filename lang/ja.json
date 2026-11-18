@@ -1455,6 +1455,8 @@
         },
         "plugin-missing-title": "Pano プラグインはありません",
         "plugin-missing": "プレーヤー、TPS、ゲーム内機能は利用できません。",
+        "paused-title": "サーバー一時停止中",
+        "paused": "オンラインのプレイヤーがいないため、サーバーは一時停止しており TPS が低く表示されます。プレイヤーが参加するとすぐに再開します。",
         "plugin-java-too-old-title": "Pano プラグインには Java 11 以降が必要です",
         "plugin-java-too-old": "このサーバーは古い Java で実行されているため、Pano プラグインがインストールされておらず、サーバーがリンクされていません。プレーヤー、TPS、およびゲーム内機能は利用できません。 「設定」→「起動」で Java 11 以降を選択すると、Pano がプラグインをインストールし、サーバーにリンクします。",
         "java-missing": "The last start failed: this node has no Java {major}, which this server needs.",

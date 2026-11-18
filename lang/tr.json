@@ -1484,6 +1484,8 @@
         },
         "plugin-missing-title": "Pano Eklentisi Yok",
         "plugin-missing": "Oyuncular, TPS ve oyun içi özellikler kullanılamıyor.",
+        "paused-title": "Sunucu Duraklatıldı",
+        "paused": "Oyunda kimse olmadığı için sunucu duraklatıldı, TPS bu yüzden düşük görünür. Bir oyuncu girince devam eder.",
         "plugin-java-too-old-title": "Pano Eklentisi Java 11 Veya Üstünü Gerektirir",
         "plugin-java-too-old": "Bu sunucu daha eski bir Java ile çalışıyor; bu yüzden Pano eklentisi kurulmadı ve sunucu bağlı değil: oyuncular, TPS ve oyun içi özellikler kullanılamıyor. Ayarlar → Başlangıç altından Java 11 veya daha yenisini seçin; Pano eklentiyi kurar ve sunucuyu bağlar.",
         "java-missing": "Son başlatma başarısız oldu: bu sunucunun ihtiyaç duyduğu Java {major} bu düğümde yok.",
