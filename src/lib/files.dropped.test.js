@@ -12,7 +12,7 @@ mock.module('$lib/components/ToastContainer.svelte', () => ({
   show: () => {},
 }));
 
-const { filesFromDataTransfer, filesFromFolderInput } = await import('./files.util.js');
+const { filesFromDataTransfer, filesFromFolderInput, joinPath } = await import('./files.util.js');
 
 test('a picked folder keeps each file in its place', () => {
   const picked = filesFromFolderInput([
@@ -55,4 +55,11 @@ test('a dropped folder is walked, batch by batch, and an empty folder is kept', 
     'world/playerdata|',
     '|server.properties',
   ]);
+});
+
+test('a plain file uploaded into a sub-folder targets that folder, with no trailing slash', () => {
+  // `versions/` used to send the upload's existing-file check into an endless climb.
+  expect(joinPath('versions', '')).toBe('versions');
+  expect(joinPath('', '')).toBe('');
+  expect(joinPath('versions', 'a.jar')).toBe('versions/a.jar');
 });

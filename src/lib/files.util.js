@@ -82,6 +82,11 @@ export function joinPath(directory, name) {
   const base = normalizePath(directory);
   const leaf = String(name ?? '').replace(/^\/+|\/+$/g, '');
 
+  // An empty name is the directory itself: `versions` + `` is `versions`, not `versions/`.
+  if (!leaf) {
+    return base;
+  }
+
   return base ? `${base}/${leaf}` : leaf;
 }
 
