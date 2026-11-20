@@ -219,7 +219,7 @@
                     id="clearPasswordInEditPlayerModal"
                     checked={$player.clearPassword}
                     on:change={onClearPasswordToggle} />
-                  <label class="form-check-label" for="clearPasswordInEditPlayerModal">
+                  <label class="form-check-label text-capitalize" for="clearPasswordInEditPlayerModal">
                     {$_('components.modals.edit-player.inputs.clear-password.label')}
                   </label>
                 </div>

@@ -248,7 +248,7 @@
           on:focus={() => (isFocused = true)}
           on:blur={() => (isFocused = false)}
           type="button"
-          class="navbar-toggler d-block position-absolute start-0 ms-2"
+          class="navbar-toggler d-block position-absolute start-0 ms-2 text-body-secondary border-0"
           aria-label={$_('components.sidebar.hide-menu')}
           title={windowWidth < 992 ? $_('components.sidebar.hide-menu') : null}
           on:click={onMobileSideBarCollapseClick}

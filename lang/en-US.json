@@ -301,11 +301,9 @@
         "description": "One or more premium addons couldn't be verified. Click View to see status and remediation options."
       },
       "welcome-card": {
-        "description": "Pano is successfully installed and ready for use. 🚀 <br /> Here's what you can do to get started:",
+        "description": "Pano installation is complete and ready for use. 🚀 <br /> Initial setup steps:",
         "connect-server": "Connect Server",
-        "connect-server-description": "Connect your game server and access more management features.",
         "enable-server-management": "Enable Server Management",
-        "enable-server-management-description": "Turn it on under Settings → Platform → Preferences.",
         "import-data": "Import Data",
         "menu-title": "The Menu",
         "links-title": "Links",
@@ -4608,7 +4606,7 @@
       "server-file-upload": {
         "title": "Upload files",
         "destination": "Uploading into",
-        "drag-here": "Drag files or folders here, or click to choose files",
+        "drag-here": "Drag files here or click to upload",
         "hint": "Several at once are fine; each file gets its own progress bar.",
         "choose-folder": "Choose a folder"
       },

@@ -301,11 +301,9 @@
         "description": "Bir veya daha fazla premium eklenti doğrulanamadı. Durum ve çözüm seçenekleri için Görüntüle'ye tıklayın."
       },
       "welcome-card": {
-        "description": "Pano başarıyla kuruldu ve kullanıma hazır. 🚀 <br /> İşte başlarken yapabileceklerin:",
+        "description": "Pano kurulumu tamamlandı ve kullanıma hazır. 🚀 <br /> Başlangıç adımları:",
         "connect-server": "Sunucu Bağla",
-        "connect-server-description": "Oyun sunucunu bağla ve daha fazla yönetim özelliklerine eriş.",
         "enable-server-management": "Sunucu Yönetimini Aç",
-        "enable-server-management-description": "Ayarlar → Platform → Tercihler bölümünden açabilirsin.",
         "import-data": "Verileri İçe Aktar",
         "menu-title": "Menü",
         "links-title": "Bağlantılar",
@@ -4610,7 +4608,7 @@
       "server-file-upload": {
         "title": "Dosya yükle",
         "destination": "Yüklenecek klasör",
-        "drag-here": "Dosyaları ya da klasörleri buraya sürükleyin veya dosya seçmek için tıklayın",
+        "drag-here": "Dosyaları buraya sürükleyin veya yüklemek için tıklayın",
         "hint": "Birden fazlası sorun değil; her dosyanın kendi ilerleme çubuğu olur.",
         "choose-folder": "Klasör seç"
       },

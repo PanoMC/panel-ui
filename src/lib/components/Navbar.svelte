@@ -27,7 +27,7 @@
         <button
           bind:this={sidebarToggler}
           class:d-lg-none={$isSidebarOpen}
-          class="navbar-toggler d-inline-block me-2"
+          class="navbar-toggler d-inline-block me-2 text-body-secondary border-0"
           class:active={isFocused}
           on:focus={() => (isFocused = true)}
           on:blur={() => (isFocused = false)}

@@ -301,11 +301,9 @@
         "description": "1 つ以上のプレミアム アドオンを確認できませんでした。 「表示」をクリックしてステータスと修復オプションを表示します。"
       },
       "welcome-card": {
-        "description": "Pano is successfully installed and ready for use. 🚀 <br /> Here's what you can do to get started:",
+        "description": "Pano installation is complete and ready for use. 🚀 <br /> Initial setup steps:",
         "connect-server": "サーバーに接続する",
-        "connect-server-description": "ゲームサーバーに接続して、より多くの管理機能にアクセスします。",
         "enable-server-management": "サーバー管理を有効にする",
-        "enable-server-management-description": "「設定」→「プラットフォーム」→「環境設定」でオンにします。",
         "import-data": "データのインポート",
         "menu-title": "メニュー",
         "links-title": "リンク",
@@ -4515,7 +4513,7 @@
       "server-file-upload": {
         "title": "ファイルをアップロードする",
         "destination": "にアップロードしています",
-        "drag-here": "ファイルまたはフォルダーをここにドラッグするか、クリックしてファイルを選択します",
+        "drag-here": "ファイルをここにドラッグするか、クリックしてアップロード",
         "hint": "一度に複数の場合は問題ありません。 各ファイルには独自の進行状況バーが表示されます。",
         "choose-folder": "フォルダーを選択してください"
       },

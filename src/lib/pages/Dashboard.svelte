@@ -98,9 +98,6 @@
                   <i class="fa-solid fa-server me-2"></i>
                   {$_('pages.dashboard.welcome-card.enable-server-management')}
                 </a>
-                <div>
-                  {$_('pages.dashboard.welcome-card.enable-server-management-description')}
-                </div>
               {:else}
                 <button
                   type="button"
@@ -199,7 +196,7 @@
       <button
         type="button"
         title={$_('buttons.close')}
-        class="btn-close"
+        class="btn-close focus-ring"
         data-bs-dismiss="alert"
         on:click={onCloseGettingStartedCard}>
       </button>
@@ -383,12 +380,13 @@
                 </label>
                 <div class="col-6 col-form-label">
                   <a
-                    class="btn btn-sm btn-link px-0 text-decoration-none"
+                    class="btn btn-sm btn-link px-0 text-decoration-none rounded focus-ring"
                     aria-describedby="panoWebsite"
                     href={PANO_WEBSITE_URL}
                     id="panoWebsite"
                     target="_blank">
                     panomc.com
+                    <i class="fa-solid fa-arrow-up-right-from-square ms-1" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
@@ -398,7 +396,7 @@
                 </label>
                 <div class="col-6 col-form-label">
                   <a
-                    class="btn btn-sm btn-link px-0 text-decoration-none"
+                    class="btn btn-sm btn-link px-0 text-decoration-none rounded focus-ring"
                     aria-describedby="panoWebsite"
                     aria-label="Discord"
                     href="{PANO_WEBSITE_URL}/discord"
