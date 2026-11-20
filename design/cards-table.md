@@ -137,6 +137,9 @@ Then:
 - A filter dropdown that shows only an icon, or a native `<select>` in the header.
 - A colored, bold, resized or `<h5>` header title, or a title without the count.
 - Search missing, not in the middle, or not focused on load.
+- A row that does nothing when clicked, or a clickable row whose title is not a real link / button.
+- A link in a cell without `rounded focus-ring text-decoration-none`, or an external link without
+  the new-tab icon.
 - Action buttons in a row, an actions column on the right, or a titled actions column.
 - An empty table, or `NoContent` with an icon, when there is no data.
 - Alerts / hint text inside the card. Pagination centered or on the right.

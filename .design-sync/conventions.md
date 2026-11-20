@@ -36,6 +36,11 @@ Style your own layout glue with **Bootstrap 5.3 classes**; the shipped styleshee
 - Nav: `nav nav-pills`, `nav-link active`, `breadcrumb`, `pagination`
 - Forms: `form-control`, `form-select`, `form-label`, `form-check`, `input-group`
 - Text: `fw-bold` (700), default weight is 500; body font is Quicksand — never set another font-family.
+- `list-group-item`: default weight `fw-normal`; the title is capitalized (add `text-capitalize`
+  when the string cannot carry it) and uses `text-body`, the description uses
+  `text-body-secondary`. These theme-token classes keep both legible in dark and light mode.
+- All button labels are capitalized. Add `text-capitalize` when the translation string cannot carry
+  it.
 
 Icons are **Font Awesome 6 Free**: `<i className="fa-solid fa-server"></i>` (also `fa-brands`). No other icon set ships.
 
