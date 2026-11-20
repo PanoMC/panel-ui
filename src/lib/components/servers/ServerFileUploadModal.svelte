@@ -20,7 +20,6 @@
             style="cursor: pointer;"
             icon="fas fa-upload fa-2x"
             title={$_('components.modals.server-file-upload.drag-here')}
-            subtitle={$_('components.modals.server-file-upload.hint')}
             on:drop={(event) => pick(event.detail)} />
         </div>
         <!-- The file chooser of a browser picks files or a folder, never both: the folder has
@@ -109,8 +108,28 @@
       return;
     }
 
-    // The progress list on the page takes it from here, as it does for a drop on the listing.
-    hide();
-    onFiles(files);
+    // The progress list on the page takes it from here, as it does for a drop on the listing. It
+    // gets the files only once this dialog is fully hidden: the page may open the "already there"
+    // dialog right away, and Bootstrap cannot show a modal while another one is still fading out
+    // (the backdrop and the scroll lock got stuck and the page looked frozen).
+    const element = $modalElement;
+    let handed = false;
+
+    const handOver = () => {
+      if (handed) return;
+
+      handed = true;
+      onFiles(files);
+    };
+
+    if (element?.classList.contains('show')) {
+      element.addEventListener('hidden.bs.modal', handOver, { once: true });
+      // A hide asked for while the dialog is still fading in is ignored by Bootstrap and never
+      // reports `hidden`: the files must not wait forever for it.
+      setTimeout(handOver, 1000);
+      hide();
+    } else {
+      handOver();
+    }
   }
 </script>

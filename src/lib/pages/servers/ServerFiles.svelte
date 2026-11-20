@@ -189,59 +189,69 @@
           <button class="btn btn-primary" type="submit">
             {$_('pages.servers.files.path-go')}
           </button>
-          <button class="btn btn-primary" type="button" onclick={() => (editingPath = false)}>
+          <button
+            class="btn btn-primary"
+            type="button"
+            onclick={() => {
+              editingPath = false;
+              focusSearch();
+            }}>
             {$_('buttons.cancel')}
           </button>
         </form>
       </div>
     {/if}
 
-    <!-- `truncateLeftSlot` off: a truncated breadcrumb would hide the folder actually open,
-         which is the one crumb that matters. -->
-    <CardHeader truncateLeftSlot={false}>
-      <div slot="left" class="d-flex align-items-center gap-2">
-        <!-- Plain text, the way the players page shows its count: a pill would say "status", and
-             this is only how much the listing below holds. -->
-        <span class="text-nowrap">
-          {$_('pages.servers.files.count', { values: { count: visibleEntries.length } })}
-        </span>
-
-        {#if !editingPath}
-          <nav class="min-w-0" aria-label={$_('pages.servers.files.path-label')}>
-            <ol class="breadcrumb mb-0 small">
-              <li class="breadcrumb-item">
-                <button type="button" class="btn btn-link btn-sm p-0" onclick={() => navigate('')}>
-                  <i class="fa-solid fa-hard-drive me-1" aria-hidden="true"></i>
-                  {$_('pages.servers.files.root')}
+    <!-- The breadcrumb takes the card's own width, like the path edit that replaces it: in a
+         header column it was squeezed into a quarter of the card and broke apart on narrow
+         screens. Its crumbs wrap as a whole, so the folder actually open is never cut off. -->
+    {#if !editingPath}
+      <div class="card-body border-bottom py-2 d-flex align-items-center gap-2">
+        <nav class="flex-grow-1 min-w-0" aria-label={$_('pages.servers.files.path-label')}>
+          <ol class="breadcrumb mb-0 small row-gap-1">
+            <li class="breadcrumb-item">
+              <button
+                type="button"
+                class="btn btn-link btn-sm p-0 text-nowrap text-decoration-none"
+                onclick={() => navigate('')}>
+                <i class="fa-solid fa-hard-drive me-1" aria-hidden="true"></i>
+                {$_('pages.servers.files.root')}
+              </button>
+            </li>
+            {#each segments as segment (segment.path)}
+              <li class="breadcrumb-item text-break">
+                <button
+                  type="button"
+                  class="btn btn-link btn-sm p-0 text-start text-break text-decoration-none"
+                  onclick={() => navigate(segment.path)}>
+                  {segment.name}
                 </button>
               </li>
-              {#each segments as segment (segment.path)}
-                <li class="breadcrumb-item">
-                  <button
-                    type="button"
-                    class="btn btn-link btn-sm p-0 text-break"
-                    onclick={() => navigate(segment.path)}>
-                    {segment.name}
-                  </button>
-                </li>
-              {/each}
-            </ol>
-          </nav>
+            {/each}
+          </ol>
+        </nav>
 
-          <button
-            type="button"
-            class="btn btn-sm btn-link text-decoration-none flex-shrink-0"
-            onclick={startEditingPath}
-            use:tooltip={[$_('pages.servers.files.path-edit'), { placement: 'bottom' }]}
-            aria-label={$_('pages.servers.files.path-edit')}>
-            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-          </button>
-        {/if}
+        <button
+          type="button"
+          class="btn btn-sm btn-link text-decoration-none flex-shrink-0"
+          onclick={startEditingPath}
+          use:tooltip={[$_('pages.servers.files.path-edit'), { placement: 'bottom' }]}
+          aria-label={$_('pages.servers.files.path-edit')}>
+          <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+        </button>
       </div>
+    {/if}
+
+    <CardHeader>
+      <!-- Plain text, the way the players page shows its count: a pill would say "status", and
+           this is only how much the listing below holds. -->
+      <span slot="left" class="text-nowrap">
+        {$_('pages.servers.files.count', { values: { count: visibleEntries.length } })}
+      </span>
 
       <!-- Find sits in the middle so it is at the card's centre, the way the console's is. -->
       <div slot="middle" class="file-search w-100">
-        <SearchInput autofocus onchange={(value) => (query = value)} />
+        <SearchInput bind:this={searchInput} autofocus onchange={(value) => (query = value)} />
       </div>
 
       <span slot="right" class="d-flex flex-wrap align-items-center gap-2">
@@ -708,7 +718,7 @@
   import { _ } from 'svelte-i18n';
 
   import { browser } from '$app/env';
-  import { goto } from '$app/navigation';
+  import { afterNavigate, goto } from '$app/navigation';
   import { page } from '@panomc/sdk/core/js/appStores.js';
 
   import ApiUtil from '$lib/api.util.js';
@@ -815,6 +825,8 @@
   let busy = $state(false);
   let dragging = $state(false);
   let editingPath = $state(false);
+  /** @type {{ focus: () => void } | undefined} */
+  let searchInput = $state();
   let pathInput = $state('');
   /** @type {Array<{ id: number, name: string, percent: number, status: string }>} */
   let uploads = $state([]);
@@ -1014,6 +1026,7 @@
     loading = false;
     hydratedKey = `${Number(serverId)}:${result.path}`;
     applyEntries(result);
+    focusSearch();
 
     if (result.status === 'error') {
       showServerLoadError(result.error, serverId);
@@ -1099,6 +1112,31 @@
 
     editorModal?.open(joinPath(path, entry.name));
   }
+
+  /**
+   * Puts the caret in Find once the listing is on screen: on opening the page and after every
+   * directory change. `SearchInput`'s own `autofocus` fires only on mount — before the router has
+   * settled and while the folder button that was clicked still holds focus, and that button is
+   * gone once the new listing renders. So it waits a frame and only takes focus nobody holds
+   * (an open modal or the path edit keeps theirs).
+   */
+  function focusSearch() {
+    if (!browser) {
+      return;
+    }
+
+    void tick().then(() =>
+      requestAnimationFrame(() => {
+        const active = document.activeElement;
+
+        if (!editingPath && (!active || active === document.body)) {
+          searchInput?.focus();
+        }
+      }),
+    );
+  }
+
+  afterNavigate(focusSearch);
 
   function startEditingPath() {
     pathInput = path;
