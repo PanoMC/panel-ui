@@ -1,6 +1,14 @@
 <!-- Upload into the folder the file manager is showing: the add-on installer's drop zone, with
      the destination named above it so nobody uploads into the wrong folder. -->
-<div role="dialog" class="modal fade" bind:this={$modalElement} tabindex="-1" aria-hidden="true">
+<!-- A file dropped next to the zone must not make the browser open it in place of the panel. -->
+<div
+  role="dialog"
+  class="modal fade"
+  bind:this={$modalElement}
+  tabindex="-1"
+  aria-hidden="true"
+  on:dragover|preventDefault
+  on:drop|preventDefault>
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">

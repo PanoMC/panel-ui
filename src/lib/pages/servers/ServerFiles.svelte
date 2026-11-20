@@ -1424,6 +1424,13 @@
       let known = null;
 
       if (folder !== into) {
+        // Only folders below `into` are walked up; anything else would climb past it forever.
+        if (!folder.startsWith(into ? `${into}/` : '')) {
+          listings.set(folder, null);
+
+          return null;
+        }
+
         const above = await listing(parentPath(folder));
         const name = folder.slice(folder.lastIndexOf('/') + 1);
 
@@ -1537,7 +1544,11 @@
   async function drainUploads() {
     const workers = [];
 
-    while (uploadWorkers < UPLOAD_PARALLEL) {
+    // Counted up front: a worker that finds nothing queued is done before `push` returns, so a
+    // `while (uploadWorkers < UPLOAD_PARALLEL)` would never reach the limit and spin forever.
+    const missing = UPLOAD_PARALLEL - uploadWorkers;
+
+    for (let i = 0; i < missing; i++) {
       uploadWorkers += 1;
       workers.push(uploadWorker());
     }
