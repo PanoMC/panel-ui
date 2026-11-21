@@ -2,3 +2,7 @@
 	path = theme-core
 	url = https://github.com/PanoMC/sdk.git
 	branch = dev
+[submodule "docs"]
+	path = docs
+	url = https://github.com/PanoMC/docs.git
+	branch = dev

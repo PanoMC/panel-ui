@@ -12,4 +12,7 @@ AGENTS.md
 src/error.html
 jsconfig.json
 error.html
-agent-guide
+docs
+GEMINI.md
+REPO-NOTES.md
+.github/copilot-instructions.md
