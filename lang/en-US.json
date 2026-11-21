@@ -4951,6 +4951,18 @@
         "description": "Ask for a description",
         "description-placeholder": "Description placeholder (empty: default)"
       }
+    },
+    "pano-plus": {
+      "badge": "Pano+",
+      "grace": "Your Pano+ subscription ends {days, plural, =0 {today} one {in # day} other {in # days}}. Pay now to keep it.",
+      "pay-now": "Pay Now",
+      "hint-backup": "Get {gb} GB of backup space with Pano+",
+      "hint-mail": "{count} e-mails a month with Pano+",
+      "learn-more": "See Pano+",
+      "dismiss": "Close",
+      "included": "Included with Pano+",
+      "license-active": "Active with Pano+ · until {date}",
+      "license-active-no-date": "Active with Pano+"
     }
   },
   "page-error": {

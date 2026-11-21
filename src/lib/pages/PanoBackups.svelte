@@ -209,6 +209,11 @@
   {#if tab === 'pano'}
     <PanoBackupAccountSummary {remote} />
 
+    <PanoPlusHint
+      text={$_('components.pano-plus.hint-backup', {
+        values: { gb: $panoPlus?.benefits?.backupGb ?? 50 },
+      })} />
+
     <!-- When panomc.com cannot be reached the summary above already says so; the list would only
          repeat it. -->
     {#if connected && !hostUnavailable}
@@ -660,6 +665,8 @@
   import DateComponent from '$lib/components/Date.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
+  import PanoPlusHint from '$lib/components/PanoPlusHint.svelte';
+  import { panoPlus } from '$lib/pano-plus.js';
   import CardFilters from '$lib/components/CardFilters.svelte';
   import CardFiltersItem from '$lib/components/CardFiltersItem.svelte';
   import Pagination from '$lib/components/Pagination.svelte';

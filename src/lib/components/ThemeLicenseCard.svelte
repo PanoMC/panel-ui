@@ -27,11 +27,13 @@
     </div>
     <div class="card-body">
       {#if theme.licenseStatus === 'LICENSED'}
-        <p class="mb-0 text-body-secondary">
-          {$_('pages.theme-detail.license.active', {
-            default: 'License is active for this Pano installation.',
-          })}
-        </p>
+        <PanoPlusLicenseLine viaPanoPlus={theme.licensePanoPlus === true}>
+          <p class="mb-0 text-body-secondary">
+            {$_('pages.theme-detail.license.active', {
+              default: 'License is active for this Pano installation.',
+            })}
+          </p>
+        </PanoPlusLicenseLine>
       {:else if theme.licenseStatus === 'NOT_CONNECTED'}
         <p class="mb-3">
           {$_('pages.theme-detail.license.not-connected', {
@@ -93,6 +95,7 @@
   import ApiUtil from '$lib/api.util.js';
   import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
   import LicenseStatusBadge from '$lib/components/LicenseStatusBadge.svelte';
+  import PanoPlusLicenseLine from '$lib/components/PanoPlusLicenseLine.svelte';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
   import { PANO_WEBSITE_URL } from '$lib/variables.js';
 

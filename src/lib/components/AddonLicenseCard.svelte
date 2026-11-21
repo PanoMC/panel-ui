@@ -27,9 +27,11 @@
     </div>
     <div class="card-body">
       {#if addon.licenseStatus === 'LICENSED'}
-        <p class="mb-0 text-body-secondary">
-          {$_('pages.addon-detail.license.active')}
-        </p>
+        <PanoPlusLicenseLine viaPanoPlus={addon.licensePanoPlus === true}>
+          <p class="mb-0 text-body-secondary">
+            {$_('pages.addon-detail.license.active')}
+          </p>
+        </PanoPlusLicenseLine>
       {:else if addon.licenseStatus === 'NO_PURCHASE' || addon.licenseStatus === 'MISSING' || addon.licenseStatus === 'NEEDS_REFRESH' || addon.licenseStatus === 'JAR_TAMPERED' || addon.licenseStatus === 'SIGNATURE_INVALID'}
         <p class="mb-3">
           {$_('pages.addon-detail.license.no-purchase', websiteI18n)}
@@ -80,6 +82,7 @@
   import ApiUtil from '$lib/api.util.js';
   import { showSuccess as showSuccessToast } from '$lib/components/ToastContainer.svelte';
   import LicenseStatusBadge from '$lib/components/LicenseStatusBadge.svelte';
+  import PanoPlusLicenseLine from '$lib/components/PanoPlusLicenseLine.svelte';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
 
   let { addon } = $props();

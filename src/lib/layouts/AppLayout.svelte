@@ -36,6 +36,11 @@
       <HostedBanner />
     {/if}
 
+    <!-- Pano+: only while its grace runs, for those who can act on it. -->
+    {#if signedIn && !standalone && !$resetLayout && !isInlineLogin(kitPage) && hasPermission(Permissions.MANAGE_PLATFORM_SETTINGS)}
+      <PanoPlusGraceBar />
+    {/if}
+
     <div
       class="panel-shell d-flex flex-grow-1 overflow-hidden"
       class:workspace-game={$sidebarTabsState === 'game'}
@@ -92,6 +97,7 @@
 
   import PageActions from '$lib/components/PageActions.svelte';
   import HostedBanner from '$lib/components/HostedBanner.svelte';
+  import PanoPlusGraceBar from '$lib/components/PanoPlusGraceBar.svelte';
   import PageLoader from '$lib/components/PageLoader.svelte';
   import PageNavItem from '$lib/components/PageNavItem.svelte';
   import PageNav from '$lib/components/PageNav.svelte';

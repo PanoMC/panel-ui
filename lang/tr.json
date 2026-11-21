@@ -4953,6 +4953,18 @@
         "description": "Açıklama sorulsun",
         "description-placeholder": "Açıklama ipucu metni (boş: varsayılan)"
       }
+    },
+    "pano-plus": {
+      "badge": "Pano+",
+      "grace": "Pano+ aboneliğiniz {days, plural, =0 {bugün} other {# gün içinde}} bitiyor. Devam etmesi için şimdi ödeyin.",
+      "pay-now": "Şimdi Öde",
+      "hint-backup": "Pano+ ile {gb} GB yedekleme alanı edinin",
+      "hint-mail": "Pano+ ile ayda {count} e-posta",
+      "learn-more": "Pano+'ı İncele",
+      "dismiss": "Kapat",
+      "included": "Pano+'a dahil",
+      "license-active": "Pano+ ile etkin · {date} tarihine kadar",
+      "license-active-no-date": "Pano+ ile etkin"
     }
   },
   "page-error": {

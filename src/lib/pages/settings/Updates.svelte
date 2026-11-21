@@ -298,6 +298,7 @@
                         </h5>
                         <VerifiedStatus status={getVerifiedStatus(update.verified)} />
                       </svelte:element>
+                      <PanoPlusIncludedBadge included={update.panoPlusIncluded === true} />
                       <span class="badge text-bg-primary">
                         {update.oldVersion}
                         <i class="fas fa-arrow-right fa-xs"></i>
@@ -591,6 +592,7 @@
   import DateTime from '$lib/components/Date.svelte';
   import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
   import VerifiedStatus from '$lib/components/VerifiedStatus.svelte';
+  import PanoPlusIncludedBadge from '$lib/components/PanoPlusIncludedBadge.svelte';
   import CardHeader from '$lib/components/CardHeader.svelte';
   import ServerUpdatesCard from '$lib/components/settings/ServerUpdatesCard.svelte';
   import { hasPermission, Permissions } from '$lib/auth.util.js';

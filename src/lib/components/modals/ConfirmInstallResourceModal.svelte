@@ -133,6 +133,8 @@
                       {#if $versionInfoObj.version.freemium}
                         <FreemiumBadge />
                       {/if}
+                      <PanoPlusIncludedBadge
+                        included={$versionInfoObj.version.panoPlusIncluded === true} />
                     </div>
 
                     <!-- Resource ID -->
@@ -249,6 +251,7 @@
 
   import ChangelogModal, { show as showChangelogModal } from './ChangelogModal.svelte';
   import FreemiumBadge from '$lib/components/FreemiumBadge.svelte';
+  import PanoPlusIncludedBadge from '$lib/components/PanoPlusIncludedBadge.svelte';
   import {
     showSuccess as showSuccessToast,
     showError as showErrorToast,

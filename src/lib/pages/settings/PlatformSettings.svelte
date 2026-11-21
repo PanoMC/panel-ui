@@ -761,6 +761,14 @@
 
     <!-- Everything below is off with the switch: a fieldset disables every control in it at once
          (the single `disabled` flags further down missed the Pano Mail choice and its buttons). -->
+    <PanoPlusHint
+      classes="mb-3"
+      text={$_('components.pano-plus.hint-mail', {
+        values: {
+          count: ($panoPlus?.benefits?.mailPerMonth ?? 3000).toLocaleString($currentLanguage?.code),
+        },
+      })} />
+
     <fieldset disabled={smtpDisabled} class="border-0 p-0 m-0" style="min-width: 0;">
       {#if panoMailStatus}
         <div
@@ -1455,6 +1463,8 @@
   // Mounted once globally in AppLayout, so only the opener is imported here.
   import { show as showConfirmActionModal } from '$lib/components/modals/ConfirmActionModal.svelte';
   import PageActions from '$lib/components/PageActions.svelte';
+  import PanoPlusHint from '$lib/components/PanoPlusHint.svelte';
+  import { panoPlus } from '$lib/pano-plus.js';
   import ManagePlanButton from '$lib/components/settings/pano-backup/ManagePlanButton.svelte';
   import PlanCard from '$lib/components/settings/pano-backup/PlanCard.svelte';
   import PermissionNodeInput from '$lib/components/PermissionNodeInput.svelte';

@@ -4950,6 +4950,18 @@
         "description": "Спрашивать описание",
         "description-placeholder": "Подсказка описания (пусто: по умолчанию)"
       }
+    },
+    "pano-plus": {
+      "badge": "Pano+",
+      "grace": "Подписка Pano+ заканчивается {days, plural, =0 {сегодня} one {через # день} few {через # дня} many {через # дней} other {через # дня}}. Оплатите сейчас, чтобы сохранить её.",
+      "pay-now": "Оплатить Сейчас",
+      "hint-backup": "{gb} ГБ для резервных копий с Pano+",
+      "hint-mail": "{count} писем в месяц с Pano+",
+      "learn-more": "Подробнее О Pano+",
+      "dismiss": "Закрыть",
+      "included": "Входит в Pano+",
+      "license-active": "Активно с Pano+ · до {date}",
+      "license-active-no-date": "Активно с Pano+"
     }
   },
   "page-error": {
