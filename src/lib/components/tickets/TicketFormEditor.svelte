@@ -10,8 +10,8 @@
         role="switch"
         id="{idPrefix}-{row.prop}"
         autocomplete="off"
-        checked={form[row.enabled] !== false}
-        onchange={(event) => (form = { ...form, [row.enabled]: event.currentTarget.checked })} />
+        checked={current[row.enabled] !== false}
+        onchange={(event) => (form = { ...current, [row.enabled]: event.currentTarget.checked })} />
       <label class="form-check-label" for="{idPrefix}-{row.prop}">
         {$_(`components.tickets.form-editor.${row.key}`)}
       </label>
@@ -22,17 +22,17 @@
         class:border-danger={errors[`form.${row.prop}`]}
         type="text"
         maxlength="200"
-        disabled={form[row.enabled] === false}
+        disabled={current[row.enabled] === false}
         placeholder={$_(`components.tickets.form-editor.${row.key}-placeholder`)}
-        value={form[row.prop] ?? ''}
-        oninput={(event) => (form = { ...form, [row.prop]: event.currentTarget.value })} />
+        value={current[row.prop] ?? ''}
+        oninput={(event) => (form = { ...current, [row.prop]: event.currentTarget.value })} />
       {#if i18n !== undefined}
         <TranslationsButton
           bind:i18n
           prop={row.prop}
-          defaultText={form[row.prop] ?? ''}
+          defaultText={current[row.prop] ?? ''}
           maxlength={200}
-          disabled={form[row.enabled] === false}
+          disabled={current[row.enabled] === false}
           {errors}
           errorKey={(code) => `i18n.${code}.${row.prop}`} />
       {/if}
@@ -73,4 +73,7 @@
     errors = {},
     idPrefix = 'ticketForm',
   } = $props();
+
+  // The category modal renders before a category is picked (form still undefined).
+  const current = $derived(form ?? defaultTicketForm());
 </script>
