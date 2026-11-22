@@ -188,6 +188,7 @@
     "theme-settings": {
       "title": "Theme Settings",
       "error": "Error occurred while loading theme settings, please try again.",
+      "slow": "Theme settings are taking longer than usual to load. Your internet connection might be slow, please wait a little longer.",
       "home": {
         "label": "Home Page",
         "description": "The page visitors see at the front of your site.",

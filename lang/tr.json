@@ -188,6 +188,7 @@
     "theme-settings": {
       "title": "Tema Ayarları",
       "error": "Tema ayarları yüklenirken bir hata oluştu, lütfen tekrar deneyin.",
+      "slow": "Tema ayarlarının yüklenmesi normalden uzun sürüyor. İnternet bağlantınız yavaş olabilir, lütfen biraz daha bekleyin.",
       "home": {
         "label": "Ana Sayfa",
         "description": "Ziyaretçilerin sitenizin önünde gördüğü sayfa.",

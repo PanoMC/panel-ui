@@ -5,6 +5,14 @@
 {/if}
 
 {#if loading || alwaysLoading}
+  {#if slow}
+    <div class="alert alert-warning d-flex align-items-center mb-0" role="status" in:fade>
+      <i class="fa-solid fa-hourglass-half me-3" aria-hidden="true"></i>
+      <div class="flex-grow-1">
+        {$_('pages.theme-settings.slow')}
+      </div>
+    </div>
+  {/if}
   <div class="d-flex align-items-center justify-content-center" style="height: 500px;">
     <div class="spinner-border text-primary" role="status" aria-label="Loading"></div>
   </div>
@@ -73,6 +81,21 @@
 
   let alwaysLoading = false;
 
+  const LOAD_TIMEOUT_MS = 60 * 1000;
+  // After this long a note says the connection might be slow; loading goes on until LOAD_TIMEOUT_MS.
+  const SLOW_NOTICE_MS = 8 * 1000;
+  let loadTimeout = null;
+  let slowTimeout = null;
+  let slow = false;
+
+  function clearLoadTimeout() {
+    if (loadTimeout) clearTimeout(loadTimeout);
+    if (slowTimeout) clearTimeout(slowTimeout);
+    loadTimeout = null;
+    slowTimeout = null;
+    slow = false;
+  }
+
   // The home page select above the settings (doc 01 section 9). It shows only when the backend
   // answers the read: an older backend or a failed call leaves the page as it was.
   let homeController = null;
@@ -136,7 +159,15 @@
     }
 
     if (data.type === 'theme-settings-ready') {
+      clearLoadTimeout();
       loading = false;
+    }
+
+    // The iframe could not load the panel's stylesheets: show the error instead of an unstyled page.
+    if (data.type === 'theme-settings-error') {
+      clearLoadTimeout();
+      loading = false;
+      error = true;
     }
   }
 
@@ -234,9 +265,10 @@
   async function handleLoad() {
     if (!frame) await delay(100);
 
-    if (childOrigin && frame.contentWindow) {
+    // The CSS goes only on 'theme-settings-loaded': sending it here too made the iframe load every
+    // stylesheet twice. This early message is often dropped anyway, the iframe app is not listening yet.
+    if (childOrigin && frame?.contentWindow) {
       sendTheme();
-      sendCSS();
     }
   }
 
@@ -267,12 +299,22 @@
     frame?.removeEventListener('load', onLoad);
     frame?.addEventListener('load', onLoad);
 
-    setTimeout(() => {
+    // The iframe boots a whole theme app and then loads the panel's stylesheets into it; on a slow or
+    // far connection that takes well over 5 seconds. The iframe reports a failure itself
+    // ('theme-settings-error'), this timeout only catches an iframe that never answers.
+    clearLoadTimeout();
+    slowTimeout = setTimeout(() => {
+      slowTimeout = null;
+      if (loading) slow = true;
+    }, SLOW_NOTICE_MS);
+    loadTimeout = setTimeout(() => {
+      loadTimeout = null;
+      slow = false;
       if (loading) {
         loading = false;
         error = true;
       }
-    }, 5 * 1000); // 5 seconds;
+    }, LOAD_TIMEOUT_MS);
 
     return () => {
       frame?.removeEventListener('load', onLoad);
@@ -295,6 +337,7 @@
   });
 
   onDestroy(() => {
+    clearLoadTimeout();
     if (unsubscribeTheme) {
       unsubscribeTheme();
     }
