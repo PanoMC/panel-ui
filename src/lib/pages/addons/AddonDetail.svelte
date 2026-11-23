@@ -34,10 +34,14 @@
               {$_('pages.addon-detail.source')}
             </dt>
             <dd class="col-sm-8 text-sm-end text-break mb-0">
-              <a href={data.addon.sourceUrl} target="_blank">
-                {data.addon.sourceUrl || $_('pages.addon-detail.unknown')}
-                <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
-              </a>
+              {#if data.addon.sourceUrl}
+                <a href={data.addon.sourceUrl} target="_blank" rel="noopener noreferrer">
+                  {data.addon.sourceUrl}
+                  <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
+                </a>
+              {:else}
+                <span class="text-body-secondary">{$_('pages.addon-detail.unknown')}</span>
+              {/if}
             </dd>
           </div>
         </div>

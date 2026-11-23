@@ -182,14 +182,19 @@
             {/if}
             <li class="list-group-item">
               <strong>{$_('pages.theme-detail.source')}:</strong>
-              <a
-                class="text-truncate d-block"
-                aria-label={$_('pages.theme-detail.source')}
-                href={theme.sourceUrl ? theme.sourceUrl : null}
-                target="_blank">
-                {theme.sourceUrl || $_('pages.theme-detail.unknown')}
-                <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
-              </a>
+              {#if theme.sourceUrl}
+                <a
+                  class="text-truncate d-block"
+                  aria-label={$_('pages.theme-detail.source')}
+                  href={theme.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  {theme.sourceUrl}
+                  <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+                </a>
+              {:else}
+                <span class="d-block text-body-secondary">{$_('pages.theme-detail.unknown')}</span>
+              {/if}
             </li>
             <li class="list-group-item">
               <strong>Hash:</strong>
