@@ -212,8 +212,23 @@ export function fileDownloadUrl(serverId, paths, { base, archive = false, inline
  * @returns {boolean} whether the per-row menu offers "extract here".
  */
 export function isArchive(entry) {
-  return !isDirectory(entry) && fileExtension(entry?.name || '') === 'zip';
+  return !isDirectory(entry) && ARCHIVE_EXTENSIONS.has(fileExtension(entry?.name || ''));
 }
+
+/** Extensions the node can unpack: zip, tar and its compressed forms, gz, 7z and rar. */
+const ARCHIVE_EXTENSIONS = new Set([
+  'zip',
+  'tar',
+  'gz',
+  'tgz',
+  'bz2',
+  'tbz',
+  'tbz2',
+  'xz',
+  'txz',
+  '7z',
+  'rar',
+]);
 
 /**
  * A modified timestamp as epoch millis. The contract says millis, but an ISO string is a

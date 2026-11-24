@@ -137,6 +137,14 @@
         </label>
       </div>
 
+      {#if uploadStats}
+        <UploadProgress
+          stats={uploadStats}
+          name={file?.name || ''}
+          phase={$_('pages.settings.backups.restore.uploading')}
+          oncancel={oncancelupload} />
+      {/if}
+
       {#if error}
         <div class="alert alert-danger mb-0 d-flex align-items-start">
           <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
@@ -148,6 +156,7 @@
       <button
         type="button"
         class="btn btn-link text-decoration-none text-capitalize col-6 m-0"
+        disabled={busy}
         data-bs-dismiss="modal">
         {$_('buttons.cancel')}
       </button>
@@ -170,15 +179,18 @@
   import { inspectArchiveFile } from '$lib/pano-backup.util.js';
 
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
+  import UploadProgress from '$lib/components/UploadProgress.svelte';
   import BsModal from './BsModal.svelte';
 
   /**
    * @typedef {{ currentPassword: string, passphrase: string, file: File | null }} RestoreInput
    * @type {{
    *   onsubmit: (input: RestoreInput) => Promise<ReturnType<typeof import('$lib/pano-backup.util.js').describeError>>,
+   *   uploadStats?: import('$lib/upload.util.js').UploadStats | null,
+   *   oncancelupload?: (() => void) | null,
    * }}
    */
-  let { onsubmit } = $props();
+  let { onsubmit, uploadStats = null, oncancelupload = null } = $props();
 
   /** @type {BsModal | undefined} */
   let modal = $state();

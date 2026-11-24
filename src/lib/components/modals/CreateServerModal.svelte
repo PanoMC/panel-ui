@@ -178,49 +178,39 @@
               </div>
             {/if}
           {:else if source === Sources.UPLOAD}
-            {#if uploadTicket}
+            {#if uploadFile}
               <div class="alert alert-success d-flex align-items-center gap-3 mb-0" role="alert">
                 <i class="fa-solid fa-file-zipper fa-2x" aria-hidden="true"></i>
                 <div class="min-w-0 flex-grow-1">
                   <b class="text-break">{uploadFilename}</b>
                   <div>
                     {formatBytes(uploadSize, uploadSize < 1024 ? 0 : 1)}
-                    &middot; {$_('components.modals.create-server.import.upload-expires')}
+                    &middot; <span class="font-monospace">{uploadFormat}</span>
+                    &middot; {$_('components.modals.create-server.import.upload-on-create')}
                   </div>
                 </div>
-                <button type="button" class="btn alert-btn" onclick={clearUpload}>
+                <button
+                  type="button"
+                  class="btn alert-btn"
+                  disabled={submitting}
+                  onclick={clearUpload}>
                   {$_('buttons.change')}
                 </button>
               </div>
-            {:else if uploadBusy}
-              <div class="d-flex justify-content-between small mb-1">
-                <span class="text-break">{uploadFilename}</span>
-                <span class="font-monospace">{uploadPercent}%</span>
-              </div>
-              <div
-                class="progress"
-                style="height: 6px;"
-                role="progressbar"
-                aria-label={$_('components.modals.create-server.import.upload-progress')}
-                aria-valuenow={uploadPercent}
-                aria-valuemin="0"
-                aria-valuemax="100">
-                <div
-                  class="progress-bar progress-bar-striped progress-bar-animated"
-                  style="width: {uploadPercent}%;">
-                </div>
+            {:else if uploadDetecting}
+              <div class="text-center py-4">
+                <span class="spinner-border" role="status" aria-hidden="true"></span>
               </div>
             {:else}
               <DragAndDropZone
                 id="createServerUpload"
-                accept={['.zip']}
-                maxFileSize={MAX_UPLOAD_BYTES}
+                accept={[...ARCHIVE_ACCEPT]}
                 style="min-height: 9rem;"
                 icon="fa-solid fa-file-zipper fa-2x"
                 title={$_('components.modals.create-server.import.upload-drop')}
-                subtitle={$_('components.modals.create-server.import.upload-limit')}
-                on:drop={(event) => void uploadArchive(event.detail)}
-                on:error={(event) => onUploadRejected(event.detail)} />
+                subtitle={$_('components.modals.create-server.import.upload-hint')}
+                on:drop={(event) => void selectArchive(event.detail)}
+                on:error={onUploadRejected} />
             {/if}
           {:else if source === Sources.MODPACK}
             <!-- The wizard's only field on this screen, so it is the default size rather than
@@ -582,6 +572,33 @@
               {/each}
             </tbody>
           </table>
+
+          {#if uploadStats}
+            <div class="mt-3">
+              <UploadProgress
+                stats={uploadStats}
+                name={uploadFilename}
+                phase={uploadStats.sent && EXTRACT_AFTER_UPLOAD.includes(uploadFormat)
+                  ? $_('components.modals.create-server.import.phase-extract')
+                  : $_('components.modals.create-server.import.phase-upload-extract')}
+                oncancel={cancelUpload}
+                cancelDisabled={!uploadHandle} />
+            </div>
+          {/if}
+
+          {#if uploadError}
+            <div class="alert alert-danger mt-3 mb-0 d-flex align-items-start" role="alert">
+              <i class="fa-solid fa-circle-exclamation me-3 mt-1" aria-hidden="true"></i>
+              <div>
+                <div>{$_(uploadError.key, { values: uploadError.values })}</div>
+                {#if uploadErrorRemoved}
+                  <div class="mt-1">
+                    {$_('components.modals.create-server.import.upload-failed-removed')}
+                  </div>
+                {/if}
+              </div>
+            </div>
+          {/if}
         {/if}
       </div>
 
@@ -726,12 +743,25 @@
     softwareNoteBadge,
     softwareVersionLabelKey,
   } from '$lib/servers.util.js';
-  import { onNode, onNodeRemoved, subscribeNodes } from '$lib/panelRealtime.js';
+  import { onNode, onNodeRemoved, onTaskProgress, subscribeNodes } from '$lib/panelRealtime.js';
   import { sanitizeImageSrc } from '$lib/security.util.js';
   import { formatBytes } from '$lib/string.util.js';
+  import { errorCode } from '$lib/apiError.util.js';
+  import { newUploadId, sendUpload, UPLOAD_CANCELLED } from '$lib/upload.util.js';
+  import {
+    ARCHIVE_ACCEPT,
+    checkTransferSpace,
+    describeUploadFailure,
+    detectArchiveFormat,
+    EXTRACT_AFTER_UPLOAD,
+    stripArchiveExtension,
+    taskErrorCode,
+    uploadErrorMessage,
+  } from '$lib/transfers.util.js';
 
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
   import NoContent from '$lib/components/NoContent.svelte';
+  import UploadProgress from '$lib/components/UploadProgress.svelte';
   import SearchInput from '$lib/components/SearchInput.svelte';
   import SoftwareLogo from '$lib/components/servers/SoftwareLogo.svelte';
   import { showError, showSuccess } from '$lib/components/ToastContainer.svelte';
@@ -779,9 +809,6 @@
     },
   ];
 
-  /** The transfer endpoint refuses anything larger (§2.4.8), so the browser says so first. */
-  const MAX_UPLOAD_BYTES = 1024 * 1024 * 1024;
-
   /** Modpacks only come from Modrinth for now — `.mrpack` is the format the node understands. */
   const MODPACK_SOURCE = 'modrinth';
 
@@ -824,12 +851,22 @@
 
   let folderPath = $state('');
 
-  /** UPLOAD — the ticket `POST /api/v1/panel/transfers/upload` handed back for the spooled zip. */
-  let uploadTicket = $state('');
+  /** UPLOAD — the archive is only picked on its step; it goes up after Create (§2.4.8). */
+  /** @type {File | null} */
+  let uploadFile = $state.raw(null);
   let uploadFilename = $state('');
   let uploadSize = $state(0);
-  let uploadBusy = $state(false);
-  let uploadPercent = $state(0);
+  /** `zip`, `tar.gz`, … from the first bytes of the file. */
+  let uploadFormat = $state('');
+  let uploadDetecting = $state(false);
+  /** @type {import('$lib/upload.util.js').UploadStats | null} */
+  let uploadStats = $state(null);
+  /** @type {{ abort: () => void } | null} */
+  let uploadHandle = $state.raw(null);
+  /** @type {import('$lib/transfers.util.js').UploadMessage | null} */
+  let uploadError = $state(null);
+  /** The server was created and removed again because its upload failed. */
+  let uploadErrorRemoved = $state(false);
 
   /** MODPACK — the Modrinth project and the pack version the node will resolve. */
   let modpackQuery = $state('');
@@ -1142,7 +1179,7 @@
       }
 
       if (source === Sources.UPLOAD) {
-        return !!uploadTicket;
+        return !!uploadFile && !!uploadFormat;
       }
 
       if (source === Sources.MODPACK) {
@@ -1216,99 +1253,133 @@
     jvmArgs = aikarFlags(memoryMb);
   }
 
-  /** Throws the spooled archive away so another one can be picked. */
+  /** Drops the picked archive so another one can be picked. */
   function clearUpload() {
-    uploadTicket = '';
+    uploadFile = null;
     uploadFilename = '';
     uploadSize = 0;
-    uploadPercent = 0;
-    uploadBusy = false;
+    uploadFormat = '';
+    uploadDetecting = false;
+    uploadStats = null;
+    uploadHandle = null;
+    uploadError = null;
+    uploadErrorRemoved = false;
+  }
+
+  /** The drop zone refused the file by its name, before it was read. */
+  function onUploadRejected() {
+    void showError('components.modals.create-server.import.upload-wrong-type');
   }
 
   /**
-   * The drop zone rejected the file before it ever reached us — wrong extension, or bigger than
-   * the transfer endpoint accepts.
-   *
-   * @param {{ error?: string }} detail
-   */
-  function onUploadRejected(detail) {
-    void showError(
-      detail?.error === 'INVALID_SIZE'
-        ? 'components.modals.create-server.import.upload-too-large'
-        : 'components.modals.create-server.import.upload-wrong-type',
-    );
-  }
-
-  /**
-   * Spools the zip through `POST /api/v1/panel/transfers/upload` (multipart part `file`) and keeps
-   * the ticket it answers with. The ticket — not the file — is what the create call carries, so
-   * the node can pull the archive itself; it expires after 30 minutes (§2.4.8).
+   * Keeps the picked archive and tells its format from the first bytes. Nothing is uploaded yet:
+   * that happens after Create, into the server the create call made (§2.4.8).
    *
    * @param {File} file
    */
-  async function uploadArchive(file) {
-    if (!file || uploadBusy) {
+  async function selectArchive(file) {
+    if (!file || submitting) {
       return;
     }
 
     clearUpload();
+    uploadDetecting = true;
 
+    const format = await detectArchiveFormat(file).catch(() => '');
+
+    uploadDetecting = false;
+
+    if (!format) {
+      await showError('components.modals.create-server.import.upload-unknown-format', {
+        name: file.name,
+      });
+
+      return;
+    }
+
+    uploadFile = file;
     uploadFilename = file.name;
     uploadSize = file.size;
-    uploadBusy = true;
-    uploadPercent = 0;
+    uploadFormat = format;
+  }
+
+  function cancelUpload() {
+    uploadHandle?.abort();
+  }
+
+  /**
+   * Sends the picked archive to the server the create call just made, over the ticket it answered
+   * with. The node unpacks it as it arrives.
+   *
+   * @param {any} created the answer of `POST /panel/servers/create`.
+   * @returns {Promise<boolean>} whether it went through.
+   */
+  async function uploadCreatedArchive(created) {
+    const ticket = String(created?.uploadTicket ?? '');
+    const file = uploadFile;
+
+    if (!ticket || !file) {
+      uploadError = { key: 'components.modals.create-server.import.upload-unavailable' };
+
+      return false;
+    }
+
+    const uploadId = newUploadId();
+    const taskIds = [created.taskId, created.taskUuid]
+      .filter((id) => id != null && id !== '')
+      .map(String);
+    /** The `error` of the import task when it failed while the upload ran. */
+    let taskError = '';
+
+    const offTask = onTaskProgress((frame) => {
+      if (frame?.status === 'FAILED' && taskIds.includes(String(frame.taskId))) {
+        taskError = String(frame.error || '');
+      }
+    });
 
     const form = new FormData();
 
     form.append('file', file, file.name);
 
-    /** @type {any} */
-    let body = null;
+    const handle = sendUpload({
+      path: `/panel/transfers/upload?ticket=${encodeURIComponent(ticket)}&uploadId=${encodeURIComponent(uploadId)}`,
+      body: form,
+      size: file.size,
+      onprogress: (stats) => (uploadStats = stats),
+    });
 
-    try {
-      body = await ApiUtil.post({
-        path: '/panel/transfers/upload',
-        body: form,
-        onUploadProgress: (progress) => {
-          uploadPercent = Math.min(100, Math.round(Number(progress) * 100));
-        },
-        handler: (/** @type {object} */ response) => response,
-      });
-    } catch (uploadError) {
-      console.error('Upload failed', uploadError);
-      body = null;
+    uploadHandle = handle;
+
+    const result = await handle.promise;
+
+    uploadHandle = null;
+
+    if (!result?.error) {
+      offTask();
+
+      return true;
     }
 
-    uploadBusy = false;
+    let message = await describeUploadFailure(result, uploadId);
 
-    if (!body) {
-      clearUpload();
+    // The import task's error names the cause when the request itself could not (the node
+    // refused the archive while it was arriving).
+    if (errorCode(result) !== UPLOAD_CANCELLED && message.key.endsWith('.interrupted')) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
-      return;
+      const taskCode = taskErrorCode(taskError);
+
+      if (taskCode) {
+        message = uploadErrorMessage(taskCode);
+      }
     }
 
-    if (isEndpointUnavailable(body)) {
-      clearUpload();
-      await showError('components.modals.create-server.import.upload-unavailable');
+    offTask();
+    uploadStats = null;
+    uploadError = message;
+    uploadErrorRemoved = true;
 
-      return;
-    }
-
-    if (body.error) {
-      clearUpload();
-      await showServerActionError(body.error);
-
-      return;
-    }
-
-    uploadTicket = String(body.ticket ?? body.uploadTicket ?? '');
-    uploadFilename = String(body.filename ?? file.name);
-    uploadSize = Number(body.size) || file.size;
-
-    if (!uploadTicket) {
-      clearUpload();
-      await showError('components.modals.create-server.import.upload-unavailable');
-    }
+    return false;
   }
 
   function clearModpack() {
@@ -1484,7 +1555,7 @@
           .split(/[\\/]/)
           .pop()
       : source === Sources.UPLOAD
-        ? uploadFilename.replace(/\.zip$/i, '')
+        ? stripArchiveExtension(uploadFilename)
         : source === Sources.MODPACK
           ? modpackProject?.name
           : selectedSoftware?.name || selectedSoftware?.id;
@@ -1652,6 +1723,25 @@
 
     submitting = true;
 
+    if (source === Sources.UPLOAD) {
+      uploadError = null;
+      uploadErrorRemoved = false;
+
+      // Nothing is created when the archive cannot fit on the node.
+      const space = await checkTransferSpace({
+        nodeId: Number(nodeId),
+        size: uploadSize,
+        format: uploadFormat,
+      });
+
+      if (space) {
+        uploadError = space;
+        submitting = false;
+
+        return;
+      }
+    }
+
     /** @type {Record<string, unknown>} */
     const payload = {
       nodeId: Number(nodeId),
@@ -1674,7 +1764,7 @@
     if (isFolderSource(source)) {
       payload.folderPath = folderPath.trim();
     } else if (source === Sources.UPLOAD) {
-      payload.uploadTicket = uploadTicket;
+      payload.upload = { filename: uploadFilename, size: uploadSize };
     } else if (source === Sources.MODPACK) {
       payload.modpack = {
         source: MODPACK_SOURCE,
@@ -1692,23 +1782,42 @@
       handler: (response) => response,
     });
 
-    submitting = false;
-
     if (body === undefined || body === null) {
+      submitting = false;
+
       return;
     }
 
     if (isEndpointUnavailable(body)) {
+      submitting = false;
       await showError('components.modals.create-server.create-unavailable');
 
       return;
     }
 
     if (body.error) {
+      submitting = false;
+
+      if (errorCode(body) === 'NOT_ENOUGH_SPACE') {
+        uploadError = uploadErrorMessage('NOT_ENOUGH_SPACE', body);
+
+        return;
+      }
+
       await showServerActionError(body.error);
 
       return;
     }
+
+    // The server exists now; its archive goes up while the modal stays open. When that fails,
+    // Pano fails the import and removes the server again, so there is nothing to open.
+    if (source === Sources.UPLOAD && !(await uploadCreatedArchive(body))) {
+      submitting = false;
+
+      return;
+    }
+
+    submitting = false;
 
     const createdId = body.server?.id ?? body.serverId ?? body.id ?? null;
 

@@ -24,10 +24,9 @@
               icon="fas fa-upload fa-2x"
               title={$_('pages.servers.plugins.upload.drop')}
               accept={['.jar', 'application/java-archive']}
-              maxFileSize={MAX_UPLOAD_BYTES}
               multiple
               on:drop={(event) => stage(event.detail)}
-              on:error={(event) => onZoneError(event.detail)} />
+              on:error={onZoneError} />
           </div>
 
           {#each $errors as error, index (index)}
@@ -58,16 +57,13 @@
                       {$_('pages.servers.plugins.upload.status-' + upload.status)}
                     </span>
                   </div>
-                  {#if upload.status === 'uploading'}
-                    <div
-                      class="progress mt-2"
-                      style="height: 4px;"
-                      role="progressbar"
-                      aria-label={upload.name}
-                      aria-valuenow={upload.percent}
-                      aria-valuemin="0"
-                      aria-valuemax="100">
-                      <div class="progress-bar" style="width: {upload.percent}%;"></div>
+                  {#if upload.status === 'uploading' && upload.stats}
+                    <div class="mt-2">
+                      <UploadProgress
+                        compact
+                        stats={upload.stats}
+                        label={upload.name}
+                        oncancel={() => cancel(upload.id)} />
                     </div>
                   {/if}
                 </li>
@@ -85,17 +81,18 @@
   import { errorCode } from '$lib/apiError.util.js';
   import { get, writable } from 'svelte/store';
 
-  /** The endpoint's ceiling (PanelUploadServerPluginAPI.MAX_UPLOAD_BYTES). */
-  export const MAX_UPLOAD_BYTES = 256 * 1024 * 1024;
-
   const modalElement = writable();
   const serverIdStore = writable(null);
   const directory = writable('plugins');
-  /** @type {import('svelte/store').Writable<Array<{ id: number, name: string, file: File, percent: number, status: 'pending' | 'uploading' | 'done' | 'failed' }>>} */
+  /** @type {import('svelte/store').Writable<Array<{ id: number, name: string, file: File, stats: import('$lib/upload.util.js').UploadStats | null, status: 'pending' | 'uploading' | 'done' | 'failed' }>>} */
   const uploads = writable([]);
   /** What went wrong, shown as alerts inside the modal instead of toasts. */
   /** @type {import('svelte/store').Writable<Array<{ key: string, values: Record<string, unknown> }>>} */
   const errors = writable([]);
+
+  /** The running request of each row, so Cancel can stop it. */
+  /** @type {Map<number, { abort: () => void }>} */
+  const handles = new Map();
 
   /** @type {() => void} */
   let onUploaded = () => {};
@@ -126,7 +123,12 @@
 <script>
   import { _ } from 'svelte-i18n';
 
-  import ApiUtil from '$lib/api.util.js';
+  import { newUploadId, sendUpload } from '$lib/upload.util.js';
+  import {
+    checkTransferSpace,
+    describeUploadFailure,
+    isUploadFailureCode,
+  } from '$lib/transfers.util.js';
   import {
     getRetryAfterSeconds,
     isEndpointUnavailable,
@@ -137,6 +139,7 @@
   } from '$lib/servers.util.js';
 
   import DragAndDropZone from '$lib/components/DragAndDropZone.svelte';
+  import UploadProgress from '$lib/components/UploadProgress.svelte';
   import { showSuccess } from '$lib/components/ToastContainer.svelte';
 
   /**
@@ -186,15 +189,13 @@
     }
   }
 
-  /**
-   * @param {{ error: string, file?: File }} detail
-   */
-  function onZoneError(detail) {
-    if (detail?.error === 'INVALID_SIZE') {
-      addError('pages.servers.plugins.upload.too-large', { name: detail.file?.name || '' });
-    } else {
-      addError('pages.servers.plugins.upload.invalid-type');
-    }
+  function onZoneError() {
+    addError('pages.servers.plugins.upload.invalid-type');
+  }
+
+  /** @param {number} id */
+  function cancel(id) {
+    handles.get(id)?.abort();
   }
 
   /**
@@ -222,7 +223,7 @@
 
       uploads.update((list) => [
         ...list,
-        { id: ++nextId, name: file.name, file, percent: 0, status: 'pending' },
+        { id: ++nextId, name: file.name, file, stats: null, status: 'pending' },
       ]);
       added++;
     }
@@ -257,6 +258,23 @@
         break;
       }
 
+      // The whole batch has to fit on the node, or none of it starts.
+      const space = await checkTransferSpace({
+        serverId,
+        size: queue.reduce((sum, item) => sum + item.file.size, 0),
+      });
+
+      if (space) {
+        const ids = new Set(queue.map((item) => item.id));
+
+        uploads.update((list) =>
+          list.map((item) => (ids.has(item.id) ? { ...item, status: 'failed' } : item)),
+        );
+        addError(space.key, space.values);
+
+        continue;
+      }
+
       for (const { id, file } of queue) {
         patch(id, { status: 'uploading' });
 
@@ -264,30 +282,37 @@
 
         form.append('file', file, file.name);
 
-        /** @type {any} */
-        let response = null;
+        const uploadId = newUploadId();
+        const handle = sendUpload({
+          path: `/panel/servers/${serverId}/plugins/upload?uploadId=${encodeURIComponent(uploadId)}`,
+          body: form,
+          size: file.size,
+          onprogress: (stats) => patch(id, { stats }),
+        });
 
-        try {
-          response = await ApiUtil.post({
-            path: `/panel/servers/${serverId}/plugins/upload`,
-            body: form,
-            onUploadProgress: (progress) => {
-              patch(id, { percent: Math.min(100, Math.round(Number(progress) * 100)) });
-            },
-            handler: (result) => result,
-          });
-        } catch (error) {
-          console.error('Plugin upload failed', error);
-          response = null;
-        }
+        handles.set(id, handle);
+
+        /** @type {any} */
+        const response = await handle.promise;
+
+        handles.delete(id);
 
         if (!response || isEndpointUnavailable(response) || response.error) {
-          patch(id, { status: 'failed', percent: 100 });
+          patch(id, { status: 'failed', stats: null });
 
-          if (response?.error?.code === 'INVALID_DATA') {
+          const code = errorCode(response);
+
+          if (code === 'INVALID_DATA') {
             addError('pages.servers.plugins.upload.invalid-type');
+          } else if (isUploadFailureCode(code)) {
+            const message = await describeUploadFailure(response, uploadId);
+
+            addError('pages.servers.plugins.upload.failed-reason', {
+              name: file.name,
+              reason: $_(message.key, { values: message.values }),
+            });
           } else if (response?.error) {
-            addServerError(errorCode(response), response);
+            addServerError(code, response);
           } else if (response && isEndpointUnavailable(response)) {
             addError('pages.servers.errors.unavailable');
           } else {
@@ -297,7 +322,7 @@
           continue;
         }
 
-        patch(id, { status: 'done', percent: 100 });
+        patch(id, { status: 'done', stats: null });
         uploaded++;
 
         void showSuccess('pages.servers.plugins.upload.done', {

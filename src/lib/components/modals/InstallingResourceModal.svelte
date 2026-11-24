@@ -48,7 +48,7 @@
           </div>
         </div>
 
-        <p class="small mb-0" in:fade out:fade>
+        <div class="small mb-0" in:fade out:fade>
           {#if $installError}
             <span class="text-danger">
               {#if $installIncompatible}
@@ -80,11 +80,16 @@
             </span>
           {:else if !isFinished($installingStep)}
             {$_($processes[$installingStep - 1])}
+            {#if $uploadStats}
+              <div class="mt-2">
+                <UploadProgress stats={$uploadStats} oncancel={cancelUpload} />
+              </div>
+            {/if}
             <DownloadStats stats={$downloadStats} />
           {:else}
             🎉 {$_('components.modals.installing-resource.install-complete')}
           {/if}
-        </p>
+        </div>
       </div>
       {#if isFinished($installingStep) || $installError}
         <div class="modal-footer flex-nowrap">
@@ -122,6 +127,7 @@
   import { base } from '@panomc/sdk/core/js/basePath.js';
 
   import ApiUtil from '$lib/api.util';
+  import { sendUpload, UPLOAD_CANCELLED } from '$lib/upload.util.js';
 
   import { showError as showErrorToast } from '$lib/components/ToastContainer.svelte';
   import { show as showInstallResourceModal } from '$lib/components/modals/InstallResourceModal.svelte';
@@ -136,6 +142,10 @@
   /** Size, speed and time left of the download step, null outside it. */
   const downloadStats = writable(null);
   const downloadTracker = createDownloadTracker();
+  /** Size, speed and time left of the upload step, null outside it. */
+  const uploadStats = writable(null);
+  /** @type {{ abort: () => void } | null} */
+  let uploadHandle = null;
   const installError = writable();
   /** Set when install failed on license check ([LicenseDeniedReason.publicId]). */
   const installLicenseDeniedReason = writable(null);
@@ -234,13 +244,29 @@
 
     body.append('file', file);
 
-    const uploadResponse = await ApiUtil.put({
+    uploadHandle = sendUpload({
+      method: 'PUT',
       path: `/panel/install/upload`,
       body,
-      onUploadProgress: (progress) => {
-        currentProgress.set(progress);
+      size: file.size,
+      onprogress: (stats) => {
+        uploadStats.set(stats);
+        currentProgress.set(stats.percent / 100);
       },
     });
+
+    const uploadResponse = await uploadHandle.promise;
+
+    uploadHandle = null;
+    uploadStats.set(null);
+
+    // Cancelled by the admin: nothing to explain, the modal just goes.
+    if (errorCode(uploadResponse) === UPLOAD_CANCELLED) {
+      installing = false;
+      hide({ force: true });
+
+      return null;
+    }
 
     if (uploadResponse.error) {
       installLicenseDeniedReason.set(null);
@@ -259,6 +285,10 @@
     installingStep.set(get(installingStep) + 1);
 
     return uploadResponse.data.fileName;
+  }
+
+  function cancelUpload() {
+    uploadHandle?.abort();
   }
 
   function delay(time) {
@@ -353,6 +383,7 @@
     installingStep.set(1);
     currentProgress.set(0);
     downloadStats.set(null);
+    uploadStats.set(null);
     downloadTracker.reset();
     versionId.set(newVersionId);
     installError.set(null);
@@ -416,6 +447,7 @@
 <script>
   import { _ } from 'svelte-i18n';
   import DownloadStats from '$lib/components/DownloadStats.svelte';
+  import UploadProgress from '$lib/components/UploadProgress.svelte';
   import { websiteDisplayHost } from '$lib/website-display.util.js';
   import { fade } from 'svelte/transition';
 

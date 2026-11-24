@@ -580,7 +580,11 @@
   </div>
 </BsModal>
 
-<RestorePanoBackupModal bind:this={restoreModal} onsubmit={submitRestore} />
+<RestorePanoBackupModal
+  bind:this={restoreModal}
+  onsubmit={submitRestore}
+  uploadStats={restoreUploadStats}
+  oncancelupload={restoreUploadHandle ? () => restoreUploadHandle?.abort() : null} />
 <RestoreServerBackupModal
   bind:this={restoreServerModal}
   passphraseSet={remote.passphraseSet}
@@ -644,6 +648,9 @@
   import { _ } from 'svelte-i18n';
 
   import { formatBytes } from '$lib/string.util.js';
+  import { errorCode } from '$lib/apiError.util.js';
+  import { sendUpload, UPLOAD_CANCELLED } from '$lib/upload.util.js';
+  import { uploadErrorMessage } from '$lib/transfers.util.js';
   import { fetchServersList } from '$lib/servers.util.js';
   import { describeBackupError as describeError } from '$lib/pano-backup-error.js';
   import {
@@ -821,6 +828,11 @@
   let remoteLoading = $state(false);
   /** @type {{ kind: 'local' | 'remote' | 'snapshot', backup: any } | null} */
   let restoreTarget = $state(null);
+  /** The restore archive going up: its numbers and the request, for Cancel. */
+  /** @type {import('$lib/upload.util.js').UploadStats | null} */
+  let restoreUploadStats = $state(null);
+  /** @type {{ abort: () => void } | null} */
+  let restoreUploadHandle = $state.raw(null);
 
   const running = $derived(isJobRunning(job));
   const restoring = $derived(isRunningRestore(job));
@@ -1072,7 +1084,27 @@
       form.append('passphrase', input.passphrase);
       form.append('file', input.file);
 
-      return startJob(ApiUtil.post({ path: '/panel/pano-backups/restore', body: form }));
+      const handle = sendUpload({
+        path: '/panel/pano-backups/restore',
+        body: form,
+        size: input.file.size,
+        onprogress: (stats) => (restoreUploadStats = stats),
+      });
+
+      restoreUploadHandle = handle;
+
+      try {
+        const body = await handle.promise;
+
+        if (errorCode(body) === UPLOAD_CANCELLED) {
+          return { ...uploadErrorMessage(UPLOAD_CANCELLED), code: UPLOAD_CANCELLED };
+        }
+
+        return await startJob(Promise.resolve(body));
+      } finally {
+        restoreUploadHandle = null;
+        restoreUploadStats = null;
+      }
     }
 
     const target = restoreTarget;

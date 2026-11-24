@@ -974,7 +974,8 @@
           "workload-key": "Bu, örnek anahtarıyla şifrelenmiş bir Pano Host yedeği. Bunun yerine {website} üzerinden dışa aktarma olarak indirin.",
           "passphrase-saved-hint": "Kayıtlı parolayı kullanmak için boş bırakın.",
           "confirm": "Bu Pano'nun mevcut verilerinin değiştirileceğini anlıyorum.",
-          "submit": "Geri Yükle"
+          "submit": "Geri Yükle",
+          "uploading": "Yedek yükleniyor"
         },
         "transfer": {
           "title": "Pano Host'a Aktar",
@@ -1737,13 +1738,13 @@
           "title": "Eklenti Yükle",
           "drop": ".jar dosyalarını buraya bırak ya da seçmek için tıkla",
           "invalid-type": "Buraya sadece .jar dosyaları yüklenebilir.",
-          "too-large": "{name} 256 MB'tan büyük.",
           "done": "{name} yüklendi.",
           "failed": "{name} yüklenemedi.",
           "status-pending": "Bekliyor",
           "status-uploading": "Yükleniyor",
           "status-done": "Yüklendi",
-          "status-failed": "Başarısız"
+          "status-failed": "Başarısız",
+          "failed-reason": "{name} yüklenemedi: {reason}"
         }
       },
       "files": {
@@ -4368,7 +4369,7 @@
         "source-folder-title": "Düğümdeki Mevcut Klasör",
         "source-folder-description": "Düğümde zaten duran bir sunucu klasörünü devral. Hiçbir şey yeniden kurulmaz.",
         "source-upload-title": "Mevcut Sunucuyu Yükle",
-        "source-upload-description": "Başka bir yerde çalıştırdığın sunucunun zip dosyasını yükle.",
+        "source-upload-description": "Başka bir yerde çalıştırdığın sunucunun arşivini yükle (zip, tar.gz, 7z, rar ve diğerleri).",
         "source-modpack-title": "Modpack",
         "source-modpack-description": "Bir paket dosyasından sunucu tarafı modpack kur.",
         "coming-later": "Pano’nun ileriki bir sürümünde gelecek.",
@@ -4416,12 +4417,8 @@
           "step-modpack": "Modpack",
           "folder-invalid": "Mutlak bir yol gir, örneğin /home/minecraft/survival.",
           "folder-copy-note": "Klasör kopyalanır, taşınmaz — orijinali olduğu yerde kalır.",
-          "upload-drop": "Bir .zip Dosyasını Buraya Bırak veya Tıkla ve Seç",
-          "upload-limit": "En fazla 1 GB. Yükleme 30 dakika boyunca kullanılabilir.",
-          "upload-progress": "Arşiv Yükleniyor",
-          "upload-expires": "önümüzdeki 30 dakika boyunca içe aktarılabilir",
-          "upload-too-large": "Bu arşiv 1 GB'tan büyük.",
-          "upload-wrong-type": "Yalnızca .zip arşivleri içe aktarılabilir.",
+          "upload-drop": "Bir Arşivi Buraya Bırak veya Tıkla ve Seç",
+          "upload-wrong-type": "Yalnızca şu arşivler içe aktarılabilir: zip, tar, tar.gz, tar.bz2, tar.xz, gz, 7z, rar.",
           "upload-unavailable": "Pano'nun bu sürümü henüz sunucu yüklemesi kabul edemiyor.",
           "modpack-search-placeholder": "Modrinth'de Ara",
           "modpack-search-failed": "Modpack araması başarısız oldu. İşlem daha sonra yeniden denenmeli.",
@@ -4430,7 +4427,13 @@
           "modpack-no-versions": "Bu modpack'in Pano'nun sunucuya kurabileceği bir sürümü yok.",
           "will-be-detected": "otomatik algılanacak",
           "review-archive": "Arşiv",
-          "review-modpack": "Modpack"
+          "review-modpack": "Modpack",
+          "upload-hint": "zip, tar, tar.gz, tar.bz2, tar.xz, gz, 7z, rar. Sunucuyu oluşturduğunda yüklenir.",
+          "upload-on-create": "sunucuyu oluşturduğunda yüklenecek",
+          "upload-unknown-format": "{name}, Pano'nun içe aktarabileceği bir arşiv değil. Şunlardan birini kullan: zip, tar, tar.gz, tar.bz2, tar.xz, gz, 7z, rar.",
+          "phase-upload-extract": "Yükleniyor ve açılıyor",
+          "phase-extract": "Açılıyor",
+          "upload-failed-removed": "Sunucu yeniden kaldırıldı. Bir şeyi değiştirmek için geri dön ya da tekrar denemek için Sunucu Oluştur’a bas."
         },
         "source-in-place-title": "Var Olan Klasör, Yerinde Çalıştır",
         "source-in-place-description": "Düğüm, makinesinde zaten bulunan bir sunucu klasörünü olduğu yerden çalıştırır. Hiçbir şey kopyalanmaz ya da taşınmaz.",
@@ -5015,6 +5018,26 @@
     },
     "installing-resource": {
       "installing-leave-alert": "Bir kurulum devam ediyor, bu sayfadan ayrılmak bazı özelliklerin bozulmasına yol açabilir!"
+    },
+    "upload-progress": {
+      "uploading": "Yükleniyor",
+      "cancel": "İptal",
+      "speed": "{speed}/sn",
+      "calculating": "hesaplanıyor…",
+      "seconds-left": "{seconds} sn kaldı",
+      "minutes-left": "{minutes} dk {seconds} sn kaldı",
+      "hours-left": "{hours} sa {minutes} dk kaldı",
+      "errors": {
+        "not-enough-space": "Yeterli disk alanı yok: {required} gerekli, {free} boş.",
+        "not-enough-space-plain": "Düğümde yeterli disk alanı yok.",
+        "cancelled": "Yükleme iptal edildi.",
+        "transfer-failed": "Düğüm dosyayı yazamadı.",
+        "unsupported-archive": "Bu arşiv biçimi desteklenmiyor.",
+        "rar-unavailable": "Düğüm RAR arşivlerini açamıyor.",
+        "corrupt-archive": "Arşiv bozuk, açılamadı.",
+        "interrupted": "Yükleme yarıda kesildi.",
+        "generic": "Yükleme başarısız oldu ({error})."
+      }
     }
   },
   "page-error": {

@@ -972,7 +972,8 @@
           "workload-key": "Это копия Pano Host, зашифрованная ключом экземпляра. Вместо этого скачайте её как экспорт на {website}.",
           "passphrase-saved-hint": "Оставьте пустым, чтобы использовать сохранённый пароль.",
           "confirm": "Я понимаю, что текущие данные этого Pano будут заменены.",
-          "submit": "Восстановить"
+          "submit": "Восстановить",
+          "uploading": "Загрузка резервной копии"
         },
         "transfer": {
           "title": "Перенести в Pano Host",
@@ -1737,13 +1738,13 @@
           "title": "Загрузка плагинов",
           "drop": "Перетащите .jar-файлы сюда или нажмите, чтобы выбрать",
           "invalid-type": "Сюда можно загружать только .jar-файлы.",
-          "too-large": "{name} больше 256 МБ.",
           "done": "{name} загружен.",
           "failed": "Не удалось загрузить {name}.",
           "status-pending": "Ожидает",
           "status-uploading": "Загрузка",
           "status-done": "Загружено",
-          "status-failed": "Ошибка"
+          "status-failed": "Ошибка",
+          "failed-reason": "Не удалось загрузить {name}: {reason}"
         }
       },
       "files": {
@@ -4368,7 +4369,7 @@
         "source-folder-title": "Существующая папка на узле",
         "source-folder-description": "Взять под управление папку сервера, которая уже лежит на узле. Ничего не переустанавливается.",
         "source-upload-title": "Загрузить существующий сервер",
-        "source-upload-description": "Загрузите zip-архив сервера, который у вас уже работает.",
+        "source-upload-description": "Загрузите архив сервера, который у вас уже работает (zip, tar.gz, 7z, rar и другие).",
         "source-modpack-title": "Модпак",
         "source-modpack-description": "Установить серверную часть модпака из файла сборки.",
         "coming-later": "Появится в одной из следующих версий Pano.",
@@ -4416,12 +4417,8 @@
           "step-modpack": "Модпак",
           "folder-invalid": "Укажите абсолютный путь, например /home/minecraft/survival.",
           "folder-copy-note": "Папка копируется, а не переносится — оригинал остаётся на месте.",
-          "upload-drop": "Перетащите сюда .zip или нажмите, чтобы выбрать",
-          "upload-limit": "До 1 ГБ. Загрузка действительна 30 минут.",
-          "upload-progress": "Загрузка архива",
-          "upload-expires": "доступно для импорта ещё 30 минут",
-          "upload-too-large": "Этот архив больше 1 ГБ.",
-          "upload-wrong-type": "Импортировать можно только архивы .zip.",
+          "upload-drop": "Перетащите сюда архив или нажмите, чтобы выбрать",
+          "upload-wrong-type": "Импортировать можно только такие архивы: zip, tar, tar.gz, tar.bz2, tar.xz, gz, 7z, rar.",
           "upload-unavailable": "Эта сборка Pano пока не принимает загрузку серверов.",
           "modpack-search-placeholder": "Поиск в Modrinth",
           "modpack-search-failed": "Поиск модпаков не удался. Попробуйте ещё раз.",
@@ -4430,7 +4427,13 @@
           "modpack-no-versions": "У этого модпака нет версии, которую Pano может установить на сервер.",
           "will-be-detected": "определится автоматически",
           "review-archive": "Архив",
-          "review-modpack": "Модпак"
+          "review-modpack": "Модпак",
+          "upload-hint": "zip, tar, tar.gz, tar.bz2, tar.xz, gz, 7z, rar. Архив загрузится, когда вы создадите сервер.",
+          "upload-on-create": "загрузится при создании сервера",
+          "upload-unknown-format": "{name} — не архив, который Pano может импортировать. Используйте один из форматов: zip, tar, tar.gz, tar.bz2, tar.xz, gz, 7z, rar.",
+          "phase-upload-extract": "Загрузка и распаковка",
+          "phase-extract": "Распаковка",
+          "upload-failed-removed": "Сервер снова удалён. Вернитесь, чтобы что-то изменить, или нажмите «Создать сервер», чтобы попробовать ещё раз."
         },
         "source-in-place-title": "Существующая папка, на месте",
         "source-in-place-description": "Узел запускает папку сервера, которая уже есть на его машине, прямо оттуда. Ничего не копируется и не перемещается.",
@@ -5015,6 +5018,26 @@
     },
     "installing-resource": {
       "installing-leave-alert": "Выполняется установка, уход с этой страницы может привести к поломке функций!"
+    },
+    "upload-progress": {
+      "uploading": "Загрузка",
+      "cancel": "Отмена",
+      "speed": "{speed}/с",
+      "calculating": "вычисляется…",
+      "seconds-left": "осталось {seconds} с",
+      "minutes-left": "осталось {minutes} мин {seconds} с",
+      "hours-left": "осталось {hours} ч {minutes} мин",
+      "errors": {
+        "not-enough-space": "Недостаточно места на диске: нужно {required}, свободно {free}.",
+        "not-enough-space-plain": "На узле недостаточно места на диске.",
+        "cancelled": "Загрузка отменена.",
+        "transfer-failed": "Узлу не удалось записать файл.",
+        "unsupported-archive": "Этот формат архива не поддерживается.",
+        "rar-unavailable": "Узел не умеет распаковывать архивы RAR.",
+        "corrupt-archive": "Архив повреждён, распаковать его не удалось.",
+        "interrupted": "Загрузка прервалась.",
+        "generic": "Загрузка не удалась ({error})."
+      }
     }
   },
   "page-error": {

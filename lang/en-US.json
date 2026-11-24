@@ -972,7 +972,8 @@
           "workload-key": "This is a Pano Host backup encrypted with the instance key. Download it as an export from {website} instead.",
           "passphrase-saved-hint": "Leave empty to use the saved passphrase.",
           "confirm": "I understand that the current data of this Pano will be replaced.",
-          "submit": "Restore"
+          "submit": "Restore",
+          "uploading": "Uploading the backup"
         },
         "transfer": {
           "title": "Transfer to Pano Host",
@@ -1737,13 +1738,13 @@
           "title": "Upload Plugins",
           "drop": "Drop .jar files here or click to choose",
           "invalid-type": "Only .jar files can be uploaded here.",
-          "too-large": "{name} is larger than 256 MB.",
           "done": "Uploaded {name}.",
           "failed": "{name} could not be uploaded.",
           "status-pending": "Waiting",
           "status-uploading": "Uploading",
           "status-done": "Uploaded",
-          "status-failed": "Failed"
+          "status-failed": "Failed",
+          "failed-reason": "{name} could not be uploaded: {reason}"
         }
       },
       "files": {
@@ -4368,7 +4369,7 @@
         "source-folder-title": "Existing Folder on the Node",
         "source-folder-description": "Adopt a server directory that is already on the node. Nothing is reinstalled.",
         "source-upload-title": "Upload an Existing Server",
-        "source-upload-description": "Upload a zip of a server you already run somewhere else.",
+        "source-upload-description": "Upload the archive of a server you already run somewhere else (zip, tar.gz, 7z, rar and more).",
         "source-modpack-title": "Modpack",
         "source-modpack-description": "Install a modpack server-side from a pack file.",
         "coming-later": "Coming in a later Pano release.",
@@ -4416,12 +4417,8 @@
           "step-modpack": "Modpack",
           "folder-invalid": "Give an absolute path, for example /home/minecraft/survival.",
           "folder-copy-note": "The folder is copied, never moved — the original stays exactly where it is.",
-          "upload-drop": "Drop a .zip Here, or Click to Choose One",
-          "upload-limit": "Up to 1 GB. The upload stays usable for 30 minutes.",
-          "upload-progress": "Uploading the Archive",
-          "upload-expires": "ready to import for the next 30 minutes",
-          "upload-too-large": "That archive is larger than 1 GB.",
-          "upload-wrong-type": "Only .zip archives can be imported.",
+          "upload-drop": "Drop an Archive Here, or Click to Choose One",
+          "upload-wrong-type": "Only these archives can be imported: zip, tar, tar.gz, tar.bz2, tar.xz, gz, 7z, rar.",
           "upload-unavailable": "This build of Pano cannot accept server uploads yet.",
           "modpack-search-placeholder": "Search Modrinth",
           "modpack-search-failed": "The modpack search failed. Try again in a moment.",
@@ -4430,7 +4427,13 @@
           "modpack-no-versions": "This modpack has no version Pano can install on a server.",
           "will-be-detected": "detected automatically",
           "review-archive": "Archive",
-          "review-modpack": "Modpack"
+          "review-modpack": "Modpack",
+          "upload-hint": "zip, tar, tar.gz, tar.bz2, tar.xz, gz, 7z, rar. It is uploaded when you create the server.",
+          "upload-on-create": "uploaded when you create the server",
+          "upload-unknown-format": "{name} is not an archive Pano can import. Use one of: zip, tar, tar.gz, tar.bz2, tar.xz, gz, 7z, rar.",
+          "phase-upload-extract": "Uploading and extracting",
+          "phase-extract": "Extracting",
+          "upload-failed-removed": "The server was removed again. Go back to change something, or press Create to try again."
         },
         "source-in-place-title": "Existing Folder, Run in Place",
         "source-in-place-description": "The node runs a server folder that is already on its machine, from where it is. Nothing is copied or moved.",
@@ -5015,6 +5018,26 @@
     },
     "installing-resource": {
       "installing-leave-alert": "An installation is in progress, leaving this page may result in broken features!"
+    },
+    "upload-progress": {
+      "uploading": "Uploading",
+      "cancel": "Cancel",
+      "speed": "{speed}/s",
+      "calculating": "calculating…",
+      "seconds-left": "{seconds} s left",
+      "minutes-left": "{minutes} min {seconds} s left",
+      "hours-left": "{hours} h {minutes} min left",
+      "errors": {
+        "not-enough-space": "Not enough disk space: {required} needed, {free} free.",
+        "not-enough-space-plain": "Not enough disk space on the node.",
+        "cancelled": "The upload was cancelled.",
+        "transfer-failed": "The node could not write the file.",
+        "unsupported-archive": "This archive format is not supported.",
+        "rar-unavailable": "The node cannot extract RAR archives.",
+        "corrupt-archive": "The archive is damaged and could not be extracted.",
+        "interrupted": "The upload was interrupted.",
+        "generic": "The upload failed ({error})."
+      }
     }
   },
   "page-error": {

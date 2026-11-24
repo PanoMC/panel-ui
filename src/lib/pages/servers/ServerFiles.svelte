@@ -54,10 +54,6 @@
     max-width: 250px;
   }
 
-  .upload-progress {
-    height: 4px;
-  }
-
   .sort-button {
     background: none;
     border: 0;
@@ -121,19 +117,19 @@
               {:else if upload.status === 'queued'}
                 <span class="badge text-bg-secondary"
                   >{$_('pages.servers.files.upload-queued')}</span>
-              {:else}
-                <span class="font-monospace">{upload.percent}%</span>
               {/if}
             </div>
-            {#if upload.status === 'uploading'}
-              <div
-                class="progress upload-progress mt-1"
-                role="progressbar"
-                aria-label={upload.name}
-                aria-valuenow={upload.percent}
-                aria-valuemin="0"
-                aria-valuemax="100">
-                <div class="progress-bar" style="width: {upload.percent}%;"></div>
+            {#if upload.status === 'uploading' && upload.stats}
+              <div class="mt-1">
+                <UploadProgress
+                  compact
+                  stats={upload.stats}
+                  label={upload.name}
+                  oncancel={() => cancelUpload(upload.id)} />
+              </div>
+            {:else if upload.status === 'failed' && upload.error}
+              <div class="small text-danger mt-1">
+                {$_(upload.error.key, { values: upload.error.values })}
               </div>
             {/if}
           </li>
@@ -722,6 +718,14 @@
   import { page } from '@panomc/sdk/core/js/appStores.js';
 
   import ApiUtil from '$lib/api.util.js';
+  import { errorCode } from '$lib/apiError.util.js';
+  import { newUploadId, sendUpload, UPLOAD_CANCELLED } from '$lib/upload.util.js';
+  import {
+    checkTransferSpace,
+    describeUploadFailure,
+    isUploadFailureCode,
+  } from '$lib/transfers.util.js';
+  import UploadProgress from '$lib/components/UploadProgress.svelte';
   import tooltip from '$lib/tooltip.util';
   import {
     defaultExtractName,
@@ -828,7 +832,7 @@
   /** @type {{ focus: () => void } | undefined} */
   let searchInput = $state();
   let pathInput = $state('');
-  /** @type {Array<{ id: number, name: string, percent: number, status: string }>} */
+  /** @type {Array<{ id: number, name: string, stats: import('$lib/upload.util.js').UploadStats | null, error: import('$lib/transfers.util.js').UploadMessage | null, status: string }>} */
   let uploads = $state([]);
   let previewModal = $state();
   let dropZone = $state();
@@ -1420,6 +1424,9 @@
   /** What each row uploads; kept beside the list so the files themselves stay out of state. A row
    *  keeps its job until it is done, so one that failed can be sent again. */
   const uploadJobs = new Map();
+  /** The running request of each row, so its Cancel can stop it. */
+  /** @type {Map<number, { abort: () => void }>} */
+  const uploadHandles = new Map();
   let uploadWorkers = 0;
 
   /** How many files go up at the same time. */
@@ -1555,6 +1562,19 @@
       }
     }
 
+    // The whole drop has to fit on the node, or none of it starts.
+    const dropSize = items.reduce((sum, { file }) => sum + (file ? file.size : 0), 0);
+
+    if (dropSize > 0) {
+      const space = await checkTransferSpace({ serverId, size: dropSize });
+
+      if (space) {
+        void showError(space.key, space.values);
+
+        return;
+      }
+    }
+
     const queued = [];
 
     for (const { file, dir } of items) {
@@ -1565,7 +1585,8 @@
       queued.push({
         id,
         name: file ? joinPath(target, file.name) : target + '/',
-        percent: 0,
+        stats: null,
+        error: null,
         status: 'queued',
       });
     }
@@ -1614,7 +1635,7 @@
           break;
         }
 
-        patchUpload(next.id, { status: 'uploading', percent: 0 });
+        patchUpload(next.id, { status: 'uploading', stats: null, error: null });
 
         const job = uploadJobs.get(next.id);
         const failed = job ? await uploadOne(next.id, job) : true;
@@ -1623,7 +1644,7 @@
           uploadJobs.delete(next.id);
         }
 
-        patchUpload(next.id, { status: failed ? 'failed' : 'done', percent: 100 });
+        patchUpload(next.id, { status: failed ? 'failed' : 'done', stats: null });
       }
     } finally {
       uploadWorkers -= 1;
@@ -1638,6 +1659,7 @@
   async function uploadOne(id, { file, target, serverId: jobServerId }) {
     /** @type {any} */
     let response = null;
+    let uploadId = '';
 
     // Many small files go out faster than the request budget refills. A refusal for that reason is
     // not a failure: the same file waits for the time Pano names and goes again.
@@ -1648,14 +1670,18 @@
 
           form.append('file', file, file.name);
 
-          response = await ApiUtil.post({
-            path: `/panel/servers/${jobServerId}/files/upload?path=${encodeURIComponent(target)}`,
+          uploadId = newUploadId();
+
+          const handle = sendUpload({
+            path: `/panel/servers/${jobServerId}/files/upload?path=${encodeURIComponent(target)}&uploadId=${encodeURIComponent(uploadId)}`,
             body: form,
-            onUploadProgress: (progress) => {
-              patchUpload(id, { percent: Math.min(100, Math.round(Number(progress) * 100)) });
-            },
-            handler: (result) => result,
+            size: file.size,
+            onprogress: (stats) => patchUpload(id, { stats }),
           });
+
+          uploadHandles.set(id, handle);
+          response = await handle.promise;
+          uploadHandles.delete(id);
         } else {
           // A folder with nothing in it: there is no file to carry it over, so it is made.
           response = await ApiUtil.post({
@@ -1680,7 +1706,7 @@
 
       const seconds = Number(response.error.details?.retryAfter) || 1;
 
-      patchUpload(id, { percent: 0 });
+      patchUpload(id, { stats: null });
 
       await new Promise((resolve) =>
         setTimeout(resolve, Math.min(Math.max(seconds, 1), 60) * 1000 + 500),
@@ -1688,6 +1714,21 @@
     }
 
     if (!response || isEndpointUnavailable(response) || response.error) {
+      const code = errorCode(response);
+
+      // The transfer itself broke: the row says why (the disk is full, the upload was cancelled, …).
+      if (isUploadFailureCode(code)) {
+        const message = await describeUploadFailure(response, uploadId);
+
+        patchUpload(id, { error: message });
+
+        if (code !== UPLOAD_CANCELLED && !uploads.some((upload) => upload.status === 'failed')) {
+          void showError(message.key, message.values);
+        }
+
+        return true;
+      }
+
       // One toast for the first failure of a run, not one per file: the list names every one.
       if (!uploads.some((upload) => upload.status === 'failed')) {
         if (response?.error) {
@@ -1714,11 +1755,20 @@
   function retryFailedUploads() {
     uploads = uploads.map((upload) =>
       upload.status === 'failed' && uploadJobs.has(upload.id)
-        ? { ...upload, status: 'queued', percent: 0 }
+        ? { ...upload, status: 'queued', stats: null, error: null }
         : upload,
     );
 
     void drainUploads();
+  }
+
+  /**
+   * Stops one file that is going up; it stays in the list as failed, so it can be sent again.
+   *
+   * @param {number} id
+   */
+  function cancelUpload(id) {
+    uploadHandles.get(id)?.abort();
   }
 
   /** Drops what has not started yet; the files that are going up finish. */
