@@ -190,7 +190,7 @@
             class="btn btn-link btn-sm text-decoration-none"
             onclick={() => (isPreview = !isPreview)}>
             <i class="fas fa-eye"></i>
-            {isPreview ? 'Edit' : 'Preview'}
+            {isPreview ? $_('buttons.edit') : $_('components.editor.preview')}
           </button>
         {/if}
 
@@ -199,7 +199,7 @@
             class="btn btn-link btn-sm text-decoration-none"
             onclick={() => (isHtmlView = !isHtmlView)}>
             <i class="fas fa-code"></i>
-            {isHtmlView ? 'Rich Text' : 'HTML'}
+            {isHtmlView ? $_('components.editor.rich-text') : 'HTML'}
           </button>
         {/if}
       </div>

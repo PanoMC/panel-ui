@@ -74,7 +74,7 @@
                       <img
                         src="{PANO_WEBSITE_API_URL}/resources/{$versionInfoObj.version
                           .resourceId}/icon?preview=true"
-                        alt="Icon"
+                        alt=""
                         width="64"
                         height="64"
                         class="object-fit-contain w-100 h-100 p-1"
@@ -90,7 +90,7 @@
                         src="{PANO_WEBSITE_API_URL}/resources/{$versionInfoObj.version
                           .resourceId}/screenshots/{$versionInfoObj.version
                           .screenshots[0]}?preview=true"
-                        alt="Screenshot"
+                        alt={$_('pages.theme-detail.screenshot')}
                         width="64"
                         height="64"
                         class="object-fit-cover w-100 h-100"

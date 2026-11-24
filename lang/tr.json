@@ -835,7 +835,8 @@
             "JAR_UNAVAILABLE": "Eklenti derlemesi yok"
           }
         },
-        "incompatible-version": "Pano sürümü uyumsuz"
+        "incompatible-version": "Pano sürümü uyumsuz",
+        "last-check": "Son kontrol"
       },
       "backups": {
         "title": "Yedekler",
@@ -4093,7 +4094,8 @@
         "6-months": "6 Ay",
         "1-year": "1 Yıl",
         "scope-pano": "Bu işlem {username} adlı Pano hesabını yasaklar: siteden çıkış yaptırılır, ban entegrasyonu açık her sunucu onu atar ve ban bitene kadar girişine izin vermez.",
-        "scope-server": "{username} adlı oyuncunun Pano hesabı yok, bu yüzden sadece bu sunucunun kendi ban listesine eklenir. Diğer sunucular etkilenmez ve bitiş tarihi yoktur."
+        "scope-server": "{username} adlı oyuncunun Pano hesabı yok, bu yüzden sadece bu sunucunun kendi ban listesine eklenir. Diğer sunucular etkilenmez ve bitiş tarihi yoktur.",
+        "duration-options": "Yasaklama süresi seçenekleri"
       },
       "confirm-ban-ip": {
         "title": "IP Yasakla",
@@ -4101,7 +4103,8 @@
         "find-player": "Kullanıcı Bul (Kayıt IP)",
         "toast-banned": "{ip} IP adresi yasaklandı.",
         "toast-no-registered-ip": "Bu kullanıcının kullanılacak bir kayıt IP adresi yok.",
-        "toast-ip-required": "Bir IP girin veya bir kullanıcı seçin."
+        "toast-ip-required": "Bir IP girin veya bir kullanıcı seçin.",
+        "duration-options": "IP yasaklama süresi seçenekleri"
       },
       "confirm-close-ticket": {
         "title-single": "Bu talep kapatılsın mı?",
@@ -4775,7 +4778,9 @@
       "image": "Resim",
       "link": "Bağlantı",
       "text-color": "Yazı Rengi",
-      "remove-text-color": "Yazı Rengini Kaldır"
+      "remove-text-color": "Yazı Rengini Kaldır",
+      "preview": "Önizleme",
+      "rich-text": "Zengin Metin"
     },
     "no-content": {
       "here-is-empty": "Burası boş."

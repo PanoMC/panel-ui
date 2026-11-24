@@ -72,7 +72,10 @@
 
           <div class="text-start">
             <h6 class="mb-2">{$_('components.modals.confirm-ban-player.ban-duration')}</h6>
-            <div class="btn-group w-100" role="group" aria-label="IP ban duration options">
+            <div
+              class="btn-group w-100"
+              role="group"
+              aria-label={$_('components.modals.confirm-ban-ip.duration-options')}>
               <input
                 type="radio"
                 class="btn-check"

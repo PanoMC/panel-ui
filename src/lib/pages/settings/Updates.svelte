@@ -16,7 +16,9 @@
 <!-- Action Menu -->
 <PageActions middleClasses="d-lg-flex d-none">
   <div slot="left">
-    <span class="small text-body-secondary" use:tooltip={['Last Check', { placement: 'bottom' }]}>
+    <span
+      class="small text-body-secondary"
+      use:tooltip={[$_('pages.settings.updates.last-check'), { placement: 'bottom' }]}>
       {#if data.lastCheckedAt}
         <DateTime time={data.lastCheckedAt.value} relativeFormat={true} tooltip={false} />
       {:else}

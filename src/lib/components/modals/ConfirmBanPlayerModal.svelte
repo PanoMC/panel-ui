@@ -74,7 +74,10 @@
             <h6 class="mb-2">{$_('components.modals.confirm-ban-player.ban-duration')}</h6>
 
             <!-- Button Group for Ban Duration -->
-            <div class="btn-group w-100" role="group" aria-label="Ban duration options">
+            <div
+              class="btn-group w-100"
+              role="group"
+              aria-label={$_('components.modals.confirm-ban-player.duration-options')}>
               <!-- Permanent Ban -->
               <input
                 type="radio"

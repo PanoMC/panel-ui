@@ -87,7 +87,7 @@
       </div>
 
       <div class="tab-pane" id="other" role="tabpanel" aria-labelledby="other-tab">
-        <NoContent text="Not available yet." />
+        <NoContent text={$_('pages.migration.not-available')} />
       </div>
     </div>
   </div>

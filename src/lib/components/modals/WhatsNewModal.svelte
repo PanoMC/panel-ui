@@ -35,7 +35,7 @@
         <button
           type="button"
           class="btn-close position-absolute top-0 end-0 m-3"
-          aria-label="Close"
+          aria-label={$_('buttons.close')}
           on:click={handleClose}></button>
         <img
           src="{base}/assets/img/pano-logo-heorizontal.png"

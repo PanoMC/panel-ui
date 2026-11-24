@@ -14,7 +14,11 @@
     </div>
   {/if}
   <div class="d-flex align-items-center justify-content-center" style="height: 500px;">
-    <div class="spinner-border text-primary" role="status" aria-label="Loading"></div>
+    <div
+      class="spinner-border text-primary"
+      role="status"
+      aria-label={$_('components.store-loading.loading')}>
+    </div>
   </div>
 {/if}
 
