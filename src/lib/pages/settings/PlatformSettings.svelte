@@ -1121,9 +1121,12 @@
               id="port"
               bind:value={data.email.starttls}
               disabled={smtpDisabled || hostMailLocked}>
-              <option value="REQUIRED">REQUIRED</option>
-              <option value="OPTIONAL">OPTIONAL</option>
-              <option value="DISABLED">DISABLED</option>
+              <option value="REQUIRED"
+                >{$_('pages.settings.platform.smtp.starttls.REQUIRED')}</option>
+              <option value="OPTIONAL"
+                >{$_('pages.settings.platform.smtp.starttls.OPTIONAL')}</option>
+              <option value="DISABLED"
+                >{$_('pages.settings.platform.smtp.starttls.DISABLED')}</option>
             </select>
           </div>
         </div>

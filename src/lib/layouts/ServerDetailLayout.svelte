@@ -159,7 +159,10 @@
               {#if iconUploading}
                 <span class="spinner-border spinner-border-sm"></span>
               {:else}
-                <i class="fa-solid fa-pen" title={$_('edit')} aria-label={$_('edit')}></i>
+                <i
+                  class="fa-solid fa-pen"
+                  title={$_('buttons.edit')}
+                  aria-label={$_('buttons.edit')}></i>
               {/if}
             </span>
           </DragAndDropZone>

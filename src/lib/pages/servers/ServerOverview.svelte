@@ -1166,7 +1166,7 @@
   // The process start on the node for a managed server, the plugin's reported boot time for a
   // linked one; counted up every second while the server is up.
   $: uptimeStart = Number(view?.processStartedAt) || Number(view?.startTime) || 0;
-  $: uptimeText = describeUptime(uptimeStart, isServerOnline(view), uptimeNow);
+  $: uptimeText = ($_, describeUptime(uptimeStart, isServerOnline(view), uptimeNow));
 
   // L13 — `status` is the plugin socket, so a managed server can be RUNNING with it OFFLINE:
   // Vanilla, a server the plugin could not be installed on, or a Java too old for it. A server
@@ -2162,14 +2162,18 @@
     const pad = (value) => String(value).padStart(2, '0');
 
     if (days > 0) {
-      return `${days}d ${hours}h`;
+      return $_('pages.servers.overview.uptime-days', { values: { days, hours } });
     }
 
     if (hours > 0) {
-      return `${hours}h ${pad(minutes)}m`;
+      return $_('pages.servers.overview.uptime-hours', {
+        values: { hours, minutes: pad(minutes) },
+      });
     }
 
-    return `${minutes}m ${pad(seconds)}s`;
+    return $_('pages.servers.overview.uptime-minutes', {
+      values: { minutes, seconds: pad(seconds) },
+    });
   }
 
   /**

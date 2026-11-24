@@ -664,7 +664,12 @@
           "confirm-switch-host-description": "Your custom SMTP settings are kept.",
           "confirm-switch-own-title": "Send e-mails with your custom SMTP from now on?",
           "confirm-switch-own-description": "Pano Host mail is no longer used for this website's e-mails.",
-          "sender-local-invalid": "Use letters, digits and . _ + - only (up to 64)."
+          "sender-local-invalid": "Use letters, digits and . _ + - only (up to 64).",
+          "starttls": {
+            "REQUIRED": "Required",
+            "OPTIONAL": "Optional",
+            "DISABLED": "Disabled"
+          }
         },
         "smtp-settings": "Email (SMTP)",
         "smtp-settings-sub": "How Pano sends e-mail: verification, password reset and notifications.",
@@ -1172,7 +1177,10 @@
           "contexts": "Contexts",
           "placeholder": "Enter permission...",
           "never": "Never",
-          "date": "Date"
+          "date": "Date",
+          "value-true": "Allow (true)",
+          "value-false": "Deny (false)",
+          "no-context": "none"
         }
       },
       "server-scope": {
@@ -1514,7 +1522,10 @@
         "plugin-java-too-old": "This server runs on an older Java, so the Pano plugin was not installed and the server is not linked: players, TPS and in-game features are unavailable. Pick Java 11 or newer under Settings → Startup and Pano installs the plugin and links the server.",
         "java-missing": "The last start failed: this node has no Java {major}, which this server needs.",
         "java-missing-action": "Download Java {major} And Start",
-        "java-missing-no-permission": "Ask someone who manages nodes to install Java {major}."
+        "java-missing-no-permission": "Ask someone who manages nodes to install Java {major}.",
+        "uptime-days": "{days}d {hours}h",
+        "uptime-hours": "{hours}h {minutes}m",
+        "uptime-minutes": "{minutes}m {seconds}s"
       },
       "capability": {
         "node-offline": "The node running this server is offline. {section} comes back when it reconnects.",
@@ -2635,7 +2646,10 @@
       "ban-source": "Source",
       "source-panel": "Panel",
       "source-migration": "Imported",
-      "source-server": "Server"
+      "source-server": "Server",
+      "unknown": "Unknown",
+      "unknown-browser": "Unknown browser",
+      "unknown-os": "Unknown OS"
     },
     "ip-bans": {
       "ip": "IP",
@@ -2649,7 +2663,7 @@
     "migration": {
       "server-title": "Server",
       "platforms-title": "Other",
-      "plugins-title": "Addons",
+      "plugins-title": "Plugins",
       "other-addons": "Other Addons",
       "not-available": "Not available.",
       "banned": "Banned",
@@ -3778,7 +3792,9 @@
       "in-game": "In Game",
       "in-website": "In Website",
       "online": "Online",
-      "offline": "Offline"
+      "offline": "Offline",
+      "online-in-game": "Online in game",
+      "online-in-website": "Online on the website"
     },
     "addon-status-badge": {
       "STARTED": "Started",
@@ -3791,7 +3807,7 @@
     "bottom": {
       "documentation": "Documentation",
       "website": "Website",
-      "github": "Github",
+      "github": "GitHub",
       "discord": "Discord"
     },
     "notification-container": {
@@ -4900,7 +4916,8 @@
       "maintenance-ban-removed": "IP ban removed.",
       "maintenance-page-reset": "The maintenance page was reset to the default design.",
       "smtp-disabled-success": "E-mail sending turned off.",
-      "smtp-enabled-success": "E-mail sending turned on."
+      "smtp-enabled-success": "E-mail sending turned on.",
+      "cant-remove-yourself": "You can't remove yourself."
     },
     "search-input": {
       "searching": "Searching..."

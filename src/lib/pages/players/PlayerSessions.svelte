@@ -32,7 +32,7 @@
               </td>
               <td class="align-middle">
                 <span use:tooltip={[session.userAgent]}>
-                  {parseUserAgent(session.userAgent)}
+                  {parseUserAgent(session.userAgent, $_)}
                 </span>
               </td>
               <td class="align-middle">

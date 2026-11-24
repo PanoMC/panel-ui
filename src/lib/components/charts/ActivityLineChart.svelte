@@ -163,6 +163,7 @@
       maxDate = to.getTime();
 
       displayFormats = { day: 'eee' };
+      tooltipFormat = 'PP';
     } else {
       // Start: 1 month ago at 00:00 (relative, not calendar-aligned)
       const from = startOfDay(subMonths(currentDate, 1));
@@ -173,6 +174,7 @@
       maxDate = to.getTime();
 
       displayFormats = { day: 'dd, eee' };
+      tooltipFormat = 'PP';
     }
   }
 
@@ -207,14 +209,10 @@
   }
 
   /**
-   * The date-fns locale for the axis labels — only in the year view, where they are month
-   * names. The week and month views keep the labels they have always had.
+   * The date-fns locale for the axis labels and the tooltip title: month and weekday names follow
+   * the panel language.
    */
   function chartLocale() {
-    if (period !== YEAR) {
-      return undefined;
-    }
-
     const code = get(currentLanguage)?.dateFnsCode;
 
     return (code && dateFnsLocales[code]) || undefined;

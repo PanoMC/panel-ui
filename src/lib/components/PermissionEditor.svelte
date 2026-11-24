@@ -63,8 +63,8 @@
                 class="form-select form-select-sm"
                 value={node.value}
                 on:change={(e) => updatePermissionNode(index, 'value', e.target.value === 'true')}>
-                <option value="true">true</option>
-                <option value="false">false</option>
+                <option value="true">{$_('pages.permissions.panel.editor.value-true')}</option>
+                <option value="false">{$_('pages.permissions.panel.editor.value-false')}</option>
               </select>
             </td>
 
@@ -89,7 +89,8 @@
 
             <!-- Contexts -->
             <td>
-              <span class="badge text-bg-primary">none</span>
+              <span class="badge text-bg-primary"
+                >{$_('pages.permissions.panel.editor.no-context')}</span>
             </td>
           </tr>
         {/each}

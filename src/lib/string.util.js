@@ -31,13 +31,13 @@ export function formatBytes(bytes, decimals = 2) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
 }
 
-export function parseUserAgent(userAgent) {
-  if (!userAgent || userAgent === '-') return 'Unknown';
+export function parseUserAgent(userAgent, t = (key) => key) {
+  if (!userAgent || userAgent === '-') return t('pages.player-detail.unknown');
 
   const ua = userAgent.toLowerCase();
 
   // Browser detection
-  let browser = 'Unknown Browser';
+  let browser = t('pages.player-detail.unknown-browser');
   if (ua.includes('firefox')) browser = 'Firefox';
   else if (ua.includes('edg')) browser = 'Edge';
   else if (ua.includes('chrome')) browser = 'Chrome';
@@ -45,7 +45,7 @@ export function parseUserAgent(userAgent) {
   else if (ua.includes('opera') || ua.includes('opr')) browser = 'Opera';
 
   // OS detection
-  let os = 'Unknown OS';
+  let os = t('pages.player-detail.unknown-os');
   if (ua.includes('win')) os = 'Windows';
   else if (ua.includes('mac')) os = 'macOS';
   else if (ua.includes('linux')) os = 'Linux';

@@ -112,11 +112,7 @@
     <div class="col-lg-4">
       <div class="accordion" id="leftAccordion">
         <!-- Trackler -->
-        <div
-          class="accordion-item"
-          role="button"
-          tabindex="0"
-          on:keydown={(e) => e.key === 'Enter' && alert('zaa')}>
+        <div class="accordion-item">
           <h2 class="accordion-header" id="tracksHeading">
             <button
               class="accordion-button {showTracks ? '' : 'collapsed'}"
@@ -215,11 +211,7 @@
           </div>
         </div>
         <!-- Gruplar -->
-        <div
-          class="accordion-item"
-          role="button"
-          tabindex="0"
-          on:keydown={(e) => e.key === 'Enter' && alert('zaa')}>
+        <div class="accordion-item">
           <h2 class="accordion-header" id="groupsHeading">
             <button
               class="accordion-button {showGroups ? '' : 'collapsed'}"
@@ -283,11 +275,7 @@
         </div>
 
         <!-- Users -->
-        <div
-          class="accordion-item"
-          role="button"
-          tabindex="0"
-          on:keydown={(e) => e.key === 'Enter' && alert('zaa')}>
+        <div class="accordion-item">
           <h2 class="accordion-header" id="usersHeading">
             <button
               class="accordion-button {showUsers ? '' : 'collapsed'}"
@@ -430,7 +418,7 @@
                   {#if selectedUser.username}
                     <img
                       src={`/api/v1/profile/picture/${encodeURIComponent(selectedUser.username)}?${$avatarVersion}`}
-                      alt={`${selectedUser.username} avatar`}
+                      alt={selectedUser.username}
                       width="28"
                       height="28"
                       class="rounded me-2 flex-shrink-0"
@@ -1693,9 +1681,7 @@
   async function showRemoveUserModal(u) {
     if (!u) return;
     if (isSelfUser(u)) {
-      await showErrorToast('components.toasts.settings-save-error', {
-        errorCode: "You can't remove yourself.",
-      });
+      await showErrorToast('components.toasts.cant-remove-yourself');
       return;
     }
     showConfirmRemovePermUserModal(u);
