@@ -197,7 +197,7 @@
               {/if}
             </li>
             <li class="list-group-item">
-              <strong>Hash:</strong>
+              <strong>{$_('pages.theme-detail.hash')}:</strong>
               <code class="overflow-auto text-nowrap d-block user-select-all py-1"
                 >sha256:{theme.hash}</code>
             </li>

@@ -6,7 +6,7 @@
   <div class="card">
     <div class="card-header d-flex align-items-center justify-content-between">
       <div class="d-flex align-items-center gap-2">
-        <strong>{$_('pages.theme-detail.license-section', { default: 'License' })}</strong>
+        <strong>{$_('pages.theme-detail.license-section')}</strong>
         <LicenseStatusBadge status={theme.licenseStatus} labeled={false} />
       </div>
       {#if theme.licenseStatus !== 'LICENSED'}
@@ -29,58 +29,38 @@
       {#if theme.licenseStatus === 'LICENSED'}
         <PanoPlusLicenseLine viaPanoPlus={theme.licensePanoPlus === true}>
           <p class="mb-0 text-body-secondary">
-            {$_('pages.theme-detail.license.active', {
-              default: 'License is active for this Pano installation.',
-            })}
+            {$_('pages.theme-detail.license-status.active')}
           </p>
         </PanoPlusLicenseLine>
       {:else if theme.licenseStatus === 'NOT_CONNECTED'}
         <p class="mb-3">
-          {$_('pages.theme-detail.license.not-connected', {
-            ...websiteI18n,
-            default: 'Connect your {website} account to verify this theme’s license.',
-          })}
+          {$_('pages.theme-detail.license-status.not-connected', websiteI18n)}
         </p>
         <a class="btn btn-primary" href="{base}/settings/platform">
           <i class="fa-solid fa-link me-2"></i>
-          {$_('buttons.connect-pano-account', { default: 'Connect Pano account' })}
+          {$_('buttons.connect-pano-account')}
         </a>
       {:else if theme.licenseStatus === 'EXPIRED'}
         <p class="mb-0">
-          {$_('pages.theme-detail.license.expired', {
-            ...websiteI18n,
-            default: 'Your license has expired. Renew it on {website} to keep using this theme.',
-          })}
+          {$_('pages.theme-detail.license-status.expired', websiteI18n)}
         </p>
       {:else if theme.licenseStatus === 'NETWORK_ERROR'}
         <p class="mb-0">
-          {$_('pages.theme-detail.license.network-error', {
-            ...websiteI18n,
-            default: 'Could not reach {website}. Check your network and try refresh.',
-          })}
+          {$_('pages.theme-detail.license-status.network-error', websiteI18n)}
         </p>
       {:else if theme.licenseStatus === 'VERSION_MISMATCH' || theme.licenseStatus === 'AUDIENCE_MISMATCH' || theme.licenseStatus === 'PLATFORM_MISMATCH'}
         <p class="mb-0">
-          {$_('pages.theme-detail.license.version-mismatch', {
-            ...websiteI18n,
-            default: 'This theme version is not licensed for your account on {website}.',
-          })}
+          {$_('pages.theme-detail.license-status.version-mismatch', websiteI18n)}
         </p>
       {:else}
         <!-- NO_PURCHASE, MISSING, NEEDS_REFRESH, JAR_TAMPERED, SIGNATURE_INVALID, UNKNOWN -->
         <p class="mb-3">
-          {$_('pages.theme-detail.license.no-purchase', {
-            ...websiteI18n,
-            default: 'No valid license found for this theme on {website}.',
-          })}
+          {$_('pages.theme-detail.license-status.no-purchase', websiteI18n)}
         </p>
         {#if purchaseUrl}
           <a class="btn btn-warning" href={purchaseUrl} target="_blank" rel="noopener">
             <i class="fa-solid fa-store me-2"></i>
-            {$_('buttons.buy-theme-on-market', {
-              ...websiteI18n,
-              default: 'Buy on {website}',
-            })}
+            {$_('buttons.buy-theme-on-market', websiteI18n)}
           </a>
         {/if}
       {/if}

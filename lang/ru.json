@@ -113,7 +113,10 @@
     "close-tickets": "Закрыть Тикеты",
     "set-as-main": "Сделать Главным",
     "retry": "Повторить",
-    "content": "Контент"
+    "content": "Контент",
+    "buy-theme-on-market": "Купить",
+    "reveal": "Показать",
+    "upload": "Загрузить"
   },
   "pages": {
     "auth": {
@@ -224,7 +227,17 @@
       "unknown": "Неизвестно",
       "license-required-toast": "Для этой премиум-темы требуется лицензия.",
       "activate-failed-toast": "Не удалось активировать тему. Пожалуйста, попробуйте ещё раз.",
-      "license-denied-toast": "Проверка лицензии премиум-темы не прошла (причина: {reason}). Проверьте свою учётную запись {website} и покупку, затем обновите лицензию."
+      "license-denied-toast": "Проверка лицензии премиум-темы не прошла (причина: {reason}). Проверьте свою учётную запись {website} и покупку, затем обновите лицензию.",
+      "license-section": "Лицензия",
+      "license-status": {
+        "active": "Эта тема принадлежит вашему аккаунту Pano.",
+        "not-connected": "Pano не подключён к аккаунту {website}. Подключите аккаунт для проверки лицензий премиум-тем.",
+        "expired": "Срок действия закэшированной лицензии истёк, и её не удалось обновить.",
+        "network-error": "Pano не смог связаться с {website} для проверки лицензии. Проверьте сеть и повторите попытку.",
+        "version-mismatch": "Убедитесь, что вы приобрели эту тему на {website} и что Pano подключён к этому аккаунту.",
+        "no-purchase": "Это премиум-тема, и ваш аккаунт Pano её ещё не приобрёл. Купите лицензию на {website}, чтобы использовать её."
+      },
+      "hash": "Хеш"
     },
     "addons": {
       "title": "Аддоны",
@@ -269,7 +282,10 @@
       "requires": "Требует",
       "size": "Размер",
       "api-level": "Уровень API",
-      "unknown": "Неизвестно"
+      "unknown": "Неизвестно",
+      "hash": "Хеш",
+      "no-settings": "Нет настроек",
+      "no-settings-desc": "У этого аддона нет настраиваемых параметров."
     },
     "activity-logs": {
       "title": "Логи активности",
@@ -293,7 +309,11 @@
       "title": "Переводы",
       "card-title": "{count} Переводов",
       "source-theme": "Тема",
-      "source-theme-title": "Этот текст берётся из папки lang-overrides активной темы, а не из плагина."
+      "source-theme-title": "Этот текст берётся из папки lang-overrides активной темы, а не из плагина.",
+      "key": "Ключ",
+      "original": "Оригинал",
+      "custom": "Свой вариант",
+      "unused-alert": "Эти переводы больше не используются, их можно удалить:"
     },
     "dashboard": {
       "title": "Панель",
@@ -403,7 +423,8 @@
         "author": "Автор",
         "last-update": "Последнее обновление",
         "image": "Миниатюра"
-      }
+      },
+      "banned": "Заблокированных"
     },
     "tickets": {
       "title": "{pageType} Тикеты",
@@ -813,7 +834,8 @@
             "SERVER_OFFLINE": "Сервер не в сети",
             "JAR_UNAVAILABLE": "Нет сборки плагина"
           }
-        }
+        },
+        "incompatible-version": "Несовместимая версия Pano"
       },
       "backups": {
         "title": "Резервные копии",
@@ -1053,7 +1075,10 @@
           "storage-full": "Хранилище заполнено.",
           "failed": "Не удалось создать копию.",
           "upload-note": "Отправляется только то, что изменилось с прошлого снимка."
-        }
+        },
+        "tab-local": "Локальные копии",
+        "tab-pano": "Pano Backup",
+        "remote-title": "Pano Backup недоступен"
       }
     },
     "ticket-detail": {
@@ -1292,7 +1317,8 @@
         "title": "Уйти без сохранения?",
         "description": "Некоторые изменения ещё не сохранены автоматически и могут быть потеряны, если вы уйдёте сейчас.",
         "confirm": "Уйти"
-      }
+      },
+      "small-image": "Миниатюра"
     },
     "servers": {
       "card": {
@@ -3131,7 +3157,8 @@
         "url-TEAMS": "URL вебхука Teams Workflows",
         "url-CUSTOM": "URL получателя, например вебхук n8n или Zapier",
         "telegram-token": "Токен бота от @BotFather",
-        "telegram-chat": "ID чата или @канал"
+        "telegram-chat": "ID чата или @канал",
+        "unlisted-tab": "Не в списке"
       },
       "endpoints": {
         "table-title": "{count}/{max} вебхуков",
@@ -3782,7 +3809,7 @@
       "server": "Сервер",
       "game-integration": "Интеграция с игрой",
       "startup": "Запуск",
-      "properties": "Server properties"
+      "properties": "Свойства сервера"
     },
     "modals": {
       "login": {
@@ -4963,6 +4990,9 @@
       "included": "Входит в Pano+",
       "license-active": "Активно с Pano+ · до {date}",
       "license-active-no-date": "Активно с Pano+"
+    },
+    "installing-resource": {
+      "installing-leave-alert": "Выполняется установка, уход с этой страницы может привести к поломке функций!"
     }
   },
   "page-error": {

@@ -95,7 +95,7 @@
         {/if}
         <div class="list-group-item">
           <div class="row">
-            <dt class="col-sm-4 fw-normal text-body-secondary">Hash</dt>
+            <dt class="col-sm-4 fw-normal text-body-secondary">{$_('pages.addon-detail.hash')}</dt>
             <dd class="col-sm-8 text-sm-end mb-0">
               <code
                 class="d-block text-truncate font-monospace user-select-all"

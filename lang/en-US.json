@@ -113,7 +113,10 @@
     "close-tickets": "Close Tickets",
     "set-as-main": "Set As Main",
     "retry": "Retry",
-    "content": "Content"
+    "content": "Content",
+    "buy-theme-on-market": "Buy",
+    "reveal": "Reveal",
+    "upload": "Upload"
   },
   "pages": {
     "auth": {
@@ -224,7 +227,17 @@
       "unknown": "Unknown",
       "license-required-toast": "License required for this premium theme.",
       "activate-failed-toast": "Failed to activate the theme. Please try again.",
-      "license-denied-toast": "Premium theme license check failed (reason: {reason}). Verify your {website} account and purchase, then refresh the license."
+      "license-denied-toast": "Premium theme license check failed (reason: {reason}). Verify your {website} account and purchase, then refresh the license.",
+      "license-section": "License",
+      "license-status": {
+        "active": "Your Pano account owns this theme.",
+        "not-connected": "Pano isn't connected to a {website} account. Connect your account to verify premium theme licenses.",
+        "expired": "Your cached license expired and could not be renewed.",
+        "network-error": "Pano couldn't reach {website} to verify the license. Check your network and retry.",
+        "version-mismatch": "Please confirm on {website} that you purchased this theme and that Pano is linked to the same account.",
+        "no-purchase": "This is a premium theme and your Pano account hasn't purchased it yet. Buy a license on {website} to use it."
+      },
+      "hash": "Hash"
     },
     "addons": {
       "title": "Addons",
@@ -269,7 +282,10 @@
       "requires": "Requires",
       "size": "Size",
       "api-level": "API level",
-      "unknown": "Unknown"
+      "unknown": "Unknown",
+      "hash": "Hash",
+      "no-settings": "No Settings",
+      "no-settings-desc": "This addon has no configurable settings."
     },
     "activity-logs": {
       "title": "Activity Logs",
@@ -293,7 +309,11 @@
       "title": "Translations",
       "card-title": "{count} Translations",
       "source-theme": "Theme",
-      "source-theme-title": "This text comes from the active theme's lang-overrides folder, not from the plugin."
+      "source-theme-title": "This text comes from the active theme's lang-overrides folder, not from the plugin.",
+      "key": "Key",
+      "original": "Original",
+      "custom": "Custom",
+      "unused-alert": "These translations are not used anymore, you can delete them:"
     },
     "dashboard": {
       "title": "Panel",
@@ -403,7 +423,8 @@
         "author": "Author",
         "last-update": "Last Update",
         "image": "Thumbnail"
-      }
+      },
+      "banned": "Banned"
     },
     "tickets": {
       "title": "{pageType}Tickets",
@@ -813,7 +834,8 @@
             "SERVER_OFFLINE": "Server offline",
             "JAR_UNAVAILABLE": "No plugin build available"
           }
-        }
+        },
+        "incompatible-version": "Pano version incompatible"
       },
       "backups": {
         "title": "Backups",
@@ -1053,7 +1075,10 @@
           "storage-full": "Storage is full.",
           "failed": "The backup failed.",
           "upload-note": "Only what changed since the last snapshot is sent."
-        }
+        },
+        "tab-local": "Local Backups",
+        "tab-pano": "Pano Backup",
+        "remote-title": "Pano Backup is unreachable"
       }
     },
     "ticket-detail": {
@@ -1292,7 +1317,8 @@
         "title": "Leave without saving?",
         "description": "Some changes are not saved automatically yet and may be lost if you leave now.",
         "confirm": "Leave"
-      }
+      },
+      "small-image": "Thumbnail"
     },
     "servers": {
       "card": {
@@ -4964,6 +4990,9 @@
       "included": "Included with Pano+",
       "license-active": "Active with Pano+ · until {date}",
       "license-active-no-date": "Active with Pano+"
+    },
+    "installing-resource": {
+      "installing-leave-alert": "An installation is in progress, leaving this page may result in broken features!"
     }
   },
   "page-error": {

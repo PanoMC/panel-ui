@@ -113,7 +113,10 @@
     "close-tickets": "Talepleri Kapat",
     "set-as-main": "Ana Sunucu Yap",
     "retry": "Yeniden Dene",
-    "content": "İçerik"
+    "content": "İçerik",
+    "buy-theme-on-market": "Satın Al",
+    "reveal": "Göster",
+    "upload": "Yükle"
   },
   "pages": {
     "auth": {
@@ -224,7 +227,17 @@
       "unknown": "Bilinmiyor",
       "license-required-toast": "Bu premium tema için lisans gerekli.",
       "activate-failed-toast": "Tema aktifleştirilemedi. Lütfen tekrar deneyin.",
-      "license-denied-toast": "Premium tema lisans kontrolü başarısız (sebep: {reason}). {website} hesabınızı ve satın alımınızı kontrol edip lisansı yenileyin."
+      "license-denied-toast": "Premium tema lisans kontrolü başarısız (sebep: {reason}). {website} hesabınızı ve satın alımınızı kontrol edip lisansı yenileyin.",
+      "license-section": "Lisans",
+      "license-status": {
+        "active": "Bu tema Pano hesabınıza ait.",
+        "not-connected": "Pano bir {website} hesabına bağlı değil. Premium tema lisanslarını doğrulamak için hesabınızı bağlayın.",
+        "expired": "Önbellekteki lisansınızın süresi dolmuş ve yenilenemedi.",
+        "network-error": "Pano lisansı doğrulamak için {website} adresine ulaşamadı. Ağ bağlantınızı kontrol edin ve tekrar deneyin.",
+        "version-mismatch": "Bu temayı {website} üzerinden satın aldığınızdan ve Pano'nun aynı hesaba bağlı olduğundan emin olun.",
+        "no-purchase": "Bu bir premium tema ve Pano hesabınızda satın alınmamış. Kullanmak için {website} üzerinden lisans satın alın."
+      },
+      "hash": "Hash"
     },
     "addons": {
       "title": "Eklentiler",
@@ -269,7 +282,10 @@
       "requires": "Gerekliler",
       "size": "Boyut",
       "api-level": "API seviyesi",
-      "unknown": "Bilinmiyor"
+      "unknown": "Bilinmiyor",
+      "hash": "Hash",
+      "no-settings": "Ayar Yok",
+      "no-settings-desc": "Bu eklentinin yapılandırılabilir ayarı yok."
     },
     "activity-logs": {
       "title": "Aktivite Kayıtları",
@@ -293,7 +309,11 @@
       "title": "Çeviriler",
       "card-title": "{count} Çeviri",
       "source-theme": "Tema",
-      "source-theme-title": "Bu metin eklentiden değil, etkin temanın lang-overrides klasöründen geliyor."
+      "source-theme-title": "Bu metin eklentiden değil, etkin temanın lang-overrides klasöründen geliyor.",
+      "key": "Anahtar",
+      "original": "Orijinal",
+      "custom": "Özel",
+      "unused-alert": "Bu çeviriler artık kullanılmıyor, silebilirsiniz:"
     },
     "dashboard": {
       "title": "Panel",
@@ -403,7 +423,8 @@
         "author": "Yazar",
         "last-update": "Son Güncellenme",
         "image": "Küçük Resim"
-      }
+      },
+      "banned": "Yasaklı"
     },
     "tickets": {
       "title": "{pageType}Talepler",
@@ -813,7 +834,8 @@
             "SERVER_OFFLINE": "Sunucu çevrimdışı",
             "JAR_UNAVAILABLE": "Eklenti derlemesi yok"
           }
-        }
+        },
+        "incompatible-version": "Pano sürümü uyumsuz"
       },
       "backups": {
         "title": "Yedekler",
@@ -1055,7 +1077,8 @@
           "storage-full": "Depolama alanı dolu.",
           "failed": "Yedekleme başarısız oldu.",
           "upload-note": "Son kayıt noktasından bu yana yalnızca değişenler gönderilir."
-        }
+        },
+        "remote-title": "Pano Backup'a ulaşılamıyor"
       }
     },
     "ticket-detail": {
@@ -1196,7 +1219,7 @@
       "form": {
         "group-name": "Grup İsmi",
         "group-name-placeholder": "Grup İsmi",
-        "display-name": "Display Name",
+        "display-name": "Görünen Ad",
         "display-name-placeholder": "Görünen İsim"
       },
       "permission-editor": {
@@ -1294,7 +1317,8 @@
         "title": "Kaydetmeden çıkılsın mı?",
         "description": "Bazı değişiklikler henüz otomatik kaydedilmedi; şimdi çıkarsan kaybolabilirler.",
         "confirm": "Çık"
-      }
+      },
+      "small-image": "Küçük resim"
     },
     "servers": {
       "card": {
@@ -2268,7 +2292,7 @@
             "help": "Aynı anda çevrimiçi olabilecek oyuncu sayısı."
           },
           "online-mode": {
-            "label": "Online mode",
+            "label": "Çevrimiçi mod",
             "help": "Oyuncuları Mojang üzerinden doğrula. Sadece proxy arkasındayken kapatın."
           },
           "white-list": {
@@ -3785,7 +3809,7 @@
       "server": "Sunucu",
       "game-integration": "Oyun Entegrasyonu",
       "startup": "Başlangıç",
-      "properties": "Server properties"
+      "properties": "Sunucu özellikleri"
     },
     "modals": {
       "login": {
@@ -4966,6 +4990,9 @@
       "included": "Pano+'a dahil",
       "license-active": "Pano+ ile etkin · {date} tarihine kadar",
       "license-active-no-date": "Pano+ ile etkin"
+    },
+    "installing-resource": {
+      "installing-leave-alert": "Bir kurulum devam ediyor, bu sayfadan ayrılmak bazı özelliklerin bozulmasına yol açabilir!"
     }
   },
   "page-error": {

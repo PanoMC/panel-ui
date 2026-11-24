@@ -1,7 +1,7 @@
 <div class="alert alert-warning d-flex align-items-start" role="alert">
   <i class="fa-solid fa-triangle-exclamation me-3 mt-1" aria-hidden="true"></i>
   <details class="flex-grow-1" {open}>
-    <summary> These translations are not used anymore, you can delete them: </summary>
+    <summary>{$_('pages.translations.unused-alert')}</summary>
     {#each translations as translation, index (translation)}
       <TranslationRow
         {translation}
@@ -14,6 +14,7 @@
 
 <script>
   import { createEventDispatcher } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
   import TranslationRow from '$lib/components/rows/TranslationRow.svelte';
 

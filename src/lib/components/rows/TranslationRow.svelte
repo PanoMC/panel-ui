@@ -11,7 +11,7 @@
         readonly
         value={pluginId ? translation.key.replace(`plugins.${pluginId}.`, '') : translation.key}
         title={pluginId ? translation.key.replace(`plugins.${pluginId}.`, '') : translation.key} />
-      <label for="KeyTranslation">Key</label>
+      <label for="KeyTranslation">{$_('pages.translations.key')}</label>
     </div>
   </div>
   <div class="col-md">
@@ -23,7 +23,7 @@
         readonly
         value={translation.original}
         title={translation.original}></textarea>
-      <label for="OriginalTranslation">Original</label>
+      <label for="OriginalTranslation">{$_('pages.translations.original')}</label>
     </div>
   </div>
   <div class="col-md">
@@ -35,7 +35,7 @@
         bind:value={translation.custom}
         title={translation.custom}
         on:input={onCustomInputChange}></textarea>
-      <label for="CustomTranslation">Custom</label>
+      <label for="CustomTranslation">{$_('pages.translations.custom')}</label>
     </div>
   </div>
   {#if translation.notExists}
