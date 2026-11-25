@@ -42,6 +42,8 @@ export const ARCHIVE_SNIFF_BYTES = ENVELOPE_MAGIC.length + 4 + MAX_HEADER_BYTES;
  */
 export const KNOWN_ERRORS = Object.freeze([
   'CURRENT_PASSWORD_NOT_CORRECT',
+  'NOT_ENOUGH_SPACE',
+  'NOT_ENOUGH_SPACE_NODE',
   'PANO_BACKUP_BUSY',
   'BACKUP_BUSY',
   'FILE_TOO_LARGE',
@@ -509,6 +511,11 @@ export function describeError(source, options = {}) {
     code = String(details.hostError || 'PANO_HOST_UNAVAILABLE');
   }
 
+  // A full disk is said for the machine it is on: Pano's own, or the server's node.
+  if (code === 'NOT_ENOUGH_SPACE' && details.where === 'node') {
+    code = 'NOT_ENOUGH_SPACE_NODE';
+  }
+
   // The archive does not fit the chosen instance: not the Pano Backup limit.
   if (code === 'QUOTA_EXCEEDED' && options.context === 'transfer') {
     code = 'QUOTA_EXCEEDED_TRANSFER';
@@ -526,6 +533,7 @@ export function describeError(source, options = {}) {
     quota: details.quotaBytes != null ? formatBytes(Number(details.quotaBytes)) : '',
     used: details.usedBytes != null ? formatBytes(Number(details.usedBytes)) : '',
     max: details.maxBytes != null ? formatBytes(Number(details.maxBytes)) : '',
+    free: details.free != null ? formatBytes(Number(details.free)) : '?',
     seconds: Number(details.retryAfterSeconds) || 0,
     minLength: Number(details.minLength) || MIN_PASSPHRASE_LENGTH,
     website: options.website || 'panomc.com',

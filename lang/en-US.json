@@ -993,6 +993,8 @@
         "errors": {
           "generic": "Something went wrong ({code}).",
           "CURRENT_PASSWORD_NOT_CORRECT": "Your account password is not correct.",
+          "NOT_ENOUGH_SPACE": "Not enough disk space on this Pano's server ({free} free, 256 MB is always kept free). The operation was stopped and its files removed.",
+          "NOT_ENOUGH_SPACE_NODE": "Not enough disk space on the server's node ({free} free, 256 MB is always kept free). The operation was stopped and nothing was kept.",
           "PANO_BACKUP_BUSY": "Another backup or restore is running. Wait for it to finish.",
           "BACKUP_BUSY": "Another backup or restore is running. Wait for it to finish.",
           "FILE_TOO_LARGE": "The file is too large.",

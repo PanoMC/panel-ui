@@ -51,6 +51,9 @@
           {#if speedText}
             <span class="ms-auto">{speedText}</span>
           {/if}
+          {#if leftText}
+            <span>· {leftText}</span>
+          {/if}
         </div>
       {/if}
       {#if job.type === 'RESTORE'}
@@ -148,6 +151,30 @@
   const shownPercent = $derived(processing ? null : percent);
   const hasBytes = $derived((Number(job?.bytesTotal) || 0) > 0);
   const speedText = $derived(formatSpeed(speed));
+  /** Time left of the current phase, from its bytes and the measured speed. */
+  const leftText = $derived.by(() => {
+    const total = Number(job?.bytesTotal) || 0;
+    const done = Number(job?.bytesDone) || 0;
+
+    if (!speed || speed <= 0 || total <= 0 || done >= total) {
+      return null;
+    }
+
+    const seconds = Math.ceil((total - done) / speed);
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const rest = seconds % 60;
+
+    if (hours > 0) {
+      return $_('components.upload-progress.hours-left', { values: { hours, minutes } });
+    }
+
+    if (minutes > 0) {
+      return $_('components.upload-progress.minutes-left', { values: { minutes, seconds: rest } });
+    }
+
+    return $_('components.upload-progress.seconds-left', { values: { seconds: rest } });
+  });
   const error = $derived(
     job?.status === 'FAILED'
       ? describeError(job, { context: job?.type === 'TRANSFER' ? 'transfer' : undefined })

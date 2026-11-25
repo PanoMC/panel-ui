@@ -88,6 +88,15 @@ describe('inspectArchiveHeader', () => {
 });
 
 describe('describeError', () => {
+  test('a full disk is said for the machine it is on, with what is free', () => {
+    const pano = describeError({ error: 'NOT_ENOUGH_SPACE', details: { free: 100 * 1024 * 1024 } });
+    const node = describeError({ error: 'NOT_ENOUGH_SPACE', details: { free: 5, where: 'node' } });
+
+    expect(pano?.key).toBe('pages.settings.backups.errors.NOT_ENOUGH_SPACE');
+    expect(pano?.values.free).toBe(formatBytes(100 * 1024 * 1024));
+    expect(node?.key).toBe('pages.settings.backups.errors.NOT_ENOUGH_SPACE_NODE');
+  });
+
   test('a quota refusal of a transfer says the Pano does not fit the instance', () => {
     const result = describeError(
       { error: 'QUOTA_EXCEEDED', details: { maxBytes: 1048576 } },

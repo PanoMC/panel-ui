@@ -995,6 +995,8 @@
         "errors": {
           "generic": "Bir şeyler ters gitti ({code}).",
           "CURRENT_PASSWORD_NOT_CORRECT": "Hesap şifreniz yanlış.",
+          "NOT_ENOUGH_SPACE": "Pano'nun sunucusunda yeterli disk alanı yok ({free} boş, 256 MB her zaman boş tutulur). İşlem durduruldu ve dosyaları silindi.",
+          "NOT_ENOUGH_SPACE_NODE": "Sunucunun node'unda yeterli disk alanı yok ({free} boş, 256 MB her zaman boş tutulur). İşlem durduruldu, hiçbir şey saklanmadı.",
           "PANO_BACKUP_BUSY": "Başka bir yedekleme veya geri yükleme çalışıyor. Bitmesini bekleyin.",
           "BACKUP_BUSY": "Başka bir yedekleme veya geri yükleme çalışıyor. Bitmesini bekleyin.",
           "FILE_TOO_LARGE": "Dosya çok büyük.",
