@@ -338,6 +338,8 @@
 
     ApiUtil.post({
       path: '/panel/notifications/quick/markAsRead',
+      // Only the ones the menu shows: one that arrived after it last loaded stays unread.
+      body: { ids: $quickNotifications.slice(0, 5).map((notification) => notification.id) },
       handler: (body) => {
         if (quickNotificationProcessID !== id) {
           return;
@@ -374,8 +376,9 @@
 
           quickNotifications.update((notifications) => {
             notifications.forEach((subNotification) => {
+              // The row in the store now: a refresh in the meantime replaced the one this timer saw.
               if (subNotification.id === notification.id) {
-                notification.status = 'READ';
+                subNotification.status = 'READ';
               }
             });
 
